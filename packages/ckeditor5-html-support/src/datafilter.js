@@ -240,10 +240,14 @@ export default class DataFilter extends Plugin {
 				this._fireRegisterEvent( definition );
 			}
 		}, {
-			// With high priority listener we are able to register elements right before
-			// running data conversion. Make also sure that priority is higher than the one
-			// used by `RealTimeCollaborationClient`, as RTC is stopping event propagation.
-			priority: priorities.get( 'high' ) + 1
+			// With highest priority listener we are able to register elements right before
+			// running data conversion. Also:
+			// * Make sure that priority is higher than the one used by `RealTimeCollaborationClient`,
+			// as RTC is stopping event propagation.
+			// * Make sure no other features hook into this event before GHS because otherwise the
+			// downcast conversion (for these features) could run before GHS registered its converters
+			// (https://github.com/ckeditor/ckeditor5/issues/11356).
+			priority: priorities.get( 'highest' ) + 1
 		} );
 	}
 
@@ -331,7 +335,7 @@ export default class DataFilter extends Plugin {
 		} );
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: modelName,
 			view: toObjectWidgetConverter( editor, definition )
 		} );

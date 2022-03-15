@@ -30,7 +30,7 @@ msgstr "No se pudo seleccionar la imagen redimensionada"
 
 msgctxt "Error message displayed when an image cannot be inserted at the current position."
 msgid "Could not insert image at the current position."
-msgstr "No se puede insertar una imagen en la posición actual"
+msgstr "No se pudo insertar la imagen en la posición actual."
 
 msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
 msgid "Inserting image failed"

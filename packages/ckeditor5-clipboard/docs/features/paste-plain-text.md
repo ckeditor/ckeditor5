@@ -14,6 +14,10 @@ It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> 
 
 Pasting plain text with a double line break will turn the break into a paragraph. A single line break will instead be turned into a soft break upon pasting.
 
+<info-box info>
+	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+</info-box>
+
 ## Demo
 
 Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> to test the style inheritance. Paste without the <kbd>Shift</kbd> modifier to retain unstyled text. You can copy this very paragraph or one from the demo for convenience.
@@ -29,7 +33,7 @@ CKEditor 5 supports a wider range of paste features, including:
 ## Installation
 
 <info-box info>
-	This feature is required by the clipboard plugin and is enabled by default in all official builds. The installation instructions are for developers interested in building their own custom rich-text editor.
+	This feature is required by the clipboard plugin and is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own custom rich-text editor.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-clipboard`](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard) package:

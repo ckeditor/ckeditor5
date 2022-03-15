@@ -29,9 +29,9 @@ import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
-import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listpropertiesediting';
-import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolistediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
+import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting';
+import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting';
 
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
 
@@ -387,9 +387,9 @@ describe( 'HtmlComment integration', () => {
 			expect( editor.getData() ).to.equal(
 				'<!-- c1 -->' +
 				'<figure class="image">' +
-					'<img src="/assets/sample.png" alt="Example image">' +
 					'<!-- c3 -->' +
 					'<!-- c2 -->' +
+					'<img src="/assets/sample.png" alt="Example image">' +
 					'<figcaption>' +
 						'<!-- c4 -->' +
 						'image caption' +

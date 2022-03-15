@@ -74,11 +74,10 @@ export function isMediaWidget( viewElement ) {
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createMediaFigureElement( writer, registry, url, options ) {
-	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
-
-	writer.insert( writer.createPositionAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
-
-	return figure;
+	return writer.createContainerElement( 'figure', { class: 'media' }, [
+		registry.getMediaViewElement( writer, url, options ),
+		writer.createSlot()
+	] );
 }
 
 /**

@@ -44,7 +44,8 @@ export default class ScriptElementSupport extends Plugin {
 			schema.register( 'htmlScript', definition.modelSchema );
 
 			schema.extend( 'htmlScript', {
-				allowAttributes: [ 'htmlAttributes', 'htmlContent' ]
+				allowAttributes: [ 'htmlAttributes', 'htmlContent' ],
+				isContent: true
 			} );
 
 			editor.data.registerRawContentMatcher( {

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global console */
+
 import Model from '../../src/model/model';
 import Writer from '../../src/model/writer';
 import Batch from '../../src/model/batch';
@@ -20,8 +22,12 @@ import { getNodesAndText } from '../../tests/model/_utils/utils';
 import DocumentSelection from '../../src/model/documentselection';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 describe( 'Writer', () => {
 	let model, doc, batch;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		model = new Model();
@@ -2496,19 +2502,32 @@ describe( 'Writer', () => {
 			}, 'writer-updatemarker-marker-not-exists', model );
 		} );
 
-		it( 'should only refresh the marker when there is no provided options to update', () => {
+		it( 'should only refresh (but warn()) the marker when there is no provided options to update', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
 			const spy = sinon.spy( model.markers, '_refresh' );
+			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
 
 			updateMarker( marker );
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, marker );
+			sinon.assert.calledOnce( consoleWarnStub );
+			sinon.assert.calledWithExactly( consoleWarnStub.firstCall,
+				sinon.match( /^writer-updatemarker-reconvert-using-editingcontroller/ ),
+				{ markerName: 'name' },
+				sinon.match.string // Link to the documentation
+			);
 
 			updateMarker( 'name' );
 
 			sinon.assert.calledTwice( spy );
 			sinon.assert.calledWithExactly( spy.secondCall, marker );
+			sinon.assert.calledTwice( consoleWarnStub );
+			sinon.assert.calledWithExactly( consoleWarnStub.secondCall,
+				sinon.match( /^writer-updatemarker-reconvert-using-editingcontroller/ ),
+				{ markerName: 'name' },
+				sinon.match.string // Link to the documentation
+			);
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {

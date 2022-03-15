@@ -17,8 +17,9 @@ CKEditor 5 Framework is a highly-flexible and universal platform providing a set
 
 ## Related links
 
- * {@link features/index Features} &ndash; Learn about some of the features included in CKEditor 5 Framework.
- * {@link examples/index Examples} &ndash; Try live demos of all available builds. View some of the possible customizations of CKEditor.
+ * {@link installation/getting-started/quick-start CKEditor 5 installation} &ndash; Learn how to install, integrate and configure CKEditor 5.
+ * {@link features/index CKEditor 5 features} &ndash; Learn about some of the features available for CKEditor 5.
+ * {@link examples/index Implementation examples} &ndash; Try live demos of all available predefined builds. View some of the possible customizations of CKEditor.
 
 <info-box>
     The CKEditor 5 Framework documentation is still in progress, so it may be lacking many things. Feel free to [suggest documentation enhancements](https://github.com/ckeditor/ckeditor5/labels/type%3Adocs) and share your feedback about the framework.

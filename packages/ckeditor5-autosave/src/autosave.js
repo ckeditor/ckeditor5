@@ -37,8 +37,8 @@ import { debounce } from 'lodash-es';
  *				}
  *			} );
  *
- * Read more about this feature in the {@glink builds/guides/integration/saving-data#autosave-feature Autosave feature}
- * section of the {@glink builds/guides/integration/saving-data Saving and getting data}.
+ * Read more about this feature in the {@glink installation/advanced/saving-data#autosave-feature Autosave feature}
+ * section of the {@glink installation/advanced/saving-data Saving and getting data}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -399,7 +399,7 @@ mix( Autosave, ObservableMixin );
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  *
- * See also the demo of the {@glink builds/guides/integration/saving-data#autosave-feature autosave feature}.
+ * See also the demo of the {@glink installation/advanced/saving-data#autosave-feature autosave feature}.
  *
  * @interface AutosaveConfig
  */

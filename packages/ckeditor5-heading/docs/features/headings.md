@@ -11,7 +11,7 @@ The {@link module:heading/heading~Heading} feature enables support for headings.
 Headings can easily be added with toolbar dropdown, buttons or with {@link features/autoformat Markdown code} as you type. They can also be cleared with the {@link features/remove-format remove format} feature.
 
 <info-box info>
-	This feature is enabled by default in all builds.
+	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
 </info-box>
 
 ## Heading levels
@@ -19,7 +19,7 @@ Headings can easily be added with toolbar dropdown, buttons or with {@link featu
 By default this feature is configured to support `<h2>`, `<h3>` and `<h4>` elements which are named: "Heading 1", "Heading 2" and "Heading 3", respectively. The rationale behind starting from `<h2>` is that `<h1>` should be reserved for the {@link features/title page's main title} and the page content will usually start from `<h2>`.
 
 <info-box hint>
-	Support for adding a document title is provided through the {@link module:heading/title~Title} plugin. This plugin is optional and needs to be {@link builds/guides/integration/installing-plugins added to your editor build}. When it is enabled, a `<h1>` element pasted into the editor will be rendered as the {@link features/title document title}.
+	Support for adding a document title is provided through the {@link module:heading/title~Title} plugin. This plugin is optional and needs to be {@link installation/getting-started/installing-plugins added to your editor build}. When it is enabled, a `<h1>` element pasted into the editor will be rendered as the {@link features/title document title}.
 </info-box>
 
 By default, when your editor build does not include the title plugin, a `<h1>` element pasted into the rich-text editor is converted to `<h2>` ("Heading 1").
@@ -164,7 +164,7 @@ ClassicEditor
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
@@ -197,7 +197,7 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

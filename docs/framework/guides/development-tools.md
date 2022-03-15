@@ -37,7 +37,7 @@ or as a plain `<script>` tag in the HTML of your application:
 
 ### Enabling the inspector
 
-Attach the inspector to the editor instance when {@link builds/guides/integration/basic-api#creating-an-editor created} using the `CKEditorInspector.attach()` method:
+Attach the inspector to the editor instance when {@link installation/getting-started/basic-api#creating-an-editor created} using the `CKEditorInspector.attach()` method:
 
 ```js
 ClassicEditor

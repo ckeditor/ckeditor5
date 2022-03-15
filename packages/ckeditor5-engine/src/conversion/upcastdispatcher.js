@@ -40,10 +40,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * The third parameter of the callback is an instance of {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi}
  * which provides additional tools for converters.
  *
- * You can read more about conversion in the following guides:
- *
- * * {@glink framework/guides/deep-dive/conversion/conversion-introduction Advanced conversion concepts &mdash; attributes}
- * * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion}
+ * You can read more about conversion in the {@glink framework/guides/deep-dive/conversion/upcast Upcast conversion} guide.
  *
  * Examples of event-based converters:
  *
@@ -127,7 +124,7 @@ export default class UpcastDispatcher {
 		/**
 		 * The list of elements that were created during splitting.
 		 *
-		 * After the conversion process the list is cleared.
+		 * After the conversion process, the list is cleared.
 		 *
 		 * @private
 		 * @type {Map.<module:engine/model/element~Element,Array.<module:engine/model/element~Element>>}

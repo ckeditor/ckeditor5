@@ -11,7 +11,7 @@ order: 30
 This feature allows you to insert images as well as links to files into the rich-text editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader. CKFinder is a commercial application that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET and Java and version 2.x for ASP and ColdFusion.
 
 <info-box info>
-	CKFinder is a commercial solution. This feature is enabled by default in all builds for convenience, but the editor will still work properly without activating it.
+	CKFinder is a commercial solution. This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds} for convenience, but the editor will still work properly without activating it.
 </info-box>
 
 This feature can be used in the rich-text editor in two different ways:
@@ -168,7 +168,7 @@ Use the `allowedExtensions` configuration option to define the file extension al
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
+	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-ckfinder`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder) package:

@@ -18,7 +18,7 @@ Below you can see a demo of an editor with the dark theme as a result of customi
 CKEditor 5 is bundled using [webpack](https://webpack.js.org/) and it handles the importing and processing of styles using [loaders](https://webpack.js.org/concepts/loaders/). Its configuration can be found in the `webpack.config.js` file.
 
 <info-box info>
-	To learn more about building CKEditor, check out the {@link builds/guides/development/custom-builds Creating custom builds guide}.
+	To learn more about building CKEditor, check out the {@link installation/getting-started/quick-start#building-the-editor-from-source Creating custom builds guide}.
 </info-box>
 
 The entire process of building and managing the styles boils down to three steps:
@@ -60,7 +60,7 @@ The entire process of building and managing the styles boils down to three steps
 
 ## Customization with CSS variables
 
-Having {@link builds/guides/development/custom-builds#forking-an-existing-build cloned} an existing build of CKEditor for a quick start, let's use the full potential of CSS variables (custom properties). The customization explained in this guide will make the theme dark, with slightly bigger text and more rounded corners.
+Having {@link installation/getting-started/quick-start#building-the-editor-from-source#forking-an-existing-build cloned} an existing build of CKEditor for a quick start, let's use the full potential of CSS variables (custom properties). The customization explained in this guide will make the theme dark, with slightly bigger text and more rounded corners.
 
 <info-box hint>
 	Check out the [color sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals/_colors.css) for a full list of customizable colors. You can also browse [other files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to learn about other useful tools.

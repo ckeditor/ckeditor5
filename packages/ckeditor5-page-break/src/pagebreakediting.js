@@ -41,28 +41,27 @@ export default class PageBreakEditing extends Plugin {
 			allowWhere: '$block'
 		} );
 
-		conversion.for( 'dataDowncast' ).elementToElement( {
+		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'pageBreak',
 			view: ( modelElement, { writer } ) => {
-				const divElement = writer.createContainerElement( 'div', {
-					class: 'page-break',
-					// If user has no `.ck-content` styles, it should always break a page during print.
-					style: 'page-break-after: always'
-				} );
-
-				// For a rationale of using span inside a div see:
-				// https://github.com/ckeditor/ckeditor5-page-break/pull/1#discussion_r328934062.
-				const spanElement = writer.createContainerElement( 'span', {
-					style: 'display: none'
-				} );
-
-				writer.insert( writer.createPositionAt( divElement, 0 ), spanElement );
+				const divElement = writer.createContainerElement( 'div',
+					{
+						class: 'page-break',
+						// If user has no `.ck-content` styles, it should always break a page during print.
+						style: 'page-break-after: always'
+					},
+					// For a rationale of using span inside a div see:
+					// https://github.com/ckeditor/ckeditor5-page-break/pull/1#discussion_r328934062.
+					writer.createContainerElement( 'span', {
+						style: 'display: none'
+					} )
+				);
 
 				return divElement;
 			}
 		} );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: 'pageBreak',
 			view: ( modelElement, { writer } ) => {
 				const label = t( 'Page break' );

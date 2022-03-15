@@ -58,6 +58,14 @@ export default class DowncastWriter {
 		 * @type {Map.<String,Set>}
 		 */
 		this._cloneGroups = new Map();
+
+		/**
+		 * The slot factory used by the `elementToStructure` downcast helper.
+		 *
+		 * @private
+		 * @type {Function|null}
+		 */
+		this._slotFactory = null;
 	}
 
 	/**
@@ -222,8 +230,20 @@ export default class DowncastWriter {
 	 *		// Create element with custom classes.
 	 *		writer.createContainerElement( 'p', { class: 'foo bar baz' } );
 	 *
+	 *		// Create element with children.
+	 *		writer.createContainerElement( 'figure', { class: 'image' }, [
+	 *			writer.createEmptyElement( 'img' ),
+	 *			writer.createContainerElement( 'figcaption' )
+	 *		] );
+	 *
+	 *		// Create element with specific options.
+	 *		writer.createContainerElement( 'span', { class: 'placeholder' }, { isAllowedInsideAttributeElement: true } );
+	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>|Object} [childrenOrOptions]
+	 * A node or a list of nodes to be inserted into the created element. If no children were specified, element's `options`
+	 * can be passed in this argument.
 	 * @param {Object} [options] Element's options.
 	 * @param {Boolean} [options.isAllowedInsideAttributeElement=false] Whether an element is
 	 * {@link module:engine/view/element~Element#isAllowedInsideAttributeElement allowed inside an AttributeElement} and can be wrapped
@@ -232,8 +252,16 @@ export default class DowncastWriter {
 	 * pipeline even though they would normally be filtered out by unsafe attribute detection mechanisms.
 	 * @returns {module:engine/view/containerelement~ContainerElement} Created element.
 	 */
-	createContainerElement( name, attributes, options = {} ) {
-		const containerElement = new ContainerElement( this.document, name, attributes );
+	createContainerElement( name, attributes, childrenOrOptions = {}, options = {} ) {
+		let children = null;
+
+		if ( isPlainObject( childrenOrOptions ) ) {
+			options = childrenOrOptions;
+		} else {
+			children = childrenOrOptions;
+		}
+
+		const containerElement = new ContainerElement( this.document, name, attributes, children );
 
 		if ( options.isAllowedInsideAttributeElement !== undefined ) {
 			containerElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
@@ -1167,7 +1195,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates new {@link module:engine/view/selection~Selection} instance.
 	 *
 	 * 		// Creates empty selection without ranges.
 	 *		const selection = writer.createSelection();
@@ -1228,6 +1256,63 @@ export default class DowncastWriter {
 	 */
 	createSelection( selectable, placeOrOffset, options ) {
 		return new Selection( selectable, placeOrOffset, options );
+	}
+
+	/**
+	 * Creates placeholders for child elements of the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+	 * `elementToStructure()`} conversion helper.
+	 *
+	 *		const viewSlot = conversionApi.writer.createSlot();
+	 *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+	 *
+	 *		conversionApi.writer.insert( viewPosition, viewSlot );
+	 *
+	 * It could be filtered down to a specific subset of children (only `<foo>` model elements in this case):
+	 *
+	 *		const viewSlot = conversionApi.writer.createSlot( node => node.is( 'element', 'foo' ) );
+	 *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+	 *
+	 *		conversionApi.writer.insert( viewPosition, viewSlot );
+	 *
+	 * While providing a filtered slot, make sure to provide slots for all child nodes. A single node can not be downcasted into
+	 * multiple slots.
+	 *
+	 * **Note**: You should not change the order of nodes. View elements should be in the same order as model nodes.
+	 *
+	 * @param {'children'|module:engine/conversion/downcasthelpers~SlotFilter} [modeOrFilter='children'] The filter for child nodes.
+	 * @returns {module:engine/view/element~Element} The slot element to be placed in to the view structure while processing
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
+	 */
+	createSlot( modeOrFilter ) {
+		if ( !this._slotFactory ) {
+			/**
+			 * The `createSlot()` method is only allowed inside the `elementToStructure` downcast helper callback.
+			 *
+			 * @error view-writer-invalid-create-slot-context
+			 */
+			throw new CKEditorError( 'view-writer-invalid-create-slot-context', this.document );
+		}
+
+		return this._slotFactory( this, modeOrFilter );
+	}
+
+	/**
+	 * Registers a slot factory.
+	 *
+	 * @protected
+	 * @param {Function} slotFactory The slot factory.
+	 */
+	_registerSlotFactory( slotFactory ) {
+		this._slotFactory = slotFactory;
+	}
+
+	/**
+	 * Clears the registered slot factory.
+	 *
+	 * @protected
+	 */
+	_clearSlotFactory() {
+		this._slotFactory = null;
 	}
 
 	/**

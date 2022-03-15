@@ -117,7 +117,12 @@ describe( 'DataFilter', () => {
 				// register it before DataFilter listener.
 				this.editor.data.on( 'init', evt => {
 					evt.stop();
-				}, { priority: 'high' } );
+				}, {
+					// The actual RTC client listens on 'high' but in these tests we're making a point
+					// of GHS registering its converters before anything else triggers the downcast conversion.
+					// See https://github.com/ckeditor/ckeditor5/issues/11356.
+					priority: 'highest'
+				} );
 			}
 		}
 
@@ -372,10 +377,12 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should consume htmlAttributes attribute (editing downcast)', () => {
-			const spy = sinon.spy();
+			let consumable;
 
 			editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-				dispatcher.on( 'attribute:htmlAttributes:htmlInput', spy );
+				dispatcher.on( 'insert:htmlInput', ( evt, data, conversionApi ) => {
+					consumable = conversionApi.consumable;
+				} );
 			} );
 
 			dataFilter.allowElement( 'input' );
@@ -383,7 +390,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input type="number"/></p>' );
 
-			expect( spy.called ).to.be.false;
+			expect( consumable.test( model.document.getRoot().getChild( 0 ).getChild( 0 ), 'attribute:htmlAttributes' ) ).to.be.false;
 		} );
 
 		function getObjectModelDataWithAttributes( model, options ) {

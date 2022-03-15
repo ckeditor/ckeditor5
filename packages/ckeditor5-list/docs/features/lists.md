@@ -14,7 +14,7 @@ Lists are useful when you want to emphasize selected information, highlight a se
 You may find additional interesting details and examples in the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post after reading this guide.
 
 <info-box info>
-	The base list feature is enabled by default in all predefined CKEditor 5 WYSIWYG editor builds.
+	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
 </info-box>
 
 {@snippet features/lists-source}
@@ -41,7 +41,7 @@ A Markdown code provided by the {@link features/autoformat autoformatting featur
 Beside the basic functionality of creating the ordered and unordered lists, CKEditor 5 offers additional formatting tools that allow controlling the lists. Features such as more styles for list markers, setting the start index or reversing the list order can be enabled separately or all together. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. See the [installation](#list-properties-2) section to learn how to enable it in your editor.
+	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only. See the [installation](#list-properties-2) section to learn how to enable it in your editor.
 </info-box>
 
 ### List styles
@@ -78,6 +78,10 @@ Click the second list and use the ordered list dropdown switch to choose whether
 
 {@snippet features/lists-reversed}
 
+<info-box info>
+	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Full-featured editor} and {@link examples/builds/document-editor Document editor} examples.
+</info-box>
+
 ## List indentation
 
 Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
@@ -92,7 +96,7 @@ These features also provide similar functionality:
 ## Installation
 
 <info-box info>
-	The base list feature is enabled by default in all {@link builds/guides/overview predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
+	The base list feature is enabled by default in all {@link installation/advanced/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
@@ -118,7 +122,7 @@ ClassicEditor
 ### List properties
 
 <info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only.
+	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only.
 </info-box>
 
 To enable the list properties feature, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
@@ -149,27 +153,27 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 <info-box warning>
-	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/listui~ListUI}.
+	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
 
 ## Common API
 
 The {@link module:list/list~List} plugin registers:
 
-* The {@link module:list/listcommand~ListCommand `'numberedList'`} command.
-* The {@link module:list/listcommand~ListCommand `'bulletedList'`} command.
-* The {@link module:list/indentcommand~IndentCommand `'indentList'`} command.
-* The {@link module:list/indentcommand~IndentCommand `'outdentList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'numberedList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'bulletedList'`} command.
+* The {@link module:list/list/indentcommand~IndentCommand `'indentList'`} command.
+* The {@link module:list/list/indentcommand~IndentCommand `'outdentList'`} command.
 * The `'numberedList'` UI button.
 * The `'bulletedList'` UI button.
 
 The {@link module:list/listproperties~ListProperties} plugin registers:
 
-* The {@link module:list/liststylecommand~ListStyleCommand `'listStyle'`} command that accepts the `type` of the list style to set. If not set, is uses the default marker (usually decimal).
+* The {@link module:list/listproperties/liststylecommand~ListStyleCommand `listStyle`} command that accepts the `type` of the list style to set. If not set, is uses the default marker (usually decimal).
     ```js
     editor.execute( 'listStyle', { type: 'lower-roman' } );
     ```
@@ -177,20 +181,20 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 
     * For bulleted lists: `'disc'`, `'circle'` and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'` and `'upper-latin'`.
-* The {@link module:list/liststartcommand~ListStartCommand `'listStart'`} command which is a Boolean and defaults to `false` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
+* The {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`} command which is a Boolean and defaults to `false` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
     editor.execute( 'listStart', { startIndex: 3 } );
     ```
 
-* The {@link module:list/listreversedcommand~ListReversedCommand `'listReversed'`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
+* The {@link module:list/listproperties/listreversedcommand~ListReversedCommand `listReversed`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
     editor.execute( 'listReversed', { reversed: 'true' } );
     ```
 
-* The `'numberedList'` UI split button that overrides the UI button registered by the `List` plugin.
-* The `'bulletedList'` UI split button that overrides the UI button registered by the `List` plugin.
+* The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.
+* The `bulletedList` UI split button that overrides the UI button registered by the `List` plugin.
 
 ## Contribute
 

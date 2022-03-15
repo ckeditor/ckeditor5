@@ -8,7 +8,7 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
