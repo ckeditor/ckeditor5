@@ -198,6 +198,13 @@ export default class Renderer {
 	 * removed as long as the selection is in the text node which needed it at first.
 	 */
 	render() {
+		// console.info( '[Renderer] Rendering.' );
+		if ( this.isComposing ) {
+			console.info( '[Renderer] Rendering while composing aborted.' );
+
+			return;
+		}
+
 		let inlineFillerPosition;
 		const isInlineFillerRenderingPossible = env.isBlink && !env.isAndroid ? !this.isSelecting : true;
 

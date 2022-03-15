@@ -14,6 +14,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
@@ -38,6 +39,7 @@ ClassicEditor
 			ImageCaption,
 			ImageStyle,
 			ImageToolbar,
+			ImageResize,
 			Indent,
 			Italic,
 			Link,
@@ -128,7 +130,8 @@ ClassicEditor
 			}
 			console.log( '%ctargetRanges:', 'font-weight: bold', targetRanges );
 
-			if ( targetRanges.length ) {
+			// TODO: Note: In FF sometimes it exists but is null. This should be fixed in inputobserver.
+			if ( targetRanges.length && targetRanges[ 0 ] ) {
 				console.group( 'first range' );
 				console.log( '%cstart:', 'font-weight: bold', targetRanges[ 0 ].start );
 				console.log( '%cend:', 'font-weight: bold', targetRanges[ 0 ].end );
@@ -149,7 +152,7 @@ ClassicEditor
 			);
 		}, { priority: 'highest' } );
 
-		editor.editing.view.document.on( 'compositionend', () => {
+		editor.editing.view.document.on( 'compositionend', ( evt, data ) => {
 			console.log(
 				`%c└───────────────────────────── ＃${ compositionEventCount } compositionend ─────────────────────────────┘`,
 				'font-weight: bold; color: green'

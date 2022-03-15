@@ -129,6 +129,14 @@ export default class SelectionObserver extends Observer {
 
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
+			if ( this.document.isComposing ) {
+				console.info( '[SelectiobObserver] Selection change when composing aborted.' );
+
+				return;
+			}
+
+			console.log( '[SelectiobObserver] _handleSelectionChange()' );
+
 			this._handleSelectionChange( domEvent, domDocument );
 
 			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
