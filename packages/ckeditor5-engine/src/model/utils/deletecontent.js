@@ -7,8 +7,6 @@
  * @module engine/model/utils/deletecontent
  */
 
-import getAttributesWithProperty from '@ckeditor/ckeditor5-utils/src/getattributeswithproperty';
-
 import LivePosition from '../liveposition';
 import Range from '../range';
 import DocumentSelection from '../documentselection';
@@ -117,7 +115,7 @@ export default function deleteContent( model, selection, options = {} ) {
 		// If autoparagraphing is off, we assume that you know what you do so we leave the selection wherever it was.
 		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPosition ) ) {
 			const selectedElement = selection.getSelectedElement();
-			const attributesToCopy = getAttributesWithProperty( model, selectedElement, 'copyOnReplace', true );
+			const attributesToCopy = schema.getAttributesWithProperty( selectedElement, 'copyOnReplace', true );
 
 			insertParagraph( writer, startPosition, selection, attributesToCopy );
 		}

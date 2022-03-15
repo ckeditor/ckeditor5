@@ -165,9 +165,9 @@ describe( 'Inserting widgets in document lists', () => {
 					'* ' + modelTable( [
 						[ '[]', '' ]
 					] ),
-					'* Foo',
-					'* Bar',
-					'* Yar'
+					'  Foo',
+					'* Bar {id:001}',
+					'* Yar {id:002}'
 				]
 			} );
 		} );
@@ -183,9 +183,9 @@ describe( 'Inserting widgets in document lists', () => {
 					'* ' + modelTable( [
 						[ '[]', '' ]
 					] ),
-					'* Fooo',
-					'* Bar',
-					'* Yar'
+					'  Fooo',
+					'* Bar {id:001}',
+					'* Yar {id:002}'
 				]
 			} );
 		} );
@@ -201,9 +201,9 @@ describe( 'Inserting widgets in document lists', () => {
 					'* ' + modelTable( [
 						[ '[]', '' ]
 					] ),
-					'* Fooo',
-					'* Bar',
-					'* Yar'
+					'  Fooo',
+					'* Bar {id:001}',
+					'* Yar {id:002}'
 				]
 			} );
 		} );
@@ -287,10 +287,7 @@ describe( 'Inserting widgets in document lists', () => {
 					'* Bar',
 					'* Yar]'
 				],
-				expected: '[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]' +
-					'<paragraph listIndent="0" listItemId="001" listType="bulleted">Foo</paragraph>' +
-					'<paragraph listIndent="0" listItemId="002" listType="bulleted">Bar</paragraph>' +
-					'<paragraph listIndent="0" listItemId="003" listType="bulleted">Yar</paragraph>'
+				expected: '[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]'
 			} );
 		} );
 
@@ -301,10 +298,8 @@ describe( 'Inserting widgets in document lists', () => {
 					'* Bar',
 					'* Yar]'
 				],
-				expected: '[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]' +
-					'<paragraph listIndent="0" listItemId="001" listType="bulleted">Foo</paragraph>' +
-					'<paragraph listIndent="0" listItemId="002" listType="bulleted">Bar</paragraph>' +
-					'<paragraph listIndent="0" listItemId="003" listType="bulleted">Yar</paragraph>'
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Fo</paragraph>' +
+					'[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]'
 			} );
 		} );
 
@@ -315,10 +310,8 @@ describe( 'Inserting widgets in document lists', () => {
 					'* Bar',
 					'* Yar]'
 				],
-				expected: '[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]' +
-					'<paragraph listIndent="0" listItemId="001" listType="bulleted">Foo</paragraph>' +
-					'<paragraph listIndent="0" listItemId="002" listType="bulleted">Bar</paragraph>' +
-					'<paragraph listIndent="0" listItemId="003" listType="bulleted">Yar</paragraph>'
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]'
 			} );
 		} );
 	} );
@@ -398,14 +391,14 @@ describe( 'Inserting widgets in document lists', () => {
 			} );
 		} );
 
-		it( 'should insert a image block in place of a list if a non-collapsed selection spans entire list', () => {
+		it( 'should insert an inline image in place of a list if a non-collapsed selection spans entire list', () => {
 			runTest( {
 				input: [
 					'* [Foo',
 					'* Bar',
 					'* Yar]'
 				],
-				expected: '[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src=""></imageBlock>]'
+				expected: '<paragraph>[<imageInline src=""></imageInline>]</paragraph>'
 			} );
 		} );
 
@@ -511,14 +504,14 @@ describe( 'Inserting widgets in document lists', () => {
 			} );
 		} );
 
-		it( 'should insert a page break in place of a list when whole list is selected', () => {
+		it( 'should insert a page break as a list item in place of a list when whole list is selected', () => {
 			runTest( {
 				input: [
 					'* [Foo',
 					'* Bar',
 					'* Yar]'
 				],
-				expected: '<pageBreak></pageBreak>' +
+				expected: '<pageBreak listIndent="0" listItemId="000" listType="bulleted"></pageBreak>' +
 					'<paragraph>[]</paragraph>'
 			} );
 		} );
@@ -632,7 +625,7 @@ describe( 'Inserting widgets in document lists', () => {
 					'* Bar',
 					'* Yar]'
 				],
-				expected: '<horizontalLine></horizontalLine>' +
+				expected: '<horizontalLine listIndent="0" listItemId="000" listType="bulleted"></horizontalLine>' +
 					'<paragraph>[]</paragraph>'
 			} );
 		} );
@@ -735,14 +728,14 @@ describe( 'Inserting widgets in document lists', () => {
 			} );
 		} );
 
-		it( 'should insert a HTML embed in place of a list when whole list is selected', () => {
+		it( 'should insert a HTML embed in place of a list as a first list item when whole list is selected', () => {
 			runTest( {
 				input: [
 					'* [Foo',
 					'* Bar',
 					'* Yar]'
 				],
-				expected: '[<rawHtml></rawHtml>]'
+				expected: '[<rawHtml listIndent="0" listItemId="000" listType="bulleted"></rawHtml>]'
 			} );
 		} );
 
@@ -823,7 +816,7 @@ describe( 'Inserting widgets in document lists', () => {
 
 		it( 'should insert a paragraph after an image block as a third block of a list item', () => {
 			setModelData( model, modelList( [
-				'* foo',
+				'* Foo',
 				'  <imageBlock src=""></imageBlock>'
 			] ) );
 

@@ -69,10 +69,8 @@ export default class HtmlEmbedCommand extends Command {
 					htmlEmbedElement,
 					undefined,
 					undefined,
-					{ setSelection: 'on', findOptimalPosition: false }
+					{ setSelection: 'on' }
 				);
-
-				writer.setSelection( htmlEmbedElement, 'on' );
 			}
 
 			writer.setAttribute( 'value', value, htmlEmbedElement );

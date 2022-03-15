@@ -671,5 +671,123 @@ describe( 'ImageTypeCommand', () => {
 				setModelData( model, `[<imageBlock src="${ imgSrc }"><caption>foo</caption></imageBlock>]` );
 			} );
 		} );
+
+		describe( 'inheriting attributes', () => {
+			const imgSrc = '/foo.jpg';
+
+			beforeEach( () => {
+				const attributes = [ 'smart', 'pretty' ];
+
+				model.schema.extend( '$block', {
+					allowAttributes: attributes
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: attributes
+				} );
+
+				for ( const attribute of attributes ) {
+					model.schema.setAttributeProperties( attribute, {
+						copyOnReplace: true
+					} );
+				}
+			} );
+
+			it( 'should copy parent block attributes to image block', () => {
+				setModelData( model, `<paragraph pretty="true" smart="true">[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+				blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal( `[<imageBlock pretty="true" smart="true" src="${ imgSrc }"></imageBlock>]` );
+			} );
+
+			it( 'should copy a block image attributes to an inline image\'s parent block', () => {
+				setModelData( model, `[<imageBlock pretty="true" smart="true" src="${ imgSrc }"></imageBlock>]` );
+
+				inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph pretty="true" smart="true">' +
+						`[<imageInline src="${ imgSrc }"></imageInline>]` +
+					'</paragraph>' );
+			} );
+
+			// it( 'should copy $block attributes on a block image element when inserting it in $block', () => {
+			// 	setModelData( model, '<paragraph pretty="true" smart="true">[]</paragraph>' );
+
+			// 	command.execute( {
+			// 		source: {
+			// 			src: imgSrc
+			// 		}
+			// 	} );
+
+			// 	expect( getModelData( model ) ).to.equalMarkup(
+			// 		'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
+			// 	);
+			// } );
+
+			// it( 'should not copy $block attributes on an inline image element when inserting it in $block', () => {
+			// 	setModelData( model, '<paragraph pretty="true" smart="true">Foo []</paragraph>' );
+
+			// 	command.execute( {
+			// 		source: {
+			// 			src: imgSrc
+			// 		}
+			// 	} );
+
+			// 	expect( getModelData( model ) ).to.equalMarkup(
+			// 		'<paragraph pretty="true" smart="true">' +
+			// 			'Foo [<imageInline src="/foo.jpg"></imageInline>]' +
+			// 		'</paragraph>'
+			// 	);
+			// } );
+
+			// it( 'should not copy attributes when inserting inline image (non-collapsed selection)', () => {
+			// 	setModelData( model, '<paragraph pretty="true">[foo</paragraph><paragraph smart="true">bar]</paragraph>' );
+
+			// 	command.execute( {
+			// 		source: {
+			// 			src: imgSrc
+			// 		}
+			// 	} );
+
+			// 	expect( getModelData( model ) ).to.equalMarkup(
+			// 		'<paragraph>' +
+			// 			'[<imageInline src="/foo.jpg"></imageInline>]' +
+			// 		'</paragraph>'
+			// 	);
+			// } );
+
+			// it( 'should only copy $block attributes marked with copyOnReplace', () => {
+			// 	setModelData( model, '<paragraph pretty="true" smart="true" nice="true">[]</paragraph>' );
+
+			// 	command.execute( {
+			// 		source: {
+			// 			src: imgSrc
+			// 		}
+			// 	} );
+
+			// 	expect( getModelData( model ) ).to.equalMarkup(
+			// 		'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
+			// 	);
+			// } );
+
+			// it( 'should copy attributes from object when it is selected during insertion', () => {
+			// 	model.schema.register( 'object', { isObject: true, inheritAllFrom: '$blockObject' } );
+			// 	editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+			// 	setModelData( model, '[<object pretty="true" smart="true"></object>]' );
+
+			// 	command.execute( {
+			// 		source: {
+			// 			src: imgSrc
+			// 		}
+			// 	} );
+
+			// 	expect( getModelData( model ) ).to.equalMarkup(
+			// 		'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
+			// 	);
+			// } );
+		} );
 	} );
 } );

@@ -48,25 +48,8 @@ export default class HorizontalLineCommand extends Command {
 				horizontalElement,
 				undefined,
 				undefined,
-				{ setSelection: 'after', findOptimalPosition: false }
+				{ setSelection: 'after' }
 			);
-
-			let nextElement = horizontalElement.nextSibling;
-
-			// Check whether an element next to the inserted horizontal line is defined and can contain a text.
-			const canSetSelection = nextElement && model.schema.checkChild( nextElement, '$text' );
-
-			// If the element is missing, but a paragraph could be inserted next to the horizontal line, let's add it.
-			if ( !canSetSelection && model.schema.checkChild( horizontalElement.parent, 'paragraph' ) ) {
-				nextElement = writer.createElement( 'paragraph' );
-
-				model.insertContent( nextElement, writer.createPositionAfter( horizontalElement ) );
-			}
-
-			// Put the selection inside the element, at the beginning.
-			if ( nextElement ) {
-				writer.setSelection( nextElement, 0 );
-			}
 		} );
 	}
 }

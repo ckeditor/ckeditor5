@@ -863,6 +863,28 @@ export default class Schema {
 		}
 	}
 
+	// TODO: API DOCS
+	getAttributesWithProperty( node, propertyName, propertyValue ) {
+		const attributes = {};
+
+		if ( !node ) {
+			return attributes;
+		}
+
+		const nodeAttributes = node.getAttributes();
+
+		for ( const [ attributeName, attributeValue ] of nodeAttributes ) {
+			const attributeProperties = this.getAttributeProperties( attributeName );
+			const isPropertyValueValid = ( !propertyValue || attributeProperties[ propertyName ] === propertyValue );
+
+			if ( attributeProperties[ propertyName ] && isPropertyValueValid ) {
+				attributes[ attributeName ] = attributeValue;
+			}
+		}
+
+		return attributes;
+	}
+
 	/**
 	 * Creates an instance of the schema context.
 	 *
