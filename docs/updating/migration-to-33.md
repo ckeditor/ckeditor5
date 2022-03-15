@@ -149,6 +149,10 @@ Starting with v33.0.0, all {@link framework/guides/architecture/editing-engine#m
 
 ### The `triggerBy` option in the downcast pipeline is now obsolete
 
+<info-box>
+	The v33.0.0 release introduces massive upgrade to the conversion system. You can find a detailed summary off all these changes in these [developer notes on Github](https://github.com/ckeditor/ckeditor5/issues/11268#issuecomment-1061655977).
+</info-box>
+
 If some of your downcast pipeline converters took advantage of the experimental `triggerBy` property to trigger (re)conversion upon changes of attributes or children, they need to be updated. For instance:
 
 ```js
