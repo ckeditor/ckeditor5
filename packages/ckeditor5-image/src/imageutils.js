@@ -117,8 +117,6 @@ export default class ImageUtils extends Plugin {
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
-				writer.setSelection( imageElement, 'on' );
-
 				return imageElement;
 			}
 
