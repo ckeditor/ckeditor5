@@ -29,43 +29,42 @@ export default function insertObject( model, object, selectable, offset, options
 	const optionsWithDefaults = { ...insertObjectDefaultOptions, ...options };
 
 	return model.change( writer => {
-		let selection;
+		let originalSelection;
 
 		if ( !selectable ) {
-			selection = model.document.selection;
+			originalSelection = model.document.selection;
 		} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
-			selection = selectable;
+			originalSelection = selectable;
 		} else {
-			selection = writer.createSelection( selectable, offset );
+			originalSelection = writer.createSelection( selectable, offset );
 		}
 
-		let insertionSelection = selection;
+		let insertionSelection = originalSelection;
 
 		if ( optionsWithDefaults.findOptimalPosition && model.schema.isBlock( object ) ) {
-			const range = findOptimalInsertionRange( selection, model );
+			const range = findOptimalInsertionRange( originalSelection, model );
 			insertionSelection = writer.createSelection( range, offset );
 		}
 
 		// Get and set attributes
-		const firstSelectedBlock = first( selection.getSelectedBlocks() );
+		const firstSelectedBlock = first( originalSelection.getSelectedBlocks() );
 		const attributesToCopy = model.schema.getAttributesWithProperty( firstSelectedBlock, 'copyOnReplace', true );
 
 		// Autoparagraph
 		if (
 			!model.schema.checkChild( insertionSelection.anchor.parent, object ) &&
-			model.schema.checkChild( insertionSelection.anchor.parent, 'paragraph' &&
-			model.schema.checkChild( 'paragraph', object ) )
+			model.schema.checkChild( insertionSelection.anchor.parent, 'paragraph' ) &&
+			model.schema.checkChild( 'paragraph', object )
 		) {
 			const paragraph = writer.createElement( 'paragraph', attributesToCopy );
 
-			if ( !insertionSelection.isCollapsed ) {
-				model.deleteContent( insertionSelection, { doNotAutoparagraph: true } );
+			if ( !originalSelection.isCollapsed ) {
+				model.deleteContent( originalSelection, { doNotAutoparagraph: true } );
 			}
 
 			writer.insert( object, paragraph );
 
 			objectToInsert = paragraph;
-			insertionSelection = writer.createPositionAt( paragraph, 0 );
 		}
 
 		// Add checking schema

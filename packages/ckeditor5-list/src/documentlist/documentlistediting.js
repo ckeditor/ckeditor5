@@ -489,10 +489,10 @@ function createModelIndentPasteFixer( model ) {
 		// First list item in `data` has indent equal to 0 (it is a first list item). It should have indent equal
 		// to the indent of reference item. We have to fix the first item and all of it's children and following siblings.
 		// Indent of all those items has to be adjusted to reference item.
-		const indentChange = refItem.getAttribute( 'listIndent' );
+		const indentChange = refItem.getAttribute( 'listIndent' ) - item.getAttribute( 'listIndent' );
 
 		// Fix only if there is anything to fix.
-		if ( indentChange == 0 ) {
+		if ( indentChange <= 0 ) {
 			return;
 		}
 
