@@ -121,6 +121,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableTypeAroundFakeCaretActivationUsingKeyboardArrows();
 		this._enableDeleteIntegration();
 		this._enableInsertContentIntegration();
+		this._enableInsertObjectIntegration();
 		this._enableDeleteContentIntegration();
 	}
 
@@ -779,6 +780,34 @@ export default class WidgetTypeAround extends Plugin {
 
 				return result;
 			} );
+		}, { priority: 'high' } );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_enableInsertObjectIntegration() {
+		const editor = this.editor;
+		const model = this.editor.model;
+		const documentSelection = model.document.selection;
+
+		this._listenToIfEnabled( editor.model, 'insertObject', ( evt, args ) => {
+			const [ , selectable, , options = {} ] = args;
+
+			if ( selectable && !selectable.is( 'documentSelection' ) ) {
+				return;
+			}
+
+			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( documentSelection );
+
+			if ( !typeAroundFakeCaretPosition ) {
+				return;
+			}
+
+			options.findOptimalPosition = typeAroundFakeCaretPosition;
+			args[ 3 ] = options;
 		}, { priority: 'high' } );
 	}
 

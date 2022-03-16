@@ -42,7 +42,15 @@ export default class InsertParagraphCommand extends Command {
 		let position = options.position;
 
 		model.change( writer => {
-			const paragraph = writer.createElement( 'paragraph', attributes );
+			const paragraph = writer.createElement( 'paragraph' );
+
+			if ( attributes ) {
+				for ( const [ attributeName, attributeValue ] of Object.entries( attributes ) ) {
+					if ( model.schema.checkAttribute( paragraph, attributeName ) ) {
+						writer.setAttribute( attributeName, attributeValue, paragraph );
+					}
+				}
+			}
 
 			if ( !model.schema.checkChild( position.parent, paragraph ) ) {
 				const allowedParent = model.schema.findAllowedParent( position, paragraph );

@@ -80,8 +80,17 @@ export default function deleteContent( model, selection, options = {} ) {
 			return;
 		}
 
-		const selectedElement = selection.getSelectedElement();
-		const attributesToCopy = schema.getAttributesWithProperty( selectedElement, 'copyOnReplace', true );
+		// Collect attributes to copy in case of autoparagraphing.
+		const attributesForAutoparagraph = {};
+
+		if ( !options.doNotAutoparagraph ) {
+			// TODO I'm not sure if this should check selected element or rather selected blocks or the first selected block.
+			const selectedElement = selection.getSelectedElement();
+
+			if ( selectedElement ) {
+				Object.assign( attributesForAutoparagraph, schema.getAttributesWithProperty( selectedElement, 'copyOnReplace', true ) );
+			}
+		}
 
 		// Get the live positions for the range adjusted to span only blocks selected from the user perspective.
 		const [ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
@@ -117,15 +126,7 @@ export default function deleteContent( model, selection, options = {} ) {
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
 		// If autoparagraphing is off, we assume that you know what you do so we leave the selection wherever it was.
 		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPosition ) ) {
-			const attributes = {};
-
-			for ( const attributeName of Object.keys( attributesToCopy ) ) {
-				if ( model.schema.checkAttribute( 'paragraph', attributeName ) ) {
-					attributes[ attributeName ] = attributesToCopy[ attributeName ];
-				}
-			}
-
-			insertParagraph( writer, startPosition, selection, attributes );
+			insertParagraph( writer, startPosition, selection, attributesForAutoparagraph );
 		}
 
 		startPosition.detach();
@@ -493,8 +494,15 @@ function isCrossingLimitElement( leftPos, rightPos, schema ) {
 	return true;
 }
 
-function insertParagraph( writer, position, selection, attributes ) {
-	const paragraph = writer.createElement( 'paragraph', attributes );
+function insertParagraph( writer, position, selection, attributes = {} ) {
+	const schema = writer.model.schema;
+	const paragraph = writer.createElement( 'paragraph' );
+
+	for ( const [ attributeName, attributeValue ] of Object.entries( attributes ) ) {
+		if ( schema.checkAttribute( paragraph, attributeName ) ) {
+			writer.setAttribute( attributeName, attributeValue, paragraph );
+		}
+	}
 
 	writer.insert( paragraph, position );
 

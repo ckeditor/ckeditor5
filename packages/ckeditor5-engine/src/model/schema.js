@@ -867,17 +867,14 @@ export default class Schema {
 	getAttributesWithProperty( node, propertyName, propertyValue ) {
 		const attributes = {};
 
-		if ( !node ) {
-			return attributes;
-		}
-
-		const nodeAttributes = node.getAttributes();
-
-		for ( const [ attributeName, attributeValue ] of nodeAttributes ) {
+		for ( const [ attributeName, attributeValue ] of node.getAttributes() ) {
 			const attributeProperties = this.getAttributeProperties( attributeName );
-			const isPropertyValueValid = ( !propertyValue || attributeProperties[ propertyName ] === propertyValue );
 
-			if ( attributeProperties[ propertyName ] && isPropertyValueValid ) {
+			if ( attributeProperties[ propertyName ] === undefined ) {
+				continue;
+			}
+
+			if ( propertyValue === undefined || propertyValue === attributeProperties[ propertyName ] ) {
 				attributes[ attributeName ] = attributeValue;
 			}
 		}

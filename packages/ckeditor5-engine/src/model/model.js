@@ -21,13 +21,13 @@ import ModelSelection from './selection';
 import OperationFactory from './operation/operationfactory';
 
 import insertContent from './utils/insertcontent';
+import insertObject from './utils/insertobject';
 import deleteContent from './utils/deletecontent';
 import modifySelection from './utils/modifyselection';
 import getSelectedContent from './utils/getselectedcontent';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
 import { autoParagraphEmptyRoots } from './utils/autoparagraphing';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import insertObject from '@ckeditor/ckeditor5-widget/src/insertobject';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
 // @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
@@ -81,7 +81,7 @@ export default class Model {
 		 */
 		this._currentWriter = null;
 
-		[ 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ]
+		[ 'insertContent', 'insertObject', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ]
 			.forEach( methodName => this.decorate( methodName ) );
 
 		// Adding operation validation with `highest` priority, so it is called before any other feature would like

@@ -15,6 +15,7 @@ import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
 
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import dragHandleIcon from '../theme/icons/drag-handle.svg';
+import { findOptimalInsertionRange as engineFindOptimalInsertionRange } from '@ckeditor/ckeditor5-engine/src/model/utils/insertobject';
 
 /**
  * CSS class added to each widget element.
@@ -281,6 +282,8 @@ export function toWidgetEditable( editable, writer ) {
 }
 
 /**
+ * TODO this is only wrapping the engine util for the cases where selection is tested for possibility to insert some object.
+ *
  * Returns a model range which is optimal (in terms of UX) for inserting a widget block.
  *
  * For instance, if a selection is in the middle of a paragraph, the collapsed range before this paragraph
@@ -307,33 +310,9 @@ export function findOptimalInsertionRange( selection, model ) {
 		if ( typeAroundFakeCaretPosition ) {
 			return model.createRange( model.createPositionAt( selectedElement, typeAroundFakeCaretPosition ) );
 		}
-
-		if ( model.schema.isObject( selectedElement ) && !model.schema.isInline( selectedElement ) ) {
-			return model.createRangeOn( selectedElement );
-		}
 	}
 
-	const firstBlock = selection.getSelectedBlocks().next().value;
-
-	if ( firstBlock ) {
-		// If inserting into an empty block – return position in that block. It will get
-		// replaced with the image by insertContent(). #42.
-		if ( firstBlock.isEmpty ) {
-			return model.createRange( model.createPositionAt( firstBlock, 0 ) );
-		}
-
-		const positionAfter = model.createPositionAfter( firstBlock );
-
-		// If selection is at the end of the block - return position after the block.
-		if ( selection.focus.isTouching( positionAfter ) ) {
-			return model.createRange( positionAfter );
-		}
-
-		// Otherwise return position before the block.
-		return model.createRange( model.createPositionBefore( firstBlock ) );
-	}
-
-	return model.createRange( selection.focus );
+	return engineFindOptimalInsertionRange( selection, model );
 }
 
 /**
