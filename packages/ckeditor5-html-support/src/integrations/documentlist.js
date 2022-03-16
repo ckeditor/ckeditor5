@@ -7,6 +7,7 @@
  * @module html-support/integrations/documentlist
  */
 
+import { isEqual } from 'lodash-es';
 import { Plugin } from 'ckeditor5/src/core';
 import { setViewAttributes } from '../conversionutils.js';
 
@@ -81,62 +82,62 @@ export default class DocumentListElementSupport extends Plugin {
 				dispatcher.on( 'element:ol', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' } );
 				dispatcher.on( 'element:li', viewToModelListAttributeConverter( 'htmlLiAttributes', dataFilter ), { priority: 'low' } );
 			} );
+		} );
 
-			// Make sure that all items in a single list (items at the same level & listType) have the same properties.
-			// Note: This is almost exact copy from DocumentListPropertiesEditing.
-			documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
-				const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
+		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
+		// Note: This is almost exact copy from DocumentListPropertiesEditing.
+		documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
+			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
 
-				for ( const { node, previous } of listNodes ) {
-					// For the first list block there is nothing to compare with.
-					if ( !previous ) {
-						continue;
-					}
+			for ( const { node, previous } of listNodes ) {
+				// For the first list block there is nothing to compare with.
+				if ( !previous ) {
+					continue;
+				}
 
-					const nodeIndent = node.getAttribute( 'listIndent' );
-					const previousNodeIndent = previous.getAttribute( 'listIndent' );
+				const nodeIndent = node.getAttribute( 'listIndent' );
+				const previousNodeIndent = previous.getAttribute( 'listIndent' );
 
-					let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
+				let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
 
-					// Let's find previous node for the same indent.
-					// We're going to need that when we get back to previous indent.
-					if ( nodeIndent > previousNodeIndent ) {
-						previousNodesByIndent[ previousNodeIndent ] = previous;
-					}
-					// Restore the one for given indent.
-					else if ( nodeIndent < previousNodeIndent ) {
-						previousNodeInList = previousNodesByIndent[ nodeIndent ];
-						previousNodesByIndent.length = nodeIndent;
-					}
-					// Same indent.
-					else {
-						previousNodeInList = previous;
-					}
+				// Let's find previous node for the same indent.
+				// We're going to need that when we get back to previous indent.
+				if ( nodeIndent > previousNodeIndent ) {
+					previousNodesByIndent[ previousNodeIndent ] = previous;
+				}
+				// Restore the one for given indent.
+				else if ( nodeIndent < previousNodeIndent ) {
+					previousNodeInList = previousNodesByIndent[ nodeIndent ];
+					previousNodesByIndent.length = nodeIndent;
+				}
+				// Same indent.
+				else {
+					previousNodeInList = previous;
+				}
 
-					// This is a first item of a nested list.
-					if ( !previousNodeInList ) {
-						continue;
-					}
+				// This is a first item of a nested list.
+				if ( !previousNodeInList ) {
+					continue;
+				}
 
-					if ( previousNodeInList.getAttribute( 'listType' ) == node.getAttribute( 'listType' ) ) {
-						const value = previousNodeInList.getAttribute( 'htmlListAttributes' );
+				if ( previousNodeInList.getAttribute( 'listType' ) == node.getAttribute( 'listType' ) ) {
+					const value = previousNodeInList.getAttribute( 'htmlListAttributes' );
 
-						if ( node.getAttribute( 'htmlListAttributes' ) != value ) {
-							writer.setAttribute( 'htmlListAttributes', value, node );
-							evt.return = true;
-						}
-					}
-
-					if ( previousNodeInList.getAttribute( 'listItemId' ) == node.getAttribute( 'listItemId' ) ) {
-						const value = previousNodeInList.getAttribute( 'htmlLiAttributes' );
-
-						if ( node.getAttribute( 'htmlLiAttributes' ) != value ) {
-							writer.setAttribute( 'htmlLiAttributes', value, node );
-							evt.return = true;
-						}
+					if ( !isEqual( node.getAttribute( 'htmlListAttributes' ), value ) ) {
+						writer.setAttribute( 'htmlListAttributes', value, node );
+						evt.return = true;
 					}
 				}
-			} );
+
+				if ( previousNodeInList.getAttribute( 'listItemId' ) == node.getAttribute( 'listItemId' ) ) {
+					const value = previousNodeInList.getAttribute( 'htmlLiAttributes' );
+
+					if ( !isEqual( node.getAttribute( 'htmlLiAttributes' ), value ) ) {
+						writer.setAttribute( 'htmlLiAttributes', value, node );
+						evt.return = true;
+					}
+				}
+			}
 		} );
 	}
 }
