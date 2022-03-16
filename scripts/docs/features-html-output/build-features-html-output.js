@@ -291,7 +291,7 @@ function createFeatureLink( packageData, plugin ) {
 
 	const link = /http(s)?:/.test( plugin.docs ) ?
 		plugin.docs :
-		`../../../${ plugin.docs }`;
+		`../../${ plugin.docs }`;
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
