@@ -8,7 +8,7 @@
  */
 
 import { toWidget } from 'ckeditor5/src/widget';
-import { setViewAttributes, mergeViewElementAttributes } from './conversionutils';
+import { setViewAttributes, mergeViewElementAttributes, setViewInlineAttributes } from './conversionutils';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -127,7 +127,7 @@ export function attributeToViewInlineConverter( { priority, view: viewName } ) {
 		const { writer } = conversionApi;
 		const viewElement = writer.createAttributeElement( viewName, null, { priority } );
 
-		setViewAttributes( writer, attributeValue, viewElement );
+		setViewInlineAttributes( writer, attributeValue, viewElement );
 
 		return viewElement;
 	};
@@ -168,7 +168,10 @@ export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilt
 export function modelToViewBlockAttributeConverter( { model: modelName } ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
-			const viewAttributes = data.attributeNewValue;
+			const viewAttributes = {
+				oldAttributes: data.attributeOldValue,
+				newAttributes: data.attributeNewValue
+			};
 
 			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 				return;

@@ -20,6 +20,7 @@ import {
 
 	viewToAttributeInlineConverter,
 	attributeToViewInlineConverter,
+	modelToViewInlineAttributeConverter,
 
 	viewToModelBlockAttributeConverter,
 	modelToViewBlockAttributeConverter

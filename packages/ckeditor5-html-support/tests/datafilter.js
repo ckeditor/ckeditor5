@@ -20,7 +20,7 @@ import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/b
 
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
 
-describe( 'DataFilter', () => {
+describe.only( 'DataFilter', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
 
 	testUtils.createSinonSandbox();
@@ -1174,6 +1174,53 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<p><a href="example.com" data-foo="foo">link</a></p>' );
 		} );
 	} );
+
+	// describe.only( 'attributes modifications', () => {
+	// 	it( 'should allow modifying attributes (classes)', () => {
+	// 		dataFilter.allowElement( 'input' );
+	// 		dataFilter.allowAttributes( { name: 'input', classes: [ 'foobar' ] } );
+
+	// 		editor.setData( '<p><input class="foobar"></p>' );
+
+	// 		expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+	// 			data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
+	// 			attributes: {
+	// 				1: {
+	// 					classes: [ 'foobar' ]
+	// 				}
+	// 			}
+	// 		} );
+
+	// 		expect( editor.getData() ).to.equal( '<p><input class="foobar"></p>' );
+
+	// 		// const root = model.document.getRoot();
+
+	// 		// model.change( writer => {
+	// 		// 	const firstParagraph = root.getChild( 0 );
+	// 		// 	const input = firstParagraph.getChild( 0 );
+
+	// 		// 	writer.setAttribute( 'htmlAttributes', {
+	// 		// 		classes: [ 'another' ]
+	// 		// 	}, input );
+	// 		// } );
+
+	// 		// expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+	// 		// 	data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
+	// 		// 	attributes: {
+	// 		// 		1: {
+	// 		// 			classes: [ 'another' ]
+	// 		// 		}
+	// 		// 	}
+	// 		// } );
+
+	// 		// expect( editor.getData() ).to.equal( '<p><input class="another"></p>' );
+	// 	} );
+
+	// 	function getObjectModelDataWithAttributes( model, options ) {
+	// 		options.excludeAttributes = [ 'htmlContent' ];
+	// 		return getModelDataWithAttributes( model, options );
+	// 	}
+	// } );
 
 	it( 'should correctly resolve attributes nesting order', () => {
 		dataFilter.allowElement( 'span' );
