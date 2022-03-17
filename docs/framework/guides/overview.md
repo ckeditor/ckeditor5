@@ -1,9 +1,10 @@
 ---
+menu-title: Overview
 category: framework-guides
 order: 10
 ---
 
-# Overview
+# CKEditor 5 Framework overview
 
 CKEditor 5 is a project that allows you to quickly and easily initialize one of the many types of editors it offers in your application. At the same time, it is a framework for creating custom-tailored rich-text editing solutions. The former requirement is met thanks to {@link installation/advanced/predefined-builds CKEditor 5 builds}. The latter &mdash; thanks to CKEditor 5 Framework.
 
