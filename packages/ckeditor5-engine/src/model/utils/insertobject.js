@@ -10,24 +10,30 @@
 import first from '@ckeditor/ckeditor5-utils/src/first';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-/*
-Place for exceptional documentation
-Object - an object that we would like to insert
-Selectable - 99% - document selection, but sometimes custom one.
-Offset - just to pass to insert content
-Options -     	setSelection: 'on|after',
-findOptimalPosition: true,
-// Maybe:
-doNotInheritBlockAttributes: true
-*/
-
-export default function insertObject( model, object, selectable, offset, options = {} ) {
+/**
+ * TODO
+ *
+ * @param {module:engine/model/model~Model} model The model in context of which the insertion
+ * should be performed.
+ * @param {module:engine/model/element~Element} object TODO
+ * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
+ * Selection into which the content should be inserted.
+ * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+ * @param {Object} [options] TODO
+ * @param {'auto'|'before'|'after'} [options.findOptimalPosition] TODO
+ * @param {'on'|'after'} [options.setSelection] TODO
+ * @returns {module:engine/model/range~Range} Range which contains all the performed changes. This is a range that, if removed,
+ * would return the model to the state before the insertion. If no changes were preformed by `insertObject`, returns a range collapsed
+ * at the insertion position.
+ */
+export default function insertObject( model, object, selectable, placeOrOffset, options = {} ) {
 	if ( !model.schema.isObject( object ) ) {
 		/**
 		 * TODO
 		 * @error insertobject-todo
 		 */
-		throw new CKEditorError( 'insertobject-todo', this, { object } );
+		// TODO make sure that it is tested with expectToThrowCKEditorError helper
+		throw new CKEditorError( 'insertobject-todo', model, { object } );
 	}
 
 	// Normalize selectable to a selection instance.
@@ -38,7 +44,7 @@ export default function insertObject( model, object, selectable, offset, options
 	} else if ( selectable.is( 'selection' ) ) {
 		originalSelection = selectable;
 	} else {
-		originalSelection = model.createSelection( selectable, offset );
+		originalSelection = model.createSelection( selectable, placeOrOffset );
 	}
 
 	// Adjust the insertion selection.
@@ -57,12 +63,19 @@ export default function insertObject( model, object, selectable, offset, options
 	}
 
 	return model.change( writer => {
+		// Remove the selected content to find out what the parent of the inserted object would be.
+		// It would be removed inside model.insertContent() anyway.
+		if ( !insertionSelection.isCollapsed ) {
+			model.deleteContent( insertionSelection, { doNotAutoparagraph: true } );
+		}
+
 		let elementToInsert = object;
+		const insertionPositionParent = insertionSelection.anchor.parent;
 
 		// Autoparagraphing of an inline objects.
 		if (
-			!model.schema.checkChild( insertionSelection.anchor.parent, object ) &&
-			model.schema.checkChild( insertionSelection.anchor.parent, 'paragraph' ) &&
+			!model.schema.checkChild( insertionPositionParent, object ) &&
+			model.schema.checkChild( insertionPositionParent, 'paragraph' ) &&
 			model.schema.checkChild( 'paragraph', object )
 		) {
 			elementToInsert = writer.createElement( 'paragraph' );
@@ -106,15 +119,15 @@ export default function insertObject( model, object, selectable, offset, options
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
  * The selection based on which the insertion position should be calculated.
  * @param {module:engine/model/model~Model} model Model instance.
- * @param {'before'|'after'|Boolean} [preference=false] TODO
+ * @param {'auto'|'before'|'after'} [place='auto'] TODO
  * @returns {module:engine/model/range~Range} The optimal range.
  */
-export function findOptimalInsertionRange( selection, model, preference = false ) {
+export function findOptimalInsertionRange( selection, model, place = 'auto' ) {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement && model.schema.isObject( selectedElement ) && !model.schema.isInline( selectedElement ) ) {
-		if ( [ 'before', 'after' ].includes( preference ) ) {
-			return model.createRange( model.createPositionAt( selectedElement, preference ) );
+		if ( [ 'before', 'after' ].includes( place ) ) {
+			return model.createRange( model.createPositionAt( selectedElement, place ) );
 		}
 
 		return model.createRangeOn( selectedElement );
@@ -169,6 +182,15 @@ function updateSelection( writer, contextElement, place, paragraphAttributes ) {
 	}
 	else if ( place == 'on' ) {
 		writer.setSelection( contextElement, 'on' );
+	}
+	else {
+		/**
+		 * TODO
+		 *
+		 * @error insertobject-invalid-place-todo
+		 */
+		// TODO make sure that it is tested with expectToThrowCKEditorError helper
+		throw new CKEditorError( 'insertobject-invalid-place-todo', model );
 	}
 }
 

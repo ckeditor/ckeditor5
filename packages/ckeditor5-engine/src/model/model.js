@@ -463,9 +463,25 @@ export default class Model {
 						// Maybe:
 						doNotInheritBlockAttributes: true
 	*/
-	insertObject( object, selectable, offset, options ) {
-		// TODO: Get rid of import from widget package, so engine does not depend on it.
-		return insertObject( this, object, selectable, offset, options );
+
+	/**
+	 * TODO
+	 *
+	 * @fires insertObject
+	 * @param {module:engine/model/element~Element} object TODO
+	 * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
+	 * The selection into which the object should be inserted. If not provided the current model document selection will be used.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] To be used when a model item was passed as `selectable`.
+	 * This param defines a position in relation to that item.
+	 * @param {Object} [options] TODO
+	 * @param {'auto'|'before'|'after'} [options.findOptimalPosition] TODO
+	 * @param {'on'|'after'} [options.setSelection] TODO
+	 * @returns {module:engine/model/range~Range} Range which contains all the performed changes. This is a range that, if removed,
+	 * would return the model to the state before the insertion. If no changes were preformed by `insertObject`, returns a range collapsed
+	 * at the insertion position.
+	 */
+	insertObject( object, selectable, placeOrOffset, options ) {
+		return insertObject( this, object, selectable, placeOrOffset, options );
 	}
 
 	/**
@@ -939,6 +955,19 @@ export default class Model {
 	 * `model.document.selection`.
 	 *
 	 * @event insertContent
+	 * @param {Array} args The arguments passed to the original method.
+	 */
+
+	/**
+	 * Event fired when {@link #insertObject} method is called.
+	 *
+	 * The {@link #insertObject default action of that method} is implemented as a
+	 * listener to this event so it can be fully customized by the features.
+	 *
+	 * **Note** The `selectable` parameter for the {@link #insertObject} is optional. When `undefined` value is passed the method uses
+	 * `model.document.selection`.
+	 *
+	 * @event insertObject
 	 * @param {Array} args The arguments passed to the original method.
 	 */
 

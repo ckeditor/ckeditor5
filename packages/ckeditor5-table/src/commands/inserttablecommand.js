@@ -50,7 +50,6 @@ export default class InsertTableCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const selection = model.document.selection;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const config = this.editor.config.get( 'table' );
 
@@ -68,12 +67,7 @@ export default class InsertTableCommand extends Command {
 		model.change( writer => {
 			const table = tableUtils.createTable( writer, options );
 
-			model.insertObject(
-				table,
-				selection,
-				undefined,
-				{ findOptimalPosition: true }
-			);
+			model.insertObject( table, null, null, { findOptimalPosition: true } );
 
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 		} );

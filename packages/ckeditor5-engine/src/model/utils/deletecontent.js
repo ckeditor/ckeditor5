@@ -84,7 +84,6 @@ export default function deleteContent( model, selection, options = {} ) {
 		const attributesForAutoparagraph = {};
 
 		if ( !options.doNotAutoparagraph ) {
-			// TODO I'm not sure if this should check selected element or rather selected blocks or the first selected block.
 			const selectedElement = selection.getSelectedElement();
 
 			if ( selectedElement ) {
@@ -498,6 +497,7 @@ function insertParagraph( writer, position, selection, attributes = {} ) {
 	const schema = writer.model.schema;
 	const paragraph = writer.createElement( 'paragraph' );
 
+	// TODO this is the same as setAllowedAttributes() helper in insertObject.
 	for ( const [ attributeName, attributeValue ] of Object.entries( attributes ) ) {
 		if ( schema.checkAttribute( paragraph, attributeName ) ) {
 			writer.setAttribute( attributeName, attributeValue, paragraph );

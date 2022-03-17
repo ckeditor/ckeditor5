@@ -103,17 +103,12 @@ export default class ImageUtils extends Plugin {
 		return model.change( writer => {
 			const imageElement = writer.createElement( imageType, attributes );
 
-			model.insertObject(
-				imageElement,
-				selectable,
-				undefined,
-				{
-					setSelection: 'on',
-					// If we want to insert a block image (for whatever reason) then we don't want to split text blocks.
-					// This applies only when we don't have the selectable specified (i.e., we insert multiple block images at once).
-					findOptimalPosition: !selectable && imageType != 'imageInline'
-				}
-			);
+			model.insertObject( imageElement, selectable, null, {
+				setSelection: 'on',
+				// If we want to insert a block image (for whatever reason) then we don't want to split text blocks.
+				// This applies only when we don't have the selectable specified (i.e., we insert multiple block images at once).
+				findOptimalPosition: !selectable && imageType != 'imageInline'
+			} );
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
