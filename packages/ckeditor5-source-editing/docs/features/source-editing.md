@@ -1,5 +1,6 @@
 ---
-category: features
+category: features-html
+order: 40
 menu-title: Source editing
 modified_at: 2021-06-28
 ---
@@ -78,7 +79,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

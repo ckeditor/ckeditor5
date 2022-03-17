@@ -1,5 +1,5 @@
 ---
-category: features-ghs
+category: features-html
 order: 10
 modified_at: 2021-10-25
 ---
@@ -72,7 +72,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -201,7 +201,7 @@ The content inside the editor (what you see in the editing area) is filtered by 
 
 Moreover, as a general rule, not exclusive to GHS, there should always be a sanitization process present on the back-end side of your application. Even the best filtering done on the browser side of your application can be mitigated and every network call can be manipulated, thus bypassing the front-end filtering. This can quickly become a security risk.
 
-In addition to the sanitization process and safe GHS configuration, it is highly recommended to set strict {@link builds/guides/integration/csp Content Security Policy} rules.
+In addition to the sanitization process and safe GHS configuration, it is highly recommended to set strict {@link installation/advanced/csp Content Security Policy} rules.
 
 ### Enabling custom elements
 

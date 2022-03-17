@@ -1,5 +1,6 @@
 ---
-category: features
+category: features-html
+order: 30
 menu-title: HTML embed
 ---
 
@@ -62,7 +63,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
