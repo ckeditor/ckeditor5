@@ -16,6 +16,6 @@ There are, however, cases where you might want to provide a rich editing experie
 
 ## Helpers by category
 
-* **{@link framework/guides/deep-dive/conversion/helpers/downcast Downcast helpers (model to view)}**
+* **{@link framework/guides/deep-dive/conversion/helpers/downcast Downcast helpers &mdash; model to view conversion}**
 
-* **{@link framework/guides/deep-dive/conversion/helpers/upcast Upcast helpers (view to model)}**
+* **{@link framework/guides/deep-dive/conversion/helpers/upcast Upcast helpers &mdash; view to model conversion}**
