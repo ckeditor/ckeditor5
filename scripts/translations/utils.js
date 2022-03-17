@@ -50,7 +50,7 @@ function parseArguments( args ) {
 	delete options[ 'include-external-directory' ];
 
 	// Normalize the current work directory path.
-	options.cwd = normalizePath( options.cwd );
+	options.cwd = normalizePath( path.resolve( options.cwd ) );
 
 	return options;
 }
