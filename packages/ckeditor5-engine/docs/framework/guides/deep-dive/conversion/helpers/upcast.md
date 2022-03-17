@@ -1,12 +1,12 @@
 ---
 category: framework-deep-dive-conversion-helpers
-menu-title: Upcast helpers (view to model)
+menu-title: Upcast helpers
 order: 30
 since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Upcast helpers (view to model)
+# Upcast helpers &mdash; view to model conversion
 
 This article lists all editor helpers available in the {@link framework/guides/deep-dive/conversion/upcast upcast conversion}.
 

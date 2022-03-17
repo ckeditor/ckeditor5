@@ -1,12 +1,12 @@
 ---
 category: framework-deep-dive-conversion-helpers
-menu-title: Downcast helpers (model to view)
+menu-title: Downcast helpers
 order: 20
 since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Downcast helpers (model to view)
+# Downcast helpers &mdash; model to view conversion
 
 This article lists all editor helpers available in the {@link framework/guides/deep-dive/conversion/downcast downcast conversion}.
 
