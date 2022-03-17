@@ -402,44 +402,34 @@ describe( 'DocumentListElementSupport', () => {
 					paragraph( '3.', '03', 0, 'bulleted', { 'data-foo': 'B' } )
 				) );
 			} );
-
-			function paragraph( text, id, indent, type, listAttributes ) {
-				const attrs = JSON.stringify( { attributes: listAttributes } ).replaceAll( '"', '&quot;' );
-
-				return (
-					`<paragraph htmlListAttributes="${ attrs }" listIndent="${ indent }" listItemId="${ id }" listType="${ type }">` +
-						text +
-					'</paragraph>'
-				);
-			}
 		} );
 
 		describe( 'htmlLiAttributes', () => {
 			it( 'should ensure that all blocks of single list item have the same `htmlLiAttributes`', () => {
 				setModelData( model,
-					paragraph( 'A1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( 'A2.', '01', 0, 'numbered', { 'data-foo': 'B' } ) +
-					paragraph( 'A3.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( 'B1.', '02', 0, 'numbered', { 'data-foo': 'X' } ) +
-					paragraph( 'B2.', '02', 0, 'numbered', { 'data-foo': 'Y' } ) +
-					paragraph( 'B3.', '02', 0, 'numbered', { 'data-foo': 'Z' } )
+					liParagraph( 'A1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( 'A2.', '01', 0, 'numbered', { 'data-foo': 'B' } ) +
+					liParagraph( 'A3.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( 'B1.', '02', 0, 'numbered', { 'data-foo': 'X' } ) +
+					liParagraph( 'B2.', '02', 0, 'numbered', { 'data-foo': 'Y' } ) +
+					liParagraph( 'B3.', '02', 0, 'numbered', { 'data-foo': 'Z' } )
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( unquote(
-					paragraph( 'A1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( 'A2.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( 'A3.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( 'B1.', '02', 0, 'numbered', { 'data-foo': 'X' } ) +
-					paragraph( 'B2.', '02', 0, 'numbered', { 'data-foo': 'X' } ) +
-					paragraph( 'B3.', '02', 0, 'numbered', { 'data-foo': 'X' } )
+					liParagraph( 'A1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( 'A2.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( 'A3.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( 'B1.', '02', 0, 'numbered', { 'data-foo': 'X' } ) +
+					liParagraph( 'B2.', '02', 0, 'numbered', { 'data-foo': 'X' } ) +
+					liParagraph( 'B3.', '02', 0, 'numbered', { 'data-foo': 'X' } )
 				) );
 			} );
 
 			it( 'should restore `htmlLiAttributes` attribute after it\'s changed in one of the following items', () => {
 				setModelData( model,
-					paragraph( '1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( '2.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( '3.', '01', 0, 'numbered', { 'data-foo': 'A' } )
+					liParagraph( '1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( '2.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( '3.', '01', 0, 'numbered', { 'data-foo': 'A' } )
 				);
 
 				model.change( writer => {
@@ -451,17 +441,17 @@ describe( 'DocumentListElementSupport', () => {
 				} );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( unquote(
-					paragraph( '1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( '2.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( '3.', '01', 0, 'numbered', { 'data-foo': 'A' } )
+					liParagraph( '1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( '2.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( '3.', '01', 0, 'numbered', { 'data-foo': 'A' } )
 				) );
 			} );
 
 			it( 'should change `htmlLiAttributes` attribute for all the following items after the first one is changed', () => {
 				setModelData( model,
-					paragraph( '1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( '2.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
-					paragraph( '3.', '01', 0, 'numbered', { 'data-foo': 'A' } )
+					liParagraph( '1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( '2.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
+					liParagraph( '3.', '01', 0, 'numbered', { 'data-foo': 'A' } )
 				);
 
 				model.change( writer => {
@@ -473,13 +463,13 @@ describe( 'DocumentListElementSupport', () => {
 				} );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( unquote(
-					paragraph( '1.', '01', 0, 'numbered', { 'data-foo': 'B' } ) +
-					paragraph( '2.', '01', 0, 'numbered', { 'data-foo': 'B' } ) +
-					paragraph( '3.', '01', 0, 'numbered', { 'data-foo': 'B' } )
+					liParagraph( '1.', '01', 0, 'numbered', { 'data-foo': 'B' } ) +
+					liParagraph( '2.', '01', 0, 'numbered', { 'data-foo': 'B' } ) +
+					liParagraph( '3.', '01', 0, 'numbered', { 'data-foo': 'B' } )
 				) );
 			} );
 
-			function paragraph( text, id, indent, type, liAttributes ) {
+			function liParagraph( text, id, indent, type, liAttributes ) {
 				const attrs = JSON.stringify( { attributes: liAttributes } ).replaceAll( '"', '&quot;' );
 
 				return (
@@ -489,9 +479,99 @@ describe( 'DocumentListElementSupport', () => {
 				);
 			}
 		} );
-
-		function unquote( text ) {
-			return text.replaceAll( '&quot;', '"' );
-		}
 	} );
+
+	describe( 'indenting lists', () => {
+		it( 'should reset `htmlListAttributes` attribute after indenting a single item', () => {
+			setModelData( model,
+				paragraph( '1.', '01', 0, 'numbered', { 'data-foo': 'foo' } ) +
+				paragraph( '1a.', '02', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '2.', '03', 0, 'numbered', { 'data-foo': 'foo' } ) +
+				paragraph( '3.[]', '04', 0, 'numbered', { 'data-foo': 'foo' } ) +
+				paragraph( '4.', '05', 0, 'numbered', { 'data-foo': 'foo' } )
+			);
+
+			editor.execute( 'indentList' );
+
+			expect( getModelData( model ) ).to.equal( unquote(
+				paragraph( '1.', '01', 0, 'numbered', { 'data-foo': 'foo' } ) +
+				paragraph( '1a.', '02', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '2.', '03', 0, 'numbered', { 'data-foo': 'foo' } ) +
+				paragraph( '3.[]', '04', 1, 'numbered', undefined ) +
+				paragraph( '4.', '05', 0, 'numbered', { 'data-foo': 'foo' } )
+			) );
+		} );
+
+		it( 'should reset `htmlListAttributes` attribute after indenting a few items', () => {
+			setModelData( model,
+				paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'foo' } ) +
+				paragraph( '[2.', '02', 0, 'bulleted', { 'data-foo': 'foo' } ) +
+				paragraph( '3.]', '03', 0, 'bulleted', { 'data-foo': 'foo' } )
+			);
+
+			editor.execute( 'indentList' );
+
+			expect( getModelData( model ) ).to.equal( unquote(
+				paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'foo' } ) +
+				paragraph( '[2.', '02', 1, 'bulleted', undefined ) +
+				paragraph( '3.]', '03', 1, 'bulleted', undefined )
+			) );
+		} );
+
+		it( 'should copy `htmlListAttributes` attribute after indenting a single item into previously nested list', () => {
+			setModelData( model,
+				paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'foo' } ) +
+				paragraph( '1a.', '02', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '1b.', '03', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '2.[]', '04', 0, 'bulleted', { 'data-foo': 'foo' } ) +
+				paragraph( '3.', '05', 0, 'bulleted', { 'data-foo': 'foo' } )
+			);
+
+			editor.execute( 'indentList' );
+
+			expect( getModelData( model ) ).to.equal( unquote(
+				paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'foo' } ) +
+				paragraph( '1a.', '02', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '1b.', '03', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '2.[]', '04', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '3.', '05', 0, 'bulleted', { 'data-foo': 'foo' } )
+			) );
+		} );
+
+		it( 'should copy `htmlListAttributes` attribute after indenting a few items into previously nested list', () => {
+			setModelData( model,
+				paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'foo' } ) +
+				paragraph( '1a.', '02', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '1b.', '03', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '[2.', '04', 0, 'bulleted', { 'data-foo': 'foo' } ) +
+				paragraph( '3.]', '05', 0, 'bulleted', { 'data-foo': 'foo' } ) +
+				paragraph( '4.', '06', 0, 'bulleted', { 'data-foo': 'foo' } )
+			);
+
+			editor.execute( 'indentList' );
+
+			expect( getModelData( model ) ).to.equal( unquote(
+				paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'foo' } ) +
+				paragraph( '1a.', '02', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '1b.', '03', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '[2.', '04', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '3.]', '05', 1, 'bulleted', { 'data-foo': 'bar' } ) +
+				paragraph( '4.', '06', 0, 'bulleted', { 'data-foo': 'foo' } )
+			) );
+		} );
+	} );
+
+	function paragraph( text, id, indent, type, listAttributes ) {
+		const attrs = JSON.stringify( { attributes: listAttributes } ).replaceAll( '"', '&quot;' );
+
+		return (
+			`<paragraph htmlListAttributes="${ attrs }" listIndent="${ indent }" listItemId="${ id }" listType="${ type }">` +
+				text +
+			'</paragraph>'
+		);
+	}
+
+	function unquote( text ) {
+		return text.replaceAll( '&quot;', '"' );
+	}
 } );
