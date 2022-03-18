@@ -144,7 +144,7 @@ describe( 'FocusObserver', () => {
 		it( 'should trigger fallback rendering after 50ms', () => {
 			const renderSpy = sinon.spy();
 			view.on( 'render', renderSpy );
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 			sinon.assert.notCalled( renderSpy );
@@ -157,7 +157,7 @@ describe( 'FocusObserver', () => {
 		it( 'should not call render if destroyed', () => {
 			const renderSpy = sinon.spy();
 			view.on( 'render', renderSpy );
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 			sinon.assert.notCalled( renderSpy );

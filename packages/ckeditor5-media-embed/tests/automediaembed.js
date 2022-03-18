@@ -58,7 +58,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 		let clock;
 
 		beforeEach( () => {
-			clock = sinon.useFakeTimers();
+			clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 		} );
 
 		afterEach( () => {

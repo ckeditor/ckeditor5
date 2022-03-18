@@ -150,7 +150,7 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	it( 'should fire internal `_selectionChangeDebounced` event 200 ms after last selection change', () => {
-		const clock = testUtils.sinon.useFakeTimers();
+		const clock = testUtils.sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 		const spy = testUtils.sinon.spy();
 
 		setData( model, '<paragraph>[bar]</paragraph>' );
@@ -589,7 +589,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should not fire `_selectionChangeDebounced` after plugin destroy', () => {
-			const clock = testUtils.sinon.useFakeTimers();
+			const clock = testUtils.sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const spy = testUtils.sinon.spy();
 
 			balloonToolbar.on( '_selectionChangeDebounced', spy );

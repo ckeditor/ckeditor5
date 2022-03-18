@@ -530,7 +530,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
-		clock = testUtils.sinon.useFakeTimers();
+		clock = testUtils.sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 
 		return BalloonEditor
 			.create( editorElement, {

@@ -248,7 +248,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should convert image\'s "complete" uploadStatus attribute and display temporary icon', done => {
-		const clock = testUtils.sinon.useFakeTimers();
+		const clock = testUtils.sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'uploadImage', { file: createNativeFileMock() } );

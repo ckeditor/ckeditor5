@@ -16,7 +16,7 @@ describe( 'MediaEmbed integration', () => {
 	let element, clock;
 
 	beforeEach( () => {
-		clock = sinon.useFakeTimers();
+		clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 	} );

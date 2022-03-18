@@ -23,7 +23,7 @@ describe( 'FocusTracker', () => {
 		container.appendChild( containerFirstInput );
 		container.appendChild( containerSecondInput );
 
-		testUtils.sinon.useFakeTimers();
+		testUtils.sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 
 		focusTracker = new FocusTracker();
 	} );

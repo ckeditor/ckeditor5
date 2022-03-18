@@ -207,6 +207,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should not be treated as an infinite loop if changes are not often', () => {
 		const clock = sinon.useFakeTimers( {
+			shouldClearNativeTimers: true,
 			toFake: [ 'setInterval', 'clearInterval' ]
 		} );
 		const consoleWarnStub = sinon.stub( console, 'warn' );
@@ -479,7 +480,7 @@ describe( 'SelectionObserver', () => {
 			let clock;
 
 			beforeEach( () => {
-				clock = testUtils.sinon.useFakeTimers();
+				clock = testUtils.sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 
 				// We need to recreate SelectionObserver, so it will use mocked setTimeout.
 				selectionObserver.disable();

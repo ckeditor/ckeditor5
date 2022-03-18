@@ -104,7 +104,7 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	it( 'should fire `selectionChangeDone` event after selection stop changing', () => {
-		const clock = testUtils.sinon.useFakeTimers();
+		const clock = testUtils.sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );
@@ -127,7 +127,7 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', () => {
-		const clock = testUtils.sinon.useFakeTimers();
+		const clock = testUtils.sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );

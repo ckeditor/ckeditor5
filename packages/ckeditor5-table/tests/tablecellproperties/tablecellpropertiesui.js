@@ -32,7 +32,7 @@ describe( 'table cell properties', () => {
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
-			clock = sinon.useFakeTimers();
+			clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 

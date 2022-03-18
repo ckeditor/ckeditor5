@@ -180,7 +180,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
-		clock = testUtils.sinon.useFakeTimers();
+		clock = testUtils.sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 
 		return BalloonEditor.create( element, {
 			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton, Bold ],

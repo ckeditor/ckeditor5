@@ -37,7 +37,10 @@ describe( 'MentionUI', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		clock = sinon.useFakeTimers( { now: Date.now() } );
+		clock = sinon.useFakeTimers( {
+			now: Date.now(),
+			shouldClearNativeTimers: true
+		} );
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 	} );

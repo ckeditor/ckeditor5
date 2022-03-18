@@ -112,7 +112,10 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should not refresh token if autoRefresh is disabled in options', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers( {
+				shouldClearNativeTimers: true,
+				toFake: [ 'setTimeout' ]
+			} );
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
@@ -127,7 +130,10 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should refresh token with the time specified in token `exp` payload property', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers( {
+				shouldClearNativeTimers: true,
+				toFake: [ 'setTimeout' ]
+			} );
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
@@ -155,7 +161,10 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should refresh the token with the default time if getting token expiration time failed', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers( {
+				shouldClearNativeTimers: true,
+				toFake: [ 'setTimeout' ]
+			} );
 			const tokenValue = 'header.test.signature';
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
@@ -174,7 +183,10 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should refresh the token with the default time if the token payload does not contain `exp` property', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const clock = sinon.useFakeTimers( {
+				shouldClearNativeTimers: true,
+				toFake: [ 'setTimeout' ]
+			} );
 			const tokenValue = `header.${ btoa( JSON.stringify( {} ) ) }.signature`;
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
@@ -198,7 +210,10 @@ describe( 'Token', () => {
 
 	describe( 'destroy', () => {
 		it( 'should stop refreshing the token', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout', 'clearTimeout' ] } );
+			const clock = sinon.useFakeTimers( {
+				shouldClearNativeTimers: true,
+				toFake: [ 'setTimeout', 'clearTimeout' ]
+			} );
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );

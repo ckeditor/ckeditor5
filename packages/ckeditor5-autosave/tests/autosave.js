@@ -14,7 +14,10 @@ describe( 'Autosave', () => {
 	let editor, element, autosave;
 
 	beforeEach( () => {
-		sinon.useFakeTimers( { now: Date.now() } );
+		sinon.useFakeTimers( {
+			now: Date.now(),
+			shouldClearNativeTimers: true
+		} );
 	} );
 
 	afterEach( () => {

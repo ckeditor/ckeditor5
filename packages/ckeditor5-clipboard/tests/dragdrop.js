@@ -86,7 +86,7 @@ describe( 'Drag and Drop', () => {
 
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const dataTransferMock = createDataTransfer();
 			const spyClipboardOutput = sinon.spy();
 			const spyClipboardInput = sinon.spy();
@@ -150,7 +150,7 @@ describe( 'Drag and Drop', () => {
 
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const dataTransferMock = createDataTransfer();
 			const spyClipboardOutput = sinon.spy();
 			const spyClipboardInput = sinon.spy();
@@ -211,7 +211,7 @@ describe( 'Drag and Drop', () => {
 
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const dataTransferMock = createDataTransfer();
 			const spyClipboardOutput = sinon.spy();
 			const spyClipboardInput = sinon.spy();
@@ -271,7 +271,7 @@ describe( 'Drag and Drop', () => {
 
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const dataTransferMock = createDataTransfer();
 			const spyClipboardOutput = sinon.spy();
 			const spyClipboardInput = sinon.spy();
@@ -326,7 +326,7 @@ describe( 'Drag and Drop', () => {
 		it( 'should move text to other place in the same editor (over some widget)', () => {
 			setModelData( model, '<paragraph>[foo]bar</paragraph><horizontalLine></horizontalLine>' );
 
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const dataTransferMock = createDataTransfer();
 			const spyClipboardOutput = sinon.spy();
 			const spyClipboardInput = sinon.spy();
@@ -371,7 +371,7 @@ describe( 'Drag and Drop', () => {
 		it( 'should do nothing if dropped on dragged range', () => {
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const dataTransferMock = createDataTransfer();
 			const spyClipboardOutput = sinon.spy();
 			const spyClipboardInput = sinon.spy();
@@ -402,7 +402,7 @@ describe( 'Drag and Drop', () => {
 		it( 'should copy text to from outside the editor', () => {
 			setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const dataTransferMock = createDataTransfer( { 'text/html': 'abc' } );
 			const spyClipboardInput = sinon.spy();
 			let targetPosition;
@@ -443,7 +443,7 @@ describe( 'Drag and Drop', () => {
 		it( 'should not remove dragged range if it is from other drag session', () => {
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			let dataTransferMock = createDataTransfer();
 			const spyClipboardOutput = sinon.spy();
 			const spyClipboardInput = sinon.spy();
@@ -539,7 +539,7 @@ describe( 'Drag and Drop', () => {
 		it( 'should properly move content even if dragend event is not fired', () => {
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const dataTransferMock = createDataTransfer();
 			const spyClipboardOutput = sinon.spy();
 			const spyClipboardInput = sinon.spy();
@@ -593,7 +593,7 @@ describe( 'Drag and Drop', () => {
 		it( 'should not allow dropping if the editor is read-only', () => {
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const dataTransferMock = createDataTransfer();
 			const spyClipboardOutput = sinon.spy();
 			const spyClipboardInput = sinon.spy();
@@ -651,7 +651,7 @@ describe( 'Drag and Drop', () => {
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const plugin = editor.plugins.get( 'DragDrop' );
-			const clock = sinon.useFakeTimers();
+			const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 			const dataTransferMock = createDataTransfer();
 			const spyClipboardOutput = sinon.spy();
 			const spyClipboardInput = sinon.spy();
@@ -1246,7 +1246,7 @@ describe( 'Drag and Drop', () => {
 					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
 				);
 
-				const clock = sinon.useFakeTimers();
+				const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 				const domNode = view.getDomRoot().querySelector( '.ck-widget__selection-handle' );
 				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
 				const selectionHandleElement = widgetViewElement.getChild( 0 );
@@ -1277,7 +1277,7 @@ describe( 'Drag and Drop', () => {
 					'<horizontalLine></horizontalLine>'
 				);
 
-				const clock = sinon.useFakeTimers();
+				const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
 				const viewElement = widgetViewElement.getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
@@ -1310,7 +1310,7 @@ describe( 'Drag and Drop', () => {
 					'<horizontalLine></horizontalLine>'
 				);
 
-				const clock = sinon.useFakeTimers();
+				const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
 				const viewElement = widgetViewElement.getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
@@ -1341,7 +1341,7 @@ describe( 'Drag and Drop', () => {
 			it( 'should remove "draggable" attribute from editable element', () => {
 				setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-				const clock = sinon.useFakeTimers();
+				const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 				const editableElement = viewDocument.getRoot();
 				const viewElement = editableElement.getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
@@ -1391,7 +1391,7 @@ describe( 'Drag and Drop', () => {
 			it( 'should remove drop target marker', () => {
 				setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-				const clock = sinon.useFakeTimers();
+				const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 				const dataTransferMock = createDataTransfer();
 
 				fireDragStart( dataTransferMock );
@@ -1411,7 +1411,7 @@ describe( 'Drag and Drop', () => {
 				setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 				const spy = sinon.spy();
-				const clock = sinon.useFakeTimers();
+				const clock = sinon.useFakeTimers( { shouldClearNativeTimers: true } );
 				const dataTransferMock = createDataTransfer();
 
 				model.markers.on( 'update:drop-target', ( evt, marker, oldRange, newRange ) => {

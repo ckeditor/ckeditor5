@@ -62,7 +62,7 @@ export default class Watchdog {
 
 		/**
 		 * Returns the result of the `Date.now()` call. It can be overridden in tests to mock time as some popular
-		 * approaches like `sinon.useFakeTimers()` do not work well with error handling.
+		 * approaches like `sinon.useFakeTimers( { shouldClearNativeTimers: true } )` do not work well with error handling.
 		 *
 		 * @protected
 		 */
