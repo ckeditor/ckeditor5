@@ -20,6 +20,10 @@ html {
 	padding: 20px 30px!important;
 }
 
+.ck-source-editing-area {
+	min-height: 100vh;
+}
+
 .ck-content .todo-list .todo-list__label > input {
 	margin-bottom: 6px!important;
 }
@@ -34,6 +38,10 @@ html {
 .ck.ck-button.helpjuice-callout-warning-btn svg,
 .ck.ck-button.helpjuice-callout-danger-btn svg {
 	width: 17px;
+}
+
+.ck.ck-button.helpjuice-decision-tree-btn svg {
+	width: 14px;
 }
 
 .ck.ck-button.helpjuice-callout-info-btn svg {

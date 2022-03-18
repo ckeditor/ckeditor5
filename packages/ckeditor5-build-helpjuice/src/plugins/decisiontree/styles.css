@@ -1,0 +1,176 @@
+/* Decision Tree */
+.helpjuice-decision-tree {
+	position: relative;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+.helpjuice-decision-tree::before {
+	content: "Decision Tree";
+	font-size: 10px;
+	font-weight: normal;
+	text-transform: uppercase;
+	background-color: #757575;
+	color: #FFFFFF;
+	position: absolute;
+	top: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 1px 10px;
+	z-index: 9999;
+	border-radius: 2px;
+}
+
+.helpjuice-decision-tree.ck-widget,
+.ck-blurred .helpjuice-decision-tree.ck-widget {
+	outline: 3px solid #e1e1e1!important;
+}
+.helpjuice-decision-tree.ck-widget:hover {
+	outline-color: #ffc83d!important;
+}
+
+.ck-focused .helpjuice-decision-tree.ck-widget.ck-widget_selected,
+.ck-focused .helpjuice-decision-tree.ck-widget.ck-widget_selected:hover {
+	outline-color: #1f89e5!important;
+}
+
+.ck .helpjuice-decision-tree-button-text.ck-editor__nested-editable.ck-editor__nested-editable_focused,
+.ck .helpjuice-decision-tree-button-text.ck-editor__nested-editable:focus {
+	background: none!important;
+}
+
+.helpjuice-decision-tree .ck-widget {
+	outline: none!important;
+}
+
+.helpjuice-decision-tree-tabs {
+	position: relative;
+    margin: 20px 10px!important;
+    padding: 10px;
+    border: 1px dashed #E2E5E9!important;
+	outline: none!important;
+	box-shadow: none!important;
+}
+
+.helpjuice-decision-tree-tabs .ck.ck-reset_all {
+	display: none!important;
+}
+
+.helpjuice-decision-tree-first-question {
+	padding-left: 10px;
+	border: none!important;
+	box-shadow: none!important;
+	margin-bottom: 30px;
+}
+
+.helpjuice-decision-tree-tab-nav {
+	position: relative;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap;
+	margin: -20px 0 0 0;
+}
+.helpjuice-decision-tree-button {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #F3F5F8;
+	color: rgba(0, 0, 0, .87);
+	border: none!important;
+	margin: -5px 10px 5px 0;
+}
+
+.helpjuice-decision-tree-button-text {
+	border: none!important;
+	box-shadow: none!important;
+}
+
+.helpjuice-decision-tree-button p {
+	background: none!important;
+	padding: 3px 8px;
+	margin: 0;
+	font-size: 14px;
+	font-weight: normal;
+	color: rgba(0, 0, 0, .87);
+}
+.helpjuice-decision-tree-button .helpjuice-decision-tree-delete-button {
+	width: 27px;
+	height: 27px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #e3e3e4;
+	cursor: pointer;
+}
+
+.helpjuice-decision-tree-button .helpjuice-decision-tree-delete-button::before {
+	content: "\f2ed";
+	font-family: "Font Awesome 6 Pro";
+	font-size: 12px;
+	color: #cc0808;
+	display: block;
+}
+
+.helpjuice-decision-tree-button[data-active="active"] {
+	background: #126CFF;
+	color: #FFFFFF;
+}
+.helpjuice-decision-tree-button[data-active="active"] p {
+	color: #FFFFFF;
+}
+.helpjuice-decision-tree-button[data-active="active"] .helpjuice-decision-tree-delete-button {
+	background: #0857d8;
+	color: #FFFFFF;
+}
+.helpjuice-decision-tree-button[data-active="active"] .helpjuice-decision-tree-delete-button::before {
+	color: #FFFFFF;
+}
+
+.helpjuice-decision-tree-add-tab-button {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #e9e9e9;
+	color: rgba(0, 0, 0, .87);
+	border: none!important;
+	height: 27px;
+	padding: 0 8px;
+	font-size: 14px;
+	cursor: pointer;
+	margin-top: -10px;
+}
+
+.helpjuice-decision-tree-tab-content {
+	display: none;
+	margin-top: 20px;
+	border: none!important;
+	box-shadow: none!important;
+}
+
+.helpjuice-decision-tree-tab-content[data-active="active"] {
+	display: block;
+}
+
+.helpjuice-decision-tree-add-answers {
+	position: absolute!important;
+	bottom: -10px;
+	left: 10px;
+	z-index: 9999;
+	width: 20px;
+	height: 20px;
+	border: 1px solid rgba(0, 0, 0, .87);
+	background: #FFFFFF;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.helpjuice-decision-tree-add-answers::before {
+	content: "\2b";
+	font-family: "Font Awesome 6 Pro";
+	font-size: 16px;
+	color: rgba(0, 0, 0, .87);
+	display: block;
+}

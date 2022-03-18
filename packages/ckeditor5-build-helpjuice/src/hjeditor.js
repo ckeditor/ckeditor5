@@ -41,6 +41,7 @@ import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
+import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 
 // Custom Plugins
 import Accordion from './plugins/accordion/accordion';
@@ -50,6 +51,7 @@ import Success from './plugins/calloutblocks/success/success';
 import Warning from './plugins/calloutblocks/warning/warning';
 import Danger from './plugins/calloutblocks/danger/danger';
 import InternalBlock from './plugins/internalblock/internalblock';
+import DecisionTree from './plugins/decisiontree/decisiontree';
 
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
@@ -96,7 +98,9 @@ HelpjuiceEditor.builtinPlugins = [
 	Success,
 	Warning,
 	Danger,
-	InternalBlock
+	InternalBlock,
+	DecisionTree,
+	SimpleUploadAdapter
 ];
 
 // Editor configuration.
@@ -171,7 +175,8 @@ HelpjuiceEditor.defaultConfig = {
 			'success',
 			'warning',
 			'danger',
-			'internalblock'
+			'internalblock',
+			'decisiontree'
 		],
 		shouldNotGroupWhenFull: true
 	},
