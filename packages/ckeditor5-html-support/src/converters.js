@@ -8,7 +8,7 @@
  */
 
 import { toWidget } from 'ckeditor5/src/widget';
-import { setViewAttributes, mergeViewElementAttributes, setViewInlineAttributes } from './conversionutils';
+import { setViewAttributes, mergeViewElementAttributes } from './conversionutils';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -37,14 +37,14 @@ export function viewToModelObjectConverter( { model: modelName } ) {
 export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) {
 	const t = editor.t;
 
-	return ( modelElement, { writer, consumable } ) => {
+	return ( modelElement, { writer } ) => {
 		const widgetLabel = t( 'HTML object' );
 
 		const viewElement = createObjectView( viewName, modelElement, writer );
 		writer.addClass( 'html-object-embed__content', viewElement );
 
 		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
-		if ( viewAttributes && consumable.consume( modelElement, `attribute:htmlAttributes:${ modelElement.name }` ) ) {
+		if ( viewAttributes ) {
 			setViewAttributes( writer, viewAttributes, viewElement );
 		}
 
@@ -127,7 +127,7 @@ export function attributeToViewInlineConverter( { priority, view: viewName } ) {
 		const { writer } = conversionApi;
 		const viewElement = writer.createAttributeElement( viewName, null, { priority } );
 
-		setViewInlineAttributes( writer, attributeValue, viewElement );
+		setViewAttributes( writer, attributeValue, viewElement );
 
 		return viewElement;
 	};

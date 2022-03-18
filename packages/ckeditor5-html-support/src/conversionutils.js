@@ -7,107 +7,108 @@
  * @module html-support/conversionutils
  */
 
-import { cloneDeep } from 'lodash-es';
-
-export function setViewInlineAttributes( writer, viewAttributes, viewElement ) {
-	if ( viewAttributes.attributes ) {
-		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
-			writer.setAttribute( key, value, viewElement );
-		}
-	}
-
-	if ( viewAttributes.styles ) {
-		writer.setStyle( viewAttributes.styles, viewElement );
-	}
-
-	if ( viewAttributes.classes ) {
-		writer.addClass( viewAttributes.classes, viewElement );
-	}
-}
+import { cloneDeep, isPlainObject } from 'lodash-es';
 
 /**
 * Helper function for downcast converter. Sets attributes on the given view element.
 *
 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
-* @param {Object} viewAttributes
+* @param {Object} viewAttributes Object with only new attributes to set or both new and old attributes to set and remove
 * @param {module:engine/view/element~Element} viewElement
 */
 export function setViewAttributes( writer, viewAttributes, viewElement ) {
 	const { newAttributes, oldAttributes } = viewAttributes;
 
-	if ( oldAttributes && oldAttributes.attributes ) {
-		for ( const [ key, value ] of Object.entries( oldAttributes.attributes ) ) {
-			writer.removeAttribute( key, value, viewElement );
+	// only new attributes have been passed so just set them.
+	if ( isPlainObject( viewAttributes ) && !newAttributes && !oldAttributes ) {
+		setNewAttributes( writer, viewAttributes, viewElement );
+		return;
+	}
+
+	if ( oldAttributes ) {
+		removeOldAttributes( writer, oldAttributes, viewElement );
+	}
+
+	if ( newAttributes ) {
+		setNewAttributes( writer, newAttributes, viewElement );
+	}
+}
+
+// Removes old attributes form the view element.
+//
+// @private
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @param {Object} attributes View element attributes to remove
+// @param {module:engine/view/element~Element} element View element to remove attributes from
+function removeOldAttributes( writer, attributes, element ) {
+	if ( attributes.attributes ) {
+		for ( const [ key, value ] of Object.entries( attributes.attributes ) ) {
+			writer.removeAttribute( key, value, element );
 		}
 	}
 
-	if ( newAttributes && newAttributes.attributes ) {
-		for ( const [ key, value ] of Object.entries( newAttributes.attributes ) ) {
-			writer.setAttribute( key, value, viewElement );
+	if ( attributes.styles ) {
+		for ( const style of Object.keys( attributes.styles ) ) {
+			writer.removeStyle( style, element );
 		}
 	}
 
-	if ( oldAttributes && oldAttributes.styles ) {
-		for ( const style of Object.keys( oldAttributes.styles ) ) {
-			writer.removeStyle( style, viewElement );
+	if ( attributes.classes ) {
+		writer.removeClass( attributes.classes, element );
+	}
+}
+
+// Sets new attributes on the view element.
+//
+// @private
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @param {Object} attributes View element attributes to set
+// @param {module:engine/view/element~Element} element View element to set attributes on
+function setNewAttributes( writer, attributes, element ) {
+	if ( attributes.attributes ) {
+		for ( const [ key, value ] of Object.entries( attributes.attributes ) ) {
+			writer.setAttribute( key, value, element );
 		}
 	}
 
-	if ( newAttributes && newAttributes.styles ) {
-		writer.setStyle( newAttributes.styles, viewElement );
+	if ( attributes.styles ) {
+		writer.setStyle( attributes.styles, element );
 	}
 
-	if ( oldAttributes && oldAttributes.classes ) {
-		writer.removeClass( oldAttributes.classes, viewElement );
-	}
-
-	if ( newAttributes && newAttributes.classes ) {
-		writer.addClass( newAttributes.classes, viewElement );
+	if ( attributes.classes ) {
+		writer.addClass( attributes.classes, element );
 	}
 }
 
 /**
-* Helper function to update only one attribute from all htmlAttributes on a model element.
+* Helper function to update only one attribute from all html attributes on a model element.
 *
 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 * @param {module:engine/model/element~Element} element
-* @param {String} attributeName
-* @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue
+* @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
+* @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
+* @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
 */
-export function setModelHtmlAttribute( writer, element, attributeName, attributeValue ) {
-	const attributes = element.getAttribute( 'htmlAttributes' );
+export function setModelHtmlAttribute( writer, element, attributeName, attributeKey, attributeValue ) {
+	const attributes = element.getAttribute( attributeName );
 	const newAttributes = {};
 
-	for ( const [ attribute, value ] of Object.entries( attributes ) ) {
-		if ( attribute === attributeName ) {
-			newAttributes[ attribute ] = attributeValue;
-			continue;
+	if ( attributes ) {
+		for ( const [ attribute, value ] of Object.entries( attributes ) ) {
+			if ( attribute === attributeKey ) {
+				newAttributes[ attribute ] = attributeValue;
+				continue;
+			}
+
+			newAttributes[ attribute ] = value;
 		}
-
-		newAttributes[ attribute ] = value;
 	}
 
-	writer.setAttribute( 'htmlAttributes', newAttributes, element );
-}
-
-export function setModelHtmlInlineAttribute( writer, element, attributeElementName, attributeName, attributeValue ) {
-	const attributes = element.getAttribute( attributeElementName );
-	const newAttributes = {};
-
-	for ( const [ attribute, value ] of Object.entries( attributes ) ) {
-		if ( attribute === attributeName ) {
-			newAttributes[ attribute ] = attributeValue;
-			continue;
-		}
-
-		newAttributes[ attribute ] = value;
+	if ( !newAttributes[ attributeKey ] ) {
+		newAttributes[ attributeKey ] = attributeValue;
 	}
 
-	if ( !newAttributes[ attributeName ] ) {
-		newAttributes[ attributeName ] = attributeValue;
-	}
-
-	writer.setAttribute( attributeElementName, newAttributes, element );
+	writer.setAttribute( attributeName, newAttributes, element );
 }
 
 /**

@@ -8,18 +8,16 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { setModelHtmlAttribute, setModelHtmlInlineAttribute } from '../../src/conversionutils';
+import { setModelHtmlAttribute } from '../../src/conversionutils';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			// Bold,
 			Essentials,
 			Heading,
 			Italic,
@@ -37,13 +35,7 @@ ClassicEditor
 		htmlSupport: {
 			allow: [
 				{
-					name: 'div',
-					classes: [ 'red', 'blue', 'small', 'big' ],
-					styles: true,
-					attributes: true
-				},
-				{
-					name: 'span',
+					name: /div|span|p|input|table|td|tr/,
 					classes: [ 'red', 'blue', 'small', 'big' ],
 					styles: true,
 					attributes: true
@@ -68,20 +60,19 @@ ClassicEditor
 
 		buttonClass.addEventListener( 'click', () => {
 			model.change( writer => {
-				setModelHtmlAttribute( writer, element, 'classes', [ 'blue', 'big' ] );
+				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'classes', [ 'blue', 'big' ] );
 			} );
 		} );
 
 		buttonRemove.addEventListener( 'click', () => {
 			model.change( writer => {
-				setModelHtmlAttribute( writer, element, 'classes', [] );
-				setModelHtmlAttribute( writer, element, 'styles', {} );
+				writer.removeAttribute( 'htmlAttributes', element );
 			} );
 		} );
 
 		buttonStyle.addEventListener( 'click', () => {
 			model.change( writer => {
-				setModelHtmlAttribute( writer, element, 'styles', {
+				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'styles', {
 					'background-color': 'orange',
 					'font-weight': 'bold'
 				} );
@@ -94,7 +85,7 @@ ClassicEditor
 
 				for ( const range of ranges ) {
 					for ( const item of range.getItems() ) {
-						setModelHtmlInlineAttribute( writer, item, 'htmlSpan', 'classes', [ 'blue', 'big' ] );
+						setModelHtmlAttribute( writer, item, 'htmlSpan', 'classes', [ 'blue', 'big' ] );
 					}
 				}
 			} );
@@ -106,7 +97,10 @@ ClassicEditor
 
 				for ( const range of ranges ) {
 					for ( const item of range.getItems() ) {
-						setModelHtmlInlineAttribute( writer, item, 'htmlSpan', 'classes', [ 'red', 'small' ] );
+						setModelHtmlAttribute( writer, item, 'htmlSpan', 'styles', {
+							'background-color': 'red',
+							'font-weight': '100'
+						} );
 					}
 				}
 			} );
@@ -118,8 +112,7 @@ ClassicEditor
 
 				for ( const range of ranges ) {
 					for ( const item of range.getItems() ) {
-						setModelHtmlInlineAttribute( writer, item, 'htmlSpan', 'classes', [] );
-						setModelHtmlInlineAttribute( writer, item, 'htmlSpan', 'styles', {} );
+						writer.removeAttribute( 'htmlSpan', item );
 					}
 				}
 			} );
