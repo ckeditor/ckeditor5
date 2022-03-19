@@ -7,7 +7,7 @@
  * @module html-support/conversionutils
  */
 
-import { cloneDeep, isPlainObject } from 'lodash-es';
+import { cloneDeep, isPlainObject, isArray } from 'lodash-es';
 
 /**
 * Helper function for downcast converter. Sets attributes on the given view element.
@@ -42,8 +42,8 @@ export function setViewAttributes( writer, viewAttributes, viewElement ) {
 // @param {module:engine/view/element~Element} element View element to remove attributes from
 function removeOldAttributes( writer, attributes, element ) {
 	if ( attributes.attributes ) {
-		for ( const [ key, value ] of Object.entries( attributes.attributes ) ) {
-			writer.removeAttribute( key, value, element );
+		for ( const [ key ] of Object.entries( attributes.attributes ) ) {
+			writer.removeAttribute( key, element );
 		}
 	}
 
@@ -91,9 +91,20 @@ function setNewAttributes( writer, attributes, element ) {
 */
 export function setModelHtmlAttribute( writer, element, attributeName, attributeKey, attributeValue ) {
 	const attributes = element.getAttribute( attributeName );
+	const attributeKeys = attributes && Object.keys( attributes );
+
+	if ( isAttributeValueEmpty( attributeValue ) ) {
+		// If someone wants to remove attribute by setting its value to null, empty string, empty object or empty array
+		// and this attribute is the only one present in attributes object, we should remove the whole attribute.
+		if ( attributeKeys && attributeKeys.length === 1 && attributeKeys[ 0 ] === attributeKey ) {
+			writer.removeAttribute( attributeName, element );
+			return;
+		}
+	}
+
 	const newAttributes = {};
 
-	if ( attributes ) {
+	if ( attributes && attributeValue ) {
 		for ( const [ attribute, value ] of Object.entries( attributes ) ) {
 			if ( attribute === attributeKey ) {
 				newAttributes[ attribute ] = attributeValue;
@@ -104,11 +115,28 @@ export function setModelHtmlAttribute( writer, element, attributeName, attribute
 		}
 	}
 
-	if ( !newAttributes[ attributeKey ] ) {
+	if ( !newAttributes[ attributeKey ] && attributeValue ) {
 		newAttributes[ attributeKey ] = attributeValue;
 	}
 
 	writer.setAttribute( attributeName, newAttributes, element );
+}
+
+// Checks if attribute value is empty or not.
+//
+// @private
+// @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue
+// @return {Boolean} True if value is empty false otherwise
+function isAttributeValueEmpty( attributeValue ) {
+	if ( isPlainObject( attributeValue ) ) {
+		return Object.keys( attributeValue ).length === 0;
+	}
+
+	if ( isArray( attributeValue ) ) {
+		return attributeValue.length === 0;
+	}
+
+	return !attributeValue;
 }
 
 /**

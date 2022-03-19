@@ -66,15 +66,14 @@ ClassicEditor
 
 		buttonRemove.addEventListener( 'click', () => {
 			model.change( writer => {
-				writer.removeAttribute( 'htmlAttributes', element );
+				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'styles', null );
 			} );
 		} );
 
 		buttonStyle.addEventListener( 'click', () => {
 			model.change( writer => {
-				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'styles', {
-					'background-color': 'orange',
-					'font-weight': 'bold'
+				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'attributes', {
+					'data-foo': 'bar baz'
 				} );
 			} );
 		} );
