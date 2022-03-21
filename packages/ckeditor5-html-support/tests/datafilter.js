@@ -721,6 +721,30 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
 		} );
 
+		it( 'should not create empty htmlA (upcast)', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { name: true, attributes: [ 'href' ] } );
+
+					if ( !data.modelRange ) {
+						Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+					}
+				} );
+			} );
+
+			dataFilter.allowElement( 'a' );
+			dataFilter.allowAttributes( { name: 'a', attributes: { 'href': true } } );
+
+			editor.setData( '<a href="example.com"><p>foo</p></a>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo</paragraph>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+		} );
+
 		it( 'should not consume attribute already consumed (downcast)', () => {
 			editor.conversion.for( 'downcast' ).add( dispatcher => {
 				dispatcher.on( 'attribute:htmlAttributes:htmlSection', ( evt, data, conversionApi ) => {
