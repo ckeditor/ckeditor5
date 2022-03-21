@@ -1100,6 +1100,29 @@ describe( 'DataFilter', () => {
 			} );
 		} );
 
+		// #10657.
+		// #11450.
+		// #11477.
+		it( 'should not throw exception when outer element doesn\'t have attributes', () => {
+			dataFilter.allowElement( 'span' );
+			dataFilter.allowAttributes( { name: 'span', classes: /[\s\S]+/ } );
+
+			editor.setData( '<p><span>foo<span class="test">bar</span></span></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text htmlSpan="(1)">foo</$text>' +
+						'<$text htmlSpan="(2)">bar</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {
+						classes: [ 'test' ]
+					}
+				}
+			} );
+		} );
+
 		describe( 'attribute properties', () => {
 			it( 'should set if given', () => {
 				dataSchema.registerInlineElement( {
