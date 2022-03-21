@@ -1699,6 +1699,26 @@ describe( 'DataFilter', () => {
 					'</section>'
 				);
 			} );
+
+			it( 'should do nothing if trying to unset attribute when no attributes are present', () => {
+				dataFilter.allowElement( 'section' );
+				dataFilter.allowAttributes( { name: 'section', classes: true } );
+
+				editor.setData(
+					'<section><p>foobar</p></section>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal( '<section><p>foobar</p></section>' );
+			} );
 		} );
 
 		describe( 'on inline elements', () => {
