@@ -13,7 +13,7 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { setModelHtmlAttribute } from '../../src/conversionutils';
+import { setModelHtmlAttribute, setModelSelectionHtmlAttribute } from '../../src/conversionutils';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -48,7 +48,6 @@ ClassicEditor
 
 		const model = editor.model;
 		const root = model.document.getRoot();
-		const selection = model.document.selection;
 		const element = root.getChild( 0 );
 		const buttonClass = document.getElementById( 'modify-class' );
 		const buttonStyle = document.getElementById( 'modify-style' );
@@ -67,6 +66,7 @@ ClassicEditor
 		buttonRemove.addEventListener( 'click', () => {
 			model.change( writer => {
 				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'classes', null );
 			} );
 		} );
 
@@ -80,40 +80,23 @@ ClassicEditor
 
 		buttonClassInline.addEventListener( 'click', () => {
 			model.change( writer => {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), 'htmlSpan' );
-
-				for ( const range of ranges ) {
-					for ( const item of range.getItems() ) {
-						setModelHtmlAttribute( writer, item, 'htmlSpan', 'classes', [ 'blue', 'big' ] );
-					}
-				}
+				setModelSelectionHtmlAttribute( model, writer, 'htmlSpan', 'classes', [ 'blue', 'big' ] );
 			} );
 		} );
 
 		buttonStyleInline.addEventListener( 'click', () => {
 			model.change( writer => {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), 'htmlSpan' );
-
-				for ( const range of ranges ) {
-					for ( const item of range.getItems() ) {
-						setModelHtmlAttribute( writer, item, 'htmlSpan', 'styles', {
-							'background-color': 'red',
-							'font-weight': '100'
-						} );
-					}
-				}
+				setModelSelectionHtmlAttribute( model, writer, 'htmlSpan', 'styles', {
+					'background-color': 'red',
+					'font-weight': '100'
+				} );
 			} );
 		} );
 
 		buttonRemoveInline.addEventListener( 'click', () => {
 			model.change( writer => {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), 'htmlSpan' );
-
-				for ( const range of ranges ) {
-					for ( const item of range.getItems() ) {
-						writer.removeAttribute( 'htmlSpan', item );
-					}
-				}
+				setModelSelectionHtmlAttribute( model, writer, 'htmlSpan', 'styles', null );
+				setModelSelectionHtmlAttribute( model, writer, 'htmlSpan', 'classes', null );
 			} );
 		} );
 	} )

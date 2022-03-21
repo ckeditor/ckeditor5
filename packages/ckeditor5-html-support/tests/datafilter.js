@@ -13,13 +13,13 @@ import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolored
 import DataFilter from '../src/datafilter';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getModelDataWithAttributes } from './_utils/utils';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
-import { setModelHtmlAttribute } from '../src/conversionutils';
+import { setModelHtmlAttribute, setModelSelectionHtmlAttribute } from '../src/conversionutils';
 
 describe( 'DataFilter', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
@@ -1177,14 +1177,22 @@ describe( 'DataFilter', () => {
 	} );
 
 	describe( 'attributes modifications', () => {
+		let root;
+
+		beforeEach( () => {
+			root = model.document.getRoot();
+		} );
+
+		describe( 'on object elements', () => {
+			// TODO
+		} );
+
 		describe( 'on block elements', () => {
 			it( 'should add new styles if no html attributes applied', () => {
 				dataFilter.allowElement( 'section' );
 				dataFilter.allowAttributes( { name: 'section', styles: true } );
 
 				editor.setData( '<section><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
@@ -1689,6 +1697,37 @@ describe( 'DataFilter', () => {
 					'<section class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz">' +
 						'<p>foobar</p>' +
 					'</section>'
+				);
+			} );
+		} );
+
+		describe( 'on inline elements', () => {
+			it( 'should add new styles if no html attributes applied', () => {
+				dataFilter.allowElement( 'cite' );
+
+				setModelData( model, '<paragraph>[foobar]</paragraph>' );
+
+				model.change( writer => {
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+						'background-color': 'blue',
+						color: 'red'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite style="background-color:blue;color:red;">foobar</cite></p>'
 				);
 			} );
 		} );

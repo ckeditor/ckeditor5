@@ -84,13 +84,19 @@ function setNewAttributes( writer, attributes, element ) {
 * Helper function to update only one attribute from all html attributes on a model element.
 *
 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
-* @param {module:engine/model/element~Element} element
+* @param {module:engine/model/element~Element|module:engine/model/text~Text} element Element or text node.
 * @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
 * @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
 * @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
 */
 export function setModelHtmlAttribute( writer, element, attributeName, attributeKey, attributeValue ) {
 	const attributes = element.getAttribute( attributeName );
+
+	// Do nothing if trying to remove attribute if no attributes present.
+	if ( !attributeValue && !attributes ) {
+		return;
+	}
+
 	const attributeKeys = attributes && Object.keys( attributes );
 
 	if ( isAttributeValueEmpty( attributeValue ) ) {
@@ -104,10 +110,12 @@ export function setModelHtmlAttribute( writer, element, attributeName, attribute
 
 	const newAttributes = {};
 
-	if ( attributes && attributeValue ) {
+	if ( attributes ) {
 		for ( const [ attribute, value ] of Object.entries( attributes ) ) {
 			if ( attribute === attributeKey ) {
-				newAttributes[ attribute ] = attributeValue;
+				if ( !isAttributeValueEmpty( attributeValue ) ) {
+					newAttributes[ attribute ] = attributeValue;
+				}
 				continue;
 			}
 
@@ -120,6 +128,25 @@ export function setModelHtmlAttribute( writer, element, attributeName, attribute
 	}
 
 	writer.setAttribute( attributeName, newAttributes, element );
+}
+
+/**
+* Helper function to update only one attribute from all html attributes on a model selection.
+*
+* @param {module:engine/model/model~Model} model writer
+* @param {module:engine/view/downcastwriter~DowncastWriter} writer
+* @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
+* @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
+* @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
+*/
+export function setModelSelectionHtmlAttribute( model, writer, attributeName, attributeKey, attributeValue ) {
+	const ranges = model.schema.getValidRanges( model.document.selection.getRanges(), attributeName );
+
+	for ( const range of ranges ) {
+		for ( const item of range.getItems() ) {
+			setModelHtmlAttribute( writer, item, attributeName, attributeKey, attributeValue );
+		}
+	}
 }
 
 // Checks if attribute value is empty or not.
