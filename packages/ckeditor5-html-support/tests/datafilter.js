@@ -1071,6 +1071,33 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<p><cite>foo</cite></p>' );
 		} );
 
+		it( 'should not convert element already consumed (upcast)', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { name: true, attributes: [ 'href' ] } );
+
+					if ( !data.modelRange ) {
+						Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+					}
+				} );
+			} );
+
+			dataFilter.allowElement( 'a' );
+			dataFilter.allowAttributes( { name: 'a', attributes: { 'href': true } } );
+			dataFilter.allowElement( 'span' );
+
+			editor.setData( '<p><a href="example.com">foo <span>bar</span></a></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo <$text htmlSpan="(1)">bar</$text></paragraph>',
+				attributes: {
+					1: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo <span>bar</span></p>' );
+		} );
+
 		it( 'should not consume attribute already consumed (downcast)', () => {
 			editor.conversion.for( 'downcast' ).add( dispatcher => {
 				dispatcher.on( 'attribute:htmlCite:$text', ( evt, data, conversionApi ) => {
