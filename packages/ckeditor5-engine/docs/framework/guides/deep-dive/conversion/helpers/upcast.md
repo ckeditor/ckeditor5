@@ -1,16 +1,16 @@
 ---
 category: framework-deep-dive-conversion-helpers
-menu-title: Upcast helpers (view to model)
+menu-title: Upcast helpers
 order: 30
 since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Upcast helpers (view to model)
+# Upcast helpers &mdash; view to model conversion
 
 This article lists all editor helpers available in the {@link framework/guides/deep-dive/conversion/upcast upcast conversion}.
 
-## Element to element
+## Element to element conversion helper
 
 Converting a view element to a model element is the most common case of conversion. It is used to handle view elements like `<p>` or `<h1>` which need to be converted to model elements.
 
@@ -118,7 +118,7 @@ In the above example, the first converter has the default priority, `normal` (no
 
 Another practical application of this solution is to have your converter act as a fallback when other converters for a given element are not present (e.g. a plugin has not been loaded). It can be easily achieved by setting the `converterProperty` to `low`.
 
-## Element to attribute
+## Element to attribute conversion helper
 
 The element to attribute conversion is used to handle formatting view elements like `<b>` or `<span style="font-family: ...">` that need to be converted to text attributes. It is important to note that text formatting such as bold or font size should be represented in the model as text nodes attributes.
 
@@ -235,7 +235,7 @@ editor.conversion
 
 In this example, the first converter has the default priority, `normal`. The second one overrides it, having its priority set to `high`. Using both of these converters at once will result in the `<strong>` view element being converted to an `important` model attribute.
 
-## Attribute to attribute
+## Attribute to attribute conversion helper
 
 The `attributeToAttribute()` helper allows registering a converter that handles a specific attribute and converts it to an attribute of a model element.
 
