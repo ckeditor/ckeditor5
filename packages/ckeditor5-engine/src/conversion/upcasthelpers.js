@@ -908,6 +908,11 @@ function prepareToAttributeConverter( config, shallow ) {
 		// It may happen that a converter will try to set an attribute that is not allowed in the given context.
 		// In such a situation we cannot consume the attribute. See: https://github.com/ckeditor/ckeditor5/pull/9249#issuecomment-815658459.
 		if ( attributeWasSet ) {
+			// Consume the element itself if not yet consumed.
+			if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
+				match.match.name = true;
+			}
+
 			conversionApi.consumable.consume( data.viewItem, match.match );
 		}
 	};
