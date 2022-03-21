@@ -35,8 +35,8 @@ ClassicEditor
 		htmlSupport: {
 			allow: [
 				{
-					name: /div|span|p|input|table|td|tr/,
-					classes: [ 'red', 'blue', 'small', 'big' ],
+					name: /div|span|p|input|table|td|tr|section|cite/,
+					classes: true,
 					styles: true,
 					attributes: true
 				}
@@ -95,8 +95,13 @@ ClassicEditor
 
 		buttonRemoveInline.addEventListener( 'click', () => {
 			model.change( writer => {
-				setModelSelectionHtmlAttribute( model, writer, 'htmlSpan', 'styles', null );
-				setModelSelectionHtmlAttribute( model, writer, 'htmlSpan', 'classes', null );
+				const element = root.getChild( 0 ).getChild( 0 );
+				const range = writer.createRangeOn( element );
+				const selection = writer.createSelection( range );
+
+				writer.setSelection( selection );
+
+				setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
 			} );
 		} );
 	} )

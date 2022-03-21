@@ -1188,10 +1188,16 @@ describe( 'DataFilter', () => {
 		} );
 
 		describe( 'on block elements', () => {
-			it( 'should add new styles if no html attributes applied', () => {
+			beforeEach( () => {
+				root = model.document.getRoot();
+
 				dataFilter.allowElement( 'section' );
 				dataFilter.allowAttributes( { name: 'section', styles: true } );
+				dataFilter.allowAttributes( { name: 'section', classes: true } );
+				dataFilter.allowAttributes( { name: 'section', attributes: true } );
+			} );
 
+			it( 'should add new styles if no html attributes applied', () => {
 				editor.setData( '<section><p>foobar</p></section>' );
 
 				model.change( writer => {
@@ -1219,12 +1225,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new styles if no classes or other attributes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', styles: true } );
-
 				editor.setData( '<section style="background-color:blue;color:red;"><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
@@ -1253,12 +1254,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should update existing styles if no classes or other attributes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', styles: true } );
-
 				editor.setData( '<section style="background-color:blue;color:red;"><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
@@ -1285,12 +1281,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should remove some styles if no classes or other attributes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', styles: true } );
-
 				editor.setData( '<section style="background-color:blue;color:red;font-size:10px;"><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
@@ -1316,16 +1307,8 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
-			it( 'should remove all attributes when removing all styles and no other classes or attributes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( {
-					name: 'section',
-					styles: true
-				} );
-
+			it( 'should remove the attribute when removing all styles and no other classes or attributes are present', () => {
 				editor.setData( '<section style="background-color:blue;color:red;font-size:10px;"><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
@@ -1342,14 +1325,9 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new styles if there are other classes or attributes', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', styles: true, classes: true, attributes: true } );
-
 				editor.setData(
 					'<section style="background-color:blue;color:red;" class="foo bar" data-foo="bar"><p>foobar</p></section>'
 				);
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
@@ -1383,15 +1361,45 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
-			it( 'should remove some styles if there are other classes or attributes', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', styles: true, classes: true, attributes: true } );
-
+			it( 'should remove some styles if there are already other classes or attributes', () => {
 				editor.setData(
 					'<section style="background-color:blue;color:red;font-size:10px;" class="foo" data-foo="bar"><p>foobar</p></section>'
 				);
 
-				const root = model.document.getRoot();
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+						'background-color': 'blue',
+						'font-size': '10px'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo' ],
+							styles: {
+								'background-color': 'blue',
+								'font-size': '10px'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<section class="foo" style="background-color:blue;font-size:10px;" data-foo="bar">' +
+						'<p>foobar</p>' +
+					'</section>'
+				);
+			} );
+
+			it( 'should remove all styles if there are already other classes or attributes', () => {
+				editor.setData(
+					'<section style="background-color:blue;color:red;font-size:10px;" class="foo" data-foo="bar"><p>foobar</p></section>'
+				);
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
@@ -1415,12 +1423,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new classes if no html attributes applied', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', classes: true } );
-
 				editor.setData( '<section><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar' ] );
@@ -1441,12 +1444,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new classes if no styles or other attributes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', classes: [ 'foo', 'bar', 'baz' ] } );
-
 				editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar', 'baz' ] );
@@ -1464,13 +1462,27 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
+			it( 'should update existing classes if no other styles or attributes are present', () => {
+				editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
+					attributes: {
+						1: { classes: [ 'foo', 'baz' ] }
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<section class="foo baz"><p>foobar</p></section>'
+				);
+			} );
+
 			it( 'should remove some classes if no other styles or attributes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', classes: [ 'foo', 'bar', 'baz' ] } );
-
 				editor.setData( '<section class="foo bar baz"><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
@@ -1489,12 +1501,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should remove all attributes when removing all classes and no other styles or attributes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', classes: [ 'foo', 'bar', 'baz' ] } );
-
 				editor.setData( '<section class="foo bar baz"><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
@@ -1511,14 +1518,9 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new classes if there are other styles and attributes', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', styles: true, classes: true, attributes: true } );
-
 				editor.setData(
 					'<section style="background-color:blue;color:red;" class="foo bar" data-foo="bar"><p>foobar</p></section>'
 				);
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
@@ -1547,13 +1549,71 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
+			it( 'should remove some classes if there are already other styles and attributes', () => {
+				editor.setData(
+					'<section style="background-color:blue;color:red;" class="foo bar baz" data-foo="bar"><p>foobar</p></section>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo' ],
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<section class="foo" style="background-color:blue;color:red;" data-foo="bar">' +
+						'<p>foobar</p>' +
+					'</section>'
+				);
+			} );
+
+			it( 'should remove all classes if there are already other styles and attributes', () => {
+				editor.setData(
+					'<section style="background-color:blue;color:red;" class="foo bar baz" data-foo="bar"><p>foobar</p></section>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<section style="background-color:blue;color:red;" data-foo="bar">' +
+						'<p>foobar</p>' +
+					'</section>'
+				);
+			} );
+
 			it( 'should add new attributes if no html attributes applied', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', attributes: true } );
-
 				editor.setData( '<section><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', { 'data-foo': 'bar' } );
@@ -1574,12 +1634,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new attributes if no styles or classes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', attributes: true } );
-
 				editor.setData( '<section data-foo="bar"><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
@@ -1605,18 +1660,13 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
-			it( 'should remove some attributes if no other styles or classes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', attributes: true } );
-
+			it( 'should update existing attributes if no styles or classes are present', () => {
 				editor.setData( '<section data-foo="bar" data-bar="baz"><p>foobar</p></section>' );
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar',
-						'data-bar': 'baz'
+						'data-foo': 'bar baz',
+						'data-bar': 'baz bar'
 					} );
 				} );
 
@@ -1625,25 +1675,45 @@ describe( 'DataFilter', () => {
 					attributes: {
 						1: {
 							attributes: {
-								'data-foo': 'bar',
-								'data-bar': 'baz'
+								'data-foo': 'bar baz',
+								'data-bar': 'baz bar'
 							}
 						}
 					}
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<section data-bar="baz" data-foo="bar"><p>foobar</p></section>'
+					'<section data-foo="bar baz" data-bar="baz bar"><p>foobar</p></section>'
 				);
 			} );
 
-			it( 'should remove all attributes when removing all attributes and no other styles or classes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', attributes: true } );
-
+			it( 'should remove some attributes if no other styles or classes are present', () => {
 				editor.setData( '<section data-foo="bar" data-bar="baz"><p>foobar</p></section>' );
 
-				const root = model.document.getRoot();
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<section data-foo="bar"><p>foobar</p></section>'
+				);
+			} );
+
+			it( 'should remove attribute element when removing all attributes and no other styles or classes are present', () => {
+				editor.setData( '<section data-foo="bar" data-bar="baz"><p>foobar</p></section>' );
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
@@ -1660,14 +1730,9 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should modify attributes if there are other styles and classes', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', styles: true, classes: true, attributes: true } );
-
 				editor.setData(
 					'<section style="background-color:blue;color:red;" class="foo bar" data-foo="bar"><p>foobar</p></section>'
 				);
-
-				const root = model.document.getRoot();
 
 				model.change( writer => {
 					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
@@ -1700,10 +1765,74 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
-			it( 'should do nothing if trying to unset attribute when no attributes are present', () => {
-				dataFilter.allowElement( 'section' );
-				dataFilter.allowAttributes( { name: 'section', classes: true } );
+			it( 'should remove some attributes if there are other styles and classes', () => {
+				editor.setData(
+					'<section class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz">' +
+						'<p>foobar</p>' +
+					'</section>'
+				);
 
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo', 'bar' ],
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<section class="foo bar" style="background-color:blue;color:red;" data-foo="bar">' +
+						'<p>foobar</p>' +
+					'</section>'
+				);
+			} );
+
+			it( 'should remove all attributes if there are other styles and classes', () => {
+				editor.setData(
+					'<section class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz">' +
+						'<p>foobar</p>' +
+					'</section>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
+					attributes: {
+						1: {
+							classes: [ 'foo', 'bar' ],
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<section class="foo bar" style="background-color:blue;color:red;">' +
+						'<p>foobar</p>' +
+					'</section>'
+				);
+			} );
+
+			it( 'should do nothing if trying to unset attribute when no attributes are present', () => {
 				editor.setData(
 					'<section><p>foobar</p></section>'
 				);
@@ -1722,9 +1851,16 @@ describe( 'DataFilter', () => {
 		} );
 
 		describe( 'on inline elements', () => {
-			it( 'should add new styles if no html attributes applied', () => {
-				dataFilter.allowElement( 'cite' );
+			beforeEach( () => {
+				root = model.document.getRoot();
 
+				dataFilter.allowElement( 'cite' );
+				dataFilter.allowAttributes( { name: 'cite', styles: true } );
+				dataFilter.allowAttributes( { name: 'cite', classes: true } );
+				dataFilter.allowAttributes( { name: 'cite', attributes: true } );
+			} );
+
+			it( 'should add new styles if no html attributes applied', () => {
 				setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 				model.change( writer => {
@@ -1748,6 +1884,234 @@ describe( 'DataFilter', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<p><cite style="background-color:blue;color:red;">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should add new styles if no classes or other attributes are present', () => {
+				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
+
+				model.change( writer => {
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+						'background-color': 'blue',
+						color: 'red'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite style="background-color:blue;color:red;">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should update existing styles if no classes or other attributes are present', () => {
+				editor.setData( '<p><cite style="background-color:blue;">foobar</cite></p>' );
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+						'background-color': 'blue',
+						color: 'red'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite style="background-color:blue;color:red;">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should remove some styles if no classes or other attributes are present', () => {
+				editor.setData( '<p><cite style="background-color:blue;color:red;font-size:10px;">foobar</cite></p>' );
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+						'background-color': 'blue',
+						'font-size': '10px'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							styles: {
+								'background-color': 'blue',
+								'font-size': '10px'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite style="background-color:blue;font-size:10px;">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should remove the attribute element when removing all styles and no other classes or attributes are present', () => {
+				editor.setData( '<p><cite style="background-color:blue;color:red;font-size:10px;">foobar</cite></p>' );
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foobar</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>foobar</p>'
+				);
+			} );
+
+			it( 'should add new styles if there are other classes or attributes', () => {
+				editor.setData(
+					'<p><cite style="background-color:blue;color:red;" class="foo bar" data-foo="bar">foobar</cite></p>'
+				);
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+						'background-color': 'blue',
+						color: 'red',
+						'font-size': '10px'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo', 'bar' ],
+							styles: {
+								'background-color': 'blue',
+								color: 'red',
+								'font-size': '10px'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite class="foo bar" style="background-color:blue;color:red;font-size:10px;" data-foo="bar">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should remove some styles if there are other classes or attributes', () => {
+				editor.setData(
+					'<p><cite style="background-color:blue;color:red;font-size:10px;" class="foo bar" data-foo="bar">foobar</cite></p>'
+				);
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+						'background-color': 'blue',
+						'font-size': '10px'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo', 'bar' ],
+							styles: {
+								'background-color': 'blue',
+								'font-size': '10px'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite class="foo bar" style="background-color:blue;font-size:10px;" data-foo="bar">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should remove all styles if there are other classes or attributes', () => {
+				editor.setData(
+					'<p><cite style="background-color:blue;color:red;font-size:10px;" class="foo bar" data-foo="bar">foobar</cite></p>'
+				);
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo', 'bar' ]
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite class="foo bar" data-foo="bar">foobar</cite></p>'
 				);
 			} );
 		} );
