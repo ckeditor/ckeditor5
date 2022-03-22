@@ -150,7 +150,7 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * Registers a downcast strategyl
+	 * Registers a downcast strategy.
 	 *
 	 * **Note**: Strategies must be registered in the `Plugin#init()` phase so that it can be applied
 	 * in the `DocumentListEditing#afterInit()`.
