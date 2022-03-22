@@ -336,23 +336,27 @@ export default class Differ {
 	 * @returns {Boolean}
 	 */
 	hasDataChanges() {
+		if ( this._changesInElement.size > 0 ) {
+			return true;
+		}
+
 		for ( const { newMarkerData, oldMarkerData } of this._changedMarkers.values() ) {
 			if ( newMarkerData.affectsData !== oldMarkerData.affectsData ) {
 				return true;
 			}
 
 			if ( newMarkerData.affectsData ) {
-				// Skip markers, which ranges have not changed.
-				if ( newMarkerData.range && oldMarkerData.range && newMarkerData.range.isEqual( oldMarkerData.range ) ) {
-					return false;
-				}
+				const markerAdded = newMarkerData.range && !oldMarkerData.range;
+				const markerRemoved = !newMarkerData.range && oldMarkerData.range;
+				const markerChanged = newMarkerData.range && oldMarkerData.range && !newMarkerData.range.isEqual( oldMarkerData.range );
 
-				return true;
+				if ( markerAdded || markerRemoved || markerChanged ) {
+					return true;
+				}
 			}
 		}
 
-		// If markers do not affect the data, check whether there are some changes in elements.
-		return this._changesInElement.size > 0;
+		return false;
 	}
 
 	/**
