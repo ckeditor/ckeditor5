@@ -227,6 +227,22 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 	const stack = [];
 	const seenIds = new Set();
 
+	if ( !Array.isArray( lines ) ) {
+		lines = lines
+			// Remove the first and last empty lines.
+			.replace( /^[^\n]*\n|\n[^\n]*$/g, '' )
+			// Replace tab characters with spaces.
+			.replace( /^[\t ]+/gm, match => match.split( '' ).reduce( ( pad, char ) => (
+				pad + ( char != '\t' ? char : ' '.repeat( 4 - pad.length % 4 ) )
+			), '' ) );
+
+		// Find the indent of the first line.
+		const basePad = lines.match( /^\s*/ )[ 0 ].length;
+
+		// Convert to array.
+		lines = lines.split( '\n' ).map( line => line.substring( basePad ) );
+	}
+
 	let prevIndent = -1;
 
 	for ( const [ idx, line ] of lines.entries() ) {
@@ -247,24 +263,41 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 			}
 
 			if ( !stack[ listIndent ] || marker ) {
-				let listItemId = String( idx ).padStart( 3, '0' );
+				const props = {
+					listType: marker == '#' ? 'numbered' : 'bulleted',
+					listItemId: String( idx ).padStart( 3, '0' )
+				};
 
-				content = content.replace( /\s*{(?:id:)?([^}]+)}\s*/, ( match, id ) => {
-					listItemId = id;
+				content = content.replace( /\s*{(?:(id|style|start|reversed):)([^}]+)}\s*/g, ( match, key, value ) => {
+					switch ( key ) {
+						case 'id':
+							props.listItemId = value;
+							break;
+						case 'style':
+							props.listStyle = value;
+							break;
+						case 'start':
+							props.listStart = parseInt( value );
+							break;
+						case 'reversed':
+							props.listReversed = value;
+							break;
+					}
 
 					return '';
 				} );
 
-				if ( !ignoreIdConflicts && seenIds.has( listItemId ) ) {
-					throw new Error( 'ID conflict: ' + listItemId );
+				if ( !ignoreIdConflicts && seenIds.has( props.listItemId ) ) {
+					throw new Error( 'ID conflict: ' + props.listItemId );
 				}
 
-				seenIds.add( listItemId );
+				seenIds.add( props.listItemId );
 
-				stack[ listIndent ] = {
-					listItemId,
-					listType: marker == '#' ? 'numbered' : 'bulleted'
-				};
+				if ( stack[ listIndent ] && stack[ listIndent ].listType != props.listType ) {
+					stack[ listIndent ] = Object.assign( {}, props );
+				} else {
+					stack[ listIndent ] = Object.assign( stack[ listIndent ] || {}, props );
+				}
 			}
 
 			items.push( stringifyElement( content, { listIndent, ...stack[ listIndent ] } ) );
@@ -298,7 +331,7 @@ export function stringifyList( fragmentOrElement ) {
 			if ( node.hasAttribute( 'listItemId' ) ) {
 				const marker = node.getAttribute( 'listType' ) == 'numbered' ? '#' : '*';
 				const indentSpaces = ( node.getAttribute( 'listIndent' ) + 1 ) * 2;
-				const isFollowing = !!ListWalker.first( node, { sameIndent: true, sameItemId: true } );
+				const isFollowing = !!ListWalker.first( node, { sameIndent: true, sameListAttributes: 'listItemId' } );
 
 				pad = isFollowing ? ' '.repeat( indentSpaces ) : marker.padStart( indentSpaces - 1 ) + ' ';
 			}
@@ -366,9 +399,12 @@ function stringifyElement( content, listAttributes = {} ) {
 		}
 	}
 
-	listAttributes = Object.entries( listAttributes ).map( ( [ key, value ] ) => ` ${ key }="${ value }"` ).join( '' );
+	listAttributes = Object.entries( listAttributes )
+		.sort( ( [ keyA ], [ keyB ] ) => keyA.localeCompare( keyB ) )
+		.map( ( [ key, value ] ) => ` ${ key }="${ value }"` )
+		.join( '' );
 
 	return `${ selectionBefore }` +
 		`<${ name }${ elementAttributes }${ listAttributes }>${ content }</${ name.replace( /\s.*/, '' ) }>` +
-	`${ selectionAfter }`;
+		`${ selectionAfter }`;
 }

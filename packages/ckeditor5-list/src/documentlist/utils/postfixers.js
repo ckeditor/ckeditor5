@@ -8,7 +8,7 @@
  */
 
 import { iterateSiblingListBlocks } from './listwalker';
-import { getListItemBlocks, ListItemUid } from './model';
+import { getListItemBlocks, isListItemBlock, ListItemUid } from './model';
 
 /**
  * Based on the provided positions looks for the list head and stores it in the provided map.
@@ -21,10 +21,10 @@ import { getListItemBlocks, ListItemUid } from './model';
 export function findAndAddListHeadToMap( position, itemToListHead ) {
 	const previousNode = position.nodeBefore;
 
-	if ( !previousNode || !previousNode.hasAttribute( 'listItemId' ) ) {
+	if ( !isListItemBlock( previousNode ) ) {
 		const item = position.nodeAfter;
 
-		if ( item && item.hasAttribute( 'listItemId' ) ) {
+		if ( isListItemBlock( item ) ) {
 			itemToListHead.set( item, item );
 		}
 	} else {

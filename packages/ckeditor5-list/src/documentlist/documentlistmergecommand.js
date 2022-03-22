@@ -15,7 +15,8 @@ import {
 	isFirstBlockOfListItem,
 	mergeListItemBefore,
 	isSingleListItem,
-	getSelectedBlockObject
+	getSelectedBlockObject,
+	isListItemBlock
 } from './utils/model';
 import ListWalker from './utils/listwalker';
 
@@ -88,7 +89,6 @@ export default class DocumentListMergeCommand extends Command {
 				let sel = selection;
 
 				if ( selection.isCollapsed ) {
-					// TODO what if one of blocks is an object (for example a table or block image)?
 					sel = writer.createSelection( writer.createRange(
 						writer.createPositionAt( firstElement, 'end' ),
 						writer.createPositionAt( lastElement, 0 )
@@ -151,7 +151,7 @@ export default class DocumentListMergeCommand extends Command {
 		if ( selection.isCollapsed || selectedBlockObject ) {
 			const positionParent = selectedBlockObject || selection.getFirstPosition().parent;
 
-			if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+			if ( !isListItemBlock( positionParent ) ) {
 				return false;
 			}
 
@@ -176,7 +176,7 @@ export default class DocumentListMergeCommand extends Command {
 				return false;
 			}
 
-			if ( !lastPosition.parent.hasAttribute( 'listItemId' ) ) {
+			if ( !isListItemBlock( lastPosition.parent ) ) {
 				return false;
 			}
 		}

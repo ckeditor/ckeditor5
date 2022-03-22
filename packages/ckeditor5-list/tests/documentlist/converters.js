@@ -44,7 +44,7 @@ describe( 'DocumentListEditing - converters', () => {
 
 		model.schema.register( 'foo', {
 			allowWhere: '$block',
-			allowAttributes: [ 'listIndent', 'listType' ],
+			allowAttributesOf: '$container',
 			isBlock: true,
 			isObject: true
 		} );
@@ -608,76 +608,10 @@ describe( 'DocumentListEditing - converters', () => {
 						'<ul><li><div>foo</div></li></ul>'
 					);
 				} );
-
-				it( 'model change type converter should not fire if change was already consumed', () => {
-					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, 'attribute:listType' );
-						}, { priority: 'highest' } ) );
-
-					const input = parseModel(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>',
-						model.schema
-					);
-
-					model.change( writer => {
-						writer.remove( writer.createRangeIn( modelRoot ) );
-						writer.insert( input, modelRoot, 0 );
-					} );
-
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-						'<p>foo</p>'
-					);
-
-					expect( editor.getData() ).to.equal(
-						'<p>foo</p>'
-					);
-				} );
-
-				it( 'model change indent converter should not fire if change was already consumed', () => {
-					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, 'attribute:listIndent' );
-						}, { priority: 'highest' } ) );
-
-					const input = parseModel(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>',
-						model.schema
-					);
-
-					model.change( writer => {
-						writer.remove( writer.createRangeIn( modelRoot ) );
-						writer.insert( input, modelRoot, 0 );
-					} );
-
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-						'<p>foo</p>'
-					);
-
-					expect( editor.getData() ).to.equal(
-						'<p>foo</p>'
-					);
-				} );
 			} );
 		} );
 
 		describe( 'consuming', () => {
-			it( 'model change type converter should not fire if change was already consumed', () => {
-				editor.editing.downcastDispatcher.on( 'attribute:listType', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, 'attribute:listType' );
-				}, { priority: 'highest' } );
-
-				setModelData( model, '<paragraph listIndent="0" listItemId="a" listType="bulleted"></paragraph>' );
-
-				model.change( writer => {
-					writer.setAttribute( 'listType', 'numbered', modelRoot.getChild( 0 ) );
-				} );
-
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-					'<ul><li><span class="ck-list-bogus-paragraph"></span></li></ul>'
-				);
-			} );
-
 			it( 'model change indent converter should not fire if change was already consumed', () => {
 				editor.editing.downcastDispatcher.on( 'attribute:listIndent', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.item, 'attribute:listIndent' );

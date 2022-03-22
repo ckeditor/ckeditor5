@@ -4,22 +4,25 @@
  */
 
 /**
- * @module list/listproperties/liststylecommand
+ * @module list/documentlistproperties/documentliststylecommand
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { getListTypeFromListStyleType, getSelectedListItems } from '../list/utils';
+import { first } from 'ckeditor5/src/utils';
+import {
+	expandListBlocksToCompleteList,
+	isListItemBlock
+} from '../documentlist/utils/model';
+import { getListTypeFromListStyleType } from './utils/style';
 
 /**
- * The list style command. It changes the `listStyle` attribute of the selected list items.
- *
- * If the list type (numbered or bulleted) can be inferred from the passed style type,
- * the command tries to convert selected items to a list of that type.
- * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
+ * The list style command. It changes `listStyle` attribute of the selected list items,
+ * letting the user choose styles for the list item markers.
+ * It is used by the {@link module:list/documentlistproperties~DocumentListProperties list properties feature}.
  *
  * @extends module:core/command~Command
  */
-export default class ListStyleCommand extends Command {
+export default class DocumentListStyleCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
@@ -56,18 +59,25 @@ export default class ListStyleCommand extends Command {
 	 * style will be applied.
 	 */
 	execute( options = {} ) {
-		this._tryToConvertItemsToList( options );
-
 		const model = this.editor.model;
-		const listItems = getSelectedListItems( model );
-
-		if ( !listItems.length ) {
-			return;
-		}
+		const document = model.document;
 
 		model.change( writer => {
-			for ( const item of listItems ) {
-				writer.setAttribute( 'listStyle', options.type || this._defaultType, item );
+			this._tryToConvertItemsToList( options );
+
+			let blocks = Array.from( document.selection.getSelectedBlocks() )
+				.filter( block => block.hasAttribute( 'listType' ) );
+
+			if ( !blocks.length ) {
+				return;
+			}
+
+			const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
+
+			blocks = expandListBlocksToCompleteList( blocks, documentListEditingPlugin.getSameListDefiningAttributes() );
+
+			for ( const block of blocks ) {
+				writer.setAttribute( 'listStyle', options.type || this._defaultType, block );
 			}
 		} );
 	}
@@ -79,9 +89,9 @@ export default class ListStyleCommand extends Command {
 	 * @returns {String|null} The current value.
 	 */
 	_getValue() {
-		const listItem = this.editor.model.document.selection.getFirstPosition().parent;
+		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
-		if ( listItem && listItem.is( 'element', 'listItem' ) ) {
+		if ( isListItemBlock( listItem ) ) {
 			return listItem.getAttribute( 'listStyle' );
 		}
 
@@ -106,9 +116,9 @@ export default class ListStyleCommand extends Command {
 	/**
 	 * Check if the provided list style is valid. Also change the selection to a list if it's not set yet.
 	 *
+	 * @private
 	 * @param {Object} options
 	 * @param {String|null} [options.type] The type of the list style. If `null` is specified, the function does nothing.
-	 * @private
 	*/
 	_tryToConvertItemsToList( options ) {
 		if ( !options.type ) {
