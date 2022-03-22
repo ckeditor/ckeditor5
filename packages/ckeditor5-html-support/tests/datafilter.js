@@ -1623,6 +1623,231 @@ describe( 'DataFilter', () => {
 					'<p><input style="background-color:blue;color:red;font-size:10px;" data-foo="bar"></p>'
 				);
 			} );
+
+			it( 'should add new attributes if no html attributes applied', () => {
+				editor.setData( '<p><input></p>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar',
+						'data-bar': 'baz'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar',
+								'data-bar': 'baz'
+							}
+						},
+						2: ''
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><input data-foo="bar" data-bar="baz"></p>'
+				);
+			} );
+
+			it( 'should add new attributes if no classes or styles are present', () => {
+				editor.setData( '<p><input data-foo="bar"></p>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar',
+						'data-bar': 'baz'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar',
+								'data-bar': 'baz'
+							}
+						},
+						2: ''
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><input data-foo="bar" data-bar="baz"></p>'
+				);
+			} );
+
+			it( 'should update existing attributes if no classes or styles are present', () => {
+				editor.setData( '<p><input data-foo="bar" data-bar="baz"></p>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'baz',
+						'data-bar': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'baz',
+								'data-bar': 'bar'
+							}
+						},
+						2: ''
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><input data-foo="baz" data-bar="bar"></p>'
+				);
+			} );
+
+			it( 'should remove some attributes if no classes or styles are present', () => {
+				editor.setData( '<p><input data-foo="bar" data-bar="baz"></p>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							}
+						},
+						2: ''
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><input data-foo="bar"></p>'
+				);
+			} );
+
+			it( 'should remove the attribute when removing all attributes and no other classes or styles are present', () => {
+				editor.setData( '<p><input data-foo="bar" data-bar="baz"></p>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><htmlInput htmlContent=""></htmlInput></paragraph>',
+					attributes: {
+						1: ''
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><input></p>'
+				);
+			} );
+
+			it( 'should add new attributes if there are other classes or styles', () => {
+				editor.setData(
+					'<p><input style="background-color:blue;color:red;" class="foo bar" data-foo="bar"></p>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar',
+						'data-bar': 'baz'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar',
+								'data-bar': 'baz'
+							},
+							classes: [ 'foo', 'bar' ],
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						},
+						2: ''
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><input class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz"></p>'
+				);
+			} );
+
+			it( 'should remove some attributes if there are already other classes or styles', () => {
+				editor.setData(
+					'<p><input style="background-color:blue;font-size:10px;" class="foo bar" data-foo="bar" data-bar="baz"></p>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo', 'bar' ],
+							styles: {
+								'background-color': 'blue',
+								'font-size': '10px'
+							}
+						},
+						2: ''
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><input class="foo bar" style="background-color:blue;font-size:10px;" data-foo="bar"></p>'
+				);
+			} );
+
+			it( 'should remove all attributes if there are already other classes or styles', () => {
+				editor.setData(
+					'<p><input style="background-color:blue;font-size:10px;" class="foo bar" data-foo="bar"></p>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'foo', 'bar' ],
+							styles: {
+								'background-color': 'blue',
+								'font-size': '10px'
+							}
+						},
+						2: ''
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><input class="foo bar" style="background-color:blue;font-size:10px;"></p>'
+				);
+			} );
 		} );
 
 		describe( 'on block elements', () => {
