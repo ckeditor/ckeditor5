@@ -137,13 +137,13 @@ Finally, when webpack finishes compiling your super build, you can change the `s
 <div id="classic-editor">
 	<h2>Sample</h2>
 
-	<p>This is an instance of the <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor">classic editor build</a>.</p>
+	<p>This is an instance of the <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#classic-editor">classic editor build</a>.</p>
 </div>
 
 <div id="inline-editor">
 	<h2>Sample</h2>
 
-	<p>This is an instance of the <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#inline-editor">inline editor build</a>.</p>
+	<p>This is an instance of the <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#inline-editor">inline editor build</a>.</p>
 </div>
 
 <script src="../build/ckeditor.js"></script>
