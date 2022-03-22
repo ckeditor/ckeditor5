@@ -48,7 +48,7 @@ ClassicEditor
 
 		const model = editor.model;
 		const root = model.document.getRoot();
-		const element = root.getChild( 0 );
+		const element = root.getChild( 0 ).getChild( 0 );
 		const buttonClass = document.getElementById( 'modify-class' );
 		const buttonStyle = document.getElementById( 'modify-style' );
 		const buttonRemove = document.getElementById( 'remove-all' );
@@ -65,8 +65,9 @@ ClassicEditor
 
 		buttonRemove.addEventListener( 'click', () => {
 			model.change( writer => {
-				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'styles', null );
 				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'styles', null );
 			} );
 		} );
 
