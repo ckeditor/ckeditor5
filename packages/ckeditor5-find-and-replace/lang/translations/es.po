@@ -22,7 +22,7 @@ msgstr "Buscar y reemplazar"
 
 msgctxt "The label for the searched text in the find and replace dropdown."
 msgid "Find in text…"
-msgstr ""
+msgstr "Buscar en el texto..."
 
 msgctxt "The label for the find action button in the find and replace dropdown."
 msgid "Find"
@@ -46,23 +46,23 @@ msgstr "Reemplazar todo"
 
 msgctxt "The label for the match case checkbox in the find and replace dropdown."
 msgid "Match case"
-msgstr ""
+msgstr "Respetar mayúsculas y minúsculas"
 
 msgctxt "The label for the whole words only checkbox in the find and replace dropdown."
 msgid "Whole words only"
-msgstr ""
+msgstr "Solo palabras completas"
 
 msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"
-msgstr ""
+msgstr "Reemplazar con..."
 
 msgctxt "An error text displayed when user attempted to find an empty text."
 msgid "Text to find must not be empty."
-msgstr ""
+msgstr "El texto a buscar no debe estar vacío."
 
 msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
 msgid "Tip: Find some text first in order to replace it."
-msgstr ""
+msgstr "Consejo: Primero busque algún texto para reemplazar."
 
 msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
 msgid "Show options"
