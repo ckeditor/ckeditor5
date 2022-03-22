@@ -84,13 +84,13 @@ function setNewAttributes( writer, attributes, element ) {
 * Helper function to update only one attribute from all html attributes on a model element.
 *
 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
-* @param {module:engine/model/element~Element|module:engine/model/text~Text} element Element or text node.
+* @param {module:engine/model/element~Element|module:engine/model/text~Text} node Element or text node.
 * @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
 * @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
 * @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
 */
-export function setModelHtmlAttribute( writer, element, attributeName, attributeKey, attributeValue ) {
-	const attributes = element.getAttribute( attributeName );
+export function setModelHtmlAttribute( writer, node, attributeName, attributeKey, attributeValue ) {
+	const attributes = node.getAttribute( attributeName );
 
 	// Do nothing if trying to remove attribute if no attributes present.
 	if ( !attributeValue && !attributes ) {
@@ -103,7 +103,7 @@ export function setModelHtmlAttribute( writer, element, attributeName, attribute
 		// If someone wants to remove attribute by setting its value to null, empty string, empty object or empty array
 		// and this attribute is the only one present in attributes object, we should remove the whole attribute.
 		if ( attributeKeys && attributeKeys.length === 1 && attributeKeys[ 0 ] === attributeKey ) {
-			writer.removeAttribute( attributeName, element );
+			writer.removeAttribute( attributeName, node );
 			return;
 		}
 	}
@@ -127,7 +127,7 @@ export function setModelHtmlAttribute( writer, element, attributeName, attribute
 		newAttributes[ attributeKey ] = attributeValue;
 	}
 
-	writer.setAttribute( attributeName, newAttributes, element );
+	writer.setAttribute( attributeName, newAttributes, node );
 }
 
 /**

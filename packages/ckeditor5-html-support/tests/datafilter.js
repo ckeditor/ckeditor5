@@ -1860,7 +1860,7 @@ describe( 'DataFilter', () => {
 				dataFilter.allowAttributes( { name: 'cite', attributes: true } );
 			} );
 
-			it( 'should add new styles if no html attributes applied', () => {
+			it( 'should add new styles if no attribute element is present', () => {
 				setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 				model.change( writer => {
@@ -2112,6 +2112,233 @@ describe( 'DataFilter', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<p><cite class="foo bar" data-foo="bar">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should add new classes if no attribute element is present', () => {
+				setModelData( model, '<paragraph>[foobar]</paragraph>' );
+
+				model.change( writer => {
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'foo', 'bar' ]
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite class="foo bar">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should add new classes if no styles or other attributes are present', () => {
+				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
+
+				model.change( writer => {
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'foo', 'bar' ]
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite class="foo bar">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should update existing classes if no styles or other attributes are present', () => {
+				editor.setData( '<p><cite class="foo">foobar</cite></p>' );
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'foo', 'bar' ]
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite class="foo bar">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should remove some classes if no styles or other attributes are present', () => {
+				editor.setData( '<p><cite class="foo bar baz">foobar</cite></p>' );
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'baz' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'foo', 'baz' ]
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite class="foo baz">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should remove the attribute element when removing all classes and no other styles or attributes are present', () => {
+				editor.setData( '<p><cite class="foo bar">foobar</cite></p>' );
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foobar</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>foobar</p>'
+				);
+			} );
+
+			it( 'should add new classes if there are other styles or attributes', () => {
+				editor.setData(
+					'<p><cite style="background-color:blue;color:red;" class="foo bar" data-foo="bar">foobar</cite></p>'
+				);
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar', 'baz' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo', 'bar', 'baz' ],
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite class="foo bar baz" style="background-color:blue;color:red;" data-foo="bar">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should remove some classes if there are other styles or attributes', () => {
+				editor.setData(
+					'<p><cite style="background-color:blue;font-size:10px;" class="foo bar" data-foo="bar">foobar</cite></p>'
+				);
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo' ],
+							styles: {
+								'background-color': 'blue',
+								'font-size': '10px'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite class="foo" style="background-color:blue;font-size:10px;" data-foo="bar">foobar</cite></p>'
+				);
+			} );
+
+			it( 'should remove all classes if there are other styles or attributes', () => {
+				editor.setData(
+					'<p><cite style="background-color:blue;color:red;font-size:10px;" class="foo bar" data-foo="bar">foobar</cite></p>'
+				);
+
+				model.change( writer => {
+					const element = root.getChild( 0 ).getChild( 0 );
+					const range = writer.createRangeOn( element );
+					const selection = writer.createSelection( range );
+
+					writer.setSelection( selection );
+
+					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							styles: {
+								'background-color': 'blue',
+								color: 'red',
+								'font-size': '10px'
+							}
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite style="background-color:blue;color:red;font-size:10px;" data-foo="bar">foobar</cite></p>'
 				);
 			} );
 		} );

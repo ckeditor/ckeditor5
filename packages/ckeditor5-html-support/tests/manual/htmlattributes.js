@@ -80,13 +80,13 @@ ClassicEditor
 
 		buttonClassInline.addEventListener( 'click', () => {
 			model.change( writer => {
-				setModelSelectionHtmlAttribute( model, writer, 'htmlSpan', 'classes', [ 'blue', 'big' ] );
+				setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'blue', 'big' ] );
 			} );
 		} );
 
 		buttonStyleInline.addEventListener( 'click', () => {
 			model.change( writer => {
-				setModelSelectionHtmlAttribute( model, writer, 'htmlSpan', 'styles', {
+				setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
 					'background-color': 'red',
 					'font-weight': '100'
 				} );
@@ -95,14 +95,17 @@ ClassicEditor
 
 		buttonRemoveInline.addEventListener( 'click', () => {
 			model.change( writer => {
-				const element = root.getChild( 0 ).getChild( 0 );
-				const range = writer.createRangeOn( element );
-				const selection = writer.createSelection( range );
-
-				writer.setSelection( selection );
-
 				setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
 			} );
+			// model.change( writer => {
+			// 	const element = root.getChild( 0 ).getChild( 0 );
+			// 	const range = writer.createRangeOn( element );
+			// 	const selection = writer.createSelection( range );
+
+			// 	writer.setSelection( selection );
+
+			// 	setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
+			// } );
 		} );
 	} )
 	.catch( err => {
