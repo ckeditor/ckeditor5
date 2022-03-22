@@ -9,6 +9,7 @@ import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 import { setModelHtmlAttribute } from '../../src/conversionutils';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 /* global document */
 
@@ -253,6 +254,12 @@ describe( 'CodeBlockElementSupport', () => {
 					}
 				} );
 
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<pre data-language="Plain text" spellcheck="false" style="background-color:blue;color:red">' +
+						'<code class="language-plaintext">foobar</code>' +
+					'</pre>'
+				);
+
 				expect( editor.getData() ).to.equal(
 					'<pre style="background-color:blue;color:red;"><code class="language-plaintext">foobar</code></pre>'
 				);
@@ -273,6 +280,12 @@ describe( 'CodeBlockElementSupport', () => {
 						}
 					}
 				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<pre class="foo" data-language="Plain text" spellcheck="false">' +
+						'<code class="language-plaintext">foobar</code>' +
+					'</pre>'
+				);
 
 				expect( editor.getData() ).to.equal(
 					'<pre class="foo"><code class="language-plaintext">foobar</code></pre>'
@@ -299,6 +312,12 @@ describe( 'CodeBlockElementSupport', () => {
 					}
 				} );
 
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<pre data-foo="bar" data-language="Plain text" spellcheck="false">' +
+						'<code class="language-plaintext">foobar</code>' +
+					'</pre>'
+				);
+
 				expect( editor.getData() ).to.equal(
 					'<pre data-foo="bar"><code class="language-plaintext">foobar</code></pre>'
 				);
@@ -324,6 +343,12 @@ describe( 'CodeBlockElementSupport', () => {
 					}
 				} );
 
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<pre data-language="Plain text" spellcheck="false" style="background-color:blue">' +
+						'<code class="language-plaintext">foobar</code>' +
+					'</pre>'
+				);
+
 				expect( editor.getData() ).to.equal(
 					'<pre style="background-color:blue;"><code class="language-plaintext">foobar</code></pre>'
 				);
@@ -344,6 +369,12 @@ describe( 'CodeBlockElementSupport', () => {
 						}
 					}
 				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<pre class="foo" data-language="Plain text" spellcheck="false">' +
+						'<code class="language-plaintext">foobar</code>' +
+					'</pre>'
+				);
 
 				expect( editor.getData() ).to.equal(
 					'<pre class="foo"><code class="language-plaintext">foobar</code></pre>'
@@ -369,6 +400,12 @@ describe( 'CodeBlockElementSupport', () => {
 						}
 					}
 				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<pre data-foo="bar" data-language="Plain text" spellcheck="false">' +
+						'<code class="language-plaintext">foobar</code>' +
+					'</pre>'
+				);
 
 				expect( editor.getData() ).to.equal(
 					'<pre data-foo="bar"><code class="language-plaintext">foobar</code></pre>'
@@ -407,6 +444,12 @@ describe( 'CodeBlockElementSupport', () => {
 					}
 				} );
 
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<pre class="foo" data-foo="bar" data-language="Plain text" spellcheck="false" style="background-color:blue">' +
+						'<code class="language-plaintext">foobar</code>' +
+					'</pre>'
+				);
+
 				expect( editor.getData() ).to.equal(
 					'<pre class="foo" style="background-color:blue;" data-foo="bar"><code class="language-plaintext">foobar</code></pre>'
 				);
@@ -429,6 +472,12 @@ describe( 'CodeBlockElementSupport', () => {
 					data: '<codeBlock language="plaintext">foobar</codeBlock>',
 					attributes: {}
 				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<pre data-language="Plain text" spellcheck="false">' +
+						'<code class="language-plaintext">foobar</code>' +
+					'</pre>'
+				);
 
 				expect( editor.getData() ).to.equal(
 					'<pre><code class="language-plaintext">foobar</code></pre>'
