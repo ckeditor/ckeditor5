@@ -168,19 +168,15 @@ export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilt
 export function modelToViewBlockAttributeConverter( { model: modelName } ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
-			const viewAttributes = {
-				oldAttributes: data.attributeOldValue,
-				newAttributes: data.attributeNewValue
-			};
-
 			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 				return;
 			}
 
+			const { attributeOldValue, attributeNewValue } = data;
 			const viewWriter = conversionApi.writer;
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-			setViewAttributes( viewWriter, viewAttributes, viewElement );
+			setViewAttributes( viewWriter, { attributeOldValue, attributeNewValue }, viewElement );
 		} );
 	};
 }

@@ -101,10 +101,11 @@ function modelToViewCodeBlockAttributeConverter() {
 				return;
 			}
 
+			const { attributeOldValue, attributeNewValue } = data;
 			const viewCodeElement = conversionApi.mapper.toViewElement( data.item );
 			const viewPreElement = viewCodeElement.parent;
 
-			setViewAttributes( conversionApi.writer, data.attributeNewValue, viewPreElement );
+			setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewPreElement );
 		} );
 
 		dispatcher.on( 'attribute:htmlContentAttributes:codeBlock', ( evt, data, conversionApi ) => {
@@ -112,9 +113,10 @@ function modelToViewCodeBlockAttributeConverter() {
 				return;
 			}
 
+			const { attributeOldValue, attributeNewValue } = data;
 			const viewCodeElement = conversionApi.mapper.toViewElement( data.item );
 
-			setViewAttributes( conversionApi.writer, data.attributeNewValue, viewCodeElement );
+			setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewCodeElement );
 		} );
 	};
 }

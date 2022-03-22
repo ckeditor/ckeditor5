@@ -12,8 +12,29 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { setModelHtmlAttribute, setModelSelectionHtmlAttribute } from '../../src/conversionutils';
+import { setModelHtmlAttribute } from '../../src/conversionutils';
+
+class ExtendHTMLSupport extends Plugin {
+	static get requires() {
+		return [ GeneralHtmlSupport ];
+	}
+
+	init() {
+		const dataFilter = this.editor.plugins.get( 'DataFilter' );
+
+		dataFilter.allowElement( /^(pre|code)$/ );
+		dataFilter.allowAttributes( { name: /^(pre|code)$/, styles: { color: /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: /^(pre|code)$/, styles: { background: /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
+
+		dataFilter.disallowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': 'bar' } } );
+		dataFilter.disallowAttributes( { name: /^(pre|code)$/, styles: { background: 'yellow' } } );
+	}
+}
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -24,9 +45,11 @@ ClassicEditor
 			Paragraph,
 			Strikethrough,
 			Underline,
-			GeneralHtmlSupport
+			CodeBlock,
+			ExtendHTMLSupport
 		],
 		toolbar: [
+			'codeBlock', '|',
 			'bold',
 			'italic',
 			'underline',
@@ -48,18 +71,36 @@ ClassicEditor
 
 		const model = editor.model;
 		const root = model.document.getRoot();
-		const element = root.getChild( 0 ).getChild( 0 );
+		const element = root.getChild( 0 );
 		const buttonClass = document.getElementById( 'modify-class' );
 		const buttonStyle = document.getElementById( 'modify-style' );
+		const buttonAttributes = document.getElementById( 'modify-attributes' );
 		const buttonRemove = document.getElementById( 'remove-all' );
 
-		const buttonClassInline = document.getElementById( 'modify-class-inline' );
-		const buttonStyleInline = document.getElementById( 'modify-style-inline' );
-		const buttonRemoveInline = document.getElementById( 'remove-all-inline' );
+		const buttonContentClass = document.getElementById( 'modify-content-class' );
+		const buttonContentStyle = document.getElementById( 'modify-content-style' );
+		const buttonContentAttributes = document.getElementById( 'modify-content-attributes' );
+		const buttonContentRemove = document.getElementById( 'remove-content-all' );
 
 		buttonClass.addEventListener( 'click', () => {
 			model.change( writer => {
 				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'classes', [ 'blue', 'big' ] );
+			} );
+		} );
+
+		buttonStyle.addEventListener( 'click', () => {
+			model.change( writer => {
+				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'styles', {
+					'color': 'red'
+				} );
+			} );
+		} );
+
+		buttonAttributes.addEventListener( 'click', () => {
+			model.change( writer => {
+				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'attributes', {
+					'data-foo': 'bar baz'
+				} );
 			} );
 		} );
 
@@ -71,42 +112,34 @@ ClassicEditor
 			} );
 		} );
 
-		buttonStyle.addEventListener( 'click', () => {
+		buttonContentClass.addEventListener( 'click', () => {
 			model.change( writer => {
-				setModelHtmlAttribute( writer, element, 'htmlAttributes', 'attributes', {
+				setModelHtmlAttribute( writer, element, 'htmlContentAttributes', 'classes', [ 'blue', 'big' ] );
+			} );
+		} );
+
+		buttonContentStyle.addEventListener( 'click', () => {
+			model.change( writer => {
+				setModelHtmlAttribute( writer, element, 'htmlContentAttributes', 'styles', {
+					'color': 'red'
+				} );
+			} );
+		} );
+
+		buttonContentAttributes.addEventListener( 'click', () => {
+			model.change( writer => {
+				setModelHtmlAttribute( writer, element, 'htmlContentAttributes', 'attributes', {
 					'data-foo': 'bar baz'
 				} );
 			} );
 		} );
 
-		buttonClassInline.addEventListener( 'click', () => {
+		buttonContentRemove.addEventListener( 'click', () => {
 			model.change( writer => {
-				setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'blue', 'big' ] );
+				setModelHtmlAttribute( writer, element, 'htmlContentAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, element, 'htmlContentAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, element, 'htmlContentAttributes', 'styles', null );
 			} );
-		} );
-
-		buttonStyleInline.addEventListener( 'click', () => {
-			model.change( writer => {
-				setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
-					'background-color': 'red',
-					'font-weight': '100'
-				} );
-			} );
-		} );
-
-		buttonRemoveInline.addEventListener( 'click', () => {
-			model.change( writer => {
-				setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
-			} );
-			// model.change( writer => {
-			// 	const element = root.getChild( 0 ).getChild( 0 );
-			// 	const range = writer.createRangeOn( element );
-			// 	const selection = writer.createSelection( range );
-
-			// 	writer.setSelection( selection );
-
-			// 	setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
-			// } );
 		} );
 	} )
 	.catch( err => {

@@ -17,20 +17,20 @@ import { cloneDeep, isPlainObject, isArray } from 'lodash-es';
 * @param {module:engine/view/element~Element} viewElement
 */
 export function setViewAttributes( writer, viewAttributes, viewElement ) {
-	const { newAttributes, oldAttributes } = viewAttributes;
+	const { attributeNewValue, attributeOldValue } = viewAttributes;
 
 	// only new attributes have been passed so just set them.
-	if ( isPlainObject( viewAttributes ) && !newAttributes && !oldAttributes ) {
+	if ( isPlainObject( viewAttributes ) && !attributeNewValue && !attributeOldValue ) {
 		setNewAttributes( writer, viewAttributes, viewElement );
 		return;
 	}
 
-	if ( oldAttributes ) {
-		removeOldAttributes( writer, oldAttributes, viewElement );
+	if ( attributeOldValue ) {
+		removeOldAttributes( writer, attributeOldValue, viewElement );
 	}
 
-	if ( newAttributes ) {
-		setNewAttributes( writer, newAttributes, viewElement );
+	if ( attributeNewValue ) {
+		setNewAttributes( writer, attributeNewValue, viewElement );
 	}
 }
 
