@@ -472,6 +472,8 @@ describe( 'Editor', () => {
 			expect( editor.hasReadOnlyLock( 'lock-2' ) ).to.be.true;
 		} );
 
+		// The `change:isReadOnly` event is fired manually and this test ensures
+		// the behavior is the same as when the `isReadOnly` would be a normal observable prop.
 		it( 'should be observable', () => {
 			const editor = new TestEditor();
 			const spy = sinon.spy();
@@ -482,9 +484,43 @@ describe( 'Editor', () => {
 
 			sinon.assert.calledOnce( spy );
 
+			expect( spy.firstCall.args.slice( 1 ) ).to.deep.equal( [
+				'isReadOnly',
+				true,
+				false
+			] );
+
 			editor.clearReadOnlyLock( 'unit-test' );
 
 			sinon.assert.calledTwice( spy );
+
+			expect( spy.secondCall.args.slice( 1 ) ).to.deep.equal( [
+				'isReadOnly',
+				false,
+				true
+			] );
+		} );
+
+		// The `change:isReadOnly` event is fired manually and this test ensures
+		// the behavior is the same as when the `isReadOnly` would be a normal observable prop.
+		it( 'should be bindable', async () => {
+			class CustomPlugin extends Plugin {}
+
+			const editor = await TestEditor.create( {
+				plugins: [ CustomPlugin ]
+			} );
+
+			const customPlugin = editor.plugins.get( CustomPlugin );
+
+			customPlugin.bind( 'isEditorReadOnly' ).to( editor, 'isReadOnly' );
+
+			editor.setReadOnlyLock( 'unit-test' );
+
+			expect( customPlugin.isEditorReadOnly ).to.equal( true );
+
+			editor.clearReadOnlyLock( 'unit-test' );
+
+			expect( customPlugin.isEditorReadOnly ).to.equal( false );
 		} );
 
 		it( 'setting read-only lock to a value can be achieved by passing the additional argument', () => {

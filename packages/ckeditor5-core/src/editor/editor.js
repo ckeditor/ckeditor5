@@ -109,6 +109,14 @@ export default class Editor {
 		this.t = this.locale.t;
 
 		/**
+		 * A set of lock IDs for the {@link #isReadOnly} getter.
+		 *
+		 * @private
+		 * @type {Set.<String>}
+		 */
+		this._readOnlyLocks = new Set();
+
+		/**
 		 * Commands registered to the editor.
 		 *
 		 * Use the shorthand {@link #execute `editor.execute()`} method to execute commands:
@@ -141,29 +149,6 @@ export default class Editor {
 		this.set( 'state', 'initializing' );
 		this.once( 'ready', () => ( this.state = 'ready' ), { priority: 'high' } );
 		this.once( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
-
-		/**
-		 * Defines whether this editor is in read-only mode.
-		 *
-		 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
-		 * to modify the document by using them. Also, the editable element(s) become non-editable.
-		 *
-		 * In order to make the editor read-only, you need to call the {@link #setReadOnlyLock} method:
-		 *
-		 *		editor.setReadOnlyLock( 'feature-lock-id' );
-		 *
-		 * Later, to clear the lock, call {@link #clearReadOnlyLock}:
-		 *
-		 * 		editor.clearReadOnlyLock( 'feature-lock-id' );
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isReadOnly
-		 */
-		this.set( 'isReadOnly', false );
-
-		// Stop the event to not allow changing the property by hand.
-		this.on( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
 
 		/**
 		 * The editor's model.
@@ -235,14 +220,36 @@ export default class Editor {
 		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view.document );
+	}
 
-		/**
-		 * Set of read-only lock IDs.
-		 *
-		 * @private
-		 * @type {Set.<String>}
-		 */
-		this._readOnlyStack = new Set();
+	/**
+	 * Defines whether this editor is in read-only mode.
+	 *
+	 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
+	 * to modify the document by using them. Also, the editable element(s) become non-editable.
+	 *
+	 * In order to make the editor read-only, you need to call the {@link #setReadOnlyLock} method:
+	 *
+	 *		editor.setReadOnlyLock( 'feature-lock-id' );
+	 *
+	 * Later, to clear the lock, call {@link #clearReadOnlyLock}:
+	 *
+	 * 		editor.clearReadOnlyLock( 'feature-lock-id' );
+	 *
+	 * @readonly
+	 * @observable
+	 * @member {Boolean} #isReadOnly
+	 */
+	get isReadOnly() {
+		return this._readOnlyLocks.size > 0;
+	}
+
+	set isReadOnly( value ) {
+		// eslint-disable-next-line no-undef
+		console.warn(
+			'Editor#isReadOnly should be now changed using lock mechanism: ' +
+			'`Editor#setReadOnlyLock( lockId )` and `Editor#clearReadOnlyLock( lockId )`.'
+		);
 	}
 
 	/**
@@ -251,7 +258,7 @@ export default class Editor {
 	 * @param {String} lockId The lock ID for setting the editor to the read-only state.
 	 */
 	hasReadOnlyLock( lockId ) {
-		return this._readOnlyStack.has( lockId );
+		return this._readOnlyLocks.has( lockId );
 	}
 
 	/**
@@ -295,16 +302,15 @@ export default class Editor {
 			return;
 		}
 
-		if ( this._readOnlyStack.has( lockId ) ) {
+		if ( this._readOnlyLocks.has( lockId ) ) {
 			return;
 		}
 
-		this._readOnlyStack.add( lockId );
+		this._readOnlyLocks.add( lockId );
 
-		if ( this._readOnlyStack.size === 1 ) {
-			this.off( 'set:isReadOnly', stopReadOnlyChangeEvent );
-			this.isReadOnly = true;
-			this.on( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
+		if ( this._readOnlyLocks.size === 1 ) {
+			// Manually fire the `change:isReadOnly` event as only getter is provided.
+			this.fire( 'change:isReadOnly', 'isReadOnly', true, false );
 		}
 	}
 
@@ -320,16 +326,15 @@ export default class Editor {
 			throw new CKEditorError( 'editor-read-only-lock-id-not-a-string', null, { lockId } );
 		}
 
-		if ( !this._readOnlyStack.has( lockId ) ) {
+		if ( !this._readOnlyLocks.has( lockId ) ) {
 			return;
 		}
 
-		this._readOnlyStack.delete( lockId );
+		this._readOnlyLocks.delete( lockId );
 
-		if ( this._readOnlyStack.size == 0 ) {
-			this.off( 'set:isReadOnly', stopReadOnlyChangeEvent );
-			this.isReadOnly = false;
-			this.on( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
+		if ( this._readOnlyLocks.size == 0 ) {
+			// Manually fire the `change:isReadOnly` event as only getter is provided.
+			this.fire( 'change:isReadOnly', 'isReadOnly', false, true );
 		}
 	}
 
@@ -554,14 +559,3 @@ mix( Editor, ObservableMixin );
  * @static
  * @member {Object} module:core/editor/editor~Editor.defaultConfig
  */
-
-function stopReadOnlyChangeEvent( evt, name, value, oldValue ) {
-	// eslint-disable-next-line no-undef
-	console.warn(
-		'Editor#isReadOnly should be now changed using lock mechanism: ' +
-		'`Editor#setReadOnlyLock( lockId )` and `Editor#clearReadOnlyLock( lockId )`.'
-	);
-
-	evt.return = oldValue;
-	evt.stop();
-}
