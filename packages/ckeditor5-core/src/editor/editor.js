@@ -255,14 +255,17 @@ export default class Editor {
 	}
 
 	/**
-	 * Sets the read-only lock on the editor with given lock ID.
+	 * Turns on the read-only mode in the editor.
 	 *
-	 * When at least one feature sets the read-only lock, then the {@link #isReadOnly `isReadOnly` property} will be set to `true`.
+	 * The editor supports locking mechanism for the read-only mode. It means that multiple features can request to turn on
+	 * the read-only mode. To disable the read-only mode, all those features need to turn it off ("clear their locks").
+	 *
+	 * When at least one feature sets the read-only mode, then the {@link #isReadOnly `isReadOnly` property} will be set to `true`.
 	 * Otherwise it is set to `false`.
 	 *
 	 * 		editor.setReadOnlyLock( 'my-feature-lock-id' );
 	 *
-	 * You can remove the lock using the {@link #clearReadOnlyLock} method afterwards.
+	 * You can turn off the read-only mode ("clear the lock") using the {@link #clearReadOnlyLock} method.
 	 *
 	 * 		editor.clearReadOnlyLock( 'my-feature-lock-id' );
 	 *
