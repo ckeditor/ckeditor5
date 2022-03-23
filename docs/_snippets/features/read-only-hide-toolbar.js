@@ -22,13 +22,13 @@ ClassicEditor
 		const button = document.querySelector( '#snippet-read-only-toggle-toolbar' );
 
 		button.addEventListener( 'click', () => {
-			if ( editor.isReadOnly ) {
+			if ( editor.hasReadOnlyLock( 'readonly-mode' ) ) {
 				editor.clearReadOnlyLock( 'readonly-mode' );
+				button.innerText = 'Switch to read-only mode';
 			} else {
 				editor.setReadOnlyLock( 'readonly-mode' );
+				button.innerText = 'Switch to editable mode';
 			}
-
-			button.innerText = editor.isReadOnly ? 'Switch to editable mode' : 'Switch to read-only mode';
 		} );
 
 		const toolbarElement = editor.ui.view.toolbar.element;
