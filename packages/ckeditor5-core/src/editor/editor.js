@@ -302,7 +302,7 @@ export default class Editor {
 		this._readOnlyStack.add( lockId );
 
 		if ( this._readOnlyStack.size === 1 ) {
-			this.off( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
+			this.off( 'set:isReadOnly', stopReadOnlyChangeEvent );
 			this.isReadOnly = true;
 			this.on( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
 		}
@@ -327,7 +327,7 @@ export default class Editor {
 		this._readOnlyStack.delete( lockId );
 
 		if ( this._readOnlyStack.size == 0 ) {
-			this.off( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
+			this.off( 'set:isReadOnly', stopReadOnlyChangeEvent );
 			this.isReadOnly = false;
 			this.on( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
 		}
