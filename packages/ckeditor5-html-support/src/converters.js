@@ -89,12 +89,14 @@ export function createObjectView( viewName, modelElement, writer ) {
 export function viewToAttributeInlineConverter( { view: viewName, model: attributeKey }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			const viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
+			let viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
 
 			// Do not apply an attribute if the element itself is already consumed and there is no view attributes to store.
 			if ( !viewAttributes && !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
 				return;
 			}
+
+			viewAttributes = viewAttributes || {};
 
 			// This was not yet consumed, so it's GHS responsibility to remove it when needed.
 			if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
@@ -113,7 +115,7 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 					// Node's children are converted recursively, so node can already include model attribute.
 					// We want to extend it, not replace.
 					const nodeAttributes = node.getAttribute( attributeKey );
-					const attributesToAdd = mergeViewElementAttributes( viewAttributes || {}, nodeAttributes || {} );
+					const attributesToAdd = mergeViewElementAttributes( viewAttributes, nodeAttributes || {} );
 
 					conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
 				}

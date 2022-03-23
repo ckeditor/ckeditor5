@@ -586,6 +586,7 @@ export default {
 			model: 'htmlA',
 			view: 'a',
 			priority: 5,
+			coupledAttribute: 'linkHref',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -593,6 +594,7 @@ export default {
 		{
 			model: 'htmlStrong',
 			view: 'strong',
+			coupledAttribute: 'bold',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -600,6 +602,7 @@ export default {
 		{
 			model: 'htmlB',
 			view: 'b',
+			coupledAttribute: 'bold',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -607,6 +610,7 @@ export default {
 		{
 			model: 'htmlI',
 			view: 'i',
+			coupledAttribute: 'italic',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -614,6 +618,7 @@ export default {
 		{
 			model: 'htmlEm',
 			view: 'em',
+			coupledAttribute: 'italic',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -621,6 +626,7 @@ export default {
 		{
 			model: 'htmlS',
 			view: 's',
+			coupledAttribute: 'strikethrough',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -629,6 +635,7 @@ export default {
 		{
 			model: 'htmlDel',
 			view: 'del',
+			coupledAttribute: 'strikethrough',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -644,6 +651,7 @@ export default {
 		{
 			model: 'htmlU',
 			view: 'u',
+			coupledAttribute: 'underline',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -651,6 +659,7 @@ export default {
 		{
 			model: 'htmlSub',
 			view: 'sub',
+			coupledAttribute: 'subscript',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -658,6 +667,7 @@ export default {
 		{
 			model: 'htmlSup',
 			view: 'sup',
+			coupledAttribute: 'superscript',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -665,6 +675,7 @@ export default {
 		{
 			model: 'htmlCode',
 			view: 'code',
+			coupledAttribute: 'code',
 			attributeProperties: {
 				copyOnEnter: true
 			}
