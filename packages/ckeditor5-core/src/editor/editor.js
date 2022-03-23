@@ -152,7 +152,7 @@ export default class Editor {
 		 *
 		 *		editor.setReadOnlyLock( 'feature-lock-id' );
 		 *
-		 * To clear the lock, call later the {@link #clearReadOnlyLock} method:
+		 * Later, to clear the lock, call {@link #clearReadOnlyLock}:
 		 *
 		 * 		editor.clearReadOnlyLock( 'feature-lock-id' );
 		 *
@@ -246,7 +246,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Returns `true` if some feature with the given lock ID ensures the editor being in the read-only state.
+	 * Returns `true` if read only mode was set with the given lock ID.
 	 *
 	 * @param {String} lockId The lock ID for setting the editor to the read-only state.
 	 */
@@ -267,9 +267,11 @@ export default class Editor {
 	 * 		editor.clearReadOnlyLock( 'my-feature-lock-id' );
 	 *
 	 * It is possible to pass the additional argument - `value` to determine if the lock should be set or removed.
+	 * Passing `false` works the same way as calling `clearReadOnlyLock()`.
 	 *
-	 * 		let shouldMyFeatureSetReadOnlyMode = false;
-	 * 		editor.setReadOnlyLock( 'my-feature-lock-id', shouldMyFeatureSetReadOnlyMode );
+	 * 		myFeature.on( 'change:isConnected', () => {
+	 * 			editor.setReadOnlyLock( 'my-feature-lock-id', myFeature.isConnected );
+	 * 		} );
 	 *
 	 * @param {String} lockId The lock ID for setting the editor to the read-only state.
 	 * @param {Boolean} [value=true] An optional value indicating whether the lock should be set or removed.
