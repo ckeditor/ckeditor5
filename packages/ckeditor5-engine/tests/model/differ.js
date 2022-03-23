@@ -1550,6 +1550,26 @@ describe( 'Differ', () => {
 			] );
 		} );
 
+		it( 'add marker not affecting data', () => {
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: false }, { range, affectsData: false } );
+
+			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+
+			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+				{ name: 'name', range }
+			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: null,
+						newRange: range
+					}
+				}
+			] );
+		} );
+
 		it( 'remove marker', () => {
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
 
@@ -1592,18 +1612,6 @@ describe( 'Differ', () => {
 			] );
 		} );
 
-		it( 'add marker not affecting data', () => {
-			differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range: rangeB, affectsData: false } );
-
-			expect( differ.hasDataChanges() ).to.be.false;
-		} );
-
-		it( 'add marker affecting data', () => {
-			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
-
-			expect( differ.hasDataChanges() ).to.be.true;
-		} );
-
 		it( 'add marker and remove it', () => {
 			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
@@ -1611,11 +1619,9 @@ describe( 'Differ', () => {
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
 			expect( differ.getChangedMarkers() ).to.deep.equal( [] );
-
-			expect( differ.hasDataChanges() ).to.be.false;
 		} );
 
-		it( 'add marker and change it', () => {
+		it( 'add marker and change range', () => {
 			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 
@@ -1636,45 +1642,72 @@ describe( 'Differ', () => {
 			] );
 		} );
 
+		it( 'add marker and change affectsData', () => {
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: false }, { range, affectsData: false } );
+			differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range, affectsData: true } );
+
+			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+
+			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+				{ name: 'name', range }
+			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: null,
+						newRange: range
+					}
+				}
+			] );
+		} );
+
 		describe( 'hasDataChanges()', () => {
-			it( 'should return `true` when marker stops affecting data', () => {
+			it( 'should return `true` when the range changes and the marker affects data', () => {
 				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
-				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range, affectsData: false } );
 
-				// As marker is longer outputted to the data, the data may be changed.
 				expect( differ.hasDataChanges() ).to.be.true;
-			} );
-
-			it( 'should return `true` when marker starts affecting data', () => {
-				differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range: rangeB, affectsData: false } );
-				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: false }, { range, affectsData: true } );
-
-				// As marker is longer outputted to the data, the data may be changed.
-				expect( differ.hasDataChanges() ).to.be.true;
-			} );
-
-			it( 'should return `false` when continuous marker changes do not change affecting data and was initially set to false', () => {
-				differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range: rangeB, affectsData: false } );
-				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: false }, { range, affectsData: true } );
-				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: false } );
-
-				// As marker is longer outputted to the data, the data may be changed.
-				expect( differ.hasDataChanges() ).to.be.false;
 			} );
 
 			it( 'should return `false` when the range does not change', () => {
 				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: true } );
 
-				// As marker is longer outputted to the data, the data may be changed.
 				expect( differ.hasDataChanges() ).to.be.false;
 			} );
 
-			it( 'should return `false` when the continuous changes result in not changed range', () => {
+			it( 'should return `false` when multiple changes result in not changed range', () => {
 				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range, affectsData: true } );
 
-				// As marker is longer outputted to the data, the data may be changed.
 				expect( differ.hasDataChanges() ).to.be.false;
+			} );
+
+			it( 'should return `true` when marker stops affecting data', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: false } );
+
+				expect( differ.hasDataChanges() ).to.be.true;
+			} );
+
+			it( 'should return `true` when marker starts affecting data', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range, affectsData: true } );
+
+				expect( differ.hasDataChanges() ).to.be.true;
+			} );
+
+			it( 'should return `false` when multiple marker changes do not change affecting data (which is false)', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range: rangeB, affectsData: true } );
+				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range: rangeB, affectsData: false } );
+
+				expect( differ.hasDataChanges() ).to.be.false;
+			} );
+
+			it( 'should return `true` if at least one marker changed', () => {
+				differ.bufferMarkerChange( 'nameA', { range, affectsData: true }, { range, affectsData: true } );
+				differ.bufferMarkerChange( 'nameB', { range, affectsData: true }, { range: rangeB, affectsData: true } );
+				differ.bufferMarkerChange( 'nameC', { range, affectsData: true }, { range, affectsData: true } );
+
+				expect( differ.hasDataChanges() ).to.be.true;
 			} );
 		} );
 
