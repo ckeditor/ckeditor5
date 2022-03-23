@@ -21,12 +21,7 @@ CKEditor 5 is currently supported in the following desktop browsers:
 	* Opera (latest stable release).
 	* Electron (latest stable release).
 	* Edge (latest stable release). Known issues:
-		* Minor issue with selection: [1](https://github.com/ckeditor/ckeditor5-engine/issues/974).
-
-Not supported yet:
-
-* Internet Explorer 11. See the [Compatibility with IE11](https://github.com/ckeditor/ckeditor5/issues/330) ticket.
-
+		* Minor issue with selection: [#974](https://github.com/ckeditor/ckeditor5-engine/issues/974).
 ## Mobile environment
 
 CKEditor 5 is currently supported in the following mobile environments:
