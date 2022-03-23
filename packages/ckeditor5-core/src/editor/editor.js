@@ -112,7 +112,7 @@ export default class Editor {
 		 * A set of lock IDs for the {@link #isReadOnly} getter.
 		 *
 		 * @private
-		 * @type {Set.<String>}
+		 * @type {Set.<String|Symbol>}
 		 */
 		this._readOnlyLocks = new Set();
 
@@ -255,7 +255,7 @@ export default class Editor {
 	/**
 	 * Returns `true` if read only mode was set with the given lock ID.
 	 *
-	 * @param {String} lockId The lock ID for setting the editor to the read-only state.
+	 * @param {String|Symbol} lockId The lock ID for setting the editor to the read-only state.
 	 */
 	hasReadOnlyLock( lockId ) {
 		return this._readOnlyLocks.has( lockId );
@@ -283,17 +283,17 @@ export default class Editor {
 	 * 			editor.setReadOnlyLock( 'my-feature-lock-id', myFeature.isConnected );
 	 * 		} );
 	 *
-	 * @param {String} lockId The lock ID for setting the editor to the read-only state.
+	 * @param {String|Symbol} lockId The lock ID for setting the editor to the read-only state.
 	 * @param {Boolean} [value=true] An optional value indicating whether the lock should be set or removed.
 	 */
 	setReadOnlyLock( lockId, value = true ) {
-		if ( typeof lockId !== 'string' ) {
+		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
 			/**
-			 * The lock ID is missing or it is not a string.
+			 * The lock ID is missing or it is not a string or symbol.
 			 *
-			 * @error editor-read-only-lock-id-not-a-string
+			 * @error editor-read-only-lock-id-invalid
 			 */
-			throw new CKEditorError( 'editor-read-only-lock-id-not-a-string', null, { lockId } );
+			throw new CKEditorError( 'editor-read-only-lock-id-invalid', null, { lockId } );
 		}
 
 		if ( value === false ) {
@@ -319,11 +319,11 @@ export default class Editor {
 	 *
 	 * When no lock is present on the editor anymore, then the {@link #isReadOnly `isReadOnly` property} will be set to `false`.
 	 *
-	 * @param {String} lockId The lock ID for setting the editor to the read-only state.
+	 * @param {String|Symbol} lockId The lock ID for setting the editor to the read-only state.
 	 */
 	clearReadOnlyLock( lockId ) {
-		if ( typeof lockId !== 'string' ) {
-			throw new CKEditorError( 'editor-read-only-lock-id-not-a-string', null, { lockId } );
+		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
+			throw new CKEditorError( 'editor-read-only-lock-id-invalid', null, { lockId } );
 		}
 
 		if ( !this._readOnlyLocks.has( lockId ) ) {

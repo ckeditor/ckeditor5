@@ -457,6 +457,24 @@ describe( 'Editor', () => {
 			expect( editor.isReadOnly ).to.be.false;
 		} );
 
+		it( 'should allow using symbols as lock IDs', () => {
+			const editor = new TestEditor();
+
+			const s1 = Symbol( 'lock' );
+			const s2 = Symbol( 'lock' );
+
+			editor.setReadOnlyLock( s1 );
+			editor.setReadOnlyLock( s2 );
+
+			editor.clearReadOnlyLock( s1 );
+
+			expect( editor.isReadOnly ).to.be.true;
+
+			editor.clearReadOnlyLock( s2 );
+
+			expect( editor.isReadOnly ).to.be.false;
+		} );
+
 		it( 'should be possible to check the presence of given lock', () => {
 			const editor = new TestEditor();
 
@@ -578,11 +596,11 @@ describe( 'Editor', () => {
 
 			expectToThrowCKEditorError( () => {
 				editor.setReadOnlyLock();
-			}, /editor-read-only-lock-id-not-a-string/, null, { lockId: undefined } );
+			}, /editor-read-only-lock-id-invalid/, null, { lockId: undefined } );
 
 			expectToThrowCKEditorError( () => {
 				editor.setReadOnlyLock( 123 );
-			}, /editor-read-only-lock-id-not-a-string/, null, { lockId: 123 } );
+			}, /editor-read-only-lock-id-invalid/, null, { lockId: 123 } );
 		} );
 
 		it( 'clearing read-only lock should throw an error when the lock ID is not a string', () => {
@@ -590,11 +608,11 @@ describe( 'Editor', () => {
 
 			expectToThrowCKEditorError( () => {
 				editor.clearReadOnlyLock();
-			}, /editor-read-only-lock-id-not-a-string/, null, { lockId: undefined } );
+			}, /editor-read-only-lock-id-invalid/, null, { lockId: undefined } );
 
 			expectToThrowCKEditorError( () => {
 				editor.clearReadOnlyLock( 123 );
-			}, /editor-read-only-lock-id-not-a-string/, null, { lockId: 123 } );
+			}, /editor-read-only-lock-id-invalid/, null, { lockId: 123 } );
 		} );
 	} );
 
