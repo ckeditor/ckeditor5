@@ -2,13 +2,10 @@
 category: features
 menu-title: Spelling and grammar checking
 modified_at: 2021-05-07
+badges: [ premium ]
 ---
 
 # Proofreading, spelling and grammar checking
-
-<info-box>
-	The spell checker for CKEditor 5 is a commercial solution provided by our partner, [WebSpellChecker](https://webspellchecker.com/). You can report any issues in its [GitHub repository](https://github.com/WebSpellChecker/wproofreader). The license can be purchased [here](https://ckeditor.com/contact/).
-</info-box>
 
 [WProofreader](https://webspellchecker.com/wsc-proofreader) is an innovative, multi-language proofreading tool that combines the functionality of "spell check as you type" and "spell check in a dialog" in a modern, distraction-free UI. Spelling, punctuation and grammar suggestions are available on hover with no clicking needed or as a convenient dialog, both with additional in-place replacement suggestions.
 
@@ -16,9 +13,13 @@ You can fine-tune the spell checking rules via the dedicated settings menu. You 
 
 After reading this guide, you may find additional interesting details and examples in the [Spell and grammar check in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-spell-and-grammar-check-in-ckeditor-5/) blog post.
 
+<info-box>
+	The spell checker for CKEditor 5 is a commercial solution provided by our partner, [WebSpellChecker](https://webspellchecker.com/). You can report any issues in its [GitHub repository](https://github.com/WebSpellChecker/wproofreader). The license can be purchased [here](https://ckeditor.com/contact/).
+</info-box>
+
 ## Demo
 
-See the spelling and grammar checking feature working in the editor below.
+Use the toolbar button {@icon @webspellchecker/wproofreader-ckeditor5/theme/icons/wproofreader.svg Spelling and grammar check} to test the spelling and grammar checking feature in the editor below.
 
 {@snippet features/wproofreader}
 
@@ -64,7 +65,7 @@ The feature is compliant with WCAG 2.1 and Section 508 accessibility standards.
 
 ## Installation
 
-WProofreader is delivered as a CKEditor 5 plugin, so it can be combined into an editor build as other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
+WProofreader is delivered as a CKEditor 5 plugin, so it can be combined into an editor build just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
 ```
 npm install --save @webspellchecker/wproofreader-ckeditor5
@@ -85,7 +86,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 At this step, it is required to provide a proper configuration. The proofreader can be used either as a [cloud solution](#wproofreader-cloud) or [hosted on your own server](#wproofreader-server).

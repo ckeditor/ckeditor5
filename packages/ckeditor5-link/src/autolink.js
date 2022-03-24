@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { TextWatcher, getLastTextLine } from 'ckeditor5/src/typing';
+import { Delete, TextWatcher, getLastTextLine } from 'ckeditor5/src/typing';
 
 import { addLinkProtocolIfApplicable } from './utils';
 
@@ -72,6 +72,13 @@ export default class AutoLink extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ Delete ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'AutoLink';
 	}
@@ -121,12 +128,10 @@ export default class AutoLink extends Plugin {
 			}
 		} );
 
-		const input = editor.plugins.get( 'Input' );
-
 		watcher.on( 'matched:data', ( evt, data ) => {
 			const { batch, range, url } = data;
 
-			if ( !input.isInput( batch ) ) {
+			if ( !batch.isTyping ) {
 				return;
 			}
 
@@ -226,6 +231,7 @@ export default class AutoLink extends Plugin {
 	 */
 	_applyAutoLink( link, range ) {
 		const model = this.editor.model;
+		const deletePlugin = this.editor.plugins.get( 'Delete' );
 
 		if ( !this.isEnabled || !isLinkAllowedOnRange( range, model ) ) {
 			return;
@@ -236,6 +242,10 @@ export default class AutoLink extends Plugin {
 			const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
 			const parsedUrl = addLinkProtocolIfApplicable( link, defaultProtocol );
 			writer.setAttribute( 'linkHref', parsedUrl, range );
+
+			model.enqueueChange( () => {
+				deletePlugin.requestUndoOnBackspace();
+			} );
 		} );
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,26 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Autosave from '../../src/autosave';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Autosave ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+		plugins: [ ArticlePluginSet, Autosave, SourceEditing ],
+		toolbar: [
+			'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo', '|', 'sourceEditing'
+		],
 		image: {
 			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		autosave: {
+			save( editor ) {
+				const data = editor.getData();
+
+				return wait( 1000 )
+					.then( () => console.log( `${ getTime() } Saved content: ${ data }` ) );
+			}
 		}
 	} )
 	.then( editor => {
@@ -25,14 +36,6 @@ ClassicEditor
 		destroyButton.addEventListener( 'click', () => editor.destroy() );
 
 		const autosave = editor.plugins.get( Autosave );
-		autosave.adapter = {
-			save() {
-				const data = editor.getData();
-
-				return wait( 1000 )
-					.then( () => console.log( `${ getTime() } Saved content: ${ data }` ) );
-			}
-		};
 
 		autosave.listenTo( autosave, 'change:state',
 			( evt, propName, newValue, oldValue ) => console.log( `${ getTime() } Changed state: ${ oldValue } -> ${ newValue }` ) );

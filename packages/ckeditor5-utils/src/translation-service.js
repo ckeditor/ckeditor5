@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -131,7 +131,7 @@ export function add( language, translations, getPluralForm ) {
  *
  * @protected
  * @param {String} language Target language.
- * @param {module:utils/translation-service~Message|String} message A message that will be translated.
+ * @param {module:utils/translation-service~Message} message A message that will be translated.
  * @param {Number} [quantity] The number of elements for which a plural form should be picked from the target language dictionary.
  * @returns {String} Translated sentence.
  */

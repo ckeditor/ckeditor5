@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -45,7 +45,7 @@ export function mergeViewElementAttributes( target, source ) {
 	for ( const key in source ) {
 		// Merge classes.
 		if ( Array.isArray( source[ key ] ) ) {
-			result[ key ] = Array.from( new Set( [ ...target[ key ], ...source[ key ] ] ) );
+			result[ key ] = Array.from( new Set( [ ...( target[ key ] || [] ), ...source[ key ] ] ) );
 		}
 
 		// Merge attributes or styles.

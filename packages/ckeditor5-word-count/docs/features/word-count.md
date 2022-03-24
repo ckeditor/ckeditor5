@@ -13,6 +13,8 @@ It is a feature crucial for writing professionals but also for students and mark
 
 ## Demo
 
+Type some more or edit the content and observe the counter below the main editor window react in real-time.
+
 {@snippet features/word-count}
 
 The example above was created by using the following HTML page structure:
@@ -45,7 +47,7 @@ ClassicEditor
 CKEditor 5 provides other productivity-boosting features that you may find helpful:
 
 * {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
-* {@link builds/guides/integration/saving-data#autosave-feature Autosave} &ndash; Never lose you content by accident, stay safe and automatically save.
+* {@link installation/advanced/saving-data#autosave-feature Autosave} &ndash; Never lose you content by accident, stay safe and automatically save.
 * {@link features/autoformat Autoformatting} &ndash; Employ Markdown syntax for a faster and more efficient editing process.
 * {@link features/text-transformation Automatic text transformation} &ndash; Automatically turn predefined snippets into their improved forms using the autocorrect feature.
 
@@ -256,7 +258,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

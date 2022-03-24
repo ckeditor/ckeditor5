@@ -1,0 +1,69 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Italian (https://www.transifex.com/ckeditor/teams/11143/it/)\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
+msgid "Find and replace"
+msgstr "Trova e sostituisci"
+
+msgctxt "The label for the searched text in the find and replace dropdown."
+msgid "Find in text…"
+msgstr "Trova nel testo…"
+
+msgctxt "The label for the find action button in the find and replace dropdown."
+msgid "Find"
+msgstr "Trova"
+
+msgctxt "The label for the previous result button in the find and replace dropdown."
+msgid "Previous result"
+msgstr "Risultato precedente"
+
+msgctxt "The label for the previous result button in the find and replace dropdown."
+msgid "Next result"
+msgstr "Risultato successivo"
+
+msgctxt "The label for the (single) replace action button in the find and replace dropdown."
+msgid "Replace"
+msgstr "Sostituisci"
+
+msgctxt "The label for the replace all action button in the find and replace dropdown."
+msgid "Replace all"
+msgstr "Sostituisci tutto"
+
+msgctxt "The label for the match case checkbox in the find and replace dropdown."
+msgid "Match case"
+msgstr "Distingui maiuscole e minuscole"
+
+msgctxt "The label for the whole words only checkbox in the find and replace dropdown."
+msgid "Whole words only"
+msgstr "Solo parole intere"
+
+msgctxt "The label for the text replacement in the find and replace dropdown."
+msgid "Replace with…"
+msgstr "Sostituisci con…"
+
+msgctxt "An error text displayed when user attempted to find an empty text."
+msgid "Text to find must not be empty."
+msgstr "Il testo da cercare non può essere vuoto."
+
+msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
+msgid "Tip: Find some text first in order to replace it."
+msgstr "Consiglio: trova il testo prima di sostituirlo."
+
+msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
+msgid "Show options"
+msgstr "Mostra opzioni"

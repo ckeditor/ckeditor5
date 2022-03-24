@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.live-snippet .ck-editor__editable.ck-rounded-corners {
+	max-height: 700px;
+}
+
+.ck-source-editing-area {
+	max-height: 700px;
+	border-bottom: 1px solid var(--ck-color-base-border);
+}

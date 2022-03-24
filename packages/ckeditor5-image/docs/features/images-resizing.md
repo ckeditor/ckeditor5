@@ -12,7 +12,7 @@ The {@link features/images-styles image styles} feature is meant to give the use
 
 ## Enabling image resizing
 
-The image resize feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. In order to enable it in other builds, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the {@link features/images-resizing#installation installation} section.
+The image resize feature is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only. In order to enable it in other builds, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the {@link features/images-resizing#installation installation} section.
 
 ## Methods to resize images
 
@@ -26,9 +26,9 @@ The plugin also gives you an ability to change the size of the image through the
 
 In this case, the user is able to resize images by dragging square handles displayed in each corner of the image. Once image resizing is enabled, this option does not require any additional configuration.
 
-Use the corner handles to resize the image and adjust it to the text as needed. Yu can also use the alignment options from the image toolbar to achieve the desired effect.
+Use the corner handles to resize the image and adjust it to the text as needed. You can also use the alignment options from the image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Image align} to achieve the desired effect.
 
-Images can also be pre-resized using styling, as observed below (the bottom image is hard-set to 60%).
+Images can also be pre-resized using styling, as observed below (the last three images are hard-set to 28% for the visual consistency of the article).
 
 {@snippet features/image-resize}
 
@@ -83,7 +83,7 @@ const imageConfiguration = {
 }
 ```
 
-Try out the live demo of the resize dropdown available in the image toolbar below.
+Try out the live demo of the resize dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg Image resize} available in the image toolbar below.
 
 {@snippet features/image-resize-buttons-dropdown}
 
@@ -123,12 +123,12 @@ const imageConfiguration = {
 	toolbar: [
 		...,
 		'resizeImage:50',
-		'resizeImage:75'
+		'resizeImage:75',
 		'resizeImage:original',
 	]
 }
 ```
-Try out the live demo of the individual resize buttons available in the image toolbar below:
+Try out the live demo of the individual resize buttons available in the image toolbar below {@icon @ckeditor/ckeditor5-core/theme/icons/object-size-large.svg Image resize}:
 
 {@snippet features/image-resize-buttons}
 
@@ -289,7 +289,7 @@ Check out the difference in the live demo below:
 
 ## Installation
 
-The image resize feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. To enable it in other editor builds, you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
+The image resize feature is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only. To enable it in other editor builds, you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
 
 ```js
 import Image from '@ckeditor/ckeditor5-image/src/image';

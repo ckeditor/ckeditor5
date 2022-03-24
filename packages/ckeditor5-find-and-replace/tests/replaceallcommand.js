@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -98,6 +98,31 @@ describe( 'ReplaceAllCommand', () => {
 			editor.execute( 'replaceAll', 'new', 'bar' );
 
 			expect( editor.getData() ).to.equal( '' );
+		} );
+
+		it( 'should replace all occurrences in multiple roots', async () => {
+			class MultiRootEditor extends ModelTestEditor {
+				constructor( config ) {
+					super( config );
+
+					this.model.document.createRoot( '$root', 'second' );
+				}
+			}
+
+			const multiRootEditor = await MultiRootEditor
+				.create( { plugins: [ FindAndReplaceEditing, Paragraph ] } );
+
+			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>' );
+			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
+
+			const { results } = multiRootEditor.execute( 'find', 'z' );
+
+			multiRootEditor.execute( 'replaceAll', 'r', results );
+
+			expect( multiRootEditor.getData() ).to.equal( '<p>Foo bar bar</p>' );
+			expect( multiRootEditor.getData( { rootName: 'second' } ) ).to.equal( '<p>Foo bar bar</p>' );
+
+			await multiRootEditor.destroy();
 		} );
 	} );
 } );

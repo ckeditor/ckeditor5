@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,12 +11,12 @@ import { Plugin } from 'ckeditor5/src/core';
 import { MouseObserver } from 'ckeditor5/src/engine';
 import { Input, TwoStepCaretMovement, inlineHighlight, findAttributeRange } from 'ckeditor5/src/typing';
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
-import { keyCodes } from 'ckeditor5/src/utils';
+import { keyCodes, env } from 'ckeditor5/src/utils';
 
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import ManualDecorator from './utils/manualdecorator';
-import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
+import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators, openLink } from './utils';
 
 import '../theme/link.css';
 
@@ -107,6 +107,9 @@ export default class LinkEditing extends Plugin {
 		// Setup highlight over selected link.
 		inlineHighlight( editor, 'linkHref', 'a', HIGHLIGHT_CLASS );
 
+		// Handle link following by CTRL+click or ALT+ENTER
+		this._enableLinkOpen();
+
 		// Change the attributes of the selection in certain situations after the link was inserted into the document.
 		this._enableInsertContentSelectionAttributesFixer();
 
@@ -184,14 +187,24 @@ export default class LinkEditing extends Plugin {
 			editor.model.schema.extend( '$text', { allowAttributes: decorator.id } );
 
 			// Keeps reference to manual decorator to decode its name to attributes during downcast.
-			manualDecorators.add( new ManualDecorator( decorator ) );
+			decorator = new ManualDecorator( decorator );
+
+			manualDecorators.add( decorator );
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: decorator.id,
 				view: ( manualDecoratorName, { writer } ) => {
 					if ( manualDecoratorName ) {
-						const attributes = manualDecorators.get( decorator.id ).attributes;
-						const element = writer.createAttributeElement( 'a', attributes, { priority: 5 } );
+						const element = writer.createAttributeElement( 'a', decorator.attributes, { priority: 5 } );
+
+						if ( decorator.classes ) {
+							writer.addClass( decorator.classes, element );
+						}
+
+						for ( const key in decorator.styles ) {
+							writer.setStyle( key, decorator.styles[ key ], element );
+						}
+
 						writer.setCustomProperty( 'link', true, element );
 
 						return element;
@@ -201,13 +214,75 @@ export default class LinkEditing extends Plugin {
 			editor.conversion.for( 'upcast' ).elementToAttribute( {
 				view: {
 					name: 'a',
-					attributes: manualDecorators.get( decorator.id ).attributes
+					...decorator._createPattern()
 				},
 				model: {
 					key: decorator.id
 				}
 			} );
 		} );
+	}
+
+	/**
+	 * Attaches handlers for {@link module:engine/view/document~Document#event:enter} and
+	 * {@link module:engine/view/document~Document#event:click} to enable link following.
+	 *
+	 * @private
+	 */
+	_enableLinkOpen() {
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+		const modelDocument = editor.model.document;
+
+		this.listenTo( viewDocument, 'click', ( evt, data ) => {
+			const shouldOpen = env.isMac ? data.domEvent.metaKey : data.domEvent.ctrlKey;
+
+			if ( !shouldOpen ) {
+				return;
+			}
+
+			let clickedElement = data.domTarget;
+
+			if ( clickedElement.tagName.toLowerCase() != 'a' ) {
+				clickedElement = clickedElement.closest( 'a' );
+			}
+
+			if ( !clickedElement ) {
+				return;
+			}
+
+			const url = clickedElement.getAttribute( 'href' );
+
+			if ( !url ) {
+				return;
+			}
+
+			evt.stop();
+			data.preventDefault();
+
+			openLink( url );
+		}, { context: '$capture' } );
+
+		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+			const selection = modelDocument.selection;
+
+			const selectedElement = selection.getSelectedElement();
+
+			const url = selectedElement ?
+				selectedElement.getAttribute( 'linkHref' ) :
+				selection.getAttribute( 'linkHref' );
+
+			const shouldOpen = url && data.domEvent.altKey;
+
+			if ( !shouldOpen ) {
+				return;
+			}
+
+			evt.stop();
+
+			openLink( url );
+		}, { context: 'a' } );
 	}
 
 	/**
@@ -567,9 +642,9 @@ function shouldCopyAttributes( model ) {
 // @params {module:core/editor/editor~Editor} editor
 // @returns {Boolean}
 function isTyping( editor ) {
-	const input = editor.plugins.get( 'Input' );
+	const currentBatch = editor.model.change( writer => writer.batch );
 
-	return input.isInput( editor.model.change( writer => writer.batch ) );
+	return currentBatch.isTyping;
 }
 
 // Returns an array containing names of the attributes allowed on `$text` that describes the link item.

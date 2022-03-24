@@ -1,11 +1,13 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, window, Node */
+/* globals setTimeout, window, Node, DOMParser */
 
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
+import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter';
+import DomConverter from '../../src/view/domconverter';
 import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import { stringify, parse } from '../../src/dev-utils/view';
@@ -18,6 +20,18 @@ describe( 'HtmlDataProcessor', () => {
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
 		dataProcessor = new HtmlDataProcessor( viewDocument );
+	} );
+
+	describe( 'constructor', () => {
+		it( 'should set public properties', () => {
+			expect( dataProcessor ).to.have.property( 'domParser' );
+			expect( dataProcessor ).to.have.property( 'domConverter' );
+			expect( dataProcessor ).to.have.property( 'htmlWriter' );
+
+			expect( dataProcessor.domParser ).to.be.an.instanceOf( DOMParser );
+			expect( dataProcessor.domConverter ).to.be.an.instanceOf( DomConverter );
+			expect( dataProcessor.htmlWriter ).to.be.an.instanceOf( BasicHtmlWriter );
+		} );
 	} );
 
 	describe( 'toView()', () => {
@@ -95,150 +109,254 @@ describe( 'HtmlDataProcessor', () => {
 	} );
 
 	describe( '_toDom()', () => {
-		it( 'should insert nested comment nodes into <body> collection', () => {
-			const bodyDocumentFragment = dataProcessor._toDom(
-				'<div>' +
-					'<!-- Comment 1 -->' +
+		describe( 'HTML fragment without document structure', () => {
+			it( 'should insert nested comment nodes into <body> collection', () => {
+				const bodyDocumentFragment = dataProcessor._toDom(
+					'<div>' +
+						'<!-- Comment 1 -->' +
+						'<p>' +
+							'<!-- Comment 2 -->' +
+							'Paragraph' +
+							'<!-- Comment 3 -->' +
+						'</p>' +
+						'<!-- Comment 4 -->' +
+					'</div>'
+				);
+
+				const [ div ] = bodyDocumentFragment.childNodes;
+				const [ comment1, paragraph, comment4 ] = div.childNodes;
+				const [ comment2, text, comment3 ] = paragraph.childNodes;
+
+				expect( bodyDocumentFragment.childNodes.length ).to.equal( 1 );
+				expect( div.childNodes.length ).to.equal( 3 );
+				expect( paragraph.childNodes.length ).to.equal( 3 );
+
+				expect( comment1.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment1.data ).to.equal( ' Comment 1 ' );
+
+				expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment2.data ).to.equal( ' Comment 2 ' );
+
+				expect( comment3.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment3.data ).to.equal( ' Comment 3 ' );
+
+				expect( comment4.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment4.data ).to.equal( ' Comment 4 ' );
+
+				expect( text.nodeType ).to.equal( Node.TEXT_NODE );
+				expect( text.data ).to.equal( 'Paragraph' );
+
+				expect( div.nodeType ).to.equal( Node.ELEMENT_NODE );
+				expect( div.outerHTML ).to.equal(
+					'<div>' +
+						'<!-- Comment 1 -->' +
+						'<p>' +
+							'<!-- Comment 2 -->' +
+							'Paragraph' +
+							'<!-- Comment 3 -->' +
+						'</p>' +
+						'<!-- Comment 4 -->' +
+					'</div>'
+				);
+
+				expect( paragraph.nodeType ).to.equal( Node.ELEMENT_NODE );
+				expect( paragraph.outerHTML ).to.equal(
 					'<p>' +
 						'<!-- Comment 2 -->' +
 						'Paragraph' +
 						'<!-- Comment 3 -->' +
-					'</p>' +
-					'<!-- Comment 4 -->' +
-				'</div>'
-			);
+					'</p>'
+				);
+			} );
 
-			const [ div ] = bodyDocumentFragment.childNodes;
-			const [ comment1, paragraph, comment4 ] = div.childNodes;
-			const [ comment2, text, comment3 ] = paragraph.childNodes;
-
-			expect( bodyDocumentFragment.childNodes.length ).to.equal( 1 );
-			expect( div.childNodes.length ).to.equal( 3 );
-			expect( paragraph.childNodes.length ).to.equal( 3 );
-
-			expect( comment1.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment1.data ).to.equal( ' Comment 1 ' );
-
-			expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment2.data ).to.equal( ' Comment 2 ' );
-
-			expect( comment3.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment3.data ).to.equal( ' Comment 3 ' );
-
-			expect( comment4.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment4.data ).to.equal( ' Comment 4 ' );
-
-			expect( text.nodeType ).to.equal( Node.TEXT_NODE );
-			expect( text.data ).to.equal( 'Paragraph' );
-
-			expect( div.nodeType ).to.equal( Node.ELEMENT_NODE );
-			expect( div.outerHTML ).to.equal(
-				'<div>' +
+			it( 'should insert leading comment nodes from HTML string into <body> collection', () => {
+				const bodyDocumentFragment = dataProcessor._toDom(
 					'<!-- Comment 1 -->' +
-					'<p>' +
-						'<!-- Comment 2 -->' +
-						'Paragraph' +
-						'<!-- Comment 3 -->' +
-					'</p>' +
-					'<!-- Comment 4 -->' +
-				'</div>'
-			);
-
-			expect( paragraph.nodeType ).to.equal( Node.ELEMENT_NODE );
-			expect( paragraph.outerHTML ).to.equal(
-				'<p>' +
 					'<!-- Comment 2 -->' +
-					'Paragraph' +
+					'<h2>Heading</h2>' +
+					'<p>Paragraph</p>' +
 					'<!-- Comment 3 -->' +
-				'</p>'
-			);
+					'<!-- Comment 4 -->'
+				);
+
+				const [
+					comment1,
+					comment2,
+					heading,
+					paragraph,
+					comment3,
+					comment4
+				] = bodyDocumentFragment.childNodes;
+
+				expect( bodyDocumentFragment.childNodes.length ).to.equal( 6 );
+
+				expect( comment1.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment1.data ).to.equal( ' Comment 1 ' );
+
+				expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment2.data ).to.equal( ' Comment 2 ' );
+
+				expect( comment3.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment3.data ).to.equal( ' Comment 3 ' );
+
+				expect( comment4.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment4.data ).to.equal( ' Comment 4 ' );
+
+				expect( heading.nodeType ).to.equal( Node.ELEMENT_NODE );
+				expect( heading.outerHTML ).to.equal( '<h2>Heading</h2>' );
+
+				expect( paragraph.nodeType ).to.equal( Node.ELEMENT_NODE );
+				expect( paragraph.outerHTML ).to.equal( '<p>Paragraph</p>' );
+			} );
+
+			it( 'should insert leading script nodes from HTML string into <body> collection', () => {
+				const bodyDocumentFragment = dataProcessor._toDom(
+					'<!-- Comment 1 -->' +
+					'<!-- Comment 2 -->' +
+					'<h2>Heading</h2>' +
+					'<p>Paragraph</p>' +
+					'<!-- Comment 3 -->' +
+					'<!-- Comment 4 -->'
+				);
+
+				const [
+					comment1,
+					comment2,
+					heading,
+					paragraph,
+					comment3,
+					comment4
+				] = bodyDocumentFragment.childNodes;
+
+				expect( bodyDocumentFragment.childNodes.length ).to.equal( 6 );
+
+				expect( comment1.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment1.data ).to.equal( ' Comment 1 ' );
+
+				expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment2.data ).to.equal( ' Comment 2 ' );
+
+				expect( comment3.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment3.data ).to.equal( ' Comment 3 ' );
+
+				expect( comment4.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment4.data ).to.equal( ' Comment 4 ' );
+
+				expect( heading.nodeType ).to.equal( Node.ELEMENT_NODE );
+				expect( heading.outerHTML ).to.equal( '<h2>Heading</h2>' );
+
+				expect( paragraph.nodeType ).to.equal( Node.ELEMENT_NODE );
+				expect( paragraph.outerHTML ).to.equal( '<p>Paragraph</p>' );
+			} );
+
+			it( 'should preserve leading non-layout elements', () => {
+				const bodyDocumentFragment = dataProcessor._toDom(
+					'<!-- Comment 1 -->' +
+					'<style>#foo { color: red }</style>' +
+					'<script>bar</script>' +
+					'<p>' +
+						'<!-- Comment 2 -->' +
+						'Paragraph' +
+					'</p>'
+				);
+
+				expect( bodyDocumentFragment.childNodes.length ).to.equal( 4 );
+
+				const [
+					comment1,
+					style,
+					script,
+					paragraph
+				] = bodyDocumentFragment.childNodes;
+
+				expect( comment1.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment1.data ).to.equal( ' Comment 1 ' );
+
+				expect( style.nodeType ).to.equal( Node.ELEMENT_NODE );
+				expect( style.outerHTML ).to.equal( '<style>#foo { color: red }</style>' );
+
+				expect( script.nodeType ).to.equal( Node.ELEMENT_NODE );
+				expect( script.outerHTML ).to.equal( '<script>bar</script>' );
+
+				expect( paragraph.nodeType ).to.equal( Node.ELEMENT_NODE );
+				expect( paragraph.outerHTML ).to.equal( '<p><!-- Comment 2 -->Paragraph</p>' );
+			} );
 		} );
 
-		it( 'should insert leading comment nodes from HTML string into <body> collection #1', () => {
-			const bodyDocumentFragment = dataProcessor._toDom(
-				'<!-- Comment 1 -->' +
-				'<!-- Comment 2 -->' +
-				'<h2>Heading</h2>' +
-				'<p>Paragraph</p>' +
-				'<!-- Comment 3 -->' +
-				'<!-- Comment 4 -->'
-			);
+		describe( 'full HTML document', () => {
+			it( 'should ignore leading non-layout elements if <html> tag is provided', () => {
+				const bodyDocumentFragment = dataProcessor._toDom(
+					'<html>' +
+						'<!-- Comment 1 -->' +
+						'<style>#foo { color: red }</style>' +
+						'<script>bar</script>' +
+						'<p>' +
+							'<!-- Comment 2 -->' +
+							'Paragraph' +
+						'</p>' +
+					'</html>'
+				);
 
-			const [
-				comment1,
-				comment2,
-				heading,
-				paragraph,
-				comment3,
-				comment4
-			] = bodyDocumentFragment.childNodes;
+				expect( bodyDocumentFragment.childNodes.length ).to.equal( 1 );
 
-			expect( bodyDocumentFragment.childNodes.length ).to.equal( 6 );
+				const [ paragraph ] = bodyDocumentFragment.childNodes;
+				const [ comment2, text ] = paragraph.childNodes;
 
-			expect( comment1.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment1.data ).to.equal( ' Comment 1 ' );
+				expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment2.data ).to.equal( ' Comment 2 ' );
 
-			expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment2.data ).to.equal( ' Comment 2 ' );
+				expect( text.nodeType ).to.equal( Node.TEXT_NODE );
+				expect( text.data ).to.equal( 'Paragraph' );
+			} );
 
-			expect( comment3.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment3.data ).to.equal( ' Comment 3 ' );
+			it( 'should ignore leading non-layout elements if <body> tag is provided', () => {
+				const bodyDocumentFragment = dataProcessor._toDom(
+					'<!-- Comment 1 -->' +
+					'<style>#foo { color: red }</style>' +
+					'<script>bar</script>' +
+					'<body>' +
+						'<p>' +
+							'<!-- Comment 2 -->' +
+							'Paragraph' +
+						'</p>' +
+					'</body>'
+				);
 
-			expect( comment4.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment4.data ).to.equal( ' Comment 4 ' );
+				expect( bodyDocumentFragment.childNodes.length ).to.equal( 1 );
 
-			expect( heading.nodeType ).to.equal( Node.ELEMENT_NODE );
-			expect( heading.outerHTML ).to.equal( '<h2>Heading</h2>' );
+				const [ paragraph ] = bodyDocumentFragment.childNodes;
+				const [ comment2, text ] = paragraph.childNodes;
 
-			expect( paragraph.nodeType ).to.equal( Node.ELEMENT_NODE );
-			expect( paragraph.outerHTML ).to.equal( '<p>Paragraph</p>' );
-		} );
+				expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment2.data ).to.equal( ' Comment 2 ' );
 
-		it( 'should insert leading comment nodes from HTML string into <body> collection #2', () => {
-			// The existence of the <meta> tag causes that DOMParser inserts this element into the <head>. Moreover, all subsequent comment
-			// nodes (up until the node, that is not valid inside the <head>, which is the <h2> in our case) are also inserted into the
-			// <head>. So both <!-- Comment 3 --> and <!-- Comment 4 --> nodes, that are located between the <meta> and <h2> in the HTML
-			// string, are insterted into the <head>.
-			const bodyDocumentFragment = dataProcessor._toDom(
-				'<!-- Comment 1 -->' +
-				'<!-- Comment 2 -->' +
-				'<meta>' + // inserted into the <head> by DOMParser#parseFromString()
-				'<!-- Comment 3 -->' + // inserted into the <head> by DOMParser#parseFromString()
-				'<!-- Comment 4 -->' + // inserted into the <head> by DOMParser#parseFromString()
-				'<h2>Heading</h2>' +
-				'<p>Paragraph</p>' +
-				'<!-- Comment 5 -->' +
-				'<!-- Comment 6 -->'
-			);
+				expect( text.nodeType ).to.equal( Node.TEXT_NODE );
+				expect( text.data ).to.equal( 'Paragraph' );
+			} );
 
-			const [
-				comment1,
-				comment2,
-				heading,
-				paragraph,
-				comment5,
-				comment6
-			] = bodyDocumentFragment.childNodes;
+			it( 'should ignore leading non-layout elements if <meta> tag is provided', () => {
+				const bodyDocumentFragment = dataProcessor._toDom(
+					'<meta>' +
+					'<!-- Comment 1 -->' +
+					'<style>#foo { color: red }</style>' +
+					'<script>bar</script>' +
+					'<p>' +
+						'<!-- Comment 2 -->' +
+						'Paragraph' +
+					'</p>'
+				);
 
-			expect( bodyDocumentFragment.childNodes.length ).to.equal( 6 );
+				expect( bodyDocumentFragment.childNodes.length ).to.equal( 1 );
 
-			expect( comment1.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment1.data ).to.equal( ' Comment 1 ' );
+				const [ paragraph ] = bodyDocumentFragment.childNodes;
+				const [ comment2, text ] = paragraph.childNodes;
 
-			expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment2.data ).to.equal( ' Comment 2 ' );
+				expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
+				expect( comment2.data ).to.equal( ' Comment 2 ' );
 
-			expect( comment5.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment5.data ).to.equal( ' Comment 5 ' );
-
-			expect( comment6.nodeType ).to.equal( Node.COMMENT_NODE );
-			expect( comment6.data ).to.equal( ' Comment 6 ' );
-
-			expect( heading.nodeType ).to.equal( Node.ELEMENT_NODE );
-			expect( heading.outerHTML ).to.equal( '<h2>Heading</h2>' );
-
-			expect( paragraph.nodeType ).to.equal( Node.ELEMENT_NODE );
-			expect( paragraph.outerHTML ).to.equal( '<p>Paragraph</p>' );
+				expect( text.nodeType ).to.equal( Node.TEXT_NODE );
+				expect( text.data ).to.equal( 'Paragraph' );
+			} );
 		} );
 	} );
 

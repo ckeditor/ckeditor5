@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -72,6 +72,23 @@ export default class Table extends Plugin {
  * Read more in {@link module:table/table~TableConfig}.
  *
  * @member {module:table/table~TableConfig} module:core/editor/editorconfig~EditorConfig#table
+ */
+
+/**
+ * Number of rows and columns to render by default as table heading when inserting new tables.
+ *
+ * You can configure it like this:
+ *
+ *		const tableConfig = {
+ *			defaultHeadings: {
+ *				rows: 1,
+ *				columns: 1
+ *			}
+ *		};
+ *
+ * Both rows and columns properties are optional defaulting to 0 (no heading).
+ *
+ * @member {Object} module:table/table~TableConfig#defaultHeadings
  */
 
 /**

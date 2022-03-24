@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,6 @@
 import { Command } from 'ckeditor5/src/core';
 
 import TableWalker from '../tablewalker';
-import { getSelectionAffectedTableCells } from '../utils/selection';
 
 /**
  * The select column command.
@@ -27,8 +26,19 @@ export default class SelectColumnCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		// It does not affect data so should be enabled in read-only mode.
+		this.affectsData = false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	refresh() {
-		const selectedCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 
 		this.isEnabled = selectedCells.length > 0;
 	}
@@ -37,13 +47,13 @@ export default class SelectColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
-		const referenceCells = getSelectionAffectedTableCells( model.document.selection );
+		const referenceCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const firstCell = referenceCells[ 0 ];
 		const lastCell = referenceCells.pop();
 		const table = firstCell.findAncestor( 'table' );
 
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const startLocation = tableUtils.getCellLocation( firstCell );
 		const endLocation = tableUtils.getCellLocation( lastCell );
 

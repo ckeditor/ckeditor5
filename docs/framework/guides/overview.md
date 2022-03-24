@@ -1,17 +1,18 @@
 ---
+menu-title: Overview
 category: framework-guides
 order: 10
 ---
 
-# Overview
+# CKEditor 5 Framework overview
 
-CKEditor 5 is a project that allows you to quickly and easily initialize one of the many types of editors it offers in your application. At the same time, it is a framework for creating custom-tailored rich-text editing solutions. The former requirement is met thanks to {@link builds/guides/overview CKEditor 5 Builds}. The latter &mdash; thanks to CKEditor 5 Framework.
+CKEditor 5 is a project that allows you to quickly and easily initialize one of the many types of editors it offers in your application. At the same time, it is a framework for creating custom-tailored rich-text editing solutions. The former requirement is met thanks to {@link installation/advanced/predefined-builds CKEditor 5 builds}. The latter &mdash; thanks to CKEditor 5 Framework.
 
 This guide explains how the framework is built and how to start using it.
 
 ## When to use the framework?
 
-{@link builds/guides/development/custom-builds CKEditor 5 Builds can be customized}, but certain types of customizations require using the framework.
+{@link installation/getting-started/quick-start CKEditor 5 builds can be customized}, but certain types of customizations require using the framework.
 
 * **Writing your own features.** Features are implemented using the framework.
 * **Customizing existing features.** Changing the behavior or look of existing features can be done using the framework capabilities.
@@ -25,7 +26,7 @@ The framework was designed to be a highly flexible and universal platform for cr
 
 * **Plugin-based architecture.** Everything is a plugin &mdash; even such crucial features as support for typing or `<p>` elements. You can remove plugins or replace them with your own implementations to achieve fully customized results.
 * **Schema-less core.** The core makes minimal assumptions and can be controlled through the schema. This leaves all decisions to plugins and hence to you.
-* **Collaboration-ready.** Or rather, real-time collaboration is **ready for you to use**! The editor implements [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) for the tree-structured model as well as many other mechanisms which were required to create a seamless collaborative UX. Additionally, we provide cloud infrastructure and plugins enabling real-time collaborative editing in your application! [Check the collaboration demo](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html).
+* **Collaboration-ready.** Or rather, real-time collaboration is **ready for you to use**! The editor implements [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) for the tree-structured model as well as many other mechanisms which were required to create a seamless collaborative UX. Additionally, we provide cloud infrastructure and plugins enabling real-time collaborative editing in your application! {@link features/real-time-collaboration Check the collaboration demo}.
 * **Custom data model.** The editing engine implements a tree-structured custom data model, designed to fit multiple requirements such as enabling real-time collaboration and complex editing features (like tables or nested blocks).
 * **Virtual DOM.** The editing engine features a custom, editing-oriented virtual DOM implementation that aims to hide browser quirks from your sight. **No more `contentEditable` nightmares!**
 * **Granular, reusable features.** Features are implemented in a granular way. This allows for reusing and recomposing them which, in turn, makes it possible to customize and extend the editor. For instance, the {@link features/images-overview image feature} consists of over 10 plugins at the moment.
@@ -47,7 +48,7 @@ There are a few groups of packages:
 * [Editors](https://github.com/ckeditor/ckeditor5#editors) &ndash; Packages that implement various types of editors.
 * [Features](https://github.com/ckeditor/ckeditor5#features) &ndash; Packages that implement end user features.
 * [Themes](https://github.com/ckeditor/ckeditor5#themes) &ndash; Packages that implement editor themes.
-* [Builds](https://github.com/ckeditor/ckeditor5#builds) &ndash; Packages containing {@link builds/guides/overview CKEditor 5 Builds}.
+* [Builds](https://github.com/ckeditor/ckeditor5#builds) &ndash; Packages containing {@link installation/advanced/predefined-builds CKEditor 5 builds}.
 
 ## What's next?
 

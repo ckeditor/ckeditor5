@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,11 +19,11 @@ const TRANSFORMATIONS = {
 	trademark: { from: '(tm)', to: '™' },
 
 	// Mathematical:
-	oneHalf: { from: '1/2', to: '½' },
-	oneThird: { from: '1/3', to: '⅓' },
-	twoThirds: { from: '2/3', to: '⅔' },
-	oneForth: { from: '1/4', to: '¼' },
-	threeQuarters: { from: '3/4', to: '¾' },
+	oneHalf: { from: /(^|[^/a-z0-9])(1\/2)([^/a-z0-9])$/i, to: [ null, '½', null ] },
+	oneThird: { from: /(^|[^/a-z0-9])(1\/3)([^/a-z0-9])$/i, to: [ null, '⅓', null ] },
+	twoThirds: { from: /(^|[^/a-z0-9])(2\/3)([^/a-z0-9])$/i, to: [ null, '⅔', null ] },
+	oneForth: { from: /(^|[^/a-z0-9])(1\/4)([^/a-z0-9])$/i, to: [ null, '¼', null ] },
+	threeQuarters: { from: /(^|[^/a-z0-9])(3\/4)([^/a-z0-9])$/i, to: [ null, '¾', null ] },
 	lessThanOrEqual: { from: '<=', to: '≤' },
 	greaterThanOrEqual: { from: '>=', to: '≥' },
 	notEqual: { from: '!=', to: '≠' },
@@ -77,6 +77,13 @@ export default class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ 'Delete', 'Input' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'TextTransformation';
 	}
@@ -117,7 +124,7 @@ export default class TextTransformation extends Plugin {
 	_enableTransformationWatchers() {
 		const editor = this.editor;
 		const model = editor.model;
-		const input = editor.plugins.get( 'Input' );
+		const deletePlugin = editor.plugins.get( 'Delete' );
 		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' ) );
 
 		const testCallback = text => {
@@ -132,7 +139,7 @@ export default class TextTransformation extends Plugin {
 		};
 
 		const watcherCallback = ( evt, data ) => {
-			if ( !input.isInput( data.batch ) ) {
+			if ( !data.batch.isTyping ) {
 				return;
 			}
 
@@ -164,6 +171,10 @@ export default class TextTransformation extends Plugin {
 
 					changeIndex += replaceWith.length;
 				}
+
+				model.enqueueChange( () => {
+					deletePlugin.requestUndoOnBackspace();
+				} );
 			} );
 		};
 
@@ -237,8 +248,9 @@ function normalizeTransformations( config ) {
 	const configured = config.include.concat( extra ).filter( isNotRemoved );
 
 	return expandGroupsAndRemoveDuplicates( configured )
-		.filter( isNotRemoved ) // Filter out 'remove' transformations as they might be set in group
+		.filter( isNotRemoved ) // Filter out 'remove' transformations as they might be set in group.
 		.map( transformation => TRANSFORMATIONS[ transformation ] || transformation )
+		.filter( transformation => typeof transformation === 'object' ) // Filter out transformations set as string that has not been found.
 		.map( transformation => ( {
 			from: normalizeFrom( transformation.from ),
 			to: normalizeTo( transformation.to )

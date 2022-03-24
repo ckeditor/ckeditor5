@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-env node */
@@ -70,18 +70,15 @@ childProcess.execSync( 'mkdir .nyc_output' );
 childProcess.execSync( 'rm -r -f .out' );
 childProcess.execSync( 'mkdir .out' );
 
-const packages = childProcess.execSync( 'ls -1 packages', {
-	encoding: 'utf8'
-} ).toString().trim().split( '\n' );
+// Temporary: Do not check the `ckeditor5-minimap` package(s).
+const excludedPackages = [ 'ckeditor5-minimap' ];
+const packages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
+	.toString()
+	.trim()
+	.split( '\n' )
+	.filter( fullPackageName => !excludedPackages.includes( fullPackageName ) );
 
 packages.unshift( 'ckeditor5' );
-
-// Temporary: Do not check the `ckeditor5-find-and-replace` package.
-const findReplaceIndex = packages.indexOf( 'ckeditor5-find-and-replace' );
-
-if ( findReplaceIndex !== -1 ) {
-	packages.splice( findReplaceIndex, 1 );
-}
 
 for ( const fullPackageName of packages ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );

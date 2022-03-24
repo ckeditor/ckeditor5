@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -47,6 +47,20 @@ export default class TextPartLanguageUI extends Plugin {
 
 			const languageCommand = editor.commands.get( 'textPartLanguage' );
 
+			// Item definition with false `languageCode` will behave as remove lang button.
+			itemDefinitions.add( {
+				type: 'button',
+				model: new Model( {
+					label: removeTitle,
+					languageCode: false,
+					withText: true
+				} )
+			} );
+
+			itemDefinitions.add( {
+				type: 'separator'
+			} );
+
 			for ( const option of options ) {
 				const def = {
 					type: 'button',
@@ -66,20 +80,6 @@ export default class TextPartLanguageUI extends Plugin {
 
 				titles[ language ] = option.title;
 			}
-
-			itemDefinitions.add( {
-				type: 'separator'
-			} );
-
-			// Item definition with false `languageCode` will behave as remove lang button.
-			itemDefinitions.add( {
-				type: 'button',
-				model: new Model( {
-					label: removeTitle,
-					languageCode: false,
-					withText: true
-				} )
-			} );
 
 			const dropdownView = createDropdown( locale );
 			addListToDropdown( dropdownView, itemDefinitions );

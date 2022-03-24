@@ -12,6 +12,8 @@ The highlight plugin always comes with a predefined and limited number of availa
 
 ## Demo
 
+Select the text you want to highlight, then use the highlight toolbar button {@icon @ckeditor/ckeditor5-highlight/theme/icons/marker.svg Highlight} to chose a desired color from the dropdown.
+
 {@snippet features/highlight}
 
 ## Related features
@@ -190,7 +192,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

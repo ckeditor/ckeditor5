@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -381,7 +381,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return true when the selection directly in the root', () => {
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setModelData( model, '[]' );
 
 				expect( imageUtils.isImageAllowed() ).to.be.true;
@@ -701,11 +701,11 @@ describe( 'ImageUtils plugin', () => {
 		} );
 	} );
 
-	describe( 'getViewImageFromWidget()', () => {
+	describe( 'findViewImgElement()', () => {
 		// figure
 		//   img
 		it( 'returns the the img element from widget if the img is the first children', () => {
-			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.findViewImgElement( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -713,7 +713,7 @@ describe( 'ImageUtils plugin', () => {
 		//   img
 		it( 'returns the the img element from widget if the img is not the first children', () => {
 			writer.insert( writer.createPositionAt( element, 0 ), writer.createContainerElement( 'div' ) );
-			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.findViewImgElement( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -725,7 +725,28 @@ describe( 'ImageUtils plugin', () => {
 			writer.insert( writer.createPositionAt( element, 0 ), divElement );
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 0 ) );
 
-			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.findViewImgElement( element ) ).to.equal( image );
+		} );
+
+		// figure
+		//   div
+		//      div
+		//         div
+		//            div
+		//              img
+		it( 'finds the the img element deeply nested in a view tree', () => {
+			const divElement1 = writer.createContainerElement( 'div' );
+			const divElement2 = writer.createContainerElement( 'div' );
+			const divElement3 = writer.createContainerElement( 'div' );
+			const divElement4 = writer.createContainerElement( 'div' );
+
+			writer.insert( writer.createPositionAt( element, 0 ), divElement1 );
+			writer.insert( writer.createPositionAt( divElement1, 0 ), divElement2 );
+			writer.insert( writer.createPositionAt( divElement2, 0 ), divElement3 );
+			writer.insert( writer.createPositionAt( divElement3, 0 ), divElement4 );
+			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement4, 0 ) );
+
+			expect( imageUtils.findViewImgElement( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -741,7 +762,7 @@ describe( 'ImageUtils plugin', () => {
 			writer.insert( writer.createPositionAt( divElement, 0 ), writer.createText( 'Bar' ) );
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 1 ) );
 
-			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.findViewImgElement( element ) ).to.equal( image );
 		} );
 	} );
 } );

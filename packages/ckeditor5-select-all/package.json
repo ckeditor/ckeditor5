@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-select-all",
-  "version": "28.0.0",
+  "version": "33.0.0",
   "description": "Select all feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,22 +12,22 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^28.0.0",
-    "@ckeditor/ckeditor5-utils": "^28.0.0",
-    "@ckeditor/ckeditor5-ui": "^28.0.0"
+    "@ckeditor/ckeditor5-core": "^33.0.0",
+    "@ckeditor/ckeditor5-utils": "^33.0.0",
+    "@ckeditor/ckeditor5-ui": "^33.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^28.0.0",
-    "@ckeditor/ckeditor5-engine": "^28.0.0",
-    "@ckeditor/ckeditor5-essentials": "^28.0.0",
-    "@ckeditor/ckeditor5-heading": "^28.0.0",
-    "@ckeditor/ckeditor5-image": "^28.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^28.0.0",
-    "@ckeditor/ckeditor5-table": "^28.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^28.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^33.0.0",
+    "@ckeditor/ckeditor5-engine": "^33.0.0",
+    "@ckeditor/ckeditor5-essentials": "^33.0.0",
+    "@ckeditor/ckeditor5-heading": "^33.0.0",
+    "@ckeditor/ckeditor5-image": "^33.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^33.0.0",
+    "@ckeditor/ckeditor5-table": "^33.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^33.0.0"
   },
   "engines": {
-    "node": ">=12.0.0",
+    "node": ">=14.0.0",
     "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
@@ -42,6 +42,7 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "ckeditor5-metadata.json"
   ]
 }

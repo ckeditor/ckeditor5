@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,7 @@
 
 /**
  * Removes some popular browser quirks out of the clipboard data (HTML).
+ * Removes all HTML comments. These are considered an internal thing and it makes little sense if they leak into the editor data.
  *
  * @param {String} data The HTML data to normalize.
  * @returns {String} Normalized HTML.
@@ -23,5 +24,7 @@ export default function normalizeClipboardData( data ) {
 			}
 
 			return spaces;
-		} );
+		} )
+		// Remove all HTML comments.
+		.replace( /<!--[\s\S]*?-->/g, '' );
 }

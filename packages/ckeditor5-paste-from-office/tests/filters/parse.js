@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -160,6 +160,17 @@ describe( 'PasteFromOffice - filters', () => {
 				expect( styles.length ).to.equal( 0 );
 
 				expect( stylesString ).to.equal( '' );
+			} );
+
+			it( 'should remove all comments', () => {
+				const html = '<body><!--c1--><p>Foo Bar</p><!--c2--></body>';
+				const { body } = parseHtml( html );
+
+				expect( body ).to.instanceof( DocumentFragment );
+
+				expect( body.childCount ).to.equal( 1 );
+
+				expect( body.getChild( 0 ).name ).to.equal( 'p' );
 			} );
 		} );
 	} );

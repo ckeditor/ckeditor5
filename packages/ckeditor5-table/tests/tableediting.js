@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,7 +22,6 @@ import MergeCellCommand from '../src/commands/mergecellcommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -221,6 +220,27 @@ describe( 'TableEditing', () => {
 						'<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>' +
 					'</tableCell></tableRow></table>' );
 			} );
+
+			it( 'should convert table when colspan is string', () => {
+				editor.setData( '<table><tbody><tr><td colspan="abc">foo</td></tr></tbody></table>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+			} );
+
+			it( 'should convert table with colspan 0', () => {
+				editor.setData( '<table><tbody><tr><td colspan="0">foo</td></tr></tbody></table>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+			} );
+
+			it( 'should convert table with negative rowspan and colspan', () => {
+				editor.setData( '<table><tbody><tr><td colspan="-1" rowspan="-1">foo</td></tr></tbody></table>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+			} );
 		} );
 	} );
 
@@ -254,7 +274,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			assertEqualMarkup( getModelData( model ), '<paragraph>[]foo</paragraph>' );
+			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>[]foo</paragraph>' );
 		} );
 
 		it( 'should do nothing if table cell has already a block content', () => {
@@ -265,7 +285,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			assertEqualMarkup( getModelData( model ), modelTable( [
+			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '<paragraph>[]11</paragraph>' ]
 			] ) );
 		} );
@@ -292,7 +312,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			assertEqualMarkup( getModelData( model ), modelTable( [
+			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]11' ]
 			] ) );
 		} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,24 +9,6 @@
 
 import { toWidget } from 'ckeditor5/src/widget';
 import { setViewAttributes, mergeViewElementAttributes } from './conversionutils';
-
-/**
- * Conversion helper consuming all disallowed attributes from the definition view element.
- *
- * This converter listenes on `high` priority to ensure that all attributes are consumed
- * before standard priority converters.
- *
- * @param {module:html-support/dataschema~DataSchemaDefinition} definition
- * @param {module:html-support/datafilter~DataFilter} dataFilter
- * @returns {Function} Returns a conversion callback.
-*/
-export function disallowedAttributesConverter( { view: viewName }, dataFilter ) {
-	return dispatcher => {
-		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			dataFilter._consumeDisallowedAttributes( data.viewItem, conversionApi );
-		}, { priority: 'high' } );
-	};
-}
 
 /**
  * View-to-model conversion helper for object elements.
@@ -58,15 +40,6 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 	return ( modelElement, { writer, consumable } ) => {
 		const widgetLabel = t( 'HTML object' );
 
-		// Widget cannot be a raw element because the widget system would not be able
-		// to add its UI to it. Thus, we need separate view container.
-		const viewContainer = writer.createContainerElement( isInline ? 'span' : 'div', {
-			class: 'html-object-embed',
-			'data-html-object-embed-label': widgetLabel
-		}, {
-			isAllowedInsideAttributeElement: isInline
-		} );
-
 		const viewElement = createObjectView( viewName, modelElement, writer );
 		writer.addClass( 'html-object-embed__content', viewElement );
 
@@ -75,7 +48,18 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 			setViewAttributes( writer, viewAttributes, viewElement );
 		}
 
-		writer.insert( writer.createPositionAt( viewContainer, 0 ), viewElement );
+		// Widget cannot be a raw element because the widget system would not be able
+		// to add its UI to it. Thus, we need separate view container.
+		const viewContainer = writer.createContainerElement( isInline ? 'span' : 'div',
+			{
+				class: 'html-object-embed',
+				'data-html-object-embed-label': widgetLabel
+			},
+			viewElement,
+			{
+				isAllowedInsideAttributeElement: isInline
+			}
+		);
 
 		return toWidget( viewContainer, writer, { widgetLabel } );
 	};
@@ -90,8 +74,8 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 * @returns {module:engine/view/element~Element}
 */
 export function createObjectView( viewName, modelElement, writer ) {
-	return writer.createRawElement( viewName, null, function( domElement ) {
-		domElement.innerHTML = modelElement.getAttribute( 'htmlContent' );
+	return writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
+		domConverter.setContentOf( domElement, modelElement.getAttribute( 'htmlContent' ) );
 	} );
 }
 

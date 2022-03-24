@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module engine/dataprocessor/htmldataprocessor
  */
 
-/* globals document, DOMParser, Node */
+/* globals document, DOMParser */
 
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
@@ -28,26 +28,23 @@ export default class HtmlDataProcessor {
 		/**
 		 * A DOM parser instance used to parse an HTML string to an HTML document.
 		 *
-		 * @private
 		 * @member {DOMParser}
 		 */
-		this._domParser = new DOMParser();
+		this.domParser = new DOMParser();
 
 		/**
 		 * A DOM converter used to convert DOM elements to view elements.
 		 *
-		 * @private
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this._domConverter = new DomConverter( document, { blockFillerMode: 'nbsp' } );
+		this.domConverter = new DomConverter( document, { renderingMode: 'data' } );
 
 		/**
 		 * A basic HTML writer instance used to convert DOM elements to an HTML string.
 		 *
-		 * @private
-		 * @member {module:engine/dataprocessor/basichtmlwriter~BasicHtmlWriter}
+		 * @member {module:engine/dataprocessor/htmlwriter~HtmlWriter}
 		 */
-		this._htmlWriter = new BasicHtmlWriter();
+		this.htmlWriter = new BasicHtmlWriter();
 	}
 
 	/**
@@ -59,10 +56,10 @@ export default class HtmlDataProcessor {
 	 */
 	toData( viewFragment ) {
 		// Convert view DocumentFragment to DOM DocumentFragment.
-		const domFragment = this._domConverter.viewToDom( viewFragment, document );
+		const domFragment = this.domConverter.viewToDom( viewFragment, document );
 
 		// Convert DOM DocumentFragment to HTML output.
-		return this._htmlWriter.getHtml( domFragment );
+		return this.htmlWriter.getHtml( domFragment );
 	}
 
 	/**
@@ -76,7 +73,7 @@ export default class HtmlDataProcessor {
 		const domFragment = this._toDom( data );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this._domConverter.domToView( domFragment );
+		return this.domConverter.domToView( domFragment );
 	}
 
 	/**
@@ -90,7 +87,7 @@ export default class HtmlDataProcessor {
 	 * be treated as raw data.
 	 */
 	registerRawContentMatcher( pattern ) {
-		this._domConverter.registerRawContentMatcher( pattern );
+		this.domConverter.registerRawContentMatcher( pattern );
 	}
 
 	/**
@@ -105,7 +102,7 @@ export default class HtmlDataProcessor {
 	 * @param {'default'|'marked'} type Whether to use the default or the marked `&nbsp;` block fillers.
 	 */
 	useFillerType( type ) {
-		this._domConverter.blockFillerMode = type == 'marked' ? 'markedNbsp' : 'nbsp';
+		this.domConverter.blockFillerMode = type == 'marked' ? 'markedNbsp' : 'nbsp';
 	}
 
 	/**
@@ -117,37 +114,15 @@ export default class HtmlDataProcessor {
 	 * @returns {DocumentFragment}
 	 */
 	_toDom( data ) {
-		const document = this._domParser.parseFromString( data, 'text/html' );
-		const fragment = document.createDocumentFragment();
-
-		// The rules for parsing an HTML string can be read on https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inhtml.
-		//
-		// In short, parsing tokens in an HTML string starts with the so-called "initial" insertion mode. When a DOM parser is in this
-		// state and encounters a comment node, it inserts this comment node as the last child of the newly-created `HTMLDocument` object.
-		// The parser then proceeds to successive insertion modes during parsing subsequent tokens and appends in the `HTMLDocument` object
-		// other nodes (like <html>, <head>, <body>). This causes that the first leading comments from HTML string become the first nodes
-		// in the `HTMLDocument` object, but not in the <body> collection, because they are ultimately located before the <html> element.
-		//
-		// Therefore, so that such leading comments do not disappear, they all are moved from the `HTMLDocument` object to the document
-		// fragment, until the <html> element is encountered.
-		//
-		// See: https://github.com/ckeditor/ckeditor5/issues/9861.
-		let documentChildNode = document.firstChild;
-
-		while ( !documentChildNode.isSameNode( document.documentElement ) ) {
-			const node = documentChildNode;
-
-			documentChildNode = documentChildNode.nextSibling;
-
-			// It seems that `DOMParser#parseFromString()` adds only comment nodes directly to the `HTMLDocument` object, before the <html>
-			// node. The condition below is just to be sure we are moving only comment nodes.
-
-			/* istanbul ignore else */
-			if ( node.nodeType == Node.COMMENT_NODE ) {
-				fragment.appendChild( node );
-			}
+		// Wrap data with a <body> tag so leading non-layout nodes (like <script>, <style>, HTML comment)
+		// will be preserved in the body collection.
+		// Do it only for data that is not a full HTML document.
+		if ( !data.match( /<(?:html|body|head|meta)(?:\s[^>]*)?>/i ) ) {
+			data = `<body>${ data }</body>`;
 		}
 
+		const document = this.domParser.parseFromString( data, 'text/html' );
+		const fragment = document.createDocumentFragment();
 		const bodyChildNodes = document.body.childNodes;
 
 		while ( bodyChildNodes.length > 0 ) {

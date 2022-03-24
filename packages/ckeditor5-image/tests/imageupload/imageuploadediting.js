@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -26,7 +26,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import { modelToViewAttributeConverter } from '../../src/image/converters';
+import { downcastImageAttribute } from '../../src/image/converters';
 
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
@@ -661,6 +661,82 @@ describe( 'ImageUploadEditing', () => {
 		expect( loadSpy.called ).to.be.false;
 	} );
 
+	it( 'should not abort if an image changed type (but with the same uploadId value)', async () => {
+		const file = createNativeFileMock();
+
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'uploadImage', { file } );
+
+		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+		const abortSpy = sinon.spy( loader, 'abort' );
+		const id = fileRepository.getLoader( file ).id;
+		const uploadCompleteSpy = sinon.spy();
+
+		imageUploadEditing.on( 'uploadComplete', uploadCompleteSpy );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		expect( getModelData( model ) ).to.equal(
+			`<paragraph>[<imageInline uploadId="${ id }" uploadStatus="uploading"></imageInline>]foo bar</paragraph>`
+		);
+
+		editor.execute( 'imageTypeBlock' );
+
+		expect( getModelData( model ) ).to.equal(
+			`[<imageBlock uploadId="${ id }" uploadStatus="uploading"></imageBlock>]<paragraph>foo bar</paragraph>`
+		);
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
+		} );
+
+		expect( getModelData( model ) ).to.equal(
+			'[<imageBlock src="image.png"></imageBlock>]<paragraph>foo bar</paragraph>'
+		);
+
+		sinon.assert.notCalled( abortSpy );
+		sinon.assert.calledOnce( uploadCompleteSpy );
+	} );
+
+	it( 'should abort if an image changed type and then was removed', async () => {
+		const file = createNativeFileMock();
+
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'uploadImage', { file } );
+
+		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+		const abortSpy = sinon.spy( loader, 'abort' );
+		const id = fileRepository.getLoader( file ).id;
+		const uploadCompleteSpy = sinon.spy();
+
+		imageUploadEditing.on( 'uploadComplete', uploadCompleteSpy );
+
+		await loader.file;
+
+		nativeReaderMock.mockSuccess( base64Sample );
+
+		editor.execute( 'imageTypeBlock' );
+
+		expect( getModelData( model ) ).to.equal(
+			`[<imageBlock uploadId="${ id }" uploadStatus="reading"></imageBlock>]<paragraph>foo bar</paragraph>`
+		);
+
+		sinon.assert.notCalled( abortSpy );
+
+		model.change( writer => {
+			writer.remove( model.document.selection.getSelectedElement() );
+		} );
+
+		sinon.assert.calledOnce( abortSpy );
+		sinon.assert.notCalled( uploadCompleteSpy );
+
+		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+	} );
+
 	it( 'image should be permanently removed if it is removed by user during upload', done => {
 		const file = createNativeFileMock();
 		const notification = editor.plugins.get( Notification );
@@ -759,7 +835,7 @@ describe( 'ImageUploadEditing', () => {
 			editor.model.schema.extend( 'imageBlock', { allowAttributes: 'data-original' } );
 
 			editor.conversion.for( 'downcast' )
-				.add( modelToViewAttributeConverter( editor.plugins.get( 'ImageUtils' ), 'data-original' ) );
+				.add( downcastImageAttribute( editor.plugins.get( 'ImageUtils' ), 'data-original' ) );
 
 			editor.conversion.for( 'upcast' )
 				.attributeToAttribute( {
@@ -792,8 +868,8 @@ describe( 'ImageUploadEditing', () => {
 				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { originalUrl: 'original.jpg', default: 'image.jpg' } ) );
 			} );
 
-			// Make sure the custom attribute was set in the same transparent batch as the default handling (setting src and status).
-			expect( batch.type ).to.equal( 'transparent' );
+			// Make sure the custom attribute was set in the same non-undoable batch as the default handling (setting src and status).
+			expect( batch.isUndoable ).to.be.false;
 			expect( batch.operations.length ).to.equal( 3 );
 
 			expect( batch.operations[ 0 ].type ).to.equal( 'changeAttribute' );
@@ -847,8 +923,8 @@ describe( 'ImageUploadEditing', () => {
 				) );
 			} );
 
-			// Make sure the custom attribute was set in the same transparent batch as the default handling (setting src and status).
-			expect( batch.type ).to.equal( 'transparent' );
+			// Make sure the custom attribute was set in the non-undoable batch as the default handling (setting src and status).
+			expect( batch.isUndoable ).to.be.false;
 			expect( batch.operations.length ).to.equal( 2 );
 
 			expect( batch.operations[ 0 ].type ).to.equal( 'changeAttribute' );

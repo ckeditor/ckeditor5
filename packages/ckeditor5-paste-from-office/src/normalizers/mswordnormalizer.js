@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,6 @@
  * @module paste-from-office/normalizers/mswordnormalizer
  */
 
-import { parseHtml } from '../filters/parse';
 import { transformListItemLikeElementsIntoLists } from '../filters/list';
 import { replaceImagesSourceWithBase64 } from '../filters/image';
 
@@ -44,11 +43,11 @@ export default class MSWordNormalizer {
 	 * @inheritDoc
 	 */
 	execute( data ) {
-		const { body, stylesString } = parseHtml( data.dataTransfer.getData( 'text/html' ), this.document.stylesProcessor );
+		const { body: documentFragment, stylesString } = data._parsedData;
 
-		transformListItemLikeElementsIntoLists( body, stylesString );
-		replaceImagesSourceWithBase64( body, data.dataTransfer.getData( 'text/rtf' ) );
+		transformListItemLikeElementsIntoLists( documentFragment, stylesString );
+		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
 
-		data.content = body;
+		data.content = documentFragment;
 	}
 }

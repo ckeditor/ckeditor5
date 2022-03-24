@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -56,5 +56,29 @@ describe( 'normalizeClipboardData()', () => {
 		expect(
 			normalizeClipboardData( '<span class="Apple-converted-space"> </span><span foo>  </span><span>a</span>' )
 		).to.equal( ' <span foo>  </span><span>a</span>' );
+	} );
+
+	it( 'should strip HTML comments if clipboard data contains anything but HTML comments', () => {
+		expect(
+			normalizeClipboardData( '<!-- comment 1 --><!-- comment 2 --><!-- comment 3 -->' )
+		).to.equal( '' );
+	} );
+
+	it( 'should strip HTML comments if clipboard data contains anything but multiline HTML comments', () => {
+		expect(
+			normalizeClipboardData( '<!-- multi \n\n\n line \n\n\n comment 1 --><!-- multi \n\n\n line \n\n\n comment 2 -->' )
+		).to.equal( '' );
+	} );
+
+	it( 'should strip HTML comments if clipboard data contains HTML comments mixed with elements', () => {
+		expect(
+			normalizeClipboardData( '<!-- comment 1 --><div><p><!-- comment 2 -->foo<!-- comment 3 --></p></div><!-- comment 4 -->' )
+		).to.equal( '<div><p>foo</p></div>' );
+	} );
+
+	it( 'should strip HTML comments if clipboard data contains multiline HTML comments with commented out elements', () => {
+		expect(
+			normalizeClipboardData( '<p>foo</p><!-- multi \n\n\n line \n\n\n comment \n\n\n with element <p>bar</p> --><p>baz</p>' )
+		).to.equal( '<p>foo</p><p>baz</p>' );
 	} );
 } );

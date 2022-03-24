@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -87,10 +87,6 @@ describe( 'InlineEditorUIView', () => {
 
 			it( 'is given a locale object', () => {
 				expect( view.panel.locale ).to.equal( locale );
-			} );
-
-			it( 'gets view.panel#withArrow set', () => {
-				expect( view.panel.withArrow ).to.be.false;
 			} );
 
 			it( 'is not rendered', () => {
@@ -247,6 +243,27 @@ describe( 'InlineEditorUIView', () => {
 			expect( positions ).to.have.length( 2 );
 			expect( positions[ 0 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_east' );
 			expect( positions[ 1 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_west' );
+		} );
+
+		it( 'returned positions ahould have no arrow', () => {
+			const uiView = new InlineEditorUIView( locale, editingView );
+			const positions = uiView.panelPositions;
+			const editableRect = {
+				top: 100,
+				bottom: 200,
+				left: 100,
+				right: 100,
+				width: 100,
+				height: 100
+			};
+			const panelRect = {
+				width: 50,
+				height: 50
+			};
+
+			expect( positions ).to.have.length( 2 );
+			expect( positions[ 0 ]( editableRect, panelRect ).config.withArrow ).to.be.false;
+			expect( positions[ 1 ]( editableRect, panelRect ).config.withArrow ).to.be.false;
 		} );
 
 		describe( 'west', () => {

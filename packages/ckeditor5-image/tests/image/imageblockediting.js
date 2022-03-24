@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -244,11 +244,11 @@ describe( 'ImageBlockEditing', () => {
 					.to.equal( '<imageBlock src="/assets/sample.png"></imageBlock>' );
 			} );
 
-			it( 'should not convert without src attribute', () => {
+			it( 'should convert without src attribute', () => {
 				editor.setData( '<figure class="image"><img alt="alt text" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '' );
+					.to.equal( '<imageBlock alt="alt text"></imageBlock>' );
 			} );
 
 			it( 'should not convert in wrong context', () => {
@@ -457,10 +457,14 @@ describe( 'ImageBlockEditing', () => {
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<limit><div>foobar</div></limit>' );
 				} );
 
-				it( 'should not convert and autohoist image element without src attribute (which is not allowed by schema)', () => {
+				it( 'should convert and autohoist image element without src attribute', () => {
 					editor.setData( '<div>foo<img alt="foo" />bar</div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<div>foobar</div>' );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<div>foo</div>' +
+						'<imageBlock alt="foo"></imageBlock>' +
+						'<div>bar</div>'
+					);
 				} );
 			} );
 		} );

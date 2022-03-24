@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Autoformat from '../src/autoformat';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
-import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolistediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
+import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting';
@@ -549,6 +549,25 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">```[]</codeBlock>' );
+		} );
+
+		it( 'should remember the last used language', () => {
+			setData( model, '<paragraph>[]</paragraph>' );
+
+			// Mock the UI usage: execute the command with the specified language.
+			editor.execute( 'codeBlock', { language: 'cpp' } );
+			editor.execute( 'codeBlock' );
+
+			// Typing '```' in a single change does not trigger the autoformat feature.
+			model.change( writer => {
+				writer.insertText( '``', doc.selection.getFirstPosition() );
+			} );
+
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<codeBlock language="cpp">[]</codeBlock>' );
 		} );
 	} );
 

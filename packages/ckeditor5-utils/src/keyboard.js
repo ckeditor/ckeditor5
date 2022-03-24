@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -33,6 +33,7 @@ const modifiersToGlyphsNonMac = {
  * * `a-z`,
  * * `0-9`,
  * * `f1-f12`,
+ * * `` ` ``, `-`, `=`, `[`, `]`, `;`, `'`, `,`, `.`, `/`, `\`,
  * * `arrow(left|up|right|bottom)`,
  * * `backspace`, `delete`, `enter`, `esc`, `tab`,
  * * `ctrl`, `cmd`, `shift`, `alt`.
@@ -249,6 +250,11 @@ function generateKnownKeyCodes() {
 	// F1-F12
 	for ( let code = 112; code <= 123; code++ ) {
 		keyCodes[ 'f' + ( code - 111 ) ] = code;
+	}
+
+	// other characters
+	for ( const char of '`-=[];\',./\\' ) {
+		keyCodes[ char ] = char.charCodeAt( 0 );
 	}
 
 	return keyCodes;

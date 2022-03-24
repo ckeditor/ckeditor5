@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,6 +10,7 @@ import WidgetResize from '../src/widgetresize';
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 import { toWidget } from '../src/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -162,11 +163,6 @@ describe( 'WidgetResize', () => {
 				expect( isVisible( resizer ) ).to.be.true;
 			}
 		} );
-
-		function isVisible( element ) {
-			// Checks if the DOM element is visible to the end user.
-			return element.offsetParent !== null && !element.classList.contains( 'ck-hidden' );
-		}
 	} );
 
 	describe( 'integration (pixels)', () => {
@@ -557,24 +553,6 @@ describe( 'WidgetResize', () => {
 
 			expect( widgetResizePlugin.visibleResizer ).to.eql( resizer );
 		} );
-
-		function gerResizerOptions( editor ) {
-			return {
-				modelElement: editor.model.document.getRoot().getChild( 0 ),
-				viewElement: editor.editing.view.document.getRoot().getChild( 0 ),
-				editor,
-
-				isCentered: () => false,
-				getHandleHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-				getResizeHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-
-				onCommit: commitStub
-			};
-		}
 	} );
 
 	describe( 'init()', () => {
@@ -593,6 +571,50 @@ describe( 'WidgetResize', () => {
 			} );
 
 			expect( redrawSpy.callCount ).to.equal( 1 );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/10156
+		it( 'removes references to and destroys resizers of widget removed from the model document', () => {
+			const plugin = editor.plugins.get( WidgetResize );
+			const resizer = plugin.attachTo( gerResizerOptions( editor ) );
+			const widgetViewElement = editor.editing.view.document.getRoot().getChild( 0 );
+			const resizerDestroySpy = sinon.spy( resizer, 'destroy' );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.equal( resizer );
+			sinon.assert.notCalled( resizerDestroySpy );
+
+			editor.setData( '' );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.be.undefined;
+			sinon.assert.calledOnce( resizerDestroySpy );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/10266
+		it( 'removes references to and destroys resizers of widgets moved in the model document (but re-rendered in view)', () => {
+			const plugin = editor.plugins.get( WidgetResize );
+			const resizer = plugin.attachTo( gerResizerOptions( editor ) );
+			const widgetViewElement = editor.editing.view.document.getRoot().getChild( 0 );
+			const resizerDestroySpy = sinon.spy( resizer, 'destroy' );
+
+			editor.model.schema.register( 'wrapperBlock', {
+				allowIn: '$root',
+				allowChildren: [ 'widget' ]
+			} );
+
+			editor.conversion.elementToElement( {
+				model: 'wrapperBlock',
+				view: 'wrapperBlock'
+			} );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.equal( resizer );
+			sinon.assert.notCalled( resizerDestroySpy );
+
+			editor.model.change( writer => {
+				writer.wrap( writer.createRangeIn( editor.model.document.getRoot() ), 'wrapperBlock' );
+			} );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.be.undefined;
+			sinon.assert.calledOnce( resizerDestroySpy );
 		} );
 	} );
 
@@ -720,5 +742,23 @@ describe( 'WidgetResize', () => {
 		};
 
 		return editor.plugins.get( WidgetResize ).attachTo( Object.assign( defaultOptions, resizerOptions ) );
+	}
+
+	function gerResizerOptions( editor ) {
+		return {
+			modelElement: editor.model.document.getRoot().getChild( 0 ),
+			viewElement: editor.editing.view.document.getRoot().getChild( 0 ),
+			editor,
+
+			isCentered: () => false,
+			getHandleHost( domWidgetElement ) {
+				return domWidgetElement;
+			},
+			getResizeHost( domWidgetElement ) {
+				return domWidgetElement;
+			},
+
+			onCommit: commitStub
+		};
 	}
 } );

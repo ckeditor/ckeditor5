@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,6 +23,8 @@ import ModelDocumentFragment from '../../src/model/documentfragment';
 import { getData as getModelData, parse } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
 import { StylesProcessor } from '../../src/view/stylesmap';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'EditingController', () => {
 	describe( 'constructor()', () => {
@@ -509,6 +511,119 @@ describe( 'EditingController', () => {
 			editing.destroy();
 
 			expect( spy.called ).to.be.true;
+		} );
+	} );
+
+	describe( 'reconvertMarker()', () => {
+		let model, editing;
+
+		beforeEach( () => {
+			model = new Model();
+			model.document.createRoot();
+			editing = new EditingController( model, new StylesProcessor() );
+		} );
+
+		it( 'should call MarkerCollection#_refresh()', () => {
+			model.change( writer => {
+				writer.insert( writer.createText( 'x' ), model.document.getRoot(), 0 );
+
+				writer.addMarker( 'foo', {
+					range: writer.createRangeIn( model.document.getRoot() ),
+					usingOperation: true
+				} );
+			} );
+
+			const refreshSpy = sinon.stub( model.markers, '_refresh' );
+
+			editing.reconvertMarker( 'foo' );
+			sinon.assert.calledOnce( refreshSpy );
+			sinon.assert.calledWith( refreshSpy, model.markers.get( 'foo' ) );
+		} );
+
+		it( 'should use a model.change() block to reconvert a marker', () => {
+			const changeSpy = sinon.spy();
+
+			model.change( writer => {
+				writer.insert( writer.createText( 'x' ), model.document.getRoot(), 0 );
+
+				writer.addMarker( 'foo', {
+					range: writer.createRangeIn( model.document.getRoot() ),
+					usingOperation: true
+				} );
+			} );
+
+			model.document.on( 'change', changeSpy );
+			sinon.assert.notCalled( changeSpy );
+
+			editing.reconvertMarker( 'foo' );
+			sinon.assert.calledOnce( changeSpy );
+		} );
+
+		it( 'should work when a marker instance was passed', () => {
+			let marker;
+
+			model.change( writer => {
+				writer.insert( writer.createText( 'x' ), model.document.getRoot(), 0 );
+
+				marker = writer.addMarker( 'foo', {
+					range: writer.createRangeIn( model.document.getRoot() ),
+					usingOperation: true
+				} );
+			} );
+
+			const refreshSpy = sinon.stub( model.markers, '_refresh' );
+
+			editing.reconvertMarker( marker );
+			sinon.assert.calledOnce( refreshSpy );
+		} );
+
+		it( 'should throw when marker was not found in the collection', () => {
+			expectToThrowCKEditorError(
+				() => {
+					editing.reconvertMarker( 'foo' );
+				},
+				'editingcontroller-reconvertmarker-marker-not-exist',
+				editing,
+				{
+					markerName: 'foo'
+				}
+			);
+		} );
+	} );
+
+	describe( 'reconvertItem()', () => {
+		let model, editing;
+
+		beforeEach( () => {
+			model = new Model();
+			model.document.createRoot();
+			editing = new EditingController( model, new StylesProcessor() );
+		} );
+
+		it( 'should call Differ#_refreshItem()', () => {
+			model.change( writer => {
+				writer.insert( writer.createText( 'x' ), model.document.getRoot(), 0 );
+			} );
+
+			const refreshSpy = sinon.stub( model.document.differ, '_refreshItem' );
+
+			editing.reconvertItem( model.document.getRoot().getChild( 0 ) );
+			sinon.assert.calledOnce( refreshSpy );
+			sinon.assert.calledWith( refreshSpy, model.document.getRoot().getChild( 0 ) );
+		} );
+
+		it( 'should use a model.change() block to reconvert an item', () => {
+			const changeSpy = sinon.spy();
+
+			model.change( writer => {
+				writer.insert( writer.createText( 'x' ), model.document.getRoot(), 0 );
+			} );
+
+			model.document.on( 'change', changeSpy );
+			sinon.assert.notCalled( changeSpy );
+
+			editing.reconvertItem( model.document.getRoot().getChild( 0 ) );
+			sinon.assert.calledOnce( changeSpy );
 		} );
 	} );
 } );

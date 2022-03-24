@@ -9,7 +9,7 @@ The {@link module:special-characters/specialcharacters~SpecialCharacters} plugin
 
 ## Demo
 
-Use the editor below to see the special characters plugin in action.
+Use the toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters} in the editor below to gain access to a [configurable](#configuration) panel with a table of selectable special characters.
 
 {@snippet features/special-characters-source}
 
@@ -163,7 +163,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

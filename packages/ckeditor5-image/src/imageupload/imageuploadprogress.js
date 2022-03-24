@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,8 +11,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { FileRepository } from 'ckeditor5/src/upload';
-
-import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
 
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
@@ -41,10 +39,12 @@ export default class ImageUploadProgress extends Plugin {
 		/**
 		 * The image placeholder that is displayed before real image data can be accessed.
 		 *
+		 * For the record, this image is a 1x1 px GIF with an aspect ratio set by CSS.
+		 *
 		 * @protected
 		 * @member {String} #placeholder
 		 */
-		this.placeholder = 'data:image/svg+xml;utf8,' + encodeURIComponent( uploadingPlaceholder );
+		this.placeholder = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 	}
 
 	/**
@@ -157,7 +157,7 @@ function _showPlaceholder( imageUtils, placeholder, viewFigure, writer ) {
 		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
 	}
 
-	const viewImg = imageUtils.getViewImageFromWidget( viewFigure );
+	const viewImg = imageUtils.findViewImgElement( viewFigure );
 
 	if ( viewImg.getAttribute( 'src' ) !== placeholder ) {
 		writer.setAttribute( 'src', placeholder, viewImg );
@@ -285,7 +285,7 @@ function _removeUIElement( viewFigure, writer, uniqueProperty ) {
 // @param {module:upload/filerepository~FileLoader} loader
 function _displayLocalImage( imageUtils, viewFigure, writer, loader ) {
 	if ( loader.data ) {
-		const viewImg = imageUtils.getViewImageFromWidget( viewFigure );
+		const viewImg = imageUtils.findViewImgElement( viewFigure );
 
 		writer.setAttribute( 'src', loader.data, viewImg );
 	}

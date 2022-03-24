@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,8 +14,6 @@ import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, CKEditorError } from 'ckeditor5/src/utils';
 import { Widget } from 'ckeditor5/src/widget';
 import {
-	disallowedAttributesConverter,
-
 	viewToModelObjectConverter,
 	toObjectWidgetConverter,
 	createObjectView,
@@ -210,7 +208,7 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * Matches and consumes allowed view attributes.
+	 * Matches and consumes allowed and disallowed view attributes and returns the allowed ones.
 	 *
 	 * @protected
 	 * @param {module:engine/view/element~Element} viewElement
@@ -221,22 +219,11 @@ export default class DataFilter extends Plugin {
 	 * @returns {Array.<String>} result.classes Set with matched class names.
 	 */
 	_consumeAllowedAttributes( viewElement, conversionApi ) {
-		return consumeAttributes( viewElement, conversionApi, this._allowedAttributes );
-	}
+		// Make sure that the disabled attributes are handled before the allowed attributes are called.
+		// For example, for block images the <figure> converter triggers conversion for <img> first and then for other elements, i.e. <a>.
+		consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
 
-	/**
-	 * Matches and consumes disallowed view attributes.
-	 *
-	 * @protected
-	 * @param {module:engine/view/element~Element} viewElement
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-	 * @returns {Object} [result]
-	 * @returns {Object} result.attributes Set with matched attribute names.
-	 * @returns {Object} result.styles Set with matched style names.
-	 * @returns {Array.<String>} result.classes Set with matched class names.
-	 */
-	_consumeDisallowedAttributes( viewElement, conversionApi ) {
-		return consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
+		return consumeAttributes( viewElement, conversionApi, this._allowedAttributes );
 	}
 
 	/**
@@ -253,10 +240,14 @@ export default class DataFilter extends Plugin {
 				this._fireRegisterEvent( definition );
 			}
 		}, {
-			// With high priority listener we are able to register elements right before
-			// running data conversion. Make also sure that priority is higher than the one
-			// used by `RealTimeCollaborationClient`, as RTC is stopping event propagation.
-			priority: priorities.get( 'high' ) + 1
+			// With highest priority listener we are able to register elements right before
+			// running data conversion. Also:
+			// * Make sure that priority is higher than the one used by `RealTimeCollaborationClient`,
+			// as RTC is stopping event propagation.
+			// * Make sure no other features hook into this event before GHS because otherwise the
+			// downcast conversion (for these features) could run before GHS registered its converters
+			// (https://github.com/ckeditor/ckeditor5/issues/11356).
+			priority: priorities.get( 'highest' ) + 1
 		} );
 	}
 
@@ -335,7 +326,6 @@ export default class DataFilter extends Plugin {
 			name: viewName
 		} );
 
-		conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, this ) );
 		conversion.for( 'upcast' ).elementToElement( {
 			view: viewName,
 			model: viewToModelObjectConverter( definition ),
@@ -345,7 +335,7 @@ export default class DataFilter extends Plugin {
 		} );
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: modelName,
 			view: toObjectWidgetConverter( editor, definition )
 		} );
@@ -400,7 +390,6 @@ export default class DataFilter extends Plugin {
 			allowAttributes: 'htmlAttributes'
 		} );
 
-		conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, this ) );
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
 		conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
 	}
@@ -427,7 +416,6 @@ export default class DataFilter extends Plugin {
 			schema.setAttributeProperties( attributeKey, definition.attributeProperties );
 		}
 
-		conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, this ) );
 		conversion.for( 'upcast' ).add( viewToAttributeInlineConverter( definition, this ) );
 
 		conversion.for( 'downcast' ).attributeToElement( {

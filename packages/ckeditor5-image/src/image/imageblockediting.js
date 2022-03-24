@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,14 +11,18 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
-import { modelToViewAttributeConverter, srcsetAttributeConverter, viewFigureToModel } from './converters';
+import {
+	downcastImageAttribute,
+	downcastSrcsetAttribute,
+	upcastImageFigure
+} from './converters';
 
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
-	getImageTypeMatcher,
-	createImageViewElement,
+	getImgViewElementMatcher,
+	createBlockImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../image/utils';
 
@@ -86,31 +90,34 @@ export default class ImageBlockEditing extends Plugin {
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'dataDowncast' )
-			.elementToElement( {
+			.elementToStructure( {
 				model: 'imageBlock',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'imageBlock' )
+				view: ( modelElement, { writer } ) => createBlockImageViewElement( writer )
 			} );
 
 		conversion.for( 'editingDowncast' )
-			.elementToElement( {
+			.elementToStructure( {
 				model: 'imageBlock',
 				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
-					createImageViewElement( writer, 'imageBlock' ), writer, t( 'image widget' )
+					createBlockImageViewElement( writer ), writer, t( 'image widget' )
 				)
 			} );
 
 		conversion.for( 'downcast' )
-			.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'src' ) )
-			.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'alt' ) )
-			.add( srcsetAttributeConverter( imageUtils, 'imageBlock' ) );
+			.add( downcastImageAttribute( imageUtils, 'imageBlock', 'src' ) )
+			.add( downcastImageAttribute( imageUtils, 'imageBlock', 'alt' ) )
+			.add( downcastSrcsetAttribute( imageUtils, 'imageBlock' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getImageTypeMatcher( editor, 'imageBlock' ),
-				model: ( viewImage, { writer } ) => writer.createElement( 'imageBlock', { src: viewImage.getAttribute( 'src' ) } )
+				view: getImgViewElementMatcher( editor, 'imageBlock' ),
+				model: ( viewImage, { writer } ) => writer.createElement(
+					'imageBlock',
+					viewImage.hasAttribute( 'src' ) ? { src: viewImage.getAttribute( 'src' ) } : null
+				)
 			} )
-			.add( viewFigureToModel( imageUtils ) );
+			.add( upcastImageFigure( imageUtils ) );
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,10 @@ import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
 
 const defaultPositions = BalloonPanelView.defaultPositions;
 const container = document.querySelector( '#container' );
+
+// It makes no sense to test the sticky position in this context,
+// thus exclude it from this manual test.
+delete defaultPositions.viewportStickyNorth;
 
 let currentHeading = '';
 

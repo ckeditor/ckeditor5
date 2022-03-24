@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -70,24 +70,26 @@ describe( 'Autosave', () => {
 	} );
 
 	describe( 'config.autosave.save', () => {
+		let spy;
+
 		beforeEach( () => {
 			element = document.createElement( 'div' );
 			document.body.appendChild( element );
+
+			spy = sinon.spy();
 
 			return ClassicTestEditor
 				.create( element, {
 					plugins: [ Autosave, Paragraph ],
 					autosave: {
-						save: sinon.spy()
-					}
+						save: spy
+					},
+					initialData: '<p>Foo</p>'
 				} )
 				.then( _editor => {
 					editor = _editor;
 
 					autosave = editor.plugins.get( Autosave );
-
-					const data = '<p>paragraph1</p><p>paragraph2</p>';
-					editor.setData( data );
 				} );
 		} );
 
@@ -95,6 +97,14 @@ describe( 'Autosave', () => {
 			document.body.removeChild( element );
 
 			return editor.destroy();
+		} );
+
+		it( 'should not call autosave callback while editor is being initialized', () => {
+			sinon.clock.tick( 1000 );
+
+			return Promise.resolve().then( () => {
+				expect( spy.called ).to.be.false;
+			} );
 		} );
 
 		it( 'should enable providing callback via the config', () => {
@@ -625,7 +635,7 @@ describe( 'Autosave', () => {
 				} );
 		} );
 
-		it( 'should handle a situration when the save callback throws an error', () => {
+		it( 'should handle a situation when the save callback throws an error', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
 			const successServerActionSpy = sinon.spy();
 			const serverActionStub = sinon.stub();
@@ -662,6 +672,194 @@ describe( 'Autosave', () => {
 					sinon.assert.calledTwice( serverActionStub );
 					sinon.assert.calledOnce( successServerActionSpy );
 				} );
+		} );
+
+		it( 'should ignore non-local changes', () => {
+			autosave.adapter = {
+				save: sinon.spy()
+			};
+
+			editor.model.enqueueChange( { isLocal: false }, writer => {
+				writer.insertElement( 'paragraph', null, editor.model.document.getRoot(), 0 );
+			} );
+
+			sinon.clock.tick( 2000 );
+
+			return runPromiseCycles().then( () => {
+				sinon.assert.notCalled( autosave.adapter.save );
+			} );
+		} );
+	} );
+
+	describe( 'save()', () => {
+		let spy;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			spy = sinon.spy();
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Autosave, Paragraph ],
+					autosave: {
+						save: async () => {
+							await wait( 100 );
+
+							spy();
+						}
+					},
+					initialData: '<p>Foo</p>'
+				} )
+				.then( _editor => {
+					editor = _editor;
+					autosave = editor.plugins.get( Autosave );
+				} );
+		} );
+
+		afterEach( () => {
+			document.body.removeChild( element );
+
+			return editor.destroy();
+		} );
+
+		it( 'should call autosave callback and return a promise resolved when the callback is finished', async () => {
+			const promise = autosave.save();
+
+			// Wait for autosave's inner promise delayer. After this callback has been called.
+			await runPromiseCycles();
+
+			// "Wait" for the callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await promise;
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should use one autosave call and one promise if called multiple times', async () => {
+			const promise = autosave.save();
+			const promiseB = autosave.save();
+			const promiseC = autosave.save();
+
+			expect( promiseB ).to.equal( promise );
+			expect( promiseC ).to.equal( promise );
+
+			// Wait for autosave's inner promise delayer. After this callback has been called.
+			await runPromiseCycles();
+
+			// "Wait" for the callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await promise;
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should use two autosave calls and one promise if called another time after model changed', async () => {
+			const promise = autosave.save();
+
+			editor.model.change( writer => {
+				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( writer.createText( 'foo' ) );
+			} );
+
+			const promiseB = autosave.save();
+
+			expect( promise ).to.equal( promiseB );
+
+			// Wait for autosave's inner promise delayer. After this callback has been called.
+			await runPromiseCycles();
+
+			// "Wait" for the first callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await runPromiseCycles();
+
+			expect( spy.calledOnce ).to.be.true;
+
+			// "Wait" for the second callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await promise;
+
+			expect( spy.calledTwice ).to.be.true;
+		} );
+
+		it( 'should cancel delayed autosave callback', async () => {
+			editor.model.change( writer => {
+				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( writer.createText( 'foo' ) );
+			} );
+
+			autosave.save();
+
+			// Wait for autosave's inner promise delayer.
+			await runPromiseCycles();
+
+			// "Wait" for the `save()` callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await runPromiseCycles();
+
+			// "Wait" for the debounce to finish.
+			sinon.clock.tick( 2000 );
+
+			// Wait for autosave's inner promise delayer.
+			await runPromiseCycles();
+
+			// "Wait" for the autosave callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await runPromiseCycles();
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should return a promise resolved when the autosave for save() call is finished (another callback in progress)', async () => {
+			editor.model.change( writer => {
+				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( writer.createText( 'foo' ) );
+			} );
+
+			// "Wait" for the debounce to finish.
+			sinon.clock.tick( 2000 );
+
+			// Wait for autosave's inner promise delayer.
+			await runPromiseCycles();
+
+			editor.model.change( writer => {
+				editor.model.insertContent( writer.createText( 'foo' ) );
+			} );
+
+			// Call `save()` before earlier callback finishes.
+			const promise = autosave.save();
+
+			expect( spy.called ).to.be.false;
+
+			// "Wait" for the callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await runPromiseCycles();
+
+			// First callback (debounced) has finished.
+			expect( spy.calledOnce ).to.be.true;
+
+			// "Wait" for the second callback to finish.
+			sinon.clock.tick( 100 );
+
+			await promise;
+
+			// First callback has finished.
+			expect( spy.calledTwice ).to.be.true;
 		} );
 	} );
 

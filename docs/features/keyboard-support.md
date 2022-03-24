@@ -7,6 +7,10 @@ classes: keyboard-shortcuts
 
 CKEditor 5 offers plenty of features to help you create your content in the most productive way. Using keyboard shortcuts is one of the simplest yet most efficient and popular ways to improve interaction with the software.
 
+<info-box info>
+	Keyboard support is enabled by default.
+</info-box>
+
 Below is a list of the most important keystrokes supported by CKEditor 5 and its features.
 
 ## Content editing
@@ -80,6 +84,10 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 		<tr>
 			<td>Move out of link or inline style</td>
 			<td colspan="2"><kbd>←</kbd> <kbd>←</kbd> / <kbd>→</kbd> <kbd>→</kbd></td>
+		</tr>
+		<tr>
+			<td>Revert autoformatting action</td>
+			<td colspan="2"><kbd>Backspace</kbd></td>
 		</tr>
 		<tr>
 			<th colspan="3">When a widget is selected (for example: image, table, horizontal line, etc.)</th>

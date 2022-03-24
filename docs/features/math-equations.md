@@ -1,14 +1,10 @@
 ---
 category: features
 menu-title: Math and chemical formulas
+badges: [ premium ]
 ---
 
 # Math equations and chemical formulas
-
-<info-box>
-	This feature is provided as a commercial solution called MathType delivered by our partner, [Wiris](http://www.wiris.com).
-	You can report any issues in the official CKEditor 5 [GitHub repository](https://github.com/ckeditor/ckeditor5/issues). A license can be purchased [here](https://ckeditor.com/contact/).
-</info-box>
 
 [MathType](http://www.wiris.com/en/mathtype) is a popular mathematical and science formula editor with classical and handwriting input modes. You can use it to create math equations or chemical formulas right inside the CKEditor 5 content.
 
@@ -16,9 +12,14 @@ MathType is based upon standards like MathML for internal representation and the
 
 Additionally, MathType offers a special tool designed to help you work with chemical notation. When enabled, ChemType adds a specialized toolbar with the common chemical symbols as well as changes the notation to make it more intuitive to work with chemical formulas.
 
+<info-box>
+	This feature is provided as a commercial solution called MathType delivered by our partner, [Wiris](http://www.wiris.com).
+	You can report any issues in the official CKEditor 5 [GitHub repository](https://github.com/ckeditor/ckeditor5/issues). A license can be purchased [here](https://ckeditor.com/contact/).
+</info-box>
+
 ## Demo
 
-In order to start creating math or chemical formulas in the WYSIWYG editor below, click the MathType or ChemType buttons in the toolbar. This will open the relevant dialog on the screen.
+To start creating math or chemical formulas in the WYSIWYG editor below, click the MathType {@icon @wiris/mathtype-ckeditor5/theme/icons/formula.svg MathType} or ChemType {@icon @wiris/mathtype-ckeditor5/theme/icons/chem.svg ChemType} buttons in the toolbar. This will open the relevant dialog on the screen.
 
 Use the toolbar to write your equation or formula. At any time you can also click the "Go to handwritten mode" button on the right side of the MathType editor to switch to handwriting.
 
@@ -46,7 +47,7 @@ If you visit a page using MathType with your mobile device, the handwriting inte
 
 ## Installation
 
-To add MathType features to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
+MathType is delivered as a CKEditor 5 plugin, so it can be combined into an editor build just like other features. To add this feature to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
 
 ```bash
 npm install --save @wiris/mathtype-ckeditor5
@@ -67,7 +68,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Customizing MathType service
@@ -206,3 +207,10 @@ To install the Ruby on Rails service, follow the steps below:
             }
     }
     ```
+
+## Displaying equations on your website
+
+By default, MathType returns equations in MathML which is [not supported by all browsers](https://developer.mozilla.org/en-US/docs/Web/MathML#browser_compatibility). In order to display equations on a page, you will need to use some engine that will handle the rendering process.
+
+Fortunately, MathType introduces the full MathML mode that handles the unsupported markup and converts it into a form that could be properly recognized by browsers. You can read more about the full MathML mode [in the documentation](https://docs.wiris.com/en/mathtype/mathtype_web/integrations/mathml-mode).
+

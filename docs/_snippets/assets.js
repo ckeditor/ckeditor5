@@ -1,14 +1,12 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console, window, document */
 
-import tippy from 'tippy.js';
+import isRelativeUrl from 'is-relative-url';
 
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/themes/light-border.css';
 import './tour-balloon.css';
 
 /**
@@ -67,9 +65,7 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		<button class="ck ck-button tippy-content__close-button ck-off" title="Close"></button>
 	`;
 
-	const tooltip = tippy( target, {
-		content,
-		theme: 'light-border',
+	const options = Object.assign( {}, {
 		placement: 'bottom',
 		trigger: 'manual',
 		hideOnClick: false,
@@ -77,20 +73,12 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		maxWidth: 280,
 		showOnCreate: true,
 		interactive: true,
+		theme: 'light-border',
 		zIndex: 1,
-		appendTo: () => document.body,
-		...tippyOptions
-	} );
+		appendTo: () => document.body
+	}, tippyOptions );
 
-	const closeButton = tooltip.popper.querySelector( '.tippy-content__close-button' );
-
-	closeButton.addEventListener( 'click', () => {
-		tooltip.hide();
-	} );
-
-	target.addEventListener( 'click', () => {
-		tooltip.hide();
-	} );
+	const tooltip = window.umberto.createTooltip( target, content, options );
 
 	for ( const root of editor.editing.view.document.roots ) {
 		root.once( 'change:isFocused', ( evt, name, isFocused ) => {
@@ -128,3 +116,46 @@ window.findToolbarItem = function( toolbarView, indexOrCallback ) {
 
 	return item ? item.element : undefined;
 };
+
+// Replaces all relative paths inside the content container with absolute URLs
+// to avoid a broken user experience when copying images between editors.
+// It parses all `<img>` elements and `<source>` elements if they belong to the `<picture>` node.
+( () => {
+	[ ...document.querySelectorAll( '.main__content-inner img' ) ]
+		.filter( img => isRelativeUrl( img.getAttribute( 'src' ) ) )
+		.forEach( img => {
+			// Update `<img src="...">`.
+			img.setAttribute( 'src', img.src );
+
+			// Update `<img srcset="...">`.
+			if ( img.srcset ) {
+				updateSrcSetAttribute( img, img.baseURI );
+			}
+
+			// Update `<source>` elements if grouped in the `<picture>` element.
+			if ( img.parentElement instanceof window.HTMLPictureElement ) {
+				[ ...img.parentElement.querySelectorAll( 'source' ) ]
+					.forEach( source => {
+						updateSrcSetAttribute( source, img.baseURI );
+					} );
+			}
+		} );
+
+	function updateSrcSetAttribute( element, baseURI ) {
+		const srcset = element.srcset.split( ',' )
+			.map( item => {
+				const [ relativeUrl, ratio ] = item.trim().split( ' ' );
+
+				if ( !isRelativeUrl( relativeUrl ) ) {
+					return item;
+				}
+
+				const absoluteUrl = new window.URL( relativeUrl, baseURI ).toString();
+
+				return [ absoluteUrl, ratio ].filter( i => i ).join( ' ' );
+			} )
+			.join( ', ' );
+
+		element.setAttribute( 'srcset', srcset );
+	}
+} )();

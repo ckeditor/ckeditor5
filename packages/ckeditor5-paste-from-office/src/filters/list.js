@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -87,7 +87,7 @@ export function unwrapParagraphInListItem( documentFragment, writer ) {
 		const element = value.item;
 
 		if ( element.is( 'element', 'li' ) ) {
-			// Google Docs allows on single paragraph inside LI.
+			// Google Docs allows for single paragraph inside LI.
 			const firstChild = element.getChild( 0 );
 
 			if ( firstChild && firstChild.is( 'element', 'p' ) ) {
@@ -155,17 +155,20 @@ function findAllItemLikeElements( documentFragment, writer ) {
 // @param {String} stylesString CSS stylesheet.
 // @returns {Object} result
 // @returns {String} result.type List type, could be `ul` or `ol`.
+// @returns {Number} result.startIndex List start index, valid only for ordered lists.
 // @returns {String|null} result.style List style, for example: `decimal`, `lower-roman`, etc. It is extracted
 // directly from Word stylesheet and adjusted to represent proper values for the CSS `list-style-type` property.
 // If it cannot be adjusted, the `null` value is returned.
 function detectListStyle( listLikeItem, stylesString ) {
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
 	const listStyleTypeRegex = /mso-level-number-format:([^;]{0,100});/gi;
+	const listStartIndexRegex = /mso-level-start-at:\s{0,100}([0-9]{0,10})\s{0,100};/gi;
 
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
 	let listStyleType = 'decimal'; // Decimal is default one.
 	let type = 'ol'; // <ol> is default list.
+	let startIndex = null;
 
 	if ( listStyleMatch && listStyleMatch[ 1 ] ) {
 		const listStyleTypeMatch = listStyleTypeRegex.exec( listStyleMatch[ 1 ] );
@@ -185,11 +188,18 @@ function detectListStyle( listLikeItem, stylesString ) {
 			if ( bulletedStyle ) {
 				listStyleType = bulletedStyle;
 			}
+		} else {
+			const listStartIndexMatch = listStartIndexRegex.exec( listStyleMatch[ 1 ] );
+
+			if ( listStartIndexMatch && listStartIndexMatch[ 1 ] ) {
+				startIndex = parseInt( listStartIndexMatch[ 1 ] );
+			}
 		}
 	}
 
 	return {
 		type,
+		startIndex,
 		style: mapListStyleDefinition( listStyleType )
 	};
 }
@@ -197,7 +207,7 @@ function detectListStyle( listLikeItem, stylesString ) {
 // Tries to extract the `list-style-type` value based on the marker element for bulleted list.
 //
 // @param {module:engine/view/element~Element} element
-// @returns {module:engine/view/element~Element|null}
+// @returns {String|null}
 function findBulletedListStyle( element ) {
 	const listMarkerElement = findListMarkerNode( element );
 
@@ -225,18 +235,28 @@ function findBulletedListStyle( element ) {
 // @param {module:engine/view/element~Element} element
 // @returns {module:engine/view/text~Text|null}
 function findListMarkerNode( element ) {
-	// If the first child is a text node, it is a value for the element.
+	// If the first child is a text node, it is the data for the element.
+	// The list-style marker is not present here.
 	if ( element.getChild( 0 ).is( '$text' ) ) {
 		return null;
 	}
 
-	const textNodeOrElement = element.getChild( 0 ).getChild( 0 );
+	for ( const childNode of element.getChildren() ) {
+		// The list-style marker will be inside the `<span>` element. Let's ignore all non-span elements.
+		// It may happen that the `<a>` element is added as the first child. Most probably, it's an anchor element.
+		if ( !childNode.is( 'element', 'span' ) ) {
+			continue;
+		}
 
-	if ( textNodeOrElement.is( '$text' ) ) {
-		return textNodeOrElement;
+		const textNodeOrElement = childNode.getChild( 0 );
+
+		// If already found the marker element, use it.
+		if ( textNodeOrElement.is( '$text' ) ) {
+			return textNodeOrElement;
+		}
+
+		return textNodeOrElement.getChild( 0 );
 	}
-
-	return textNodeOrElement.getChild( 0 );
 }
 
 // Parses the `list-style-type` value extracted directly from the Word CSS stylesheet and returns proper CSS definition.
@@ -244,9 +264,11 @@ function findListMarkerNode( element ) {
 // @param {String|null} value
 // @returns {String|null}
 function mapListStyleDefinition( value ) {
+	if ( value.startsWith( 'arabic-leading-zero' ) ) {
+		return 'decimal-leading-zero';
+	}
+
 	switch ( value ) {
-		case 'arabic-leading-zero':
-			return 'decimal-leading-zero';
 		case 'alpha-upper':
 			return 'upper-alpha';
 		case 'alpha-lower':
@@ -264,7 +286,7 @@ function mapListStyleDefinition( value ) {
 	}
 }
 
-// Creates empty list of a given type and inserts it after a specified element.
+// Creates an empty list of a given type and inserts it after a specified element.
 //
 // @param {Object} listStyle List style object which determines the type of newly created list.
 // Usually a result of `detectListStyle()` function.
@@ -283,6 +305,10 @@ function insertNewEmptyList( listStyle, element, writer ) {
 	// Set the value for the `list-style-type` property directly to the list container.
 	if ( listStyle.style ) {
 		writer.setStyle( 'list-style-type', listStyle.style, list );
+	}
+
+	if ( listStyle.startIndex && listStyle.startIndex > 1 ) {
+		writer.setAttribute( 'start', listStyle.startIndex, list );
 	}
 
 	return list;

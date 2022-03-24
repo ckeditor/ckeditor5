@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module ui/panel/balloon/contextualballoon
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BalloonPanelView from './balloonpanelview';
 import View from '../../view';
 import ButtonView from '../../button/buttonview';
@@ -168,6 +168,17 @@ export default class ContextualBalloon extends Plugin {
 		 * @type {module:ui/view~View}
 		 */
 		this._fakePanelsView = this._createFakePanelsView();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.view.destroy();
+		this._rotatorView.destroy();
+		this._fakePanelsView.destroy();
 	}
 
 	/**
@@ -498,11 +509,18 @@ export default class ContextualBalloon extends Plugin {
 	_getBalloonPosition() {
 		let position = Array.from( this._visibleStack.values() ).pop().position;
 
-		// Use the default limiter if none has been specified.
-		if ( position && !position.limiter ) {
+		if ( position ) {
+			// Use the default limiter if none has been specified.
+			if ( !position.limiter ) {
+				// Don't modify the original options object.
+				position = Object.assign( {}, position, {
+					limiter: this.positionLimiter
+				} );
+			}
+
 			// Don't modify the original options object.
 			position = Object.assign( {}, position, {
-				limiter: this.positionLimiter
+				viewportOffsetConfig: this.editor.ui.viewportOffset
 			} );
 		}
 
@@ -619,6 +637,15 @@ class RotatorView extends View {
 		super.render();
 
 		this.focusTracker.add( this.element );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
 	}
 
 	/**

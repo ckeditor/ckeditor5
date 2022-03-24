@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -34,10 +34,6 @@ msgstr ""
 
 msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
 msgid "Previous"
-msgstr ""
-
-msgctxt "Label for a 'page X of Y' status of a typical next/previous page navigation."
-msgid "%0 of %1"
 msgstr ""
 
 msgctxt "Label used by assistive technologies describing a generic editor toolbar."

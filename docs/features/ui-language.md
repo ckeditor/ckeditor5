@@ -13,6 +13,8 @@ The UI of the editor can be localized. CKEditor 5 currently supports around 90 l
 	If you want to help translate CKEditor 5 into your native language, join the [CKEditor 5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
 </info-box>
 
+## Demo
+
 See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
@@ -24,6 +26,8 @@ See the demo of the editor in Spanish:
 ## Right–to–left (RTL) languages support
 
 CKEditor 5 supports right–to–left languages out–of–the–box. When one of <abbr title="right–to–left">RTL</abbr> languages is used, the WYSIWYG editor adapts its UI for the best editing experience, for instance, mirroring various elements like toolbars, dropdowns, buttons, etc.
+
+### Demo
 
 See the demo of the editor in Arabic:
 
@@ -75,7 +79,7 @@ For example:
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/translations/de.js"></script>
 ```
 
-See the {@link builds/guides/integration/installation#cdn CDN installation guide} for more information.
+See the {@link installation/advanced/predefined-builds#cdn CDN installation guide} for more information.
 
 ### npm
 
@@ -83,7 +87,7 @@ After installing the build from npm, languages will be available in `node_module
 
 A single language can be loaded directly to your code by importing e.g. `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
 
-See the {@link builds/guides/integration/installation#npm npm installation guide} for more information.
+See the {@link installation/advanced/predefined-builds#npm npm installation guide} for more information.
 
 ### Zip
 
@@ -94,13 +98,13 @@ All additional languages are included in the `.zip` file. You need to include th
 <script src="[ckeditor-path]/translations/de.js"></script>
 ```
 
-See the {@link builds/guides/integration/installation#zip-download zip installation guide} for more information.
+See the {@link installation/advanced/predefined-builds#zip-download zip installation guide} for more information.
 
 ## Building the editor using a specific language
 
 Currently, it is possible to change the UI language at the build stage and after the build. A single build of the editor supports the language which was defined in the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin)'s configuration. Check the whole translation process to see how you can change the language later.
 
-If you use one of the {@link builds/index predefined editor builds}, refer to {@link builds/guides/development/custom-builds Creating custom builds} to learn how to change the language of your build.
+If you use one of the {@link installation/index predefined editor builds}, refer to {@link installation/getting-started/quick-start#building-the-editor-from-source Creating custom builds} to learn how to change the language of your build.
 
 If you build CKEditor 5 from scratch or integrate it directly into your application, then all you need to do is to:
 

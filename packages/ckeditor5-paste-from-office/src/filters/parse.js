@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -56,14 +56,14 @@ export function parseHtml( htmlString, stylesProcessor ) {
 	};
 }
 
-// Transforms native `Document` object into {@link module:engine/view/documentfragment~DocumentFragment}.
+// Transforms native `Document` object into {@link module:engine/view/documentfragment~DocumentFragment}. Comments are skipped.
 //
 // @param {Document} htmlDocument Native `Document` object to be transformed.
 // @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
 // @returns {module:engine/view/documentfragment~DocumentFragment}
 function documentToView( htmlDocument, stylesProcessor ) {
 	const viewDocument = new ViewDocument( stylesProcessor );
-	const domConverter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
+	const domConverter = new DomConverter( viewDocument, { renderingMode: 'data' } );
 	const fragment = htmlDocument.createDocumentFragment();
 	const nodes = htmlDocument.body.childNodes;
 
@@ -71,7 +71,7 @@ function documentToView( htmlDocument, stylesProcessor ) {
 		fragment.appendChild( nodes[ 0 ] );
 	}
 
-	return domConverter.domToView( fragment );
+	return domConverter.domToView( fragment, { skipComments: true } );
 }
 
 // Extracts both `CSSStyleSheet` and string representation from all `style` elements available in a provided `htmlDocument`.

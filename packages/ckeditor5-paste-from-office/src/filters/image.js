@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -66,6 +66,10 @@ function findAllShapesIds( documentFragment, writer ) {
 	const shapesIds = [];
 
 	for ( const value of range ) {
+		if ( value.type != 'elementStart' ) {
+			continue;
+		}
+
 		const el = value.item;
 		const prevSiblingName = el.previousSibling && el.previousSibling.name || null;
 
@@ -125,7 +129,7 @@ function removeAllShapeElements( documentFragment, writer ) {
 	const shapes = [];
 
 	for ( const value of range ) {
-		if ( shapeElementsMatcher.match( value.item ) ) {
+		if ( value.type == 'elementStart' && shapeElementsMatcher.match( value.item ) ) {
 			shapes.push( value.item );
 		}
 	}

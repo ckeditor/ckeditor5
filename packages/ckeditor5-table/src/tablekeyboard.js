@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,10 +9,10 @@
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
+import TableUtils from './tableutils';
 
 import { Plugin } from 'ckeditor5/src/core';
 import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
-import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -32,7 +32,7 @@ export default class TableKeyboard extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableSelection ];
+		return [ TableSelection, TableUtils ];
 	}
 
 	/**
@@ -83,10 +83,11 @@ export default class TableKeyboard extends Plugin {
 	 */
 	_getTabHandler( isForward ) {
 		const editor = this.editor;
+		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		return ( domEventData, cancel ) => {
 			const selection = editor.model.document.selection;
-			let tableCell = getTableCellsContainingSelection( selection )[ 0 ];
+			let tableCell = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
 
 			if ( !tableCell ) {
 				tableCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
@@ -115,7 +116,6 @@ export default class TableKeyboard extends Plugin {
 				return;
 			}
 
-			const tableUtils = this.editor.plugins.get( 'TableUtils' );
 			const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
 			const isLastRow = currentRowIndex === tableUtils.getRows( table ) - 1;
 
@@ -188,13 +188,14 @@ export default class TableKeyboard extends Plugin {
 	 * @returns {Boolean} Returns `true` if key was handled.
 	 */
 	_handleArrowKeys( direction, expandSelection ) {
+		const tableUtils = this.editor.plugins.get( TableUtils );
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const isForward = [ 'right', 'down' ].includes( direction );
 
 		// In case one or more table cells are selected (from outside),
 		// move the selection to a cell adjacent to the selected table fragment.
-		const selectedCells = getSelectedTableCells( selection );
+		const selectedCells = tableUtils.getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
 			let focusCell;
@@ -218,10 +219,25 @@ export default class TableKeyboard extends Plugin {
 			return false;
 		}
 
-		// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
-		// Selection for sure will not approach cell edge.
-		if ( expandSelection && !selection.isCollapsed && selection.isBackward == isForward ) {
-			return false;
+		// When the selection is not collapsed.
+		if ( !selection.isCollapsed ) {
+			if ( expandSelection ) {
+				// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
+				// Selection for sure will not approach cell edge.
+				//
+				// With a special case when all cell content is selected - then selection should expand to the other cell.
+				// Note: When the entire cell gets selected using CTRL+A, the selection is always forward.
+				if ( selection.isBackward == isForward && !selection.containsEntireContent( tableCell ) ) {
+					return false;
+				}
+			} else {
+				const selectedElement = selection.getSelectedElement();
+
+				// It will collapse for non-object selected so it's not going to move to other cell.
+				if ( !selectedElement || !model.schema.isObject( selectedElement ) ) {
+					return false;
+				}
+			}
 		}
 
 		// Let's check if the selection is at the beginning/end of the cell.

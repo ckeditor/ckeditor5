@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -26,7 +26,7 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
  * (sending the file and handling server's response). You can use one of the existing plugins introducing upload adapters
  * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
  * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one – see
- * the {@glink framework/guides/deep-dive/upload-adapter "Custom image upload adapter" deep dive guide}.
+ * the {@glink framework/guides/deep-dive/upload-adapter Custom image upload adapter deep dive guide}.
  *
  * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
  * {@link module:upload/filerepository~FileLoader} instance to load and upload files.
@@ -154,7 +154,8 @@ export default class FileRepository extends Plugin {
 			 * This warning shows up when {@link module:upload/filerepository~FileRepository} is being used
 			 * without {@link #createUploadAdapter defining an upload adapter}.
 			 *
-			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**
+			 * **If you see this warning when using one of the {@glink installation/advanced/alternative-setups/predefined-builds
+			 * CKEditor 5 Builds}**
 			 * it means that you did not configure any of the upload adapters available by default in those builds.
 			 *
 			 * See the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn which upload

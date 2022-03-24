@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, console */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
@@ -68,15 +68,53 @@ describe( 'InlineEditorUI', () => {
 			it( 'sets view#viewportTopOffset, if specified', () => {
 				return VirtualInlineTestEditor
 					.create( 'foo', {
-						toolbar: {
-							viewportTopOffset: 100
+						ui: {
+							viewportOffset: {
+								top: 100
+							}
 						}
 					} )
 					.then( editor => {
 						const ui = editor.ui;
 						const view = ui.view;
 
+						expect( ui.viewportOffset.top ).to.equal( 100 );
 						expect( view.viewportTopOffset ).to.equal( 100 );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'sets view#viewportTopOffset if legacy toolbar.vierportTopOffset specified', () => {
+				sinon.stub( console, 'warn' );
+
+				return VirtualInlineTestEditor
+					.create( 'foo', {
+						toolbar: {
+							viewportTopOffset: 100
+						}
+					} )
+					.then( editor => {
+						const ui = editor.ui;
+
+						expect( ui.viewportOffset.top ).to.equal( 100 );
+						expect( ui.view.viewportTopOffset ).to.equal( 100 );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'warns if legacy toolbar.vierportTopOffset specified', () => {
+				const spy = sinon.stub( console, 'warn' );
+
+				return VirtualInlineTestEditor
+					.create( 'foo', {
+						toolbar: {
+							viewportTopOffset: 100
+						}
+					} )
+					.then( editor => {
+						sinon.assert.calledWithMatch( spy, 'editor-ui-deprecated-viewport-offset-config' );
 
 						return editor.destroy();
 					} );
@@ -210,8 +248,7 @@ describe( 'InlineEditorUI', () => {
 				return VirtualInlineTestEditor
 					.create( '', {
 						toolbar: {
-							items: [ 'foo', 'bar' ],
-							viewportTopOffset: 100
+							items: [ 'foo', 'bar' ]
 						}
 					} )
 					.then( editor => {

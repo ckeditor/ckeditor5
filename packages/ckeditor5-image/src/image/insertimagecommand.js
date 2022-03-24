@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,6 +28,15 @@ import { logWarning, toArray } from 'ckeditor5/src/utils';
  *			source:  [
  *				'path/to/image.jpg',
  *				'path/to/other-image.jpg'
+ *			]
+ *		} );
+ *
+ * If you want to take the full control over the process, you can specify individual model attributes:
+ *
+ *		editor.execute( 'insertImage', {
+ *			source:  [
+ *				{ src: 'path/to/image.jpg', alt: 'First alt text' },
+ *				{ src: 'path/to/other-image.jpg', alt: 'Second alt text', customAttribute: 'My attribute value' }
  *			]
  *		} );
  *
@@ -79,10 +88,11 @@ export default class InsertImageCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} options Options for the executed command.
-	 * @param {String|Array.<String>} options.source The image source or an array of image sources to insert.
+	 * @param {String|Array.<String>|Array.<Object>} options.source The image source or an array of image sources to insert.
+	 * See the documentation of the command to learn more about accepted formats.
 	 */
 	execute( options ) {
-		const sources = toArray( options.source );
+		const sourceDefinitions = toArray( options.source );
 		const selection = this.editor.model.document.selection;
 		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
 
@@ -96,17 +106,21 @@ export default class InsertImageCommand extends Command {
 		// Note: Selection attributes that do not make sense for images will be filtered out by insertImage() anyway.
 		const selectionAttributes = Object.fromEntries( selection.getAttributes() );
 
-		sources.forEach( ( src, index ) => {
+		sourceDefinitions.forEach( ( sourceDefinition, index ) => {
 			const selectedElement = selection.getSelectedElement();
+
+			if ( typeof sourceDefinition === 'string' ) {
+				sourceDefinition = { src: sourceDefinition };
+			}
 
 			// Inserting of an inline image replace the selected element and make a selection on the inserted image.
 			// Therefore inserting multiple inline images requires creating position after each element.
 			if ( index && selectedElement && imageUtils.isImage( selectedElement ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
-				imageUtils.insertImage( { src, ...selectionAttributes }, position );
+				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes }, position );
 			} else {
-				imageUtils.insertImage( { src, ...selectionAttributes } );
+				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes } );
 			}
 		} );
 	}

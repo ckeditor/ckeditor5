@@ -1,12 +1,11 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import TableEditing from '../../src/tableediting';
 import { modelTable } from '../_utils/utils';
@@ -91,7 +90,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '[]', '' ],
 					[ '', '' ]
 				] ) );
@@ -102,7 +101,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '' ],
@@ -116,7 +115,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '', '', '' ],
@@ -131,7 +130,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4, headingRows: 1, headingColumns: 2 } );
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '', '', '' ],
@@ -146,7 +145,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
@@ -160,7 +159,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					modelTable( [
 						[ '[]', '', '', '' ],
 						[ '', '', '', '' ],
@@ -192,6 +191,169 @@ describe( 'InsertTableCommand', () => {
 				expect( getData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ] ) + '<paragraph>bar</paragraph>'
 				);
+			} );
+		} );
+
+		describe( 'auto headings', () => {
+			it( 'should have first row as a heading by default', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 1 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 1 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should have first column as a heading by default', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { columns: 1 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ]
+					], { headingColumns: 1 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should have first row and first column as a heading by default', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 1, columns: 1 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 3, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 1, headingColumns: 1 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should have first three rows and two columns as a heading by default', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 2 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 4, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 3, headingColumns: 2 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should have auto headings not to be greater than table rows and columns', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 3 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 2, headingColumns: 2 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should work when heading rows and columns are explicitly set to 0', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 2 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 4, columns: 3, headingRows: 0, headingColumns: 0 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					] )
+				);
+
+				await editor.destroy();
 			} );
 		} );
 	} );

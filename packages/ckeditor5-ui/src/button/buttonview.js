@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -184,7 +184,7 @@ export default class ButtonView extends View {
 		this.children.add( this.tooltipView );
 		this.children.add( this.labelView );
 
-		if ( this.withKeystroke ) {
+		if ( this.withKeystroke && this.keystroke ) {
 			this.children.add( this.keystrokeView );
 		}
 	}

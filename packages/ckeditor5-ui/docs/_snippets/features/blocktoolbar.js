@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,8 +15,12 @@ BalloonEditor
 	.create( document.querySelector( '#snippet-block-toolbar' ), {
 		plugins: BalloonEditor.builtinPlugins.concat( [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI ] ),
 		toolbar: {
-			items: [ 'bold', 'italic', 'link', 'undo', 'redo' ],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			items: [ 'bold', 'italic', 'link', 'undo', 'redo' ]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		blockToolbar: [
 			'paragraph', 'heading1', 'heading2', 'heading3',

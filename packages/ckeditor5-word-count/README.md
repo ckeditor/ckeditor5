@@ -1,15 +1,16 @@
-CKEditor 5 word count and character count feature
+CKEditor 5 word and character count feature
 ===========================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-word-count.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count)
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
-[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
+![Dependency Status](https://img.shields.io/librariesio/release/npm/@ckeditor/ckeditor5-word-count)
 
 This package implements word count and character count support for CKEditor 5.
 
 ## Demo
 
-Check out the demo in the [Word count and character count feature](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html) guide.
+Check out the demo in the [word count and character count feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html#demo).
 
 ## Documentation
 

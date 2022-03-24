@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -98,12 +98,13 @@ export default class DataTransfer {
 
 function getFiles( nativeDataTransfer ) {
 	// DataTransfer.files and items are array-like and might not have an iterable interface.
-	const files = nativeDataTransfer.files ? Array.from( nativeDataTransfer.files ) : [];
-	const items = nativeDataTransfer.items ? Array.from( nativeDataTransfer.items ) : [];
+	const files = Array.from( nativeDataTransfer.files || [] );
+	const items = Array.from( nativeDataTransfer.items || [] );
 
 	if ( files.length ) {
 		return files;
 	}
+
 	// Chrome has empty DataTransfer.files, but allows getting files through the items interface.
 	return items
 		.filter( item => item.kind === 'file' )

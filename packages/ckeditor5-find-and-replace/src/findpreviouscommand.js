@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,13 +10,16 @@
 import FindNextCommand from './findnextcommand';
 
 /**
- * The find next command. Moves the highlight to the next search result.
+ * The find previous command. Moves the highlight to the previous search result.
  *
  * It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  *
  * @extends module:find-and-replace/findnextcommand~FindNextCommand
  */
 export default class FindPreviousCommand extends FindNextCommand {
+	/**
+	 * @inheritDoc
+	 */
 	execute() {
 		const results = this._state.results;
 		const currentIndex = results.getIndex( this._state.highlightedResult );

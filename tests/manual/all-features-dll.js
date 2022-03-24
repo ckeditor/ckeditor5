@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,7 +17,6 @@ import '@ckeditor/ckeditor5-editor-balloon/build/editor-balloon';
 import '@ckeditor/ckeditor5-image/build/image';
 import '@ckeditor/ckeditor5-link/build/link';
 import '@ckeditor/ckeditor5-basic-styles/build/basic-styles';
-// import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import '@ckeditor/ckeditor5-find-and-replace/build/find-and-replace';
 import '@ckeditor/ckeditor5-font/build/font';
 import '@ckeditor/ckeditor5-indent/build/indent';
@@ -35,6 +34,7 @@ import '@ckeditor/ckeditor5-heading/build/heading';
 import '@ckeditor/ckeditor5-highlight/build/highlight';
 import '@ckeditor/ckeditor5-horizontal-line/build/horizontal-line';
 import '@ckeditor/ckeditor5-html-embed/build/html-embed';
+import '@ckeditor/ckeditor5-html-support/build/html-support';
 import '@ckeditor/ckeditor5-language/build/language';
 import '@ckeditor/ckeditor5-media-embed/build/media-embed';
 import '@ckeditor/ckeditor5-mention/build/mention';
@@ -57,7 +57,7 @@ const { Bold, Italic, Strikethrough, Subscript, Superscript, Underline, Code } =
 const { FindAndReplace } = window.CKEditor5.findAndReplace;
 const { FontColor, FontFamily, FontSize, FontBackgroundColor } = window.CKEditor5.font;
 const { Indent, IndentBlock } = window.CKEditor5.indent;
-const { List, ListStyle, TodoList } = window.CKEditor5.list;
+const { List, ListProperties, TodoList } = window.CKEditor5.list;
 const { SpecialCharacters, SpecialCharactersEssentials } = window.CKEditor5.specialCharacters;
 const { Table, TableToolbar, TableCellProperties, TableProperties, TableCaption } = window.CKEditor5.table;
 const { Alignment } = window.CKEditor5.alignment;
@@ -71,6 +71,7 @@ const { Heading } = window.CKEditor5.heading;
 const { Highlight } = window.CKEditor5.highlight;
 const { HorizontalLine } = window.CKEditor5.horizontalLine;
 const { HtmlEmbed } = window.CKEditor5.htmlEmbed;
+const { HtmlComment } = window.CKEditor5.htmlSupport;
 const { MediaEmbed } = window.CKEditor5.mediaEmbed;
 const { Mention } = window.CKEditor5.mention;
 const { PageBreak } = window.CKEditor5.pageBreak;
@@ -125,8 +126,9 @@ const config = {
 		Highlight,
 		HorizontalLine,
 		HtmlEmbed,
+		HtmlComment,
 		Indent, IndentBlock,
-		List, ListStyle, TodoList,
+		List, ListProperties, TodoList,
 		MediaEmbed,
 		Mention,
 		PageBreak,
@@ -236,9 +238,7 @@ const config = {
 			isGallery: {
 				mode: 'manual',
 				label: 'Gallery link',
-				attributes: {
-					class: 'gallery'
-				}
+				classes: 'gallery'
 			}
 		}
 	},
@@ -294,7 +294,8 @@ const decoupledEditorData = '<h2>Sample</h2>' +
 		'<img src="./sample.jpg" alt="Autumn fields" />' +
 	'</figure>' +
 	'<p>You can use this sample to validate whether your ' +
-		'<a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html">custom build</a> works fine.' +
+		'<a href="https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/custom-builds.html">' +
+		'custom build</a> works fine.' +
 	'</p>';
 
 const decoupledEditorPromise = DecoupledEditor.create( decoupledEditorData, config )

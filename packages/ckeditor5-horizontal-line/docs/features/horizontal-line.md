@@ -11,7 +11,7 @@ Often known as the horizontal rule, it provides a visual way to separate the con
 
 ## Demo
 
-To insert horizontal line, use the toolbar button. Alternatively, start the line with `---` to insert horizontal line thanks to the {@link features/autoformat autoformatting feature}.
+To insert a horizontal line in the demo below, use the toolbar button {@icon @ckeditor/ckeditor5-horizontal-line/theme/icons/horizontalline.svg Horizontal line}. Alternatively, start new line with `---` to insert a horizontal line thanks to the {@link features/autoformat autoformatting feature}.
 
 {@snippet features/horizontal-line}
 
@@ -47,7 +47,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

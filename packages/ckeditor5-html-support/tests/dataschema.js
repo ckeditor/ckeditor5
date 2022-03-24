@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -207,5 +207,203 @@ describe( 'DataSchema', () => {
 			// It's expected that definition will include `isBlock` property.
 			return getFakeDefinitions( ...viewNames ).map( def => ( { ...def, isBlock: true } ) );
 		}
+	} );
+
+	describe( 'extendBlockElement()', () => {
+		it( 'should extend schema with new properties', () => {
+			dataSchema.registerBlockElement( {
+				view: 'viewName',
+				model: 'modelName'
+			} );
+
+			dataSchema.extendBlockElement( {
+				model: 'modelName',
+				paragraphLikeModel: 'htmlDivParagraph',
+				modelSchema: {
+					isSelectable: true
+				}
+			} );
+
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+				model: 'modelName',
+				view: 'viewName',
+				paragraphLikeModel: 'htmlDivParagraph',
+				modelSchema: {
+					isSelectable: true
+				},
+				isBlock: true
+			} ] );
+		} );
+
+		it( 'should append items to array', () => {
+			dataSchema.registerBlockElement( {
+				view: 'viewName',
+				model: 'modelName',
+				modelSchema: {
+					allowChildren: [ 'paragraph' ]
+				}
+			} );
+
+			dataSchema.extendBlockElement( {
+				model: 'modelName',
+				modelSchema: {
+					allowChildren: [ 'htmlA' ],
+					allowIn: [ 'htmlDiv' ]
+				}
+			} );
+
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+				model: 'modelName',
+				view: 'viewName',
+				modelSchema: {
+					allowChildren: [ 'paragraph', 'htmlA' ],
+					allowIn: [ 'htmlDiv' ]
+				},
+				isBlock: true
+			} ] );
+		} );
+
+		it( 'should register new schema if not registered already', () => {
+			dataSchema.extendBlockElement( {
+				model: 'modelName',
+				view: 'viewName',
+				paragraphLikeModel: 'htmlDivParagraph',
+				modelSchema: {
+					isSelectable: true
+				}
+			} );
+
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+				model: 'modelName',
+				view: 'viewName',
+				paragraphLikeModel: 'htmlDivParagraph',
+				modelSchema: {
+					isSelectable: true
+				},
+				isBlock: true
+			} ] );
+		} );
+
+		it( 'should not modify existing schema in-place', () => {
+			dataSchema.registerBlockElement( {
+				view: 'viewName',
+				model: 'modelName'
+			} );
+
+			const originalSchema = Array.from( dataSchema.getDefinitionsForView( 'viewName' ) )[ 0 ];
+
+			dataSchema.extendBlockElement( {
+				model: 'modelName',
+				paragraphLikeModel: 'htmlDivParagraph',
+				modelSchema: {
+					isSelectable: true
+				}
+			} );
+
+			expect( originalSchema ).to.deep.equal( {
+				model: 'modelName',
+				view: 'viewName',
+				isBlock: true
+			} );
+		} );
+	} );
+
+	describe( 'extendInlineElement()', () => {
+		it( 'should extend schema with new properties', () => {
+			dataSchema.registerInlineElement( {
+				view: 'viewName',
+				model: 'modelName'
+			} );
+
+			dataSchema.extendInlineElement( {
+				model: 'modelName',
+				priority: 1,
+				modelSchema: {
+					isSelectable: true
+				}
+			} );
+
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+				model: 'modelName',
+				view: 'viewName',
+				priority: 1,
+				modelSchema: {
+					isSelectable: true
+				},
+				isInline: true
+			} ] );
+		} );
+
+		it( 'should append items to array', () => {
+			dataSchema.registerInlineElement( {
+				view: 'viewName',
+				model: 'modelName',
+				modelSchema: {
+					allowChildren: [ 'htmlSpan' ]
+				}
+			} );
+
+			dataSchema.extendInlineElement( {
+				model: 'modelName',
+				modelSchema: {
+					allowChildren: [ 'htmlA' ],
+					allowIn: [ 'htmlDiv' ]
+				}
+			} );
+
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+				model: 'modelName',
+				view: 'viewName',
+				modelSchema: {
+					allowChildren: [ 'htmlSpan', 'htmlA' ],
+					allowIn: [ 'htmlDiv' ]
+				},
+				isInline: true
+			} ] );
+		} );
+
+		it( 'should register new schema if not registered already', () => {
+			dataSchema.extendInlineElement( {
+				model: 'modelName',
+				view: 'viewName',
+				priority: 1,
+				modelSchema: {
+					isSelectable: true
+				}
+			} );
+
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+				model: 'modelName',
+				view: 'viewName',
+				priority: 1,
+				modelSchema: {
+					isSelectable: true
+				},
+				isInline: true
+			} ] );
+		} );
+
+		it( 'should not modify existing schema in-place', () => {
+			dataSchema.registerInlineElement( {
+				view: 'viewName',
+				model: 'modelName'
+			} );
+
+			const originalSchema = Array.from( dataSchema.getDefinitionsForView( 'viewName' ) )[ 0 ];
+
+			dataSchema.extendInlineElement( {
+				model: 'modelName',
+				priority: 1,
+				modelSchema: {
+					isSelectable: true
+				}
+			} );
+
+			expect( originalSchema ).to.deep.equal( {
+				model: 'modelName',
+				view: 'viewName',
+				isInline: true
+			} );
+		} );
 	} );
 } );

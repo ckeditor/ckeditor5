@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,15 +21,19 @@ export default class FindNextCommand extends Command {
 	 * Creates a new `FindNextCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
+	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state An object to hold plugin state.
 	 */
 	constructor( editor, state ) {
 		super( editor );
 
+		// It does not affect data so should be enabled in read-only mode.
+		this.affectsData = false;
+
 		/**
 		 * The find and replace state object used for command operations.
 		 *
-		 * @private
-		 * @member {module:find-and-replace/findandreplaceediting~FindAndReplaceState} #_state
+		 * @protected
+		 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #_state
 		 */
 		this._state = state;
 
@@ -38,19 +42,18 @@ export default class FindNextCommand extends Command {
 		this.listenTo( this._state.results, 'change', () => {
 			this.isEnabled = this._state.results.length > 1;
 		} );
-
-		// Do not block the command if the editor goes into the read-only mode as it does not impact the data. See #9975.
-		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
-			if ( value ) {
-				this.clearForceDisabled( 'readOnlyMode' );
-			}
-		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	refresh() {
 		this.isEnabled = this._state.results.length > 1;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	execute() {
 		const results = this._state.results;
 		const currentIndex = results.getIndex( this._state.highlightedResult );

@@ -10,11 +10,11 @@ This package implements the indentation feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/indent#demo demo in the block indentation feature} guide.
+Check out the {@link features/indent#demo demo in the block indentation feature guide}.
 
 ## Documentation
 
-See the {@link features/indent Block indentation} guide and the {@link module:indent/indent~Indent} plugin documentation.
+See the {@link features/indent block indentation guide} and the {@link module:indent/indent~Indent} plugin documentation.
 
 ## Installation
 

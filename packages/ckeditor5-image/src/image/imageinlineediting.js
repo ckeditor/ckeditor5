@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,14 +11,17 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
-import { modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';
+import {
+	downcastImageAttribute,
+	downcastSrcsetAttribute
+} from './converters';
 
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
-	getImageTypeMatcher,
-	createImageViewElement,
+	getImgViewElementMatcher,
+	createInlineImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../image/utils';
 
@@ -61,6 +64,7 @@ export default class ImageInlineEditing extends Plugin {
 			isObject: true,
 			isInline: true,
 			allowWhere: '$text',
+			allowAttributesOf: '$text',
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
@@ -101,23 +105,26 @@ export default class ImageInlineEditing extends Plugin {
 			} );
 
 		conversion.for( 'editingDowncast' )
-			.elementToElement( {
+			.elementToStructure( {
 				model: 'imageInline',
 				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
-					createImageViewElement( writer, 'imageInline' ), writer, t( 'image widget' )
+					createInlineImageViewElement( writer ), writer, t( 'image widget' )
 				)
 			} );
 
 		conversion.for( 'downcast' )
-			.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'src' ) )
-			.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'alt' ) )
-			.add( srcsetAttributeConverter( imageUtils, 'imageInline' ) );
+			.add( downcastImageAttribute( imageUtils, 'imageInline', 'src' ) )
+			.add( downcastImageAttribute( imageUtils, 'imageInline', 'alt' ) )
+			.add( downcastSrcsetAttribute( imageUtils, 'imageInline' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getImageTypeMatcher( editor, 'imageInline' ),
-				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
+				view: getImgViewElementMatcher( editor, 'imageInline' ),
+				model: ( viewImage, { writer } ) => writer.createElement(
+					'imageInline',
+					viewImage.hasAttribute( 'src' ) ? { src: viewImage.getAttribute( 'src' ) } : null
+				)
 			} );
 	}
 
@@ -185,7 +192,7 @@ export default class ImageInlineEditing extends Plugin {
 						Array.from( blockViewImage.getAttributes() )
 							.forEach( attribute => writer.setAttribute(
 								...attribute,
-								imageUtils.getViewImageFromWidget( blockViewImage )
+								imageUtils.findViewImgElement( blockViewImage )
 							) );
 
 						return blockViewImage.getChild( 0 );

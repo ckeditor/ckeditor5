@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -31,6 +31,44 @@ describe( 'DataTransfer', () => {
 			} );
 
 			expect( dt.files ).to.deep.equal( [ 'file1', 'file2' ] );
+		} );
+
+		it( 'should evaluate files property exactly once', () => {
+			const nativeDataTransfer = {
+				get files() {
+					return {
+						0: 'file1',
+						length: 1
+					};
+				}
+			};
+
+			const spy = sinon.spy( nativeDataTransfer, 'files', [ 'get' ] );
+
+			const dt = new DataTransfer( nativeDataTransfer );
+
+			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+
+			expect( spy.get.calledOnce ).to.be.true;
+		} );
+
+		it( 'should evaluate items property exactly once', () => {
+			const nativeDataTransfer = {
+				get items() {
+					return {
+						0: { kind: 'file', getAsFile: () => 'file1' },
+						length: 1
+					};
+				}
+			};
+
+			const spy = sinon.spy( nativeDataTransfer, 'items', [ 'get' ] );
+
+			const dt = new DataTransfer( nativeDataTransfer );
+
+			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+
+			expect( spy.get.calledOnce ).to.be.true;
 		} );
 	} );
 	describe( 'getData()', () => {

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -41,7 +41,13 @@ require( '@ckeditor/ckeditor5-dev-env' )
 		},
 		customReleasesFiles: {
 			ckeditor5: [
-				'src/*.js'
+				// Do not add the entire `build/` directory as it contains files produced by internal scripts:
+				// automated/manual tests, translations, documentation, content styles.
+				// If you need to release anything from the directory, type a full path to the file/directory.
+				'src/*.js',
+				'build/ckeditor5-dll.js',
+				'build/ckeditor5-dll.manifest.json',
+				'build/translations/*.js'
 			]
 		},
 		dryRun: process.argv.includes( '--dry-run' )

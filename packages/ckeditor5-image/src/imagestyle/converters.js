@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -61,7 +61,8 @@ export function viewToModelStyleAttribute( styles ) {
 		const viewElement = data.viewItem;
 		const modelImageElement = first( data.modelRange.getItems() );
 
-		// Check if `modelImageElement` exists (see: #8270, and #9563)...
+		// Run this converter only if an image has been found in the model.
+		// In some cases it may not be found (for example if we run this on a figure with different type than image).
 		if ( !modelImageElement ) {
 			return;
 		}

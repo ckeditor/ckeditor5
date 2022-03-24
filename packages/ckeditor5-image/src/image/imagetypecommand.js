@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -64,7 +64,10 @@ export default class ImageTypeCommand extends Command {
 		const oldElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 		const attributes = Object.fromEntries( oldElement.getAttributes() );
 
-		if ( !attributes.src ) {
+		// Don't change image type if "src" is missing (a broken image), unless there's "uploadId" set.
+		// This state may happen during image upload (before it finishes) and it should be possible to change type
+		// of the image in the meantime.
+		if ( !attributes.src && !attributes.uploadId ) {
 			return null;
 		}
 

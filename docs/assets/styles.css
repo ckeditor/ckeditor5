@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* https://github.com/ckeditor/ckeditor5/issues/5598. */
@@ -50,4 +51,18 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 	.main .navigation-hint_mobile {
 		display: inline;
 	}
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/9700 */
+.main .main__content-inner .features-html-output .output-overview-table-icon {
+	display: inline;
+	margin: 0;
+	height: 1rem;
+	vertical-align: middle;
+	position: relative;
+	top: -1px;
+}
+
+.main .main__content-inner .features-html-output th {
+	background-color: hsl(0, 0%, 96%);
 }

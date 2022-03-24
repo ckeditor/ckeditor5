@@ -13,7 +13,7 @@ The text part language feature implements the [WCAG 3.1.2 Language of Parts](htt
 
 ## Demo
 
-Use the editor below to see the text part language plugin in action. Select a text fragment and use the toolbar dropdown to choose from predefined available languages that can be applied to the content.
+Use the language toolbar dropdown in the editor below to see the feature in action. Select a text fragment and use the toolbar dropdown to choose from predefined available languages that can be applied to the content.
 
 {@snippet features/textpartlanguage}
 
@@ -23,6 +23,29 @@ There are other language-related CKEditor 5 features you may want to check:
 
 * {@link features/ui-language UI Language}  &ndash; Set the UI language.
 * {@link features/spelling-and-grammar-checking Spelling and grammar checking} &ndash; Employ multi-language spell check for flawless content.
+
+## Configuring available languages
+
+To modify the list of available languages displayed in the language dropdown use the {@link module:core/editor/editorconfig~LanguageConfig#textPartLanguage `config.language.textPartLanguage`} configuration option.
+
+The example below shows the configuration used for the [demo](#demo) above:
+
+```js
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+		// ...
+		language: {
+			textPartLanguage: [
+				{ title: 'Arabic', languageCode: 'ar' },
+				{ title: 'French', languageCode: 'fr' },
+				{ title: 'Hebrew', languageCode: 'he' },
+				{ title: 'Spanish', languageCode: 'es' }
+			]
+		}
+    } )
+    .then( ... )
+    .catch( ... );
+```
 
 ## Installation
 
@@ -47,7 +70,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API
