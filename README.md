@@ -41,11 +41,11 @@ CKEditor 5 builds are a set of ready-to-use rich text editors. Every "build" pro
 
 The following CKEditor 5 builds are currently available:
 
-* [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor)
-* [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#inline-editor)
-* [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-editor)
-* [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-block-editor)
-* [Document editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor)
+* [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#classic-editor)
+* [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#inline-editor)
+* [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#balloon-editor)
+* [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#balloon-block-editor)
+* [Document editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#document-editor)
 
 #### Example
 
@@ -60,7 +60,7 @@ In your HTML page add an element that CKEditor should replace:
 <div id="editor"></div>
 ```
 
-Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#npm) and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#zip-download)):
+Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#npm) and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#zip-download)):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/<version>/classic/ckeditor.js"></script>
@@ -80,7 +80,7 @@ Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/a
 
 You’re ready to go!
 
-To find out how to start with other builds check the [Quick start guide in the CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/quick-start.html).
+To find out how to start with other builds check the [Predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html) guide in the CKEditor 5 documentation.
 
 ### CKEditor 5 Framework
 
