@@ -98,10 +98,8 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 
 			viewAttributes = viewAttributes || {};
 
-			// This was not yet consumed, so it's GHS responsibility to remove it when needed.
-			if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
-				viewAttributes.name = true;
-			}
+			// Consume the element itself if it wasn't consumed by any other converter.
+			conversionApi.consumable.consume( data.viewItem, { name: true } );
 
 			// Since we are converting to attribute we need a range on which we will set the attribute.
 			// If the range is not created yet, we will create it.

@@ -106,6 +106,15 @@ export default class DataFilter extends Plugin {
 		*/
 		this._dataInitialized = false;
 
+		/**
+		 * Cached map of coupled attributes. The map is keyed by the feature attribute name
+		 * and coupled GHS attribute names are stored in the value array.
+		 *
+		 * @private
+		 * @member {Map.<String,Array>}
+		 */
+		this._coupledAttributes = null;
+
 		this._registerElementsAfterInit();
 		this._registerElementHandlers();
 		this._registerModelPostFixer();
@@ -168,6 +177,9 @@ export default class DataFilter extends Plugin {
 			if ( this._dataInitialized ) {
 				this._fireRegisterEvent( definition );
 			}
+
+			// Reset cached map to recalculate it on the next usage.
+			this._coupledAttributes = null;
 		}
 	}
 
@@ -290,7 +302,15 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Registers a model post-fixer that is removing coupled GHS attributes of inline elements. Those attributes
+	 * are removed if a coupled feature attribute is removed.
+	 *
+	 * For example while unlinking a text (by the remove of `linkHref` attribute):
+	 *
+	 *		<$text linkHref="foo" htmlA="{ ... }">bar</$text>
+	 *
+	 * The `htmlA` attribute would be left behind in the model and would cause GHS to generate an `<a>` element
+	 * that should not be there anymore because that text was supposed to be unlinked completely (not only a `href`).
 	 *
 	 * @private
 	 */
@@ -301,31 +321,22 @@ export default class DataFilter extends Plugin {
 			const changes = model.document.differ.getChanges();
 			let changed = false;
 
-			const coupledAttributes = new Map();
-
-			for ( const definition of this._allowedElements ) {
-				if ( definition.isInline && !definition.isObject && definition.coupledAttribute && definition.model ) {
-					const attributeNames = coupledAttributes.get( definition.coupledAttribute );
-
-					if ( attributeNames ) {
-						attributeNames.push( definition.model );
-					} else {
-						coupledAttributes.set( definition.coupledAttribute, [ definition.model ] );
-					}
-				}
-			}
+			const coupledAttributes = this._getCoupledAttributesMap();
 
 			for ( const change of changes ) {
+				// Handle only attribute removals.
 				if ( change.type != 'attribute' || change.attributeNewValue !== null ) {
 					continue;
 				}
 
+				// Find a list of coupled GHS attributes.
 				const attributeKeys = coupledAttributes.get( change.attributeKey );
 
 				if ( !attributeKeys ) {
 					continue;
 				}
 
+				// Remove the coupled GHS attributes on the same range as the feature attribute was removed.
 				for ( const { item } of change.range.getWalker( { shallow: true } ) ) {
 					for ( const attributeKey of attributeKeys ) {
 						if ( item.hasAttribute( attributeKey ) ) {
@@ -338,6 +349,33 @@ export default class DataFilter extends Plugin {
 
 			return changed;
 		} );
+	}
+
+	/**
+	 * Collects the map of coupled attributes. The returned map is keyed by the feature attribute name
+	 * and coupled GHS attribute names are stored in the value array .
+	 *
+	 * @private
+	 * @returns {Map.<String,Array>}
+	 */
+	_getCoupledAttributesMap() {
+		if ( this._coupledAttributes ) {
+			return this._coupledAttributes;
+		}
+
+		this._coupledAttributes = new Map();
+
+		for ( const definition of this._allowedElements ) {
+			if ( definition.coupledAttribute && definition.model ) {
+				const attributeNames = this._coupledAttributes.get( definition.coupledAttribute );
+
+				if ( attributeNames ) {
+					attributeNames.push( definition.model );
+				} else {
+					this._coupledAttributes.set( definition.coupledAttribute, [ definition.model ] );
+				}
+			}
+		}
 	}
 
 	/**
