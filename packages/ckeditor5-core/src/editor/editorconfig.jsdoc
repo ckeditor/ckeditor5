@@ -24,7 +24,7 @@
  *			.then( ... )
  *			.catch( ... );
  *
- * Check the {@glink builds/guides/integration/configuration Configuration guide} for more information
+ * Check the {@glink installation/advanced/alternative-setups/predefined-builds Configuration guide} for more information
  * about setting configuration options.
  *
  * @interface EditorConfig
@@ -41,13 +41,17 @@
  *			.catch( ... );
  *
  * By default, the editor is initialized with the content of the element on which this editor is initialized.
- * See {@link module:core/editor/editor~Editor.create Editor.create()}.
- *
- * This configuration option lets you override initial data if an element is passed to `Editor.create()`.
+ * This configuration option lets you override this behavior and pass different initial data.
  * It is especially useful if it is difficult for your integration to put the data inside the HTML element.
  *
- * **Note:** If initial data is passed to `Editor.create()` as a parameter and, at the same time, via this configuration option,
- * an error will be thrown as those two options exclude themselves.
+ * See also {@link module:core/editor/editor~Editor.create Editor.create()}.
+ *
+ * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
+ * at the same time, `config.initialData` is set, an error will be thrown as those two options exclude themselves.
+ *
+ * If `config.initialData` is not set when the editor is initialized, the data received in `Editor.create()` call
+ * will be used to set `config.initialData`. As a result, `initialData` is always set in the editor's config and
+ * plugins can read and/or modify it during initialization.
  *
  * @member {String} module:core/editor/editorconfig~EditorConfig#initialData
  */
@@ -62,7 +66,7 @@
 /**
  * The list of plugins to load.
  *
- * If you use an {@glink builds/guides/predefined-builds/overview editor build} you can define the list of plugins to load
+ * If you use an {@glink installation/advanced/alternative-setups/predefined-builds editor build} you can define the list of plugins to load
  * using the names of plugins that are available:
  *
  *		const config = {
@@ -94,7 +98,7 @@
 
 /**
  * The list of additional plugins to load along those already available in the
- * {@glink builds/guides/predefined-builds/overview editor build}. It extends the {@link #plugins `plugins`} configuration.
+ * {@glink installation/advanced/alternative-setups/predefined-builds editor build}. It extends the {@link #plugins `plugins`} configuration.
  *
  *		function MyPlugin( editor ) {
  *			// ...
@@ -106,7 +110,7 @@
  *
  * **Note:** This configuration works only for simple plugins which utilize the
  * {@link module:core/plugin~PluginInterface plugin interface} and have no dependencies. To extend a
- * build with complex features, create a {@glink builds/guides/development/custom-builds custom build}.
+ * build with complex features, create a {@glink installation/getting-started/quick-start#creating-custom-builds-with-online-builder custom build}.
  *
  * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
  * about the {@glink features/toolbar/toolbar toolbar setup}.
@@ -115,7 +119,7 @@
  */
 
 /**
- * The list of plugins which should not be loaded despite being available in an {@glink builds/guides/predefined-builds/overview editor build}.
+ * The list of plugins which should not be loaded despite being available in an {@glink installation/advanced/alternative-setups/predefined-builds editor build}.
  *
  *		const config = {
  *			removePlugins: [ 'Bold', 'Italic' ]

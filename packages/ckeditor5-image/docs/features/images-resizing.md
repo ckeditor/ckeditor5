@@ -12,7 +12,7 @@ The {@link features/images-styles image styles} feature is meant to give the use
 
 ## Enabling image resizing
 
-The image resize feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. In order to enable it in other builds, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the {@link features/images-resizing#installation installation} section.
+The image resize feature is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only. In order to enable it in other builds, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the {@link features/images-resizing#installation installation} section.
 
 ## Methods to resize images
 
@@ -289,7 +289,7 @@ Check out the difference in the live demo below:
 
 ## Installation
 
-The image resize feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. To enable it in other editor builds, you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
+The image resize feature is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only. To enable it in other editor builds, you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
 
 ```js
 import Image from '@ckeditor/ckeditor5-image/src/image';

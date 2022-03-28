@@ -1259,7 +1259,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Creates placeholders for child elements of {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+	 * Creates placeholders for child elements of the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
 	 * `elementToStructure()`} conversion helper.
 	 *
 	 *		const viewSlot = conversionApi.writer.createSlot();
@@ -1267,14 +1267,14 @@ export default class DowncastWriter {
 	 *
 	 *		conversionApi.writer.insert( viewPosition, viewSlot );
 	 *
-	 * It could be filtered to a specific subset of children (only `<foo>` model elements in this case):
+	 * It could be filtered down to a specific subset of children (only `<foo>` model elements in this case):
 	 *
 	 *		const viewSlot = conversionApi.writer.createSlot( node => node.is( 'element', 'foo' ) );
 	 *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
 	 *
 	 *		conversionApi.writer.insert( viewPosition, viewSlot );
 	 *
-	 * While providing a filtered slot make sure to provide slots for all child nodes. A single node can not be downcasted into
+	 * While providing a filtered slot, make sure to provide slots for all child nodes. A single node can not be downcasted into
 	 * multiple slots.
 	 *
 	 * **Note**: You should not change the order of nodes. View elements should be in the same order as model nodes.
@@ -1286,7 +1286,7 @@ export default class DowncastWriter {
 	createSlot( modeOrFilter ) {
 		if ( !this._slotFactory ) {
 			/**
-			 * The `createSlot()` method is allowed only inside the `elementToStructure` downcast helper callback.
+			 * The `createSlot()` method is only allowed inside the `elementToStructure` downcast helper callback.
 			 *
 			 * @error view-writer-invalid-create-slot-context
 			 */

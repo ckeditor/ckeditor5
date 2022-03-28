@@ -325,7 +325,7 @@ describe( 'GFMDataProcessor', () => {
 			);
 		} );
 
-		it( 'should create same bullet from different list indicators', () => {
+		it( 'should create different lists from different list indicators', () => {
 			testDataProcessor(
 				'* test\n' +
 				'+ test\n' +
@@ -333,13 +333,19 @@ describe( 'GFMDataProcessor', () => {
 
 				'<ul>' +
 					'<li>test</li>' +
+				'</ul>' +
+				'<ul>' +
 					'<li>test</li>' +
+				'</ul>' +
+				'<ul>' +
 					'<li>test</li>' +
 				'</ul>',
 
 				// After converting back list items will be unified.
 				'*   test\n' +
+				'\n' +
 				'*   test\n' +
+				'\n' +
 				'*   test'
 			);
 		} );

@@ -26,7 +26,7 @@ msgstr "Poista väri"
 
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"
-msgstr ""
+msgstr "Palauta oletus"
 
 msgctxt "Label for the Save button."
 msgid "Save"

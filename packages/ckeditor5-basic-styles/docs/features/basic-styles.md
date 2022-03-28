@@ -18,7 +18,7 @@ Basic formatting options may be applied with the toolbar buttons (pictured below
 * Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
 
 <info-box info>
-	Bold and italic styles are enabled by default in all {@link builds/guides/overview predefined builds}. Strikethrough and underline are available in the {@link builds/guides/overview#document-editor document editor build} only. The code style is not present in any of the predefined builds.
+	Bold and italic styles are enabled by default in all {@link installation/advanced/predefined-builds predefined builds}. Strikethrough and underline are available in the {@link installation/advanced/predefined-builds #document-editor document editor build} only. The code style is not present in any of the predefined builds.
 </info-box>
 
 ## Demo
@@ -48,7 +48,7 @@ Check out also these CKEditor 5 features to gain better control over your conten
 | {@link module:basic-styles/superscript~Superscript} | `'superscript'` | `'superscript'` | `<sup>superscript</sup>` |
 
 <info-box info>
-	{@link module:basic-styles/bold~Bold} and {@link module:basic-styles/italic~Italic} are available out–of–the–box in most of the {@link builds/guides/overview editor builds}.
+	{@link module:basic-styles/bold~Bold} and {@link module:basic-styles/italic~Italic} are available out–of–the–box in most of the {@link installation/advanced/predefined-builds editor builds}.
 
 	The {@link module:basic-styles/code~Code} feature provides support for inline code formatting. To create blocks of pre-formatted code with a specific programming language assigned, use the {@link features/code-blocks code block feature}.
 </info-box>
@@ -81,6 +81,10 @@ CKEditor 5 allows for typing both at inner and outer boundaries of code to make 
 
 ## Installation
 
+<info-box info>
+	Selected styles are enabled in certain predefined builds, as enumerated at the beginning of this guide. These installation instructions are for developers interested in building their own, custom editor.
+</info-box>
+
 To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package:
 
 ```
@@ -110,7 +114,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API
