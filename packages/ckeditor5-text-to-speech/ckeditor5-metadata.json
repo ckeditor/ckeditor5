@@ -1,0 +1,17 @@
+{
+	"plugins": [
+		{
+			"name": "My plugin",
+			"className": "MyPlugin",
+			"description": "Adds text to the editor.",
+			"path": "src/myplugin.js",
+			"uiComponents": [
+				{
+					"name": "myButton",
+					"type": "Button",
+					"iconPath": "theme/icons/ckeditor.svg"
+				}
+			]
+		}
+	]
+}

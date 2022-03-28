@@ -1,0 +1,84 @@
+{
+  "name": "@scofalik/ckeditor5-text-to-speech",
+  "version": "0.0.1",
+  "description": "A plugin for CKEditor 5.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin",
+    "ckeditor5-dll",
+    "ckeditor5-package-generator"
+  ],
+  "main": "src/index.js",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=5.7.1"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme",
+    "build",
+    "ckeditor5-metadata.json"
+  ],
+  "dependencies": {
+    "ckeditor5": ">=33.0.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-autoformat": ">=33.0.0",
+    "@ckeditor/ckeditor5-basic-styles": ">=33.0.0",
+    "@ckeditor/ckeditor5-block-quote": ">=33.0.0",
+    "@ckeditor/ckeditor5-code-block": ">=33.0.0",
+    "@ckeditor/ckeditor5-core": ">=33.0.0",
+    "@ckeditor/ckeditor5-editor-classic": ">=33.0.0",
+    "@ckeditor/ckeditor5-essentials": ">=33.0.0",
+    "@ckeditor/ckeditor5-heading": ">=33.0.0",
+    "@ckeditor/ckeditor5-image": ">=33.0.0",
+    "@ckeditor/ckeditor5-indent": ">=33.0.0",
+    "@ckeditor/ckeditor5-inspector": "^2.2.2",
+    "@ckeditor/ckeditor5-link": ">=33.0.0",
+    "@ckeditor/ckeditor5-list": ">=33.0.0",
+    "@ckeditor/ckeditor5-media-embed": ">=33.0.0",
+    "@ckeditor/ckeditor5-package-tools": "^1.0.0-beta.4",
+    "@ckeditor/ckeditor5-paragraph": ">=33.0.0",
+    "@ckeditor/ckeditor5-table": ">=33.0.0",
+    "@ckeditor/ckeditor5-theme-lark": ">=33.0.0",
+    "@ckeditor/ckeditor5-upload": ">=33.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-ckeditor5": ">=4.0.0",
+    "http-server": "^14.1.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.6",
+    "stylelint": "^13.13.1",
+    "stylelint-config-ckeditor5": ">=4.0.0"
+  },
+  "scripts": {
+    "dll:build": "ckeditor5-package-tools dll:build",
+    "dll:serve": "http-server ./ -o sample/dll.html",
+    "lint": "eslint \"**/*.js\" --quiet --ignore-pattern \"build/\"",
+    "start": "ckeditor5-package-tools start",
+    "stylelint": "stylelint --quiet --allow-empty-input 'theme/**/*.css'",
+    "test": "ckeditor5-package-tools test",
+    "prepare": "yarn run dll:build",
+    "prepublishOnly": "yarn run dll:build",
+    "translations:collect": "ckeditor5-package-tools translations:collect",
+    "translations:download": "ckeditor5-package-tools translations:download",
+    "translations:upload": "ckeditor5-package-tools translations:upload"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "eslint --quiet"
+    ],
+    "**/*.css": [
+      "stylelint --quiet --allow-empty-input"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}

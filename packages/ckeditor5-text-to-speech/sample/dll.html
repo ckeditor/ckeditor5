@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>CKEditor 5 – DLL Sample</title>
+    <style>
+        body {
+            max-width: 800px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1>CKEditor 5 – DLL Sample</h1>
+
+<div id="editor">
+    <h2>Production sample</h2>
+    <p>
+        This is a demo of the <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor">classic editor
+        build</a>, initialized using the <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/dll-builds.html">DLL builds</a>.
+    </p>
+    <p>
+        The package generator creates an example plugin (<code>MyPlugin</code>) which is loaded into the editor by default. If you changed its name or toolbar items it exposes, make sure to update the editor configuration in the <code>sample/dll.html</code> file.
+    </p>
+
+    <h3>Uncaught TypeError</h3>
+    <p>If the editor is not initialized correctly and the browser console displays an error such as the following:</p>
+    <pre><code>Uncaught TypeError: Cannot read properties of undefined (reading 'MyPlugin') at dll.html:85</code></pre>
+    <p>it means that the DLL build of the <code>@scofalik/ckeditor5-text-to-speech</code> package has not been created.</p>
+    <p>Please call the <code>yarn run dll:build</code> command in the CLI, and after it finishes, refresh the page.</p>
+
+    <h3>Anatomy of the DLL build</h3>
+    <p>The source of the DLL build is located in the <code>src/index.js</code> file. It may export as many things as the package offers.</p>
+
+    <h4>Maintaining the sample</h4>
+    <p>Whenever you change objects exported by the DLL build, please review the content of the sample. Things to keep in mind:</p>
+    <ul>
+        <li>Review the list of loaded plugins in the configuration.</li>
+        <li>Review names of items registered in toolbars.</li>
+    </ul>
+
+    <h3>The goal</h3>
+    <p>The primary purpose of the sample is to verify whether the plugins in the package will work together with CKEditor 5 created with the DLL approach.</p>
+
+    <h3>Publishing the package</h3>
+    <p>
+        By default, the <code>build/</code> directory is specified in the <a href="https://docs.npmjs.com/cli/v7/configuring-npm/package-json#files"><code>#files</code></a>
+        array in the <a href="../package.json"><code>package.json</code></a> file. It means all its contents will be published when calling the <code>yarn publish</code> command.
+    </p>
+    <p>
+        Unfortunately, it is easy to forget to refresh the DLL build before making a new release. Hence, we created the <a href="https://docs.npmjs.com/cli/v7/using-npm/scripts#pre--post-scripts">prescript</a> that would refresh the build automatically when calling the <code>yarn publish</code> command.
+    </p>
+
+    <h3>Reporting issues</h3>
+    <p>If you found a problem with CKEditor 5 or the package generator, please, report an issue:</p>
+    <ul>
+        <li><a href="https://github.com/ckeditor/ckeditor5/issues/new/choose">CKEditor 5</a></li>
+        <li><a href="https://github.com/ckeditor/create-ckeditor5-plugin/issues/new">The package generator</a></li>
+    </ul>
+</div>
+
+<!-- DLL builds are served from the `node_modules/` directory -->
+<script src="../node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-editor-classic/build/editor-classic.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-code-block/build/code-block.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-essentials/build/essentials.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-heading/build/heading.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-block-quote/build/block-quote.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-image/build/image.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-link/build/link.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-indent/build/indent.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-media-embed/build/media-embed.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-list/build/list.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-table/build/table.js"></script>
+
+<!-- The "@scofalik/ckeditor5-text-to-speech" package DLL build is served from the `build/` directory -->
+<script src="../build/text-to-speech.js"></script>
+
+<script>
+	console.log( 'Objects exported by the DLL build:', CKEditor5[ 'textToSpeech' ] );
+
+	CKEditor5.editorClassic.ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [
+				// `MyPlugin` is an example plugin generated by the package generator.
+				CKEditor5[ 'textToSpeech' ].MyPlugin,
+				CKEditor5.essentials.Essentials,
+				CKEditor5.autoformat.Autoformat,
+				CKEditor5.blockQuote.BlockQuote,
+				CKEditor5.basicStyles.Bold,
+				CKEditor5.heading.Heading,
+				CKEditor5.image.Image,
+				CKEditor5.image.ImageCaption,
+				CKEditor5.image.ImageStyle,
+				CKEditor5.image.ImageToolbar,
+				CKEditor5.image.ImageUpload,
+				CKEditor5.indent.Indent,
+				CKEditor5.basicStyles.Italic,
+				CKEditor5.link.Link,
+				CKEditor5.list.List,
+				CKEditor5.mediaEmbed.MediaEmbed,
+				CKEditor5.paragraph.Paragraph,
+				CKEditor5.table.Table,
+				CKEditor5.table.TableToolbar,
+				CKEditor5.codeBlock.CodeBlock,
+				CKEditor5.basicStyles.Code,
+				CKEditor5.upload.Base64UploadAdapter
+			],
+			toolbar: [
+				// `myButton` is an example button provided by the `MyPlugin` class.
+				'myButton',
+				'|',
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'code',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'uploadImage',
+				'blockQuote',
+				'insertTable',
+				'mediaEmbed',
+				'codeBlock',
+				'|',
+				'undo',
+				'redo'
+			],
+			image: {
+				toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			},
+			table: {
+				contentToolbar: [
+					'tableColumn',
+					'tableRow',
+					'mergeTableCells'
+				]
+			}
+		} )
+		.then( editor => {
+			window.editor = editor;
+		} )
+		.catch( error => {
+			console.error( 'There was a problem initializing the editor.', error );
+		} );
+</script>
+</body>
+</html>
