@@ -9,9 +9,7 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 [![Join newsletter](https://img.shields.io/badge/join-newsletter-00cc99.svg)](http://eepurl.com/c3zRPr)
 [![Follow twitter](https://img.shields.io/badge/follow-twitter-00cc99.svg)](https://twitter.com/ckeditor)
 
-CKEditor 5 is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM. It is written from scratch in ES6 and has excellent webpack support. It provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all of which is possible within a single editing framework.
-
-
+CKEditor 5 is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM. It is written from scratch in ES6 and has excellent webpack support. It provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all of which is possible within a single editing framework. As a market leader, it is constantly expanded and updated.
 
 ![CKEditor 5 Classic rich text editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor5-build-classic.png)
 
@@ -83,7 +81,7 @@ To find out how to start with other builds check the [Predefined builds](https:/
 
 ### CKEditor 5 advanced installation
 
-For more advanced users, or those who need to integrate CKEditor 5 with their own applications, we have prepared several other, advanced methods to do it. You can [integrate the editor from source](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/integrating-from-source.html), use [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/dll-builds.html) or utilize some of the premade integrations with popular [JavaScript frameworks](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/overview.html), like [Angular](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/angular.html), [React](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/react.html) or [Vue](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/vuejs-v3.html).
+For more advanced users, or those who need to integrate CKEditor 5 with their own applications, we have prepared several other, advanced methods to do it. You can [integrate the editor from source](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/integrating-from-source.html), use [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/dll-builds.html) or utilize some of the pre-made integrations with popular [JavaScript frameworks](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/overview.html), like [Angular](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/angular.html), [React](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/react.html) or [Vue](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/vuejs-v3.html).
 
 #### CKEditor 5 Framework
 
@@ -93,7 +91,7 @@ To find out how to start building your own editor from scratch go to [CKEditor 5
 
 ## Documentation and FAQ
 
-An extensive, vast documentation dedicated to all thing CKEditor 5-related is available handy. You will find basic guides that will help you kick off your project, advanced deep-down tutorials to tailor it your specific needs and help sections with solutions and answers to your possible questions. To find out more see the following [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/index.html) sections:
+An extensive, vast documentation dedicated to all thing CKEditor 5-related is available handy. You will find basic guides that will help you kick off your project, advanced deep-dive tutorials to tailor it your specific needs and help sections with solutions and answers to any of your possible questions. To find out more see the following [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/index.html) sections:
 
 * [CKEditor 5 installation guides](https://ckeditor.com/docs/ckeditor5/latest/installation/index.html)
 * [CKEditor 5 Features documentation](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
