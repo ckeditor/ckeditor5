@@ -110,7 +110,7 @@
  *
  * **Note:** This configuration works only for simple plugins which utilize the
  * {@link module:core/plugin~PluginInterface plugin interface} and have no dependencies. To extend a
- * build with complex features, create a {@glink /installation/getting-started/quick-start#creating-custom-builds custom build}.
+ * build with complex features, create a {@glink installation/getting-started/quick-start#creating-custom-builds-with-online-builder custom build}.
  *
  * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
  * about the {@glink features/toolbar/toolbar toolbar setup}.

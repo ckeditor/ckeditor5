@@ -348,7 +348,7 @@ export default class PluginCollection {
 			 * CKEditor 5 Builds}**,
 			 * it means that you try to enable a plugin which was not included in that build. This may be due to a typo
 			 * in the plugin name or simply because that plugin is not a part of this build. In the latter scenario,
-			 * read more about {@glink /installation/getting-started/quick-start custom builds}.
+			 * read more about {@glink installation/getting-started/quick-start custom builds}.
 			 *
 			 * **If you see this warning when using one of the editor creators directly** (not a build), then it means
 			 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".
