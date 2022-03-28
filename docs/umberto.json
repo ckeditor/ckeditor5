@@ -103,8 +103,7 @@
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
-		"import-path": "../scripts/docs/getrealimportpath",
-		"insert-changelog": "../scripts/docs/insertchangelog"
+		"import-path": "../scripts/docs/getrealimportpath"
 	},
 	"docsearch": {
 		"apiKey": "fc463c26455365ad403d5ec51796cd73",
