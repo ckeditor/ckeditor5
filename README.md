@@ -93,11 +93,11 @@ To find out how to start building your own editor from scratch go to [CKEditor 5
 
 An extensive, vast documentation dedicated to all thing CKEditor 5-related is available handy. You will find basic guides that will help you kick off your project, advanced deep-dive tutorials to tailor it your specific needs and help sections with solutions and answers to any of your possible questions. To find out more see the following [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/index.html) sections:
 
-* [CKEditor 5 installation guides](https://ckeditor.com/docs/ckeditor5/latest/installation/index.html)
-* [CKEditor 5 Features documentation](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
-* [CKEditor 5 Examples](https://ckeditor.com/docs/ckeditor5/latest/examples/index.html)
+* [Installing CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/installation/index.html)
+* [CKEditor 5 features documentation](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
+* [CKEditor 5 examples](https://ckeditor.com/docs/ckeditor5/latest/examples/index.html)
 * [Updating CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/updating/index.html)
-* [CKEditor 5 support](https://ckeditor.com/docs/ckeditor5/latest/support/index.html)
+* [Getting CKEditor 5 support](https://ckeditor.com/docs/ckeditor5/latest/support/index.html)
 * [CKEditor 5 Framework documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html)
 * [API documentation](https://ckeditor.com/docs/ckeditor5/latest/api/index.html)
 
