@@ -20,22 +20,25 @@ CKEditor 5 is an ultra-modern JavaScript rich text editor with MVC architecture,
 * [Quick start](#quick-start)
    * [CKEditor 5 Online builder](#ckeditor-5-online-builder)
    * [CKEditor 5 predefined builds](#ckeditor-5-predefined-builds)
-   * [CKEditor 5 Framework](#ckeditor-5-framework)
+   * [Other CKEditor 5 installation methods](#ckeditor-5-advanced-installation)
 * [Documentation and FAQ](#documentation-and-faq)
 * [Contributing and project organization](#contributing-and-project-organization)
    * [Ideas and discussions](#ideas-and-discussions)
    * [Development](#development)
    * [Reporting issues and feature requests](#reporting-issues-and-feature-requests)
-* [Releases](#releases)
 * [License](#license)
 
 ## Quick start
 
+### CKEditor 5 Online builder
+
+The easies way to start using CKEditor 5 will all the functions and features you need, is preparing a customized build with the [Online builder](https://ckeditor.com/ckeditor-5/online-builder/). All you need to do is choose the preferred predefined build as a base, add all the required plugins and download the ready package that can be then used out of the box. Should you need to activate any premium features, you can simply [contact us](https://ckeditor.com/contact/) and inquire about the appropriate license.
+
 ### CKEditor 5 predefined builds
 
-CKEditor 5 builds are a set of ready-to-use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration.
+CKEditor 5 predefined builds are a set of ready-to-use rich text editors. Every such build provides a single type of editor with a set of features and a default configuration.
 
-The following CKEditor 5 builds are currently available:
+The following CKEditor 5 predefined builds are currently available:
 
 * [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#classic-editor)
 * [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#inline-editor)
@@ -43,7 +46,7 @@ The following CKEditor 5 builds are currently available:
 * [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#balloon-block-editor)
 * [Document editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#document-editor)
 
-#### Example
+#### Example installation
 
 Creating an editor using a CKEditor 5 build is very simple and can be described in two steps:
 
@@ -78,7 +81,11 @@ You’re ready to go!
 
 To find out how to start with other builds check the [Predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html) guide in the CKEditor 5 documentation.
 
-### CKEditor 5 Framework
+### CKEditor 5 advanced installation
+
+For more advanced users, or those who need to integrate CKEditor 5 with their own applications, we have prepared several other, advanced methods to do it. You can [integrate the editor from source](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/integrating-from-source.html), use [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/dll-builds.html) or utilize some of the premade integrations with popular [JavaScript frameworks](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/overview.html), like [Angular](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/angular.html), [React](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/react.html) or [Vue](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/vuejs-v3.html).
+
+#### CKEditor 5 Framework
 
 CKEditor 5 builds allow you to quickly and easily initialize one of the many types of editors in your application. At the same time, CKEditor 5 is also a framework for creating custom-made rich text editing solutions.
 
@@ -86,18 +93,22 @@ To find out how to start building your own editor from scratch go to [CKEditor 5
 
 ## Documentation and FAQ
 
-To find out more see the following [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/index.html) sections:
+An extensive, vast documentation dedicated to all thing CKEditor 5-related is available handy. You will find basic guides that will help you kick off your project, advanced deep-down tutorials to tailor it your specific needs and help sections with solutions and answers to your possible questions. To find out more see the following [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/index.html) sections:
 
-* [API documentation](https://ckeditor.com/docs/ckeditor5/latest/api/index.html)
-* [CKEditor 5 Framework documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html)
-* [CKEditor 5 builds documentation](https://ckeditor.com/docs/ckeditor5/latest/installation/index.html)
+* [CKEditor 5 installation guides](https://ckeditor.com/docs/ckeditor5/latest/installation/index.html)
 * [CKEditor 5 Features documentation](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
 * [CKEditor 5 Examples](https://ckeditor.com/docs/ckeditor5/latest/examples/index.html)
-
-The documentation is far from being complete and will be constantly evolving (as will the editor) until it is ready for v1.0.0.
+* [Updating CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/updating/index.html)
+* [CKEditor 5 support](https://ckeditor.com/docs/ckeditor5/latest/support/index.html)
+* [CKEditor 5 Framework documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html)
+* [API documentation](https://ckeditor.com/docs/ckeditor5/latest/api/index.html)
 
 For FAQ please go to the [CKEditor Ecosystem help center](https://support.ckeditor.com/hc/en-us).
 For a high-level overview of the project see the [CKEditor Ecosystem website](https://ckeditor.com).
+
+## Releases
+
+See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/blog/?category=releases&tags=CKEditor-5) for each release details.
 
 ## Contributing and project organization
 
@@ -117,11 +128,7 @@ See the [official contributors' guide](https://ckeditor.com/docs/ckeditor5/lates
 
 Each repository handles its issues independently. However, it is recommended to report issues in [this repository](https://github.com/ckeditor/ckeditor5/issues) unless you know to which specific repository the issue belongs.
 
-Read more on the [Support](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/getting-support.html) page.
-
-## Releases
-
-See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/blog/?category=releases&tags=CKEditor-5).
+Read more on the [Support](https://ckeditor.com/docs/ckeditor5/latest/support/getting-support.html) page.
 
 ## License
 
