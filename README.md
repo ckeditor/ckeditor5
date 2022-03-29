@@ -108,7 +108,7 @@ For a high-level overview of the project see the [CKEditor Ecosystem website](ht
 
 Follow the [CKEditor 5 changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) for release details and check out the CKEditor 5 release blog posts on the [CKSource blog](https://ckeditor.com/blog/?category=releases&tags=CKEditor-5) for important release highlights and additional information.
 
-## Editing features
+## Editing and collaboration features
 
 The CKEditor 5 Framework offers access to plethora of various plugins, supporting [all kinds of editing features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html).
 
