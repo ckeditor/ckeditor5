@@ -123,16 +123,6 @@ ClassicEditor
 				}
 			]
 		},
-		htmlSupport: {
-			allow: [
-				{
-					name: /^.*$/,
-					styles: true,
-					attributes: true,
-					classes: true
-				}
-			]
-		},
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},

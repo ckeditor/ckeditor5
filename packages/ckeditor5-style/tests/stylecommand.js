@@ -94,16 +94,6 @@ describe( 'StyleCommand', () => {
 							classes: [ 'red-heading' ]
 						}
 					]
-				},
-				htmlSupport: {
-					allow: [
-						{
-							name: /^.*$/,
-							styles: true,
-							attributes: true,
-							classes: true
-						}
-					]
 				}
 			} )
 			.then( newEditor => {
