@@ -4,6 +4,7 @@ order: 11
 feedback-widget: false
 meta-title: CKEditor 5 changelog
 menu-title: Recent release changelog
+toc-limit: 1
 ---
 
 # CKEditor 5 changelog
