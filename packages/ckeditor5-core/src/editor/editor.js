@@ -230,11 +230,11 @@ export default class Editor {
 	 *
 	 * In order to make the editor read-only, you need to call the {@link #setReadOnly} method:
 	 *
-	 *		editor.setReadOnly( 'feature-lock-id' );
+	 *		editor.setReadOnly( 'feature-id' );
 	 *
-	 * Later, to clear the lock, call {@link #clearReadOnly}:
+     * Later, to turn off the read-only mode, call {@link #clearReadOnly}:
 	 *
-	 * 		editor.clearReadOnly( 'feature-lock-id' );
+	 * 		editor.clearReadOnly( 'feature-id' );
 	 *
 	 * @readonly
 	 * @observable
@@ -247,7 +247,7 @@ export default class Editor {
 	set isReadOnly( value ) {
 		// eslint-disable-next-line no-undef
 		console.warn(
-			'Editor#isReadOnly should be now changed using lock mechanism: ' +
+			'Editor#isReadOnly should be now changed using dedicated methods: ' +
 			'`Editor#setReadOnly( lockId )` and `Editor#clearReadOnly( lockId )`.'
 		);
 	}
@@ -261,20 +261,20 @@ export default class Editor {
 	 * When at least one feature sets the read-only mode, then the {@link #isReadOnly `isReadOnly` property} will be set to `true`.
 	 * Otherwise it is set to `false`.
 	 *
-	 * 		editor.setReadOnly( 'my-feature-lock-id' );
+	 * 		editor.setReadOnly( 'my-feature-id' );
 	 *
 	 * You can turn off the read-only mode ("clear the lock") using the {@link #clearReadOnly} method.
 	 *
-	 * 		editor.clearReadOnly( 'my-feature-lock-id' );
+	 * 		editor.clearReadOnly( 'my-feature-id' );
 	 *
 	 * It is possible to pass the additional argument - `value` to determine if the lock should be set or removed.
 	 * Passing `false` works the same way as calling {@link #clearReadOnly `clearReadOnly()`}.
 	 *
 	 * 		myFeature.on( 'change:isConnected', () => {
-	 * 			editor.setReadOnly( 'my-feature-lock-id', myFeature.isConnected );
+	 * 			editor.setReadOnly( 'my-feature-id', myFeature.isConnected );
 	 * 		} );
 	 *
-	 * @param {String|Symbol} lockId The lock ID for setting the editor to the read-only state.
+	 * @param {String|Symbol} lockId A unique ID for setting the editor to the read-only state.
 	 * @param {Boolean} [value=true] An optional value indicating whether the lock should be set or removed.
 	 */
 	setReadOnly( lockId, value = true ) {
@@ -323,7 +323,7 @@ export default class Editor {
 
 		this._readOnlyLocks.delete( lockId );
 
-		if ( this._readOnlyLocks.size == 0 ) {
+		if ( this._readOnlyLocks.size === 0 ) {
 			// Manually fire the `change:isReadOnly` event as only getter is provided.
 			this.fire( 'change:isReadOnly', 'isReadOnly', false, true );
 		}
