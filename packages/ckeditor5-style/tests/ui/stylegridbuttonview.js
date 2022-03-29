@@ -53,7 +53,14 @@ describe( 'StyleGridButtonView', () => {
 			it( 'should have CSS classes', () => {
 				expect( button.previewView.element.classList.contains( 'ck' ) ).to.be.true;
 				expect( button.previewView.element.classList.contains( 'ck-style-grid__button__preview' ) ).to.be.true;
+			} );
+
+			it( 'should use the .ck-content CSS class for easier integration (configuration)', () => {
 				expect( button.previewView.element.classList.contains( 'ck-content' ) ).to.be.true;
+			} );
+
+			it( 'should exclude its content from the UI CSS reset for easier integration (configuration)', () => {
+				expect( button.previewView.element.classList.contains( 'ck-reset_all-excluded' ) ).to.be.true;
 			} );
 
 			it( 'should render the inner preview as the element specified in definition if previewable', () => {
