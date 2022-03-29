@@ -135,7 +135,7 @@ class InsertImage extends Plugin {
 }
 ```
 
-And add `InsertImage` plugin to `config.plugins` and `insertImage` to `config.toolbar`:
+And add the `InsertImage` plugin to `config.plugins` and `insertImage` to `config.toolbar`:
 
 ```js
 ClassicEditor
@@ -203,7 +203,7 @@ Congratulations! You have just created your first CKEditor 5 plugin!
 
 ## Bonus. Enabling image captions
 
-Thanks to the fact that all plugins operate on the model and on the view, and know as little about themselves as possible, you can easily enable image captions by simply loading the {@link module:image/imagecaption~ImageCaption} plugin which handles the captions feature and {@link module:image/imagetoolbar~ImageToolbar} which makes you able to control image properties like having the caption or not. Also, it is necessary to specify what should be included in the new toolbar. In this case, it would be a toggle executing the {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} which disables or enables image caption: 
+All the plugins operate both on the model and on the view, and know as little about themselves as possible. Thanks to this fact, you can easily enable image captions by simply loading the {@link module:image/imagecaption~ImageCaption} plugin which handles the captions feature and the {@link module:image/imagetoolbar~ImageToolbar} which makes you able to control such image properties like having the caption or not. It is also necessary to specify what to include in the new toolbar. In this case, it would be a toggle executing the {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} which disables or enables image caption:
 
 ```js
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
