@@ -8,6 +8,7 @@
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Style from '../src/style';
 
@@ -60,7 +61,7 @@ describe( 'StyleCommand', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Heading, Style ],
+				plugins: [ Paragraph, Heading, GeneralHtmlSupport, Style ],
 				style: {
 					definitions: [
 						{
@@ -92,16 +93,6 @@ describe( 'StyleCommand', () => {
 							name: 'Red heading',
 							element: 'h2',
 							classes: [ 'red-heading' ]
-						}
-					]
-				},
-				htmlSupport: {
-					allow: [
-						{
-							name: /^.*$/,
-							styles: true,
-							attributes: true,
-							classes: true
 						}
 					]
 				}

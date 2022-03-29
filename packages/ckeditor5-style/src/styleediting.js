@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import { normalizeConfig } from './utils';
 
 import StyleCommand from './stylecommand';
@@ -30,7 +29,7 @@ export default class StyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ GeneralHtmlSupport ];
+		return [ 'GeneralHtmlSupport' ];
 	}
 
 	/**
@@ -43,6 +42,23 @@ export default class StyleEditing extends Plugin {
 		const styles = new Styles( normalizedStyleDefinitions );
 
 		editor.commands.add( 'style', new StyleCommand( editor, styles ) );
+
+		this._configureGHSDataFilter( normalizedStyleDefinitions );
+	}
+
+	/**
+	 * This is where the styles feature configures the GHS feature. This method translates normalized
+	 * {@link module:style/style~StyleDefinition style definitions} to {@link module:engine/view/matcher~MatcherPattern matcher patterns}
+	 * and feeds them to the GHS {@link module:html-support/datafilter~DataFilter} plugin.
+	 *
+	 * @private
+	 * @param {Object} normalizedStyleDefinitions
+	 */
+	_configureGHSDataFilter( { block: blockDefinitions, inline: inlineDefinitions } ) {
+		const ghsDataFilter = this.editor.plugins.get( 'DataFilter' );
+
+		ghsDataFilter.loadAllowedConfig( blockDefinitions.map( normalizedStyleDefinitionToMatcherPattern ) );
+		ghsDataFilter.loadAllowedConfig( inlineDefinitions.map( normalizedStyleDefinitionToMatcherPattern ) );
 	}
 }
 
@@ -93,4 +109,15 @@ class Styles {
 	getDefinitionsByClassName( className ) {
 		return this.classToDefinition.get( className );
 	}
+}
+
+// Translates a normalized style definition to a view matcher pattern.
+//
+// @param {Object} definition A normalized style definition.
+// @returns {module:engine/view/matcher~MatcherPattern}
+function normalizedStyleDefinitionToMatcherPattern( { element, classes } ) {
+	return {
+		name: element,
+		classes
+	};
 }

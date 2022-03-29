@@ -7,12 +7,13 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 import Style from '../../src/style';
 
 ClassicEditor
 	.create( document.querySelector( '#editor-full' ), {
-		plugins: [ ArticlePluginSet, Style ],
+		plugins: [ ArticlePluginSet, GeneralHtmlSupport, Style ],
 		toolbar: [
 			'styleDropdown',
 			'|',
@@ -123,16 +124,6 @@ ClassicEditor
 				}
 			]
 		},
-		htmlSupport: {
-			allow: [
-				{
-					name: /^.*$/,
-					styles: true,
-					attributes: true,
-					classes: true
-				}
-			]
-		},
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
@@ -153,7 +144,7 @@ ClassicEditor
 
 ClassicEditor
 	.create( document.querySelector( '#editor-just-inline' ), {
-		plugins: [ ArticlePluginSet, Style ],
+		plugins: [ ArticlePluginSet, GeneralHtmlSupport, Style ],
 		toolbar: [
 			'styleDropdown',
 			'|',
