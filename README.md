@@ -9,7 +9,7 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 [![Join newsletter](https://img.shields.io/badge/join-newsletter-00cc99.svg)](http://eepurl.com/c3zRPr)
 [![Follow twitter](https://img.shields.io/badge/follow-twitter-00cc99.svg)](https://twitter.com/ckeditor)
 
-CKEditor 5 is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM. It is written from scratch in ES6 and has excellent webpack support. It provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all of which is possible within a single editing framework. As a market leader, it is constantly expanded and updated.
+CKEditor 5 is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM. It is written from scratch in ES6 and has excellent webpack support. It provides every type of WYSIWYG editing solution imaginable with extensive collaboration support. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all of which is possible within a single editing framework. As a market leader, it is constantly expanded and updated.
 
 ![CKEditor 5 Classic rich text editor build screenshot](https://user-images.githubusercontent.com/68123541/160365501-894a609b-c890-4c4e-bc29-20ab0aeda788.png)
 
@@ -107,6 +107,16 @@ For a high-level overview of the project see the [CKEditor Ecosystem website](ht
 ## Releases
 
 Follow the [CKEditor 5 changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) for release details and check out the CKEditor 5 release blog posts on the [CKSource blog](https://ckeditor.com/blog/?category=releases&tags=CKEditor-5) for important release highlights and additional information.
+
+## Editing features
+
+The CKEditor 5 Framework offers access to plethora of various plugins, supporting [all kinds of editing features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html).
+
+From collaborative editing support providing comments and tracking changes, through editing tools that let users control the content looks and structure such as tables, lists, font styles, to accessibility helpers and multi-language support - CKEditor 5 is easily extendable and customizable. Special duty features like Markdown input and output and source editing, or export to PDF and Word provide solutions for users with diverse and specialized needs and demands. Images and videos are easily supported and CKEditor 5 offers various upload and storage systems to manage these.
+
+The number of options and the easiness of customization and adding new ones makes the editing experience even better for any potential environments and professional backgrounds.
+
+Refer to the [CKEditor 5 Features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html) documentation for details.
 
 ## Contributing and project organization
 
