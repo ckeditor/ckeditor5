@@ -290,7 +290,7 @@ describe( 'ClipboardPipeline feature', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
 			const spy = sinon.stub( editor.model, 'insertContent' );
 
-			editor.setReadOnlyLock( 'unit-test' );
+			editor.setReadOnly( 'unit-test' );
 
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
@@ -307,7 +307,7 @@ describe( 'ClipboardPipeline feature', () => {
 
 			viewDocument.on( 'clipboardInput', spy, { priority: 'high' } );
 
-			editor.setReadOnlyLock( 'unit-test' );
+			editor.setReadOnly( 'unit-test' );
 
 			viewDocument.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock
@@ -315,7 +315,7 @@ describe( 'ClipboardPipeline feature', () => {
 
 			sinon.assert.notCalled( spy );
 
-			editor.clearReadOnlyLock( 'unit-test' );
+			editor.clearReadOnly( 'unit-test' );
 
 			viewDocument.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock
@@ -507,7 +507,7 @@ describe( 'ClipboardPipeline feature', () => {
 			const spy = sinon.spy();
 
 			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
-			editor.setReadOnlyLock( 'unit-test' );
+			editor.setReadOnly( 'unit-test' );
 
 			viewDocument.on( 'clipboardOutput', spy );
 

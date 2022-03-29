@@ -71,7 +71,7 @@ describe( 'FindPreviousCommand', () => {
 			command._state.results.add( {} );
 			command._state.results.add( {} );
 
-			editor.setReadOnlyLock( 'unit-test' );
+			editor.setReadOnly( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -83,8 +83,8 @@ describe( 'FindPreviousCommand', () => {
 			command._state.results.add( {} );
 			command._state.results.add( {} );
 
-			editor.setReadOnlyLock( 'unit-test' );
-			editor.clearReadOnlyLock( 'unit-test' );
+			editor.setReadOnly( 'unit-test' );
+			editor.clearReadOnly( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );

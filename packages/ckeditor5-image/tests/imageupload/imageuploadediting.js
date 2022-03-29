@@ -270,7 +270,7 @@ describe( 'ImageUploadEditing', () => {
 				const targetRange = editor.model.document.selection.getFirstRange();
 				const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-				editor.setReadOnlyLock( 'unit-test' );
+				editor.setReadOnly( 'unit-test' );
 
 				editor.editing.view.document.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 

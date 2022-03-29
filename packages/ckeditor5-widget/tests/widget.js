@@ -1391,7 +1391,7 @@ describe( 'Widget', () => {
 				'<paragraph>foo</paragraph>'
 			);
 
-			editor.setReadOnlyLock( 'unit-test' );
+			editor.setReadOnly( 'unit-test' );
 
 			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
 
@@ -1419,7 +1419,7 @@ describe( 'Widget', () => {
 				'<paragraph>foo</paragraph>'
 			);
 
-			editor.setReadOnlyLock( 'unit-test' );
+			editor.setReadOnly( 'unit-test' );
 
 			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
 

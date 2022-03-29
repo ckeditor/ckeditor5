@@ -68,11 +68,11 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should disable button if editor is in read-only mode', () => {
-			editor.setReadOnlyLock( 'unit-test' );
+			editor.setReadOnly( 'unit-test' );
 
 			expect( button.isEnabled ).to.be.false;
 
-			editor.clearReadOnlyLock( 'unit-test' );
+			editor.clearReadOnly( 'unit-test' );
 
 			expect( button.isEnabled ).to.be.true;
 		} );
@@ -311,11 +311,11 @@ describe( 'SourceEditing', () => {
 			const domRoot = editor.editing.view.getDomRoot();
 			const textarea = domRoot.nextSibling.children[ 0 ];
 
-			editor.setReadOnlyLock( 'unit-test' );
+			editor.setReadOnly( 'unit-test' );
 
 			expect( textarea.readOnly ).to.be.true;
 
-			editor.clearReadOnlyLock( 'unit-test' );
+			editor.clearReadOnly( 'unit-test' );
 
 			expect( textarea.readOnly ).to.be.false;
 		} );

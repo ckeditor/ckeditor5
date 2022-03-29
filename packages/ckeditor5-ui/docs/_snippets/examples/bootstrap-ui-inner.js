@@ -316,7 +316,7 @@ BootstrapEditor
 		button.addEventListener( 'click', () => {
 			isReadOnly = !isReadOnly;
 
-			editor.setReadOnlyLock( 'docs-snippet', isReadOnly );
+			editor.setReadOnly( 'docs-snippet', isReadOnly );
 
 			button.textContent = isReadOnly ?
 				'Turn off read-only mode' :

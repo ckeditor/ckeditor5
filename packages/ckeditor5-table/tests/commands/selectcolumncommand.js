@@ -67,7 +67,7 @@ describe( 'SelectColumnCommand', () => {
 				[ '00[]' ]
 			] ) );
 
-			editor.setReadOnlyLock( 'unit-test' );
+			editor.setReadOnly( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
