@@ -253,15 +253,6 @@ export default class Editor {
 	}
 
 	/**
-	 * Returns `true` if read only mode was set with the given lock ID.
-	 *
-	 * @param {String|Symbol} lockId The lock ID for setting the editor to the read-only state.
-	 */
-	hasReadOnlyLock( lockId ) {
-		return this._readOnlyLocks.has( lockId );
-	}
-
-	/**
 	 * Turns on the read-only mode in the editor.
 	 *
 	 * The editor supports locking mechanism for the read-only mode. It means that multiple features can request to turn on

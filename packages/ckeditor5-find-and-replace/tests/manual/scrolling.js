@@ -23,8 +23,15 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		document.getElementById( 'readonly-toggle' ).addEventListener( 'click', () => {
-			editor.setReadOnlyLock( 'manual-test', !editor.hasReadonlyLock( 'manual-test' ) );
+		const button = document.getElementById( 'readonly-toggle' );
+		let isReadOnly = false;
+
+		button.addEventListener( 'click', () => {
+			isReadOnly = !isReadOnly;
+
+			editor.setReadOnlyLock( 'manual-test', isReadOnly );
+
+			editor.editing.view.focus();
 		} );
 	} )
 	.catch( err => {

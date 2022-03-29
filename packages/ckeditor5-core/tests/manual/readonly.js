@@ -23,15 +23,16 @@ ClassicEditor
 		window.editor = editor;
 
 		const button = document.querySelector( '#read-only' );
+		let isReadOnly = false;
 
 		button.addEventListener( 'click', () => {
-			if ( editor.hasReadonlyLock( 'manual-test' ) ) {
-				editor.clearReadOnlyLock( 'manual-test' );
-				button.textContent = 'Turn off read-only mode';
-			} else {
-				editor.setReadOnlyLock( 'manual-test' );
-				button.textContent = 'Turn on read-only mode';
-			}
+			isReadOnly = !isReadOnly;
+
+			editor.setReadOnlyLock( 'manual-test', isReadOnly );
+
+			button.textContent = isReadOnly ?
+				'Turn off read-only mode' :
+				'Turn on read-only mode';
 
 			editor.editing.view.focus();
 		} );

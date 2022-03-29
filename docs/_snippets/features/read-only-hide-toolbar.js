@@ -20,15 +20,18 @@ ClassicEditor
 		window.editor = editor;
 
 		const button = document.querySelector( '#snippet-read-only-toggle-toolbar' );
+		let isReadOnly = false;
 
 		button.addEventListener( 'click', () => {
-			if ( editor.hasReadOnlyLock( 'readonly-mode' ) ) {
-				editor.clearReadOnlyLock( 'readonly-mode' );
-				button.innerText = 'Switch to read-only mode';
-			} else {
-				editor.setReadOnlyLock( 'readonly-mode' );
-				button.innerText = 'Switch to editable mode';
-			}
+			isReadOnly = !isReadOnly;
+
+			editor.setReadOnlyLock( 'docs-snippet', isReadOnly );
+
+			button.textContent = isReadOnly ?
+				'Turn off read-only mode' :
+				'Turn on read-only mode';
+
+			editor.editing.view.focus();
 		} );
 
 		const toolbarElement = editor.ui.view.toolbar.element;

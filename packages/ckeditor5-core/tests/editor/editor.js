@@ -475,21 +475,6 @@ describe( 'Editor', () => {
 			expect( editor.isReadOnly ).to.be.false;
 		} );
 
-		it( 'should be possible to check the presence of given lock', () => {
-			const editor = new TestEditor();
-
-			editor.setReadOnlyLock( 'lock-1' );
-
-			expect( editor.hasReadOnlyLock( 'lock-1' ) ).to.be.true;
-			expect( editor.hasReadOnlyLock( 'lock-2' ) ).to.be.false;
-
-			editor.clearReadOnlyLock( 'lock-1' );
-			editor.setReadOnlyLock( 'lock-2' );
-
-			expect( editor.hasReadOnlyLock( 'lock-1' ) ).to.be.false;
-			expect( editor.hasReadOnlyLock( 'lock-2' ) ).to.be.true;
-		} );
-
 		// The `change:isReadOnly` event is fired manually and this test ensures
 		// the behavior is the same as when the `isReadOnly` would be a normal observable prop.
 		it( 'should be observable', () => {

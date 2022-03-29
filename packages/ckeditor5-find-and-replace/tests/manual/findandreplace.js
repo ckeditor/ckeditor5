@@ -28,9 +28,14 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		let isReadOnly = false;
 
 		document.getElementById( 'readonly-toggle' ).addEventListener( 'click', () => {
-			editor.setReadOnlyLock( 'manual-test', !editor.hasReadonlyLock( 'manual-test' ) );
+			isReadOnly = !isReadOnly;
+
+			editor.setReadOnlyLock( 'manual-test', isReadOnly );
+
+			editor.editing.view.focus();
 		} );
 	} )
 	.catch( err => {

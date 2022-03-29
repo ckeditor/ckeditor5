@@ -119,16 +119,17 @@ function initEditor() {
 				document.getElementById( 'read-only' ).removeEventListener( 'click', toggleReadOnly );
 			}
 
-			function toggleReadOnly() {
-				const button = document.getElementById( 'read-only' );
+			const button = document.getElementById( 'read-only' );
+			let isReadOnly = false;
 
-				if ( editor.hasReadonlyLock( 'manual-test' ) ) {
-					editor.clearReadOnlyLock( 'manual-test' );
-					button.textContent = 'Turn off read-only mode';
-				} else {
-					editor.setReadOnlyLock( 'manual-test' );
-					button.textContent = 'Turn on read-only mode';
-				}
+			function toggleReadOnly() {
+				isReadOnly = !isReadOnly;
+
+				editor.setReadOnlyLock( 'manual-test', isReadOnly );
+
+				button.textContent = isReadOnly ?
+					'Turn off read-only mode' :
+					'Turn on read-only mode';
 
 				editor.editing.view.focus();
 			}
