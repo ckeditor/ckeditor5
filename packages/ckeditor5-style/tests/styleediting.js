@@ -7,6 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import StyleEditing from '../src/styleediting';
 import StyleCommand from '../src/stylecommand';
 
@@ -18,7 +19,7 @@ describe( 'StyleEditing', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, StyleEditing ],
+			plugins: [ Paragraph, GeneralHtmlSupport, StyleEditing ],
 			style: {
 				definitions: [
 					{
@@ -66,8 +67,9 @@ describe( 'StyleEditing', () => {
 		expect( StyleEditing.pluginName ).to.equal( 'StyleEditing' );
 	} );
 
-	// it( 'should require the GHS plugin', () => {
-	// } );
+	it( 'should soft-require the GHS plugin', () => {
+		expect( StyleEditing.requires ).to.deep.equal( [ 'GeneralHtmlSupport' ] );
+	} );
 
 	it( 'should register the "style" command', () => {
 		expect( editor.commands.get( 'style' ) ).to.be.instanceOf( StyleCommand );

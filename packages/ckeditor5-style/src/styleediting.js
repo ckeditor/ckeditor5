@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import { normalizeConfig } from './utils';
 
 import StyleCommand from './stylecommand';
@@ -30,7 +29,7 @@ export default class StyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ GeneralHtmlSupport ];
+		return [ 'GeneralHtmlSupport' ];
 	}
 
 	/**

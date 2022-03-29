@@ -9,6 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
@@ -26,7 +27,7 @@ describe( 'StyleUI', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Style, Paragraph ]
+			plugins: [ GeneralHtmlSupport, Style, Paragraph ]
 		} );
 	} );
 
