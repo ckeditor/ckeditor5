@@ -169,6 +169,10 @@ export default class DocumentListEditing extends Plugin {
 		this.listenTo( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
 
+			if ( getSelectedBlockObject( editor.model ) ) {
+				return;
+			}
+
 			editor.model.change( () => {
 				const firstPosition = selection.getFirstPosition();
 
