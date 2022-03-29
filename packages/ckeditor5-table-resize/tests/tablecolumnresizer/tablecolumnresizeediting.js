@@ -11,6 +11,7 @@ import TableColumnResize from '../../src/tablecolumnresize';
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 // import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -773,6 +774,48 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
 			} );
+
+			it( 'shrinks the table twice as much when resizing centered table as compared to aligned table', () => {
+				const columnToResizeIndex = 1;
+				const mouseMovementVector = { x: -10, y: 0 };
+
+				editor.setData(
+					`<figure class="table" style="float:left;">
+						<table>
+							<tbody>
+								<tr>
+									<td>11</td>
+									<td>12</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>`
+				);
+
+				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 0 );
+
+				const alignedTableColumnWidthsPx = getViewColumnWidthsPx( view );
+
+				editor.setData(
+					`<figure class="table">
+						<table>
+							<tbody>
+								<tr>
+									<td>11</td>
+									<td>12</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>`
+				);
+
+				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 0 );
+
+				const centeredTableColumnWidthsPx = getViewColumnWidthsPx( view );
+				const widthDifference = centeredTableColumnWidthsPx[ 1 ] - alignedTableColumnWidthsPx[ 1 ];
+
+				expect( widthDifference ).to.be.equal( mouseMovementVector.x );
+			} );
 		} );
 
 		describe( 'right or left (RTL)', () => {
@@ -1244,7 +1287,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 	async function createEditor( configCustomization ) {
 		const newEditor = await ClassicEditor.create( editorElement, Object.assign( {}, {
-			plugins: [ Table, TableColumnResize, TableColumnResizeEditing, Paragraph, WidgetResize ]
+			plugins: [ Table, TableProperties, TableColumnResize, TableColumnResizeEditing, Paragraph, WidgetResize ]
 		}, configCustomization ) );
 
 		await focusEditor( newEditor );
