@@ -142,9 +142,10 @@ function modelToViewImageAttributeConverter() {
 					return;
 				}
 
+				const { attributeOldValue, attributeNewValue } = data;
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
+				setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewElement );
 			}, { priority: 'low' } );
 		}
 
@@ -154,10 +155,11 @@ function modelToViewImageAttributeConverter() {
 					return;
 				}
 
+				const { attributeOldValue, attributeNewValue } = data;
 				const containerElement = conversionApi.mapper.toViewElement( data.item );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
+				setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewElement );
 			}, { priority: 'low' } );
 		}
 

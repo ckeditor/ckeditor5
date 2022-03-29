@@ -15,6 +15,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { getModelDataWithAttributes } from '../_utils/utils';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import { setModelHtmlAttribute } from '../../src/conversionutils';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 /* global document */
 
@@ -310,6 +312,85 @@ describe( 'ImageElementSupport', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<figure class="image"><img src="/assets/sample.png"></figure>'
+			);
+		} );
+
+		it.only( 'should allow modifying styles, classes and attributes', () => {
+			dataFilter.allowElement( /^(figure|img|figcaption)$/ );
+			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, attributes: /^data-.*$/ } );
+			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, classes: true } );
+			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, styles: true } );
+
+			const expectedHtml =
+				'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
+					'<img src="/assets/sample.png" class="bar" style="color:blue;" data-image="image">' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
+
+			const imageBlock = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'red'
+				} );
+
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', {
+					'font-size': '12px',
+					'text-align': 'center'
+				} );
+
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', {
+					'data-image': 'xyz'
+				} );
+
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', {
+					'data-figure': 'zzz'
+				} );
+
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-image': 'xyz'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'red'
+						}
+					},
+					2: {
+						attributes: {
+							'data-figure': 'zzz'
+						},
+						classes: [ 'foobar' ],
+						styles: {
+							'font-size': '12px',
+							'text-align': 'center'
+						}
+					}
+				}
+			} );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
+						' style="font-size:12px;text-align:center">' +
+					'<img class="bar baz" data-image="xyz" style="background-color:blue;color:red;" src="/assets/sample.png">' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
+					'<img class="bar baz" style="background-color:blue;color:red;" src="/assets/sample.png" data-image="xyz">' +
+				'</figure>'
 			);
 		} );
 	} );
