@@ -15,6 +15,13 @@
 			border: 1px solid red !important;
 		}
 	</style>
+		<!--
+            For a totally unknown reason, Travis cannot fetch an image from the `via.placeholder.com` service.
+            So this request/response has been added to exclusions for the crawler. See: #11436.
+        -->
+		<meta name="x-cke-crawler-ignore-patterns" content='{
+			"response-failure": "via.placeholder.com"
+		}'>
 </head>
 <div style="display: flex">
 	<div style="width: 40%; margin-right: 20px">

@@ -2,10 +2,9 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 ===================================
 
 [![npm version](https://badge.fury.io/js/ckeditor5.svg)](https://www.npmjs.com/package/ckeditor5)
-
-[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
-[![Dependency Status](https://img.shields.io/david/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5)
-[![devDependency Status](https://img.shields.io/david/dev/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
+![Dependency Status](https://img.shields.io/librariesio/release/npm/ckeditor5)
 
 [![Join newsletter](https://img.shields.io/badge/join-newsletter-00cc99.svg)](http://eepurl.com/c3zRPr)
 [![Follow twitter](https://img.shields.io/badge/follow-twitter-00cc99.svg)](https://twitter.com/ckeditor)
@@ -41,11 +40,11 @@ CKEditor 5 builds are a set of ready-to-use rich text editors. Every "build" pro
 
 The following CKEditor 5 builds are currently available:
 
-* [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor)
-* [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#inline-editor)
-* [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-editor)
-* [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-block-editor)
-* [Document editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor)
+* [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#classic-editor)
+* [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#inline-editor)
+* [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#balloon-editor)
+* [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#balloon-block-editor)
+* [Document editor](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#document-editor)
 
 #### Example
 
@@ -60,7 +59,7 @@ In your HTML page add an element that CKEditor should replace:
 <div id="editor"></div>
 ```
 
-Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#npm) and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#zip-download)):
+Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#npm) and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#zip-download)):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/<version>/classic/ckeditor.js"></script>
@@ -80,7 +79,7 @@ Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/a
 
 You’re ready to go!
 
-To find out how to start with other builds check the [Quick start guide in the CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/quick-start.html).
+To find out how to start with other builds check the [Predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html) guide in the CKEditor 5 documentation.
 
 ### CKEditor 5 Framework
 
@@ -94,7 +93,7 @@ To find out more see the following [CKEditor 5 documentation](https://ckeditor.c
 
 * [API documentation](https://ckeditor.com/docs/ckeditor5/latest/api/index.html)
 * [CKEditor 5 Framework documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html)
-* [CKEditor 5 builds documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html)
+* [CKEditor 5 builds documentation](https://ckeditor.com/docs/ckeditor5/latest/installation/index.html)
 * [CKEditor 5 Features documentation](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
 * [CKEditor 5 Examples](https://ckeditor.com/docs/ckeditor5/latest/examples/index.html)
 

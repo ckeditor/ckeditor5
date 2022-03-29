@@ -28,7 +28,7 @@ import { convertSelectionChange } from '../conversion/upcasthelpers';
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
 /**
- * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
+ * A controller for the editing pipeline. The editing pipeline controls the {@link ~EditingController#model model} rendering,
  * including selection handling. It also creates the {@link ~EditingController#view view} which builds a
  * browser-independent virtualization over the DOM elements. The editing controller also attaches default converters.
  *
@@ -59,7 +59,7 @@ export default class EditingController {
 		this.view = new View( stylesProcessor );
 
 		/**
-		 * Mapper which describes the model-view binding.
+		 * A mapper that describes the model-view binding.
 		 *
 		 * @readonly
 		 * @member {module:engine/conversion/mapper~Mapper}
@@ -67,7 +67,7 @@ export default class EditingController {
 		this.mapper = new Mapper();
 
 		/**
-		 * Downcast dispatcher that converts changes from the model to {@link #view the editing view}.
+		 * Downcast dispatcher that converts changes from the model to the {@link #view editing view}.
 		 *
 		 * @readonly
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher} #downcastDispatcher
@@ -82,7 +82,7 @@ export default class EditingController {
 		const markers = this.model.markers;
 
 		// When plugins listen on model changes (on selection change, post fixers, etc.) and change the view as a result of
-		// model's change, they might trigger view rendering before the conversion is completed (e.g. before the selection
+		// the model's change, they might trigger view rendering before the conversion is completed (e.g. before the selection
 		// is converted). We disable rendering for the length of the outermost model change() block to prevent that.
 		//
 		// See https://github.com/ckeditor/ckeditor5-engine/issues/1528
@@ -193,7 +193,7 @@ export default class EditingController {
 
 		if ( !currentMarker ) {
 			/**
-			 * The marker with provided name does not exist and cannot be reconverted.
+			 * The marker with the provided name does not exist and cannot be reconverted.
 			 *
 			 * @error editingcontroller-reconvertmarker-marker-not-exist
 			 * @param {String} markerName The name of the reconverted marker.

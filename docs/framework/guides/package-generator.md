@@ -160,7 +160,7 @@ npm run stylelint
 
 ### `dll:build`
 
-Creates a DLL-compatible package build which can be loaded into an editor using {@link builds/guides/development/dll-builds DLL builds}.
+Creates a DLL-compatible package build which can be loaded into an editor using {@link installation/advanced/dll-builds DLL builds}.
 
 Examples:
 
@@ -174,7 +174,7 @@ npm run dll:build -- --watch
 
 ### `dll:serve`
 
-Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor 5 {@link builds/guides/development/dll-builds DLL builds}.
+Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor 5 {@link installation/advanced/dll-builds DLL builds}.
 
 Examples:
 
@@ -204,15 +204,15 @@ npm run translations:collect
 Download translations from the Transifex server. Depending on users' activity in the project, it creates translations files used for building the editor.
 
 <info-box info>
-The task requires passing the URL to Transifex API. Usually, it matches the following format: `https://www.transifex.com/api/2/project/[PROJECT_SLUG]`.
+The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
 
-To avoid passing the `--transifex` option every time when calls the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
+To avoid passing these option every time when calls the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:download` command.
 </info-box>
 
 Examples:
 
 ```bash
-npm run translations:download -- --transifex [API URL]
+npm run translations:download -- --organization [ORGANIZATION] --project [PROJECT]
 ```
 
 ### `translations:upload`
@@ -220,15 +220,15 @@ npm run translations:download -- --transifex [API URL]
 Uploads translation messages onto the Transifex server. It allows for the creation of translations into other languages by users using the Transifex platform.
 
 <info-box info>
-The task requires passing the URL to the Transifex API. Usually, it matches the following format: `https://www.transifex.com/api/2/project/[PROJECT_SLUG]`.
+The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
 
-To avoid passing the `--transifex` option every time when you call the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
+To avoid passing these option every time when calls the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
 </info-box>
 
 Examples:
 
 ```bash
-npm run translations:upload -- --transifex [API URL]
+npm run translations:upload -- --organization [ORGANIZATION] --project [PROJECT]
 ```
 
 ### `prepare` and `prepublishOnly`
@@ -241,7 +241,7 @@ To change ESLint config, edit the [.eslintrc.js](https://github.com/ckeditor/cke
 
 ### Why the predefined ESLint rules are recommended?
 
-To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages. To learn more, visit the {@link builds/guides/development/dll-builds DLL guide} and {@link framework/guides/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see detailed explanation} about the limitation.
+To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages. To learn more, visit the {@link installation/advanced/dll-builds DLL guide} and {@link framework/guides/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see detailed explanation} about the limitation.
 
 ## Translations
 

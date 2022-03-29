@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
-msgstr "Έντονη"
+msgstr "Έντονα"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
@@ -26,20 +26,20 @@ msgstr "Πλάγια"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr ""
+msgstr "Υπογράμμιση"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr ""
+msgstr "Κώδικας"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr ""
+msgstr "Διακριτή διαγραφή"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "Δείκτης"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "Εκθέτης"

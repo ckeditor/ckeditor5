@@ -106,6 +106,8 @@ export default class MarkerCollection {
 		const oldMarker = this._markers.get( markerName );
 
 		if ( oldMarker ) {
+			const oldMarkerData = oldMarker.getData();
+
 			const oldRange = oldMarker.getRange();
 			let hasChanged = false;
 
@@ -125,7 +127,7 @@ export default class MarkerCollection {
 			}
 
 			if ( hasChanged ) {
-				this.fire( 'update:' + markerName, oldMarker, oldRange, range );
+				this.fire( 'update:' + markerName, oldMarker, oldRange, range, oldMarkerData );
 			}
 
 			return oldMarker;
@@ -135,7 +137,7 @@ export default class MarkerCollection {
 		const marker = new Marker( markerName, liveRange, managedUsingOperations, affectsData );
 
 		this._markers.set( markerName, marker );
-		this.fire( 'update:' + markerName, marker, null, range );
+		this.fire( 'update:' + markerName, marker, null, range, { ...marker.getData(), range: null } );
 
 		return marker;
 	}
@@ -154,7 +156,7 @@ export default class MarkerCollection {
 
 		if ( oldMarker ) {
 			this._markers.delete( markerName );
-			this.fire( 'update:' + markerName, oldMarker, oldMarker.getRange(), null );
+			this.fire( 'update:' + markerName, oldMarker, oldMarker.getRange(), null, oldMarker.getData() );
 
 			this._destroyMarker( oldMarker );
 
@@ -188,7 +190,7 @@ export default class MarkerCollection {
 
 		const range = marker.getRange();
 
-		this.fire( 'update:' + markerName, marker, range, range, marker.managedUsingOperations, marker.affectsData );
+		this.fire( 'update:' + markerName, marker, range, range, marker.getData() );
 	}
 
 	/**
@@ -273,10 +275,19 @@ export default class MarkerCollection {
 	 * means that marker is just added.
 	 * @param {module:engine/model/range~Range|null} newRange Marker range after update. When is not defined it
 	 * means that marker is just removed.
+	 * @param {module:engine/model/markercollection~MarkerData} oldMarkerData Data of the marker before the change.
 	 */
 }
 
 mix( MarkerCollection, EmitterMixin );
+
+/**
+ * @typedef {Object} module:engine/model/markercollection~MarkerData
+ *
+ * @property {module:engine/model/range~Range|null} range Marker range. `null` if the marker was removed.
+ * @property {Boolean} affectsData A property defining if the marker affects data.
+ * @property {Boolean} managedUsingOperations A property defining if the marker is managed using operations.
+ */
 
 /**
  * `Marker` is a continuous parts of model (like a range), is named and represent some kind of information about marked
@@ -416,6 +427,19 @@ class Marker {
 		}
 
 		return this._affectsData;
+	}
+
+	/**
+	 * Returns the marker data (properties defining the marker).
+	 *
+	 * @returns {module:engine/model/markercollection~MarkerData}
+	 */
+	getData() {
+		return {
+			range: this.getRange(),
+			affectsData: this.affectsData,
+			managedUsingOperations: this.managedUsingOperations
+		};
 	}
 
 	/**

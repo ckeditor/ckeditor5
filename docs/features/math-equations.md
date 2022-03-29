@@ -6,16 +6,16 @@ badges: [ premium ]
 
 # Math equations and chemical formulas
 
-<info-box>
-	This feature is provided as a commercial solution called MathType delivered by our partner, [Wiris](http://www.wiris.com).
-	You can report any issues in the official CKEditor 5 [GitHub repository](https://github.com/ckeditor/ckeditor5/issues). A license can be purchased [here](https://ckeditor.com/contact/).
-</info-box>
-
 [MathType](http://www.wiris.com/en/mathtype) is a popular mathematical and science formula editor with classical and handwriting input modes. You can use it to create math equations or chemical formulas right inside the CKEditor 5 content.
 
 MathType is based upon standards like MathML for internal representation and the PNG image format for displaying formulas. It can also handle other formats like LaTeX, Flash, SVG and EPS.
 
 Additionally, MathType offers a special tool designed to help you work with chemical notation. When enabled, ChemType adds a specialized toolbar with the common chemical symbols as well as changes the notation to make it more intuitive to work with chemical formulas.
+
+<info-box>
+	This feature is provided as a commercial solution called MathType delivered by our partner, [Wiris](http://www.wiris.com).
+	You can report any issues in the official CKEditor 5 [GitHub repository](https://github.com/ckeditor/ckeditor5/issues). A license can be purchased [here](https://ckeditor.com/contact/).
+</info-box>
 
 ## Demo
 
@@ -47,7 +47,7 @@ If you visit a page using MathType with your mobile device, the handwriting inte
 
 ## Installation
 
-To add MathType features to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
+MathType is delivered as a CKEditor 5 plugin, so it can be combined into an editor build just like other features. To add this feature to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
 
 ```bash
 npm install --save @wiris/mathtype-ckeditor5
@@ -68,7 +68,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Customizing MathType service
