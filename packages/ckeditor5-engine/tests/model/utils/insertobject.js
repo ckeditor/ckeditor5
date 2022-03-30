@@ -59,7 +59,7 @@ describe( 'insertObject()', () => {
 		it( 'should throw an error if element is not an object', () => {
 			const paragraph = new Element( 'paragraph', [], [ new Text( 'bar' ) ] );
 
-			expectToThrowCKEditorError( () => insertObject( model, paragraph ), 'insertobject-todo' );
+			expectToThrowCKEditorError( () => insertObject( model, paragraph ), 'insertobject-element-not-an-object' );
 		} );
 	} );
 
@@ -342,7 +342,7 @@ describe( 'insertObject()', () => {
 
 			expectToThrowCKEditorError(
 				() => insertObject( model, widget, undefined, undefined, { setSelection: 'above' } ),
-				'insertobject-invalid-place-todo'
+				'insertobject-invalid-place-parameter-value'
 			);
 		} );
 	} );
@@ -533,14 +533,23 @@ describe( 'insertObject()', () => {
 				'<paragraph>Bar</paragraph>'
 			);
 
-			const range = model.createRangeOn( model.getChild( 1 ) );
+			const range = model.createRangeOn( root.getChild( 1 ) );
 
 			model.insertObject( widget, range );
 
-			sinon.assert.calledOnce( insertContentSpy );
-			sinon.assert.calledWith( insertContentSpy, widget, model.document.selection );
+			const insertContentCall = insertContentSpy.getCall( 0 );
+			const content = insertContentCall.args[ 0 ];
+			const selectable = insertContentCall.args[ 1 ];
 
-			expect( getData( model ) ).to.equalMarkup( '[<blockWidget></blockWidget>]' );
+			sinon.assert.calledOnce( insertContentSpy );
+
+			expect( content ).to.equal( widget );
+			expect( selectable.anchor.path ).to.deep.equal( [ 1 ] );
+			expect( selectable.focus.path ).to.deep.equal( [ 2 ] );
+			expect( getData( model ) ).to.equalMarkup(
+				'<block>[Foo]</block>' +
+				'<blockWidget></blockWidget>'
+			);
 		} );
 	} );
 } );
