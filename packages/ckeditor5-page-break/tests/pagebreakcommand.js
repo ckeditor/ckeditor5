@@ -325,7 +325,7 @@ describe( 'PageBreakCommand', () => {
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'<pageBreak pretty="true" smart="true"></pageBreak>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
 				);
 			} );
 
@@ -336,7 +336,7 @@ describe( 'PageBreakCommand', () => {
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'<pageBreak pretty="true"></pageBreak>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph pretty="true">[]</paragraph>'
 				);
 			} );
 
@@ -347,7 +347,7 @@ describe( 'PageBreakCommand', () => {
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'<pageBreak pretty="true" smart="true"></pageBreak>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
 				);
 			} );
 
@@ -361,7 +361,7 @@ describe( 'PageBreakCommand', () => {
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'<pageBreak pretty="true" smart="true"></pageBreak>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
 				);
 			} );
 		} );

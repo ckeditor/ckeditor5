@@ -697,7 +697,7 @@ describe( 'ImageTypeCommand', () => {
 				setModelData( model,
 					'<paragraph pretty="true" smart="true">' +
 						`[<imageInline src="${ imgSrc }"></imageInline>]` +
-					'</paragraph>`'
+					'</paragraph>'
 				);
 
 				blockCommand.execute();

@@ -45,12 +45,7 @@ export default class InsertParagraphCommand extends Command {
 			const paragraph = writer.createElement( 'paragraph' );
 
 			if ( attributes ) {
-				// TODO this is the same as setAllowedAttributes() helper in insertObject.
-				for ( const [ attributeName, attributeValue ] of Object.entries( attributes ) ) {
-					if ( model.schema.checkAttribute( paragraph, attributeName ) ) {
-						writer.setAttribute( attributeName, attributeValue, paragraph );
-					}
-				}
+				model.schema.setAllowedAttributes( paragraph, attributes, writer );
 			}
 
 			if ( !model.schema.checkChild( position.parent, paragraph ) ) {

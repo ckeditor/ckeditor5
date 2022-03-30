@@ -327,7 +327,7 @@ describe( 'HorizontalLineCommand', () => {
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'<horizontalLine pretty="true" smart="true"></horizontalLine>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
 				);
 			} );
 
@@ -338,7 +338,7 @@ describe( 'HorizontalLineCommand', () => {
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'<horizontalLine pretty="true"></horizontalLine>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph pretty="true">[]</paragraph>'
 				);
 			} );
 
@@ -349,7 +349,7 @@ describe( 'HorizontalLineCommand', () => {
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'<horizontalLine pretty="true" smart="true"></horizontalLine>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
 				);
 			} );
 
@@ -363,7 +363,7 @@ describe( 'HorizontalLineCommand', () => {
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'<horizontalLine pretty="true" smart="true"></horizontalLine>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
 				);
 			} );
 		} );

@@ -835,6 +835,23 @@ export default class Schema {
 	}
 
 	/**
+	 * Sets attributes allowed by the schema on given node.
+	 *
+	 * @param {module:engine/model/node~Node} node A node to set attributes on.
+	 * @param {Object} attributes Attributes keys and values.
+	 * @param {module:engine/model/writer~Writer} writer An instance of the model writer.
+	 */
+	setAllowedAttributes( node, attributes, writer ) {
+		const model = writer.model;
+
+		for ( const [ attributeName, attributeValue ] of Object.entries( attributes ) ) {
+			if ( model.schema.checkAttribute( node, attributeName ) ) {
+				writer.setAttribute( attributeName, attributeValue, node );
+			}
+		}
+	}
+
+	/**
 	 * Removes attributes disallowed by the schema.
 	 *
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes that will be filtered.

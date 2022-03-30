@@ -85,7 +85,7 @@ export default function insertObject( model, object, selectable, placeOrOffset, 
 		}
 
 		// Apply attributes that are allowed on the inserted object (or paragraph if autoparagraphed).
-		setAllowedAttributes( writer, elementToInsert, attributesToCopy );
+		model.schema.setAllowedAttributes( elementToInsert, attributesToCopy, writer );
 
 		// Insert the prepared content at the optionally adjusted selection.
 		const affectedRange = model.insertContent( elementToInsert, insertionSelection );
@@ -185,7 +185,7 @@ function updateSelection( writer, contextElement, place, paragraphAttributes ) {
 		if ( !canSetSelection && model.schema.checkChild( contextElement.parent, 'paragraph' ) ) {
 			nextElement = writer.createElement( 'paragraph' );
 
-			setAllowedAttributes( writer, nextElement, paragraphAttributes );
+			model.schema.setAllowedAttributes( nextElement, paragraphAttributes, writer );
 			model.insertContent( nextElement, writer.createPositionAfter( contextElement ) );
 		}
 
@@ -205,22 +205,5 @@ function updateSelection( writer, contextElement, place, paragraphAttributes ) {
 		 * @error insertobject-invalid-place-parameter-value
 		 */
 		throw new CKEditorError( 'insertobject-invalid-place-parameter-value', model );
-	}
-}
-
-/**
- * Sets attributes which are allowed by schema on given element.
- *
- * @param {module:engine/model/writer~Writer} writer An instance of the model writer.
- * @param {module:engine/model/element~Element} element An element to set attributes on.
- * @param {Object} attributes Attributes keys and values.
- */
-export function setAllowedAttributes( writer, element, attributes ) {
-	const model = writer.model;
-
-	for ( const [ attributeName, attributeValue ] of Object.entries( attributes ) ) {
-		if ( model.schema.checkAttribute( element, attributeName ) ) {
-			writer.setAttribute( attributeName, attributeValue, element );
-		}
 	}
 }
