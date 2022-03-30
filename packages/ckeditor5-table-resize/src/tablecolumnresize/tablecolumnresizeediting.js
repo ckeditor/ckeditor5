@@ -99,6 +99,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._setupConversion();
 		this._setupPostFixer();
 		this._setupColumnResizers();
+		this._registerColgroupFixer();
 
 		const editor = this.editor;
 		const columnResizePlugin = editor.plugins.get( 'TableColumnResize' );
@@ -679,5 +680,25 @@ export default class TableColumnResizeEditing extends Plugin {
 				isLtrContent
 			}
 		};
+	}
+
+	/**
+	 * Inserts colgroup if it is missing from table (e.g. after table insertion into table).
+	 *
+	 * @private
+	 */
+	_registerColgroupFixer() {
+		const editor = this.editor;
+
+		this.listenTo( editor.editing.view.document, 'layoutChanged', () => {
+			const table = editor.model.document.selection.getFirstPosition().findAncestor( 'table' );
+			const tableView = editor.editing.view.document.selection.getFirstPosition().getAncestors().reverse().find(
+				element => element.name === 'table'
+			);
+
+			if ( table && table.hasAttribute( 'columnWidths' ) && tableView && tableView.getChild( 0 ).name !== 'colgroup' ) {
+				editor.editing.reconvertItem( table );
+			}
+		}, { priority: 'low' } );
 	}
 }
