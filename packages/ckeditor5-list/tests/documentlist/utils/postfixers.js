@@ -8,6 +8,9 @@ import {
 	fixListIndents,
 	fixListItemIds
 } from '../../../src/documentlist/utils/postfixers';
+import {
+	iterateSiblingListBlocks
+} from '../../../src/documentlist/utils/listwalker';
 import stubUid from '../_utils/uid';
 import { modelList } from '../_utils/utils';
 
@@ -204,7 +207,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 1 ), writer );
+				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 1 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -223,7 +226,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 0 ), writer );
+				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -243,7 +246,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 0 ), writer );
+				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -263,7 +266,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 0 ), writer );
+				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -284,7 +287,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 0 ), writer );
+				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -309,7 +312,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 0 ), writer );
+				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -336,7 +339,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 0 ), writer );
+				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -362,7 +365,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			const fragment = parseModel( input, schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 1 ).getChild( 0 ), writer );
+				fixListIndents( iterateSiblingListBlocks( fragment.getChild( 1 ).getChild( 0 ) ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal(
@@ -390,7 +393,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
+				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -412,7 +415,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
+				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -435,7 +438,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
+				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal( modelList( [
@@ -458,7 +461,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
+				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -481,7 +484,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
+				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -505,7 +508,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
+				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -534,7 +537,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			stubUid();
 
 			model.change( writer => {
-				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
+				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -564,7 +567,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 			seenIds.add( 'b' );
 
 			model.change( writer => {
-				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
+				fixListItemIds( iterateSiblingListBlocks( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [

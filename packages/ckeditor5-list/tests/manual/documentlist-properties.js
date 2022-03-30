@@ -120,49 +120,49 @@ function createEditor( idSuffix, properties ) {
 		} );
 }
 
-createEditor( 'a', {
+createEditor( 'all', {
 	styles: true,
 	startIndex: true,
 	reversed: true
 } );
 
-createEditor( 'b', {
+createEditor( 'style-start', {
 	styles: true,
 	startIndex: true,
 	reversed: false
 } );
 
-createEditor( 'c', {
+createEditor( 'style-reversed', {
 	styles: true,
 	startIndex: false,
 	reversed: true
 } );
 
-createEditor( 'd', {
+createEditor( 'start-reversed', {
 	styles: false,
 	startIndex: true,
 	reversed: true
 } );
 
-createEditor( 'e', {
+createEditor( 'start', {
 	styles: false,
 	startIndex: true,
 	reversed: false
 } );
 
-createEditor( 'f', {
+createEditor( 'reversed', {
 	styles: false,
 	startIndex: false,
 	reversed: true
 } );
 
-createEditor( 'g', {
+createEditor( 'style', {
 	styles: true,
 	startIndex: false,
 	reversed: false
 } );
 
-createEditor( 'h', {
+createEditor( 'none', {
 	styles: false,
 	startIndex: false,
 	reversed: false

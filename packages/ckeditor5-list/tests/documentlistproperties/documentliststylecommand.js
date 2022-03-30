@@ -6,7 +6,6 @@
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { Plugin } from '@ckeditor/ckeditor5-core';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import DocumentListCommand from '../../src/documentlist/documentlistcommand';
@@ -19,20 +18,8 @@ describe( 'DocumentListStyleCommand', () => {
 
 	testUtils.createSinonSandbox();
 
-	class DocumentListEditingMock extends Plugin {
-		static get pluginName() {
-			return 'DocumentListEditing';
-		}
-
-		getSameListDefiningAttributes() {
-			return [ 'listType', 'listStyle' ];
-		}
-	}
-
 	beforeEach( async () => {
-		editor = new Editor( {
-			plugins: [ DocumentListEditingMock ]
-		} );
+		editor = new Editor();
 
 		await editor.initPlugins();
 
@@ -275,24 +262,6 @@ describe( 'DocumentListStyleCommand', () => {
 				* 1.[] {style:circle}
 				* 2.
 				# 1. {style:default}
-			` ) );
-		} );
-
-		it( 'should stop searching for the list items when spotted listItem with different `listStyle` attribute', () => {
-			setData( model, modelList( `
-				Foo.
-				* 1.[] {style:default}
-				* 2.
-				* 3. {style:disc}
-			` ) );
-
-			listStyleCommand.execute( { type: 'circle' } );
-
-			expect( getData( model ) ).to.equalMarkup( modelList( `
-				Foo.
-				* 1.[] {style:circle}
-				* 2.
-				* 3. {style:disc}
 			` ) );
 		} );
 

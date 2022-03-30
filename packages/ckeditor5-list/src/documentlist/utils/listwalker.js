@@ -21,7 +21,7 @@ export default class ListWalker {
 	 * @param {Object} options
 	 * @param {'forward'|'backward'} [options.direction='backward'] The iterating direction.
 	 * @param {Boolean} [options.includeSelf=false] Whether start block should be included in the result (if it's matching other criteria).
-	 * @param {Array.<String>|String} [options.sameListAttributes=[]] Additional attributes that must be the same for each block.
+	 * @param {Array.<String>|String} [options.sameAttributes=[]] Additional attributes that must be the same for each block.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
 	 * @param {Boolean} [options.lowerIndent=false] Whether blocks with a lower indent level than the start block should be included
@@ -68,7 +68,7 @@ export default class ListWalker {
 		 * @private
 		 * @type {Array.<String>}
 		 */
-		this._sameListAttributes = toArray( options.sameListAttributes || [] );
+		this._sameAttributes = toArray( options.sameAttributes || [] );
 
 		/**
 		 * Whether blocks with the same indent level as the start block should be included in the result.
@@ -102,7 +102,7 @@ export default class ListWalker {
 	 * @param {Object} options
 	 * @param {'forward'|'backward'} [options.direction='backward'] The iterating direction.
 	 * @param {Boolean} [options.includeSelf=false] Whether start block should be included in the result (if it's matching other criteria).
-	 * @param {Array.<String>|String} [options.sameListAttributes=[]] Additional attributes that must be the same for each block.
+	 * @param {Array.<String>|String} [options.sameAttributes=[]] Additional attributes that must be the same for each block.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
 	 * @param {Boolean} [options.lowerIndent=false] Whether blocks with a lower indent level than the start block should be included
@@ -172,7 +172,7 @@ export default class ListWalker {
 				}
 
 				// Abort if item has any additionally specified attribute different.
-				if ( this._sameListAttributes.some( attr => node.getAttribute( attr ) !== this._startElement.getAttribute( attr ) ) ) {
+				if ( this._sameAttributes.some( attr => node.getAttribute( attr ) !== this._startElement.getAttribute( attr ) ) ) {
 					break;
 				}
 			}
@@ -209,10 +209,11 @@ export default class ListWalker {
  *
  * @protected
  * @param {module:engine/model/node~Node} node The model node.
- * @param {'backward'|'forward'} direction Iteration direction.
- * @returns {Iterable.<Object>} The object with `node` and `previous` {@link module:engine/model/element~Element blocks}.
+ * @param {'backward'|'forward'} [direction='forward'] Iteration direction.
+ * @returns {Iterator.<module:list/documentlist/utils/listwalker~ListIteratorValue>} The object with `node` and `previous`
+ * {@link module:engine/model/element~Element blocks}.
  */
-export function* iterateSiblingListBlocks( node, direction ) {
+export function* iterateSiblingListBlocks( node, direction = 'forward' ) {
 	const isForward = direction == 'forward';
 	let previous = null;
 
@@ -223,3 +224,37 @@ export function* iterateSiblingListBlocks( node, direction ) {
 		node = isForward ? node.nextSibling : node.previousSibling;
 	}
 }
+
+/**
+ * The iterable protocol over the list elements.
+ *
+ * @protected
+ */
+export class ListBlocksIterable {
+	/**
+	 * @param {module:engine/model/element~Element} listHead The head element of a list.
+	 */
+	constructor( listHead ) {
+		this._listHead = listHead;
+	}
+
+	/**
+	 * List blocks iterator.
+	 *
+	 * Iterates over all blocks of a list.
+	 *
+	 * @returns {Iterator.<module:list/documentlist/utils/listwalker~ListIteratorValue>}
+	 */
+	[ Symbol.iterator ]() {
+		return iterateSiblingListBlocks( this._listHead, 'forward' );
+	}
+}
+
+/**
+ * Object returned by `iterateSiblingListBlocks()` when traversing a list.
+ *
+ * @protected
+ * @typedef {Object} module:list/documentlist/utils/listwalker~ListIteratorValue
+ * @property {module:engine/model/node~Node} node The current list node.
+ * @property {module:engine/model/node~Node} previous The previous list node.
+ */

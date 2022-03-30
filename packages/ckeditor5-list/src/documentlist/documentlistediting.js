@@ -34,14 +34,25 @@ import {
 	isLastBlockOfListItem,
 	isSingleListItem,
 	getSelectedBlockObject,
-	isListItemBlock,
-	LIST_BASE_ATTRIBUTES
+	isListItemBlock
 } from './utils/model';
-import { getViewElementNameForListType } from './utils/view';
-
-import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
+import {
+	getViewElementIdForListType,
+	getViewElementNameForListType
+} from './utils/view';
+import ListWalker, {
+	iterateSiblingListBlocks,
+	ListBlocksIterable
+} from './utils/listwalker';
 
 import '../../theme/documentlist.css';
+
+/**
+ * A list of base list model attributes.
+ *
+ * @private
+ */
+const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
 
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
@@ -68,12 +79,12 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	init() {
 		/**
-		 * The list of attributes that must be consistent among all items in the same list.
+		 * The list of registered downcast strategies.
 		 *
 		 * @private
-		 * @type {Array.<String>}
+		 * @type {Array.<module:list/documentlist/documentlistediting~DowncastStrategy>}
 		 */
-		this._sameListDefiningAttributes = [ 'listType' ];
+		this._downcastStrategies = [];
 
 		const editor = this.editor;
 		const model = editor.model;
@@ -107,8 +118,6 @@ export default class DocumentListEditing extends Plugin {
 		editor.commands.add( 'splitListItemBefore', new DocumentListSplitCommand( editor, 'before' ) );
 		editor.commands.add( 'splitListItemAfter', new DocumentListSplitCommand( editor, 'after' ) );
 
-		this._setupModelPostFixing();
-		this._setupConversion();
 		this._setupDeleteIntegration();
 		this._setupEnterIntegration();
 		this._setupTabIntegration();
@@ -134,25 +143,34 @@ export default class DocumentListEditing extends Plugin {
 			// First we want to allow user to outdent all indendations from other features then he can oudent list item.
 			outdent.registerChildCommand( commands.get( 'outdentList' ), { priority: 'lowest' } );
 		}
+
+		// Register conversion and model post-fixer after other plugins had a chance to register their attribute strategies.
+		this._setupModelPostFixing();
+		this._setupConversion();
 	}
 
 	/**
-	 * Register attribute that must be that must be consistent among all items in the same list.
-	 * If list items have different values of registered attributes, they belong to different lists.
+	 * Registers a downcast strategy.
 	 *
-	 * @param {String} attributeName
+	 * **Note**: Strategies must be registered in the `Plugin#init()` phase so that it can be applied
+	 * in the `DocumentListEditing#afterInit()`.
+	 *
+	 * @param {module:list/documentlist/documentlistediting~DowncastStrategy} strategy The downcast strategy to register.
 	 */
-	registerSameListDefiningAttributes( attributeName ) {
-		this._sameListDefiningAttributes.push( attributeName );
+	registerDowncastStrategy( strategy ) {
+		this._downcastStrategies.push( strategy );
 	}
 
 	/**
-	 * Gets the list of attributes that must be consistent among all items in the same list.
+	 * Returns list of model attribute names that should affect downcast conversion.
 	 *
-	 * @returns {Array.<String>}
+	 * @private
 	 */
-	getSameListDefiningAttributes() {
-		return this._sameListDefiningAttributes;
+	_getListAttributeNames() {
+		return [
+			...LIST_BASE_ATTRIBUTES,
+			...this._downcastStrategies.map( strategy => strategy.attributeName )
+		];
 	}
 
 	/**
@@ -184,7 +202,7 @@ export default class DocumentListEditing extends Plugin {
 					}
 
 					const previousBlock = ListWalker.first( positionParent, {
-						sameListAttributes: this.getSameListDefiningAttributes(),
+						sameAttributes: 'listType',
 						sameIndent: true
 					} );
 
@@ -339,6 +357,7 @@ export default class DocumentListEditing extends Plugin {
 	_setupConversion() {
 		const editor = this.editor;
 		const model = editor.model;
+		const attributeNames = this._getListAttributeNames();
 
 		editor.conversion.for( 'upcast' )
 			.elementToElement( { view: 'li', model: 'paragraph' } )
@@ -351,25 +370,23 @@ export default class DocumentListEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'paragraph',
-				view: bogusParagraphCreator(),
+				view: bogusParagraphCreator( attributeNames ),
 				converterPriority: 'high'
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'paragraph',
-				view: bogusParagraphCreator( { dataPipeline: true } ),
+				view: bogusParagraphCreator( attributeNames, { dataPipeline: true } ),
 				converterPriority: 'high'
 			} );
 
 		editor.conversion.for( 'downcast' )
 			.add( dispatcher => {
-				for ( const attributeName of LIST_BASE_ATTRIBUTES ) {
-					dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( LIST_BASE_ATTRIBUTES, model ) );
-				}
+				dispatcher.on( 'attribute', listItemDowncastConverter( attributeNames, this._downcastStrategies, model ) );
 			} );
 
-		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, this ) );
+		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, attributeNames, this ) );
 
 		// For LI verify if an ID of the attribute element is correct.
 		this.on( 'checkAttributes:item', ( evt, { viewElement, modelAttributes } ) => {
@@ -381,7 +398,10 @@ export default class DocumentListEditing extends Plugin {
 
 		// For UL and OL check if the name and ID of element is correct.
 		this.on( 'checkAttributes:list', ( evt, { viewElement, modelAttributes } ) => {
-			if ( viewElement.name != getViewElementNameForListType( modelAttributes.listType ) ) {
+			if (
+				viewElement.name != getViewElementNameForListType( modelAttributes.listType ) ||
+				viewElement.id != getViewElementIdForListType( modelAttributes.listType, modelAttributes.listIndent )
+			) {
 				evt.return = true;
 				evt.stop();
 			}
@@ -395,23 +415,31 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	_setupModelPostFixing() {
 		const model = this.editor.model;
+		const attributeNames = this._getListAttributeNames();
 
 		// Register list fixing.
 		// First the low level handler.
-		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, this ) );
+		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, attributeNames, this ) );
 
 		// Then the callbacks for the specific lists.
 		// The indentation fixing must be the first one...
-		this.on( 'postFixer', ( evt, { listHead, writer } ) => {
-			evt.return = fixListIndents( listHead, writer ) || evt.return;
+		this.on( 'postFixer', ( evt, { listNodes, writer } ) => {
+			evt.return = fixListIndents( listNodes, writer ) || evt.return;
 		}, { priority: 'high' } );
 
 		// ...then the item ids... and after that other fixers that rely on the correct indentation and ids.
-		this.on( 'postFixer', ( evt, { listHead, writer, seenIds } ) => {
-			evt.return = fixListItemIds( listHead, seenIds, writer ) || evt.return;
+		this.on( 'postFixer', ( evt, { listNodes, writer, seenIds } ) => {
+			evt.return = fixListItemIds( listNodes, seenIds, writer ) || evt.return;
 		}, { priority: 'high' } );
 	}
 }
+
+/**
+ * @typedef {Object} module:list/documentlist/documentlistediting~DowncastStrategy
+ * @property {'list'|'item'} scope The scope of the downcast (whether it applies to LI or OL/UL).
+ * @property {String} attributeName The model attribute name.
+ * @property {Function} setAttributeOnDowncast Sets the property on the view element.
+ */
 
 // Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
 //
@@ -434,9 +462,10 @@ export default class DocumentListEditing extends Plugin {
 //
 // @param {module:engine/model/model~Model} model The data model.
 // @param {module:engine/model/writer~Writer} writer The writer to do changes with.
+// @param {Array.<String>} attributeNames The list of all model list attributes (including registered strategies).
 // @param {module:list/documentlist/documentlistediting~DocumentListEditing} documentListEditing The document list editing plugin.
 // @returns {Boolean} `true` if any change has been applied, `false` otherwise.
-function modelChangePostFixer( model, writer, documentListEditing ) {
+function modelChangePostFixer( model, writer, attributeNames, documentListEditing ) {
 	const changes = model.document.differ.getChanges();
 	const itemToListHead = new Map();
 
@@ -449,7 +478,7 @@ function modelChangePostFixer( model, writer, documentListEditing ) {
 			// Remove attributes in case of renamed element.
 			if ( !model.schema.checkAttribute( item, 'listItemId' ) ) {
 				for ( const attributeName of Array.from( item.getAttributeKeys() ) ) {
-					if ( attributeName.startsWith( 'list' ) ) {
+					if ( attributeNames.includes( attributeName ) ) {
 						writer.removeAttribute( attributeName, item );
 
 						applied = true;
@@ -476,7 +505,7 @@ function modelChangePostFixer( model, writer, documentListEditing ) {
 			findAndAddListHeadToMap( entry.position, itemToListHead );
 		}
 		// Changed list item indent or type.
-		else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
+		else if ( entry.type == 'attribute' && attributeNames.includes( entry.attributeKey ) ) {
 			findAndAddListHeadToMap( entry.range.start, itemToListHead );
 
 			if ( entry.attributeNewValue === null ) {
@@ -505,7 +534,12 @@ function modelChangePostFixer( model, writer, documentListEditing ) {
 		 * @param {Object} modelAttributes
 		 * @returns {Boolean} If a post-fixer made a change of the model tree, it should return `true`.
 		 */
-		applied = documentListEditing.fire( 'postFixer', { listHead, writer, seenIds } ) || applied;
+		applied = documentListEditing.fire( 'postFixer', {
+			listNodes: new ListBlocksIterable( listHead ),
+			listHead,
+			writer,
+			seenIds
+		} ) || applied;
 	}
 
 	return applied;

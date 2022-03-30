@@ -331,7 +331,7 @@ export function stringifyList( fragmentOrElement ) {
 			if ( node.hasAttribute( 'listItemId' ) ) {
 				const marker = node.getAttribute( 'listType' ) == 'numbered' ? '#' : '*';
 				const indentSpaces = ( node.getAttribute( 'listIndent' ) + 1 ) * 2;
-				const isFollowing = !!ListWalker.first( node, { sameIndent: true, sameListAttributes: 'listItemId' } );
+				const isFollowing = !!ListWalker.first( node, { sameIndent: true, sameAttributes: 'listItemId' } );
 
 				pad = isFollowing ? ' '.repeat( indentSpaces ) : marker.padStart( indentSpaces - 1 ) + ' ';
 			}

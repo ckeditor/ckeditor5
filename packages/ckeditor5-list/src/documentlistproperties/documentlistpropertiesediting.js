@@ -13,12 +13,7 @@ import DocumentListEditing from '../documentlist/documentlistediting';
 import DocumentListStartCommand from './documentliststartcommand';
 import DocumentListStyleCommand from './documentliststylecommand';
 import DocumentListReversedCommand from './documentlistreversedcommand';
-import {
-	listPropertiesDowncastConverter,
-	listPropertiesUpcastConverter
-} from './converters';
-import { iterateSiblingListBlocks } from '../documentlist/utils/listwalker';
-import { LIST_BASE_ATTRIBUTES } from '../documentlist/utils/model';
+import { listPropertiesUpcastConverter } from './converters';
 import { getListTypeFromListStyleType } from './utils/style';
 
 const DEFAULT_LIST_TYPE = 'default';
@@ -74,9 +69,20 @@ export default class DocumentListPropertiesEditing extends Plugin {
 
 		for ( const strategy of strategies ) {
 			strategy.addCommand( editor );
+
 			model.schema.extend( '$container', { allowAttributes: strategy.attributeName } );
 			model.schema.extend( '$block', { allowAttributes: strategy.attributeName } );
 			model.schema.extend( '$blockObject', { allowAttributes: strategy.attributeName } );
+
+			// Register downcast strategy.
+			documentListEditing.registerDowncastStrategy( {
+				scope: 'list',
+				attributeName: strategy.attributeName,
+
+				setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+					strategy.setAttributeOnDowncast( writer, attributeValue, viewElement );
+				}
+			} );
 		}
 
 		// Set up conversion.
@@ -84,14 +90,6 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			for ( const strategy of strategies ) {
 				dispatcher.on( 'element:ol', listPropertiesUpcastConverter( strategy ) );
 				dispatcher.on( 'element:ul', listPropertiesUpcastConverter( strategy ) );
-			}
-		} );
-
-		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			for ( const strategy of strategies ) {
-				for ( const attributeName of [ ...LIST_BASE_ATTRIBUTES, strategy.attributeName ] ) {
-					dispatcher.on( `attribute:${ attributeName }`, listPropertiesDowncastConverter( strategy, model ) );
-				}
 			}
 		} );
 
@@ -122,8 +120,8 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		} );
 
 		// Add or remove list properties attributes depending on the list type.
-		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
-			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+		documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
+			for ( const { node } of listNodes ) {
 				for ( const strategy of strategies ) {
 					// Check if attribute is valid.
 					if ( strategy.hasValidAttribute( node ) ) {
@@ -145,10 +143,10 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		} );
 
 		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
-		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
+		documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
 			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
 
-			for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+			for ( const { node, previous } of listNodes ) {
 				// For the first list block there is nothing to compare with.
 				if ( !previous ) {
 					continue;

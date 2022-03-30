@@ -46,9 +46,7 @@ export default class DocumentListReversedCommand extends Command {
 		let blocks = Array.from( document.selection.getSelectedBlocks() )
 			.filter( block => isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' );
 
-		const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
-
-		blocks = expandListBlocksToCompleteList( blocks, documentListEditingPlugin.getSameListDefiningAttributes() );
+		blocks = expandListBlocksToCompleteList( blocks );
 
 		model.change( writer => {
 			for ( const block of blocks ) {

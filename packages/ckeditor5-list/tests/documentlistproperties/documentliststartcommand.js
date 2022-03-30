@@ -5,7 +5,6 @@
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import { Plugin } from '@ckeditor/ckeditor5-core';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import DocumentListStartCommand from '../../src/documentlistproperties/documentliststartcommand';
@@ -14,20 +13,8 @@ import { modelList } from '../documentlist/_utils/utils';
 describe( 'DocumentListStartCommand', () => {
 	let editor, model, listStartCommand;
 
-	class DocumentListEditingMock extends Plugin {
-		static get pluginName() {
-			return 'DocumentListEditing';
-		}
-
-		getSameListDefiningAttributes() {
-			return [ 'listType', 'listStart' ];
-		}
-	}
-
 	beforeEach( async () => {
-		editor = new Editor( {
-			plugins: [ DocumentListEditingMock ]
-		} );
+		editor = new Editor();
 
 		await editor.initPlugins();
 
@@ -290,24 +277,6 @@ describe( 'DocumentListStartCommand', () => {
 				# 1.[] {start:5}
 				# 2.
 				* 1.
-			` ) );
-		} );
-
-		it( 'should stop searching for the list items when spotted listItem with different listStart attribute', () => {
-			setData( model, modelList( `
-				Foo.
-				# 1.[] {start:2}
-				# 2.
-				# 3. {start:3}
-			` ) );
-
-			listStartCommand.execute( { startIndex: 5 } );
-
-			expect( getData( model ) ).to.equalMarkup( modelList( `
-				Foo.
-				# 1.[] {start:5}
-				# 2.
-				# 3. {start:3}
 			` ) );
 		} );
 

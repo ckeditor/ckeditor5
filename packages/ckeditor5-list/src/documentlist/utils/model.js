@@ -29,13 +29,6 @@ export class ListItemUid {
 }
 
 /**
- * A list of base list model attributes.
- *
- * @protected
- */
-export const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
-
-/**
  * Returns true if the given model node is a list item block.
  *
  * @protected
@@ -87,7 +80,7 @@ export function getListItemBlocks( listItem, options = {} ) {
 		...options,
 		includeSelf: isForward,
 		sameIndent: true,
-		sameListAttributes: 'listItemId'
+		sameAttributes: 'listItemId'
 	} ) );
 
 	return isForward ? items : items.reverse();
@@ -112,18 +105,17 @@ export function getNestedListBlocks( listItem ) {
  *
  * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @param {Array.<String>} sameListDefiningAttributes The list of attributes that must be consistent among all items in the same list.
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function getListItems( listItem, sameListDefiningAttributes ) {
+export function getListItems( listItem ) {
 	const backwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
-		sameListAttributes: sameListDefiningAttributes
+		sameAttributes: 'listType'
 	} );
 
 	const forwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
-		sameListAttributes: sameListDefiningAttributes,
+		sameAttributes: 'listType',
 		includeSelf: true,
 		direction: 'forward'
 	} );
@@ -144,7 +136,7 @@ export function getListItems( listItem, sameListDefiningAttributes ) {
 export function isFirstBlockOfListItem( listBlock ) {
 	const previousSibling = ListWalker.first( listBlock, {
 		sameIndent: true,
-		sameListAttributes: 'listItemId'
+		sameAttributes: 'listItemId'
 	} );
 
 	if ( !previousSibling ) {
@@ -165,7 +157,7 @@ export function isLastBlockOfListItem( listBlock ) {
 	const nextSibling = ListWalker.first( listBlock, {
 		direction: 'forward',
 		sameIndent: true,
-		sameListAttributes: 'listItemId'
+		sameAttributes: 'listItemId'
 	} );
 
 	if ( !nextSibling ) {
@@ -204,16 +196,15 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
  *
  * @protected
  * @param {module:engine/model/element~Element|Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
- * @param {Array.<String>} sameListDefiningAttributes The list of attributes that must be consistent among all items in the same list.
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function expandListBlocksToCompleteList( blocks, sameListDefiningAttributes ) {
+export function expandListBlocksToCompleteList( blocks ) {
 	blocks = toArray( blocks );
 
 	const allBlocks = new Set();
 
 	for ( const block of blocks ) {
-		for ( const itemBlock of getListItems( block, sameListDefiningAttributes ) ) {
+		for ( const itemBlock of getListItems( block ) ) {
 			allBlocks.add( itemBlock );
 		}
 	}

@@ -99,10 +99,11 @@ export function getIndent( listItem ) {
  * @param {'bulleted'|'numbered'} type The list type.
  * @returns {module:engine/view/attributeelement~AttributeElement}
  */
-export function createListElement( writer, indent, type ) {
+export function createListElement( writer, indent, type, id = getViewElementIdForListType( type, indent ) ) {
 	// Negative priorities so that restricted editing attribute won't wrap lists.
 	return writer.createAttributeElement( getViewElementNameForListType( type ), null, {
-		priority: 2 * indent / 100 - 100
+		priority: 2 * indent / 100 - 100,
+		id
 	} );
 }
 
@@ -132,4 +133,16 @@ export function createListItemElement( writer, indent, id ) {
  */
 export function getViewElementNameForListType( type ) {
 	return type == 'numbered' ? 'ol' : 'ul';
+}
+
+/**
+ * Returns a view element ID for the given list type and indent.
+ *
+ * @protected
+ * @param {'bulleted'|'numbered'} type The list type.
+ * @param {Number} indent The list indent level.
+ * @returns {String}
+ */
+export function getViewElementIdForListType( type, indent ) {
+	return `list-${ type }-${ indent }`;
 }

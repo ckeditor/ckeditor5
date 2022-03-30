@@ -14,17 +14,19 @@ import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import ListEditing from '../../src/list/listediting';
 import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
 import DocumentListSplitCommand from '../../src/documentlist/documentlistsplitcommand';
 
 import stubUid from './_utils/uid';
-import { prepareTest } from './_utils/utils';
+import { modelList, prepareTest } from './_utils/utils';
 
 describe( 'DocumentListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view;
@@ -103,28 +105,6 @@ describe( 'DocumentListEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listItemId' ) ).to.be.false;
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listIndent' ) ).to.be.false;
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listType' ) ).to.be.false;
-	} );
-
-	describe( 'same list-defining attributes', () => {
-		let plugin;
-
-		beforeEach( () => {
-			plugin = editor.plugins.get( DocumentListEditing );
-		} );
-
-		it( '`listType` should define list', () => {
-			expect( plugin.getSameListDefiningAttributes() ).to.include( 'listType' );
-		} );
-
-		it( 'should allow registering custom list-defining attributes', () => {
-			plugin.registerSameListDefiningAttributes( 'attr1' );
-			plugin.registerSameListDefiningAttributes( 'attr2' );
-			plugin.registerSameListDefiningAttributes( 'attr3' );
-
-			expect( plugin.getSameListDefiningAttributes() ).to.include( 'attr1' );
-			expect( plugin.getSameListDefiningAttributes() ).to.include( 'attr2' );
-			expect( plugin.getSameListDefiningAttributes() ).to.include( 'attr3' );
-		} );
 	} );
 
 	describe( 'commands', () => {
@@ -739,4 +719,75 @@ describe( 'DocumentListEditing', () => {
 			} );
 		} );
 	} );
+} );
+
+describe( 'DocumentListEditing - registerDowncastStrategy()', () => {
+	let editor, model, view;
+
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
+	it( 'should allow registering strategy for list elements', async () => {
+		await createEditor( class CustomPlugin extends Plugin {
+			init() {
+				this.editor.plugins.get( 'DocumentListEditing' ).registerDowncastStrategy( {
+					scope: 'list',
+					attributeName: 'someFoo',
+
+					setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+						writer.setAttribute( 'data-foo', attributeValue, viewElement );
+					}
+				} );
+			}
+		} );
+
+		setModelData( model, modelList( `
+			* <paragraph someFoo="123">foo</paragraph>
+			* <paragraph someFoo="123">bar</paragraph>
+		` ) );
+
+		expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			'<ul data-foo="123">' +
+				'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'<li><span class="ck-list-bogus-paragraph">bar</span></li>' +
+			'</ul>'
+		);
+	} );
+
+	it( 'should allow registering strategy for list items elements', async () => {
+		await createEditor( class CustomPlugin extends Plugin {
+			init() {
+				this.editor.plugins.get( 'DocumentListEditing' ).registerDowncastStrategy( {
+					scope: 'item',
+					attributeName: 'someFoo',
+
+					setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+						writer.setAttribute( 'data-foo', attributeValue, viewElement );
+					}
+				} );
+			}
+		} );
+
+		setModelData( model, modelList( `
+			* <paragraph someFoo="123">foo</paragraph>
+			* <paragraph someFoo="321">bar</paragraph>
+		` ) );
+
+		expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			'<ul>' +
+				'<li data-foo="123"><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'<li data-foo="321"><span class="ck-list-bogus-paragraph">bar</span></li>' +
+			'</ul>'
+		);
+	} );
+
+	async function createEditor( extraPlugin ) {
+		editor = await VirtualTestEditor.create( {
+			plugins: [ Paragraph, DocumentListEditing, UndoEditing, extraPlugin ]
+		} );
+
+		model = editor.model;
+		view = editor.editing.view;
+	}
 } );
