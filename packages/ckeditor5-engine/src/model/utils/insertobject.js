@@ -11,17 +11,36 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * TODO
+ * Inserts objects into the editor.
+ *
+ * It takes care of removing the selected content, splitting elements (if needed), inserting elements defined in schema as objects and
+ * copying attributes from block elements that are selected by given `selectable` parameter to inserted object.
+ *
+ * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable` it will be modified
+ * to the insertion selection (equal to a range to be selected after insertion).
+ *
+ * If `selectable` is not passed, the content will be inserted using the current selection of the model document.
+ *
+ * **Note:** Use {@link module:engine/model/model~Model#insertObject} instead of this function.
+ * This function is only exposed to be reusable in algorithms which change the {@link module:engine/model/model~Model#insertObject}
+ * method's behavior.
  *
  * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
- * @param {module:engine/model/element~Element} object TODO
+ * @param {module:engine/model/element~Element} object An object to insert in a model.
  * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
  * Selection into which the content should be inserted.
- * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
- * @param {Object} [options] TODO
- * @param {'auto'|'before'|'after'} [options.findOptimalPosition] TODO
- * @param {'on'|'after'} [options.setSelection] TODO
+ * @param {Number|'before'|'end'|'after'|'on'|'in'} placeOrOffset Sets place or offset of the selection.
+ * @param {Object} [options] Additional options.
+ * @param {'auto'|'before'|'after'} [options.findOptimalPosition] Place where to insert an object in relation to `selectable` parameter.
+ * It modifies insertion position in relation to `selectable` parameter and is used to not split content when inserting an object.
+ * Value `auto` will determine itself the best position for insertion - before or after an element a selection is in.
+ * Value `before` will try to find a position before selection.
+ * Value `after` will try to find a position after selection.
+ * @param {'on'|'after'} [options.setSelection] Sets selection after performing insert.
+ * Value `on` will set document's selection on inserted object.
+ * Value `after` will try to set document's selection in a text node of an element after inserted object. If there is no
+ * such element a paragraph will be created and document's selection will be set inside it.
  * @returns {module:engine/model/range~Range} Range which contains all the performed changes. This is a range that, if removed,
  * would return the model to the state before the insertion. If no changes were preformed by `insertObject`, returns a range collapsed
  * at the insertion position.

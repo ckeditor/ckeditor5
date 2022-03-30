@@ -453,29 +453,33 @@ export default class Model {
 		return insertContent( this, content, selectable, placeOrOffset );
 	}
 
-	/*
-		Place for exceptional documentation
-		Object - an object that we would like to insert
-		Selectable - 99% - document selection, but sometimes custom one.
-		Offset - just to pass to insert content
-		Options -     	setSelection: 'on|in|after',
-						findOptimalPosition: true,
-						// Maybe:
-						doNotInheritBlockAttributes: true
-	*/
-
 	/**
-	 * TODO
+	 * Inserts objects at the position in the editor specified by the selection.
 	 *
-	 * @fires insertObject
-	 * @param {module:engine/model/element~Element} object TODO
+	 * This is a high-level method. It takes the {@link #schema schema} into consideration when inserting
+	 * the objects, clears the given selection's content before inserting objects and moves the selection
+	 * to its target position at the end of the process.
+	 * It can split elements, wrap inline objects with paragraphs if they are not allowed in target position, etc.
+	 *
+	 * For lower-level methods see {@link module:engine/model/writer~Writer `Writer`}.
+	 *
+	 * This method, unlike {@link module:engine/model/writer~Writer `Writer`}'s methods, does not have to be used
+	 * inside a {@link #change `change()` block}.
+	 *
+	 * @param {module:engine/model/element~Element} object An object to insert in a model.
 	 * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
-	 * The selection into which the object should be inserted. If not provided the current model document selection will be used.
-	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] To be used when a model item was passed as `selectable`.
-	 * This param defines a position in relation to that item.
-	 * @param {Object} [options] TODO
-	 * @param {'auto'|'before'|'after'} [options.findOptimalPosition] TODO
-	 * @param {'on'|'after'} [options.setSelection] TODO
+	 * Selection into which the content should be inserted.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} placeOrOffset Sets place or offset of the selection.
+	 * @param {Object} [options] Additional options.
+	 * @param {'auto'|'before'|'after'} [options.findOptimalPosition] Place where to insert an object in relation to `selectable` parameter.
+	 * It modifies insertion position in relation to `selectable` parameter and is used to not split content when inserting an object.
+	 * Value `auto` will determine itself the best position for insertion - before or after an element a selection is in.
+	 * Value `before` will try to find a position before selection.
+	 * Value `after` will try to find a position after selection.
+	 * @param {'on'|'after'} [options.setSelection] Sets selection after performing insert.
+	 * Value `on` will set document's selection on inserted object.
+	 * Value `after` will try to set document's selection in a text node of an element after inserted object. If there is no
+	 * such element a paragraph will be created and document's selection will be set inside it.
 	 * @returns {module:engine/model/range~Range} Range which contains all the performed changes. This is a range that, if removed,
 	 * would return the model to the state before the insertion. If no changes were preformed by `insertObject`, returns a range collapsed
 	 * at the insertion position.
