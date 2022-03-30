@@ -863,7 +863,16 @@ export default class Schema {
 		}
 	}
 
-	// TODO: API DOCS
+	/**
+	 * Gets attributes of a node that have given property.
+	 *
+	 * @param {<module:engine/model/node~Node>} node Node to get attributes from.
+	 * @param {String} propertyName Name of the property that attribute must have set to return it.
+	 * @param {Boolean|Symbol|String|Number|Object|null|undefined} propertyValue Desired value of the property that we want to check.
+	 * When `undefined` attributes will be returned if they have set a given property no matter what the value is. If specified it will
+	 * return attributes which given property's value is equal to this parameter.
+	 * @returns {Object} Object with attributes' names as key and attributes' values as value.
+	 */
 	getAttributesWithProperty( node, propertyName, propertyValue ) {
 		const attributes = {};
 

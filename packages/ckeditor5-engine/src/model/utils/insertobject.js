@@ -29,11 +29,12 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 export default function insertObject( model, object, selectable, placeOrOffset, options = {} ) {
 	if ( !model.schema.isObject( object ) ) {
 		/**
-		 * TODO
-		 * @error insertobject-todo
+		 * Tried to insert an element by {@link module:engine/model/utils/insertobject insertObject()} function
+		 * that is not defined as an object in schema.
+		 * See {@link module:engine/model/schema~SchemaItemDefinition#isObject `SchemaItemDefinition`}.
+		 * @error insertobject-element-not-an-object
 		 */
-		// TODO make sure that it is tested with expectToThrowCKEditorError helper
-		throw new CKEditorError( 'insertobject-todo', model, { object } );
+		throw new CKEditorError( 'insertobject-element-not-an-object', model, { object } );
 	}
 
 	// Normalize selectable to a selection instance.
@@ -102,10 +103,9 @@ export default function insertObject( model, object, selectable, placeOrOffset, 
 	} );
 }
 
+// TODO findOptimalInsertionRange should be exported or exposed in some reasonable place to be used in the widget util of the same name.
+
 /**
- * TODO docs should be updated
- * TODO this should be exported or exposed in some reasonable place to be used in the widget util of the same name.
- *
  * Returns a model range which is optimal (in terms of UX) for inserting a widget block.
  *
  * For instance, if a selection is in the middle of a paragraph, the collapsed range before this paragraph
@@ -119,7 +119,10 @@ export default function insertObject( model, object, selectable, placeOrOffset, 
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
  * The selection based on which the insertion position should be calculated.
  * @param {module:engine/model/model~Model} model Model instance.
- * @param {'auto'|'before'|'after'} [place='auto'] TODO
+ * @param {'auto'|'before'|'after'} [place='auto'] Place where to look for optimal insertion range.
+ * Default value `auto` will determine itself the best position for insertion.
+ * Value `before` will try to find a position before selection.
+ * Value `after` will try to find a position after selection.
  * @returns {module:engine/model/range~Range} The optimal range.
  */
 export function findOptimalInsertionRange( selection, model, place = 'auto' ) {
@@ -157,7 +160,16 @@ export function findOptimalInsertionRange( selection, model, place = 'auto' ) {
 	return model.createRange( model.createPositionBefore( firstBlock ) );
 }
 
-// TODO docs
+/**
+ * Updates document selection based on given `place` parameter in relation to `contextElement` element.
+ *
+ * @param {module:engine/model/writer~Writer} writer An instance of the model writer.
+ * @param {module:engine/model/element~Element} contextElement An element to set attributes on.
+ * @param {'on'|'after'} place Place where selection should be set in relation to `contextElement` element.
+ * Value `on` will set selection on passed `contextElement`. Value `after` will set selection after `contextElement`.
+ * @param {Object} attributes Attributes keys and values to set on a paragraph that this function can create when
+ * `place` parameter is equal to `after` but there is no element with `$text` node to set selection in.
+ */
 function updateSelection( writer, contextElement, place, paragraphAttributes ) {
 	const model = writer.model;
 
@@ -185,17 +197,23 @@ function updateSelection( writer, contextElement, place, paragraphAttributes ) {
 	}
 	else {
 		/**
-		 * TODO
+		 * Unsupported `place` parameter was passed to the {@link module:engine/model/utils/insertobject insertObject()} function.
+		 * Check {@link module:engine/model/utils/insertobject insertObject()} API documentation for allowed `place` parameter values.
 		 *
-		 * @error insertobject-invalid-place-todo
+		 * @error insertobject-invalid-place-parameter-value
 		 */
-		// TODO make sure that it is tested with expectToThrowCKEditorError helper
-		throw new CKEditorError( 'insertobject-invalid-place-todo', model );
+		throw new CKEditorError( 'insertobject-invalid-place-parameter-value', model );
 	}
 }
 
-// TODO docs
-function setAllowedAttributes( writer, element, attributes ) {
+/**
+ * Sets attributes which are allowed by schema on given element.
+ *
+ * @param {module:engine/model/writer~Writer} writer An instance of the model writer.
+ * @param {module:engine/model/element~Element} element An element to set attributes on.
+ * @param {Object} attributes Attributes keys and values.
+ */
+export function setAllowedAttributes( writer, element, attributes ) {
 	const model = writer.model;
 
 	for ( const [ attributeName, attributeValue ] of Object.entries( attributes ) ) {

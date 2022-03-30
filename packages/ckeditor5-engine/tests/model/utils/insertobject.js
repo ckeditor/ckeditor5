@@ -11,6 +11,7 @@ import { setData, getData } from '../../../src/dev-utils/model';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'insertObject()', () => {
 	let model, doc, root, schema;
@@ -58,9 +59,7 @@ describe( 'insertObject()', () => {
 		it( 'should throw an error if element is not an object', () => {
 			const paragraph = new Element( 'paragraph', [], [ new Text( 'bar' ) ] );
 
-			expect( () => {
-				insertObject( model, paragraph );
-			} ).to.throw( CKEditorError, /insertobject-todo/ );
+			expectToThrowCKEditorError( () => insertObject( model, paragraph ), 'insertobject-todo' );
 		} );
 	} );
 
@@ -341,9 +340,10 @@ describe( 'insertObject()', () => {
 		it( 'should throw an error if unhandled position was passed', () => {
 			const widget = new Element( 'inlineWidget', [], [] );
 
-			expect( () => {
-				insertObject( model, widget, undefined, undefined, { setSelection: 'above' } );
-			} ).to.throw( CKEditorError, /insertobject-invalid-place-todo/ );
+			expectToThrowCKEditorError(
+				() => insertObject( model, widget, undefined, undefined, { setSelection: 'above' } ),
+				'insertobject-invalid-place-todo'
+			);
 		} );
 	} );
 

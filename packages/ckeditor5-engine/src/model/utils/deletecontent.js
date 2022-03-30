@@ -10,6 +10,7 @@
 import LivePosition from '../liveposition';
 import Range from '../range';
 import DocumentSelection from '../documentselection';
+import { setAllowedAttributes } from './insertobject';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
@@ -494,15 +495,9 @@ function isCrossingLimitElement( leftPos, rightPos, schema ) {
 }
 
 function insertParagraph( writer, position, selection, attributes = {} ) {
-	const schema = writer.model.schema;
 	const paragraph = writer.createElement( 'paragraph' );
 
-	// TODO this is the same as setAllowedAttributes() helper in insertObject.
-	for ( const [ attributeName, attributeValue ] of Object.entries( attributes ) ) {
-		if ( schema.checkAttribute( paragraph, attributeName ) ) {
-			writer.setAttribute( attributeName, attributeValue, paragraph );
-		}
-	}
+	setAllowedAttributes( writer, paragraph, attributes );
 
 	writer.insert( paragraph, position );
 
