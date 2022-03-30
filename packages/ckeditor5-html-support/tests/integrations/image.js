@@ -29,7 +29,15 @@ describe( 'ImageElementSupport', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Image, ImageCaption, LinkImage, Paragraph, GeneralHtmlSupport ]
+				plugins: [ Image, ImageCaption, LinkImage, Paragraph, GeneralHtmlSupport ],
+				htmlSupport: {
+					allow: [ {
+						name: /^(figure|img|figcaption)$/,
+						attributes: true,
+						classes: true,
+						styles: true
+					} ]
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -317,9 +325,20 @@ describe( 'ImageElementSupport', () => {
 
 		it.only( 'should allow modifying styles, classes and attributes', () => {
 			dataFilter.allowElement( /^(figure|img|figcaption)$/ );
-			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, attributes: /^data-.*$/ } );
-			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, classes: true } );
-			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, styles: true } );
+
+			// TODO: create a ticket to resolve issue with non-GHS attributes being removed if picked up by GSH
+			// when we allow all attributes (attributes: true) instead of more precise selection (attributes: /^data-.*$/).
+			// dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, attributes: /^data-.*$/ } );
+			// dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, classes: true } );
+			// dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, styles: true } );
+			// dataFilter.loadAllowedConfig( [
+			// 	{
+			// 		name: /^(figure|img|figcaption)$/,
+			// 		attributes: true,
+			// 		classes: true,
+			// 		styles: true
+			// 	}
+			// ] );
 
 			const expectedHtml =
 				'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
@@ -382,7 +401,7 @@ describe( 'ImageElementSupport', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
 						' style="font-size:12px;text-align:center">' +
-					'<img class="bar baz" data-image="xyz" style="background-color:blue;color:red;" src="/assets/sample.png">' +
+					'<img class="bar baz" data-image="xyz" src="/assets/sample.png" style="background-color:blue;color:red"></img>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>'
 			);

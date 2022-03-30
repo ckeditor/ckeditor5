@@ -12,7 +12,6 @@ import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { setModelHtmlAttribute } from '../../src/conversionutils';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
