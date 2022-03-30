@@ -1238,6 +1238,26 @@ describe( 'TableColumnResizeEditing', () => {
 						}
 					} );
 				} );
+
+				describe( 'should not remove colgroup', () => {
+					it( 'after pasting a table that increases number of rows and columns at the same time', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01' ],
+							[ '10', '[11]' ]
+						], { columnWidths: '50%,50%' } ) );
+
+						model.change( () => {
+							editor.execute( 'insertTableRowBelow' );
+							editor.execute( 'insertTableColumnRight' );
+						} );
+
+						expect( view.document.getRoot()
+							.getChild( 0 ) // figure
+							.getChild( 1 ) // table
+							.getChild( 0 ).name
+						).to.equal( 'colgroup' );
+					} );
+				} );
 			} );
 		} );
 	} );
