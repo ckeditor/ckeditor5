@@ -1786,6 +1786,82 @@ describe( 'WidgetTypeAround', () => {
 		}
 	} );
 
+	describe( 'Model#insertObject() integration', () => {
+		let model, modelSelection;
+
+		beforeEach( () => {
+			model = editor.model;
+			modelSelection = model.document.selection;
+		} );
+
+		it( 'should not alter insertObject\'s findOptimalPosition parameter other than the document selection', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+			const selection = model.createSelection( modelSelection );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+				model.insertObject( createObject(), selection );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget><paragraph>baz</paragraph>' );
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should not alter insertObject when the "fake caret" is not active', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+
+			model.insertObject( createObject() );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should alter insertObject\'s findOptimalPosition when the fake carret is active', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+			const insertObjectSpy = sinon.spy( model, 'insertObject' );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+			} );
+
+			model.insertObject( createObject(), undefined, undefined, { setSelection: 'on', findOptimalPosition: 'before' } );
+
+			expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget>[<blockWidget></blockWidget>]' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+			expect( insertObjectSpy.firstCall.args[ 3 ].findOptimalPosition ).to.equal( 'after' );
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		function createObject( ) {
+			return model.change( writer => {
+				const object = writer.createElement( 'blockWidget' );
+
+				return object;
+			} );
+		}
+
+		function setupBatchWatch() {
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, [ operation ] ) => {
+				if ( operation.isDocumentOperation ) {
+					createdBatches.add( operation.batch );
+				}
+			} );
+
+			return createdBatches;
+		}
+	} );
+
 	describe( 'Model#deleteContent() integration', () => {
 		let model, modelSelection;
 

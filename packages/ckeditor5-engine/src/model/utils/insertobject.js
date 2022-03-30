@@ -169,6 +169,8 @@ export function findOptimalInsertionRange( selection, model, place = 'auto' ) {
  * Value `on` will set selection on passed `contextElement`. Value `after` will set selection after `contextElement`.
  * @param {Object} attributes Attributes keys and values to set on a paragraph that this function can create when
  * `place` parameter is equal to `after` but there is no element with `$text` node to set selection in.
+ *
+ * @private
  */
 function updateSelection( writer, contextElement, place, paragraphAttributes ) {
 	const model = writer.model;

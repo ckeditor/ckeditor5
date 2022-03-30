@@ -784,7 +784,10 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Attaches the {@link module:engine/model/model~Model#event:insertObject} event listener that modifies `options.findOptimalPosition`
+	 * parameter to position of fake caret in relation to selected element to reflect user's intent of desired insertion position.
+	 *
+	 * The object is inserted according to the `widget-type-around` selection attribute (see {@link #_handleArrowKeyPress}).
 	 *
 	 * @private
 	 */
