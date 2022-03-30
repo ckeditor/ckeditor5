@@ -155,7 +155,7 @@ describe( 'TextPartLanguageCommand', () => {
 		} );
 
 		it( 'should be disabled in a readonly mode', () => {
-			editor.setReadOnly( 'unit-test' );
+			editor.setReadOnlyMode( 'unit-test' );
 			setData( model, '<p>f[]oo</p>' );
 			expect( command.isEnabled ).to.be.false;
 		} );

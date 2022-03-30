@@ -603,7 +603,7 @@ describe( 'BlockToolbar', () => {
 			blockToolbar.buttonView.isVisible = true;
 			blockToolbar.panelView.isVisible = true;
 
-			editor.setReadOnly( 'unit-test' );
+			editor.setReadOnlyMode( 'unit-test' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 			expect( blockToolbar.panelView.isVisible ).to.be.false;
@@ -614,11 +614,11 @@ describe( 'BlockToolbar', () => {
 
 			expect( blockToolbar.buttonView.isVisible ).to.true;
 
-			editor.setReadOnly( 'unit-test' );
+			editor.setReadOnlyMode( 'unit-test' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.false;
 
-			editor.clearReadOnly( 'unit-test' );
+			editor.clearReadOnlyMode( 'unit-test' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
@@ -645,7 +645,7 @@ describe( 'BlockToolbar', () => {
 			blockToolbar.buttonView.isVisible = true;
 			blockToolbar.panelView.isVisible = false;
 
-			editor.setReadOnly( 'unit-test' );
+			editor.setReadOnlyMode( 'unit-test' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 			expect( blockToolbar.panelView.isVisible ).to.be.false;

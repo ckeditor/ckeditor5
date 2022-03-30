@@ -395,7 +395,7 @@ describe( 'table clipboard', () => {
 		it( 'should be disabled in a readonly mode', () => {
 			const preventDefaultStub = sinon.stub();
 
-			editor.setReadOnly( 'unit-test' );
+			editor.setReadOnlyMode( 'unit-test' );
 
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
@@ -408,7 +408,7 @@ describe( 'table clipboard', () => {
 			};
 			viewDocument.fire( 'cut', data );
 
-			editor.clearReadOnly( 'unit-test' );
+			editor.clearReadOnlyMode( 'unit-test' );
 
 			expect( data.dataTransfer.getData( 'text/html' ) ).to.be.undefined;
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [

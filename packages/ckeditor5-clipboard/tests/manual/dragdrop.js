@@ -211,7 +211,7 @@ ClassicEditor
 		button.addEventListener( 'click', () => {
 			isReadOnly = !isReadOnly;
 
-			editor.setReadOnly( 'manual-test', isReadOnly );
+			editor.setReadOnlyMode( 'manual-test', isReadOnly );
 
 			button.textContent = isReadOnly ?
 				'Turn off read-only mode' :

@@ -29,7 +29,7 @@ ClassicEditor
 		button.addEventListener( 'click', () => {
 			isReadOnly = !isReadOnly;
 
-			editor.setReadOnly( 'manual-test', isReadOnly );
+			editor.setReadOnlyMode( 'manual-test', isReadOnly );
 
 			editor.editing.view.focus();
 		} );

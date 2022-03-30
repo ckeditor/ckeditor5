@@ -228,13 +228,13 @@ export default class Editor {
 	 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
 	 * to modify the document by using them. Also, the editable element(s) become non-editable.
 	 *
-	 * In order to make the editor read-only, you need to call the {@link #setReadOnly} method:
+	 * In order to make the editor read-only, you need to call the {@link #setReadOnlyMode} method:
 	 *
-	 *		editor.setReadOnly( 'feature-id' );
+	 *		editor.setReadOnlyMode( 'feature-id' );
 	 *
-     * Later, to turn off the read-only mode, call {@link #clearReadOnly}:
+     * Later, to turn off the read-only mode, call {@link #clearReadOnlyMode}:
 	 *
-	 * 		editor.clearReadOnly( 'feature-id' );
+	 * 		editor.clearReadOnlyMode( 'feature-id' );
 	 *
 	 * @readonly
 	 * @observable
@@ -248,7 +248,7 @@ export default class Editor {
 		// eslint-disable-next-line no-undef
 		console.warn(
 			'Editor#isReadOnly should be now changed using dedicated methods: ' +
-			'`Editor#setReadOnly( lockId )` and `Editor#clearReadOnly( lockId )`.'
+			'`Editor#setReadOnlyMode( lockId )` and `Editor#clearReadOnlyMode( lockId )`.'
 		);
 	}
 
@@ -261,23 +261,23 @@ export default class Editor {
 	 * When at least one feature sets the read-only mode, then the {@link #isReadOnly `isReadOnly` property} will be set to `true`.
 	 * Otherwise it is set to `false`.
 	 *
-	 * 		editor.setReadOnly( 'my-feature-id' );
+	 * 		editor.setReadOnlyMode( 'my-feature-id' );
 	 *
-	 * You can turn off the read-only mode ("clear the lock") using the {@link #clearReadOnly} method.
+	 * You can turn off the read-only mode ("clear the lock") using the {@link #clearReadOnlyMode} method.
 	 *
-	 * 		editor.clearReadOnly( 'my-feature-id' );
+	 * 		editor.clearReadOnlyMode( 'my-feature-id' );
 	 *
 	 * It is possible to pass the additional argument - `value` to determine if the lock should be set or removed.
-	 * Passing `false` works the same way as calling {@link #clearReadOnly `clearReadOnly()`}.
+	 * Passing `false` works the same way as calling {@link #clearReadOnlyMode `clearReadOnlyMode()`}.
 	 *
 	 * 		myFeature.on( 'change:isConnected', () => {
-	 * 			editor.setReadOnly( 'my-feature-id', myFeature.isConnected );
+	 * 			editor.setReadOnlyMode( 'my-feature-id', myFeature.isConnected );
 	 * 		} );
 	 *
 	 * @param {String|Symbol} lockId A unique ID for setting the editor to the read-only state.
 	 * @param {Boolean} [value=true] An optional value indicating whether the lock should be set or removed.
 	 */
-	setReadOnly( lockId, value = true ) {
+	setReadOnlyMode( lockId, value = true ) {
 		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
 			/**
 			 * The lock ID is missing or it is not a string or symbol.
@@ -288,7 +288,7 @@ export default class Editor {
 		}
 
 		if ( value === false ) {
-			this.clearReadOnly( lockId );
+			this.clearReadOnlyMode( lockId );
 
 			return;
 		}
@@ -312,7 +312,7 @@ export default class Editor {
 	 *
 	 * @param {String|Symbol} lockId The lock ID for setting the editor to the read-only state.
 	 */
-	clearReadOnly( lockId ) {
+	clearReadOnlyMode( lockId ) {
 		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
 			throw new CKEditorError( 'editor-read-only-lock-id-invalid', null, { lockId } );
 		}

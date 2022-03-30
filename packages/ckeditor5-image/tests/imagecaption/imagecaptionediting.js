@@ -677,7 +677,7 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'should show empty figcaption when image is selected but editor is in the readOnly mode', () => {
-			editor.setReadOnly( 'unit-test' );
+			editor.setReadOnlyMode( 'unit-test' );
 
 			setModelData( model, '[<imageBlock src="img.png"><caption></caption></imageBlock>]' );
 
