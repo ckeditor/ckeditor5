@@ -4422,6 +4422,7 @@ describe( 'ListEditing', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li>a</li><li>b</li></ul>' );
 		} );
 
+		// See #11490.
 		it( 'model view split converter should not fire if change was already consumed', () => {
 			model.schema.register( 'container', {
 				allowWhere: '$block',
