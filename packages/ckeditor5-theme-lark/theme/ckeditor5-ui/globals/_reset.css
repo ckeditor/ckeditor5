@@ -16,7 +16,7 @@
  */
 .ck.ck-reset,
 .ck.ck-reset_all,
-.ck.ck-reset_all * {
+.ck-reset_all *:not(.ck-reset_all-excluded *) {
 	/* Do not include inheritable rules here. */
 	margin: 0;
 	padding: 0;
@@ -34,7 +34,7 @@
  * Resets an element AND its children.
  */
 .ck.ck-reset_all,
-.ck.ck-reset_all * {
+.ck-reset_all *:not(.ck-reset_all-excluded *) {
 	/* These are rule inherited by all children elements. */
 	border-collapse: collapse;
 	font: normal normal normal var(--ck-font-size-base)/var(--ck-line-height-base) var(--ck-font-face);
@@ -45,38 +45,38 @@
 	float: none;
 }
 
-.ck.ck-reset_all {
-	& .ck-rtl * {
+.ck-reset_all {
+	& .ck-rtl *:not(.ck-reset_all-excluded *) {
 		text-align: right;
 	}
 
-	& iframe {
+	& iframe:not(.ck-reset_all-excluded *) {
 		/* For IE */
 		vertical-align: inherit;
 	}
 
-	& textarea {
+	& textarea:not(.ck-reset_all-excluded *) {
 		white-space: pre-wrap;
 	}
 
-	& textarea,
-	& input[type="text"],
-	& input[type="password"] {
+	& textarea:not(.ck-reset_all-excluded *),
+	& input[type="text"]:not(.ck-reset_all-excluded *),
+	& input[type="password"]:not(.ck-reset_all-excluded *) {
 		cursor: text;
 	}
 
-	& textarea[disabled],
-	& input[type="text"][disabled],
-	& input[type="password"][disabled] {
+	& textarea[disabled]:not(.ck-reset_all-excluded *),
+	& input[type="text"][disabled]:not(.ck-reset_all-excluded *),
+	& input[type="password"][disabled]:not(.ck-reset_all-excluded *) {
 		cursor: default;
 	}
 
-	& fieldset {
+	& fieldset:not(.ck-reset_all-excluded *) {
 		padding: 10px;
 		border: 2px groove hsl(255, 7%, 88%);
 	}
 
-	& button::-moz-focus-inner {
+	& button:not(.ck-reset_all-excluded *)::-moz-focus-inner {
 		/* See http://stackoverflow.com/questions/5517744/remove-extra-button-spacing-padding-in-firefox */
 		padding: 0;
 		border: 0
