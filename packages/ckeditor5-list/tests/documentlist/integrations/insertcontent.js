@@ -207,6 +207,54 @@ describe( 'Inserting widgets in document lists', () => {
 				]
 			} );
 		} );
+
+		it( 'should insert a table as a next block of an indented list item if selection is at the end', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Bar[]'
+				],
+				expected: [
+					'* Foo',
+					'  * Bar',
+					'    ' + modelTable( [
+						[ '[]', '' ]
+					] )
+				]
+			} );
+		} );
+
+		it( 'should insert a table as a first block of an indented list item if selection is at the beginning', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * []Bar'
+				],
+				expected: [
+					'* Foo',
+					'  * ' + modelTable( [
+						[ '[]', '' ]
+					] ),
+					'    Bar'
+				]
+			} );
+		} );
+
+		it( 'should insert a table as a first block of an indented list item if selection is not at the end', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Ba[]r'
+				],
+				expected: [
+					'* Foo',
+					'  * ' + modelTable( [
+						[ '[]', '' ]
+					] ),
+					'    Bar'
+				]
+			} );
+		} );
 	} );
 
 	describe( 'inserting media', () => {
@@ -319,6 +367,42 @@ describe( 'Inserting widgets in document lists', () => {
 				'<paragraph listIndent="0" listItemId="000" listType="bulleted">Fooo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="001" listType="bulleted">Bar</paragraph>' +
 				'<paragraph listIndent="0" listItemId="002" listType="bulleted">Yar</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a media as a first block of an indended list item if selection is at the beginning', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * []Bar'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'[<media listIndent="1" listItemId="001" listType="bulleted" url=""></media>]' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">Bar</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a media as a first block of an indended list item if selection is not at the end', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Ba[]r'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'[<media listIndent="1" listItemId="001" listType="bulleted" url=""></media>]' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">Bar</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a media as a next block of an indended list item if selection is at the end', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Bar[]'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+				'<paragraph listIndent="1" listItemId="001" listType="bulleted">Bar</paragraph>' +
+				'[<media listIndent="1" listItemId="001" listType="bulleted" url=""></media>]'
 			} );
 		} );
 	} );
@@ -434,6 +518,30 @@ describe( 'Inserting widgets in document lists', () => {
 					'</paragraph>'
 			} );
 		} );
+
+		it( 'should insert an inline image inside an indented list item', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Bar[]'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">Bar' +
+						'[<imageInline src=""></imageInline>]' +
+					'</paragraph>'
+			} );
+		} );
+
+		it( 'should replace an indented empty paragraph with an indented block image', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * []'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'[<imageBlock listIndent="1" listItemId="001" listType="bulleted" src=""></imageBlock>]'
+			} );
+		} );
 	} );
 
 	describe( 'inserting page break', () => {
@@ -449,7 +557,7 @@ describe( 'Inserting widgets in document lists', () => {
 					'* []'
 				],
 				expected: '<pageBreak listIndent="0" listItemId="000" listType="bulleted"></pageBreak>' +
-				'<paragraph>[]</paragraph>'
+				'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -470,7 +578,7 @@ describe( 'Inserting widgets in document lists', () => {
 				],
 				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<pageBreak listIndent="0" listItemId="000" listType="bulleted"></pageBreak>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -482,7 +590,7 @@ describe( 'Inserting widgets in document lists', () => {
 				],
 				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<pageBreak listIndent="0" listItemId="000" listType="bulleted"></pageBreak>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -495,7 +603,7 @@ describe( 'Inserting widgets in document lists', () => {
 				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Bar</paragraph>' +
 					'<pageBreak listIndent="0" listItemId="000" listType="bulleted"></pageBreak>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -519,7 +627,7 @@ describe( 'Inserting widgets in document lists', () => {
 					'* Yar]'
 				],
 				expected: '<pageBreak listIndent="0" listItemId="000" listType="bulleted"></pageBreak>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -532,7 +640,7 @@ describe( 'Inserting widgets in document lists', () => {
 				],
 				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Fo</paragraph>' +
 					'<pageBreak listIndent="0" listItemId="000" listType="bulleted"></pageBreak>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -545,7 +653,45 @@ describe( 'Inserting widgets in document lists', () => {
 				],
 				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<pageBreak listIndent="0" listItemId="000" listType="bulleted"></pageBreak>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a page break as a first block in an indented list item when selection is at the start', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * []Bar'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<pageBreak listIndent="1" listItemId="001" listType="bulleted"></pageBreak>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]Bar</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a page break as a second block in an indented list item and split text', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Ba[]r'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">Ba</paragraph>' +
+					'<pageBreak listIndent="1" listItemId="001" listType="bulleted"></pageBreak>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]r</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a page break as a second block in an indented list item and add a paragraph after', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Bar[]'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">Bar</paragraph>' +
+					'<pageBreak listIndent="1" listItemId="001" listType="bulleted"></pageBreak>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 	} );
@@ -563,7 +709,7 @@ describe( 'Inserting widgets in document lists', () => {
 					'* []'
 				],
 				expected: '<horizontalLine listIndent="0" listItemId="000" listType="bulleted"></horizontalLine>' +
-				'<paragraph>[]</paragraph>'
+				'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -584,7 +730,7 @@ describe( 'Inserting widgets in document lists', () => {
 				],
 				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<horizontalLine listIndent="0" listItemId="000" listType="bulleted"></horizontalLine>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -596,7 +742,7 @@ describe( 'Inserting widgets in document lists', () => {
 				],
 				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<horizontalLine listIndent="0" listItemId="000" listType="bulleted"></horizontalLine>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -609,7 +755,7 @@ describe( 'Inserting widgets in document lists', () => {
 				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Bar</paragraph>' +
 					'<horizontalLine listIndent="0" listItemId="000" listType="bulleted"></horizontalLine>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -633,7 +779,7 @@ describe( 'Inserting widgets in document lists', () => {
 					'* Yar]'
 				],
 				expected: '<horizontalLine listIndent="0" listItemId="000" listType="bulleted"></horizontalLine>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -646,7 +792,7 @@ describe( 'Inserting widgets in document lists', () => {
 				],
 				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Fo</paragraph>' +
 					'<horizontalLine listIndent="0" listItemId="000" listType="bulleted"></horizontalLine>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 
@@ -659,7 +805,45 @@ describe( 'Inserting widgets in document lists', () => {
 				],
 				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<horizontalLine listIndent="0" listItemId="000" listType="bulleted"></horizontalLine>' +
-					'<paragraph>[]</paragraph>'
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a horizontal line as a first block in an indented list item when selection is at the start', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * []Bar'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<horizontalLine listIndent="1" listItemId="001" listType="bulleted"></horizontalLine>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]Bar</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a horizontal line as a second block in an indented list item and split text', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Ba[]r'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">Ba</paragraph>' +
+					'<horizontalLine listIndent="1" listItemId="001" listType="bulleted"></horizontalLine>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]r</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a horizontal line as a second block in an indented list item and add a paragraph after', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Bar[]'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">Bar</paragraph>' +
+					'<horizontalLine listIndent="1" listItemId="001" listType="bulleted"></horizontalLine>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]</paragraph>'
 			} );
 		} );
 	} );
@@ -769,6 +953,43 @@ describe( 'Inserting widgets in document lists', () => {
 					'[<rawHtml listIndent="0" listItemId="000" listType="bulleted"></rawHtml>]'
 			} );
 		} );
+
+		it( 'should insert a HTML embed as a first block in an indented list item when selection is at the start', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * []Bar'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'[<rawHtml listIndent="1" listItemId="001" listType="bulleted"></rawHtml>]' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">Bar</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a HTML embed as a second block in an indented list item and split the text', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Ba[]r'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">Ba</paragraph>' +
+					'[<rawHtml listIndent="1" listItemId="001" listType="bulleted"></rawHtml>]' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">r</paragraph>'
+			} );
+		} );
+
+		it( 'should insert a HTML embed after selection in an indented list item', () => {
+			runTest( {
+				input: [
+					'* Foo',
+					'  * Bar[]'
+				],
+				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="1" listItemId="001" listType="bulleted">Bar</paragraph>' +
+					'[<rawHtml listIndent="1" listItemId="001" listType="bulleted"></rawHtml>]'
+			} );
+		} );
 	} );
 
 	describe( 'inserting paragraphs with widget type around', () => {
@@ -832,6 +1053,36 @@ describe( 'Inserting widgets in document lists', () => {
 			const expectedModel = '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 			'<imageBlock listIndent="0" listItemId="000" listType="bulleted" src=""></imageBlock>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>';
+
+			expect( getModelData( model ) ).to.equalMarkup( expectedModel );
+		} );
+
+		it( 'should insert a paragraph before an image block in and indented list item', () => {
+			setModelData( model, modelList( [
+				'* foo',
+				'  * [<imageBlock src=""></imageBlock>]'
+			] ) );
+
+			insertCommand( 'before', 1 );
+
+			const expectedModel = '<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]</paragraph>' +
+			'<imageBlock listIndent="1" listItemId="001" listType="bulleted" src=""></imageBlock>';
+
+			expect( getModelData( model ) ).to.equalMarkup( expectedModel );
+		} );
+
+		it( 'should insert a paragraph after an image block in and indented list item', () => {
+			setModelData( model, modelList( [
+				'* foo',
+				'  * [<imageBlock src=""></imageBlock>]'
+			] ) );
+
+			insertCommand( 'after', 1 );
+
+			const expectedModel = '<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
+			'<imageBlock listIndent="1" listItemId="001" listType="bulleted" src=""></imageBlock>' +
+			'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]</paragraph>';
 
 			expect( getModelData( model ) ).to.equalMarkup( expectedModel );
 		} );

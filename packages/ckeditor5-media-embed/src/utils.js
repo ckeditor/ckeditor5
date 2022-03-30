@@ -107,7 +107,8 @@ export function getSelectedMediaModelWidget( selection ) {
  * @param {module:engine/model/range~Range} [insertRange] The range to insert the media. If not specified,
  * the default behavior of {@link module:engine/model/model~Model#insertContent `model.insertContent()`} will
  * be applied.
- * TODO update JSDocs
+ * @param {Boolean} findOptimalPosition If true it will try to find optimal position to insert media without breaking content
+ * in which a selection is.
  */
 export function insertMedia( model, url, selectable, findOptimalPosition ) {
 	model.change( writer => {

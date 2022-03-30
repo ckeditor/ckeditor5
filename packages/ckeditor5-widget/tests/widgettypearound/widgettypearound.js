@@ -145,6 +145,82 @@ describe( 'WidgetTypeAround', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should inherit attributes from widget that have copyOnReplace property', () => {
+			editor.model.schema.extend( 'paragraph', {
+				allowAttributes: 'a'
+			} );
+
+			editor.model.schema.extend( '$blockObject', {
+				allowAttributes: 'a'
+			} );
+
+			editor.model.schema.setAttributeProperties( 'a', {
+				copyOnReplace: true
+			} );
+
+			setModelData( editor.model, '[<blockWidget a="true"></blockWidget>]' );
+
+			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
+
+			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+
+			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph a="true">[]</paragraph><blockWidget a="true"></blockWidget>' );
+		} );
+
+		it( 'should not copy attribute if it has copyOnReplace property but it is not allowed on paragraph', () => {
+			editor.model.schema.extend( '$blockObject', {
+				allowAttributes: 'a'
+			} );
+
+			editor.model.schema.setAttributeProperties( 'a', {
+				copyOnReplace: true
+			} );
+
+			setModelData( editor.model, '[<blockWidget a="true"></blockWidget>]' );
+
+			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
+
+			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+
+			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget a="true"></blockWidget>' );
+		} );
+
+		it( 'should not copy attribute if it has not got copyOnReplace attribute', () => {
+			editor.model.schema.extend( 'paragraph', {
+				allowAttributes: 'a'
+			} );
+
+			editor.model.schema.extend( '$blockObject', {
+				allowAttributes: 'a'
+			} );
+
+			setModelData( editor.model, '[<blockWidget a="true"></blockWidget>]' );
+
+			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
+
+			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+
+			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget a="true"></blockWidget>' );
+		} );
 	} );
 
 	describe( 'UI to type around view widgets', () => {
