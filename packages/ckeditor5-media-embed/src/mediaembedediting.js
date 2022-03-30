@@ -184,10 +184,10 @@ export default class MediaEmbedEditing extends Plugin {
 		// Model -> Data
 		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'media',
-			view: ( modelElement, conversionApi ) => {
+			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );
 
-				return createMediaFigureElement( conversionApi, registry, url, {
+				return createMediaFigureElement( writer, registry, url, {
 					elementName,
 					renderMediaPreview: url && renderMediaPreview
 				} );
@@ -204,14 +204,14 @@ export default class MediaEmbedEditing extends Plugin {
 		// Model -> View (element)
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: 'media',
-			view: ( modelElement, conversionApi ) => {
+			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );
-				const figure = createMediaFigureElement( conversionApi, registry, url, {
+				const figure = createMediaFigureElement( writer, registry, url, {
 					elementName,
 					renderForEditingView: true
 				} );
 
-				return toMediaWidget( figure, conversionApi.writer, t( 'media widget' ) );
+				return toMediaWidget( figure, writer, t( 'media widget' ) );
 			}
 		} );
 

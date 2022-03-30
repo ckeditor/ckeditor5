@@ -109,8 +109,6 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-const onShowBordersChange = () => {
+document.getElementById( 'chbx-show-borders' ).addEventListener( 'change', () => {
 	document.body.classList.toggle( 'show-borders' );
-};
-
-document.getElementById( 'chbx-show-borders' ).addEventListener( 'change', onShowBordersChange );
+} );

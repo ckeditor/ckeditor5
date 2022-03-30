@@ -215,32 +215,29 @@ describe( 'DocumentList - utils - view', () => {
 	} );
 
 	describe( 'createListElement()', () => {
-		it( 'should create an attribute element for numbered list with given ID', () => {
-			const element = createListElement( viewDowncastWriter, 0, 'numbered', 'abc' );
+		it( 'should create an attribute element for numbered list', () => {
+			const element = createListElement( viewDowncastWriter, 0, 'numbered' );
 
 			expect( element.is( 'attributeElement', 'ol' ) ).to.be.true;
-			expect( element.id ).to.equal( 'abc' );
 		} );
 
-		it( 'should create an attribute element for bulleted list with given ID', () => {
-			const element = createListElement( viewDowncastWriter, 0, 'bulleted', '123' );
+		it( 'should create an attribute element for bulleted list', () => {
+			const element = createListElement( viewDowncastWriter, 0, 'bulleted' );
 
 			expect( element.is( 'attributeElement', 'ul' ) ).to.be.true;
-			expect( element.id ).to.equal( '123' );
 		} );
 
 		it( 'should create an attribute element OL for other list types', () => {
-			const element = createListElement( viewDowncastWriter, 0, 'something', 'foobar' );
+			const element = createListElement( viewDowncastWriter, 0, 'something' );
 
 			expect( element.is( 'attributeElement', 'ul' ) ).to.be.true;
-			expect( element.id ).to.equal( 'foobar' );
 		} );
 
 		it( 'should use priority related to indent', () => {
 			let previousPriority = Number.NEGATIVE_INFINITY;
 
 			for ( let i = 0; i < 20; i++ ) {
-				const element = createListElement( viewDowncastWriter, i, 'abc', '123' );
+				const element = createListElement( viewDowncastWriter, i, 'abc' );
 
 				expect( element.priority ).to.be.greaterThan( previousPriority );
 				expect( element.priority ).to.be.lessThan( 80 );

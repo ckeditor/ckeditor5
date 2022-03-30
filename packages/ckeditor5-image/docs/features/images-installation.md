@@ -5,7 +5,7 @@ order: 15
 modified_at: 2021-06-17
 ---
 
-The vast majority of image-related features {@link features/images-overview#image-features is available} out-of-the-box in all {@link builds/guides/overview ready-to-use editor builds} and does not require additional installation steps. If the default configuration does not match your needs or you want to create a {@link builds/guides/development/custom-builds custom editor build} you can add image features to your rich-text editor by installing the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
+The vast majority of image-related features {@link features/images-overview#image-features is available} out-of-the-box in all {@link installation/advanced/predefined-builds ready-to-use editor builds} and does not require additional installation steps. If the default configuration does not match your needs or you want to create a {@link installation/getting-started/quick-start#building-the-editor-from-source custom editor build} you can add image features to your rich-text editor by installing the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
 
 ```plaintext
 npm install --save @ckeditor/ckeditor5-image
@@ -45,14 +45,14 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Inline and block images
 
 Inline images can be inserted in the middle of a paragraph or a link just like a regular text. Block images, on the other hand, can be inserted only between other blocks like paragraphs, tables or media. Being larger and existing as a standalone content, block images can also have individual captions. Other than that, both types of images can be resized, linked, etc..
 
-By default, the {@link module:image/image~Image} plugin available in all {@link builds/guides/overview ready-to-use editor builds} provides support for both inline and block images, working as a glue for {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock} plugins:
+By default, the {@link module:image/image~Image} plugin available in all {@link installation/advanced/predefined-builds ready-to-use editor builds} provides support for both inline and block images, working as a glue for {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock} plugins:
 
 <figure class="table">
 	<table style="text-align: center">
@@ -89,7 +89,7 @@ By default, the {@link module:image/image~Image} plugin available in all {@link 
 <info-box info>
 	Up to CKEditor 5 v[27.1.0], only **block** images were supported. The support for **inline** images started in v[28.0.0] in all editor builds loading the `Image` plugin.
 
-	If your integration depends on a ready–to–use editor build and you want to take advantage of updated CKEditor 5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link builds/guides/migration/migration-to-29 official migration guide} that will help you configure the editor.
+	If your integration depends on a ready–to–use editor build and you want to take advantage of updated CKEditor 5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link updating/migration-to-29 official migration guide} that will help you configure the editor.
 </info-box>
 
 ## Contribute

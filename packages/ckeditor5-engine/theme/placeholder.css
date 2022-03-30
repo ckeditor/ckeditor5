@@ -25,3 +25,12 @@
 		display: none;
 	}
 }
+
+/*
+ * Rules for the `ck-placeholder` are loaded before the rules for `ck-reset_all` in the base CKEditor 5 DLL build.
+ * This fix overwrites the incorrectly set `position: static` from `ck-reset_all`.
+ * See https://github.com/ckeditor/ckeditor5/issues/11418.
+ */
+.ck.ck-reset_all .ck-placeholder {
+	position: relative;
+}

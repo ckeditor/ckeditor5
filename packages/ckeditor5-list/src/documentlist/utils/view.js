@@ -97,7 +97,6 @@ export function getIndent( listItem ) {
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer The downcast writer.
  * @param {Number} indent The list item indent.
  * @param {'bulleted'|'numbered'} type The list type.
- * @param {String} [id] The list ID.
  * @returns {module:engine/view/attributeelement~AttributeElement}
  */
 export function createListElement( writer, indent, type, id = getViewElementIdForListType( type, indent ) ) {

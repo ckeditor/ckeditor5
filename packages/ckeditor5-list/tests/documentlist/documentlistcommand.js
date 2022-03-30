@@ -18,8 +18,11 @@ describe( 'DocumentListCommand', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		editor = new Editor();
+
+		await editor.initPlugins();
+
 		editor.model = new Model();
 
 		model = editor.model;

@@ -34,7 +34,7 @@ You can see the demo of a WYSIWYG editor with the base image feature enabled bel
 
 ## Installation
 
-This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
+This feature is available in all {@link installation/advanced/predefined-builds ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
 
 ## Common API
 

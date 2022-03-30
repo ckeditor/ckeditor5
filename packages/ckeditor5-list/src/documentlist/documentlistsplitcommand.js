@@ -10,6 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 import {
 	isFirstBlockOfListItem,
+	isListItemBlock,
 	sortBlocks,
 	splitListItemBefore
 } from './utils/model';
@@ -94,7 +95,7 @@ export default class DocumentListSplitCommand extends Command {
 		const block = this._getStartBlock();
 
 		return selection.isCollapsed &&
-			!!block && block.hasAttribute( 'listItemId' ) &&
+			isListItemBlock( block ) &&
 			!isFirstBlockOfListItem( block );
 	}
 

@@ -332,7 +332,7 @@ describe( 'mockList()', () => {
 
 	it( 'should allow to customize the list item id (suffix)', () => {
 		expect( modelList( [
-			'* foo{abc}',
+			'* foo{id:abc}',
 			'  bar',
 			'* baz'
 		] ) ).to.equalMarkup(
@@ -345,7 +345,7 @@ describe( 'mockList()', () => {
 	it( 'should allow to customize the list item id (prefix)', () => {
 		expect( modelList( [
 			'* foo',
-			'* {abc}bar',
+			'* {id:abc}bar',
 			'  baz'
 		] ) ).to.equalMarkup(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
@@ -369,12 +369,144 @@ describe( 'mockList()', () => {
 	it( 'should not parse the custom list item ID if provided in the following block of a list item', () => {
 		expect( modelList( [
 			'* foo',
-			'  {abc}bar',
+			'  {id:abc}bar',
 			'* baz'
 		] ) ).to.equalMarkup(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
-			'<paragraph listIndent="0" listItemId="000" listType="bulleted">{abc}bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">{id:abc}bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
+	it( 'should parse the custom list style', () => {
+		expect( modelList( [
+			'* foo {style:abc}',
+			'  bar',
+			'* baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStyle="abc" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listStyle="abc" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listStyle="abc" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
+	it( 'should parse the custom list start', () => {
+		expect( modelList( [
+			'* foo {start:7}',
+			'  bar',
+			'* baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStart="7" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listStart="7" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listStart="7" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
+	it( 'should parse the list reversed', () => {
+		expect( modelList( [
+			'* foo {reversed:true}',
+			'  bar',
+			'* baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listReversed="true" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listReversed="true" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listReversed="true" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
+	it( 'should not parse the custom list style if provided in the following block of a list item', () => {
+		expect( modelList( [
+			'* foo {style:123}',
+			'  bar {style:abc}',
+			'* baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">bar {style:abc}</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listStyle="123" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
+	it( 'should parse the custom list style of the different adjacent list type', () => {
+		expect( modelList( [
+			'* foo {style:123}',
+			'* bar',
+			'# abc {style:789}',
+			'# def'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listStyle="123" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listStyle="789" listType="numbered">abc</paragraph>' +
+			'<paragraph listIndent="0" listItemId="003" listStyle="789" listType="numbered">def</paragraph>'
+		);
+	} );
+
+	it( 'should not forward `style` to different list', () => {
+		expect( modelList( [
+			'* foo {style:xyz}',
+			'# bar'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStyle="xyz" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listType="numbered">bar</paragraph>'
+		);
+	} );
+
+	it( 'should not forward `start` to different list', () => {
+		expect( modelList( [
+			'# foo {start:7}',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStart="7" listType="numbered">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should not forward `reversed` to different list', () => {
+		expect( modelList( [
+			'# foo {reversed:true}',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listReversed="true" listType="numbered">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should parse string to lines', () => {
+		expect( modelList( `
+			* foo
+			* bar
+			  # num
+				block
+			  # aaa
+			  abc
+			* end
+		` ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="1" listItemId="002" listType="numbered">num</paragraph>' +
+			'<paragraph listIndent="1" listItemId="002" listType="numbered">block</paragraph>' +
+			'<paragraph listIndent="1" listItemId="004" listType="numbered">aaa</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">abc</paragraph>' +
+			'<paragraph listIndent="0" listItemId="006" listType="bulleted">end</paragraph>'
+		);
+	} );
+
+	it( 'should parse string with mixed tabs and spaces to lines', () => {
+		expect( modelList( `
+			* foo
+			\x20\x20# num
+			\ta
+			\x20\tb
+			\x20\x20\tc
+			\x20\x20\x20\td
+			\x20\x20\x20\x20e
+		` ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">num</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">a</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">b</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">c</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">d</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">e</paragraph>'
 		);
 	} );
 

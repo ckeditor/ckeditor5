@@ -8,7 +8,7 @@
  */
 
 import { iterateSiblingListBlocks } from './listwalker';
-import { getListItemBlocks, ListItemUid } from './model';
+import { getListItemBlocks, isListItemBlock, ListItemUid } from './model';
 
 /**
  * Based on the provided positions looks for the list head and stores it in the provided map.
@@ -21,10 +21,10 @@ import { getListItemBlocks, ListItemUid } from './model';
 export function findAndAddListHeadToMap( position, itemToListHead ) {
 	const previousNode = position.nodeBefore;
 
-	if ( !previousNode || !previousNode.hasAttribute( 'listItemId' ) ) {
+	if ( !isListItemBlock( previousNode ) ) {
 		const item = position.nodeAfter;
 
-		if ( item && item.hasAttribute( 'listItemId' ) ) {
+		if ( isListItemBlock( item ) ) {
 			itemToListHead.set( item, item );
 		}
 	} else {
@@ -44,17 +44,17 @@ export function findAndAddListHeadToMap( position, itemToListHead ) {
  * Scans the list starting from the given list head element and fixes items' indentation.
  *
  * @protected
- * @param {module:engine/model/element~Element} listHead The list head model element.
+ * @param {Iterable.<module:list/documentlist/utils/listwalker~ListIteratorValue>} listNodes The iterable of list nodes.
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @returns {Boolean} Whether the model was modified.
  */
-export function fixListIndents( listHead, writer ) {
+export function fixListIndents( listNodes, writer ) {
 	let maxIndent = 0; // Guards local sublist max indents that need fixing.
 	let prevIndent = -1; // Previous item indent.
 	let fixBy = null;
 	let applied = false;
 
-	for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+	for ( const { node } of listNodes ) {
 		const itemIndent = node.getAttribute( 'listIndent' );
 
 		if ( itemIndent > maxIndent ) {
@@ -93,16 +93,16 @@ export function fixListIndents( listHead, writer ) {
  * Scans the list starting from the given list head element and fixes items' types.
  *
  * @protected
- * @param {module:engine/model/element~Element} listHead The list head model element.
+ * @param {Iterable.<module:list/documentlist/utils/listwalker~ListIteratorValue>} listNodes The iterable of list nodes.
  * @param {Set.<String>} seenIds The set of already known IDs.
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @returns {Boolean} Whether the model was modified.
  */
-export function fixListItemIds( listHead, seenIds, writer ) {
+export function fixListItemIds( listNodes, seenIds, writer ) {
 	const visited = new Set();
 	let applied = false;
 
-	for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+	for ( const { node } of listNodes ) {
 		if ( visited.has( node ) ) {
 			continue;
 		}

@@ -1,0 +1,47 @@
+<div class="options-container">
+	<input id="chbx-show-borders" type="checkbox" />
+	<label for="chbx-show-borders">Show borders</label>
+</div>
+
+<div id="editor">
+	<ol style="list-style-type: lower-roman;" start="3">
+		<li>A numbered list with lower-roman numbering that starts at 3.</li>
+		<li>Item with multiple blocks...<hr>...and this is the 3rd block of it.</li>
+		<li><p>This is a list item with two paragraphs.</p><p>And here is the last one.</p></li>
+	</ol>
+	<ul style="list-style-type: square;">
+		<li>
+			<p>This is a multi block item of a square bulleted list.</p>
+			<hr>
+			<p>And there is a block widget above.</p>
+		</li>
+		<li>
+			<p>Other item with multi blocks...</p>
+			<p>...and nested list:</p>
+			<ol style="list-style-type: lower-alpha;" start="3" reversed>
+				<li><p>It's numbered, lower-alpha that starts at 3...</p></li>
+				<li><p>...and it is reversed.</p></li>
+			</ol>
+			<p>Here is also a block after a nested list.</p>
+		</li>
+	</ul>
+</div>
+
+<style>
+	.show-borders ul, .show-borders ol {
+		border: 2px dashed blue;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin: 5px;
+	}
+
+	.show-borders li {
+		border: 2px dotted red;
+		padding: 5px;
+		margin: 5px;
+	}
+
+	.options-container {
+		margin-bottom: 16px;
+	}
+</style>

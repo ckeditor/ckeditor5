@@ -117,7 +117,12 @@ describe( 'DataFilter', () => {
 				// register it before DataFilter listener.
 				this.editor.data.on( 'init', evt => {
 					evt.stop();
-				}, { priority: 'high' } );
+				}, {
+					// The actual RTC client listens on 'high' but in these tests we're making a point
+					// of GHS registering its converters before anything else triggers the downcast conversion.
+					// See https://github.com/ckeditor/ckeditor5/issues/11356.
+					priority: 'highest'
+				} );
 			}
 		}
 
@@ -1090,6 +1095,29 @@ describe( 'DataFilter', () => {
 					},
 					3: {
 						classes: [ 'foo', 'bar', 'baz' ]
+					}
+				}
+			} );
+		} );
+
+		// #10657.
+		// #11450.
+		// #11477.
+		it( 'should not throw exception when outer element doesn\'t have attributes', () => {
+			dataFilter.allowElement( 'span' );
+			dataFilter.allowAttributes( { name: 'span', classes: /[\s\S]+/ } );
+
+			editor.setData( '<p><span>foo<span class="test">bar</span></span></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text htmlSpan="(1)">foo</$text>' +
+						'<$text htmlSpan="(2)">bar</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {
+						classes: [ 'test' ]
 					}
 				}
 			} );

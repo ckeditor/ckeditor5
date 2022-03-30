@@ -1721,6 +1721,29 @@ describe( 'ListPropertiesEditing', () => {
 				}
 			} );
 
+			describe( 'toggling list', () => {
+				// #11408
+				it( 'should copy the `listStyle` attribute from the previous list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Apollo</listItem>' +
+						'<paragraph>[Space shuttle</paragraph>' +
+						'<paragraph>Dragon]</paragraph>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Apollo</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">[Space shuttle</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Dragon]</listItem>'
+					);
+				} );
+			} );
+
 			describe( 'the FontColor feature', () => {
 				let editor, view, container;
 
@@ -3431,6 +3454,29 @@ describe( 'ListPropertiesEditing', () => {
 					};
 				}
 			} );
+
+			describe( 'toggling list', () => {
+				// #11408
+				it( 'should copy the `listReversed` attribute from the previous list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Apollo</listItem>' +
+						'<paragraph>[Space shuttle</paragraph>' +
+						'<paragraph>Dragon]</paragraph>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Apollo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">[Space shuttle</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Dragon]</listItem>'
+					);
+				} );
+			} );
 		} );
 	} );
 
@@ -5079,6 +5125,29 @@ describe( 'ListPropertiesEditing', () => {
 						setData() {}
 					};
 				}
+			} );
+
+			describe( 'toggling list', () => {
+				// #11408
+				it( 'should copy the `listStart` attribute from the previous list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listStart="5" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">Apollo</listItem>' +
+						'<paragraph>[Space shuttle</paragraph>' +
+						'<paragraph>Dragon]</paragraph>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStart="5" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">Apollo</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">[Space shuttle</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">Dragon]</listItem>'
+					);
+				} );
 			} );
 		} );
 	} );

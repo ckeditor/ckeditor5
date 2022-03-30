@@ -77,7 +77,7 @@ Before you can implement your own custom upload adapter, you should learn about 
 	* dragging a file from the file system,
 	* selecting an image through a file system dialog.
 
-	The images are intercepted by the {@link module:image/imageupload~ImageUpload image upload} plugin (which is enabled in all official {@link builds/guides/overview editor builds}).
+	The images are intercepted by the {@link module:image/imageupload~ImageUpload image upload} plugin (which is enabled in all official {@link installation/advanced/predefined-builds editor builds}).
 2. For every image, the image upload plugin {@link module:upload/filerepository~FileRepository#createLoader creates an instance of a file loader}.
 
 	* The role of the **file loader** is to read the file from the disk and upload it to the server by using the upload adapter.
@@ -96,7 +96,7 @@ This is just an overview of the image upload process. Actually, the whole thing 
 
 To sum up, for the image upload to work in the rich-text editor, two conditions must be true:
 
-* **The {@link module:image/imageupload~ImageUpload image upload} plugin must be enabled** in the editor. It is enabled by default in all official {@link builds/guides/overview builds}, but if you are {@link builds/guides/development/custom-builds customizing} CKEditor 5, do not forget to include it.
+* **The {@link module:image/imageupload~ImageUpload image upload} plugin must be enabled** in the editor. It is enabled by default in all official {@link installation/advanced/predefined-builds builds}, but if you are {@link installation/getting-started/quick-start#building-the-editor-from-source customizing} CKEditor 5, do not forget to include it.
 * **The upload adapter needs to be defined**. This can be done by using (enabling *and* configuring):
 
 	* {@link features/image-upload#official-upload-adapters One of the existing upload adapters}.
@@ -390,7 +390,7 @@ For image uploading, you can later retrieve the data in the {@link module:image/
 
 ### Activating a custom upload adapter
 
-Having implemented the adapter, you must figure out how to enable it in the WYSIWYG editor. The good news is that it is pretty easy, and you do not need to {@link builds/guides/development/custom-builds rebuild the editor} to do that!
+Having implemented the adapter, you must figure out how to enable it in the WYSIWYG editor. The good news is that it is pretty easy, and you do not need to {@link installation/getting-started/quick-start#building-the-editor-from-source rebuild the editor} to do that!
 
 You are going to extend the basic implementation presented in ["The anatomy of the adapter"](#the-anatomy-of-the-adapter) section of this guide so your custom adapter becomes an editor plugin. To do that, create a simple standalone plugin (`MyCustomUploadAdapterPlugin`) that will {@link module:upload/filerepository~FileRepository#createLoader create an instance of the file loader} and glue it with your custom `MyUploadAdapter`.
 
