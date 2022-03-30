@@ -42,6 +42,133 @@ describe( 'DocumentListElementSupport', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'downcast', () => {
+		it( 'should downcast list attributes', () => {
+			setModelData( model, makeList( 'bulleted', 0, { attributes: { 'data-foo': 'foo', 'data-bar': 'bar' } }, [
+				{ text: '1.' },
+				{ text: '2.' },
+				{ text: '3.' }
+			] ) );
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul data-foo="foo" data-bar="bar">' +
+					'<li>1.</li>' +
+					'<li>2.</li>' +
+					'<li>3.</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should downcast list attributes (classes)', () => {
+			setModelData( model, makeList( 'bulleted', 0, { classes: [ 'foo', 'bar', 'baz' ] }, [
+				{ text: '1.' },
+				{ text: '2.' },
+				{ text: '3.' }
+			] ) );
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul class="foo bar baz">' +
+					'<li>1.</li>' +
+					'<li>2.</li>' +
+					'<li>3.</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should downcast list attributes (styles)', () => {
+			setModelData( model, makeList( 'numbered', 0, { styles: { color: 'red', background: 'blue' } }, [
+				{ text: '1.' },
+				{ text: '2.' },
+				{ text: '3.' }
+			] ) );
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ol style="background:blue;color:red;">' +
+					'<li>1.</li>' +
+					'<li>2.</li>' +
+					'<li>3.</li>' +
+				'</ol>'
+			);
+		} );
+
+		it( 'should downcast list item attributes', () => {
+			setModelData( model, makeList( 'bulleted', 0, null, [
+				{ text: '1.', attributes: { 'data-foo': 'foo' } },
+				{ text: '2.', attributes: { 'data-foo': 'bar' } },
+				{ text: '3.', attributes: { 'data-bar': 'baz' } }
+			] ) );
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li data-foo="foo">1.</li>' +
+					'<li data-foo="bar">2.</li>' +
+					'<li data-bar="baz">3.</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should downcast list item attributes (classes)', () => {
+			setModelData( model, makeList( 'numbered', 0, null, [
+				{ text: '1.', classes: [ 'foo' ] },
+				{ text: '2.', classes: [ 'foo', 'bar' ] },
+				{ text: '3.', classes: [ 'baz' ] }
+			] ) );
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ol>' +
+					'<li class="foo">1.</li>' +
+					'<li class="foo bar">2.</li>' +
+					'<li class="baz">3.</li>' +
+				'</ol>'
+			);
+		} );
+
+		it( 'should downcast list item attributes (styles)', () => {
+			setModelData( model, makeList( 'numbered', 0, null, [
+				{ text: '1.', styles: { color: 'red' } },
+				{ text: '2.', styles: { color: 'green' } },
+				{ text: '3.', styles: { background: 'blue', color: 'yellow' } }
+			] ) );
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ol>' +
+					'<li style="color:red;">1.</li>' +
+					'<li style="color:green;">2.</li>' +
+					'<li style="background:blue;color:yellow;">3.</li>' +
+				'</ol>'
+			);
+		} );
+
+		function makeList( listType, listIndent, listAttributes, elements ) {
+			const htmlListAttributes = listAttributes ?
+				`htmlListAttributes="${ JSON.stringify( listAttributes ).replaceAll( '"', '&quot;' ) }" ` :
+				'';
+
+			return elements.map( ( element, index ) => {
+				const listItemAtributes = {
+					attributes: element.attributes,
+					classes: element.classes,
+					styles: element.styles
+				};
+
+				const htmlLiAttributes = ( listItemAtributes.attributes || listItemAtributes.classes || listItemAtributes.styles ) ?
+					`htmlLiAttributes="${ JSON.stringify( listItemAtributes ).replaceAll( '"', '&quot;' ) }" ` :
+					'';
+
+				return (
+					'<paragraph ' +
+						htmlLiAttributes +
+						htmlListAttributes +
+						`listIndent="${ listIndent }" ` +
+						`listItemId="${ index }" ` +
+						`listType="${ listType }">` +
+						element.text +
+					'</paragraph>'
+				);
+			} ).join( '' );
+		}
+	} );
+
 	describe( 'upcast', () => {
 		it( 'should allow attributes', () => {
 			dataFilter.allowElement( /^(ul|ol)$/ );
