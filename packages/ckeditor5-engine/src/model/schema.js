@@ -883,7 +883,7 @@ export default class Schema {
 	/**
 	 * Gets attributes of a node that have given property.
 	 *
-	 * @param {<module:engine/model/node~Node>} node Node to get attributes from.
+	 * @param {module:engine/model/node~Node} node Node to get attributes from.
 	 * @param {String} propertyName Name of the property that attribute must have to return it.
 	 * @param {Boolean|Symbol|String|Number|Object|null|undefined} propertyValue Desired value of the property that we want to check.
 	 * When `undefined` attributes will be returned if they have set a given property no matter what the value is. If specified it will
