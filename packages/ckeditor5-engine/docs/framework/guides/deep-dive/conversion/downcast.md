@@ -6,7 +6,7 @@ since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Model to view (downcast)
+# Downcast conversion &mdash; model to view
 
 ## Introduction
 
@@ -42,7 +42,7 @@ The above converter will handle the conversion of every `<paragraph>` model elem
 </info-box>
 
 <info-box>
-	You just learned about the {@link framework/guides/deep-dive/conversion/helpers/downcast#element-to-element `elementToElement()` **downcast** conversion helper method}! More helpers are documented in the following chapters.
+	You just learned about the {@link framework/guides/deep-dive/conversion/helpers/downcast#element-to-element-conversion-helper `elementToElement()` **downcast** conversion helper method}! More helpers are documented in the following chapters.
 </info-box>
 
 ## Downcast pipelines
@@ -88,7 +88,7 @@ As you should already know from the {@link framework/guides/architecture/editing
 
 Such text node attributes may be converted into view elements.
 
-In order to do so, you can register a converter by using the {@link framework/guides/deep-dive/conversion/helpers/downcast#attribute-to-element `attributeToElement()` conversion helper}:
+In order to do so, you can register a converter by using the {@link framework/guides/deep-dive/conversion/helpers/downcast#attribute-to-element-conversion-helper `attributeToElement()` conversion helper}:
 
 ```js
 editor.conversion
@@ -109,7 +109,7 @@ The above converter will handle the conversion of every `bold` model text node a
 
 ## Converting element to element
 
-Similar to the previous example, you can convert a `<heading>` model element into an `<h1>` view element with the use of the {@link framework/guides/deep-dive/conversion/helpers/downcast#element-to-element `elementToElement()` conversion helper}. A code to achieve it would look like this:
+Similar to the previous example, you can convert a `<heading>` model element into an `<h1>` view element with the use of the {@link framework/guides/deep-dive/conversion/helpers/downcast#element-to-element-conversion-helper `elementToElement()` conversion helper}. A code to achieve it would look like this:
 
 ```js
 editor.conversion
@@ -173,7 +173,7 @@ You can check this in action by using the example below. Use the dropdown to cha
 
 Sometimes you may want to convert a **single model element** into a more complex view structure consisting of a **single view element with children**.
 
-You can use the {@link framework/guides/deep-dive/conversion/helpers/downcast#element-to-structure `elementToStructure()` conversion helper} for this purpose:
+You can use the {@link framework/guides/deep-dive/conversion/helpers/downcast#element-to-structure-conversion-helper `elementToStructure()` conversion helper} for this purpose:
 
 ```js
 editor.conversion

@@ -7,6 +7,7 @@
  * @module table
  */
 
+export { default as PlainTableOutput } from './plaintableoutput';
 export { default as Table } from './table';
 export { default as TableEditing } from './tableediting';
 export { default as TableUI } from './tableui';

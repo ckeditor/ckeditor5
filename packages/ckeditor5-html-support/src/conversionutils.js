@@ -179,7 +179,7 @@ export function mergeViewElementAttributes( target, source ) {
 	for ( const key in source ) {
 		// Merge classes.
 		if ( Array.isArray( source[ key ] ) ) {
-			result[ key ] = Array.from( new Set( [ ...target[ key ], ...source[ key ] ] ) );
+			result[ key ] = Array.from( new Set( [ ...( target[ key ] || [] ), ...source[ key ] ] ) );
 		}
 
 		// Merge attributes or styles.
