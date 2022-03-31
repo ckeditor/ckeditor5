@@ -223,7 +223,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Defines whether this editor is in read-only mode.
+	 * Defines whether the editor is in the read-only mode.
 	 *
 	 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
 	 * to modify the document by using them. Also, the editable element(s) become non-editable.
@@ -255,24 +255,49 @@ export default class Editor {
 	/**
 	 * Turns on the read-only mode in the editor.
 	 *
-	 * The editor supports locking mechanism for the read-only mode. It means that multiple features can request to turn on
-	 * the read-only mode. To disable the read-only mode, all those features need to turn it off ("clear their locks").
+	 * Editor can be switched to or out of the read-only mode by many features, under various circumstances. The editor supports locking
+	 * mechanism for the read-only mode. It enables easy control over the read-only mode when many features wants to turn it on or off at
+	 * the same time, without conflicting with each other. It guarantees that you will not make the editor editable accidentally (which
+	 * could lead to errors).
 	 *
-	 * When at least one feature sets the read-only mode, then the {@link #isReadOnly `isReadOnly` property} will be set to `true`.
-	 * Otherwise it is set to `false`.
+	 * Each read-only mode request is identified by a unique id (also called "lock"). If multiple plugins requested to turn on the
+	 * read-only mode, then, the editor will become editable only after all these plugins turn the read-only mode off (using the same ids).
+	 *
+	 * Note, that you cannot force the editor to disable the read-only mode if other plugins set it.
+	 *
+	 * After the first `enableReadOnlyMode()` call, the {@link #isReadOnly `isReadOnly` property} will be set to `true`:
+	 *
+	 *		editor.isReadOnly; // `false`.
+	 * 		editor.enableReadOnlyMode( 'my-feature-id' );
+	 * 		editor.isReadOnly; // `true`.
+	 *
+	 * You can turn off the read-only mode ("clear the lock") using the {@link #disableReadOnlyMode `disableReadOnlyMode()`} method:
 	 *
 	 * 		editor.enableReadOnlyMode( 'my-feature-id' );
-	 *
-	 * You can turn off the read-only mode ("clear the lock") using the {@link #disableReadOnlyMode} method.
-	 *
+	 * 		// ...
 	 * 		editor.disableReadOnlyMode( 'my-feature-id' );
+	 * 		editor.isReadOnly; // `false`.
 	 *
-	 * It is possible to pass the additional argument - `value` to determine if the lock should be set or removed.
-	 * Passing `false` works the same way as calling {@link #disableReadOnlyMode `disableReadOnlyMode()`}.
+	 * All "locks" need to be removed to enable editing:
 	 *
+	 * 		editor.enableReadOnlyMode( 'my-feature-id' );
+	 * 		editor.enableReadOnlyMode( 'my-other-feature-id' );
+	 * 		// ...
+	 * 		editor.disableReadOnlyMode( 'my-feature-id' );
+	 * 		editor.isReadOnly; // `true`.
+	 * 		editor.disableReadOnlyMode( 'my-other-feature-id' );
+	 * 		editor.isReadOnly; // `false`.
+	 *
+	 * It is possible to pass an additional argument - `value` - to determine if the lock should be set or removed.
+	 * Passing `false` works the same way as calling {@link #disableReadOnlyMode `disableReadOnlyMode()`}:
+	 *
+	 *		// Assuming `isConnected` is an observable property in `myFeature`.
 	 * 		myFeature.on( 'change:isConnected', () => {
-	 * 			editor.enableReadOnlyMode( 'my-feature-id', myFeature.isConnected );
+	 * 			editor.enableReadOnlyMode( 'my-feature-id', !myFeature.isConnected );
 	 * 		} );
+	 *
+	 * 		myFeature.isConnected = false; // editor.isReadOnly -> true.
+	 * 		myFeature.isConnected = true; // editor.isReadOnly -> false.
 	 *
 	 * @param {String|Symbol} lockId A unique ID for setting the editor to the read-only state.
 	 * @param {Boolean} [value=true] An optional value indicating whether the lock should be set or removed.
