@@ -4,7 +4,8 @@
  */
 
 import Model from '../../../src/model/model';
-import insertObject, { findOptimalInsertionRange } from '../../../src/model/utils/insertobject';
+import insertObject from '../../../src/model/utils/insertobject';
+import { findOptimalInsertionRange } from '../../../src/model/utils/findoptimalinsertionrange';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import { setData, getData } from '../../../src/dev-utils/model';
