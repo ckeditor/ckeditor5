@@ -91,20 +91,17 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 			let viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
 
-			// Do not apply an attribute if the element itself is already consumed and there is no view attributes to store.
-			if ( !viewAttributes && !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
-				return;
-			}
-
-			viewAttributes = viewAttributes || {};
-
-			// Consume the element itself if it wasn't consumed by any other converter.
-			conversionApi.consumable.consume( data.viewItem, { name: true } );
-
 			// Do not apply the attribute if the element itself is already consumed and there is no view attributes to store.
 			if ( !viewAttributes && !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
 				return;
 			}
+
+			// Otherwise, we might need to convert it to an empty object just to preserve element itself,
+			// for example `<cite>` => <$text htmlCite="{}">.
+			viewAttributes = viewAttributes || {};
+
+			// Consume the element itself if it wasn't consumed by any other converter.
+			conversionApi.consumable.consume( data.viewItem, { name: true } );
 
 			// Since we are converting to attribute we need a range on which we will set the attribute.
 			// If the range is not created yet, we will create it.
