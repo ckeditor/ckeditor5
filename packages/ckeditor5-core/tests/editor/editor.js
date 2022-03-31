@@ -422,24 +422,12 @@ describe( 'Editor', () => {
 			expect( editor.isReadOnly ).to.be.false;
 		} );
 
-		it( 'should be immutable for external assignment operations', () => {
+		it( 'isReadOnly property should throw an error when set directly', () => {
 			const editor = new TestEditor();
 
-			const stub = sinon.stub( window.console, 'warn' );
-
-			editor.isReadOnly = true;
-
-			expect( editor.isReadOnly ).to.be.false;
-
-			editor.enableReadOnlyMode( 'unit-test' );
-
-			expect( editor.isReadOnly ).to.be.true;
-
-			editor.isReadOnly = false;
-
-			expect( editor.isReadOnly ).to.be.true;
-
-			sinon.assert.calledTwice( stub );
+			expectToThrowCKEditorError( () => {
+				editor.isReadOnly = true;
+			}, /editor-isreadonly-has-no-setter/ );
 		} );
 
 		it( 'should be set to true when at least one lock is set', () => {

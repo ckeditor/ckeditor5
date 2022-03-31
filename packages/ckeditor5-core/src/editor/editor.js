@@ -245,11 +245,13 @@ export default class Editor {
 	}
 
 	set isReadOnly( value ) {
-		// eslint-disable-next-line no-undef
-		console.warn(
-			'Editor#isReadOnly should be now changed using dedicated methods: ' +
-			'`Editor#enableReadOnlyMode( lockId )` and `Editor#disableReadOnlyMode( lockId )`.'
-		);
+		/**
+		 * `Editor#isReadOnly` does not have a setter and should be set using `Editor#enableReadOnlyMode( lockId )` and
+		 * `Editor#disableReadOnlyMode( lockId )`.
+		 *
+		 * @error editor-isreadonly-has-no-setter
+		 */
+		throw new CKEditorError( 'editor-isreadonly-has-no-setter' );
 	}
 
 	/**
