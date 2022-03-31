@@ -33,6 +33,7 @@ export default class InsertParagraphCommand extends Command {
 	 * @param {Object} options Options for the executed command.
 	 * @param {module:engine/model/position~Position} options.position The model position at which
 	 * the new paragraph will be inserted.
+	 * @param {Object} attributes Attributes keys and values to set on a inserted paragraph
 	 * @fires execute
 	 */
 	execute( options ) {

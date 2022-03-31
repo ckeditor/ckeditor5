@@ -53,7 +53,7 @@ describe( 'insertObject()', () => {
 
 			expect( () => {
 				insertObject( model, widget );
-			} ).to.not.throw( CKEditorError, /insertobject-todo/ );
+			} ).to.not.throw( CKEditorError, /insertobject-element-not-an-object/ );
 		} );
 
 		it( 'should throw an error if element is not an object', () => {
@@ -64,7 +64,7 @@ describe( 'insertObject()', () => {
 	} );
 
 	describe( 'insertion selection', () => {
-		describe( 'with findOptimalSelection', () => {
+		describe( 'with findOptimalPosition', () => {
 			it( 'should call insert content with selection from optimal insertion range when no selection was passed (before)', () => {
 				const widget = new Element( 'blockWidget', [], [] );
 
@@ -105,7 +105,7 @@ describe( 'insertObject()', () => {
 			} );
 		} );
 
-		describe( 'without findOptimalSelection', () => {
+		describe( 'without findOptimalPosition', () => {
 			it( 'should call insert content with model selection if called with no selectable', () => {
 				const widget = new Element( 'blockWidget', [], [] );
 

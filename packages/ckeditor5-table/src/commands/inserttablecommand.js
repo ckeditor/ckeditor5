@@ -67,7 +67,7 @@ export default class InsertTableCommand extends Command {
 		model.change( writer => {
 			const table = tableUtils.createTable( writer, options );
 
-			model.insertObject( table, null, null, { findOptimalPosition: 'auto' } );
+			model.insertObject( table, null, 'after' );
 
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 		} );

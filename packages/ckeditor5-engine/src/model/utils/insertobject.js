@@ -10,6 +10,8 @@
 import first from '@ckeditor/ckeditor5-utils/src/first';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
+import { findOptimalInsertionRange } from './findoptimalinsertionrange';
+
 /**
  * Inserts objects into the editor.
  *
@@ -48,9 +50,11 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 export default function insertObject( model, object, selectable, placeOrOffset, options = {} ) {
 	if ( !model.schema.isObject( object ) ) {
 		/**
-		 * Tried to insert an element by {@link module:engine/model/utils/insertobject insertObject()} function
+		 * Tried to insert an element with {@link module:engine/model/utils/insertobject insertObject()} function
 		 * that is not defined as an object in schema.
 		 * See {@link module:engine/model/schema~SchemaItemDefinition#isObject `SchemaItemDefinition`}.
+		 * If you want to insert content that is not an object you might want to use
+		 * {@link module:engine/model/utils/insertcontent insertContent()} function.
 		 * @error insertobject-element-not-an-object
 		 */
 		throw new CKEditorError( 'insertobject-element-not-an-object', model, { object } );
@@ -122,75 +126,15 @@ export default function insertObject( model, object, selectable, placeOrOffset, 
 	} );
 }
 
-// TODO findOptimalInsertionRange should be exported or exposed in some reasonable place to be used in the widget util of the same name.
-
-/**
- * Returns a model range which is optimal (in terms of UX) for inserting a widget block.
- *
- * For instance, if a selection is in the middle of a paragraph, the collapsed range before this paragraph
- * will be returned so that it is not split. If the selection is at the end of a paragraph,
- * the collapsed range after this paragraph will be returned.
- *
- * Note: If the selection is placed in an empty block, the range in that block will be returned. If that range
- * is then passed to {@link module:engine/model/model~Model#insertContent}, the block will be fully replaced
- * by the inserted widget block.
- *
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
- * The selection based on which the insertion position should be calculated.
- * @param {module:engine/model/model~Model} model Model instance.
- * @param {'auto'|'before'|'after'} [place='auto'] Place where to look for optimal insertion range.
- * Default value `auto` will determine itself the best position for insertion.
- * Value `before` will try to find a position before selection.
- * Value `after` will try to find a position after selection.
- * @returns {module:engine/model/range~Range} The optimal range.
- */
-export function findOptimalInsertionRange( selection, model, place = 'auto' ) {
-	const selectedElement = selection.getSelectedElement();
-
-	if ( selectedElement && model.schema.isObject( selectedElement ) && !model.schema.isInline( selectedElement ) ) {
-		if ( [ 'before', 'after' ].includes( place ) ) {
-			return model.createRange( model.createPositionAt( selectedElement, place ) );
-		}
-
-		return model.createRangeOn( selectedElement );
-	}
-
-	const firstBlock = first( selection.getSelectedBlocks() );
-
-	// There are no block elements within ancestors (in the current limit element).
-	if ( !firstBlock ) {
-		return model.createRange( selection.focus );
-	}
-
-	// If inserting into an empty block – return position in that block. It will get
-	// replaced with the image by insertContent(). #42.
-	if ( firstBlock.isEmpty ) {
-		return model.createRange( model.createPositionAt( firstBlock, 0 ) );
-	}
-
-	const positionAfter = model.createPositionAfter( firstBlock );
-
-	// If selection is at the end of the block - return position after the block.
-	if ( selection.focus.isTouching( positionAfter ) ) {
-		return model.createRange( positionAfter );
-	}
-
-	// Otherwise, return position before the block.
-	return model.createRange( model.createPositionBefore( firstBlock ) );
-}
-
-/**
- * Updates document selection based on given `place` parameter in relation to `contextElement` element.
- *
- * @param {module:engine/model/writer~Writer} writer An instance of the model writer.
- * @param {module:engine/model/element~Element} contextElement An element to set attributes on.
- * @param {'on'|'after'} place Place where selection should be set in relation to `contextElement` element.
- * Value `on` will set selection on passed `contextElement`. Value `after` will set selection after `contextElement`.
- * @param {Object} attributes Attributes keys and values to set on a paragraph that this function can create when
- * `place` parameter is equal to `after` but there is no element with `$text` node to set selection in.
- *
- * @private
- */
+// Updates document selection based on given `place` parameter in relation to `contextElement` element.
+//
+// @private
+// @param {module:engine/model/writer~Writer} writer An instance of the model writer.
+// @param {module:engine/model/element~Element} contextElement An element to set attributes on.
+// @param {'on'|'after'} place Place where selection should be set in relation to `contextElement` element.
+// Value `on` will set selection on passed `contextElement`. Value `after` will set selection after `contextElement`.
+// @param {Object} attributes Attributes keys and values to set on a paragraph that this function can create when
+// `place` parameter is equal to `after` but there is no element with `$text` node to set selection in.
 function updateSelection( writer, contextElement, place, paragraphAttributes ) {
 	const model = writer.model;
 
@@ -218,8 +162,10 @@ function updateSelection( writer, contextElement, place, paragraphAttributes ) {
 	}
 	else {
 		/**
-		 * Unsupported `place` parameter was passed to the {@link module:engine/model/utils/insertobject insertObject()} function.
-		 * Check {@link module:engine/model/utils/insertobject insertObject()} API documentation for allowed `place` parameter values.
+		 * Unsupported `options.setSelection` parameter was passed
+		 * to the {@link module:engine/model/utils/insertobject insertObject()} function.
+		 * Check {@link module:engine/model/utils/insertobject insertObject()} API documentation for allowed
+		 * `options.setSelection` parameter values.
 		 *
 		 * @error insertobject-invalid-place-parameter-value
 		 */
