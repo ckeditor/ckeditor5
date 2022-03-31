@@ -322,7 +322,8 @@ export default class Model {
 	 * Inserts content at the position in the editor specified by the selection, as one would expect the paste
 	 * functionality to work.
 	 *
-	 * **Note**: If you want to insert an object (e.g. a widget), see {@link #insertObject} instead.
+	 * **Note**: If you want to insert an {@glink framework/guides/deep-dive/schema#object-elements object element}
+	 * (e.g. a {@link module:widget/utils~toWidget widget}), see {@link #insertObject} instead.
 	 *
 	 * This is a high-level method. It takes the {@link #schema schema} into consideration when inserting
 	 * the content, clears the given selection's content before inserting nodes and moves the selection
@@ -1006,7 +1007,7 @@ export default class Model {
 	 * listener to this event so it can be fully customized by the features.
 	 *
 	 * **Note** The `selectable` parameter for the {@link #insertContent} is optional. When `undefined` value is passed the method uses
-	 * `model.document.selection`.
+	 * {@link module:engine/model/document~Document#selection document selection}.
 	 *
 	 * @event insertContent
 	 * @param {Array} args The arguments passed to the original method.
@@ -1019,7 +1020,7 @@ export default class Model {
 	 * listener to this event so it can be fully customized by the features.
 	 *
 	 * **Note** The `selectable` parameter for the {@link #insertObject} is optional. When `undefined` value is passed the method uses
-	 * `model.document.selection`.
+	 * {@link module:engine/model/document~Document#selection document selection}.
 	 *
 	 * @event insertObject
 	 * @param {Array} args The arguments passed to the original method.

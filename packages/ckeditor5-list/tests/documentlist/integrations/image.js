@@ -56,7 +56,7 @@ describe( 'image plugin integration', () => {
 		} );
 
 		describe( 'inline image to block image', () => {
-			it( 'should replace inline image with a block image', () => {
+			it( 'should replace an inline image with a block image', () => {
 				setModelData( model, modelList( [
 					`* <paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
 				] ) );
@@ -68,7 +68,7 @@ describe( 'image plugin integration', () => {
 				);
 			} );
 
-			it( 'should create a block imaage below paragraph when an inline image is at the end of a block', () => {
+			it( 'should create a block image below paragraph when an inline image is at the end of a block', () => {
 				setModelData( model, modelList( [
 					`* <paragraph>Foo[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
 				] ) );
