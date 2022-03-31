@@ -11,38 +11,37 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Inserts objects into the editor.
- *
- * It takes care of removing the selected content, splitting elements (if needed), inserting elements defined in schema as objects and
- * copying attributes from block elements that are selected by given `selectable` parameter to inserted object.
- *
- * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable` it will be modified
- * to the insertion selection (equal to a range to be selected after insertion).
- *
- * If `selectable` is not passed, the content will be inserted using the current selection of the model document.
+ * Inserts an {@glink framework/guides/deep-dive/schema#object-elements object element} at a specific position in the editor content.
  *
  * **Note:** Use {@link module:engine/model/model~Model#insertObject} instead of this function.
  * This function is only exposed to be reusable in algorithms which change the {@link module:engine/model/model~Model#insertObject}
  * method's behavior.
  *
+ * **Note**: For more documentation and examples, see {@link module:engine/model/model~Model#insertObject}.
+ *
  * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
- * @param {module:engine/model/element~Element} object An object to insert in a model.
+ * @param {module:engine/model/element~Element} object An object to be inserted into the model document.
  * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
- * Selection into which the content should be inserted.
- * @param {Number|'before'|'end'|'after'|'on'|'in'} placeOrOffset Sets place or offset of the selection.
+ * A selectable where the content should be inserted. If not specified, the current
+ * {@link module:engine/model/document~Document#selection document selection} will be used instead.
+ * @param {Number|'before'|'end'|'after'|'on'|'in'} placeOrOffset Specifies the exact place or offset for the insertion to take place,
+ * relative to `selectable`.
  * @param {Object} [options] Additional options.
- * @param {'auto'|'before'|'after'} [options.findOptimalPosition] Place where to insert an object in relation to `selectable` parameter.
- * It modifies insertion position in relation to `selectable` parameter and is used to not split content when inserting an object.
- * Value `auto` will determine itself the best position for insertion - before or after an element a selection is in.
- * Value `before` will try to find a position before selection.
- * Value `after` will try to find a position after selection.
- * @param {'on'|'after'} [options.setSelection] Sets selection after performing insert.
- * Value `on` will set document's selection on inserted object.
- * Value `after` will try to set document's selection in a text node of an element after inserted object. If there is no
- * such element a paragraph will be created and document's selection will be set inside it.
- * @returns {module:engine/model/range~Range} Range which contains all the performed changes. This is a range that, if removed,
- * would return the model to the state before the insertion. If no changes were preformed by `insertObject`, returns a range collapsed
+ * @param {'auto'|'before'|'after'} [options.findOptimalPosition] An option that, when set, adjusts the insertion position (relative to
+ * `selectable` and `placeOrOffset`) so that the content of `selectable` is not split upon insertion (a.k.a. non-destructive insertion).
+ * * When `'auto'`, the algorithm will decide whether to insert the object before or after `selectable` to avoid content splitting.
+ * * When `'before'`, the closest position before `selectable` will be used that will not result in content splitting.
+ * * When `'after'`, the closest position after `selectable` will be used that will not result in content splitting.
+ *
+ * Note that this option works only for block objects. Inline objects are inserted into text and do not split blocks.
+ * @param {'on'|'after'} [options.setSelection] An option that, when set, moves the
+ * {@link module:engine/model/document~Document#selection document selection} after inserting the object.
+ * * When `'on'`, the document selection will be set on the inserted object.
+ * * When `'after'`, the document selection will move to the closest text node after the inserted object. If there is no
+ * such text node, a paragraph will be created and the document selection will be moved inside it.
+ * @returns {module:engine/model/range~Range} A range which contains all the performed changes. This is a range that, if removed,
+ * would return the model to the state before the insertion. If no changes were preformed by `insertObject()`, returns a range collapsed
  * at the insertion position.
  */
 export default function insertObject( model, object, selectable, placeOrOffset, options = {} ) {
