@@ -74,7 +74,7 @@ describe( 'Command', () => {
 			command.affectsData = true;
 			command.isEnabled = true;
 
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			// Is false.
 			expect( command.isEnabled ).to.false;
@@ -84,7 +84,7 @@ describe( 'Command', () => {
 			// Still false.
 			expect( command.isEnabled ).to.false;
 
-			editor.clearReadOnlyMode( 'unit-test' );
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			// And is back to true.
 			expect( command.isEnabled ).to.true;
@@ -94,7 +94,7 @@ describe( 'Command', () => {
 			command.affectsData = false;
 			command.isEnabled = true;
 
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			// Is true.
 			expect( command.isEnabled ).to.true;
@@ -104,7 +104,7 @@ describe( 'Command', () => {
 			// Still true.
 			expect( command.isEnabled ).to.true;
 
-			editor.clearReadOnlyMode( 'unit-test' );
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			// And is back to true.
 			expect( command.isEnabled ).to.true;
@@ -117,7 +117,7 @@ describe( 'Command', () => {
 
 			expect( editor.something ).to.true;
 
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( editor.something ).to.false;
 		} );
@@ -131,7 +131,7 @@ describe( 'Command', () => {
 			command.on( 'set', setSpy );
 			command.on( 'change', changeSpy );
 
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			sinon.assert.notCalled( setSpy );
 			sinon.assert.calledOnce( changeSpy );

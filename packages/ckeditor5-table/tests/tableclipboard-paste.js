@@ -53,7 +53,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should be disabled in a readonly mode', () => {
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
@@ -65,7 +65,7 @@ describe( 'table clipboard', () => {
 				[ 'ba', 'bb' ]
 			] );
 
-			editor.clearReadOnlyMode( 'unit-test' );
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02', '03' ],

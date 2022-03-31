@@ -166,11 +166,11 @@ describe( 'Editor', () => {
 
 			expect( editor.editing.view.document.isReadOnly ).to.false;
 
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( editor.editing.view.document.isReadOnly ).to.true;
 
-			editor.clearReadOnlyMode( 'unit-test' );
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( editor.editing.view.document.isReadOnly ).to.false;
 		} );
@@ -431,7 +431,7 @@ describe( 'Editor', () => {
 
 			expect( editor.isReadOnly ).to.be.false;
 
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( editor.isReadOnly ).to.be.true;
 
@@ -445,14 +445,14 @@ describe( 'Editor', () => {
 		it( 'should be set to true when at least one lock is set', () => {
 			const editor = new TestEditor();
 
-			editor.setReadOnlyMode( 'lock-1' );
-			editor.setReadOnlyMode( 'lock-2' );
+			editor.enableReadOnlyMode( 'lock-1' );
+			editor.enableReadOnlyMode( 'lock-2' );
 
-			editor.clearReadOnlyMode( 'lock-1' );
+			editor.disableReadOnlyMode( 'lock-1' );
 
 			expect( editor.isReadOnly ).to.be.true;
 
-			editor.clearReadOnlyMode( 'lock-2' );
+			editor.disableReadOnlyMode( 'lock-2' );
 
 			expect( editor.isReadOnly ).to.be.false;
 		} );
@@ -463,14 +463,14 @@ describe( 'Editor', () => {
 			const s1 = Symbol( 'lock' );
 			const s2 = Symbol( 'lock' );
 
-			editor.setReadOnlyMode( s1 );
-			editor.setReadOnlyMode( s2 );
+			editor.enableReadOnlyMode( s1 );
+			editor.enableReadOnlyMode( s2 );
 
-			editor.clearReadOnlyMode( s1 );
+			editor.disableReadOnlyMode( s1 );
 
 			expect( editor.isReadOnly ).to.be.true;
 
-			editor.clearReadOnlyMode( s2 );
+			editor.disableReadOnlyMode( s2 );
 
 			expect( editor.isReadOnly ).to.be.false;
 		} );
@@ -483,7 +483,7 @@ describe( 'Editor', () => {
 
 			editor.on( 'change:isReadOnly', spy );
 
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			sinon.assert.calledOnce( spy );
 
@@ -493,7 +493,7 @@ describe( 'Editor', () => {
 				false
 			] );
 
-			editor.clearReadOnlyMode( 'unit-test' );
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			sinon.assert.calledTwice( spy );
 
@@ -517,11 +517,11 @@ describe( 'Editor', () => {
 
 			customPlugin.bind( 'isEditorReadOnly' ).to( editor, 'isReadOnly' );
 
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( customPlugin.isEditorReadOnly ).to.equal( true );
 
-			editor.clearReadOnlyMode( 'unit-test' );
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( customPlugin.isEditorReadOnly ).to.equal( false );
 		} );
@@ -529,19 +529,19 @@ describe( 'Editor', () => {
 		it( 'setting read-only lock to a value can be achieved by passing the additional argument', () => {
 			const editor = new TestEditor();
 
-			editor.setReadOnlyMode( 'lock', true );
+			editor.enableReadOnlyMode( 'lock', true );
 
 			expect( editor.isReadOnly ).to.true;
 
-			editor.setReadOnlyMode( 'lock', true );
+			editor.enableReadOnlyMode( 'lock', true );
 
 			expect( editor.isReadOnly ).to.true;
 
-			editor.setReadOnlyMode( 'lock', false );
+			editor.enableReadOnlyMode( 'lock', false );
 
 			expect( editor.isReadOnly ).to.false;
 
-			editor.setReadOnlyMode( 'lock', false );
+			editor.enableReadOnlyMode( 'lock', false );
 
 			expect( editor.isReadOnly ).to.false;
 		} );
@@ -549,12 +549,12 @@ describe( 'Editor', () => {
 		it( 'setting read-only lock twice should not throw an error for the same lock ID', () => {
 			const editor = new TestEditor();
 
-			editor.setReadOnlyMode( 'lock' );
-			editor.setReadOnlyMode( 'lock' );
+			editor.enableReadOnlyMode( 'lock' );
+			editor.enableReadOnlyMode( 'lock' );
 
 			expect( editor.isReadOnly ).to.be.true;
 
-			editor.clearReadOnlyMode( 'lock' );
+			editor.disableReadOnlyMode( 'lock' );
 
 			expect( editor.isReadOnly ).to.be.false;
 		} );
@@ -562,16 +562,16 @@ describe( 'Editor', () => {
 		it( 'clearing read-only lock should not throw an error if the lock ID is not present', () => {
 			const editor = new TestEditor();
 
-			editor.clearReadOnlyMode( 'lock' );
+			editor.disableReadOnlyMode( 'lock' );
 
 			expect( editor.isReadOnly ).to.be.false;
 
-			editor.setReadOnlyMode( 'lock' );
+			editor.enableReadOnlyMode( 'lock' );
 
 			expect( editor.isReadOnly ).to.be.true;
 
-			editor.clearReadOnlyMode( 'lock' );
-			editor.clearReadOnlyMode( 'lock' );
+			editor.disableReadOnlyMode( 'lock' );
+			editor.disableReadOnlyMode( 'lock' );
 
 			expect( editor.isReadOnly ).to.be.false;
 		} );
@@ -580,11 +580,11 @@ describe( 'Editor', () => {
 			const editor = new TestEditor();
 
 			expectToThrowCKEditorError( () => {
-				editor.setReadOnlyMode();
+				editor.enableReadOnlyMode();
 			}, /editor-read-only-lock-id-invalid/, null, { lockId: undefined } );
 
 			expectToThrowCKEditorError( () => {
-				editor.setReadOnlyMode( 123 );
+				editor.enableReadOnlyMode( 123 );
 			}, /editor-read-only-lock-id-invalid/, null, { lockId: 123 } );
 		} );
 
@@ -592,11 +592,11 @@ describe( 'Editor', () => {
 			const editor = new TestEditor();
 
 			expectToThrowCKEditorError( () => {
-				editor.clearReadOnlyMode();
+				editor.disableReadOnlyMode();
 			}, /editor-read-only-lock-id-invalid/, null, { lockId: undefined } );
 
 			expectToThrowCKEditorError( () => {
-				editor.clearReadOnlyMode( 123 );
+				editor.disableReadOnlyMode( 123 );
 			}, /editor-read-only-lock-id-invalid/, null, { lockId: 123 } );
 		} );
 	} );

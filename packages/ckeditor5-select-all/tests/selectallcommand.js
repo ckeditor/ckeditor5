@@ -42,7 +42,7 @@ describe( 'SelectAllCommand', () => {
 		} );
 
 		it( 'should not depend on editor read-only state', () => {
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );

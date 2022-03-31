@@ -98,7 +98,7 @@ let isReadOnly = false;
 document.querySelector( '#toggleReadOnly' ).addEventListener( 'click', () => {
 	isReadOnly = !isReadOnly;
 
-	window.editor.setReadOnlyMode( 'manual-test', isReadOnly );
+	window.editor.enableReadOnlyMode( 'manual-test', isReadOnly );
 
 	window.editor.editing.view.focus();
 } );

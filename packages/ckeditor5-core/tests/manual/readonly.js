@@ -38,7 +38,7 @@ function enableReadOnlyManagement( button, editor, lockName ) {
 	button.addEventListener( 'click', () => {
 		isReadOnly = !isReadOnly;
 
-		editor.setReadOnlyMode( lockName, isReadOnly );
+		editor.enableReadOnlyMode( lockName, isReadOnly );
 
 		button.textContent = isReadOnly ?
 			`${ lockName }: Clear the read-only mode lock` :

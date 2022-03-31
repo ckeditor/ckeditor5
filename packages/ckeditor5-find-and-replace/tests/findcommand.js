@@ -52,7 +52,7 @@ describe( 'FindCommand', () => {
 		it( 'should be enabled in readonly mode editor', () => {
 			setData( model, '<paragraph>foo[]</paragraph>' );
 
-			editor.setReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -60,8 +60,8 @@ describe( 'FindCommand', () => {
 		it( 'should be enabled after disabling readonly mode', () => {
 			setData( model, '<paragraph>foo[]</paragraph>' );
 
-			editor.setReadOnlyMode( 'unit-test' );
-			editor.clearReadOnlyMode( 'unit-test' );
+			editor.enableReadOnlyMode( 'unit-test' );
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );

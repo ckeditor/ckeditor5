@@ -33,7 +33,7 @@ ClassicEditor
 		document.getElementById( 'readonly-toggle' ).addEventListener( 'click', () => {
 			isReadOnly = !isReadOnly;
 
-			editor.setReadOnlyMode( 'manual-test', isReadOnly );
+			editor.enableReadOnlyMode( 'manual-test', isReadOnly );
 
 			editor.editing.view.focus();
 		} );
