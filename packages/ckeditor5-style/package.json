@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-style",
   "version": "32.0.0",
-  "description": "Styles feature for CKEditor 5.",
+  "description": "Style feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",

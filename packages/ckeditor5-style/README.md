@@ -10,7 +10,7 @@ This package implements the style feature for CKEditor 5.
 
 ## Demo
 
-See the [styles](https://ckeditor.com/docs/ckeditor5/latest/features/style.html#demo) feature in action in the CKEditor 5 documentation.
+See the [style](https://ckeditor.com/docs/ckeditor5/latest/features/style.html#demo) feature in action in the CKEditor 5 documentation.
 
 ## Documentation
 
