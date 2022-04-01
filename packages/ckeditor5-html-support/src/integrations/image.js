@@ -134,7 +134,7 @@ function modelToViewImageAttributeConverter() {
 
 		addBlockAttributeConversion( 'img', 'htmlAttributes' );
 		addBlockAttributeConversion( 'figure', 'htmlFigureAttributes' );
-		addBlockImageLinkAttributeConversion();
+		addBlockAttributeConversion( 'a', 'htmlLinkAttributes' );
 
 		function addInlineAttributeConversion( attributeName ) {
 			dispatcher.on( `attribute:${ attributeName }:imageInline`, ( evt, data, conversionApi ) => {
@@ -151,7 +151,7 @@ function modelToViewImageAttributeConverter() {
 
 		function addBlockAttributeConversion( elementName, attributeName ) {
 			dispatcher.on( `attribute:${ attributeName }:imageBlock`, ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+				if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 					return;
 				}
 
@@ -159,23 +159,25 @@ function modelToViewImageAttributeConverter() {
 				const containerElement = conversionApi.mapper.toViewElement( data.item );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
-				setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewElement );
-			}, { priority: 'low' } );
-		}
-
-		// To have a link element in the view, we need to attach a converter to the `linkHref` attribute.
-		// Doing this directly on `htmlLinkAttributes` will fail, as the link wrapper is not yet called at that moment.
-		function addBlockImageLinkAttributeConversion( ) {
-			dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, 'attribute:htmlLinkAttributes:imageBlock' ) ) {
-					return;
+				if ( viewElement ) {
+					setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewElement );
+					conversionApi.consumable.consume( data.item, evt.name );
 				}
-
-				const containerElement = conversionApi.mapper.toViewElement( data.item );
-				const viewElement = getDescendantElement( conversionApi.writer, containerElement, 'a' );
-
-				setViewAttributes( conversionApi.writer, data.item.getAttribute( 'htmlLinkAttributes' ), viewElement );
 			}, { priority: 'low' } );
+
+			if ( elementName === 'a' ) {
+				// To have a link element in the view, we need to attach a converter to the `linkHref` attribute as well.
+				dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
+					if ( !conversionApi.consumable.consume( data.item, 'attribute:htmlLinkAttributes:imageBlock' ) ) {
+						return;
+					}
+
+					const containerElement = conversionApi.mapper.toViewElement( data.item );
+					const viewElement = getDescendantElement( conversionApi.writer, containerElement, 'a' );
+
+					setViewAttributes( conversionApi.writer, data.item.getAttribute( 'htmlLinkAttributes' ), viewElement );
+				}, { priority: 'low' } );
+			}
 		}
 	};
 }

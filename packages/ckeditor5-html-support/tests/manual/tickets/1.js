@@ -37,23 +37,49 @@ ClassicEditor
 
 		const dataFilter = editor.plugins.get( 'DataFilter' );
 
-		dataFilter.allowElement( /^(figure|img|figcaption)$/ );
-		dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, attributes: /^data-.*$/ } );
-		dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, classes: true } );
-		dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, styles: true } );
+		dataFilter.loadAllowedConfig( [ {
+			name: /^(figure|img|a)$/,
+			attributes: /^data-.*$/,
+			classes: true,
+			styles: true
+		} ] );
 
 		editor.setData(
-			`<figure class="image" data-figure="figure">
-				<img src="../sample.jpg" data-image="image">
-			</figure>`
+			'<figure class="image" data-figure="figure">' +
+				'<a href="www.example.com" data-link="link">' +
+					'<img src="../sample.jpg" data-image="image">' +
+				'</a>' +
+			'</figure>'
 		);
 
 		const imageBlock = model.document.getRoot().getChild( 0 );
 
 		model.change( writer => {
+			setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', {
+				'background-color': 'blue',
+				color: 'red'
+			} );
+			setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', {
+				'font-size': '12px',
+				'text-align': 'center'
+			} );
+			setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'styles', {
+				color: 'green'
+			} );
+
 			setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', {
 				'data-image': 'xyz'
 			} );
+			setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', {
+				'data-figure': 'zzz'
+			} );
+			setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'attributes', {
+				'data-link': 'xxx'
+			} );
+
+			setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
+			setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
+			setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'classes', [ 'baz', 'foo', 'bar' ] );
 		} );
 	} )
 	.catch( err => {
