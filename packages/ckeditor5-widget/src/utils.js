@@ -284,8 +284,6 @@ export function toWidgetEditable( editable, writer ) {
 }
 
 /**
- * TODO this is only wrapping the engine util for the cases where selection is tested for possibility to insert some object.
- *
  * Returns a model range which is optimal (in terms of UX) for inserting a widget block.
  *
  * For instance, if a selection is in the middle of a paragraph, the collapsed range before this paragraph

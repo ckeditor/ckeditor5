@@ -9,26 +9,29 @@
 
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
-/**
- * Returns a model range which is optimal (in terms of UX) for inserting a widget block.
- *
- * For instance, if a selection is in the middle of a paragraph, the collapsed range before this paragraph
- * will be returned so that it is not split. If the selection is at the end of a paragraph,
- * the collapsed range after this paragraph will be returned.
- *
- * Note: If the selection is placed in an empty block, the range in that block will be returned. If that range
- * is then passed to {@link module:engine/model/model~Model#insertContent}, the block will be fully replaced
- * by the inserted widget block.
- *
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
- * The selection based on which the insertion position should be calculated.
- * @param {module:engine/model/model~Model} model Model instance.
- * @param {'auto'|'before'|'after'} [place='auto'] Place where to look for optimal insertion range.
- * Default value `auto` will determine itself the best position for insertion.
- * Value `before` will try to find a position before selection.
- * Value `after` will try to find a position after selection.
- * @returns {module:engine/model/range~Range} The optimal range.
- */
+// Returns a model range which is optimal (in terms of UX) for inserting a widget block.
+//
+// For instance, if a selection is in the middle of a paragraph, the collapsed range before this paragraph
+// will be returned so that it is not split. If the selection is at the end of a paragraph,
+// the collapsed range after this paragraph will be returned.
+//
+// Note: If the selection is placed in an empty block, the range in that block will be returned. If that range
+// is then passed to {@link module:engine/model/model~Model#insertContent}, the block will be fully replaced
+// by the inserted widget block.
+//
+// **Note:** Use {@link module:widget/utils#findOptimalInsertionRange} instead of this function outside engine.
+// This function is only exposed to be used by {@link module:widget/utils#findOptimalInsertionRange findOptimalInsertionRange()}
+// in `widget` package and inside `engine` package.
+//
+// @private
+// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+// The selection based on which the insertion position should be calculated.
+// @param {module:engine/model/model~Model} model Model instance.
+// @param {'auto'|'before'|'after'} [place='auto'] Place where to look for optimal insertion range.
+// Default value `auto` will determine itself the best position for insertion.
+// Value `before` will try to find a position before selection.
+// Value `after` will try to find a position after selection.
+// @returns {module:engine/model/range~Range} The optimal range.
 export function findOptimalInsertionRange( selection, model, place = 'auto' ) {
 	const selectedElement = selection.getSelectedElement();
 
