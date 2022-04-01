@@ -1325,6 +1325,129 @@ describe( 'ImageElementSupport', () => {
 			);
 			/* eslint-enable max-len */
 		} );
+
+		it( 'should allow modifying styles, classes and attributes', () => {
+			// This should also work when we set `attributes: true` but currently there are some
+			// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
+			// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
+			// @see https://github.com/ckeditor/ckeditor5/issues/11532
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
+
+			editor.setData(
+				'<figure class="image foo" style="background:red;" data-figure="figure">' +
+					'<img src="/assets/sample.png" class="bar" style="color:green;" data-image="image">' +
+					'<figcaption class="baz" style="border:solid 1px;" data-figcaption="figcaption">A caption</figcaption>' +
+				'</figure>'
+			);
+
+			const imageBlock = model.document.getRoot().getChild( 0 );
+			const caption = imageBlock.getChild( 0 );
+
+			model.change( writer => {
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'red'
+				} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', {
+					'font-size': '12px',
+					'text-align': 'center'
+				} );
+
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', {
+					'data-image': 'xyz'
+				} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', {
+					'data-figure': 'zzz'
+				} );
+
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
+
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'styles', {
+					color: 'green'
+				} );
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'attributes', {
+					'data-figcaption': 'xxx'
+				} );
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'classes', [ 'baz', 'foo', 'bar' ] );
+			} );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
+						' style="font-size:12px;text-align:center">' +
+					'<img class="bar baz" data-image="xyz" src="/assets/sample.png" style="background-color:blue;color:red"></img>' +
+					'<figcaption class="bar baz ck-editor__editable ck-editor__nested-editable foo" contenteditable="true" ' +
+								'data-figcaption="xxx" data-placeholder="Enter image caption" style="color:green">A caption</figcaption>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
+					'<img class="bar baz" style="background-color:blue;color:red;" src="/assets/sample.png" data-image="xyz">' +
+					'<figcaption class="baz foo bar" style="color:green;" data-figcaption="xxx">A caption</figcaption>' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should allow removing all styles, classes and attributes', () => {
+			// This should also work when we set `attributes: true` but currently there are some
+			// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
+			// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
+			// @see https://github.com/ckeditor/ckeditor5/issues/11532
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
+
+			editor.setData(
+				'<figure class="image foo" style="background:red;" data-figure="figure">' +
+					'<img src="/assets/sample.png" class="bar" style="color:green;" data-image="image">' +
+					'<figcaption class="baz" style="border:solid 1px;" data-figcaption="figcaption">A caption</figcaption>' +
+				'</figure>'
+			);
+
+			const imageBlock = model.document.getRoot().getChild( 0 );
+			const caption = imageBlock.getChild( 0 );
+
+			model.change( writer => {
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', null );
+
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', null );
+
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', null );
+
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'classes', null );
+			} );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+					'<img src="/assets/sample.png"></img>' +
+					'<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+								'data-placeholder="Enter image caption">A caption</figcaption>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="image">' +
+					'<img src="/assets/sample.png">' +
+					'<figcaption>A caption</figcaption>' +
+				'</figure>'
+			);
+		} );
 	} );
 
 	describe( 'InlineImage', () => {
