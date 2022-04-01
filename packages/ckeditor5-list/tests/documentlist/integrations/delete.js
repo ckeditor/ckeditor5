@@ -3062,7 +3062,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it.skip( 'should delete a block widget and move the selection to the list item block that precedes it', () => {
+				it( 'should delete a block widget and keep the selection in the same item block', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3072,18 +3072,21 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'* a',
 							'  []'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 1
+							mergeForward: 0
 						},
 						changedBlocks: []
 					} );
 				} );
 
-				it.skip( 'should delete a block widget and move the selection to the block that precedes it (multiple blocks)', () => {
+				it( 'should delete a block widget and keep the selection in the same block (multiple blocks)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3095,18 +3098,21 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  []',
 							'  b'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 1
+							mergeForward: 0
 						},
 						changedBlocks: []
 					} );
 				} );
 
-				it.skip( 'should delete a block widget and move the selection to the block that precedes it (nested item follows)', () => {
+				it( 'should delete a block widget and keep the selection in the same block (nested item follows)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3118,18 +3124,21 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  []',
 							'  * b {id:002}'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 1
+							mergeForward: 0
 						},
 						changedBlocks: []
 					} );
 				} );
 
-				it.skip( 'should delete a block widget and move the selection down to the (shallower) block that precedes it', () => {
+				it( 'should delete a block widget and keep the selection in the same list item', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3139,18 +3148,21 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'* a',
 							'  * []'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 1
+							mergeForward: 0
 						},
 						changedBlocks: []
 					} );
 				} );
 
-				it.skip( 'should delete a block widget and move the selection down to the block that precedes it (multiple blocks)', () => {
+				it( 'should delete a block widget andkeep the selection in the same list item (multiple blocks)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3162,12 +3174,15 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  * []',
 							'  b'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 1
+							mergeForward: 0
 						},
 						changedBlocks: []
 					} );
@@ -3346,7 +3361,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it.skip( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
+				it( 'should remove a block widget and keep the selection in the same block', () => {
 					runTest( {
 						input: [
 							'* a<inlineWidget></inlineWidget>',
@@ -3358,12 +3373,15 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  []',
 							'  <inlineWidget></inlineWidget>b'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 1
+							mergeForward: 0
 						},
 						changedBlocks: []
 					} );
@@ -6381,7 +6399,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it.skip( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
+				it( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
 					runTest( {
 						input: [
 							'* a<inlineWidget></inlineWidget>',
@@ -6393,12 +6411,15 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  []',
 							'  <inlineWidget></inlineWidget>b'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 1
+							mergeForward: 0
 						},
 						changedBlocks: []
 					} );
@@ -6406,21 +6427,60 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 
 				// #11346.
 				it( 'should remove a widget that is a list item', () => {
-					setModelData( model,
-						'<paragraph listIndent="0" listItemId="00" listType="bulleted">Foo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="01" listType="bulleted">Bar</paragraph>' +
-						'[<blockWidget listIndent="0" listItemId="02" listType="bulleted"></blockWidget>]' +
-						'<paragraph listIndent="0" listItemId="03" listType="bulleted">Baz</paragraph>'
-					);
+					runTest( {
+						input: [
+							'* a',
+							'* [<blockWidget></blockWidget>]',
+							'* b'
+						],
+						expected: [
+							'* a',
+							'* []',
+							'* b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
 
-					view.document.fire( eventInfo, domEventData );
-
-					expect( getModelData( model ) ).to.equalMarkup(
-						'<paragraph listIndent="0" listItemId="00" listType="bulleted">Foo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="01" listType="bulleted">Bar</paragraph>' +
-						'<paragraph>[]</paragraph>' +
-						'<paragraph listIndent="0" listItemId="03" listType="bulleted">Baz</paragraph>'
-					);
+				// #11346.
+				it( 'should remove a widget that is a list item in a nested structure', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * aa',
+							'  * [<blockWidget></blockWidget>]',
+							'  * ac',
+							'* b'
+						],
+						expected: [
+							'* a',
+							'  * aa',
+							'  * []',
+							'  * ac',
+							'* b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
 				} );
 			} );
 
