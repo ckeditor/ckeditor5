@@ -40,75 +40,91 @@ const {
  */
 const DEFAULT_OPTIONS = {
 	// This style represents an image placed in the line of text.
-	inline: {
-		name: 'inline',
-		title: 'In line',
-		icon: objectInline,
-		modelElements: [ 'imageInline' ],
-		isDefault: true
+	get inline() {
+		return {
+			name: 'inline',
+			title: 'In line',
+			icon: objectInline,
+			modelElements: [ 'imageInline' ],
+			isDefault: true
+		};
 	},
 
 	// This style represents an image aligned to the left and wrapped with text.
-	alignLeft: {
-		name: 'alignLeft',
-		title: 'Left aligned image',
-		icon: objectLeft,
-		modelElements: [ 'imageBlock', 'imageInline' ],
-		className: 'image-style-align-left'
+	get alignLeft() {
+		return {
+			name: 'alignLeft',
+			title: 'Left aligned image',
+			icon: objectLeft,
+			modelElements: [ 'imageBlock', 'imageInline' ],
+			className: 'image-style-align-left'
+		};
 	},
 
 	// This style represents an image aligned to the left.
-	alignBlockLeft: {
-		name: 'alignBlockLeft',
-		title: 'Left aligned image',
-		icon: objectBlockLeft,
-		modelElements: [ 'imageBlock' ],
-		className: 'image-style-block-align-left'
+	get alignBlockLeft() {
+		return {
+			name: 'alignBlockLeft',
+			title: 'Left aligned image',
+			icon: objectBlockLeft,
+			modelElements: [ 'imageBlock' ],
+			className: 'image-style-block-align-left'
+		};
 	},
 
 	// This style represents a centered image.
-	alignCenter: {
-		name: 'alignCenter',
-		title: 'Centered image',
-		icon: objectCenter,
-		modelElements: [ 'imageBlock' ],
-		className: 'image-style-align-center'
+	get alignCenter() {
+		return {
+			name: 'alignCenter',
+			title: 'Centered image',
+			icon: objectCenter,
+			modelElements: [ 'imageBlock' ],
+			className: 'image-style-align-center'
+		};
 	},
 
 	// This style represents an image aligned to the right and wrapped with text.
-	alignRight: {
-		name: 'alignRight',
-		title: 'Right aligned image',
-		icon: objectRight,
-		modelElements: [ 'imageBlock', 'imageInline' ],
-		className: 'image-style-align-right'
+	get alignRight() {
+		return {
+			name: 'alignRight',
+			title: 'Right aligned image',
+			icon: objectRight,
+			modelElements: [ 'imageBlock', 'imageInline' ],
+			className: 'image-style-align-right'
+		};
 	},
 
 	// This style represents an image aligned to the right.
-	alignBlockRight: {
-		name: 'alignBlockRight',
-		title: 'Right aligned image',
-		icon: objectBlockRight,
-		modelElements: [ 'imageBlock' ],
-		className: 'image-style-block-align-right'
+	get alignBlockRight() {
+		return {
+			name: 'alignBlockRight',
+			title: 'Right aligned image',
+			icon: objectBlockRight,
+			modelElements: [ 'imageBlock' ],
+			className: 'image-style-block-align-right'
+		};
 	},
 
 	// This option is equal to the situation when no style is applied.
-	block: {
-		name: 'block',
-		title: 'Centered image',
-		icon: objectCenter,
-		modelElements: [ 'imageBlock' ],
-		isDefault: true
+	get block() {
+		return {
+			name: 'block',
+			title: 'Centered image',
+			icon: objectCenter,
+			modelElements: [ 'imageBlock' ],
+			isDefault: true
+		};
 	},
 
 	// This represents a side image.
-	side: {
-		name: 'side',
-		title: 'Side image',
-		icon: objectRight,
-		modelElements: [ 'imageBlock' ],
-		className: 'image-style-side'
+	get side() {
+		return {
+			name: 'side',
+			title: 'Side image',
+			icon: objectRight,
+			modelElements: [ 'imageBlock' ],
+			className: 'image-style-side'
+		};
 	}
 };
 

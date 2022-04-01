@@ -28,6 +28,7 @@ It accepts the following arguments that must be passed after the `--` option:
 * `--browsers` &ndash; Browsers that will be used to run the tests. Defaults to `Chrome`.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `9876`.
+* `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
 
 ### Examples
 

@@ -493,7 +493,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API
@@ -504,7 +504,7 @@ The {@link module:mention/mention~Mention} plugin registers:
 	You can insert a mention element by executing the following code:
 
 	```js
-	editor.execute( 'mention', { marker: '@', mention: 'John' } );
+	editor.execute( 'mention', { marker: '@', mention: '@John' } );
 	```
 
 <info-box>

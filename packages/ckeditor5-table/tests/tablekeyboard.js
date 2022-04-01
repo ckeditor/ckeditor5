@@ -8,7 +8,6 @@ import Table from '../src/table';
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
 import { modelTable } from './_utils/utils';
-import { getTableCellsContainingSelection } from '../src/utils/selection';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -1079,7 +1078,9 @@ describe( 'TableKeyboard', () => {
 					let tableCell;
 
 					beforeEach( () => {
-						tableCell = getTableCellsContainingSelection( selection )[ 0 ];
+						const tableUtils = editor.plugins.get( 'TableUtils' );
+
+						tableCell = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
 					} );
 
 					it( 'should expand the selection to the cell on the right when the direction is "right"', () => {

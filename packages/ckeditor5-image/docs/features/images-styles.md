@@ -18,14 +18,14 @@ This package allows for adjusting the image appearance by:
 
 	You can find the source of the default styles applied by the editor here: [`ckeditor5-image/theme/imagestyle.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/theme/imagestyle.css).
 
-	Read more about {@link builds/guides/integration/content-styles styling the content of the editor}.
+	Read more about {@link installation/advanced/content-styles styling the content of the editor}.
 </info-box>
 
 ### Image classes
 The styles applied to the image can either add or remove the style-related class from it. This behavior depends on the particular configuration of the {@link module:image/imagestyle~ImageStyleOptionDefinition}. Only the definition with the {@link module:image/imagestyle~ImageStyleOptionDefinition#isDefault} flag set to true will remove any applied image style-related class.
 
 <info-box warning>
-	The `ImageStyle` plugin does not provide any mechanism to apply a default CSS class to newly inserted images. The initial image appearance should be handled by the integrator by defining the proper custom {@link builds/guides/integration/content-styles content styles}. If desired, the default image appearance customization can be done by overriding the following CSS rules:
+	The `ImageStyle` plugin does not provide any mechanism to apply a default CSS class to newly inserted images. The initial image appearance should be handled by the integrator by defining the proper custom {@link installation/advanced/content-styles content styles}. If desired, the default image appearance customization can be done by overriding the following CSS rules:
 	  * `.ck-content .image-inline` for the inline images,
 	  * `.ck-content .image` for the block images.
 </info-box>
@@ -139,7 +139,7 @@ See the result below:
 
 </div>
 
-This set of buttons and styles is available by default in the predefined {@link builds/guides/overview#document-editor document editor build} and does not require any additional customization:
+This set of buttons and styles is available by default in the predefined {@link installation/advanced/predefined-builds#document-editor document editor build} and does not require any additional customization:
 
 ```js
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
@@ -234,7 +234,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-It also applies multiple CSS rules to not only display custom image styles (the `'image-margin-right'`, `'image-margin-left'` and `'image-side'` classes) properly, but also to provide the default {@link builds/guides/integration/content-styles content styles}, so the appearance of headers, paragraphs, links, captions and newly inserted images is consistent.
+It also applies multiple CSS rules to not only display custom image styles (the `'image-margin-right'`, `'image-margin-left'` and `'image-side'` classes) properly, but also to provide the default {@link installation/advanced/content-styles content styles}, so the appearance of headers, paragraphs, links, captions and newly inserted images is consistent.
 
 The most important rules regarding the image styling are presented below. You can see the complete content stylesheet [here](https://github.com/ckeditor/ckeditor5/blob/a95554244e9fc71af5aa9e53c6841f114c6d2483/packages/ckeditor5-image/docs/_snippets/features/image-semantical-style-custom.html).
 
@@ -417,7 +417,7 @@ The `ImageStyle` plugin provides a set of default styles depending on the loaded
 
 ## Installation
 
-This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
+This feature is available in all {@link installation/advanced/predefined-builds ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
 
 ## Common API
 
