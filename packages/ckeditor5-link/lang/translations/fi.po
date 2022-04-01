@@ -30,7 +30,7 @@ msgstr "Linkin osoite"
 
 msgctxt "Label for the image link button."
 msgid "Link image"
-msgstr ""
+msgstr "Linkkikuva"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
@@ -46,7 +46,7 @@ msgstr "Linkillä ei ole URL-osoitetta"
 
 msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
 msgid "Open in a new tab"
-msgstr ""
+msgstr "Avaa uudelle välilehdelle"
 
 msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
 msgid "Downloadable"

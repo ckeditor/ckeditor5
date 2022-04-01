@@ -64,7 +64,7 @@ export function isMediaWidget( viewElement ) {
  *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
  *		</figure>
  *
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry
  * @param {String} url
  * @param {Object} options
@@ -73,7 +73,7 @@ export function isMediaWidget( viewElement ) {
  * @param {Boolean} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
-export function createMediaFigureElement( { writer }, registry, url, options ) {
+export function createMediaFigureElement( writer, registry, url, options ) {
 	return writer.createContainerElement( 'figure', { class: 'media' }, [
 		registry.getMediaViewElement( writer, url, options ),
 		writer.createSlot()

@@ -90,6 +90,17 @@ describe( 'StyleElementSupport', () => {
 		expect( editor.getData() ).to.equal( `<p>Foo</p><style type="c++">${ STYLE }</style>` );
 	} );
 
+	// See: https://github.com/ckeditor/ckeditor5/issues/11247
+	it( 'should allow element in the empty editor', () => {
+		editor.setData( `<style>${ STYLE }</style>` );
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			`<htmlStyle htmlContent="${ STYLE }"></htmlStyle>`
+		);
+
+		expect( editor.getData() ).to.equal( `<style>${ STYLE }</style>` );
+	} );
+
 	describe( 'element position', () => {
 		const testCases = [ {
 			name: 'paragraph',

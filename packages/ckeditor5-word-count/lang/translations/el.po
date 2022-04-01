@@ -1,0 +1,25 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Greek (https://www.transifex.com/ckeditor/teams/11143/el/)\n"
+"Language: el\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label showing the number of words in the editor content."
+msgid "Words: %0"
+msgstr "Λέξεις: %0"
+
+msgctxt "Label showing the number of characters in the editor content."
+msgid "Characters: %0"
+msgstr "Χαρακτήρες: %0"

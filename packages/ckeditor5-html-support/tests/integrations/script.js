@@ -91,6 +91,17 @@ describe( 'ScriptElementSupport', () => {
 		expect( editor.getData() ).to.equal( `<p>Foo</p><script type="c++">${ CODE_CPP }</script>` );
 	} );
 
+	// See: https://github.com/ckeditor/ckeditor5/issues/11247
+	it( 'should allow element in the empty editor', () => {
+		editor.setData( `<script>${ CODE }</script>` );
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			`<htmlScript htmlContent="${ CODE }"></htmlScript>`
+		);
+
+		expect( editor.getData() ).to.equal( `<script>${ CODE }</script>` );
+	} );
+
 	describe( 'element position', () => {
 		const testCases = [ {
 			name: 'paragraph',
