@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,6 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';
 import MoveOperation from '@ckeditor/ckeditor5-engine/src/model/operation/moveoperation';
 import AttributeOperation from '@ckeditor/ckeditor5-engine/src/model/operation/attributeoperation';
-
 import {
 	getAffectedTables,
 	getColumnIndex,
@@ -20,10 +19,71 @@ import {
 	clamp,
 	fillArray,
 	sumArray,
-	normalizeColumnWidthsAttribute
+	normalizeColumnWidthsAttribute,
+	getElementWidthInPixels
 } from '../../src/tablecolumnresize/utils';
 
+/* globals document, window */
+
 describe( 'TableColumnResize utils', () => {
+	describe( 'getComputedStyle()', () => {
+		// Because the `window.getComputedStyle()` for colgroup will always return 0px on Safari, we needed to change the calculations
+		// to be based on tbody element instead - which works ok in all main browsers.
+		it( 'check `getElementWidthInPixels()` to return correct value on Safari', () => {
+			const tableContent = '<table>' +
+									'<colgroup>' +
+										'<col style="width:50%;">' +
+										'<col style="width:50%;">' +
+									'</colgroup>' +
+									'<tbody>' +
+										'<tr>' +
+											'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+												'<span class="ck-table-bogus-paragraph">' +
+													'<br data-cke-filler="true">' +
+												'</span>' +
+												'<div class="table-column-resizer">' +
+													'Foo bar baz' +
+												'</div>' +
+											'</td>' +
+											'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+												'<span class="ck-table-bogus-paragraph">' +
+													'<br data-cke-filler="true">' +
+												'</span>' +
+												'<div class="table-column-resizer">' +
+												'</div>' +
+											'</td>' +
+										'</tr>' +
+									'</tbody>' +
+								'</table>';
+
+			const table = document.createElement( 'table' );
+			table.innerHTML = tableContent;
+			document.body.appendChild( table );
+
+			const getComputedStyleOriginal = window.getComputedStyle;
+
+			const modifiedGetComputedStyle = function( element ) {
+				let result = getComputedStyleOriginal( element );
+
+				if ( element.localName === 'colgroup' ) {
+					result = [ ...result ];
+					result.width = '0px';
+				}
+
+				return result;
+			};
+
+			const stub = sinon.stub( window, 'getComputedStyle' ).callsFake( modifiedGetComputedStyle );
+
+			expect( getElementWidthInPixels( table ) ).to.not.equal( 0 );
+
+			sinon.assert.called( stub );
+
+			table.remove();
+			stub.restore();
+		} );
+	} );
+
 	describe( 'getAffectedTables()', () => {
 		let differ, root, model;
 
