@@ -169,6 +169,7 @@ export default class DocumentListEditing extends Plugin {
 		this.listenTo( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
 
+			// Let the Widget plugin take care of block widgets while deleting (https://github.com/ckeditor/ckeditor5/issues/11346).
 			if ( getSelectedBlockObject( editor.model ) ) {
 				return;
 			}
