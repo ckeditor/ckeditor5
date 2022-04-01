@@ -55,6 +55,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 
 		model.schema.register( 'blockWidget', {
 			isObject: true,
+			isBlock: true,
 			allowIn: '$root',
 			allowAttributesOf: '$container'
 		} );
@@ -6401,6 +6402,25 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 						},
 						changedBlocks: []
 					} );
+				} );
+
+				// #11346.
+				it( 'should remove a widget that is a list item', () => {
+					setModelData( model,
+						'<paragraph listIndent="0" listItemId="00" listType="bulleted">Foo</paragraph>' +
+						'<paragraph listIndent="0" listItemId="01" listType="bulleted">Bar</paragraph>' +
+						'[<blockWidget listIndent="0" listItemId="02" listType="bulleted"></blockWidget>]' +
+						'<paragraph listIndent="0" listItemId="03" listType="bulleted">Baz</paragraph>'
+					);
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="00" listType="bulleted">Foo</paragraph>' +
+						'<paragraph listIndent="0" listItemId="01" listType="bulleted">Bar</paragraph>' +
+						'<paragraph>[]</paragraph>' +
+						'<paragraph listIndent="0" listItemId="03" listType="bulleted">Baz</paragraph>'
+					);
 				} );
 			} );
 
