@@ -37,8 +37,10 @@ ClassicEditor
 
 		const dataFilter = editor.plugins.get( 'DataFilter' );
 
-		dataFilter.allowElement( /^(figure|img)$/ );
-		dataFilter.allowAttributes( { name: /^(figure|img)$/, attributes: true } );
+		dataFilter.allowElement( /^(figure|img|figcaption)$/ );
+		dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, attributes: /^data-.*$/ } );
+		dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, classes: true } );
+		dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, styles: true } );
 
 		editor.setData(
 			`<figure class="image" data-figure="figure">

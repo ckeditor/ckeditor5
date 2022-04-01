@@ -29,15 +29,7 @@ describe( 'ImageElementSupport', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Image, ImageCaption, LinkImage, Paragraph, GeneralHtmlSupport ],
-				htmlSupport: {
-					allow: [ {
-						name: /^(figure|img|figcaption)$/,
-						attributes: true,
-						classes: true,
-						styles: true
-					} ]
-				}
+				plugins: [ Image, ImageCaption, LinkImage, Paragraph, GeneralHtmlSupport ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -323,29 +315,22 @@ describe( 'ImageElementSupport', () => {
 			);
 		} );
 
-		it.only( 'should allow modifying styles, classes and attributes', () => {
+		it( 'should allow modifying styles, classes and attributes', () => {
 			dataFilter.allowElement( /^(figure|img|figcaption)$/ );
 
-			// TODO: create a ticket to resolve issue with non-GHS attributes being removed if picked up by GSH
-			// when we allow all attributes (attributes: true) instead of more precise selection (attributes: /^data-.*$/).
-			// dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, attributes: /^data-.*$/ } );
-			// dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, classes: true } );
-			// dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, styles: true } );
-			// dataFilter.loadAllowedConfig( [
-			// 	{
-			// 		name: /^(figure|img|figcaption)$/,
-			// 		attributes: true,
-			// 		classes: true,
-			// 		styles: true
-			// 	}
-			// ] );
+			// This should also work when we set `attributes: true` but currently there are some
+			// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
+			// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
+			// @see https://github.com/ckeditor/ckeditor5/issues/11532
+			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, attributes: /^data-.*$/ } );
+			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, classes: true } );
+			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, styles: true } );
 
-			const expectedHtml =
+			editor.setData(
 				'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
 					'<img src="/assets/sample.png" class="bar" style="color:blue;" data-image="image">' +
-				'</figure>';
-
-			editor.setData( expectedHtml );
+				'</figure>'
+			);
 
 			const imageBlock = model.document.getRoot().getChild( 0 );
 
@@ -409,6 +394,55 @@ describe( 'ImageElementSupport', () => {
 			expect( editor.getData() ).to.equal(
 				'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
 					'<img class="bar baz" style="background-color:blue;color:red;" src="/assets/sample.png" data-image="xyz">' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should allow removing all styles, classes and attributes', () => {
+			dataFilter.allowElement( /^(figure|img|figcaption)$/ );
+
+			// This should also work when we set `attributes: true` but currently there are some
+			// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
+			// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
+			// @see https://github.com/ckeditor/ckeditor5/issues/11532
+			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, attributes: /^data-.*$/ } );
+			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, classes: true } );
+			dataFilter.allowAttributes( { name: /^(figure|img|figcaption)$/, styles: true } );
+
+			editor.setData(
+				'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
+					'<img src="/assets/sample.png" class="bar" style="color:blue;" data-image="image">' +
+				'</figure>'
+			);
+
+			const imageBlock = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', null );
+
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', null );
+
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', null );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<imageBlock src="/assets/sample.png"></imageBlock>',
+				attributes: {}
+			} );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+					'<img src="/assets/sample.png"></img>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="image">' +
+					'<img src="/assets/sample.png">' +
 				'</figure>'
 			);
 		} );
