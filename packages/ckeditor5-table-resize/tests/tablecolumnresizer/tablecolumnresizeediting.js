@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -775,46 +775,69 @@ describe( 'TableColumnResizeEditing', () => {
 				assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
 			} );
 
-			it( 'shrinks the table twice as much when resizing centered table as compared to aligned table', () => {
-				const columnToResizeIndex = 1;
-				const mouseMovementVector = { x: -10, y: 0 };
+			describe( 'in editor with TableProperties, where there are 2 tables: centered and aligned', () => {
+				let editor, view, editorElement;
 
-				editor.setData(
-					`<figure class="table" style="float:left;">
-						<table>
-							<tbody>
-								<tr>
-									<td>11</td>
-									<td>12</td>
-								</tr>
-							</tbody>
-						</table>
-					</figure>`
-				);
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+					editor = await createEditor( null, [ TableProperties ] );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 0 );
+					view = editor.editing.view;
+					contentDirection = editor.locale.contentLanguageDirection;
+				} );
 
-				const alignedTableColumnWidthsPx = getViewColumnWidthsPx( view );
+				afterEach( async () => {
+					if ( editorElement ) {
+						editorElement.remove();
+					}
 
-				editor.setData(
-					`<figure class="table">
-						<table>
-							<tbody>
-								<tr>
-									<td>11</td>
-									<td>12</td>
-								</tr>
-							</tbody>
-						</table>
-					</figure>`
-				);
+					if ( editor ) {
+						await editor.destroy();
+					}
+				} );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 0 );
+				it( 'shrinks the table twice as much when resizing centered table as compared to aligned table', () => {
+					const columnToResizeIndex = 1;
+					const mouseMovementVector = { x: -10, y: 0 };
 
-				const centeredTableColumnWidthsPx = getViewColumnWidthsPx( view );
-				const widthDifference = centeredTableColumnWidthsPx[ 1 ] - alignedTableColumnWidthsPx[ 1 ];
+					editor.setData(
+						`<figure class="table" style="float:left;">
+							<table>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
 
-				expect( widthDifference ).to.be.equal( mouseMovementVector.x );
+					tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 0 );
+
+					const alignedTableColumnWidthsPx = getViewColumnWidthsPx( view );
+
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 0 );
+
+					const centeredTableColumnWidthsPx = getViewColumnWidthsPx( view );
+					const widthDifference = centeredTableColumnWidthsPx[ 1 ] - alignedTableColumnWidthsPx[ 1 ];
+
+					expect( widthDifference ).to.be.equal( mouseMovementVector.x );
+				} );
 			} );
 		} );
 
@@ -1285,9 +1308,15 @@ describe( 'TableColumnResizeEditing', () => {
 		} );
 	} );
 
-	async function createEditor( configCustomization ) {
+	async function createEditor( configCustomization, additionalPlugins ) {
+		const plugins = [ Table, TableColumnResize, TableColumnResizeEditing, Paragraph, WidgetResize ];
+
+		if ( additionalPlugins ) {
+			plugins.push( ...additionalPlugins );
+		}
+
 		const newEditor = await ClassicEditor.create( editorElement, Object.assign( {}, {
-			plugins: [ Table, TableProperties, TableColumnResize, TableColumnResizeEditing, Paragraph, WidgetResize ]
+			plugins
 		}, configCustomization ) );
 
 		await focusEditor( newEditor );
