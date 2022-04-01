@@ -6399,7 +6399,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it.skip( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
+				it( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
 					runTest( {
 						input: [
 							'* a<inlineWidget></inlineWidget>',
@@ -6411,12 +6411,15 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  []',
 							'  <inlineWidget></inlineWidget>b'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 1
+							mergeForward: 0
 						},
 						changedBlocks: []
 					} );
@@ -6424,21 +6427,60 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 
 				// #11346.
 				it( 'should remove a widget that is a list item', () => {
-					setModelData( model,
-						'<paragraph listIndent="0" listItemId="00" listType="bulleted">Foo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="01" listType="bulleted">Bar</paragraph>' +
-						'[<blockWidget listIndent="0" listItemId="02" listType="bulleted"></blockWidget>]' +
-						'<paragraph listIndent="0" listItemId="03" listType="bulleted">Baz</paragraph>'
-					);
+					runTest( {
+						input: [
+							'* a',
+							'* [<blockWidget></blockWidget>]',
+							'* b'
+						],
+						expected: [
+							'* a',
+							'* []',
+							'* b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
 
-					view.document.fire( eventInfo, domEventData );
-
-					expect( getModelData( model ) ).to.equalMarkup(
-						'<paragraph listIndent="0" listItemId="00" listType="bulleted">Foo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="01" listType="bulleted">Bar</paragraph>' +
-						'<paragraph>[]</paragraph>' +
-						'<paragraph listIndent="0" listItemId="03" listType="bulleted">Baz</paragraph>'
-					);
+				// #11346.
+				it( 'should remove a widget that is a list item in a nested structure', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * aa',
+							'  * [<blockWidget></blockWidget>]',
+							'  * ac',
+							'* b'
+						],
+						expected: [
+							'* a',
+							'  * aa',
+							'  * []',
+							'  * ac',
+							'* b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
 				} );
 			} );
 
