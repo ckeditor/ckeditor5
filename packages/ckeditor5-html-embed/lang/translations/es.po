@@ -22,11 +22,11 @@ msgstr "Insertar HTML"
 
 msgctxt "The HTML snippet."
 msgid "HTML snippet"
-msgstr ""
+msgstr "Fragmento HTML"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."
-msgstr "Pegue HTML en bruto aquí…"
+msgstr "Pegue el código HTML aquí…"
 
 msgctxt "A label of a button that switches the HTML embed to the source editing mode."
 msgid "Edit source"
@@ -42,4 +42,4 @@ msgstr "No hay ninguna previsualización"
 
 msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
 msgid "Empty snippet content"
-msgstr ""
+msgstr "Fragmento vacío"

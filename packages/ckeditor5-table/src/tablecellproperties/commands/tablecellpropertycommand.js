@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { getSelectionAffectedTableCells } from '../../utils/selection';
 
 /**
  * The table cell attribute command.
@@ -51,7 +50,8 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const selectedTableCells = getSelectionAffectedTableCells( editor.model.document.selection );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const selectedTableCells = tableUtils.getSelectionAffectedTableCells( editor.model.document.selection );
 
 		this.isEnabled = !!selectedTableCells.length;
 		this.value = this._getSingleValue( selectedTableCells );
@@ -70,7 +70,8 @@ export default class TableCellPropertyCommand extends Command {
 	execute( options = {} ) {
 		const { value, batch } = options;
 		const model = this.editor.model;
-		const tableCells = getSelectionAffectedTableCells( model.document.selection );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch, writer => {

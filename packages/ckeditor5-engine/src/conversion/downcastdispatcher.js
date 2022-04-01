@@ -15,7 +15,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting
- * to changes in the model and firing a set of events. Callbacks listening to these events are called converters. The
+ * to changes in the model and firing a set of events. The callbacks listening to these events are called converters. The
  * converters' role is to convert the model changes to changes in view (for example, adding view nodes or
  * changing attributes on view elements).
  *
@@ -24,7 +24,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * for example: "a node has been inserted" or "an attribute has changed". This is in contrary to upcasting (a view-to-model conversion)
  * where you convert the view state (view nodes) to a model tree.
  *
- * The events are prepared basing on a diff created by {@link module:engine/model/differ~Differ Differ}, which buffers them
+ * The events are prepared basing on a diff created by the {@link module:engine/model/differ~Differ Differ}, which buffers them
  * and then passes to the downcast dispatcher as a diff between the old model state and the new model state.
  *
  * Note that because the changes are converted, there is a need to have a mapping between the model structure and the view structure.
@@ -41,7 +41,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * For {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert`}
  * and {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute`},
- * downcast dispatcher generates {@link module:engine/conversion/modelconsumable~ModelConsumable consumables}.
+ * the downcast dispatcher generates {@link module:engine/conversion/modelconsumable~ModelConsumable consumables}.
  * These are used to have control over which changes have already been consumed. It is useful when some converters
  * overwrite others or convert multiple changes (for example, it converts an insertion of an element and also converts that
  * element's attributes during the insertion).
@@ -53,9 +53,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * removed.
  *
  * Note that changing a marker is done through removing the marker from the old range and adding it to the new range,
- * so both events are fired.
+ * so both of these events are fired.
  *
- * Finally, downcast dispatcher also handles firing events for the {@link module:engine/model/selection model selection}
+ * Finally, a downcast dispatcher also handles firing events for the {@link module:engine/model/selection model selection}
  * conversion:
  *
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:selection `selection`}
@@ -621,24 +621,24 @@ export default class DowncastDispatcher {
 	 * `insert:name`. `name` is either `'$text'`, when {@link module:engine/model/text~Text a text node} has been inserted,
 	 * or {@link module:engine/model/element~Element#name name} of inserted element.
 	 *
-	 * This way listeners can either listen to a general `insert` event or specific event (for example `insert:paragraph`).
+	 * This way, the listeners can either listen to a general `insert` event or specific event (for example `insert:paragraph`).
 	 *
 	 * @event insert
 	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/item~Item} data.item Inserted item.
+	 * @param {module:engine/model/item~Item} data.item The inserted item.
 	 * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
-	 * to be used by callback, passed in `DowncastDispatcher` constructor.
+	 * to be used by callback, passed in the `DowncastDispatcher` constructor.
 	 */
 
 	/**
 	 * Fired for removed nodes.
 	 *
 	 * `remove` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `remove:name`. `name` is either `'$text'`, when {@link module:engine/model/text~Text a text node} has been removed,
+	 * `remove:name`. `name` is either `'$text'`, when a {@link module:engine/model/text~Text a text node} has been removed,
 	 * or the {@link module:engine/model/element~Element#name name} of removed element.
 	 *
-	 * This way listeners can either listen to a general `remove` event or specific event (for example `remove:paragraph`).
+	 * This way, listeners can either listen to a general `remove` event or specific event (for example `remove:paragraph`).
 	 *
 	 * @event remove
 	 * @param {Object} data Additional information about the change.
@@ -653,7 +653,7 @@ export default class DowncastDispatcher {
 	 *
 	 * * when an attribute has been added, changed, or removed from a node,
 	 * * when a node with an attribute is inserted,
-	 * * when collapsed model selection attribute is converted.
+	 * * when a collapsed model selection attribute is converted.
 	 *
 	 * `attribute` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `attribute:attributeKey:name`. `attributeKey` is the key of added/changed/removed attribute.

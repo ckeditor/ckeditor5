@@ -18,88 +18,88 @@ msgstr ""
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor, %0"
-msgstr "Επεξεργαστής Πλούσιου Κειμένου, %0"
+msgstr "Επεξεργαστής εμπλουτισμένου κειμένου, %0"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
-msgstr "Επεξεργαστής Πλούσιου Κειμένου"
+msgstr "Επεξεργαστής εμπλουτισμένου κειμένου"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
-msgstr ""
+msgstr "Επεξεργασία τμήματος"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
-msgstr ""
+msgstr "Επόμενο"
 
 msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
 msgid "Previous"
-msgstr ""
+msgstr "Προηγούμενο"
 
 msgctxt "Label used by assistive technologies describing a generic editor toolbar."
 msgid "Editor toolbar"
-msgstr ""
+msgstr "Γραμμή εργαλείων επεξεργαστή"
 
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
-msgstr ""
+msgstr "Γραμμή εργαλείων αναδυόμενου μενού"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"
-msgstr ""
+msgstr "Μαύρο"
 
 msgctxt "Label of a button that applies a dim grey color in color pickers."
 msgid "Dim grey"
-msgstr ""
+msgstr "Θολό γκρι"
 
 msgctxt "Label of a button that applies a grey color in color pickers."
 msgid "Grey"
-msgstr ""
+msgstr "Γκρι"
 
 msgctxt "Label of a button that applies a light grey color in color pickers."
 msgid "Light grey"
-msgstr ""
+msgstr "Φωτινό γκρι"
 
 msgctxt "Label of a button that applies a white color in color pickers."
 msgid "White"
-msgstr ""
+msgstr "Λευκό"
 
 msgctxt "Label of a button that applies a red color in color pickers."
 msgid "Red"
-msgstr ""
+msgstr "Κόκκινο"
 
 msgctxt "Label of a button that applies a orange color in color pickers."
 msgid "Orange"
-msgstr ""
+msgstr "Πορτοκαλί"
 
 msgctxt "Label of a button that applies a yellow color in color pickers."
 msgid "Yellow"
-msgstr ""
+msgstr "Κίτρινο"
 
 msgctxt "Label of a button that applies a light green color in color pickers."
 msgid "Light green"
-msgstr ""
+msgstr "Φωτινό πράσινο"
 
 msgctxt "Label of a button that applies a green color in color pickers."
 msgid "Green"
-msgstr ""
+msgstr "Πράσινο"
 
 msgctxt "Label of a button that applies a aquamarine color in color pickers."
 msgid "Aquamarine"
-msgstr ""
+msgstr "Ακουαμαρίνα"
 
 msgctxt "Label of a button that applies a turquoise color in color pickers."
 msgid "Turquoise"
-msgstr ""
+msgstr "Τιρκουάζ"
 
 msgctxt "Label of a button that applies a light blue color in color pickers."
 msgid "Light blue"
-msgstr ""
+msgstr "Φωτινό μπλε"
 
 msgctxt "Label of a button that applies a blue color in color pickers."
 msgid "Blue"
-msgstr ""
+msgstr "Μπλε"
 
 msgctxt "Label of a button that applies a purple color in color pickers."
 msgid "Purple"
-msgstr ""
+msgstr "Πορφυρό"
