@@ -44,7 +44,8 @@ export default class StyleElementSupport extends Plugin {
 			schema.register( 'htmlStyle', definition.modelSchema );
 
 			schema.extend( 'htmlStyle', {
-				allowAttributes: [ 'htmlAttributes', 'htmlContent' ]
+				allowAttributes: [ 'htmlAttributes', 'htmlContent' ],
+				isContent: true
 			} );
 
 			editor.data.registerRawContentMatcher( {

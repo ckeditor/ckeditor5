@@ -16,13 +16,13 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
 
@@ -84,6 +84,39 @@ describe( 'DecoupledEditor', () => {
 
 					editorElement.remove();
 				} );
+			} );
+		} );
+
+		describe( 'config.initialData', () => {
+			it( 'if not set, is set using DOM element data', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				const editor = new DecoupledEditor( editorElement );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+			} );
+
+			it( 'if not set, is set using data passed in constructor', () => {
+				const editor = new DecoupledEditor( '<p>Foo</p>' );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+			} );
+
+			it( 'if set, is not overwritten with DOM element data', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				const editor = new DecoupledEditor( editorElement, { initialData: '<p>Bar</p>' } );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Bar</p>' );
+			} );
+
+			it( 'it should throw if config.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new DecoupledEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
 			} );
 		} );
 	} );
@@ -178,26 +211,6 @@ describe( 'DecoupledEditor', () => {
 						assertCKEditorError( err, 'editor-source-element-already-used' );
 					}
 				)
-				.then( done )
-				.catch( done );
-		} );
-
-		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
-			DecoupledEditor.create( '<p>Hello world!</p>', {
-				initialData: '<p>I am evil!</p>',
-				plugins: [ Paragraph ]
-			} )
-				.then(
-					() => {
-						expect.fail( 'Decoupled editor should throw an error when both initial data are passed' );
-					},
-					err => {
-						assertCKEditorError( err, 'editor-create-initial-data' );
-					}
-				)
-				.then( () => {
-					removeEditorBodyOrphans();
-				} )
 				.then( done )
 				.catch( done );
 		} );

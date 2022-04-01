@@ -4422,6 +4422,33 @@ describe( 'ListEditing', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li>a</li><li>b</li></ul>' );
 		} );
 
+		// See #11490.
+		it( 'model view split converter should not fire if change was already consumed', () => {
+			model.schema.register( 'container', {
+				allowWhere: '$block',
+				isObject: true,
+				isBlock: true
+			} );
+
+			model.schema.register( 'caption', {
+				allowIn: 'container',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+
+			editor.conversion.elementToElement( { model: 'container', view: 'custom-container' } );
+
+			editor.editing.downcastDispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+				for ( const { item } of model.createRangeOn( data.item ) ) {
+					conversionApi.consumable.consume( item, 'insert' );
+				}
+			}, { priority: 'highest' } );
+
+			setModelData( model, '<container><caption>foo</caption></container>' );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<custom-container></custom-container>' );
+		} );
+
 		it( 'view li converter should not fire if change was already consumed', () => {
 			editor.data.upcastDispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.viewItem, { name: true } );

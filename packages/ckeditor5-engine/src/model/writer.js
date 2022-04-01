@@ -1024,7 +1024,7 @@ export default class Writer {
 
 		if ( !options ) {
 			/**
-			 * Usage of `writer.updateMarker()` only to reconvert (refresh) a
+			 * The usage of `writer.updateMarker()` only to reconvert (refresh) a
 			 * {@link module:engine/model/markercollection~Marker model marker} was deprecated and may not work in the future.
 			 * Please update your code to use
 			 * {@link module:engine/controller/editingcontroller~EditingController#reconvertMarker `editor.editing.reconvertMarker()`}

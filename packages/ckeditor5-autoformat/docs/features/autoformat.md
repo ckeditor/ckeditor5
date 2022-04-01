@@ -7,12 +7,12 @@ The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickl
 
 Employ Markdown-like inline codes as you type for a faster and more efficient editing workflow. Speed up and simplify the process by skipping the need to use toolbar buttons and dropdowns for the most common formatting features with these easy to memorize options listed below.
 
-Coupled with the {@link features/markdown Markdown output} feature, the autoformatting feature allows for the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post.
+Coupled with the {@link features/markdown Markdown output} feature, the autoformatting feature allows for the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post. Visit the [free online Markdown editor](https://onlinemarkdowneditor.dev/) to see this solution implemented.
 
 If needed, the automattic change can be reverted simply by pressing <kbd>Backspace</kbd>.
 
 <info-box info>
-	This feature is enabled by default in all {@link builds/guides/overview predefined builds}.
+	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
 </info-box>
 
 ## Block formatting
@@ -87,7 +87,7 @@ ClassicEditor
 </info-box>
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Creating custom autoformatters

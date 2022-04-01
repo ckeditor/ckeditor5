@@ -290,6 +290,14 @@ describe( 'ImageBlockEditing', () => {
 					.to.equal( '' );
 			} );
 
+			it( 'should consume the src attribute on <img>', () => {
+				editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { attributes: 'src' } ) ).to.be.false;
+				}, { priority: 'low' } );
+
+				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );
+			} );
+
 			it( 'should dispatch conversion for nested elements', () => {
 				const conversionSpy = sinon.spy();
 				editor.data.upcastDispatcher.on( 'element:figcaption', conversionSpy );
