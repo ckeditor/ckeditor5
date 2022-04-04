@@ -22,8 +22,7 @@ import { first } from 'ckeditor5/src/utils';
  */
 export function createInlineImageViewElement( writer ) {
 	return writer.createContainerElement( 'span', { class: 'image-inline' },
-		writer.createEmptyElement( 'img' ),
-		{ isAllowedInsideAttributeElement: true }
+		writer.createEmptyElement( 'img' )
 	);
 }
 

@@ -219,7 +219,7 @@ describe( 'DataFilter', () => {
 				view: 'xyz',
 				isObject: true,
 				modelSchema: {
-					inheritAllFrom: '$htmlObjectBlock'
+					inheritAllFrom: '$blockObject'
 				}
 			} );
 
@@ -692,7 +692,7 @@ describe( 'DataFilter', () => {
 				model: 'htmlXyz',
 				allowChildren: 'not-exists',
 				schema: {
-					inheritAllFrom: '$htmlSection'
+					inheritAllFrom: '$container'
 				}
 			} );
 
