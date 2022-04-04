@@ -82,6 +82,7 @@ export default class StyleGridButtonView extends ButtonView {
 			attributes: {
 				class: [
 					'ck',
+					'ck-reset_all-excluded',
 					'ck-style-grid__button__preview',
 					'ck-content'
 				]
