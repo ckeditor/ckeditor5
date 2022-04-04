@@ -8,7 +8,7 @@
  */
 
 import { toWidget } from 'ckeditor5/src/widget';
-import { setViewAttributes, mergeViewElementAttributes } from './conversionutils';
+import { setViewAttributes, mergeViewElementAttributes, updateViewAttributes } from './conversionutils';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -37,14 +37,14 @@ export function viewToModelObjectConverter( { model: modelName } ) {
 export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) {
 	const t = editor.t;
 
-	return ( modelElement, { writer, consumable } ) => {
+	return ( modelElement, { writer } ) => {
 		const widgetLabel = t( 'HTML object' );
 
 		const viewElement = createObjectView( viewName, modelElement, writer );
 		writer.addClass( 'html-object-embed__content', viewElement );
 
 		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
-		if ( viewAttributes && consumable.consume( modelElement, `attribute:htmlAttributes:${ modelElement.name }` ) ) {
+		if ( viewAttributes ) {
 			setViewAttributes( writer, viewAttributes, viewElement );
 		}
 
@@ -173,20 +173,15 @@ export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilt
 export function modelToViewBlockAttributeConverter( { model: modelName } ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
-			const viewAttributes = data.attributeNewValue;
-
 			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 				return;
 			}
 
+			const { attributeOldValue, attributeNewValue } = data;
 			const viewWriter = conversionApi.writer;
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-			if ( !viewAttributes ) {
-				return;
-			}
-
-			setViewAttributes( viewWriter, viewAttributes, viewElement );
+			updateViewAttributes( viewWriter, attributeOldValue, attributeNewValue, viewElement );
 		} );
 	};
 }

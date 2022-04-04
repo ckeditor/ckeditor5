@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { toArray } from 'ckeditor5/src/utils';
 
 import DataFilter from './datafilter';
 import CodeBlockElementSupport from './integrations/codeblock';
@@ -18,6 +19,7 @@ import MediaEmbedElementSupport from './integrations/mediaembed';
 import ScriptElementSupport from './integrations/script';
 import TableElementSupport from './integrations/table';
 import StyleElementSupport from './integrations/style';
+import { setModelHtmlAttribute, setModelSelectionHtmlAttribute } from './conversionutils';
 
 /**
  * The General HTML Support feature.
@@ -62,6 +64,140 @@ export default class GeneralHtmlSupport extends Plugin {
 		// Load the filtering configuration.
 		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
 		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {String|Array.<String>} className
+	 * @param {module:engine/model/selection~Selectable} selectable
+	 * @param {String} htmlAttributeName
+	 */
+	addModelHtmlClass( className, selectable, htmlAttributeName ) {
+		const model = this.editor.model;
+
+		model.change( writer => {
+			if ( selectable.is( 'selection' ) && selectable.isCollapsed ) {
+				if ( model.schema.checkAttributeInSelection( selectable, htmlAttributeName ) ) {
+					const attributeValue = selectable.getAttribute( htmlAttributeName );
+					const classes = new Set( attributeValue && attributeValue.classes || [] );
+
+					for ( const name of toArray( className ) ) {
+						classes.add( name );
+					}
+
+					setModelHtmlAttribute( writer, selectable, htmlAttributeName, 'classes', Array.from( classes ) );
+				}
+
+				return;
+			}
+
+			let ranges = [];
+
+			if ( selectable.is( 'range' ) ) {
+				ranges = model.schema.getValidRanges( [ selectable ], htmlAttributeName );
+			} else if ( selectable.is( 'selection' ) ) {
+				ranges = model.schema.getValidRanges( selectable.getRanges(), htmlAttributeName );
+			} else if ( model.schema.checkAttribute( selectable, htmlAttributeName ) ) {
+				ranges = [ model.createRangeOn( selectable ) ];
+			}
+
+			for ( const range of ranges ) {
+				for ( const item of range.getItems( { shallow: true } ) ) {
+					const attributeValue = item.getAttribute( htmlAttributeName );
+					const classes = new Set( attributeValue && attributeValue.classes || [] );
+
+					for ( const name of toArray( className ) ) {
+						classes.add( name );
+					}
+
+					setModelHtmlAttribute( writer, item, htmlAttributeName, 'classes', Array.from( classes ) );
+				}
+			}
+		} );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {String|Array.<String>} className
+	 * @param {module:engine/model/selection~Selectable} selectable
+	 * @param {String} htmlAttributeName
+	 */
+	removeModelHtmlClass( className, selectable, htmlAttributeName ) {
+		const model = this.editor.model;
+
+		model.change( writer => {
+			if ( selectable.is( 'selection' ) && selectable.isCollapsed ) {
+				if ( model.schema.checkAttributeInSelection( selectable, htmlAttributeName ) ) {
+					const attributeValue = selectable.getAttribute( htmlAttributeName );
+					const classes = new Set( attributeValue && attributeValue.classes || [] );
+
+					for ( const name of toArray( className ) ) {
+						classes.delete( name );
+					}
+
+					setModelHtmlAttribute( writer, selectable, htmlAttributeName, 'classes', Array.from( classes ) );
+				}
+
+				return;
+			}
+
+			let ranges = [];
+
+			if ( selectable.is( 'range' ) ) {
+				ranges = model.schema.getValidRanges( [ selectable ], htmlAttributeName );
+			} else if ( selectable.is( 'selection' ) ) {
+				ranges = model.schema.getValidRanges( selectable.getRanges(), htmlAttributeName );
+			} else if ( model.schema.checkAttribute( selectable, htmlAttributeName ) ) {
+				ranges = [ model.createRangeOn( selectable ) ];
+			}
+
+			for ( const range of ranges ) {
+				for ( const item of range.getItems( { shallow: true } ) ) {
+					const attributeValue = item.getAttribute( htmlAttributeName );
+					const classes = new Set( attributeValue && attributeValue.classes || [] );
+
+					for ( const name of toArray( className ) ) {
+						classes.delete( name );
+					}
+
+					setModelHtmlAttribute( writer, item, htmlAttributeName, 'classes', Array.from( classes ) );
+				}
+			}
+		} );
+	}
+
+	/**
+	 * TODO to remove
+	 * Helper function to update only one attribute from all html attributes on a model element.
+	 *
+	 * @protected
+	 * @deprecated
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	 * @param {module:engine/model/element~Element|module:engine/model/text~Text} node Element or text node.
+	 * @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
+	 * @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
+	 * @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
+	 */
+	setModelHtmlAttribute( writer, node, attributeName, attributeKey, attributeValue ) {
+		setModelHtmlAttribute( writer, node, attributeName, attributeKey, attributeValue );
+	}
+
+	/**
+	 * TODO to remove
+	 * Helper function to update only one attribute from all html attributes on a model selection.
+	 *
+	 * @protected
+	 * @deprecated
+	 * @param {module:engine/model/model~Model} model writer
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	 * @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
+	 * @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
+	 * @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
+	 */
+	setModelSelectionHtmlAttribute( model, writer, attributeName, attributeKey, attributeValue ) {
+		setModelSelectionHtmlAttribute( model, writer, attributeName, attributeKey, attributeValue );
 	}
 }
 

@@ -4,7 +4,9 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
+import { setModelHtmlAttribute } from '../../src/conversionutils';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 
@@ -41,6 +43,11 @@ describe( 'HeadingElementSupport', () => {
 			model = editor.model;
 			dataSchema = editor.plugins.get( 'DataSchema' );
 			dataFilter = editor.plugins.get( 'DataFilter' );
+
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(h1|h2|h3|h4|h5)$/,
+				attributes: /^data-.*$/
+			} ] );
 		} );
 
 		it( 'should register heading schemas', () => {
@@ -86,11 +93,6 @@ describe( 'HeadingElementSupport', () => {
 		} );
 
 		it( 'should preserve attributes on headings', () => {
-			dataFilter.loadAllowedConfig( [ {
-				name: /^(h1|h2|h3|h4|h5)$/,
-				attributes: /^data-.*$/
-			} ] );
-
 			const expectedHtml =
 				'<h1 data-foo="bar-1">one</h1>' +
 				'<h2 data-foo="bar-2">two</h2>' +
@@ -139,6 +141,252 @@ describe( 'HeadingElementSupport', () => {
 
 			expect( editor.getData() ).to.equal( expectedHtml );
 		} );
+
+		describe( 'should allow', () => {
+			let root;
+
+			beforeEach( () => {
+				root = model.document.getRoot();
+			} );
+
+			it( 'adding new styles', () => {
+				editor.setData( '<h1>foobar</h1>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+						'background-color': 'blue',
+						color: 'red'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<heading1 htmlAttributes="(1)">foobar</heading1>',
+					attributes: {
+						1: {
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h1 style="background-color:blue;color:red">foobar</h1>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h1 style="background-color:blue;color:red;">foobar</h1>'
+				);
+			} );
+
+			it( 'adding new classes', () => {
+				editor.setData( '<h2>foobar</h2>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<heading2 htmlAttributes="(1)">foobar</heading2>',
+					attributes: {
+						1: {
+							classes: [ 'foo' ]
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h2 class="foo">foobar</h2>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h2 class="foo">foobar</h2>'
+				);
+			} );
+
+			it( 'adding new attributes', () => {
+				editor.setData( '<h5>foobar</h5>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<otherHeading htmlAttributes="(1)">foobar</otherHeading>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							}
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h5 data-foo="bar">foobar</h5>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h5 data-foo="bar">foobar</h5>'
+				);
+			} );
+
+			it( 'removing some styles', () => {
+				editor.setData( '<h1 style="background-color:blue;color:red;">foobar</h1>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+						'background-color': 'blue'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<heading1 htmlAttributes="(1)">foobar</heading1>',
+					attributes: {
+						1: {
+							styles: {
+								'background-color': 'blue'
+							}
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h1 style="background-color:blue">foobar</h1>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h1 style="background-color:blue;">foobar</h1>'
+				);
+			} );
+
+			it( 'removing some classes', () => {
+				editor.setData( '<h2 class="foo bar">foobar</h2>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<heading2 htmlAttributes="(1)">foobar</heading2>',
+					attributes: {
+						1: {
+							classes: [ 'foo' ]
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h2 class="foo">foobar</h2>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h2 class="foo">foobar</h2>'
+				);
+			} );
+
+			it( 'removing some attributes', () => {
+				editor.setData( '<h5 data-foo="bar" data-bar="baz">foobar</h5>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<otherHeading htmlAttributes="(1)">foobar</otherHeading>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							}
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h5 data-foo="bar">foobar</h5>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h5 data-foo="bar">foobar</h5>'
+				);
+			} );
+
+			it( 'removing some classes, styles and attributes', () => {
+				editor.setData(
+					'<h1 class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz">' +
+						'foobar' +
+					'</h1>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+						'background-color': 'blue'
+					} );
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<heading1 htmlAttributes="(1)">foobar</heading1>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo' ],
+							styles: {
+								'background-color': 'blue'
+							}
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h1 class="foo" data-foo="bar" style="background-color:blue">' +
+						'foobar' +
+					'</h1>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h1 class="foo" style="background-color:blue;" data-foo="bar">foobar</h1>'
+				);
+			} );
+
+			it( 'removing all classes, styles and attributes', () => {
+				editor.setData(
+					'<h1 class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz">' +
+						'foobar' +
+					'</h1>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<heading1>foobar</heading1>',
+					attributes: {}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h1>foobar</h1>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h1>foobar</h1>'
+				);
+			} );
+		} );
 	} );
 
 	describe( 'HeadingEditing plugin is not available', () => {
@@ -164,6 +412,11 @@ describe( 'HeadingElementSupport', () => {
 			model = editor.model;
 			dataSchema = editor.plugins.get( 'DataSchema' );
 			dataFilter = editor.plugins.get( 'DataFilter' );
+
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(h1|h2|h3|h4|h5)$/,
+				attributes: /^data-.*$/
+			} ] );
 		} );
 
 		it( 'should not register heading schemas', () => {
@@ -206,11 +459,6 @@ describe( 'HeadingElementSupport', () => {
 		} );
 
 		it( 'should preserve attributes on headings', () => {
-			dataFilter.loadAllowedConfig( [ {
-				name: /^(h1|h2|h3|h4|h5)$/,
-				attributes: /^data-.*$/
-			} ] );
-
 			const expectedHtml =
 				'<h1 data-foo="bar-1">one</h1>' +
 				'<h2 data-foo="bar-2">two</h2>' +
@@ -258,6 +506,252 @@ describe( 'HeadingElementSupport', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		describe( 'should allow', () => {
+			let root;
+
+			beforeEach( () => {
+				root = model.document.getRoot();
+			} );
+
+			it( 'adding new styles', () => {
+				editor.setData( '<h1>foobar</h1>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+						'background-color': 'blue',
+						color: 'red'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlH1 htmlAttributes="(1)">foobar</htmlH1>',
+					attributes: {
+						1: {
+							styles: {
+								'background-color': 'blue',
+								color: 'red'
+							}
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h1 style="background-color:blue;color:red">foobar</h1>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h1 style="background-color:blue;color:red;">foobar</h1>'
+				);
+			} );
+
+			it( 'adding new classes', () => {
+				editor.setData( '<h2>foobar</h2>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlH2 htmlAttributes="(1)">foobar</htmlH2>',
+					attributes: {
+						1: {
+							classes: [ 'foo' ]
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h2 class="foo">foobar</h2>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h2 class="foo">foobar</h2>'
+				);
+			} );
+
+			it( 'adding new attributes', () => {
+				editor.setData( '<h3>foobar</h3>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlH3 htmlAttributes="(1)">foobar</htmlH3>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							}
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h3 data-foo="bar">foobar</h3>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h3 data-foo="bar">foobar</h3>'
+				);
+			} );
+
+			it( 'removing some styles', () => {
+				editor.setData( '<h1 style="background-color:blue;color:red;">foobar</h1>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+						'background-color': 'blue'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlH1 htmlAttributes="(1)">foobar</htmlH1>',
+					attributes: {
+						1: {
+							styles: {
+								'background-color': 'blue'
+							}
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h1 style="background-color:blue">foobar</h1>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h1 style="background-color:blue;">foobar</h1>'
+				);
+			} );
+
+			it( 'removing some classes', () => {
+				editor.setData( '<h2 class="foo bar">foobar</h2>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlH2 htmlAttributes="(1)">foobar</htmlH2>',
+					attributes: {
+						1: {
+							classes: [ 'foo' ]
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h2 class="foo">foobar</h2>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h2 class="foo">foobar</h2>'
+				);
+			} );
+
+			it( 'removing some attributes', () => {
+				editor.setData( '<h3 data-foo="bar" data-bar="baz">foobar</h3>' );
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlH3 htmlAttributes="(1)">foobar</htmlH3>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							}
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h3 data-foo="bar">foobar</h3>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h3 data-foo="bar">foobar</h3>'
+				);
+			} );
+
+			it( 'removing some classes, styles and attributes', () => {
+				editor.setData(
+					'<h1 class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz">' +
+						'foobar' +
+					'</h1>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+						'background-color': 'blue'
+					} );
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+						'data-foo': 'bar'
+					} );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlH1 htmlAttributes="(1)">foobar</htmlH1>',
+					attributes: {
+						1: {
+							attributes: {
+								'data-foo': 'bar'
+							},
+							classes: [ 'foo' ],
+							styles: {
+								'background-color': 'blue'
+							}
+						}
+					}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h1 class="foo" data-foo="bar" style="background-color:blue">' +
+						'foobar' +
+					'</h1>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h1 class="foo" style="background-color:blue;" data-foo="bar">foobar</h1>'
+				);
+			} );
+
+			it( 'removing all classes, styles and attributes', () => {
+				editor.setData(
+					'<h1 class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz">' +
+						'foobar' +
+					'</h1>'
+				);
+
+				model.change( writer => {
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
+					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<htmlH1>foobar</htmlH1>',
+					attributes: {}
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<h1>foobar</h1>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<h1>foobar</h1>'
+				);
+			} );
 		} );
 	} );
 } );
