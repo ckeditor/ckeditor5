@@ -69,12 +69,20 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * TODO
 	 *
+	 * @param {String} viewElementName
 	 * @param {String|Array.<String>} className
 	 * @param {module:engine/model/selection~Selectable} selectable
-	 * @param {String} htmlAttributeName
 	 */
-	addModelHtmlClass( className, selectable, htmlAttributeName ) {
+	addModelHtmlClass( viewElementName, className, selectable ) {
 		const model = this.editor.model;
+		const dataSchema = this.editor.plugins.get( 'DataSchema' );
+		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
+
+		let htmlAttributeName = 'htmlAttributes';
+
+		if ( definitions && definitions[ 0 ].isInline ) {
+			htmlAttributeName = definitions[ 0 ].model;
+		}
 
 		model.change( writer => {
 			if ( selectable.is( 'selection' ) && selectable.isCollapsed ) {
@@ -120,12 +128,20 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * TODO
 	 *
+	 * @param {String} viewElementName
 	 * @param {String|Array.<String>} className
 	 * @param {module:engine/model/selection~Selectable} selectable
-	 * @param {String} htmlAttributeName
 	 */
-	removeModelHtmlClass( className, selectable, htmlAttributeName ) {
+	removeModelHtmlClass( viewElementName, className, selectable ) {
 		const model = this.editor.model;
+		const dataSchema = this.editor.plugins.get( 'DataSchema' );
+		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
+
+		let htmlAttributeName = 'htmlAttributes';
+
+		if ( definitions && definitions[ 0 ].isInline ) {
+			htmlAttributeName = definitions[ 0 ].model;
+		}
 
 		model.change( writer => {
 			if ( selectable.is( 'selection' ) && selectable.isCollapsed ) {

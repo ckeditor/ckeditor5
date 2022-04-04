@@ -2172,7 +2172,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes if no html attributes applied', () => {
 				editor.setData( '<section><p>foobar</p></section>' );
 
-				htmlSupport.addModelHtmlClass( [ 'foo', 'bar' ], root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.addModelHtmlClass( 'section', [ 'foo', 'bar' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2191,7 +2191,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes if no styles or other attributes are present', () => {
 				editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
 
-				htmlSupport.addModelHtmlClass( 'baz', root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.addModelHtmlClass( 'section', 'baz', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2208,8 +2208,8 @@ describe( 'DataFilter', () => {
 			it( 'should update existing classes if no other styles or attributes are present', () => {
 				editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
 
-				htmlSupport.addModelHtmlClass( 'baz', root.getChild( 0 ), 'htmlAttributes' );
-				htmlSupport.removeModelHtmlClass( 'bar', root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.addModelHtmlClass( 'section', 'baz', root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.removeModelHtmlClass( 'section', 'bar', root.getChild( 0 ), 'htmlAttributes' );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2226,7 +2226,7 @@ describe( 'DataFilter', () => {
 			it( 'should remove some classes if no other styles or attributes are present', () => {
 				editor.setData( '<section class="foo bar baz"><p>foobar</p></section>' );
 
-				htmlSupport.removeModelHtmlClass( 'bar', root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.removeModelHtmlClass( 'section', 'bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2243,7 +2243,7 @@ describe( 'DataFilter', () => {
 			it( 'should remove all attributes when removing all classes and no other styles or attributes are present', () => {
 				editor.setData( '<section class="foo bar baz"><p>foobar</p></section>' );
 
-				htmlSupport.removeModelHtmlClass( [ 'foo', 'bar', 'baz' ], root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.removeModelHtmlClass( 'section', [ 'foo', 'bar', 'baz' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
@@ -2856,7 +2856,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes if no attribute element is present', () => {
 				setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
-				htmlSupport.addModelHtmlClass( [ 'foo', 'bar' ], model.document.selection.getFirstRange(), 'htmlCite' );
+				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2876,7 +2876,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes to a collapsed selection', () => {
 				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-				htmlSupport.addModelHtmlClass( [ 'foo', 'bar' ], model.document.selection, 'htmlCite' );
+				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
 				expect( getModelData( model ) ).to.deep.equal(
 					'<paragraph>foo<$text htmlCite="{"classes":["foo","bar"]}">[]</$text>bar</paragraph>'
@@ -2897,7 +2897,7 @@ describe( 'DataFilter', () => {
 					} );
 				} );
 
-				htmlSupport.removeModelHtmlClass( 'bar', model.document.selection, 'htmlCite' );
+				htmlSupport.removeModelHtmlClass( 'cite', 'bar', model.document.selection );
 
 				expect( getModelData( model ) ).to.deep.equal(
 					'<paragraph>foo<$text htmlCite="{"classes":["foo"]}">[]</$text>bar</paragraph>'
