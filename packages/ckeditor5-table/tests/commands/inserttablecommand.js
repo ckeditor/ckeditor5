@@ -356,5 +356,100 @@ describe( 'InsertTableCommand', () => {
 				await editor.destroy();
 			} );
 		} );
+
+		describe( 'inheriting attributes', () => {
+			let editor;
+			let model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 1 }
+						}
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				const attributes = [ 'smart', 'pretty' ];
+
+				model.schema.extend( '$block', {
+					allowAttributes: attributes
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: attributes
+				} );
+
+				for ( const attribute of attributes ) {
+					model.schema.setAttributeProperties( attribute, {
+						copyOnReplace: true
+					} );
+				}
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should copy $block attributes on a table element when inserting it in $block', async () => {
+				setData( model, '<paragraph pretty="true" smart="true">[]</paragraph>' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 1, pretty: true, smart: true } )
+				);
+			} );
+
+			it( 'should copy attributes from first selected element', () => {
+				setData( model, '<paragraph pretty="true">[foo</paragraph><paragraph smart="true" >bar]</paragraph>' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 1, pretty: true } ) +
+					'<paragraph pretty="true">foo</paragraph>' +
+					'<paragraph smart="true">bar</paragraph>'
+				);
+			} );
+
+			it( 'should only copy $block attributes marked with copyOnReplace', () => {
+				setData( model, '<paragraph pretty="true" smart="true" nice="false">[]</paragraph>' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 1, pretty: true, smart: true } )
+				);
+			} );
+
+			it( 'should copy attributes from object when it is selected during insertion', () => {
+				model.schema.register( 'object', { isObject: true, inheritAllFrom: '$blockObject' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setData( model, '[<object pretty="true" smart="true"></object>]' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 1, pretty: true, smart: true } )
+				);
+			} );
+		} );
 	} );
 } );

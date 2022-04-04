@@ -80,6 +80,17 @@ export default function deleteContent( model, selection, options = {} ) {
 			return;
 		}
 
+		// Collect attributes to copy in case of autoparagraphing.
+		const attributesForAutoparagraph = {};
+
+		if ( !options.doNotAutoparagraph ) {
+			const selectedElement = selection.getSelectedElement();
+
+			if ( selectedElement ) {
+				Object.assign( attributesForAutoparagraph, schema.getAttributesWithProperty( selectedElement, 'copyOnReplace', true ) );
+			}
+		}
+
 		// Get the live positions for the range adjusted to span only blocks selected from the user perspective.
 		const [ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
 
@@ -114,7 +125,7 @@ export default function deleteContent( model, selection, options = {} ) {
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
 		// If autoparagraphing is off, we assume that you know what you do so we leave the selection wherever it was.
 		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPosition ) ) {
-			insertParagraph( writer, startPosition, selection );
+			insertParagraph( writer, startPosition, selection, attributesForAutoparagraph );
 		}
 
 		startPosition.detach();
@@ -482,8 +493,10 @@ function isCrossingLimitElement( leftPos, rightPos, schema ) {
 	return true;
 }
 
-function insertParagraph( writer, position, selection ) {
+function insertParagraph( writer, position, selection, attributes = {} ) {
 	const paragraph = writer.createElement( 'paragraph' );
+
+	writer.model.schema.setAllowedAttributes( paragraph, attributes, writer );
 
 	writer.insert( paragraph, position );
 

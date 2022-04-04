@@ -219,7 +219,7 @@ describe( 'DataFilter', () => {
 				view: 'xyz',
 				isObject: true,
 				modelSchema: {
-					inheritAllFrom: '$htmlObjectBlock'
+					inheritAllFrom: '$blockObject'
 				}
 			} );
 
@@ -692,7 +692,7 @@ describe( 'DataFilter', () => {
 				model: 'htmlXyz',
 				allowChildren: 'not-exists',
 				schema: {
-					inheritAllFrom: '$htmlSection'
+					inheritAllFrom: '$container'
 				}
 			} );
 
@@ -719,6 +719,30 @@ describe( 'DataFilter', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
+		} );
+
+		it( 'should not create empty htmlA (upcast)', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { name: true, attributes: [ 'href' ] } );
+
+					if ( !data.modelRange ) {
+						Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+					}
+				} );
+			} );
+
+			dataFilter.allowElement( 'a' );
+			dataFilter.allowAttributes( { name: 'a', attributes: { 'href': true } } );
+
+			editor.setData( '<a href="example.com"><p>foo</p></a>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo</paragraph>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should not consume attribute already consumed (downcast)', () => {
@@ -1047,6 +1071,33 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<p><cite>foo</cite></p>' );
 		} );
 
+		it( 'should not convert element already consumed (upcast)', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { name: true, attributes: [ 'href' ] } );
+
+					if ( !data.modelRange ) {
+						Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+					}
+				} );
+			} );
+
+			dataFilter.allowElement( 'a' );
+			dataFilter.allowAttributes( { name: 'a', attributes: { 'href': true } } );
+			dataFilter.allowElement( 'span' );
+
+			editor.setData( '<p><a href="example.com">foo <span>bar</span></a></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo <$text htmlSpan="(1)">bar</$text></paragraph>',
+				attributes: {
+					1: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo <span>bar</span></p>' );
+		} );
+
 		it( 'should not consume attribute already consumed (downcast)', () => {
 			editor.conversion.for( 'downcast' ).add( dispatcher => {
 				dispatcher.on( 'attribute:htmlCite:$text', ( evt, data, conversionApi ) => {
@@ -1095,6 +1146,29 @@ describe( 'DataFilter', () => {
 					},
 					3: {
 						classes: [ 'foo', 'bar', 'baz' ]
+					}
+				}
+			} );
+		} );
+
+		// #10657.
+		// #11450.
+		// #11477.
+		it( 'should not throw exception when outer element doesn\'t have attributes', () => {
+			dataFilter.allowElement( 'span' );
+			dataFilter.allowAttributes( { name: 'span', classes: /[\s\S]+/ } );
+
+			editor.setData( '<p><span>foo<span class="test">bar</span></span></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text htmlSpan="(1)">foo</$text>' +
+						'<$text htmlSpan="(2)">bar</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {
+						classes: [ 'test' ]
 					}
 				}
 			} );
