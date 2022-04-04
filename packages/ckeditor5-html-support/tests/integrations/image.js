@@ -2005,6 +2005,159 @@ describe( 'ImageElementSupport', () => {
 				'<p><a href="www.example.com"><img src="/assets/sample.png"></a></p>'
 			);
 		} );
+
+		it( 'should allow modifying styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|a|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
+
+			editor.setData(
+				'<p data-paragraph="paragraph">' +
+					'<a href="www.example.com" class="bar" style="background:blue;" data-link="link">' +
+						'<img src="/assets/sample.png" class="foo" style="color:red;" data-image="image">' +
+					'</a>' +
+				'</p>'
+			);
+
+			const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'green'
+				} );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', {
+					'data-image': 'xxx'
+				} );
+
+				setModelHtmlAttribute( writer, image, 'htmlA', 'styles', {
+					background: 'red',
+					color: 'pink'
+				} );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'classes', [ 'foo' ] );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'attributes', {
+					'data-link': 'zzz'
+				} );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph htmlAttributes="(1)">' +
+						'<imageInline htmlA="(2)" htmlAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-paragraph': 'paragraph'
+						}
+					},
+					2: {
+						attributes: {
+							'data-link': 'zzz'
+						},
+						classes: [ 'foo' ],
+						styles: {
+							background: 'red',
+							color: 'pink'
+						}
+					},
+					3: {
+						attributes: {
+							'data-image': 'xxx'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'green'
+						}
+					}
+				}
+			} );
+
+			// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view!
+			// expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			// 	'<p data-paragraph="paragraph">' +
+			// 		'<span class="foo" data-link="zzz" href="www.example.com" style="background:red;color:pink">' +
+			// 			'<span class="ck-widget image-inline" contenteditable="false">' +
+			// 				'<img src="/assets/sample.png" class="bar baz" style="background-color:blue;color:red;" data-image="xxx">' +
+			// 				'</img>' +
+			// 			'</span>' +
+			// 		'</a>' +
+			// 	'</p>'
+			// );
+
+			expect( editor.getData() ).to.equal(
+				'<p data-paragraph="paragraph">' +
+					'<a class="foo" style="background:red;color:pink;" href="www.example.com" data-link="zzz">' +
+						'<img class="bar baz" style="background-color:blue;color:green;" src="/assets/sample.png" data-image="xxx">' +
+					'</a>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should allow removing all styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
+
+			editor.setData(
+				'<p data-paragraph="paragraph">' +
+					'<a href="www.example.com" class="bar" style="background:blue;" data-link="link">' +
+						'<img src="/assets/sample.png" class="foo" style="color:red;" data-image="image">' +
+					'</a>' +
+				'</p>'
+			);
+
+			const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'styles', null );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'classes', null );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'attributes', null );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph htmlAttributes="(1)">' +
+						'<imageInline linkHref="www.example.com" src="/assets/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-paragraph': 'paragraph'
+						}
+					}
+				}
+			} );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<p data-paragraph="paragraph">' +
+					'<a href="www.example.com">' +
+						'<span class="ck-widget image-inline" contenteditable="false">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</span>' +
+					'</a>' +
+				'</p>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<p data-paragraph="paragraph">' +
+					'<a href="www.example.com">' +
+						'<img src="/assets/sample.png">' +
+					'</a>' +
+				'</p>'
+			);
+		} );
 	} );
 
 	describe( 'Partial load of image plugins', () => {
