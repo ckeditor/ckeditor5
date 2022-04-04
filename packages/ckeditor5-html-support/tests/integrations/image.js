@@ -1663,6 +1663,124 @@ describe( 'ImageElementSupport', () => {
 
 			expect( editor.getData() ).to.equal( '' );
 		} );
+
+		it( 'should allow modifying styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
+
+			editor.setData(
+				'<p data-paragraph="paragraph">' +
+					'<img src="/assets/sample.png" class="foo" style="color:red;" data-image="image">' +
+				'</p>'
+			);
+
+			const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'green'
+				} );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', {
+					'data-image': 'xxx'
+				} );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph htmlAttributes="(1)">' +
+						'<imageInline htmlAttributes="(2)" src="/assets/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-paragraph': 'paragraph'
+						}
+					},
+					2: {
+						attributes: {
+							'data-image': 'xxx'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'green'
+						}
+					}
+				}
+			} );
+
+			// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view!
+			// expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			// 	'<p data-paragraph="paragraph">' +
+			// 		'<span class="ck-widget image-inline" contenteditable="false">' +
+			// 			'<img src="/assets/sample.png" class="bar baz" style="background-color:blue;color:red;" data-image="xxx"></img>' +
+			// 		'</span>' +
+			// 	'</p>'
+			// );
+
+			expect( editor.getData() ).to.equal(
+				'<p data-paragraph="paragraph">' +
+					'<img class="bar baz" style="background-color:blue;color:green;" src="/assets/sample.png" data-image="xxx">' +
+				'</p>'
+			);
+		} );
+
+		it( 'should allow removing all styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
+
+			editor.setData(
+				'<p data-paragraph="paragraph">' +
+					'<img src="/assets/sample.png" class="foo" style="color:red;" data-image="image">' +
+				'</p>'
+			);
+
+			const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', null );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph htmlAttributes="(1)">' +
+						'<imageInline src="/assets/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-paragraph': 'paragraph'
+						}
+					}
+				}
+			} );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<p data-paragraph="paragraph">' +
+					'<span class="ck-widget image-inline" contenteditable="false">' +
+						'<img src="/assets/sample.png"></img>' +
+					'</span>' +
+				'</p>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<p data-paragraph="paragraph">' +
+					'<img src="/assets/sample.png">' +
+				'</p>'
+			);
+		} );
 	} );
 
 	describe( 'Inline image with link', () => {
