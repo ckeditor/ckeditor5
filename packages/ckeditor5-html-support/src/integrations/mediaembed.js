@@ -100,10 +100,11 @@ function modelToViewMediaAttributeConverter( mediaElementName ) {
 					return;
 				}
 
+				const { attributeOldValue, attributeNewValue } = data;
 				const containerElement = conversionApi.mapper.toViewElement( data.item );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
+				setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewElement );
 			} );
 		}
 	};

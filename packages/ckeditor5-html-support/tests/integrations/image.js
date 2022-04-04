@@ -1761,7 +1761,8 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view!
+			// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view.
+			// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
 			// expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 			// 	'<p data-paragraph="paragraph">' +
 			// 		'<span class="ck-widget image-inline" contenteditable="false">' +
@@ -2124,7 +2125,8 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view!
+			// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view.
+			// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
 			// expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 			// 	'<p data-paragraph="paragraph">' +
 			// 		'<span class="foo" data-link="zzz" href="www.example.com" style="background:red;color:pink">' +
