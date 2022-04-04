@@ -12,7 +12,7 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^33.0.0",
+    "ckeditor5": "^33.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^33.0.0",
