@@ -2,7 +2,7 @@
 category: updating
 menu-title: Migration to v34.x
 order: 90
-modified_at: 2022-03-15
+modified_at: 2022-04-12
 ---
 
 # Migration to CKEditor 5 v34.0.0
