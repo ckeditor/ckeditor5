@@ -6,6 +6,19 @@ order: 60
 
 # Frequently asked questions
 
+## How to set the height of CKEditor 5?
+
+The height of the editing area can be easily controlled with CSS. For example, the `minHeight` and `maxHeight` settings can be set with the following code:
+
+```css
+.ck.ck-content:not(.ck-comment__input *) {
+height: 300px;
+overflow-y: auto;
+}
+```
+
+The {@link installation/advanced/predefined-builds#classic-editor Classic Editor predefined build}, however, requires a slightly more advanced solution. Check the [How to set the height of CKEditor 5 (Classic editor)](https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor) Stack Overflow issue if you need it.
+
 ## Why does the editor filter out my content (styles, classes, elements)? Where is `config.allowedContent = true`?
 
 Unlike [CKEditor 4](https://ckeditor.com/ckeditor-4/), CKEditor 5 implements a custom {@link framework/guides/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
