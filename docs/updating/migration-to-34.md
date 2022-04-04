@@ -25,7 +25,7 @@ The {@link installation/advanced/dll-builds DLL builds} support was introduced f
 
 From now on, additional plugins will be required, when the following CKEditor 5 collaboration features are added to the editor:
 
-* **{@link module:real-time-collaboration/realtimecollaborativerevisionhistory~RealTimeCollaborativeRevisionHistory}** will also require {@link module:revision-history/revisionhistory~RevisionHistory}:
+* **{@link module:real-time-collaboration/realtimecollaborativerevisionhistory~RealTimeCollaborativeRevisionHistory}** will also require adding {@link module:revision-history/revisionhistory~RevisionHistory} to the list of the editor plugins:
 
 	```js
 	// ❌ Old imports:
