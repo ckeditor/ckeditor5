@@ -1377,6 +1377,44 @@ describe( 'ImageElementSupport', () => {
 				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'classes', [ 'baz', 'foo', 'bar' ] );
 			} );
 
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
+						'<caption htmlAttributes="(3)">A caption</caption>' +
+					'</imageBlock>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-image': 'xyz'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'red'
+						}
+					},
+					2: {
+						attributes: {
+							'data-figure': 'zzz'
+						},
+						classes: [ 'foobar' ],
+						styles: {
+							'font-size': '12px',
+							'text-align': 'center'
+						}
+					},
+					3: {
+						attributes: {
+							'data-figcaption': 'xxx'
+						},
+						classes: [ 'baz', 'foo', 'bar' ],
+						styles: {
+							color: 'green'
+						}
+					}
+				}
+			} );
+
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
 						' style="font-size:12px;text-align:center">' +
@@ -1430,6 +1468,14 @@ describe( 'ImageElementSupport', () => {
 				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'styles', null );
 				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'attributes', null );
 				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'classes', null );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<imageBlock src="/assets/sample.png">' +
+						'<caption>A caption</caption>' +
+					'</imageBlock>',
+				attributes: {}
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
