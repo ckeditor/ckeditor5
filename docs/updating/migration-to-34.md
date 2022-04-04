@@ -34,14 +34,3 @@ From now on, additional plugins will be required, when the following CKEditor 5 
 	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
 	import RevisionHistory from '@ckeditor/ckeditor5-revision-history/src/revisionhistory';
 	```
-
-* **{@link module:real-time-collaboration/realtimecollaborativerevisionhistory~RealTimeCollaborativeRevisionHistory}** will also require {@link module:revision-history/revisionhistory~RevisionHistory}:
-
-	```js
-	// ❌ Old imports:
-	import CloudServicesRevisionHistoryAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter';
-
-	// ✅ New imports:
-	import CloudServicesRevisionHistoryAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter';
-	import RevisionHistory from '@ckeditor/ckeditor5-cloud-services/src/revisionhistory';
-	```
