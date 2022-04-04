@@ -18,6 +18,7 @@ import MediaEmbedElementSupport from './integrations/mediaembed';
 import ScriptElementSupport from './integrations/script';
 import TableElementSupport from './integrations/table';
 import StyleElementSupport from './integrations/style';
+import { setModelHtmlAttribute, setModelSelectionHtmlAttribute } from './conversionutils';
 
 /**
  * The General HTML Support feature.
@@ -62,6 +63,32 @@ export default class GeneralHtmlSupport extends Plugin {
 		// Load the filtering configuration.
 		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
 		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
+	}
+
+	/**
+	* Helper function to update only one attribute from all html attributes on a model element.
+	*
+	* @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	* @param {module:engine/model/element~Element|module:engine/model/text~Text} node Element or text node.
+	* @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
+	* @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
+	* @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
+	*/
+	setModelHtmlAttribute( writer, node, attributeName, attributeKey, attributeValue ) {
+		setModelHtmlAttribute( writer, node, attributeName, attributeKey, attributeValue );
+	}
+
+	/**
+	* Helper function to update only one attribute from all html attributes on a model selection.
+	*
+	* @param {module:engine/model/model~Model} model writer
+	* @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	* @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
+	* @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
+	* @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
+	*/
+	setModelSelectionHtmlAttribute( model, writer, attributeName, attributeKey, attributeValue ) {
+		setModelSelectionHtmlAttribute( model, writer, attributeName, attributeKey, attributeValue );
 	}
 }
 
