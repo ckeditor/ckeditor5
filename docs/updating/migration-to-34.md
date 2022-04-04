@@ -37,13 +37,13 @@ From now on, additional plugins will be required, when the following CKEditor 5 
 
 ### Changed mechanism for setting and clearing the editor read-only mode
 
-With this update, the previously editable {@link module:core/editor/editor~Editor#isReadOnly `editor.isReadOnly`} become a getter, manual setting `editor.isReadOnly` is no longer permitted.
+With this update, {@link module:core/editor/editor~Editor#isReadOnly `editor.isReadOnly`} becomes a read-only property. Setting it manually is no longer permitted and will result in an error.
 
-Changing the editor mode it now possible only via the lock mechanism, and thanks to that, various features that set the read-only mode will not conflict with themselves and will not have to know about each other.
+Changing the editor mode it now possible only via dedicated methods that introduce a lock mechanism. Thanks to that, various features that set the read-only mode will not collide and will not have to know about each other. Basically, the editor will become editable again only if all features (that earlier set it to read-only) will allow for that.
 
-The lock mechanism makes the editor read-only if there is at least one feature lock, otherwise it makes the editing allowed.
+The new methods on the `Editor` class are {@link module:core/editor/editor~Editor#enableReadOnlyMode `editor.enableReadOnlyMode( lockId )`}  and {@link module:core/editor/editor~Editor#disableReadOnlyMode `editor.disableReadOnlyMode( lockId )`}, which respectively enable and disable the read-only mode.
 
- The new methods on the `Editor` are called {@link module:core/editor/editor~Editor#enableReadOnlyMode `editor.enableReadOnlyMode( featureLockId )`}  and {@link module:core/editor/editor~Editor#clearReadOnlyMode `editor.clearReadOnlyMode( featureLockId )`}, which respectively set and clear the read-only lock on the editor.
+The lock mechanism makes the editor read-only if there is at least one lock. If all locks are removed, the content becomes editable again. Because each feature is responsible only for setting and removing its own lock, the features do not conflict each other. Earlier, such issues could result in the editor content being editable when it shouldn't.
 
 	```js
 	// ❌ Old usage:
@@ -54,6 +54,7 @@ The lock mechanism makes the editor read-only if there is at least one feature l
 	function makeEditorEditable() {
 		editor.isReadOnly = false;
 	}
+	
 	// ✅ New usage:
 	const myFeatureLockId = Symbol( 'my-feature' );
 
@@ -62,6 +63,6 @@ The lock mechanism makes the editor read-only if there is at least one feature l
 	}
 
 	function makeEditorEditable() {
-		editor.clearReadOnlyMode( myFeatureLockId );
+		editor.disableReadOnlyMode( myFeatureLockId );
 	}
 	```
