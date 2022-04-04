@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { setViewAttributes } from '../conversionutils.js';
+import { updateViewAttributes } from '../conversionutils.js';
 
 import DataFilter from '../datafilter';
 
@@ -105,7 +105,7 @@ function modelToViewCodeBlockAttributeConverter() {
 			const viewCodeElement = conversionApi.mapper.toViewElement( data.item );
 			const viewPreElement = viewCodeElement.parent;
 
-			setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewPreElement );
+			updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewPreElement );
 		} );
 
 		dispatcher.on( 'attribute:htmlContentAttributes:codeBlock', ( evt, data, conversionApi ) => {
@@ -116,7 +116,7 @@ function modelToViewCodeBlockAttributeConverter() {
 			const { attributeOldValue, attributeNewValue } = data;
 			const viewCodeElement = conversionApi.mapper.toViewElement( data.item );
 
-			setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewCodeElement );
+			updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewCodeElement );
 		} );
 	};
 }

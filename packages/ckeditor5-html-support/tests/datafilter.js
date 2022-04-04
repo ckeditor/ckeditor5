@@ -2172,9 +2172,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes if no html attributes applied', () => {
 				editor.setData( '<section><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar' ] );
-				} );
+				htmlSupport.addModelHtmlClass( [ 'foo', 'bar' ], root.getChild( 0 ), 'htmlAttributes' );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2193,9 +2191,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes if no styles or other attributes are present', () => {
 				editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar', 'baz' ] );
-				} );
+				htmlSupport.addModelHtmlClass( 'baz', root.getChild( 0 ), 'htmlAttributes' );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2212,9 +2208,8 @@ describe( 'DataFilter', () => {
 			it( 'should update existing classes if no other styles or attributes are present', () => {
 				editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
-				} );
+				htmlSupport.addModelHtmlClass( 'baz', root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.removeModelHtmlClass( 'bar', root.getChild( 0 ), 'htmlAttributes' );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2231,9 +2226,7 @@ describe( 'DataFilter', () => {
 			it( 'should remove some classes if no other styles or attributes are present', () => {
 				editor.setData( '<section class="foo bar baz"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
-				} );
+				htmlSupport.removeModelHtmlClass( 'bar', root.getChild( 0 ), 'htmlAttributes' );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2250,9 +2243,7 @@ describe( 'DataFilter', () => {
 			it( 'should remove all attributes when removing all classes and no other styles or attributes are present', () => {
 				editor.setData( '<section class="foo bar baz"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
-				} );
+				htmlSupport.removeModelHtmlClass( [ 'foo', 'bar', 'baz' ], root.getChild( 0 ), 'htmlAttributes' );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
@@ -2865,9 +2856,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes if no attribute element is present', () => {
 				setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
-				model.change( writer => {
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
-				} );
+				htmlSupport.addModelHtmlClass( [ 'foo', 'bar' ], model.document.selection.getFirstRange(), 'htmlCite' );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',

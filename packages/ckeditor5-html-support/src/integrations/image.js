@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 
 import DataFilter from '../datafilter';
-import { setViewAttributes } from '../conversionutils.js';
+import { setViewAttributes, updateViewAttributes } from '../conversionutils.js';
 
 /**
  * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.
@@ -145,7 +145,7 @@ function modelToViewImageAttributeConverter() {
 				const { attributeOldValue, attributeNewValue } = data;
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-				setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewElement );
+				updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewElement );
 			}, { priority: 'low' } );
 		}
 
@@ -160,7 +160,7 @@ function modelToViewImageAttributeConverter() {
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
 				if ( viewElement ) {
-					setViewAttributes( conversionApi.writer, { attributeOldValue, attributeNewValue }, viewElement );
+					updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewElement );
 					conversionApi.consumable.consume( data.item, evt.name );
 				}
 			}, { priority: 'low' } );

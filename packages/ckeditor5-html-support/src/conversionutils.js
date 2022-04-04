@@ -7,76 +7,71 @@
  * @module html-support/conversionutils
  */
 
-import { cloneDeep, isPlainObject, isArray } from 'lodash-es';
+import { cloneDeep, isPlainObject } from 'lodash-es';
 
 /**
-* Helper function for downcast converter. Sets attributes on the given view element.
+* Helper function for downcast converter. Updates the attributes on the given view element.
 *
 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
-* @param {Object} viewAttributes Object with only new attributes to set or both new and old attributes to set and remove
+* @param {Object} oldViewAttributes
+* @param {Object} newViewAttributes
 * @param {module:engine/view/element~Element} viewElement
 */
+export function updateViewAttributes( writer, oldViewAttributes, newViewAttributes, viewElement ) {
+	if ( oldViewAttributes ) {
+		removeViewAttributes( writer, oldViewAttributes, viewElement );
+	}
+
+	if ( newViewAttributes ) {
+		setViewAttributes( writer, newViewAttributes, viewElement );
+	}
+}
+
+/**
+ * Helper function for downcast converter. Sets the attributes on the given view element.
+ *
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {Object} viewAttributes
+ * @param {module:engine/view/element~Element} viewElement
+ */
 export function setViewAttributes( writer, viewAttributes, viewElement ) {
-	const { attributeNewValue, attributeOldValue } = viewAttributes;
-
-	// only new attributes have been passed so just set them.
-	if ( isPlainObject( viewAttributes ) && !attributeNewValue && !attributeOldValue ) {
-		setNewAttributes( writer, viewAttributes, viewElement );
-		return;
+	if ( viewAttributes.attributes ) {
+		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
+			writer.setAttribute( key, value, viewElement );
+		}
 	}
 
-	if ( attributeOldValue ) {
-		removeOldAttributes( writer, attributeOldValue, viewElement );
+	if ( viewAttributes.styles ) {
+		writer.setStyle( viewAttributes.styles, viewElement );
 	}
 
-	if ( attributeNewValue ) {
-		setNewAttributes( writer, attributeNewValue, viewElement );
+	if ( viewAttributes.classes ) {
+		writer.addClass( viewAttributes.classes, viewElement );
 	}
 }
 
-// Removes old attributes form the view element.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {Object} attributes View element attributes to remove
-// @param {module:engine/view/element~Element} element View element to remove attributes from
-function removeOldAttributes( writer, attributes, element ) {
-	if ( attributes.attributes ) {
-		for ( const [ key ] of Object.entries( attributes.attributes ) ) {
-			writer.removeAttribute( key, element );
+/**
+ * Helper function for downcast converter. Removes the attributes on the given view element.
+ *
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {Object} viewAttributes
+ * @param {module:engine/view/element~Element} viewElement
+ */
+export function removeViewAttributes( writer, viewAttributes, viewElement ) {
+	if ( viewAttributes.attributes ) {
+		for ( const [ key ] of Object.entries( viewAttributes.attributes ) ) {
+			writer.removeAttribute( key, viewElement );
 		}
 	}
 
-	if ( attributes.styles ) {
-		for ( const style of Object.keys( attributes.styles ) ) {
-			writer.removeStyle( style, element );
+	if ( viewAttributes.styles ) {
+		for ( const style of Object.keys( viewAttributes.styles ) ) {
+			writer.removeStyle( style, viewElement );
 		}
 	}
 
-	if ( attributes.classes ) {
-		writer.removeClass( attributes.classes, element );
-	}
-}
-
-// Sets new attributes on the view element.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {Object} attributes View element attributes to set
-// @param {module:engine/view/element~Element} element View element to set attributes on
-function setNewAttributes( writer, attributes, element ) {
-	if ( attributes.attributes ) {
-		for ( const [ key, value ] of Object.entries( attributes.attributes ) ) {
-			writer.setAttribute( key, value, element );
-		}
-	}
-
-	if ( attributes.styles ) {
-		writer.setStyle( attributes.styles, element );
-	}
-
-	if ( attributes.classes ) {
-		writer.addClass( attributes.classes, element );
+	if ( viewAttributes.classes ) {
+		writer.removeClass( viewAttributes.classes, viewElement );
 	}
 }
 
@@ -159,7 +154,7 @@ function isAttributeValueEmpty( attributeValue ) {
 		return Object.keys( attributeValue ).length === 0;
 	}
 
-	if ( isArray( attributeValue ) ) {
+	if ( Array.isArray( attributeValue ) ) {
 		return attributeValue.length === 0;
 	}
 

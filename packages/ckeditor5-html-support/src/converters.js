@@ -8,7 +8,7 @@
  */
 
 import { toWidget } from 'ckeditor5/src/widget';
-import { setViewAttributes, mergeViewElementAttributes } from './conversionutils';
+import { setViewAttributes, mergeViewElementAttributes, updateViewAttributes } from './conversionutils';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -181,7 +181,7 @@ export function modelToViewBlockAttributeConverter( { model: modelName } ) {
 			const viewWriter = conversionApi.writer;
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-			setViewAttributes( viewWriter, { attributeOldValue, attributeNewValue }, viewElement );
+			updateViewAttributes( viewWriter, attributeOldValue, attributeNewValue, viewElement );
 		} );
 	};
 }
