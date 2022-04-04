@@ -19,10 +19,9 @@ import { getModelDataWithAttributes } from './_utils/utils';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
-import { setModelHtmlAttribute, setModelSelectionHtmlAttribute } from '../src/conversionutils';
 
 describe( 'DataFilter', () => {
-	let editor, model, editorElement, dataFilter, dataSchema;
+	let editor, model, editorElement, dataFilter, dataSchema, htmlSupport;
 
 	testUtils.createSinonSandbox();
 
@@ -40,6 +39,7 @@ describe( 'DataFilter', () => {
 
 				dataFilter = editor.plugins.get( 'DataFilter' );
 				dataSchema = editor.plugins.get( 'DataSchema' );
+				htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
 			} );
 	} );
 
@@ -1271,7 +1271,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'blue',
 						color: 'red'
 					} );
@@ -1299,7 +1299,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input style="background-color:blue;color:red;"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'blue',
 						color: 'red',
 						'font-size': '10px'
@@ -1329,7 +1329,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input style="background-color:blue;color:red;"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'green',
 						color: 'red'
 					} );
@@ -1357,7 +1357,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input style="background-color:blue;color:red;font-size:10px;"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'blue',
 						'font-size': '10px'
 					} );
@@ -1385,7 +1385,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input style="background-color:blue;color:red;font-size:10px;"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1406,7 +1406,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'blue',
 						color: 'red',
 						'font-size': '10px'
@@ -1442,7 +1442,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'blue',
 						'font-size': '10px'
 					} );
@@ -1476,7 +1476,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'styles', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1501,7 +1501,9 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [
+						'foo', 'bar'
+					] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1523,7 +1525,9 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input class="foo"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [
+						'foo', 'bar'
+					] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1545,7 +1549,9 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input class="foo bar"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [
+						'foo', 'baz'
+					] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1567,7 +1573,9 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input class="foo bar baz"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [
+						'foo', 'baz'
+					] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1589,7 +1597,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input class="foo bar"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1610,7 +1618,9 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [
+						'foo', 'bar'
+					] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1641,7 +1651,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1673,7 +1683,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'classes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1702,7 +1712,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'bar',
 						'data-bar': 'baz'
 					} );
@@ -1730,7 +1740,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input data-foo="bar"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'bar',
 						'data-bar': 'baz'
 					} );
@@ -1758,7 +1768,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input data-foo="bar" data-bar="baz"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'baz',
 						'data-bar': 'bar'
 					} );
@@ -1786,7 +1796,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input data-foo="bar" data-bar="baz"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'bar'
 					} );
 				} );
@@ -1812,7 +1822,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><input data-foo="bar" data-bar="baz"></p>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1833,7 +1843,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'bar',
 						'data-bar': 'baz'
 					} );
@@ -1868,7 +1878,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'bar'
 					} );
 				} );
@@ -1901,7 +1911,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ).getChild( 0 ), 'htmlAttributes', 'attributes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -1938,7 +1948,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'blue',
 						color: 'red'
 					} );
@@ -1965,7 +1975,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section style="background-color:blue;color:red;"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'blue',
 						color: 'red',
 						'font-size': '10px'
@@ -1994,7 +2004,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section style="background-color:blue;color:red;"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'green',
 						color: 'red'
 					} );
@@ -2021,7 +2031,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section style="background-color:blue;color:red;font-size:10px;"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'blue',
 						'font-size': '10px'
 					} );
@@ -2048,7 +2058,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section style="background-color:blue;color:red;font-size:10px;"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2067,7 +2077,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'blue',
 						color: 'red',
 						'font-size': '10px'
@@ -2104,7 +2114,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
 						'background-color': 'blue',
 						'font-size': '10px'
 					} );
@@ -2139,7 +2149,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2163,7 +2173,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2184,7 +2194,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar', 'baz' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'bar', 'baz' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2203,7 +2213,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2222,7 +2232,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section class="foo bar baz"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2241,7 +2251,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section class="foo bar baz"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2260,7 +2270,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2292,7 +2302,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2324,7 +2334,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2353,7 +2363,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', { 'data-foo': 'bar' } );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', { 'data-foo': 'bar' } );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2374,7 +2384,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section data-foo="bar"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'bar',
 						'data-bar': 'baz'
 					} );
@@ -2401,7 +2411,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section data-foo="bar" data-bar="baz"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'bar baz',
 						'data-bar': 'baz bar'
 					} );
@@ -2428,7 +2438,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section data-foo="bar" data-bar="baz"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'bar'
 					} );
 				} );
@@ -2453,7 +2463,7 @@ describe( 'DataFilter', () => {
 				editor.setData( '<section data-foo="bar" data-bar="baz"><p>foobar</p></section>' );
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2472,7 +2482,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'bar',
 						'data-bar': 'baz'
 					} );
@@ -2510,7 +2520,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
 						'data-foo': 'bar'
 					} );
 				} );
@@ -2546,7 +2556,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2575,7 +2585,7 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
+					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2601,7 +2611,7 @@ describe( 'DataFilter', () => {
 				setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 				model.change( writer => {
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
 						'background-color': 'blue',
 						color: 'red'
 					} );
@@ -2628,7 +2638,7 @@ describe( 'DataFilter', () => {
 				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 
 				model.change( writer => {
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
 						'background-color': 'blue',
 						color: 'red'
 					} );
@@ -2661,7 +2671,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
 						'background-color': 'blue',
 						color: 'red'
 					} );
@@ -2694,7 +2704,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
 						'background-color': 'blue',
 						'font-size': '10px'
 					} );
@@ -2727,7 +2737,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2752,7 +2762,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
 						'background-color': 'blue',
 						color: 'red',
 						'font-size': '10px'
@@ -2793,7 +2803,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
 						'background-color': 'blue',
 						'font-size': '10px'
 					} );
@@ -2832,7 +2842,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2856,7 +2866,7 @@ describe( 'DataFilter', () => {
 				setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 				model.change( writer => {
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2877,7 +2887,7 @@ describe( 'DataFilter', () => {
 				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 
 				model.change( writer => {
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2904,7 +2914,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2931,7 +2941,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'baz' ] );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'baz' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2958,7 +2968,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', null );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -2983,7 +2993,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar', 'baz' ] );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar', 'baz' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -3019,7 +3029,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo' ] );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo' ] );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -3055,7 +3065,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', null );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -3083,7 +3093,7 @@ describe( 'DataFilter', () => {
 				setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 				model.change( writer => {
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
 						'data-foo': 'bar',
 						'data-bar': 'baz'
 					} );
@@ -3110,7 +3120,7 @@ describe( 'DataFilter', () => {
 				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 
 				model.change( writer => {
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
 						'data-foo': 'bar',
 						'data-bar': 'baz'
 					} );
@@ -3143,7 +3153,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
 						'data-foo': 'bar baz'
 					} );
 				} );
@@ -3174,7 +3184,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
 						'data-foo': 'bar'
 					} );
 				} );
@@ -3205,7 +3215,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', null );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
@@ -3230,7 +3240,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
 						'data-foo': 'bar',
 						'data-bar': 'baz'
 					} );
@@ -3270,7 +3280,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
 						'data-foo': 'bar'
 					} );
 				} );
@@ -3308,7 +3318,7 @@ describe( 'DataFilter', () => {
 
 					writer.setSelection( selection );
 
-					setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', null );
+					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', null );
 				} );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
