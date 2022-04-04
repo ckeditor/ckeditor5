@@ -2872,6 +2872,42 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
+			// TODO temp
+			it( 'should add new classes to a collapsed selection', () => {
+				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+				htmlSupport.addModelHtmlClass( [ 'foo', 'bar' ], model.document.selection, 'htmlCite' );
+
+				expect( getModelData( model ) ).to.deep.equal(
+					'<paragraph>foo<$text htmlCite="{"classes":["foo","bar"]}">[]</$text>bar</paragraph>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<p>foobar</p>'
+				);
+			} );
+
+			// TODO temp
+			it( 'should remove classes from a collapsed selection', () => {
+				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'htmlCite', {
+						classes: [ 'foo', 'bar' ]
+					} );
+				} );
+
+				htmlSupport.removeModelHtmlClass( 'bar', model.document.selection, 'htmlCite' );
+
+				expect( getModelData( model ) ).to.deep.equal(
+					'<paragraph>foo<$text htmlCite="{"classes":["foo"]}">[]</$text>bar</paragraph>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<p>foobar</p>'
+				);
+			} );
+
 			it( 'should add new classes if no styles or other attributes are present', () => {
 				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 

@@ -98,7 +98,12 @@ export function setModelHtmlAttribute( writer, node, attributeName, attributeKey
 		// If someone wants to remove attribute by setting its value to null, empty string, empty object or empty array
 		// and this attribute is the only one present in attributes object, we should remove the whole attribute.
 		if ( attributeKeys && attributeKeys.length === 1 && attributeKeys[ 0 ] === attributeKey ) {
-			writer.removeAttribute( attributeName, node );
+			if ( node.is( 'selection' ) ) {
+				writer.removeSelectionAttribute( attributeName );
+			} else {
+				writer.removeAttribute( attributeName, node );
+			}
+
 			return;
 		}
 	}
@@ -122,7 +127,11 @@ export function setModelHtmlAttribute( writer, node, attributeName, attributeKey
 		newAttributes[ attributeKey ] = attributeValue;
 	}
 
-	writer.setAttribute( attributeName, newAttributes, node );
+	if ( node.is( 'selection' ) ) {
+		writer.setSelectionAttribute( attributeName, newAttributes );
+	} else {
+		writer.setAttribute( attributeName, newAttributes, node );
+	}
 }
 
 /**

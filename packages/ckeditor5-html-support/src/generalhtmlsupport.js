@@ -70,21 +70,38 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * TODO
 	 *
 	 * @param {String|Array.<String>} className
-	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {String} htmlAttributeName
 	 */
-	addModelHtmlClass( className, itemOrRange, htmlAttributeName ) {
+	addModelHtmlClass( className, selectable, htmlAttributeName ) {
 		const model = this.editor.model;
 
-		let ranges = [];
-
-		if ( itemOrRange.is( 'range' ) ) {
-			ranges = model.schema.getValidRanges( [ itemOrRange ], htmlAttributeName );
-		} else if ( model.schema.checkAttribute( itemOrRange, htmlAttributeName ) ) {
-			ranges = [ model.createRangeOn( itemOrRange ) ];
-		}
-
 		model.change( writer => {
+			if ( selectable.is( 'selection' ) && selectable.isCollapsed ) {
+				if ( model.schema.checkAttributeInSelection( selectable, htmlAttributeName ) ) {
+					const attributeValue = selectable.getAttribute( htmlAttributeName );
+					const classes = new Set( attributeValue && attributeValue.classes || [] );
+
+					for ( const name of toArray( className ) ) {
+						classes.add( name );
+					}
+
+					setModelHtmlAttribute( writer, selectable, htmlAttributeName, 'classes', Array.from( classes ) );
+				}
+
+				return;
+			}
+
+			let ranges = [];
+
+			if ( selectable.is( 'range' ) ) {
+				ranges = model.schema.getValidRanges( [ selectable ], htmlAttributeName );
+			} else if ( selectable.is( 'selection' ) ) {
+				ranges = model.schema.getValidRanges( selectable.getRanges(), htmlAttributeName );
+			} else if ( model.schema.checkAttribute( selectable, htmlAttributeName ) ) {
+				ranges = [ model.createRangeOn( selectable ) ];
+			}
+
 			for ( const range of ranges ) {
 				for ( const item of range.getItems( { shallow: true } ) ) {
 					const attributeValue = item.getAttribute( htmlAttributeName );
@@ -104,21 +121,38 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * TODO
 	 *
 	 * @param {String|Array.<String>} className
-	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {String} htmlAttributeName
 	 */
-	removeModelHtmlClass( className, itemOrRange, htmlAttributeName ) {
+	removeModelHtmlClass( className, selectable, htmlAttributeName ) {
 		const model = this.editor.model;
 
-		let ranges = [];
-
-		if ( itemOrRange.is( 'range' ) ) {
-			ranges = model.schema.getValidRanges( [ itemOrRange ], htmlAttributeName );
-		} else if ( model.schema.checkAttribute( itemOrRange, htmlAttributeName ) ) {
-			ranges = [ model.createRangeOn( itemOrRange ) ];
-		}
-
 		model.change( writer => {
+			if ( selectable.is( 'selection' ) && selectable.isCollapsed ) {
+				if ( model.schema.checkAttributeInSelection( selectable, htmlAttributeName ) ) {
+					const attributeValue = selectable.getAttribute( htmlAttributeName );
+					const classes = new Set( attributeValue && attributeValue.classes || [] );
+
+					for ( const name of toArray( className ) ) {
+						classes.delete( name );
+					}
+
+					setModelHtmlAttribute( writer, selectable, htmlAttributeName, 'classes', Array.from( classes ) );
+				}
+
+				return;
+			}
+
+			let ranges = [];
+
+			if ( selectable.is( 'range' ) ) {
+				ranges = model.schema.getValidRanges( [ selectable ], htmlAttributeName );
+			} else if ( selectable.is( 'selection' ) ) {
+				ranges = model.schema.getValidRanges( selectable.getRanges(), htmlAttributeName );
+			} else if ( model.schema.checkAttribute( selectable, htmlAttributeName ) ) {
+				ranges = [ model.createRangeOn( selectable ) ];
+			}
+
 			for ( const range of ranges ) {
 				for ( const item of range.getItems( { shallow: true } ) ) {
 					const attributeValue = item.getAttribute( htmlAttributeName );
