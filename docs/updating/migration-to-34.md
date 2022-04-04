@@ -34,3 +34,34 @@ From now on, additional plugins will be required, when the following CKEditor 5 
 	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
 	import RevisionHistory from '@ckeditor/ckeditor5-revision-history/src/revisionhistory';
 	```
+
+### Changed mechanism for setting and clearing the editor read-only mode
+
+With this update, the previously editable {@link module:core/editor/editor~Editor#isReadOnly `editor.isReadOnly`} become a getter, manual setting `editor.isReadOnly` is no longer permitted.
+
+Changing the editor mode it now possible only via the lock mechanism, and thanks to that, various features that set the read-only mode will not conflict with themselves and will not have to know about each other.
+
+The lock mechanism makes the editor read-only if there is at least one feature lock, otherwise it makes the editing allowed.
+
+ The new methods on the `Editor` are called {@link module:core/editor/editor~Editor#enableReadOnlyMode `editor.enableReadOnlyMode( featureLockId )`}  and {@link module:core/editor/editor~Editor#clearReadOnlyMode `editor.clearReadOnlyMode( featureLockId )`}, which respectively set and clear the read-only lock on the editor.
+
+	```js
+	// ❌ Old usage:
+	function makeEditorReadOnly() {
+		editor.isReadOnly = true;
+	}
+
+	function makeEditorEditable() {
+		editor.isReadOnly = false;
+	}
+	// ✅ New usage:
+	const myFeatureLockId = Symbol( 'my-feature' );
+
+	function makeEditorReadOnly() {
+		editor.enableReadOnlyMode( myFeatureLockId );
+	}
+
+	function makeEditorEditable() {
+		editor.clearReadOnlyMode( myFeatureLockId );
+	}
+	```
