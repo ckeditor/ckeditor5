@@ -10,6 +10,14 @@
 import { Command } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 
+function addClass( writer, elementOrSelection ) {
+	writer.setAttribute( 'htmlAttributes', { classes: [ 'red-heading', 'large-heading' ] }, elementOrSelection );
+}
+
+function removeClass( writer, elementOrSelection ) {
+	writer.setAttribute( 'htmlAttributes', { classes: [ 'red-heading' ] }, elementOrSelection );
+}
+
 /**
  * TODO
  *
@@ -71,91 +79,70 @@ export default class StyleCommand extends Command {
 	/**
 	 * TODO
 	 *
-	 * @param {TODO} definition
+	 * @param {TODO} styleName
 	 */
-	execute( definition ) {
+	execute( styleName ) {
+		// TODO: error message.
+		if ( !this.enabledStyles.includes( styleName ) ) {
+			return;
+		}
+
 		const editor = this.editor;
 		const model = editor.model;
 		const doc = model.document;
 		const selection = doc.selection;
-		const value = definition.classes.join( ' ' );
 
 		model.change( writer => {
-			/**
-			 * BLOCK ELEMENTS (BLOCK STYLES)
-			 */
+			const selectedBlockElement = this._getSelectedBlockElement( selection );
+			const definition = this.styles.getDefinitionsByName( styleName );
+			const { classes, modelElements } = definition;
+			const data = { writer, styleName, classes };
 
-			// 1. Find element to work on
-			const selectedBlockElement = this._getSelectedBlockElement( selection, definition );
-
-			// 2. Set htmlAttributes on this element
 			if ( selectedBlockElement ) {
-				const selectedValue = this._getValueFromClass( value );
-
-				if ( this.value.includes( selectedValue ) ) {
-					if ( this.value.length === 1 ) {
-						writer.removeAttribute( 'htmlAttributes', selectedBlockElement );
-						return;
-					}
-				} else {
-					writer.setAttribute( 'htmlAttributes', {
-						classes: this._mergeElementClasses( value, selectedBlockElement )
-					}, selectedBlockElement );
-				}
-
+				this._handleClasses( data, selectedBlockElement );
 				return;
 			}
 
-			/**
-			 * TEXT NODES (INLINE STYLES)
-			 */
-			const { modelElements } = definition;
-
-			// Get GHS attribute element from all matching definition model elements.
-			// It may be for example htmlSpan, htmlCode, htmlPre etc...
-			const attributeElement = modelElements.find( attributeName => attributeName.startsWith( 'html' ) );
-
 			if ( selection.isCollapsed ) {
-				if ( value ) {
-					writer.setSelectionAttribute( attributeElement, {
-						classes: this._mergeCollapsedSelectionClasses( value, attributeElement, selection )
-					} );
-				}
-			} else {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), attributeElement );
-
-				for ( const range of ranges ) {
-					if ( value ) {
-						for ( const item of range.getItems() ) {
-							writer.setAttribute( attributeElement, {
-								classes: this._mergeRangeItemClasses( value, attributeElement, item )
-							}, item );
-						}
-					}
-				}
+				this._handleClasses( data, selection );
+				return;
 			}
+
+			const attributeElement = modelElements.find( attributeName => attributeName.startsWith( 'html' ) );
+			const ranges = model.schema.getValidRanges( selection.getRanges(), attributeElement );
+			this._handleClasses( data, ranges );
 		} );
 	}
 
-	_getValueFromClass( classes ) {
-		const definition = this.styles.getDefinitionsByClassName( classes );
+	/**
+	 * TODO
+	 *
+	 * @param {TODO} data
+	 * @param {TODO} selectable
+	 */
+	_handleClasses( data, selectable ) {
+		const { writer, styleName, classes } = data;
 
-		if ( definition ) {
-			return definition.name;
+		if ( this.value.includes( styleName ) ) {
+			removeClass( writer, selectable, classes );
+		} else {
+			addClass( writer, selectable, classes );
 		}
 	}
 
-	_getSelectedBlockElement( selection, definition ) {
-		const isBlock = definition.isBlock;
-		const block = first( selection.getSelectedBlocks() );
+	/**
+	 * TODO
+	 *
+	 * @param {TODO} selection
+	 */
+	_getSelectedBlockElement( selection ) {
+		const isInline = !selection.getSelectedElement();
 
-		let selectedElement = selection.getSelectedElement();
-
-		if ( isBlock ) {
-			selectedElement = block;
+		if ( isInline ) {
+			return first( selection.getSelectedBlocks() );
 		}
 
-		return selectedElement;
+		return selection.getSelectedElement();
 	}
 
 	/**
@@ -188,10 +175,16 @@ export default class StyleCommand extends Command {
 		if ( availableDefinitions ) {
 			const blockStyleNames = availableDefinitions.map( ( { name } ) => name );
 
-			this.enabledStyles = [ ...this.enabledStyles, ...blockStyleNames ];
+			this.enabledStyles = [
+				...this.enabledStyles,
+				...blockStyleNames
+			];
 		}
 
-		return [ ...value, ...this._getAttributeValue( 'htmlAttributes' ) ];
+		return [
+			...value,
+			...this._getAttributeValue( 'htmlAttributes' )
+		];
 	}
 
 	/**
@@ -264,61 +257,5 @@ export default class StyleCommand extends Command {
 		}
 
 		return [];
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @param {TODO} value
-	 * @param {TODO} element
-	 */
-	_mergeElementClasses( value, element ) {
-		const styleClasses = [ value ];
-
-		const { classes } = element.getAttribute( 'htmlAttributes' ) || {};
-
-		if ( Array.isArray( classes ) ) {
-			styleClasses.push( ...classes );
-		}
-
-		return styleClasses;
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @param {TODO} value
-	 * @param {TODO} attributeElement
-	 * @param {TODO} selection
-	 */
-	_mergeCollapsedSelectionClasses( value, attributeElement, selection ) {
-		const styleClasses = [ value ];
-
-		const { classes } = selection.getAttribute( attributeElement ) || {};
-
-		if ( Array.isArray( classes ) ) {
-			styleClasses.push( ...classes );
-		}
-
-		return styleClasses;
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @param {TODO} value
-	 * @param {TODO} item
-	 * @param {TODO} attributeElement
-	 */
-	_mergeRangeItemClasses( value, attributeElement, item ) {
-		const styleClasses = [ value ];
-
-		const { classes } = item.getAttribute( attributeElement ) || {};
-
-		if ( Array.isArray( classes ) ) {
-			styleClasses.push( ...classes );
-		}
-
-		return styleClasses;
 	}
 }

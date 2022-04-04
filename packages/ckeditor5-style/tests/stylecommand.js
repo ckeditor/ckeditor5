@@ -15,45 +15,45 @@ import Style from '../src/style';
 describe( 'StyleCommand', () => {
 	let editor, editorElement, command, model, doc, root;
 
-	const markerStyleDefinition = {
-		isBlock: false,
-		modelElements: [ 'htmlSpan' ],
-		name: 'Marker',
-		element: 'span',
-		classes: [ 'marker' ]
-	};
+	// const 'Marker' = {
+	// 	isBlock: false,
+	// 	modelElements: [ 'htmlSpan' ],
+	// 	name: 'Marker',
+	// 	element: 'span',
+	// 	classes: [ 'marker' ]
+	// };
 
-	const typewriterStyleDefinition = {
-		isBlock: false,
-		modelElements: [ 'htmlSpan' ],
-		name: 'Typewriter',
-		element: 'span',
-		classes: [ 'typewriter' ]
-	};
+	// const 'Typewriter' = {
+	// 	isBlock: false,
+	// 	modelElements: [ 'htmlSpan' ],
+	// 	name: 'Typewriter',
+	// 	element: 'span',
+	// 	classes: [ 'typewriter' ]
+	// };
 
-	const multipleClassesDefinition = {
-		isBlock: false,
-		modelElements: [ 'htmlSpan' ],
-		name: 'Multiple classes',
-		element: 'span',
-		classes: [ 'class-one', 'class-two' ]
-	};
+	// const 'Multiple classes' = {
+	// 	isBlock: false,
+	// 	modelElements: [ 'htmlSpan' ],
+	// 	name: 'Multiple classes',
+	// 	element: 'span',
+	// 	classes: [ 'class-one', 'class-two' ]
+	// };
 
-	const bigHeadingStyleDefinition = {
-		isBlock: true,
-		modelElements: [ 'heading2', 'htmlH2' ],
-		name: 'Big heading',
-		element: 'h2',
-		classes: [ 'big-heading' ]
-	};
+	// const 'Big heading' = {
+	// 	isBlock: true,
+	// 	modelElements: [ 'heading2', 'htmlH2' ],
+	// 	name: 'Big heading',
+	// 	element: 'h2',
+	// 	classes: [ 'big-heading' ]
+	// };
 
-	const redHeadingStyleDefinition = {
-		isBlock: true,
-		modelElements: [ 'heading2', 'htmlH2' ],
-		name: 'Red heading',
-		element: 'h2',
-		classes: [ 'red-heading' ]
-	};
+	// const redHeadingStyleDefinition = {
+	// 	isBlock: true,
+	// 	modelElements: [ 'heading2', 'htmlH2' ],
+	// 	name: 'Red heading',
+	// 	element: 'h2',
+	// 	classes: [ 'red-heading' ]
+	// };
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -122,7 +122,7 @@ describe( 'StyleCommand', () => {
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 			command.isEnabled = false;
-			command.execute( markerStyleDefinition );
+			command.execute( 'Marker' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
@@ -131,7 +131,7 @@ describe( 'StyleCommand', () => {
 			it( 'should add htmlSpan attribute with proper class to the collapsed selection', () => {
 				setData( model, '<paragraph>foobar[]</paragraph>' );
 
-				command.execute( markerStyleDefinition );
+				command.execute( 'Marker' );
 
 				expect( getData( model ) ).to.equal(
 					'<paragraph>foobar<$text htmlSpan="{"classes":["marker"]}">[]</$text></paragraph>'
@@ -149,8 +149,8 @@ describe( 'StyleCommand', () => {
 			it( 'should add multiple htmlSpan attributes with proper classes to the collapsed selection', () => {
 				setData( model, '<paragraph>foobar[]</paragraph>' );
 
-				command.execute( markerStyleDefinition );
-				command.execute( typewriterStyleDefinition );
+				command.execute( 'Marker' );
+				command.execute( 'Typewriter' );
 
 				expect( getData( model ) ).to.equal(
 					'<paragraph>foobar<$text htmlSpan="{"classes":["typewriter","marker"]}">[]</$text></paragraph>'
@@ -168,7 +168,7 @@ describe( 'StyleCommand', () => {
 			it( 'should add htmlSpan attribute with proper class to the selected text', () => {
 				setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-				command.execute( markerStyleDefinition );
+				command.execute( 'Marker' );
 
 				expect( getData( model ) ).to.equal(
 					'<paragraph>fo[<$text htmlSpan="{"classes":["marker"]}">ob</$text>]ar</paragraph>'
@@ -178,8 +178,8 @@ describe( 'StyleCommand', () => {
 			it( 'should add multiple htmlSpan attributes with proper class to the selected text', () => {
 				setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-				command.execute( markerStyleDefinition );
-				command.execute( typewriterStyleDefinition );
+				command.execute( 'Marker' );
+				command.execute( 'Typewriter' );
 
 				expect( getData( model ) ).to.equal(
 					'<paragraph>fo[<$text htmlSpan="{"classes":["typewriter","marker"]}">ob</$text>]ar</paragraph>'
@@ -190,7 +190,7 @@ describe( 'StyleCommand', () => {
 				// initial selection [foo b]ar baz.
 				setData( model, '<paragraph>[foo b]ar baz</paragraph>' );
 
-				command.execute( markerStyleDefinition );
+				command.execute( 'Marker' );
 
 				expect( getData( model ) ).to.equal(
 					'<paragraph>[<$text htmlSpan="{"classes":["marker"]}">foo b</$text>]ar baz</paragraph>'
@@ -204,7 +204,7 @@ describe( 'StyleCommand', () => {
 					) );
 				} );
 
-				command.execute( typewriterStyleDefinition );
+				command.execute( 'Typewriter' );
 
 				expect( getData( model ) ).to.equal(
 					'<paragraph>[' +
@@ -215,22 +215,47 @@ describe( 'StyleCommand', () => {
 				);
 			} );
 
+			// TODO: classes as arrays.
 			it( 'should add multiple htmlSpan attributes to the selected text if definition specify multiple classes', () => {
 				setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-				command.execute( multipleClassesDefinition );
+				command.execute( 'Multiple classes' );
 
 				expect( getData( model ) ).to.equal(
 					'<paragraph>fo[<$text htmlSpan="{"classes":["class-one class-two"]}">ob</$text>]ar</paragraph>'
 				);
 			} );
+
+			it( 'should remove class from htmlSpan attribute element', () => {
+				setData( model, '<paragraph>foo[<$text htmlSpan="{"classes":["marker", "typewriter"]}">bar</$text>]</paragraph>' );
+
+				command.execute( 'Marker' );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>foo[<$text htmlSpan="{"classes":["typewriter"]}">bar</$text>]</paragraph>'
+				);
+			} );
+
+			it( 'should remove htmlSpan element when removing class attribute to the selection', () => {
+				setData( model, '<paragraph>foo[<$text htmlSpan="{"classes":["marker"]}">bar</$text>]</paragraph>' );
+
+				command.execute( 'Marker' );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>foo[bar]</$text></paragraph>'
+				);
+			} );
+
+			// TODO: add removing attributes.
+			// TODO: more complex selection tests.
+			// TODO: test for adding styles outside of enabledStyles.
 		} );
 
 		describe( 'block styles', () => {
 			it( 'should add htmlAttribute with proper class to the selected element', () => {
 				setData( model, '<heading2>foo[]bar</heading2>' );
 
-				command.execute( bigHeadingStyleDefinition );
+				command.execute( 'Big heading' );
 
 				expect( getData( model ) ).to.equal(
 					'<heading2 htmlAttributes="{"classes":["big-heading"]}">foo[]bar</heading2>'
@@ -240,8 +265,8 @@ describe( 'StyleCommand', () => {
 			it( 'should add multiple htmlAttribute classes the selected element', () => {
 				setData( model, '<heading2>foo[]bar</heading2>' );
 
-				command.execute( bigHeadingStyleDefinition );
-				command.execute( redHeadingStyleDefinition );
+				command.execute( 'Big heading' );
+				command.execute( 'Red heading' );
 
 				expect( getData( model ) ).to.equal(
 					'<heading2 htmlAttributes="{"classes":["red-heading","big-heading"]}">foo[]bar</heading2>'
@@ -252,7 +277,7 @@ describe( 'StyleCommand', () => {
 				const attributes = { classes: [ 'big-heading' ] };
 				setData( model, '<heading2 htmlAttributes="' + attributes + '">foo[]bar</heading2>' );
 
-				command.execute( bigHeadingStyleDefinition );
+				command.execute( 'Big heading' );
 
 				expect( getData( model ) ).to.equal( '<heading2>foo[]bar</heading2>' );
 			} );

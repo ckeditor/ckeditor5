@@ -68,6 +68,7 @@ class Styles {
 		this.styleDefinitions = styleDefinitions;
 		this.elementToDefinition = new Map();
 		this.classToDefinition = new Map();
+		this.nameToDefinition = new Map();
 
 		this._prepareDefinitionsMapping();
 	}
@@ -84,7 +85,7 @@ class Styles {
 					this.elementToDefinition.set( modelElement, newValue );
 				}
 
-				this.classToDefinition.set( classes.join( ' ' ), { name, element, classes } );
+				this.nameToDefinition.set( name, { name, element, classes } );
 			}
 		}
 	}
@@ -106,8 +107,8 @@ class Styles {
 	/**
 	 * TODO
 	 */
-	getDefinitionsByClassName( className ) {
-		return this.classToDefinition.get( className );
+	getDefinitionsByName( name ) {
+		return this.nameToDefinition.get( name );
 	}
 }
 
