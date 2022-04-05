@@ -224,19 +224,27 @@ export default class StyleCommand extends Command {
 		const selection = model.document.selection;
 
 		if ( selection.isCollapsed ) {
+			/* istanbul ignore next */
 			const { classes } = selection.getAttribute( attributeName ) || {};
+
+			/* istanbul ignore next */
 			return classes || [];
 		}
 
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
+				/* istanbul ignore else */
 				if ( schema.checkAttribute( item, attributeName ) ) {
+					/* istanbul ignore next */
 					const { classes } = item.getAttribute( attributeName ) || {};
+
+					/* istanbul ignore next */
 					return classes || [];
 				}
 			}
 		}
 
+		/* istanbul ignore next */
 		return [];
 	}
 }
