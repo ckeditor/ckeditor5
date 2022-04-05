@@ -4,7 +4,7 @@
  */
 
 /**
- * @module TODO
+ * @module style/style
  */
 
 import { Command } from 'ckeditor5/src/core';
