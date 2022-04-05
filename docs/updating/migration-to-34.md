@@ -12,7 +12,7 @@ modified_at: 2022-04-05
 
 	If you are using the On-Premises version of CKEditor Cloud Services, and you upload the editor bundles to the Cloud Services (e.g. in order to use the document storage, import and export, or connection optimization features), then please wait with upgrading to CKEditor 5 v34.0.0.
 
-	The On-Premises version of CKEditor Cloud Services that will support CKEditor 5 v34.0.0 editor bundles is going to be released by the end of April 2022. Until then, uploading a bundle (with CKEditor 5 v33.0.0) will be rejected by the REST API.
+	The On-Premises version of CKEditor Cloud Services that will support CKEditor 5 v34.0.0 editor bundles is going to be released by the end of April 2022. Until then, uploading a bundle (with CKEditor 5 v34.0.0) will be rejected by the REST API.
 </info-box>
 
 <info-box>
