@@ -14,6 +14,7 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import {
@@ -39,7 +40,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [
 				Paragraph, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
-				BlockQuoteEditing, TableEditing, HeadingEditing
+				BlockQuoteEditing, TableEditing, HeadingEditing, ShiftEnter
 			]
 		} );
 
@@ -159,7 +160,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -190,6 +191,79 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 
 				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.true;
+			} );
+
+			describe( 'with shift', () => {
+				beforeEach( () => {
+					domEventData.isSoft = true;
+				} );
+
+				it( 'should not capture event', () => {
+					setModelData( model, modelList( [
+						'* []'
+					] ) );
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup( modelList( [
+						'* <softBreak></softBreak>[]'
+					] ) );
+
+					expect( changedBlocks ).to.deep.equal( [ ] );
+
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( eventInfo.stop.called ).to.be.undefined;
+				} );
+
+				it( 'should create a soft break in an empty item at the end of a list', () => {
+					setModelData( model, modelList( [
+						'* Foo',
+						'* []'
+					] ) );
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup( modelList( [
+						'* Foo',
+						'* <softBreak></softBreak>[]'
+					] ) );
+
+					expect( changedBlocks ).to.deep.equal( [ ] );
+
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( eventInfo.stop.called ).to.be.undefined;
+				} );
+
+				it( 'should create a soft break in an indented empty item at the end of a list', () => {
+					setModelData( model, modelList( [
+						'* Foo',
+						'  * []'
+					] ) );
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup( modelList( [
+						'* Foo',
+						'  * <softBreak></softBreak>[]'
+					] ) );
+
+					expect( changedBlocks ).to.deep.equal( [ ] );
+
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( eventInfo.stop.called ).to.be.undefined;
+				} );
 			} );
 		} );
 
@@ -272,7 +346,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -298,7 +372,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -324,7 +398,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -350,7 +424,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -376,7 +450,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -544,6 +618,60 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.true;
 				} );
+
+			describe( 'with shift', () => {
+				beforeEach( () => {
+					domEventData.isSoft = true;
+				} );
+
+				it( 'should not capture event', () => {
+					setModelData( model, modelList( [
+						'* ',
+						'  []'
+					] ) );
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup( modelList( [
+						'* ',
+						'  <softBreak></softBreak>[]'
+					] ) );
+
+					expect( changedBlocks ).to.deep.equal( [ ] );
+
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( eventInfo.stop.called ).to.be.undefined;
+				} );
+
+				it( 'should create a soft break in a block of a list item at the end of a list', () => {
+					setModelData( model, modelList( [
+						'* Foo',
+						'* ',
+						'  []'
+					] ) );
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup( modelList( [
+						'* Foo',
+						'* ',
+						'  <softBreak></softBreak>[]'
+					] ) );
+
+					expect( changedBlocks ).to.deep.equal( [ ] );
+
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( eventInfo.stop.called ).to.be.undefined;
+				} );
+			} );
 		} );
 	} );
 
@@ -569,7 +697,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -593,7 +721,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -615,7 +743,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -638,7 +766,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -664,8 +792,58 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
+			} );
+
+			describe( 'with shift', () => {
+				beforeEach( () => {
+					domEventData.isSoft = true;
+				} );
+
+				it( 'should replace text with soft break', () => {
+					setModelData( model, modelList( [
+						'* [ab]'
+					] ) );
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup( modelList( [
+						'* <softBreak></softBreak>[]'
+					] ) );
+
+					expect( changedBlocks ).to.deep.equal( [ ] );
+
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( eventInfo.stop.called ).to.be.undefined;
+				} );
+
+				it( 'should delete selected text and set selection in new paragraph', () => {
+					setModelData( model, modelList( [
+						'* F[oo',
+						'* Bar]'
+					] ) );
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup( modelList( [
+						'* F',
+						'* []'
+					] ) );
+
+					expect( changedBlocks ).to.deep.equal( [ ] );
+
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( eventInfo.stop.called ).to.be.undefined;
+				} );
 			} );
 
 			describe( 'cross-indent level selection', () => {
@@ -687,7 +865,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -711,7 +889,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -736,7 +914,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -761,7 +939,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -787,7 +965,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -813,7 +991,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -838,7 +1016,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -865,7 +1043,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -890,7 +1068,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -916,7 +1094,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -942,7 +1120,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -969,7 +1147,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -998,7 +1176,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 			} );
@@ -1026,7 +1204,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1050,7 +1228,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1075,7 +1253,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1109,7 +1287,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1134,7 +1312,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1159,7 +1337,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1185,7 +1363,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1210,7 +1388,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1237,8 +1415,39 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 				expect( eventInfo.stop.called ).to.be.undefined;
+			} );
+
+			describe( 'with shift', () => {
+				beforeEach( () => {
+					domEventData.isSoft = true;
+				} );
+
+				it( 'should replace text and create a new paragraph after', () => {
+					setModelData( model, modelList( [
+						'* A[a',
+						'  b',
+						'* cc',
+						'* dd]'
+					] ) );
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup( modelList( [
+						'* A',
+						'* [] {id:003}'
+					] ) );
+
+					expect( changedBlocks ).to.deep.equal( [ ] );
+
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( eventInfo.stop.called ).to.be.undefined;
+				} );
 			} );
 
 			describe( 'cross-indent level selection', () => {
@@ -1266,7 +1475,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1294,7 +1503,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1322,7 +1531,7 @@ describe( 'DocumentListEditing integrations: enter key', () => {
 					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
 					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 			} );

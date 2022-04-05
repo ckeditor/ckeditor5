@@ -278,7 +278,12 @@ export default class DocumentListEditing extends Plugin {
 			const doc = model.document;
 			const positionParent = doc.selection.getFirstPosition().parent;
 
-			if ( doc.selection.isCollapsed && isListItemBlock( positionParent ) && positionParent.isEmpty ) {
+			if (
+				doc.selection.isCollapsed &&
+				isListItemBlock( positionParent ) &&
+				positionParent.isEmpty &&
+				!data.isSoft
+			) {
 				const isFirstBlock = isFirstBlockOfListItem( positionParent );
 				const isLastBlock = isLastBlockOfListItem( positionParent );
 
