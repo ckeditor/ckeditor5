@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, console */
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -11,49 +11,10 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Style from '../src/style';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 
 describe( 'StyleCommand', () => {
 	let editor, editorElement, command, model, doc, root;
-
-	// const 'Marker' = {
-	// 	isBlock: false,
-	// 	modelElements: [ 'htmlSpan' ],
-	// 	name: 'Marker',
-	// 	element: 'span',
-	// 	classes: [ 'marker' ]
-	// };
-
-	// const 'Typewriter' = {
-	// 	isBlock: false,
-	// 	modelElements: [ 'htmlSpan' ],
-	// 	name: 'Typewriter',
-	// 	element: 'span',
-	// 	classes: [ 'typewriter' ]
-	// };
-
-	// const 'Multiple classes' = {
-	// 	isBlock: false,
-	// 	modelElements: [ 'htmlSpan' ],
-	// 	name: 'Multiple classes',
-	// 	element: 'span',
-	// 	classes: [ 'class-one', 'class-two' ]
-	// };
-
-	// const 'Big heading' = {
-	// 	isBlock: true,
-	// 	modelElements: [ 'heading2', 'htmlH2' ],
-	// 	name: 'Big heading',
-	// 	element: 'h2',
-	// 	classes: [ 'big-heading' ]
-	// };
-
-	// const redHeadingStyleDefinition = {
-	// 	isBlock: true,
-	// 	modelElements: [ 'heading2', 'htmlH2' ],
-	// 	name: 'Red heading',
-	// 	element: 'h2',
-	// 	classes: [ 'red-heading' ]
-	// };
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -61,7 +22,7 @@ describe( 'StyleCommand', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Heading, GeneralHtmlSupport, Style ],
+				plugins: [ Paragraph, Table, Heading, GeneralHtmlSupport, Style ],
 				style: {
 					definitions: [
 						{
@@ -93,6 +54,11 @@ describe( 'StyleCommand', () => {
 							name: 'Red heading',
 							element: 'h2',
 							classes: [ 'red-heading' ]
+						},
+						{
+							name: 'Table style',
+							element: 'table',
+							classes: [ 'example' ]
 						}
 					]
 				}
@@ -115,6 +81,11 @@ describe( 'StyleCommand', () => {
 	} );
 
 	describe( 'isEnabled', () => {
+		it( 'should be disabled if selection is on an widget object', () => {
+			setData( model, '[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'execute()', () => {
@@ -125,6 +96,17 @@ describe( 'StyleCommand', () => {
 			command.execute( 'Marker' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+		} );
+
+		it( 'should warn if the command is executed with incorrect style name', () => {
+			const stub = sinon.stub( console, 'warn' );
+
+			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
+
+			command.execute( 'Invalid style' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+			sinon.assert.calledWithMatch( stub, 'style-command-executed-with-incorrect-style-name' );
 		} );
 
 		describe( 'inline styles', () => {
@@ -153,7 +135,7 @@ describe( 'StyleCommand', () => {
 				command.execute( 'Typewriter' );
 
 				expect( getData( model ) ).to.equal(
-					'<paragraph>foobar<$text htmlSpan="{"classes":["typewriter","marker"]}">[]</$text></paragraph>'
+					'<paragraph>foobar<$text htmlSpan="{"classes":["marker","typewriter"]}">[]</$text></paragraph>'
 				);
 
 				model.change( writer => {
@@ -161,7 +143,7 @@ describe( 'StyleCommand', () => {
 				} );
 
 				expect( getData( model ) ).to.equal(
-					'<paragraph>foobar<$text htmlSpan="{"classes":["typewriter","marker"]}">baz[]</$text></paragraph>'
+					'<paragraph>foobar<$text htmlSpan="{"classes":["marker","typewriter"]}">baz[]</$text></paragraph>'
 				);
 			} );
 
@@ -182,7 +164,7 @@ describe( 'StyleCommand', () => {
 				command.execute( 'Typewriter' );
 
 				expect( getData( model ) ).to.equal(
-					'<paragraph>fo[<$text htmlSpan="{"classes":["typewriter","marker"]}">ob</$text>]ar</paragraph>'
+					'<paragraph>fo[<$text htmlSpan="{"classes":["marker","typewriter"]}">ob</$text>]ar</paragraph>'
 				);
 			} );
 
@@ -208,7 +190,7 @@ describe( 'StyleCommand', () => {
 
 				expect( getData( model ) ).to.equal(
 					'<paragraph>[' +
-						'<$text htmlSpan="{"classes":["typewriter","marker"]}">foo b</$text>' +
+						'<$text htmlSpan="{"classes":["marker","typewriter"]}">foo b</$text>' +
 						'<$text htmlSpan="{"classes":["typewriter"]}">ar ba</$text>]' +
 						'z' +
 					'</paragraph>'
@@ -222,13 +204,15 @@ describe( 'StyleCommand', () => {
 				command.execute( 'Multiple classes' );
 
 				expect( getData( model ) ).to.equal(
-					'<paragraph>fo[<$text htmlSpan="{"classes":["class-one class-two"]}">ob</$text>]ar</paragraph>'
+					'<paragraph>fo[<$text htmlSpan="{"classes":["class-one","class-two"]}">ob</$text>]ar</paragraph>'
 				);
 			} );
 
 			it( 'should remove class from htmlSpan attribute element', () => {
-				setData( model, '<paragraph>foo[<$text htmlSpan="{"classes":["marker", "typewriter"]}">bar</$text>]</paragraph>' );
+				setData( model, '<paragraph>foo[bar]</paragraph>' );
 
+				command.execute( 'Marker' );
+				command.execute( 'Typewriter' );
 				command.execute( 'Marker' );
 
 				expect( getData( model ) ).to.equal(
@@ -237,12 +221,13 @@ describe( 'StyleCommand', () => {
 			} );
 
 			it( 'should remove htmlSpan element when removing class attribute to the selection', () => {
-				setData( model, '<paragraph>foo[<$text htmlSpan="{"classes":["marker"]}">bar</$text>]</paragraph>' );
+				setData( model, '<paragraph>foo[bar]</paragraph>' );
 
+				command.execute( 'Marker' );
 				command.execute( 'Marker' );
 
 				expect( getData( model ) ).to.equal(
-					'<paragraph>foo[bar]</$text></paragraph>'
+					'<paragraph>foo[bar]</paragraph>'
 				);
 			} );
 
@@ -253,33 +238,33 @@ describe( 'StyleCommand', () => {
 
 		describe( 'block styles', () => {
 			it( 'should add htmlAttribute with proper class to the selected element', () => {
-				setData( model, '<heading2>foo[]bar</heading2>' );
+				setData( model, '<heading1>foo[]bar</heading1>' );
 
 				command.execute( 'Big heading' );
 
 				expect( getData( model ) ).to.equal(
-					'<heading2 htmlAttributes="{"classes":["big-heading"]}">foo[]bar</heading2>'
+					'<heading1 htmlAttributes="{"classes":["big-heading"]}">foo[]bar</heading1>'
 				);
 			} );
 
 			it( 'should add multiple htmlAttribute classes the selected element', () => {
-				setData( model, '<heading2>foo[]bar</heading2>' );
+				setData( model, '<heading1>foo[]bar</heading1>' );
 
 				command.execute( 'Big heading' );
 				command.execute( 'Red heading' );
 
 				expect( getData( model ) ).to.equal(
-					'<heading2 htmlAttributes="{"classes":["red-heading","big-heading"]}">foo[]bar</heading2>'
+					'<heading1 htmlAttributes="{"classes":["big-heading","red-heading"]}">foo[]bar</heading1>'
 				);
 			} );
 
 			it( 'should remove htmlAttribute from the selected element', () => {
-				const attributes = { classes: [ 'big-heading' ] };
-				setData( model, '<heading2 htmlAttributes="' + attributes + '">foo[]bar</heading2>' );
+				setData( model, '<heading1>foo[]bar</heading1>' );
 
 				command.execute( 'Big heading' );
+				command.execute( 'Big heading' );
 
-				expect( getData( model ) ).to.equal( '<heading2>foo[]bar</heading2>' );
+				expect( getData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
 			} );
 		} );
 	} );

@@ -8,15 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
-
-function addClass( writer, elementOrSelection ) {
-	writer.setAttribute( 'htmlAttributes', { classes: [ 'red-heading', 'large-heading' ] }, elementOrSelection );
-}
-
-function removeClass( writer, elementOrSelection ) {
-	writer.setAttribute( 'htmlAttributes', { classes: [ 'red-heading' ] }, elementOrSelection );
-}
+import { logWarning, first } from 'ckeditor5/src/utils';
 
 /**
  * TODO
@@ -46,8 +38,16 @@ export default class StyleCommand extends Command {
 		/**
 		 * TODO
 		 */
+		this.htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
+
+		/**
+		 * TODO
+		 */
 		this.set( 'enabledStyles', [] );
 
+		/**
+		 * TODO
+		 */
 		this.refresh();
 	}
 
@@ -59,17 +59,16 @@ export default class StyleCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const block = first( selection.getSelectedBlocks() );
-		const isInline = !selection.getSelectedElement();
 
 		this.enabledStyles = [];
 
-		if ( isInline ) {
+		if ( !block || !editor.model.schema.isObject( block ) ) {
 			value = this._prepareNewInlineElementValue( value, selection );
 			this.enabledStyles = this.styles.getInlineElementsNames();
-		}
 
-		if ( block ) {
-			value = this._prepareNewBlockElementValue( value, block );
+			if ( block ) {
+				value = this._prepareNewBlockElementValue( value, block );
+			}
 		}
 
 		this.isEnabled = this.enabledStyles.length > 0;
@@ -82,8 +81,13 @@ export default class StyleCommand extends Command {
 	 * @param {TODO} styleName
 	 */
 	execute( styleName ) {
-		// TODO: error message.
 		if ( !this.enabledStyles.includes( styleName ) ) {
+			/**
+			 * TODO: describe
+			 *
+			 * @error style-command-executed-with-incorrect-style-name
+			 */
+			logWarning( 'style-command-executed-with-incorrect-style-name' );
 			return;
 		}
 
@@ -92,57 +96,30 @@ export default class StyleCommand extends Command {
 		const doc = model.document;
 		const selection = doc.selection;
 
-		model.change( writer => {
-			const selectedBlockElement = this._getSelectedBlockElement( selection );
-			const definition = this.styles.getDefinitionsByName( styleName );
-			const { classes, modelElements } = definition;
-			const data = { writer, styleName, classes };
+		const selectedBlockElement = first( selection.getSelectedBlocks() );
+		const definition = this.styles.getDefinitionsByName( styleName );
 
-			if ( selectedBlockElement ) {
-				this._handleClasses( data, selectedBlockElement );
-				return;
-			}
-
-			if ( selection.isCollapsed ) {
-				this._handleClasses( data, selection );
-				return;
-			}
-
-			const attributeElement = modelElements.find( attributeName => attributeName.startsWith( 'html' ) );
-			const ranges = model.schema.getValidRanges( selection.getRanges(), attributeElement );
-			this._handleClasses( data, ranges );
-		} );
+		if ( selectedBlockElement && definition.isBlock ) {
+			this._handleStyleUpdate( definition, selectedBlockElement );
+		} else {
+			this._handleStyleUpdate( definition, selection );
+		}
 	}
 
 	/**
 	 * TODO
 	 *
-	 * @param {TODO} data
+	 * @param {TODO} definition
 	 * @param {TODO} selectable
 	 */
-	_handleClasses( data, selectable ) {
-		const { writer, styleName, classes } = data;
+	_handleStyleUpdate( definition, selectable ) {
+		const { name, element, classes } = definition;
 
-		if ( this.value.includes( styleName ) ) {
-			removeClass( writer, selectable, classes );
+		if ( this.value.includes( name ) ) {
+			this.htmlSupport.removeModelHtmlClass( element, classes, selectable );
 		} else {
-			addClass( writer, selectable, classes );
+			this.htmlSupport.addModelHtmlClass( element, classes, selectable );
 		}
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @param {TODO} selection
-	 */
-	_getSelectedBlockElement( selection ) {
-		const isInline = !selection.getSelectedElement();
-
-		if ( isInline ) {
-			return first( selection.getSelectedBlocks() );
-		}
-
-		return selection.getSelectedElement();
 	}
 
 	/**
@@ -198,12 +175,8 @@ export default class StyleCommand extends Command {
 			this._getValueFromBlockElement() :
 			this._getValueFromFirstAllowedNode( attribute );
 
-		if ( !classes ) {
-			return value;
-		}
-
 		for ( const htmlClass of classes ) {
-			const { name } = this.styles.getDefinitionsByClassName( htmlClass );
+			const { name } = this.styles.getDefinitionsByClassName( htmlClass ) || {};
 
 			value.push( name );
 		}
@@ -239,7 +212,7 @@ export default class StyleCommand extends Command {
 		if ( selection.isCollapsed ) {
 			const attribute = selection.getAttribute( attributeName );
 
-			if ( attribute && Object.prototype.hasOwnProperty.call( attribute, 'classes' ) ) {
+			if ( attribute && attribute.classes ) {
 				return attribute.classes;
 			}
 		}

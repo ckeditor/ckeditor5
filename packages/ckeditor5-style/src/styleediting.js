@@ -78,14 +78,15 @@ class Styles {
 	 */
 	_prepareDefinitionsMapping() {
 		for ( const type of this.styleTypes ) {
-			for ( const { modelElements, name, element, classes } of this.styleDefinitions[ type ] ) {
+			for ( const { modelElements, name, element, classes, isBlock } of this.styleDefinitions[ type ] ) {
 				for ( const modelElement of modelElements ) {
 					const currentValue = this.elementToDefinition.get( modelElement ) || [];
 					const newValue = [ ...currentValue, { name, element, classes } ];
 					this.elementToDefinition.set( modelElement, newValue );
 				}
 
-				this.nameToDefinition.set( name, { name, element, classes } );
+				this.classToDefinition.set( classes.join( ' ' ), { name, element, classes } );
+				this.nameToDefinition.set( name, { name, element, classes, isBlock } );
 			}
 		}
 	}
@@ -109,6 +110,13 @@ class Styles {
 	 */
 	getDefinitionsByName( name ) {
 		return this.nameToDefinition.get( name );
+	}
+
+	/**
+	 * TODO
+	 */
+	getDefinitionsByClassName( className ) {
+		return this.classToDefinition.get( className );
 	}
 }
 

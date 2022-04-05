@@ -16,9 +16,7 @@
 			"htmlOutput": [
 				{
 					"elements": "*",
-					"attributes": "*",
 					"classes": "*",
-					"styles": "*",
 					"_comment": "The plugin can output any arbitrary HTML depending on its configuration."
 				}
 			]

@@ -35,8 +35,6 @@ export function normalizeConfig( dataSchema, styleDefinitions = [] ) {
 		inline: []
 	};
 
-	// Use DataSchema here. But to do that, elements must be enabled in GHS first.
-	// TODO: isBlock reconsider changing to type
 	for ( const definition of styleDefinitions ) {
 		const matchingDefinitions = Array.from( dataSchema.getDefinitionsForView( definition.element ) );
 		const modelElements = matchingDefinitions.map( ( { model } ) => model );
