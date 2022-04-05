@@ -2756,6 +2756,26 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
+			it( 'should remove all classes from a collapsed selection', () => {
+				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'htmlCite', {
+						classes: [ 'foo', 'bar' ]
+					} );
+				} );
+
+				htmlSupport.removeModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
+
+				expect( getModelData( model ) ).to.deep.equal(
+					'<paragraph>foo[]bar</paragraph>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<p>foobar</p>'
+				);
+			} );
+
 			it( 'should add new classes if no styles or other attributes are present', () => {
 				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 
@@ -3151,6 +3171,109 @@ describe( 'DataFilter', () => {
 				expect( editor.getData() ).to.equal(
 					'<p><cite class="foo bar" style="background-color:blue;font-size:10px;">foobar</cite></p>'
 				);
+			} );
+
+			it( 'should not add new styles if the attribute is forbidden', () => {
+				setModelData( model, '<paragraph>[foobar]</paragraph>' );
+
+				model.schema.addAttributeCheck( ( context, attributeName ) => {
+					if ( attributeName == 'htmlCite' ) {
+						return false;
+					}
+				} );
+
+				htmlSupport.setModelHtmlStyles( 'cite', {
+					'background-color': 'blue',
+					color: 'red'
+				}, root.getChild( 0 ).getChild( 0 ) );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foobar</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>foobar</p>'
+				);
+			} );
+
+			it( 'should not add new styles if the attribute is forbidden (collapsed selection)', () => {
+				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+				model.schema.addAttributeCheck( ( context, attributeName ) => {
+					if ( attributeName == 'htmlCite' ) {
+						return false;
+					}
+				} );
+
+				htmlSupport.setModelHtmlStyles( 'cite', {
+					'background-color': 'blue',
+					color: 'red'
+				}, model.document.selection );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foobar</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>foobar</p>'
+				);
+			} );
+
+			describe( 'on ranges', () => {
+				beforeEach( () => {
+					root = model.document.getRoot();
+
+					dataFilter.allowElement( 'cite' );
+					dataFilter.allowAttributes( { name: 'cite', styles: true } );
+					dataFilter.allowAttributes( { name: 'cite', classes: true } );
+					dataFilter.allowAttributes( { name: 'cite', attributes: true } );
+				} );
+
+				it( 'should add new classes', () => {
+					editor.setData( '<p>foobar</p>' );
+
+					htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.createRange(
+						model.createPositionAt( root.getChild( 0 ), 1 ),
+						model.createPositionAt( root.getChild( 0 ), 4 )
+					) );
+
+					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+						data: '<paragraph>f<$text htmlCite="(1)">oob</$text>ar</paragraph>',
+						attributes: {
+							1: {
+								classes: [ 'foo', 'bar' ]
+							}
+						}
+					} );
+
+					expect( editor.getData() ).to.equal(
+						'<p>f<cite class="foo bar">oob</cite>ar</p>'
+					);
+				} );
+
+				it( 'should remove classes', () => {
+					editor.setData( '<p><cite class="foo">foobar</cite></p>' );
+
+					htmlSupport.removeModelHtmlClass( 'cite', 'foo', model.createRange(
+						model.createPositionAt( root.getChild( 0 ), 1 ),
+						model.createPositionAt( root.getChild( 0 ), 6 )
+					) );
+
+					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+						data: '<paragraph><$text htmlCite="(1)">f</$text>oobar</paragraph>',
+						attributes: {
+							1: {
+								classes: [ 'foo' ]
+							}
+						}
+					} );
+
+					expect( editor.getData() ).to.equal(
+						'<p><cite class="foo">f</cite>oobar</p>'
+					);
+				} );
 			} );
 		} );
 	} );

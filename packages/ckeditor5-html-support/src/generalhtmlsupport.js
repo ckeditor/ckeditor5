@@ -237,12 +237,14 @@ function* getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) {
 
 // Translates a given selectable to an iterable of ranges.
 function getValidRangesForSelectable( model, selectable, ghsAttributeName ) {
-	if ( selectable.is( 'selection' ) ) {
-		return model.schema.getValidRanges( selectable.getRanges(), ghsAttributeName );
-	} else if ( selectable.is( 'range' ) ) {
-		return model.schema.getValidRanges( [ selectable ], ghsAttributeName );
-	} else if ( model.schema.checkAttribute( selectable, ghsAttributeName ) ) {
-		return [ model.createRangeOn( selectable ) ];
+	if ( selectable.is( 'node' ) || selectable.is( '$text' ) || selectable.is( '$textProxy' ) ) {
+		if ( model.schema.checkAttribute( selectable, ghsAttributeName ) ) {
+			return [ model.createRangeOn( selectable ) ];
+		} else {
+			return [];
+		}
+	} else {
+		return model.schema.getValidRanges( model.createSelection( selectable ).getRanges(), ghsAttributeName );
 	}
 }
 
