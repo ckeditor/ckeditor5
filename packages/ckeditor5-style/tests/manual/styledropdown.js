@@ -88,31 +88,32 @@ const config = {
 		Style
 	],
 	cloudServices: CS_CONFIG,
-	toolbar: [
-		'style',
-		'|',
-		'heading',
-		'|',
-		'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',
-		'|',
-		'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
-		'|',
-		'bulletedList', 'numberedList', 'todoList',
-		'|',
-		'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
-		'|',
-		'htmlEmbed',
-		'|',
-		'alignment', 'outdent', 'indent',
-		'|',
-		'pageBreak', 'horizontalLine',
-		'|',
-		'textPartLanguage',
-		'|',
-		'sourceEditing',
-		'|',
-		'undo', 'redo'
-	],
+	toolbar: {
+		items: [
+			'sourceEditing',
+			'|',
+			'style',
+			'|',
+			'heading',
+			'|',
+			'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',
+			'|',
+			'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+			'-',
+			'bulletedList', 'numberedList', 'todoList',
+			'|',
+			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
+			'|',
+			'htmlEmbed',
+			'|',
+			'alignment', 'outdent', 'indent',
+			'|',
+			'pageBreak', 'horizontalLine',
+			'|',
+			'textPartLanguage'
+		],
+		shouldNotGroupWhenFull: true
+	},
 	table: {
 		contentToolbar: [
 			'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
@@ -281,22 +282,22 @@ ClassicEditor
 				},
 
 				{
-					name: 'Foo',
+					name: 'span.Foo',
 					element: 'span',
 					classes: [ 'Foo' ]
 				},
 				{
-					name: 'Bar',
+					name: 'span.Bar',
 					element: 'span',
 					classes: [ 'Bar' ]
 				},
 				{
-					name: 'Baz',
+					name: 'strong.Baz',
 					element: 'strong',
 					classes: [ 'Baz' ]
 				},
 				{
-					name: 'Qux',
+					name: 'code.Qux',
 					element: 'code',
 					classes: [ 'Qux' ]
 				}
