@@ -6,11 +6,11 @@ modified_at: 2022-03-31
 
 # Styles
 
-The {@link module:style/style~Style Style} feature lets you completely control the way the edited content is presented. It lets the user apply pre-configured visual styles, allowing for control of font face, color and other {@link features/basic-styles basic text styles} of the edited content.
+The {@link module:style/style~Style Style} feature lets you completely control the way the edited content is presented. It adds a dropdown to the CKEditor 5 toolbar which lets the user apply pre-configured visual styles, allowing for control of font face, color and other {@link features/basic-styles basic text styles} of the edited content. The {@link features/remove-format remove formatting} feature can be used to clear those styles.
 
 ## Demo
 
-TODO
+{@snippet features/styles}
 
 ## Related features
 
