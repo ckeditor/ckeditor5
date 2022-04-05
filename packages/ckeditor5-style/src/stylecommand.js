@@ -84,15 +84,15 @@ export default class StyleCommand extends Command {
 	 * style type (inline or block):
 	 *
 	 * * When applying inline styles:
-	 * * * If the selection is on a range, the command applies the style classes to all nodes in that range.
-	 * * * If the selection is collapsed in a non-empty node, the command applies the style classes to the
+	 *   * If the selection is on a range, the command applies the style classes to all nodes in that range.
+	 *   * If the selection is collapsed in a non-empty node, the command applies the style classes to the
 	 * {@link module:engine/model/document~Document#selection} itself (note that typed characters copy style classes from the selection).
 	 *
 	 * * When applying block styles:
-	 * * * If the selection is on a range, the command applies the style classes to the nearest block parent element.
+	 *   * If the selection is on a range, the command applies the style classes to the nearest block parent element.
 	 *
 	 * * When selection is set on a widget object:
-	 * * * Do nothing. Widgets are not yet supported by the style command.
+	 *   * Do nothing. Widgets are not yet supported by the style command.
 	 *
 	 * @fires execute
 	 * @param {String} styleName Style name matching the one defined in the config.
@@ -220,18 +220,23 @@ export default class StyleCommand extends Command {
 	 */
 	_getValueFromFirstAllowedNode( attributeName ) {
 		const model = this.editor.model;
+		const schema = model.schema;
 		const selection = model.document.selection;
 
 		if ( selection.isCollapsed ) {
-			const { classes } = selection.getAttribute( attributeName );
-			return classes;
+			const { classes } = selection.getAttribute( attributeName ) || {};
+			return classes || [];
 		}
 
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
-				const { classes } = item.getAttribute( attributeName );
-				return classes;
+				if ( schema.checkAttribute( item, attributeName ) ) {
+					const { classes } = item.getAttribute( attributeName ) || {};
+					return classes || [];
+				}
 			}
 		}
+
+		return [];
 	}
 }
