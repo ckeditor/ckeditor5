@@ -15,7 +15,7 @@ Check out these examples of different editor integrations. See the predefined bu
 	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through CKEditor 5 examples. Visit the {@link features/index Features} section to see even more examples!
 </info-box>
 
-## Related links
+**Related links**
 
  * {@link installation/getting-started/quick-start CKEditor 5 installation} &ndash; Learn how to install, integrate and configure CKEditor 5. More complex aspects, like creating custom builds, are explained here, too.
  * {@link features/index CKEditor 5 features} &ndash; Learn more about the available CKEditor 5 features.

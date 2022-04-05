@@ -46,6 +46,14 @@ describe( 'PageBreakEditing', () => {
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'pageBreak' ) ).to.be.false;
 	} );
 
+	it( 'inherits attributes from $blockObject', () => {
+		model.schema.extend( '$blockObject', {
+			allowAttributes: 'foo'
+		} );
+
+		expect( model.schema.checkAttribute( 'pageBreak', 'foo' ) ).to.be.true;
+	} );
+
 	it( 'should register pageBreak command', () => {
 		expect( editor.commands.get( 'pageBreak' ) ).to.be.instanceOf( PageBreakCommand );
 	} );

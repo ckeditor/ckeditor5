@@ -516,7 +516,7 @@ describe( 'WidgetResize', () => {
 				.elementToElement( {
 					model: 'inline-widget',
 					view: ( modelItem, { writer } ) => {
-						const span = writer.createContainerElement( 'span', null, { isAllowedInsideAttributeElement: true } );
+						const span = writer.createContainerElement( 'span' );
 
 						return toWidget( span, writer );
 					}

@@ -151,8 +151,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * the view element. Note that the view will be reconverted if any of the listed attributes changes.
  	 * @param {Boolean} [config.model.children] Specifies whether the view element requires reconversion if the list
 	 * of the model child nodes changed.
-	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
-	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
+	 * @param {module:engine/view/elementdefinition~ElementDefinition|module:engine/conversion/downcasthelpers~ElementCreatorFunction}
+	 * config.view A view element definition or a function that takes the model element and
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a view container element.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
@@ -377,7 +378,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {Object} config Conversion configuration.
 	 * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
 	 * of `String`s with possible values if the model attribute is an enumerable.
-	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function|Object} config.view A view element definition or a function
+	 * @param {module:engine/view/elementdefinition~ElementDefinition|Object|
+	 * module:engine/conversion/downcasthelpers~AttributeElementCreatorFunction} config.view A view element definition or a function
 	 * that takes the model attribute value and
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API} as parameters and returns a view
 	 * attribute element. If `config.model.values` is given, `config.view` should be an object assigning values from `config.model.values`
@@ -459,8 +461,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {Object} config Conversion configuration.
 	 * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values, [ name ] }` object describing
 	 * the attribute key, possible values and, optionally, an element name to convert from.
-	 * @param {String|Object|Function} config.view A view attribute key, or a `{ key, value }` object or a function that takes
-	 * the model attribute value and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
+	 * @param {String|Object|module:engine/conversion/downcasthelpers~AttributeCreatorFunction} config.view A view attribute key,
+	 * or a `{ key, value }` object or a function that takes the model attribute value and
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a `{ key, value }` object. If the `key` is `'class'`, the `value` can be a `String` or an
 	 * array of `String`s. If the `key` is `'style'`, the `value` is an object with key-value pairs. In other cases, `value` is a `String`.
 	 * If `config.model.values` is set, `config.view` should be an object assigning values from `config.model.values` to
@@ -971,10 +974,10 @@ export function wrap( elementCreator ) {
 
 		// Recreate current wrapping node. It will be used to unwrap view range if the attribute value has changed
 		// or the attribute was removed.
-		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi );
+		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi, data );
 
 		// Create node to wrap with.
-		const newViewElement = elementCreator( data.attributeNewValue, conversionApi );
+		const newViewElement = elementCreator( data.attributeNewValue, conversionApi, data );
 
 		if ( !oldViewElement && !newViewElement ) {
 			return;
@@ -1037,7 +1040,7 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 			return;
 		}
 
-		const viewElement = elementCreator( data.item, conversionApi );
+		const viewElement = elementCreator( data.item, conversionApi, data );
 
 		if ( !viewElement ) {
 			return;
@@ -1085,7 +1088,7 @@ export function insertStructure( elementCreator, consumer ) {
 		conversionApi.writer._registerSlotFactory( createSlotFactory( data.item, slotsMap, conversionApi ) );
 
 		// View creation.
-		const viewElement = elementCreator( data.item, conversionApi );
+		const viewElement = elementCreator( data.item, conversionApi, data );
 
 		conversionApi.writer._clearSlotFactory();
 
@@ -1376,8 +1379,8 @@ function changeAttribute( attributeCreator ) {
 			return;
 		}
 
-		const oldAttribute = attributeCreator( data.attributeOldValue, conversionApi );
-		const newAttribute = attributeCreator( data.attributeNewValue, conversionApi );
+		const oldAttribute = attributeCreator( data.attributeOldValue, conversionApi, data );
+		const newAttribute = attributeCreator( data.attributeNewValue, conversionApi, data );
 
 		if ( !oldAttribute && !newAttribute ) {
 			return;
@@ -1653,7 +1656,8 @@ function removeHighlight( highlightDescriptor ) {
 // @param {String|Object} config.model The description or a name of the model element to convert.
 // @param {String|Array.<String>} [config.model.attributes] List of attributes triggering element reconversion.
 // @param {Boolean} [config.model.children] Should reconvert element if the list of model child nodes changed.
-// @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view
+// @param {module:engine/view/elementdefinition~ElementDefinition|module:engine/conversion/downcasthelpers~ElementCreatorFunction}
+// config.view
 // @returns {Function} Conversion helper.
 function downcastElementToElement( config ) {
 	config = cloneDeep( config );
@@ -1760,10 +1764,11 @@ function downcastElementToStructure( config ) {
 // @param {Object} config Conversion configuration.
 // @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
 // of `String`s with possible values if the model attribute is an enumerable.
-// @param {module:engine/view/elementdefinition~ElementDefinition|Function|Object} config.view A view element definition or a function
-// that takes the model attribute value and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
-// as parameters and returns a view attribute element. If `config.model.values` is
-// given, `config.view` should be an object assigning values from `config.model.values` to view element definitions or functions.
+// @param {module:engine/view/elementdefinition~ElementDefinition|module:engine/conversion/downcasthelpers~AttributeElementCreatorFunction|
+// Object} config.view A view element definition or a function that takes the model attribute value and
+// {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} as parameters and returns a view attribute element.
+// If `config.model.values` is given, `config.view` should be an object assigning values from `config.model.values` to view element
+// definitions or functions.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 // @returns {Function} Conversion helper.
 function downcastAttributeToElement( config ) {
@@ -1798,9 +1803,10 @@ function downcastAttributeToElement( config ) {
 // @param {Object} config Conversion configuration.
 // @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values, [ name ] }` object describing
 // the attribute key, possible values and, optionally, an element name to convert from.
-// @param {String|Object|Function} config.view A view attribute key, or a `{ key, value }` object or a function that takes
-// the model attribute value and returns a `{ key, value }` object. If `key` is `'class'`, `value` can be a `String` or an
-// array of `String`s. If `key` is `'style'`, `value` is an object with key-value pairs. In other cases, `value` is a `String`.
+// @param {String|Object|module:engine/conversion/downcasthelpers~AttributeCreatorFunction} config.view A view attribute key,
+// or a `{ key, value }` object or a function that takes the model attribute value and returns a `{ key, value }` object.
+// If `key` is `'class'`, `value` can be a `String` or an array of `String`s. If `key` is `'style'`, `value` is an object with
+// key-value pairs. In other cases, `value` is a `String`.
 // If `config.model.values` is set, `config.view` should be an object assigning values from `config.model.values` to
 // `{ key, value }` objects or a functions.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
@@ -2387,16 +2393,81 @@ function defaultConsumer( item, consumable, { preflight } = {} ) {
  */
 
 /**
+ * A view element creator function that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi
+ * downcast conversion API} as parameters and returns a view container element.
+ *
+ * @callback module:engine/conversion/downcasthelpers~ElementCreatorFunction
+ * @param {module:engine/model/element~Element} element The model element to be converted to the view structure.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion interface.
+ * @param {Object} data Additional information about the change (same as for
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert`} event).
+ * @param {module:engine/model/item~Item} data.item Inserted item.
+ * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
+ * @returns {module:engine/view/element~Element} The view element.
+ *
+ * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement
+ * @see module:engine/conversion/downcasthelpers~insertElement
+ */
+
+/**
  * A function that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast
  * conversion API} as parameters and returns a view container element with slots for model child nodes to be converted into.
  *
  * @callback module:engine/conversion/downcasthelpers~StructureCreatorFunction
  * @param {module:engine/model/element~Element} element The model element to be converted to the view structure.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion interface.
+ * @param {Object} data Additional information about the change (same as for
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert`} event).
+ * @param {module:engine/model/item~Item} data.item Inserted item.
+ * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
  * @returns {module:engine/view/element~Element} The view structure with slots for model child nodes.
  *
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
  * @see module:engine/conversion/downcasthelpers~insertStructure
+ */
+
+/**
+ * A view element creator function that takes the model attribute value and
+ * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API} as parameters and returns a view
+ * attribute element.
+ *
+ * @callback module:engine/conversion/downcasthelpers~AttributeElementCreatorFunction
+ * @param {*} attributeValue The model attribute value to be converted to the view attribute element.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion interface.
+ * @param {Object} data Additional information about the change (same as for
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute`} event).
+ * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} data.item Changed item
+ * or converted selection.
+ * @param {module:engine/model/range~Range} data.range Range spanning over changed item or selection range.
+ * @param {String} data.attributeKey Attribute key.
+ * @param {*} data.attributeOldValue Attribute value before the change. This is `null` when selection attribute is converted.
+ * @param {*} data.attributeNewValue New attribute value.
+ * @returns {module:engine/view/attributeelement~AttributeElement} The view attribute element.
+ *
+ * @see module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement
+ * @see module:engine/conversion/downcasthelpers~wrap
+ */
+
+/**
+ * A function that takes the model attribute value and
+ * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
+ * as parameters.
+ *
+ * @callback module:engine/conversion/downcasthelpers~AttributeCreatorFunction
+ * @param {*} attributeValue The model attribute value to be converted to the view attribute element.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion interface.
+ * @param {Object} data Additional information about the change (same as for
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute`} event).
+ * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} data.item Changed item
+ * or converted selection.
+ * @param {module:engine/model/range~Range} data.range Range spanning over changed item or selection range.
+ * @param {String} data.attributeKey Attribute key.
+ * @param {*} data.attributeOldValue Attribute value before the change. This is `null` when selection attribute is converted.
+ * @param {*} data.attributeNewValue New attribute value.
+ * @returns {Object|null} A `{ key, value }` object. If `key` is `'class'`, `value` can be a `String` or an
+ * array of `String`s. If `key` is `'style'`, `value` is an object with key-value pairs. In other cases, `value` is a `String`.
+ *
+ * @see module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToAttribute
  */
 
 /**
