@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor</title>
+	<meta http-equiv="Content-Security-Policy" content="
+			script-src 'self' https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js 'unsafe-inline' 'unsafe-eval';
+			script-src-elem 'self' https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js 'unsafe-inline'
+			">
+	<script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
+</head>
+
+<body>
+	<p>
+		<button id="destroyEditor">Destroy editor</button>
+		<button id="initEditor">Init editor</button>
+	</p>
+
+	<div id="editor">This is some sample content.</div>
+	<script>
+
+		function initEditor() {
+			let editor;
+
+			ClassicEditor
+				.create(document.querySelector('#editor'))
+				.then(newEditor => {
+					editor = newEditor;
+					document.getElementById('destroyEditor').addEventListener('click', destroyEditor);
+				})
+				.catch(error => {
+					console.error(error);
+				});
+
+			function destroyEditor() {
+				editor.destroy().then(() => console.log('Editor was destroyed'));
+				editor = null;
+				document.getElementById('destroyEditor').removeEventListener('click', destroyEditor);
+			}
+		}
+		document.getElementById('initEditor').addEventListener('click', initEditor);
+
+	</script>
+</body>
+
+</html>
