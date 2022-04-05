@@ -238,8 +238,7 @@ export function downcastSourcesAttribute( imageUtils ) {
 			const pictureElement = viewWriter.createContainerElement( 'picture', null,
 				data.attributeNewValue.map( sourceAttributes => {
 					return viewWriter.createEmptyElement( 'source', sourceAttributes );
-				} ),
-				{ isAllowedInsideAttributeElement: true }
+				} )
 			);
 
 			// Collect all wrapping attribute elements.

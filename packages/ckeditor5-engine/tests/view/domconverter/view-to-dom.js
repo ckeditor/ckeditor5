@@ -1095,6 +1095,120 @@ describe( 'DomConverter', () => {
 			expect( domChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
 			expect( domChildren[ 1 ].childNodes.length ).to.equal( 0 );
 		} );
+
+		describe( 'transparentRendering custom property', () => {
+			it( 'should be transparent in the data pipeline', () => {
+				converter.renderingMode = 'data';
+				converter.blockFillerMode = 'nbsp';
+
+				const warnStub = testUtils.sinon.stub( console, 'warn' );
+
+				const viewList = parse(
+					'<container:div>' +
+						'<attribute:ul>' +
+							'<attribute:li>' +
+								'<container:p>foo<attribute:b>bar</attribute:b></container:p>' +
+							'</attribute:li>' +
+							'<attribute:li>' +
+								'<container:p>abc</container:p>' +
+								'<container:p>123</container:p>' +
+							'</attribute:li>' +
+						'</attribute:ul>' +
+					'</container:div>'
+				);
+
+				const bogusParagraph = viewList.getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+				bogusParagraph._setCustomProperty( 'dataPipeline:transparentRendering', true );
+
+				const domDivChildren = Array.from( converter.viewChildrenToDom( viewList, document ) );
+
+				expect( domDivChildren.length ).to.equal( 1 );
+				expect( domDivChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'ul' );
+
+				const domUlChildren = Array.from( domDivChildren[ 0 ].childNodes );
+
+				expect( domUlChildren.length ).to.equal( 2 );
+				expect( domUlChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'li' );
+				expect( domUlChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'li' );
+
+				const domUl1Children = Array.from( domUlChildren[ 0 ].childNodes );
+				const domUl2Children = Array.from( domUlChildren[ 1 ].childNodes );
+
+				expect( domUl1Children.length ).to.equal( 2 );
+				expect( domUl1Children[ 0 ].data ).to.equal( 'foo' );
+				expect( domUl1Children[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+				expect( domUl1Children[ 1 ].firstChild.data ).to.equal( 'bar' );
+
+				expect( domUl2Children.length ).to.equal( 2 );
+				expect( domUl2Children[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
+				expect( domUl2Children[ 1 ].tagName.toLowerCase() ).to.equal( 'p' );
+				expect( domUl2Children[ 0 ].firstChild.data ).to.equal( 'abc' );
+				expect( domUl2Children[ 1 ].firstChild.data ).to.equal( '123' );
+
+				sinon.assert.notCalled( warnStub );
+			} );
+
+			it( 'should not be transparent in the editing pipeline', () => {
+				converter.renderingMode = 'editing';
+				converter.blockFillerMode = 'br';
+
+				const warnStub = testUtils.sinon.stub( console, 'warn' );
+
+				const viewList = parse(
+					'<container:div>' +
+						'<attribute:ul>' +
+							'<attribute:li>' +
+								'<container:p>foo<attribute:b>bar</attribute:b></container:p>' +
+							'</attribute:li>' +
+							'<attribute:li>' +
+								'<container:p>abc</container:p>' +
+								'<container:p>123</container:p>' +
+							'</attribute:li>' +
+						'</attribute:ul>' +
+					'</container:div>'
+				);
+
+				const bogusParagraph = viewList.getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+				bogusParagraph._setCustomProperty( 'dataPipeline:transparentRendering', true );
+
+				const domDivChildren = Array.from( converter.viewChildrenToDom( viewList, document ) );
+
+				expect( domDivChildren.length ).to.equal( 1 );
+				expect( domDivChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'ul' );
+
+				const domUlChildren = Array.from( domDivChildren[ 0 ].childNodes );
+
+				expect( domUlChildren.length ).to.equal( 2 );
+				expect( domUlChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'li' );
+				expect( domUlChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'li' );
+
+				const domUl1Children = Array.from( domUlChildren[ 0 ].childNodes );
+				const domUl2Children = Array.from( domUlChildren[ 1 ].childNodes );
+
+				expect( domUl1Children.length ).to.equal( 1 );
+				expect( domUl1Children[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
+				expect( domUl1Children[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+				expect( domUl1Children[ 0 ].childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+				expect( domUl1Children[ 0 ].childNodes[ 1 ].firstChild.data ).to.equal( 'bar' );
+
+				expect( domUl2Children.length ).to.equal( 2 );
+				expect( domUl2Children[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
+				expect( domUl2Children[ 1 ].tagName.toLowerCase() ).to.equal( 'p' );
+				expect( domUl2Children[ 0 ].firstChild.data ).to.equal( 'abc' );
+				expect( domUl2Children[ 1 ].firstChild.data ).to.equal( '123' );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-transparent-rendering-unsupported-in-editing-pipeline/ ),
+					{
+						viewElement: bogusParagraph
+					},
+					sinon.match.string // Link to the documentation
+				);
+			} );
+		} );
 	} );
 
 	describe( 'viewPositionToDom()', () => {
