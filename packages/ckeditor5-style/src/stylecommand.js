@@ -206,29 +206,18 @@ export default class StyleCommand extends Command {
 	 */
 	_getValueFromFirstAllowedNode( attributeName ) {
 		const model = this.editor.model;
-		const schema = model.schema;
 		const selection = model.document.selection;
 
 		if ( selection.isCollapsed ) {
-			const attribute = selection.getAttribute( attributeName );
-
-			if ( attribute && attribute.classes ) {
-				return attribute.classes;
-			}
+			const { classes } = selection.getAttribute( attributeName );
+			return classes;
 		}
 
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
-				if ( schema.checkAttribute( item, attributeName ) ) {
-					const { classes } = item.getAttribute( attributeName ) || {};
-
-					if ( classes ) {
-						return classes;
-					}
-				}
+				const { classes } = item.getAttribute( attributeName );
+				return classes;
 			}
 		}
-
-		return [];
 	}
 }
