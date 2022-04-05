@@ -7,7 +7,7 @@
  * @module html-support/conversionutils
  */
 
-import { cloneDeep, isPlainObject } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 
 /**
 * Helper function for downcast converter. Updates the attributes on the given view element.
@@ -76,101 +76,6 @@ export function removeViewAttributes( writer, viewAttributes, viewElement ) {
 }
 
 /**
-* Helper function to update only one attribute from all html attributes on a model element.
-*
-* @param {module:engine/view/downcastwriter~DowncastWriter} writer
-* @param {module:engine/model/element~Element|module:engine/model/text~Text} node Element or text node.
-* @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
-* @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
-* @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
-*/
-export function setModelHtmlAttribute( writer, node, attributeName, attributeKey, attributeValue ) {
-	const attributes = node.getAttribute( attributeName );
-
-	// Do nothing if trying to remove attribute if no attributes present.
-	if ( !attributeValue && !attributes ) {
-		return;
-	}
-
-	const attributeKeys = attributes && Object.keys( attributes );
-
-	if ( isAttributeValueEmpty( attributeValue ) ) {
-		// If someone wants to remove attribute by setting its value to null, empty string, empty object or empty array
-		// and this attribute is the only one present in attributes object, we should remove the whole attribute.
-		if ( attributeKeys && attributeKeys.length === 1 && attributeKeys[ 0 ] === attributeKey ) {
-			if ( node.is( 'selection' ) ) {
-				writer.removeSelectionAttribute( attributeName );
-			} else {
-				writer.removeAttribute( attributeName, node );
-			}
-
-			return;
-		}
-	}
-
-	const newAttributes = {};
-
-	if ( attributes ) {
-		for ( const [ attribute, value ] of Object.entries( attributes ) ) {
-			if ( attribute === attributeKey ) {
-				if ( !isAttributeValueEmpty( attributeValue ) ) {
-					newAttributes[ attribute ] = attributeValue;
-				}
-				continue;
-			}
-
-			newAttributes[ attribute ] = value;
-		}
-	}
-
-	if ( !newAttributes[ attributeKey ] && attributeValue ) {
-		newAttributes[ attributeKey ] = attributeValue;
-	}
-
-	if ( node.is( 'selection' ) ) {
-		writer.setSelectionAttribute( attributeName, newAttributes );
-	} else {
-		writer.setAttribute( attributeName, newAttributes, node );
-	}
-}
-
-/**
-* Helper function to update only one attribute from all html attributes on a model selection.
-*
-* @param {module:engine/model/model~Model} model writer
-* @param {module:engine/view/downcastwriter~DowncastWriter} writer
-* @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
-* @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
-* @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
-*/
-export function setModelSelectionHtmlAttribute( model, writer, attributeName, attributeKey, attributeValue ) {
-	const ranges = model.schema.getValidRanges( model.document.selection.getRanges(), attributeName );
-
-	for ( const range of ranges ) {
-		for ( const item of range.getItems() ) {
-			setModelHtmlAttribute( writer, item, attributeName, attributeKey, attributeValue );
-		}
-	}
-}
-
-// Checks if attribute value is empty or not.
-//
-// @private
-// @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue
-// @return {Boolean} True if value is empty false otherwise
-function isAttributeValueEmpty( attributeValue ) {
-	if ( isPlainObject( attributeValue ) ) {
-		return Object.keys( attributeValue ).length === 0;
-	}
-
-	if ( Array.isArray( attributeValue ) ) {
-		return attributeValue.length === 0;
-	}
-
-	return !attributeValue;
-}
-
-/**
 * Merges view element attribute objects.
 *
 * @param {Object} target
@@ -193,4 +98,8 @@ export function mergeViewElementAttributes( target, source ) {
 	}
 
 	return result;
+}
+
+export function setModelHtmlAttribute() {
+	throw new Error( '!!' );
 }

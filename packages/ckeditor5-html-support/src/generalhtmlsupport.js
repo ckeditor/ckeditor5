@@ -19,7 +19,6 @@ import MediaEmbedElementSupport from './integrations/mediaembed';
 import ScriptElementSupport from './integrations/script';
 import TableElementSupport from './integrations/table';
 import StyleElementSupport from './integrations/style';
-import { setModelHtmlAttribute, setModelSelectionHtmlAttribute } from './conversionutils';
 
 /**
  * The General HTML Support feature.
@@ -69,50 +68,38 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * TODO
 	 *
+	 * @param {String} viewElementName
+	 * @returns {String}
+	 */
+	getGhsAttributeNameForElement( viewElementName ) {
+		const dataSchema = this.editor.plugins.get( 'DataSchema' );
+		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
+
+		if ( definitions && definitions.length && definitions[ 0 ].isInline ) {
+			return definitions[ 0 ].model;
+		}
+
+		return 'htmlAttributes';
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {String} viewElementName
 	 * @param {String|Array.<String>} className
 	 * @param {module:engine/model/selection~Selectable} selectable
-	 * @param {String} htmlAttributeName
 	 */
-	addModelHtmlClass( className, selectable, htmlAttributeName ) {
+	addModelHtmlClass( viewElementName, className, selectable ) {
 		const model = this.editor.model;
+		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
 		model.change( writer => {
-			if ( selectable.is( 'selection' ) && selectable.isCollapsed ) {
-				if ( model.schema.checkAttributeInSelection( selectable, htmlAttributeName ) ) {
-					const attributeValue = selectable.getAttribute( htmlAttributeName );
-					const classes = new Set( attributeValue && attributeValue.classes || [] );
-
-					for ( const name of toArray( className ) ) {
-						classes.add( name );
+			for ( const item of getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) ) {
+				modifyGhsAttribute( writer, item, ghsAttributeName, 'classes', classes => {
+					for ( const value of toArray( className ) ) {
+						classes.add( value );
 					}
-
-					setModelHtmlAttribute( writer, selectable, htmlAttributeName, 'classes', Array.from( classes ) );
-				}
-
-				return;
-			}
-
-			let ranges = [];
-
-			if ( selectable.is( 'range' ) ) {
-				ranges = model.schema.getValidRanges( [ selectable ], htmlAttributeName );
-			} else if ( selectable.is( 'selection' ) ) {
-				ranges = model.schema.getValidRanges( selectable.getRanges(), htmlAttributeName );
-			} else if ( model.schema.checkAttribute( selectable, htmlAttributeName ) ) {
-				ranges = [ model.createRangeOn( selectable ) ];
-			}
-
-			for ( const range of ranges ) {
-				for ( const item of range.getItems( { shallow: true } ) ) {
-					const attributeValue = item.getAttribute( htmlAttributeName );
-					const classes = new Set( attributeValue && attributeValue.classes || [] );
-
-					for ( const name of toArray( className ) ) {
-						classes.add( name );
-					}
-
-					setModelHtmlAttribute( writer, item, htmlAttributeName, 'classes', Array.from( classes ) );
-				}
+				} );
 			}
 		} );
 	}
@@ -120,84 +107,175 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * TODO
 	 *
+	 * @param {String} viewElementName
 	 * @param {String|Array.<String>} className
 	 * @param {module:engine/model/selection~Selectable} selectable
-	 * @param {String} htmlAttributeName
 	 */
-	removeModelHtmlClass( className, selectable, htmlAttributeName ) {
+	removeModelHtmlClass( viewElementName, className, selectable ) {
 		const model = this.editor.model;
+		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
 		model.change( writer => {
-			if ( selectable.is( 'selection' ) && selectable.isCollapsed ) {
-				if ( model.schema.checkAttributeInSelection( selectable, htmlAttributeName ) ) {
-					const attributeValue = selectable.getAttribute( htmlAttributeName );
-					const classes = new Set( attributeValue && attributeValue.classes || [] );
-
-					for ( const name of toArray( className ) ) {
-						classes.delete( name );
+			for ( const item of getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) ) {
+				modifyGhsAttribute( writer, item, ghsAttributeName, 'classes', classes => {
+					for ( const value of toArray( className ) ) {
+						classes.delete( value );
 					}
-
-					setModelHtmlAttribute( writer, selectable, htmlAttributeName, 'classes', Array.from( classes ) );
-				}
-
-				return;
-			}
-
-			let ranges = [];
-
-			if ( selectable.is( 'range' ) ) {
-				ranges = model.schema.getValidRanges( [ selectable ], htmlAttributeName );
-			} else if ( selectable.is( 'selection' ) ) {
-				ranges = model.schema.getValidRanges( selectable.getRanges(), htmlAttributeName );
-			} else if ( model.schema.checkAttribute( selectable, htmlAttributeName ) ) {
-				ranges = [ model.createRangeOn( selectable ) ];
-			}
-
-			for ( const range of ranges ) {
-				for ( const item of range.getItems( { shallow: true } ) ) {
-					const attributeValue = item.getAttribute( htmlAttributeName );
-					const classes = new Set( attributeValue && attributeValue.classes || [] );
-
-					for ( const name of toArray( className ) ) {
-						classes.delete( name );
-					}
-
-					setModelHtmlAttribute( writer, item, htmlAttributeName, 'classes', Array.from( classes ) );
-				}
+				} );
 			}
 		} );
 	}
 
 	/**
-	 * TODO to remove
-	 * Helper function to update only one attribute from all html attributes on a model element.
+	 * TODO
 	 *
-	 * @protected
-	 * @deprecated
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
-	 * @param {module:engine/model/element~Element|module:engine/model/text~Text} node Element or text node.
-	 * @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
-	 * @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
-	 * @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
+	 * @param {String} viewElementName
+	 * @param {Object} attributes
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 */
-	setModelHtmlAttribute( writer, node, attributeName, attributeKey, attributeValue ) {
-		setModelHtmlAttribute( writer, node, attributeName, attributeKey, attributeValue );
+	setModelHtmlAttributes( viewElementName, attributes, selectable ) {
+		const model = this.editor.model;
+		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
+
+		model.change( writer => {
+			for ( const item of getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) ) {
+				modifyGhsAttribute( writer, item, ghsAttributeName, 'attributes', attributesMap => {
+					for ( const [ key, value ] of Object.entries( attributes ) ) {
+						attributesMap.set( key, value );
+					}
+				} );
+			}
+		} );
 	}
 
 	/**
-	 * TODO to remove
-	 * Helper function to update only one attribute from all html attributes on a model selection.
+	 * TODO
 	 *
-	 * @protected
-	 * @deprecated
-	 * @param {module:engine/model/model~Model} model writer
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
-	 * @param {String} attributeName Attribute name like `htmlAttributes`, `htmlSpan`, `htmlCode` etc.
-	 * @param {'styles'|'classes'|'attributes'} attributeKey Attribute key in the attributes object
-	 * @param {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} attributeValue New attribute value
+	 * @param {String} viewElementName
+	 * @param {String|Array.<String>} attributeName
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 */
-	setModelSelectionHtmlAttribute( model, writer, attributeName, attributeKey, attributeValue ) {
-		setModelSelectionHtmlAttribute( model, writer, attributeName, attributeKey, attributeValue );
+	removeModelHtmlAttributes( viewElementName, attributeName, selectable ) {
+		const model = this.editor.model;
+		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
+
+		model.change( writer => {
+			for ( const item of getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) ) {
+				modifyGhsAttribute( writer, item, ghsAttributeName, 'attributes', attributesMap => {
+					for ( const key of toArray( attributeName ) ) {
+						attributesMap.delete( key );
+					}
+				} );
+			}
+		} );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {String} viewElementName
+	 * @param {Object} styles
+	 * @param {module:engine/model/selection~Selectable} selectable
+	 */
+	setModelHtmlStyles( viewElementName, styles, selectable ) {
+		const model = this.editor.model;
+		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
+
+		model.change( writer => {
+			for ( const item of getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) ) {
+				modifyGhsAttribute( writer, item, ghsAttributeName, 'styles', stylesMap => {
+					for ( const [ key, value ] of Object.entries( styles ) ) {
+						stylesMap.set( key, value );
+					}
+				} );
+			}
+		} );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {String} viewElementName
+	 * @param {String|Array.<String>} properties
+	 * @param {module:engine/model/selection~Selectable} selectable
+	 */
+	removeModelHtmlStyles( viewElementName, properties, selectable ) {
+		const model = this.editor.model;
+		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
+
+		model.change( writer => {
+			for ( const item of getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) ) {
+				modifyGhsAttribute( writer, item, ghsAttributeName, 'styles', stylesMap => {
+					for ( const key of toArray( properties ) ) {
+						stylesMap.delete( key );
+					}
+				} );
+			}
+		} );
+	}
+
+	setModelHtmlAttribute() { throw new Error( '!' ); }
+}
+
+// TODO
+function* getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) {
+	if ( selectable.is( 'documentSelection' ) && selectable.isCollapsed ) {
+		if ( model.schema.checkAttributeInSelection( selectable, ghsAttributeName ) ) {
+			yield selectable;
+		}
+	} else {
+		for ( const range of getValidRangesForSelectable( model, selectable, ghsAttributeName ) ) {
+			yield* range.getItems( { shallow: true } );
+		}
+	}
+}
+
+// TODO
+function getValidRangesForSelectable( model, selectable, ghsAttributeName ) {
+	if ( selectable.is( 'selection' ) ) {
+		return model.schema.getValidRanges( selectable.getRanges(), ghsAttributeName );
+	} else if ( selectable.is( 'range' ) ) {
+		return model.schema.getValidRanges( [ selectable ], ghsAttributeName );
+	} else if ( model.schema.checkAttribute( selectable, ghsAttributeName ) ) {
+		return [ model.createRangeOn( selectable ) ];
+	}
+}
+
+// TODO
+function modifyGhsAttribute( writer, item, ghsAttributeName, subject, callback ) {
+	const oldValue = item.getAttribute( ghsAttributeName );
+	const newValue = {};
+
+	for ( const kind of [ 'attributes', 'styles', 'classes' ] ) {
+		if ( kind != subject ) {
+			if ( oldValue && oldValue[ kind ] ) {
+				newValue[ kind ] = oldValue[ kind ];
+			}
+		} else {
+			const values = kind == 'classes' ?
+				new Set( oldValue && oldValue[ kind ] || [] ) :
+				new Map( Object.entries( oldValue && oldValue[ kind ] || {} ) );
+
+			callback( values );
+
+			if ( values.size ) {
+				newValue[ kind ] = kind == 'classes' ? Array.from( values ) : Object.fromEntries( values );
+			}
+		}
+	}
+
+	if ( Object.keys( newValue ).length ) {
+		if ( item.is( 'documentSelection' ) ) {
+			writer.setSelectionAttribute( ghsAttributeName, newValue );
+		} else {
+			writer.setAttribute( ghsAttributeName, newValue, item );
+		}
+	} else if ( oldValue ) {
+		if ( item.is( 'documentSelection' ) ) {
+			writer.removeSelectionAttribute( ghsAttributeName );
+		} else {
+			writer.removeAttribute( ghsAttributeName, item );
+		}
 	}
 }
 

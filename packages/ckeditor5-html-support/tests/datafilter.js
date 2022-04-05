@@ -1947,12 +1947,10 @@ describe( 'DataFilter', () => {
 			it( 'should add new styles if no html attributes applied', () => {
 				editor.setData( '<section><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue',
-						color: 'red'
-					} );
-				} );
+				htmlSupport.setModelHtmlStyles( 'section', {
+					'background-color': 'blue',
+					color: 'red'
+				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -1974,13 +1972,9 @@ describe( 'DataFilter', () => {
 			it( 'should add new styles if no classes or other attributes are present', () => {
 				editor.setData( '<section style="background-color:blue;color:red;"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue',
-						color: 'red',
-						'font-size': '10px'
-					} );
-				} );
+				htmlSupport.setModelHtmlStyles( 'section', {
+					'font-size': '10px'
+				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2003,12 +1997,9 @@ describe( 'DataFilter', () => {
 			it( 'should update existing styles if no classes or other attributes are present', () => {
 				editor.setData( '<section style="background-color:blue;color:red;"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'green',
-						color: 'red'
-					} );
-				} );
+				htmlSupport.setModelHtmlStyles( 'section', {
+					'background-color': 'green'
+				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2030,12 +2021,7 @@ describe( 'DataFilter', () => {
 			it( 'should remove some styles if no classes or other attributes are present', () => {
 				editor.setData( '<section style="background-color:blue;color:red;font-size:10px;"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue',
-						'font-size': '10px'
-					} );
-				} );
+				htmlSupport.removeModelHtmlStyles( 'section', 'color', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2057,9 +2043,7 @@ describe( 'DataFilter', () => {
 			it( 'should remove the attribute when removing all styles and no other classes or attributes are present', () => {
 				editor.setData( '<section style="background-color:blue;color:red;font-size:10px;"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
-				} );
+				htmlSupport.removeModelHtmlStyles( 'section', [ 'background-color', 'color', 'font-size' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
@@ -2076,13 +2060,9 @@ describe( 'DataFilter', () => {
 					'<section style="background-color:blue;color:red;" class="foo bar" data-foo="bar"><p>foobar</p></section>'
 				);
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue',
-						color: 'red',
-						'font-size': '10px'
-					} );
-				} );
+				htmlSupport.setModelHtmlStyles( 'section', {
+					'font-size': '10px'
+				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2113,12 +2093,7 @@ describe( 'DataFilter', () => {
 					'<section style="background-color:blue;color:red;font-size:10px;" class="foo" data-foo="bar"><p>foobar</p></section>'
 				);
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue',
-						'font-size': '10px'
-					} );
-				} );
+				htmlSupport.removeModelHtmlStyles( 'section', [ 'color' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2148,9 +2123,7 @@ describe( 'DataFilter', () => {
 					'<section style="background-color:blue;color:red;font-size:10px;" class="foo" data-foo="bar"><p>foobar</p></section>'
 				);
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
-				} );
+				htmlSupport.removeModelHtmlStyles( 'section', [ 'background-color', 'color', 'font-size' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2172,7 +2145,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes if no html attributes applied', () => {
 				editor.setData( '<section><p>foobar</p></section>' );
 
-				htmlSupport.addModelHtmlClass( [ 'foo', 'bar' ], root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.addModelHtmlClass( 'section', [ 'foo', 'bar' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2191,7 +2164,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes if no styles or other attributes are present', () => {
 				editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
 
-				htmlSupport.addModelHtmlClass( 'baz', root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.addModelHtmlClass( 'section', 'baz', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2208,8 +2181,8 @@ describe( 'DataFilter', () => {
 			it( 'should update existing classes if no other styles or attributes are present', () => {
 				editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
 
-				htmlSupport.addModelHtmlClass( 'baz', root.getChild( 0 ), 'htmlAttributes' );
-				htmlSupport.removeModelHtmlClass( 'bar', root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.addModelHtmlClass( 'section', 'baz', root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.removeModelHtmlClass( 'section', 'bar', root.getChild( 0 ), 'htmlAttributes' );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2226,7 +2199,7 @@ describe( 'DataFilter', () => {
 			it( 'should remove some classes if no other styles or attributes are present', () => {
 				editor.setData( '<section class="foo bar baz"><p>foobar</p></section>' );
 
-				htmlSupport.removeModelHtmlClass( 'bar', root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.removeModelHtmlClass( 'section', 'bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2243,7 +2216,7 @@ describe( 'DataFilter', () => {
 			it( 'should remove all attributes when removing all classes and no other styles or attributes are present', () => {
 				editor.setData( '<section class="foo bar baz"><p>foobar</p></section>' );
 
-				htmlSupport.removeModelHtmlClass( [ 'foo', 'bar', 'baz' ], root.getChild( 0 ), 'htmlAttributes' );
+				htmlSupport.removeModelHtmlClass( 'section', [ 'foo', 'bar', 'baz' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
@@ -2260,9 +2233,8 @@ describe( 'DataFilter', () => {
 					'<section style="background-color:blue;color:red;" class="foo bar" data-foo="bar"><p>foobar</p></section>'
 				);
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo', 'baz' ] );
-				} );
+				htmlSupport.addModelHtmlClass( 'section', 'baz', root.getChild( 0 ) );
+				htmlSupport.removeModelHtmlClass( 'section', 'bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2292,9 +2264,7 @@ describe( 'DataFilter', () => {
 					'<section style="background-color:blue;color:red;" class="foo bar baz" data-foo="bar"><p>foobar</p></section>'
 				);
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
-				} );
+				htmlSupport.removeModelHtmlClass( 'section', [ 'bar', 'baz' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2324,9 +2294,7 @@ describe( 'DataFilter', () => {
 					'<section style="background-color:blue;color:red;" class="foo bar baz" data-foo="bar"><p>foobar</p></section>'
 				);
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
-				} );
+				htmlSupport.removeModelHtmlClass( 'section', [ 'foo', 'bar', 'baz' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2353,9 +2321,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new attributes if no html attributes applied', () => {
 				editor.setData( '<section><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', { 'data-foo': 'bar' } );
-				} );
+				htmlSupport.setModelHtmlAttributes( 'section', { 'data-foo': 'bar' }, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2374,12 +2340,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new attributes if no styles or classes are present', () => {
 				editor.setData( '<section data-foo="bar"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar',
-						'data-bar': 'baz'
-					} );
-				} );
+				htmlSupport.setModelHtmlAttributes( 'section', { 'data-bar': 'baz' }, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2401,12 +2362,10 @@ describe( 'DataFilter', () => {
 			it( 'should update existing attributes if no styles or classes are present', () => {
 				editor.setData( '<section data-foo="bar" data-bar="baz"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar baz',
-						'data-bar': 'baz bar'
-					} );
-				} );
+				htmlSupport.setModelHtmlAttributes( 'section', {
+					'data-foo': 'bar baz',
+					'data-bar': 'baz bar'
+				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2421,18 +2380,14 @@ describe( 'DataFilter', () => {
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<section data-foo="bar baz" data-bar="baz bar"><p>foobar</p></section>'
+					'<section data-bar="baz bar" data-foo="bar baz"><p>foobar</p></section>'
 				);
 			} );
 
 			it( 'should remove some attributes if no other styles or classes are present', () => {
 				editor.setData( '<section data-foo="bar" data-bar="baz"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar'
-					} );
-				} );
+				htmlSupport.removeModelHtmlAttributes( 'section', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2453,9 +2408,7 @@ describe( 'DataFilter', () => {
 			it( 'should remove attribute element when removing all attributes and no other styles or classes are present', () => {
 				editor.setData( '<section data-foo="bar" data-bar="baz"><p>foobar</p></section>' );
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
-				} );
+				htmlSupport.removeModelHtmlAttributes( 'section', [ 'data-bar', 'data-foo' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
@@ -2472,12 +2425,7 @@ describe( 'DataFilter', () => {
 					'<section style="background-color:blue;color:red;" class="foo bar" data-foo="bar"><p>foobar</p></section>'
 				);
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar',
-						'data-bar': 'baz'
-					} );
-				} );
+				htmlSupport.setModelHtmlAttributes( 'section', { 'data-bar': 'baz' }, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2510,11 +2458,7 @@ describe( 'DataFilter', () => {
 					'</section>'
 				);
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar'
-					} );
-				} );
+				htmlSupport.removeModelHtmlAttributes( 'section', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2546,9 +2490,7 @@ describe( 'DataFilter', () => {
 					'</section>'
 				);
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
-				} );
+				htmlSupport.removeModelHtmlAttributes( 'section', [ 'data-bar', 'data-foo' ], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
@@ -2575,9 +2517,7 @@ describe( 'DataFilter', () => {
 					'<section><p>foobar</p></section>'
 				);
 
-				model.change( writer => {
-					htmlSupport.setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
-				} );
+				htmlSupport.removeModelHtmlAttributes( 'section', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
@@ -2601,12 +2541,10 @@ describe( 'DataFilter', () => {
 			it( 'should add new styles if no attribute element is present', () => {
 				setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
-				model.change( writer => {
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
-						'background-color': 'blue',
-						color: 'red'
-					} );
-				} );
+				htmlSupport.setModelHtmlStyles( 'cite', {
+					'background-color': 'blue',
+					color: 'red'
+				}, model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2628,12 +2566,10 @@ describe( 'DataFilter', () => {
 			it( 'should add new styles if no classes or other attributes are present', () => {
 				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 
-				model.change( writer => {
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
-						'background-color': 'blue',
-						color: 'red'
-					} );
-				} );
+				htmlSupport.setModelHtmlStyles( 'cite', {
+					'background-color': 'blue',
+					color: 'red'
+				}, model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2656,17 +2592,13 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><cite style="background-color:blue;">foobar</cite></p>' );
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
-						'background-color': 'blue',
-						color: 'red'
-					} );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.setModelHtmlStyles( 'cite', {
+					color: 'red'
+				}, model.document.selection );
+				htmlSupport.removeModelHtmlStyles( 'cite', [], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2689,17 +2621,10 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><cite style="background-color:blue;color:red;font-size:10px;">foobar</cite></p>' );
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
-						'background-color': 'blue',
-						'font-size': '10px'
-					} );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlStyles( 'cite', [ 'color' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2722,14 +2647,10 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><cite style="background-color:blue;color:red;font-size:10px;">foobar</cite></p>' );
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlStyles( 'cite', [ 'background-color', 'color', 'font-size' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph>foobar</paragraph>',
@@ -2747,18 +2668,12 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
-						'background-color': 'blue',
-						color: 'red',
-						'font-size': '10px'
-					} );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.setModelHtmlStyles( 'cite', {
+					'font-size': '10px'
+				}, model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2788,17 +2703,10 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', {
-						'background-color': 'blue',
-						'font-size': '10px'
-					} );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlStyles( 'cite', [ 'color' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2827,14 +2735,10 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'styles', null );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlStyles( 'cite', [ 'background-color', 'color', 'font-size' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2856,7 +2760,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes if no attribute element is present', () => {
 				setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
-				htmlSupport.addModelHtmlClass( [ 'foo', 'bar' ], model.document.selection.getFirstRange(), 'htmlCite' );
+				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2872,11 +2776,10 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
-			// TODO temp
 			it( 'should add new classes to a collapsed selection', () => {
 				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-				htmlSupport.addModelHtmlClass( [ 'foo', 'bar' ], model.document.selection, 'htmlCite' );
+				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
 				expect( getModelData( model ) ).to.deep.equal(
 					'<paragraph>foo<$text htmlCite="{"classes":["foo","bar"]}">[]</$text>bar</paragraph>'
@@ -2887,7 +2790,6 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
-			// TODO temp
 			it( 'should remove classes from a collapsed selection', () => {
 				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
@@ -2897,7 +2799,7 @@ describe( 'DataFilter', () => {
 					} );
 				} );
 
-				htmlSupport.removeModelHtmlClass( 'bar', model.document.selection, 'htmlCite' );
+				htmlSupport.removeModelHtmlClass( 'cite', 'bar', model.document.selection );
 
 				expect( getModelData( model ) ).to.deep.equal(
 					'<paragraph>foo<$text htmlCite="{"classes":["foo"]}">[]</$text>bar</paragraph>'
@@ -2911,9 +2813,7 @@ describe( 'DataFilter', () => {
 			it( 'should add new classes if no styles or other attributes are present', () => {
 				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 
-				model.change( writer => {
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
-				} );
+				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2933,14 +2833,10 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><cite class="foo">foobar</cite></p>' );
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar' ] );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.addModelHtmlClass( 'cite', 'bar', model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2960,14 +2856,10 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><cite class="foo bar baz">foobar</cite></p>' );
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'baz' ] );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlClass( 'cite', 'bar', model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -2987,14 +2879,10 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><cite class="foo bar">foobar</cite></p>' );
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', null );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph>foobar</paragraph>',
@@ -3012,14 +2900,10 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo', 'bar', 'baz' ] );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.addModelHtmlClass( 'cite', [ 'baz' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -3048,14 +2932,10 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', [ 'foo' ] );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlClass( 'cite', [ 'bar' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -3084,14 +2964,10 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'classes', null );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -3117,12 +2993,10 @@ describe( 'DataFilter', () => {
 			it( 'should add new attributes if no attribute element is present', () => {
 				setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
-				model.change( writer => {
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
-						'data-foo': 'bar',
-						'data-bar': 'baz'
-					} );
-				} );
+				htmlSupport.setModelHtmlAttributes( 'cite', {
+					'data-foo': 'bar',
+					'data-bar': 'baz'
+				}, model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -3144,12 +3018,10 @@ describe( 'DataFilter', () => {
 			it( 'should add new attributes if no classes or styles are present', () => {
 				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 
-				model.change( writer => {
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
-						'data-foo': 'bar',
-						'data-bar': 'baz'
-					} );
-				} );
+				htmlSupport.setModelHtmlAttributes( 'cite', {
+					'data-foo': 'bar',
+					'data-bar': 'baz'
+				}, model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -3172,16 +3044,12 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><cite data-foo="bar">foobar</cite></p>' );
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
-						'data-foo': 'bar baz'
-					} );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.setModelHtmlAttributes( 'cite', {
+					'data-foo': 'bar baz'
+				}, model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -3200,19 +3068,13 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should remove some attributes if no classes or styles are present', () => {
-				editor.setData( '<p><cite data-foo="bar baz" data-bar="baz">foobar</cite></p>' );
+				editor.setData( '<p><cite data-foo="bar" data-bar="baz">foobar</cite></p>' );
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
-						'data-foo': 'bar'
-					} );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlAttributes( 'cite', [ 'data-bar' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -3234,14 +3096,10 @@ describe( 'DataFilter', () => {
 				editor.setData( '<p><cite data-foo="bar" data-bar="baz">foobar</cite></p>' );
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', null );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlAttributes( 'cite', [ 'data-foo', 'data-bar' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph>foobar</paragraph>',
@@ -3259,17 +3117,12 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
-						'data-foo': 'bar',
-						'data-bar': 'baz'
-					} );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.setModelHtmlAttributes( 'cite', {
+					'data-bar': 'baz'
+				}, model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -3295,20 +3148,14 @@ describe( 'DataFilter', () => {
 
 			it( 'should remove some attributes if there are other classes or styles', () => {
 				editor.setData(
-					'<p><cite style="background-color:blue;color:red;" class="foo bar" data-foo="bar baz" data-bar="baz">foobar</cite></p>'
+					'<p><cite style="background-color:blue;color:red;" class="foo bar" data-foo="bar" data-bar="baz">foobar</cite></p>'
 				);
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', {
-						'data-foo': 'bar'
-					} );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlAttributes( 'cite', [ 'data-bar' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
@@ -3337,14 +3184,10 @@ describe( 'DataFilter', () => {
 				);
 
 				model.change( writer => {
-					const element = root.getChild( 0 ).getChild( 0 );
-					const range = writer.createRangeOn( element );
-					const selection = writer.createSelection( range );
-
-					writer.setSelection( selection );
-
-					htmlSupport.setModelSelectionHtmlAttribute( model, writer, 'htmlCite', 'attributes', null );
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 				} );
+
+				htmlSupport.removeModelHtmlAttributes( 'cite', [ 'data-foo' ], model.document.selection );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
