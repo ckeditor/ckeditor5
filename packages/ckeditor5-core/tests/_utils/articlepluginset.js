@@ -22,7 +22,7 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
+import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -57,7 +57,7 @@ export default class ArticlePluginSet extends Plugin {
 			Indent,
 			Italic,
 			Link,
-			List,
+			DocumentList,
 			MediaEmbed,
 			Paragraph,
 			Table,

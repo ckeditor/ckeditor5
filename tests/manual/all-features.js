@@ -25,7 +25,7 @@ import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
+import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistproperties';
 import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
@@ -41,7 +41,6 @@ import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
@@ -54,7 +53,7 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
-			CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption,
+			CodeBlock, DocumentListProperties, TableProperties, TableCellProperties, TableCaption,
 			EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
 			AutoLink, Mention, TextTransformation,
 			Alignment, IndentBlock,
@@ -69,7 +68,7 @@ ClassicEditor
 			'|',
 			'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
 			'|',
-			'bulletedList', 'numberedList', 'todoList',
+			'bulletedList', 'numberedList',
 			'|',
 			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
 			'|',
