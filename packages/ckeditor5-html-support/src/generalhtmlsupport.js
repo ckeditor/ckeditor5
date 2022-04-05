@@ -76,7 +76,7 @@ export default class GeneralHtmlSupport extends Plugin {
 		const dataSchema = this.editor.plugins.get( 'DataSchema' );
 		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
 
-		if ( definitions && definitions.length && definitions[ 0 ].isInline ) {
+		if ( definitions && definitions.length && definitions[ 0 ].isInline && !definitions[ 0 ].isObject ) {
 			return definitions[ 0 ].model;
 		}
 
@@ -220,8 +220,6 @@ export default class GeneralHtmlSupport extends Plugin {
 			}
 		} );
 	}
-
-	setModelHtmlAttribute() { throw new Error( '!' ); }
 }
 
 // Returns an iterator over an items in the selectable that accept given GHS attribute.
