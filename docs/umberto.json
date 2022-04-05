@@ -17,6 +17,7 @@
 		"api/easy-video.html": "api/media-embed.html",
 		"api/module_iframe-embed_iframeembed-IframeEmbed.html": "api/module_ui_iframe_iframeview.html",
 		"api/video.html": "api/media-embed.html",
+		"api/module_image_image_imageinsertcommand-ImageInsertCommand.html": "api/module_image_image_insertimagecommand-InsertImageCommand.html",
 		"builds/guides/browser-compatibility.html": "support/browser-compatibility.html",
 		"builds/guides/development/installing-plugins.html": "installation/getting-started/installing-plugins.html",
 		"builds/guides/integration/frameworks/vuejs.html": "installation/frameworks/vuejs-v3.html",
