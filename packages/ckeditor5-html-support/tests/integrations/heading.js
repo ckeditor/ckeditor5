@@ -6,14 +6,13 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import { setModelHtmlAttribute } from '../../src/conversionutils';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 
 /* global document */
 
 describe( 'HeadingElementSupport', () => {
-	let editor, editorElement, model, dataSchema, dataFilter;
+	let editor, editorElement, model, dataSchema, dataFilter, htmlSupport;
 
 	afterEach( () => {
 		editorElement.remove();
@@ -43,10 +42,13 @@ describe( 'HeadingElementSupport', () => {
 			model = editor.model;
 			dataSchema = editor.plugins.get( 'DataSchema' );
 			dataFilter = editor.plugins.get( 'DataFilter' );
+			htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
 
 			dataFilter.loadAllowedConfig( [ {
 				name: /^(h1|h2|h3|h4|h5)$/,
-				attributes: /^data-.*$/
+				attributes: true,
+				classes: true,
+				styles: true
 			} ] );
 		} );
 
@@ -152,12 +154,10 @@ describe( 'HeadingElementSupport', () => {
 			it( 'adding new styles', () => {
 				editor.setData( '<h1>foobar</h1>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue',
-						color: 'red'
-					} );
-				} );
+				htmlSupport.setModelHtmlStyles( 'h1', {
+					'background-color': 'blue',
+					color: 'red'
+				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<heading1 htmlAttributes="(1)">foobar</heading1>',
@@ -183,9 +183,7 @@ describe( 'HeadingElementSupport', () => {
 			it( 'adding new classes', () => {
 				editor.setData( '<h2>foobar</h2>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
-				} );
+				htmlSupport.addModelHtmlClass( 'h2', 'foo', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<heading2 htmlAttributes="(1)">foobar</heading2>',
@@ -208,11 +206,9 @@ describe( 'HeadingElementSupport', () => {
 			it( 'adding new attributes', () => {
 				editor.setData( '<h5>foobar</h5>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar'
-					} );
-				} );
+				htmlSupport.setModelHtmlAttributes( 'h5', {
+					'data-foo': 'bar'
+				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<otherHeading htmlAttributes="(1)">foobar</otherHeading>',
@@ -237,11 +233,7 @@ describe( 'HeadingElementSupport', () => {
 			it( 'removing some styles', () => {
 				editor.setData( '<h1 style="background-color:blue;color:red;">foobar</h1>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue'
-					} );
-				} );
+				htmlSupport.removeModelHtmlStyles( 'h1', 'color', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<heading1 htmlAttributes="(1)">foobar</heading1>',
@@ -266,9 +258,7 @@ describe( 'HeadingElementSupport', () => {
 			it( 'removing some classes', () => {
 				editor.setData( '<h2 class="foo bar">foobar</h2>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
-				} );
+				htmlSupport.removeModelHtmlClass( 'h2', 'bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<heading2 htmlAttributes="(1)">foobar</heading2>',
@@ -291,11 +281,7 @@ describe( 'HeadingElementSupport', () => {
 			it( 'removing some attributes', () => {
 				editor.setData( '<h5 data-foo="bar" data-bar="baz">foobar</h5>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar'
-					} );
-				} );
+				htmlSupport.removeModelHtmlAttributes( 'h5', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<otherHeading htmlAttributes="(1)">foobar</otherHeading>',
@@ -324,15 +310,9 @@ describe( 'HeadingElementSupport', () => {
 					'</h1>'
 				);
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue'
-					} );
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar'
-					} );
-				} );
+				htmlSupport.removeModelHtmlClass( 'h1', 'bar', root.getChild( 0 ) );
+				htmlSupport.removeModelHtmlStyles( 'h1', 'color', root.getChild( 0 ) );
+				htmlSupport.removeModelHtmlAttributes( 'h1', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<heading1 htmlAttributes="(1)">foobar</heading1>',
@@ -367,11 +347,18 @@ describe( 'HeadingElementSupport', () => {
 					'</h1>'
 				);
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
-				} );
+				htmlSupport.removeModelHtmlClass( 'h1', [
+					'foo',
+					'bar'
+				], root.getChild( 0 ) );
+				htmlSupport.removeModelHtmlStyles( 'h1', [
+					'background-color',
+					'color'
+				], root.getChild( 0 ) );
+				htmlSupport.removeModelHtmlAttributes( 'h1', [
+					'data-foo',
+					'data-bar'
+				], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<heading1>foobar</heading1>',
@@ -412,10 +399,13 @@ describe( 'HeadingElementSupport', () => {
 			model = editor.model;
 			dataSchema = editor.plugins.get( 'DataSchema' );
 			dataFilter = editor.plugins.get( 'DataFilter' );
+			htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
 
 			dataFilter.loadAllowedConfig( [ {
 				name: /^(h1|h2|h3|h4|h5)$/,
-				attributes: /^data-.*$/
+				attributes: true,
+				classes: true,
+				styles: true
 			} ] );
 		} );
 
@@ -518,12 +508,10 @@ describe( 'HeadingElementSupport', () => {
 			it( 'adding new styles', () => {
 				editor.setData( '<h1>foobar</h1>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue',
-						color: 'red'
-					} );
-				} );
+				htmlSupport.setModelHtmlStyles( 'h2', {
+					'background-color': 'blue',
+					color: 'red'
+				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlH1 htmlAttributes="(1)">foobar</htmlH1>',
@@ -549,9 +537,7 @@ describe( 'HeadingElementSupport', () => {
 			it( 'adding new classes', () => {
 				editor.setData( '<h2>foobar</h2>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
-				} );
+				htmlSupport.addModelHtmlClass( 'h2', 'foo', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlH2 htmlAttributes="(1)">foobar</htmlH2>',
@@ -574,11 +560,9 @@ describe( 'HeadingElementSupport', () => {
 			it( 'adding new attributes', () => {
 				editor.setData( '<h3>foobar</h3>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar'
-					} );
-				} );
+				htmlSupport.setModelHtmlAttributes( 'h3', {
+					'data-foo': 'bar'
+				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlH3 htmlAttributes="(1)">foobar</htmlH3>',
@@ -603,11 +587,7 @@ describe( 'HeadingElementSupport', () => {
 			it( 'removing some styles', () => {
 				editor.setData( '<h1 style="background-color:blue;color:red;">foobar</h1>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue'
-					} );
-				} );
+				htmlSupport.removeModelHtmlStyles( 'h3', 'color', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlH1 htmlAttributes="(1)">foobar</htmlH1>',
@@ -632,9 +612,7 @@ describe( 'HeadingElementSupport', () => {
 			it( 'removing some classes', () => {
 				editor.setData( '<h2 class="foo bar">foobar</h2>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
-				} );
+				htmlSupport.removeModelHtmlClass( 'h2', 'bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlH2 htmlAttributes="(1)">foobar</htmlH2>',
@@ -657,11 +635,7 @@ describe( 'HeadingElementSupport', () => {
 			it( 'removing some attributes', () => {
 				editor.setData( '<h3 data-foo="bar" data-bar="baz">foobar</h3>' );
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar'
-					} );
-				} );
+				htmlSupport.removeModelHtmlAttributes( 'h3', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlH3 htmlAttributes="(1)">foobar</htmlH3>',
@@ -690,15 +664,9 @@ describe( 'HeadingElementSupport', () => {
 					'</h1>'
 				);
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', [ 'foo' ] );
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', {
-						'background-color': 'blue'
-					} );
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', {
-						'data-foo': 'bar'
-					} );
-				} );
+				htmlSupport.removeModelHtmlClass( 'h1', 'bar', root.getChild( 0 ) );
+				htmlSupport.removeModelHtmlStyles( 'h1', 'color', root.getChild( 0 ) );
+				htmlSupport.removeModelHtmlAttributes( 'h1', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlH1 htmlAttributes="(1)">foobar</htmlH1>',
@@ -733,11 +701,18 @@ describe( 'HeadingElementSupport', () => {
 					'</h1>'
 				);
 
-				model.change( writer => {
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'classes', null );
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'styles', null );
-					setModelHtmlAttribute( writer, root.getChild( 0 ), 'htmlAttributes', 'attributes', null );
-				} );
+				htmlSupport.removeModelHtmlClass( 'h1', [
+					'foo',
+					'bar'
+				], root.getChild( 0 ) );
+				htmlSupport.removeModelHtmlStyles( 'h1', [
+					'background-color',
+					'color'
+				], root.getChild( 0 ) );
+				htmlSupport.removeModelHtmlAttributes( 'h1', [
+					'data-foo',
+					'data-bar'
+				], root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 					data: '<htmlH1>foobar</htmlH1>',
