@@ -10,7 +10,10 @@
 import { Plugin } from 'ckeditor5/src/core';
 
 import DataFilter from '../datafilter';
-import { setViewAttributes, updateViewAttributes } from '../conversionutils.js';
+import {
+	setViewAttributes,
+	updateViewAttributes
+} from '../conversionutils.js';
 
 /**
  * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.

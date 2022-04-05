@@ -68,16 +68,17 @@ export default class GeneralHtmlSupport extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Returns a GHS model attribute name related to a given view element name.
 	 *
-	 * @param {String} viewElementName
+	 * @protected
+	 * @param {String} viewElementName A view element name.
 	 * @returns {String}
 	 */
 	getGhsAttributeNameForElement( viewElementName ) {
 		const dataSchema = this.editor.plugins.get( 'DataSchema' );
 		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
 
-		if ( definitions && definitions.length && definitions[ 0 ].isInline ) {
+		if ( definitions && definitions.length && definitions[ 0 ].isInline && !definitions[ 0 ].isObject ) {
 			return definitions[ 0 ].model;
 		}
 
@@ -85,11 +86,12 @@ export default class GeneralHtmlSupport extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Updates GHS model attribute for a specified view element name, so it includes a given class name.
 	 *
-	 * @param {String} viewElementName
-	 * @param {String|Array.<String>} className
-	 * @param {module:engine/model/selection~Selectable} selectable
+	 * @protected
+	 * @param {String} viewElementName A view element name.
+	 * @param {String|Array.<String>} className The css class to add.
+	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
 	 */
 	addModelHtmlClass( viewElementName, className, selectable ) {
 		const model = this.editor.model;
@@ -107,11 +109,12 @@ export default class GeneralHtmlSupport extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Updates GHS model attribute for a specified view element name, so it does not include a given class name.
 	 *
-	 * @param {String} viewElementName
-	 * @param {String|Array.<String>} className
-	 * @param {module:engine/model/selection~Selectable} selectable
+	 * @protected
+	 * @param {String} viewElementName A view element name.
+	 * @param {String|Array.<String>} className The css class to remove.
+	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
 	 */
 	removeModelHtmlClass( viewElementName, className, selectable ) {
 		const model = this.editor.model;
@@ -129,11 +132,12 @@ export default class GeneralHtmlSupport extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Updates GHS model attribute for a specified view element name, so it includes a given attribute.
 	 *
-	 * @param {String} viewElementName
-	 * @param {Object} attributes
-	 * @param {module:engine/model/selection~Selectable} selectable
+	 * @protected
+	 * @param {String} viewElementName A view element name.
+	 * @param {Object} attributes The object with attributes to set.
+	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
 	 */
 	setModelHtmlAttributes( viewElementName, attributes, selectable ) {
 		const model = this.editor.model;
@@ -151,11 +155,12 @@ export default class GeneralHtmlSupport extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Updates GHS model attribute for a specified view element name, so it does not include a given attribute.
 	 *
-	 * @param {String} viewElementName
-	 * @param {String|Array.<String>} attributeName
-	 * @param {module:engine/model/selection~Selectable} selectable
+	 * @protected
+	 * @param {String} viewElementName A view element name.
+	 * @param {String|Array.<String>} attributeName The attribute name (or names) to remove.
+	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
 	 */
 	removeModelHtmlAttributes( viewElementName, attributeName, selectable ) {
 		const model = this.editor.model;
@@ -173,11 +178,12 @@ export default class GeneralHtmlSupport extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Updates GHS model attribute for a specified view element name, so it includes a given style.
 	 *
-	 * @param {String} viewElementName
-	 * @param {Object} styles
-	 * @param {module:engine/model/selection~Selectable} selectable
+	 * @protected
+	 * @param {String} viewElementName A view element name.
+	 * @param {Object} styles The object with styles to set.
+	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
 	 */
 	setModelHtmlStyles( viewElementName, styles, selectable ) {
 		const model = this.editor.model;
@@ -195,11 +201,12 @@ export default class GeneralHtmlSupport extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Updates GHS model attribute for a specified view element name, so it does not include a given style.
 	 *
-	 * @param {String} viewElementName
-	 * @param {String|Array.<String>} properties
-	 * @param {module:engine/model/selection~Selectable} selectable
+	 * @protected
+	 * @param {String} viewElementName A view element name.
+	 * @param {String|Array.<String>} properties The style (or styles list) to remove.
+	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
 	 */
 	removeModelHtmlStyles( viewElementName, properties, selectable ) {
 		const model = this.editor.model;
@@ -215,11 +222,9 @@ export default class GeneralHtmlSupport extends Plugin {
 			}
 		} );
 	}
-
-	setModelHtmlAttribute() { throw new Error( '!' ); }
 }
 
-// TODO
+// Returns an iterator over an items in the selectable that accept given GHS attribute.
 function* getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) {
 	if ( selectable.is( 'documentSelection' ) && selectable.isCollapsed ) {
 		if ( model.schema.checkAttributeInSelection( selectable, ghsAttributeName ) ) {
@@ -232,18 +237,25 @@ function* getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) {
 	}
 }
 
-// TODO
+// Translates a given selectable to an iterable of ranges.
 function getValidRangesForSelectable( model, selectable, ghsAttributeName ) {
-	if ( selectable.is( 'selection' ) ) {
-		return model.schema.getValidRanges( selectable.getRanges(), ghsAttributeName );
-	} else if ( selectable.is( 'range' ) ) {
-		return model.schema.getValidRanges( [ selectable ], ghsAttributeName );
-	} else if ( model.schema.checkAttribute( selectable, ghsAttributeName ) ) {
-		return [ model.createRangeOn( selectable ) ];
+	if ( selectable.is( 'node' ) || selectable.is( '$text' ) || selectable.is( '$textProxy' ) ) {
+		if ( model.schema.checkAttribute( selectable, ghsAttributeName ) ) {
+			return [ model.createRangeOn( selectable ) ];
+		} else {
+			return [];
+		}
+	} else {
+		return model.schema.getValidRanges( model.createSelection( selectable ).getRanges(), ghsAttributeName );
 	}
 }
 
-// TODO
+// Updates a GHS attribute on a specified item.
+// @param {module:engine/model/writer~Writer} writer
+// @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} item
+// @param {String} ghsAttributeName
+// @param {'classes'|'attributes'|'styles'} subject
+// @param {Function} callback That receives a map or set as an argument and should modify it (add or remove entries).
 function modifyGhsAttribute( writer, item, ghsAttributeName, subject, callback ) {
 	const oldValue = item.getAttribute( ghsAttributeName );
 	const newValue = {};

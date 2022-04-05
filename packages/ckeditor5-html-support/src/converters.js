@@ -8,7 +8,11 @@
  */
 
 import { toWidget } from 'ckeditor5/src/widget';
-import { setViewAttributes, mergeViewElementAttributes, updateViewAttributes } from './conversionutils';
+import {
+	setViewAttributes,
+	mergeViewElementAttributes,
+	updateViewAttributes
+} from './conversionutils';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -28,7 +32,7 @@ export function viewToModelObjectConverter( { model: modelName } ) {
 }
 
 /**
- * Conversion helper converting object element to HTML object widget.
+ * Conversion helper converting an object element to an HTML object widget.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
@@ -41,9 +45,10 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 		const widgetLabel = t( 'HTML object' );
 
 		const viewElement = createObjectView( viewName, modelElement, writer );
+		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
+
 		writer.addClass( 'html-object-embed__content', viewElement );
 
-		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
 		if ( viewAttributes ) {
 			setViewAttributes( writer, viewAttributes, viewElement );
 		}
