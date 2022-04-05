@@ -99,7 +99,3 @@ export function mergeViewElementAttributes( target, source ) {
 
 	return result;
 }
-
-export function setModelHtmlAttribute() {
-	throw new Error( '!!' );
-}
