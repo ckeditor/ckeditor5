@@ -11,7 +11,9 @@ import { Command } from 'ckeditor5/src/core';
 import { logWarning, first } from 'ckeditor5/src/utils';
 
 /**
- * TODO
+ * Style command.
+ *
+ * Applies and removes styles from selection and elements.
  *
  * @extends module:core/command~Command
  */
@@ -28,7 +30,8 @@ export default class StyleCommand extends Command {
 		 */
 
 		/**
-		 * Styles object ... TODO
+		 * Styles object. Helps in getting styles definitions by
+		 * class name, style name and model element name.
 		 *
 		 * @readonly
 		 * @member {Object}
@@ -127,10 +130,11 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Adds or removes classes to element, range or selection.
 	 *
-	 * @param {TODO} definition
-	 * @param {TODO} selectable
+	 * @private
+	 * @param {Object} definition Style definition object.
+	 * @param {module:engine/model/selection~Selectable} selectable Selection, range or element to update the style on.
 	 */
 	_handleStyleUpdate( definition, selectable ) {
 		const { name, element, classes } = definition;
@@ -144,10 +148,11 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Returns inline element value.
 	 *
-	 * @param {TODO} value
-	 * @param {TODO} selection
+	 * @private
+	 * @param {Array} value
+	 * @param {module:engine/model/selection~Selection} selection
 	 */
 	_prepareNewInlineElementValue( value, selection ) {
 		let newValue = [];
@@ -162,13 +167,15 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Returns element value and sets enabled styles.
 	 *
-	 * @param {TODO} value
-	 * @param {TODO} block
+	 * @private
+	 * @param {Array} value
+	 * @param {Object|null} element
+	 * @return {Array} Current block element styles value.
 	 */
-	_prepareNewBlockElementValue( value, block ) {
-		const availableDefinitions = this.styles.getDefinitionsByElementName( block.name );
+	_prepareNewBlockElementValue( value, element ) {
+		const availableDefinitions = this.styles.getDefinitionsByElementName( element.name );
 
 		if ( availableDefinitions ) {
 			const blockStyleNames = availableDefinitions.map( ( { name } ) => name );
@@ -179,9 +186,10 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Get classes attribute value.
 	 *
-	 * @param {TODO} attribute
+	 * @private
+	 * @param {String} attribute
 	 */
 	_getAttributeValue( attribute ) {
 		const value = [];
@@ -199,7 +207,9 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Gets classes from currently selected block element.
+	 *
+	 * @private
 	 */
 	_getValueFromBlockElement() {
 		const selection = this.editor.model.document.selection;
@@ -214,9 +224,10 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Gets classes from currently selected text element.
 	 *
-	 * @param {TODO} attributeName
+	 * @private
+	 * @param {String} attributeName Text attribute name.
 	 */
 	_getValueFromFirstAllowedNode( attributeName ) {
 		const model = this.editor.model;
