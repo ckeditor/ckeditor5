@@ -119,15 +119,6 @@ export default class DataSchema extends Plugin {
 	}
 
 	/**
-	 * Returns all definitions.
-	 *
-	 * @returns {Set.<module:html-support/dataschema~DataSchemaDefinition>}
-	 */
-	getDefinitions() {
-		return this._definitions;
-	}
-
-	/**
 	 * Returns all definitions matching the given view name.
 	 *
 	 * @param {String|RegExp} viewName
