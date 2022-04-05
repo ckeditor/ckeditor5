@@ -12,7 +12,6 @@ import { range } from 'lodash-es';
 
 /* global document */
 
-// TODO: setModelHtmlAttribute() was deprecated.
 describe( 'MediaEmbedElementSupport', () => {
 	describe( 'MediaEmbed feature is available', () => {
 		let editor, model, editorElement, dataFilter;

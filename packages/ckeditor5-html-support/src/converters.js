@@ -8,7 +8,11 @@
  */
 
 import { toWidget } from 'ckeditor5/src/widget';
-import { setViewAttributes, mergeViewElementAttributes, updateViewAttributes } from './conversionutils';
+import {
+	setViewAttributes,
+	mergeViewElementAttributes,
+	updateViewAttributes
+} from './conversionutils';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -28,7 +32,7 @@ export function viewToModelObjectConverter( { model: modelName } ) {
 }
 
 /**
- * Conversion helper converting object element to HTML object widget.
+ * Conversion helper converting an object element to an HTML object widget.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition

@@ -10,7 +10,7 @@
 import { cloneDeep } from 'lodash-es';
 
 /**
-* Helper function for downcast converter. Updates the attributes on the given view element.
+* Helper function for the downcast converter. Updates attributes on the given view element.
 *
 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer.
 * @param {Object} oldViewAttributes The previous GHS attribute value.
@@ -28,7 +28,7 @@ export function updateViewAttributes( writer, oldViewAttributes, newViewAttribut
 }
 
 /**
- * Helper function for downcast converter. Sets the attributes on the given view element.
+ * Helper function for the downcast converter. Sets attributes on the given view element.
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer.
  * @param {Object} viewAttributes The GHS attribute value.
@@ -51,7 +51,7 @@ export function setViewAttributes( writer, viewAttributes, viewElement ) {
 }
 
 /**
- * Helper function for downcast converter. Removes the attributes on the given view element.
+ * Helper function for the downcast converter. Removes attributes on the given view element.
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer.
  * @param {Object} viewAttributes The GHS attribute value.
