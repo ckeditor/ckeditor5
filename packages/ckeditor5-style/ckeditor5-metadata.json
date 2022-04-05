@@ -9,16 +9,14 @@
 			"uiComponents": [
 				{
 					"type": "Dropdown",
-					"name": "styleDropdown",
+					"name": "style",
 					"label": "Style"
 				}
 			],
 			"htmlOutput": [
 				{
 					"elements": "*",
-					"attributes": "*",
 					"classes": "*",
-					"styles": "*",
 					"_comment": "The plugin can output any arbitrary HTML depending on its configuration."
 				}
 			]

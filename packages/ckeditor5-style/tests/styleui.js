@@ -9,6 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
@@ -26,7 +27,7 @@ describe( 'StyleUI', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Style, Paragraph ]
+			plugins: [ GeneralHtmlSupport, Style, Paragraph ]
 		} );
 	} );
 
@@ -45,16 +46,16 @@ describe( 'StyleUI', () => {
 	} );
 
 	describe( 'init', () => {
-		describe( 'styleDropdown component', () => {
+		describe( 'style dropdown component', () => {
 			let dropdown, command;
 
 			beforeEach( () => {
-				dropdown = editor.ui.componentFactory.create( 'styleDropdown' );
+				dropdown = editor.ui.componentFactory.create( 'style' );
 				command = editor.commands.get( 'style' );
 			} );
 
 			it( 'should be registered in the component factory', () => {
-				expect( editor.ui.componentFactory.has( 'styleDropdown' ) ).to.be.true;
+				expect( editor.ui.componentFactory.has( 'style' ) ).to.be.true;
 				expect( dropdown ).to.be.instanceOf( DropdownView );
 			} );
 
@@ -89,11 +90,17 @@ describe( 'StyleUI', () => {
 			} );
 
 			it( 'should close when a style was #executed in the panel', () => {
+				const buttonMock = {
+					styleDefinition: {
+						name: 'foo'
+					}
+				};
+
 				testUtils.sinon.stub( editor, 'execute' );
 
 				dropdown.isOpen = true;
 
-				dropdown.panelView.children.first.fire( 'execute' );
+				dropdown.panelView.children.first.fire( new EventInfo( buttonMock, 'execute' ) );
 
 				expect( dropdown.isOpen ).to.be.false;
 			} );
@@ -123,7 +130,7 @@ describe( 'StyleUI', () => {
 				} );
 			} );
 
-			describe( 'styeles panel', () => {
+			describe( 'styles panel', () => {
 				let panel, commandExecuteStub;
 
 				beforeEach( () => {
@@ -139,17 +146,24 @@ describe( 'StyleUI', () => {
 
 				it( 'should delegate #execute to the dropdown', () => {
 					const spy = sinon.spy();
+					const buttonMock = {
+						styleDefinition: {
+							name: 'foo'
+						}
+					};
 
 					dropdown.on( 'execute', spy );
 
-					panel.fire( 'execute', 'foo' );
+					panel.fire( new EventInfo( buttonMock, 'execute' ) );
 
-					sinon.assert.calledOnceWithExactly( spy, sinon.match.object, 'foo' );
+					sinon.assert.calledOnceWithExactly( spy, sinon.match.object );
 				} );
 
 				it( 'should execute the command on #execute event', () => {
 					const buttonMock = {
-						styleDefinition: 'foo'
+						styleDefinition: {
+							name: 'foo'
+						}
 					};
 
 					panel.fire( new EventInfo( buttonMock, 'execute' ) );

@@ -54,7 +54,7 @@ TODO
 The {@link module:style/style~Style Style} plugin registers:
 
 * TODO style command
-* The `'styleDropdown'` UI drop-down.
+* The `'style'` UI drop-down.
 
 ## Contribute
 
