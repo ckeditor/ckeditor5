@@ -112,7 +112,7 @@ class Styles {
 	 * Returns all inline definitions elements names.
 	 *
 	 * @protected
-	 * @return {Array<string>} Inline elements names.
+	 * @return {Array.<String>} Inline elements names.
 	 */
 	getInlineElementsNames() {
 		return this.styleDefinitions.inline.map( ( { name } ) => name );

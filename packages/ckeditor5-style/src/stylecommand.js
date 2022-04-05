@@ -4,7 +4,7 @@
  */
 
 /**
- * @module style/style
+ * @module style/stylecommand
  */
 
 import { Command } from 'ckeditor5/src/core';
@@ -24,6 +24,9 @@ export default class StyleCommand extends Command {
 		/**
 		 * Set of currently applied styles on current selection.
 		 *
+		 * Names of styles correspond to the `name` property of
+		 * {@link module:style/style~StyleDefinition configured definitions}.
+		 *
 		 * @observable
 		 * @readonly
 		 * @member {Boolean|String} #value
@@ -33,18 +36,21 @@ export default class StyleCommand extends Command {
 		 * Styles object. Helps in getting styles definitions by
 		 * class name, style name and model element name.
 		 *
+		 * @private
 		 * @readonly
-		 * @member {Object}
+		 * @member {module:style/styleediting~Styles}
 		 */
 		this.styles = styles;
 
 		/**
-		 * Defines enabled styles. Different set of styles will be enabled
-		 * depending on the current selection.
+		 * Names of enabled styles (styles that can be applied to the current selection).
+		 *
+		 * Names of enabled styles correspond to the `name` property of
+		 * {@link module:style/style~StyleDefinition configured definitions}.
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {Boolean} #enabledStyles
+		 * @member {Array.<String>} #enabledStyles
 		 */
 		this.set( 'enabledStyles', [] );
 
