@@ -74,7 +74,8 @@ class Styles {
 	}
 
 	/**
-	 * TODO
+	 * Populates various maps to simplify getting config definitions
+	 * by model name,class name and style name.
 	 */
 	_prepareDefinitionsMapping() {
 		for ( const type of this.styleTypes ) {
@@ -92,28 +93,36 @@ class Styles {
 	}
 
 	/**
-	 * TODO
+	 * Returns all inline definitions elements names.
+	 *
+	 * @return {Array<string>} Inline elements names.
 	 */
 	getInlineElementsNames() {
 		return this.styleDefinitions.inline.map( ( { name } ) => name );
 	}
 
 	/**
-	 * TODO
+	 * Returns the style config definitions by the model element name.
+	 *
+	 * @return {Object} Style config definition.
 	 */
 	getDefinitionsByElementName( elementName ) {
 		return this.elementToDefinition.get( elementName );
 	}
 
 	/**
-	 * TODO
+	 * Returns the style config definitions by the style name.
+	 *
+	 * @return {Object} Style config definition.
 	 */
 	getDefinitionsByName( name ) {
 		return this.nameToDefinition.get( name );
 	}
 
 	/**
-	 * TODO
+	 * Returns the style config definitions by the style name.
+	 *
+	 * @return {Object} Style config definition.
 	 */
 	getDefinitionsByClassName( className ) {
 		return this.classToDefinition.get( className );

@@ -20,7 +20,7 @@ export default class StyleCommand extends Command {
 		super( editor );
 
 		/**
-		 * TODO
+		 * Set of currently applied styles on current selection.
 		 *
 		 * @observable
 		 * @readonly
@@ -28,25 +28,25 @@ export default class StyleCommand extends Command {
 		 */
 
 		/**
-		 * TODO:
+		 * Styles object ... TODO
 		 *
 		 * @readonly
-		 * @member {Map.<String, Map.<String, module:style/style~StyleDefinition>>}
+		 * @member {Object}
 		 */
 		this.styles = styles;
 
 		/**
-		 * TODO
-		 */
-		this.htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
-
-		/**
-		 * TODO
+		 * Defines enabled styles. Different set of styles will be enabled
+		 * depending on the current selection.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #enabledStyles
 		 */
 		this.set( 'enabledStyles', [] );
 
 		/**
-		 * TODO
+		 * Refresh state.
 		 */
 		this.refresh();
 	}
@@ -76,14 +76,34 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Executes the command &mdash; applies the style classes to the selection or removes it from the selection.
 	 *
-	 * @param {TODO} styleName
+	 * If the command value already contains the requested style, it will remove the style classes. Otherwise, it will set it.
+	 *
+	 * The execution result differs, depending on the {@link module:engine/model/document~Document#selection} and the
+	 * style type (inline or block):
+	 *
+	 * * When applying inline styles:
+	 * * * If the selection is on a range, the command applies the style classes to all nodes in that range.
+	 * * * If the selection is collapsed in a non-empty node, the command applies the style classes to the
+	 * {@link module:engine/model/document~Document#selection} itself (note that typed characters copy style classes from the selection).
+	 *
+	 * * When applying block styles:
+	 * * * If the selection is on a range, the command applies the style classes to the nearest block parent element.
+	 *
+	 * * When selection is set on a widget object:
+	 * * * Do nothing. Widgets are not yet supported by the style command.
+	 *
+	 * @fires execute
+	 * @param {String} styleName Style name matching the one defined in the config.
 	 */
 	execute( styleName ) {
 		if ( !this.enabledStyles.includes( styleName ) ) {
 			/**
-			 * TODO: describe
+			 * Style command can be executed only on a correct style name.
+			 * This warning may be caused by passing name that it not specified in any of the
+			 * definitions in the styles config, when trying to apply style that is not allowed
+			 * on given element or passing class name instead of the style name.
 			 *
 			 * @error style-command-executed-with-incorrect-style-name
 			 */
@@ -114,11 +134,12 @@ export default class StyleCommand extends Command {
 	 */
 	_handleStyleUpdate( definition, selectable ) {
 		const { name, element, classes } = definition;
+		const htmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
 		if ( this.value.includes( name ) ) {
-			this.htmlSupport.removeModelHtmlClass( element, classes, selectable );
+			htmlSupport.removeModelHtmlClass( element, classes, selectable );
 		} else {
-			this.htmlSupport.addModelHtmlClass( element, classes, selectable );
+			htmlSupport.addModelHtmlClass( element, classes, selectable );
 		}
 	}
 
@@ -151,17 +172,10 @@ export default class StyleCommand extends Command {
 
 		if ( availableDefinitions ) {
 			const blockStyleNames = availableDefinitions.map( ( { name } ) => name );
-
-			this.enabledStyles = [
-				...this.enabledStyles,
-				...blockStyleNames
-			];
+			this.enabledStyles = [ ...this.enabledStyles, ...blockStyleNames ];
 		}
 
-		return [
-			...value,
-			...this._getAttributeValue( 'htmlAttributes' )
-		];
+		return [ ...value, ...this._getAttributeValue( 'htmlAttributes' ) ];
 	}
 
 	/**

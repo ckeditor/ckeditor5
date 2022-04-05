@@ -65,7 +65,20 @@ export default class Style extends Plugin {
 /**
  * Style definition.
  *
- * TODO
+ * An object describing style definition. It contains the `name`, `element` and `classes` array.
+ *
+ *		{
+ *			name: 'Example style',
+ *			element: 'h2',
+ *			classes: [ 'foo' ]
+ *		}
+ *
+ * Style definitions will be displayed in the styles dropdown and will be used to execute
+ * the `style` command applying specified classes to the `element`.
+ *
+ * A block style will only be available to apply if the selected element matches the definition `element`.
+ *
+ * Text styles are applicable to any text node.
  *
  * @typedef {Object} module:style/style~StyleDefinition
  */
