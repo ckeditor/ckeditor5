@@ -90,11 +90,17 @@ describe( 'StyleUI', () => {
 			} );
 
 			it( 'should close when a style was #executed in the panel', () => {
+				const buttonMock = {
+					styleDefinition: {
+						name: 'foo'
+					}
+				};
+
 				testUtils.sinon.stub( editor, 'execute' );
 
 				dropdown.isOpen = true;
 
-				dropdown.panelView.children.first.fire( 'execute' );
+				dropdown.panelView.children.first.fire( new EventInfo( buttonMock, 'execute' ) );
 
 				expect( dropdown.isOpen ).to.be.false;
 			} );
@@ -140,17 +146,24 @@ describe( 'StyleUI', () => {
 
 				it( 'should delegate #execute to the dropdown', () => {
 					const spy = sinon.spy();
+					const buttonMock = {
+						styleDefinition: {
+							name: 'foo'
+						}
+					};
 
 					dropdown.on( 'execute', spy );
 
-					panel.fire( 'execute', 'foo' );
+					panel.fire( new EventInfo( buttonMock, 'execute' ) );
 
-					sinon.assert.calledOnceWithExactly( spy, sinon.match.object, 'foo' );
+					sinon.assert.calledOnceWithExactly( spy, sinon.match.object );
 				} );
 
 				it( 'should execute the command on #execute event', () => {
 					const buttonMock = {
-						styleDefinition: 'foo'
+						styleDefinition: {
+							name: 'foo'
+						}
 					};
 
 					panel.fire( new EventInfo( buttonMock, 'execute' ) );
