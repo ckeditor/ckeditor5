@@ -22,8 +22,10 @@ import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import TableKeyboard from '@ckeditor/ckeditor5-table/src/tablekeyboard';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
 
 describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
@@ -34,7 +36,7 @@ describe( 'ListEditing', () => {
 		return VirtualTestEditor
 			.create( {
 				plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing,
-					TableEditing ]
+					TableEditing, TableKeyboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -375,7 +377,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should execute outdentList command on Shift+Tab keystroke', () => {
-			domEvtDataStub.keyCode += getCode( 'Shift' );
+			domEvtDataStub.shiftKey = true;
 
 			setModelData(
 				model,
@@ -415,6 +417,103 @@ describe( 'ListEditing', () => {
 			expect( editor.execute.called ).to.be.false;
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should execute list indent command when in a li context and nested in an element that also listens to Tab', () => {
+			const listInputModel = '<listItem listIndent="0" listType="bulleted">foo</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">[]bar</listItem>';
+
+			const listOutputModel = '<listItem listIndent="0" listType="bulleted">foo</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">[]bar</listItem>';
+
+			const input = modelTable( [
+				[ listInputModel, 'bar' ]
+			] );
+
+			const output = modelTable( [
+				[ listOutputModel, 'bar' ]
+			] );
+
+			setModelData( model, input );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledWithExactly( editor.execute, 'indentList' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			expect( getModelData( model ) ).to.equalMarkup( output );
+		} );
+
+		it( 'should execute list outdent command when in a li context and nested in an element that also listens to Tab', () => {
+			const listInputModel = '<listItem listIndent="0" listType="bulleted">foo</listItem>' +
+							'<listItem listIndent="1" listType="bulleted">[]bar</listItem>';
+
+			const listOutputModel = '<listItem listIndent="0" listType="bulleted">foo</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">[]bar</listItem>';
+
+			const input = modelTable( [
+				[ listInputModel, 'bar' ]
+			] );
+
+			const output = modelTable( [
+				[ listOutputModel, 'bar' ]
+			] );
+
+			setModelData( model, input );
+
+			domEvtDataStub.shiftKey = true;
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			expect( getModelData( model ) ).to.equalMarkup( output );
+		} );
+
+		it( 'should not capture event when list cannot be indented and allow other listeners to capture it', () => {
+			const listInputModel = '<listItem listIndent="0" listType="bulleted">bar[]</listItem>';
+			const listOutputModel = '<listItem listIndent="0" listType="bulleted">bar</listItem>';
+
+			const input = modelTable( [
+				[ 'foo', listInputModel ]
+			] );
+
+			const output = modelTable( [
+				[ 'foo', listOutputModel ],
+				[ '[]', '' ]
+			] );
+
+			setModelData( model, input );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.neverCalledWith( editor.execute, 'indentList' );
+			sinon.assert.neverCalledWith( editor.execute, 'outdentList' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			expect( getModelData( model ) ).to.equalMarkup( output );
+		} );
+
+		it( 'should not capture event when not in a list and should allow other listeners to capture it', () => {
+			const input = modelTable( [
+				[ 'foo', 'bar[]' ]
+			] );
+
+			const output = modelTable( [
+				[ 'foo', 'bar' ],
+				[ '[]', '' ]
+			] );
+
+			setModelData( model, input );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.neverCalledWith( editor.execute, 'indentList' );
+			sinon.assert.neverCalledWith( editor.execute, 'outdentList' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			expect( getModelData( model ) ).to.equalMarkup( output );
 		} );
 	} );
 

@@ -671,5 +671,50 @@ describe( 'ImageTypeCommand', () => {
 				setModelData( model, `[<imageBlock src="${ imgSrc }"><caption>foo</caption></imageBlock>]` );
 			} );
 		} );
+
+		describe( 'inheriting attributes', () => {
+			const imgSrc = '/foo.jpg';
+
+			beforeEach( () => {
+				const attributes = [ 'smart', 'pretty' ];
+
+				model.schema.extend( '$block', {
+					allowAttributes: attributes
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: attributes
+				} );
+
+				for ( const attribute of attributes ) {
+					model.schema.setAttributeProperties( attribute, {
+						copyOnReplace: true
+					} );
+				}
+			} );
+
+			it( 'should copy parent block attributes to image block', () => {
+				setModelData( model,
+					'<paragraph pretty="true" smart="true">' +
+						`[<imageInline src="${ imgSrc }"></imageInline>]` +
+					'</paragraph>'
+				);
+
+				blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal( `[<imageBlock pretty="true" smart="true" src="${ imgSrc }"></imageBlock>]` );
+			} );
+
+			it( 'should copy a block image attributes to an inline image\'s parent block', () => {
+				setModelData( model, `[<imageBlock pretty="true" smart="true" src="${ imgSrc }"></imageBlock>]` );
+
+				inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph pretty="true" smart="true">' +
+						`[<imageInline src="${ imgSrc }"></imageInline>]` +
+					'</paragraph>' );
+			} );
+		} );
 	} );
 } );

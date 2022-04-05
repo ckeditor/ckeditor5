@@ -82,7 +82,7 @@ function createWatchdog( editorElement, stateElement, name ) {
 		stateElement.innerText = watchdog.state;
 
 		if ( watchdog.state === 'crashedPermanently' ) {
-			watchdog.editor.isReadOnly = true;
+			watchdog.editor.enableReadOnlyMode( 'manual-test' );
 		}
 	} );
 
