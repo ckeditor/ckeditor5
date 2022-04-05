@@ -46,16 +46,16 @@ describe( 'StyleUI', () => {
 	} );
 
 	describe( 'init', () => {
-		describe( 'styleDropdown component', () => {
+		describe( 'style dropdown component', () => {
 			let dropdown, command;
 
 			beforeEach( () => {
-				dropdown = editor.ui.componentFactory.create( 'styleDropdown' );
+				dropdown = editor.ui.componentFactory.create( 'style' );
 				command = editor.commands.get( 'style' );
 			} );
 
 			it( 'should be registered in the component factory', () => {
-				expect( editor.ui.componentFactory.has( 'styleDropdown' ) ).to.be.true;
+				expect( editor.ui.componentFactory.has( 'style' ) ).to.be.true;
 				expect( dropdown ).to.be.instanceOf( DropdownView );
 			} );
 

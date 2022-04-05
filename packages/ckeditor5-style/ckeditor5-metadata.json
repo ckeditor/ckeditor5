@@ -9,7 +9,7 @@
 			"uiComponents": [
 				{
 					"type": "Dropdown",
-					"name": "styleDropdown",
+					"name": "style",
 					"label": "Style"
 				}
 			],

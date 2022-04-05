@@ -89,7 +89,7 @@ const config = {
 	],
 	cloudServices: CS_CONFIG,
 	toolbar: [
-		'styleDropdown',
+		'style',
 		'|',
 		'heading',
 		'|',

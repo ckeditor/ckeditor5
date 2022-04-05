@@ -18,7 +18,7 @@ import '../theme/style.css';
 /**
  * The UI plugin of the style feature .
  *
- * It registers the `'styleDropdown'` UI dropdown in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}
+ * It registers the `'style'` UI dropdown in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}
  * that displays a grid of styles and allows changing styles of the content.
  *
  * @extends module:core/plugin~Plugin
@@ -40,7 +40,7 @@ export default class StyleUI extends Plugin {
 		const normalizedStyleDefinitions = normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
 
 		// Add the dropdown fo the component factory.
-		editor.ui.componentFactory.add( 'styleDropdown', locale => {
+		editor.ui.componentFactory.add( 'style', locale => {
 			const t = locale.t;
 			const dropdown = createDropdown( locale );
 			const panelView = new StylePanelView( locale, normalizedStyleDefinitions );
