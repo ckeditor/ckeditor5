@@ -130,7 +130,7 @@ describe( 'StyleUI', () => {
 				} );
 			} );
 
-			describe( 'styeles panel', () => {
+			describe( 'styles panel', () => {
 				let panel, commandExecuteStub;
 
 				beforeEach( () => {

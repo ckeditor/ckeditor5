@@ -27,7 +27,7 @@
  * @protected
  * @param {module:html-support/dataschema~DataSchema} dataSchema
  * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions
- * @returns {Object} And object with normalized style definitions grouped into `block` and `inline` categories (arrays).
+ * @returns {Object} An object with normalized style definitions grouped into `block` and `inline` categories (arrays).
  */
 export function normalizeConfig( dataSchema, styleDefinitions = [] ) {
 	const normalizedDefinitions = {

@@ -13,7 +13,11 @@ import { normalizeConfig } from './utils';
 import StyleCommand from './stylecommand';
 
 /**
- * TODO
+ * The style engine feature.
+ *
+ * It configures the {@glink features/general-html-support General HTML Support feature} based on
+ * {@link module:style/style~StyleConfig#definitions configured style definitions} and introduces the
+ * {@link module:style/stylecommand~StyleCommand style command} that applies styles to the content of the document.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -62,7 +66,17 @@ export default class StyleEditing extends Plugin {
 	}
 }
 
+/**
+ * The helper class storing various mappings based on
+ * {@link module:style/style~StyleConfig#definitions configured style definitions}. Used internally by
+ * {@link module:style/stylecommand~StyleCommand}.
+ *
+ * @private
+ */
 class Styles {
+	/**
+	 * @param {Object} An object with normalized style definitions grouped into `block` and `inline` categories (arrays).
+	 */
 	constructor( styleDefinitions ) {
 		this.styleTypes = [ 'inline', 'block' ];
 		this.styleDefinitions = styleDefinitions;
@@ -76,6 +90,8 @@ class Styles {
 	/**
 	 * Populates various maps to simplify getting config definitions
 	 * by model name,class name and style name.
+	 *
+	 * @private
 	 */
 	_prepareDefinitionsMapping() {
 		for ( const type of this.styleTypes ) {
@@ -95,6 +111,7 @@ class Styles {
 	/**
 	 * Returns all inline definitions elements names.
 	 *
+	 * @protected
 	 * @return {Array<string>} Inline elements names.
 	 */
 	getInlineElementsNames() {
@@ -104,6 +121,7 @@ class Styles {
 	/**
 	 * Returns the style config definitions by the model element name.
 	 *
+	 * @protected
 	 * @return {Object} Style config definition.
 	 */
 	getDefinitionsByElementName( elementName ) {
@@ -113,6 +131,7 @@ class Styles {
 	/**
 	 * Returns the style config definitions by the style name.
 	 *
+	 * @protected
 	 * @return {Object} Style config definition.
 	 */
 	getDefinitionsByName( name ) {
@@ -122,6 +141,7 @@ class Styles {
 	/**
 	 * Returns the style config definitions by the style name.
 	 *
+	 * @protected
 	 * @return {Object} Style config definition.
 	 */
 	getDefinitionsByClassName( className ) {
