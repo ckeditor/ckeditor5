@@ -84,8 +84,12 @@ export default class TextPartLanguageEditing extends Plugin {
 
 		conversion.for( 'downcast' ).attributeToElement( {
 			model: 'language',
-			view: ( attributeValue, { writer } ) => {
+			view: ( attributeValue, { writer }, data ) => {
 				if ( !attributeValue ) {
+					return;
+				}
+
+				if ( !data.item.is( '$textProxy' ) && !data.item.is( 'documentSelection' ) ) {
 					return;
 				}
 
