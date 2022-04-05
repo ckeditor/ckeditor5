@@ -8,10 +8,14 @@ import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';
 import MoveOperation from '@ckeditor/ckeditor5-engine/src/model/operation/moveoperation';
 import AttributeOperation from '@ckeditor/ckeditor5-engine/src/model/operation/attributeoperation';
+
+import TableColumnResize from '../../src/tablecolumnresize';
 import {
 	getAffectedTables,
 	getColumnIndex,
@@ -20,70 +24,12 @@ import {
 	fillArray,
 	sumArray,
 	normalizeColumnWidthsAttribute,
-	getElementWidthInPixels
+	getTableWidthInPixels
 } from '../../src/tablecolumnresize/utils';
 
-/* globals document, window */
+/* globals window */
 
 describe( 'TableColumnResize utils', () => {
-	describe( 'getComputedStyle()', () => {
-		// Because the `window.getComputedStyle()` for colgroup will always return 0px on Safari, we needed to change the calculations
-		// to be based on tbody element instead - which works ok in all main browsers.
-		it( 'check `getElementWidthInPixels()` to return correct value on Safari', () => {
-			const tableContent = '<table>' +
-									'<colgroup>' +
-										'<col style="width:50%;">' +
-										'<col style="width:50%;">' +
-									'</colgroup>' +
-									'<tbody>' +
-										'<tr>' +
-											'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-												'<span class="ck-table-bogus-paragraph">' +
-													'<br data-cke-filler="true">' +
-												'</span>' +
-												'<div class="table-column-resizer">' +
-													'Foo bar baz' +
-												'</div>' +
-											'</td>' +
-											'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-												'<span class="ck-table-bogus-paragraph">' +
-													'<br data-cke-filler="true">' +
-												'</span>' +
-												'<div class="table-column-resizer">' +
-												'</div>' +
-											'</td>' +
-										'</tr>' +
-									'</tbody>' +
-								'</table>';
-
-			const table = document.createElement( 'table' );
-			table.innerHTML = tableContent;
-			document.body.appendChild( table );
-
-			const getComputedStyleOriginal = window.getComputedStyle;
-
-			const modifiedGetComputedStyle = function( element ) {
-				let result = getComputedStyleOriginal( element );
-
-				if ( element.localName === 'colgroup' ) {
-					result = [ ...result ];
-					result.width = '0px';
-				}
-
-				return result;
-			};
-
-			const stub = sinon.stub( window, 'getComputedStyle' ).callsFake( modifiedGetComputedStyle );
-
-			expect( getElementWidthInPixels( table ) ).to.not.equal( 0 );
-
-			sinon.assert.called( stub );
-
-			table.remove();
-			stub.restore();
-		} );
-	} );
-
 	describe( 'getAffectedTables()', () => {
 		let differ, root, model;
 
@@ -485,6 +431,67 @@ describe( 'TableColumnResize utils', () => {
 			expect( normalizeColumnWidthsAttribute( '1%, 2%, 3%, 4%' ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
 			expect( normalizeColumnWidthsAttribute( '12.33%, 17.4%, 21.49%, 33.52%, 26.6%, 10.43%' ) )
 				.to.deep.equal( [ 10.13, 14.29, 17.65, 27.53, 21.84, 8.56 ] );
+		} );
+	} );
+
+	describe( 'getTableWidthInPixels()', () => {
+		let editor;
+
+		beforeEach( () => {
+			return ClassicEditor
+				.create( '', {
+					plugins: [ Table, TableColumnResize ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
+		} );
+
+		// Because the `window.getComputedStyle()` for colgroup will always return 0px on Safari, we needed to change the calculations
+		// to be based on tbody element instead - which works ok in all main browsers. See #1466 for reference.
+		it( 'checks if `getTableWidthInPixels()` will return correct value on Safari', () => {
+			editor.setData(
+				`<figure class="table">
+					<table>
+						<colgroup>
+							<col style="width:50%;">
+							<col style="width:50%;">
+						</colgroup>
+						<tbody>
+							<tr>
+								<td>foo</td>
+								<td>bar</td>
+							</tr>
+						</tbody>
+					</table>
+				</figure>`
+			);
+
+			const table = editor.model.document.getRoot().getChild( 0 );
+			const getComputedStyleOriginal = window.getComputedStyle;
+
+			const modifiedGetComputedStyle = function( element ) {
+				let result = getComputedStyleOriginal( element );
+
+				if ( element.localName === 'colgroup' ) {
+					result = [ ...result ];
+					result.width = '0px';
+				}
+
+				return result;
+			};
+
+			const stub = sinon.stub( window, 'getComputedStyle' ).callsFake( modifiedGetComputedStyle );
+
+			expect( getTableWidthInPixels( table, editor ) ).to.not.equal( 0 );
+
+			stub.restore();
+
+			sinon.assert.called( stub );
 		} );
 	} );
 } );
