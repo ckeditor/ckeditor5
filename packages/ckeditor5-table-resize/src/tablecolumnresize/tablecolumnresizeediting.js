@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -695,8 +695,11 @@ export default class TableColumnResizeEditing extends Plugin {
 			const tableView = editor.editing.view.document.selection.getFirstPosition().getAncestors().reverse().find(
 				element => element.name === 'table'
 			);
+			const tableViewContainsColgroup = tableView && [ ...tableView.getChildren() ].find(
+				viewElement => viewElement.is( 'element', 'colgroup' )
+			);
 
-			if ( table && table.hasAttribute( 'columnWidths' ) && tableView && tableView.getChild( 0 ).name !== 'colgroup' ) {
+			if ( table && table.hasAttribute( 'columnWidths' ) && !tableViewContainsColgroup ) {
 				editor.editing.reconvertItem( table );
 			}
 		}, { priority: 'low' } );
