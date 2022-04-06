@@ -311,11 +311,11 @@ export default class DataFilter extends Plugin {
 	 *
 	 * Which would be upcasted to following text node in the model:
 	 *
-	 *		<$text linkHref="foo.html" htmlA="{ id: 'myId' }">bar</$text>
+	 *		<$text linkHref="foo.html" htmlA="{ attributes: { id: 'myId' } }">bar</$text>
 	 *
 	 * When the user removes the link from that text (using UI), only `linkHref` attribute would be removed:
 	 *
-	 *		<$text htmlA="{ id: 'myId' }">bar</$text>
+	 *		<$text htmlA="{ attributes: { id: 'myId' } }">bar</$text>
 	 *
 	 * The `htmlA` attribute would stay in the model and would cause GHS to generate an `<a>` element.
 	 * This is incorrect from UX point of view, as the user wanted to remove the whole link (not only `href`).
