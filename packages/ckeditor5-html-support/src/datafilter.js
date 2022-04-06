@@ -319,7 +319,6 @@ export default class DataFilter extends Plugin {
 	 *
 	 * The `htmlA` attribute would stay in the model and would cause GHS to generate an `<a>` element.
 	 * This is incorrect from UX point of view, as the user wanted to remove the whole link (not only `href`).
-	 * that should not be there anymore because that text was supposed to be unlinked completely (not only a `href`).
 	 *
 	 * @private
 	 */
