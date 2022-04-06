@@ -1304,6 +1304,26 @@ describe( 'TableColumnResizeEditing', () => {
 						}
 					} );
 				} );
+
+				describe( 'should not remove colgroup', () => {
+					it( 'after pasting a table that increases number of rows and columns at the same time', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01' ],
+							[ '10', '[11]' ]
+						], { columnWidths: '50%,50%' } ) );
+
+						model.change( () => {
+							editor.execute( 'insertTableRowBelow' );
+							editor.execute( 'insertTableColumnRight' );
+						} );
+
+						const tableView = view.document.getRoot().getChild( 0 ).getChild( 1 );
+
+						expect( [ ...tableView.getChildren() ].find(
+							viewElement => viewElement.is( 'element', 'colgroup' ) )
+						).to.not.be.undefined;
+					} );
+				} );
 			} );
 		} );
 	} );

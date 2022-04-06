@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -99,6 +99,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._setupConversion();
 		this._setupPostFixer();
 		this._setupColumnResizers();
+		this._registerColgroupFixer();
 
 		const editor = this.editor;
 		const columnResizePlugin = editor.plugins.get( 'TableColumnResize' );
@@ -679,5 +680,28 @@ export default class TableColumnResizeEditing extends Plugin {
 				isLtrContent
 			}
 		};
+	}
+
+	/**
+	 * Inserts colgroup if it is missing from table (e.g. after table insertion into table).
+	 *
+	 * @private
+	 */
+	_registerColgroupFixer() {
+		const editor = this.editor;
+
+		this.listenTo( editor.editing.view.document, 'layoutChanged', () => {
+			const table = editor.model.document.selection.getFirstPosition().findAncestor( 'table' );
+			const tableView = editor.editing.view.document.selection.getFirstPosition().getAncestors().reverse().find(
+				element => element.name === 'table'
+			);
+			const tableViewContainsColgroup = tableView && [ ...tableView.getChildren() ].find(
+				viewElement => viewElement.is( 'element', 'colgroup' )
+			);
+
+			if ( table && table.hasAttribute( 'columnWidths' ) && !tableViewContainsColgroup ) {
+				editor.editing.reconvertItem( table );
+			}
+		}, { priority: 'low' } );
 	}
 }
