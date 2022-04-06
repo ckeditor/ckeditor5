@@ -49,7 +49,7 @@ import '../../theme/components/dropdown/listdropdown.css';
  * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface). For instance, you can use
  * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} to create a dropdown with a split button.
  *
- *		const dropdown = createDropdown( model, SplitButtonView );
+ *		const dropdown = createDropdown( locale, SplitButtonView );
  *
  *		// Configure dropdown's button properties:
  *		dropdown.buttonView.set( {
