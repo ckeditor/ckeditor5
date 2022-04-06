@@ -7,13 +7,16 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import ImageUpload from '../../src/imageupload';
 import ImageInsert from '../../src/imageinsert';
 import AutoImage from '../../src/autoimage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, LinkImage ],
+		plugins: [ ArticlePluginSet, ImageUpload, ImageInsert, AutoImage, LinkImage, CKFinderUploadAdapter, CKFinder ],
 		toolbar: [
 			'heading',
 			'|',
@@ -33,7 +36,8 @@ ClassicEditor
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ],
 			insert: {
 				integrations: [
-					'insertImageViaUrl'
+					'insertImageViaUrl',
+					'openCKFinder'
 				]
 			}
 		},

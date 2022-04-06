@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import ImageUpload from './imageupload';
 import ImageInsertUI from './imageinsert/imageinsertui';
 
 /**
@@ -37,7 +36,7 @@ export default class ImageInsert extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageUpload, ImageInsertUI ];
+		return [ ImageInsertUI ];
 	}
 }
 

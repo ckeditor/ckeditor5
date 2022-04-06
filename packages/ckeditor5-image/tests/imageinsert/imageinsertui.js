@@ -6,39 +6,14 @@
 /* globals document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Image from '../../src/image';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import ImageInsert from '../../src/imageinsert';
-import ImageInsertUI from '../../src/imageinsert/imageinsertui';
-import ImageInsertPanelView from '../../src/imageinsert/ui/imageinsertpanelview';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import Link from '@ckeditor/ckeditor5-link/src/link';
+import Image from '../../src/image';
 
 describe( 'ImageInsertUI', () => {
-	let editor, editorElement, fileRepository, dropdown;
-
-	class UploadAdapterPluginMock extends Plugin {
-		init() {
-			fileRepository = this.editor.plugins.get( FileRepository );
-			fileRepository.createUploadAdapter = loader => {
-				return new UploadAdapterMock( loader );
-			};
-		}
-	}
+	let editor, editorElement, dropdown;
 
 	describe( 'dropdown', () => {
 		beforeEach( () => {
@@ -47,7 +22,7 @@ describe( 'ImageInsertUI', () => {
 
 			return ClassicEditor
 				.create( editorElement, {
-					plugins: [ Paragraph, Image, ImageInsert, ImageInsertUI, FileRepository, UploadAdapterPluginMock, Clipboard ],
+					plugins: [ Notification, Image, ImageInsert ],
 					toolbar: [ 'insertImage' ],
 					image: {
 						insert: {
@@ -74,99 +49,10 @@ describe( 'ImageInsertUI', () => {
 			return editor.destroy();
 		} );
 
-		it( 'should register the "insertImage" dropdown', () => {
-			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
-
-			expect( dropdown ).to.be.instanceOf( DropdownView );
-		} );
-
-		it( 'should register "imageInsert" dropdown as an alias for the "insertImage" dropdown', () => {
-			const dropdownCreator = editor.ui.componentFactory._components.get( 'insertImage'.toLowerCase() );
-			const dropdownAliasCreator = editor.ui.componentFactory._components.get( 'imageInsert'.toLowerCase() );
-
-			expect( dropdownCreator.callback ).to.equal( dropdownAliasCreator.callback );
-		} );
-
-		it( 'should not insert panel view children until dropdown is not open for the first time', () => {
-			expect( dropdown.panelView.children.length ).to.equal( 0 );
-
-			dropdown.buttonView.fire( 'open' );
-
-			expect( dropdown.panelView.children.length ).to.equal( 1 );
-			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
-		} );
-
-		describe( 'dropdown action button', () => {
-			it( 'should be an instance of FileDialogButtonView', () => {
-				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
-
-				expect( dropdown.buttonView.actionView ).to.be.instanceOf( FileDialogButtonView );
-			} );
-		} );
-
-		describe( 'dropdown panel buttons', () => {
-			it( 'should have "Update" label on submit button when URL input is already filled', () => {
-				const viewDocument = editor.editing.view.document;
-
-				editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
-
-				editor.editing.view.change( writer => {
-					writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
-				} );
-
-				const img = viewDocument.selection.getSelectedElement();
-
-				const data = fakeEventData();
-				const eventInfo = new EventInfo( img, 'click' );
-				const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
-
-				viewDocument.fire( 'click', domEventDataMock );
-
-				dropdown.buttonView.fire( 'open' );
-
-				const inputValue = dropdown.panelView.children.first.imageURLInputValue;
-
-				expect( inputValue ).to.equal( '/assets/sample.png' );
-				expect( dropdown.panelView.children.first.insertButtonView.label ).to.equal( 'Update' );
-			} );
-
-			it( 'should have "Insert" label on submit button on uploading a new image', () => {
-				const viewDocument = editor.editing.view.document;
-
-				editor.setData( '<p>test</p>' );
-
-				editor.editing.view.change( writer => {
-					writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'end' );
-				} );
-
-				const el = viewDocument.selection.getSelectedElement();
-
-				const data = fakeEventData();
-				const eventInfo = new EventInfo( el, 'click' );
-				const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
-
-				viewDocument.fire( 'click', domEventDataMock );
-
-				dropdown.buttonView.fire( 'open' );
-
-				const inputValue = dropdown.panelView.children.first.imageURLInputValue;
-
-				expect( dropdown.isOpen ).to.be.true;
-				expect( inputValue ).to.equal( '' );
-				expect( dropdown.panelView.children.first.insertButtonView.label ).to.equal( 'Insert' );
-			} );
-		} );
-
 		describe( 'dropdown panel integrations', () => {
 			describe( 'insert image via URL form', () => {
 				it( 'should have "Insert image via URL" label on inserting new image', () => {
 					const viewDocument = editor.editing.view.document;
-
-					editor.setData( '<p>test</p>' );
-
-					editor.editing.view.change( writer => {
-						writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'end' );
-					} );
 
 					const el = viewDocument.selection.getSelectedElement();
 
@@ -214,43 +100,6 @@ describe( 'ImageInsertUI', () => {
 					expect( insertImageViaUrlForm.label ).to.equal( 'Update image URL' );
 				} );
 			} );
-		} );
-
-		it( 'should remove all attributes from model except "src" when updating the image source URL', () => {
-			const viewDocument = editor.editing.view.document;
-			const commandSpy = sinon.spy( editor.commands.get( 'insertImage' ), 'execute' );
-			const submitSpy = sinon.spy();
-
-			dropdown.buttonView.fire( 'open' );
-
-			const insertButtonView = dropdown.panelView.children.first.insertButtonView;
-
-			editor.setData( '<figure class="image"><img src="image-url-800w.jpg"' +
-			'srcset="image-url-480w.jpg 480w,image-url-800w.jpg 800w"' +
-			'sizes="(max-width: 600px) 480px,800px"' +
-			'alt="test-image"></figure>' );
-
-			editor.editing.view.change( writer => {
-				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
-			} );
-
-			const selectedElement = editor.model.document.selection.getSelectedElement();
-
-			expect( selectedElement.getAttribute( 'src' ) ).to.equal( 'image-url-800w.jpg' );
-			expect( selectedElement.hasAttribute( 'srcset' ) ).to.be.true;
-
-			dropdown.panelView.children.first.imageURLInputValue = '/assets/sample3.png';
-
-			dropdown.on( 'submit', submitSpy );
-
-			insertButtonView.fire( 'execute' );
-
-			sinon.assert.notCalled( commandSpy );
-			sinon.assert.calledOnce( submitSpy );
-			expect( dropdown.isOpen ).to.be.false;
-			expect( selectedElement.getAttribute( 'src' ) ).to.equal( '/assets/sample3.png' );
-			expect( selectedElement.hasAttribute( 'srcset' ) ).to.be.false;
-			expect( selectedElement.hasAttribute( 'sizes' ) ).to.be.false;
 		} );
 
 		describe( 'events', () => {
@@ -301,42 +150,6 @@ describe( 'ImageInsertUI', () => {
 				dropdown.buttonView.fire( 'open' );
 				sinon.assert.calledOnce( spy );
 			} );
-		} );
-
-		it( 'should inject integrations to the dropdown panel view from the config', async () => {
-			const editor = await ClassicEditor
-				.create( editorElement, {
-					plugins: [
-						Link,
-						Image,
-						CKFinderUploadAdapter,
-						CKFinder,
-						Paragraph,
-						ImageInsert,
-						ImageInsertUI,
-						FileRepository,
-						UploadAdapterPluginMock,
-						Clipboard
-					],
-					image: {
-						insert: {
-							integrations: [
-								'insertImageViaUrl',
-								'openCKFinder'
-							]
-						}
-					}
-				} );
-
-			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
-
-			dropdown.buttonView.fire( 'open' );
-
-			expect( dropdown.panelView.children.first._integrations.length ).to.equal( 2 );
-			expect( dropdown.panelView.children.first._integrations.first ).to.be.instanceOf( LabeledFieldView );
-			expect( dropdown.panelView.children.first._integrations.last ).to.be.instanceOf( ButtonView );
-
-			editor.destroy();
 		} );
 	} );
 } );
