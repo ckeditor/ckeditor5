@@ -109,14 +109,6 @@ export default {
 
 		// Compatibility features
 		{
-			model: '$htmlSection',
-			modelSchema: {
-				allowChildren: '$block',
-				allowIn: [ '$root', '$htmlSection' ],
-				isBlock: true
-			}
-		},
-		{
 			model: 'htmlP',
 			view: 'p',
 			modelSchema: {
@@ -127,14 +119,14 @@ export default {
 			model: 'htmlBlockquote',
 			view: 'blockquote',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container'
 			}
 		},
 		{
 			model: 'htmlTable',
 			view: 'table',
 			modelSchema: {
-				allowIn: [ '$htmlSection', '$root' ],
+				allowWhere: '$block',
 				isBlock: true
 			}
 		},
@@ -175,8 +167,7 @@ export default {
 			model: 'htmlTr',
 			view: 'tr',
 			modelSchema: {
-				allowIn: [ 'htmlTable', 'htmlThead', 'htmlTbody' ],
-				isBlock: true
+				allowIn: [ 'htmlTable', 'htmlThead', 'htmlTbody' ]
 			}
 		},
 		// TODO can also include text.
@@ -185,8 +176,7 @@ export default {
 			view: 'td',
 			modelSchema: {
 				allowIn: 'htmlTr',
-				allowChildren: [ '$block', '$htmlSection' ],
-				isBlock: true
+				allowContentOf: '$container'
 			}
 		},
 		// TODO can also include text.
@@ -195,8 +185,7 @@ export default {
 			view: 'th',
 			modelSchema: {
 				allowIn: 'htmlTr',
-				allowChildren: [ '$block', '$htmlSection' ],
-				isBlock: true
+				allowContentOf: '$container'
 			}
 		},
 		// TODO can also include text.
@@ -204,7 +193,7 @@ export default {
 			model: 'htmlFigure',
 			view: 'figure',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection',
+				inheritAllFrom: '$container',
 				isBlock: true
 			}
 		},
@@ -223,7 +212,8 @@ export default {
 			model: 'htmlAddress',
 			view: 'address',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		// TODO can also include text.
@@ -231,7 +221,8 @@ export default {
 			model: 'htmlAside',
 			view: 'aside',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		// TODO can also include text.
@@ -239,7 +230,8 @@ export default {
 			model: 'htmlMain',
 			view: 'main',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		// TODO can also include text.
@@ -247,7 +239,8 @@ export default {
 			model: 'htmlDetails',
 			view: 'details',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		{
@@ -264,7 +257,7 @@ export default {
 			view: 'div',
 			paragraphLikeModel: 'htmlDivParagraph',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container'
 			}
 		},
 		// TODO can also include text.
@@ -272,7 +265,8 @@ export default {
 			model: 'htmlFieldset',
 			view: 'fieldset',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		// TODO can also include h1-h6.
@@ -289,7 +283,8 @@ export default {
 			model: 'htmlHeader',
 			view: 'header',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		// TODO can also include text.
@@ -297,7 +292,8 @@ export default {
 			model: 'htmlFooter',
 			view: 'footer',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		// TODO can also include text.
@@ -305,7 +301,8 @@ export default {
 			model: 'htmlForm',
 			view: 'form',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		{
@@ -368,7 +365,7 @@ export default {
 		{
 			model: '$htmlList',
 			modelSchema: {
-				allowWhere: '$htmlSection',
+				allowWhere: '$container',
 				allowChildren: [ '$htmlList', 'htmlLi' ],
 				isBlock: true
 			}
@@ -422,14 +419,16 @@ export default {
 			model: 'htmlArticle',
 			view: 'article',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		{
 			model: 'htmlSection',
 			view: 'section',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		// TODO can also include text.
@@ -437,14 +436,15 @@ export default {
 			model: 'htmlNav',
 			view: 'nav',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		{
 			model: 'htmlDl',
 			view: 'dl',
 			modelSchema: {
-				allowIn: [ '$htmlSection', '$root' ],
+				allowWhere: '$container',
 				allowChildren: [ 'htmlDt', 'htmlDd' ],
 				isBlock: true
 			}
@@ -469,17 +469,8 @@ export default {
 			model: 'htmlCenter',
 			view: 'center',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
-			}
-		},
-		// Objects
-		{
-			model: '$htmlObjectBlock',
-			isObject: true,
-			modelSchema: {
-				isObject: true,
-				isBlock: true,
-				allowWhere: '$block'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		}
 	],
@@ -718,21 +709,11 @@ export default {
 
 		// Objects
 		{
-			model: '$htmlObjectInline',
-			isObject: true,
-			modelSchema: {
-				isObject: true,
-				isInline: true,
-				allowWhere: '$text',
-				allowAttributesOf: '$text'
-			}
-		},
-		{
 			model: 'htmlObject',
 			view: 'object',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -740,7 +721,7 @@ export default {
 			view: 'iframe',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -748,7 +729,7 @@ export default {
 			view: 'input',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -756,7 +737,7 @@ export default {
 			view: 'button',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -764,7 +745,7 @@ export default {
 			view: 'textarea',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -772,7 +753,7 @@ export default {
 			view: 'select',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -780,7 +761,7 @@ export default {
 			view: 'video',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -788,7 +769,7 @@ export default {
 			view: 'embed',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -796,7 +777,7 @@ export default {
 			view: 'oembed',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -804,7 +785,7 @@ export default {
 			view: 'audio',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -812,7 +793,7 @@ export default {
 			view: 'img',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -820,7 +801,7 @@ export default {
 			view: 'canvas',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		// TODO it could be probably represented as non-object element, although it has graphical representation,
@@ -830,7 +811,7 @@ export default {
 			view: 'meter',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		// TODO it could be probably represented as non-object element, although it has graphical representation,
@@ -840,7 +821,7 @@ export default {
 			view: 'progress',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{

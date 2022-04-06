@@ -170,7 +170,7 @@ export default class AutoMediaEmbed extends Plugin {
 					insertionPosition = this._positionToInsert;
 				}
 
-				insertMedia( editor.model, url, insertionPosition );
+				insertMedia( editor.model, url, insertionPosition, false );
 
 				this._positionToInsert.detach();
 				this._positionToInsert = null;

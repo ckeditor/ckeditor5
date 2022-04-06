@@ -72,10 +72,9 @@ describe( 'Command', () => {
 
 		it( 'is falsy when the editor is in read-only mode and command affects data', () => {
 			command.affectsData = true;
-			editor.isReadOnly = false;
 			command.isEnabled = true;
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			// Is false.
 			expect( command.isEnabled ).to.false;
@@ -85,7 +84,7 @@ describe( 'Command', () => {
 			// Still false.
 			expect( command.isEnabled ).to.false;
 
-			editor.isReadOnly = false;
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			// And is back to true.
 			expect( command.isEnabled ).to.true;
@@ -93,10 +92,9 @@ describe( 'Command', () => {
 
 		it( 'doesn\'t depend on the editor read-only mode when command doesn\'t affect data', () => {
 			command.affectsData = false;
-			editor.isReadOnly = false;
 			command.isEnabled = true;
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			// Is true.
 			expect( command.isEnabled ).to.true;
@@ -106,21 +104,20 @@ describe( 'Command', () => {
 			// Still true.
 			expect( command.isEnabled ).to.true;
 
-			editor.isReadOnly = false;
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			// And is back to true.
 			expect( command.isEnabled ).to.true;
 		} );
 
 		it( 'is observable when is overridden', () => {
-			editor.isReadOnly = false;
 			command.isEnabled = true;
 
 			editor.bind( 'something' ).to( command, 'isEnabled' );
 
 			expect( editor.something ).to.true;
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( editor.something ).to.false;
 		} );
@@ -130,12 +127,11 @@ describe( 'Command', () => {
 			const changeSpy = sinon.spy();
 
 			command.isEnabled = true;
-			editor.isReadOnly = false;
 
 			command.on( 'set', setSpy );
 			command.on( 'change', changeSpy );
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			sinon.assert.notCalled( setSpy );
 			sinon.assert.calledOnce( changeSpy );

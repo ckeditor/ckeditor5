@@ -45,7 +45,7 @@ describe( 'ListStyleCommand', () => {
 			expect( listStyleCommand.isEnabled ).to.equal( true );
 		} );
 
-		it( 'should be false if bulletedList and numberedList are enabled', () => {
+		it( 'should be false if bulletedList and numberedList are disabled', () => {
 			bulletedListCommand.isEnabled = false;
 			numberedListCommand.isEnabled = false;
 
