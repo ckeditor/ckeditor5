@@ -8,6 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
+import ImageUpload from '../../../../src/imageupload';
 import ImageInsert from '../../../../src/imageinsert';
 import ImageResize from '../../../../src/imageresize';
 
@@ -16,7 +17,7 @@ import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
-		plugins: [ ArticlePluginSet, HtmlEmbed, ImageInsert, ImageResize ],
+		plugins: [ ArticlePluginSet, HtmlEmbed, ImageUpload, ImageInsert, ImageResize ],
 		toolbar: [ 'insertImage', '|', 'htmlEmbed' ],
 		htmlEmbed: {
 			showPreviews: true
