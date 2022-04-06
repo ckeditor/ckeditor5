@@ -10,6 +10,10 @@ The {@link module:style/style~Style Style} feature lets you completely control t
 
 ## Demo
 
+<info-box>
+	The styles feature is experimental and **still in development**.
+</info-box>
+
 {@snippet features/styles}
 
 ## Related features
