@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, setTimeout */
+/* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -51,44 +51,29 @@ ClassicEditor
 		style: {
 			definitions: [
 				{
-					name: 'Red heading',
+					name: 'Article category',
+					element: 'h3',
+					classes: [ 'category' ]
+				},
+				{
+					name: 'Title',
 					element: 'h2',
-					classes: [ 'red-heading' ]
+					classes: [ 'document-title' ]
 				},
 				{
-					name: 'Large heading',
-					element: 'h2',
-					classes: [ 'large-heading' ]
+					name: 'Subtitle',
+					element: 'h3',
+					classes: [ 'document-subtitle' ]
 				},
 				{
-					name: 'Rounded container',
+					name: 'Info box',
 					element: 'p',
-					classes: [ 'rounded-container' ]
+					classes: [ 'info-box' ]
 				},
 				{
-					name: 'Large preview',
-					element: 'p',
-					classes: [ 'large-preview' ]
-				},
-				{
-					name: 'Bold table',
-					element: 'table',
-					classes: [ 'bold-table' ]
-				},
-				{
-					name: 'Facncy table',
-					element: 'table',
-					classes: [ 'fancy-table' ]
-				},
-				{
-					name: 'Colorfull cell',
-					element: 'td',
-					classes: [ 'colorful-cell' ]
-				},
-				{
-					name: 'Vibrant code',
-					element: 'pre',
-					classes: [ 'vibrant-code' ]
+					name: 'Side quote',
+					element: 'blockquote',
+					classes: [ 'side-quote' ]
 				},
 				{
 					name: 'Marker',
@@ -96,29 +81,14 @@ ClassicEditor
 					classes: [ 'marker' ]
 				},
 				{
-					name: 'Typewriter',
+					name: 'Spoiler',
 					element: 'span',
-					classes: [ 'typewriter' ]
+					classes: [ 'spoiler' ]
 				},
 				{
-					name: 'Deleted text',
-					element: 'span',
-					classes: [ 'deleted' ]
-				},
-				{
-					name: 'Cited work',
-					element: 'span',
-					classes: [ 'cited', 'another-class' ]
-				},
-				{
-					name: 'Small text',
-					element: 'span',
-					classes: [ 'small' ]
-				},
-				{
-					name: 'Very long name of the style',
-					element: 'span',
-					classes: [ 'foo' ]
+					name: 'Featured code',
+					element: 'pre',
+					classes: [ 'fancy-code' ]
 				}
 			]
 		},
@@ -142,17 +112,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		const outputElement = document.querySelector( '#snippet-styles' );
-
-		editor.model.document.on( 'change', () => {
-			outputElement.innerText = editor.getData();
-		} );
-
-		// Set the initial data with delay so hightlight.js doesn't catch it.
-		setTimeout( () => {
-			outputElement.innerText = editor.getData();
-		}, 500 );
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
