@@ -1317,11 +1317,11 @@ describe( 'TableColumnResizeEditing', () => {
 							editor.execute( 'insertTableColumnRight' );
 						} );
 
-						expect( view.document.getRoot()
-							.getChild( 0 ) // figure
-							.getChild( 1 ) // table
-							.getChild( 0 ).name
-						).to.equal( 'colgroup' );
+						const tableView = view.document.getRoot().getChild( 0 ).getChild( 1 );
+
+						expect( [ ...tableView.getChildren() ].find(
+							viewElement => viewElement.is( 'element', 'colgroup' ) )
+						).to.not.be.undefined;
 					} );
 				} );
 			} );
