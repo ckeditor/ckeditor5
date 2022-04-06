@@ -305,11 +305,20 @@ export default class DataFilter extends Plugin {
 	 * Registers a model post-fixer that is removing coupled GHS attributes of inline elements. Those attributes
 	 * are removed if a coupled feature attribute is removed.
 	 *
-	 * For example while unlinking a text (by the remove of `linkHref` attribute):
+	 * For example, consider following HTML:
 	 *
-	 *		<$text linkHref="foo" htmlA="{ ... }">bar</$text>
+	 *		<a href="foo.html" id="myId"></a>
 	 *
-	 * The `htmlA` attribute would be left behind in the model and would cause GHS to generate an `<a>` element
+	 * Which would be upcasted to following text node in the model:
+	 *
+	 *		<$text linkHref="foo.html" htmlA="{ id: 'myId' }">bar</$text>
+	 *
+	 * When the user removes the link from that text (using UI), only `linkHref` attribute would be removed:
+	 *
+	 *		<$text htmlA="{ id: 'myId' }">bar</$text>
+	 *
+	 * The `htmlA` attribute would stay in the model and would cause GHS to generate an `<a>` element.
+	 * This is incorrect from UX point of view, as the user wanted to remove the whole link (not only `href`).
 	 * that should not be there anymore because that text was supposed to be unlinked completely (not only a `href`).
 	 *
 	 * @private
