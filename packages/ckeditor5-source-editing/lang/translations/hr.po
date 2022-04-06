@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: German (https://www.transifex.com/ckeditor/teams/11143/de/)\n"
-"Language: de\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Croatian (https://www.transifex.com/ckeditor/teams/11143/hr/)\n"
+"Language: hr\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
-msgid "Cannot upload file:"
-msgstr "Die Datei kann nicht hochgeladen werden:"
+msgctxt "The label of the source editing feature toolbar button."
+msgid "Source"
+msgstr "Izvorni kod"

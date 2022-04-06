@@ -12,58 +12,58 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Galician (https://www.transifex.com/ckeditor/teams/11143/gl/)\n"
-"Language: gl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Slovak (https://www.transifex.com/ckeditor/teams/11143/sk/)\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
 msgid "Find and replace"
-msgstr "Buscar e substituír"
+msgstr "Vyhľadať a nahradiť"
 
 msgctxt "The label for the searched text in the find and replace dropdown."
 msgid "Find in text…"
-msgstr "Buscar no texto…"
+msgstr "Vyhľadať v texte..."
 
 msgctxt "The label for the find action button in the find and replace dropdown."
 msgid "Find"
-msgstr "Buscar"
+msgstr "Vyhľadať"
 
 msgctxt "The label for the previous result button in the find and replace dropdown."
 msgid "Previous result"
-msgstr "Resultado anterior"
+msgstr "Predchádzajúci výsledok"
 
 msgctxt "The label for the previous result button in the find and replace dropdown."
 msgid "Next result"
-msgstr "Seguinte resultado"
+msgstr "Nasledujúci výsledok"
 
 msgctxt "The label for the (single) replace action button in the find and replace dropdown."
 msgid "Replace"
-msgstr "Substituír"
+msgstr "Nahradiť"
 
 msgctxt "The label for the replace all action button in the find and replace dropdown."
 msgid "Replace all"
-msgstr "Substituír todo"
+msgstr "Nahradiť všetko"
 
 msgctxt "The label for the match case checkbox in the find and replace dropdown."
 msgid "Match case"
-msgstr "Coincidencia de maiúsculas"
+msgstr "Presná zhoda"
 
 msgctxt "The label for the whole words only checkbox in the find and replace dropdown."
 msgid "Whole words only"
-msgstr "Só palabras enteiras"
+msgstr "Iba celé slová"
 
 msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"
-msgstr "Substituír por…"
+msgstr "Nahradiť za..."
 
 msgctxt "An error text displayed when user attempted to find an empty text."
 msgid "Text to find must not be empty."
-msgstr "O texto a buscar non debe estar baleiro."
+msgstr "Text vyhľadávania nemôže byť prázdny."
 
 msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
 msgid "Tip: Find some text first in order to replace it."
-msgstr "Consello: primeiro busca algo de texto para substituílo."
+msgstr "Tip: Najskôr vyhľadajte text, ktorý následne môžete nahradiť."
 
 msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
 msgid "Show options"
-msgstr "Amosar as opcións"
+msgstr "Zobraziť možnosti"
