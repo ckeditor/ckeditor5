@@ -610,7 +610,22 @@ export default class TableColumnResizeEditing extends Plugin {
 			writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
 
 			if ( isRightEdge ) {
-				const tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / rootWidth );
+				const tableAncestors = viewFigure.getAncestors().filter( element => element.name === 'table' );
+				let tableWidthAsPercentage;
+
+				if ( tableAncestors && tableAncestors.length >= 1 ) {
+					let numberOfTablesChildren = 0;
+
+					tableAncestors.forEach( tableElement => {
+						numberOfTablesChildren += Array.from( tableElement.getChild( 0 ).getChildren() ).length;
+					} );
+
+					const updatedRootWidth = rootWidth / numberOfTablesChildren;
+
+					tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / updatedRootWidth );
+				} else {
+					tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / rootWidth );
+				}
 
 				writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
 			} else {

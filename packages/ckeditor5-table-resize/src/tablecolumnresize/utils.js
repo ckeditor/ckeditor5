@@ -190,7 +190,11 @@ function getColgroupViewElement( table, editor ) {
  */
 export function toPrecision( value ) {
 	const multiplier = Math.pow( 10, COLUMN_WIDTH_PRECISION );
-	const number = parseFloat( value );
+	let number = parseFloat( value );
+
+	if ( number > 100 ) {
+		number = 100;
+	}
 
 	return Math.round( number * multiplier ) / multiplier;
 }
