@@ -2,7 +2,7 @@
 category: updating
 menu-title: Migration to v33.x
 order: 91
-modified_at: 2022-02-21
+modified_at: 2022-02-01
 ---
 
 # Migration to CKEditor 5 v33.0.0

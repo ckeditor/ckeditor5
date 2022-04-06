@@ -27,7 +27,7 @@
  * @protected
  * @param {module:html-support/dataschema~DataSchema} dataSchema
  * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions
- * @returns {Object} And object with normalized style definitions grouped into `block` and `inline` categories (arrays).
+ * @returns {Object} An object with normalized style definitions grouped into `block` and `inline` categories (arrays).
  */
 export function normalizeConfig( dataSchema, styleDefinitions = [] ) {
 	const normalizedDefinitions = {
@@ -35,12 +35,15 @@ export function normalizeConfig( dataSchema, styleDefinitions = [] ) {
 		inline: []
 	};
 
-	// Use DataSchema here. But to do that, elements must be enabled in GHS first.
 	for ( const definition of styleDefinitions ) {
-		if ( definition.element === 'span' ) {
-			normalizedDefinitions.inline.push( definition );
+		const matchingDefinitions = Array.from( dataSchema.getDefinitionsForView( definition.element ) );
+		const modelElements = matchingDefinitions.map( ( { model } ) => model );
+		const isBlock = matchingDefinitions.some( ( { isBlock } ) => isBlock );
+
+		if ( isBlock ) {
+			normalizedDefinitions.block.push( { isBlock, modelElements, ...definition } );
 		} else {
-			normalizedDefinitions.block.push( definition );
+			normalizedDefinitions.inline.push( { isBlock, modelElements, ...definition } );
 		}
 	}
 	return normalizedDefinitions;

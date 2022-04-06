@@ -38,7 +38,7 @@ Refer to the {@link installation/getting-started/migration-from-ckeditor-4 CKEdi
 
 Find out more about the {@link installation/advanced/plugins plugin development}, how to {@link installation/advanced/saving-data handle and save the data} and what the {@link installation/advanced/features-html-output-overview features' HTML output} is for each plugin. Learn about alternative setups such as {@link installation/advanced/dll-builds DLL builds} or {@link installation/advanced/integrating-from-source integrating CKEditor 5 from source}.
 
-## Related links
+**Related links**
 
  * {@link updating/index Updating CKEditor 5} &ndash; Find out how to keep you installation up-to-date at all times.
  * {@link features/index Features} &ndash; Learn more about the CKEditor 5 features.

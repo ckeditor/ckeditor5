@@ -66,6 +66,12 @@ export default class AutomaticDecorators {
 				if ( !conversionApi.consumable.test( data.item, 'attribute:linkHref' ) ) {
 					return;
 				}
+
+				// Automatic decorators for block links are handled e.g. in LinkImageEditing.
+				if ( !( data.item.is( 'selection' ) || conversionApi.schema.isInline( data.item ) ) ) {
+					return;
+				}
+
 				const viewWriter = conversionApi.writer;
 				const viewSelection = viewWriter.document.selection;
 
