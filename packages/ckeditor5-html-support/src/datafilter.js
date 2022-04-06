@@ -107,8 +107,8 @@ export default class DataFilter extends Plugin {
 		this._dataInitialized = false;
 
 		/**
-		 * Cached map of coupled attributes. The map is keyed by the feature attribute name
-		 * and coupled GHS attribute names are stored in the value array.
+		 * Cached map of coupled attributes. Keys are the feature attributes names
+		 * and values are arrays with coupled GHS attributes names.
 		 *
 		 * @private
 		 * @member {Map.<String,Array>}
