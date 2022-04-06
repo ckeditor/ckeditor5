@@ -643,7 +643,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const lastColumnIndex = getNumberOfColumn( modelTable, editor ) - 1;
 
 		const isRightEdge = leftColumnIndex === lastColumnIndex;
-		const isTableCentered = !modelTable.hasAttribute( 'alignment' );
+		const isTableCentered = !modelTable.hasAttribute( 'tableAlignment' );
 		const isLtrContent = editor.locale.contentLanguageDirection !== 'rtl';
 
 		const viewTable = viewLeftCell.findAncestor( 'table' );
