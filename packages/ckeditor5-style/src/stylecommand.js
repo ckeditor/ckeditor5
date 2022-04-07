@@ -64,22 +64,50 @@ export default class StyleCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		let value = [];
 		const editor = this.editor;
-		const selection = editor.model.document.selection;
-		const block = first( selection.getSelectedBlocks() );
+		const model = editor.model;
+		const selection = model.document.selection;
 
-		this.enabledStyles = [];
+		const value = [];
+		const enabledStyles = [];
 
-		if ( !block || !editor.model.schema.isObject( block ) ) {
-			value = this._prepareNewInlineElementValue( value, selection );
-			this.enabledStyles = this.styles.getInlineElementsNames();
+		// Inline styles;
+		for ( const ghsAttributeName of this.styles.getInlineGhsAttributeNames() ) {
+			// Active styles.
+			const ghsAttributeValue = this._getValueFromFirstAllowedNode( ghsAttributeName );
+			const styleNames = this._getStyleNamesForGhsAttributeValue( ghsAttributeValue );
 
-			if ( block ) {
-				value = this._prepareNewBlockElementValue( value, block );
+			value.push( ...styleNames );
+
+			// Enabled styles.
+			if ( model.schema.checkAttributeInSelection( selection, ghsAttributeName ) ) {
+				const definitions = this.styles.getDefinitionsByGhsAttributeName( ghsAttributeName );
+
+				for ( const definition of definitions ) {
+					enabledStyles.push( definition.name );
+				}
 			}
 		}
 
+		// Block styles.
+		const firstBlock = first( selection.getSelectedBlocks() );
+
+		if ( firstBlock && model.schema.checkAttribute( firstBlock, 'htmlAttributes' ) && !model.schema.isObject( firstBlock ) ) {
+			// Active styles.
+			const ghsAttributeValue = firstBlock.getAttribute( 'htmlAttributes' );
+			const styleNames = this._getStyleNamesForGhsAttributeValue( ghsAttributeValue );
+
+			value.push( ...styleNames );
+
+			// Enabled styles.
+			const definitions = this.styles.getDefinitionsByElementName( firstBlock.name );
+
+			for ( const definition of definitions ) {
+				enabledStyles.push( definition.name );
+			}
+		}
+
+		this.enabledStyles = enabledStyles;
 		this.isEnabled = this.enabledStyles.length > 0;
 		this.value = this.isEnabled ? value : [];
 	}
@@ -110,13 +138,14 @@ export default class StyleCommand extends Command {
 		if ( !this.enabledStyles.includes( styleName ) ) {
 			/**
 			 * Style command can be executed only on a correct style name.
-			 * This warning may be caused by passing name that it not specified in any of the
+			 * This warning may be caused by passing name that is not specified in any of the
 			 * definitions in the styles config, when trying to apply style that is not allowed
 			 * on given element or passing class name instead of the style name.
 			 *
 			 * @error style-command-executed-with-incorrect-style-name
 			 */
 			logWarning( 'style-command-executed-with-incorrect-style-name' );
+
 			return;
 		}
 
@@ -125,14 +154,20 @@ export default class StyleCommand extends Command {
 		const doc = model.document;
 		const selection = doc.selection;
 
-		const selectedBlockElement = first( selection.getSelectedBlocks() );
-		const definition = this.styles.getDefinitionsByName( styleName );
+		model.change( () => {
+			const definition = this.styles.getDefinitionsByName( styleName );
 
-		if ( selectedBlockElement && definition.isBlock ) {
-			this._handleStyleUpdate( definition, selectedBlockElement );
-		} else {
-			this._handleStyleUpdate( definition, selection );
-		}
+			if ( definition.isBlock ) {
+				Array.from( doc.selection.getSelectedBlocks() )
+					.filter( block => (
+						definition.modelElements.includes( block.name ) &&
+						model.schema.checkAttribute( block, 'htmlAttributes' ) )
+					)
+					.forEach( block => this._updateStyle( definition, block ) );
+			} else {
+				this._updateStyle( definition, selection );
+			}
+		} );
 	}
 
 	/**
@@ -142,8 +177,7 @@ export default class StyleCommand extends Command {
 	 * @param {Object} definition Style definition object.
 	 * @param {module:engine/model/selection~Selectable} selectable Selection, range or element to update the style on.
 	 */
-	_handleStyleUpdate( definition, selectable ) {
-		const { name, element, classes } = definition;
+	_updateStyle( { name, element, classes }, selectable ) {
 		const htmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
 		if ( this.value.includes( name ) ) {
@@ -154,86 +188,29 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * Returns inline element value.
-	 *
-	 * @private
-	 * @param {Array} value
-	 * @param {module:engine/model/selection~Selection} selection
+	 * TODO
 	 */
-	_prepareNewInlineElementValue( value, selection ) {
-		let newValue = [];
-
-		const attributes = selection.getAttributes();
-
-		for ( const [ attribute ] of attributes ) {
-			newValue = [ ...value, ...this._getAttributeValue( attribute ) ];
+	* _getStyleNamesForGhsAttributeValue( ghsAttributeValue ) {
+		if ( !ghsAttributeValue || !ghsAttributeValue.classes ) {
+			return;
 		}
 
-		return newValue;
+		for ( const className of ghsAttributeValue.classes ) {
+			const definition = this.styles.getDefinitionsByClassName( className );
+
+			if ( definition ) {
+				yield definition.name;
+			}
+		}
 	}
 
 	/**
-	 * Returns element value and sets enabled styles.
+	 * Checks the attribute value of the first node in the selection that allows the attribute.
+	 * For the collapsed selection returns the selection attribute.
 	 *
 	 * @private
-	 * @param {Array} value
-	 * @param {Object|null} element
-	 * @return {Array} Current block element styles value.
-	 */
-	_prepareNewBlockElementValue( value, element ) {
-		const availableDefinitions = this.styles.getDefinitionsByElementName( element.name );
-
-		if ( availableDefinitions ) {
-			const blockStyleNames = availableDefinitions.map( ( { name } ) => name );
-			this.enabledStyles = [ ...this.enabledStyles, ...blockStyleNames ];
-		}
-
-		return [ ...value, ...this._getAttributeValue( 'htmlAttributes' ) ];
-	}
-
-	/**
-	 * Get classes attribute value.
-	 *
-	 * @private
-	 * @param {String} attribute
-	 */
-	_getAttributeValue( attribute ) {
-		const value = [];
-		const classes = attribute === 'htmlAttributes' ?
-			this._getValueFromBlockElement() :
-			this._getValueFromFirstAllowedNode( attribute );
-
-		for ( const htmlClass of classes ) {
-			const { name } = this.styles.getDefinitionsByClassName( htmlClass ) || {};
-
-			value.push( name );
-		}
-
-		return value;
-	}
-
-	/**
-	 * Gets classes from currently selected block element.
-	 *
-	 * @private
-	 */
-	_getValueFromBlockElement() {
-		const selection = this.editor.model.document.selection;
-		const block = first( selection.getSelectedBlocks() );
-		const attributes = block.getAttribute( 'htmlAttributes' );
-
-		if ( attributes ) {
-			return attributes.classes;
-		}
-
-		return [];
-	}
-
-	/**
-	 * Gets classes from currently selected text element.
-	 *
-	 * @private
-	 * @param {String} attributeName Text attribute name.
+	 * @param {String} attributeName Name of the GHS attribute.
+	 * @returns {Object|null} The attribute value.
 	 */
 	_getValueFromFirstAllowedNode( attributeName ) {
 		const model = this.editor.model;
@@ -241,27 +218,17 @@ export default class StyleCommand extends Command {
 		const selection = model.document.selection;
 
 		if ( selection.isCollapsed ) {
-			/* istanbul ignore next */
-			const { classes } = selection.getAttribute( attributeName ) || {};
-
-			/* istanbul ignore next */
-			return classes || [];
+			return selection.getAttribute( attributeName );
 		}
 
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
-				/* istanbul ignore else */
 				if ( schema.checkAttribute( item, attributeName ) ) {
-					/* istanbul ignore next */
-					const { classes } = item.getAttribute( attributeName ) || {};
-
-					/* istanbul ignore next */
-					return classes || [];
+					return item.getAttribute( attributeName );
 				}
 			}
 		}
 
-		/* istanbul ignore next */
-		return [];
+		return null;
 	}
 }

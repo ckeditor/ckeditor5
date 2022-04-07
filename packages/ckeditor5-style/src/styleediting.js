@@ -103,7 +103,7 @@ class Styles {
 				}
 
 				this.classToDefinition.set( classes.join( ' ' ), { name, element, classes } );
-				this.nameToDefinition.set( name, { name, element, classes, isBlock } );
+				this.nameToDefinition.set( name, { name, element, classes, isBlock, modelElements } );
 			}
 		}
 	}
@@ -129,6 +129,13 @@ class Styles {
 	}
 
 	/**
+	 * TODO
+	 */
+	getDefinitionsByGhsAttributeName( ghsAttributeName ) {
+		return this.elementToDefinition.get( ghsAttributeName );
+	}
+
+	/**
 	 * Returns the style config definitions by the style name.
 	 *
 	 * @protected
@@ -146,6 +153,17 @@ class Styles {
 	 */
 	getDefinitionsByClassName( className ) {
 		return this.classToDefinition.get( className );
+	}
+
+	/**
+	 * TODO
+	 */
+	* getInlineGhsAttributeNames() {
+		for ( const [ elementName, definition ] of this.elementToDefinition ) {
+			if ( !definition.isBlock ) {
+				yield elementName;
+			}
+		}
 	}
 }
 
