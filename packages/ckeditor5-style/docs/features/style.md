@@ -51,7 +51,47 @@ ClassicEditor
 
 ## Configuration
 
-TODO
+Configuring the styles feature takes two steps. First you need to define the styles in the configuration file, for example:
+
+```js
+style: {
+	definitions: [
+		{
+			name: 'Article category',
+			element: 'h3',
+			classes: [ 'category' ]
+		},
+		{
+			name: 'Info box',
+			element: 'p',
+			classes: [ 'info-box' ]
+		},
+	]
+},
+
+```
+
+The, the css styles need to be defined for the document:
+
+```css
+	.ck.ck-content h3.category {
+		font-family: 'Bebas Neue';
+		font-size: 20px;
+		font-weight: bold;
+		color: #d1d1d1;
+		letter-spacing: 10px;
+		margin: 0;
+		padding: 0;
+	}
+
+	.ck.ck-content p.info-box {
+		padding: 1.2em 2em;
+		border: 1px solid #e91e63;
+		border-left: 10px solid #e91e63;
+		border-radius: 5px;
+		margin: 1.5em;
+	}
+```
 
 ## Common API
 
