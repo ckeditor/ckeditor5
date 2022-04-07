@@ -8,8 +8,6 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
@@ -17,13 +15,14 @@ import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Style from '@ckeditor/ckeditor5-style/src/style';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-styles' ), {
 		plugins: [
-			ArticlePluginSet, EasyImage, ImageUpload, CloudServices,
-			Code, CodeBlock, Strikethrough, HorizontalLine, GeneralHtmlSupport, Style
+			ArticlePluginSet, CloudServices,
+			Code, CodeBlock, Strikethrough, HorizontalLine, GeneralHtmlSupport, Style, Highlight
 		],
 		toolbar: {
 			items: [
@@ -36,13 +35,9 @@ ClassicEditor
 				'strikethrough',
 				'link',
 				'|',
-				'bulletedList',
-				'numberedList',
-				'|',
+				'highlight',
 				'code',
 				'codeBlock',
-				'|',
-				'uploadImage',
 				'blockQuote',
 				'horizontalLine'
 			],
