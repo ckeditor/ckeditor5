@@ -78,6 +78,46 @@ describe( 'StyleCommand', () => {
 	} );
 
 	describe( 'value', () => {
+		it( 'should detect applied inline style', () => {
+			setData( model, '<paragraph>[foobar]</paragraph>' );
+
+			model.change( writer => {
+				writer.setAttribute( 'htmlSpan', { classes: [ 'marker' ] }, root.getChild( 0 ).getChild( 0 ) );
+			} );
+
+			expect( command.value ).to.deep.equal( [ 'Marker' ] );
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[<$text htmlSpan="{"classes":["marker"]}">foobar</$text>]</paragraph>'
+			);
+		} );
+
+		it( 'should detect applied multiple inline styles', () => {
+			setData( model, '<paragraph>[foobar]</paragraph>' );
+
+			model.change( writer => {
+				writer.setAttribute( 'htmlSpan', { classes: [ 'marker', 'typewriter' ] }, root.getChild( 0 ).getChild( 0 ) );
+			} );
+
+			expect( command.value ).to.deep.equal( [ 'Marker', 'Typewriter' ] );
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[<$text htmlSpan="{"classes":["marker","typewriter"]}">foobar</$text>]</paragraph>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/11588
+		it( 'should detect applied multiple inline styles x', () => {
+			setData( model, '<paragraph>[foobar]</paragraph>' );
+
+			model.change( writer => {
+				writer.setAttribute( 'htmlSpan', { classes: [ 'marker' ] }, root.getChild( 0 ).getChild( 0 ) );
+				writer.setAttribute( 'bold', true, root.getChild( 0 ).getChild( 0 ) );
+			} );
+
+			expect( command.value ).to.deep.equal( [ 'Marker' ] );
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[<$text bold="true" htmlSpan="{"classes":["marker"]}">foobar</$text>]</paragraph>'
+			);
+		} );
 	} );
 
 	describe( 'isEnabled', () => {
