@@ -46,14 +46,14 @@ import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
 export default class TableColumnResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
- 	 */
+	 */
 	static get requires() {
 		return [ TableEditing ];
 	}
 
 	/**
 	 * @inheritDoc
- 	 */
+	 */
 	static get pluginName() {
 		return 'TableColumnResizeEditing';
 	}
@@ -93,7 +93,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
- 	 */
+	 */
 	init() {
 		this._extendSchema();
 		this._setupConversion();
@@ -571,7 +571,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				isTableCentered
 			},
 			widths: {
-				rootWidth,
+				viewFigureParentWidth,
 				tableWidth,
 				leftColumnWidth,
 				rightColumnWidth
@@ -586,7 +586,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
 
 		const dxUpperBound = isRightEdge ?
-			rootWidth - tableWidth :
+			viewFigureParentWidth - tableWidth :
 			rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
 
 		// The multiplier is needed for calculating the proper movement offset:
@@ -610,22 +610,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
 
 			if ( isRightEdge ) {
-				const tableAncestors = viewFigure.getAncestors().filter( element => element.name === 'table' );
-				let tableWidthAsPercentage;
-
-				if ( tableAncestors && tableAncestors.length >= 1 ) {
-					let numberOfTablesChildren = 0;
-
-					tableAncestors.forEach( tableElement => {
-						numberOfTablesChildren += Array.from( tableElement.getChild( 0 ).getChildren() ).length;
-					} );
-
-					const updatedRootWidth = rootWidth / numberOfTablesChildren;
-
-					tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / updatedRootWidth );
-				} else {
-					tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / rootWidth );
-				}
+				const tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / viewFigureParentWidth );
 
 				writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
 			} else {
@@ -666,7 +651,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const viewLeftColumn = viewColgroup.getChild( leftColumnIndex );
 		const viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex + 1 );
 
-		const rootWidth = getElementWidthInPixels( editor.editing.view.getDomRoot() );
+		const viewFigureParentWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure.parent ) );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
 		const columnWidths = getColumnWidthsInPixels( modelTable, editor );
 		const leftColumnWidth = columnWidths[ leftColumnIndex ];
@@ -683,7 +668,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				viewResizer
 			},
 			widths: {
-				rootWidth,
+				viewFigureParentWidth,
 				tableWidth,
 				leftColumnWidth,
 				rightColumnWidth
