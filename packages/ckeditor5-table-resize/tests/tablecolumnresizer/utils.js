@@ -453,7 +453,7 @@ describe( 'TableColumnResize utils', () => {
 
 		// Because the `window.getComputedStyle()` for colgroup will always return 0px on Safari, we needed to change the calculations
 		// to be based on tbody element instead - which works ok in all main browsers. See #1466 for reference.
-		it( 'checks if `getTableWidthInPixels()` will return correct value on Safari', () => {
+		it( 'returns a correct value on Safari', () => {
 			editor.setData(
 				`<figure class="table">
 					<table>
@@ -472,26 +472,16 @@ describe( 'TableColumnResize utils', () => {
 			);
 
 			const table = editor.model.document.getRoot().getChild( 0 );
-			const getComputedStyleOriginal = window.getComputedStyle;
+			const getComputedStyleStub = sinon.stub( window, 'getComputedStyle' ).callThrough();
 
-			const modifiedGetComputedStyle = function( element ) {
-				let result = getComputedStyleOriginal( element );
+			// Emulate safari's bug.
+			getComputedStyleStub.withArgs( sinon.match.has( 'localName', 'colgroup' ) ).returns( { width: '0px' } );
 
-				if ( element.localName === 'colgroup' ) {
-					result = [ ...result ];
-					result.width = '0px';
-				}
+			const result = getTableWidthInPixels( table, editor );
 
-				return result;
-			};
+			getComputedStyleStub.restore();
 
-			const stub = sinon.stub( window, 'getComputedStyle' ).callsFake( modifiedGetComputedStyle );
-
-			expect( getTableWidthInPixels( table, editor ) ).to.not.equal( 0 );
-
-			stub.restore();
-
-			sinon.assert.called( stub );
+			expect( result ).to.not.equal( 0 );
 		} );
 	} );
 } );
