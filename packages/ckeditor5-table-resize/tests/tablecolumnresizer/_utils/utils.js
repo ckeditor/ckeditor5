@@ -1,54 +1,54 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
-
-/* global window, MouseEvent */
 
 import { global } from 'ckeditor5/src/utils';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import TableColumnResizeEditing from '../../../src/tablecolumnresize/tablecolumnresizeediting';
 
 export const tableColumnResizeMouseSimulator = {
-	down( view, domTarget ) {
-		const preventDefault = sinon.spy();
-		const domEventDataMock = new DomEventData( view, {
-			target: domTarget,
-			preventDefault,
-			clientX: getColumnResizerRect( domTarget ).x
-		} );
+	down( editor, domTarget, options ) {
+		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
+		const stop = options.stop || sinon.spy().named( 'stop' );
 
-		view.document.fire( 'mousedown', domEventDataMock );
+		const clientX = getColumnResizerRect( domTarget ).x;
+
+		const eventInfo = { stop };
+
+		const domEventData = {
+			target: editor.editing.view.domConverter.domToView( domTarget ),
+			domEvent: { clientX },
+			preventDefault
+		};
+		this._getPlugin( editor )._onMouseDownHandler( eventInfo, domEventData );
 	},
 
-	move( domTarget, vector ) {
-		const event = new MouseEvent( 'mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
+	move( editor, domTarget, vector ) {
+		const eventInfo = {};
+
+		const domEventData = {
 			clientX: getColumnResizerRect( domTarget ).moveBy( vector.x, vector.y ).x
-		} );
+		};
 
-		domTarget.dispatchEvent( event );
+		this._getPlugin( editor )._onMouseMoveHandler( eventInfo, domEventData );
 	},
 
-	up( domTarget ) {
-		const event = new MouseEvent( 'mouseup', {
-			view: window,
-			bubbles: true,
-			cancelable: true
-		} );
-
-		domTarget.dispatchEvent( event );
+	up( editor ) {
+		this._getPlugin( editor )._onMouseUpHandler();
 	},
 
-	resize( view, columnIndex, vector, rowIndex ) {
+	resize( editor, view, columnIndex, vector, rowIndex, options ) {
 		const domResizer = getDomResizer( view, columnIndex, rowIndex );
 
-		this.down( view, domResizer );
-		this.move( domResizer, vector );
-		this.up( domResizer );
+		this.down( editor, domResizer, options || {} );
+		this.move( editor, domResizer, vector );
+		this.up( editor );
+	},
+
+	_getPlugin( editor ) {
+		return editor.plugins.get( TableColumnResizeEditing );
 	}
 };
 
