@@ -463,6 +463,13 @@ describe( 'TableColumnResizeEditing', () => {
 
 			const table = model.document.getRoot().getChild( 0 );
 
+			// We define table width precisely to be able to predict column widths in %.
+			// Setting table width to 201px causes the columns to have initially: [50px][50px][100px]
+			editor.editing.view.change( writer => {
+				const viewEditableRoot = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 1 );
+				writer.setAttribute( 'style', 'width: 201px;', viewEditableRoot );
+			} );
+
 			model.change( writer => {
 				const cell = table.getChild( 1 ).getChild( 1 );
 
@@ -471,7 +478,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			const tableWidths = table.getAttribute( 'columnWidths' );
 
-			expect( tableWidths ).to.be.equal( '25%,10.19%,64.81%' );
+			expect( tableWidths ).to.be.equal( '25%,50%,25%' );
 
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
 
