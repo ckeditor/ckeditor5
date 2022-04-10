@@ -836,7 +836,7 @@ describe( 'TableColumnResizeEditing', () => {
 					const centeredTableColumnWidthsPx = getViewColumnWidthsPx( view );
 					const widthDifference = centeredTableColumnWidthsPx[ 1 ] - alignedTableColumnWidthsPx[ 1 ];
 
-					expect( widthDifference ).to.be.equal( mouseMovementVector.x );
+					expect( Math.abs( widthDifference - mouseMovementVector.x ) < PIXEL_PRECISION ).to.be.true;
 				} );
 			} );
 		} );
