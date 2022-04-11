@@ -13,7 +13,7 @@ The read-only mode may have several applications. It may be used to impose user-
 
 The feature may also be used to view content that should not be edited, like financial reports, software logs or reprinted stories. While not editable, this content will still be accessible for copying or for screen readers.
 
-Editor can be switched to or out of the read-only mode by many features, under various circumstances. The editor supports locking mechanism for the read-only mode. It enables easy control over the read-only mode when many features wants to turn it on or off at the same time, without conflicting with each other. It guarantees that you will not make the editor editable accidentally (which could lead to errors).
+Editor can be switched to or out of the read-only mode by many features, under various circumstances. The editor supports locking mechanism for the read-only mode. It enables easy control over the read-only mode when many features wants to turn it on or off at the same time, without conflicting with each other. It guarantees that you will not make the editor content editable by an accident (which could lead to errors).
 
 <info-box>
 	See also the {@link features/restricted-editing restricted editing feature} that lets you define which parts of a document can be editable for a group of users with limited editing rights, leaving the rest of the content non-editable to them. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
