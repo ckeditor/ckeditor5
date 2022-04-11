@@ -58,6 +58,8 @@ export const getDomTable = view => view.domConverter.mapViewToDom( view.document
 
 export const getModelTable = model => model.document.getRoot().getChild( 0 );
 
+export const getViewTable = view => view.document.getRoot().getChild( 0 ).getChild( 1 );
+
 export function getDomTableRects( domTable ) {
 	return domTable.getClientRects()[ 0 ];
 }
