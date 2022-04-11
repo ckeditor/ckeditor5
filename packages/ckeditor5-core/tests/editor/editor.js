@@ -514,26 +514,6 @@ describe( 'Editor', () => {
 			expect( customPlugin.isEditorReadOnly ).to.equal( false );
 		} );
 
-		it( 'setting read-only lock to a value can be achieved by passing the additional argument', () => {
-			const editor = new TestEditor();
-
-			editor.enableReadOnlyMode( 'lock', true );
-
-			expect( editor.isReadOnly ).to.true;
-
-			editor.enableReadOnlyMode( 'lock', true );
-
-			expect( editor.isReadOnly ).to.true;
-
-			editor.enableReadOnlyMode( 'lock', false );
-
-			expect( editor.isReadOnly ).to.false;
-
-			editor.enableReadOnlyMode( 'lock', false );
-
-			expect( editor.isReadOnly ).to.false;
-		} );
-
 		it( 'setting read-only lock twice should not throw an error for the same lock ID', () => {
 			const editor = new TestEditor();
 
