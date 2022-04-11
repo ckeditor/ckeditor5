@@ -62,7 +62,7 @@ ClassicEditor
 	} );
 ```
 
-When the button is clicked, the property `editor.isReadOnly` is set to `true`. This triggers the code showed above, which in turn hides the toolbar using CSS styles. After clicking the button once more and setting `editor.isReadOnly` to `false`, the toolbar is visible again. This approach will work both for classic and decoupled editors.
+When the button is clicked, the `editor.enableReadOnlyMode()` creates a lock that sets the read-only mode on the editor. This triggers the code showed above, which in turn hides the toolbar using CSS styles. After clicking the button once more, the `editor.disableReadOnlyMode()` is called, which removes the read-only lock and the editor's and the toolbar is visible again. This approach will work both for classic and decoupled editors.
 
 Use the demo below to see this code in action, toggle read-only mode together with the editor's toolbar with the dedicated button.
 
