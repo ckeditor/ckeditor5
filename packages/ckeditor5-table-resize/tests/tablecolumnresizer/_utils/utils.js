@@ -79,8 +79,8 @@ export function getViewColumnWidthsPx( domTable ) {
 	return widths;
 }
 
-export function getModelColumnWidthsPc( model ) {
-	return model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ).replaceAll( '%', '' ).split( ',' );
+export function getModelColumnWidthsPc( modelTable ) {
+	return modelTable.getAttribute( 'columnWidths' ).replaceAll( '%', '' ).split( ',' );
 }
 
 export function getViewColumnWidthsPc( view ) {

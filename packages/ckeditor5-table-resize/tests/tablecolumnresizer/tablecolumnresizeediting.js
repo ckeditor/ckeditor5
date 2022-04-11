@@ -19,6 +19,7 @@ import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_util
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
 import {
 	getDomTable,
+	getModelTable,
 	getColumnWidth,
 	getViewColumnWidthsPx,
 	getModelColumnWidthsPc,
@@ -502,7 +503,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector, 1 );
 
-			const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+			const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 			assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -539,7 +540,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -573,7 +574,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -607,7 +608,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -642,7 +643,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -685,7 +686,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -728,7 +729,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector, 1 );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -763,7 +764,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector, 2 );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -878,7 +879,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -912,7 +913,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -946,7 +947,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -981,7 +982,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -1024,7 +1025,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -1061,7 +1062,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -1096,7 +1097,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -1131,7 +1132,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
@@ -1167,7 +1168,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				tableColumnResizeMouseSimulator.resize( editor, view, columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
