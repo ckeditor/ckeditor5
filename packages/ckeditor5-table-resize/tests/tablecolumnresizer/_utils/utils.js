@@ -39,8 +39,8 @@ export const tableColumnResizeMouseSimulator = {
 		this._getPlugin( editor )._onMouseUpHandler();
 	},
 
-	resize( editor, view, columnIndex, vector, rowIndex, options ) {
-		const domResizer = getDomResizer( view, columnIndex, rowIndex );
+	resize( editor, domTable, columnIndex, vector, rowIndex, options ) {
+		const domResizer = getDomResizer( domTable, columnIndex, rowIndex );
 
 		this.down( editor, domResizer, options || {} );
 		this.move( editor, domResizer, vector );
@@ -95,8 +95,7 @@ export function getViewColumnWidthsPc( view ) {
 	return viewColWidths;
 }
 
-export function getDomResizer( view, columnIndex, rowIndex ) {
-	const domTable = getDomTable( view );
+export function getDomResizer( domTable, columnIndex, rowIndex ) {
 	const rows = Array.from( domTable.querySelectorAll( 'tr' ) );
 	const row = rows[ rowIndex ? rowIndex : 0 ];
 	const domResizer = Array.from( row.querySelectorAll( '.table-column-resizer' ) )[ columnIndex ];
