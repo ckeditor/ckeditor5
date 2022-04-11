@@ -74,7 +74,9 @@ A relatively simple yet efficient strategy of adopting CKEditor 5 into existing 
 
 ## Plugins compatibility table
 
-{@snippet builds/plugins-mapping/plugins-mapping}
+The following table presents plugins available in CKEditor 4 and their equivalent in CKEditor 5.
+
+{@snippet installation/plugins-mapping/plugins-mapping}
 
 ## Configuration options compatibility table
 
