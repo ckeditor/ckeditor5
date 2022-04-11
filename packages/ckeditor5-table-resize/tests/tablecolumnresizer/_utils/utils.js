@@ -68,8 +68,7 @@ export function getColumnWidth( domTable, columnIndex ) {
 	return getWidth( Array.from( domTable.querySelectorAll( 'col' ) )[ columnIndex ] );
 }
 
-export function getViewColumnWidthsPx( view ) {
-	const domTable = getDomTable( view );
+export function getViewColumnWidthsPx( domTable ) {
 	const widths = [];
 
 	Array.from( domTable.querySelectorAll( 'col' ) ).forEach( col => {
