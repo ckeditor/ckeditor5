@@ -634,7 +634,7 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 1;
-				const initialColumnWidth = getColumnWidth( view, columnToResizeIndex );
+				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: -( initialColumnWidth * 1.05 ), y: 0 };
 
 				// Test-agnostic.
@@ -677,7 +677,7 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 0;
-				const initialColumnWidth = getColumnWidth( view, columnToResizeIndex );
+				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: ( initialColumnWidth * 1.05 ), y: 0 };
 
 				// Test-agnostic.
@@ -973,7 +973,7 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 1;
-				const initialColumnWidth = getColumnWidth( view, columnToResizeIndex );
+				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: initialColumnWidth * 1.05, y: 0 };
 
 				// Test-agnostic.
@@ -1016,7 +1016,7 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 0;
-				const initialColumnWidth = getColumnWidth( view, columnToResizeIndex );
+				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: -( initialColumnWidth * 1.05 ), y: 0 };
 
 				// Test-agnostic.

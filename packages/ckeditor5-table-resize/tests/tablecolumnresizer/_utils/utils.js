@@ -64,9 +64,7 @@ export function getDomTableCellRects( domTable, columnIndex ) {
 	return Array.from( domTable.querySelectorAll( 'td' ) )[ columnIndex ].getClientRects()[ 0 ];
 }
 
-export function getColumnWidth( view, columnIndex ) {
-	const domTable = getDomTable( view );
-
+export function getColumnWidth( domTable, columnIndex ) {
 	return getWidth( Array.from( domTable.querySelectorAll( 'col' ) )[ columnIndex ] );
 }
 
