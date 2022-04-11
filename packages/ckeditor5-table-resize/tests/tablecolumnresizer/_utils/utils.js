@@ -60,8 +60,8 @@ export function getDomTableRects( domTable ) {
 	return domTable.getClientRects()[ 0 ];
 }
 
-export function getDomTableCellRects( view, columnIndex ) {
-	return Array.from( getDomTable( view ).querySelectorAll( 'td' ) )[ columnIndex ].getClientRects()[ 0 ];
+export function getDomTableCellRects( domTable, columnIndex ) {
+	return Array.from( domTable.querySelectorAll( 'td' ) )[ columnIndex ].getClientRects()[ 0 ];
 }
 
 export function getColumnWidth( view, columnIndex ) {

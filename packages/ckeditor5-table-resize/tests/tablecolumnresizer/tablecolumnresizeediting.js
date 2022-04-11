@@ -1053,7 +1053,7 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 0;
-				const cellRect = getDomTableCellRects( view, columnToResizeIndex );
+				const cellRect = getDomTableCellRects( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: 10, y: -( cellRect.height ) };
 
 				// Test-agnostic.
@@ -1123,7 +1123,7 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 0;
-				const cellRect = getDomTableCellRects( view, columnToResizeIndex );
+				const cellRect = getDomTableCellRects( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: -( cellRect.width + 20 ), y: 0 };
 
 				// Test-agnostic.
@@ -1159,7 +1159,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				const columnToResizeIndex = 1;
 				// We need the width of the last cell to move the cursor beyond it.
-				const cellRect = getDomTableCellRects( view, 2 );
+				const cellRect = getDomTableCellRects( getDomTable( view ), 2 );
 				const mouseMovementVector = { x: ( cellRect.width + 40 ), y: 0 };
 
 				// Test-agnostic.
