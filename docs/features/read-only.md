@@ -7,7 +7,7 @@ modified_at: 2021-11-15
 
 {@snippet features/read-only-build}
 
-CKEditor 5 offers an out of the box read-only mode. The feature does not require any additional plugin and the editor can be set into a read-only mode using the editor's {@link module:core/editor/editor~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode()`}.
+CKEditor 5 offers an out of the box read-only mode. The feature does not require any additional plugin and the editor can be set into a read-only mode using the editor's {@link module:core/editor/editor~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode()`} method.
 
 The read-only mode may have several applications. It may be used to impose user-based access restriction, where a selected user or a group of users is only allowed to access the content for evaluation purposes but not change it.
 
@@ -33,8 +33,8 @@ Use the demo below to toggle between editing modes and test the feature. Some fe
 
 The editor provides the following API to manage the read-only mode:
 
-* {@link module:core/editor/editor~Editor#isReadOnly} is a getter and observable that allows you to check the `isReadOnly` value and react to its changes,
-* {@link module:core/editor/editor~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode( featureId )`} Turns on the read-only mode on the editor by creating a lock by given feature.
+* {@link module:core/editor/editor~Editor#isReadOnly} is a read-only, observable property that allows you to check the `isReadOnly` value and react to its changes,
+* {@link module:core/editor/editor~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode( featureId )`} Turns on the read-only mode on the editor by creating a lock with given unique id.
 * {@link module:core/editor/editor~Editor#disableReadOnlyMode `Editor#disableReadOnlyMode( featureId )`} removes the read-only lock from the editor. The editor becomes editable when no lock is present on the editor anymore.
 
 ## Hiding toolbar in read-only mode
