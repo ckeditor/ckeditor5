@@ -195,6 +195,20 @@ describe( 'SourceEditing utils', () => {
 			expect( formatHtml( source ) ).to.equal( sourceFormatted );
 		} );
 
+		it( 'should not format pre blocks', () => {
+			const source = '' +
+				'<blockquote>' +
+					'<pre><code>abc</code></pre>' +
+				'</blockquote>';
+
+			const sourceFormatted = '' +
+				'<blockquote>\n' +
+				'    <pre><code>abc</code></pre>\n' +
+				'</blockquote>';
+
+			expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		} );
+
 		it( 'should keep all attributes unchanged', () => {
 			const source = '' +
 				'<p id="foo" class="class1 class2" data-value="bar" onclick="fn();">' +
