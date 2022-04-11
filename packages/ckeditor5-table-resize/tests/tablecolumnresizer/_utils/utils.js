@@ -85,13 +85,12 @@ export function getModelColumnWidthsPc( modelTable ) {
 	return modelTable.getAttribute( 'columnWidths' ).replaceAll( '%', '' ).split( ',' );
 }
 
-export function getViewColumnWidthsPc( view ) {
+export function getViewColumnWidthsPc( viewTable ) {
 	const viewColWidths = [];
+	const viewColgroup = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) );
 
-	for ( const item of view.createRangeIn( view.document.getRoot() ) ) {
-		if ( item.item.is( 'element', 'col' ) ) {
-			viewColWidths.push( item.item.getStyle( 'width' ).replaceAll( '%', '' ) );
-		}
+	for ( const viewCol of [ ...viewColgroup.getChildren() ] ) {
+		viewColWidths.push( viewCol.getStyle( 'width' ).replaceAll( '%', '' ) );
 	}
 
 	return viewColWidths;

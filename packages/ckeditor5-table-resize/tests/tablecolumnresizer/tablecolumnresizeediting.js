@@ -20,6 +20,7 @@ import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
 import {
 	getDomTable,
 	getModelTable,
+	getViewTable,
 	getColumnWidth,
 	getViewColumnWidthsPx,
 	getModelColumnWidthsPc,
@@ -507,7 +508,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			assertModelWidthsSum( finalModelColumnWidthsPc );
 
-			const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+			const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 			assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -544,7 +545,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -578,7 +579,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -612,7 +613,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -647,7 +648,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -690,7 +691,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -733,7 +734,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -768,7 +769,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -883,7 +884,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -917,7 +918,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -951,7 +952,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -986,7 +987,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -1029,7 +1030,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -1066,7 +1067,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -1101,7 +1102,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -1136,7 +1137,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
@@ -1172,7 +1173,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
