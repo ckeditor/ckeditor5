@@ -164,6 +164,11 @@ let beforeInputEventCount = 0;
 let compositionEventCount = 0;
 
 document.addEventListener( 'beforeinput', evt => {
+	// Don't log for the editor.
+	if ( evt.target.closest( '.ck-content' ) ) {
+		return;
+	}
+
 	const { inputType, data, isComposing } = evt;
 
 	console.group(
@@ -182,14 +187,24 @@ document.addEventListener( 'beforeinput', evt => {
 	console.groupEnd();
 } );
 
-document.addEventListener( 'compositionstart', () => {
+document.addEventListener( 'compositionstart', evt => {
+	// Don't log for the editor.
+	if ( evt.target.closest( '.ck-content' ) ) {
+		return;
+	}
+
 	console.log(
 		`%c┌───────────────────────────── ＃${ ++compositionEventCount } native compositionstart ─────────────────────────────┐`,
 		'font-weight: bold; color: green'
 	);
 } );
 
-document.addEventListener( 'compositionend', () => {
+document.addEventListener( 'compositionend', evt => {
+	// Don't log for the editor.
+	if ( evt.target.closest( '.ck-content' ) ) {
+		return;
+	}
+
 	console.log(
 		`%c└───────────────────────────── ＃${ compositionEventCount } native compositionend ─────────────────────────────┘`,
 		'font-weight: bold; color: green'
