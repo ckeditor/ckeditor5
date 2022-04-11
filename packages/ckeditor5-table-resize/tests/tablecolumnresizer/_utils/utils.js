@@ -56,8 +56,8 @@ const getWidth = domElement => parseFloat( global.window.getComputedStyle( domEl
 
 export const getDomTable = view => view.domConverter.mapViewToDom( view.document.getRoot().getChild( 0 ) );
 
-export function getDomTableRects( view ) {
-	return getDomTable( view ).getClientRects()[ 0 ];
+export function getDomTableRects( domTable ) {
+	return domTable.getClientRects()[ 0 ];
 }
 
 export function getDomTableCellRects( view, columnIndex ) {

@@ -1088,7 +1088,7 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 0;
-				const tableRect = getDomTableRects( view );
+				const tableRect = getDomTableRects( getDomTable( view ) );
 				const mouseMovementVector = { x: 10, y: tableRect.height };
 
 				// Test-agnostic.
