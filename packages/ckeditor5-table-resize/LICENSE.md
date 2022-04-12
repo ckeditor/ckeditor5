@@ -1,8 +1,8 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 table resize feature** (https://ckeditor.com/ckeditor-5/)<br>
-Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
+**CKEditor 5 table resize feature** (https://ckeditor.com/ckeditor-5-table-resize/)<br>
+Copyright (c) 2003-2022, [CKSource](http://cksource.com) Holding sp. z o.o. All rights reserved.
 
 CKEditor 5 table resize feature is licensed under a commercial license and is protected by copyright law.
 For more details about available licensing options please contact us at sales@cksource.com.
@@ -15,4 +15,4 @@ Where not otherwise indicated, all CKEditor 5 table resize feature content is au
 Trademarks
 ----------
 
-**CKEditor** is a trademark of [CKSource](http://cksource.com) Frederico Knabben. All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
+**CKEditor** is a trademark of [CKSource](http://cksource.com) Holding sp. z o.o. All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
