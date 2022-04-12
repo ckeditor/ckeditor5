@@ -1325,6 +1325,155 @@ describe( 'TableColumnResizeEditing', () => {
 					} );
 				} );
 			} );
+
+			describe( 'tableWidth attribute', () => {
+				it( 'should not be set initially when creating a table', () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ]
+					], { columnWidths: '20%,25%,55%' } ) );
+
+					expect( getModelData( model ) ).to.equal(
+						'[<table columnWidths="20%,25%,55%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>00</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>01</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>02</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+				} );
+
+				it( 'should be set if table was initiated with a tableWidth value', () => {
+					setModelData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '100px' } ) );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<table columnWidths="100%" tableWidth="100px">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>[]foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should be added to the table after the last column has been resized', () => {
+					const columnToResizeIndex = 2;
+					const mouseMovementVector = { x: -10, y: 0 };
+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ]
+					], { columnWidths: '20%,25%,55%' } ) );
+
+					tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<table columnWidths="20.39%,25.48%,54.13%" tableWidth="98.01%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>00</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>01</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>02</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+				} );
+
+				it( 'is updated correctly after the last column has been resized', () => {
+					const columnToResizeIndex = 2;
+					const mouseMovementVector = { x: -10, y: 0 };
+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ]
+					], { tableWidth: '100px', columnWidths: '20%,25%,55%' } ) );
+					// setModelData( model, modelTable( [
+					// 	[ '00', '01', '02' ]
+					// ], { columnWidths: '20%,25%,55%' } ) );
+
+					tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<table columnWidths="20.39%,25.48%,54.13%" tableWidth="98.01%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>00</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>01</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>02</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+				} );
+
+				it( 'does not change when one of the middle columns is resized', () => {
+					const columnToResizeIndex = 2;
+					const mouseMovementVector = { x: -10, y: 0 };
+
+					setModelData( model, modelTable( [
+						[ '[00', '01', '02]' ]
+					], { columnWidths: '20%,25%,55%', tableWidth: '100px' } ) );
+
+					tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 0 );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<table columnWidths="20.39%,25.48%,54.13%" tableWidth="98.01%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>00</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>01</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>02</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+				} );
+
+				it( 'is not being added when any of the middle columns is resized', () => {
+					const columnToResizeIndex = 1;
+					const mouseMovementVector = { x: -40, y: 0 };
+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ]
+					], { columnWidths: '20%,25%,55%' } ) );
+
+					tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 0 );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<table columnWidths="20%,21.5%,58.5%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>00</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>01</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>02</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+				} );
+			} );
 		} );
 	} );
 
