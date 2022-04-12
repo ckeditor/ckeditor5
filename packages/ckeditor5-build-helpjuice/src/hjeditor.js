@@ -29,6 +29,7 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -56,6 +57,7 @@ import Warning from './plugins/calloutblocks/warning/warning';
 import Danger from './plugins/calloutblocks/danger/danger';
 import InternalBlock from './plugins/internalblock/internalblock';
 import DecisionTree from './plugins/decisiontree/decisiontree';
+import InsertArticle from './plugins/insertarticle/insertarticle';
 
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
@@ -87,6 +89,7 @@ HelpjuiceEditor.builtinPlugins = [
 	Link,
 	List,
 	TodoList,
+	FindAndReplace,
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
@@ -108,7 +111,8 @@ HelpjuiceEditor.builtinPlugins = [
 	Danger,
 	InternalBlock,
 	DecisionTree,
-	SimpleUploadAdapter
+	SimpleUploadAdapter,
+	InsertArticle
 ];
 
 // Editor configuration.
@@ -194,6 +198,7 @@ HelpjuiceEditor.defaultConfig = {
 			'imageInsert',
 			'mediaEmbed',
 			'|',
+			'findAndReplace',
 			'alignment',
 			'blockQuote',
 			'insertTable',
@@ -205,6 +210,7 @@ HelpjuiceEditor.defaultConfig = {
 			'undo',
 			'redo',
 			'|',
+			'insertarticle',
 			'accordion',
 			'tab',
 			'info',

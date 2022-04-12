@@ -1,0 +1,109 @@
+.ck.ck-button.insert-article-btn ~ .ck-dropdown__panel {
+	padding: 20px;
+	width: 600px!important;
+}
+.ck.ck-button.insert-article-btn ~ .ck-dropdown__panel h3 {
+	font-size: 20px;
+	font-weight: 600;
+	color: rgba(0, 0, 0, .87);
+}
+.ck.ck-button.insert-article-btn ~ .ck-dropdown__panel p {
+	font-size: 16px;
+	font-weight: normal;
+	color: rgba(0, 0, 0, .5);
+	white-space: normal;
+	margin-bottom: 20px;
+}
+.ck.ck-button.insert-article-btn ~ .ck-dropdown__panel input {
+	width: 100%;
+	border: 1px solid rgba(0, 0, 0, .3);
+	padding: 0 16px;
+	height: 38px;
+	border-radius: 5px;
+	outline: none;
+	box-shadow: none;
+	font-size: 14px;
+	color: rgba(0, 0, 0, .87);
+	margin-bottom: 20px;
+}
+.ck.ck-button.insert-article-btn ~ .ck-dropdown__panel input:focus {
+	border: 1px solid #126CFF;
+}
+.ck.ck-button.insert-article-btn ~ .ck-dropdown__panel ul {
+	max-height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin: 0;
+	padding: 0;
+}
+.ck.ck-button.insert-article-btn ~ .ck-dropdown__panel ul li {
+	display: block;
+	list-style-type: none;
+	padding: 0;
+}
+.ck.ck-button.insert-article-btn ~ .ck-dropdown__panel ul li a {
+	display: block;
+	font-size: 14px;
+	font-weight: normal;
+	color: rgba(0, 0, 0, .87);
+	cursor: pointer;
+	padding: 3px 10px;
+	background-color: #FFFFFF;
+	border-radius: 2px;
+	transition: .2s ease;
+}
+.ck.ck-button.insert-article-btn ~ .ck-dropdown__panel ul li a:hover {
+	background-color: #F3F5F8;
+}
+
+.helpjuice-inserted-article {
+	position: relative;
+	background-color: #F3F5F8;
+	padding: 10px;
+}
+
+.helpjuice-inserted-article::before {
+	content: "Inserted Article";
+	font-size: 10px;
+	font-weight: normal;
+	text-transform: uppercase;
+	background-color: #757575;
+	color: #FFFFFF;
+	position: absolute;
+	top: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 1px 10px;
+	z-index: 10;
+	border-radius: 2px;
+}
+
+.helpjuice-inserted-article-body {
+	outline: none!important;
+	border: none!important;
+}
+.helpjuice-inserted-article-body .ck.ck-reset_all.ck-widget__type-around {
+	display: none!important;
+}
+
+.helpjuice-inserted-article-body h3 {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.helpjuice-inserted-article-body p:last-of-type {
+	display: none!important;
+}
+
+.helpjuice-inserted-article.ck-widget,
+.ck-blurred .helpjuice-inserted-article.ck-widget {
+	outline: 3px solid #e1e1e1!important;
+}
+.helpjuice-inserted-article.ck-widget:hover {
+	outline-color: #ffc83d!important;
+}
+
+.ck-focused .helpjuice-inserted-article.ck-widget.ck-widget_selected,
+.ck-focused .helpjuice-inserted-article.ck-widget.ck-widget_selected:hover {
+	outline-color: #1f89e5!important;
+}
