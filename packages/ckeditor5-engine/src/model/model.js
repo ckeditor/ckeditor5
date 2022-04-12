@@ -525,7 +525,7 @@ export default class Model {
 	 * * When `'before'`, the closest position before `selectable` will be used that will not result in content splitting.
 	 * * When `'after'`, the closest position after `selectable` will be used that will not result in content splitting.
 	 *
-	 * Note that this option works only for block objects. Inline objects are inserted into text and do not split blocks.
+	 * Note that this option only works for block objects. Inline objects are inserted into text and do not split blocks.
 	 * @param {'on'|'after'} [options.setSelection] An option that, when set, moves the
 	 * {@link module:engine/model/document~Document#selection document selection} after inserting the object.
 	 * * When `'on'`, the document selection will be set on the inserted object.
@@ -1014,7 +1014,7 @@ export default class Model {
 	 */
 
 	/**
-	 * Event fired when {@link #insertObject} method is called.
+	 * Event fired when the {@link #insertObject} method is called.
 	 *
 	 * The {@link #insertObject default action of that method} is implemented as a
 	 * listener to this event so it can be fully customized by the features.

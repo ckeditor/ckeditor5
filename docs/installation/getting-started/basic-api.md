@@ -174,7 +174,7 @@ Once destroyed, resources used by the editor instance are released and the origi
 
 ### Listening to changes
 
-The {@link module:engine/model/document~Document#change:data `Document#change:data`} event is fired when the document changes in such a way which is "visible" in the editor data.
+The {@link module:engine/model/document~Document#change:data `Document#change:data`} event is fired when the document changes in such a way that is "visible" in the editor data.
 
 ```js
 editor.model.document.on( 'change:data', () => {
