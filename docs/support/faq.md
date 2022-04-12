@@ -8,7 +8,7 @@ order: 60
 
 ## How to set the height of CKEditor 5?
 
-The height of the editing area can be easily controlled with CSS. For example, the `minHeight` and `maxHeight` settings can be set with the following code:
+The height of the editing area can be easily controlled with CSS.
 
 ```css
 .ck.ck-content:not(.ck-comment__input *) {
