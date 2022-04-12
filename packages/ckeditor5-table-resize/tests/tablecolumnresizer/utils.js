@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,11 +8,14 @@ import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';
 import MoveOperation from '@ckeditor/ckeditor5-engine/src/model/operation/moveoperation';
 import AttributeOperation from '@ckeditor/ckeditor5-engine/src/model/operation/attributeoperation';
 
+import TableColumnResize from '../../src/tablecolumnresize';
 import {
 	getAffectedTables,
 	getColumnIndex,
@@ -20,8 +23,11 @@ import {
 	clamp,
 	fillArray,
 	sumArray,
-	normalizeColumnWidthsAttribute
+	normalizeColumnWidthsAttribute,
+	getTableWidthInPixels
 } from '../../src/tablecolumnresize/utils';
+
+/* globals window */
 
 describe( 'TableColumnResize utils', () => {
 	describe( 'getAffectedTables()', () => {
@@ -425,6 +431,57 @@ describe( 'TableColumnResize utils', () => {
 			expect( normalizeColumnWidthsAttribute( '1%, 2%, 3%, 4%' ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
 			expect( normalizeColumnWidthsAttribute( '12.33%, 17.4%, 21.49%, 33.52%, 26.6%, 10.43%' ) )
 				.to.deep.equal( [ 10.13, 14.29, 17.65, 27.53, 21.84, 8.56 ] );
+		} );
+	} );
+
+	describe( 'getTableWidthInPixels()', () => {
+		let editor;
+
+		beforeEach( () => {
+			return ClassicEditor
+				.create( '', {
+					plugins: [ Table, TableColumnResize ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
+		} );
+
+		// Because the `window.getComputedStyle()` for colgroup will always return 0px on Safari, we needed to change the calculations
+		// to be based on tbody element instead - which works ok in all main browsers. See #1466 for reference.
+		it( 'returns a correct value on Safari', () => {
+			editor.setData(
+				`<figure class="table">
+					<table>
+						<colgroup>
+							<col style="width:50%;">
+							<col style="width:50%;">
+						</colgroup>
+						<tbody>
+							<tr>
+								<td>foo</td>
+								<td>bar</td>
+							</tr>
+						</tbody>
+					</table>
+				</figure>`
+			);
+
+			const table = editor.model.document.getRoot().getChild( 0 );
+			const getComputedStyleStub = sinon.stub( window, 'getComputedStyle' ).callThrough();
+
+			// Emulate safari's bug.
+			getComputedStyleStub.withArgs( sinon.match.has( 'localName', 'colgroup' ) ).returns( { width: '0px' } );
+
+			const result = getTableWidthInPixels( table, editor );
+
+			getComputedStyleStub.restore();
+
+			expect( result ).to.not.equal( 0 );
 		} );
 	} );
 } );
