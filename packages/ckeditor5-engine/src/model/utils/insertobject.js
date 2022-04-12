@@ -129,9 +129,9 @@ export default function insertObject( model, object, selectable, placeOrOffset, 
 //
 // @private
 // @param {module:engine/model/writer~Writer} writer An instance of the model writer.
-// @param {module:engine/model/element~Element} contextElement An element to set attributes on.
-// @param {'on'|'after'} place Place where selection should be set in relation to `contextElement` element.
-// Value `on` will set selection on passed `contextElement`. Value `after` will set selection after `contextElement`.
+// @param {module:engine/model/element~Element} contextElement An element to set the attributes on.
+// @param {'on'|'after'} place The place where selection should be set in relation to the `contextElement` element.
+// Value `on` will set selection on the passed `contextElement`. Value `after` will set selection after `contextElement`.
 // @param {Object} attributes Attributes keys and values to set on a paragraph that this function can create when
 // `place` parameter is equal to `after` but there is no element with `$text` node to set selection in.
 function updateSelection( writer, contextElement, place, paragraphAttributes ) {
@@ -161,9 +161,9 @@ function updateSelection( writer, contextElement, place, paragraphAttributes ) {
 	}
 	else {
 		/**
-		 * Unsupported `options.setSelection` parameter was passed
+		 * The unsupported `options.setSelection` parameter was passed
 		 * to the {@link module:engine/model/utils/insertobject insertObject()} function.
-		 * Check {@link module:engine/model/utils/insertobject insertObject()} API documentation for allowed
+		 * Check the {@link module:engine/model/utils/insertobject insertObject()} API documentation for allowed
 		 * `options.setSelection` parameter values.
 		 *
 		 * @error insertobject-invalid-place-parameter-value

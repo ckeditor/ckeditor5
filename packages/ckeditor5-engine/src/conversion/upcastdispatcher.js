@@ -152,9 +152,9 @@ export default class UpcastDispatcher {
 		this._modelCursor = null;
 
 		/**
-		 * The list of elements that were created during splitting but should not get removed on conversion end even if they are empty.
+		 * The list of elements that were created during the splitting but should not get removed on conversion end even if they are empty.
 		 *
-		 * After the conversion process the list is cleared.
+		 * The list is cleared after the conversion process.
 		 *
 		 * @private
 		 * @type {Set.<module:engine/model/element~Element>}
@@ -464,7 +464,7 @@ export default class UpcastDispatcher {
 	}
 
 	/**
-	 * Mark an element that were created during splitting that it should not get removed on conversion end even if it's empty.
+	 * Mark an element that were created during the splitting to not get removed on conversion end even if it is empty.
 	 *
 	 * @private
 	 */
@@ -779,7 +779,7 @@ function createContextTree( contextDefinition, writer ) {
  */
 
 /**
- * Mark an element that was created during splitting that it should not get removed on conversion end even if it's empty.
+ * Mark an element that was created during splitting to not get removed on conversion end even if it is empty.
  *
  * **Note:** This is an advanced method. For most cases you will not need to keep the split empty element.
  *

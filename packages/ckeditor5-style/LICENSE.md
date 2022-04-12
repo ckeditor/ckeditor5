@@ -14,4 +14,4 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 Trademarks
 ----------
 
-**CKEditor** is a trademark of [CKSource](http://cksource.com) Holding sp. z o.o. All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
+**CKEditor** is a trademark of [CKSource Holding sp. z o.o.](http://cksource.com) All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
