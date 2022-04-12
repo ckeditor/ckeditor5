@@ -21,7 +21,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 
 There is no "drop in" solution for migrating. In this guide we hope to summarize the most important aspects you need to consider before you proceed with installing CKEditor 5.
 
-Before starting, be sure that migrating is your best choice. Refer to {@link installation/advanced/predefined-builds#when-not-to-use-predefined-builds When NOT to use predefined CKEditor 5 builds?} for more information.
+Before starting, be sure that migrating is your best choice. Refer to the {@link installation/advanced/predefined-builds#when-not-to-use-predefined-builds When NOT to use predefined CKEditor 5 builds?} guide for more information.
 
 ## Installation and integration
 
@@ -702,12 +702,12 @@ Note: The number of options was reduced on purpose. We understood that configuri
 	</tbody>
 </table>
 
-If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first as the feature you are after may have already been reported &mdash; you can support it by upvoting 👍. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
+If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &mdash; you can support it by upvoting the issue with &nbsp;👍&nbsp;. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
 
 <info-box hint>
 **What's next?**
 
-Now you should have a basic knowledge about differences between CKEditor 4 and CKEditor 5. Feel free to explore our Features page to compare the available plugins to your needs.
+You should now have the basic knowledge about differences between CKEditor 4 and CKEditor 5. Feel free to explore our {@link features/index features page} to compare the available plugins to your needs.
 
 It's time to move to the last article in the **Getting started** path. {@link installation/getting-started/maintenance See you there}!
 </info-box>
