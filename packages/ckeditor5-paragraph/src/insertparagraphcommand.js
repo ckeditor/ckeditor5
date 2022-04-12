@@ -33,14 +33,21 @@ export default class InsertParagraphCommand extends Command {
 	 * @param {Object} options Options for the executed command.
 	 * @param {module:engine/model/position~Position} options.position The model position at which
 	 * the new paragraph will be inserted.
+	 * @param {Object} attributes Attributes keys and values to set on a inserted paragraph
 	 * @fires execute
 	 */
 	execute( options ) {
 		const model = this.editor.model;
+		const attributes = options.attributes;
+
 		let position = options.position;
 
 		model.change( writer => {
 			const paragraph = writer.createElement( 'paragraph' );
+
+			if ( attributes ) {
+				model.schema.setAllowedAttributes( paragraph, attributes, writer );
+			}
 
 			if ( !model.schema.checkChild( position.parent, paragraph ) ) {
 				const allowedParent = model.schema.findAllowedParent( position, paragraph );

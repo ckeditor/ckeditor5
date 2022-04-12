@@ -208,10 +208,20 @@ ClassicEditor
 		} );
 
 		const button = document.getElementById( 'read-only' );
+		let isReadOnly = false;
 
 		button.addEventListener( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
-			button.textContent = editor.isReadOnly ? 'Turn off read-only mode' : 'Turn on read-only mode';
+			isReadOnly = !isReadOnly;
+
+			if ( isReadOnly ) {
+				editor.enableReadOnlyMode( 'manual-test' );
+			} else {
+				editor.disableReadOnlyMode( 'manual-test' );
+			}
+
+			button.textContent = isReadOnly ?
+				'Turn off read-only mode' :
+				'Turn on read-only mode';
 
 			editor.editing.view.focus();
 		} );

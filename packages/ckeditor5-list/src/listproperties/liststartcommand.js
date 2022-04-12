@@ -29,9 +29,9 @@ export default class ListStartCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
+	 * @fires execute
 	 * @param {Object} options
 	 * @param {Number} [options.startIndex=1] The list start index.
-	 * @protected
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
