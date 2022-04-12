@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,6 +11,7 @@ import TableColumnResize from '../../src/tablecolumnresize';
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 // import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -18,6 +19,8 @@ import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_util
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
 import {
 	getDomTable,
+	getModelTable,
+	getViewTable,
 	getColumnWidth,
 	getViewColumnWidthsPx,
 	getModelColumnWidthsPc,
@@ -462,6 +465,13 @@ describe( 'TableColumnResizeEditing', () => {
 
 			const table = model.document.getRoot().getChild( 0 );
 
+			// We define table width precisely to be able to predict column widths in %.
+			// Setting table width to 201px causes the columns to have initially: [50px][50px][100px]
+			editor.editing.view.change( writer => {
+				const viewEditableRoot = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 1 );
+				writer.setAttribute( 'style', 'width: 201px;', viewEditableRoot );
+			} );
+
 			model.change( writer => {
 				const cell = table.getChild( 1 ).getChild( 1 );
 
@@ -470,9 +480,9 @@ describe( 'TableColumnResizeEditing', () => {
 
 			const tableWidths = table.getAttribute( 'columnWidths' );
 
-			expect( tableWidths ).to.be.equal( '25%,10.19%,64.81%' );
+			expect( tableWidths ).to.be.equal( '25%,50%,25%' );
 
-			const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 			expect( Math.abs( 100 - finalViewColumnWidthsPx[ 1 ] ) < PIXEL_PRECISION ).to.be.true;
 		} );
@@ -490,19 +500,19 @@ describe( 'TableColumnResizeEditing', () => {
 			], { columnWidths: '20%,25%,55%' } ) );
 
 			// Test-agnostic.
-			const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+			const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-			tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 1 );
+			tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 1 );
 
-			const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+			const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 			assertModelWidthsSum( finalModelColumnWidthsPc );
 
-			const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+			const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 			assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-			const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 			const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 				initialViewColumnWidthsPx,
 				mouseMovementVector,
@@ -527,19 +537,19 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '25%,25%,50%' } ) );
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -561,19 +571,19 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '25%,25%,50%' } ) );
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -595,19 +605,19 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '25%,25%,50%' } ) );
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -626,23 +636,23 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 1;
-				const initialColumnWidth = getColumnWidth( view, columnToResizeIndex );
+				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: -( initialColumnWidth * 1.05 ), y: 0 };
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -669,23 +679,23 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 0;
-				const initialColumnWidth = getColumnWidth( view, columnToResizeIndex );
+				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: ( initialColumnWidth * 1.05 ), y: 0 };
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -716,19 +726,19 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 1 );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 1 );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -751,19 +761,19 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector, 2 );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 2 );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -772,6 +782,71 @@ describe( 'TableColumnResizeEditing', () => {
 				);
 
 				assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+			} );
+
+			describe( 'in editor with TableProperties, where there are 2 tables: centered and aligned', () => {
+				let editor, view, editorElement;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+					editor = await createEditor( null, [ TableProperties ] );
+
+					view = editor.editing.view;
+					contentDirection = editor.locale.contentLanguageDirection;
+				} );
+
+				afterEach( async () => {
+					if ( editorElement ) {
+						editorElement.remove();
+					}
+
+					if ( editor ) {
+						await editor.destroy();
+					}
+				} );
+
+				it( 'shrinks the table twice as much when resizing centered table as compared to aligned table', () => {
+					const columnToResizeIndex = 1;
+					const mouseMovementVector = { x: -10, y: 0 };
+
+					editor.setData(
+						`<figure class="table" style="float:left;">
+							<table>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
+
+					const alignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
+
+					const centeredTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+					const widthDifference = centeredTableColumnWidthsPx[ 1 ] - alignedTableColumnWidthsPx[ 1 ];
+
+					expect( Math.abs( widthDifference - mouseMovementVector.x ) < PIXEL_PRECISION ).to.be.true;
+				} );
 			} );
 		} );
 
@@ -801,19 +876,19 @@ describe( 'TableColumnResizeEditing', () => {
 				const mouseMovementVector = { x: 10, y: 0 };
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -835,19 +910,19 @@ describe( 'TableColumnResizeEditing', () => {
 				const mouseMovementVector = { x: -10, y: 0 };
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -869,19 +944,19 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '25%,25%,50%' } ) );
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -900,23 +975,23 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 1;
-				const initialColumnWidth = getColumnWidth( view, columnToResizeIndex );
+				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: initialColumnWidth * 1.05, y: 0 };
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -943,23 +1018,23 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 0;
-				const initialColumnWidth = getColumnWidth( view, columnToResizeIndex );
+				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: -( initialColumnWidth * 1.05 ), y: 0 };
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -980,23 +1055,23 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 0;
-				const cellRect = getDomTableCellRects( view, columnToResizeIndex );
+				const cellRect = getDomTableCellRects( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: 10, y: -( cellRect.height ) };
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -1015,23 +1090,23 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 0;
-				const tableRect = getDomTableRects( view );
+				const tableRect = getDomTableRects( getDomTable( view ) );
 				const mouseMovementVector = { x: 10, y: tableRect.height };
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -1050,23 +1125,23 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '20%,25%,55%' } ) );
 
 				const columnToResizeIndex = 0;
-				const cellRect = getDomTableCellRects( view, columnToResizeIndex );
+				const cellRect = getDomTableCellRects( getDomTable( view ), columnToResizeIndex );
 				const mouseMovementVector = { x: -( cellRect.width + 20 ), y: 0 };
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -1086,23 +1161,23 @@ describe( 'TableColumnResizeEditing', () => {
 
 				const columnToResizeIndex = 1;
 				// We need the width of the last cell to move the cursor beyond it.
-				const cellRect = getDomTableCellRects( view, 2 );
+				const cellRect = getDomTableCellRects( getDomTable( view ), 2 );
 				const mouseMovementVector = { x: ( cellRect.width + 40 ), y: 0 };
 
 				// Test-agnostic.
-				const initialViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-				tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-				const finalModelColumnWidthsPc = getModelColumnWidthsPc( model );
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
 
 				assertModelWidthsSum( finalModelColumnWidthsPc );
 
-				const finalViewColumnWidthsPc = getViewColumnWidthsPc( view );
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
 
 				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
 
-				const finalViewColumnWidthsPx = getViewColumnWidthsPx( view );
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
 					initialViewColumnWidthsPx,
 					mouseMovementVector,
@@ -1238,13 +1313,39 @@ describe( 'TableColumnResizeEditing', () => {
 						}
 					} );
 				} );
+
+				describe( 'should not remove colgroup', () => {
+					it( 'after pasting a table that increases number of rows and columns at the same time', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01' ],
+							[ '10', '[11]' ]
+						], { columnWidths: '50%,50%' } ) );
+
+						model.change( () => {
+							editor.execute( 'insertTableRowBelow' );
+							editor.execute( 'insertTableColumnRight' );
+						} );
+
+						const tableView = view.document.getRoot().getChild( 0 ).getChild( 1 );
+
+						expect( [ ...tableView.getChildren() ].find(
+							viewElement => viewElement.is( 'element', 'colgroup' ) )
+						).to.not.be.undefined;
+					} );
+				} );
 			} );
 		} );
 	} );
 
-	async function createEditor( configCustomization ) {
+	async function createEditor( configCustomization, additionalPlugins ) {
+		const plugins = [ Table, TableColumnResize, TableColumnResizeEditing, Paragraph, WidgetResize ];
+
+		if ( additionalPlugins ) {
+			plugins.push( ...additionalPlugins );
+		}
+
 		const newEditor = await ClassicEditor.create( editorElement, Object.assign( {}, {
-			plugins: [ Table, TableColumnResize, TableColumnResizeEditing, Paragraph, WidgetResize ]
+			plugins
 		}, configCustomization ) );
 
 		await focusEditor( newEditor );

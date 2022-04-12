@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -90,10 +90,10 @@ export function getElementWidthInPixels( domElement ) {
  * @returns {Number}
  */
 export function getTableWidthInPixels( table, editor ) {
-	const viewColgroup = getColgroupViewElement( table, editor );
-	const domColgroup = editor.editing.view.domConverter.mapViewToDom( viewColgroup );
+	const viewTbody = getTbodyViewElement( table, editor );
+	const domTbody = editor.editing.view.domConverter.mapViewToDom( viewTbody );
 
-	return getElementWidthInPixels( domColgroup );
+	return getElementWidthInPixels( domTbody );
 }
 
 /**
@@ -180,6 +180,19 @@ function getColgroupViewElement( table, editor ) {
 	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
 
 	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'colgroup' ) );
+}
+
+// Returns the `<tbody>` view element, if it exists in a table. Returns `undefined` otherwise.
+//
+// @private
+// @param {module:engine/model/element~Element} table
+// @param {module:core/editor/editor~Editor} editor
+// @returns {module:engine/view/element~Element|undefined}
+function getTbodyViewElement( table, editor ) {
+	const viewFigure = editor.editing.mapper.toViewElement( table );
+	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
+
+	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'tbody' ) );
 }
 
 /**

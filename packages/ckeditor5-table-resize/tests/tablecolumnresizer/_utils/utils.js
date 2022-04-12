@@ -1,54 +1,54 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
-
-/* global window, MouseEvent */
 
 import { global } from 'ckeditor5/src/utils';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import TableColumnResizeEditing from '../../../src/tablecolumnresize/tablecolumnresizeediting';
 
 export const tableColumnResizeMouseSimulator = {
-	down( view, domTarget ) {
-		const preventDefault = sinon.spy();
-		const domEventDataMock = new DomEventData( view, {
-			target: domTarget,
-			preventDefault,
-			clientX: getColumnResizerRect( domTarget ).x
-		} );
+	down( editor, domTarget, options ) {
+		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
+		const stop = options.stop || sinon.spy().named( 'stop' );
 
-		view.document.fire( 'mousedown', domEventDataMock );
+		const clientX = getColumnResizerRect( domTarget ).x;
+
+		const eventInfo = { stop };
+
+		const domEventData = {
+			target: editor.editing.view.domConverter.domToView( domTarget ),
+			domEvent: { clientX },
+			preventDefault
+		};
+		this._getPlugin( editor )._onMouseDownHandler( eventInfo, domEventData );
 	},
 
-	move( domTarget, vector ) {
-		const event = new MouseEvent( 'mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
+	move( editor, domTarget, vector ) {
+		const eventInfo = {};
+
+		const domEventData = {
 			clientX: getColumnResizerRect( domTarget ).moveBy( vector.x, vector.y ).x
-		} );
+		};
 
-		domTarget.dispatchEvent( event );
+		this._getPlugin( editor )._onMouseMoveHandler( eventInfo, domEventData );
 	},
 
-	up( domTarget ) {
-		const event = new MouseEvent( 'mouseup', {
-			view: window,
-			bubbles: true,
-			cancelable: true
-		} );
-
-		domTarget.dispatchEvent( event );
+	up( editor ) {
+		this._getPlugin( editor )._onMouseUpHandler();
 	},
 
-	resize( view, columnIndex, vector, rowIndex ) {
-		const domResizer = getDomResizer( view, columnIndex, rowIndex );
+	resize( editor, domTable, columnIndex, vector, rowIndex, options ) {
+		const domResizer = getDomResizer( domTable, columnIndex, rowIndex );
 
-		this.down( view, domResizer );
-		this.move( domResizer, vector );
-		this.up( domResizer );
+		this.down( editor, domResizer, options || {} );
+		this.move( editor, domResizer, vector );
+		this.up( editor );
+	},
+
+	_getPlugin( editor ) {
+		return editor.plugins.get( TableColumnResizeEditing );
 	}
 };
 
@@ -56,22 +56,23 @@ const getWidth = domElement => parseFloat( global.window.getComputedStyle( domEl
 
 export const getDomTable = view => view.domConverter.mapViewToDom( view.document.getRoot().getChild( 0 ) );
 
-export function getDomTableRects( view ) {
-	return getDomTable( view ).getClientRects()[ 0 ];
+export const getModelTable = model => model.document.getRoot().getChild( 0 );
+
+export const getViewTable = view => view.document.getRoot().getChild( 0 ).getChild( 1 );
+
+export function getDomTableRects( domTable ) {
+	return domTable.getClientRects()[ 0 ];
 }
 
-export function getDomTableCellRects( view, columnIndex ) {
-	return Array.from( getDomTable( view ).querySelectorAll( 'td' ) )[ columnIndex ].getClientRects()[ 0 ];
+export function getDomTableCellRects( domTable, columnIndex ) {
+	return Array.from( domTable.querySelectorAll( 'td' ) )[ columnIndex ].getClientRects()[ 0 ];
 }
 
-export function getColumnWidth( view, columnIndex ) {
-	const domTable = getDomTable( view );
-
+export function getColumnWidth( domTable, columnIndex ) {
 	return getWidth( Array.from( domTable.querySelectorAll( 'col' ) )[ columnIndex ] );
 }
 
-export function getViewColumnWidthsPx( view ) {
-	const domTable = getDomTable( view );
+export function getViewColumnWidthsPx( domTable ) {
 	const widths = [];
 
 	Array.from( domTable.querySelectorAll( 'col' ) ).forEach( col => {
@@ -80,24 +81,22 @@ export function getViewColumnWidthsPx( view ) {
 	return widths;
 }
 
-export function getModelColumnWidthsPc( model ) {
-	return model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ).replaceAll( '%', '' ).split( ',' );
+export function getModelColumnWidthsPc( modelTable ) {
+	return modelTable.getAttribute( 'columnWidths' ).replaceAll( '%', '' ).split( ',' );
 }
 
-export function getViewColumnWidthsPc( view ) {
+export function getViewColumnWidthsPc( viewTable ) {
 	const viewColWidths = [];
+	const viewColgroup = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) );
 
-	for ( const item of view.createRangeIn( view.document.getRoot() ) ) {
-		if ( item.item.is( 'element', 'col' ) ) {
-			viewColWidths.push( item.item.getStyle( 'width' ).replaceAll( '%', '' ) );
-		}
+	for ( const viewCol of [ ...viewColgroup.getChildren() ] ) {
+		viewColWidths.push( viewCol.getStyle( 'width' ).replaceAll( '%', '' ) );
 	}
 
 	return viewColWidths;
 }
 
-export function getDomResizer( view, columnIndex, rowIndex ) {
-	const domTable = getDomTable( view );
+export function getDomResizer( domTable, columnIndex, rowIndex ) {
 	const rows = Array.from( domTable.querySelectorAll( 'tr' ) );
 	const row = rows[ rowIndex ? rowIndex : 0 ];
 	const domResizer = Array.from( row.querySelectorAll( '.table-column-resizer' ) )[ columnIndex ];
