@@ -29,7 +29,7 @@ Use the demo below to toggle between editing modes and test the feature. Some fe
 	You can see that after switching to read-only mode, some of the toolbar items are still active and functional. It happens thanks to the {@link module:core/command~Command#affectsData `affectsData` property}. For most of the plugins, it is set to `true` by default, which makes them inactive when entering read-only mode. However, for those plugins that do not make any changes in the model &ndash; do not affect the content &ndash; it is set to `false`, thus allowing to still make use of them in modes with restricted user write permissions.
 </info-box>
 
-### API
+### Common API
 
 The editor provides the following API to manage the read-only mode:
 
