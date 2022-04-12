@@ -310,8 +310,19 @@ BootstrapEditor
 	.then( editor => {
 		window.editor = editor;
 
-		$( '#toggle-readonly' ).on( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
+		const button = window.document.getElementById( 'toggle-readonly' );
+		let isReadOnly = false;
+
+		button.addEventListener( 'click', () => {
+			isReadOnly = !isReadOnly;
+
+			editor.enableReadOnlyMode( 'docs-snippet', isReadOnly );
+
+			button.textContent = isReadOnly ?
+				'Turn off read-only mode' :
+				'Turn on read-only mode';
+
+			editor.editing.view.focus();
 		} );
 	} )
 	.catch( err => {

@@ -2,18 +2,10 @@
 category: updating
 menu-title: Migration to v33.x
 order: 91
-modified_at: 2022-02-21
+modified_at: 2022-02-01
 ---
 
 # Migration to CKEditor 5 v33.0.0
-
-<info-box warning>
-	<span style="font-family: sans;">⚠️</span>&nbsp;&nbsp;️️️ **Warning: Information for customers which use On-Premises CKEditor Cloud Services and [upload the editor bundles to Cloud Services](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html).**
-
-	If you are using the On-Premises version of CKEditor Cloud Services, and you upload the editor bundles to the Cloud Services (e.g. in order to use the document storage, import and export or connection optimization features), then please wait with upgrading to CKEditor 5 v33.0.0.
-
-	The On-Premises version of CKEditor Cloud Services that will support CKEditor 5 v33.0.0 editor bundles is going to be released by the end of March 2022. Until then, uploading a bundle (with CKEditor 5 v33.0.0) will be rejected by the REST API.
-</info-box>
 
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
@@ -27,9 +19,9 @@ Listed below are the most important changes that require your attention when upg
 
 ## Important changes
 
-### New import paths in the ckeditor5-list package
+### New import paths in the `ckeditor5-list` package
 
-Starting with v33.0.0, some import paths have changed in the [ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application {@link installation/getting-started/installing-plugins imports individual plugins} to integrate or build CKEditor 5, you should updated the paths accordingly:
+Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application {@link installation/getting-started/installing-plugins imports individual plugins} to integrate or build CKEditor 5, you should update the paths accordingly:
 
 ```js
 // ❌ Old import paths:
@@ -46,14 +38,14 @@ import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/l
 ```
 
 <info-box>
-	Please note that **import paths for top-level plugins such as {@link module:list/list~List}, {@link module:list/listproperties~ListProperties}, {@link module:list/todolist~TodoList}, etc. remain the same**. If you are not sure what import path you should use, you can always [browse the GitHub source code](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list/src) that corresponds to the contents of the package on npm.
+	Please note that **import paths for top-level plugins such as {@link module:list/list~List}, {@link module:list/listproperties~ListProperties}, {@link module:list/todolist~TodoList}, etc. remain the same**. If you are not sure which import path you should use, you can always [browse the GitHub source code](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list/src) that corresponds to the contents of the package on npm.
 </info-box>
 
-### Additional dependencies in CKEditor 5 Collaboration Features
+### Additional dependencies in CKEditor 5 collaboration features
 
 The {@link installation/advanced/dll-builds DLL builds} support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process.
 
-From now on, additional plugins will be required, when the following CKEditor 5 collaboration features are added to the editor:
+From now on, additional plugins will be required when the following CKEditor 5 collaboration features are added to the editor:
 
 * **{@link module:track-changes/trackchanges~TrackChanges}** will also require adding {@link module:comments/comments~Comments} to the list of the editor plugins:
 
@@ -145,9 +137,13 @@ From now on, additional plugins will be required, when the following CKEditor 5 
 
 ### Mandatory consumption of all model items in the downcast conversion pipeline
 
-Starting with v33.0.0, all {@link framework/guides/architecture/editing-engine#model model} {@link module:engine/model/item~Item items} must be consumed in the {@link framework/guides/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and about possible solutions, please refer to the {@link support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
+Starting with v33.0.0, all {@link module:engine/model/item~Item items} in the {@link framework/guides/architecture/editing-engine#model model} must be consumed in the {@link framework/guides/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and about possible solutions, please refer to the {@link support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
 
 ### The `triggerBy` option in the downcast pipeline is now obsolete
+
+<info-box>
+	The v33.0.0 release introduces a massive upgrade to the conversion system. You can find a detailed summary of all these changes in the [developer notes on GitHub](https://github.com/ckeditor/ckeditor5/issues/11268#issuecomment-1061655977).
+</info-box>
 
 If some of your downcast pipeline converters took advantage of the experimental `triggerBy` property to trigger (re)conversion upon changes of attributes or children, they need to be updated. For instance:
 
@@ -192,12 +188,12 @@ If your integration extends or overwrites that conversion (the `table`, `tableRo
 
 ### Responsibility shift in the low–level downcast converters
 
-{@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} will now fire events for model items no matter if they were {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} or not. This means that the low–level (event–driven) downcast converters listening to these events must first {@link module:engine/conversion/viewconsumable~ViewConsumable#test test} whether the item has already been consumed to prevent double conversion and errors:
+{@link module:engine/conversion/downcastdispatcher~DowncastDispatcher Downcast dispatcher} will now fire events for model items no matter if they were {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} or not. This means that the low–level (event–driven) downcast converters listening to these events must first {@link module:engine/conversion/viewconsumable~ViewConsumable#test test} whether the item has already been consumed to prevent double conversion and errors:
 
 ```js
 editor.conversion.for( 'downcast' ).add( dispatcher => {
 	dispatcher.on( '...', ( evt, data, conversionApi ) => {
-		// Before converting, check whether the change has not already been consumed.
+		// Before converting, check whether the change has not been consumed yet.
 		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 			return;
 		}
@@ -207,11 +203,11 @@ editor.conversion.for( 'downcast' ).add( dispatcher => {
 } );
 ```
 
-Also, please keep in mind that starting with v33.0.0, all model items [must be consumed](#mandatory-consumption-of-all-model-items-in-the-downcast-conversion-pipeline) by your custom converters to prevent further errors.
+Also, please keep in mind that starting with CKEditor 5 v33.0.0, all model items [must be consumed](#mandatory-consumption-of-all-model-items-in-the-downcast-conversion-pipeline) by your custom converters to prevent further errors.
 
 ### The `Differ#refreshItem()` method is now obsolete
 
-Please note that `Differ#refreshItem()` is obsolete and has been replaced by {@link module:engine/controller/editingcontroller~EditingController#reconvertItem}:
+Please note that `Differ#refreshItem()` is obsolete and was replaced by {@link module:engine/controller/editingcontroller~EditingController#reconvertItem}:
 
 ```js
 // ❌ Old API:
@@ -268,13 +264,13 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 ### New `elementToStructure()` downcast helper
 
-The new {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper has been introduced to streamline downcast conversion to complex view structures. Unlike {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement}, it allows placing children of an element in configurable slots in the view structure without the need to develop complex converters using low–level event–driven API.
+The new {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper was introduced to streamline downcast conversion to complex view structures. Unlike {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement}, it allows placing children of an element in configurable slots in the view structure without the need to develop complex converters using low–level event–driven API.
 
-To learn more about this new helper, please refer to the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure API docs} or check out the {@link framework/guides/deep-dive/conversion/downcast#converting-element-to-structure official conversion guide} with plenty of examples and details.
+To learn more about this new helper, please refer to the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure API documentation} or check out the {@link framework/guides/deep-dive/conversion/downcast#converting-element-to-structure official conversion guide} with plenty of examples and details.
 
 ### New API to trigger downcast (re)conversion
 
-The [`triggerBy` property is obsolete](#the-triggerby-option-in-the-downcast-pipeline-is-now-obsolete) and a new API has been created to trigger downcast conversion of a model element upon changes to its attributes or children (also known as *reconversion*):
+The [`triggerBy` property is obsolete](#the-triggerby-option-in-the-downcast-pipeline-is-now-obsolete) and a new API was created to trigger downcast conversion of a model element upon changes to its attributes or children (also known as *reconversion*):
 
 ```js
 editor.conversion.for( 'downcast' ).elementToElement( {

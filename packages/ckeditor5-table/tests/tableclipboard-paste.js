@@ -53,7 +53,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should be disabled in a readonly mode', () => {
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
@@ -65,7 +65,7 @@ describe( 'table clipboard', () => {
 				[ 'ba', 'bb' ]
 			] );
 
-			editor.isReadOnly = false;
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02', '03' ],
@@ -85,8 +85,6 @@ describe( 'table clipboard', () => {
 			};
 			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
 			viewDocument.fire( 'paste', data );
-
-			editor.isReadOnly = false;
 
 			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00foo[]', '01', '02', '03' ],
@@ -143,8 +141,6 @@ describe( 'table clipboard', () => {
 			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
 			viewDocument.fire( 'paste', data );
 
-			editor.isReadOnly = false;
-
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo[]</paragraph>' + modelTable( [
 				[ '00', '01', '02', '03' ],
 				[ '10', '11', '12', '13' ],
@@ -171,8 +167,6 @@ describe( 'table clipboard', () => {
 			};
 			data.dataTransfer.setData( 'text/html', table );
 			viewDocument.fire( 'paste', data );
-
-			editor.isReadOnly = false;
 
 			expect( getModelData( model ) ).to.equalMarkup(
 				'[' + modelTable( [

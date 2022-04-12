@@ -1,0 +1,43 @@
+<h2>CSS reset exclusion</h2>
+
+<div class="ck ck-reset_all" style="border: 1px dotted gray; padding: 10px;">
+	<h3>A box with the <code>ck-reset_all</code> CSS class.</h3>
+	<p>Paragraph of text.</p>
+	<button type="button">Button</button>
+	<input type="text" value="Text of input" />
+	<div class="ck-rtl">
+		<p>.ck-rtl paragraph.</p>
+	</div>
+	<textarea>Textarea content</textarea>
+	<table><tbody><tr><td>table cell</td><td>table cell</td></tr><tr><td>table cell</td><td>table cell</td></tr></tbody></table>
+
+	<div class="ck-reset_all-excluded" style="outline: 1px solid hsl(120, 100%, 25%); padding: 10px;">
+		<h3>A box excluded from <code>.ck-reset_all</code> thanks to <code>.ck-reset_all-excluded</code> class</h3>
+		<p>Paragraph of text.</p>
+		<button type="button">Button</button>
+		<input type="text" value="Text of input" />
+		<div class="ck-rtl">
+			<p>.ck-rtl paragraph.</p>
+		</div>
+		<textarea>Textarea content</textarea>
+		<table><tbody><tr><td>table cell</td><td>table cell</td></tr><tr><td>table cell</td><td>table cell</td></tr></tbody></table>
+
+		<div style="outline: 1px solid hsl(120, 100%, 25%); padding: 10px;">
+			<h4>A nested box excluded from <code>.ck-reset_all</code> to check if selectors work fine in a deep structure</h4>
+			<p>Paragraph of text.</p>
+			<button type="button">Button</button>
+			<input type="text" value="Text of input" />
+			<div class="ck-rtl">
+				<p>.ck-rtl paragraph.</p>
+			</div>
+			<textarea>Textarea content</textarea>
+			<table><tbody><tr><td>table cell</td><td>table cell</td></tr><tr><td>table cell</td><td>table cell</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<style>
+	table td {
+		border: 1px solid hsl(0, 0%, 27%);
+	}
+</style>

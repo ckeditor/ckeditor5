@@ -73,8 +73,7 @@ export default class HtmlEmbedEditing extends Plugin {
 		const schema = editor.model.schema;
 
 		schema.register( 'rawHtml', {
-			isObject: true,
-			allowWhere: '$block',
+			inheritAllFrom: '$blockObject',
 			allowAttributes: [ 'value' ]
 		} );
 

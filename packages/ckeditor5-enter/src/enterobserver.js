@@ -17,7 +17,7 @@ const ENTER_EVENT_TYPES = {
 };
 
 /**
- * Enter observer introduces the {@link module:engine/view/document~Document#event:enter} event.
+ * Enter observer introduces the {@link module:engine/view/document~Document#event:enter `Document#enter`} event.
  *
  * @extends module:engine/view/observer/observer~Observer
  */

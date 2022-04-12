@@ -156,5 +156,66 @@ describe( 'MediaEmbedCommand', () => {
 				'<p>foo</p>[<media url="http://ckeditor.com"></media>]<p>bar</p>'
 			);
 		} );
+
+		describe( 'inheriting attributes', () => {
+			beforeEach( () => {
+				const attributes = [ 'smart', 'pretty' ];
+
+				model.schema.extend( '$block', {
+					allowAttributes: attributes
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: attributes
+				} );
+
+				for ( const attribute of attributes ) {
+					model.schema.setAttributeProperties( attribute, {
+						copyOnReplace: true
+					} );
+				}
+			} );
+
+			it( 'should copy $block attributes on a media element when inserting it in $block', () => {
+				setData( model, '<p pretty="true" smart="true" >[]</p>' );
+
+				command.execute( 'http://cksource.com' );
+
+				expect( getData( model ) ).to.equalMarkup( '[<media pretty="true" smart="true" url="http://cksource.com"></media>]' );
+			} );
+
+			it( 'should copy attributes from first selected element', () => {
+				setData( model, '<p pretty="true">[foo</p><p smart="true">bar]</p>' );
+
+				command.execute( 'http://cksource.com' );
+
+				expect( getData( model ) ).to.equalMarkup(
+					'[<media pretty="true" url="http://cksource.com"></media>]' +
+					'<p pretty="true">foo</p>' +
+					'<p smart="true">bar</p>'
+				);
+			} );
+
+			it( 'should only copy $block attributes marked with copyOnReplace', () => {
+				setData( model, '<p pretty="true" smart="true" nice="true" >[]</p>' );
+
+				command.execute( 'http://cksource.com' );
+
+				expect( getData( model ) ).to.equalMarkup( '[<media pretty="true" smart="true" url="http://cksource.com"></media>]' );
+			} );
+
+			it( 'should copy attributes from object when it is selected during insertion', () => {
+				model.schema.register( 'object', { isObject: true, inheritAllFrom: '$blockObject' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setData( model, '<p>foo</p>[<object pretty="true" smart="true"></object>]<p>bar</p>' );
+
+				command.execute( 'http://cksource.com' );
+
+				expect( getData( model ) ).to.equalMarkup(
+					'<p>foo</p>[<media pretty="true" smart="true" url="http://cksource.com"></media>]<p>bar</p>'
+				);
+			} );
+		} );
 	} );
 } );
