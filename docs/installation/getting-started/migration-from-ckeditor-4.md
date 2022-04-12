@@ -118,7 +118,6 @@ Note: The number of options was reduced on purpose. We understood that configuri
 					height: 300px;<br />
 					overflow-y: auto;<br />
 				}</code>.</p>
-				<p> See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
 		<tr>
