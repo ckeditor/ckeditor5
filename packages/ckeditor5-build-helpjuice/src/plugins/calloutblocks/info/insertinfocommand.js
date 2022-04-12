@@ -22,7 +22,7 @@ function createInfoCallout(writer) {
 	const infoCallout = writer.createElement('info');
 	const infoCalloutBody = writer.createElement('infoBody');
 
-	const infoCalloutTitle = writer.createElement('heading2');
+	const infoCalloutTitle = writer.createElement('heading3');
 	writer.insertText("Helpjuice Info Callout Title", infoCalloutTitle);
 
 	const infoCalloutContent = writer.createElement('paragraph');

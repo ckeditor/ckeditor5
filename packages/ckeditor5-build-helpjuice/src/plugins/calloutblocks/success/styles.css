@@ -16,7 +16,7 @@
 .helpjuice-callout.success .helpjuice-callout-body {
 	background: #d4edda!important;
 }
-.helpjuice-callout.success .helpjuice-callout-body h2:first-of-type {
+.helpjuice-callout.success .helpjuice-callout-body h3:first-of-type {
 	color: #155724;
 }
 
@@ -27,7 +27,7 @@
 .helpjuice-callout.info .helpjuice-callout-body {
 	background: #cce5ff!important;
 }
-.helpjuice-callout.info .helpjuice-callout-body h2:first-of-type {
+.helpjuice-callout.info .helpjuice-callout-body h3:first-of-type {
 	color: #004085;
 }
 
@@ -38,7 +38,7 @@
 .helpjuice-callout.warning .helpjuice-callout-body {
 	background: #fff3cd!important;
 }
-.helpjuice-callout.warning .helpjuice-callout-body h2:first-of-type {
+.helpjuice-callout.warning .helpjuice-callout-body h3:first-of-type {
 	color: #856404;
 }
 
@@ -49,6 +49,6 @@
 .helpjuice-callout.danger .helpjuice-callout-body {
 	background: #f8d7da!important;
 }
-.helpjuice-callout.danger .helpjuice-callout-body h2:first-of-type {
+.helpjuice-callout.danger .helpjuice-callout-body h3:first-of-type {
 	color: #721c24;
 }

@@ -22,7 +22,7 @@ function createDangerCallout(writer) {
 	const dangerCallout = writer.createElement('danger');
 	const dangerCalloutBody = writer.createElement('dangerBody');
 
-	const dangerCalloutTitle = writer.createElement('heading2');
+	const dangerCalloutTitle = writer.createElement('heading3');
 	writer.insertText("Helpjuice Danger Callout Title", dangerCalloutTitle);
 
 	const dangerCalloutContent = writer.createElement('paragraph');

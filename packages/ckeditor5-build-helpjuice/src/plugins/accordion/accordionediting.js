@@ -81,7 +81,7 @@ export default class AccordionEditing extends Plugin {
 		conversion.for('editingDowncast').elementToElement({
 			model: 'accordion',
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-accordion', "data-controller": "accordion" });
+				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-accordion', "data-controller": "editor--toggle-element" });
 
 				return toWidget(div, viewWriter, { label: 'Insert Accordion' });
 			}
@@ -129,7 +129,7 @@ export default class AccordionEditing extends Plugin {
 			model: 'accordionBody',
 			view: (modelElement, { writer: viewWriter }) => {
 				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-accordion-body active', "data-accordion-target": "body" });
+				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-accordion-body active', "data-editor--toggle-element-target": "body" });
 
 				return toWidgetEditable(div, viewWriter);
 			}
@@ -153,7 +153,7 @@ export default class AccordionEditing extends Plugin {
 			model: 'accordionToggle',
 			view: (modelElement, { writer: viewWriter }) => {
 				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-accordion-toggle', "data-action": "click->accordion#toggle" });
+				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-accordion-toggle', "data-action": "click->editor--toggle-element#toggle" });
 
 				return toWidget(div, viewWriter);
 			}

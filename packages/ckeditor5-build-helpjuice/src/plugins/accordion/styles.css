@@ -3,6 +3,7 @@
 	position: relative;
 	background-color: #F3F5F8;
 	padding: 10px;
+	margin: 10px 0;
 }
 
 .helpjuice-accordion::before {
@@ -17,7 +18,7 @@
 	left: 50%;
 	transform: translateX(-50%);
 	padding: 1px 10px;
-	z-index: 9999;
+	z-index: 10;
 	border-radius: 2px;
 }
 
@@ -40,15 +41,20 @@
 
 /* Accordion Title */
 .helpjuice-accordion-title {
-	margin: 0;
+	font-size: 24px!important;
+	margin: 0!important;
 	padding: 10px 60px 10px 10px;
+	border: none!important;
+	box-shadow: none!important;
 }
 
 /* Accordion Body */
 .helpjuice-accordion-body {
 	display: none;
-	margin: 10px 0 0;
+	margin: 10px 0 0!important;
 	padding: 10px;
+	border: none!important;
+	box-shadow: none!important;
 }
 
 .helpjuice-accordion-body.active {
@@ -60,7 +66,7 @@
 	position: absolute!important;
 	top: 25px;
 	right: 20px;
-	z-index: 100;
+	z-index: 10;
 	outline: none!important;
 	cursor: pointer;
 	width: 24px;

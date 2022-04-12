@@ -81,7 +81,7 @@ export default class TabEditing extends Plugin {
 		conversion.for('editingDowncast').elementToElement({
 			model: 'tab',
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-tab', "data-controller": "tab" });
+				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-tab', "data-controller": "editor--toggle-element" });
 
 				return toWidget(div, viewWriter, { label: 'Insert tab' });
 			}
@@ -129,7 +129,7 @@ export default class TabEditing extends Plugin {
 			model: 'tabBody',
 			view: (modelElement, { writer: viewWriter }) => {
 				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-tab-body active', "data-tab-target": "body" });
+				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-tab-body active', "data-editor--toggle-element-target": "body" });
 
 				return toWidgetEditable(div, viewWriter);
 			}
@@ -153,7 +153,7 @@ export default class TabEditing extends Plugin {
 			model: 'tabToggle',
 			view: (modelElement, { writer: viewWriter }) => {
 				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-tab-toggle', "data-action": "click->tab#toggle" });
+				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-tab-toggle', "data-action": "click->editor--toggle-element#toggle" });
 
 				return toWidget(div, viewWriter);
 			}

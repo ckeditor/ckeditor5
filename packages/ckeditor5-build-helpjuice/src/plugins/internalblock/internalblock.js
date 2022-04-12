@@ -1,5 +1,5 @@
-import InternalBlockEditing from './Internalblockediting';
-import InternalBlockUI from './Internalblockui';
+import InternalBlockEditing from './internalblockediting';
+import InternalBlockUI from './internalblockui';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import "./styles.css";
 

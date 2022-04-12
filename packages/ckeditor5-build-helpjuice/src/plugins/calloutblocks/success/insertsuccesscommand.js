@@ -22,7 +22,7 @@ function createSuccessCallout(writer) {
 	const successCallout = writer.createElement('success');
 	const successCalloutBody = writer.createElement('successBody');
 
-	const successCalloutTitle = writer.createElement('heading2');
+	const successCalloutTitle = writer.createElement('heading3');
 	writer.insertText("Helpjuice Success Callout Title", successCalloutTitle);
 
 	const successCalloutContent = writer.createElement('paragraph');

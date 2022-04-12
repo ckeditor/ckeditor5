@@ -1,9 +1,9 @@
-.helpjuice-internal-block.ck-widget {
+.helpjuice-internal-block {
 	position: relative;
 	background-color: #F3F5F8;
 	padding: 10px;
 }
-.helpjuice-internal-block.ck-widget::before {
+.helpjuice-internal-block::before {
 	content: "Restricted Content";
 	font-size: 10px;
 	font-weight: normal;
@@ -15,49 +15,54 @@
 	left: 50%;
 	transform: translateX(-50%);
 	padding: 1px 10px;
-	z-index: 9999;
+	z-index: 10;
 	border-radius: 2px;
 }
 
-.helpjuice-internal-block.ck-widget,
-.ck-blurred .helpjuice-internal-block.ck-widget {
+.helpjuice-internal-block,
+.ck-blurred .helpjuice-internal-block {
 	outline: 3px solid #e1e1e1!important;
 }
-.helpjuice-internal-block.ck-widget:hover {
+.helpjuice-internal-block:hover {
 	outline-color: #ffc83d!important;
 }
 
-.ck-focused .helpjuice-internal-block.ck-widget.ck-widget_selected,
-.ck-focused .helpjuice-internal-block.ck-widget.ck-widget_selected:hover {
+.ck-focused .helpjuice-internal-block.ck-widget_selected,
+.ck-focused .helpjuice-internal-block.ck-widget_selected:hover {
 	outline-color: #1f89e5!important;
 }
 
-.helpjuice-internal-block.ck-widget .helpjuice-internal-block-title.ck-widget {
-	position: absolute;
+.helpjuice-internal-block-settings {
+	position: absolute!important;
 	top: 0;
-	right: 0;
+	right: -3px;
 	outline: none!important;
-	z-index: 9999;
+	z-index: 10;
 }
-.helpjuice-internal-block.ck-widget .helpjuice-internal-block-title.ck-widget p {
-	margin: -8px 0 0 0;
-	padding: 1px 10px;
+.helpjuice-internal-block-settings p {
+	display: none;
+}
+.helpjuice-internal-block-settings::before {
+	content: "Settings";
+	display: block;
 	font-size: 10px;
 	font-weight: normal;
 	text-transform: uppercase;
 	background-color: #757575;
 	color: #FFFFFF;
-	z-index: 9999;
 	border-radius: 2px;
 	cursor: pointer;
+	margin: -8px 0 0 0;
+	padding: 1px 10px;
 }
-.helpjuice-internal-block.ck-widget .helpjuice-internal-block-title.ck-widget .ck-reset_all {
+.helpjuice-internal-block-settings .ck-reset_all {
 	display: none!important;
 }
 
-.helpjuice-internal-block.ck-widget .helpjuice-internal-block-body {
+.helpjuice-internal-block .helpjuice-internal-block-body {
 	background: none!important;
-	border: none;
+	border: none!important;
 	box-shadow: none!important;
 	padding: 0 10px;
+	background-color: none;
 }

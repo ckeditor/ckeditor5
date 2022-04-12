@@ -9,7 +9,7 @@ export default class AccordionUI extends Plugin {
 
 		// The "simpleBox" button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
-		editor.ui.componentFactory.add('internalblock', locale => {
+		editor.ui.componentFactory.add('internalBlock', locale => {
 			// The state of the button will be bound to the widget command.
 			const command = editor.commands.get('insertInternalBlock');
 

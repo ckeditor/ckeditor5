@@ -40,7 +40,8 @@ const findNodes = function(writer, type, root) {
 	return nodes;
 };
 
-HelpjuiceEditor.create(document.querySelector('#helpjuice-editor'))
+HelpjuiceEditor
+	.create(document.querySelector('#helpjuice-editor'))
 	.then(editor => {
 		const viewDocument = editor.editing.view.document;
 		window.editor = editor;
@@ -166,7 +167,6 @@ HelpjuiceEditor.create(document.querySelector('#helpjuice-editor'))
 
 						// CREATE ADD BUTTON
 						const decisionTreeAddTabButton = writer.createElement("decisionTreeAddTabButton");
-						writer.insertText("Add Button", decisionTreeAddTabButton);
 						writer.append(decisionTreeAddTabButton, decisionTreeTabNav);
 
 

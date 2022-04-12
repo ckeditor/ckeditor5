@@ -1,7 +1,7 @@
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import InsertInternalBlockCommand from './insertinternalblockcommand';
+import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
+import { toWidget, toWidgetEditable } from "@ckeditor/ckeditor5-widget/src/utils";
+import Widget from "@ckeditor/ckeditor5-widget/src/widget";
+import InsertInternalBlockCommand from "./insertinternalblockcommand";
 
 export default class InternalBlockEditing extends Plugin {
 	static get requires() {
@@ -11,43 +11,40 @@ export default class InternalBlockEditing extends Plugin {
 	init() {
 		this._defineSchema();
 		this._defineConverters();
-
-		this.editor.commands.add('insertInternalBlock', new InsertInternalBlockCommand(this.editor));
+		this.editor.commands.add("insertInternalBlock", new InsertInternalBlockCommand(this.editor));
 	}
 
 	_defineSchema() {
 		const schema = this.editor.model.schema;
 
-		schema.register('internalblock', {
-			// Behaves like a self-contained object (e.g. an image).
+		schema.register("internalBlock", {
 			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			allowWhere: "$block",
+			allowAttributes: ["data-permitted-users", "data-permitted-groups", "data-controller", "data-internal-block-id"]
 		});
 
-		schema.register('internalblockTitle', {
-			// Cannot be split or left by the caret.
+		// Schema for Internal Block Content
+		schema.register("internalBlockBody", {
 			isLimit: true,
-
-			allowIn: 'accordion',
-
-			// Allow content which is allowed in blocks (i.e. text with attributes).
-			allowContentOf: '$block'
-		});
-
-		schema.register('internalblockBody', {
-			// Cannot be split or left by the caret.
-			isLimit: true,
-
-			allowIn: 'internalblock',
-
-			// Allow content which is allowed in the root (e.g. paragraphs).
-			allowContentOf: '$root'
+			allowIn: "internalBlock",
+			allowContentOf: "$root"
 		});
 
 		schema.addChildCheck((context, childDefinition) => {
-			if (context.endsWith('internalblockBody') && childDefinition.name == 'internalblock') {
+			if (context.endsWith("internalBlockBody") && childDefinition.name == "internalBlock") {
+				return false;
+			}
+		});
+
+		schema.register("internalBlockSettings", {
+			isLimit: true,
+			allowIn: "internalBlock",
+			allowContentOf: "$root",
+			allowAttributes: ["data-action"]
+		});
+
+		schema.addChildCheck((context, childDefinition) => {
+			if (context.endsWith("internalBlockSettings") && childDefinition.name == "internalBlock") {
 				return false;
 			}
 		});
@@ -56,79 +53,104 @@ export default class InternalBlockEditing extends Plugin {
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
-		conversion.for('upcast').elementToElement({
-			model: 'internalblock',
+		conversion.for("upcast").elementToElement({
 			view: {
-				name: 'div',
-				classes: 'helpjuice-internal-block'
+				name: "div",
+				classes: "helpjuice-internal-block",
+				attributes: ["data-permitted-groups", "data-permitted-users", "data-controller", "data-internal-block-id"]
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement("internalBlock", {
+					"data-permitted-groups": viewElement.getAttribute("data-permitted-groups"),
+					"data-permitted-users": viewElement.getAttribute("data-permitted-users"),
+					"data-controller": viewElement.getAttribute("data-controller"),
+					"data-internal-block-id": viewElement.getAttribute("data-internal-block-id")
+				});
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'internalblock',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-internal-block'
-			}
+		conversion.for("dataDowncast").elementToElement({
+			model: "internalBlock",
+			view: ( modelElement, { writer } ) => {
+				return writer.createContainerElement("div", {
+					class: "helpjuice-internal-block",
+					"data-permitted-groups": modelElement.getAttribute("data-permitted-groups"),
+					"data-permitted-users": modelElement.getAttribute("data-permitted-users"),
+					"data-controller": modelElement.getAttribute("data-controller"),
+					"data-internal-block-id": modelElement.getAttribute("data-internal-block-id")
+				});
+			},
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'internalblock',
+		conversion.for("editingDowncast").elementToElement({
+			model: "internalBlock",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-internal-block', "data-controller": "internal-block", "data-internal-block-id": `${getUniqueId()}`, "data-permitted-users": "", "data-permitted-groups": "" });
+				const div = viewWriter.createContainerElement("div", {
+					class: "helpjuice-internal-block",
+					"data-permitted-groups": modelElement.getAttribute("data-permitted-groups"),
+					"data-permitted-users": modelElement.getAttribute("data-permitted-users"),
+					"data-controller": modelElement.getAttribute("data-controller"),
+					"data-internal-block-id": modelElement.getAttribute("data-internal-block-id")
+				});
 
-				return toWidget(div, viewWriter, { label: 'Insert Internal Block' });
+				return toWidget(div, viewWriter);
 			}
 		});
 
-		conversion.for('upcast').elementToElement({
-			model: 'internalblockTitle',
+		// Conversion for Internal Block Body
+		conversion.for("upcast").elementToElement({
+			model: "internalBlockBody",
 			view: {
-				name: 'div',
-				classes: 'helpjuice-internal-block-title'
+				name: "div",
+				classes: "helpjuice-internal-block-body"
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'internalblockTitle',
+		conversion.for("dataDowncast").elementToElement({
+			model: "internalBlockBody",
 			view: {
-				name: 'h2',
-				classes: 'helpjuice-internal-block-title'
+				name: "div",
+				classes: "helpjuice-internal-block-body"
 			}
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'internalblockTitle',
+		conversion.for("editingDowncast").elementToElement({
+			model: "internalBlockBody",
 			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
-				const h2 = viewWriter.createEditableElement('div', { class: 'helpjuice-internal-block-title' });
-
-				return toWidget(h2, viewWriter);
-			}
-		});
-
-		conversion.for('upcast').elementToElement({
-			model: 'internalblockBody',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-internal-block-body'
-			}
-		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'internalblockBody',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-internal-block-body'
-			}
-		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'internalblockBody',
-			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-internal-block-body' });
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-internal-block-body" });
 
 				return toWidgetEditable(div, viewWriter);
 			}
 		});
-	}
-}
 
-function getUniqueId() {
-	return Math.random().toString(16).slice(2);
+		// Conversion for Internal Block Body
+		conversion.for("upcast").elementToElement({
+			view: {
+				name: "div",
+				classes: "helpjuice-internal-block-settings",
+				attributes: ["data-action"]
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement("internalBlockSettings", {
+					"data-action": viewElement.getAttribute("data-action"),
+				});
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "internalBlockSettings",
+			view: ( modelElement, { writer } ) => {
+				return writer.createContainerElement("div", {
+					class: "helpjuice-internal-block-settings",
+					"data-action": modelElement.getAttribute("data-action")
+				});
+			},
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "internalBlockSettings",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createContainerElement("div", {
+					class: "helpjuice-internal-block-settings",
+					"data-action": modelElement.getAttribute("data-action")
+				});
+
+				return toWidget(div, viewWriter);
+			}
+		});
+	}
 }

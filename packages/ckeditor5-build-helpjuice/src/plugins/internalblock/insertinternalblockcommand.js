@@ -3,8 +3,6 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 export default class InsertInternalBlockCommand extends Command {
 	execute() {
 		this.editor.model.change(writer => {
-			// Insert <accordion> at the current selection position
-			// in a way that will result in creating a valid model structure.
 			this.editor.model.insertContent(createInternalBlock(writer));
 		});
 	}
@@ -12,26 +10,32 @@ export default class InsertInternalBlockCommand extends Command {
 	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const allowedIn = model.schema.findAllowedParent(selection.getFirstPosition(), 'internalblock');
+		const allowedIn = model.schema.findAllowedParent(selection.getFirstPosition(), 'internalBlock');
 
 		this.isEnabled = allowedIn !== null;
 	}
 }
 
 function createInternalBlock(writer) {
-	const internalBlock = writer.createElement('internalblock');
+	const internalBlock = writer.createElement('internalBlock');
+	const id = Math.random().toString(8).slice(2);
 
-	const internalBlockTitle = writer.createElement('internalblockTitle');
-	const internalBlockSettings = writer.createElement('paragraph');
-	writer.insertText("Settings", internalBlockSettings);
-	writer.append(internalBlockSettings, internalBlockTitle);
+	writer.setAttributes({
+		"data-permitted-users": "",
+		"data-permitted-groups": "",
+		"data-internal-block-id": id,
+		"data-controller": "editor--internal-block"
+	}, internalBlock);
 
-	const internalBlockBody = writer.createElement('internalblockBody');
-	const internalBlockContent = writer.createElement('paragraph');
-	writer.insertText("Helpjuice Internal Block Content", internalBlockContent);
-	writer.append(internalBlockContent, internalBlockBody);
+	const internalBlockBody = writer.createElement("internalBlockBody");
+	const internalBlockBodyContent = writer.createElement("paragraph");
+	writer.insertText("Helpjuice Internal Block Content", internalBlockBodyContent);
+	writer.append(internalBlockBodyContent, internalBlockBody);
 
-	writer.append(internalBlockTitle, internalBlock);
+	const internalBlockSettings = writer.createElement("internalBlockSettings");
+	writer.setAttribute("data-action", "click->editor--internal-block#toggleSettings", internalBlockSettings);
+
+	writer.append(internalBlockSettings, internalBlock);
 	writer.append(internalBlockBody, internalBlock);
 
 	return internalBlock;

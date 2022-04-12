@@ -22,7 +22,7 @@ function createWarningCallout(writer) {
 	const warningCallout = writer.createElement('warning');
 	const warningCalloutBody = writer.createElement('warningBody');
 
-	const warningCalloutTitle = writer.createElement('heading2');
+	const warningCalloutTitle = writer.createElement('heading3');
 	writer.insertText("Helpjuice Warning Callout Title", warningCalloutTitle);
 
 	const warningCalloutContent = writer.createElement('paragraph');

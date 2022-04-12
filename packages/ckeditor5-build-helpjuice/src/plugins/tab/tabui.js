@@ -21,7 +21,8 @@ export default class TabUI extends Plugin {
 				// translated and change when the language of the editor changes.
 				label: t('Insert Tab'),
 				icon: Tabs,
-				tooltip: true
+				tooltip: true,
+				class: "insert-tab-btn"
 			});
 
 			// Bind the state of the button to the command.

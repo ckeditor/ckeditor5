@@ -21,7 +21,8 @@ export default class AccordionUI extends Plugin {
 				// translated and change when the language of the editor changes.
 				label: t('Insert Accordion'),
 				icon: LayerGroup,
-				tooltip: true
+				tooltip: true,
+				class: "insert-accordion-btn"
 			});
 
 			// Bind the state of the button to the command.

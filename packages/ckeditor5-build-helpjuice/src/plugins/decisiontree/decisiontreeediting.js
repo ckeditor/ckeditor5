@@ -240,13 +240,54 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
+		conversion.for("upcast").elementToElement({
+			view: {
+				name: "div",
+				classes: "helpjuice-decision-tree-tab-content",
+				attributes: ["id", "data-active"]
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( "decisionTreeTabContent", {
+					"id": viewElement.getAttribute("id"),
+					"data-active": viewElement.getAttribute("data-active")
+				});
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "decisionTreeTabContent",
+			view: ( modelElement, { writer } ) => {
+				return writer.createEditableElement("div", {
+					class: "helpjuice-decision-tree-tab-content",
+					"id": modelElement.getAttribute("id"),
+					"data-active": modelElement.getAttribute("data-active")
+				});
+			},
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "decisionTreeTabContent",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createEditableElement("div", {
+					class: "helpjuice-decision-tree-tab-content",
+					id: modelElement.getAttribute("id"),
+					"data-active": modelElement.getAttribute("data-active")
+				});
+
+				return toWidgetEditable(div, viewWriter);
+			}
+		});
+
 		// Conversion for Button
 		conversion.for("upcast").elementToElement({
-			model: "decisionTreeButton",
 			view: {
 				name: "div",
 				classes: "helpjuice-decision-tree-button",
 				attributes: ["data-id", "data-active"]
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( "decisionTreeButton", {
+					"data-id": viewElement.getAttribute("data-id"),
+					"data-active": viewElement.getAttribute("data-active")
+				});
 			}
 		});
 		conversion.for("dataDowncast").elementToElement({
@@ -322,7 +363,7 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
-		// Conversion for Button
+		// Conversion for Add Button
 		conversion.for("upcast").elementToElement({
 			model: "decisionTreeAddTabButton",
 			view: {
@@ -332,15 +373,18 @@ export default class DecisionTreeEditing extends Plugin {
 		});
 		conversion.for("dataDowncast").elementToElement({
 			model: "decisionTreeAddTabButton",
-			view: {
-				name: "div",
-				classes: "helpjuice-decision-tree-add-tab-button"
-			}
+			view: ( modelElement, { writer } ) => {
+				return writer.createEditableElement("div", {
+					class: "helpjuice-decision-tree-add-tab-button"
+				});
+			},
 		});
 		conversion.for("editingDowncast").elementToElement({
 			model: "decisionTreeAddTabButton",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createContainerElement("div", { class: "helpjuice-decision-tree-add-tab-button" });
+				const div = viewWriter.createContainerElement("div", {
+					class: "helpjuice-decision-tree-add-tab-button"
+				})
 
 				return toWidget(div, viewWriter);
 			}
@@ -383,21 +427,19 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
-
 		// Conversion for Add Answers
 		conversion.for("upcast").elementToElement({
 			model: "decisionTreeAddAnswers",
 			view: {
 				name: "div",
-				classes: "helpjuice-decision-tree-add-answers",
-				attributes: ["data-active"]
+				classes: "helpjuice-decision-tree-add-answers"
 			}
 		});
 		conversion.for("dataDowncast").elementToElement({
 			model: "decisionTreeAddAnswers",
 			view: ( modelElement, { writer } ) => {
 				return writer.createEditableElement("div", {
-					class: "helpjuice-decision-tree-tab-content"
+					class: "helpjuice-decision-tree-add-answers"
 				});
 			},
 		});

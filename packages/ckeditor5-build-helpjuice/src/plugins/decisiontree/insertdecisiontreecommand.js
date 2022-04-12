@@ -53,7 +53,6 @@ function createDecisionTree(writer) {
 
 	// Create Add Tab Button
 	const decisionTreeAddTabButton = writer.createElement("decisionTreeAddTabButton");
-	writer.insertText("Add Button", decisionTreeAddTabButton);
 
 	writer.append(decisionTreeButton, decisionTreeTabNav);
 	writer.append(decisionTreeAddTabButton, decisionTreeTabNav);

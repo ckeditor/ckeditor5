@@ -10,6 +10,7 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import AutoSave from '@ckeditor/ckeditor5-autosave/src/autosave';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
@@ -33,7 +34,10 @@ import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
@@ -61,6 +65,7 @@ HelpjuiceEditor.builtinPlugins = [
 	UploadAdapter,
 	Alignment,
 	Autoformat,
+	AutoSave,
 	Bold,
 	Underline,
 	Italic,
@@ -68,6 +73,7 @@ HelpjuiceEditor.builtinPlugins = [
 	FontSize,
 	FontColor,
 	FontBackgroundColor,
+	Highlight,
 	BlockQuote,
 	HorizontalLine,
 	Heading,
@@ -85,10 +91,12 @@ HelpjuiceEditor.builtinPlugins = [
 	Paragraph,
 	PasteFromOffice,
 	Table,
+	TableCaption,
 	TableToolbar,
+	TableProperties,
+	TableCellProperties,
 	TextTransformation,
 	CodeBlock,
-	Highlight,
 	HtmlEmbed,
 	RemoveFormat,
 	SourceEditing,
@@ -114,6 +122,19 @@ HelpjuiceEditor.defaultConfig = {
 			{ model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' }
 		]
 	},
+	fontFamily: {
+		options: [
+			'Arial, Helvetica, sans-serif',
+			'Courier New, Courier, monospace',
+			'Georgia, serif',
+			'Lucida Sans Unicode, Lucida Grande, sans-serif',
+			'Tahoma, Geneva, sans-serif',
+			'Times New Roman, Times, serif',
+			'Trebuchet MS, Helvetica, sans-serif',
+			'Verdana, Geneva, sans-serif',
+			'Open Sans, sans-serif'
+		]
+    },
 	fontSize: {
 		options: [
 			12,
@@ -130,9 +151,24 @@ HelpjuiceEditor.defaultConfig = {
 			92
 		]
 	},
-	ckfinder: {
-		// Upload the images to the server using the CKFinder QuickUpload command.
-		uploadUrl: '/admin/direct_uploads'
+	simpleUpload: {
+		// The URL that the images are uploaded to.
+		uploadUrl: '/uploads'
+	},
+	table: {
+		contentToolbar: [
+			'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+		],
+
+		// Configuration of the TableProperties plugin.
+		tableProperties: {
+			// ...
+		},
+
+		// Configuration of the TableCellProperties plugin.
+		tableCellProperties: {
+			// ...
+		}
 	},
 	toolbar: {
 		items: [
@@ -146,6 +182,7 @@ HelpjuiceEditor.defaultConfig = {
 			'fontSize',
 			'fontColor',
 			'fontBackgroundColor',
+			'highlight',
 			'|',
 			'bulletedList',
 			'numberedList',
@@ -163,7 +200,6 @@ HelpjuiceEditor.defaultConfig = {
 			'horizontalLine',
 			'htmlembed',
 			'codeblock',
-			'highlight',
 			'sourceEditing',
 			'removeFormat',
 			'undo',
@@ -188,13 +224,6 @@ HelpjuiceEditor.defaultConfig = {
 			'|',
 			'toggleImageCaption',
 			'imageTextAlternative'
-		]
-	},
-	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
