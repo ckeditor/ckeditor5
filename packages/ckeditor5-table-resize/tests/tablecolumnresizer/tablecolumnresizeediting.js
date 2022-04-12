@@ -1397,9 +1397,6 @@ describe( 'TableColumnResizeEditing', () => {
 					setModelData( model, modelTable( [
 						[ '00', '01', '02' ]
 					], { tableWidth: '100px', columnWidths: '20%,25%,55%' } ) );
-					// setModelData( model, modelTable( [
-					// 	[ '00', '01', '02' ]
-					// ], { columnWidths: '20%,25%,55%' } ) );
 
 					tableColumnResizeMouseSimulator.resize( view, columnToResizeIndex, mouseMovementVector );
 
