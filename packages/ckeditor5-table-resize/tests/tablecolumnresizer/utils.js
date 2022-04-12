@@ -14,6 +14,14 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';
 import MoveOperation from '@ckeditor/ckeditor5-engine/src/model/operation/moveoperation';
 import AttributeOperation from '@ckeditor/ckeditor5-engine/src/model/operation/attributeoperation';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import LinkCommand from '@ckeditor/ckeditor5-link/src/linkcommand';
+import UnlinkCommand from '@ckeditor/ckeditor5-link/src/unlinkcommand';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
+import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
+import HighlightCommand from '@ckeditor/ckeditor5-highlight/src/highlightcommand';
 
 import TableColumnResize from '../../src/tablecolumnresize';
 import {
@@ -27,7 +35,7 @@ import {
 	getTableWidthInPixels
 } from '../../src/tablecolumnresize/utils';
 
-/* globals window */
+/* globals window, document */
 
 describe( 'TableColumnResize utils', () => {
 	describe( 'getAffectedTables()', () => {
@@ -322,6 +330,131 @@ describe( 'TableColumnResize utils', () => {
 					model,
 					new Text( 'foo' ),
 					new Position( root, [ 2, 1, 2, 0 ] )
+				);
+
+				const changes = differ.getChanges();
+				const affectedTables = getAffectedTables( changes );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
+		} );
+
+		describe( 'should not crash if no affected table has been found', () => {
+			let model, differ, editor, editorElement, linkCommand, unlinkCommand, highlightCommand;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				editor = await ClassicEditor.create( editorElement, Object.assign( {}, {
+					plugins: [ Table, Paragraph, LinkEditing, HighlightEditing, Bold ]
+				} ) );
+
+				model = editor.model;
+				differ = model.document.differ;
+				linkCommand = new LinkCommand( editor );
+				unlinkCommand = new UnlinkCommand( editor );
+				highlightCommand = new HighlightCommand( editor );
+			} );
+
+			afterEach( async () => {
+				editorElement.remove();
+
+				await editor.destroy();
+			} );
+
+			it( 'when link is being removed', () => {
+				setData( model,
+					'<table columnWidths="20%,25%,55%">' +
+						'<tableRow>' +
+							'<tableCell columnIndex="0">' +
+								'<paragraph>00[foo]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				expect( linkCommand.value ).to.be.undefined;
+
+				linkCommand.execute( 'url' );
+
+				expect( linkCommand.value ).to.be.equal( 'url' );
+
+				unlinkCommand.execute();
+
+				expect( getData( model ) ).to.equal(
+					'<table columnWidths="20%,25%,55%">' +
+						'<tableRow>' +
+							'<tableCell columnIndex="0">' +
+								'<paragraph>00[foo]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				const changes = differ.getChanges();
+				const affectedTables = getAffectedTables( changes );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
+
+			it( 'when highlight is being removed', () => {
+				setData( model,
+					'<table columnWidths="100%">' +
+						'<tableRow>' +
+							'<tableCell columnIndex="0">' +
+								'<paragraph>00[foo]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				expect( highlightCommand.value ).to.equal( undefined );
+
+				highlightCommand.execute( { value: 'greenMarker' } );
+
+				expect( highlightCommand.value ).to.equal( 'greenMarker' );
+
+				highlightCommand.execute();
+
+				expect( getData( model ) ).to.equal(
+					'<table columnWidths="100%">' +
+						'<tableRow>' +
+							'<tableCell columnIndex="0">' +
+								'<paragraph>00[foo]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				const changes = differ.getChanges();
+				const affectedTables = getAffectedTables( changes );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
+
+			it( 'when bold is being removed', () => {
+				setData( model,
+					'<table columnWidths="100%">' +
+						'<tableRow>' +
+							'<tableCell columnIndex="0">' +
+								'<paragraph>00[foo]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				editor.commands.get( 'bold' ).execute();
+				editor.commands.get( 'bold' ).execute();
+
+				expect( getData( model ) ).to.equal(
+					'<table columnWidths="100%">' +
+						'<tableRow>' +
+							'<tableCell columnIndex="0">' +
+								'<paragraph>00[foo]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
 				);
 
 				const changes = differ.getChanges();
