@@ -28,6 +28,7 @@ import cancel from './../theme/icons/cancel.svg';
 import caption from './../theme/icons/caption.svg';
 import check from './../theme/icons/check.svg';
 import cog from './../theme/icons/cog.svg';
+import browseFiles from './../theme/icons/browse-files.svg';
 import eraser from './../theme/icons/eraser.svg';
 import lowVision from './../theme/icons/low-vision.svg';
 import image from './../theme/icons/image.svg';
@@ -63,6 +64,7 @@ export const icons = {
 	caption,
 	check,
 	cog,
+	browseFiles,
 	eraser,
 	lowVision,
 	image,

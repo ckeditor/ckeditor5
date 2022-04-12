@@ -15,7 +15,7 @@ import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uplo
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import CKFinder from '../src/ckfinder';
-import browseFilesIcon from '../theme/icons/browse-files.svg';
+import browseFilesIcon from '@ckeditor/ckeditor5-core/theme/icons/browse-files.svg';
 
 describe( 'CKFinderUI', () => {
 	let editorElement, editor, button;
