@@ -11,14 +11,15 @@ const path = require( 'path' );
 const { getChangesForVersion, getChangelog } = require( '@ckeditor/ckeditor5-dev-env/lib/release-tools/utils/changelog' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
-
 const VERSIONS_TO_PRINT = 3;
 
 /**
- * Returns changelogs formatted in markdown for last X versions of the editor. Additional formatting is applied:
+ * Returns changelogs formatted in markdown for the last three versions of the CKEditor 5 releases.
+ * Additional, the following sections for each entry are modified:
  *
- * - "ℹ️" character in "BREAKING CHANGE" headers removed.
- * - "Released packages" section removed.
+ * - The "ℹ️" symbol is removed.
+ * - The "Released packages" section is removed.
+ * - The "Release highlights" section is removed.
  *
  * @returns {String}
  */
