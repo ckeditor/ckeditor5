@@ -2,18 +2,10 @@
 category: updating
 menu-title: Migration to v33.x
 order: 91
-modified_at: 2022-02-21
+modified_at: 2022-02-01
 ---
 
 # Migration to CKEditor 5 v33.0.0
-
-<info-box warning>
-	<span style="font-family: sans;">⚠️</span>&nbsp;&nbsp;️️️ **Warning: Information for customers who use CKEditor Cloud Services On-Premises and [upload the editor bundles to Cloud Services](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html).**
-
-	If you are using the On-Premises version of CKEditor Cloud Services, and you upload the editor bundles to the Cloud Services (e.g. in order to use the document storage, import and export, or connection optimization features), then please wait with upgrading to CKEditor 5 v33.0.0.
-
-	The On-Premises version of CKEditor Cloud Services that will support CKEditor 5 v33.0.0 editor bundles is going to be released by the end of March 2022. Until then, uploading a bundle (with CKEditor 5 v33.0.0) will be rejected by the REST API.
-</info-box>
 
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.

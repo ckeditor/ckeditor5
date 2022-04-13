@@ -975,6 +975,102 @@ describe( 'DataController utils', () => {
 				// Note that auto-paragraphing post-fixer injected a paragraph into the empty root.
 				expect( getData( model, { rootName: 'bodyRoot' } ) ).to.equal( '<paragraph>[]</paragraph>' );
 			} );
+
+			it( 'creates a paragraph that inherits a deleted block widget attribute with copyOnReplace property', () => {
+				model.schema.extend( 'paragraph', {
+					allowAttributes: 'foo'
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: 'foo'
+				} );
+
+				model.schema.setAttributeProperties( 'foo', {
+					copyOnReplace: true
+				} );
+
+				setData(
+					model,
+					'[<blockWidget foo="true"></blockWidget>]',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph foo="true">[]</paragraph>' );
+			} );
+
+			it( 'creates a paragraph that inherits a deleted block widget attributes with copyOnReplace property', () => {
+				model.schema.extend( 'paragraph', {
+					allowAttributes: [ 'foo', 'bar' ]
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: [ 'foo', 'bar' ]
+				} );
+
+				model.schema.setAttributeProperties( 'foo', {
+					copyOnReplace: true
+				} );
+
+				model.schema.setAttributeProperties( 'bar', {
+					copyOnReplace: true
+				} );
+
+				setData(
+					model,
+					'[<blockWidget bar="true" foo="true"></blockWidget>]',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph bar="true" foo="true">[]</paragraph>' );
+			} );
+
+			it( 'creates a paragraph that does not inherit a deleted block widget attribute without copyOnReplace property', () => {
+				model.schema.extend( 'paragraph', {
+					allowAttributes: 'foo'
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: 'foo'
+				} );
+
+				setData(
+					model,
+					'[<blockWidget foo="true"></blockWidget>]',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
+			it( 'creates a paragraph that does not inherit a deleted block widget attribute if it is not allowed on paragraph', () => {
+				model.schema.extend( '$blockObject', {
+					allowAttributes: 'foo'
+				} );
+
+				model.schema.setAttributeProperties( 'foo', {
+					copyOnReplace: true
+				} );
+
+				setData(
+					model,
+					'[<blockWidget foo="true"></blockWidget>]',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>[]</paragraph>' );
+			} );
 		} );
 
 		describe( 'integration with inline limit elements', () => {
