@@ -69,7 +69,11 @@ ClassicEditor
 		button.addEventListener( 'click', () => {
 			isReadOnly = !isReadOnly;
 
-			editor.enableReadOnlyMode( 'docs-snippet', isReadOnly );
+			if ( isReadOnly ) {
+				editor.enableReadOnlyMode( 'docs-snippet' );
+			} else {
+				editor.disableReadOnlyMode( 'docs-snippet' );
+			}
 
 			button.textContent = isReadOnly ?
 				'Turn off read-only mode' :
