@@ -282,8 +282,11 @@ export default class History {
 	 * Resets the history of operations.
 	 */
 	reset() {
+		this._version = 0;
 		this._undoPairs = new Map();
 		this.operations = [];
 		this._undoneOperations = new Set();
+		this._gaps = new Map();
+		this._baseVersionToOperationIndex = new Map();
 	}
 }
