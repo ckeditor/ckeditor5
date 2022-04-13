@@ -848,6 +848,227 @@ describe( 'TableColumnResizeEditing', () => {
 					expect( Math.abs( widthDifference - mouseMovementVector.x ) < PIXEL_PRECISION ).to.be.true;
 				} );
 			} );
+
+			describe( 'nested table ', () => {
+				it( 'correctly shrinks when the last column is dragged to the left', () => {
+					// Test-specific.
+					const columnToResizeIndex = 1;
+					const mouseMovementVector = { x: -10, y: 0 };
+
+					setModelData( editor.model,
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'[<table columnWidths="50%,50%">' +
+										'<tableRow>' +
+											'<tableCell columnIndex="0">' +
+												'<paragraph>foo</paragraph>' +
+											'</tableCell>' +
+											'<tableCell columnIndex="1">' +
+												'<paragraph>bar</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+									'</table>]' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					const modelNestedTable = model.document.selection.getSelectedElement();
+					const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
+					const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
+
+					// Test-agnostic.
+					const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+
+					tableColumnResizeMouseSimulator.resize( editor, domNestedTable, columnToResizeIndex, mouseMovementVector, 0 );
+
+					const finalModelColumnWidthsPc = getModelColumnWidthsPc( modelNestedTable );
+
+					assertModelWidthsSum( finalModelColumnWidthsPc );
+
+					const finalViewColumnWidthsPc = getViewColumnWidthsPc( viewNestedTable );
+
+					assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+					const finalViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+					const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+						initialViewColumnWidthsPx,
+						mouseMovementVector,
+						contentDirection,
+						columnToResizeIndex
+					);
+
+					assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<table columnWidths="50.9%,49.1%" width="98.15%">' +
+										'<tableRow>' +
+											'<tableCell columnIndex="0">' +
+												'<paragraph>foo</paragraph>' +
+											'</tableCell>' +
+											'<tableCell columnIndex="1">' +
+												'<paragraph>bar</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+									'</table>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'correctly expands when the last column is dragged to the right', () => {
+					// Test-specific.
+					const columnToResizeIndex = 1;
+					const mouseMovementVector = { x: 10, y: 0 };
+
+					setModelData( editor.model,
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'[<table columnWidths="50%,50%" width="90%">' +
+										'<tableRow>' +
+											'<tableCell columnIndex="0">' +
+												'<paragraph>foo</paragraph>' +
+											'</tableCell>' +
+											'<tableCell columnIndex="1">' +
+												'<paragraph>bar</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+									'</table>]' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					const modelNestedTable = model.document.selection.getSelectedElement();
+					const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
+					const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
+
+					// Test-agnostic.
+					const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+
+					tableColumnResizeMouseSimulator.resize( editor, domNestedTable, columnToResizeIndex, mouseMovementVector, 0 );
+
+					const finalModelColumnWidthsPc = getModelColumnWidthsPc( modelNestedTable );
+
+					assertModelWidthsSum( finalModelColumnWidthsPc );
+
+					const finalViewColumnWidthsPc = getViewColumnWidthsPc( viewNestedTable );
+
+					assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+					const finalViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+					const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+						initialViewColumnWidthsPx,
+						mouseMovementVector,
+						contentDirection,
+						columnToResizeIndex
+					);
+
+					assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<table columnWidths="49.04%,50.96%" width="91.68%">' +
+										'<tableRow>' +
+											'<tableCell columnIndex="0">' +
+												'<paragraph>foo</paragraph>' +
+											'</tableCell>' +
+											'<tableCell columnIndex="1">' +
+												'<paragraph>bar</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+									'</table>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'correctly updates the widths of the columns, when any of the inside ones has been resized', () => {
+					// Test-specific.
+					const columnToResizeIndex = 1;
+					const mouseMovementVector = { x: 10, y: 0 };
+
+					setModelData( editor.model,
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'[<table columnWidths="25%,25%,50%" width="100%">' +
+										'<tableRow>' +
+											'<tableCell columnIndex="0">' +
+												'<paragraph>foo</paragraph>' +
+											'</tableCell>' +
+											'<tableCell columnIndex="1">' +
+												'<paragraph>bar</paragraph>' +
+											'</tableCell>' +
+											'<tableCell columnIndex="2">' +
+												'<paragraph>baz</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+									'</table>]' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					const modelNestedTable = model.document.selection.getSelectedElement();
+					const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
+					const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
+
+					// Test-agnostic.
+					const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+
+					tableColumnResizeMouseSimulator.resize( editor, domNestedTable, columnToResizeIndex, mouseMovementVector, 0 );
+
+					const finalModelColumnWidthsPc = getModelColumnWidthsPc( modelNestedTable );
+
+					assertModelWidthsSum( finalModelColumnWidthsPc );
+
+					const finalViewColumnWidthsPc = getViewColumnWidthsPc( viewNestedTable );
+
+					assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+					const finalViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+
+					const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+						initialViewColumnWidthsPx,
+						mouseMovementVector,
+						contentDirection,
+						columnToResizeIndex
+					);
+					assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<table columnWidths="25%,25.88%,49.12%" width="100%">' +
+										'<tableRow>' +
+											'<tableCell columnIndex="0">' +
+												'<paragraph>foo</paragraph>' +
+											'</tableCell>' +
+											'<tableCell columnIndex="1">' +
+												'<paragraph>bar</paragraph>' +
+											'</tableCell>' +
+											'<tableCell columnIndex="2">' +
+												'<paragraph>baz</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+									'</table>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+			} );
 		} );
 
 		describe( 'right or left (RTL)', () => {
