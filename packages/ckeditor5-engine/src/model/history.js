@@ -87,8 +87,8 @@ export default class History {
 	}
 
 	set version( version ) {
-		// Create a new gap whenever there are some operations already in the history and the
-		// new version is not an incrementation comparing to the latest one.
+		// Store a gap if there are some operations already in the history and the
+		// new version does not increment the latest one.
 		if ( this.operations.length && version > this._version + 1 ) {
 			this._gaps.set( this._version, version );
 		}
@@ -143,6 +143,8 @@ export default class History {
 
 	/**
 	 * Returns operations chronologically that were added to the history from the given range.
+	 *
+	 * Note that operation versions may contain gaps.
 	 *
 	 * @param {Number} [from] Base version from which operations should be returned (inclusive).
 	 * @param {Number} [to] Base version up to which operations should be returned (exclusive).
