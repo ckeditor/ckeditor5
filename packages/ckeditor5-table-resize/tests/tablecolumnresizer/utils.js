@@ -14,14 +14,6 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';
 import MoveOperation from '@ckeditor/ckeditor5-engine/src/model/operation/moveoperation';
 import AttributeOperation from '@ckeditor/ckeditor5-engine/src/model/operation/attributeoperation';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import LinkCommand from '@ckeditor/ckeditor5-link/src/linkcommand';
-import UnlinkCommand from '@ckeditor/ckeditor5-link/src/unlinkcommand';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
-import HighlightCommand from '@ckeditor/ckeditor5-highlight/src/highlightcommand';
 
 import TableColumnResize from '../../src/tablecolumnresize';
 import {
@@ -35,7 +27,7 @@ import {
 	getTableWidthInPixels
 } from '../../src/tablecolumnresize/utils';
 
-/* globals window, document */
+/* globals window */
 
 describe( 'TableColumnResize utils', () => {
 	describe( 'getAffectedTables()', () => {
@@ -339,124 +331,26 @@ describe( 'TableColumnResize utils', () => {
 			} );
 		} );
 
-		describe( 'should not crash if no affected table has been found', () => {
-			let model, differ, editor, editorElement, linkCommand, unlinkCommand, highlightCommand;
+		it( 'should not find any affected table if it was a text formatting removal operation', () => {
+			let range;
 
-			beforeEach( async () => {
-				editorElement = document.createElement( 'div' );
-				document.body.appendChild( editorElement );
+			// To test the getAffectedTable(), when the attribute is being removed we need
+			// to frist insert the text inside one of the table cells.
+			model.change( () => {
+				insert(
+					model,
+					new Text( 'foo' ),
+					new Position( root, [ 0, 0, 0, 0 ] )
+				);
 
-				editor = await ClassicEditor.create( editorElement, Object.assign( {}, {
-					plugins: [ Table, Paragraph, LinkEditing, HighlightEditing, Bold ]
-				} ) );
+				range = new Range( new Position( root, [ 0, 0, 0, 1 ] ), new Position( root, [ 0, 0, 0, 3 ] ) );
 
-				model = editor.model;
-				differ = model.document.differ;
-				linkCommand = new LinkCommand( editor );
-				unlinkCommand = new UnlinkCommand( editor );
-				highlightCommand = new HighlightCommand( editor );
+				attribute( model, range, 'linkHref', null, 'www' );
 			} );
 
-			afterEach( async () => {
-				editorElement.remove();
-
-				await editor.destroy();
-			} );
-
-			it( 'when link is being removed', () => {
-				setData( model,
-					'<table columnWidths="20%,25%,55%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>00[foo]</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-
-				expect( linkCommand.value ).to.be.undefined;
-
-				linkCommand.execute( 'url' );
-
-				expect( linkCommand.value ).to.be.equal( 'url' );
-
-				unlinkCommand.execute();
-
-				expect( getData( model ) ).to.equal(
-					'<table columnWidths="20%,25%,55%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>00[foo]</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
-
-				expect( affectedTables.size ).to.equal( 0 );
-			} );
-
-			it( 'when highlight is being removed', () => {
-				setData( model,
-					'<table columnWidths="100%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>00[foo]</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-
-				expect( highlightCommand.value ).to.equal( undefined );
-
-				highlightCommand.execute( { value: 'greenMarker' } );
-
-				expect( highlightCommand.value ).to.equal( 'greenMarker' );
-
-				highlightCommand.execute();
-
-				expect( getData( model ) ).to.equal(
-					'<table columnWidths="100%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>00[foo]</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
-
-				expect( affectedTables.size ).to.equal( 0 );
-			} );
-
-			it( 'when bold is being removed', () => {
-				setData( model,
-					'<table columnWidths="100%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>00[foo]</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-
-				editor.commands.get( 'bold' ).execute();
-				editor.commands.get( 'bold' ).execute();
-
-				expect( getData( model ) ).to.equal(
-					'<table columnWidths="100%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>00[foo]</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-
+			// And in a different model.change() remove the attribute, beacuse otherwise the changes would be empty.
+			model.change( () => {
+				attribute( model, range, 'linkHref', 'www', null );
 				const changes = differ.getChanges();
 				const affectedTables = getAffectedTables( changes );
 
