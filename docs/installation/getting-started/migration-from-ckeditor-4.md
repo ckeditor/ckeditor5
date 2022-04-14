@@ -113,11 +113,11 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>
 				<p>These settings are no longer needed as by default, CKEditor 5 automatically grows with content.</p>
 				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the <code>minHeight</code> and <code>maxHeight</code> settings can be achieved with the following code:</p>
-				<p>
-				<code>.ck.ck-content:not(.ck-comment__input *) {<br />
-					height: 300px;<br />
-					overflow-y: auto;<br />
-				}</code>.</p>
+				<pre><code class="language-css">.ck.ck-content:not(.ck-comment__input *) {
+	/* Note: You can use min-height and max-height instead here. */
+	height: 300px;
+	overflow-y: auto;
+}</code>
 			</td>
 		</tr>
 		<tr>
