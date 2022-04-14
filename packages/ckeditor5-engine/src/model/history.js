@@ -142,35 +142,35 @@ export default class History {
 	}
 
 	/**
-	 * Returns operations chronologically that were added to the history from the given range.
+	 * Returns operations chronologically that were added to the history from the given range of operation base versions.
 	 *
 	 * Note that operation versions may contain gaps.
 	 *
-	 * @param {Number} [from] Base version from which operations should be returned (inclusive).
-	 * @param {Number} [to] Base version up to which operations should be returned (exclusive).
+	 * @param {Number} [fromBaseVersion] Base version from which operations should be returned (inclusive).
+	 * @param {Number} [toBaseVersion] Base version up to which operations should be returned (exclusive).
 	 * @returns {Array.<module:engine/model/operation/operation~Operation>} History operations from the given range, added chronologically.
 	 */
-	getOperations( from, to = this.version ) {
+	getOperations( fromBaseVersion, toBaseVersion = this.version ) {
 		// When there is no operation in the history, return an empty array.
 		// After that we can be sure that `firstOperation`, `lastOperation` are not nullish.
 		if ( !this.operations.length ) {
 			return [];
 		}
 
-		if ( from === undefined ) {
-			from = this.firstOperation.baseVersion;
+		if ( fromBaseVersion === undefined ) {
+			fromBaseVersion = this.firstOperation.baseVersion;
 		}
 
 		// Change exclusive `to` to inclusive, so the `to` will refer to the actual index.
 		// Thanks to that mapping from base versions to operation indexes are possible.
-		let inclusiveTo = to - 1;
+		let inclusiveTo = toBaseVersion - 1;
 
 		// Check if the `from` or `to` points to the gap between versions.
 		// If yes, then change the incorrect position to the proper side of the gap.
 		// Thanks to it, it will be possible to get index of the operation.
 		for ( const [ gapFrom, gapTo ] of this._gaps ) {
-			if ( from > gapFrom && from < gapTo ) {
-				from = gapTo;
+			if ( fromBaseVersion > gapFrom && fromBaseVersion < gapTo ) {
+				fromBaseVersion = gapTo;
 			}
 
 			if ( inclusiveTo > gapFrom && inclusiveTo < gapTo ) {
@@ -179,11 +179,11 @@ export default class History {
 		}
 
 		// If the whole range is outside of the operation versions, then return an empty array.
-		if ( inclusiveTo < this.firstOperation.baseVersion || from > this.lastOperation.baseVersion ) {
+		if ( inclusiveTo < this.firstOperation.baseVersion || fromBaseVersion > this.lastOperation.baseVersion ) {
 			return [];
 		}
 
-		let fromIndex = this._baseVersionToOperationIndex.get( from );
+		let fromIndex = this._baseVersionToOperationIndex.get( fromBaseVersion );
 
 		// TODO Change
 		// If the range starts before the first operation, then use the first operation as the range's start.
