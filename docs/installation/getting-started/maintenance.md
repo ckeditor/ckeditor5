@@ -9,7 +9,7 @@ modified_at: 2021-07-16
 <info-box hint>
 **Quick recap**
 
-In the previous tutorials you have learned about installing, configuring and extending your editor. This guide is the last chapter from the *Getting started* section, so if you are looking for some basic information about the editor, check the previous articles!
+In the previous tutorials you have learned about installing, configuring and extending your editor. This guide is the final chapter from the *Getting started* section, so if you are looking for some basic information about the editor, check the previous articles!
 </info-box>
 
 CKEditor 5 is an active, rapidly developing software project. It is, therefore, important to keep in touch with all the new features and APIs, changes and bug fixes that are periodically released. As in the case of every software project, it is always wise and highly advised to keep your copy of CKEditor 5 and all plugins up-to-date to maintain the highest level of security and stability. To ensure your CKEditor 5 installation is always up-to-date, observe the following suggestions.

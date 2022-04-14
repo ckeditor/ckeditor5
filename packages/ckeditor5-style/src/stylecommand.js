@@ -161,12 +161,12 @@ export default class StyleCommand extends Command {
 	 * @param {module:engine/model/selection~Selection} selection
 	 */
 	_prepareNewInlineElementValue( value, selection ) {
-		let newValue = [];
+		let newValue = [ ...value ];
 
 		const attributes = selection.getAttributes();
 
 		for ( const [ attribute ] of attributes ) {
-			newValue = [ ...value, ...this._getAttributeValue( attribute ) ];
+			newValue = [ ...newValue, ...this._getAttributeValue( attribute ) ];
 		}
 
 		return newValue;

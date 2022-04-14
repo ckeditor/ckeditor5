@@ -8,24 +8,22 @@ modified_at: 2022-04-05
 # Migration to CKEditor 5 v34.0.0
 
 <info-box>
-	<span style="font-family: sans;">⚠️</span>&nbsp;&nbsp;️️️ **Warning: Information for customers who use CKEditor Cloud Services On-Premises and [upload the editor bundles to Cloud Services](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html).**
-
-	If you are using the On-Premises version of CKEditor Cloud Services, and you upload the editor bundles to the Cloud Services (e.g. in order to use the document storage, import and export, or connection optimization features), then please wait with upgrading to CKEditor 5 v34.0.0.
-
-	The On-Premises version of CKEditor Cloud Services that will support CKEditor 5 v34.0.0 editor bundles is going to be released by the end of April 2022. Until then, uploading a bundle (with CKEditor 5 v34.0.0) will be rejected by the REST API.
-</info-box>
-
-<info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-For the entire list of changes introduced in version 34.0.0, see the [changelog for CKEditor 5 v34.0.0]
+For the entire list of changes introduced in version 34.0.0, see the [changelog for CKEditor 5 v34.0.0](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md#3400-2022-04-08).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v34.0.0.
 
 ## Important changes
+
+### Collaboration Server On-Premises version must be at least 4.5.0
+
+ The latest version of CKEditor contains some fixes and improvements for the WebSockets communication with the CKEditor Cloud Services servers. If you use the On-premises version of CKEditor Cloud Services (i.e. Collaboration Server On-Premises), CKEditor v34.0.0 will only work with the server in version 4.5.0 or higher.
+
+ Before updating your CKEditor instance to v34.0.0 please make sure you have the updated version of Collaboration Server On-Premises, too.
 
 ### Additional dependencies in CKEditor 5 Collaboration Features
 
@@ -33,13 +31,13 @@ The {@link installation/advanced/dll-builds DLL builds} support was introduced f
 
 **{@link module:real-time-collaboration/realtimecollaborativerevisionhistory~RealTimeCollaborativeRevisionHistory}** will require adding {@link module:revision-history/revisionhistory~RevisionHistory} to the list of the editor plugins:
 
-	```js
-	// ❌ Old imports:
-	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
-	// ✅ New imports:
-	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
-	import RevisionHistory from '@ckeditor/ckeditor5-revision-history/src/revisionhistory';
-	```
+```js
+// ❌ Old imports:
+import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
+// ✅ New imports:
+import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
+import RevisionHistory from '@ckeditor/ckeditor5-revision-history/src/revisionhistory';
+```
 
 ### Changed mechanism for setting and clearing the editor read-only mode
 
@@ -51,24 +49,24 @@ The new methods on the `Editor` class are {@link module:core/editor/editor~Edito
 
 The lock mechanism turns the editor read-only if there is at least one lock set. After all of these locks are removed, the content becomes editable again. Because each feature is responsible only for setting and removing its own lock, they hence do not come into conflict with each other. Before introducing this change, setting and removing the read-only state of the editor could result in its content being editable when it should not.
 
-	```js
-	// ❌ Old usage:
-	function makeEditorReadOnly() {
-		editor.isReadOnly = true;
-	}
+```js
+// ❌ Old usage:
+function makeEditorReadOnly() {
+	editor.isReadOnly = true;
+}
 
-	function makeEditorEditable() {
-		editor.isReadOnly = false;
-	}
+function makeEditorEditable() {
+	editor.isReadOnly = false;
+}
 
-	// ✅ New usage:
-	const myFeatureLockId = Symbol( 'my-feature' );
+// ✅ New usage:
+const myFeatureLockId = Symbol( 'my-feature' );
 
-	function makeEditorReadOnly() {
-		editor.enableReadOnlyMode( myFeatureLockId );
-	}
+function makeEditorReadOnly() {
+	editor.enableReadOnlyMode( myFeatureLockId );
+}
 
-	function makeEditorEditable() {
-		editor.disableReadOnlyMode( myFeatureLockId );
-	}
-	```
+function makeEditorEditable() {
+	editor.disableReadOnlyMode( myFeatureLockId );
+}
+```

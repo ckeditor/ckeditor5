@@ -125,7 +125,11 @@ function initEditor() {
 			function toggleReadOnly() {
 				isReadOnly = !isReadOnly;
 
-				editor.enableReadOnlyMode( 'manual-test', isReadOnly );
+				if ( isReadOnly ) {
+					editor.enableReadOnlyMode( 'manual-test' );
+				} else {
+					editor.disableReadOnlyMode( 'manual-test' );
+				}
 
 				button.textContent = isReadOnly ?
 					'Turn off read-only mode' :
