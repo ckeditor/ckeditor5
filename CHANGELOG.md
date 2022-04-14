@@ -20,7 +20,7 @@ There were also a few bug fixes:
 * Certain markup no longer [breaks the editor when using the GHS feature](https://github.com/ckeditor/ckeditor5/issues/10703)
 * Block insertion annotations are now properly displayed even [if there is any annotation afterwards](https://github.com/ckeditor/ckeditor5/pull/11506)
 
-<!-- TODO: Add a link to the blog post. -->
+Read about release highlights in a dedicated blog post: https://ckeditor.com/blog/ckeditor-5-v34.0.0-with-redesigned-lists-new-styles-implementation-and-extended-dll-builds/
 
 Please refer to the [Migration to v34.x](https://ckeditor.com/docs/ckeditor5/latest/updating/migration-to-34.html) guide to learn more about these changes.
 
