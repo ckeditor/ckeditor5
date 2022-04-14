@@ -225,17 +225,6 @@ export default class History {
 	}
 
 	/**
-	 * Returns a generator yielding operations from last to first.
-	 */
-	* getReversed() {
-		let i = this.operations.length;
-
-		while ( i-- ) {
-			yield this.operations[ i ];
-		}
-	}
-
-	/**
 	 * Marks in history that one operation is an operation that is undoing the other operation. By marking operation this way,
 	 * history is keeping more context information about operations, which helps in operational transformation.
 	 *
