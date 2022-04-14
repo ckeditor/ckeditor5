@@ -15,11 +15,56 @@ describe( 'History', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create an empty History instance', () => {
-			expect( Array.from( history.getOperations() ).length ).to.equal( 0 );
+			expect( history.getOperations().length ).to.equal( 0 );
+			expect( history.getOperations().length ).to.equal( 0 );
 		} );
 
 		it( 'should set the version to 0', () => {
 			expect( history.version ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'operations', () => {
+		it( 'should be an array of operations added chronologically to the history', () => {
+			const op1 = new Operation( 0 );
+			const op2 = new Operation( 1 );
+			history.addOperation( op1 );
+			history.addOperation( op2 );
+
+			expect( history.operations ).to.be.an( 'array' );
+			expect( history.operations ).to.deep.equal( [ op1, op2 ] );
+		} );
+	} );
+
+	describe( 'reset()', () => {
+		it( 'should reset the history of operations', () => {
+			const op1 = new Operation( 0 );
+			const op2 = new Operation( 1 );
+			history.addOperation( op1 );
+			history.addOperation( op2 );
+
+			history.reset();
+
+			expect( history.operations ).to.deep.equal( [] );
+			expect( history.version ).to.equal( 0 );
+			expect( history.lastOperation ).to.be.undefined;
+			expect( history.firstOperation ).to.be.undefined;
+		} );
+
+		it( 'should reset the history of undone operations', () => {
+			const undone = new Operation( 0 );
+			const undoing = new Operation( 1 );
+
+			history.addOperation( undone );
+			history.addOperation( undoing );
+
+			history.setOperationAsUndone( undone, undoing );
+
+			history.reset();
+
+			expect( history.isUndoingOperation( undoing ) ).to.equal( false );
+			expect( history.isUndoneOperation( undone ) ).to.equal( false );
+			expect( history.getUndoneOperation( undoing ) ).to.be.undefined;
 		} );
 	} );
 
@@ -29,7 +74,7 @@ describe( 'History', () => {
 
 			history.addOperation( op );
 
-			const ops = Array.from( history.getOperations() );
+			const ops = history.getOperations();
 			expect( ops.length ).to.equal( 1 );
 			expect( ops[ 0 ] ).to.equal( op );
 		} );
