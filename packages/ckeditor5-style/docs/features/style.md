@@ -14,6 +14,8 @@ The {@link module:style/style~Style Style} feature lets you completely control t
 	The styles feature is experimental and **still in development**.
 </info-box>
 
+Use the demo below to test applying various styles to content.
+
 {@snippet features/styles}
 
 ## Related features
