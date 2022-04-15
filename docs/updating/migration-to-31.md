@@ -68,6 +68,20 @@ Also starting from v31.1.0, any `<script>` element that would find its way to th
 
 Please keep in mind that this mechanism will not change the output of the editor (e.g. the result of `editor.getData()` will include full `<script>...</script>` tags) and there is no way to opt out of it.
 
+### The `table` and `tableCell` attributes' names change
+
+Names of the `table` elements' attributes have changed. A `table` prefix has been added to all the names.
+
+The affected attributes include: `borderStyle`, `borderColor`, `borderWidth`, `backgroundColor`, `alignment`, `width` and `height`.
+
+These are now respectively: `tableBorderStyle`, `tableBorderColor`, `tableBorderWidth`, `tableBackgroundColor`, `tableAlignment`, `tableWidth` and `tableHeight`.
+
+Names of the `tableCell` elements' attributes have changed. A `tableCell` prefix has been added to all the names.
+
+The affected attributes include: `backgroundColor`, `padding`, `width`, `height`, `borderStyle`, `borderColor`, `borderWidth`, `verticalAlignment` and `horizontalAlignment`.
+
+These were changed to `tableCellBackgroundColor`, `tableCellPadding`, `tableCellWidth`, `tableCellHeight`, `tableCellBorderStyle`, `tableCellBorderColor`, `tableCellBorderWidth`, `tableCellVerticalAlignment` and `tableCellHorizontalAlignment` respectively.
+
 
 ## Migration to CKEditor 5 v31.0.0
 
