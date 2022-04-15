@@ -109,66 +109,6 @@ export default class EditingController {
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
-		// let currentCompositionStartRange;
-		let inlineFSC, domSelectedElement;
-
-		this.listenTo( this.view.document, 'compositionstart', () => {
-			// currentCompositionStartRange = this.view.document.selection.getFirstRange();
-			const selectedElement = model.document.selection.getSelectedElement();
-
-			if ( !selectedElement || !model.schema.isObject( selectedElement ) ) {
-				return;
-			}
-
-			const sel = document.getSelection();
-			inlineFSC = document.createElement( model.schema.isInline( selectedElement ) ? 'span' : 'p' );
-
-			if ( model.schema.isInline( selectedElement ) ) {
-				inlineFSC.innerHTML = '\u2060';
-			} else {
-				inlineFSC.innerHTML = '<br>';
-			}
-
-			const viewSelectedElement = this.mapper.toViewElement( selectedElement );
-			domSelectedElement = this.view.domConverter.mapViewToDom( viewSelectedElement );
-
-			domSelectedElement.parentElement.replaceChild( inlineFSC, domSelectedElement );
-
-			if ( model.schema.isInline( selectedElement ) ) {
-				sel.collapse( inlineFSC.firstChild, 1 );
-			} else {
-				sel.collapse( inlineFSC, 0 );
-			}
-		} );
-
-		this.listenTo( this.view.document, 'compositionend', ( evt, data ) => {
-			const { domEvent } = data;
-			const eventInfo = new EventInfo( this.view.document, 'insertText' );
-
-			console.log( '[InsertTextObserver] Compositionend transaction.', domEvent.data );
-
-			if ( domSelectedElement ) {
-				const sel = document.getSelection();
-
-				sel.collapse( this.view._renderer._fakeSelectionContainer, 0 );
-
-				inlineFSC.parentElement.replaceChild( domSelectedElement, inlineFSC );
-			}
-
-			inlineFSC = null;
-			domSelectedElement = null;
-
-			if ( !domEvent.data ) {
-				return;
-			}
-
-			this.view.document.fire( eventInfo, new DomEventData( this.view.document, domEvent, {
-				text: domEvent.data,
-				// selection: this.view.createSelection( currentCompositionStartRange )
-				selection: this.view.document.selection
-			} ) );
-		} );
-
 		// Attach default model converters.
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 		this.downcastDispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );

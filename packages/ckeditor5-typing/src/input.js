@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import InsertTextCommand from './inserttextcommand';
 import InsertTextObserver from './inserttextobserver';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -62,5 +63,24 @@ export default class Input extends Plugin {
 
 			editor.execute( 'insertText', insertTextCommandData );
 		} );
+
+		this.listenTo( viewDocument, 'compositionstart', ( evt, data ) => {
+			if ( !editor.commands.get( 'insertText' ).isEnabled ) {
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: '$capture' } );
+
+		this.listenTo( viewDocument, 'compositionend', ( evt, { domEvent } ) => {
+			if ( !domEvent.data ) {
+				return;
+			}
+
+			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
+			viewDocument.fire( 'insertText', new DomEventData( viewDocument, domEvent, {
+				text: domEvent.data,
+				selection: viewDocument.selection
+			} ) );
+		}, { priority: 'low' } );
 	}
 }

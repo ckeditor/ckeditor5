@@ -56,6 +56,26 @@ export default class InsertTextCommand extends Command {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	refresh() {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+		const selectionParent = selection.getFirstPosition();
+
+		// TODO Check also split of ancestors (until limit reached).
+		// TODO fake caret position in WTA
+		if (
+			model.schema.checkChild( selectionParent.parent, '$text' ) ||
+			model.schema.checkChild( 'paragraph', '$text' ) && model.schema.checkChild( selectionParent.parent, 'paragraph' )
+		) {
+			this.isEnabled = true;
+		} else {
+			this.isEnabled = false;
+		}
+	}
+
+	/**
 	 * Executes the input command. It replaces the content within the given range with the given text.
 	 * Replacing is a two step process, first the content within the range is removed and then the new text is inserted
 	 * at the beginning of the range (which after the removal is a collapsed range).

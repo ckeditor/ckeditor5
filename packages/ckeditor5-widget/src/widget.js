@@ -12,6 +12,7 @@ import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobs
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import verticalNavigationHandler from './verticalnavigation';
@@ -173,6 +174,61 @@ export default class Widget extends Plugin {
 				evt.stop();
 			}
 		}, { context: '$root' } );
+
+		// let currentCompositionStartRange;
+		let inlineFSC, domSelectedElement;
+
+		// TODO here or in the fake selection observer?
+		this.listenTo( viewDocument, 'compositionstart', () => {
+			const model = editor.model;
+			const selection = model.document.selection;
+			const selectedElement = selection.getSelectedElement();
+
+			if ( !selectedElement || !model.schema.isObject( selectedElement ) ) {
+				return;
+			}
+
+			const sel = global.document.getSelection();
+			inlineFSC = global.document.createElement( model.schema.isInline( selectedElement ) ? 'span' : 'p' );
+
+			// TODO this should be moved to renderer
+			if ( model.schema.isInline( selectedElement ) ) {
+				inlineFSC.innerHTML = '\u2060';
+			} else {
+				inlineFSC.innerHTML = '<br>';
+			}
+
+			const viewSelectedElement = editor.editing.mapper.toViewElement( selectedElement );
+
+			domSelectedElement = view.domConverter.mapViewToDom( viewSelectedElement );
+			domSelectedElement.parentElement.replaceChild( inlineFSC, domSelectedElement );
+
+			if ( model.schema.isInline( selectedElement ) ) {
+				sel.collapse( inlineFSC.firstChild, 1 );
+			} else {
+				sel.collapse( inlineFSC, 0 );
+			}
+
+			// TODO try to hide widget toolbar
+			editor.ui.update();
+		}, { context: isWidget } );
+
+		this.listenTo( viewDocument, 'compositionend', () => {
+			if ( !inlineFSC || !domSelectedElement ) {
+				return;
+			}
+
+			// TODO this should be moved to renderer
+			if ( domSelectedElement ) {
+				global.document.getSelection().collapse( view._renderer._fakeSelectionContainer, 0 );
+				inlineFSC.parentElement.replaceChild( domSelectedElement, inlineFSC );
+			}
+
+			inlineFSC = null;
+			domSelectedElement = null;
+
+			editor.ui.update();
+		}, { context: '$capture' } );
 	}
 
 	/**
