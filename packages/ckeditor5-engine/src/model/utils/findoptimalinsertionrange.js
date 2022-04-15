@@ -21,16 +21,16 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 //
 // **Note:** Use {@link module:widget/utils#findOptimalInsertionRange} instead of this function outside engine.
 // This function is only exposed to be used by {@link module:widget/utils#findOptimalInsertionRange findOptimalInsertionRange()}
-// in `widget` package and inside `engine` package.
+// in the `widget` package and inside the `engine` package.
 //
 // @private
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // The selection based on which the insertion position should be calculated.
 // @param {module:engine/model/model~Model} model Model instance.
-// @param {'auto'|'before'|'after'} [place='auto'] Place where to look for optimal insertion range.
-// Default value `auto` will determine itself the best position for insertion.
-// Value `before` will try to find a position before selection.
-// Value `after` will try to find a position after selection.
+// @param {'auto'|'before'|'after'} [place='auto'] The place where to look for optimal insertion range.
+// The default `auto` value will determine itself the best position for insertion.
+// The `before` value will try to find a position before selection.
+// The `after` value will try to find a position after selection.
 // @returns {module:engine/model/range~Range} The optimal range.
 export function findOptimalInsertionRange( selection, model, place = 'auto' ) {
 	const selectedElement = selection.getSelectedElement();

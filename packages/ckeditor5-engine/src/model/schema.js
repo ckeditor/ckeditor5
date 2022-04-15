@@ -835,7 +835,7 @@ export default class Schema {
 	}
 
 	/**
-	 * Sets attributes allowed by the schema on given node.
+	 * Sets attributes allowed by the schema on a given node.
 	 *
 	 * @param {module:engine/model/node~Node} node A node to set attributes on.
 	 * @param {Object} attributes Attributes keys and values.
@@ -881,7 +881,7 @@ export default class Schema {
 	}
 
 	/**
-	 * Gets attributes of a node that have given property.
+	 * Gets attributes of a node that have a given property.
 	 *
 	 * @param {module:engine/model/node~Node} node Node to get attributes from.
 	 * @param {String} propertyName Name of the property that attribute must have to return it.

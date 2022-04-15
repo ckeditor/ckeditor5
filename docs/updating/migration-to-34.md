@@ -13,7 +13,7 @@ modified_at: 2022-04-05
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-For the entire list of changes introduced in version 34.0.0, see the [changelog for CKEditor 5 v34.0.0]
+For the entire list of changes introduced in version 34.0.0, see the [changelog for CKEditor 5 v34.0.0](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md#3400-2022-04-08).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v34.0.0.
 
@@ -31,13 +31,13 @@ The {@link installation/advanced/dll-builds DLL builds} support was introduced f
 
 **{@link module:real-time-collaboration/realtimecollaborativerevisionhistory~RealTimeCollaborativeRevisionHistory}** will require adding {@link module:revision-history/revisionhistory~RevisionHistory} to the list of the editor plugins:
 
-	```js
-	// ❌ Old imports:
-	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
-	// ✅ New imports:
-	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
-	import RevisionHistory from '@ckeditor/ckeditor5-revision-history/src/revisionhistory';
-	```
+```js
+// ❌ Old imports:
+import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
+// ✅ New imports:
+import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
+import RevisionHistory from '@ckeditor/ckeditor5-revision-history/src/revisionhistory';
+```
 
 ### Changed mechanism for setting and clearing the editor read-only mode
 
@@ -49,24 +49,24 @@ The new methods on the `Editor` class are {@link module:core/editor/editor~Edito
 
 The lock mechanism turns the editor read-only if there is at least one lock set. After all of these locks are removed, the content becomes editable again. Because each feature is responsible only for setting and removing its own lock, they hence do not come into conflict with each other. Before introducing this change, setting and removing the read-only state of the editor could result in its content being editable when it should not.
 
-	```js
-	// ❌ Old usage:
-	function makeEditorReadOnly() {
-		editor.isReadOnly = true;
-	}
+```js
+// ❌ Old usage:
+function makeEditorReadOnly() {
+	editor.isReadOnly = true;
+}
 
-	function makeEditorEditable() {
-		editor.isReadOnly = false;
-	}
+function makeEditorEditable() {
+	editor.isReadOnly = false;
+}
 
-	// ✅ New usage:
-	const myFeatureLockId = Symbol( 'my-feature' );
+// ✅ New usage:
+const myFeatureLockId = Symbol( 'my-feature' );
 
-	function makeEditorReadOnly() {
-		editor.enableReadOnlyMode( myFeatureLockId );
-	}
+function makeEditorReadOnly() {
+	editor.enableReadOnlyMode( myFeatureLockId );
+}
 
-	function makeEditorEditable() {
-		editor.disableReadOnlyMode( myFeatureLockId );
-	}
-	```
+function makeEditorEditable() {
+	editor.disableReadOnlyMode( myFeatureLockId );
+}
+```

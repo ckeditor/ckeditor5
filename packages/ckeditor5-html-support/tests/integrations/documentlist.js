@@ -28,7 +28,7 @@ describe( 'DocumentListElementSupport', () => {
 
 		editor = await ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ DocumentListEditing, Paragraph, GeneralHtmlSupport ]
+				plugins: [ Paragraph, GeneralHtmlSupport, DocumentListEditing ]
 			} );
 		model = editor.model;
 		dataFilter = editor.plugins.get( 'DataFilter' );

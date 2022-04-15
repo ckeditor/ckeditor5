@@ -206,7 +206,7 @@ Download translations from the Transifex server. Depending on users' activity in
 <info-box info>
 The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
 
-To avoid passing these option every time when calls the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:download` command.
+To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:download` command.
 </info-box>
 
 Examples:
@@ -222,7 +222,7 @@ Uploads translation messages onto the Transifex server. It allows for the creati
 <info-box info>
 The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
 
-To avoid passing these option every time when calls the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
+To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
 </info-box>
 
 Examples:
