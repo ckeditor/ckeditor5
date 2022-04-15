@@ -6,7 +6,7 @@
 
 category: getting-started
 order: 60
-modified_at: 2021-07-16
+modified_at: 2022-04-15
 ---
 
 # Migration from CKEditor 4
