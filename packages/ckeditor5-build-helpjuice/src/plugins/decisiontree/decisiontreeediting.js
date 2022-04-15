@@ -40,20 +40,20 @@ export default class DecisionTreeEditing extends Plugin {
 		schema.register("decisionTreeTabs", {
 			isLimit: true,
 			allowIn: ["decisionTree", "decisionTreeTabContent"],
-			allowContentOf: "$root"
+			allowContentOf: ["$root"]
 		});
 
 		schema.addChildCheck((context, childDefinition) => {
-			if (context.endsWith("decisionTreeTabs") && childDefinition.name == "decisionTree") {
+			if (context.endsWith("decisionTreeTabs") && childDefinition.name == "decisionTree" || childDefinition.name == "decisionTreeContent") {
 				return false;
 			}
 		});
 
-		// // Schema for Tab Navigation
+		// Schema for Tab Navigation
 		schema.register("decisionTreeTabNav", {
 			isLimit: true,
-			allowIn: "decisionTreeTabs",
-			allowContentOf: "$root"
+			allowIn: ["decisionTreeTabs",],
+			allowContentOf: ["$root"]
 		});
 
 		schema.addChildCheck((context, childDefinition) => {
@@ -89,7 +89,7 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
-		// Schema for Delete Button Element
+		// // Schema for Delete Button Element
 		schema.register("decisionTreeDeleteButton", {
 			isLimit: true,
 			allowIn: "decisionTreeButton"
@@ -101,7 +101,7 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
-		// Schema for Button
+		// // Schema for Button
 		schema.register("decisionTreeAddTabButton", {
 			isLimit: true,
 			allowIn: "decisionTreeTabNav",
@@ -117,13 +117,20 @@ export default class DecisionTreeEditing extends Plugin {
 		// Schema for Tab Content
 		schema.register("decisionTreeTabContent", {
 			isLimit: true,
-			allowIn: "decisionTreeTabs",
-			allowContentOf: "$root",
+			allowIn: ["decisionTreeTabs"],
+			allowContentOf: ["$root", "decisionTreeTabs"],
 			allowAttributes: ["id", "data-active"]
 		});
 
+		// Schema for Add Answers
+		schema.register("decisionTreeTabContentInner", {
+			isLimit: true,
+			allowIn: "decisionTreeTabContent",
+			allowContentOf: ["$root"]
+		});
+
 		schema.addChildCheck((context, childDefinition) => {
-			if (context.endsWith("decisionTreeTabContent") && childDefinition.name == "decisionTreeTabs") {
+			if (context.endsWith("decisionTreeTabContentInner") && childDefinition.name == "decisionTreeTabContent") {
 				return false;
 			}
 		});
@@ -194,47 +201,57 @@ export default class DecisionTreeEditing extends Plugin {
 
 		// Conversion for Tabs
 		conversion.for("upcast").elementToElement({
-			model: "decisionTreeTabs",
 			view: {
 				name: "div",
 				classes: "helpjuice-decision-tree-tabs"
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( "decisionTreeTabs");
 			}
 		});
 		conversion.for("dataDowncast").elementToElement({
 			model: "decisionTreeTabs",
-			view: {
-				name: "div",
-				classes: "helpjuice-decision-tree-tabs"
-			}
+			view: ( modelElement, { writer } ) => {
+				return writer.createEditableElement("div", {
+					class: "helpjuice-decision-tree-tabs"
+				});
+			},
 		});
 		conversion.for("editingDowncast").elementToElement({
 			model: "decisionTreeTabs",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createEditableElement("div", { class: "helpjuice-decision-tree-tabs" });
+				const div = viewWriter.createEditableElement("div", {
+					class: "helpjuice-decision-tree-tabs"
+				});
 
 				return toWidgetEditable(div, viewWriter);
 			}
 		});
 
-		// Conversion for Tabs Navigation
+		// // Conversion for Tabs Navigation
 		conversion.for("upcast").elementToElement({
-			model: "decisionTreeTabNav",
 			view: {
 				name: "div",
 				classes: "helpjuice-decision-tree-tab-nav"
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( "decisionTreeTabNav");
 			}
 		});
 		conversion.for("dataDowncast").elementToElement({
 			model: "decisionTreeTabNav",
-			view: {
-				name: "div",
-				classes: "helpjuice-decision-tree-tab-nav"
-			}
+			view: ( modelElement, { writer } ) => {
+				return writer.createEditableElement("div", {
+					class: "helpjuice-decision-tree-tab-nav"
+				});
+			},
 		});
 		conversion.for("editingDowncast").elementToElement({
 			model: "decisionTreeTabNav",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createEditableElement("div", { class: "helpjuice-decision-tree-tab-nav" });
+				const div = viewWriter.createEditableElement("div", {
+					class: "helpjuice-decision-tree-tab-nav"
+				});
 
 				return toWidgetEditable(div, viewWriter);
 			}
@@ -276,7 +293,7 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
-		// Conversion for Button
+		// // Conversion for Button
 		conversion.for("upcast").elementToElement({
 			view: {
 				name: "div",
@@ -314,7 +331,7 @@ export default class DecisionTreeEditing extends Plugin {
 		});
 		conversion.attributeToAttribute( { model: "data-active", view: "data-active" } );
 
-		// Conversion for Button Text
+		// // Conversion for Button Text
 		conversion.for("upcast").elementToElement({
 			model: "decisionTreeButtonText",
 			view: {
@@ -338,7 +355,7 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
-		// Converison for Delete Button Text
+		// // Converison for Delete Button Text
 		conversion.for("upcast").elementToElement({
 			model: "decisionTreeDeleteButton",
 			view: {
@@ -363,7 +380,7 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
-		// Conversion for Add Button
+		// // Conversion for Add Button
 		conversion.for("upcast").elementToElement({
 			model: "decisionTreeAddTabButton",
 			view: {
@@ -390,7 +407,7 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
-		// Conversion for Tab Content
+		// // Conversion for Tab Content
 		conversion.for("upcast").elementToElement({
 			view: {
 				name: "div",
@@ -421,6 +438,35 @@ export default class DecisionTreeEditing extends Plugin {
 					class: "helpjuice-decision-tree-tab-content",
 					id: modelElement.getAttribute("id"),
 					"data-active": modelElement.getAttribute("data-active")
+				});
+
+				return toWidgetEditable(div, viewWriter);
+			}
+		});
+
+		// Conversion for Tab Content Inner
+		conversion.for("upcast").elementToElement({
+			view: {
+				name: "div",
+				classes: "helpjuice-decision-tree-tab-content-inner"
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( "decisionTreeTabContentInner");
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "decisionTreeTabContentInner",
+			view: ( modelElement, { writer } ) => {
+				return writer.createEditableElement("div", {
+					class: "helpjuice-decision-tree-tab-content-inner"
+				});
+			},
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "decisionTreeTabContentInner",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createEditableElement("div", {
+					class: "helpjuice-decision-tree-tab-content-inner"
 				});
 
 				return toWidgetEditable(div, viewWriter);

@@ -29,18 +29,18 @@ function createDecisionTree(writer) {
 	// Decision Tree Tabs Nav and Content
 	const decisionTreeTabs = writer.createElement("decisionTreeTabs");
 
-	// Create Nav and Append it to Decision Tree Tabs
+	// // Create Nav and Append it to Decision Tree Tabs
 	const decisionTreeTabNav = writer.createElement("decisionTreeTabNav");
 	writer.append(decisionTreeTabNav, decisionTreeTabs);
 
-	// Create Button
+	// // Create Button
 	const decisionTreeButton = writer.createElement("decisionTreeButton");
 	writer.setAttributes({
 		"data-id": id,
 		"data-active": "active"
 	}, decisionTreeButton);
 
-	// Create Button Text
+	// // Create Button Text
 	const decisionTreeButtonText = writer.createElement("decisionTreeButtonText");
 	const decisionTreeButtonTextContent = writer.createElement("paragraph")
 	writer.insertText("Button Text", decisionTreeButtonTextContent);
@@ -59,6 +59,7 @@ function createDecisionTree(writer) {
 
 	// Create Content
 	const decisionTreeTabContent = writer.createElement("decisionTreeTabContent");
+	const decisionTreeTabContentInner = writer.createElement("decisionTreeTabContentInner");
 	const decisionTreeTabContentParagraph = writer.createElement("paragraph");
 	writer.insertText("This content will be shown (depending on) when button above is clicked", decisionTreeTabContentParagraph);
 
@@ -67,7 +68,8 @@ function createDecisionTree(writer) {
 		"data-active": "active"
 	}, decisionTreeTabContent)
 
-	writer.append(decisionTreeTabContentParagraph, decisionTreeTabContent);
+	writer.append(decisionTreeTabContentParagraph, decisionTreeTabContentInner);
+	writer.append(decisionTreeTabContentInner, decisionTreeTabContent);
 	writer.append(decisionTreeTabContent, decisionTreeTabs);
 
 	// Create Add Answers Button

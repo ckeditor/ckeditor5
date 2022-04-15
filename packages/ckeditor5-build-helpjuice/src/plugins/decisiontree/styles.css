@@ -151,13 +151,17 @@
 
 .helpjuice-decision-tree-tab-content {
 	display: none;
-	margin-top: 20px;
 	border: none!important;
 	box-shadow: none!important;
 }
 
 .helpjuice-decision-tree-tab-content[data-active="active"] {
 	display: block;
+}
+
+.helpjuice-decision-tree-tab-content-inner {
+	border: none!important;
+	box-shadow: none!important;
 }
 
 .helpjuice-decision-tree-add-answers {

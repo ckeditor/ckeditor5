@@ -13,6 +13,7 @@ function createDecisionTreeButton(writer, id) {
 
 function createDecisionTreeTabContent(writer, id) {
 	const decisionTreeTabContent = writer.createElement("decisionTreeTabContent");
+	const decisionTreeTabContentInner = writer.createElement("decisionTreeTabContentInner");
 	const decisionTreeTabContentParagraph = writer.createElement("paragraph");
 
 	writer.setAttributes({
@@ -21,7 +22,8 @@ function createDecisionTreeTabContent(writer, id) {
 	}, decisionTreeTabContent);
 
 	writer.insertText("This content will be shown (depending on) when button above is clicked", decisionTreeTabContentParagraph);
-	writer.append(decisionTreeTabContentParagraph, decisionTreeTabContent);
+	writer.append(decisionTreeTabContentParagraph, decisionTreeTabContentInner);
+	writer.append(decisionTreeTabContentInner, decisionTreeTabContent);
 	return decisionTreeTabContent;
 }
 
