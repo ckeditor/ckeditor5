@@ -56,9 +56,11 @@ function getAffectedTable( change ) {
 			break;
 
 		case 'attribute':
-			referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes( change.range.start.nodeAfter.name ) ?
-				change.range.start :
-				null;
+			if ( change.range.start.nodeAfter ) {
+				referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes( change.range.start.nodeAfter.name ) ?
+					change.range.start :
+					null;
+			}
 
 			break;
 	}

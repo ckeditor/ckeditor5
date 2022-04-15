@@ -330,6 +330,33 @@ describe( 'TableColumnResize utils', () => {
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
 		} );
+
+		it( 'should not find any affected table if it was a text formatting removal operation', () => {
+			let range;
+
+			// To test the getAffectedTable(), when the attribute is being removed we need
+			// to frist insert the text inside one of the table cells.
+			model.change( () => {
+				insert(
+					model,
+					new Text( 'foo' ),
+					new Position( root, [ 0, 0, 0, 0 ] )
+				);
+
+				range = new Range( new Position( root, [ 0, 0, 0, 1 ] ), new Position( root, [ 0, 0, 0, 3 ] ) );
+
+				attribute( model, range, 'linkHref', null, 'www' );
+			} );
+
+			// And in a different model.change() remove the attribute, beacuse otherwise the changes would be empty.
+			model.change( () => {
+				attribute( model, range, 'linkHref', 'www', null );
+				const changes = differ.getChanges();
+				const affectedTables = getAffectedTables( changes );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
+		} );
 	} );
 
 	describe( 'getColumnIndex()', () => {
