@@ -15,9 +15,9 @@ CKEditor 5 Framework is a highly-flexible and universal platform providing a set
     Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through CKEditor 5 Framework documentation. Newly added or meaningfully updated guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting.
 </info-box>
 
-Please note, that the CKEditor 5 Framework documentation is a work in constant progress, so it may still be lacking some things. Feel free to [suggest documentation enhancements](https://github.com/ckeditor/ckeditor5/labels/type%3Adocs) and share your feedback about the framework.
+Please note that the CKEditor 5 Framework documentation is constantly updated and expanded, but it may still be lacking some things. Feel free to [suggest documentation enhancements](https://github.com/ckeditor/ckeditor5/labels/type%3Adocs) and share your feedback about the framework.
 
-If the documentation is insufficient, please do not be afraid of looking into the source code of [CKEditor 5 packages](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=public). For example if you plan to create a new feature, check if a similar feature already exists and try to take inspiration from its source code.
+If the documentation is insufficient, do not be afraid to look into the source code of [CKEditor 5 packages](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=public). For example, if you plan to create a new feature, check if a similar one already exists and try to take inspiration from its source code.
 
 
 **Related links**

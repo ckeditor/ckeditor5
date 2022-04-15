@@ -10,7 +10,7 @@ This package implements the style feature for CKEditor 5.
 
 ## Documentation
 
-See the {@link module:style/style~Style} plugin documentation and the {@link features/style style feature guide}.
+See the {@link module:style/style~Style} plugin documentation and the style feature guide.
 
 ## Installation
 

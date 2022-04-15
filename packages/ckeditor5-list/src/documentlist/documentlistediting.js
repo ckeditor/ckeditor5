@@ -77,7 +77,9 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	constructor( editor ) {
+		super( editor );
+
 		/**
 		 * The list of registered downcast strategies.
 		 *
@@ -85,7 +87,12 @@ export default class DocumentListEditing extends Plugin {
 		 * @type {Array.<module:list/documentlist/documentlistediting~DowncastStrategy>}
 		 */
 		this._downcastStrategies = [];
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	init() {
 		const editor = this.editor;
 		const model = editor.model;
 

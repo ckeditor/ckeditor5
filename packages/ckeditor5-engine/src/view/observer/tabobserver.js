@@ -16,7 +16,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  * Tab observer introduces the {@link module:engine/view/document~Document#event:tab `Document#tab`} event.
  *
  * Note that because {@link module:engine/view/observer/tabobserver~TabObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~View}, this event is available by default.
  *
  * @extends module:engine/view/observer/observer~Observer
  */
@@ -60,7 +60,7 @@ export default class TabObserver extends Observer {
  * Introduced by {@link module:engine/view/observer/tabobserver~TabObserver}.
  *
  * Note that because {@link module:engine/view/observer/tabobserver~TabObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~View}, this event is available by default.
  *
  * @event module:engine/view/document~Document#event:tab
  *
