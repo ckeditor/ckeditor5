@@ -25,7 +25,7 @@ module.exports = contentRules => {
 
 	return {
 		postcssPlugin: 'list-content-styles',
-		Once( root ) {
+		OnceExit( root ) {
 			root.walkRules( rule => {
 				for ( const ruleSelector of rule.selectors ) {
 					const data = {
