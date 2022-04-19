@@ -13,7 +13,9 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-// import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
+import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
@@ -1477,6 +1479,116 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 						'</table>]'
+					);
+				} );
+			} );
+
+			describe( 'should not crash', () => {
+				let model, editor, editorElement;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					editor = await createEditor( null, [ LinkEditing, HighlightEditing, Bold ] );
+
+					model = editor.model;
+				} );
+
+				afterEach( async () => {
+					if ( editorElement ) {
+						editorElement.remove();
+					}
+
+					if ( editor ) {
+						await editor.destroy();
+					}
+				} );
+
+				it( 'when link is being removed', () => {
+					const linkCommand = editor.commands.get( 'link' );
+					const unlinkCommand = editor.commands.get( 'unlink' );
+
+					setModelData( model,
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>' +
+										'[<$text linkHref="url">foo</$text>]' +
+									'</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					expect( linkCommand.value ).to.be.equal( 'url' );
+
+					unlinkCommand.execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>[foo]</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'when highlight is being removed', () => {
+					const highlightCommand = editor.commands.get( 'highlight' );
+
+					setModelData( model,
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>' +
+										'[<$text highlight="greenMarker">foo</$text>]' +
+									'</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					expect( highlightCommand.value ).to.equal( 'greenMarker' );
+
+					highlightCommand.execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>[foo]</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'when bold is being removed', () => {
+					setModelData( model,
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>' +
+										'[<$text bold="true">foo</$text>]' +
+									'</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					editor.commands.get( 'bold' ).execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>[foo]</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
 					);
 				} );
 			} );
