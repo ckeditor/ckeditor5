@@ -203,7 +203,7 @@ Congratulations! You have just created your first CKEditor 5 plugin!
 
 ## Bonus. Enabling image captions
 
-All the plugins operate both on the model and on the view, and know as little about themselves as possible. Thanks to this fact, you can easily enable image captions by simply loading the {@link module:image/imagecaption~ImageCaption} plugin which handles the captions feature and the {@link module:image/imagetoolbar~ImageToolbar} which makes you able to control such image properties like having the caption or not. It is also necessary to specify what to include in the new toolbar. In this case, it would be a toggle executing the {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} which disables or enables image caption:
+All the plugins operate both on the model and on the view, and know as little about themselves as possible. Thanks to this fact, you can easily enable image captions by simply loading the {@link module:image/imagecaption~ImageCaption} plugin which handles the captions feature and the {@link module:image/imagetoolbar~ImageToolbar} which gives you the ability to control such image properties like having the caption or not. It is also necessary to specify what to include in this new toolbar. In this case, it would be a toggle executing the {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} which disables or enables the image caption:
 
 ```js
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
