@@ -65,13 +65,23 @@ export default class Input extends Plugin {
 		} );
 
 		this.listenTo( viewDocument, 'compositionstart', ( evt, data ) => {
-			if ( !editor.commands.get( 'insertText' ).isEnabled ) {
+			if ( !insertTextCommand.isEnabled ) {
+				// This should disable composition according to spec but browsers do not implement it.
 				data.preventDefault();
 				evt.stop();
 			}
 		}, { context: '$capture' } );
 
+		this.listenTo( viewDocument, 'compositionend', evt => {
+			if ( !insertTextCommand.isEnabled ) {
+				// Don't allow other handlers to act on this event.
+				// This should not happen but browsers ignore canceling of compositionstart event.
+				evt.stop();
+			}
+		}, { context: '$capture' } );
+
 		this.listenTo( viewDocument, 'compositionend', ( evt, { domEvent } ) => {
+			// In case of aborted composition.
 			if ( !domEvent.data ) {
 				return;
 			}

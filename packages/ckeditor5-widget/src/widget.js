@@ -17,6 +17,7 @@ import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src
 
 import verticalNavigationHandler from './verticalnavigation';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
+import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
 
 import '../theme/widget.css';
 
@@ -199,10 +200,30 @@ export default class Widget extends Plugin {
 			}
 
 			const viewSelectedElement = editor.editing.mapper.toViewElement( selectedElement );
+			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
 
 			domSelectedElement = view.domConverter.mapViewToDom( viewSelectedElement );
-			domSelectedElement.parentElement.replaceChild( inlineFSC, domSelectedElement );
 
+			// Componing on a widget.
+			if ( !typeAroundFakeCaretPosition ) {
+				domSelectedElement.parentElement.replaceChild( inlineFSC, domSelectedElement );
+			}
+			// Composing on a fake caret (before or after a widget).
+			else {
+				if ( typeAroundFakeCaretPosition == 'before' ) {
+					domSelectedElement.parentElement.insertBefore( inlineFSC, domSelectedElement );
+				} else if ( typeAroundFakeCaretPosition == 'after' ) {
+					domSelectedElement.parentElement.insertBefore( inlineFSC, domSelectedElement.nextSibling );
+				}
+
+				// Make it look like not selected and without fake caret.
+				domSelectedElement.classList.remove(
+					`ck-widget_type-around_show-fake-caret_${ typeAroundFakeCaretPosition }`,
+					'ck-widget_selected'
+				);
+			}
+
+			// Move DOM selection to the inline container to compose in the correct place.
 			if ( model.schema.isInline( selectedElement ) ) {
 				sel.collapse( inlineFSC.firstChild, 1 );
 			} else {
@@ -214,14 +235,30 @@ export default class Widget extends Plugin {
 		}, { context: isWidget } );
 
 		this.listenTo( viewDocument, 'compositionend', () => {
-			if ( !inlineFSC || !domSelectedElement ) {
+			const model = editor.model;
+
+			// This could be end of composition in text (not on widget).
+			if ( !inlineFSC ) {
 				return;
 			}
 
+			// Restore DOM to the state before composition started.
+			global.document.getSelection().collapse( view._renderer._fakeSelectionContainer, 0 );
+
+			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
+
 			// TODO this should be moved to renderer
-			if ( domSelectedElement ) {
-				global.document.getSelection().collapse( view._renderer._fakeSelectionContainer, 0 );
+			// Restore the removed DOM node.
+			if ( !typeAroundFakeCaretPosition ) {
 				inlineFSC.parentElement.replaceChild( domSelectedElement, inlineFSC );
+			}
+			// Or restore the fake caret.
+			else {
+				inlineFSC.remove();
+				domSelectedElement.classList.add(
+					`ck-widget_type-around_show-fake-caret_${ typeAroundFakeCaretPosition }`,
+					'ck-widget_selected'
+				);
 			}
 
 			inlineFSC = null;
