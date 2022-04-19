@@ -307,7 +307,7 @@ export default class DataFilter extends Plugin {
 	 *
 	 * For example, consider following HTML:
 	 *
-	 *		<a href="foo.html" id="myId"></a>
+	 *		<a href="foo.html" id="myId">bar</a>
 	 *
 	 * Which would be upcasted to following text node in the model:
 	 *
