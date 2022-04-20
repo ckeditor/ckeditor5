@@ -178,6 +178,7 @@ export default class Widget extends Plugin {
 
 		// let currentCompositionStartRange;
 		let inlineFSC, domSelectedElement;
+		const widgetToolbarRepositoryPlugin = editor.plugins.get( 'WidgetToolbarRepository' );
 
 		// TODO here or in the fake selection observer?
 		this.listenTo( viewDocument, 'compositionstart', () => {
@@ -187,6 +188,10 @@ export default class Widget extends Plugin {
 
 			if ( !selectedElement || !model.schema.isObject( selectedElement ) ) {
 				return;
+			}
+
+			if ( widgetToolbarRepositoryPlugin ) {
+				widgetToolbarRepositoryPlugin.forceDisabled( 'WidgetComposition' );
 			}
 
 			const sel = global.document.getSelection();
@@ -229,9 +234,6 @@ export default class Widget extends Plugin {
 			} else {
 				sel.collapse( inlineFSC, 0 );
 			}
-
-			// TODO try to hide widget toolbar
-			editor.ui.update();
 		}, { context: isWidget } );
 
 		this.listenTo( viewDocument, 'compositionend', () => {
@@ -264,7 +266,9 @@ export default class Widget extends Plugin {
 			inlineFSC = null;
 			domSelectedElement = null;
 
-			editor.ui.update();
+			if ( widgetToolbarRepositoryPlugin ) {
+				widgetToolbarRepositoryPlugin.clearForceDisabled( 'WidgetComposition' );
+			}
 		}, { context: '$capture' } );
 	}
 
