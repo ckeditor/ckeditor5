@@ -3,7 +3,7 @@ category: advanced
 order: 20
 ---
 
-{@snippet builds/saving-data/build-autosave-source}
+{@snippet installation/saving-data/build-autosave-source}
 
 # Getting and saving data
 
@@ -231,7 +231,7 @@ How to understand this demo:
 * The autosave itself does not check whether the data has really changed. It bases on changes in the model which, in special cases, may not be "visible" in the data. You can add such a check yourself if you would like to avoid sending the same data to the server twice in a row.
 * You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and typing something. These actions will make the editor "busy" for a longer time &mdash; try leaving the page then.
 
-{@snippet builds/saving-data/autosave}
+{@snippet installation/saving-data/autosave}
 
 ## Handling users exiting the page
 
@@ -357,4 +357,4 @@ How to understand this demo:
 * The button changes to "Saving..." when the data is being sent to the server or there are any other pending actions (e.g. an image being uploaded).
 * You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and clicking the "Save" button. These actions will make the editor "busy" for a longer time &mdash; try leaving the page then.
 
-{@snippet builds/saving-data/manualsave}
+{@snippet installation/saving-data/manualsave}
