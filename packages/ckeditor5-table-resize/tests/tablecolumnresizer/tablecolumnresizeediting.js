@@ -98,21 +98,19 @@ describe( 'TableColumnResizeEditing', () => {
 	} );
 
 	describe( 'conversion', () => {
-		describe( 'when upcasting <colgroup> attribute', () => {
-			it( 'should handle the correct number of <col> elements', () => {
+		describe( 'upcast', () => {
+			it( 'the width style to tableWidth attribute correctly', () => {
 				editor.setData(
-					`<figure class="table">
+					`<figure class="table" style="width: 100%">
 						<table>
 							<colgroup>
-								<col style="width:33.33%;">
-								<col style="width:33.33%;">
-								<col style="width:33.34%;">
+								<col style="width:50%;">
+								<col style="width:50%;">
 							</colgroup>
 							<tbody>
 								<tr>
 									<td>11</td>
 									<td>12</td>
-									<td>13</td>
 								</tr>
 							</tbody>
 						</table>
@@ -120,128 +118,189 @@ describe( 'TableColumnResizeEditing', () => {
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<table columnWidths="33.33%,33.33%,33.34%">' +
+					'<table columnWidths="50%,50%" tableWidth="100%">' +
 						'<tableRow>' +
 							'<tableCell columnIndex="0">' +
 								'<paragraph>11</paragraph>' +
 							'</tableCell>' +
 							'<tableCell columnIndex="1">' +
 								'<paragraph>12</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="2">' +
-								'<paragraph>13</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
 					'</table>'
 				);
 			} );
 
-			it( 'should handle too small number of <col> elements', () => {
-				editor.setData(
-					`<figure class="table">
-						<table>
-							<colgroup>
-								<col style="width:33.33%;">
-								<col style="width:33.33%;">
-							</colgroup>
-							<tbody>
-								<tr>
-									<td>11</td>
-									<td>12</td>
-									<td>13</td>
-								</tr>
-							</tbody>
-						</table>
-					</figure>`
-				);
+			describe( 'when upcasting <colgroup> attribute', () => {
+				it( 'should handle the correct number of <col> elements', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:33.33%;">
+									<col style="width:33.33%;">
+									<col style="width:33.34%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<table columnWidths="33.33%,33.33%,33.34%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>11</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="1">' +
-								'<paragraph>12</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="2">' +
-								'<paragraph>13</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table columnWidths="33.33%,33.33%,33.34%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should handle too small number of <col> elements', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:33.33%;">
+									<col style="width:33.33%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table columnWidths="33.33%,33.33%,33.34%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should handle too big number of <col> elements', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:33.33%;">
+									<col style="width:33.33%;">
+									<col style="width:33.33%;">
+									<col style="width:33.33%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table columnWidths="33.33%,33.33%,33.34%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should handle the incorrect elements inside', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<p style="width:33.33%;"></p>
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table columnWidths="33.33%,33.33%,33.34%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
 			} );
+		} );
 
-			it( 'should handle too big number of <col> elements', () => {
-				editor.setData(
-					`<figure class="table">
-						<table>
-							<colgroup>
-								<col style="width:33.33%;">
-								<col style="width:33.33%;">
-								<col style="width:33.33%;">
-								<col style="width:33.33%;">
-							</colgroup>
-							<tbody>
-								<tr>
-									<td>11</td>
-									<td>12</td>
-									<td>13</td>
-								</tr>
-							</tbody>
-						</table>
-					</figure>`
-				);
+		describe( 'downcast', () => {
+			it( 'the tableWidth attribute correctly', () => {
+				setModelData( model, modelTable( [
+					[ '11', '12' ]
+				], { columnWidths: '50%,50%', tableWidth: '100%' } ) );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<table columnWidths="33.33%,33.33%,33.34%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>11</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="1">' +
-								'<paragraph>12</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="2">' +
-								'<paragraph>13</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-			} );
-
-			it( 'should handle the incorrect elements inside', () => {
-				editor.setData(
-					`<figure class="table">
-						<table>
-							<colgroup>
-								<p style="width:33.33%;"></p>
-							</colgroup>
-							<tbody>
-								<tr>
-									<td>11</td>
-									<td>12</td>
-									<td>13</td>
-								</tr>
-							</tbody>
-						</table>
-					</figure>`
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<table columnWidths="33.33%,33.33%,33.34%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>11</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="1">' +
-								'<paragraph>12</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="2">' +
-								'<paragraph>13</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
+				expect( editor.getData() ).to.equal(
+					'<figure class="table" style="width:100%;">' +
+						'<table>' +
+							'<colgroup>' +
+								'<col style="width:50%;">' +
+								'<col style="width:50%;">' +
+							'</colgroup>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>11</td>' +
+									'<td>12</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
 				);
 			} );
 		} );
@@ -907,7 +966,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%">' +
 							'<tableRow>' +
 								'<tableCell columnIndex="0">' +
-									'<table columnWidths="50.9%,49.1%" width="98.15%">' +
+									'<table columnWidths="50.9%,49.1%" tableWidth="98.15%">' +
 										'<tableRow>' +
 											'<tableCell columnIndex="0">' +
 												'<paragraph>foo</paragraph>' +
@@ -932,7 +991,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%">' +
 							'<tableRow>' +
 								'<tableCell columnIndex="0">' +
-									'[<table columnWidths="50%,50%" width="90%">' +
+									'[<table tableWidth="90%" columnWidths="50%,50%">' +
 										'<tableRow>' +
 											'<tableCell columnIndex="0">' +
 												'<paragraph>foo</paragraph>' +
@@ -978,7 +1037,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%">' +
 							'<tableRow>' +
 								'<tableCell columnIndex="0">' +
-									'<table columnWidths="49.04%,50.96%" width="91.68%">' +
+									'<table columnWidths="49.04%,50.96%" tableWidth="91.68%">' +
 										'<tableRow>' +
 											'<tableCell columnIndex="0">' +
 												'<paragraph>foo</paragraph>' +
@@ -1003,7 +1062,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%">' +
 							'<tableRow>' +
 								'<tableCell columnIndex="0">' +
-									'[<table columnWidths="25%,25%,50%" width="100%">' +
+									'[<table columnWidths="25%,25%,50%" tableWidth="100%">' +
 										'<tableRow>' +
 											'<tableCell columnIndex="0">' +
 												'<paragraph>foo</paragraph>' +
@@ -1052,7 +1111,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%">' +
 							'<tableRow>' +
 								'<tableCell columnIndex="0">' +
-									'<table columnWidths="25%,25.88%,49.12%" width="100%">' +
+									'<table columnWidths="25%,25.88%,49.12%" tableWidth="100%">' +
 										'<tableRow>' +
 											'<tableCell columnIndex="0">' +
 												'<paragraph>foo</paragraph>' +
@@ -1555,6 +1614,152 @@ describe( 'TableColumnResizeEditing', () => {
 							viewElement => viewElement.is( 'element', 'colgroup' ) )
 						).to.not.be.undefined;
 					} );
+				} );
+			} );
+
+			describe( 'tableWidth attribute', () => {
+				it( 'should not be set initially when creating a table', () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ]
+					], { columnWidths: '20%,25%,55%' } ) );
+
+					expect( getModelData( model ) ).to.equal(
+						'[<table columnWidths="20%,25%,55%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>00</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>01</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>02</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+				} );
+
+				it( 'should be set if table was initiated with a tableWidth value', () => {
+					setModelData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '100px' } ) );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<table columnWidths="100%" tableWidth="100px">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>[]foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should be added to the table after the last column has been resized', () => {
+					const columnToResizeIndex = 2;
+					const mouseMovementVector = { x: -10, y: 0 };
+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ]
+					], { columnWidths: '20%,25%,55%' } ) );
+
+					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<table columnWidths="20.35%,25.44%,54.21%" tableWidth="98.17%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>00</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>01</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>02</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+				} );
+
+				it( 'is updated correctly after the last column has been resized', () => {
+					const columnToResizeIndex = 2;
+					const mouseMovementVector = { x: 10, y: 0 };
+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ]
+					], { tableWidth: '100px', columnWidths: '25%,25%,50%' } ) );
+
+					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<table columnWidths="20.8%,20.8%,58.4%" tableWidth="10.37%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>00</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>01</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>02</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+				} );
+
+				it( 'does not change when one of the middle columns is resized', () => {
+					const columnToResizeIndex = 1;
+					const mouseMovementVector = { x: 10, y: 0 };
+
+					setModelData( model, modelTable( [
+						[ '[00', '01', '02]' ]
+					], { tableWidth: '100px', columnWidths: '25%,25%,50%' } ) );
+
+					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<table columnWidths="25%,34.6%,40.4%" tableWidth="100px">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>00</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>01</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>02</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+				} );
+
+				it( 'is not being added when any of the middle columns is resized', () => {
+					const columnToResizeIndex = 1;
+					const mouseMovementVector = { x: -40, y: 0 };
+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ]
+					], { columnWidths: '20%,25%,55%' } ) );
+
+					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<table columnWidths="20%,21.51%,58.49%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>00</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="1">' +
+									'<paragraph>01</paragraph>' +
+								'</tableCell>' +
+								'<tableCell columnIndex="2">' +
+									'<paragraph>02</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
 				} );
 			} );
 

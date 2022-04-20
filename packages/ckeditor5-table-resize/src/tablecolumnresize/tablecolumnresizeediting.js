@@ -121,7 +121,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const schema = editor.model.schema;
 
 		schema.extend( 'table', {
-			allowAttributes: [ 'width', 'columnWidths' ]
+			allowAttributes: [ 'tableWidth', 'columnWidths' ]
 		} );
 
 		schema.extend( 'tableCell', {
@@ -148,7 +148,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			},
 			model: {
 				name: 'table',
-				key: 'width',
+				key: 'tableWidth',
 				value: viewElement => viewElement.getStyle( 'width' )
 			}
 		} );
@@ -156,7 +156,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		conversion.for( 'downcast' ).attributeToAttribute( {
 			model: {
 				name: 'table',
-				key: 'width'
+				key: 'tableWidth'
 			},
 			view: width => ( {
 				name: 'figure',
@@ -496,7 +496,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		const isColumnWidthsAttributeChanged = columnWidthsAttributeOld !== columnWidthsAttributeNew;
 
-		const tableWidthAttributeOld = modelTable.getAttribute( 'width' );
+		const tableWidthAttributeOld = modelTable.getAttribute( 'tableWidth' );
 		const tableWidthAttributeNew = viewFigure.getStyle( 'width' );
 
 		const isTableWidthAttributeChanged = tableWidthAttributeOld !== tableWidthAttributeNew;
@@ -510,7 +510,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					}
 
 					if ( isTableWidthAttributeChanged ) {
-						writer.setAttribute( 'width', `${ toPrecision( tableWidthAttributeNew ) }%`, modelTable );
+						writer.setAttribute( 'tableWidth', `${ toPrecision( tableWidthAttributeNew ) }%`, modelTable );
 					}
 				} );
 			} else {
