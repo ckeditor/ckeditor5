@@ -213,8 +213,8 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Processes all allowed and disallowed attributes on the view element by consuming them and returning the allowed ones.
 	 *
-	 * This method applies the configuration set up by {@link #allowAttributes `allowAttributes()`} and {@link #disallowAttributes `disallowAttributes()`}
-	 * over the given view element by consuming relevant attributes.
+	 * This method applies the configuration set up by {@link #allowAttributes `allowAttributes()`}
+	 * and {@link #disallowAttributes `disallowAttributes()`} over the given view element by consuming relevant attributes.
 	 * It returns the allowed attributes that were found on the given view element for further processing by integration code.
 	 *
 	 *		dispatcher.on( 'element:myElement', ( evt, data, conversionApi ) => {
