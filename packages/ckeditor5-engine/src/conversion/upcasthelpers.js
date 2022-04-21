@@ -877,7 +877,8 @@ function prepareToAttributeConverter( config, shallow ) {
 		if ( onlyViewNameIsDefined( config.view, data.viewItem ) ) {
 			match.match.name = true;
 		} else {
-			// Do not test or consume `name` consumable.
+			// Do not test `name` consumable because it could get consumed already while upcasting some other attribute
+			// on the same element (for example <span class="big" style="color: red">foo</span>).
 			delete match.match.name;
 		}
 
@@ -908,6 +909,15 @@ function prepareToAttributeConverter( config, shallow ) {
 		// It may happen that a converter will try to set an attribute that is not allowed in the given context.
 		// In such a situation we cannot consume the attribute. See: https://github.com/ckeditor/ckeditor5/pull/9249#issuecomment-815658459.
 		if ( attributeWasSet ) {
+			// Verify if the element itself wasn't consumed yet. It could be consumed already while upcasting some other attribute
+			// on the same element (for example <span class="big" style="color: red">foo</span>).
+			// We need to consume it so other features (especially GHS) won't try to convert it.
+			// Note that it's not tested by the other element-to-attribute converters whether an element was consumed before
+			// (in case of converters that the element itself is just a context and not the primary information to convert).
+			if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
+				match.match.name = true;
+			}
+
 			conversionApi.consumable.consume( data.viewItem, match.match );
 		}
 	};

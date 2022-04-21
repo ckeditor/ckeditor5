@@ -109,8 +109,18 @@ export default class DataFilter extends Plugin {
 		*/
 		this._dataInitialized = false;
 
+		/**
+		 * Cached map of coupled attributes. Keys are the feature attributes names
+		 * and values are arrays with coupled GHS attributes names.
+		 *
+		 * @private
+		 * @member {Map.<String,Array>}
+		 */
+		this._coupledAttributes = null;
+
 		this._registerElementsAfterInit();
 		this._registerElementHandlers();
+		this._registerModelPostFixer();
 	}
 
 	/**
@@ -170,6 +180,9 @@ export default class DataFilter extends Plugin {
 			if ( this._dataInitialized ) {
 				this._fireRegisterEvent( definition );
 			}
+
+			// Reset cached map to recalculate it on the next usage.
+			this._coupledAttributes = null;
 		}
 	}
 
@@ -302,6 +315,91 @@ export default class DataFilter extends Plugin {
 
 			evt.stop();
 		}, { priority: 'lowest' } );
+	}
+
+	/**
+	 * Registers a model post-fixer that is removing coupled GHS attributes of inline elements. Those attributes
+	 * are removed if a coupled feature attribute is removed.
+	 *
+	 * For example, consider following HTML:
+	 *
+	 *		<a href="foo.html" id="myId">bar</a>
+	 *
+	 * Which would be upcasted to following text node in the model:
+	 *
+	 *		<$text linkHref="foo.html" htmlA="{ attributes: { id: 'myId' } }">bar</$text>
+	 *
+	 * When the user removes the link from that text (using UI), only `linkHref` attribute would be removed:
+	 *
+	 *		<$text htmlA="{ attributes: { id: 'myId' } }">bar</$text>
+	 *
+	 * The `htmlA` attribute would stay in the model and would cause GHS to generate an `<a>` element.
+	 * This is incorrect from UX point of view, as the user wanted to remove the whole link (not only `href`).
+	 *
+	 * @private
+	 */
+	_registerModelPostFixer() {
+		const model = this.editor.model;
+
+		model.document.registerPostFixer( writer => {
+			const changes = model.document.differ.getChanges();
+			let changed = false;
+
+			const coupledAttributes = this._getCoupledAttributesMap();
+
+			for ( const change of changes ) {
+				// Handle only attribute removals.
+				if ( change.type != 'attribute' || change.attributeNewValue !== null ) {
+					continue;
+				}
+
+				// Find a list of coupled GHS attributes.
+				const attributeKeys = coupledAttributes.get( change.attributeKey );
+
+				if ( !attributeKeys ) {
+					continue;
+				}
+
+				// Remove the coupled GHS attributes on the same range as the feature attribute was removed.
+				for ( const { item } of change.range.getWalker( { shallow: true } ) ) {
+					for ( const attributeKey of attributeKeys ) {
+						if ( item.hasAttribute( attributeKey ) ) {
+							writer.removeAttribute( attributeKey, item );
+							changed = true;
+						}
+					}
+				}
+			}
+
+			return changed;
+		} );
+	}
+
+	/**
+	 * Collects the map of coupled attributes. The returned map is keyed by the feature attribute name
+	 * and coupled GHS attribute names are stored in the value array .
+	 *
+	 * @private
+	 * @returns {Map.<String,Array>}
+	 */
+	_getCoupledAttributesMap() {
+		if ( this._coupledAttributes ) {
+			return this._coupledAttributes;
+		}
+
+		this._coupledAttributes = new Map();
+
+		for ( const definition of this._allowedElements ) {
+			if ( definition.coupledAttribute && definition.model ) {
+				const attributeNames = this._coupledAttributes.get( definition.coupledAttribute );
+
+				if ( attributeNames ) {
+					attributeNames.push( definition.model );
+				} else {
+					this._coupledAttributes.set( definition.coupledAttribute, [ definition.model ] );
+				}
+			}
+		}
 	}
 
 	/**
