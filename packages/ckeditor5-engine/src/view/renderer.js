@@ -11,6 +11,7 @@
 
 import ViewText from './text';
 import ViewPosition from './position';
+import ViewRange from './range';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -137,6 +138,27 @@ export default class Renderer {
 
 		this.on( 'change:isComposing', () => {
 			if ( !this.isComposing ) {
+				// After the composition we mark everything (elements) the composition could possibly touch in the view
+				// and send it to the renderer. Without this bit, the view and renderer will get out of sync because
+				// upon the first keystroke of the composition, there's content deleted in native contenteditable and
+				// the editor does not know anything about this. This desync results in quite spectacular errors.
+				// TODO: Refactor this code because it looks weird.
+				const firstPositionParent = selection.getFirstPosition().parent;
+				const firstPositionParentElement = firstPositionParent.is( '$text' ) ? firstPositionParent.parent : firstPositionParent;
+				const lastPositionParent = selection.getLastPosition().parent;
+				const lastPositionParentElement = lastPositionParent.is( '$text' ) ? lastPositionParent.parent : lastPositionParent;
+
+				const range = new ViewRange(
+					firstPositionParent.is( 'rootElement' ) ?
+						selection.getFirstPosition() : ViewPosition._createAt( firstPositionParentElement, 'before' ),
+					lastPositionParent.is( 'rootElement' ) ?
+						selection.getLastPosition() : ViewPosition._createAt( lastPositionParentElement, 'after' )
+				);
+
+				Array.from( range.getItems() )
+					.filter( item => item.is( 'element' ) )
+					.forEach( item => this.markToSync( 'children', item ) );
+
 				this.render();
 			}
 		} );
