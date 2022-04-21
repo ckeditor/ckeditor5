@@ -142,9 +142,9 @@ export default class History {
 	}
 
 	/**
-	 * Returns operations chronologically that were added to the history from the given range of operation base versions.
+	 * Returns operations from the given range of operation base versions that were added to the history.
 	 *
-	 * Note that operation versions may contain gaps.
+	 * Note that there may be gaps in operations base versions.
 	 *
 	 * @param {Number} [fromBaseVersion] Base version from which operations should be returned (inclusive).
 	 * @param {Number} [toBaseVersion] Base version up to which operations should be returned (exclusive).
@@ -161,11 +161,11 @@ export default class History {
 			fromBaseVersion = this.firstOperation.baseVersion;
 		}
 
-		// Change exclusive `to` to inclusive, so the `to` will refer to the actual index.
+		// Change exclusive `toBaseVersion` to inclusive, so it will refer to the actual index.
 		// Thanks to that mapping from base versions to operation indexes are possible.
 		let inclusiveTo = toBaseVersion - 1;
 
-		// Check if the `from` or `to` points to the gap between versions.
+        // Check if "from" or "to" point to a gap between versions.
 		// If yes, then change the incorrect position to the proper side of the gap.
 		// Thanks to it, it will be possible to get index of the operation.
 		for ( const [ gapFrom, gapTo ] of this._gaps ) {
