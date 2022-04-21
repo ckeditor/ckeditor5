@@ -148,7 +148,7 @@ export default class History {
 	 *
 	 * @param {Number} [fromBaseVersion] Base version from which operations should be returned (inclusive).
 	 * @param {Number} [toBaseVersion] Base version up to which operations should be returned (exclusive).
-	 * @returns {Array.<module:engine/model/operation/operation~Operation>} History operations from the given range, added chronologically.
+     * @returns {Array.<module:engine/model/operation/operation~Operation>} History operations for the given range, in chronological order.
 	 */
 	getOperations( fromBaseVersion, toBaseVersion = this.version ) {
 		// When there is no operation in the history, return an empty array.
