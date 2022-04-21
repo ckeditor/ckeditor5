@@ -91,7 +91,7 @@ export function createObjectView( viewName, modelElement, writer ) {
 export function viewToAttributeInlineConverter( { view: viewName, model: attributeKey }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			let viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
+			let viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
 
 			// Do not apply the attribute if the element itself is already consumed and there are no view attributes to store.
 			if ( !viewAttributes && !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
@@ -163,7 +163,7 @@ export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilt
 				return;
 			}
 
-			const viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
+			const viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
 
 			if ( viewAttributes ) {
 				conversionApi.writer.setAttribute( 'htmlAttributes', viewAttributes, data.modelRange );
