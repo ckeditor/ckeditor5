@@ -53,6 +53,9 @@ import '../theme/datafilter.css';
  *			}
  *		} );
  *
+ * To apply the information about allowed and disallowed attributes in custom integration plugin,
+ * use the {@link module:html-support/datafilter~DataFilter#processViewAttributes `processViewAttributes()`} method.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class DataFilter extends Plugin {
@@ -208,17 +211,30 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * Matches and consumes allowed and disallowed view attributes and returns the allowed ones.
+	 * Processes all allowed and disallowed attributes on the view element by consuming them and returning the allowed ones.
 	 *
-	 * @protected
+	 * This method applies the configuration set up by {@link #allowAttributes `allowAttributes()`}
+	 * and {@link #disallowAttributes `disallowAttributes()`} over the given view element by consuming relevant attributes.
+	 * It returns the allowed attributes that were found on the given view element for further processing by integration code.
+	 *
+	 *		dispatcher.on( 'element:myElement', ( evt, data, conversionApi ) => {
+	 *			// Get rid of disallowed and extract all allowed attributes from a viewElement.
+	 *			const viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
+	 *			// Do something with them, i.e. store inside a model as a dictionary.
+	 *			if ( viewAttributes ) {
+	 *				conversionApi.writer.setAttribute( 'htmlAttributesOfMyElement', viewAttributes, data.modelRange );
+	 *			}
+	 *		} );
+	 *
+	 * @see module:engine/conversion/viewconsumable~ViewConsumable#consume
 	 * @param {module:engine/view/element~Element} viewElement
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+	 * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi
 	 * @returns {Object} [result]
 	 * @returns {Object} result.attributes Set with matched attribute names.
 	 * @returns {Object} result.styles Set with matched style names.
 	 * @returns {Array.<String>} result.classes Set with matched class names.
 	 */
-	_consumeAllowedAttributes( viewElement, conversionApi ) {
+	processViewAttributes( viewElement, conversionApi ) {
 		// Make sure that the disabled attributes are handled before the allowed attributes are called.
 		// For example, for block images the <figure> converter triggers conversion for <img> first and then for other elements, i.e. <a>.
 		consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
@@ -462,7 +478,7 @@ export default class DataFilter extends Plugin {
 //
 // @private
 // @param {module:engine/view/element~Element} viewElement
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi
 // @param {module:engine/view/matcher~Matcher Matcher} matcher
 // @returns {Object} [result]
 // @returns {Object} result.attributes
@@ -496,7 +512,7 @@ function consumeAttributes( viewElement, conversionApi, matcher ) {
 //
 // @private
 // @param {module:engine/view/element~Element} viewElement
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi
 // @param {module:engine/view/matcher~Matcher Matcher} matcher
 // @returns {Array.<Object>} Array with match information about found attributes.
 function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
@@ -521,7 +537,7 @@ function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
 //
 // @private
 // @param {module:engine/view/element~Element} viewElement
-// @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable
+// @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable
 // @param {Object} match
 function removeConsumedAttributes( consumable, viewElement, match ) {
 	for ( const key of [ 'attributes', 'classes', 'styles' ] ) {
