@@ -244,9 +244,6 @@ export default class Widget extends Plugin {
 				return;
 			}
 
-			// Restore DOM to the state before composition started.
-			global.document.getSelection().collapse( view._renderer._fakeSelectionContainer, 0 );
-
 			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
 
 			// TODO this should be moved to renderer

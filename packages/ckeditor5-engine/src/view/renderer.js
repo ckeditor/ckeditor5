@@ -131,6 +131,17 @@ export default class Renderer {
 		}
 
 		/**
+		 * TODO
+		 */
+		this.set( 'isComposing', false );
+
+		this.on( 'change:isComposing', () => {
+			if ( !this.isComposing ) {
+				this.render();
+			}
+		} );
+
+		/**
 		 * The text node in which the inline filler was rendered.
 		 *
 		 * @private
