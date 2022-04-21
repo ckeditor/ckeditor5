@@ -54,7 +54,7 @@ import '../theme/datafilter.css';
  *		} );
  *
  * To apply the information about allowed and disallowed attributes in custom integration plugin,
- * use {@link module:html-support/datafilter~DataFilter#processViewAttributes} method.
+ * use the {@link module:html-support/datafilter~DataFilter#processViewAttributes `processViewAttributes()`} method.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -211,13 +211,13 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * Processes all allowed and disallowed attributes on the view element by consuming them and returns allowed ones.
+	 * Processes all allowed and disallowed attributes on the view element by consuming them and returning the allowed ones.
 	 *
-	 * This method applies the configuration set up by {@link #allowAttributes} and {@link #disallowAttributes}
+	 * This method applies the configuration set up by {@link #allowAttributes `allowAttributes()`} and {@link #disallowAttributes `disallowAttributes()`}
 	 * over the given view element by consuming relevant attributes.
-	 * It returns the allowed attributed that were found on given view element for further processing by integration code.
+	 * It returns the allowed attributes that were found on the given view element for further processing by integration code.
 	 *
-	 *		dispatcher.on( `element:myElement`, ( evt, data, conversionApi ) => {
+	 *		dispatcher.on( 'element:myElement', ( evt, data, conversionApi ) => {
 	 *			// Get rid of disallowed and extract all allowed attributes from a viewElement.
 	 *			const viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
 	 *			// Do something with them, i.e. store inside a model as a dictionary.
