@@ -5,5 +5,6 @@
 	"Save": "Label for the Save button.",
 	"Show more items": "Label of a toolbar button which reveals more toolbar items.",
 	"%0 of %1": "Label for an ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or 'Search result 5 of 20'.",
-	"Insert image or file": "Toolbar button tooltip for inserting an image or file via file browser."
+	"Insert image or file": "Toolbar button tooltip for inserting an image or file via file browser.",
+	"Cannot upload file:": "A generic error message displayed on upload failure. The file name is concatenated to this text."
 }
