@@ -699,7 +699,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				viewElement => viewElement.is( 'element', 'colgroup' )
 			);
 
-			if ( table && table.hasAttribute( 'columnWidths' ) && !tableViewContainsColgroup ) {
+			if ( table && table.hasAttribute( 'columnWidths' ) && tableView && !tableViewContainsColgroup ) {
 				editor.editing.reconvertItem( table );
 			}
 		}, { priority: 'low' } );
