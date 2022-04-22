@@ -9,7 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { setViewAttributes } from '../conversionutils.js';
-
 import DataFilter from '../datafilter';
 
 /**
@@ -54,6 +53,7 @@ export default class TableElementSupport extends Plugin {
 			} );
 
 			conversion.for( 'upcast' ).add( viewToModelTableAttributeConverter( dataFilter ) );
+			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewTableAttributeConverter() );
 
 			evt.stop();
@@ -74,11 +74,6 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 
 			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
 
-			const viewFigureElement = viewTableElement.parent;
-			if ( viewFigureElement.is( 'element', 'figure' ) ) {
-				preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
-			}
-
 			for ( const childNode of viewTableElement.getChildren() ) {
 				if ( childNode.is( 'element', 'thead' ) ) {
 					preserveElementAttributes( childNode, 'htmlTheadAttributes' );
@@ -86,6 +81,36 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 
 				if ( childNode.is( 'element', 'tbody' ) ) {
 					preserveElementAttributes( childNode, 'htmlTbodyAttributes' );
+				}
+			}
+
+			function preserveElementAttributes( viewElement, attributeName ) {
+				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+
+				if ( viewAttributes ) {
+					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
+				}
+			}
+		} );
+	};
+}
+
+// View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
+// feature model element from figure view element.
+//
+// @private
+// @param {module:html-support/datafilter~DataFilter} dataFilter
+// @returns {Function} Returns a conversion callback.
+function viewToModelFigureAttributeConverter( dataFilter ) {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			const viewFigureElement = data.viewItem;
+
+			for ( const childNode of viewFigureElement.getChildren() ) {
+				if ( childNode.is( 'element', 'table' ) ) {
+					preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+
+					break;
 				}
 			}
 

@@ -12,6 +12,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import DataFilter from '../datafilter';
 import DataSchema from '../dataschema';
 import { updateViewAttributes } from '../conversionutils.js';
+import { priorities } from 'ckeditor5/src/utils';
 
 /**
  * Provides the General HTML Support integration with {@link module:media-embed/mediaembed~MediaEmbed Media Embed} feature.
@@ -57,6 +58,7 @@ export default class MediaEmbedElementSupport extends Plugin {
 			} );
 
 			conversion.for( 'upcast' ).add( viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) );
+			conversion.for( 'upcast' ).add( viewToModelFigureAttributesConverter( dataFilter, mediaElementName ) );
 			conversion.for( 'dataDowncast' ).add( modelToViewMediaAttributeConverter( mediaElementName ) );
 
 			evt.stop();
@@ -71,13 +73,8 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 
 	function upcastMedia( evt, data, conversionApi ) {
 		const viewMediaElement = data.viewItem;
-		const viewParent = viewMediaElement.parent;
 
 		preserveElementAttributes( viewMediaElement, 'htmlAttributes' );
-
-		if ( viewParent.is( 'element', 'figure' ) && viewParent.hasClass( 'media' ) ) {
-			preserveElementAttributes( viewParent, 'htmlFigureAttributes' );
-		}
 
 		function preserveElementAttributes( viewElement, attributeName ) {
 			const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
@@ -87,6 +84,36 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 			}
 		}
 	}
+}
+
+// View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
+// feature model element from figure view element.
+//
+// @private
+// @param {module:html-support/datafilter~DataFilter} dataFilter
+// @returns {Function} Returns a conversion callback.
+function viewToModelFigureAttributesConverter( dataFilter, mediaElementName ) {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			const viewFigureElement = data.viewItem;
+
+			for ( const childNode of viewFigureElement.getChildren() ) {
+				if ( childNode.is( 'element', mediaElementName ) ) {
+					preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+
+					break;
+				}
+			}
+
+			function preserveElementAttributes( viewElement, attributeName ) {
+				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+
+				if ( viewAttributes ) {
+					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
+				}
+			}
+		}, { priority: priorities.get( 'low' ) + 1 } );
+	};
 }
 
 function modelToViewMediaAttributeConverter( mediaElementName ) {

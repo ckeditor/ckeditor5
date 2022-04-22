@@ -71,6 +71,7 @@ export default class ImageElementSupport extends Plugin {
 			}
 
 			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter ) );
+			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewImageAttributeConverter() );
 
 			evt.stop();
@@ -96,10 +97,49 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 
 			preserveElementAttributes( viewImageElement, 'htmlAttributes' );
 
-			if ( viewContainerElement.is( 'element', 'figure' ) ) {
-				preserveElementAttributes( viewContainerElement, 'htmlFigureAttributes' );
-			} else if ( viewContainerElement.is( 'element', 'a' ) ) {
+			if ( viewContainerElement.is( 'element', 'a' ) ) {
 				preserveLinkAttributes( viewContainerElement );
+			}
+
+			function preserveElementAttributes( viewElement, attributeName ) {
+				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+
+				if ( viewAttributes ) {
+					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
+				}
+			}
+
+			function preserveLinkAttributes( viewContainerElement ) {
+				if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
+					preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
+				}
+
+				// If we're in a link, then the `<figure>` element should be one level higher.
+				if ( viewContainerElement.parent.is( 'element', 'figure' ) ) {
+					preserveElementAttributes( viewContainerElement.parent, 'htmlFigureAttributes' );
+				}
+			}
+		}, { priority: 'low' } );
+	};
+}
+
+// View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
+// feature model element from figure view element.
+//
+// @private
+// @param {module:html-support/datafilter~DataFilter} dataFilter
+// @returns {Function} Returns a conversion callback.
+function viewToModelFigureAttributeConverter( dataFilter ) {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			const viewFigureElement = data.viewItem;
+
+			for ( const childNode of viewFigureElement.getChildren() ) {
+				if ( childNode.is( 'element', 'img' ) ) {
+					preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+				} else if ( childNode.is( 'element', 'a' ) ) {
+					preserveLinkAttributes( viewFigureElement );
+				}
 			}
 
 			function preserveElementAttributes( viewElement, attributeName ) {
