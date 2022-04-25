@@ -74,7 +74,7 @@ function createDecisionTree(writer) {
 
 	// Create Add Answers Button
 	const decisionTreeAddAnswers = writer.createElement("decisionTreeAddAnswers");
-	writer.setAttribute("data-active", "active", decisionTreeAddAnswers);
+	writer.setAttribute("data-behavior", "back", decisionTreeAddAnswers);
 	writer.append(decisionTreeAddAnswers, decisionTreeTabs);
 
 	// // Append All Content into Decision Tree Root Element

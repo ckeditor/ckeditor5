@@ -182,7 +182,6 @@ HelpjuiceEditor
 
 						// ADD NEW TREE BUTTON
 						const decisionTreeAddAnswers = writer.createElement("decisionTreeAddAnswers");
-						writer.setAttribute("data-active", "active", decisionTreeAddAnswers);
 						writer.append(decisionTreeAddAnswers, decisionTreeTabs);
 
 						writer.append(decisionTreeTabs, activeContent[0]);

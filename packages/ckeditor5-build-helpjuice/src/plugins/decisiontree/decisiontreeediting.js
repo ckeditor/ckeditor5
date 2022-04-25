@@ -138,7 +138,8 @@ export default class DecisionTreeEditing extends Plugin {
 		// Schema for Add Answers
 		schema.register("decisionTreeAddAnswers", {
 			isLimit: true,
-			allowIn: "decisionTreeTabs"
+			allowIn: "decisionTreeTabs",
+			allowAttributes: ["data-behavior"]
 		});
 
 		schema.addChildCheck((context, childDefinition) => {
@@ -407,7 +408,7 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
-		// // Conversion for Tab Content
+		// Conversion for Tab Content
 		conversion.for("upcast").elementToElement({
 			view: {
 				name: "div",
@@ -475,17 +476,23 @@ export default class DecisionTreeEditing extends Plugin {
 
 		// Conversion for Add Answers
 		conversion.for("upcast").elementToElement({
-			model: "decisionTreeAddAnswers",
 			view: {
 				name: "div",
-				classes: "helpjuice-decision-tree-add-answers"
+				classes: "helpjuice-decision-tree-add-answers",
+				attributes: ["data-behavior"]
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( "decisionTreeAddAnswers", {
+					"data-behavior": viewElement.getAttribute("data-behavior")
+				});
 			}
 		});
 		conversion.for("dataDowncast").elementToElement({
 			model: "decisionTreeAddAnswers",
 			view: ( modelElement, { writer } ) => {
-				return writer.createEditableElement("div", {
-					class: "helpjuice-decision-tree-add-answers"
+				return writer.createContainerElement("div", {
+					class: "helpjuice-decision-tree-add-answers",
+					"data-behavior": modelElement.getAttribute("data-behavior")
 				});
 			},
 		});
@@ -493,8 +500,9 @@ export default class DecisionTreeEditing extends Plugin {
 			model: "decisionTreeAddAnswers",
 			view: (modelElement, { writer: viewWriter }) => {
 				const div = viewWriter.createContainerElement("div", {
-					class: "helpjuice-decision-tree-add-answers"
-				})
+					class: "helpjuice-decision-tree-add-answers",
+					"data-behavior": modelElement.getAttribute("data-behavior")
+				});
 
 				return toWidget(div, viewWriter);
 			}
