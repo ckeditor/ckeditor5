@@ -20,11 +20,13 @@ export default class InsertTabCommand extends Command {
 
 function createTab(writer) {
 	const tab = writer.createElement('tab');
+	writer.setAttribute("data-controller", "editor--toggle-element", tab);
 
 	const tabTitle = writer.createElement('tabTitle');
 	writer.insertText("Tab Title", tabTitle);
 
 	const tabBody = writer.createElement('tabBody');
+	writer.setAttribute("data-editor--toggle-element-target", "body", tabBody);
 	const tabBodyContent = writer.createElement('paragraph');
 	writer.insertText("Tab Body", tabBodyContent);
 	writer.append(tabBodyContent, tabBody);

@@ -19,31 +19,22 @@ export default class TabEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register('tab', {
-			// Behaves like a self-contained object (e.g. an image).
 			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			allowWhere: '$block',
+			allowAttributes: ["data-controller"]
 		});
 
 		schema.register('tabTitle', {
-			// Cannot be split or left by the caret.
 			isLimit: true,
-
 			allowIn: 'tab',
-
-			// Allow content which is allowed in blocks (i.e. text with attributes).
 			allowContentOf: '$block'
 		});
 
 		schema.register('tabBody', {
-			// Cannot be split or left by the caret.
 			isLimit: true,
-
 			allowIn: 'tab',
-
-			// Allow content which is allowed in the root (e.g. paragraphs).
-			allowContentOf: '$root'
+			allowContentOf: '$root',
+			allowAttributes: ["data-editor--toggle-element-target"]
 		});
 
 		schema.addChildCheck((context, childDefinition) => {
@@ -54,9 +45,7 @@ export default class TabEditing extends Plugin {
 
 		schema.register('tabToggle', {
 			isObject: true,
-			// Cannot be split or left by the caret.
 			isLimit: true,
-
 			allowIn: 'tab'
 		});
 	}
@@ -64,26 +53,36 @@ export default class TabEditing extends Plugin {
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
-		conversion.for('upcast').elementToElement({
-			model: 'tab',
+		conversion.for("upcast").elementToElement({
 			view: {
-				name: 'div',
-				classes: 'helpjuice-tab'
+				name: "div",
+				classes: "helpjuice-tab",
+				attributes: ["data-controller"]
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( "tab", {
+					"data-controller": viewElement.getAttribute("data-controller")
+				});
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'tab',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-tab'
-			}
+		conversion.for("dataDowncast").elementToElement({
+			model: "tab",
+			view: ( modelElement, { writer } ) => {
+				return writer.createEditableElement("div", {
+					class: "helpjuice-tab",
+					"data-controller": modelElement.getAttribute("data-controller")
+				});
+			},
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'tab',
+		conversion.for("editingDowncast").elementToElement({
+			model: "tab",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-tab', "data-controller": "editor--toggle-element" });
+				const div = viewWriter.createContainerElement("div", {
+					class: "helpjuice-tab",
+					"data-controller": modelElement.getAttribute("data-controller")
+				});
 
-				return toWidget(div, viewWriter, { label: 'Insert tab' });
+				return toWidget(div, viewWriter);
 			}
 		});
 
@@ -111,25 +110,34 @@ export default class TabEditing extends Plugin {
 			}
 		});
 
-		conversion.for('upcast').elementToElement({
-			model: 'tabBody',
+		conversion.for("upcast").elementToElement({
 			view: {
-				name: 'div',
-				classes: 'helpjuice-tab-body active'
+				name: "div",
+				classes: ["helpjuice-tab-body", "active"],
+				attributes: ["data-editor--toggle-element-target"]
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( "tabBody", {
+					"data-editor--toggle-element-target": viewElement.getAttribute("data-editor--toggle-element-target")
+				});
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'tabBody',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-tab-body active'
-			}
+		conversion.for("dataDowncast").elementToElement({
+			model: "tabBody",
+			view: ( modelElement, { writer } ) => {
+				return writer.createEditableElement("div", {
+					class: "helpjuice-tab-body active",
+					"data-editor--toggle-element-target": modelElement.getAttribute("data-editor--toggle-element-target")
+				});
+			},
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'tabBody',
+		conversion.for("editingDowncast").elementToElement({
+			model: "tabBody",
 			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-tab-body active', "data-editor--toggle-element-target": "body" });
+				const div = viewWriter.createEditableElement("div", {
+					class: "helpjuice-tab-body active",
+					"data-editor--toggle-element-target": modelElement.getAttribute("data-editor--toggle-element-target")
+				});
 
 				return toWidgetEditable(div, viewWriter);
 			}

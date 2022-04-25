@@ -20,7 +20,7 @@ export default class InsertAccordionCommand extends Command {
 
 function createAccordion(writer) {
 	const accordion = writer.createElement('accordion');
-	writer.setAttribute("data-controller", "data-editor--toggle-element", accordion);
+	writer.setAttribute("data-controller", "editor--toggle-element", accordion);
 
 	const accordionTitle = writer.createElement('accordionTitle');
 	writer.insertText("Accordion Title", accordionTitle);
