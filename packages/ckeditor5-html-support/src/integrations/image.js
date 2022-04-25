@@ -8,13 +8,13 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { priorities } from 'ckeditor5/src/utils';
 
 import DataFilter from '../datafilter';
 import {
 	setViewAttributes,
 	updateViewAttributes
 } from '../conversionutils.js';
-import { priorities } from 'ckeditor5/src/utils';
 
 /**
  * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.
@@ -128,16 +128,17 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 function viewToModelFigureAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-			// Return if there is no model element to upcast attributes to
-			if ( !data.modelRange ) {
+			const viewFigureElement = data.viewItem;
+
+			if ( !data.modelRange || !viewFigureElement.hasClass( 'image' ) ) {
 				return;
 			}
-
-			const viewFigureElement = data.viewItem;
 
 			for ( const childNode of viewFigureElement.getChildren() ) {
 				if ( childNode.is( 'element', 'img' ) || childNode.is( 'element', 'a' ) ) {
 					preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+
+					break;
 				}
 			}
 

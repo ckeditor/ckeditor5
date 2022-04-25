@@ -7,11 +7,11 @@
  * @module html-support/integrations/table
  */
 
+import { priorities } from 'ckeditor5/src/utils';
+
 import { Plugin } from 'ckeditor5/src/core';
 import { setViewAttributes } from '../conversionutils.js';
 import DataFilter from '../datafilter';
-
-import { priorities } from 'ckeditor5/src/utils';
 
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.
@@ -105,12 +105,11 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 function viewToModelFigureAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-			// Return if there is no model element to upcast attributes to
-			if ( !data.modelRange ) {
+			const viewFigureElement = data.viewItem;
+
+			if ( !data.modelRange || !viewFigureElement.hasClass( 'table' ) ) {
 				return;
 			}
-
-			const viewFigureElement = data.viewItem;
 
 			for ( const childNode of viewFigureElement.getChildren() ) {
 				if ( childNode.is( 'element', 'table' ) ) {

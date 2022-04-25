@@ -8,12 +8,11 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { priorities } from 'ckeditor5/src/utils';
 
 import DataFilter from '../datafilter';
 import DataSchema from '../dataschema';
 import { updateViewAttributes } from '../conversionutils.js';
-
-import { priorities } from 'ckeditor5/src/utils';
 
 /**
  * Provides the General HTML Support integration with {@link module:media-embed/mediaembed~MediaEmbed Media Embed} feature.
@@ -96,12 +95,11 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 function viewToModelFigureAttributesConverter( dataFilter, mediaElementName ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-			// Return if there is no model element to upcast attributes to
-			if ( !data.modelRange ) {
+			const viewFigureElement = data.viewItem;
+
+			if ( !data.modelRange || !viewFigureElement.hasClass( 'media' ) ) {
 				return;
 			}
-
-			const viewFigureElement = data.viewItem;
 
 			for ( const childNode of viewFigureElement.getChildren() ) {
 				if ( childNode.is( 'element', mediaElementName ) ) {
