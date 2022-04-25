@@ -45,11 +45,7 @@ export default class MediaEmbedElementSupport extends Plugin {
 			view: mediaElementName
 		} );
 
-		dataFilter.on( 'register:figure', ( evt, definition ) => {
-			if ( definition.model !== 'htmlFigure' ) {
-				return;
-			}
-
+		dataFilter.on( 'register:figure', ( ) => {
 			conversion.for( 'upcast' ).add( viewToModelFigureAttributesConverter( dataFilter ) );
 		} );
 

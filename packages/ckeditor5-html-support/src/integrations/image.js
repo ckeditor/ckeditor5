@@ -44,11 +44,7 @@ export default class ImageElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 
-		dataFilter.on( 'register:figure', ( evt, definition ) => {
-			if ( definition.model !== 'htmlFigure' ) {
-				return;
-			}
-
+		dataFilter.on( 'register:figure', () => {
 			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
 		} );
 
