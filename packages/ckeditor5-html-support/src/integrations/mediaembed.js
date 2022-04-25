@@ -45,6 +45,14 @@ export default class MediaEmbedElementSupport extends Plugin {
 			view: mediaElementName
 		} );
 
+		dataFilter.on( 'register:figure', ( evt, definition ) => {
+			if ( definition.model !== 'htmlFigure' ) {
+				return;
+			}
+
+			conversion.for( 'upcast' ).add( viewToModelFigureAttributesConverter( dataFilter ) );
+		} );
+
 		dataFilter.on( `register:${ mediaElementName }`, ( evt, definition ) => {
 			if ( definition.model !== 'media' ) {
 				return;
@@ -58,7 +66,6 @@ export default class MediaEmbedElementSupport extends Plugin {
 			} );
 
 			conversion.for( 'upcast' ).add( viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) );
-			conversion.for( 'upcast' ).add( viewToModelFigureAttributesConverter( dataFilter, mediaElementName ) );
 			conversion.for( 'dataDowncast' ).add( modelToViewMediaAttributeConverter( mediaElementName ) );
 
 			evt.stop();
@@ -92,7 +99,7 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 // @private
 // @param {module:html-support/datafilter~DataFilter} dataFilter
 // @returns {Function} Returns a conversion callback.
-function viewToModelFigureAttributesConverter( dataFilter, mediaElementName ) {
+function viewToModelFigureAttributesConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 			const viewFigureElement = data.viewItem;
@@ -101,13 +108,7 @@ function viewToModelFigureAttributesConverter( dataFilter, mediaElementName ) {
 				return;
 			}
 
-			for ( const childNode of viewFigureElement.getChildren() ) {
-				if ( childNode.is( 'element', mediaElementName ) ) {
-					preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
-
-					break;
-				}
-			}
+			preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
 
 			function preserveElementAttributes( viewElement, attributeName ) {
 				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
@@ -116,9 +117,7 @@ function viewToModelFigureAttributesConverter( dataFilter, mediaElementName ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-		// GHS default attributes converter's priority is -1000. Marker converter priority can range between -999 and -1001
-		// so we need to hit a spot between.
-		}, { priority: priorities.get( 'low' ) + 0.5 } );
+		}, { priority: priorities.get( 'low' ) } );
 	};
 }
 

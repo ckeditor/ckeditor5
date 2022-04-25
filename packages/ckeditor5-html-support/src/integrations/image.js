@@ -44,6 +44,14 @@ export default class ImageElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 
+		dataFilter.on( 'register:figure', ( evt, definition ) => {
+			if ( definition.model !== 'htmlFigure' ) {
+				return;
+			}
+
+			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
+		} );
+
 		dataFilter.on( 'register:img', ( evt, definition ) => {
 			if ( definition.model !== 'imageBlock' && definition.model !== 'imageInline' ) {
 				return;
@@ -72,7 +80,6 @@ export default class ImageElementSupport extends Plugin {
 			}
 
 			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter ) );
-			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewImageAttributeConverter() );
 
 			evt.stop();
@@ -134,13 +141,7 @@ function viewToModelFigureAttributeConverter( dataFilter ) {
 				return;
 			}
 
-			for ( const childNode of viewFigureElement.getChildren() ) {
-				if ( childNode.is( 'element', 'img' ) || childNode.is( 'element', 'a' ) ) {
-					preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
-
-					break;
-				}
-			}
+			preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
 
 			function preserveElementAttributes( viewElement, attributeName ) {
 				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
@@ -149,9 +150,7 @@ function viewToModelFigureAttributeConverter( dataFilter ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-		// GHS default attributes converter's priority is -1000. Marker converter priority can range between -999 and -1001
-		// so we need to hit a spot between.
-		}, { priority: priorities.get( 'low' ) + 0.5 } );
+		}, { priority: priorities.get( 'low' ) } );
 	};
 }
 
