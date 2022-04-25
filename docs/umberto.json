@@ -52,6 +52,7 @@
 		"features/image-upload/ckfinder.html": "features/images/image-upload/ckfinder.html",
 		"features/image-upload/base64-upload-adapter.html": "features/images/image-upload/base64-upload-adapter.html",
 		"features/image-upload/simple-upload-adapter.html": "features/images/image-upload/simple-upload-adapter.html",
+		"latest/features/lists.html": "latest/features/lists/lists.html",
 		"features/easy-video.html": "features/media-embed.html",
 		"features/iframe-embed.html": "features/media-embed.html",
 		"features/video.html": "features/media-embed.html",
