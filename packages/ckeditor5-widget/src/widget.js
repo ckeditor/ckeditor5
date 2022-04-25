@@ -209,7 +209,7 @@ export default class Widget extends Plugin {
 
 			domSelectedElement = view.domConverter.mapViewToDom( viewSelectedElement );
 
-			// Componing on a widget.
+			// Composing on a widget.
 			if ( !typeAroundFakeCaretPosition ) {
 				domSelectedElement.parentElement.replaceChild( inlineFSC, domSelectedElement );
 			}

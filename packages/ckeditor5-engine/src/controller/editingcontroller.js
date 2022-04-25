@@ -24,8 +24,6 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
-import DomEventData from '../view/observer/domeventdata';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
