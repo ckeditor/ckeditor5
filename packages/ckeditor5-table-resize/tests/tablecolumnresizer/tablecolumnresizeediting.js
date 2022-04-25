@@ -16,6 +16,8 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
@@ -1770,8 +1772,10 @@ describe( 'TableColumnResizeEditing', () => {
 					editorElement = document.createElement( 'div' );
 					document.body.appendChild( editorElement );
 
-					editor = await createEditor( null, [ LinkEditing, HighlightEditing, Bold ] );
-
+					editor = await createEditor(
+						{ table: { contentToolbar: [ 'toggleTableCaption' ] } },
+						[ LinkEditing, HighlightEditing, Bold, TableToolbar, TableCaption ]
+					);
 					model = editor.model;
 				} );
 
@@ -1868,6 +1872,36 @@ describe( 'TableColumnResizeEditing', () => {
 									'<paragraph>[foo]</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'when caption is being added', () => {
+					const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+					const toolbar = widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ).view;
+
+					setModelData( model,
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>' +
+										'[foo]' +
+									'</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					toolbar.items.get( 0 ).fire( 'execute' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<table columnWidths="100%">' +
+							'<tableRow>' +
+								'<tableCell columnIndex="0">' +
+									'<paragraph>foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<caption>[]</caption>' +
 						'</table>'
 					);
 				} );
