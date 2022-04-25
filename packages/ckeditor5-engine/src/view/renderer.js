@@ -155,8 +155,11 @@ export default class Renderer {
 						selection.getLastPosition() : ViewPosition._createAt( lastPositionParentElement, 'after' )
 				);
 
+				// Note: UIElement and RawElement are special cases. Their children are not stored in a view
+				// (https://github.com/ckeditor/ckeditor5/issues/3971) so we cannot use them with replacing flow
+				// (since they use view children during rendering which will always result in rendering empty elements).
 				Array.from( range.getItems() )
-					.filter( item => item.is( 'element' ) )
+					.filter( item => item.is( 'element' ) && !item.is( 'uiElement' ) && !item.is( 'rawElement' ) )
 					.forEach( item => this.markToSync( 'children', item ) );
 
 				this.render();
