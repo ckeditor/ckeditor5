@@ -119,6 +119,8 @@ export default class History {
 	/**
 	 * Adds an operation to the history and increments the history version.
 	 *
+	 * The operation's base version should be equal to the history version. Otherwise an error is thrown.
+	 *
 	 * @param {module:engine/model/operation/operation~Operation} operation Operation to add.
 	 */
 	addOperation( operation ) {
@@ -165,7 +167,7 @@ export default class History {
 		// Thanks to that mapping from base versions to operation indexes are possible.
 		let inclusiveTo = toBaseVersion - 1;
 
-        // Check if "from" or "to" point to a gap between versions.
+		// Check if "from" or "to" point to a gap between versions.
 		// If yes, then change the incorrect position to the proper side of the gap.
 		// Thanks to it, it will be possible to get index of the operation.
 		for ( const [ gapFrom, gapTo ] of this._gaps ) {
@@ -185,7 +187,6 @@ export default class History {
 
 		let fromIndex = this._baseVersionToOperationIndex.get( fromBaseVersion );
 
-		// TODO Change
 		// If the range starts before the first operation, then use the first operation as the range's start.
 		if ( fromIndex === undefined ) {
 			fromIndex = 0;
