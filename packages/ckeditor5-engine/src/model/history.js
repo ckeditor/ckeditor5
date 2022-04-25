@@ -77,8 +77,9 @@ export default class History {
 	 * The version of the last operation in the history.
 	 *
 	 * The history version is incremented automatically when a new operation is added to the history.
-	 * Setting the version manually should be done only in rare circumstances when there is a planned gap
-	 * between history versions. When doing so, the
+	 * Setting the version manually should be done only in rare circumstances when a gap is planned
+	 * between history versions. When doing so, a gap will be created and the history will accept adding
+	 * an operation with base version equal to the new history version.
 	 *
 	 * @type {Number}
 	 */
