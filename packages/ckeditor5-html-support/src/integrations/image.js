@@ -14,6 +14,7 @@ import {
 	setViewAttributes,
 	updateViewAttributes
 } from '../conversionutils.js';
+import { priorities } from 'ckeditor5/src/utils';
 
 /**
  * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.
@@ -113,11 +114,6 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 				if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
 					preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
 				}
-
-				// If we're in a link, then the `<figure>` element should be one level higher.
-				if ( viewContainerElement.parent.is( 'element', 'figure' ) ) {
-					preserveElementAttributes( viewContainerElement.parent, 'htmlFigureAttributes' );
-				}
 			}
 		}, { priority: 'low' } );
 	};
@@ -132,13 +128,16 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 function viewToModelFigureAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			// Return if there is no model element to upcast attributes to
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			const viewFigureElement = data.viewItem;
 
 			for ( const childNode of viewFigureElement.getChildren() ) {
-				if ( childNode.is( 'element', 'img' ) ) {
+				if ( childNode.is( 'element', 'img' ) || childNode.is( 'element', 'a' ) ) {
 					preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
-				} else if ( childNode.is( 'element', 'a' ) ) {
-					preserveLinkAttributes( viewFigureElement );
 				}
 			}
 
@@ -149,20 +148,9 @@ function viewToModelFigureAttributeConverter( dataFilter ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-
-			// For a block image, we want to preserve the attributes on our own.
-			// The inline image attributes will be handled by the GHS automatically.
-			function preserveLinkAttributes( viewContainerElement ) {
-				if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
-					preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
-				}
-
-				// If we're in a link, then the `<figure>` element should be one level higher.
-				if ( viewContainerElement.parent.is( 'element', 'figure' ) ) {
-					preserveElementAttributes( viewContainerElement.parent, 'htmlFigureAttributes' );
-				}
-			}
-		}, { priority: 'low' } );
+		// GHS default attributes converter's priority is -1000. Marker converter priority can range between -999 and -1001
+		// so we need to hit a spot between.
+		}, { priority: priorities.get( 'low' ) + 0.5 } );
 	};
 }
 

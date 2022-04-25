@@ -1360,12 +1360,12 @@ describe( 'TableElementSupport', () => {
 			} ] );
 
 			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'comment',
-				converterPriority: priorities.get( 'low' ) + 1
+				view: 'commented',
+				converterPriority: priorities.get( 'highest' ) // For marker this priority equals to -999
 			} );
 
 			editor.setData(
-				'<figure class="table" data-comment-end-after="foo:id" data-comment-start-before="foo:id">' +
+				'<figure data-commented-end-after="foo:id" data-commented-start-before="foo:id" class="table">' +
                     '<table>' +
                         '<tbody>' +
                             '<tr>' +
@@ -1388,7 +1388,7 @@ describe( 'TableElementSupport', () => {
 				attributes: { }
 			} );
 
-			const marker = model.markers.get( 'comment:foo:id' );
+			const marker = model.markers.get( 'commented:foo:id' );
 
 			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
 			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );

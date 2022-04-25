@@ -11,6 +11,8 @@ import { Plugin } from 'ckeditor5/src/core';
 import { setViewAttributes } from '../conversionutils.js';
 import DataFilter from '../datafilter';
 
+import { priorities } from 'ckeditor5/src/utils';
+
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.
  *
@@ -71,7 +73,6 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTableElement = data.viewItem;
-
 			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
 
 			for ( const childNode of viewTableElement.getChildren() ) {
@@ -104,6 +105,11 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 function viewToModelFigureAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			// Return if there is no model element to upcast attributes to
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			const viewFigureElement = data.viewItem;
 
 			for ( const childNode of viewFigureElement.getChildren() ) {
@@ -121,7 +127,9 @@ function viewToModelFigureAttributeConverter( dataFilter ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-		}, { priority: 'low' } );
+		// GHS default attributes converter's priority is -1000. Marker converter priority can range between -999 and -1001
+		// so we need to hit a spot between.
+		}, { priority: priorities.get( 'low' ) + 0.5 } );
 	};
 }
 

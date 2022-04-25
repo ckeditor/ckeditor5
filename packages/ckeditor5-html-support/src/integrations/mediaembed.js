@@ -12,6 +12,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import DataFilter from '../datafilter';
 import DataSchema from '../dataschema';
 import { updateViewAttributes } from '../conversionutils.js';
+
 import { priorities } from 'ckeditor5/src/utils';
 
 /**
@@ -95,6 +96,11 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 function viewToModelFigureAttributesConverter( dataFilter, mediaElementName ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			// Return if there is no model element to upcast attributes to
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			const viewFigureElement = data.viewItem;
 
 			for ( const childNode of viewFigureElement.getChildren() ) {
@@ -112,7 +118,9 @@ function viewToModelFigureAttributesConverter( dataFilter, mediaElementName ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-		}, { priority: priorities.get( 'low' ) + 1 } );
+		// GHS default attributes converter's priority is -1000. Marker converter priority can range between -999 and -1001
+		// so we need to hit a spot between.
+		}, { priority: priorities.get( 'low' ) + 0.5 } );
 	};
 }
 
