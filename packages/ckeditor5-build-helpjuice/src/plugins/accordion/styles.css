@@ -4,6 +4,7 @@
 	background-color: #F3F5F8;
 	padding: 10px;
 	margin: 10px 0;
+	border-radius: 5px;
 }
 
 .helpjuice-accordion::before {
@@ -37,6 +38,7 @@
 
 .helpjuice-accordion-title, .helpjuice-accordion-body {
 	background: #FFFFFF;
+	border-radius: 5px;
 }
 
 /* Accordion Title */

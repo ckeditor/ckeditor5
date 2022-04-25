@@ -11,7 +11,6 @@ export default class AccordionEditing extends Plugin {
 	init() {
 		this._defineSchema();
 		this._defineConverters();
-
 		this.editor.commands.add('insertAccordion', new InsertAccordionCommand(this.editor));
 	}
 
@@ -19,31 +18,22 @@ export default class AccordionEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register('accordion', {
-			// Behaves like a self-contained object (e.g. an image).
 			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			allowWhere: '$block',
+			allowAttributes: ["data-controller"]
 		});
 
 		schema.register('accordionTitle', {
-			// Cannot be split or left by the caret.
 			isLimit: true,
-
 			allowIn: 'accordion',
-
-			// Allow content which is allowed in blocks (i.e. text with attributes).
 			allowContentOf: '$block'
 		});
 
 		schema.register('accordionBody', {
-			// Cannot be split or left by the caret.
 			isLimit: true,
-
 			allowIn: 'accordion',
-
-			// Allow content which is allowed in the root (e.g. paragraphs).
-			allowContentOf: '$root'
+			allowContentOf: '$root',
+			allowAttributes: ["data-editor--toggle-element-target"]
 		});
 
 		schema.addChildCheck((context, childDefinition) => {
@@ -54,9 +44,7 @@ export default class AccordionEditing extends Plugin {
 
 		schema.register('accordionToggle', {
 			isObject: true,
-			// Cannot be split or left by the caret.
 			isLimit: true,
-
 			allowIn: 'accordion'
 		});
 	}
@@ -64,26 +52,36 @@ export default class AccordionEditing extends Plugin {
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
-		conversion.for('upcast').elementToElement({
-			model: 'accordion',
+		conversion.for("upcast").elementToElement({
 			view: {
-				name: 'div',
-				classes: 'helpjuice-accordion'
+				name: "div",
+				classes: "helpjuice-accordion",
+				attributes: ["data-controller"]
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( "accordion", {
+					"data-controller": viewElement.getAttribute("data-controller")
+				});
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'accordion',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-accordion'
-			}
+		conversion.for("dataDowncast").elementToElement({
+			model: "accordion",
+			view: ( modelElement, { writer } ) => {
+				return writer.createEditableElement("div", {
+					class: "helpjuice-accordion",
+					"data-controller": modelElement.getAttribute("data-controller")
+				});
+			},
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'accordion',
+		conversion.for("editingDowncast").elementToElement({
+			model: "accordion",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-accordion', "data-controller": "editor--toggle-element" });
+				const div = viewWriter.createContainerElement("div", {
+					class: "helpjuice-accordion",
+					"data-controller": modelElement.getAttribute("data-controller")
+				});
 
-				return toWidget(div, viewWriter, { label: 'Insert Accordion' });
+				return toWidget(div, viewWriter);
 			}
 		});
 
@@ -104,32 +102,40 @@ export default class AccordionEditing extends Plugin {
 		conversion.for('editingDowncast').elementToElement({
 			model: 'accordionTitle',
 			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
 				const h2 = viewWriter.createEditableElement('h2', { class: 'helpjuice-accordion-title' });
 
 				return toWidgetEditable(h2, viewWriter);
 			}
 		});
 
-		conversion.for('upcast').elementToElement({
-			model: 'accordionBody',
+		conversion.for("upcast").elementToElement({
 			view: {
-				name: 'div',
-				classes: 'helpjuice-accordion-body active'
+				name: "div",
+				classes: ["helpjuice-accordion-body", "active"],
+				attributes: ["data-editor--toggle-element-target"]
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( "accordionBody", {
+					"data-editor--toggle-element-target": viewElement.getAttribute("data-editor--toggle-element-target")
+				});
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'accordionBody',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-accordion-body active'
-			}
+		conversion.for("dataDowncast").elementToElement({
+			model: "accordionBody",
+			view: ( modelElement, { writer } ) => {
+				return writer.createEditableElement("div", {
+					class: "helpjuice-accordion-body active",
+					"data-editor--toggle-element-target": modelElement.getAttribute("data-editor--toggle-element-target")
+				});
+			},
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'accordionBody',
+		conversion.for("editingDowncast").elementToElement({
+			model: "accordionBody",
 			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-accordion-body active', "data-editor--toggle-element-target": "body" });
+				const div = viewWriter.createEditableElement("div", {
+					class: "helpjuice-accordion-body active",
+					"data-editor--toggle-element-target": modelElement.getAttribute("data-editor--toggle-element-target")
+				});
 
 				return toWidgetEditable(div, viewWriter);
 			}
@@ -152,7 +158,6 @@ export default class AccordionEditing extends Plugin {
 		conversion.for('editingDowncast').elementToElement({
 			model: 'accordionToggle',
 			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
 				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-accordion-toggle', "data-action": "click->editor--toggle-element#toggle" });
 
 				return toWidget(div, viewWriter);
