@@ -251,5 +251,8 @@ function testViewName( pattern, viewName ) {
  * @property {Number} [priority] Element priority. Decides in what order elements are wrapped by
  * {@link module:engine/view/downcastwriter~DowncastWriter}.
  * Set by {@link module:html-support/dataschema~DataSchema#registerInlineElement} method.
+ * @property {String} [coupledAttribute] The name of the model attribute that generates the same view element. GHS inline attribute
+ * will be removed from the model tree as soon as the coupled attribute is removed. See
+ * {@link module:html-support/datafilter~DataFilter#_registerModelPostFixer GHS post-fixer} for more details.
  * @extends module:html-support/dataschema~DataSchemaDefinition
  */

@@ -14,7 +14,7 @@ import { setViewAttributes } from '../conversionutils.js';
 import DataFilter from '../datafilter';
 
 /**
- * Provides the General HTML Support integration with {@link module:list/documentlist~DocumentList Document List} feature.
+ * Provides the General HTML Support integration with the {@link module:list/documentlist~DocumentList Document List} feature.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -85,7 +85,7 @@ export default class DocumentListElementSupport extends Plugin {
 		} );
 
 		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
-		// Note: This is almost exact copy from DocumentListPropertiesEditing.
+		// Note: This is almost an exact copy from DocumentListPropertiesEditing.
 		documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
 			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
 
@@ -180,7 +180,7 @@ function viewToModelListAttributeConverter( attributeName, dataFilter ) {
 			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
-		const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+		const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 		for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
 			// Apply only to list item blocks.

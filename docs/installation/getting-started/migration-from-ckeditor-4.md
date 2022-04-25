@@ -6,7 +6,7 @@
 
 category: getting-started
 order: 60
-modified_at: 2021-07-16
+modified_at: 2022-04-15
 ---
 
 # Migration from CKEditor 4
@@ -21,7 +21,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 
 There is no "drop in" solution for migrating. In this guide we hope to summarize the most important aspects you need to consider before you proceed with installing CKEditor 5.
 
-Before starting, be sure that migrating is your best choice. Refer to {@link installation/advanced/predefined-builds#when-not-to-use-predefined-builds When NOT to use predefined CKEditor 5 builds?} for more information.
+Before starting, be sure that migrating is your best choice. Refer to the {@link installation/advanced/predefined-builds#when-not-to-use-predefined-builds When NOT to use predefined CKEditor 5 builds?} guide for more information.
 
 ## Installation and integration
 
@@ -52,6 +52,8 @@ The same may apply for third-party plugins which may not have been ported to CKE
 
 Check the {@link installation/advanced/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
 
+When it comes to official plugins compatibility between CKEditor 4 and CKEditor 5, please see the {@link installation/getting-started/migration-from-ckeditor-4#plugins-compatibility-table compatibility table} to learn more.
+
 ## Themes (skins)
 
 In CKEditor 5, the previous concept of "skins" was reviewed and is now called "themes".
@@ -69,6 +71,12 @@ An extremely important aspect to be remembered is that &mdash; because of the di
 Extensive analysis, data verification and tests should be performed on existing data. If necessary, you will need to develop conversion procedures to avoid data loss. The {@link features/general-html-support General HTML Support} feature may be used to introduce HTML markup that is present in the legacy content but is not yet fully covered by CKEditor 5 features.
 
 A relatively simple yet efficient strategy of adopting CKEditor 5 into existing systems might be using CKEditor 5 for creating new content and the old editor for editing legacy content.
+
+## Plugins compatibility table
+
+The following table presents plugins available in CKEditor 4 and their equivalent in CKEditor 5.
+
+{@snippet installation/plugins-mapping/plugins-mapping}
 
 ## Configuration options compatibility table
 
@@ -112,8 +120,12 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_bottomSpace">autoGrow_bottomSpace</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_maxHeight">autoGrow_maxHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_minHeight">autoGrow_minHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_onStartup">autoGrow_onStartup</a></td>
 			<td>
 				<p>These settings are no longer needed as by default, CKEditor 5 automatically grows with content.</p>
-				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the <code>minHeight</code> and <code>maxHeight</code> settings can be achieved with <code>.ck-editor__editable_inline { min-height:200px; max-height:400px; }</code>.</p>
-				<p> See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
+				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the <code>minHeight</code> and <code>maxHeight</code> settings can be achieved with the following code:</p>
+				<pre><code class="language-css">.ck.ck-content:not(.ck-comment__input *) {
+	/* Note: You can use min-height and max-height instead here. */
+	height: 300px;
+	overflow-y: auto;
+}</code>
 			</td>
 		</tr>
 		<tr>
@@ -702,12 +714,12 @@ Note: The number of options was reduced on purpose. We understood that configuri
 	</tbody>
 </table>
 
-If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first as the feature you are after may have already been reported &mdash; you can support it by upvoting 👍. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
+If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &mdash; you can support it by upvoting the issue with &nbsp;👍&nbsp;. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
 
 <info-box hint>
 **What's next?**
 
-Now you should have a basic knowledge about differences between CKEditor 4 and CKEditor 5. Feel free to explore our Features page to compare the available plugins to your needs.
+You should now have the basic knowledge about differences between CKEditor 4 and CKEditor 5. Feel free to explore our {@link features/index features page} to compare the available plugins to your needs.
 
 It's time to move to the last article in the **Getting started** path. {@link installation/getting-started/maintenance See you there}!
 </info-box>
