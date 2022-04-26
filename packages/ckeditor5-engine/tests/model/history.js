@@ -24,18 +24,6 @@ describe( 'History', () => {
 		} );
 	} );
 
-	describe( 'operations', () => {
-		it( 'should be an array of operations added chronologically to the history', () => {
-			const op1 = new Operation( 0 );
-			const op2 = new Operation( 1 );
-			history.addOperation( op1 );
-			history.addOperation( op2 );
-
-			expect( history.operations ).to.be.an( 'array' );
-			expect( history.operations ).to.deep.equal( [ op1, op2 ] );
-		} );
-	} );
-
 	describe( 'reset()', () => {
 		it( 'should reset the history of operations', () => {
 			const op1 = new Operation( 0 );
@@ -45,10 +33,9 @@ describe( 'History', () => {
 
 			history.reset();
 
-			expect( history.operations ).to.deep.equal( [] );
+			expect( history.getOperations() ).to.deep.equal( [] );
 			expect( history.version ).to.equal( 0 );
 			expect( history.lastOperation ).to.be.undefined;
-			expect( history.firstOperation ).to.be.undefined;
 		} );
 
 		it( 'should reset the history of undone operations', () => {

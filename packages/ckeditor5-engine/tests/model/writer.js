@@ -1529,7 +1529,7 @@ describe( 'Writer', () => {
 				const history = model.document.history;
 
 				const lastOperation = history.lastOperation;
-				const secondLastOperation = history.operations[ history.operations.length - 2 ];
+				const secondLastOperation = history.getOperation( history.version - 2 );
 
 				expect( secondLastOperation.type ).to.equal( 'marker' );
 				expect( secondLastOperation.oldRange.isEqual( markerRange ) );
@@ -1620,7 +1620,7 @@ describe( 'Writer', () => {
 			const history = model.document.history;
 
 			const lastOperation = history.lastOperation;
-			const secondLastOperation = history.operations[ history.operations.length - 2 ];
+			const secondLastOperation = history.getOperation( history.version - 2 );
 
 			expect( secondLastOperation.type ).to.equal( 'marker' );
 			expect( secondLastOperation.oldRange.isEqual( markerRange ) );
@@ -1762,7 +1762,7 @@ describe( 'Writer', () => {
 				const history = model.document.history;
 
 				const lastOperation = history.lastOperation;
-				const secondLastOperation = history.operations[ history.operations.length - 2 ];
+				const secondLastOperation = history.getOperation( history.version - 2 );
 
 				expect( secondLastOperation.type ).to.equal( 'marker' );
 				expect( secondLastOperation.oldRange.isEqual( markerRange ) );

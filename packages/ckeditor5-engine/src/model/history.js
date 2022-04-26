@@ -20,10 +20,11 @@ export default class History {
 		/**
 		 * Operations added to the history.
 		 *
+		 * @private
 		 * @readonly
 		 * @type {Array.<module:engine/model/operation/operation~Operation>}
 		 */
-		this.operations = [];
+		this._operations = [];
 
 		/**
 		 * Holds an information which {@link module:engine/model/operation/operation~Operation operation} undoes which
@@ -90,21 +91,11 @@ export default class History {
 	set version( version ) {
 		// Store a gap if there are some operations already in the history and the
 		// new version does not increment the latest one.
-		if ( this.operations.length && version > this._version + 1 ) {
+		if ( this._operations.length && version > this._version + 1 ) {
 			this._gaps.set( this._version, version );
 		}
 
 		this._version = version;
-	}
-
-	/**
-	 * The first history operation.
-	 *
-	 * @readonly
-	 * @type {module:engine/model/operation/operation~Operation|undefined}
-	 */
-	get firstOperation() {
-		return this.operations[ 0 ];
 	}
 
 	/**
@@ -114,7 +105,7 @@ export default class History {
 	 * @type {module:engine/model/operation/operation~Operation|undefined}
 	 */
 	get lastOperation() {
-		return this.operations[ this.operations.length - 1 ];
+		return this._operations[ this._operations.length - 1 ];
 	}
 
 	/**
@@ -138,10 +129,10 @@ export default class History {
 			} );
 		}
 
-		this.operations.push( operation );
+		this._operations.push( operation );
 		this._version++;
 
-		this._baseVersionToOperationIndex.set( operation.baseVersion, this.operations.length - 1 );
+		this._baseVersionToOperationIndex.set( operation.baseVersion, this._operations.length - 1 );
 	}
 
 	/**
@@ -156,12 +147,14 @@ export default class History {
 	getOperations( fromBaseVersion, toBaseVersion = this.version ) {
 		// When there is no operation in the history, return an empty array.
 		// After that we can be sure that `firstOperation`, `lastOperation` are not nullish.
-		if ( !this.operations.length ) {
+		if ( !this._operations.length ) {
 			return [];
 		}
 
+		const firstOperation = this._operations[ 0 ];
+
 		if ( fromBaseVersion === undefined ) {
-			fromBaseVersion = this.firstOperation.baseVersion;
+			fromBaseVersion = firstOperation.baseVersion;
 		}
 
 		// Change exclusive `toBaseVersion` to inclusive, so it will refer to the actual index.
@@ -182,7 +175,7 @@ export default class History {
 		}
 
 		// If the whole range is outside of the operation versions, then return an empty array.
-		if ( inclusiveTo < this.firstOperation.baseVersion || fromBaseVersion > this.lastOperation.baseVersion ) {
+		if ( inclusiveTo < firstOperation.baseVersion || fromBaseVersion > this.lastOperation.baseVersion ) {
 			return [];
 		}
 
@@ -197,11 +190,11 @@ export default class History {
 
 		// If the range ends after the last operation, then use the last operation as the range's end.
 		if ( toIndex === undefined ) {
-			toIndex = this.operations.length - 1;
+			toIndex = this._operations.length - 1;
 		}
 
 		// Return the part of the history operations based on the calculated start index and end index.
-		return this.operations.slice(
+		return this._operations.slice(
 			fromIndex,
 
 			// The `toIndex` should be included in the returned operations, so add `1`.
@@ -223,7 +216,7 @@ export default class History {
 			return;
 		}
 
-		return this.operations[ operationIndex ];
+		return this._operations[ operationIndex ];
 	}
 
 	/**
@@ -275,7 +268,7 @@ export default class History {
 	reset() {
 		this._version = 0;
 		this._undoPairs = new Map();
-		this.operations = [];
+		this._operations = [];
 		this._undoneOperations = new Set();
 		this._gaps = new Map();
 		this._baseVersionToOperationIndex = new Map();
