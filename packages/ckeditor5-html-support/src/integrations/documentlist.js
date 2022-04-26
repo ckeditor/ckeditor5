@@ -180,7 +180,7 @@ function viewToModelListAttributeConverter( attributeName, dataFilter ) {
 			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
-		const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+		const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 		for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
 			// Apply only to list item blocks.

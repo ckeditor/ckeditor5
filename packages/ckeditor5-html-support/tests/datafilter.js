@@ -3298,19 +3298,21 @@ describe( 'DataFilter', () => {
 
 	it( 'should allow using attributes by other features', () => {
 		dataFilter.allowElement( 'span' );
-		dataFilter.allowAttributes( { name: 'span', styles: { 'color': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: 'span', styles: { 'color': /[\s\S]+/, 'font-size': /[\s\S]+/ } } );
 
-		editor.setData( '<p><span style="color:blue;">foobar</span></p>' );
+		editor.setData( '<p><span style="color:blue;font-size:30px;">foobar</span></p>' );
 
 		// Font feature should take over color CSS property.
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: '<paragraph><$text fontColor="blue" htmlSpan="(1)">foobar</$text></paragraph>',
 			attributes: {
-				1: {}
+				1: {
+					styles: { 'font-size': '30px' }
+				}
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span>foobar</span></span></p>' );
+		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span style="font-size:30px;">foobar</span></span></p>' );
 	} );
 
 	describe( 'existing features', () => {
@@ -3501,6 +3503,117 @@ describe( 'DataFilter', () => {
 		editor.setData( '<p style="background:red;">foobar</p>' );
 
 		expect( editor.getData() ).to.equal( '<p style="background-color:red;">foobar</p>' );
+	} );
+
+	describe( 'attribute coupling', () => {
+		it( 'should remove GHS attribute for the same range as a coupled feature attribute was removed', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			} ] );
+
+			editor.setData( '<p><a href="foo" class="bar">foobar</a></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlA="(1)" linkHref="foo">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'bar' ]
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><a class="bar" href="foo">foobar</a></p>' );
+
+			model.change( writer => {
+				const root = model.document.getRoot();
+				const range = model.createRange(
+					model.createPositionAt( root.getChild( 0 ), 3 ),
+					model.createPositionAt( root.getChild( 0 ), 'end' )
+				);
+
+				writer.removeAttribute( 'linkHref', range );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlA="(1)" linkHref="foo">foo</$text>bar</paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'bar' ]
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><a class="bar" href="foo">foo</a>bar</p>' );
+		} );
+
+		it( 'should not remove other GHS attribute when other coupled one is removed', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			} ] );
+
+			editor.setData( '<p><span style="color:red;text-transform:uppercase;"><strong>foobar</strong></span></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text fontColor="red" htmlSpan="(1)" htmlStrong="(2)">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'text-transform': 'uppercase'
+						}
+					},
+					2: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:red;"><span style="text-transform:uppercase;"><strong>foobar</strong></span></span></p>'
+			);
+
+			model.change( writer => {
+				const root = model.document.getRoot();
+				const range = model.createRange(
+					model.createPositionAt( root.getChild( 0 ), 0 ),
+					model.createPositionAt( root.getChild( 0 ), 3 )
+				);
+
+				writer.removeAttribute( 'fontColor', range );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph>' +
+						'<$text htmlSpan="(1)" htmlStrong="(2)">foo</$text>' +
+						'<$text fontColor="red" htmlSpan="(3)" htmlStrong="(4)">bar</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'text-transform': 'uppercase'
+						}
+					},
+					2: {},
+					3: {
+						styles: {
+							'text-transform': 'uppercase'
+						}
+					},
+					4: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="text-transform:uppercase;"><strong>foo</strong></span>' +
+					'<span style="color:red;"><span style="text-transform:uppercase;"><strong>bar</strong></span></span>' +
+				'</p>'
+			);
+		} );
 	} );
 
 	describe( 'loadAllowedConfig', () => {
