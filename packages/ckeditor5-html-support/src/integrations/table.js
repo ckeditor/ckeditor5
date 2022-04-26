@@ -11,8 +11,6 @@ import { Plugin } from 'ckeditor5/src/core';
 import { setViewAttributes } from '../conversionutils.js';
 import DataFilter from '../datafilter';
 
-import { priorities } from 'ckeditor5/src/utils';
-
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.
  *
@@ -123,7 +121,7 @@ function viewToModelFigureAttributeConverter( dataFilter ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-		}, { priority: priorities.get( 'low' ) } );
+		}, { priority: 'low' } );
 	};
 }
 

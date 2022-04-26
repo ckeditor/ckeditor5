@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { priorities } from 'ckeditor5/src/utils';
 
 import DataFilter from '../datafilter';
 import DataSchema from '../dataschema';
@@ -113,7 +112,7 @@ function viewToModelFigureAttributesConverter( dataFilter ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-		}, { priority: priorities.get( 'low' ) } );
+		}, { priority: 'low' } );
 	};
 }
 
