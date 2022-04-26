@@ -178,7 +178,11 @@ export default class Widget extends Plugin {
 
 		// let currentCompositionStartRange;
 		let inlineFSC, domSelectedElement;
-		const widgetToolbarRepositoryPlugin = editor.plugins.get( 'WidgetToolbarRepository' );
+		let widgetToolbarRepositoryPlugin;
+
+		if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
+			widgetToolbarRepositoryPlugin = editor.plugins.get( 'WidgetToolbarRepository' );
+		}
 
 		// TODO here or in the fake selection observer?
 		this.listenTo( viewDocument, 'compositionstart', () => {
