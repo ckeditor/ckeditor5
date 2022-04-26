@@ -70,13 +70,13 @@ Please keep in mind that this mechanism will not change the output of the editor
 
 ### The `table` and `tableCell` attributes' names change
 
-Names of the `table` elements' attributes were changed. A `table` prefix has been added to all the names.
+Names of the `table` elements' attributes have changed. A `table` prefix has been added to all the names.
 
 The affected attributes include: `borderStyle`, `borderColor`, `borderWidth`, `backgroundColor`, `alignment`, `width` and `height`.
 
 These are now respectively: `tableBorderStyle`, `tableBorderColor`, `tableBorderWidth`, `tableBackgroundColor`, `tableAlignment`, `tableWidth` and `tableHeight`.
 
-Names of the `tableCell` elements' attributes were changed. A `tableCell` prefix has been added to all the names.
+Names of the `tableCell` elements' attributes have changed. A `tableCell` prefix has been added to all the names.
 
 The affected attributes include: `backgroundColor`, `padding`, `width`, `height`, `borderStyle`, `borderColor`, `borderWidth`, `verticalAlignment` and `horizontalAlignment`.
 

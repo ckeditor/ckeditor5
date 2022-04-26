@@ -12,8 +12,8 @@ The height of the editing area can be easily controlled with CSS.
 
 ```css
 .ck.ck-content:not(.ck-comment__input *) {
-height: 300px;
-overflow-y: auto;
+	height: 300px;
+	overflow-y: auto;
 }
 ```
 

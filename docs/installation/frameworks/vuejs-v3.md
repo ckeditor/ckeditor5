@@ -4,7 +4,7 @@ category: frameworks
 order: 50
 ---
 
-{@snippet builds/frameworks/framework-integration}
+{@snippet installation/frameworks/framework-integration}
 
 # Rich text editor component for Vue.js 3+
 

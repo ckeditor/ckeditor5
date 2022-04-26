@@ -91,12 +91,19 @@ export function createObjectView( viewName, modelElement, writer ) {
 export function viewToAttributeInlineConverter( { view: viewName, model: attributeKey }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			const viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
+			let viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
 
 			// Do not apply the attribute if the element itself is already consumed and there are no view attributes to store.
 			if ( !viewAttributes && !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
 				return;
 			}
+
+			// Otherwise, we might need to convert it to an empty object just to preserve element itself,
+			// for example `<cite>` => <$text htmlCite="{}">.
+			viewAttributes = viewAttributes || {};
+
+			// Consume the element itself if it wasn't consumed by any other converter.
+			conversionApi.consumable.consume( data.viewItem, { name: true } );
 
 			// Since we are converting to attribute we need a range on which we will set the attribute.
 			// If the range is not created yet, we will create it.
@@ -110,7 +117,7 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 					// Node's children are converted recursively, so node can already include model attribute.
 					// We want to extend it, not replace.
 					const nodeAttributes = node.getAttribute( attributeKey );
-					const attributesToAdd = mergeViewElementAttributes( viewAttributes || {}, nodeAttributes || {} );
+					const attributesToAdd = mergeViewElementAttributes( viewAttributes, nodeAttributes || {} );
 
 					conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
 				}
@@ -156,7 +163,7 @@ export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilt
 				return;
 			}
 
-			const viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
+			const viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
 
 			if ( viewAttributes ) {
 				conversionApi.writer.setAttribute( 'htmlAttributes', viewAttributes, data.modelRange );
