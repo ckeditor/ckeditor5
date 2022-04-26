@@ -9,8 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { setViewAttributes } from '../conversionutils.js';
-
 import DataFilter from '../datafilter';
+
+import { priorities } from 'ckeditor5/src/utils';
 
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.
@@ -38,6 +39,10 @@ export default class TableElementSupport extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
+
+		dataFilter.on( 'register:figure', ( ) => {
+			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
+		} );
 
 		dataFilter.on( 'register:table', ( evt, definition ) => {
 			if ( definition.model !== 'table' ) {
@@ -71,13 +76,7 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTableElement = data.viewItem;
-
 			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
-
-			const viewFigureElement = viewTableElement.parent;
-			if ( viewFigureElement.is( 'element', 'figure' ) ) {
-				preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
-			}
 
 			for ( const childNode of viewTableElement.getChildren() ) {
 				if ( childNode.is( 'element', 'thead' ) ) {
@@ -96,7 +95,35 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-		}, { priority: 'low' } );
+		} );
+	};
+}
+
+// View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
+// feature model element from figure view element.
+//
+// @private
+// @param {module:html-support/datafilter~DataFilter} dataFilter
+// @returns {Function} Returns a conversion callback.
+function viewToModelFigureAttributeConverter( dataFilter ) {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			const viewFigureElement = data.viewItem;
+
+			if ( !data.modelRange || !viewFigureElement.hasClass( 'table' ) ) {
+				return;
+			}
+
+			preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+
+			function preserveElementAttributes( viewElement, attributeName ) {
+				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+
+				if ( viewAttributes ) {
+					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
+				}
+			}
+		}, { priority: priorities.get( 'low' ) } );
 	};
 }
 

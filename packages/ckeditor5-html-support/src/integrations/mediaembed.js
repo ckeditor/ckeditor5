@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { priorities } from 'ckeditor5/src/utils';
 
 import DataFilter from '../datafilter';
 import DataSchema from '../dataschema';
@@ -44,6 +45,10 @@ export default class MediaEmbedElementSupport extends Plugin {
 			view: mediaElementName
 		} );
 
+		dataFilter.on( 'register:figure', ( ) => {
+			conversion.for( 'upcast' ).add( viewToModelFigureAttributesConverter( dataFilter ) );
+		} );
+
 		dataFilter.on( `register:${ mediaElementName }`, ( evt, definition ) => {
 			if ( definition.model !== 'media' ) {
 				return;
@@ -71,13 +76,8 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 
 	function upcastMedia( evt, data, conversionApi ) {
 		const viewMediaElement = data.viewItem;
-		const viewParent = viewMediaElement.parent;
 
 		preserveElementAttributes( viewMediaElement, 'htmlAttributes' );
-
-		if ( viewParent.is( 'element', 'figure' ) && viewParent.hasClass( 'media' ) ) {
-			preserveElementAttributes( viewParent, 'htmlFigureAttributes' );
-		}
 
 		function preserveElementAttributes( viewElement, attributeName ) {
 			const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
@@ -87,6 +87,34 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 			}
 		}
 	}
+}
+
+// View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
+// feature model element from figure view element.
+//
+// @private
+// @param {module:html-support/datafilter~DataFilter} dataFilter
+// @returns {Function} Returns a conversion callback.
+function viewToModelFigureAttributesConverter( dataFilter ) {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			const viewFigureElement = data.viewItem;
+
+			if ( !data.modelRange || !viewFigureElement.hasClass( 'media' ) ) {
+				return;
+			}
+
+			preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+
+			function preserveElementAttributes( viewElement, attributeName ) {
+				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+
+				if ( viewAttributes ) {
+					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
+				}
+			}
+		}, { priority: priorities.get( 'low' ) } );
+	};
 }
 
 function modelToViewMediaAttributeConverter( mediaElementName ) {
