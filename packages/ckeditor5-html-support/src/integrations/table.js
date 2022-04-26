@@ -7,11 +7,11 @@
  * @module html-support/integrations/table
  */
 
-import { priorities } from 'ckeditor5/src/utils';
-
 import { Plugin } from 'ckeditor5/src/core';
 import { setViewAttributes } from '../conversionutils.js';
 import DataFilter from '../datafilter';
+
+import { priorities } from 'ckeditor5/src/utils';
 
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.
