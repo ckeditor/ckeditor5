@@ -73,21 +73,18 @@ function getAffectedTable( change, model ) {
 		return null;
 	}
 
-	const allTables = [];
-	const document = model.document;
+	const affectedTables = [];
+	const tableNode = ( referencePosition.nodeAfter && referencePosition.nodeAfter.name === 'table' ) ?
+		referencePosition.nodeAfter : referencePosition.findAncestor( 'table' );
+	const range = model.createRangeOn( tableNode );
 
-	for ( const rootName of document.getRootNames() ) {
-		const root = document.getRoot( rootName );
-		const range = model.createRangeIn( root );
-
-		for ( const node of range.getItems() ) {
-			if ( node.is( 'element' ) && node.name === 'table' ) {
-				allTables.push( node );
-			}
+	for ( const node of range.getItems() ) {
+		if ( node.is( 'element' ) && node.name === 'table' ) {
+			affectedTables.push( node );
 		}
 	}
 
-	return allTables;
+	return affectedTables;
 }
 
 /**
