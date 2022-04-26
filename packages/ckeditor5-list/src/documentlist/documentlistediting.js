@@ -34,7 +34,8 @@ import {
 	isLastBlockOfListItem,
 	isSingleListItem,
 	getSelectedBlockObject,
-	isListItemBlock
+	isListItemBlock,
+	removeListAttributes
 } from './utils/model';
 import {
 	getViewElementIdForListType,
@@ -134,6 +135,7 @@ export default class DocumentListEditing extends Plugin {
 		this._setupDeleteIntegration();
 		this._setupEnterIntegration();
 		this._setupTabIntegration();
+		this._setupClipboardIntegration();
 	}
 
 	/**
@@ -454,6 +456,50 @@ export default class DocumentListEditing extends Plugin {
 		this.on( 'postFixer', ( evt, { listNodes, writer, seenIds } ) => {
 			evt.return = fixListItemIds( listNodes, seenIds, writer ) || evt.return;
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Integrates the feature with the clipboard via {@link module:engine/model/model~Model#getSelectedContent}.
+	 *
+	 * @private
+	 */
+	_setupClipboardIntegration() {
+		const model = this.editor.model;
+
+		// To enhance the UX, the editor should not copy list attributes to the clipboard if the selection
+		// started and ended in the same list item block or a block object as a list block was selected.
+		//
+		// * This prevents splitting list items when such a content is pasted/dropped by the user (block widgets in particular),
+		//   * Clipboard integration heuristics of ImageInlineEditing can kick in.
+		// * This avoids pasting single-list-item lists (orphans) anywhere else (in the root, in a paragraph).
+		//
+		//	                       ┌─────────────────────┬───────────────────┐
+		//	                       │ Selection           │ Clipboard content │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ * [<blockObject />] │ <blockObject />   │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ * Foo [bar] baz     │ bar               │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ * Fo[o              │ * o               │
+		//	                       │   ba]r              │   ba              │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ * Fo[o              │ * o               │
+		//	                       │ * ba]r              │ * ba              │
+		//	                       └─────────────────────┴───────────────────┘
+		//
+		// See https://github.com/ckeditor/ckeditor5/issues/11608.
+		this.listenTo( model, 'getSelectedContent', ( evt, [ selection ] ) => {
+			const selectedBlockObject = getSelectedBlockObject( model );
+			const { focus, anchor } = selection;
+			const isBlockObjectInListSelected = selectedBlockObject && isListItemBlock( selectedBlockObject );
+			const isSelectionInTheSameListBlock = focus.parent === anchor.parent && isListItemBlock( focus.parent );
+
+			// Strip all list attributes if a block object was selected as a list item block.
+			// Strip all list attributes if the selection started and ended in the same list item block.
+			if ( isBlockObjectInListSelected || isSelectionInTheSameListBlock ) {
+				model.change( writer => removeListAttributes( Array.from( evt.return.getChildren() ), writer ) );
+			}
+		} );
 	}
 }
 
