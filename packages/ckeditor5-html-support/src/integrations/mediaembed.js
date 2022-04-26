@@ -103,14 +103,10 @@ function viewToModelFigureAttributesConverter( dataFilter ) {
 				return;
 			}
 
-			preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+			const viewAttributes = dataFilter.processViewAttributes( viewFigureElement, conversionApi );
 
-			function preserveElementAttributes( viewElement, attributeName ) {
-				const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
-
-				if ( viewAttributes ) {
-					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
-				}
+			if ( viewAttributes ) {
+				conversionApi.writer.setAttribute( 'htmlFigureAttributes', viewAttributes, data.modelRange );
 			}
 		}, { priority: 'low' } );
 	};
