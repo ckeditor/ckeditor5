@@ -10,8 +10,9 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock';
+
 import Style from '../src/style';
-import Table from '@ckeditor/ckeditor5-table/src/table';
 
 describe( 'StyleCommand', () => {
 	let editor, editorElement, command, model, doc, root;
@@ -22,7 +23,7 @@ describe( 'StyleCommand', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Table, Heading, GeneralHtmlSupport, Style ],
+				plugins: [ Paragraph, ImageBlock, Heading, GeneralHtmlSupport, Style ],
 				style: {
 					definitions: [
 						{
@@ -81,8 +82,8 @@ describe( 'StyleCommand', () => {
 	} );
 
 	describe( 'isEnabled', () => {
-		it( 'should be disabled if selection is on an widget object', () => {
-			setData( model, '[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]' );
+		it( 'should be disabled if selection is on a block widget object', () => {
+			setData( model, '[<imageBlock></imageBlock>]' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );

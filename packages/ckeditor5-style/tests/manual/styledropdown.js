@@ -221,6 +221,11 @@ ClassicEditor
 					classes: [ 'large-heading' ]
 				},
 				{
+					name: 'Large paragraph',
+					element: 'p',
+					classes: [ 'large-heading' ]
+				},
+				{
 					name: 'Rounded container',
 					element: 'p',
 					classes: [ 'rounded-container' ]

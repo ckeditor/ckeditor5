@@ -18,7 +18,15 @@ import { logWarning, first } from 'ckeditor5/src/utils';
  * @extends module:core/command~Command
  */
 export default class StyleCommand extends Command {
-	constructor( editor, styles ) {
+	/**
+	 * Creates an instance of the command.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {Object} styleDefinitions Normalized definitions of the styles.
+	 * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions.block Definitions of block styles.
+	 * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions.inline Definitions of inline styles.
+	 */
+	constructor( editor, styleDefinitions ) {
 		super( editor );
 
 		/**
@@ -29,18 +37,8 @@ export default class StyleCommand extends Command {
 		 *
 		 * @observable
 		 * @readonly
-		 * @member {Boolean|String} #value
+		 * @member {Array.<String>} #value
 		 */
-
-		/**
-		 * Styles object. Helps in getting styles definitions by
-		 * class name, style name and model element name.
-		 *
-		 * @private
-		 * @readonly
-		 * @member {module:style/styleediting~Styles}
-		 */
-		this.styles = styles;
 
 		/**
 		 * Names of enabled styles (styles that can be applied to the current selection).
@@ -55,8 +53,15 @@ export default class StyleCommand extends Command {
 		this.set( 'enabledStyles', [] );
 
 		/**
-		 * Refresh state.
+		 * Normalized definitions of the styles.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {Object} #styleDefinitions
 		 */
+		this._styleDefinitions = styleDefinitions;
+
+		// TODO is this needed?
 		this.refresh();
 	}
 
@@ -64,27 +69,25 @@ export default class StyleCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const editor = this.editor;
-		const model = editor.model;
+		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		const value = [];
-		const enabledStyles = [];
+		const value = new Set();
+		const enabledStyles = new Set();
 
-		// Inline styles;
-		for ( const ghsAttributeName of this.styles.getInlineGhsAttributeNames() ) {
-			// Active styles.
-			const ghsAttributeValue = this._getValueFromFirstAllowedNode( ghsAttributeName );
-			const styleNames = this._getStyleNamesForGhsAttributeValue( ghsAttributeValue );
+		// Inline styles.
+		for ( const definition of this._styleDefinitions.inline ) {
+			for ( const ghsAttributeName of definition.ghsAttributes ) {
+				// Check if this inline style is enabled.
+				if ( model.schema.checkAttributeInSelection( selection, ghsAttributeName ) ) {
+					enabledStyles.add( definition.name );
+				}
 
-			value.push( ...styleNames );
+				// Check if this inline style is active.
+				const ghsAttributeValue = this._getValueFromFirstAllowedNode( ghsAttributeName );
 
-			// Enabled styles.
-			if ( model.schema.checkAttributeInSelection( selection, ghsAttributeName ) ) {
-				const definitions = this.styles.getDefinitionsByGhsAttributeName( ghsAttributeName );
-
-				for ( const definition of definitions ) {
-					enabledStyles.push( definition.name );
+				if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+					value.add( definition.name );
 				}
 			}
 		}
@@ -93,23 +96,26 @@ export default class StyleCommand extends Command {
 		const firstBlock = first( selection.getSelectedBlocks() );
 
 		if ( firstBlock && model.schema.checkAttribute( firstBlock, 'htmlAttributes' ) && !model.schema.isObject( firstBlock ) ) {
-			// Active styles.
-			const ghsAttributeValue = firstBlock.getAttribute( 'htmlAttributes' );
-			const styleNames = this._getStyleNamesForGhsAttributeValue( ghsAttributeValue );
+			for ( const definition of this._styleDefinitions.block ) {
+				// Check if this block style is enabled.
+				if ( !definition.modelElements.includes( firstBlock.name ) ) {
+					continue;
+				}
 
-			value.push( ...styleNames );
+				enabledStyles.add( definition.name );
 
-			// Enabled styles.
-			const definitions = this.styles.getDefinitionsByElementName( firstBlock.name );
+				// Check if this block style is active.
+				const ghsAttributeValue = firstBlock.getAttribute( 'htmlAttributes' );
 
-			for ( const definition of definitions ) {
-				enabledStyles.push( definition.name );
+				if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+					value.add( definition.name );
+				}
 			}
 		}
 
-		this.enabledStyles = enabledStyles;
+		this.enabledStyles = Array.from( enabledStyles ).sort();
 		this.isEnabled = this.enabledStyles.length > 0;
-		this.value = this.isEnabled ? value : [];
+		this.value = this.isEnabled ? Array.from( value ).sort() : [];
 	}
 
 	/**
@@ -149,59 +155,36 @@ export default class StyleCommand extends Command {
 			return;
 		}
 
-		const editor = this.editor;
-		const model = editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
-
-		model.change( () => {
-			const definition = this.styles.getDefinitionsByName( styleName );
-
-			if ( definition.isBlock ) {
-				Array.from( doc.selection.getSelectedBlocks() )
-					.filter( block => (
-						definition.modelElements.includes( block.name ) &&
-						model.schema.checkAttribute( block, 'htmlAttributes' ) )
-					)
-					.forEach( block => this._updateStyle( definition, block ) );
-			} else {
-				this._updateStyle( definition, selection );
-			}
-		} );
-	}
-
-	/**
-	 * Adds or removes classes to element, range or selection.
-	 *
-	 * @private
-	 * @param {Object} definition Style definition object.
-	 * @param {module:engine/model/selection~Selectable} selectable Selection, range or element to update the style on.
-	 */
-	_updateStyle( { name, element, classes }, selectable ) {
+		const model = this.editor.model;
+		const selection = model.document.selection;
 		const htmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
-		if ( this.value.includes( name ) ) {
-			htmlSupport.removeModelHtmlClass( element, classes, selectable );
-		} else {
-			htmlSupport.addModelHtmlClass( element, classes, selectable );
-		}
-	}
+		const definition = [
+			...this._styleDefinitions.inline,
+			...this._styleDefinitions.block
+		].find( ( { name } ) => name == styleName );
 
-	/**
-	 * TODO
-	 */
-	* _getStyleNamesForGhsAttributeValue( ghsAttributeValue ) {
-		if ( !ghsAttributeValue || !ghsAttributeValue.classes ) {
-			return;
-		}
+		model.change( () => {
+			const selectables = [];
 
-		for ( const className of ghsAttributeValue.classes ) {
-			const definition = this.styles.getDefinitionsByClassName( className );
-
-			if ( definition ) {
-				yield definition.name;
+			if ( definition.isBlock ) {
+				for ( const block of selection.getSelectedBlocks() ) {
+					if ( definition.modelElements.includes( block.name ) ) {
+						selectables.push( block );
+					}
+				}
+			} else {
+				selectables.push( selection );
 			}
-		}
+
+			for ( const selectable of selectables ) {
+				if ( this.value.includes( definition.name ) ) {
+					htmlSupport.removeModelHtmlClass( definition.element, definition.classes, selectable );
+				} else {
+					htmlSupport.addModelHtmlClass( definition.element, definition.classes, selectable );
+				}
+			}
+		} );
 	}
 
 	/**
@@ -231,4 +214,13 @@ export default class StyleCommand extends Command {
 
 		return null;
 	}
+}
+
+// Verifies if all classes are set on the given GHS attribute.
+function hasAllClasses( ghsAttributeValue, classes ) {
+	if ( !ghsAttributeValue || !ghsAttributeValue.classes ) {
+		return false;
+	}
+
+	return classes.every( className => ghsAttributeValue.classes.includes( className ) );
 }
