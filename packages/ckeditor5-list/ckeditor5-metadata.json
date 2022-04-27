@@ -96,7 +96,7 @@
 		{
 			"name": "Document list",
 			"className": "DocumentList",
-			"description": "Implements bulleted and numbered list features. Supports block content inside list elements. Incompatible with the list plugin.",
+			"description": "Implements bulleted and numbered list features. Supports block content inside list elements. Incompatible with the List plugin.",
 			"path": "src/documentlist.js",
 			"uiComponents": [
 				{
