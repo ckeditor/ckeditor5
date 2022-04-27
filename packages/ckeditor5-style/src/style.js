@@ -97,7 +97,7 @@ export default class Style extends Plugin {
  *		]
  *
  * **Note**: Configuring style definitions will automatically configure the
- * {@glink features/general-html-support General HTML Support feature}. **You do not need to repeat the configuration in
+ * {@glink features/html/general-html-support General HTML Support feature}. **You do not need to repeat the configuration in
  * {@link module:html-support/generalhtmlsupport~GeneralHtmlSupportConfig}**.
  *
  * @member {Array.<module:style/style~StyleDefinition>} module:style/style~StyleConfig#definitions

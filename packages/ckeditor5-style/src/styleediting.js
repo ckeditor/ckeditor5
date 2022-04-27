@@ -15,7 +15,7 @@ import StyleCommand from './stylecommand';
 /**
  * The style engine feature.
  *
- * It configures the {@glink features/general-html-support General HTML Support feature} based on
+ * It configures the {@glink features/html/general-html-support General HTML Support feature} based on
  * {@link module:style/style~StyleConfig#definitions configured style definitions} and introduces the
  * {@link module:style/stylecommand~StyleCommand style command} that applies styles to the content of the document.
  *

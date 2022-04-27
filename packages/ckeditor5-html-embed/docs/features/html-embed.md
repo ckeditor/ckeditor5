@@ -1,6 +1,6 @@
 ---
 category: features-html
-order: 30
+order: 40
 menu-title: HTML embed
 ---
 
