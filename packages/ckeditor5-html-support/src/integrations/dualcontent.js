@@ -113,8 +113,23 @@ export default class DualContentModelElementSupport extends Plugin {
 	_hasBlockContent( viewElement ) {
 		const blockElements = this.editor.editing.view.domConverter.blockElements;
 
-		return Array.from( viewElement.getChildren() )
-			.some( node => blockElements.includes( node.name ) );
+		return hasBlockContent( viewElement );
+
+		function isBlock( node ) {
+			if ( blockElements.includes( node.name ) ) {
+				return true;
+			}
+
+			if ( node.is( 'element' ) ) {
+				return hasBlockContent( node );
+			}
+
+			return false;
+		}
+
+		function hasBlockContent( viewElement ) {
+			return Array.from( viewElement.getChildren() ).some( isBlock );
+		}
 	}
 
 	/**
