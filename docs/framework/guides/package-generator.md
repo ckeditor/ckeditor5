@@ -204,15 +204,15 @@ npm run translations:collect
 Download translations from the Transifex server. Depending on users' activity in the project, it creates translations files used for building the editor.
 
 <info-box info>
-The task requires passing the URL to Transifex API. Usually, it matches the following format: `https://www.transifex.com/api/2/project/[PROJECT_SLUG]`.
+The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
 
-To avoid passing the `--transifex` option every time when calls the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
+To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:download` command.
 </info-box>
 
 Examples:
 
 ```bash
-npm run translations:download -- --transifex [API URL]
+npm run translations:download -- --organization [ORGANIZATION] --project [PROJECT]
 ```
 
 ### `translations:upload`
@@ -220,15 +220,15 @@ npm run translations:download -- --transifex [API URL]
 Uploads translation messages onto the Transifex server. It allows for the creation of translations into other languages by users using the Transifex platform.
 
 <info-box info>
-The task requires passing the URL to the Transifex API. Usually, it matches the following format: `https://www.transifex.com/api/2/project/[PROJECT_SLUG]`.
+The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
 
-To avoid passing the `--transifex` option every time when you call the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
+To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
 </info-box>
 
 Examples:
 
 ```bash
-npm run translations:upload -- --transifex [API URL]
+npm run translations:upload -- --organization [ORGANIZATION] --project [PROJECT]
 ```
 
 ### `prepare` and `prepublishOnly`

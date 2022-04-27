@@ -22,16 +22,34 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const button = document.querySelector( '#read-only' );
+		const button1 = document.querySelector( '#read-only-1' );
+		const button2 = document.querySelector( '#read-only-2' );
 
-		button.addEventListener( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
-			button.textContent = editor.isReadOnly ? 'Turn off read-only mode' : 'Turn on read-only mode';
-
-			editor.editing.view.focus();
-		} );
+		enableReadOnlyManagement( button1, editor, 'feature-1' );
+		enableReadOnlyManagement( button2, editor, 'feature-2' );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
+function enableReadOnlyManagement( button, editor, lockName ) {
+	let isReadOnly = false;
+
+	button.addEventListener( 'click', () => {
+		isReadOnly = !isReadOnly;
+
+		if ( isReadOnly ) {
+			editor.enableReadOnlyMode( lockName );
+		} else {
+			editor.disableReadOnlyMode( lockName );
+		}
+
+		button.textContent = isReadOnly ?
+			`${ lockName }: Clear the read-only mode lock` :
+			`${ lockName }: Create read-only mode lock`;
+
+		editor.editing.view.focus();
+	} );
+
+	button.textContent = `${ lockName }: Create read-only mode lock`;
+}

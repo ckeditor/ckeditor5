@@ -300,5 +300,72 @@ describe( 'HorizontalLineCommand', () => {
 				'<paragraph>foo</paragraph><horizontalLine></horizontalLine><paragraph>[]bar</paragraph>'
 			);
 		} );
+
+		describe( 'inheriting attributes', () => {
+			beforeEach( () => {
+				const attributes = [ 'smart', 'pretty' ];
+
+				model.schema.extend( '$block', {
+					allowAttributes: attributes
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: attributes
+				} );
+
+				for ( const attribute of attributes ) {
+					model.schema.setAttributeProperties( attribute, {
+						copyOnReplace: true
+					} );
+				}
+			} );
+
+			it( 'should copy $block attributes on a horizontal line element when inserting it in $block', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true">[]</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<horizontalLine pretty="true" smart="true"></horizontalLine>' +
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
+				);
+			} );
+
+			it( 'should copy attributes from first selected element', () => {
+				setModelData( model, '<paragraph pretty="true">[foo</paragraph><paragraph smart="true">bar]</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<horizontalLine pretty="true"></horizontalLine>' +
+					'<paragraph pretty="true">[]</paragraph>'
+				);
+			} );
+
+			it( 'should only copy $block attributes marked with copyOnReplace', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true" nice="true">[]</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<horizontalLine pretty="true" smart="true"></horizontalLine>' +
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
+				);
+			} );
+
+			it( 'should copy attributes from object when it is selected during insertion', () => {
+				model.schema.register( 'object', { isObject: true, inheritAllFrom: '$blockObject' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setModelData( model, '[<object pretty="true" smart="true"></object>]' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<horizontalLine pretty="true" smart="true"></horizontalLine>' +
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
+				);
+			} );
+		} );
 	} );
 } );

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-restricted-editing",
-  "version": "33.0.0",
+  "version": "34.0.0",
   "description": "Restricted editing feature for CKEditor 5 editors.",
   "keywords": [
     "ckeditor",
@@ -11,24 +11,24 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^33.0.0"
+    "ckeditor5": "^34.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^33.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^33.0.0",
-    "@ckeditor/ckeditor5-clipboard": "^33.0.0",
-    "@ckeditor/ckeditor5-core": "^33.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^28.0.1",
-    "@ckeditor/ckeditor5-editor-classic": "^33.0.0",
-    "@ckeditor/ckeditor5-engine": "^33.0.0",
-    "@ckeditor/ckeditor5-link": "^33.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^33.0.0",
-    "@ckeditor/ckeditor5-table": "^33.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^33.0.0",
-    "@ckeditor/ckeditor5-typing": "^33.0.0",
-    "@ckeditor/ckeditor5-ui": "^33.0.0",
-    "@ckeditor/ckeditor5-undo": "^33.0.0",
-    "@ckeditor/ckeditor5-utils": "^33.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^34.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^34.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^34.0.0",
+    "@ckeditor/ckeditor5-core": "^34.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^30.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^34.0.0",
+    "@ckeditor/ckeditor5-engine": "^34.0.0",
+    "@ckeditor/ckeditor5-link": "^34.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^34.0.0",
+    "@ckeditor/ckeditor5-table": "^34.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^34.0.0",
+    "@ckeditor/ckeditor5-typing": "^34.0.0",
+    "@ckeditor/ckeditor5-ui": "^34.0.0",
+    "@ckeditor/ckeditor5-undo": "^34.0.0",
+    "@ckeditor/ckeditor5-utils": "^34.0.0",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },

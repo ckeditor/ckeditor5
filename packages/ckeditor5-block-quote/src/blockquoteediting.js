@@ -45,8 +45,7 @@ export default class BlockQuoteEditing extends Plugin {
 		editor.commands.add( 'blockQuote', new BlockQuoteCommand( editor ) );
 
 		schema.register( 'blockQuote', {
-			allowWhere: '$block',
-			allowContentOf: '$root'
+			inheritAllFrom: '$container'
 		} );
 
 		editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );

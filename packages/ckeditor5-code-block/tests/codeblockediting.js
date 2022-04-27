@@ -185,7 +185,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should execute outdentCodeBlock command on Shift+Tab keystroke', () => {
-			domEvtDataStub.keyCode += getCode( 'Shift' );
+			domEvtDataStub.shiftKey = true;
 
 			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
@@ -220,6 +220,180 @@ describe( 'CodeBlockEditing', () => {
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not call indent block command when outside `pre` context', () => {
+			const indentBlockCommand = editor.commands.get( 'indentCodeBlock' );
+			const indentBlockCommandSpy = sinon.spy( indentBlockCommand, 'execute' );
+
+			setModelData( model,
+				'<paragraph>[]foo</paragraph>',
+				'<codeBlock language="plaintext">bar</codeBlock>'
+			);
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( indentBlockCommandSpy );
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not call outdent block command when outside `pre` context', () => {
+			const outdentBlockCommand = editor.commands.get( 'outdentCodeBlock' );
+			const outdentBlockCommandSpy = sinon.spy( outdentBlockCommand, 'execute' );
+
+			domEvtDataStub.shiftKey = true;
+
+			setModelData( model,
+				'<paragraph>[]foo</paragraph>',
+				'<codeBlock language="plaintext">bar</codeBlock>'
+			);
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( outdentBlockCommandSpy );
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not indent on tab key when tab event was captured by listener with higher priority', () => {
+			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+
+			const onTabPress = ( bubblingEventInfo, domEventData ) => {
+				domEventData.preventDefault();
+				domEventData.stopPropagation();
+				bubblingEventInfo.stop();
+			};
+
+			const onTabPressSpy = sinon.spy( onTabPress );
+
+			editor.editing.view.document.on( 'tab', onTabPressSpy, { context: 'pre', priority: 'highest' } );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			sinon.assert.calledOnce( onTabPressSpy );
+		} );
+
+		it( 'should not be stopped by a listener with lower priority', () => {
+			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+
+			const onTabPress = ( bubblingEventInfo, domEventData ) => {
+				domEventData.preventDefault();
+				domEventData.stopPropagation();
+				bubblingEventInfo.stop();
+			};
+
+			const onTabPressSpy = sinon.spy( onTabPress );
+
+			editor.editing.view.document.on( 'tab', onTabPressSpy, { context: 'pre', priority: 'low' } );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'indentCodeBlock' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			sinon.assert.notCalled( onTabPressSpy );
+		} );
+
+		it( 'should not outdent on tab key when tab event was captured by listener with higher priority', () => {
+			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+
+			model.change( writer => {
+				// <codeBlock language="plaintext">  foo[]</codeBlock>
+				writer.insertText( '  ', model.document.getRoot().getChild( 0 ), 0 );
+			} );
+
+			domEvtDataStub.shiftKey = true;
+
+			const onTabPress = ( bubblingEventInfo, domEventData ) => {
+				domEventData.preventDefault();
+				domEventData.stopPropagation();
+				bubblingEventInfo.stop();
+			};
+
+			const onTabPressSpy = sinon.spy( onTabPress );
+
+			editor.editing.view.document.on( 'tab', onTabPressSpy, { context: 'pre', priority: 'highest' } );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			sinon.assert.calledOnce( onTabPressSpy );
+		} );
+
+		it( 'outdent should not be stopped by a listener with lower priority', () => {
+			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+
+			model.change( writer => {
+				// <codeBlock language="plaintext">  []foo</codeBlock>
+				writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
+			} );
+
+			domEvtDataStub.shiftKey = true;
+
+			const onTabPress = ( bubblingEventInfo, domEventData ) => {
+				domEventData.preventDefault();
+				domEventData.stopPropagation();
+				bubblingEventInfo.stop();
+			};
+
+			const onTabPressSpy = sinon.spy( onTabPress );
+
+			editor.editing.view.document.on( 'tab', onTabPressSpy, { context: 'pre', priority: 'lowest' } );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentCodeBlock' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			sinon.assert.notCalled( onTabPressSpy );
+		} );
+
+		it( 'should not stop tab event if indent command was not executed', () => {
+			model.schema.register( 'fakePre', {
+				allowIn: '$root'
+			} );
+
+			editor.conversion.elementToElement( {
+				model: 'fakePre',
+				view: 'pre'
+			} );
+
+			setModelData( model, '<fakePre>[]</fakePre>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.neverCalledWith( editor.execute, 'indentCodeBlock' );
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not stop tab event if outdent command was not executed', () => {
+			model.schema.register( 'fakePre', {
+				allowIn: '$root'
+			} );
+
+			editor.conversion.elementToElement( {
+				model: 'fakePre',
+				view: 'pre'
+			} );
+
+			setModelData( model, '<fakePre>[]</fakePre>' );
+
+			domEvtDataStub.shiftKey = true;
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.neverCalledWith( editor.execute, 'outdentCodeBlock' );
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );

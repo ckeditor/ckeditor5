@@ -131,7 +131,7 @@ watchdog.on( 'stateChange', () => {
 	console.log( `State changed from ${ currentState } to ${ prevState }` );
 
 	if ( currentState === 'crashedPermanently' ) {
-		watchdog.editor.isReadOnly = true;
+		watchdog.editor.enableReadOnlyMode( 'crashed-editor' );
 	}
 
 	prevState = currentState;
