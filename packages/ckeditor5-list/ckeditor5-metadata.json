@@ -118,8 +118,7 @@
 					]
 				},
 				{
-					"elements": "li",
-					"implements": "$block"
+					"elements": "li"
 				}
 			]
 		},
