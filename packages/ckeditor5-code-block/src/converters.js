@@ -250,3 +250,59 @@ export function dataViewToModelTextNewlinesInsertion() {
 		data.modelCursor = position;
 	};
 }
+
+/**
+ * A view-to-model converter that handles orphan text nodes (white spaces, new lines, etc.)
+ * that surround `<code>` inside `<pre>`.
+ *
+ * Sample input:
+ *
+ *		// White spaces
+ *		<pre> <code>foo()</code> </pre>
+ *
+ *		// White spaces
+ *		<pre>      <code>foo()</code>      </pre>
+ *
+ *		// White spaces
+ *		<pre>			<code>foo()</code>			</pre>
+ *
+ *		// New lines
+ *		<pre>
+ *			<code>foo()</code>
+ *		</pre>
+ *
+ *		// Redundant text
+ *		<pre>ABC<code>foo()</code>DEF</pre>
+ *
+ *		// Redundant elements
+ *		<pre><span>ABC</span><code>foo()</code><b>DEF</b></pre>
+ *
+ * Unified output for each case:
+ *
+ *		<codeBlock language="plaintext">foo()</codeBlock>
+ *
+ * @returns {Function} Returns a conversion callback.
+ */
+export function dataViewToModelOrphanNodeConsumer() {
+	return ( evt, data, { consumable } ) => {
+		// Do nothing, when not inside `<pre>`.
+		if ( !data.viewItem.parent.is( 'element', 'pre' ) ) {
+			return;
+		}
+
+		// Do nothing to `<code>` inside `<pre>`. There's a dedicated `dataViewToModelCodeBlockInsertion()`
+		// converter just for that.
+		if ( data.viewItem.is( 'element', 'code' ) ) {
+			return;
+		}
+
+		const consumables = data.viewItem.is( 'element' ) ? { name: true } : null;
+
+		// Do nothing, if the node has already been converted.
+		if ( !consumable.test( data.viewItem, consumables ) ) {
+			return;
+		}
+
+		consumable.consume( data.viewItem, consumables );
+	};
+}

@@ -1388,6 +1388,44 @@ describe( 'CodeBlockEditing', () => {
 			element.remove();
 		} );
 
+		it( 'should upcast <pre> with single spaces around <code>', () => {
+			editor.setData( '<pre> <code>Hello World!</code> </pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+		} );
+
+		it( 'should upcast <pre> with multiple spaces around <code>', () => {
+			editor.setData( '<pre>    <code>Hello World!</code>    </pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+		} );
+
+		it( 'should upcast <pre> with tabs around <code>', () => {
+			editor.setData( '<pre>		<code>Hello World!</code>		</pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+		} );
+
+		it( 'should upcast <pre> with line breaks around <code>', () => {
+			editor.setData( `<pre>
+				<code>Hello World!</code>
+			</pre>` );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+		} );
+
+		it( 'should upcast <pre> with accidental text around <code>', () => {
+			editor.setData( '<pre>foo<code>Hello World!</code>bar</pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+		} );
+
+		it( 'should upcast <pre> with accidental elements around <code>', () => {
+			editor.setData( '<pre><b>foo</b><code>Hello World!</code><span>bar</span></pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+		} );
+
 		describe( 'config.codeBlock.languages', () => {
 			it( 'should be respected when upcasting', () => {
 				return ClassicTestEditor.create(
