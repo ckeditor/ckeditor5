@@ -1388,7 +1388,7 @@ describe( 'CodeBlockEditing', () => {
 			element.remove();
 		} );
 
-		it( 'should upcast <pre> with single spaces around <code>', () => {
+		it( 'should upcast <pre> with single space around <code>', () => {
 			editor.setData( '<pre> <code>Hello World!</code> </pre>' );
 
 			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
