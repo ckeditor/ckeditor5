@@ -300,6 +300,8 @@ export default class MentionUI extends Plugin {
 	 * @param {String} feedText
 	 */
 	_requestFeed( marker, feedText ) {
+		// @if CK_DEBUG_MENTION // console.log( '%c[Feed]%c Requesting for', 'color: blue', 'color: black', `"${ feedText }"` );
+
 		// Store the last requested feed - it is used to discard any out-of order requests.
 		this._lastRequested = feedText;
 
@@ -390,7 +392,6 @@ export default class MentionUI extends Plugin {
 			const focus = selection.focus;
 			const markerPosition = editor.model.createPositionAt( focus.parent, markerDefinition.position );
 
-			// https://github.com/ckeditor/ckeditor5/issues/11400
 			if ( isPositionInExistingMention( focus ) || isMarkerInExistingMention( markerPosition ) ) {
 				this._hideUIAndRemoveMarker();
 
@@ -406,20 +407,32 @@ export default class MentionUI extends Plugin {
 
 			const markerRange = editor.model.createRange( start, end );
 
+			// @if CK_DEBUG_MENTION // console.group( '%c[TextWatcher]%c matched', 'color: red', 'color: black', `"${ feedText }"` );
+			// @if CK_DEBUG_MENTION // console.log( 'data#text', `"${ data.text }"` );
+			// @if CK_DEBUG_MENTION // console.log( 'data#range', data.range.start.path, data.range.end.path );
+			// @if CK_DEBUG_MENTION // console.log( 'marker definition', markerDefinition );
+			// @if CK_DEBUG_MENTION // console.log( 'marker range', markerRange.start.path, markerRange.end.path );
+
 			if ( checkIfStillInCompletionMode( editor ) ) {
 				const mentionMarker = editor.model.markers.get( 'mention' );
 
 				// Update the marker - user might've moved the selection to other mention trigger.
 				editor.model.change( writer => {
+					// @if CK_DEBUG_MENTION // console.log( '%c[Editing]%c Updating the marker.', 'color: purple', 'color: black' );
+
 					writer.updateMarker( mentionMarker, { range: markerRange } );
 				} );
 			} else {
 				editor.model.change( writer => {
+					// @if CK_DEBUG_MENTION // console.log( '%c[Editing]%c Adding the marker.', 'color: purple', 'color: black' );
+
 					writer.addMarker( 'mention', { range: markerRange, usingOperation: false, affectsData: false } );
 				} );
 			}
 
 			this._requestFeedDebounced( markerDefinition.marker, feedText );
+
+			// @if CK_DEBUG_MENTION // console.groupEnd( '[TextWatcher] matched' );
 		} );
 
 		watcher.on( 'unmatched', () => {
@@ -440,6 +453,9 @@ export default class MentionUI extends Plugin {
 	 */
 	_handleFeedResponse( data ) {
 		const { feed, marker } = data;
+
+		// eslint-disable-next-line max-len
+		// @if CK_DEBUG_MENTION // console.log( `%c[Feed]%c Response for "${ data.feedText }" (${ feed.length })`, 'color: blue', 'color: black', feed );
 
 		// If the marker is not in the document happens when the selection had changed and the 'mention' marker was removed.
 		if ( !checkIfStillInCompletionMode( this.editor ) ) {
@@ -472,9 +488,13 @@ export default class MentionUI extends Plugin {
 	 */
 	_showOrUpdateUI( markerMarker ) {
 		if ( this._isUIVisible ) {
+			// @if CK_DEBUG_MENTION // console.log( '%c[UI]%c Updating position.', 'color: green', 'color: black' );
+
 			// Update balloon position as the mention list view may change its size.
 			this._balloon.updatePosition( this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ) );
 		} else {
+			// @if CK_DEBUG_MENTION // console.log( '%c[UI]%c Showing the UI.', 'color: green', 'color: black' );
+
 			this._balloon.add( {
 				view: this._mentionsView,
 				position: this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ),
@@ -494,10 +514,14 @@ export default class MentionUI extends Plugin {
 	_hideUIAndRemoveMarker() {
 		// Remove the mention view from balloon before removing marker - it is used by balloon position target().
 		if ( this._balloon.hasView( this._mentionsView ) ) {
+			// @if CK_DEBUG_MENTION // console.log( '%c[UI]%c Hiding the UI.', 'color: green', 'color: black' );
+
 			this._balloon.remove( this._mentionsView );
 		}
 
 		if ( checkIfStillInCompletionMode( this.editor ) ) {
+			// @if CK_DEBUG_MENTION // console.log( '%c[Editing]%c Removing marker.', 'color: purple', 'color: black' );
+
 			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
 		}
 
