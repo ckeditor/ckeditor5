@@ -68,7 +68,6 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
 
 class FormattingOptions extends Plugin {
@@ -256,7 +255,12 @@ DecoupledEditor
 			]
 		},
 
-		cloudServices: CS_CONFIG
+		cloudServices: {
+                    // PROVIDE CORRECT VALUES HERE:
+                    tokenUrl: 'https://example.com/cs-token-endpoint',
+                    uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/',
+                    webSocketUrl: 'your-organization-id.cke-cs.com/ws/'
+                },
 	} )
 	.then( editor => {
 		window.editor = editor;
