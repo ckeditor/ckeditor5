@@ -388,8 +388,10 @@ export default class MentionUI extends Plugin {
 			const markerDefinition = getLastValidMarkerInText( feedsWithPattern, data.text );
 			const selection = editor.model.document.selection;
 			const focus = selection.focus;
+			const markerPosition = editor.model.createPositionAt( focus.parent, markerDefinition.position );
 
-			if ( hasExistingMention( focus ) ) {
+			// https://github.com/ckeditor/ckeditor5/issues/11400
+			if ( isPositionInExistingMention( focus ) || isMarkerInExistingMention( markerPosition ) ) {
 				this._hideUIAndRemoveMarker();
 
 				return;
@@ -784,7 +786,7 @@ function createFeedCallback( feedItems ) {
 //
 // @param {module:engine/model/position~Position} position.
 // @returns {Boolean}
-function hasExistingMention( position ) {
+function isPositionInExistingMention( position ) {
 	// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
 	// and you cannot use selection.hasAttribute( 'mention' ) just yet.
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/1723.
@@ -793,6 +795,18 @@ function hasExistingMention( position ) {
 	const nodeBefore = position.nodeBefore;
 
 	return hasMention || nodeBefore && nodeBefore.is( '$text' ) && nodeBefore.hasAttribute( 'mention' );
+}
+
+// Checks if the closest marker offset is at the beginning of a mention.
+//
+// See https://github.com/ckeditor/ckeditor5/issues/11400.
+//
+// @param {module:engine/model/position~Position} markerPosition
+// @returns {Boolean}
+function isMarkerInExistingMention( markerPosition ) {
+	const nodeAfter = markerPosition.nodeAfter;
+
+	return nodeAfter && nodeAfter.is( '$text' ) && nodeAfter.hasAttribute( 'mention' );
 }
 
 // Checks if string is a valid mention marker.
