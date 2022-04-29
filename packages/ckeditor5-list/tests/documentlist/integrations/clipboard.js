@@ -25,6 +25,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import {
 	getData as getModelData,
 	parse as parseModel,
+	stringify as stringifyModel,
 	setData as setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -238,6 +239,26 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 
 					expect( modelFragment.childCount ).to.equal( 1 );
 					expect( Array.from( modelFragment.getChildren() ).some( hasAnyListAttribute ) ).to.be.false;
+				} );
+
+				it( 'should not strip attributes of wrapped list', () => {
+					setModelData( model, modelList( `
+						* [<blockQuote>${ modelList( `
+							* foo
+						` ) }</blockQuote>]
+					` ) );
+
+					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
+
+					expect( modelFragment.childCount ).to.equal( 1 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.false;
+					expect( Array.from( modelFragment.getChild( 0 ).getChildren() ).every( isListItemBlock ) ).to.be.true;
+
+					expect( stringifyModel( modelFragment ) ).to.equal(
+						'<blockQuote>' +
+							'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
+						'</blockQuote>'
+					);
 				} );
 			} );
 
