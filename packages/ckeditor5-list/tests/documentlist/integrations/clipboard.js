@@ -16,7 +16,9 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -41,7 +43,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 		editor = await ClassicTestEditor.create( element, {
 			plugins: [
 				Paragraph, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
-				BlockQuoteEditing, TableEditing, HeadingEditing, Image
+				BlockQuoteEditing, TableEditing, HeadingEditing, ImageBlockEditing, ImageInlineEditing, Widget
 			]
 		} );
 
