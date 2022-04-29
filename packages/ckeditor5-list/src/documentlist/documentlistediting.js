@@ -117,8 +117,6 @@ export default class DocumentListEditing extends Plugin {
 			} );
 		}
 
-		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
-
 		// Register commands.
 		editor.commands.add( 'numberedList', new DocumentListCommand( editor, 'numbered' ) );
 		editor.commands.add( 'bulletedList', new DocumentListCommand( editor, 'bulleted' ) );
@@ -459,12 +457,15 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * Integrates the feature with the clipboard via {@link module:engine/model/model~Model#getSelectedContent}.
+	 * Integrates the feature with the clipboard via {@link module:engine/model/model~Model#insertContent} and
+	 * {@link module:engine/model/model~Model#getSelectedContent}.
 	 *
 	 * @private
 	 */
 	_setupClipboardIntegration() {
 		const model = this.editor.model;
+
+		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
 		// To enhance the UX, the editor should not copy list attributes to the clipboard if the selection
 		// started and ended in the same list item block or a block object as a list block was selected.
