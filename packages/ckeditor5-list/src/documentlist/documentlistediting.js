@@ -490,14 +490,14 @@ export default class DocumentListEditing extends Plugin {
 		//
 		// See https://github.com/ckeditor/ckeditor5/issues/11608.
 		this.listenTo( model, 'getSelectedContent', ( evt, [ selection ] ) => {
-			const selectedBlockObject = getSelectedBlockObject( model );
-			const { focus, anchor } = selection;
-			const isBlockObjectInListSelected = selectedBlockObject && isListItemBlock( selectedBlockObject );
-			const isSelectionInTheSameListBlock = focus.parent === anchor.parent && isListItemBlock( focus.parent );
+			// Is a single block object or a $block (for example a paragraph) selected?
+			const selectedElement = selection.getSelectedElement();
+			const isSingleListBlockSelected = selectedElement && isListItemBlock( selectedElement );
 
-			// Strip all list attributes if a block object was selected as a list item block.
-			// Strip all list attributes if the selection started and ended in the same list item block.
-			if ( isBlockObjectInListSelected || isSelectionInTheSameListBlock ) {
+			// Multiple blocks of a single list item are selected.
+			const isSingleListItemSelected = isSingleListItem( Array.from( selection.getSelectedBlocks() ) );
+
+			if ( isSingleListBlockSelected || isSingleListItemSelected ) {
 				model.change( writer => removeListAttributes( Array.from( evt.return.getChildren() ), writer ) );
 			}
 		} );

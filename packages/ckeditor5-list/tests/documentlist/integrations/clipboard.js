@@ -82,13 +82,13 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-				'<li>' +
-				'<p>B1</p>' +
-				'<p>B2</p>' +
-				'<ul>' +
-				'<li>C1</li>' +
-				'</ul>' +
-				'</li>' +
+					'<li>' +
+						'<p>B1</p>' +
+						'<p>B2</p>' +
+						'<ul>' +
+							'<li>C1</li>' +
+						'</ul>' +
+					'</li>' +
 				'</ul>'
 			);
 		} );
@@ -99,7 +99,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B1</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B2</paragraph>' +
 				'[<paragraph listType="bulleted" listItemId="c" listIndent="2">C1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C2</paragraph>]'
+				'<paragraph listType="bulleted" listItemId="d" listIndent="2">C2</paragraph>]'
 			);
 
 			const modelFragment = model.getSelectedContent( model.document.selection );
@@ -108,10 +108,8 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-				'<li>' +
-				'<p>C1</p>' +
-				'<p>C2</p>' +
-				'</li>' +
+					'<li>C1</li>' +
+					'<li>C2</li>' +
 				'</ul>'
 			);
 		} );
