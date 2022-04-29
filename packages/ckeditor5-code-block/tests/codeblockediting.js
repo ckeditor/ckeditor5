@@ -1423,7 +1423,11 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should upcast <pre> with accidental elements around <code>', () => {
 			editor.setData( '<pre><b>foo</b><code>Hello World!</code><span>bar</span></pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text bold="true">[]foo</$text></paragraph>' +
+				'<codeBlock language="plaintext">Hello World!</codeBlock>' +
+				'<paragraph>bar</paragraph>'
+			);
 		} );
 
 		it( 'should upcast <pre> with nested <pre> and accidental elements around <code>', () => {
@@ -1443,7 +1447,9 @@ describe( 'CodeBlockEditing', () => {
 			);
 
 			expect( getModelData( model ) ).to.equal(
-				'<codeBlock language="plaintext">[]Hello World!Nested-boldNested codeNested-span</codeBlock>'
+				'<paragraph><$text bold="true">[]foo</$text></paragraph>' +
+				'<codeBlock language="plaintext">Hello World!Nested-boldNested codeNested-span</codeBlock>' +
+				'<paragraph>bar</paragraph>'
 			);
 		} );
 

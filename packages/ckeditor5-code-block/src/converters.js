@@ -302,17 +302,13 @@ export function dataViewToModelOrphanNodeConsumer() {
 		}
 
 		for ( const child of preChildren ) {
-			if ( child === childCodeElement ) {
+			if ( child === childCodeElement || !child.is( '$text' ) ) {
 				continue;
 			}
 
-			const consumables = child.is( 'element' ) ? { name: true } : null;
-
-			// Do nothing, if the node has already been converted.
-			if ( consumable.test( child, consumables ) ) {
-				// Consuming the orphan to remove it from the input data.
-				consumable.consume( child, consumables );
-			}
+			// Consuming the orphan to remove it from the input data.
+			// Second argument in `consumable.consume` is discarded for text nodes.
+			consumable.consume( child, { name: true } );
 		}
 	};
 }
