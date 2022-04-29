@@ -237,7 +237,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
 
 					expect( modelFragment.childCount ).to.equal( 1 );
-					expect( Array.from( modelFragment.getChildren() ).some( isListItemBlock ) ).to.be.false;
+					expect( Array.from( modelFragment.getChildren() ).some( hasAnyListAttribute ) ).to.be.false;
 				} );
 			} );
 
