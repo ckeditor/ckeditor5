@@ -4,8 +4,8 @@
  */
 
 import ListProperties from '../src/listproperties';
-import ListPropertiesEditing from '../src/listpropertiesediting';
-import ListPropertiesUI from '../src/listpropertiesui';
+import ListPropertiesEditing from '../src/listproperties/listpropertiesediting';
+import ListPropertiesUI from '../src/listproperties/listpropertiesui';
 
 describe( 'ListProperties', () => {
 	it( 'should be named', () => {

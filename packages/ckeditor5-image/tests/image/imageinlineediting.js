@@ -11,7 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
@@ -276,6 +276,14 @@ describe( 'ImageInlineEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph></paragraph>' );
+			} );
+
+			it( 'should consume the src attribute on <img>', () => {
+				editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { attributes: 'src' } ) ).to.be.false;
+				}, { priority: 'low' } );
+
+				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
 			} );
 
 			it( 'should dispatch conversion for nested elements', () => {

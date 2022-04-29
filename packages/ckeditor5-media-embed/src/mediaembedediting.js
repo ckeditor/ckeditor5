@@ -177,14 +177,12 @@ export default class MediaEmbedEditing extends Plugin {
 
 		// Configure the schema.
 		schema.register( 'media', {
-			isObject: true,
-			isBlock: true,
-			allowWhere: '$block',
+			inheritAllFrom: '$blockObject',
 			allowAttributes: [ 'url' ]
 		} );
 
 		// Model -> Data
-		conversion.for( 'dataDowncast' ).elementToElement( {
+		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'media',
 			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );
@@ -204,7 +202,7 @@ export default class MediaEmbedEditing extends Plugin {
 			} ) );
 
 		// Model -> View (element)
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: 'media',
 			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );

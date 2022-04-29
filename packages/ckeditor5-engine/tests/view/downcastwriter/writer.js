@@ -15,8 +15,13 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 import DocumentFragment from '../../../src/view/documentfragment';
 import HtmlDataProcessor from '../../../src/dataprocessor/htmldataprocessor';
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		attributes = { foo: 'bar', baz: 'quz' };
@@ -108,7 +113,6 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			assertElementAttributes( element, attributes );
 		} );
 
@@ -121,7 +125,6 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			expect( element.priority ).to.equal( 99 );
 			expect( element.id ).to.equal( 'bar' );
 			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
@@ -141,21 +144,64 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'containerElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			assertElementAttributes( element, attributes );
+			expect( element.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should allow to pass additional options', () => {
 			const element = writer.createContainerElement( 'foo', attributes, {
-				isAllowedInsideAttributeElement: true,
 				renderUnsafeAttributes: [ 'baz' ]
 			} );
 
 			expect( element.is( 'containerElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.true;
 			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should create element without attributes', () => {
+			const element = writer.createContainerElement( 'foo', null );
+
+			expect( element.is( 'containerElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( Array.from( element.getAttributes() ).length ).to.equal( 0 );
+			expect( element.childCount ).to.equal( 0 );
+		} );
+
+		it( 'should create element with single child', () => {
+			const child = writer.createEmptyElement( 'bar' );
+			const element = writer.createContainerElement( 'foo', null, child );
+
+			expect( element.is( 'containerElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( Array.from( element.getAttributes() ).length ).to.equal( 0 );
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.getChild( 0 ) ).to.equal( child );
+		} );
+
+		it( 'should create element with children and attributes', () => {
+			const first = writer.createEmptyElement( 'aaa' );
+			const second = writer.createEmptyElement( 'bbb' );
+			const element = writer.createContainerElement( 'foo', attributes, [ first, second ] );
+
+			expect( element.is( 'containerElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			assertElementAttributes( element, attributes );
+			expect( element.childCount ).to.equal( 2 );
+			expect( element.getChild( 0 ) ).to.equal( first );
+			expect( element.getChild( 1 ) ).to.equal( second );
+		} );
+
+		it( 'should create element with children attributes and allow additional options', () => {
+			const child = writer.createEmptyElement( 'bar' );
+			const element = writer.createContainerElement( 'foo', attributes, child, { renderUnsafeAttributes: [ 'baz' ] } );
+
+			expect( element.is( 'containerElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+			assertElementAttributes( element, attributes );
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.getChild( 0 ) ).to.equal( child );
 		} );
 	} );
 
@@ -165,7 +211,6 @@ describe( 'DowncastWriter', () => {
 
 			expect( element ).to.be.instanceOf( EditableElement );
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			assertElementAttributes( element, attributes );
 		} );
 
@@ -184,19 +229,16 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'emptyElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 
 		it( 'should allow to pass additional options', () => {
 			const element = writer.createEmptyElement( 'foo', attributes, {
-				isAllowedInsideAttributeElement: false,
 				renderUnsafeAttributes: [ 'baz' ]
 			} );
 
 			expect( element.is( 'emptyElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
@@ -208,7 +250,6 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'uiElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 
@@ -218,18 +259,16 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'uiElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.true;
 			expect( element.render ).to.equal( renderFn );
 			assertElementAttributes( element, attributes );
 		} );
 
 		it( 'should allow to pass additional options', () => {
 			const renderFn = function() {};
-			const element = writer.createUIElement( 'foo', attributes, renderFn, { isAllowedInsideAttributeElement: false } );
+			const element = writer.createUIElement( 'foo', attributes, renderFn );
 
 			expect( element.is( 'uiElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -240,7 +279,6 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'rawElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.true;
 			assertElementAttributes( element, attributes );
 
 			expect( element.render ).to.be.a( 'function' );
@@ -269,13 +307,11 @@ describe( 'DowncastWriter', () => {
 		it( 'should allow to pass additional options', () => {
 			const renderFn = function() {};
 			const element = writer.createRawElement( 'foo', attributes, renderFn, {
-				isAllowedInsideAttributeElement: false,
 				renderUnsafeAttributes: [ 'baz' ]
 			} );
 
 			expect( element.is( 'rawElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
@@ -457,6 +493,36 @@ describe( 'DowncastWriter', () => {
 			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
 
 			expect( writer.createSelection() ).to.be.instanceof( ViewSelection );
+		} );
+	} );
+
+	describe( 'createSlot()', () => {
+		it( 'should throw if called before slot factory is initialized', () => {
+			expect( () => {
+				writer.createSlot();
+			} ).to.throw( CKEditorError, 'view-writer-invalid-create-slot-context' );
+		} );
+
+		it( 'should call slot factory and pass the parameter', () => {
+			const spy = sinon.spy();
+
+			writer._registerSlotFactory( spy );
+			writer.createSlot( 'foo' );
+
+			sinon.assert.calledWithExactly( spy, writer, 'foo' );
+		} );
+
+		it( 'should throw if called after slot factory is cleared', () => {
+			const spy = sinon.spy();
+
+			writer._registerSlotFactory( spy );
+			writer._clearSlotFactory();
+
+			expect( () => {
+				writer.createSlot( 'foo' );
+			} ).to.throw( CKEditorError, 'view-writer-invalid-create-slot-context' );
+
+			sinon.assert.notCalled( spy );
 		} );
 	} );
 

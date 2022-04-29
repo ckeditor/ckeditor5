@@ -121,6 +121,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableTypeAroundFakeCaretActivationUsingKeyboardArrows();
 		this._enableDeleteIntegration();
 		this._enableInsertContentIntegration();
+		this._enableInsertObjectIntegration();
 		this._enableDeleteContentIntegration();
 	}
 
@@ -145,8 +146,11 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
+		const attributesToCopy = editor.model.schema.getAttributesWithProperty( widgetModelElement, 'copyOnReplace', true );
+
 		editor.execute( 'insertParagraph', {
-			position: editor.model.createPositionAt( widgetModelElement, position )
+			position: editor.model.createPositionAt( widgetModelElement, position ),
+			attributes: attributesToCopy
 		} );
 
 		editingView.focus();
@@ -776,6 +780,38 @@ export default class WidgetTypeAround extends Plugin {
 
 				return result;
 			} );
+		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Attaches the {@link module:engine/model/model~Model#event:insertObject} event listener that modifies the
+	 * `options.findOptimalPosition`parameter to position of fake caret in relation to selected element
+	 * to reflect user's intent of desired insertion position.
+	 *
+	 * The object is inserted according to the `widget-type-around` selection attribute (see {@link #_handleArrowKeyPress}).
+	 *
+	 * @private
+	 */
+	_enableInsertObjectIntegration() {
+		const editor = this.editor;
+		const model = this.editor.model;
+		const documentSelection = model.document.selection;
+
+		this._listenToIfEnabled( editor.model, 'insertObject', ( evt, args ) => {
+			const [ , selectable, , options = {} ] = args;
+
+			if ( selectable && !selectable.is( 'documentSelection' ) ) {
+				return;
+			}
+
+			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( documentSelection );
+
+			if ( !typeAroundFakeCaretPosition ) {
+				return;
+			}
+
+			options.findOptimalPosition = typeAroundFakeCaretPosition;
+			args[ 3 ] = options;
 		}, { priority: 'high' } );
 	}
 

@@ -87,6 +87,7 @@ export default class CodeBlockEditing extends Plugin {
 		const schema = editor.model.schema;
 		const model = editor.model;
 		const view = editor.editing.view;
+		const isDocumentListEditingLoaded = editor.plugins.has( 'DocumentListEditing' );
 
 		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
@@ -97,19 +98,20 @@ export default class CodeBlockEditing extends Plugin {
 		editor.commands.add( 'indentCodeBlock', new IndentCodeBlockCommand( editor ) );
 		editor.commands.add( 'outdentCodeBlock', new OutdentCodeBlockCommand( editor ) );
 
-		const getCommandExecuter = commandName => {
-			return ( data, cancel ) => {
-				const command = this.editor.commands.get( commandName );
+		this.listenTo( view.document, 'tab', ( evt, data ) => {
+			const commandName = data.shiftKey ? 'outdentCodeBlock' : 'indentCodeBlock';
+			const command = editor.commands.get( commandName );
 
-				if ( command.isEnabled ) {
-					this.editor.execute( commandName );
-					cancel();
-				}
-			};
-		};
+			if ( !command.isEnabled ) {
+				return;
+			}
 
-		editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentCodeBlock' ) );
-		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentCodeBlock' ) );
+			editor.execute( commandName );
+
+			data.stopPropagation();
+			data.preventDefault();
+			evt.stop();
+		}, { context: 'pre' } );
 
 		schema.register( 'codeBlock', {
 			allowWhere: '$block',
@@ -118,8 +120,17 @@ export default class CodeBlockEditing extends Plugin {
 			allowAttributes: [ 'language' ]
 		} );
 
+		// Allow all list* attributes on `codeBlock` (integration with DocumentList).
 		// Disallow all attributes on $text inside `codeBlock`.
-		schema.addAttributeCheck( context => {
+		schema.addAttributeCheck( ( context, attributeName ) => {
+			const isDocumentListAttributeOnCodeBlock = context.endsWith( 'codeBlock' ) &&
+				attributeName.startsWith( 'list' ) &&
+				attributeName !== 'list';
+
+			if ( isDocumentListEditingLoaded && isDocumentListAttributeOnCodeBlock ) {
+				return true;
+			}
+
 			if ( context.endsWith( 'codeBlock $text' ) ) {
 				return false;
 			}
@@ -210,7 +221,11 @@ export default class CodeBlockEditing extends Plugin {
 		const outdent = commands.get( 'outdent' );
 
 		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentCodeBlock' ) );
+			// Priority is highest due to integration with `IndentList` command of `List` plugin.
+			// If selection is in a code block we give priority to it. This way list item cannot be indented
+			// but if we would give priority to indenting list item then user would have to indent list item
+			// as much as possible and only then he could indent code block.
+			indent.registerChildCommand( commands.get( 'indentCodeBlock' ), { priority: 'highest' } );
 		}
 
 		if ( outdent ) {

@@ -54,7 +54,7 @@ class ExtendHTMLSupport extends Plugin {
 			model: 'myObjectInline',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		} );
 
@@ -66,7 +66,7 @@ class ExtendHTMLSupport extends Plugin {
 			model: 'myObjectBlock',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectBlock'
+				inheritAllFrom: '$blockObject'
 			}
 		} );
 

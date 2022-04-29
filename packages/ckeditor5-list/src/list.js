@@ -7,16 +7,16 @@
  * @module list/list
  */
 
-import ListEditing from './listediting';
-import ListUI from './listui';
+import ListEditing from './list/listediting';
+import ListUI from './list/listui';
 
 import { Plugin } from 'ckeditor5/src/core';
 
 /**
  * The list feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/listediting~ListEditing list editing feature}
- * and {@link module:list/listui~ListUI list UI feature}.
+ * This is a "glue" plugin that loads the {@link module:list/list/listediting~ListEditing list editing feature}
+ * and {@link module:list/list/listui~ListUI list UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -37,7 +37,8 @@ export default class List extends Plugin {
 }
 
 /**
- * The configuration of the {@link module:list/list~List list} feature.
+ * The configuration of the {@link module:list/list~List list} feature
+ * and the {@link module:list/documentlist~DocumentList document list} feature.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -52,7 +53,7 @@ export default class List extends Plugin {
  */
 
 /**
- * The configuration of the {@link module:list/list~List} feature.
+ * The configuration of the {@link module:list/list~List} feature and the {@link module:list/documentlist~DocumentList} feature.
  *
  * Read more in {@link module:list/list~ListConfig}.
  *

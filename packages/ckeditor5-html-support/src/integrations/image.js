@@ -10,7 +10,10 @@
 import { Plugin } from 'ckeditor5/src/core';
 
 import DataFilter from '../datafilter';
-import { setViewAttributes } from '../conversionutils.js';
+import {
+	setViewAttributes,
+	updateViewAttributes
+} from '../conversionutils.js';
 
 /**
  * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.
@@ -84,6 +87,10 @@ export default class ImageElementSupport extends Plugin {
 function viewToModelImageAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			const viewImageElement = data.viewItem;
 			const viewContainerElement = viewImageElement.parent;
 
@@ -130,7 +137,7 @@ function modelToViewImageAttributeConverter() {
 
 		addBlockAttributeConversion( 'img', 'htmlAttributes' );
 		addBlockAttributeConversion( 'figure', 'htmlFigureAttributes' );
-		addBlockImageLinkAttributeConversion();
+		addBlockAttributeConversion( 'a', 'htmlLinkAttributes' );
 
 		function addInlineAttributeConversion( attributeName ) {
 			dispatcher.on( `attribute:${ attributeName }:imageInline`, ( evt, data, conversionApi ) => {
@@ -138,38 +145,42 @@ function modelToViewImageAttributeConverter() {
 					return;
 				}
 
+				const { attributeOldValue, attributeNewValue } = data;
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
+				updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewElement );
 			}, { priority: 'low' } );
 		}
 
 		function addBlockAttributeConversion( elementName, attributeName ) {
 			dispatcher.on( `attribute:${ attributeName }:imageBlock`, ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+				if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 					return;
 				}
 
+				const { attributeOldValue, attributeNewValue } = data;
 				const containerElement = conversionApi.mapper.toViewElement( data.item );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
-			}, { priority: 'low' } );
-		}
-
-		// To have a link element in the view, we need to attach a converter to the `linkHref` attribute.
-		// Doing this directly on `htmlLinkAttributes` will fail, as the link wrapper is not yet called at that moment.
-		function addBlockImageLinkAttributeConversion( ) {
-			dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, 'attribute:htmlLinkAttributes:imageBlock' ) ) {
-					return;
+				if ( viewElement ) {
+					updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewElement );
+					conversionApi.consumable.consume( data.item, evt.name );
 				}
-
-				const containerElement = conversionApi.mapper.toViewElement( data.item );
-				const viewElement = getDescendantElement( conversionApi.writer, containerElement, 'a' );
-
-				setViewAttributes( conversionApi.writer, data.item.getAttribute( 'htmlLinkAttributes' ), viewElement );
 			}, { priority: 'low' } );
+
+			if ( elementName === 'a' ) {
+				// To have a link element in the view, we need to attach a converter to the `linkHref` attribute as well.
+				dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
+					if ( !conversionApi.consumable.consume( data.item, 'attribute:htmlLinkAttributes:imageBlock' ) ) {
+						return;
+					}
+
+					const containerElement = conversionApi.mapper.toViewElement( data.item );
+					const viewElement = getDescendantElement( conversionApi.writer, containerElement, 'a' );
+
+					setViewAttributes( conversionApi.writer, data.item.getAttribute( 'htmlLinkAttributes' ), viewElement );
+				}, { priority: 'low' } );
+			}
 		}
 	};
 }

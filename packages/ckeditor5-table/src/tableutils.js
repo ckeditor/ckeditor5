@@ -775,6 +775,288 @@ export default class TableUtils extends Plugin {
 		return Array.from( table.getChildren() )
 			.reduce( ( rowCount, child ) => child.is( 'element', 'tableRow' ) ? rowCount + 1 : rowCount, 0 );
 	}
+
+	/**
+	 * Creates an instance of the table walker.
+	 *
+	 * The table walker iterates internally by traversing the table from row index = 0 and column index = 0.
+	 * It walks row by row and column by column in order to output values defined in the options.
+	 * By default it will output only the locations that are occupied by a cell. To include also spanned rows and columns,
+	 * pass the `includeAllSlots` option.
+	 *
+	 * @protected
+	 * @param {module:engine/model/element~Element} table A table over which the walker iterates.
+	 * @param {Object} [options={}] An object with configuration.
+	 * @param {Number} [options.row] A row index for which this iterator will output cells.
+	 * Can't be used together with `startRow` and `endRow`.
+	 * @param {Number} [options.startRow=0] A row index from which this iterator should start. Can't be used together with `row`.
+	 * @param {Number} [options.endRow] A row index at which this iterator should end. Can't be used together with `row`.
+	 * @param {Number} [options.column] A column index for which this iterator will output cells.
+	 * Can't be used together with `startColumn` and `endColumn`.
+	 * @param {Number} [options.startColumn=0] A column index from which this iterator should start. Can't be used together with `column`.
+	 * @param {Number} [options.endColumn] A column index at which this iterator should end. Can't be used together with `column`.
+	 * @param {Boolean} [options.includeAllSlots=false] Also return values for spanned cells.
+	 */
+	createTableWalker( table, options = {} ) {
+		return new TableWalker( table, options );
+	}
+
+	/**
+	 * Returns all model table cells that are fully selected (from the outside)
+	 * within the provided model selection's ranges.
+	 *
+	 * To obtain the cells selected from the inside, use
+	 * {@link #getTableCellsContainingSelection}.
+	 *
+	 * @param {module:engine/model/selection~Selection} selection
+	 * @returns {Array.<module:engine/model/element~Element>}
+	 */
+	getSelectedTableCells( selection ) {
+		const cells = [];
+
+		for ( const range of this.sortRanges( selection.getRanges() ) ) {
+			const element = range.getContainedElement();
+
+			if ( element && element.is( 'element', 'tableCell' ) ) {
+				cells.push( element );
+			}
+		}
+
+		return cells;
+	}
+
+	/**
+	 * Returns all model table cells that the provided model selection's ranges
+	 * {@link module:engine/model/range~Range#start} inside.
+	 *
+	 * To obtain the cells selected from the outside, use
+	 * {@link #getSelectedTableCells}.
+	 *
+	 * @param {module:engine/model/selection~Selection} selection
+	 * @returns {Array.<module:engine/model/element~Element>}
+	 */
+	getTableCellsContainingSelection( selection ) {
+		const cells = [];
+
+		for ( const range of selection.getRanges() ) {
+			const cellWithSelection = range.start.findAncestor( 'tableCell' );
+
+			if ( cellWithSelection ) {
+				cells.push( cellWithSelection );
+			}
+		}
+
+		return cells;
+	}
+
+	/**
+	 * Returns all model table cells that are either completely selected
+	 * by selection ranges or host selection range
+	 * {@link module:engine/model/range~Range#start start positions} inside them.
+	 *
+	 * Combines {@link #getTableCellsContainingSelection} and
+	 * {@link #getSelectedTableCells}.
+	 *
+	 * @param {module:engine/model/selection~Selection} selection
+	 * @returns {Array.<module:engine/model/element~Element>}
+	 */
+	getSelectionAffectedTableCells( selection ) {
+		const selectedCells = this.getSelectedTableCells( selection );
+
+		if ( selectedCells.length ) {
+			return selectedCells;
+		}
+
+		return this.getTableCellsContainingSelection( selection );
+	}
+
+	/**
+	 * Returns an object with the `first` and `last` row index contained in the given `tableCells`.
+	 *
+	 *		const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
+	*
+	*		const { first, last } = getRowIndexes( selectedTableCells );
+	*
+	*		console.log( `Selected rows: ${ first } to ${ last }` );
+	*
+	* @param {Array.<module:engine/model/element~Element>} tableCells
+	* @returns {Object} Returns an object with the `first` and `last` table row indexes.
+	*/
+	getRowIndexes( tableCells ) {
+		const indexes = tableCells.map( cell => cell.parent.index );
+
+		return this._getFirstLastIndexesObject( indexes );
+	}
+
+	/**
+	 * Returns an object with the `first` and `last` column index contained in the given `tableCells`.
+	 *
+	 *		const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
+	*
+	*		const { first, last } = getColumnIndexes( selectedTableCells );
+	*
+	*		console.log( `Selected columns: ${ first } to ${ last }` );
+	*
+	* @param {Array.<module:engine/model/element~Element>} tableCells
+	* @returns {Object} Returns an object with the `first` and `last` table column indexes.
+	*/
+	getColumnIndexes( tableCells ) {
+		const table = tableCells[ 0 ].findAncestor( 'table' );
+		const tableMap = [ ...new TableWalker( table ) ];
+
+		const indexes = tableMap
+			.filter( entry => tableCells.includes( entry.cell ) )
+			.map( entry => entry.column );
+
+		return this._getFirstLastIndexesObject( indexes );
+	}
+
+	/**
+	 * Checks if the selection contains cells that do not exceed rectangular selection.
+	 *
+	 * In a table below:
+	 *
+	 *		┌───┬───┬───┬───┐
+	*		│ a │ b │ c │ d │
+	*		├───┴───┼───┤   │
+	*		│ e     │ f │   │
+	*		│       ├───┼───┤
+	*		│       │ g │ h │
+	*		└───────┴───┴───┘
+	*
+	* Valid selections are these which create a solid rectangle (without gaps), such as:
+	*   - a, b (two horizontal cells)
+	*   - c, f (two vertical cells)
+	*   - a, b, e (cell "e" spans over four cells)
+	*   - c, d, f (cell d spans over a cell in the row below)
+	*
+	* While an invalid selection would be:
+	*   - a, c (the unselected cell "b" creates a gap)
+	*   - f, g, h (cell "d" spans over a cell from the row of "f" cell - thus creates a gap)
+	*
+	* @param {Array.<module:engine/model/element~Element>} selectedTableCells
+	* @returns {Boolean}
+	*/
+	isSelectionRectangular( selectedTableCells ) {
+		if ( selectedTableCells.length < 2 || !this._areCellInTheSameTableSection( selectedTableCells ) ) {
+			return false;
+		}
+
+		// A valid selection is a fully occupied rectangle composed of table cells.
+		// Below we will calculate the area of a selected table cells and the area of valid selection.
+		// The area of a valid selection is defined by top-left and bottom-right cells.
+		const rows = new Set();
+		const columns = new Set();
+
+		let areaOfSelectedCells = 0;
+
+		for ( const tableCell of selectedTableCells ) {
+			const { row, column } = this.getCellLocation( tableCell );
+			const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+
+			// Record row & column indexes of current cell.
+			rows.add( row );
+			columns.add( column );
+
+			// For cells that spans over multiple rows add also the last row that this cell spans over.
+			if ( rowspan > 1 ) {
+				rows.add( row + rowspan - 1 );
+			}
+
+			// For cells that spans over multiple columns add also the last column that this cell spans over.
+			if ( colspan > 1 ) {
+				columns.add( column + colspan - 1 );
+			}
+
+			areaOfSelectedCells += ( rowspan * colspan );
+		}
+
+		// We can only merge table cells that are in adjacent rows...
+		const areaOfValidSelection = getBiggestRectangleArea( rows, columns );
+
+		return areaOfValidSelection == areaOfSelectedCells;
+	}
+
+	/**
+	 * Returns array of sorted ranges.
+	 *
+	 * @param {Iterable.<module:engine/model/range~Range>} ranges
+	 * @return {Array.<module:engine/model/range~Range>}
+	 */
+	sortRanges( ranges ) {
+		return Array.from( ranges ).sort( compareRangeOrder );
+	}
+
+	/**
+	 * Helper method to get an object with `first` and `last` indexes from an unsorted array of indexes.
+	 *
+	 * @private
+	 * @param {Number[]} indexes
+	 * @returns {Object}
+	 */
+	_getFirstLastIndexesObject( indexes ) {
+		const allIndexesSorted = indexes.sort( ( indexA, indexB ) => indexA - indexB );
+
+		const first = allIndexesSorted[ 0 ];
+		const last = allIndexesSorted[ allIndexesSorted.length - 1 ];
+
+		return { first, last };
+	}
+
+	/**
+	 * Checks if the selection does not mix a header (column or row) with other cells.
+	 *
+	 * For instance, in the table below valid selections consist of cells with the same letter only.
+	 * So, a-a (same heading row and column) or d-d (body cells) are valid while c-d or a-b are not.
+	 *
+	 * header columns
+	 *		  ↓   ↓
+	 *		┌───┬───┬───┬───┐
+	 *		│ a │ a │ b │ b │  ← header row
+	 *		├───┼───┼───┼───┤
+	 *		│ c │ c │ d │ d │
+	 *		├───┼───┼───┼───┤
+	 *		│ c │ c │ d │ d │
+	 *		└───┴───┴───┴───┘
+	 *
+	 * @private
+	 * @param {Array.<module:engine/model/element~Element>} tableCells
+	 * @returns {Boolean}
+	 */
+	_areCellInTheSameTableSection( tableCells ) {
+		const table = tableCells[ 0 ].findAncestor( 'table' );
+
+		const rowIndexes = this.getRowIndexes( tableCells );
+		const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+
+		// Calculating row indexes is a bit cheaper so if this check fails we can't merge.
+		if ( !this._areIndexesInSameSection( rowIndexes, headingRows ) ) {
+			return false;
+		}
+
+		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
+		const columnIndexes = this.getColumnIndexes( tableCells );
+
+		// Similarly cells must be in same column section.
+		return this._areIndexesInSameSection( columnIndexes, headingColumns );
+	}
+
+	/**
+	 * Unified check if table rows/columns indexes are in the same heading/body section.
+	 *
+	 * @private
+	 * @param {Object} params
+	 * @param {Number} params.first
+	 * @param {Number} params.last
+	 * @param {Number} headingSectionSize
+	 */
+	_areIndexesInSameSection( { first, last }, headingSectionSize ) {
+		const firstCellIsInHeading = first < headingSectionSize;
+		const lastCellIsInHeading = last < headingSectionSize;
+
+		return firstCellIsInHeading === lastCellIsInHeading;
+	}
 }
 
 // Creates empty rows at the given index in an existing table.
@@ -942,4 +1224,32 @@ function moveCellsToRow( table, targetRowIndex, cellsToMove, writer ) {
 			previousCell = cell;
 		}
 	}
+}
+
+function compareRangeOrder( rangeA, rangeB ) {
+	// Since table cell ranges are disjoint, it's enough to check their start positions.
+	const posA = rangeA.start;
+	const posB = rangeB.start;
+
+	// Checking for equal position (returning 0) is not needed because this would be either:
+	// a. Intersecting range (not allowed by model)
+	// b. Collapsed range on the same position (allowed by model but should not happen).
+	return posA.isBefore( posB ) ? -1 : 1;
+}
+
+// Calculates the area of a maximum rectangle that can span over the provided row & column indexes.
+//
+// @param {Array.<Number>} rows
+// @param {Array.<Number>} columns
+// @returns {Number}
+function getBiggestRectangleArea( rows, columns ) {
+	const rowsIndexes = Array.from( rows.values() );
+	const columnIndexes = Array.from( columns.values() );
+
+	const lastRow = Math.max( ...rowsIndexes );
+	const firstRow = Math.min( ...rowsIndexes );
+	const lastColumn = Math.max( ...columnIndexes );
+	const firstColumn = Math.min( ...columnIndexes );
+
+	return ( lastRow - firstRow + 1 ) * ( lastColumn - firstColumn + 1 );
 }

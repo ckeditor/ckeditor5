@@ -6,8 +6,8 @@
 import Autoformat from '../src/autoformat';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
-import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolistediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
+import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting';

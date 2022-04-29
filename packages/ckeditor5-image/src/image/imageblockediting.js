@@ -22,7 +22,7 @@ import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
 	getImgViewElementMatcher,
-	createImageViewElement,
+	createBlockImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../image/utils';
 
@@ -62,9 +62,7 @@ export default class ImageBlockEditing extends Plugin {
 
 		// Converters 'alt' and 'srcset' are added in 'ImageEditing' plugin.
 		schema.register( 'imageBlock', {
-			isObject: true,
-			isBlock: true,
-			allowWhere: '$block',
+			inheritAllFrom: '$blockObject',
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
@@ -90,16 +88,16 @@ export default class ImageBlockEditing extends Plugin {
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'dataDowncast' )
-			.elementToElement( {
+			.elementToStructure( {
 				model: 'imageBlock',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'imageBlock' )
+				view: ( modelElement, { writer } ) => createBlockImageViewElement( writer )
 			} );
 
 		conversion.for( 'editingDowncast' )
-			.elementToElement( {
+			.elementToStructure( {
 				model: 'imageBlock',
 				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
-					createImageViewElement( writer, 'imageBlock' ), writer, t( 'image widget' )
+					createBlockImageViewElement( writer ), writer, t( 'image widget' )
 				)
 			} );
 

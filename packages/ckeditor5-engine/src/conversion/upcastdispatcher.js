@@ -40,10 +40,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * The third parameter of the callback is an instance of {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi}
  * which provides additional tools for converters.
  *
- * You can read more about conversion in the following guides:
- *
- * * {@glink framework/guides/deep-dive/conversion/conversion-introduction Advanced conversion concepts &mdash; attributes}
- * * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion}
+ * You can read more about conversion in the {@glink framework/guides/deep-dive/conversion/upcast Upcast conversion} guide.
  *
  * Examples of event-based converters:
  *
@@ -127,7 +124,7 @@ export default class UpcastDispatcher {
 		/**
 		 * The list of elements that were created during splitting.
 		 *
-		 * After the conversion process the list is cleared.
+		 * After the conversion process, the list is cleared.
 		 *
 		 * @private
 		 * @type {Map.<module:engine/model/element~Element,Array.<module:engine/model/element~Element>>}
@@ -155,6 +152,16 @@ export default class UpcastDispatcher {
 		this._modelCursor = null;
 
 		/**
+		 * The list of elements that were created during the splitting but should not get removed on conversion end even if they are empty.
+		 *
+		 * The list is cleared after the conversion process.
+		 *
+		 * @private
+		 * @type {Set.<module:engine/model/element~Element>}
+		 */
+		this._emptyElementsToKeep = new Set();
+
+		/**
 		 * An interface passed by the dispatcher to the event callbacks.
 		 *
 		 * @member {module:engine/conversion/upcastdispatcher~UpcastConversionApi}
@@ -170,6 +177,7 @@ export default class UpcastDispatcher {
 		// Advanced API - use only if custom position handling is needed.
 		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
 		this.conversionApi.getSplitParts = this._getSplitParts.bind( this );
+		this.conversionApi.keepEmptyElement = this._keepEmptyElement.bind( this );
 	}
 
 	/**
@@ -229,6 +237,7 @@ export default class UpcastDispatcher {
 		// Clear split elements & parents lists.
 		this._splitParts.clear();
 		this._cursorParents.clear();
+		this._emptyElementsToKeep.clear();
 
 		// Clear conversion API.
 		this.conversionApi.writer = null;
@@ -455,6 +464,15 @@ export default class UpcastDispatcher {
 	}
 
 	/**
+	 * Mark an element that were created during the splitting to not get removed on conversion end even if it is empty.
+	 *
+	 * @private
+	 */
+	_keepEmptyElement( element ) {
+		this._emptyElementsToKeep.add( element );
+	}
+
+	/**
 	 * Checks if there are any empty elements created while splitting and removes them.
 	 *
 	 * This method works recursively to re-check empty elements again after at least one element was removed in the initial call,
@@ -466,7 +484,7 @@ export default class UpcastDispatcher {
 		let anyRemoved = false;
 
 		for ( const element of this._splitParts.keys() ) {
-			if ( element.isEmpty ) {
+			if ( element.isEmpty && !this._emptyElementsToKeep.has( element ) ) {
 				this.conversionApi.writer.remove( element );
 				this._splitParts.delete( element );
 
@@ -758,6 +776,15 @@ function createContextTree( contextDefinition, writer ) {
  * @method #getSplitParts
  * @param {module:engine/model/element~Element} element
  * @returns {Array.<module:engine/model/element~Element>}
+ */
+
+/**
+ * Mark an element that was created during splitting to not get removed on conversion end even if it is empty.
+ *
+ * **Note:** This is an advanced method. For most cases you will not need to keep the split empty element.
+ *
+ * @method #keepEmptyElement
+ * @param {module:engine/model/element~Element} element
  */
 
 /**

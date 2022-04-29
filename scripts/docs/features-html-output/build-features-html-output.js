@@ -291,7 +291,7 @@ function createFeatureLink( packageData, plugin ) {
 
 	const link = /http(s)?:/.test( plugin.docs ) ?
 		plugin.docs :
-		`../../../${ plugin.docs }`;
+		`../../${ plugin.docs }`;
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
@@ -318,7 +318,7 @@ function createApiLink( packageData, plugin ) {
 		.replace( /(^src\/)|(\.js$)/g, '' )
 		.replace( /\//g, '_' );
 
-	const link = `../../../api/module_${ shortPackageName }_${ packagePath }-${ plugin.className }.html`;
+	const link = `../../api/module_${ shortPackageName }_${ packagePath }-${ plugin.className }.html`;
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 

@@ -4,8 +4,8 @@
  */
 
 import TodoList from '../src/todolist';
-import TodoListEditing from '../src/todolistediting';
-import TodoListUI from '../src/todolistui';
+import TodoListEditing from '../src/todolist/todolistediting';
+import TodoListUI from '../src/todolist/todolistui';
 
 describe( 'TodoList', () => {
 	it( 'should be named', () => {

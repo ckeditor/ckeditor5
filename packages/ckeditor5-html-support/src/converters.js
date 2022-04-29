@@ -8,7 +8,11 @@
  */
 
 import { toWidget } from 'ckeditor5/src/widget';
-import { setViewAttributes, mergeViewElementAttributes } from './conversionutils';
+import {
+	setViewAttributes,
+	mergeViewElementAttributes,
+	updateViewAttributes
+} from './conversionutils';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -28,7 +32,7 @@ export function viewToModelObjectConverter( { model: modelName } ) {
 }
 
 /**
- * Conversion helper converting object element to HTML object widget.
+ * Conversion helper converting an object element to an HTML object widget.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
@@ -37,27 +41,27 @@ export function viewToModelObjectConverter( { model: modelName } ) {
 export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) {
 	const t = editor.t;
 
-	return ( modelElement, { writer, consumable } ) => {
+	return ( modelElement, { writer } ) => {
 		const widgetLabel = t( 'HTML object' );
 
-		// Widget cannot be a raw element because the widget system would not be able
-		// to add its UI to it. Thus, we need separate view container.
-		const viewContainer = writer.createContainerElement( isInline ? 'span' : 'div', {
-			class: 'html-object-embed',
-			'data-html-object-embed-label': widgetLabel
-		}, {
-			isAllowedInsideAttributeElement: isInline
-		} );
-
 		const viewElement = createObjectView( viewName, modelElement, writer );
+		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
+
 		writer.addClass( 'html-object-embed__content', viewElement );
 
-		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
-		if ( viewAttributes && consumable.consume( modelElement, `attribute:htmlAttributes:${ modelElement.name }` ) ) {
+		if ( viewAttributes ) {
 			setViewAttributes( writer, viewAttributes, viewElement );
 		}
 
-		writer.insert( writer.createPositionAt( viewContainer, 0 ), viewElement );
+		// Widget cannot be a raw element because the widget system would not be able
+		// to add its UI to it. Thus, we need separate view container.
+		const viewContainer = writer.createContainerElement( isInline ? 'span' : 'div',
+			{
+				class: 'html-object-embed',
+				'data-html-object-embed-label': widgetLabel
+			},
+			viewElement
+		);
 
 		return toWidget( viewContainer, writer, { widgetLabel } );
 	};
@@ -88,6 +92,11 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 			const viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
+
+			// Do not apply the attribute if the element itself is already consumed and there are no view attributes to store.
+			if ( !viewAttributes && !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
+				return;
+			}
 
 			// Since we are converting to attribute we need a range on which we will set the attribute.
 			// If the range is not created yet, we will create it.
@@ -166,16 +175,15 @@ export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilt
 export function modelToViewBlockAttributeConverter( { model: modelName } ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
-			const viewAttributes = data.attributeNewValue;
-
 			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 				return;
 			}
 
+			const { attributeOldValue, attributeNewValue } = data;
 			const viewWriter = conversionApi.writer;
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-			setViewAttributes( viewWriter, viewAttributes, viewElement );
+			updateViewAttributes( viewWriter, attributeOldValue, attributeNewValue, viewElement );
 		} );
 	};
 }

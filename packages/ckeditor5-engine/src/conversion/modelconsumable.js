@@ -8,33 +8,34 @@
  */
 
 import TextProxy from '../model/textproxy';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Manages a list of consumable values for {@link module:engine/model/item~Item model items}.
+ * Manages a list of consumable values for the {@link module:engine/model/item~Item model items}.
  *
- * Consumables are various aspects of the model. A model item can be broken down into singular properties that might be
+ * Consumables are various aspects of the model. A model item can be broken down into separate, single properties that might be
  * taken into consideration when converting that item.
  *
- * `ModelConsumable` is used by {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} while analyzing changed
+ * `ModelConsumable` is used by {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} while analyzing the changed
  * parts of {@link module:engine/model/document~Document the document}. The added / changed / removed model items are broken down
- * into singular properties (the item itself and it's attributes). All those parts are saved in `ModelConsumable`. Then,
- * during conversion, when given part of model item is converted (i.e. the view element has been inserted into the view,
- * but without attributes), consumable value is removed from `ModelConsumable`.
+ * into singular properties (the item itself and its attributes). All those parts are saved in `ModelConsumable`. Then,
+ * during conversion, when the given part of a model item is converted (i.e. the view element has been inserted into the view,
+ * but without attributes), the consumable value is removed from `ModelConsumable`.
  *
  * For model items, `ModelConsumable` stores consumable values of one of following types: `insert`, `addattribute:<attributeKey>`,
  * `changeattributes:<attributeKey>`, `removeattributes:<attributeKey>`.
  *
- * In most cases, it is enough to let {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}
+ * In most cases, it is enough to let th {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}
  * gather consumable values, so there is no need to use
- * {@link module:engine/conversion/modelconsumable~ModelConsumable#add add method} directly.
+ * the {@link module:engine/conversion/modelconsumable~ModelConsumable#add add method} directly.
  * However, it is important to understand how consumable values can be
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
  * See {@link module:engine/conversion/downcasthelpers default downcast converters} for more information.
  *
- * Keep in mind, that one conversion event may have multiple callbacks (converters) attached to it. Each of those is
+ * Keep in mind that one conversion event may have multiple callbacks (converters) attached to it. Each of those is
  * able to convert one or more parts of the model. However, when one of those callbacks actually converts
- * something, other should not, because they would duplicate the results. Using `ModelConsumable` helps avoiding
- * this situation, because callbacks should only convert those values, which were not yet consumed from `ModelConsumable`.
+ * something, the others should not, because they would duplicate the results. Using `ModelConsumable` helps to avoid
+ * this situation, because callbacks should only convert these values that were not yet consumed from `ModelConsumable`.
  *
  * Consuming multiple values in a single callback:
  *
@@ -101,12 +102,12 @@ export default class ModelConsumable {
 		this._consumable = new Map();
 
 		/**
-		 * For each {@link module:engine/model/textproxy~TextProxy} added to `ModelConsumable`, this registry holds parent
-		 * of that `TextProxy` and start and end indices of that `TextProxy`. This allows identification of `TextProxy`
-		 * instances that points to the same part of the model but are different instances. Each distinct `TextProxy`
-		 * is given unique `Symbol` which is then registered as consumable. This process is transparent for `ModelConsumable`
-		 * API user because whenever `TextProxy` is added, tested, consumed or reverted, internal mechanisms of
-		 * `ModelConsumable` translates `TextProxy` to that unique `Symbol`.
+		 * For each {@link module:engine/model/textproxy~TextProxy} added to `ModelConsumable`, this registry holds a parent
+		 * of that `TextProxy` and the start and end indices of that `TextProxy`. This allows identification of the `TextProxy`
+		 * instances that point to the same part of the model but are different instances. Each distinct `TextProxy`
+		 * is given a unique `Symbol` which is then registered as consumable. This process is transparent for the `ModelConsumable`
+		 * API user because whenever `TextProxy` is added, tested, consumed or reverted, the internal mechanisms of
+		 * `ModelConsumable` translate `TextProxy` to that unique `Symbol`.
 		 *
 		 * @private
 		 * @member {Map} module:engine/conversion/modelconsumable~ModelConsumable#_textProxyRegistry
@@ -115,7 +116,7 @@ export default class ModelConsumable {
 	}
 
 	/**
-	 * Adds a consumable value to the consumables list and links it with given model item.
+	 * Adds a consumable value to the consumables list and links it with a given model item.
 	 *
 	 *		modelConsumable.add( modelElement, 'insert' ); // Add `modelElement` insertion change to consumable values.
 	 *		modelConsumable.add( modelElement, 'addAttribute:bold' ); // Add `bold` attribute insertion on `modelElement` change.
@@ -143,7 +144,7 @@ export default class ModelConsumable {
 	}
 
 	/**
-	 * Removes given consumable value from given model item.
+	 * Removes a given consumable value from a given model item.
 	 *
 	 *		modelConsumable.consume( modelElement, 'insert' ); // Remove `modelElement` insertion change from consumable values.
 	 *		modelConsumable.consume( modelElement, 'addAttribute:bold' ); // Remove `bold` attribute insertion on `modelElement` change.
@@ -174,7 +175,7 @@ export default class ModelConsumable {
 	}
 
 	/**
-	 * Tests whether there is a consumable value of given type connected with given model item.
+	 * Tests whether there is a consumable value of a given type connected with a given model item.
 	 *
 	 *		modelConsumable.test( modelElement, 'insert' ); // Check for `modelElement` insertion change.
 	 *		modelConsumable.test( modelElement, 'addAttribute:bold' ); // Check for `bold` attribute insertion on `modelElement` change.
@@ -212,7 +213,7 @@ export default class ModelConsumable {
 	}
 
 	/**
-	 * Reverts consuming of consumable value.
+	 * Reverts consuming of a consumable value.
 	 *
 	 *		modelConsumable.revert( modelElement, 'insert' ); // Revert consuming `modelElement` insertion change.
 	 *		modelConsumable.revert( modelElement, 'addAttribute:bold' ); // Revert consuming `bold` attribute insert from `modelElement`.
@@ -247,12 +248,54 @@ export default class ModelConsumable {
 	}
 
 	/**
-	 * Gets a unique symbol for passed {@link module:engine/model/textproxy~TextProxy} instance. All `TextProxy` instances that
+	 * Verifies if all events from the specified group were consumed.
+	 *
+	 * @param {String} eventGroup The events group to verify.
+	 */
+	verifyAllConsumed( eventGroup ) {
+		const items = [];
+
+		for ( const [ item, consumables ] of this._consumable ) {
+			for ( const [ event, canConsume ] of consumables ) {
+				const eventPrefix = event.split( ':' )[ 0 ];
+
+				if ( canConsume && eventGroup == eventPrefix ) {
+					items.push( {
+						event,
+						item: item.name || item.description
+					} );
+				}
+			}
+		}
+
+		if ( items.length ) {
+			/**
+			 * Some of the {@link module:engine/model/item~Item model items} were not consumed while downcasting the model to view.
+			 *
+			 * This might be the effect of:
+			 *
+			 * * A missing converter for some model elements. Make sure that you registered downcast converters for all model elements.
+			 * * A custom converter that does not consume converted items. Make sure that you
+			 * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} all model elements that you converted
+			 * from the model to the view.
+			 * * A custom converter that called `event.stop()`. When providing a custom converter, keep in mind that you should not stop
+			 * the event. If you stop it then the default converter at the `lowest` priority will not trigger the conversion of this node's
+			 * attributes and child nodes.
+			 *
+			 * @error conversion-model-consumable-not-consumed
+			 * @param {Array.<module:engine/model/item~Item>} items Items that were not consumed.
+			 */
+			throw new CKEditorError( 'conversion-model-consumable-not-consumed', null, { items } );
+		}
+	}
+
+	/**
+	 * Gets a unique symbol for the passed {@link module:engine/model/textproxy~TextProxy} instance. All `TextProxy` instances that
 	 * have same parent, same start index and same end index will get the same symbol.
 	 *
 	 * Used internally to correctly consume `TextProxy` instances.
 	 *
-	 * @private
+	 * @protected
 	 * @param {module:engine/model/textproxy~TextProxy} textProxy `TextProxy` instance to get a symbol for.
 	 * @returns {Symbol} Symbol representing all equal instances of `TextProxy`.
 	 */
@@ -270,25 +313,27 @@ export default class ModelConsumable {
 		}
 
 		if ( !symbol ) {
-			symbol = this._addSymbolForTextProxy( textProxy.startOffset, textProxy.endOffset, textProxy.parent );
+			symbol = this._addSymbolForTextProxy( textProxy );
 		}
 
 		return symbol;
 	}
 
 	/**
-	 * Adds a symbol for given properties that characterizes a {@link module:engine/model/textproxy~TextProxy} instance.
+	 * Adds a symbol for the given {@link module:engine/model/textproxy~TextProxy} instance.
 	 *
 	 * Used internally to correctly consume `TextProxy` instances.
 	 *
 	 * @private
-	 * @param {Number} startIndex Text proxy start index in it's parent.
-	 * @param {Number} endIndex Text proxy end index in it's parent.
-	 * @param {module:engine/model/element~Element} parent Text proxy parent.
-	 * @returns {Symbol} Symbol generated for given properties.
+	 * @param {module:engine/model/textproxy~TextProxy} textProxy Text proxy instance.
+	 * @returns {Symbol} Symbol generated for given `TextProxy`.
 	 */
-	_addSymbolForTextProxy( start, end, parent ) {
-		const symbol = Symbol( 'textProxySymbol' );
+	_addSymbolForTextProxy( textProxy ) {
+		const start = textProxy.startOffset;
+		const end = textProxy.endOffset;
+		const parent = textProxy.parent;
+
+		const symbol = Symbol( '$textProxy:' + textProxy.data );
 		let startMap, endMap;
 
 		startMap = this._textProxyRegistry.get( start );
@@ -311,14 +356,19 @@ export default class ModelConsumable {
 	}
 }
 
-// Returns a normalized consumable type name from given string. A normalized consumable type name is a string that has
-// at most one colon, for example: `insert` or `addMarker:highlight`. If string to normalize has more "parts" (more colons),
-// the other parts are dropped, for example: `addattribute:bold:$text` -> `addattributes:bold`.
+// Returns a normalized consumable type name from the given string. A normalized consumable type name is a string that has
+// at most one colon, for example: `insert` or `addMarker:highlight`. If a string to normalize has more "parts" (more colons),
+// the further parts are dropped, for example: `addattribute:bold:$text` -> `addattributes:bold`.
 //
 // @param {String} type Consumable type.
 // @returns {String} Normalized consumable type.
 function _normalizeConsumableType( type ) {
 	const parts = type.split( ':' );
+
+	// For inserts allow passing event name, it's stored in the context of a specified element so the element name is not needed.
+	if ( parts[ 0 ] == 'insert' ) {
+		return parts[ 0 ];
+	}
 
 	// Markers are identified by the whole name (otherwise we would consume the whole markers group).
 	if ( parts[ 0 ] == 'addMarker' || parts[ 0 ] == 'removeMarker' ) {

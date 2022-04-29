@@ -835,6 +835,23 @@ export default class Schema {
 	}
 
 	/**
+	 * Sets attributes allowed by the schema on a given node.
+	 *
+	 * @param {module:engine/model/node~Node} node A node to set attributes on.
+	 * @param {Object} attributes Attributes keys and values.
+	 * @param {module:engine/model/writer~Writer} writer An instance of the model writer.
+	 */
+	setAllowedAttributes( node, attributes, writer ) {
+		const model = writer.model;
+
+		for ( const [ attributeName, attributeValue ] of Object.entries( attributes ) ) {
+			if ( model.schema.checkAttribute( node, attributeName ) ) {
+				writer.setAttribute( attributeName, attributeValue, node );
+			}
+		}
+	}
+
+	/**
 	 * Removes attributes disallowed by the schema.
 	 *
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes that will be filtered.
@@ -861,6 +878,34 @@ export default class Schema {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Gets attributes of a node that have a given property.
+	 *
+	 * @param {module:engine/model/node~Node} node Node to get attributes from.
+	 * @param {String} propertyName Name of the property that attribute must have to return it.
+	 * @param {Boolean|Symbol|String|Number|Object|null|undefined} propertyValue Desired value of the property that we want to check.
+	 * When `undefined` attributes will be returned if they have set a given property no matter what the value is. If specified it will
+	 * return attributes which given property's value is equal to this parameter.
+	 * @returns {Object} Object with attributes' names as key and attributes' values as value.
+	 */
+	getAttributesWithProperty( node, propertyName, propertyValue ) {
+		const attributes = {};
+
+		for ( const [ attributeName, attributeValue ] of node.getAttributes() ) {
+			const attributeProperties = this.getAttributeProperties( attributeName );
+
+			if ( attributeProperties[ propertyName ] === undefined ) {
+				continue;
+			}
+
+			if ( propertyValue === undefined || propertyValue === attributeProperties[ propertyName ] ) {
+				attributes[ attributeName ] = attributeValue;
+			}
+		}
+
+		return attributes;
 	}
 
 	/**
@@ -1135,19 +1180,39 @@ mix( Schema, ObservableMixin );
  *
  * # Generic items
  *
- * There are three basic generic items: `$root`, `$block` and `$text`.
- * They are defined as follows:
+ * There are several generic items (classes of elements) available: `$root`, `$container`, `$block`, `$blockObject`,
+ * `$inlineObject`, and `$text`. They are defined as follows:
  *
- *		this.schema.register( '$root', {
+ *		schema.register( '$root', {
  *			isLimit: true
  *		} );
- *		this.schema.register( '$block', {
- *			allowIn: '$root',
+ *
+ *		schema.register( '$container', {
+ *			allowIn: [ '$root', '$container' ]
+ *		} );
+ *
+ *		schema.register( '$block', {
+ *			allowIn: [ '$root', '$container' ],
  *			isBlock: true
  *		} );
- *		this.schema.register( '$text', {
+ *
+ *		schema.register( '$blockObject', {
+ *			allowWhere: '$block',
+ *			isBlock: true,
+ *			isObject: true
+ *		} );
+ *
+ *		schema.register( '$inlineObject', {
+ *			allowWhere: '$text',
+ *			allowAttributesOf: '$text',
+ *			isInline: true,
+ *			isObject: true
+ *		} );
+ *
+ *		schema.register( '$text', {
  *			allowIn: '$block',
- *			isInline: true
+ *			isInline: true,
+ *			isContent: true
  *		} );
  *
  * They reflect typical editor content that is contained within one root, consists of several blocks
@@ -1180,14 +1245,18 @@ mix( Schema, ObservableMixin );
  *			isBlock: true
  *		} );
  *
+ * The previous rule can be written in a shorter form using inheritance:
+ *
+ *		schema.register( 'paragraph', {
+ *			inheritAllFrom: '$block'
+ *		} );
+ *
  * Make `imageBlock` a block object, which is allowed everywhere where `$block` is.
  * Also, allow `src` and `alt` attributes in it:
  *
  *		schema.register( 'imageBlock', {
- *			allowWhere: '$block',
+ *			inheritAllFrom: '$blockObject',
  *			allowAttributes: [ 'src', 'alt' ],
- *			isBlock: true,
- *			isObject: true
  *		} );
  *
  * Make `caption` allowed in `imageBlock` and make it allow all the content of `$block`s (usually, `$text`).

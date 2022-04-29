@@ -74,11 +74,10 @@ export function isMediaWidget( viewElement ) {
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createMediaFigureElement( writer, registry, url, options ) {
-	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
-
-	writer.insert( writer.createPositionAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
-
-	return figure;
+	return writer.createContainerElement( 'figure', { class: 'media' }, [
+		registry.getMediaViewElement( writer, url, options ),
+		writer.createSlot()
+	] );
 }
 
 /**
@@ -108,13 +107,16 @@ export function getSelectedMediaModelWidget( selection ) {
  * @param {module:engine/model/range~Range} [insertRange] The range to insert the media. If not specified,
  * the default behavior of {@link module:engine/model/model~Model#insertContent `model.insertContent()`} will
  * be applied.
+ * @param {Boolean} findOptimalPosition If true it will try to find optimal position to insert media without breaking content
+ * in which a selection is.
  */
-export function insertMedia( model, url, insertRange ) {
+export function insertMedia( model, url, selectable, findOptimalPosition ) {
 	model.change( writer => {
 		const mediaElement = writer.createElement( 'media', { url } );
 
-		model.insertContent( mediaElement, insertRange );
-
-		writer.setSelection( mediaElement, 'on' );
+		model.insertObject( mediaElement, selectable, null, {
+			setSelection: 'on',
+			findOptimalPosition
+		} );
 	} );
 }

@@ -27,7 +27,7 @@ import DocumentSelection from './documentselection';
 
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The model can only be modified by using the writer. It should be used whenever you want to create a node, modify
@@ -968,30 +968,8 @@ export default class Writer {
 	 * As the first parameter you can set marker name or instance. If none of them is provided, new marker, with a unique
 	 * name is created and returned.
 	 *
-	 * As the second parameter you can set the new marker data or leave this parameter as empty which will just refresh
-	 * the marker by triggering downcast conversion for it. Refreshing the marker is useful when you want to change
-	 * the marker {@link module:engine/view/element~Element view element} without changing any marker data.
-	 *
-	 * 		let isCommentActive = false;
-	 *
-	 * 		model.conversion.markerToHighlight( {
-	 * 			model: 'comment',
-	 *			view: data => {
-	 *				const classes = [ 'comment-marker' ];
-	 *
-	 *				if ( isCommentActive ) {
-	 *					classes.push( 'comment-marker--active' );
-	 *				}
-	 *
-	 *				return { classes };
-	 *			}
-	 * 		} );
-	 *
-	 * 		// Change the property that indicates if marker is displayed as active or not.
-	 * 		isCommentActive = true;
-	 *
-	 * 		// And refresh the marker to convert it with additional class.
-	 * 		model.change( writer => writer.updateMarker( 'comment' ) );
+	 * **Note**: If you want to change the {@link module:engine/view/element~Element view element} of the marker while its data in the model
+	 * remains the same, use the dedicated {@link module:engine/controller/editingcontroller~EditingController#reconvertMarker} method.
 	 *
 	 * The `options.usingOperation` parameter lets you change if the marker should be managed by operations or not. See
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
@@ -1037,7 +1015,7 @@ export default class Writer {
 
 		if ( !currentMarker ) {
 			/**
-			 * Marker with provided name does not exists.
+			 * Marker with provided name does not exist and will not be updated.
 			 *
 			 * @error writer-updatemarker-marker-not-exists
 			 */
@@ -1045,6 +1023,18 @@ export default class Writer {
 		}
 
 		if ( !options ) {
+			/**
+			 * The usage of `writer.updateMarker()` only to reconvert (refresh) a
+			 * {@link module:engine/model/markercollection~Marker model marker} was deprecated and may not work in the future.
+			 * Please update your code to use
+			 * {@link module:engine/controller/editingcontroller~EditingController#reconvertMarker `editor.editing.reconvertMarker()`}
+			 * instead.
+			 *
+			 * @error writer-updatemarker-reconvert-using-editingcontroller
+			 * @param {String} markerName The name of the updated marker.
+			 */
+			logWarning( 'writer-updatemarker-reconvert-using-editingcontroller', { markerName } );
+
 			this.model.markers._refresh( currentMarker );
 
 			return;
