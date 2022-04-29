@@ -465,39 +465,40 @@ export default class DocumentListEditing extends Plugin {
 	_setupClipboardIntegration() {
 		const model = this.editor.model;
 
-		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
+		this.listenTo( model, 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
 		// To enhance the UX, the editor should not copy list attributes to the clipboard if the selection
-		// started and ended in the same list item block or a block object as a list block was selected.
+		// started and ended in the same list item.
 		//
-		// * This prevents splitting list items when such a content is pasted/dropped by the user (block widgets in particular),
-		//   * Clipboard integration heuristics of ImageInlineEditing can kick in.
-		// * This avoids pasting single-list-item lists (orphans) anywhere else (in the root, in a paragraph).
+		// If the selection was enclosed in a single list item, there is a good chance the user did not want it
+		// to copied as a list item but plain blocks.
+		//
+		// This avoids pasting orphaned list items instead of paragraphs, for instance, straight into the root.
 		//
 		//	                       ┌─────────────────────┬───────────────────┐
 		//	                       │ Selection           │ Clipboard content │
 		//	                       ├─────────────────────┼───────────────────┤
-		//	                       │ * [<blockObject />] │ <blockObject />   │
+		//	                       │ [* <Widget />]      │ <Widget />        │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ [* Foo]             │ Foo               │
 		//	                       ├─────────────────────┼───────────────────┤
 		//	                       │ * Foo [bar] baz     │ bar               │
 		//	                       ├─────────────────────┼───────────────────┤
-		//	                       │ * Fo[o              │ * o               │
-		//	                       │   ba]r              │   ba              │
+		//	                       │ * Fo[o              │ o                 │
+		//	                       │   ba]r              │ ba                │
 		//	                       ├─────────────────────┼───────────────────┤
 		//	                       │ * Fo[o              │ * o               │
 		//	                       │ * ba]r              │ * ba              │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ [* Foo              │ * Foo             │
+		//	                       │  * bar]             │ * bar             │
 		//	                       └─────────────────────┴───────────────────┘
 		//
 		// See https://github.com/ckeditor/ckeditor5/issues/11608.
 		this.listenTo( model, 'getSelectedContent', ( evt, [ selection ] ) => {
-			// Is a single block object or a $block (for example a paragraph) selected?
-			const selectedElement = selection.getSelectedElement();
-			const isSingleListBlockSelected = selectedElement && isListItemBlock( selectedElement );
-
-			// Multiple blocks of a single list item are selected.
 			const isSingleListItemSelected = isSingleListItem( Array.from( selection.getSelectedBlocks() ) );
 
-			if ( isSingleListBlockSelected || isSingleListItemSelected ) {
+			if ( isSingleListItemSelected ) {
 				model.change( writer => removeListAttributes( Array.from( evt.return.getChildren() ), writer ) );
 			}
 		} );
