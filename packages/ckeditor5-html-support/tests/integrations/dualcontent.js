@@ -87,9 +87,9 @@ describe( 'DualContentModelElementSupport', () => {
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlDivParagraph>' +
-			'<$text italic="true" linkHref="example.com">foo</$text>' +
-			'<$text linkHref="example.com">bar</$text>' +
-			'baz' +
+				'<$text italic="true" linkHref="example.com">foo</$text>' +
+				'<$text linkHref="example.com">bar</$text>' +
+				'baz' +
 			'</htmlDivParagraph>'
 		);
 
@@ -115,8 +115,8 @@ describe( 'DualContentModelElementSupport', () => {
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlDiv>' +
-			'<paragraph><$text linkHref="example.com">foo</$text></paragraph>' +
-			'<paragraph>bar</paragraph>' +
+				'<paragraph><$text linkHref="example.com">foo</$text></paragraph>' +
+				'<paragraph>bar</paragraph>' +
 			'</htmlDiv>'
 		);
 

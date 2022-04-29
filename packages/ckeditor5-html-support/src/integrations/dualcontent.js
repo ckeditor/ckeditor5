@@ -114,6 +114,9 @@ export default class DualContentModelElementSupport extends Plugin {
 		const view = this.editor.editing.view;
 		const blockElements = view.domConverter.blockElements;
 
+		// Traversing the viewElement subtree looking for block elements.
+		// Especially for the cases like <div><a href="#"><p>foo</p></a></div>.
+		// https://github.com/ckeditor/ckeditor5/issues/11513
 		for ( const viewItem of view.createRangeIn( viewElement ).getItems() ) {
 			if ( viewItem.is( 'element' ) && blockElements.includes( viewItem.name ) ) {
 				return true;
