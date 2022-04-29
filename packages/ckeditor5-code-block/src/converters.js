@@ -285,24 +285,34 @@ export function dataViewToModelTextNewlinesInsertion() {
  */
 export function dataViewToModelOrphanNodeConsumer() {
 	return ( evt, data, { consumable } ) => {
-		// Do nothing, when not inside `<pre>`.
-		if ( !data.viewItem.parent.is( 'element', 'pre' ) ) {
+		const preElement = data.viewItem;
+
+		// Don't clean up nested pre elements. Their content should stay as it is, they are not upcasted
+		// to code blocks.
+		if ( preElement.findAncestor( 'pre' ) ) {
 			return;
 		}
 
-		// Do nothing to `<code>` inside `<pre>`. There's a dedicated `dataViewToModelCodeBlockInsertion()`
-		// converter just for that.
-		if ( data.viewItem.is( 'element', 'code' ) ) {
+		const preChildren = Array.from( preElement.getChildren() );
+		const childCodeElement = preChildren.find( node => node.is( 'element', 'code' ) );
+
+		// <code>-less <pre>. It will not upcast to code block in the model, skipping.
+		if ( !childCodeElement ) {
 			return;
 		}
 
-		const consumables = data.viewItem.is( 'element' ) ? { name: true } : null;
+		for ( const child of preChildren ) {
+			if ( child === childCodeElement ) {
+				continue;
+			}
 
-		// Do nothing, if the node has already been converted.
-		if ( !consumable.test( data.viewItem, consumables ) ) {
-			return;
+			const consumables = child.is( 'element' ) ? { name: true } : null;
+
+			// Do nothing, if the node has already been converted.
+			if ( consumable.test( child, consumables ) ) {
+				// Consuming the orphan to remove it from the input data.
+				consumable.consume( child, consumables );
+			}
 		}
-
-		consumable.consume( data.viewItem, consumables );
 	};
 }

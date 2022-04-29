@@ -1426,6 +1426,27 @@ describe( 'CodeBlockEditing', () => {
 			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
 		} );
 
+		it( 'should upcast <pre> with nested <pre> and accidental elements around <code>', () => {
+			editor.setData(
+				'<pre>' +
+					'<b>foo</b>' +
+					'<code>' +
+						'Hello World!' +
+						'<pre>' +
+							'<b>Nested-bold</b>' +
+							'<code>Nested code</code>' +
+							'<span>Nested-span</span>' +
+						'</pre>' +
+					'</code>' +
+					'<span>bar</span>' +
+				'</pre>'
+			);
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="plaintext">[]Hello World!Nested-boldNested codeNested-span</codeBlock>'
+			);
+		} );
+
 		describe( 'config.codeBlock.languages', () => {
 			it( 'should be respected when upcasting', () => {
 				return ClassicTestEditor.create(

@@ -152,9 +152,7 @@ export default class CodeBlockEditing extends Plugin {
 		editor.data.upcastDispatcher.on( 'element:code', dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs ) );
 		editor.data.upcastDispatcher.on( 'text', dataViewToModelTextNewlinesInsertion() );
 
-		// Note: Low priority to allow marker upcast first.
-		editor.data.upcastDispatcher.on( 'element', dataViewToModelOrphanNodeConsumer(), { priority: 'low' } );
-		editor.data.upcastDispatcher.on( 'text', dataViewToModelOrphanNodeConsumer() );
+		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelOrphanNodeConsumer(), { priority: 'high' } );
 
 		// Intercept the clipboard input (paste) when the selection is anchored in the code block and force the clipboard
 		// data to be pasted as a single plain text. Otherwise, the code lines will split the code block and
