@@ -471,7 +471,7 @@ export default class DocumentListEditing extends Plugin {
 		// started and ended in the same list item.
 		//
 		// If the selection was enclosed in a single list item, there is a good chance the user did not want it
-		// to copied as a list item but plain blocks.
+		// copied as a list item but plain blocks.
 		//
 		// This avoids pasting orphaned list items instead of paragraphs, for instance, straight into the root.
 		//
