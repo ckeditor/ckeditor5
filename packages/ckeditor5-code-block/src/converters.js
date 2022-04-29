@@ -274,9 +274,6 @@ export function dataViewToModelTextNewlinesInsertion() {
  *		// Redundant text
  *		<pre>ABC<code>foo()</code>DEF</pre>
  *
- *		// Redundant elements
- *		<pre><span>ABC</span><code>foo()</code><b>DEF</b></pre>
- *
  * Unified output for each case:
  *
  *		<codeBlock language="plaintext">foo()</codeBlock>
