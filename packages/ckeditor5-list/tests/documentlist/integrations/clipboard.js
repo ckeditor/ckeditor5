@@ -3,7 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import DocumentListEditing from '../../../src/documentlist/documentlistediting';
+import { isListItemBlock } from '../../../src/documentlist/utils/model';
+import { modelList } from '../_utils/utils';
 
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
@@ -12,12 +16,16 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import {
 	getData as getModelData,
 	parse as parseModel,
+	stringify as stringifyModel,
 	setData as setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -25,15 +33,18 @@ import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/vie
 import stubUid from '../_utils/uid';
 
 describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
-	let editor, model, modelDoc, modelRoot, view;
+	let element, editor, model, modelDoc, modelRoot, view;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		editor = await ClassicTestEditor.create( element, {
 			plugins: [
 				Paragraph, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
-				BlockQuoteEditing, TableEditing, HeadingEditing
+				BlockQuoteEditing, TableEditing, HeadingEditing, ImageBlockEditing, ImageInlineEditing, Widget
 			]
 		} );
 
@@ -53,6 +64,8 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 	} );
 
 	afterEach( async () => {
+		element.remove();
+
 		await editor.destroy();
 	} );
 
@@ -72,13 +85,13 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-				'<li>' +
-				'<p>B1</p>' +
-				'<p>B2</p>' +
-				'<ul>' +
-				'<li>C1</li>' +
-				'</ul>' +
-				'</li>' +
+					'<li>' +
+						'<p>B1</p>' +
+						'<p>B2</p>' +
+						'<ul>' +
+							'<li>C1</li>' +
+						'</ul>' +
+					'</li>' +
 				'</ul>'
 			);
 		} );
@@ -89,7 +102,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B1</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B2</paragraph>' +
 				'[<paragraph listType="bulleted" listItemId="c" listIndent="2">C1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C2</paragraph>]'
+				'<paragraph listType="bulleted" listItemId="d" listIndent="2">C2</paragraph>]'
 			);
 
 			const modelFragment = model.getSelectedContent( model.document.selection );
@@ -98,13 +111,213 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-				'<li>' +
-				'<p>C1</p>' +
-				'<p>C2</p>' +
-				'</li>' +
+					'<li>C1</li>' +
+					'<li>C2</li>' +
 				'</ul>'
 			);
 		} );
+
+		describe( 'UX enhancements', () => {
+			// https://github.com/ckeditor/ckeditor5/issues/11608.
+			describe( 'stripping list when a content of a single block was selected', () => {
+				// Note: this allows the heuristics in ImageInlineEditing to kick in.
+				it( 'should return an object stripped of list attributes, if that object was selected as a first list item block', () => {
+					setModelData( model, modelList( [
+						'* [<imageBlock src=""></imageBlock>]'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+				} );
+
+				it( 'should return an object stripped of list attributes, if that object was selected as a middle list item block', () => {
+					setModelData( model, modelList( [
+						'* foo',
+						'  [<imageBlock src=""></imageBlock>]',
+						'  bar'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+				} );
+
+				it( 'should strip other list attributes', () => {
+					setModelData( model, modelList( [
+						'* [<imageBlock listStyle="square" src=""></imageBlock>]'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+				} );
+
+				it( 'should return nodes stripped of list attributes, if more than a single block of the same item was selected', () => {
+					setModelData( model, modelList( [
+						'* Fo[o',
+						'  Bar',
+						'  B]az'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 3 );
+					expect( Array.from( modelFragment.getChildren() ).some( isListItemBlock ) ).to.be.false;
+				} );
+
+				it( 'should return just a text, if a list item block was partially selected', () => {
+					setModelData( model, modelList( [
+						'* Fo[o b]ar.'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+				} );
+
+				it( 'should return just a text, if a list item block was completely selected', () => {
+					setModelData( model, modelList( [
+						'* [Foo bar.]'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+				} );
+
+				it( 'should return just a text, if a list item block in the middle was completely selected', () => {
+					setModelData( model, modelList( [
+						'* Foo',
+						'  [Bar]',
+						'  Baz'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+				} );
+
+				it( 'should return an inline object stripped of list attributes, if that object was selected in a list item', () => {
+					setModelData( model, modelList( [
+						'* Foo [<imageInline src=""></imageInline>] bar.'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+				} );
+
+				it( 'should return nodes stripped of list attributes, if a single list item block was partially selected', () => {
+					setModelData( model, modelList( [
+						'* Fo[o <imageInline src=""></imageInline> b]ar.'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 3 );
+					expect( Array.from( modelFragment.getChildren() ).some( hasAnyListAttribute ) ).to.be.false;
+				} );
+
+				// Note: This test also verifies support for arbitrary selection passed to getSelectedContent().
+				it( 'should return a node stripped of list attributes, if a single item was selected from the outside', () => {
+					setModelData( model, modelList( [
+						'* Foo'
+					] ) );
+
+					// [* Foo]
+					//
+					// Note: It is impossible to set a document selection like this because the postfixer will normalize it to * [Foo].
+					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
+
+					expect( modelFragment.childCount ).to.equal( 1 );
+					expect( Array.from( modelFragment.getChildren() ).some( hasAnyListAttribute ) ).to.be.false;
+				} );
+
+				it( 'should not strip attributes of wrapped list', () => {
+					setModelData( model, modelList( `
+						* [<blockQuote>${ modelList( `
+							* foo
+						` ) }</blockQuote>]
+					` ) );
+
+					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
+
+					expect( modelFragment.childCount ).to.equal( 1 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.false;
+					expect( Array.from( modelFragment.getChild( 0 ).getChildren() ).every( isListItemBlock ) ).to.be.true;
+
+					expect( stringifyModel( modelFragment ) ).to.equal(
+						'<blockQuote>' +
+							'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
+						'</blockQuote>'
+					);
+				} );
+			} );
+
+			describe( 'preserving list structure when a cross-list item selection existed', () => {
+				it( 'should return a list structure, if more than a single list item was selected', () => {
+					setModelData( model, modelList( [
+						'* Fo[o',
+						'* Ba]r'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 2 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.true;
+				} );
+
+				it( 'should return a list structure, if a nested items were included in the selection', () => {
+					setModelData( model, modelList( [
+						'* Fo[o',
+						'  Bar',
+						'  * B]az'
+					] ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+
+					expect( modelFragment.childCount ).to.equal( 3 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.true;
+				} );
+
+				// Note: This test also verifies support for arbitrary selection passed to getSelectedContent().
+				it( 'should return a list structure, if multiple list items were selected from the outside', () => {
+					setModelData( model, modelList( [
+						'* Foo',
+						'* Bar'
+					] ) );
+
+					// [* Foo
+					//  * Bar]
+					//
+					// Note: It is impossible to set a document selection like this because the postfixer will normalize it to
+					// * [Foo
+					// * Bar]
+					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
+
+					expect( modelFragment.childCount ).to.equal( 2 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.true;
+				} );
+			} );
+		} );
+
+		function hasAnyListAttribute( node ) {
+			for ( const attributeKey of node.getAttributeKeys() ) {
+				if ( attributeKey.startsWith( 'list' ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
 	} );
 
 	describe( 'paste and insertContent() integration', () => {

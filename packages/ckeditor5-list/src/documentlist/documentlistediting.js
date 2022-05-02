@@ -34,7 +34,8 @@ import {
 	isLastBlockOfListItem,
 	isSingleListItem,
 	getSelectedBlockObject,
-	isListItemBlock
+	isListItemBlock,
+	removeListAttributes
 } from './utils/model';
 import {
 	getViewElementIdForListType,
@@ -116,8 +117,6 @@ export default class DocumentListEditing extends Plugin {
 			} );
 		}
 
-		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
-
 		// Register commands.
 		editor.commands.add( 'numberedList', new DocumentListCommand( editor, 'numbered' ) );
 		editor.commands.add( 'bulletedList', new DocumentListCommand( editor, 'bulleted' ) );
@@ -134,6 +133,7 @@ export default class DocumentListEditing extends Plugin {
 		this._setupDeleteIntegration();
 		this._setupEnterIntegration();
 		this._setupTabIntegration();
+		this._setupClipboardIntegration();
 	}
 
 	/**
@@ -454,6 +454,54 @@ export default class DocumentListEditing extends Plugin {
 		this.on( 'postFixer', ( evt, { listNodes, writer, seenIds } ) => {
 			evt.return = fixListItemIds( listNodes, seenIds, writer ) || evt.return;
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Integrates the feature with the clipboard via {@link module:engine/model/model~Model#insertContent} and
+	 * {@link module:engine/model/model~Model#getSelectedContent}.
+	 *
+	 * @private
+	 */
+	_setupClipboardIntegration() {
+		const model = this.editor.model;
+
+		this.listenTo( model, 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
+
+		// To enhance the UX, the editor should not copy list attributes to the clipboard if the selection
+		// started and ended in the same list item.
+		//
+		// If the selection was enclosed in a single list item, there is a good chance the user did not want it
+		// copied as a list item but plain blocks.
+		//
+		// This avoids pasting orphaned list items instead of paragraphs, for instance, straight into the root.
+		//
+		//	                       ┌─────────────────────┬───────────────────┐
+		//	                       │ Selection           │ Clipboard content │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ [* <Widget />]      │ <Widget />        │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ [* Foo]             │ Foo               │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ * Foo [bar] baz     │ bar               │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ * Fo[o              │ o                 │
+		//	                       │   ba]r              │ ba                │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ * Fo[o              │ * o               │
+		//	                       │ * ba]r              │ * ba              │
+		//	                       ├─────────────────────┼───────────────────┤
+		//	                       │ [* Foo              │ * Foo             │
+		//	                       │  * bar]             │ * bar             │
+		//	                       └─────────────────────┴───────────────────┘
+		//
+		// See https://github.com/ckeditor/ckeditor5/issues/11608.
+		this.listenTo( model, 'getSelectedContent', ( evt, [ selection ] ) => {
+			const isSingleListItemSelected = isSingleListItem( Array.from( selection.getSelectedBlocks() ) );
+
+			if ( isSingleListItemSelected ) {
+				model.change( writer => removeListAttributes( Array.from( evt.return.getChildren() ), writer ) );
+			}
+		} );
 	}
 }
 
