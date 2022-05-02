@@ -68,7 +68,7 @@ export default class ListProperties extends Plugin {
  * When set, the list style feature will be enabled. It allows changing the `list-style-type` HTML attribute of the lists.
  *
  * @default true
- * @member {Boolean} module:list/listproperties~ListPropertiesConfig#styles
+ * @member {Boolean|module:list/listproperties~ListPropertiesStyleConfig} module:list/listproperties~ListPropertiesConfig#styles
  */
 
 /**
@@ -98,4 +98,17 @@ export default class ListProperties extends Plugin {
  * Read more in {@link module:list/listproperties~ListPropertiesConfig}.
  *
  * @member {module:list/listproperties~ListPropertiesConfig} module:list/list~ListConfig#properties
+ */
+
+/**
+ * @interface ListPropertiesStyleConfig
+ */
+
+/**
+ * When set, the list style feature will use `type` attribute of `<ul>` and `<ol>` elements instead of `list-style-type` style.
+ *
+ * **Note**: This configuration works only with {@link module:list/documentlistproperties~DocumentListProperties document list properties}.
+ *
+ * @default false
+ * @member {Boolean} module:list/listproperties~ListPropertiesStyleConfig#useAttribute
  */
