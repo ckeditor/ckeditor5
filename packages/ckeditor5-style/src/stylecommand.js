@@ -60,9 +60,6 @@ export default class StyleCommand extends Command {
 		 * @member {Object} #styleDefinitions
 		 */
 		this._styleDefinitions = styleDefinitions;
-
-		// TODO is this needed?
-		this.refresh();
 	}
 
 	/**

@@ -118,6 +118,8 @@ describe( 'StyleCommand', () => {
 			it( 'should enable styles for paragraph', () => {
 				setData( model, '<paragraph>foo[bar]baz</paragraph>' );
 
+				command.refresh();
+
 				expect( command.enabledStyles ).to.have.members( [
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockParagraphStyles.map( ( { name } ) => name )
@@ -129,6 +131,8 @@ describe( 'StyleCommand', () => {
 					'<paragraph>foo</paragraph>' +
 					'<heading1>bar[]</heading1>'
 				);
+
+				command.refresh();
 
 				expect( command.enabledStyles ).to.have.members( [
 					...inlineStyles.map( ( { name } ) => name ),
@@ -145,6 +149,8 @@ describe( 'StyleCommand', () => {
 					'<heading1>baz</heading1>'
 				);
 
+				command.refresh();
+
 				expect( command.enabledStyles ).to.have.members( [
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockParagraphStyles.map( ( { name } ) => name ),
@@ -154,6 +160,8 @@ describe( 'StyleCommand', () => {
 
 			it( 'should enable styles for the code block', () => {
 				setData( model, '<codeBlock language="plaintext">foo[bar]baz</codeBlock>' );
+
+				command.refresh();
 
 				expect( command.enabledStyles ).to.have.members( [
 					...blockCodeBlockStyles.map( ( { name } ) => name )
@@ -166,6 +174,8 @@ describe( 'StyleCommand', () => {
 					'<heading1>b[ar</heading1>' +
 					'<paragraph>ba]z</paragraph>'
 				);
+
+				command.refresh();
 
 				expect( command.enabledStyles ).to.have.members( [
 					...blockHeadingStyles.map( ( { name } ) => name ),
@@ -181,6 +191,8 @@ describe( 'StyleCommand', () => {
 				} );
 
 				setData( model, '<paragraph>bar[]</paragraph>' );
+
+				command.refresh();
 
 				expect( command.enabledStyles ).to.have.members( [
 					...inlineStyles.map( ( { name } ) => name )
@@ -200,16 +212,34 @@ describe( 'StyleCommand', () => {
 					'</blockQuote>'
 				);
 
+				command.refresh();
+
 				expect( command.enabledStyles ).to.have.members( [
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockParagraphStyles.map( ( { name } ) => name )
 				] );
+			} );
+
+			it( 'should not crash if there are no selected blocks', () => {
+				setData( model, '<paragraph>foo</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelection( root, 0 );
+
+					command.refresh();
+
+					expect( command.enabledStyles ).to.have.members( [
+						...inlineStyles.map( ( { name } ) => name )
+					] );
+				} );
 			} );
 		} );
 
 		describe( 'inline styles', () => {
 			it( 'should enable styles for text', () => {
 				setData( model, '<paragraph>foo[bar]baz</paragraph>' );
+
+				command.refresh();
 
 				expect( command.enabledStyles ).to.have.members( [
 					...inlineStyles.map( ( { name } ) => name ),
@@ -219,6 +249,8 @@ describe( 'StyleCommand', () => {
 
 			it( 'should not enable styles for text in code block', () => {
 				setData( model, '<codeBlock language="plaintext">foo[bar]baz</codeBlock>' );
+
+				command.refresh();
 
 				expect( command.enabledStyles ).to.have.members( [
 					...blockCodeBlockStyles.map( ( { name } ) => name )
