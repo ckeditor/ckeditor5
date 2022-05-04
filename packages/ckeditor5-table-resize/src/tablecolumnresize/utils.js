@@ -139,8 +139,8 @@ export function getColumnMinWidthAsPercentage( table, editor ) {
  * @param {module:engine/model/element~Element} cell
  * @returns {Object}
  */
-export function getColumnIndex( cell ) {
-	const cellColumnIndex = cell.getAttribute( 'columnIndex' );
+export function getColumnIndex( cell, columnIndexMap ) {
+	const cellColumnIndex = columnIndexMap.get( cell );
 	const cellWidth = cell.getAttribute( 'colspan' ) || 1;
 
 	return {
