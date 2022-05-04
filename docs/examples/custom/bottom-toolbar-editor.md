@@ -2,6 +2,7 @@
 category: examples-builds-custom
 order: 30
 classes: main__content--no-toc
+toc: false
 menu-title: Bottom toolbar with formatting options grouped
 modified_at: 2021-12-09
 ---
@@ -24,10 +25,6 @@ The presented combination of the UI and editor's features works best for integra
 <summary>View editor configuration script</summary>
 
 ```js
-/**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
 
 /* globals console, window, document */
 
