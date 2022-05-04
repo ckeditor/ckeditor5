@@ -134,7 +134,7 @@ function MentionCustomization(editor) {
             classes: 'mention',
             attributes: {
                 href: true,
-                'data-id': true
+                'data-helpjuice-id': true
             }
         },
         model: {
@@ -145,8 +145,8 @@ function MentionCustomization(editor) {
                 // In order to create a proper object, use the toMentionAttribute helper method:
                 const mentionAttribute = editor.plugins.get('Mention').toMentionAttribute(viewItem, {
                     // Add any other properties that you need.
-                    link: viewItem.getAttribute('href'),
-                    userId: viewItem.getAttribute('data-id')
+                    codename: viewItem.getAttribute('href'),
+                    userId: viewItem.getAttribute('data-helpjuice-id')
                 } );
 
                 return mentionAttribute;
@@ -156,7 +156,7 @@ function MentionCustomization(editor) {
     });
 
     // Downcast the model 'mention' text attribute to a view <a> element.
-    editor.conversion.for( 'downcast' ).attributeToElement( {
+    editor.conversion.for('downcast').attributeToElement( {
         model: 'mention',
         view: (modelAttributeValue, { writer }) => {
             // Do not convert empty attributes (lack of value means no mention).
@@ -167,14 +167,14 @@ function MentionCustomization(editor) {
             return writer.createAttributeElement('a', {
                 class: 'mention',
                 'data-mention': modelAttributeValue.id,
-                'data-id': modelAttributeValue.id,
+                'data-helpjuice-id': modelAttributeValue.id,
                 'href': modelAttributeValue.codename
             }, {
                 // Make mention attribute to be wrapped by other attribute elements.
                 priority: 20,
                 // Prevent merging mentions together.
                 id: modelAttributeValue.uid
-            } );
+            });
         },
         converterPriority: 'high'
     } );
