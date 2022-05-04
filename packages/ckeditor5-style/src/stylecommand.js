@@ -95,20 +95,32 @@ export default class StyleCommand extends Command {
 		// Block styles.
 		const firstBlock = first( selection.getSelectedBlocks() );
 
-		if ( firstBlock && model.schema.checkAttribute( firstBlock, 'htmlAttributes' ) && !model.schema.isObject( firstBlock ) ) {
-			for ( const definition of this._styleDefinitions.block ) {
-				// Check if this block style is enabled.
-				if ( !definition.modelElements.includes( firstBlock.name ) ) {
+		if ( firstBlock ) {
+			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } );
+
+			for ( const block of ancestorBlocks ) {
+				if ( model.schema.isLimit( block ) ) {
+					break;
+				}
+
+				if ( !model.schema.checkAttribute( block, 'htmlAttributes' ) ) {
 					continue;
 				}
 
-				enabledStyles.add( definition.name );
+				for ( const definition of this._styleDefinitions.block ) {
+					// Check if this block style is enabled.
+					if ( !definition.modelElements.includes( block.name ) ) {
+						continue;
+					}
 
-				// Check if this block style is active.
-				const ghsAttributeValue = firstBlock.getAttribute( 'htmlAttributes' );
+					enabledStyles.add( definition.name );
 
-				if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
-					value.add( definition.name );
+					// Check if this block style is active.
+					const ghsAttributeValue = block.getAttribute( 'htmlAttributes' );
+
+					if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+						value.add( definition.name );
+					}
 				}
 			}
 		}
@@ -165,16 +177,12 @@ export default class StyleCommand extends Command {
 		].find( ( { name } ) => name == styleName );
 
 		model.change( () => {
-			const selectables = [];
+			let selectables;
 
 			if ( definition.isBlock ) {
-				for ( const block of selection.getSelectedBlocks() ) {
-					if ( definition.modelElements.includes( block.name ) ) {
-						selectables.push( block );
-					}
-				}
+				selectables = getAffectedBlocks( selection.getSelectedBlocks(), definition.modelElements, model.schema );
 			} else {
-				selectables.push( selection );
+				selectables = [ selection ];
 			}
 
 			for ( const selectable of selectables ) {
@@ -223,4 +231,27 @@ function hasAllClasses( ghsAttributeValue, classes ) {
 	}
 
 	return classes.every( className => ghsAttributeValue.classes.includes( className ) );
+}
+
+// Returns a set of elements that should be affected by the block-style change.
+function getAffectedBlocks( selectedBlocks, elementNames, schema ) {
+	const blocks = new Set();
+
+	for ( const selectedBlock of selectedBlocks ) {
+		const ancestorBlocks = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } );
+
+		for ( const block of ancestorBlocks ) {
+			if ( schema.isLimit( block ) ) {
+				break;
+			}
+
+			if ( elementNames.includes( block.name ) ) {
+				blocks.add( block );
+
+				break;
+			}
+		}
+	}
+
+	return blocks;
 }

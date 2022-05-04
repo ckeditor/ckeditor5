@@ -256,6 +256,11 @@ ClassicEditor
 					classes: [ 'vibrant-code' ]
 				},
 				{
+					name: 'Side quote',
+					element: 'blockquote',
+					classes: [ 'side-quote' ]
+				},
+				{
 					name: 'Marker',
 					element: 'span',
 					classes: [ 'marker' ]
