@@ -277,7 +277,12 @@ function createListPropertiesView( {
 			listStyleCommand
 		} );
 
-		styleButtonViews = styleDefinitions.map( styleButtonCreator );
+		// The command can be ListStyleCommand or DocumentListStyleComman. Let's checks if it has expected function.
+		const isStyleTypeSupported = typeof listStyleCommand.isStyleTypeSupported == 'function' ?
+			styleDefinition => listStyleCommand.isStyleTypeSupported( styleDefinition.type ) :
+			() => true;
+
+		styleButtonViews = styleDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
 	}
 
 	const listPropertiesView = new ListPropertiesView( locale, {

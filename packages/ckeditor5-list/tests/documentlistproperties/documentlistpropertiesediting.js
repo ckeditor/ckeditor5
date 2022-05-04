@@ -65,6 +65,24 @@ describe( 'DocumentListPropertiesEditing', () => {
 			return editor.destroy();
 		} );
 
+		describe( 'command', () => {
+			it( 'should register `listStyle` command with support for all style types', () => {
+				const command = editor.commands.get( 'listStyle' );
+
+				expect( command.isStyleTypeSupported( 'disc' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'circle' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'square' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'decimal' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'decimal-leading-zero' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'lower-roman' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-roman' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'lower-alpha' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-alpha' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'lower-latin' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-latin' ) ).to.be.true;
+			} );
+		} );
+
 		describe( 'schema rules', () => {
 			it( 'should allow set `listStyle` on the `paragraph`', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStyle' ) ).to.be.true;
@@ -361,6 +379,24 @@ describe( 'DocumentListPropertiesEditing', () => {
 			model = editor.model;
 
 			stubUid();
+		} );
+
+		describe( 'command', () => {
+			it( 'should register `listStyle` command with support for all style types except `decimal-leading-zero`', () => {
+				const command = editor.commands.get( 'listStyle' );
+
+				expect( command.isStyleTypeSupported( 'disc' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'circle' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'square' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'decimal' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'decimal-leading-zero' ) ).to.be.false;
+				expect( command.isStyleTypeSupported( 'lower-roman' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-roman' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'lower-alpha' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-alpha' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'lower-latin' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-latin' ) ).to.be.true;
+			} );
 		} );
 
 		describe( 'conversion', () => {

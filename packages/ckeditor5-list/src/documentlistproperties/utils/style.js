@@ -35,6 +35,15 @@ for ( const { listStyle, typeAttribute, listType } of LIST_STYLE_TYPES ) {
 }
 
 /**
+ * Gets all the style types supported by given list type.
+ *
+ * @returns {Array.<String>}
+ */
+export function getAllSupportedStyleTypes() {
+	return LIST_STYLE_TYPES.map( x => x.listStyle );
+}
+
+/**
 * Checks whether the given list-style-type is supported by numbered or bulleted list.
 *
 * @param {String} listStyleType

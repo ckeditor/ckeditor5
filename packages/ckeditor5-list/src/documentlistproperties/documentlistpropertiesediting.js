@@ -14,7 +14,12 @@ import DocumentListStartCommand from './documentliststartcommand';
 import DocumentListStyleCommand from './documentliststylecommand';
 import DocumentListReversedCommand from './documentlistreversedcommand';
 import { listPropertiesUpcastConverter } from './converters';
-import { getListTypeFromListStyleType, getListStyleTypeFromTypeAttribute, getTypeAttributeFromListStyleType } from './utils/style';
+import {
+	getAllSupportedStyleTypes,
+	getListTypeFromListStyleType,
+	getListStyleTypeFromTypeAttribute,
+	getTypeAttributeFromListStyleType
+} from './utils/style';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -230,13 +235,21 @@ function createAttributeStrategies( enabledProperties ) {
 	const strategies = [];
 
 	if ( enabledProperties.styles ) {
+		const useAttribute = typeof enabledProperties.styles == 'object' && enabledProperties.styles.useAttribute;
+
 		strategies.push( {
 			attributeName: 'listStyle',
 			defaultValue: DEFAULT_LIST_TYPE,
 			viewConsumables: { styles: 'list-style-type' },
 
 			addCommand( editor ) {
-				editor.commands.add( 'listStyle', new DocumentListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
+				let supportedTypes = getAllSupportedStyleTypes();
+
+				if ( useAttribute ) {
+					supportedTypes = supportedTypes.filter( styleType => !!getTypeAttributeFromListStyleType( styleType ) );
+				}
+
+				editor.commands.add( 'listStyle', new DocumentListStyleCommand( editor, DEFAULT_LIST_TYPE, supportedTypes ) );
 			},
 
 			appliesToListItem() {
@@ -257,7 +270,7 @@ function createAttributeStrategies( enabledProperties ) {
 				return getListTypeFromListStyleType( value ) == item.getAttribute( 'listType' );
 			},
 
-			setAttributeOnDowncast: ( typeof enabledProperties.styles == 'object' && enabledProperties.styles.useAttribute ) ?
+			setAttributeOnDowncast: useAttribute ?
 				( writer, listStyle, element ) => {
 					if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
 						const value = getTypeAttributeFromListStyleType( listStyle );
