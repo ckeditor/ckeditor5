@@ -46,26 +46,31 @@ export default class InfoEditing extends Plugin {
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
-		conversion.for('upcast').elementToElement({
-			model: 'info',
+		conversion.for("upcast").elementToElement({
 			view: {
-				name: 'div',
-				classes: 'helpjuice-callout info'
+				name: "div",
+				classes: ["helpjuice-callout", "info"],
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement("info");
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'info',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-callout info'
-			}
+		conversion.for("dataDowncast").elementToElement({
+			model: "info",
+			view: ( modelElement, { writer } ) => {
+				return writer.createContainerElement("div", {
+					class: "helpjuice-callout info"
+				});
+			},
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'info',
+		conversion.for("editingDowncast").elementToElement({
+			model: "info",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-callout info' });
+				const div = viewWriter.createContainerElement("div", {
+					class: "helpjuice-callout info"
+				});
 
-				return toWidget(div, viewWriter, { label: 'Insert Info Callout' });
+				return toWidget(div, viewWriter);
 			}
 		});
 
@@ -86,9 +91,7 @@ export default class InfoEditing extends Plugin {
 		conversion.for('editingDowncast').elementToElement({
 			model: 'infoBody',
 			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
 				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-callout-body' });
-
 				return toWidgetEditable(div, viewWriter);
 			}
 		});

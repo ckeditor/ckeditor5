@@ -46,26 +46,31 @@ export default class SuccessEditing extends Plugin {
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
-		conversion.for('upcast').elementToElement({
-			model: 'success',
+		conversion.for("upcast").elementToElement({
 			view: {
-				name: 'div',
-				classes: 'helpjuice-callout success'
+				name: "div",
+				classes: ["helpjuice-callout", "success"],
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement("success");
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'success',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-callout success'
-			}
+		conversion.for("dataDowncast").elementToElement({
+			model: "success",
+			view: ( modelElement, { writer } ) => {
+				return writer.createContainerElement("div", {
+					class: "helpjuice-callout success"
+				});
+			},
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'success',
+		conversion.for("editingDowncast").elementToElement({
+			model: "success",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-callout success' });
+				const div = viewWriter.createContainerElement("div", {
+					class: "helpjuice-callout success"
+				});
 
-				return toWidget(div, viewWriter, { label: 'Insert Success Callout' });
+				return toWidget(div, viewWriter);
 			}
 		});
 

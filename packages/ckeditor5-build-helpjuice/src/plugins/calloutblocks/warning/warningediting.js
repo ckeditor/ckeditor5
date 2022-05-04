@@ -46,26 +46,31 @@ export default class WarningEditing extends Plugin {
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
-		conversion.for('upcast').elementToElement({
-			model: 'warning',
+		conversion.for("upcast").elementToElement({
 			view: {
-				name: 'div',
-				classes: 'helpjuice-callout warning'
+				name: "div",
+				classes: ["helpjuice-callout", "warning"],
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement("warning");
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'warning',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-callout warning'
-			}
+		conversion.for("dataDowncast").elementToElement({
+			model: "warning",
+			view: ( modelElement, { writer } ) => {
+				return writer.createContainerElement("div", {
+					class: "helpjuice-callout warning"
+				});
+			},
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'warning',
+		conversion.for("editingDowncast").elementToElement({
+			model: "warning",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-callout warning' });
+				const div = viewWriter.createContainerElement("div", {
+					class: "helpjuice-callout warning"
+				});
 
-				return toWidget(div, viewWriter, { label: 'Insert Warning Callout' });
+				return toWidget(div, viewWriter);
 			}
 		});
 

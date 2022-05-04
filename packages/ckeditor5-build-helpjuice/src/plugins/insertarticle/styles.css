@@ -58,8 +58,9 @@
 
 .helpjuice-inserted-article {
 	position: relative;
-	background-color: #F3F5F8;
 	padding: 10px;
+	border-radius: 5px;
+	margin: 10px 0;
 }
 
 .helpjuice-inserted-article::before {

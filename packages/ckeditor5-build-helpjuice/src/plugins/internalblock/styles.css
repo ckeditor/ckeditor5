@@ -1,7 +1,8 @@
 .helpjuice-internal-block {
 	position: relative;
-	background-color: #F3F5F8;
 	padding: 10px;
+	margin: 10px 0;
+	border-radius: 5px;
 }
 .helpjuice-internal-block::before {
 	content: "Restricted Content";

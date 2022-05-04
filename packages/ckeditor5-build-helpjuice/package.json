@@ -54,7 +54,8 @@
     "@ckeditor/ckeditor5-remove-format": "^33.0.0",
     "@ckeditor/ckeditor5-source-editing": "^33.0.0",
     "@ckeditor/ckeditor5-table": "^33.0.0",
-    "@ckeditor/ckeditor5-typing": "^33.0.0"
+    "@ckeditor/ckeditor5-typing": "^33.0.0",
+    "@ckeditor/ckeditor5-mention": "^33.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^33.0.0",

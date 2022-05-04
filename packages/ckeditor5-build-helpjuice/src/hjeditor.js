@@ -23,8 +23,10 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import Link from '@ckeditor/ckeditor5-link/src/link';
@@ -58,6 +60,8 @@ import Danger from './plugins/calloutblocks/danger/danger';
 import InternalBlock from './plugins/internalblock/internalblock';
 import DecisionTree from './plugins/decisiontree/decisiontree';
 import InsertArticle from './plugins/insertarticle/insertarticle';
+import FilesManager from './plugins/filesmanager/filesmanager';
+import Mention from './plugins/mention/src/mention';
 
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
@@ -82,7 +86,9 @@ HelpjuiceEditor.builtinPlugins = [
 	Image,
 	ImageCaption,
 	ImageStyle,
+	ImageResize,
 	ImageToolbar,
+	LinkImage,
 	ImageUpload,
 	ImageInsert,
 	Indent,
@@ -112,11 +118,71 @@ HelpjuiceEditor.builtinPlugins = [
 	InternalBlock,
 	DecisionTree,
 	SimpleUploadAdapter,
-	InsertArticle
+	InsertArticle,
+	FilesManager,
+	Mention,
+	MentionCustomization
 ];
+
+function MentionCustomization(editor) {
+    // The upcast converter will convert <a class="mention" href="" data-user-id="">
+    // elements to the model 'mention' attribute.
+    editor.conversion.for('upcast').elementToAttribute( {
+        view: {
+            name: 'a',
+            key: 'data-mention',
+            classes: 'mention',
+            attributes: {
+                href: true,
+                'data-id': true
+            }
+        },
+        model: {
+            key: 'mention',
+            value: viewItem => {
+                // The mention feature expects that the mention attribute value
+                // in the model is a plain object with a set of additional attributes.
+                // In order to create a proper object, use the toMentionAttribute helper method:
+                const mentionAttribute = editor.plugins.get('Mention').toMentionAttribute(viewItem, {
+                    // Add any other properties that you need.
+                    link: viewItem.getAttribute('href'),
+                    userId: viewItem.getAttribute('data-id')
+                } );
+
+                return mentionAttribute;
+            }
+        },
+        converterPriority: 'high'
+    });
+
+    // Downcast the model 'mention' text attribute to a view <a> element.
+    editor.conversion.for( 'downcast' ).attributeToElement( {
+        model: 'mention',
+        view: (modelAttributeValue, { writer }) => {
+            // Do not convert empty attributes (lack of value means no mention).
+            if (!modelAttributeValue) {
+                return;
+            }
+
+            return writer.createAttributeElement('a', {
+                class: 'mention',
+                'data-mention': modelAttributeValue.id,
+                'data-id': modelAttributeValue.id,
+                'href': modelAttributeValue.codename
+            }, {
+                // Make mention attribute to be wrapped by other attribute elements.
+                priority: 20,
+                // Prevent merging mentions together.
+                id: modelAttributeValue.uid
+            } );
+        },
+        converterPriority: 'high'
+    } );
+}
 
 // Editor configuration.
 HelpjuiceEditor.defaultConfig = {
+	placeholder: "Type Your Content Here!",
 	heading: {
 		options: [
 			{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
@@ -138,7 +204,7 @@ HelpjuiceEditor.defaultConfig = {
 			'Verdana, Geneva, sans-serif',
 			'Open Sans, sans-serif'
 		]
-    },
+	},
 	fontSize: {
 		options: [
 			12,
@@ -174,6 +240,91 @@ HelpjuiceEditor.defaultConfig = {
 			// ...
 		}
 	},
+	image: {
+		toolbar: [
+			'imageStyle:inline',
+			'imageStyle:block',
+			'imageStyle:side',
+			'|',
+			'imageStyle:alignLeft',
+			'imageStyle:alignRight',
+			'|',
+			{
+				name: 'resizeImage',
+				items: [
+					'resizeImage:original',
+					'resizeImage:25',
+					'resizeImage:50',
+					'resizeImage:75',
+				],
+				defaultItem: 'resizeImage:original'
+			},
+			'|',
+			'linkImage',
+			'toggleImageCaption',
+			'imageTextAlternative'
+		]
+	},
+	// This value must be kept in sync with the language defined in webpack.config.js.
+	language: 'en',
+	mediaEmbed: {
+		previewsInData: true,
+		extraProviders: [
+			{
+				name: 'helpjuiceProvider',
+				url: /^static.helpjuice\.com\/(\w+)/,
+				html: match => {
+					const getUrl = match.input;
+
+					return (
+						`<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 62.5%;">
+							<iframe src="https://${getUrl}"
+								style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;"
+								frameborder="0" allowtransparency="true" allow="encrypted-media">
+							</iframe>
+						</div>`
+					);
+				}
+			},
+			{
+				name: 'localProvider',
+				url: /uploads\/upload\/(\w+)/,
+				html: match => {
+					const getUrl = match.input;
+
+					return (
+						`<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 62.5%;">
+							<iframe src="http://example.localtest.me:3000/${getUrl}"
+								style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;"
+								frameborder="0" allowtransparency="true" allow="encrypted-media">
+							</iframe>
+						</div>`
+					);
+				}
+			},
+		]
+	},
+	link: {
+		addTargetToExternalLinks: true,
+		decorators: {
+			toggleDownloadable: {
+				mode: 'manual',
+				label: 'Downloadable',
+				attributes: {
+					download: 'file'
+				}
+			},
+			openInNewTab: {
+				mode: 'manual',
+				label: 'Open in a new tab',
+				defaultValue: true,
+				attributes: {
+					target: '_blank',
+					rel: 'noopener noreferrer'
+				}
+			}
+		}
+	},
 	toolbar: {
 		items: [
 			'heading',
@@ -195,6 +346,7 @@ HelpjuiceEditor.defaultConfig = {
 			'indent',
 			'|',
 			'link',
+			'filesmanager',
 			'imageInsert',
 			'mediaEmbed',
 			'|',
@@ -222,16 +374,4 @@ HelpjuiceEditor.defaultConfig = {
 		],
 		shouldNotGroupWhenFull: true
 	},
-	image: {
-		toolbar: [
-			'imageStyle:inline',
-			'imageStyle:block',
-			'imageStyle:side',
-			'|',
-			'toggleImageCaption',
-			'imageTextAlternative'
-		]
-	},
-	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
 };

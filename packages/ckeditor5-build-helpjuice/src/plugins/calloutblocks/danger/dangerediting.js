@@ -11,7 +11,6 @@ export default class DangerEditing extends Plugin {
 	init() {
 		this._defineSchema();
 		this._defineConverters();
-
 		this.editor.commands.add('insertDanger', new InsertDangerCommand(this.editor));
 	}
 
@@ -19,20 +18,13 @@ export default class DangerEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register('danger', {
-			// Behaves like a self-contained object (e.g. an image).
 			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
 			allowWhere: '$block'
 		});
 
 		schema.register('dangerBody', {
-			// Cannot be split or left by the caret.
 			isLimit: true,
-
 			allowIn: 'danger',
-
-			// Allow content which is allowed in the root (e.g. paragraphs).
 			allowContentOf: '$root'
 		});
 
@@ -46,48 +38,57 @@ export default class DangerEditing extends Plugin {
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
-		conversion.for('upcast').elementToElement({
-			model: 'danger',
+		conversion.for("upcast").elementToElement({
 			view: {
-				name: 'div',
-				classes: 'helpjuice-callout danger'
+				name: "div",
+				classes: ["helpjuice-callout", "danger"],
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement("danger");
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'danger',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-callout danger'
-			}
+		conversion.for("dataDowncast").elementToElement({
+			model: "danger",
+			view: ( modelElement, { writer } ) => {
+				return writer.createContainerElement("div", {
+					class: "helpjuice-callout danger"
+				});
+			},
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'danger',
+		conversion.for("editingDowncast").elementToElement({
+			model: "danger",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-callout danger' });
+				const div = viewWriter.createContainerElement("div", {
+					class: "helpjuice-callout danger"
+				});
 
-				return toWidget(div, viewWriter, { label: 'Insert Danger Callout' });
+				return toWidget(div, viewWriter);
 			}
 		});
 
-		conversion.for('upcast').elementToElement({
-			model: 'dangerBody',
+		conversion.for("upcast").elementToElement({
 			view: {
-				name: 'div',
-				classes: 'helpjuice-callout-body'
+				name: "div",
+				classes: "helpjuice-callout-body",
+			},
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement("dangerBody");
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'dangerBody',
-			view: {
-				name: 'div',
-				classes: 'helpjuice-callout-body'
-			}
+		conversion.for("dataDowncast").elementToElement({
+			model: "dangerBody",
+			view: ( modelElement, { writer } ) => {
+				return writer.createEditableElement("div", {
+					class: "helpjuice-callout-body"
+				});
+			},
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'dangerBody',
+		conversion.for("editingDowncast").elementToElement({
+			model: "dangerBody",
 			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-callout-body' });
+				const div = viewWriter.createEditableElement("div", {
+					class: "helpjuice-callout-body"
+				});
 
 				return toWidgetEditable(div, viewWriter);
 			}
