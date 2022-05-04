@@ -784,7 +784,7 @@ describe( 'DocumentListEditing - registerDowncastStrategy()', () => {
 
 	async function createEditor( extraPlugin ) {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ Paragraph, DocumentListEditing, UndoEditing, extraPlugin ]
+			plugins: [ extraPlugin, Paragraph, DocumentListEditing, UndoEditing ]
 		} );
 
 		model = editor.model;

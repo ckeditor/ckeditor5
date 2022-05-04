@@ -506,9 +506,9 @@ schema.register( 'blockQuote', {
 } );
 ```
 
-Because `<$block>` is allowed in `<$container>` (see `schema.register( '$block' ...)`), despite the fact that block quote and paragraph features know nothing about each other, paragraphs will be allowed in block quotes: schema rules allow chaining.
+Because `<$block>` is allowed in `<$container>` (see `schema.register( '$block' ...)`), despite the fact that the block quote and paragraph features know nothing about each other, paragraphs will be allowed in block quotes: the schema rules allow chaining.
 
-Taking this even further, if anyone registers a `<section>` element (with the `allowContentOf: '$root'` rule), because `<$container>` is also allowed in `<$root>` (see `schema.register( '$container' ...)`) `<section>` elements will allow block quotes out–of–the–box.
+Taking this even further, if anyone registers a `<section>` element (with the `allowContentOf: '$root'` rule), because `<$container>` is also allowed in `<$root>` (see `schema.register( '$container' ...)`) the `<section>` elements will allow block quotes out–of–the–box.
 
 <info-box>
 	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.

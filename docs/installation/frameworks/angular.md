@@ -4,7 +4,7 @@ category: frameworks
 order: 20
 ---
 
-{@snippet builds/frameworks/framework-integration}
+{@snippet installation/frameworks/framework-integration}
 
 # Rich text editor component for Angular
 

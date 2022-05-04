@@ -290,21 +290,9 @@ export default class Editor {
 	 * 		editor.disableReadOnlyMode( 'my-other-feature-id' );
 	 * 		editor.isReadOnly; // `false`.
 	 *
-	 * It is possible to pass an additional argument - `value` - to determine if the lock should be set or removed.
-	 * Passing `false` works the same way as calling {@link #disableReadOnlyMode `disableReadOnlyMode()`}:
-	 *
-	 *		// Assuming `isConnected` is an observable property in `myFeature`.
-	 * 		myFeature.on( 'change:isConnected', () => {
-	 * 			editor.enableReadOnlyMode( 'my-feature-id', !myFeature.isConnected );
-	 * 		} );
-	 *
-	 * 		myFeature.isConnected = false; // editor.isReadOnly -> true.
-	 * 		myFeature.isConnected = true; // editor.isReadOnly -> false.
-	 *
 	 * @param {String|Symbol} lockId A unique ID for setting the editor to the read-only state.
-	 * @param {Boolean} [value=true] An optional value indicating whether the lock should be set or removed.
 	 */
-	enableReadOnlyMode( lockId, value = true ) {
+	enableReadOnlyMode( lockId ) {
 		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
 			/**
 			 * The lock ID is missing or it is not a string or symbol.
@@ -312,12 +300,6 @@ export default class Editor {
 			 * @error editor-read-only-lock-id-invalid
 			 */
 			throw new CKEditorError( 'editor-read-only-lock-id-invalid', null, { lockId } );
-		}
-
-		if ( value === false ) {
-			this.disableReadOnlyMode( lockId );
-
-			return;
 		}
 
 		if ( this._readOnlyLocks.has( lockId ) ) {

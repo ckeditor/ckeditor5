@@ -555,40 +555,44 @@ describe( 'EditorWatchdog', () => {
 			} );
 		} );
 
-		it( 'editor should be restarted with the data of the latest document version before the crash', () => {
+		it( 'editor should be restarted with the data of the latest document version before the crash', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = sinon.spy();
 
-			return watchdog.create( element, {
+			await watchdog.create( element, {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
-			} ).then( () => {
-				const model = watchdog.editor.model;
-				const doc = model.document;
+			} );
 
-				// Decrement the document version to simulate a situation when an operation
-				// don't produce new document version.
-				doc.version--;
+			const model = watchdog.editor.model;
+			const doc = model.document;
 
-				model.change( writer => {
-					writer.insertText( 'bar', writer.createPositionAt( doc.getRoot(), 1 ) );
-				} );
+			const watchdogRestartPromise = new Promise( res => {
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
 
-				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
-
-				return new Promise( res => {
-					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
-
-						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
-
-						watchdog.destroy().then( res );
-					} );
+					res();
 				} );
 			} );
+
+			// Throw an error inside the change() block.
+			// The watchdog should be then restarted from the state before this change block.
+			setTimeout( () => {
+				model.change( writer => {
+					writer.insertText( 'bar', writer.createPositionAt( doc.getRoot(), 1 ) );
+
+					throwCKEditorError( 'foo', watchdog.editor );
+				} );
+			} );
+
+			await watchdogRestartPromise;
+
+			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+			await watchdog.destroy();
 		} );
 
 		it( 'editor should be restarted with the latest available data before the crash', async () => {
