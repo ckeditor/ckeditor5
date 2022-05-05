@@ -39,7 +39,7 @@ export default class StyleUI extends Plugin {
 		const dataSchema = editor.plugins.get( 'DataSchema' );
 		const normalizedStyleDefinitions = normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
 
-		// Add the dropdown fo the component factory.
+		// Add the dropdown to the component factory.
 		editor.ui.componentFactory.add( 'style', locale => {
 			const t = locale.t;
 			const dropdown = createDropdown( locale );

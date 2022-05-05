@@ -55,7 +55,7 @@ describe( 'Document', () => {
 			model.applyOperation( operation );
 
 			expect( doc.version ).to.equal( 1 );
-			expect( doc.history._operations.length ).to.equal( 1 );
+			expect( doc.history.getOperations().length ).to.equal( 1 );
 			sinon.assert.calledOnce( operation._execute );
 		} );
 
@@ -65,7 +65,7 @@ describe( 'Document', () => {
 			model.applyOperation( operation );
 
 			expect( doc.version ).to.equal( 0 );
-			expect( doc.history._operations.length ).to.equal( 0 );
+			expect( doc.history.getOperations().length ).to.equal( 0 );
 			sinon.assert.calledOnce( operation._execute );
 		} );
 
@@ -80,14 +80,19 @@ describe( 'Document', () => {
 
 		it( 'should throw an error on the operation base version and the document version is different', () => {
 			const operation = {
+				type: 't',
 				baseVersion: 1,
 				isDocumentOperation: true,
-				_execute: () => {}
+				_execute: sinon.stub().returns( data ),
+				_validate: () => {}
 			};
 
 			expectToThrowCKEditorError( () => {
 				model.applyOperation( operation );
-			}, 'model-document-applyoperation-wrong-version', model );
+			}, 'model-document-history-addoperation-incorrect-version', model, {
+				operation,
+				historyVersion: 0
+			} );
 		} );
 	} );
 
