@@ -277,8 +277,8 @@ function createListPropertiesView( {
 			listStyleCommand
 		} );
 
-		// The command can be ListStyleCommand or DocumentListStyleCommand. Let's checks if it has expected function.
-		const isStyleTypeSupported = typeof listStyleCommand.isStyleTypeSupported == 'function' ?
+		// The command can be ListStyleCommand or DocumentListStyleCommand.
+		const isStyleTypeSupported = listStyleCommand.constructor.name === 'DocumentListStyleCommand' ?
 			styleDefinition => listStyleCommand.isStyleTypeSupported( styleDefinition.type ) :
 			() => true;
 
