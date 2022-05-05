@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Security-Policy" content="
+	default-src 'none';
+	connect-src 'self' http://localhost:9000 https://cksource.com https://*.cke-cs.com https://*.cke-cs-staging.com https://*.cke-cs-dev.com wss://*.cke-cs.com wss://*.cke-cs-staging.com wss://*.cke-cs-dev.com;
+	script-src 'self' 'unsafe-eval' https://cksource.com https://*.cke-cs-dev.com https://*.cke-cs-staging.com;
+	img-src * data:;
+	style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+	font-src 'self' https://fonts.gstatic.com data:;
+	frame-src *">
+	<style type="text/css">
+		#container {
+			/* To create the column layout. */
+			display: flex;
+
+			/* To make the container relative to its children. */
+			position: relative;
+		}
+
+		#container .ck.ck-editor {
+			/* To stretch the editor to max 800px
+				 (just to look nice for this example but it can be any size). */
+			width: 100%;
+			max-width: 800px;
+		}
+
+		#sidebar {
+			/* Set some size for the sidebar (it can be any). */
+			min-width: 300px;
+
+			/* Add some distance. */
+			padding: 0 10px;
+		}
+	</style>
+	<title>Questionnaire with Track Changes</title>
+</head>
+
+<body>
+	<div id="container">
+		<div id="editor">
+
+		</div>
+		<div id="sidebar"></div>
+	</div>
+</body>
+
+</html>
