@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { setViewAttributes } from '../conversionutils.js';
+import { updateViewAttributes } from '../conversionutils.js';
 
 import DataFilter from '../datafilter';
 
@@ -79,7 +79,7 @@ function viewToModelCodeBlockAttributeConverter( dataFilter ) {
 			preserveElementAttributes( viewCodeElement, 'htmlContentAttributes' );
 
 			function preserveElementAttributes( viewElement, attributeName ) {
-				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+				const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 				if ( viewAttributes ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
@@ -101,10 +101,11 @@ function modelToViewCodeBlockAttributeConverter() {
 				return;
 			}
 
+			const { attributeOldValue, attributeNewValue } = data;
 			const viewCodeElement = conversionApi.mapper.toViewElement( data.item );
 			const viewPreElement = viewCodeElement.parent;
 
-			setViewAttributes( conversionApi.writer, data.attributeNewValue, viewPreElement );
+			updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewPreElement );
 		} );
 
 		dispatcher.on( 'attribute:htmlContentAttributes:codeBlock', ( evt, data, conversionApi ) => {
@@ -112,9 +113,10 @@ function modelToViewCodeBlockAttributeConverter() {
 				return;
 			}
 
+			const { attributeOldValue, attributeNewValue } = data;
 			const viewCodeElement = conversionApi.mapper.toViewElement( data.item );
 
-			setViewAttributes( conversionApi.writer, data.attributeNewValue, viewCodeElement );
+			updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewCodeElement );
 		} );
 	};
 }
