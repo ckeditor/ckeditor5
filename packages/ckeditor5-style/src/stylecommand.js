@@ -35,10 +35,11 @@ export default class StyleCommand extends Command {
 		 * Names of styles correspond to the `name` property of
 		 * {@link module:style/style~StyleDefinition configured definitions}.
 		 *
-		 * @observable
 		 * @readonly
+		 * @observable
 		 * @member {Array.<String>} #value
 		 */
+		this.set( 'value', [] );
 
 		/**
 		 * Names of enabled styles (styles that can be applied to the current selection).
