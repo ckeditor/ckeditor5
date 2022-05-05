@@ -1,7 +1,7 @@
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import InsertTabCommand from './inserttabcommand';
+import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
+import { toWidget, toWidgetEditable } from "@ckeditor/ckeditor5-widget/src/utils";
+import Widget from "@ckeditor/ckeditor5-widget/src/widget";
+import InsertTabCommand from "./inserttabcommand";
 
 export default class TabEditing extends Plugin {
 	static get requires() {
@@ -12,41 +12,42 @@ export default class TabEditing extends Plugin {
 		this._defineSchema();
 		this._defineConverters();
 
-		this.editor.commands.add('insertTab', new InsertTabCommand(this.editor));
+		this.editor.commands.add("insertTab", new InsertTabCommand(this.editor));
 	}
 
 	_defineSchema() {
 		const schema = this.editor.model.schema;
 
-		schema.register('tab', {
+		schema.register("tab", {
 			isObject: true,
-			allowWhere: '$block',
-			allowAttributes: ["data-controller"]
+			allowWhere: "$block",
+			allowAttributes: ["data-controller"],
+			allowIn: "listItem"
 		});
 
-		schema.register('tabTitle', {
+		schema.register("tabTitle", {
 			isLimit: true,
-			allowIn: 'tab',
-			allowContentOf: '$block'
+			allowIn: "tab",
+			allowContentOf: "$block"
 		});
 
-		schema.register('tabBody', {
+		schema.register("tabBody", {
 			isLimit: true,
-			allowIn: 'tab',
-			allowContentOf: '$root',
+			allowIn: "tab",
+			allowContentOf: "$root",
 			allowAttributes: ["data-editor--toggle-element-target"]
 		});
 
 		schema.addChildCheck((context, childDefinition) => {
-			if (context.endsWith('tabBody') && childDefinition.name == 'tab') {
+			if (context.endsWith("tabBody") && childDefinition.name == "tab") {
 				return false;
 			}
 		});
 
-		schema.register('tabToggle', {
+		schema.register("tabToggle", {
 			isObject: true,
 			isLimit: true,
-			allowIn: 'tab'
+			allowIn: "tab"
 		});
 	}
 
@@ -86,25 +87,25 @@ export default class TabEditing extends Plugin {
 			}
 		});
 
-		conversion.for('upcast').elementToElement({
-			model: 'tabTitle',
+		conversion.for("upcast").elementToElement({
+			model: "tabTitle",
 			view: {
-				name: 'h2',
-				classes: 'helpjuice-tab-title'
+				name: "h2",
+				classes: "helpjuice-tab-title"
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'tabTitle',
+		conversion.for("dataDowncast").elementToElement({
+			model: "tabTitle",
 			view: {
-				name: 'h2',
-				classes: 'helpjuice-tab-title'
+				name: "h2",
+				classes: "helpjuice-tab-title"
 			}
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'tabTitle',
+		conversion.for("editingDowncast").elementToElement({
+			model: "tabTitle",
 			view: (modelElement, { writer: viewWriter }) => {
 				// Note: You use a more specialized createEditableElement() method here.
-				const h2 = viewWriter.createEditableElement('h2', { class: 'helpjuice-tab-title' });
+				const h2 = viewWriter.createEditableElement("h2", { class: "helpjuice-tab-title" });
 
 				return toWidgetEditable(h2, viewWriter);
 			}
@@ -143,25 +144,25 @@ export default class TabEditing extends Plugin {
 			}
 		});
 
-		conversion.for('upcast').elementToElement({
-			model: 'tabToggle',
+		conversion.for("upcast").elementToElement({
+			model: "tabToggle",
 			view: {
-				name: 'div',
-				classes: 'helpjuice-tab-toggle'
+				name: "div",
+				classes: "helpjuice-tab-toggle"
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'tabToggle',
+		conversion.for("dataDowncast").elementToElement({
+			model: "tabToggle",
 			view: {
-				name: 'div',
-				classes: 'helpjuice-tab-toggle'
+				name: "div",
+				classes: "helpjuice-tab-toggle"
 			}
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'tabToggle',
+		conversion.for("editingDowncast").elementToElement({
+			model: "tabToggle",
 			view: (modelElement, { writer: viewWriter }) => {
 				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-tab-toggle', "data-action": "click->editor--toggle-element#toggle" });
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-tab-toggle", "data-action": "click->editor--toggle-element#toggle" });
 
 				return toWidget(div, viewWriter);
 			}

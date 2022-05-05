@@ -20,7 +20,8 @@ export default class DecisionTreeEditing extends Plugin {
 		// Schema for Root Element
 		schema.register("decisionTree", {
 			isObject: true,
-			allowWhere: "$block"
+			allowWhere: "$block",
+			allowIn: "listItem"
 		});
 
 		// Schema for First Question

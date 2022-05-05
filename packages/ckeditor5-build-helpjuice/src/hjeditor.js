@@ -18,6 +18,7 @@ import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
 import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
 import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -50,6 +51,8 @@ import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting'
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 
+import Style from '@ckeditor/ckeditor5-style/src/style';
+
 // Custom Plugins
 import Accordion from './plugins/accordion/accordion';
 import Tab from './plugins/tab/tab';
@@ -79,6 +82,7 @@ HelpjuiceEditor.builtinPlugins = [
 	FontSize,
 	FontColor,
 	FontBackgroundColor,
+	GeneralHtmlSupport,
 	Highlight,
 	BlockQuote,
 	HorizontalLine,
@@ -121,7 +125,8 @@ HelpjuiceEditor.builtinPlugins = [
 	InsertArticle,
 	FilesManager,
 	Mention,
-	MentionCustomization
+	MentionCustomization,
+	Style
 ];
 
 function MentionCustomization(editor) {
@@ -325,6 +330,26 @@ HelpjuiceEditor.defaultConfig = {
 			}
 		}
 	},
+	htmlEmbed: {
+		showPreviews: true,
+		sanitizeHtml: html => ( { html, hasChange: false } )
+	},
+	list: {
+		properties: {
+			styles: true,
+			startIndex: true,
+			reversed: true
+		}
+	},
+	style: {
+		definitions: [
+			{
+				name: "Disable Text Selecting",
+				element: "span",
+				classes: ["hj-unselectable"]
+			}
+		]
+	},
 	toolbar: {
 		items: [
 			'heading',
@@ -332,6 +357,7 @@ HelpjuiceEditor.defaultConfig = {
 			'bold',
 			'underline',
 			'italic',
+			'style',
 			'|',
 			'fontFamily',
 			'fontSize',

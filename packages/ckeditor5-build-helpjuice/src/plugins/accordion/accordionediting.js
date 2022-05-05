@@ -1,7 +1,7 @@
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import InsertAccordionCommand from './insertaccordioncommand';
+import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
+import { toWidget, toWidgetEditable } from "@ckeditor/ckeditor5-widget/src/utils";
+import Widget from "@ckeditor/ckeditor5-widget/src/widget";
+import InsertAccordionCommand from "./insertaccordioncommand";
 
 export default class AccordionEditing extends Plugin {
 	static get requires() {
@@ -11,41 +11,42 @@ export default class AccordionEditing extends Plugin {
 	init() {
 		this._defineSchema();
 		this._defineConverters();
-		this.editor.commands.add('insertAccordion', new InsertAccordionCommand(this.editor));
+		this.editor.commands.add("insertAccordion", new InsertAccordionCommand(this.editor));
 	}
 
 	_defineSchema() {
 		const schema = this.editor.model.schema;
 
-		schema.register('accordion', {
+		schema.register("accordion", {
 			isObject: true,
-			allowWhere: '$block',
-			allowAttributes: ["data-controller"]
+			allowWhere: "$block",
+			allowAttributes: ["data-controller"],
+			allowIn: "listItem"
 		});
 
-		schema.register('accordionTitle', {
+		schema.register("accordionTitle", {
 			isLimit: true,
-			allowIn: 'accordion',
-			allowContentOf: '$block'
+			allowIn: "accordion",
+			allowContentOf: "$block"
 		});
 
-		schema.register('accordionBody', {
+		schema.register("accordionBody", {
 			isLimit: true,
-			allowIn: 'accordion',
-			allowContentOf: '$root',
+			allowIn: "accordion",
+			allowContentOf: "$root",
 			allowAttributes: ["data-editor--toggle-element-target"]
 		});
 
 		schema.addChildCheck((context, childDefinition) => {
-			if (context.endsWith('accordionBody') && childDefinition.name == 'accordion') {
+			if (context.endsWith("accordionBody") && childDefinition.name == "accordion") {
 				return false;
 			}
 		});
 
-		schema.register('accordionToggle', {
+		schema.register("accordionToggle", {
 			isObject: true,
 			isLimit: true,
-			allowIn: 'accordion'
+			allowIn: "accordion"
 		});
 	}
 
@@ -85,24 +86,24 @@ export default class AccordionEditing extends Plugin {
 			}
 		});
 
-		conversion.for('upcast').elementToElement({
-			model: 'accordionTitle',
+		conversion.for("upcast").elementToElement({
+			model: "accordionTitle",
 			view: {
-				name: 'h2',
-				classes: 'helpjuice-accordion-title'
+				name: "h2",
+				classes: "helpjuice-accordion-title"
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'accordionTitle',
+		conversion.for("dataDowncast").elementToElement({
+			model: "accordionTitle",
 			view: {
-				name: 'h2',
-				classes: 'helpjuice-accordion-title'
+				name: "h2",
+				classes: "helpjuice-accordion-title"
 			}
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'accordionTitle',
+		conversion.for("editingDowncast").elementToElement({
+			model: "accordionTitle",
 			view: (modelElement, { writer: viewWriter }) => {
-				const h2 = viewWriter.createEditableElement('h2', { class: 'helpjuice-accordion-title' });
+				const h2 = viewWriter.createEditableElement("h2", { class: "helpjuice-accordion-title" });
 
 				return toWidgetEditable(h2, viewWriter);
 			}
@@ -141,24 +142,24 @@ export default class AccordionEditing extends Plugin {
 			}
 		});
 
-		conversion.for('upcast').elementToElement({
-			model: 'accordionToggle',
+		conversion.for("upcast").elementToElement({
+			model: "accordionToggle",
 			view: {
-				name: 'div',
-				classes: 'helpjuice-accordion-toggle'
+				name: "div",
+				classes: "helpjuice-accordion-toggle"
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'accordionToggle',
+		conversion.for("dataDowncast").elementToElement({
+			model: "accordionToggle",
 			view: {
-				name: 'div',
-				classes: 'helpjuice-accordion-toggle'
+				name: "div",
+				classes: "helpjuice-accordion-toggle"
 			}
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'accordionToggle',
+		conversion.for("editingDowncast").elementToElement({
+			model: "accordionToggle",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-accordion-toggle', "data-action": "click->editor--toggle-element#toggle" });
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-accordion-toggle", "data-action": "click->editor--toggle-element#toggle" });
 
 				return toWidget(div, viewWriter);
 			}

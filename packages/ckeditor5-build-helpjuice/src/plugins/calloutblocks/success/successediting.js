@@ -1,7 +1,7 @@
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import InsertSuccessCommand from './insertsuccesscommand';
+import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
+import { toWidget, toWidgetEditable } from "@ckeditor/ckeditor5-widget/src/utils";
+import Widget from "@ckeditor/ckeditor5-widget/src/widget";
+import InsertSuccessCommand from "./insertsuccesscommand";
 
 export default class SuccessEditing extends Plugin {
 	static get requires() {
@@ -12,32 +12,26 @@ export default class SuccessEditing extends Plugin {
 		this._defineSchema();
 		this._defineConverters();
 
-		this.editor.commands.add('insertSuccess', new InsertSuccessCommand(this.editor));
+		this.editor.commands.add("insertSuccess", new InsertSuccessCommand(this.editor));
 	}
 
 	_defineSchema() {
 		const schema = this.editor.model.schema;
 
-		schema.register('success', {
-			// Behaves like a self-contained object (e.g. an image).
+		schema.register("success", {
 			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			allowWhere: "$block",
+			allowIn: "listItem"
 		});
 
-		schema.register('successBody', {
-			// Cannot be split or left by the caret.
+		schema.register("successBody", {
 			isLimit: true,
-
-			allowIn: 'success',
-
-			// Allow content which is allowed in the root (e.g. paragraphs).
-			allowContentOf: '$root'
+			allowIn: "success",
+			allowContentOf: "$root"
 		});
 
 		schema.addChildCheck((context, childDefinition) => {
-			if (context.endsWith('successBody') && childDefinition.name == 'success') {
+			if (context.endsWith("successBody") && childDefinition.name == "success") {
 				return false;
 			}
 		});
@@ -74,25 +68,25 @@ export default class SuccessEditing extends Plugin {
 			}
 		});
 
-		conversion.for('upcast').elementToElement({
-			model: 'successBody',
+		conversion.for("upcast").elementToElement({
+			model: "successBody",
 			view: {
-				name: 'div',
-				classes: 'helpjuice-callout-body'
+				name: "div",
+				classes: "helpjuice-callout-body"
 			}
 		});
-		conversion.for('dataDowncast').elementToElement({
-			model: 'successBody',
+		conversion.for("dataDowncast").elementToElement({
+			model: "successBody",
 			view: {
-				name: 'div',
-				classes: 'helpjuice-callout-body'
+				name: "div",
+				classes: "helpjuice-callout-body"
 			}
 		});
-		conversion.for('editingDowncast').elementToElement({
-			model: 'successBody',
+		conversion.for("editingDowncast").elementToElement({
+			model: "successBody",
 			view: (modelElement, { writer: viewWriter }) => {
 				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement('div', { class: 'helpjuice-callout-body' });
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-callout-body" });
 
 				return toWidgetEditable(div, viewWriter);
 			}

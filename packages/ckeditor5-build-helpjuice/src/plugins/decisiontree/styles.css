@@ -3,6 +3,7 @@
 	position: relative;
 	padding: 10px;
 	border-radius: 5px;
+	margin: 10px 0;
 }
 
 .helpjuice-decision-tree::before {

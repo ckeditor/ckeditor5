@@ -20,7 +20,8 @@ export default class InternalBlockEditing extends Plugin {
 		schema.register("internalBlock", {
 			isObject: true,
 			allowWhere: "$block",
-			allowAttributes: ["data-permitted-users", "data-permitted-groups", "data-controller", "data-internal-block-id"]
+			allowAttributes: ["data-permitted-users", "data-permitted-groups", "data-controller", "data-internal-block-id"],
+			allowIn: "listItem"
 		});
 
 		// Schema for Internal Block Content

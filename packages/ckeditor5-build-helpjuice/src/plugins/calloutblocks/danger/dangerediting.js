@@ -1,7 +1,7 @@
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import InsertDangerCommand from './insertdangercommand';
+import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
+import { toWidget, toWidgetEditable } from "@ckeditor/ckeditor5-widget/src/utils";
+import Widget from "@ckeditor/ckeditor5-widget/src/widget";
+import InsertDangerCommand from "./insertdangercommand";
 
 export default class DangerEditing extends Plugin {
 	static get requires() {
@@ -11,25 +11,26 @@ export default class DangerEditing extends Plugin {
 	init() {
 		this._defineSchema();
 		this._defineConverters();
-		this.editor.commands.add('insertDanger', new InsertDangerCommand(this.editor));
+		this.editor.commands.add("insertDanger", new InsertDangerCommand(this.editor));
 	}
 
 	_defineSchema() {
 		const schema = this.editor.model.schema;
 
-		schema.register('danger', {
+		schema.register("danger", {
 			isObject: true,
-			allowWhere: '$block'
+			allowWhere: "$block",
+			allowIn: "listItem"
 		});
 
-		schema.register('dangerBody', {
+		schema.register("dangerBody", {
 			isLimit: true,
-			allowIn: 'danger',
-			allowContentOf: '$root'
+			allowIn: "danger",
+			allowContentOf: "$root"
 		});
 
 		schema.addChildCheck((context, childDefinition) => {
-			if (context.endsWith('dangerBody') && childDefinition.name == 'danger') {
+			if (context.endsWith("dangerBody") && childDefinition.name == "danger") {
 				return false;
 			}
 		});
