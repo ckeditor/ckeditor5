@@ -14,6 +14,8 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import TableWalker from '@ckeditor/ckeditor5-table/src/tablewalker';
 import MouseEventsObserver from '@ckeditor/ckeditor5-table/src/tablemouse/mouseeventsobserver';
 
+import TableWidthCommand from '@ckeditor/ckeditor5-table/src/tableproperties/commands/tablewidthcommand';
+
 import {
 	upcastColgroupElement,
 	downcastTableColumnWidthsAttribute,
@@ -109,6 +111,8 @@ export default class TableColumnResizeEditing extends Plugin {
 			columnResizePlugin, 'isEnabled',
 			( isEditorReadOnly, isPluginEnabled ) => !isEditorReadOnly && isPluginEnabled
 		);
+
+		editor.commands.add( 'tableWidth', new TableWidthCommand( editor, '400px' ) );
 	}
 
 	/**
