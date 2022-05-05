@@ -323,30 +323,11 @@ function prepareColumnWidths( columnWidthsAttribute ) {
 		.map( columnWidth => toPrecision( columnWidth ) );
 }
 
-export function setColumnIndex( cell, columnIndex, columnIndexMap, editor ) {
-	editor.editing.view.change( viewWriter => {
-		const viewCell = editor.editing.mapper.toViewElement( cell );
-		insertColumnResizerElements( viewWriter, viewCell );
-	} );
-
-	columnIndexMap.set( cell, columnIndex );
-}
-
-export function deleteColumnIndex( cell, columnIndexMap, editor ) {
-	editor.editing.view.change( viewWriter => {
-		const viewCell = editor.editing.mapper.toViewElement( cell );
-		removeColumnResizerElements( viewWriter, viewCell );
-	} );
-
-	columnIndexMap.delete( cell );
-}
-
 // Inserts column resizer element into a view cell.
 //
-// @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
 // @param {module:engine/view/element~Element} viewCell View cell.
-function insertColumnResizerElements( viewWriter, viewCell ) {
+export function insertColumnResizerElements( viewWriter, viewCell ) {
 	let viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
 		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
 
@@ -366,10 +347,9 @@ function insertColumnResizerElements( viewWriter, viewCell ) {
 
 // Removes column resizer element from a view cell.
 //
-// @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
 // @param {module:engine/view/element~Element} viewCell View cell.
-function removeColumnResizerElements( viewWriter, viewCell ) {
+export function removeColumnResizerElements( viewWriter, viewCell ) {
 	const viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
 		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
 

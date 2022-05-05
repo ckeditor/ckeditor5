@@ -34,8 +34,8 @@ import {
 	isTableRendered,
 	normalizeColumnWidthsAttribute,
 	toPrecision,
-	setColumnIndex,
-	deleteColumnIndex
+	insertColumnResizerElements,
+	removeColumnResizerElements
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -93,6 +93,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._resizingData = null;
 
 		this._columnIndexMap = new Map();
+
+		this._cellsChanged = new Map();
 	}
 
 	/**
@@ -104,6 +106,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._setupPostFixer();
 		this._setupColumnResizers();
 		this._registerColgroupFixer();
+		this._registerResizerInserter();
 
 		const editor = this.editor;
 		const columnResizePlugin = editor.plugins.get( 'TableColumnResize' );
@@ -209,7 +212,8 @@ export default class TableColumnResizeEditing extends Plugin {
 						writer.removeAttribute( 'columnWidths', table );
 
 						for ( const { cell } of new TableWalker( table ) ) {
-							deleteColumnIndex( cell, this._columnIndexMap, editor );
+							this._columnIndexMap.delete( cell );
+							this._cellsChanged.set( cell, 'remove' );
 						}
 
 						changed = true;
@@ -241,7 +245,8 @@ export default class TableColumnResizeEditing extends Plugin {
 					// (1.2) Add the `columnIndex` attribute to the all cells. Do not process the given cell anymore, because the
 					// `columnIndex` attribute is required to properly handle column insertion and deletion.
 					if ( !this._columnIndexMap.has( cell ) ) {
-						setColumnIndex( cell, column, this._columnIndexMap, editor );
+						this._columnIndexMap.set( cell, column );
+						this._cellsChanged.set( cell, 'insert' );
 
 						changed = true;
 
@@ -267,7 +272,8 @@ export default class TableColumnResizeEditing extends Plugin {
 							isColumnInsertionHandled = true;
 						}
 
-						setColumnIndex( cell, column, this._columnIndexMap, editor );
+						this._columnIndexMap.set( cell, column );
+						this._cellsChanged.set( cell, 'insert' );
 
 						changed = true;
 					}
@@ -288,7 +294,8 @@ export default class TableColumnResizeEditing extends Plugin {
 							isColumnDeletionHandled = true;
 						}
 
-						setColumnIndex( cell, column, this._columnIndexMap, editor );
+						this._columnIndexMap.set( cell, column );
+						this._cellsChanged.set( cell, 'insert' );
 
 						changed = true;
 					}
@@ -707,5 +714,26 @@ export default class TableColumnResizeEditing extends Plugin {
 				editor.editing.reconvertItem( table );
 			}
 		}, { priority: 'low' } );
+	}
+
+	_registerResizerInserter() {
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const cellsChanged = this._cellsChanged;
+
+		view.on( 'render', () => {
+			for ( const [ cell, operation ] of cellsChanged.entries() ) {
+				const viewCell = editor.editing.mapper.toViewElement( cell );
+
+				view.change( viewWriter => {
+					if ( operation === 'insert' ) {
+						insertColumnResizerElements( viewWriter, viewCell );
+					} else if ( operation === 'remove' ) {
+						removeColumnResizerElements( viewWriter, viewCell );
+					}
+				} );
+			}
+			cellsChanged.clear();
+		}, { priority: 'lowest' } );
 	}
 }
