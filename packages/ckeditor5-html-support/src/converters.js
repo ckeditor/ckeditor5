@@ -159,7 +159,7 @@ export function attributeToViewInlineConverter( { priority, view: viewName } ) {
 export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			if ( !data.modelRange ) {
+			if ( !data.modelRange || data.modelRange.isCollapsed ) {
 				return;
 			}
 
