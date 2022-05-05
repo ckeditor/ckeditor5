@@ -30,7 +30,7 @@ export default class StyleCommand extends Command {
 		super( editor );
 
 		/**
-		 * Set of currently applied styles on current selection.
+		 * Set of currently applied styles on the current selection.
 		 *
 		 * Names of styles correspond to the `name` property of
 		 * {@link module:style/style~StyleDefinition configured definitions}.
@@ -97,6 +97,8 @@ export default class StyleCommand extends Command {
 			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } );
 
 			for ( const block of ancestorBlocks ) {
+				// E.g. reached a model table when the selection is in a cell. The command should not modify
+				// ancestors of a table.
 				if ( model.schema.isLimit( block ) ) {
 					break;
 				}
@@ -139,24 +141,25 @@ export default class StyleCommand extends Command {
 	 * * When applying inline styles:
 	 *   * If the selection is on a range, the command applies the style classes to all nodes in that range.
 	 *   * If the selection is collapsed in a non-empty node, the command applies the style classes to the
-	 * {@link module:engine/model/document~Document#selection} itself (note that typed characters copy style classes from the selection).
+	 * {@link module:engine/model/document~Document#selection}.
 	 *
 	 * * When applying block styles:
 	 *   * If the selection is on a range, the command applies the style classes to the nearest block parent element.
 	 *
-	 * * When selection is set on a widget object:
-	 *   * Do nothing. Widgets are not yet supported by the style command.
-	 *
 	 * @fires execute
-	 * @param {String} styleName Style name matching the one defined in the config.
+	 * @param {String} styleName Style name matching the one defined in the
+	 * {@link module:style/style~StyleConfig#definitions configuration}.
 	 */
 	execute( styleName ) {
 		if ( !this.enabledStyles.includes( styleName ) ) {
 			/**
-			 * Style command can be executed only on a correct style name.
-			 * This warning may be caused by passing name that is not specified in any of the
-			 * definitions in the styles config, when trying to apply style that is not allowed
-			 * on given element or passing class name instead of the style name.
+			 * Style command can be executed only with a correct style name.
+			 *
+			 * This warning may be caused by:
+			 *
+			 * * passing a name that is not specified in the {@link module:style/style~StyleConfig#definitions configuration}
+			 * (e.g. a CSS class name),
+			 * * when trying to apply a style that is not allowed on a given element.
 			 *
 			 * @error style-command-executed-with-incorrect-style-name
 			 */
