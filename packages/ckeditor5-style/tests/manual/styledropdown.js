@@ -221,6 +221,11 @@ ClassicEditor
 					classes: [ 'large-heading' ]
 				},
 				{
+					name: 'Large paragraph',
+					element: 'p',
+					classes: [ 'large-heading' ]
+				},
+				{
 					name: 'Rounded container',
 					element: 'p',
 					classes: [ 'rounded-container' ]
@@ -249,6 +254,11 @@ ClassicEditor
 					name: 'Vibrant code',
 					element: 'pre',
 					classes: [ 'vibrant-code' ]
+				},
+				{
+					name: 'Side quote',
+					element: 'blockquote',
+					classes: [ 'side-quote' ]
 				},
 				{
 					name: 'Marker',

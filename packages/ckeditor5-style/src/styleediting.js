@@ -43,9 +43,8 @@ export default class StyleEditing extends Plugin {
 		const editor = this.editor;
 		const dataSchema = editor.plugins.get( 'DataSchema' );
 		const normalizedStyleDefinitions = normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
-		const styles = new Styles( normalizedStyleDefinitions );
 
-		editor.commands.add( 'style', new StyleCommand( editor, styles ) );
+		editor.commands.add( 'style', new StyleCommand( editor, normalizedStyleDefinitions ) );
 
 		this._configureGHSDataFilter( normalizedStyleDefinitions );
 	}
@@ -63,89 +62,6 @@ export default class StyleEditing extends Plugin {
 
 		ghsDataFilter.loadAllowedConfig( blockDefinitions.map( normalizedStyleDefinitionToMatcherPattern ) );
 		ghsDataFilter.loadAllowedConfig( inlineDefinitions.map( normalizedStyleDefinitionToMatcherPattern ) );
-	}
-}
-
-/**
- * The helper class storing various mappings based on
- * {@link module:style/style~StyleConfig#definitions configured style definitions}. Used internally by
- * {@link module:style/stylecommand~StyleCommand}.
- *
- * @private
- */
-class Styles {
-	/**
-	 * @param {Object} An object with normalized style definitions grouped into `block` and `inline` categories (arrays).
-	 */
-	constructor( styleDefinitions ) {
-		this.styleTypes = [ 'inline', 'block' ];
-		this.styleDefinitions = styleDefinitions;
-		this.elementToDefinition = new Map();
-		this.classToDefinition = new Map();
-		this.nameToDefinition = new Map();
-
-		this._prepareDefinitionsMapping();
-	}
-
-	/**
-	 * Populates various maps to simplify getting config definitions
-	 * by model name,class name and style name.
-	 *
-	 * @private
-	 */
-	_prepareDefinitionsMapping() {
-		for ( const type of this.styleTypes ) {
-			for ( const { modelElements, name, element, classes, isBlock } of this.styleDefinitions[ type ] ) {
-				for ( const modelElement of modelElements ) {
-					const currentValue = this.elementToDefinition.get( modelElement ) || [];
-					const newValue = [ ...currentValue, { name, element, classes } ];
-					this.elementToDefinition.set( modelElement, newValue );
-				}
-
-				this.classToDefinition.set( classes.join( ' ' ), { name, element, classes } );
-				this.nameToDefinition.set( name, { name, element, classes, isBlock } );
-			}
-		}
-	}
-
-	/**
-	 * Returns all inline definitions elements names.
-	 *
-	 * @protected
-	 * @return {Array.<String>} Inline elements names.
-	 */
-	getInlineElementsNames() {
-		return this.styleDefinitions.inline.map( ( { name } ) => name );
-	}
-
-	/**
-	 * Returns the style config definitions by the model element name.
-	 *
-	 * @protected
-	 * @return {Object} Style config definition.
-	 */
-	getDefinitionsByElementName( elementName ) {
-		return this.elementToDefinition.get( elementName );
-	}
-
-	/**
-	 * Returns the style config definitions by the style name.
-	 *
-	 * @protected
-	 * @return {Object} Style config definition.
-	 */
-	getDefinitionsByName( name ) {
-		return this.nameToDefinition.get( name );
-	}
-
-	/**
-	 * Returns the style config definitions by the style name.
-	 *
-	 * @protected
-	 * @return {Object} Style config definition.
-	 */
-	getDefinitionsByClassName( className ) {
-		return this.classToDefinition.get( className );
 	}
 }
 
