@@ -1502,7 +1502,9 @@ describe( 'TableColumnResizeEditing', () => {
 								const text = item.item.getChild( 0 ).getChild( 0 ).data;
 
 								if ( text == '00' ) {
-									expect( item.item.getAttribute( 'columnIndex' ) ).to.equal( 1 );
+									expect(
+										editor.plugins.get( 'TableColumnResizeEditing' )._columnIndexMap.get( item.item )
+									).to.equal( 1 );
 								}
 							}
 						}
@@ -1530,7 +1532,9 @@ describe( 'TableColumnResizeEditing', () => {
 								const text = item.item.getChild( 0 ).getChild( 0 ).data;
 
 								if ( text == '01' ) {
-									expect( item.item.getAttribute( 'columnIndex' ) ).to.equal( 0 );
+									expect(
+										editor.plugins.get( 'TableColumnResizeEditing' )._columnIndexMap.get( item.item )
+									).to.equal( 0 );
 								}
 							}
 						}
@@ -1562,7 +1566,7 @@ describe( 'TableColumnResizeEditing', () => {
 							}
 							// There should not be a cell with columnIndex='2'.
 							else if ( item.item.is( 'element', 'tableCell' ) ) {
-								const index = item.item.getAttribute( 'columnIndex' );
+								const index = editor.plugins.get( 'TableColumnResizeEditing' )._columnIndexMap.get( item.item );
 								expect( index ).not.to.equal( 2 );
 							}
 						}
