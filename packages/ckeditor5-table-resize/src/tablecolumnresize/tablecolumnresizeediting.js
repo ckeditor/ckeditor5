@@ -33,7 +33,9 @@ import {
 	getNumberOfColumn,
 	isTableRendered,
 	normalizeColumnWidthsAttribute,
-	toPrecision
+	toPrecision,
+	setColumnIndex,
+	deleteColumnIndex
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -207,7 +209,7 @@ export default class TableColumnResizeEditing extends Plugin {
 						writer.removeAttribute( 'columnWidths', table );
 
 						for ( const { cell } of new TableWalker( table ) ) {
-							this._columnIndexMap.delete( cell );
+							deleteColumnIndex( cell, this._columnIndexMap, editor );
 						}
 
 						changed = true;
@@ -239,7 +241,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					// (1.2) Add the `columnIndex` attribute to the all cells. Do not process the given cell anymore, because the
 					// `columnIndex` attribute is required to properly handle column insertion and deletion.
 					if ( !this._columnIndexMap.has( cell ) ) {
-						this._columnIndexMap.set( cell, column );
+						setColumnIndex( cell, column, this._columnIndexMap, editor );
 
 						changed = true;
 
@@ -265,7 +267,7 @@ export default class TableColumnResizeEditing extends Plugin {
 							isColumnInsertionHandled = true;
 						}
 
-						this._columnIndexMap.set( cell, column );
+						setColumnIndex( cell, column, this._columnIndexMap, editor );
 
 						changed = true;
 					}
@@ -286,7 +288,7 @@ export default class TableColumnResizeEditing extends Plugin {
 							isColumnDeletionHandled = true;
 						}
 
-						this._columnIndexMap.set( cell, column );
+						setColumnIndex( cell, column, this._columnIndexMap, editor );
 
 						changed = true;
 					}

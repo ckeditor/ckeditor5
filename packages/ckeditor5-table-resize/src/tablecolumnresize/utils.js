@@ -323,6 +323,24 @@ function prepareColumnWidths( columnWidthsAttribute ) {
 		.map( columnWidth => toPrecision( columnWidth ) );
 }
 
+export function setColumnIndex( cell, columnIndex, columnIndexMap, editor ) {
+	editor.editing.view.change( viewWriter => {
+		const viewCell = editor.editing.mapper.toViewElement( cell );
+		insertColumnResizerElements( viewWriter, viewCell );
+	} );
+
+	columnIndexMap.set( cell, columnIndex );
+}
+
+export function deleteColumnIndex( cell, columnIndexMap, editor ) {
+	editor.editing.view.change( viewWriter => {
+		const viewCell = editor.editing.mapper.toViewElement( cell );
+		removeColumnResizerElements( viewWriter, viewCell );
+	} );
+
+	columnIndexMap.delete( cell );
+}
+
 // Inserts column resizer element into a view cell.
 //
 // @private
