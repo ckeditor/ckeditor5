@@ -270,9 +270,9 @@ function createAttributeStrategies( enabledProperties ) {
 				return getListTypeFromListStyleType( value ) == item.getAttribute( 'listType' );
 			},
 
-			setAttributeOnDowncast: useAttribute ?
-				( writer, listStyle, element ) => {
-					if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
+			setAttributeOnDowncast( writer, listStyle, element ) {
+				if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
+					if ( useAttribute ) {
 						const value = getTypeAttributeFromListStyleType( listStyle );
 
 						if ( value ) {
@@ -280,16 +280,16 @@ function createAttributeStrategies( enabledProperties ) {
 
 							return;
 						}
-					}
-					writer.removeAttribute( 'type', element );
-				} :
-				( writer, listStyle, element ) => {
-					if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
-						writer.setStyle( 'list-style-type', listStyle, element );
 					} else {
-						writer.removeStyle( 'list-style-type', element );
+						writer.setStyle( 'list-style-type', listStyle, element );
+
+						return;
 					}
-				},
+				}
+
+				writer.removeStyle( 'list-style-type', element );
+				writer.removeAttribute( 'type', element );
+			},
 
 			getAttributeOnUpcast( listParent ) {
 				const style = listParent.getStyle( 'list-style-type' );

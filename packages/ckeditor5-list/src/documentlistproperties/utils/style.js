@@ -57,7 +57,7 @@ export function getListTypeFromListStyleType( listStyleType ) {
  * Converts `type` attribute of `<ul>` or `<ol>` elements to `list-style-type` equivalent.
  *
  * @param {String} value
- * @retun {String|null}
+ * @returns {String|null}
  */
 export function getListStyleTypeFromTypeAttribute( value ) {
 	return TYPE_ATTRIBUTE_TO_LIST_STYLE[ value ] || null;
@@ -67,7 +67,7 @@ export function getListStyleTypeFromTypeAttribute( value ) {
  * Converts `list-style-type` style to `type` attribute of `<ul>` or `<ol>` elements.
  *
  * @param {String} value
- * @retun {String|null}
+ * @returns {String|null}
  */
 export function getTypeAttributeFromListStyleType( value ) {
 	return LIST_STYLE_TO_TYPE_ATTRIBUTE[ value ] || null;
