@@ -198,7 +198,7 @@ export default class StyleCommand extends Command {
 
 	/**
 	 * Checks the attribute value of the first node in the selection that allows the attribute.
-	 * For the collapsed selection returns the selection attribute.
+	 * For the collapsed selection, returns the selection attribute.
 	 *
 	 * @private
 	 * @param {String} attributeName Name of the GHS attribute.
@@ -225,7 +225,7 @@ export default class StyleCommand extends Command {
 	}
 }
 
-// Verifies if all classes are set on the given GHS attribute.
+// Verifies if all classes are present in the given GHS attribute.
 function hasAllClasses( ghsAttributeValue, classes ) {
 	if ( !ghsAttributeValue || !ghsAttributeValue.classes ) {
 		return false;
