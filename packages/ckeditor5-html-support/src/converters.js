@@ -159,6 +159,10 @@ export function attributeToViewInlineConverter( { priority, view: viewName } ) {
 export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
+			// Converting an attribute of an element that has not been converted to anything does not make sense
+			// because there will be nowhere to set that attribute on. At this stage, the element should've already
+			// been converted. A collapsed range can show up in to-do lists (<input>) or complex widgets (e.g. table).
+			// (https://github.com/ckeditor/ckeditor5/issues/11000).
 			if ( !data.modelRange || data.modelRange.isCollapsed ) {
 				return;
 			}
