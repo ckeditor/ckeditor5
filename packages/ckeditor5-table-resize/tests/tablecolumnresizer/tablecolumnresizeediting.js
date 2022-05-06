@@ -550,7 +550,7 @@ describe( 'TableColumnResizeEditing', () => {
 			expect( Math.abs( 100 - finalViewColumnWidthsPx[ 1 ] ) < PIXEL_PRECISION ).to.be.true;
 		} );
 
-		it( 'should find and allow for resizing of all tables - when nested', () => {
+		it( 'should find and allow for resizing nested tables', () => {
 			editor.setData(
 				`<figure class="table">
 					<table>
