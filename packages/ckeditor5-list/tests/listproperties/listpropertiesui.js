@@ -242,6 +242,23 @@ describe( 'ListPropertiesUI', () => {
 					expect( buttonView.icon ).to.equal( listStyleSquareIcon );
 				} );
 
+				it( 'should only bring the style buttons supported by the command', () => {
+					return withEditor( { styles: true }, editor => {
+						const listStyleCommand = editor.commands.get( 'listStyle' );
+
+						listStyleCommand.isStyleTypeSupported = style => style == 'square';
+
+						const componentFactory = editor.ui.componentFactory;
+						const bulletedListDropdown = componentFactory.create( 'bulletedList' );
+						const listPropertiesView = bulletedListDropdown.panelView.children.first;
+						const stylesView = listPropertiesView.stylesView;
+
+						expect( stylesView.children.map( b => b.label ) ).to.deep.equal( [
+							'Toggle the square list style'
+						] );
+					} );
+				} );
+
 				it( 'should close the drop-down when any button gets executed', () => {
 					const spy = sinon.spy();
 
@@ -510,6 +527,26 @@ describe( 'ListPropertiesUI', () => {
 					expect( buttonView.label ).to.equal( 'Toggle the upper–latin list style' );
 					expect( buttonView.tooltip ).to.equal( 'Upper-latin' );
 					expect( buttonView.icon ).to.equal( listStyleUpperLatinIcon );
+				} );
+
+				it( 'should only bring the style buttons supported by the command', () => {
+					return withEditor( { styles: true }, editor => {
+						const listStyleCommand = editor.commands.get( 'listStyle' );
+
+						listStyleCommand.isStyleTypeSupported = style => style != 'lower-latin' && style != 'decimal';
+
+						const componentFactory = editor.ui.componentFactory;
+						const numberedListDropdown = componentFactory.create( 'numberedList' );
+						const listPropertiesView = numberedListDropdown.panelView.children.first;
+						const stylesView = listPropertiesView.stylesView;
+
+						expect( stylesView.children.map( b => b.label ) ).to.deep.equal( [
+							'Toggle the decimal with leading zero list style',
+							'Toggle the lower–roman list style',
+							'Toggle the upper–roman list style',
+							'Toggle the upper–latin list style'
+						] );
+					} );
 				} );
 
 				it( 'should close the drop-down when any button gets executed', () => {

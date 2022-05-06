@@ -7,20 +7,41 @@
 * @module list/documentlistproperties/utils/style
 */
 
-const BULLETED_LIST_STYLE_TYPES = [ 'disc', 'circle', 'square' ];
+const LIST_STYLE_TO_LIST_TYPE = {};
+const LIST_STYLE_TO_TYPE_ATTRIBUTE = {};
+const TYPE_ATTRIBUTE_TO_LIST_STYLE = {};
 
-// There's a lot of them (https://www.w3.org/TR/css-counter-styles-3/#typedef-counter-style).
-// Let's support only those that can be selected by ListPropertiesUI.
-const NUMBERED_LIST_STYLE_TYPES = [
-	'decimal',
-	'decimal-leading-zero',
-	'lower-roman',
-	'upper-roman',
-	'lower-latin',
-	'upper-latin',
-	'lower-alpha',
-	'upper-alpha'
+const LIST_STYLE_TYPES = [
+	{ listStyle: 'disc', typeAttribute: 'disc', listType: 'bulleted' },
+	{ listStyle: 'circle', typeAttribute: 'circle', listType: 'bulleted' },
+	{ listStyle: 'square', typeAttribute: 'square', listType: 'bulleted' },
+	{ listStyle: 'decimal', typeAttribute: '1', listType: 'numbered' },
+	{ listStyle: 'decimal-leading-zero', typeAttribute: null, listType: 'numbered' },
+	{ listStyle: 'lower-roman', typeAttribute: 'i', listType: 'numbered' },
+	{ listStyle: 'upper-roman', typeAttribute: 'I', listType: 'numbered' },
+	{ listStyle: 'lower-alpha', typeAttribute: 'a', listType: 'numbered' },
+	{ listStyle: 'upper-alpha', typeAttribute: 'A', listType: 'numbered' },
+	{ listStyle: 'lower-latin', typeAttribute: 'a', listType: 'numbered' },
+	{ listStyle: 'upper-latin', typeAttribute: 'A', listType: 'numbered' }
 ];
+
+for ( const { listStyle, typeAttribute, listType } of LIST_STYLE_TYPES ) {
+	LIST_STYLE_TO_LIST_TYPE[ listStyle ] = listType;
+	LIST_STYLE_TO_TYPE_ATTRIBUTE[ listStyle ] = typeAttribute;
+
+	if ( typeAttribute ) {
+		TYPE_ATTRIBUTE_TO_LIST_STYLE[ typeAttribute ] = listStyle;
+	}
+}
+
+/**
+ * Gets all the style types supported by given list type.
+ *
+ * @returns {Array.<String>}
+ */
+export function getAllSupportedStyleTypes() {
+	return LIST_STYLE_TYPES.map( x => x.listStyle );
+}
 
 /**
 * Checks whether the given list-style-type is supported by numbered or bulleted list.
@@ -29,13 +50,25 @@ const NUMBERED_LIST_STYLE_TYPES = [
 * @returns {'bulleted'|'numbered'|null}
 */
 export function getListTypeFromListStyleType( listStyleType ) {
-	if ( BULLETED_LIST_STYLE_TYPES.includes( listStyleType ) ) {
-		return 'bulleted';
-	}
+	return LIST_STYLE_TO_LIST_TYPE[ listStyleType ] || null;
+}
 
-	if ( NUMBERED_LIST_STYLE_TYPES.includes( listStyleType ) ) {
-		return 'numbered';
-	}
+/**
+ * Converts `type` attribute of `<ul>` or `<ol>` elements to `list-style-type` equivalent.
+ *
+ * @param {String} value
+ * @returns {String|null}
+ */
+export function getListStyleTypeFromTypeAttribute( value ) {
+	return TYPE_ATTRIBUTE_TO_LIST_STYLE[ value ] || null;
+}
 
-	return null;
+/**
+ * Converts `list-style-type` style to `type` attribute of `<ul>` or `<ol>` elements.
+ *
+ * @param {String} value
+ * @returns {String|null}
+ */
+export function getTypeAttributeFromListStyleType( value ) {
+	return LIST_STYLE_TO_TYPE_ATTRIBUTE[ value ] || null;
 }

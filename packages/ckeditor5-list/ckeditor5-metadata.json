@@ -138,7 +138,8 @@
 					],
 					"attributes": [
 						"start",
-						"reversed"
+						"reversed",
+						"type"
 					],
 					"styles": "list-style-type"
 				}
