@@ -65,6 +65,7 @@ import DecisionTree from './plugins/decisiontree/decisiontree';
 import InsertArticle from './plugins/insertarticle/insertarticle';
 import FilesManager from './plugins/filesmanager/filesmanager';
 import Mention from './plugins/mention/src/mention';
+import Comments from './plugins/comments/comments';
 
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
@@ -126,7 +127,8 @@ HelpjuiceEditor.builtinPlugins = [
 	FilesManager,
 	Mention,
 	MentionCustomization,
-	Style
+	Style,
+	Comments
 ];
 
 function MentionCustomization(editor) {
