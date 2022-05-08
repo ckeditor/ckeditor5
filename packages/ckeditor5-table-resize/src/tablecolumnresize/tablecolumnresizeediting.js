@@ -16,8 +16,7 @@ import MouseEventsObserver from '@ckeditor/ckeditor5-table/src/tablemouse/mousee
 
 import {
 	upcastColgroupElement,
-	downcastTableColumnWidthsAttribute,
-	downcastCellColumnIndexAttribute
+	downcastTableColumnWidthsAttribute
 } from './converters';
 
 import {
@@ -190,7 +189,6 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		conversion.for( 'upcast' ).add( upcastColgroupElement( editor ) );
 		conversion.for( 'downcast' ).add( downcastTableColumnWidthsAttribute() );
-		conversion.for( 'editingDowncast' ).add( downcastCellColumnIndexAttribute() );
 	}
 
 	/**

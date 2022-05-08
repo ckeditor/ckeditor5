@@ -78,27 +78,6 @@ export function downcastTableColumnWidthsAttribute() {
 	} );
 }
 
-/**
- * Returns a helper for converting a table cell `columnIndex` attribute to view column resize element.
- *
- * @returns {Function} Conversion helper.
- */
-export function downcastCellColumnIndexAttribute() {
-	return dispatcher => dispatcher.on( 'attribute:columnIndex:tableCell', ( evt, data, conversionApi ) => {
-		const viewWriter = conversionApi.writer;
-		const modelCell = data.item;
-		const viewCell = conversionApi.mapper.toViewElement( modelCell );
-
-		if ( data.attributeNewValue !== null ) {
-			if ( data.attributeNewValue !== data.attributeOldValue ) {
-				insertColumnResizerElements( viewWriter, viewCell );
-			}
-		} else {
-			removeColumnResizerElements( viewWriter, viewCell );
-		}
-	} );
-}
-
 // Inserts the `<colgroup>` with `<col>` elements as the first child in the view table. Each `<col>` element represents a single column
 // and it has the inline width style set, taken from the appropriate slot from the `columnWidths` table attribute.
 //
