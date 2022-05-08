@@ -143,10 +143,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		schema.extend( 'table', {
 			allowAttributes: [ 'tableWidth', 'columnWidths' ]
 		} );
-
-		schema.extend( 'tableCell', {
-			allowAttributes: 'columnIndex'
-		} );
 	}
 
 	/**
