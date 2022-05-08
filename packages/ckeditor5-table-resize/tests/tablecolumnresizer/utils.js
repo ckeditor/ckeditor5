@@ -65,7 +65,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -89,7 +89,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -107,7 +107,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -125,7 +125,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -149,7 +149,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -173,7 +173,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -191,7 +191,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -209,7 +209,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -225,7 +225,7 @@ describe( 'TableColumnResize utils', () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -241,7 +241,7 @@ describe( 'TableColumnResize utils', () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -257,7 +257,7 @@ describe( 'TableColumnResize utils', () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -298,7 +298,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 3 );
 				expect( affectedTables.has( firstTable ), 'first table is affected' ).to.be.true;
@@ -328,7 +328,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -355,7 +355,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'linkHref', 'www', null );
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes );
+				const affectedTables = getAffectedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );

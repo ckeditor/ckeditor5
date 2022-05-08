@@ -18,16 +18,19 @@ import {
  * Collects all affected by the differ table model elements. The returned set may be empty.
  *
  * @param {Array.<module:engine/model/differ~DiffItem>} changes
+ * @param {module:engine/model/model~Model} model
  * @returns {Set.<module:engine/model/element~Element>}
  */
-export function getAffectedTables( changes ) {
+export function getAffectedTables( changes, model ) {
 	const tablesToProcess = new Set();
 
 	for ( const change of changes ) {
-		const table = getAffectedTable( change );
+		const table = getAffectedTable( change, model );
 
 		if ( table ) {
-			tablesToProcess.add( table );
+			for ( const tableItem of table ) {
+				tablesToProcess.add( tableItem );
+			}
 		}
 	}
 
@@ -42,8 +45,9 @@ export function getAffectedTables( changes ) {
 //
 // @private
 // @param {module:engine/model/differ~DiffItem} changes
+// @param {module:engine/model/model~Model} model
 // @returns {module:engine/model/element~Element|null}
-function getAffectedTable( change ) {
+function getAffectedTable( change, model ) {
 	let referencePosition = null;
 
 	switch ( change.type ) {
@@ -69,9 +73,18 @@ function getAffectedTable( change ) {
 		return null;
 	}
 
-	return ( referencePosition.nodeAfter && referencePosition.nodeAfter.name === 'table' ) ?
-		referencePosition.nodeAfter :
-		referencePosition.findAncestor( 'table' );
+	const affectedTables = [];
+	const tableNode = ( referencePosition.nodeAfter && referencePosition.nodeAfter.name === 'table' ) ?
+		referencePosition.nodeAfter : referencePosition.findAncestor( 'table' );
+	const range = model.createRangeOn( tableNode );
+
+	for ( const node of range.getItems() ) {
+		if ( node.is( 'element' ) && node.name === 'table' ) {
+			affectedTables.push( node );
+		}
+	}
+
+	return affectedTables;
 }
 
 /**
