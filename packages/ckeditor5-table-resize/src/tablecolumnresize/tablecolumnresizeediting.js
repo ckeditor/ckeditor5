@@ -92,8 +92,22 @@ export default class TableColumnResizeEditing extends Plugin {
 		 */
 		this._resizingData = null;
 
+		/**
+		 * Internal map to store reference between a cell and its columnIndex. This information is required in postfixer to properly
+		 * recognize if the cell was inserted or deleted.
+		 *
+		 * @private
+		 * @member {Map}
+		 */
 		this._columnIndexMap = new Map();
 
+		/**
+		 * Internal map to store reference between a cell and operation that was performed on it (insert/remove). This is required
+		 * in order to add/remove resizers based on operation performed (which is done on 'render').
+		 *
+		 * @private
+		 * @member {Map}
+		 */
 		this._cellsChanged = new Map();
 	}
 
