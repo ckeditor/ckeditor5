@@ -107,7 +107,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * @private
 		 * @member {Map}
 		 */
-		this._cellsChanged = new Map();
+		this._cellsModified = new Map();
 	}
 
 	/**
@@ -210,6 +210,8 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	_setupPostFixer() {
 		const editor = this.editor;
+		const columnIndexMap = this._columnIndexMap;
+		const cellsModified = this._cellsModified;
 
 		editor.model.document.registerPostFixer( writer => {
 			const changes = editor.model.document.differ.getChanges();
@@ -224,8 +226,8 @@ export default class TableColumnResizeEditing extends Plugin {
 						writer.removeAttribute( 'columnWidths', table );
 
 						for ( const { cell } of new TableWalker( table ) ) {
-							this._columnIndexMap.delete( cell );
-							this._cellsChanged.set( cell, 'remove' );
+							columnIndexMap.delete( cell );
+							cellsModified.set( cell, 'remove' );
 						}
 
 						changed = true;
@@ -256,16 +258,16 @@ export default class TableColumnResizeEditing extends Plugin {
 				for ( const { cell, cellWidth: cellColumnWidth, column } of new TableWalker( table ) ) {
 					// (1.2) Add the `columnIndex` attribute to the all cells. Do not process the given cell anymore, because the
 					// `columnIndex` attribute is required to properly handle column insertion and deletion.
-					if ( !this._columnIndexMap.has( cell ) ) {
-						this._columnIndexMap.set( cell, column );
-						this._cellsChanged.set( cell, 'insert' );
+					if ( !columnIndexMap.has( cell ) ) {
+						columnIndexMap.set( cell, column );
+						cellsModified.set( cell, 'insert' );
 
 						changed = true;
 
 						continue;
 					}
 
-					const previousColumn = this._columnIndexMap.get( cell );
+					const previousColumn = columnIndexMap.get( cell );
 
 					const isColumnInsertion = previousColumn < column;
 					const isColumnDeletion = previousColumn > column;
@@ -274,7 +276,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					if ( isColumnInsertion ) {
 						if ( !isColumnInsertionHandled ) {
 							const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
-							const isColumnSwapped = this._columnIndexMap.get( cell.previousSibling ) === column;
+							const isColumnSwapped = columnIndexMap.get( cell.previousSibling ) === column;
 							const columnWidthsToInsert = isColumnSwapped ?
 								removedColumnWidths :
 								fillArray( column - previousColumn, columnMinWidthAsPercentage );
@@ -284,8 +286,8 @@ export default class TableColumnResizeEditing extends Plugin {
 							isColumnInsertionHandled = true;
 						}
 
-						this._columnIndexMap.set( cell, column );
-						this._cellsChanged.set( cell, 'insert' );
+						columnIndexMap.set( cell, column );
+						cellsModified.set( cell, 'insert' );
 
 						changed = true;
 					}
@@ -295,7 +297,7 @@ export default class TableColumnResizeEditing extends Plugin {
 						if ( !isColumnDeletionHandled ) {
 							removedColumnWidths = columnWidths.splice( column, previousColumn - column );
 
-							const isColumnSwapped = cell.nextSibling && this._columnIndexMap.get( cell.nextSibling ) === column;
+							const isColumnSwapped = cell.nextSibling && columnIndexMap.get( cell.nextSibling ) === column;
 
 							if ( !isColumnSwapped ) {
 								const columnToExpand = column > 0 ? column - 1 : column;
@@ -306,8 +308,8 @@ export default class TableColumnResizeEditing extends Plugin {
 							isColumnDeletionHandled = true;
 						}
 
-						this._columnIndexMap.set( cell, column );
-						this._cellsChanged.set( cell, 'insert' );
+						columnIndexMap.set( cell, column );
+						cellsModified.set( cell, 'insert' );
 
 						changed = true;
 					}
@@ -736,10 +738,10 @@ export default class TableColumnResizeEditing extends Plugin {
 	_registerResizerInserter() {
 		const editor = this.editor;
 		const view = editor.editing.view;
-		const cellsChanged = this._cellsChanged;
+		const cellsModified = this._cellsModified;
 
 		view.on( 'render', () => {
-			for ( const [ cell, operation ] of cellsChanged.entries() ) {
+			for ( const [ cell, operation ] of cellsModified.entries() ) {
 				const viewCell = editor.editing.mapper.toViewElement( cell );
 
 				view.change( viewWriter => {
@@ -750,7 +752,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					}
 				} );
 			}
-			cellsChanged.clear();
+			cellsModified.clear();
 		}, { priority: 'lowest' } );
 	}
 }
