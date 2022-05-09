@@ -722,6 +722,26 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/11000
+		it( 'should not consume element attributes if the element was consumed into a collapsed range', () => {
+			dataFilter.allowElement( 'input' );
+			dataFilter.allowAttributes( { name: 'input', attributes: true } );
+
+			editor.data.upcastDispatcher.on( 'element:input', ( evt, data, conversionApi ) => {
+				if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+					data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+				}
+			} );
+
+			editor.data.upcastDispatcher.on( 'element:input', ( evt, data, conversionApi ) => {
+				const areConsumable = conversionApi.consumable.test( data.viewItem, { attributes: [ 'type', 'disabled' ] } );
+
+				expect( areConsumable ).to.be.true;
+			}, { priority: 'lowest' } );
+
+			editor.setData( '<p>foo<input type="checkbox" disabled="disabled">bar</p>' );
+		} );
+
 		it( 'should not create empty htmlA (upcast)', () => {
 			editor.conversion.for( 'upcast' ).add( dispatcher => {
 				dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
