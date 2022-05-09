@@ -1716,10 +1716,12 @@ describe( 'TableColumnResizeEditing', () => {
 						[ '00', '01', '02' ]
 					], { tableWidth: '100px', columnWidths: '25%,25%,50%' } ) );
 
+					setInitialWidthsInPx( editor.editing.view, 201, 300 );
+
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="20.8%,20.8%,58.4%" tableWidth="10.37%">' +
+						'[<table columnWidths="22.73%,22.73%,54.54%" tableWidth="73.33%">' +
 							'<tableRow>' +
 								'<tableCell columnIndex="0">' +
 									'<paragraph>00</paragraph>' +
@@ -1770,10 +1772,12 @@ describe( 'TableColumnResizeEditing', () => {
 						[ '00', '01', '02' ]
 					], { columnWidths: '20%,25%,55%' } ) );
 
+					setInitialWidthsInPx( editor.editing.view, 201 );
+
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="20%,21.51%,58.49%">' +
+						'[<table columnWidths="20%,20%,60%">' +
 							'<tableRow>' +
 								'<tableCell columnIndex="0">' +
 									'<paragraph>00</paragraph>' +
