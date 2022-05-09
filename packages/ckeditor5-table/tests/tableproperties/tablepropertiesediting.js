@@ -952,7 +952,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should upcast width from <figure>', () => {
-					editor.setData( '<figure style="width:1337px"><table><tr><td>foo</td></tr></table></figure>' );
+					editor.setData( '<figure class="table" style="width:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337px' );
@@ -1026,7 +1026,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should upcast height from <figure>', () => {
-					editor.setData( '<figure style="height:1337px"><table><tr><td>foo</td></tr></table></figure>' );
+					editor.setData( '<figure class="table" style="height:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337px' );
@@ -1323,7 +1323,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should not upcast the default `width` value from <figure>', () => {
-					editor.setData( '<figure style="width:250px"><table><tr><td>foo</td></tr></table></figure>' );
+					editor.setData( '<figure class="table" style="width:250px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'width' ) ).to.be.undefined;
@@ -1339,7 +1339,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should not upcast the default `height` value from <figure>', () => {
-					editor.setData( '<figure style="height:150px"><table><tr><td>foo</td></tr></table></figure>' );
+					editor.setData( '<figure class="table" style="height:150px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'height' ) ).to.be.undefined;

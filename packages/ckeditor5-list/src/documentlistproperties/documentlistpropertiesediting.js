@@ -14,7 +14,12 @@ import DocumentListStartCommand from './documentliststartcommand';
 import DocumentListStyleCommand from './documentliststylecommand';
 import DocumentListReversedCommand from './documentlistreversedcommand';
 import { listPropertiesUpcastConverter } from './converters';
-import { getListTypeFromListStyleType } from './utils/style';
+import {
+	getAllSupportedStyleTypes,
+	getListTypeFromListStyleType,
+	getListStyleTypeFromTypeAttribute,
+	getTypeAttributeFromListStyleType
+} from './utils/style';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -221,7 +226,8 @@ export default class DocumentListPropertiesEditing extends Plugin {
 // Creates an array of strategies for dealing with enabled listItem attributes.
 //
 // @param {Object} enabledProperties
-// @param {Boolean} enabledProperties.styles
+// @param {Boolean|Object} enabledProperties.styles
+// @param {Boolean} [enabledProperties.styles.useAttribute]
 // @param {Boolean} enabledProperties.reversed
 // @param {Boolean} enabledProperties.startIndex
 // @returns {Array.<module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy>}
@@ -229,13 +235,21 @@ function createAttributeStrategies( enabledProperties ) {
 	const strategies = [];
 
 	if ( enabledProperties.styles ) {
+		const useAttribute = typeof enabledProperties.styles == 'object' && enabledProperties.styles.useAttribute;
+
 		strategies.push( {
 			attributeName: 'listStyle',
 			defaultValue: DEFAULT_LIST_TYPE,
 			viewConsumables: { styles: 'list-style-type' },
 
 			addCommand( editor ) {
-				editor.commands.add( 'listStyle', new DocumentListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
+				let supportedTypes = getAllSupportedStyleTypes();
+
+				if ( useAttribute ) {
+					supportedTypes = supportedTypes.filter( styleType => !!getTypeAttributeFromListStyleType( styleType ) );
+				}
+
+				editor.commands.add( 'listStyle', new DocumentListStyleCommand( editor, DEFAULT_LIST_TYPE, supportedTypes ) );
 			},
 
 			appliesToListItem() {
@@ -258,14 +272,39 @@ function createAttributeStrategies( enabledProperties ) {
 
 			setAttributeOnDowncast( writer, listStyle, element ) {
 				if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
-					writer.setStyle( 'list-style-type', listStyle, element );
-				} else {
-					writer.removeStyle( 'list-style-type', element );
+					if ( useAttribute ) {
+						const value = getTypeAttributeFromListStyleType( listStyle );
+
+						if ( value ) {
+							writer.setAttribute( 'type', value, element );
+
+							return;
+						}
+					} else {
+						writer.setStyle( 'list-style-type', listStyle, element );
+
+						return;
+					}
 				}
+
+				writer.removeStyle( 'list-style-type', element );
+				writer.removeAttribute( 'type', element );
 			},
 
 			getAttributeOnUpcast( listParent ) {
-				return listParent.getStyle( 'list-style-type' ) || DEFAULT_LIST_TYPE;
+				const style = listParent.getStyle( 'list-style-type' );
+
+				if ( style ) {
+					return style;
+				}
+
+				const attribute = listParent.getAttribute( 'type' );
+
+				if ( attribute ) {
+					return getListStyleTypeFromTypeAttribute( attribute );
+				}
+
+				return DEFAULT_LIST_TYPE;
 			}
 		} );
 	}

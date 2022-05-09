@@ -1955,10 +1955,8 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><imageInline htmlA="(1)" linkHref="www.example.com" src="/assets/sample.png"></imageInline></paragraph>',
-				attributes: {
-					1: {}
-				}
+				data: '<paragraph><imageInline linkHref="www.example.com" src="/assets/sample.png"></imageInline></paragraph>',
+				attributes: {}
 			} );
 
 			expect( editor.getData() ).to.equal(
@@ -1982,10 +1980,8 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><imageInline htmlA="(1)" linkHref="www.example.com" src="/assets/sample.png"></imageInline></paragraph>',
-				attributes: {
-					1: {}
-				}
+				data: '<paragraph><imageInline linkHref="www.example.com" src="/assets/sample.png"></imageInline></paragraph>',
+				attributes: {}
 			} );
 
 			expect( editor.getData() ).to.equal(
@@ -2013,10 +2009,8 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><imageInline htmlA="(1)" linkHref="www.example.com" src="/assets/sample.png"></imageInline></paragraph>',
-				attributes: {
-					1: {}
-				}
+				data: '<paragraph><imageInline linkHref="www.example.com" src="/assets/sample.png"></imageInline></paragraph>',
+				attributes: {}
 			} );
 
 			expect( editor.getData() ).to.equal(

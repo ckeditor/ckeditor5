@@ -4,7 +4,7 @@ category: frameworks
 order: 30
 ---
 
-{@snippet builds/frameworks/framework-integration}
+{@snippet installation/frameworks/framework-integration}
 
 # Rich text editor component for React
 
