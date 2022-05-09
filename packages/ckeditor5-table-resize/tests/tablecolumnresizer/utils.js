@@ -337,7 +337,7 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should not find any affected table if it was a text formatting removal operation', () => {
 			let range;
 
-			// To test the getAffectedTable(), when the attribute is being removed we need
+			// To test the getAffectedTables(), when the attribute is being removed we need
 			// to frist insert the text inside one of the table cells.
 			model.change( () => {
 				insert(
