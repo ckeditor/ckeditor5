@@ -6,7 +6,7 @@
 
 category: getting-started
 order: 60
-modified_at: 2021-07-16
+modified_at: 2022-04-15
 ---
 
 # Migration from CKEditor 4
@@ -52,6 +52,8 @@ The same may apply for third-party plugins which may not have been ported to CKE
 
 Check the {@link installation/advanced/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
 
+When it comes to official plugins compatibility between CKEditor 4 and CKEditor 5, please see the {@link installation/getting-started/migration-from-ckeditor-4#plugins-compatibility-table compatibility table} to learn more.
+
 ## Themes (skins)
 
 In CKEditor 5, the previous concept of "skins" was reviewed and is now called "themes".
@@ -69,6 +71,12 @@ An extremely important aspect to be remembered is that &mdash; because of the di
 Extensive analysis, data verification and tests should be performed on existing data. If necessary, you will need to develop conversion procedures to avoid data loss. The {@link features/general-html-support General HTML Support} feature may be used to introduce HTML markup that is present in the legacy content but is not yet fully covered by CKEditor 5 features.
 
 A relatively simple yet efficient strategy of adopting CKEditor 5 into existing systems might be using CKEditor 5 for creating new content and the old editor for editing legacy content.
+
+## Plugins compatibility table
+
+The following table presents plugins available in CKEditor 4 and their equivalent in CKEditor 5.
+
+{@snippet installation/plugins-mapping/plugins-mapping}
 
 ## Configuration options compatibility table
 

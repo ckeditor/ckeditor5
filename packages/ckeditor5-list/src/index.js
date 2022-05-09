@@ -7,6 +7,10 @@
  * @module list
  */
 
+export { default as DocumentList } from './documentlist';
+export { default as DocumentListEditing } from './documentlist/documentlistediting';
+export { default as DocumentListProperties } from './documentlistproperties';
+export { default as DocumentListPropertiesEditing } from './documentlistproperties/documentlistpropertiesediting';
 export { default as List } from './list';
 export { default as ListEditing } from './list/listediting';
 export { default as ListUI } from './list/listui';
