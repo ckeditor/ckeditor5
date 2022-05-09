@@ -193,9 +193,10 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * It checks if the change from the differ concerns a table-related element or an attribute. If yes, then it is responsible for the
 	 * following:
 	 * (1) Depending on whether the `enableResize` event is not prevented...
-	 *    (1.1) ...removing the `columnWidths` attribute from the table and the `columnIndex` attributes from all the table cells, or
-	 *    (1.2) ...adding the `columnWidths` attribute to the table and the `columnIndex` attributes to all the table cells.
+	 *    (1.1) ...removing the `columnWidths` attribute from the table and all the cells from column index map, or
+	 *    (1.2) ...adding the `columnWidths` attribute to the table.
 	 * (2) Adjusting the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
+	 *    (2.1) Add all cells to column index map with its column index (to properly handle column insertion and deletion).
 	 * (3) Checking if columns have been added or removed...
 	 *    (3.1) ... in the middle of the table, or
 	 *    (3.2) ... at the table end.
@@ -215,7 +216,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			let changed = false;
 
 			for ( const table of getAffectedTables( changes, editor.model ) ) {
-				// (1.1) Remove the `columnWidths` attribute from the table and the `columnIndex` attributes from all the table cells if the
+				// (1.1) Remove the `columnWidths` attribute from the table and all the cells from column index map if the
 				// manual width is not allowed for a given cell. There is no need to process the given table anymore.
 				if ( this.fire( 'disableResize', table ) ) {
 					if ( table.hasAttribute( 'columnWidths' ) ) {
@@ -252,8 +253,8 @@ export default class TableColumnResizeEditing extends Plugin {
 				let isColumnDeletionHandled = false;
 
 				for ( const { cell, cellWidth: cellColumnWidth, column } of new TableWalker( table ) ) {
-					// (1.2) Add the `columnIndex` attribute to the all cells. Do not process the given cell anymore, because the
-					// `columnIndex` attribute is required to properly handle column insertion and deletion.
+					// (2.1) Add all cells to column index map with its column index. Do not process the given cell anymore, because the
+					// `columnIndex` reference in the map is required to properly handle column insertion and deletion.
 					if ( !columnIndexMap.has( cell ) ) {
 						columnIndexMap.set( cell, column );
 						cellsModified.set( cell, 'insert' );
@@ -268,7 +269,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					const isColumnInsertion = previousColumn < column;
 					const isColumnDeletion = previousColumn > column;
 
-					// (3.1) Handle column insertion and update the `columnIndex` attributes in affected cells.
+					// (3.1) Handle column insertion and update the `columnIndex` references in column index map for affected cells.
 					if ( isColumnInsertion ) {
 						if ( !isColumnInsertionHandled ) {
 							const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
@@ -288,7 +289,7 @@ export default class TableColumnResizeEditing extends Plugin {
 						changed = true;
 					}
 
-					// (3.1) Handle column deletion and update the `columnIndex` attributes in affected cells.
+					// (3.1) Handle column deletion and update the `columnIndex` references in column index map for affected cells.
 					if ( isColumnDeletion ) {
 						if ( !isColumnDeletionHandled ) {
 							removedColumnWidths = columnWidths.splice( column, previousColumn - column );

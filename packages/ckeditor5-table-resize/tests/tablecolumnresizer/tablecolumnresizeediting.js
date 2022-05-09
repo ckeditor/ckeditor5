@@ -356,7 +356,7 @@ describe( 'TableColumnResizeEditing', () => {
 	} );
 
 	describe( 'post-fixer', () => {
-		describe( 'correctly assigns the "columnIndex" attribute value', () => {
+		describe( 'correctly assigns the "columnIndex" reference in internal column index map', () => {
 			it( 'when the column is added at the beginning', () => {
 				setModelData( model, modelTable( [
 					[ '[00]', '01', '02' ],
