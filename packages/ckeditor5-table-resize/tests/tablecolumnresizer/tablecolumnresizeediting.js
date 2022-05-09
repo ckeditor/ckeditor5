@@ -549,6 +549,34 @@ describe( 'TableColumnResizeEditing', () => {
 
 			expect( Math.abs( 100 - finalViewColumnWidthsPx[ 1 ] ) < PIXEL_PRECISION ).to.be.true;
 		} );
+
+		it( 'should find and allow for resizing nested tables', () => {
+			editor.setData(
+				`<figure class="table">
+					<table>
+						<tbody
+							<tr>
+								<td>
+									<figure class="table">
+										<table>
+											<tbody>
+												<tr>
+													<td>20</td>
+													<td>21</td>
+												</tr>
+											</tbody>
+										</table>
+									</figure>
+								</td>
+								<td>11</td>
+							</tr>
+						</tbody>
+					</table>
+				</figure>`
+			);
+
+			expect( document.getElementsByClassName( 'table-column-resizer' ).length ).to.equal( 4 );
+		} );
 	} );
 
 	describe( 'does not resize', () => {
