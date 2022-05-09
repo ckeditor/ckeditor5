@@ -528,12 +528,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			const table = model.document.getRoot().getChild( 0 );
 
-			// We define table width precisely to be able to predict column widths in %.
-			// Setting table width to 201px causes the columns to have initially: [50px][50px][100px]
-			editor.editing.view.change( writer => {
-				const viewEditableRoot = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 1 );
-				writer.setAttribute( 'style', 'width: 201px;', viewEditableRoot );
-			} );
+			setInitialTableWidthInPx( editor.editing.view, 201 );
 
 			model.change( writer => {
 				const cell = table.getChild( 1 ).getChild( 1 );
@@ -2016,5 +2011,15 @@ describe( 'TableColumnResizeEditing', () => {
 		resultingWidths[ columnIndex + 1 ] = initialWidths[ columnIndex + 1 ] - widthChange;
 
 		return resultingWidths;
+	}
+
+	function setInitialTableWidthInPx( view, width ) {
+		// We define table width precisely when we want to correctly predict column widths in % after resizing.
+		// E.g. setting table width to 201px when we have 3 columns defined: '25%,25%,50%' causes the columns
+		// to have initially: [50px][50px][100px] (the difference of 1px is important).
+		view.change( writer => {
+			const table = view.document.getRoot().getChild( 0 ).getChild( 1 );
+			writer.setAttribute( 'style', `width: ${ width }px;`, table );
+		} );
 	}
 } );
