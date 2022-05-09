@@ -27,6 +27,7 @@ import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperti
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 
 import TableColumnResize from '../../src/tablecolumnresize';
+import TableColumnResizeTrackChanges from '../../src/tablecolumnresizetrackchanges';
 
 // We need dynamic channel to not interfere with other tests and testers.
 const channelId = Date.now();
@@ -52,7 +53,8 @@ ClassicEditor
 			TableProperties,
 			TableCellProperties,
 			TableCaption,
-			TableColumnResize
+			TableColumnResize,
+			TableColumnResizeTrackChanges
 		],
 		toolbar: [
 			'heading', 'insertTable', '|',
