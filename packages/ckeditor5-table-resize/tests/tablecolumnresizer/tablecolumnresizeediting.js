@@ -941,32 +941,6 @@ describe( 'TableColumnResizeEditing', () => {
 			} );
 
 			describe( 'nested table ', () => {
-				it( 'has resizers properly inserted', () => {
-					setModelData( editor.model,
-						'<table columnWidths="100%">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<table columnWidths="50%,50%">' +
-										'<tableRow>' +
-											'<tableCell>' +
-												'<paragraph>foo</paragraph>' +
-											'</tableCell>' +
-											'<tableCell>' +
-												'<paragraph>bar</paragraph>' +
-											'</tableCell>' +
-										'</tableRow>' +
-									'</table>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>'
-					);
-
-					const domTable = getDomTable( view );
-					const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
-
-					expect( resizers.length ).to.equal( 3 );
-				} );
-
 				it( 'correctly shrinks when the last column is dragged to the left', () => {
 					// Test-specific.
 					const columnToResizeIndex = 1;
