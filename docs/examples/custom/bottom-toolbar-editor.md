@@ -26,8 +26,6 @@ The presented combination of the UI and editor's features works best for integra
 
 ```js
 
-/* globals console, window, document */
-
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -271,16 +269,6 @@ DecoupledEditor
 
 		overrideTooltipPositions( editor.ui.view.toolbar );
 		overrideTooltipPositions( editor.plugins.get( 'FormattingOptions' ).toolbarView );
-
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Formatting options' ),
-			text: 'Click to open formatting options.',
-			editor,
-			tippyOptions: {
-				placement: 'bottom-start'
-			}
-		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
