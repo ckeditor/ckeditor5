@@ -15,6 +15,7 @@ import TableWalker from '@ckeditor/ckeditor5-table/src/tablewalker';
 import MouseEventsObserver from '@ckeditor/ckeditor5-table/src/tablemouse/mouseeventsobserver';
 
 import TableWidthCommand from '@ckeditor/ckeditor5-table/src/tableproperties/commands/tablewidthcommand';
+import TableColumnWidths from './tablecolumnwidthscommand';
 
 import {
 	upcastColgroupElement,
@@ -112,7 +113,8 @@ export default class TableColumnResizeEditing extends Plugin {
 			( isEditorReadOnly, isPluginEnabled ) => !isEditorReadOnly && isPluginEnabled
 		);
 
-		editor.commands.add( 'tableWidth', new TableWidthCommand( editor, '400px' ) );
+		editor.commands.add( 'columnResizeTableWidth', new TableWidthCommand( editor ) );
+		editor.commands.add( 'columnResizeColumnWidths', new TableColumnWidths( editor ) );
 	}
 
 	/**
@@ -508,15 +510,13 @@ export default class TableColumnResizeEditing extends Plugin {
 		if ( isColumnWidthsAttributeChanged || isTableWidthAttributeChanged ) {
 			if ( this._isResizingAllowed ) {
 				// Commit all changes to the model.
-				editor.model.change( writer => {
-					if ( isColumnWidthsAttributeChanged ) {
-						writer.setAttribute( 'columnWidths', columnWidthsAttributeNew, modelTable );
-					}
+				if ( isColumnWidthsAttributeChanged ) {
+					editor.execute( 'columnResizeColumnWidths', { value: columnWidthsAttributeNew } );
+				}
 
-					if ( isTableWidthAttributeChanged ) {
-						writer.setAttribute( 'tableWidth', `${ toPrecision( tableWidthAttributeNew ) }%`, modelTable );
-					}
-				} );
+				if ( isTableWidthAttributeChanged ) {
+					editor.execute( 'columnResizeTableWidth', { value: `${ toPrecision( tableWidthAttributeNew ) }%` } );
+				}
 			} else {
 				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
 				editingView.change( writer => {
