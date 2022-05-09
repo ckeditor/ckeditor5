@@ -90,7 +90,7 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 			}
 
 			function preserveElementAttributes( viewElement, attributeName ) {
-				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+				const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 				if ( viewAttributes ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );

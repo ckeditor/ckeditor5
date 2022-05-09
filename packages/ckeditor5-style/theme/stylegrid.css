@@ -10,6 +10,7 @@
 .ck.ck-style-panel .ck-style-grid {
 	display: grid;
 	grid-template-columns: repeat(var(--ck-style-panel-columns),auto);
+	justify-content: start;
 
 	& .ck-style-grid__button {
 		display: flex;

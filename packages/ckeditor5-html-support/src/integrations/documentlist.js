@@ -14,7 +14,7 @@ import { setViewAttributes } from '../conversionutils.js';
 import DataFilter from '../datafilter';
 
 /**
- * Provides the General HTML Support integration with {@link module:list/documentlist~DocumentList Document List} feature.
+ * Provides the General HTML Support integration with the {@link module:list/documentlist~DocumentList Document List} feature.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -84,20 +84,8 @@ export default class DocumentListElementSupport extends Plugin {
 			} );
 		} );
 
-		// Reset list attributes after indenting list items.
-		this.listenTo( editor.commands.get( 'indentList' ), 'afterExecute', ( evt, changedBlocks ) => {
-			editor.model.change( writer => {
-				for ( const node of changedBlocks ) {
-					// Just reset the attribute.
-					// If there is a previous indented list that this node should be merged into,
-					// the postfixer will unify all the attributes of both sub-lists.
-					writer.setAttribute( 'htmlListAttributes', {}, node );
-				}
-			} );
-		} );
-
 		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
-		// Note: This is almost exact copy from DocumentListPropertiesEditing.
+		// Note: This is almost an exact copy from DocumentListPropertiesEditing.
 		documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
 			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
 
@@ -152,6 +140,29 @@ export default class DocumentListElementSupport extends Plugin {
 			}
 		} );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const editor = this.editor;
+
+		if ( !editor.commands.get( 'indentList' ) ) {
+			return;
+		}
+
+		// Reset list attributes after indenting list items.
+		this.listenTo( editor.commands.get( 'indentList' ), 'afterExecute', ( evt, changedBlocks ) => {
+			editor.model.change( writer => {
+				for ( const node of changedBlocks ) {
+					// Just reset the attribute.
+					// If there is a previous indented list that this node should be merged into,
+					// the postfixer will unify all the attributes of both sub-lists.
+					writer.setAttribute( 'htmlListAttributes', {}, node );
+				}
+			} );
+		} );
+	}
 }
 
 // View-to-model conversion helper preserving allowed attributes on {@link TODO}
@@ -169,7 +180,7 @@ function viewToModelListAttributeConverter( attributeName, dataFilter ) {
 			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
-		const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+		const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 		for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
 			// Apply only to list item blocks.
