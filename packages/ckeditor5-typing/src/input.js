@@ -63,18 +63,5 @@ export default class Input extends Plugin {
 
 			editor.execute( 'insertText', insertTextCommandData );
 		} );
-
-		this.listenTo( viewDocument, 'compositionend', ( evt, { domEvent } ) => {
-			// In case of aborted composition.
-			if ( !domEvent.data ) {
-				return;
-			}
-
-			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
-			viewDocument.fire( 'insertText', new DomEventData( viewDocument, domEvent, {
-				text: domEvent.data,
-				selection: viewDocument.selection
-			} ) );
-		}, { priority: 'low' } );
 	}
 }
