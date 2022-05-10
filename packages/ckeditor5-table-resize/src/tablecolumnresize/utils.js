@@ -18,60 +18,64 @@ import {
  * Collects all affected by the differ table model elements. The returned set may be empty.
  *
  * @param {Array.<module:engine/model/differ~DiffItem>} changes
+ * @param {module:engine/model/model~Model} model
  * @returns {Set.<module:engine/model/element~Element>}
  */
-export function getAffectedTables( changes ) {
+export function getAffectedTables( changes, model ) {
 	const tablesToProcess = new Set();
 
 	for ( const change of changes ) {
-		const table = getAffectedTable( change );
+		let referencePosition = null;
+
+		// Checks if the particular change from the differ is:
+		// - an insertion or removal of a table, a row or a cell,
+		// - an attribute change on a table, a row or a cell.
+		switch ( change.type ) {
+			case 'insert':
+			case 'remove':
+				referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes( change.name ) ?
+					change.position :
+					null;
+
+				break;
+
+			case 'attribute':
+				if ( change.range.start.nodeAfter ) {
+					referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes( change.range.start.nodeAfter.name ) ?
+						change.range.start :
+						null;
+				}
+
+				break;
+		}
+
+		const affectedTables = [];
+
+		if ( referencePosition ) {
+			const tableNode = ( referencePosition.nodeAfter && referencePosition.nodeAfter.name === 'table' ) ?
+				referencePosition.nodeAfter : referencePosition.findAncestor( 'table' );
+
+			if ( tableNode ) {
+				const range = model.createRangeOn( tableNode );
+
+				for ( const node of range.getItems() ) {
+					if ( node.is( 'element' ) && node.name === 'table' ) {
+						affectedTables.push( node );
+					}
+				}
+			}
+		}
+
+		const table = affectedTables;
 
 		if ( table ) {
-			tablesToProcess.add( table );
+			for ( const tableItem of table ) {
+				tablesToProcess.add( tableItem );
+			}
 		}
 	}
 
 	return tablesToProcess;
-}
-
-// Checks if the particular change from the differ is:
-// - an insertion or removal of a table, a row or a cell,
-// - an attribute change on a table, a row or a cell.
-//
-// It returns the affected table model element or `null`.
-//
-// @private
-// @param {module:engine/model/differ~DiffItem} changes
-// @returns {module:engine/model/element~Element|null}
-function getAffectedTable( change ) {
-	let referencePosition = null;
-
-	switch ( change.type ) {
-		case 'insert':
-		case 'remove':
-			referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes( change.name ) ?
-				change.position :
-				null;
-
-			break;
-
-		case 'attribute':
-			if ( change.range.start.nodeAfter ) {
-				referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes( change.range.start.nodeAfter.name ) ?
-					change.range.start :
-					null;
-			}
-
-			break;
-	}
-
-	if ( !referencePosition ) {
-		return null;
-	}
-
-	return ( referencePosition.nodeAfter && referencePosition.nodeAfter.name === 'table' ) ?
-		referencePosition.nodeAfter :
-		referencePosition.findAncestor( 'table' );
 }
 
 /**

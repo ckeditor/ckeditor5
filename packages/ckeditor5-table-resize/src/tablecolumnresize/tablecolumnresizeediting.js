@@ -203,7 +203,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 			let changed = false;
 
-			for ( const table of getAffectedTables( changes ) ) {
+			for ( const table of getAffectedTables( changes, editor.model ) ) {
 				// (1.1) Remove the `columnWidths` attribute from the table and the `columnIndex` attributes from all the table cells if the
 				// manual width is not allowed for a given cell. There is no need to process the given table anymore.
 				if ( this.fire( 'disableResize', table ) ) {
@@ -703,7 +703,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				viewElement => viewElement.is( 'element', 'colgroup' )
 			);
 
-			if ( table && table.hasAttribute( 'columnWidths' ) && !tableViewContainsColgroup ) {
+			if ( table && table.hasAttribute( 'columnWidths' ) && tableView && !tableViewContainsColgroup ) {
 				editor.editing.reconvertItem( table );
 			}
 		}, { priority: 'low' } );
