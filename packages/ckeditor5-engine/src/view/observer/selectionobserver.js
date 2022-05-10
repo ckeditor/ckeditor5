@@ -10,6 +10,7 @@
 /* global setInterval, clearInterval */
 
 import Observer from './observer';
+import MutationObserver from './mutationobserver';
 import { debounce } from 'lodash-es';
 
 /**
@@ -27,6 +28,17 @@ import { debounce } from 'lodash-es';
 export default class SelectionObserver extends Observer {
 	constructor( view ) {
 		super( view );
+
+		/**
+		 * Instance of the mutation observer. Selection observer calls
+		 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled
+		 * before the {@link module:engine/view/document~Document#event:selectionChange} event is fired.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/observer/mutationobserver~MutationObserver}
+		 * module:engine/view/observer/selectionobserver~SelectionObserver#mutationObserver
+		 */
+		this.mutationObserver = view.getObserver( MutationObserver );
 
 		/**
 		 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare
@@ -176,6 +188,9 @@ export default class SelectionObserver extends Observer {
 		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode ) ) {
 			return;
 		}
+
+		// Ensure the mutation event will be before selection event on all browsers.
+		this.mutationObserver.flush();
 
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 

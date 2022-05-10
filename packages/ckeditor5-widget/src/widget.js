@@ -176,8 +176,6 @@ export default class Widget extends Plugin {
 			}
 		}, { context: '$root' } );
 
-		// let currentCompositionStartRange;
-		let inlineFSC, domSelectedElement;
 		let widgetToolbarRepositoryPlugin;
 
 		if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
@@ -199,7 +197,7 @@ export default class Widget extends Plugin {
 			}
 
 			const sel = global.document.getSelection();
-			inlineFSC = global.document.createElement( model.schema.isInline( selectedElement ) ? 'span' : 'p' );
+			const inlineFSC = global.document.createElement( model.schema.isInline( selectedElement ) ? 'span' : 'p' );
 
 			// TODO this should be moved to renderer
 			if ( model.schema.isInline( selectedElement ) ) {
@@ -211,7 +209,7 @@ export default class Widget extends Plugin {
 			const viewSelectedElement = editor.editing.mapper.toViewElement( selectedElement );
 			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
 
-			domSelectedElement = view.domConverter.mapViewToDom( viewSelectedElement );
+			const domSelectedElement = view.domConverter.mapViewToDom( viewSelectedElement );
 
 			// Composing on a widget.
 			if ( !typeAroundFakeCaretPosition ) {
@@ -241,32 +239,6 @@ export default class Widget extends Plugin {
 		}, { context: isWidget } );
 
 		this.listenTo( viewDocument, 'compositionend', () => {
-			const model = editor.model;
-
-			// This could be end of composition in text (not on widget).
-			if ( !inlineFSC ) {
-				return;
-			}
-
-			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
-
-			// TODO this should be moved to renderer
-			// Restore the removed DOM node.
-			if ( !typeAroundFakeCaretPosition ) {
-				inlineFSC.parentElement.replaceChild( domSelectedElement, inlineFSC );
-			}
-			// Or restore the fake caret.
-			else {
-				inlineFSC.remove();
-				domSelectedElement.classList.add(
-					`ck-widget_type-around_show-fake-caret_${ typeAroundFakeCaretPosition }`,
-					'ck-widget_selected'
-				);
-			}
-
-			inlineFSC = null;
-			domSelectedElement = null;
-
 			if ( widgetToolbarRepositoryPlugin ) {
 				widgetToolbarRepositoryPlugin.clearForceDisabled( 'WidgetComposition' );
 			}
