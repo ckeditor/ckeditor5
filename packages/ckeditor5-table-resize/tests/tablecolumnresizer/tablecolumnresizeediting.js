@@ -1113,6 +1113,8 @@ describe( 'TableColumnResizeEditing', () => {
 					const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
 					const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
 
+					setInitialWidthsInPx( editor.editing.view, viewNestedTable, null, 300 );
+
 					// Test-agnostic.
 					const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
 
@@ -1140,7 +1142,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%">' +
 							'<tableRow>' +
 								'<tableCell columnIndex="0">' +
-									'<table columnWidths="25%,25.88%,49.12%" tableWidth="100%">' +
+									'<table columnWidths="25%,28.52%,46.48%" tableWidth="100%">' +
 										'<tableRow>' +
 											'<tableCell columnIndex="0">' +
 												'<paragraph>foo</paragraph>' +
