@@ -17,6 +17,7 @@ import Selection from './selection';
 
 import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
+import MutationObserver from './observer/mutationobserver';
 import SelectionObserver from './observer/selectionobserver';
 import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
@@ -180,6 +181,7 @@ export default class View {
 		this._writer = new DowncastWriter( this.document );
 
 		// Add default observers.
+		this.addObserver( MutationObserver );
 		this.addObserver( SelectionObserver );
 		this.addObserver( FocusObserver );
 		this.addObserver( KeyObserver );
