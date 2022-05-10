@@ -7,19 +7,25 @@ modified_at: 2022-01-21
 
 # Lists
 
-The {@link module:list/list~List list} feature lets you create ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
+The lists feature lets you create ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
 
 Lists are useful when you want to emphasize selected information, highlight a series of steps, enumerate items of a collection. They draw the reader's attention and, just like {@link features/block-quote block quotes} or {@link features/indent indentation}, give the text a structure and breathing room. They help visually separate passages for a better reading experience and make skimming for information easier.
 
 You may find additional interesting details and examples in the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post after reading this guide.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	There are currently two plugins dealing with lists in CKEditor 5 at the moment: the original lists feature and the newly introduced document lists feature.
+
+	The lists feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+
+	If you wish to switch to the document list feature, you need to [install it](#installation) by hand.
 </info-box>
 
 {@snippet features/lists-source}
 
 ## Ordered and unordered lists
+
+The {@link module:list/list~List list} feature lets you create ordered (numbered) and unordered (bulleted) lists.
 
 An unordered (bulleted) list can represent items where the order is not important, for example, a list of ingredients required for preparing a dish or a drink.
 
@@ -35,6 +41,12 @@ A Markdown code provided by the {@link features/autoformat autoformatting featur
 * Start a line with `1.` or `1)` followed by a space for a numbered list.
 
 {@snippet features/lists-basic}
+
+## Document list
+
+The {@link module:list/documentlist~DocumentList document list} feature, provided by a separate plugin, is based on a completely different approach. Unlike regular list, which is a content block in itself, the document list plugin will let any part of the content be part of a list. Content blocks and elements – such as blockquotes, tables, paragraphs, and others – can now be put inside a list item, ensuring the continuity of numbering and retaining indentation.
+
+Just like regular lists, the document list feature supports both ordered and unordered lists.
 
 ## List properties
 
@@ -95,6 +107,8 @@ These features also provide similar functionality:
 
 ## Installation
 
+### List feature
+
 <info-box info>
 	The base list feature is enabled by default in all {@link installation/advanced/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
@@ -119,7 +133,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-### List properties
+#### List properties
 
 <info-box info>
 	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only.
@@ -152,6 +166,65 @@ ClassicEditor
 	.catch( ... );
 ```
 
+### Document list feature
+
+<info-box info>
+	The base list feature is enabled by default in all {@link installation/advanced/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
+
+To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
+
+```
+npm install --save @ckeditor/ckeditor5-list
+```
+
+Then add the `List` plugin to your plugin list and the toolbar configuration:
+
+```js
+import List from '@ckeditor/ckeditor5-list/src/list';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ DocumentList, ... ],
+		toolbar: [ 'bulletedList', 'numberedList', ... ]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+#### List properties
+
+<info-box info>
+	The {@link module:list/documentlistproperties~DocumentListProperties list properties feature} is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only.
+</info-box>
+
+To enable the list properties feature, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
+
+```
+npm install --save @ckeditor/ckeditor5-list
+```
+
+Then add the `DocumentListProperties` plugin to your plugin list and configure the toolbar. To enable selected sub-features of the list properties, you need to add their configuration to your editor (set `true` for each feature you want to enable):
+
+```js
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ DocumentListProperties, ... ],
+		toolbar: [ 'bulletedList', 'numberedList', ... ],
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
 <info-box info>
 	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
@@ -168,6 +241,15 @@ The {@link module:list/list~List} plugin registers:
 * The {@link module:list/list/listcommand~ListCommand `'bulletedList'`} command.
 * The {@link module:list/list/indentcommand~IndentCommand `'indentList'`} command.
 * The {@link module:list/list/indentcommand~IndentCommand `'outdentList'`} command.
+* The `'numberedList'` UI button.
+* The `'bulletedList'` UI button.
+
+The {@link module:list/documentlist~DocumentList} plugin registers:
+
+* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'numberedList'`} command.
+* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'bulletedList'`} command.
+* The {@link module:list/documentlist/documentlistindentcommand~DocumentListIndentCommand `'indentList'`} command.
+* The {@link module:list/documentlist/documentlistindentcommand~DocumentListIndentCommand `'outdentList'`} command.
 * The `'numberedList'` UI button.
 * The `'bulletedList'` UI button.
 
