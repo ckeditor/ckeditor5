@@ -8,6 +8,7 @@
  */
 
 import DomEventObserver from './domeventobserver';
+import DomEventData from './domeventdata';
 
 /**
  * {@link module:engine/view/document~Document#event:compositionstart Compositionstart},
@@ -29,8 +30,20 @@ export default class CompositionObserver extends DomEventObserver {
 			document.isComposing = true;
 		} );
 
-		document.on( 'compositionend', () => {
+		document.on( 'compositionend', ( evt, { domEvent } ) => {
+			// TODO maybe this should be after 'insertText'
 			document.isComposing = false;
+
+			// In case of aborted composition.
+			if ( !domEvent.data ) {
+				return;
+			}
+
+			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
+			document.fire( 'insertText', new DomEventData( document, domEvent, {
+				text: domEvent.data,
+				selection: document.selection
+			} ) );
 		} );
 	}
 
