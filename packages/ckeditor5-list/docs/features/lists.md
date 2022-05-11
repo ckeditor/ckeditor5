@@ -184,7 +184,7 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](htt
 npm install --save @ckeditor/ckeditor5-list
 ```
 
-Then add the `List` plugin to your plugin list and the toolbar configuration:
+Then add the `DocumentList` plugin to your plugin list and the toolbar configuration:
 
 ```js
 import List from '@ckeditor/ckeditor5-list/src/list';
