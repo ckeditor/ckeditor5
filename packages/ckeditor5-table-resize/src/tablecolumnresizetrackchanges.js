@@ -85,5 +85,29 @@ export default class TableColumnResizeTrackChanges extends Plugin {
 				} );
 			} );
 		} );
+
+		plugin._descriptionFactory.registerDescriptionCallback( suggestion => {
+			const { data } = suggestion;
+
+			if ( !data ) {
+				return;
+			}
+
+			if ( data.commandName == 'columnResizeColumnWidths' ) {
+				const newColumnWidth = data.commandParams[ 0 ].value;
+
+				if ( newColumnWidth ) {
+					return {
+						type: 'format',
+						content: `*Column widths changed* to ${ newColumnWidth }`
+					};
+				} else {
+					return {
+						type: 'format',
+						content: '*Remove column width*'
+					};
+				}
+			}
+		} );
 	}
 }
