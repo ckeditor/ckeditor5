@@ -1,28 +1,141 @@
 <div id="snippet-lists-document">
-    <h2>A list of human spacecraft</h2>
-    <p>Soviet and Russian spaceships:</p>
-
-    <ol>
-        <li>Vostok</li>
-        <li>Voskhod</li>
-        <li>Soyuz</li>
-        <li>Progress (cargo)</li>
-    </ol>
-
-    <p>American spaceships:</p>
-
-    <ol start="5">
-        <li>Mercury</li>
-        <li>Gemini</li>
-        <li>Apollo</li>
-        <li>space shuttle</li>
-        <li>Dragon</li>
-    </ol>
-
-    <p>Chinese spaceships:</p>
-
-    <ol>
-        <li>Shenzhou</li>
-        <li>Tianzhou (cargo)</li>
-    </ol>
+	<h2>Top five places to visit this summer</h2>
+	<h3>...and stay on the budget.</h3>
+	<ol>
+		<li>
+			<p>Gran Canaria, Spain</p>
+			<figure class="image image_resized image-style-align-right" style="width:30.99%;">
+				<img src="%BASE_PATH%/assets/img/gran-canaria.jpg">
+				<figcaption>Some view of Gran Canaria</figcaption>
+			</figure>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris porta tortor ac urna tempor pharetra. Donec
+				id elit et est gravida sagittis quis ut dui.&nbsp;</p>
+			<p>Aenean purus nulla, mattis nec varius in, euismod et nunc. Vivamus ac aliquam elit. Vestibulum hendrerit
+				feugiat tincidunt. Proin dapibus consectetur puru.</p>
+		</li>
+		<li>
+			<p>Florence, Italy</p>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris porta tortor ac urna tempor pharetra. Donec
+				id elit et est gravida sagittis quis ut dui.</p>
+			<ul>
+				<li><a href="lets-link-it-somewhere">Some cool thing to see in Florence #1</a></li>
+				<li><a href="lets-link-it-somewhere">Some cool thing to see in Florence #2</a></li>
+				<li><a href="lets-link-it-somewhere">Some cool thing to see in Florence #3</a></li>
+			</ul>
+			<p>Etiam suscipit porta arcu, tincidunt pellentesque ipsum porttitor in. Aenean purus nulla, mattis nec varius
+				in, euismod et nunc.</p>
+		</li>
+		<li>
+			<p>Porto, Portugal</p>
+			<p>Donec id elit et est gravida sagittis quis ut dui. Etiam suscipit porta arcu, tincidunt pellentesque ipsum
+				porttitor in. Aenean purus nulla, mattis nec varius in, euismod et nunc.</p>
+			<figure class="image">
+				<img src="%BASE_PATH%/assets/img/porto.jpg">
+				<figcaption>The old city of Porto is…</figcaption>
+			</figure>
+		</li>
+		<li>
+			<p>Budapest, Hungary</p>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris porta tortor ac urna tempor pharetra. Donec
+				id elit et est gravida sagittis quis ut dui. Etiam suscipit porta arcu, tincidunt pellentesque ipsum
+				porttitor in.</p>
+			<blockquote>
+				<p><strong>Some made up quote saying how cool this place actually is.</strong> Aenean purus nulla, mattis
+					nec varius in, euismod et nunc.Vestibulum hendrerit feugiat tincidunt. Proin dapibus consectetur purus,
+					et vehicula erat euismod sit amet. Nam quis risus vitae lectus dictum lacinia eu nec augue.</p>
+			</blockquote>
+		</li>
+		<li>
+			<p>The Peloponnese, Greece</p>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris porta tortor ac urna tempor pharetra. Donec
+				id elit et est gravida sagittis quis ut dui. Etiam suscipit porta arcu, tincidunt pellentesque ipsum
+				porttitor in. Aenean purus nulla, mattis nec varius in, euismod et nunc.</p>
+		</li>
+	</ol>
 </div>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Staatliches&display=swap');
+
+#snippet-lists-document + .ck-editor .ck-content {
+	font-family: 'Nunito', sans-serif;
+	padding: 40px;
+	position: relative;
+}
+
+#snippet-lists-document + .ck-editor .ck-content::before {
+	content: "";
+	position: absolute;
+	height: 250px;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	background: url(%BASE_PATH%/assets/img/document-lists-cover.jpg);
+	background-size: cover;
+	clip-path: polygon(0 0, 100% 0%, 100% 53%, 0% 100%);
+}
+
+#snippet-lists-document + .ck-editor .ck-content > h2:first-child {
+	font-family: 'Staatliches', cursive;
+	border: 0;
+	font-size: 3em;
+	position: relative;
+	z-index: 1;
+	text-align: center;
+	margin-bottom: 0;
+	padding-bottom: 0;
+	margin-top: 1em;
+	background: black;
+	width: fit-content;
+	line-height: 1em;
+	color: #ffffff;
+	padding: 10px 40px;
+	margin: 2em auto 0;
+	text-shadow: 3px 3px 0 #000;
+}
+
+#snippet-lists-document + .ck-editor .ck-content > h2:first-child + h3 {
+	color: #ffffff;
+	font-family: serif;
+	font-style: italic;
+	font-size: 1.5em;
+	background: #00acc1;
+	margin: -10px auto 2.5em;
+	z-index: 1;
+	width: fit-content;
+	padding: 0 15px;
+	clip-path: polygon(4% 6%, 51% 6%, 98% 3%, 99% 57%, 91% 97%, 51% 94%, 0 99%, 3% 54%);
+	position: relative;
+}
+
+#snippet-lists-document + .ck-editor .ck-content > ol > li {
+  counter-increment: list;
+  list-style: none;
+  margin-bottom: 2.5em;
+  padding-left: 70px;
+}
+
+
+#snippet-lists-document + .ck-editor .ck-content > ol > li::before {
+	font-weight: bold;
+	font-size: 2em;
+	content: counter(list);
+	width: 50px;
+	height: 50px;
+	float: left;
+	margin: 5px 20px 0 -78px;
+	color: #fff;
+	background: #000;
+	clip-path: polygon(0 0, 100% 0, 100% 65%, 65% 100%, 0 100%);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	shape-outside: ellipse();
+	font-family: 'Staatliches', cursive;
+}
+
+#snippet-lists-document + .ck-editor .ck-content > ol > li > p:first-child {
+	font-family: 'Staatliches', cursive;
+	font-size: 1.8em;
+}
+</style>

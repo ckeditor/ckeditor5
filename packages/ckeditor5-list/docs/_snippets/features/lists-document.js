@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console, ClassicEditor, ListProperties */
+/* globals window, document, console, ClassicEditor, DocumentList, DocumentListProperties, ImageResize */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -11,7 +11,8 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-lists-document' ), {
-		extraPlugins: [ ListProperties ],
+		removePlugins: [ 'List' ],
+		extraPlugins: [ DocumentList, DocumentListProperties, ImageResize ],
 		toolbar: {
 			items: [
 				'heading',
@@ -53,9 +54,9 @@ ClassicEditor
 		},
 		list: {
 			properties: {
-				styles: false,
+				styles: true,
 				startIndex: true,
-				reversed: false
+				reversed: true
 			}
 		},
 		cloudServices: CS_CONFIG
