@@ -42,6 +42,17 @@ import Style from '@ckeditor/ckeditor5-style/src/style';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Style, ... ],
+		toolbar: {
+			items: [
+				// ...
+				'style'
+			],
+		},
+		style: {
+			definitions: [
+				// ...
+			]
+		}
 	} )
 	.then( ... )
 	.catch( ... );
@@ -56,51 +67,77 @@ ClassicEditor
 Configuring the styles feature takes two steps. First you need to define the styles in the configuration file, for example:
 
 ```js
-style: {
-	definitions: [
-		{
-			name: 'Article category',
-			element: 'h3',
-			classes: [ 'category' ]
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Style, ... ],
+		toolbar: {
+			items: [
+				// ...
+				'style'
+			],
 		},
-		{
-			name: 'Info box',
-			element: 'p',
-			classes: [ 'info-box' ]
-		},
-	]
-},
+		style: {
+			definitions: [
+				{
+					name: 'Article category',
+					element: 'h3',
+					classes: [ 'category' ]
+				},
+				{
+					name: 'Info box',
+					element: 'p',
+					classes: [ 'info-box' ]
+				},
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
 
 ```
 
-The, the css styles need to be defined for the document:
+Then, corresponding CSS styles need to be defined for the document:
 
 ```css
-	.ck.ck-content h3.category {
-		font-family: 'Bebas Neue';
-		font-size: 20px;
-		font-weight: bold;
-		color: #d1d1d1;
-		letter-spacing: 10px;
-		margin: 0;
-		padding: 0;
-	}
+.ck.ck-content h3.category {
+	font-family: 'Bebas Neue';
+	font-size: 20px;
+	font-weight: bold;
+	color: #d1d1d1;
+	letter-spacing: 10px;
+	margin: 0;
+	padding: 0;
+}
 
-	.ck.ck-content p.info-box {
-		padding: 1.2em 2em;
-		border: 1px solid #e91e63;
-		border-left: 10px solid #e91e63;
-		border-radius: 5px;
-		margin: 1.5em;
-	}
+.ck.ck-content p.info-box {
+	padding: 1.2em 2em;
+	border: 1px solid #e91e63;
+	border-left: 10px solid #e91e63;
+	border-radius: 5px;
+	margin: 1.5em;
+}
 ```
+
+Note that the editor will automatically distinguish text and block styles and group them in the dropdown.
 
 ## Common API
 
 The {@link module:style/style~Style Style} plugin registers:
 
-* The {@link module:style/stylecommand~StyleCommand `'style'`} command.
+* The `'style'` command implemented by {@link module:style/stylecommand~StyleCommand}.
 * The `'style'` UI drop-down.
+
+The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+
+```js
+// Applies the style to the selected content.
+// Executing the command again will remove the style from the selected content.
+editor.execute( 'style', 'Article category' );
+```
+
+<info-box>
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
 
 ## Contribute
 
