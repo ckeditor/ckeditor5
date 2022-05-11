@@ -99,7 +99,7 @@ The, the css styles need to be defined for the document:
 
 The {@link module:style/style~Style Style} plugin registers:
 
-* TODO style command
+* The {@link module:style/stylecommand~StyleCommand `'style'`} command.
 * The `'style'` UI drop-down.
 
 ## Contribute
