@@ -24,6 +24,23 @@ export default class TableColumnWidths extends TablePropertyCommand {
 		super( editor, 'columnWidths', defaultValue );
 	}
 
+	execute( options = {} ) {
+		const model = this.editor.model;
+
+		const { value, batch, table } = options;
+		delete options.table;
+
+		const valueToSet = this._getValueToSet( value );
+
+		model.enqueueChange( batch, writer => {
+			if ( valueToSet ) {
+				writer.setAttribute( this.attributeName, valueToSet, table );
+			} else {
+				writer.removeAttribute( this.attributeName, table );
+			}
+		} );
+	}
+
 	/**
 	 * @inheritDoc
 	 */

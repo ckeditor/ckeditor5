@@ -72,9 +72,10 @@ export default class TableColumnResizeTrackChanges extends Plugin {
 		} );
 
 		plugin.enableCommand( 'columnResizeColumnWidths', ( executeCommand, options = {} ) => {
-			const selection = editor.model.document.selection;
+			const resizePlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+			const table = resizePlugin._resizingData.elements.modelTable;
 
-			const table = selection.getFirstPosition().findAncestor( 'table' );
+			options.table = table;
 
 			editor.model.change( () => {
 				executeCommand( options );
