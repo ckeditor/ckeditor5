@@ -81,9 +81,14 @@ ClassicEditor
 					classes: [ 'spoiler' ]
 				},
 				{
-					name: 'Featured code',
+					name: 'Code (dark)',
 					element: 'pre',
-					classes: [ 'fancy-code' ]
+					classes: [ 'fancy-code', 'fancy-code-dark' ]
+				},
+				{
+					name: 'Code (bright)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-bright' ]
 				}
 			]
 		},

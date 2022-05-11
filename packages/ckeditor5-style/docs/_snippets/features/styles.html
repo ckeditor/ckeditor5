@@ -32,14 +32,14 @@
 	<p>
 		Start the configuration by creating the editor:
 	</p>
-	<pre><code class="language-javascript">ClassicEditor.create( document.querySelector( '#editor' ) )
+	<pre class="fancy-code fancy-code-bright"><code class="language-javascript">ClassicEditor.create( document.querySelector( '#editor' ) )
 	.then( editor =&gt; {
 		window.editor = editor;
 	} );</code></pre>
 	<p>
 		then enable some of the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html">collaboration features</a>:
 	</p>
-	<pre class="fancy-code"><code class="language-javascript">ClassicEditor.create( document.querySelector( '#editor' ), {
+	<pre class="fancy-code fancy-code-dark"><code class="language-javascript">ClassicEditor.create( document.querySelector( '#editor' ), {
 		toolbar: [ ..., 'comment', 'trackChanges' ],
 		cloudServices: {
 			tokenUrl: '...',
@@ -59,7 +59,7 @@
 		font-family: 'PT Serif', serif;
 		font-size: 16px;
 		line-height: 1.6;
-		padding-top: 2em;
+		padding: 2em;
 	}
 
 	.ck-content .ck-horizontal-line {
@@ -101,11 +101,14 @@
 	}
 
 	.ck.ck-content p.info-box {
+		--background-size: 30px;
+		--background-color: #e91e63;
 		padding: 1.2em 2em;
-		border: 1px solid #e91e63;
-		border-left: 10px solid #e91e63;
-		border-radius: 5px;
-		margin: 1.5em;
+		border: 1px solid var(--background-color);
+		background: linear-gradient(135deg, var(--background-color) 0%, var(--background-color) var(--background-size), transparent var(--background-size)), linear-gradient(135deg, transparent calc(100% - var(--background-size)), var(--background-color) calc(100% - var(--background-size)), var(--background-color));
+		border-radius: 10px;
+		margin: 1.5em 2em;
+		box-shadow: 5px 5px 0 #ffe6ef;
 	}
 
 	.ck.ck-content blockquote.side-quote {
@@ -158,12 +161,9 @@
 	}
 
 	.ck.ck-content pre.fancy-code {
-		background: #272822;
 		border: 0;
-		color: #fff;
-		margin-left: 3em;
-		margin-right: 3em;
-		box-shadow: 5px 5px 0 #0000001f;
+		margin-left: 2em;
+		margin-right: 2em;
 		border-radius: 10px;
 	}
 
@@ -175,4 +175,17 @@
 		margin-bottom: 8px;
 		background-repeat: no-repeat;
 	}
+
+	.ck.ck-content pre.fancy-code-dark {
+		background: #272822;
+		color: #fff;
+		box-shadow: 5px 5px 0 #0000001f;
+	}
+
+	.ck.ck-content pre.fancy-code-bright {
+		background: #dddfe0;
+		color: #000;
+		box-shadow: 5px 5px 0 #b3b3b3;
+	}
+
 </style>
