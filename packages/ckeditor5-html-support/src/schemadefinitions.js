@@ -839,6 +839,14 @@ export default {
 				allowWhere: [ '$text', '$block' ],
 				isInline: true
 			}
+		},
+		{
+			model: 'htmlCustomElement',
+			view: '$customElement',
+			modelSchema: {
+				allowWhere: [ '$text', '$block' ],
+				isInline: true
+			}
 		}
 	]
 };
