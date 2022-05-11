@@ -50,7 +50,7 @@ Just like regular lists, the document list feature supports both ordered and uno
 
 ### Demo
 
-Use the demo below to add block elements like tables, images or nested lists and see the document retain ordering and list styles.
+Use the demo below to add block elements like tables, images or nested lists and see the document retain ordering and list styles. Use the toolbar buttons to insert new ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list} list items.
 
 {@snippet features/lists-document}
 
@@ -80,7 +80,7 @@ When this feature is {@link module:list/listproperties~ListPropertiesConfig#star
 
 #### Demo
 
-In the editor below, notice how the ordering is continued in the second list. You can go to the first item of the last list and use the ordered list dropdown input field to set the start index to achieve continuous numbering of spaceships.
+In the editor below, notice how the ordering is continued in the second list. You can go to the first item of the last list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown input field to set the start index to achieve continuous numbering of spaceships.
 
 {@snippet features/lists-index}
 
@@ -92,7 +92,7 @@ When this feature is {@link module:list/listproperties~ListPropertiesConfig#reve
 
 #### Demo
 
-Click the second list and use the ordered list dropdown switch to choose whether it should be reversed.
+Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown switch to choose whether it should be reversed.
 
 {@snippet features/lists-reversed}
 
@@ -116,7 +116,7 @@ These features also provide similar functionality:
 ### List feature
 
 <info-box info>
-	The base list feature is enabled by default in all {@link installation/advanced/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
+	The list feature is enabled by default in all {@link installation/advanced/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
@@ -125,7 +125,7 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](htt
 npm install --save @ckeditor/ckeditor5-list
 ```
 
-Then add the `List` plugin to your plugin list and the toolbar configuration:
+Then add the `DocumentList` plugin to your plugin list and the toolbar configuration:
 
 ```js
 import List from '@ckeditor/ckeditor5-list/src/list';
@@ -175,7 +175,7 @@ ClassicEditor
 ### Document list feature
 
 <info-box info>
-	The base list feature is enabled by default in all {@link installation/advanced/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
+	Only the [base list feature](#ordered-and-unordered-lists) is enabled by default in all {@link installation/advanced/predefined-builds predefined editor builds}. If you wish to use the [document list feature](#document-list), you need to add it .
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
@@ -198,13 +198,9 @@ ClassicEditor
 	.catch( ... );
 ```
 
-#### List properties
+#### Document list properties
 
-<info-box info>
-	The {@link module:list/documentlistproperties~DocumentListProperties list properties feature} is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only.
-</info-box>
-
-To enable the list properties feature, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
+To enable the list properties feature for document lists, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
 ```
 npm install --save @ckeditor/ckeditor5-list
@@ -213,7 +209,7 @@ npm install --save @ckeditor/ckeditor5-list
 Then add the `DocumentListProperties` plugin to your plugin list and configure the toolbar. To enable selected sub-features of the list properties, you need to add their configuration to your editor (set `true` for each feature you want to enable):
 
 ```js
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
+import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistproperties';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -241,21 +237,14 @@ ClassicEditor
 
 ## Common API
 
+### The list feature
+
 The {@link module:list/list~List} plugin registers:
 
 * The {@link module:list/list/listcommand~ListCommand `'numberedList'`} command.
 * The {@link module:list/list/listcommand~ListCommand `'bulletedList'`} command.
 * The {@link module:list/list/indentcommand~IndentCommand `'indentList'`} command.
 * The {@link module:list/list/indentcommand~IndentCommand `'outdentList'`} command.
-* The `'numberedList'` UI button.
-* The `'bulletedList'` UI button.
-
-The {@link module:list/documentlist~DocumentList} plugin registers:
-
-* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'numberedList'`} command.
-* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'bulletedList'`} command.
-* The {@link module:list/documentlist/documentlistindentcommand~DocumentListIndentCommand `'indentList'`} command.
-* The {@link module:list/documentlist/documentlistindentcommand~DocumentListIndentCommand `'outdentList'`} command.
 * The `'numberedList'` UI button.
 * The `'bulletedList'` UI button.
 
@@ -279,6 +268,42 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 
 	```js
     editor.execute( 'listReversed', { reversed: 'true' } );
+    ```
+
+* The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.
+* The `bulletedList` UI split button that overrides the UI button registered by the `List` plugin.
+
+### The document list feature
+
+The {@link module:list/documentlist~DocumentList} plugin registers:
+
+* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'numberedList'`} command.
+* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'bulletedList'`} command.
+* The {@link module:list/documentlist/documentlistindentcommand~DocumentListIndentCommand `'indentList'`} command.
+* The {@link module:list/documentlist/documentlistindentcommand~DocumentListIndentCommand `'outdentList'`} command.
+* The `'numberedList'` UI button.
+* The `'bulletedList'` UI button.
+
+The {@link module:list/documentlistproperties~DocumentListProperties} plugin registers:
+
+* The {@link module:list/documentlistproperties/documentliststylecommand~DocumentListStyleCommand `documentListStyle`} command that accepts the `type` of the list style to set. If not set, is uses the default marker (usually decimal).
+    ```js
+    editor.execute( 'documentListStyle', { type: 'lower-roman' } );
+    ```
+    The available types are:
+
+    * For bulleted lists: `'disc'`, `'circle'` and `'square'`.
+    * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'` and `'upper-latin'`.
+* The {@link module:list/documentlistproperties/documentliststartcommand~DocumentListStartCommand `documentListStart`} command which is a Boolean and defaults to `false` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
+
+	```js
+    editor.execute( 'documentListStart', { startIndex: 3 } );
+    ```
+
+* The {@link module:list/documentlistproperties/documentlistreversedcommand~DocumentListReversedCommand `documentListReversed`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
+
+	```js
+    editor.execute( 'documentListReversed', { reversed: 'true' } );
     ```
 
 * The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.
