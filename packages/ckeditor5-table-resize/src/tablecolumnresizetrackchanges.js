@@ -70,5 +70,20 @@ export default class TableColumnResizeTrackChanges extends Plugin {
 				}
 			}
 		} );
+
+		plugin.enableCommand( 'columnResizeColumnWidths', ( executeCommand, options = {} ) => {
+			const selection = editor.model.document.selection;
+
+			const table = selection.getFirstPosition().findAncestor( 'table' );
+
+			editor.model.change( () => {
+				executeCommand( options );
+
+				plugin.markBlockFormat( table, {
+					commandName: 'columnResizeColumnWidths',
+					commandParams: [ options ]
+				} );
+			} );
+		} );
 	}
 }
