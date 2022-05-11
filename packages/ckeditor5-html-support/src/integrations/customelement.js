@@ -4,7 +4,7 @@
  */
 
 /**
- * @module html-support/integrations/script
+ * @module html-support/integrations/customelement
  */
 
 import { Plugin } from 'ckeditor5/src/core';
