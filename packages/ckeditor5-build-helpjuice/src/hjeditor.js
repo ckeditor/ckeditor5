@@ -50,7 +50,6 @@ import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
-
 import Style from '@ckeditor/ckeditor5-style/src/style';
 
 // Custom Plugins
@@ -66,6 +65,7 @@ import InsertArticle from './plugins/insertarticle/insertarticle';
 import FilesManager from './plugins/filesmanager/filesmanager';
 import Mention from './plugins/mention/src/mention';
 import Comments from './plugins/comments/comments';
+import Glossary from './plugins/glossary/glossary';
 
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
@@ -128,7 +128,8 @@ HelpjuiceEditor.builtinPlugins = [
 	Mention,
 	MentionCustomization,
 	Style,
-	Comments
+	Comments,
+	Glossary
 ];
 
 function MentionCustomization(editor) {
@@ -398,7 +399,8 @@ HelpjuiceEditor.defaultConfig = {
 			'warning',
 			'danger',
 			'internalblock',
-			'decisiontree'
+			'decisiontree',
+			'glossary'
 		],
 		shouldNotGroupWhenFull: true
 	},

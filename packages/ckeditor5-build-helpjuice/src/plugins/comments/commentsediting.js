@@ -24,13 +24,14 @@ export default class CommentsEditing extends Plugin {
             view: {
                 name: 'i',
                 classes: ['helpjuice-thread'],
-                attributes: ['data-id']
+                attributes: ['data-id', 'data-definition']
             },
             model: {
                 key: 'comment',
                 value: viewElement => viewElement.getAttribute('data-id')
             }
         })
+
 
         conversion.for('downcast').attributeToElement({
             model: 'comment',
