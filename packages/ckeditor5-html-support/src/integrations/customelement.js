@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import DataSchema from '../dataschema';
 import DataFilter from '../datafilter';
@@ -67,21 +66,15 @@ export default class CustomElementSupport extends Plugin {
 						conversionApi.writer.setAttribute( 'htmlAttributes', htmlAttributes, modelElement );
 					}
 
-					const viewWriter = new UpcastWriter( viewElement.document );
-					const childNodes = [];
+					const domElement = editor.data.processor.domConverter.mapViewToDom( viewElement );
+					const rawContent = domElement.innerHTML;
 
-					// Replace filler offset so the block filler won't get injected.
-					for ( const node of Array.from( viewElement.getChildren() ) ) {
-						node.getFillerOffset = () => null;
-						childNodes.push( node );
+					if ( rawContent ) {
+						conversionApi.writer.setAttribute( 'htmlContent', rawContent, modelElement );
 					}
 
-					const documentFragment = viewWriter.createDocumentFragment( childNodes );
-
-					if ( !documentFragment.isEmpty ) {
-						const htmlContent = editor.data.processor.toData( documentFragment );
-
-						conversionApi.writer.setAttribute( 'htmlContent', htmlContent, modelElement );
+					for ( const node of viewElement.getChildren() ) {
+						conversionApi.consumable.consume( node, { name: true } );
 					}
 
 					if ( !unsafeElements.includes( viewElement.name ) ) {

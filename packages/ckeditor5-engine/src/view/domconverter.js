@@ -233,6 +233,15 @@ export default class DomConverter {
 	}
 
 	/**
+	 * TODO
+	 */
+	clearBindings() {
+		this._domToViewMapping = new WeakMap();
+		this._viewToDomMapping = new WeakMap();
+		this._fakeSelectionMapping = new WeakMap();
+	}
+
+	/**
 	 * Binds DOM and view document fragments, so it will be possible to get corresponding document fragments using
 	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView} and
 	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom}.
