@@ -24,26 +24,30 @@ export default class GlossaryUI extends Plugin {
 				let glossaryTermDefinition = glossaryModal.querySelector("#glossary_term_definition");
 
 				const range = editor.model.document.selection.getFirstRange()
+				let selection = "";
 				for (const item of range.getItems()) {
-					const selection = item.data;
-					if (selection.length) {
-						// WE USE `window.getSelection()` BECAUSE EDITOR SELECTION DOESN'T ACCEPT `getBoundingClientRect`
-						const position = window.getSelection().getRangeAt(0).getBoundingClientRect();
-						// SET BODY TO FOCUS MODE AND SHOW MODAL ON CORRECT POSITION
-						document.body.classList.add("focus-mode");
-						glossaryModal.style.display = "block";
-						glossaryModal.style.top = position.top + 20 + "px";
-						glossaryModal.style.left = position.left - 165 + position.width/2 + "px";
-						// SET TERM EXPRESSION
-						glossaryTermExpression.value = selection;
-						glossaryTermDefinition.value = "";
-						// WE NEED TO USE SET TIMEOUT IN ORDER TO FOCUS TEXTAREA
-						setTimeout(() => {
-							glossaryTermDefinition.focus();
-						}, 10);
-					} else {
-						createMessage('comment-message error', 'You must select some text in order to create a comment');
+					if (item.data) {
+						selection += item.data;
 					}
+				}
+
+				if (selection.length) {
+					// WE USE `window.getSelection()` BECAUSE EDITOR SELECTION DOESN'T ACCEPT `getBoundingClientRect`
+					const position = window.getSelection().getRangeAt(0).getBoundingClientRect();
+					// SET BODY TO FOCUS MODE AND SHOW MODAL ON CORRECT POSITION
+					document.body.classList.add("focus-mode");
+					glossaryModal.style.display = "block";
+					glossaryModal.style.top = position.top + 20 + "px";
+					glossaryModal.style.left = position.left - 165 + position.width/2 + "px";
+					// SET TERM EXPRESSION
+					glossaryTermExpression.value = selection;
+					glossaryTermDefinition.value = "";
+					// WE NEED TO USE SET TIMEOUT IN ORDER TO FOCUS TEXTAREA
+					setTimeout(() => {
+						glossaryTermDefinition.focus();
+					}, 10);
+				} else {
+					this.createMessage('comment-message error', 'You must select some text in order to create a comment');
 				}
 			});
 
