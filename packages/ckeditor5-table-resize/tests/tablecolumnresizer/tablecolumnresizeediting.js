@@ -2035,9 +2035,9 @@ describe( 'TableColumnResizeEditing', () => {
 	// we set editor width so the % values don't depend on browser width anymore.
 	//
 	// @param {module:core/editor/editor~Editor} editor
-	// @param {module:engine/view/element~Element|null} viewTable
-	// @param {Number|null} tableWidth
-	// @param {Number|undefined} editorWidth
+	// @param {module:engine/view/element~Element} [viewTable]
+	// @param {Number} [tableWidth]
+	// @param {Number} [editorWidth]
 	function setInitialWidthsInPx( editor, viewTable, tableWidth, editorWidth ) {
 		const view = editor.editing.view;
 
