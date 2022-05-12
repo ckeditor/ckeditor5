@@ -112,9 +112,18 @@ export default class TableColumnResizeTrackChanges extends Plugin {
 				const newColumnWidth = data.commandParams[ 0 ].value;
 
 				if ( newColumnWidth ) {
+					const newColumnWidthSplitted = newColumnWidth.split( ',' );
+					const suggestionColumnWidths = suggestion.getContainedElement().getAttribute( 'columnWidths' ).split( ',' );
+
+					for ( let i = 0; i < newColumnWidthSplitted.length; i++ ) {
+						if ( newColumnWidthSplitted[ i ] !== suggestionColumnWidths[ i ] ) {
+							suggestionColumnWidths[ i ] = `*${ newColumnWidthSplitted[ i ] }*`;
+						}
+					}
+
 					return {
 						type: 'format',
-						content: `*Column widths changed* to ${ newColumnWidth }`
+						content: `*Column widths changed* to ${ suggestionColumnWidths.join( ',' ) }`
 					};
 				} else {
 					return {
