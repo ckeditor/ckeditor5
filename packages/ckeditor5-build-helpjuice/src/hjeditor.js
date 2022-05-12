@@ -55,10 +55,7 @@ import Style from '@ckeditor/ckeditor5-style/src/style';
 // Custom Plugins
 import Accordion from './plugins/accordion/accordion';
 import Tab from './plugins/tab/tab';
-import Info from './plugins/calloutblocks/info/info';
-import Success from './plugins/calloutblocks/success/success';
-import Warning from './plugins/calloutblocks/warning/warning';
-import Danger from './plugins/calloutblocks/danger/danger';
+import CalloutBlocks from './plugins/calloutblocks/calloutblocks';
 import InternalBlock from './plugins/internalblock/internalblock';
 import DecisionTree from './plugins/decisiontree/decisiontree';
 import InsertArticle from './plugins/insertarticle/insertarticle';
@@ -116,10 +113,7 @@ HelpjuiceEditor.builtinPlugins = [
 	SourceEditing,
 	Accordion,
 	Tab,
-	Info,
-	Success,
-	Warning,
-	Danger,
+	CalloutBlocks,
 	InternalBlock,
 	DecisionTree,
 	SimpleUploadAdapter,
@@ -394,10 +388,7 @@ HelpjuiceEditor.defaultConfig = {
 			'insertarticle',
 			'accordion',
 			'tab',
-			'info',
-			'success',
-			'warning',
-			'danger',
+			'calloutblocksdropdown',
 			'internalblock',
 			'decisiontree',
 			'glossary'
