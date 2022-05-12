@@ -47,7 +47,7 @@ export default class GlossaryUI extends Plugin {
 						glossaryTermDefinition.focus();
 					}, 10);
 				} else {
-					this.createMessage('comment-message error', 'You must select some text in order to create a comment');
+					this.createMessage('comment-message error', 'You must select some text in order to create a glossary item');
 				}
 			});
 
