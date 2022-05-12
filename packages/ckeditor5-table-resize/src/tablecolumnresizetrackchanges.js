@@ -94,8 +94,6 @@ export default class TableColumnResizeTrackChanges extends Plugin {
 			options.tableIndex = this._changedTables.length - 1;
 
 			editor.model.change( () => {
-				executeCommand( options );
-
 				plugin.markBlockFormat( table, {
 					commandName: 'columnResizeColumnWidths',
 					commandParams: [ options ]
