@@ -528,12 +528,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			const table = model.document.getRoot().getChild( 0 );
 
-			// We define table width precisely to be able to predict column widths in %.
-			// Setting table width to 201px causes the columns to have initially: [50px][50px][100px]
-			editor.editing.view.change( writer => {
-				const viewEditableRoot = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 1 );
-				writer.setAttribute( 'style', 'width: 201px;', viewEditableRoot );
-			} );
+			setInitialWidthsInPx( editor, null, 201 );
 
 			model.change( writer => {
 				const cell = table.getChild( 1 ).getChild( 1 );
@@ -969,6 +964,8 @@ describe( 'TableColumnResizeEditing', () => {
 					const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
 					const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
 
+					setInitialWidthsInPx( editor, viewNestedTable, 201, 300 );
+
 					// Test-agnostic.
 					const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
 
@@ -996,7 +993,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'<table columnWidths="50.9%,49.1%" tableWidth="98.15%">' +
+									'<table columnWidths="55.56%,44.44%" tableWidth="63.11%">' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>foo</paragraph>' +
@@ -1040,6 +1037,8 @@ describe( 'TableColumnResizeEditing', () => {
 					const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
 					const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
 
+					setInitialWidthsInPx( editor, viewNestedTable, 201, 300 );
+
 					// Test-agnostic.
 					const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
 
@@ -1067,7 +1066,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'<table columnWidths="49.04%,50.96%" tableWidth="91.68%">' +
+									'<table columnWidths="45.45%,54.55%" tableWidth="77.13%">' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>foo</paragraph>' +
@@ -1114,6 +1113,8 @@ describe( 'TableColumnResizeEditing', () => {
 					const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
 					const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
 
+					setInitialWidthsInPx( editor, viewNestedTable, null, 300 );
+
 					// Test-agnostic.
 					const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
 
@@ -1141,7 +1142,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'<table columnWidths="25%,25.88%,49.12%" tableWidth="100%">' +
+									'<table columnWidths="25%,28.52%,46.48%" tableWidth="100%">' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>foo</paragraph>' +
@@ -1692,10 +1693,12 @@ describe( 'TableColumnResizeEditing', () => {
 						[ '00', '01', '02' ]
 					], { columnWidths: '20%,25%,55%' } ) );
 
+					setInitialWidthsInPx( editor, null, 201, 300 );
+
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="20.35%,25.44%,54.21%" tableWidth="98.17%">' +
+						'[<table columnWidths="22.22%,27.78%,50%" tableWidth="60%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>00</paragraph>' +
@@ -1719,10 +1722,12 @@ describe( 'TableColumnResizeEditing', () => {
 						[ '00', '01', '02' ]
 					], { tableWidth: '100px', columnWidths: '25%,25%,50%' } ) );
 
+					setInitialWidthsInPx( editor, null, 201, 300 );
+
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="20.8%,20.8%,58.4%" tableWidth="10.37%">' +
+						'[<table columnWidths="22.73%,22.73%,54.54%" tableWidth="73.33%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>00</paragraph>' +
@@ -1773,10 +1778,12 @@ describe( 'TableColumnResizeEditing', () => {
 						[ '00', '01', '02' ]
 					], { columnWidths: '20%,25%,55%' } ) );
 
+					setInitialWidthsInPx( editor, null, null, 300 );
+
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="20%,21.51%,58.49%">' +
+						'[<table columnWidths="20%,13.38%,66.62%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>00</paragraph>' +
@@ -2020,5 +2027,34 @@ describe( 'TableColumnResizeEditing', () => {
 
 	function getColumnIndex( cell, editor ) {
 		return editor.plugins.get( 'TableColumnResizeEditing' )._columnIndexMap.get( cell );
+	}
+
+	// Sets initial width in pixels to table and/or editor.
+	//
+	// We define table width precisely when we want to correctly predict column widths in % after resizing.
+	// E.g. setting table width to 201px when we have 3 columns defined: '25%,25%,50%' causes the columns
+	// to have initially: [50px][50px][100px] (the difference of 1px is important).
+	// We define editor width to avoid situations where table width is 100% and we resize it by providing
+	// move vector in px - this results in different widths in % depending on browser width. So to fix this
+	// we set editor width so the % values don't depend on browser width anymore.
+	//
+	// @param {module:core/editor/editor~Editor} editor
+	// @param {module:engine/view/element~Element} [viewTable]
+	// @param {Number} [tableWidth]
+	// @param {Number} [editorWidth]
+	function setInitialWidthsInPx( editor, viewTable, tableWidth, editorWidth ) {
+		const view = editor.editing.view;
+
+		view.change( writer => {
+			if ( editorWidth ) {
+				const root = view.document.getRoot();
+				writer.setAttribute( 'style', `width: ${ editorWidth }px;`, root );
+			}
+
+			if ( tableWidth ) {
+				const figure = ( viewTable ) ? viewTable.parent : view.document.getRoot().getChild( 0 );
+				writer.setAttribute( 'style', `width: ${ tableWidth }px;`, figure );
+			}
+		} );
 	}
 } );
