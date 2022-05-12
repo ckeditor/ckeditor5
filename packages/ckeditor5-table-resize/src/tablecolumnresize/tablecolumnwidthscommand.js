@@ -25,10 +25,11 @@ export default class TableColumnWidths extends TablePropertyCommand {
 	}
 
 	execute( options = {} ) {
-		const model = this.editor.model;
+		const editor = this.editor;
+		const model = editor.model;
 
-		const { value, batch, table } = options;
-		delete options.table;
+		const { value, batch, tableIndex } = options;
+		const table = editor.plugins.get( 'TableColumnResizeTrackChanges' )._changedTables[ tableIndex ];
 
 		const valueToSet = this._getValueToSet( value );
 

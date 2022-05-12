@@ -23,6 +23,21 @@ export default class TableColumnResizeTrackChanges extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * Intarnal storage for changed tables used to pass tableIndex instead of table itself because passing a table causes some errors.
+		 *
+		 * @readonly
+		 * @member {Array}
+		 */
+		this._changedTables = [];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	afterInit() {
 		const editor = this.editor;
 
@@ -75,7 +90,8 @@ export default class TableColumnResizeTrackChanges extends Plugin {
 			const resizePlugin = editor.plugins.get( 'TableColumnResizeEditing' );
 			const table = resizePlugin._resizingData.elements.modelTable;
 
-			options.table = table;
+			this._changedTables.push( table );
+			options.tableIndex = this._changedTables.length - 1;
 
 			editor.model.change( () => {
 				executeCommand( options );
