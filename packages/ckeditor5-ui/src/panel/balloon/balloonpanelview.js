@@ -756,14 +756,14 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  * The name that the position function returns will be reflected in the balloon panel's class that
  * controls the placement of the "arrow". See {@link #position} to learn more.
  *
- * @member {Object.<String,module:utils/dom/position~positioningFunction>}
+ * @member {Object.<String,module:utils/dom/position~PositioningFunction>}
  * module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
  */
 BalloonPanelView.defaultPositions = generatePositions();
 
 /**
  * Returns available {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
- * {@link module:utils/dom/position~positioningFunction positioning functions} adjusted by the specific offsets.
+ * {@link module:utils/dom/position~PositioningFunction positioning functions} adjusted by the specific offsets.
  *
  * @protected
  * @param {Object} [options] Options to generate positions. If not specified, this helper will simply return
@@ -779,8 +779,8 @@ BalloonPanelView.defaultPositions = generatePositions();
  * will be used.
  * @param {Object} [options.config] Additional configuration of the balloon balloon panel view.
  * Currently only {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#withArrow} is supported. Learn more
- * about {@link module:utils/dom/position~positioningFunction positioning functions}.
- * @returns {Object.<String,module:utils/dom/position~positioningFunction>}
+ * about {@link module:utils/dom/position~PositioningFunction positioning functions}.
+ * @returns {Object.<String,module:utils/dom/position~PositioningFunction>}
  */
 export function generatePositions( {
 	horizontalOffset = BalloonPanelView.arrowHorizontalOffset,

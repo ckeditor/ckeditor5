@@ -11,7 +11,8 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "lodash-es": "^4.17.15"
+    "lodash-es": "^4.17.15",
+    "@types/lodash-es": "^4.17.6"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-build-classic": "^34.0.0",
