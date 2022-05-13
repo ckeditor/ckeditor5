@@ -63,6 +63,12 @@ export default class PasteFromOffice extends Plugin {
 					return;
 				}
 
+				const codeBlock = editor.model.document.selection.getFirstPosition().parent;
+
+				if ( codeBlock.is( 'element', 'codeBlock' ) ) {
+					return;
+				}
+
 				const htmlString = data.dataTransfer.getData( 'text/html' );
 				const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
 
