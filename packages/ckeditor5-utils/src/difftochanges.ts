@@ -29,7 +29,7 @@ import type { DiffResult } from "./diff";
  *
  * @param {Array.<module:utils/diff~DiffResult>} diff Result of {@link module:utils/diff~diff}.
  * @param {String|Array} output The string or array which was passed as diff's output.
- * @returns {Array.<Object>} Set of changes (insert or delete) which need to be applied to the input
+ * @returns {Array.<module:utils/difftochanges~Change>} Set of changes (insert or delete) which need to be applied to the input
  * in order to transform it into the output.
  */
 export default function diffToChanges<T>( diff: readonly DiffResult[], output: ArrayLike<T> ): Change<T>[] {

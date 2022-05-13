@@ -20,7 +20,7 @@ import priorities, { PriorityString } from './priorities';
  *
  * @property {module:utils/priorities~PriorityString|Number} priority Priority of the object.
  */
-interface ObjectWithPriority {
+export interface ObjectWithPriority {
 	priority: PriorityString | number;
 }
 

@@ -142,7 +142,7 @@ export default class Config {
 	 * @param {*} value The configuration value. Used if a name is passed.
 	 * @param {Boolean} [isDefine=false] Define if passed configuration should overwrite existing one.
 	 */
-	_setToTarget( target: any, name: any, value: any, isDefine = false ) {
+	private _setToTarget( target: any, name: any, value: any, isDefine = false ): void {
 		// In case of an object, iterate through it and call `_setToTarget` again for each property.
 		if ( isPlainObject( name ) ) {
 			this._setObjectToTarget( target, name, isDefine );
@@ -198,7 +198,7 @@ export default class Config {
 	 * @param {String} name The configuration name. Configuration names are case-sensitive.
 	 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.
 	 */
-	_getFromSource( source: any, name: string ): unknown {
+	private _getFromSource( source: any, name: string ): unknown {
 		// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`].
 		const parts = name.split( '.' );
 
@@ -228,7 +228,7 @@ export default class Config {
 	 * @param {Object} configuration Configuration data set
 	 * @param {Boolean} [isDefine] Defines if passed configuration is default configuration or not.
 	 */
-	_setObjectToTarget( target: any, configuration: any, isDefine?: boolean ) {
+	private _setObjectToTarget( target: any, configuration: any, isDefine?: boolean ): void {
 		Object.keys( configuration ).forEach( key => {
 			this._setToTarget( target, key, configuration[ key ], isDefine );
 		} );

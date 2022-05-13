@@ -9,7 +9,7 @@
  * @module utils/keyboard
  */
 
-import { LanguageDirection } from './language';
+import type { LanguageDirection } from './language';
 import CKEditorError from './ckeditorerror';
 import env from './env';
 
