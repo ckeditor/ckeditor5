@@ -73,7 +73,7 @@ export default class HtmlDataProcessor {
 		const domFragment = this._toDom( data );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this.domConverter.domToView( domFragment, { bind: true } );
+		return this.domConverter.domToView( domFragment );
 	}
 
 	/**

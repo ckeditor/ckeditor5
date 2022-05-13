@@ -406,11 +406,7 @@ export default class DataController {
 		const viewDocumentFragment = this.processor.toView( data );
 
 		// view -> model
-		const modelDocumentFragment = this.toModel( viewDocumentFragment, context );
-
-		this.processor.domConverter.clearBindings();
-
-		return modelDocumentFragment;
+		return this.toModel( viewDocumentFragment, context );
 	}
 
 	/**
