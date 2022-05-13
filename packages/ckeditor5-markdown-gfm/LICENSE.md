@@ -13,9 +13,9 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
-* Marked - Copyright (c) 2011-2018, Christopher Jeffrey (https://github.com/chjj/).
-* Turndown - Copyright (c) 2017 Dom Christie.
-* Turndown-plugin-gfm - Copyright (c) 2017 Dom Christie.
+* Marked - Copyright (c) Christopher Jeffrey (https://github.com/chjj/).
+* Turndown - Copyright (c) Dom Christie.
+* Turndown-plugin-gfm - Copyright (c) Dom Christie.
 
 Trademarks
 ----------
