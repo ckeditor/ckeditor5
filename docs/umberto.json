@@ -6,6 +6,13 @@
 			"../scripts/docs/build-content-styles.js"
 		]
 	},
+	"reportIssueWidget": {
+		"enabled": true,
+		"issueUrl": "https://github.com/ckeditor/ckeditor5/issues/new?labels=squad%3Accx%2Ctype%3Adocs&template=7-docs-issue-community.yml",
+		"skipPages": [
+			"**/index.html"
+		]
+	},
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
 	"extraScripts": "assets/buildwarningbanner.js",
