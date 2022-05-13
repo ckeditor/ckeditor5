@@ -41,6 +41,7 @@ export default class CustomElementSupport extends Plugin {
 			const schema = editor.model.schema;
 			const conversion = editor.conversion;
 			const unsafeElements = editor.editing.view.domConverter.unsafeElements;
+			const preLikeElements = editor.data.htmlProcessor.domConverter.preElements;
 
 			schema.register( definition.model, definition.modelSchema );
 			schema.extend( definition.model, {
@@ -57,6 +58,16 @@ export default class CustomElementSupport extends Plugin {
 						return;
 					}
 
+					// Make sure that this element will not render in the editing view.
+					if ( !unsafeElements.includes( viewElement.name ) ) {
+						unsafeElements.push( viewElement.name );
+					}
+
+					// Make sure that whitespaces will not be trimmed or replaced by nbsps while stringify content.
+					if ( !preLikeElements.includes( viewElement.name ) ) {
+						preLikeElements.push( viewElement.name );
+					}
+
 					const modelElement = conversionApi.writer.createElement( definition.model, {
 						htmlElementName: viewElement.name
 					} );
@@ -67,25 +78,16 @@ export default class CustomElementSupport extends Plugin {
 						conversionApi.writer.setAttribute( 'htmlAttributes', htmlAttributes, modelElement );
 					}
 
+					// Store the whole element in the attribute so that DomConverter will be able to use the pre like element context.
 					const viewWriter = new UpcastWriter( viewElement.document );
-					const childNodes = [];
+					const documentFragment = viewWriter.createDocumentFragment( viewElement );
+					const htmlContent = editor.data.processor.toData( documentFragment );
 
-					// Replace filler offset so the block filler won't get injected.
-					for ( const node of Array.from( viewElement.getChildren() ) ) {
-						node.getFillerOffset = () => null;
-						childNodes.push( node );
-					}
+					conversionApi.writer.setAttribute( 'htmlContent', htmlContent, modelElement );
 
-					const documentFragment = viewWriter.createDocumentFragment( childNodes );
-
-					if ( !documentFragment.isEmpty ) {
-						const htmlContent = editor.data.processor.toData( documentFragment );
-
-						conversionApi.writer.setAttribute( 'htmlContent', htmlContent, modelElement );
-					}
-
-					if ( !unsafeElements.includes( viewElement.name ) ) {
-						unsafeElements.push( viewElement.name );
+					// Consume the content of the element.
+					for ( const { item } of editor.editing.view.createRangeIn( viewElement ) ) {
+						conversionApi.consumable.consume( item, { name: true } );
 					}
 
 					return modelElement;
@@ -93,7 +95,24 @@ export default class CustomElementSupport extends Plugin {
 				converterPriority: 'low'
 			} );
 
-			conversion.for( 'downcast' ).elementToElement( {
+			conversion.for( 'editingDowncast' ).elementToElement( {
+				model: {
+					name: definition.model,
+					attributes: [ 'htmlElementName', 'htmlAttributes', 'htmlContent' ]
+				},
+				view: ( modelElement, { writer } ) => {
+					const viewName = modelElement.getAttribute( 'htmlElementName' );
+					const viewElement = writer.createRawElement( viewName );
+
+					if ( modelElement.hasAttribute( 'htmlAttributes' ) ) {
+						setViewAttributes( writer, modelElement.getAttribute( 'htmlAttributes' ), viewElement );
+					}
+
+					return viewElement;
+				}
+			} );
+
+			conversion.for( 'dataDowncast' ).elementToElement( {
 				model: {
 					name: definition.model,
 					attributes: [ 'htmlElementName', 'htmlAttributes', 'htmlContent' ]
@@ -105,6 +124,15 @@ export default class CustomElementSupport extends Plugin {
 					const viewElement = writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
 						if ( htmlContent ) {
 							domConverter.setContentOf( domElement, htmlContent );
+
+							// Unwrap the custom element content (it was stored in the attribute as the whole custom element).
+							const customElement = domElement.firstChild;
+
+							customElement.remove();
+
+							while ( customElement.firstChild ) {
+								domElement.appendChild( customElement.firstChild );
+							}
 						}
 					} );
 
