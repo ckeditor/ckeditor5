@@ -64,6 +64,7 @@ export default class PasteFromOffice extends Plugin {
 				}
 
 				const codeBlock = editor.model.document.selection.getFirstPosition().parent;
+
 				if ( codeBlock.is( 'element', 'codeBlock' ) ) {
 					return;
 				}

@@ -25,17 +25,15 @@ describe( 'PasteFromOffice', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
-		return ClassicTestEditor.create( element, {
+
+		editor = await ClassicTestEditor.create( element, {
 			plugins: [ PasteFromOffice, Paragraph, CodeBlockEditing, CodeBlockUI ]
-		} )
-			.then( _editor => {
-				editor = _editor;
-				pasteFromOffice = editor.plugins.get( 'PasteFromOffice' );
-				clipboard = editor.plugins.get( 'ClipboardPipeline' );
-			} );
+		} );
+		pasteFromOffice = editor.plugins.get( 'PasteFromOffice' );
+		clipboard = editor.plugins.get( 'ClipboardPipeline' );
 	} );
 
 	afterEach( () => {
