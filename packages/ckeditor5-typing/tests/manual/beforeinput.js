@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, console, document */
+/* globals CKEditorInspector, console, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
@@ -27,8 +28,12 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+initEditor( ClassicEditor, document.querySelector( '#editor-classic' ), 'classic' );
+initEditor( BalloonEditor, document.querySelector( '#editor-balloon' ), 'balloon' );
+
+async function initEditor( editorConstructor, element, name ) {
+	const editor = await editorConstructor.create( element, {
+		initialData: document.querySelector( '#fixtures' ).innerHTML,
 		plugins: [
 			Essentials,
 			Autoformat,
@@ -106,62 +111,65 @@ ClassicEditor
 				}
 			]
 		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-
-		let beforeInputEventCount = 0;
-		let compositionEventCount = 0;
-
-		editor.editing.view.document.on( 'beforeinput', ( evt, evtData ) => {
-			const { targetRanges, data, inputType, isComposing } = evtData;
-
-			console.group(
-				`#${ ++beforeInputEventCount } ` +
-				'beforeInput ' +
-				`(%c"${ inputType }"%c${ isComposing ? ',%c isComposing' : '%c' }%c)`,
-				'color: blue', 'color: default', 'color: green', 'color: default'
-			);
-
-			if ( data ) {
-				console.log( `%cdata:%c "${ data }"`, 'font-weight: bold', 'font-weight: default' );
-			} else {
-				console.log( '%cdata:', 'font-weight: bold', data );
-			}
-			console.log( '%ctargetRanges:', 'font-weight: bold', targetRanges );
-
-			// TODO: Note: In FF sometimes it exists but is null. This should be fixed in inputobserver.
-			if ( targetRanges.length && targetRanges[ 0 ] ) {
-				console.group( 'first range' );
-				console.log( '%cstart:', 'font-weight: bold', targetRanges[ 0 ].start );
-				console.log( '%cend:', 'font-weight: bold', targetRanges[ 0 ].end );
-				console.log( '%cisCollapsed:', 'font-weight: bold', targetRanges[ 0 ].isCollapsed );
-				console.groupEnd( 'first range' );
-			}
-
-			// console.log( '%cdataTransfer:', 'font-weight: bold', evtData.dataTransfer );
-			// console.log( '%cfull event data:', 'font-weight: bold', evtData );
-
-			console.groupEnd();
-		}, { priority: 'highest' } );
-
-		editor.editing.view.document.on( 'compositionstart', () => {
-			console.log(
-				`%c┌───────────────────────────── ＃${ ++compositionEventCount } compositionstart ─────────────────────────────┐`,
-				'font-weight: bold; color: green'
-			);
-		}, { priority: 'highest' } );
-
-		editor.editing.view.document.on( 'compositionend', ( evt, data ) => {
-			console.log(
-				`%c└───────────────────────────── ＃${ compositionEventCount } compositionend ─────────────────────────────┘`,
-				'font-weight: bold; color: green'
-			);
-		}, { priority: 'highest' } );
-	} )
-	.catch( err => {
-		console.error( err.stack );
 	} );
+
+	CKEditorInspector.attach( { [ name ]: editor } );
+
+	let beforeInputEventCount = 0;
+	let compositionEventCount = 0;
+
+	editor.editing.view.document.on( 'keydown', ( evt, evtData ) => {
+		if ( evtData.keyCode === 229 ) {
+			console.log( '229 was fired' );
+		}
+	} );
+
+	editor.editing.view.document.on( 'beforeinput', ( evt, evtData ) => {
+		const { targetRanges, data, inputType, isComposing } = evtData;
+
+		console.group(
+			`#${ ++beforeInputEventCount } ` +
+			'beforeInput ' +
+			`(%c"${ inputType }"%c${ isComposing ? ',%c isComposing' : '%c' }%c)`,
+			'color: blue', 'color: default', 'color: green', 'color: default'
+		);
+
+		if ( data ) {
+			console.log( `%cdata:%c "${ data }"`, 'font-weight: bold', 'font-weight: default' );
+		} else {
+			console.log( '%cdata:', 'font-weight: bold', data );
+		}
+		console.log( '%ctargetRanges:', 'font-weight: bold', targetRanges );
+
+		// TODO: Note: In FF sometimes it exists but is null. This should be fixed in inputobserver.
+		if ( targetRanges.length && targetRanges[ 0 ] ) {
+			console.group( 'first range' );
+			console.log( '%cstart:', 'font-weight: bold', targetRanges[ 0 ].start );
+			console.log( '%cend:', 'font-weight: bold', targetRanges[ 0 ].end );
+			console.log( '%cisCollapsed:', 'font-weight: bold', targetRanges[ 0 ].isCollapsed );
+			console.groupEnd( 'first range' );
+		}
+
+		// console.log( '%cdataTransfer:', 'font-weight: bold', evtData.dataTransfer );
+		// console.log( '%cfull event data:', 'font-weight: bold', evtData );
+
+		console.groupEnd();
+	}, { priority: 'highest' } );
+
+	editor.editing.view.document.on( 'compositionstart', () => {
+		console.log(
+			`%c┌───────────────────────────── ＃${ ++compositionEventCount } compositionstart ─────────────────────────────┐`,
+			'font-weight: bold; color: green'
+		);
+	}, { priority: 'highest' } );
+
+	editor.editing.view.document.on( 'compositionend', ( evt, data ) => {
+		console.log(
+			`%c└───────────────────────────── ＃${ compositionEventCount } compositionend ─────────────────────────────┘`,
+			'font-weight: bold; color: green'
+		);
+	}, { priority: 'highest' } );
+}
 
 let beforeInputEventCount = 0;
 let compositionEventCount = 0;

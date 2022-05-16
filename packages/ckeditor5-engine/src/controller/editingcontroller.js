@@ -107,6 +107,20 @@ export default class EditingController {
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
+		// this.listenTo( this.view.document, 'change:isComposing', () => {
+		// 	if ( this.view.document.isComposing && !model.document.selection.isCollapsed ) {
+		// 		console.log( 'initial delete content' );
+		// 		model.deleteContent( model.document.selection );
+		// 	}
+		// }, { priority: 'low' } );
+
+		this.listenTo( this.view.document, 'keydown', ( evt, domEventData ) => {
+			if ( domEventData.keyCode === 229 && !this.view.document.isComposing ) {
+				console.log( 'initial delete content' );
+				model.deleteContent( model.document.selection );
+			}
+		}, { priority: 'lowest' } );
+
 		// Attach default model converters.
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 		this.downcastDispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );

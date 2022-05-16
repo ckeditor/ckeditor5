@@ -644,6 +644,12 @@ export default class WidgetTypeAround extends Plugin {
 				data.selection = viewDocument.selection;
 			}
 		}, { priority: 'high' } );
+
+		this._listenToIfEnabled( viewDocument, 'keydown', ( evt, domEventData ) => {
+			if ( domEventData.keyCode === 229 && !viewDocument.isComposing ) {
+				this._insertParagraphAccordingToFakeCaretPosition();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
