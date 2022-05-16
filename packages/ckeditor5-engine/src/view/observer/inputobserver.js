@@ -27,6 +27,7 @@ export default class InputObserver extends DomEventObserver {
 
 	onDomEvent( domEvent ) {
 		const domTargetRanges = domEvent.getTargetRanges();
+		console.log( 'domTargetRanges', domTargetRanges );
 		const view = this.view;
 		const viewDocument = view.document;
 
@@ -50,9 +51,15 @@ export default class InputObserver extends DomEventObserver {
 			// Future proof: in case of multi-range fake selections being possible.
 			targetRanges = [ ...viewDocument.selection.getRanges() ];
 		} else {
-			targetRanges = domTargetRanges.map( domRange => {
-				return view.domConverter.domRangeToView( domRange );
-			} );
+			if ( !domTargetRanges.length ) {
+				const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
+
+				targetRanges = [ view.domConverter.domSelectionToView( domSelection ).getFirstRange() ];
+			} else {
+				targetRanges = domTargetRanges.map( domRange => {
+					return view.domConverter.domRangeToView( domRange );
+				} );
+			}
 		}
 
 		this.fire( domEvent.type, domEvent, {

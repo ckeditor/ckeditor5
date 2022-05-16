@@ -34,15 +34,43 @@ export default class CompositionObserver extends DomEventObserver {
 			// TODO maybe this should be after 'insertText'
 			document.isComposing = false;
 
+			const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
+			const firstDomRange = domSelection.getRangeAt( 0 );
+
+			console.log( 'firstDomRange', firstDomRange );
+
 			// In case of aborted composition.
 			if ( !domEvent.data ) {
 				return;
 			}
 
+			console.log( '[CompositionObserver] insertText', {
+				text: domEvent.data,
+				selection: document.selection
+			} );
+
 			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
 			document.fire( 'insertText', new DomEventData( document, domEvent, {
 				text: domEvent.data,
 				selection: document.selection
+			} ) );
+		} );
+
+		document.on( 'compositionupdate', ( evt, { domEvent } ) => {
+			console.log( 'compositionupdate', domEvent );
+			const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
+			const firstDomRange = domSelection.getRangeAt( 0 );
+
+			if ( domSelection.isCollapsed ) {
+				console.log( 'compositionupdate in collapsed selection: aborting' );
+				return;
+			}
+
+			console.log( 'getFirstRange', view.domConverter.domSelectionToView( domSelection ).getFirstRange() );
+
+			document.fire( 'insertText', new DomEventData( document, domEvent, {
+				text: domEvent.data,
+				selection: view.domConverter.domSelectionToView( domSelection )
 			} ) );
 		} );
 	}

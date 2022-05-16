@@ -127,6 +127,8 @@ async function initEditor( editorConstructor, element, name ) {
 	editor.editing.view.document.on( 'beforeinput', ( evt, evtData ) => {
 		const { targetRanges, data, inputType, isComposing } = evtData;
 
+		console.log( 'data', evtData );
+
 		console.group(
 			`#${ ++beforeInputEventCount } ` +
 			'beforeInput ' +
@@ -156,11 +158,13 @@ async function initEditor( editorConstructor, element, name ) {
 		console.groupEnd();
 	}, { priority: 'highest' } );
 
-	editor.editing.view.document.on( 'compositionstart', () => {
+	editor.editing.view.document.on( 'compositionstart', ( evt, data ) => {
 		console.log(
 			`%c┌───────────────────────────── ＃${ ++compositionEventCount } compositionstart ─────────────────────────────┐`,
 			'font-weight: bold; color: green'
 		);
+
+		console.log( 'compositionstart', data.domEvent );
 	}, { priority: 'highest' } );
 
 	editor.editing.view.document.on( 'compositionend', ( evt, data ) => {
@@ -168,6 +172,8 @@ async function initEditor( editorConstructor, element, name ) {
 			`%c└───────────────────────────── ＃${ compositionEventCount } compositionend ─────────────────────────────┘`,
 			'font-weight: bold; color: green'
 		);
+
+		console.log( 'compositionend', data.domEvent );
 	}, { priority: 'highest' } );
 }
 
@@ -181,6 +187,8 @@ document.addEventListener( 'beforeinput', evt => {
 	}
 
 	const { inputType, data, isComposing } = evt;
+
+	console.log( 'data', evt, evt.getTargetRanges(), document.getSelection().getRangeAt( 0 ) );
 
 	console.group(
 		`#${ ++beforeInputEventCount } ` +
@@ -208,6 +216,8 @@ document.addEventListener( 'compositionstart', evt => {
 		`%c┌───────────────────────────── ＃${ ++compositionEventCount } native compositionstart ─────────────────────────────┐`,
 		'font-weight: bold; color: green'
 	);
+
+	console.log( 'compositionstart', evt );
 } );
 
 document.addEventListener( 'compositionend', evt => {
@@ -220,4 +230,6 @@ document.addEventListener( 'compositionend', evt => {
 		`%c└───────────────────────────── ＃${ compositionEventCount } native compositionend ─────────────────────────────┘`,
 		'font-weight: bold; color: green'
 	);
+
+	console.log( 'compositionend', evt );
 } );
