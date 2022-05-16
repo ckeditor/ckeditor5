@@ -6,7 +6,7 @@ order: 40
 
 {@snippet installation/frameworks/framework-integration}
 
-# Rich text editor component for Vue.js 2.x
+# Vue.js 2.x rich text editor component
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2" target="_blank" rel="noopener">
