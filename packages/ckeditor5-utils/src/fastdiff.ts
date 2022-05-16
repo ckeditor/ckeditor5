@@ -108,7 +108,7 @@ export default function fastDiff<T>(
 	b: ArrayLike<T>,
 	cmp: ( ( a: T, b: T ) => boolean ) | undefined,
 	atomicChanges: true
-): DiffResult[]
+): DiffResult[];
 export default function fastDiff<T>(
 	a: ArrayLike<T>,
 	b: ArrayLike<T>,
