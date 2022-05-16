@@ -142,7 +142,7 @@ export default class Config {
 	 * @param {*} value The configuration value. Used if a name is passed.
 	 * @param {Boolean} [isDefine=false] Define if passed configuration should overwrite existing one.
 	 */
-	private _setToTarget( target: any, name: any, value: any, isDefine = false ): void {
+	private _setToTarget( target: any, name: any, value: any, isDefine: boolean = false ): void {
 		// In case of an object, iterate through it and call `_setToTarget` again for each property.
 		if ( isPlainObject( name ) ) {
 			this._setObjectToTarget( target, name, isDefine );

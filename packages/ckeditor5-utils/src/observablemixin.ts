@@ -173,7 +173,7 @@ const ObservableMixin: Observable = {
 	/**
 	 * @inheritDoc
 	 */
-	unbind( ...unbindProperties: string[] ) {
+	unbind( ...unbindProperties: string[] ): void {
 		// Nothing to do here if not inited yet.
 		if ( !( this[ observablePropertiesSymbol ] ) ) {
 			return;
@@ -231,7 +231,7 @@ const ObservableMixin: Observable = {
 	/**
 	 * @inheritDoc
 	 */
-	decorate( this: Observable & { [ x: string ]: any }, methodName: string ) {
+	decorate( this: Observable & { [ x: string ]: any }, methodName: string ): void {
 		initObservable( this );
 
 		const originalMethod = this[ methodName ];
@@ -492,7 +492,7 @@ function bindTo( this: BindChainInternal, ...args: ( Observable | string | Funct
 // @param {Array.<Observable>} observables
 // @param {String} attribute
 // @param {Function} callback
-function bindToMany( this: BindChainInternal, observables: Observable[], attribute: string, callback: Function ) {
+function bindToMany( this: BindChainInternal, observables: Observable[], attribute: string, callback: Function ): void {
 	if ( this._bindings.size > 1 ) {
 		/**
 		 * Binding one attribute to many observables only possible with one attribute.
@@ -648,7 +648,7 @@ function updateBoundObservables(
 //
 // @private
 // @param {BindChain} chain The binding initialized by {@link Observable#bind}.
-function updateBindToBound( chain: BindChainInternal ) {
+function updateBindToBound( chain: BindChainInternal ): void {
 	let toProperty;
 
 	chain._bindings.forEach( ( binding, propertyName ) => {
@@ -670,7 +670,7 @@ function updateBindToBound( chain: BindChainInternal ) {
 // @private
 // @param {Observable} observable A observable which property is to be updated.
 // @param {String} propertyName An property to be updated.
-function updateBoundObservableProperty( observable: Observable, propertyName: string ) {
+function updateBoundObservableProperty( observable: Observable, propertyName: string ): void {
 	const boundProperties = observable[ boundPropertiesSymbol ]!;
 	const binding = boundProperties.get( propertyName )!;
 	let propertyValue;
@@ -700,7 +700,7 @@ function updateBoundObservableProperty( observable: Observable, propertyName: st
 //
 // @private
 // @param {BindChain} chain The chain initialized by {@link Observable#bind}.
-function attachBindToListeners( observable: Observable, toBindings: BindChainInternal[ '_to' ] ) {
+function attachBindToListeners( observable: Observable, toBindings: BindChainInternal[ '_to' ] ): void {
 	toBindings.forEach( to => {
 		const boundObservables = observable[ boundObservablesSymbol ]!;
 		let bindings;
@@ -738,7 +738,7 @@ function attachBindToListeners( observable: Observable, toBindings: BindChainInt
  */
 export interface Observable extends Emitter {
 	set<K extends keyof this & string>( name: K, value: this[ K ] ): void;
-	set( values: { [ K in keyof this ]?: this[ K ] } ): void;
+	set( values: { readonly [ K in keyof this ]?: unknown } ): void;
 
 	bind<K extends keyof this & string>(
 		bindProperty: K

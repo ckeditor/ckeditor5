@@ -94,7 +94,7 @@ export default class KeystrokeHandler {
 	set(
 		keystroke: string | readonly ( string | number )[],
 		callback: ( ev: KeyboardEvent, cancel: () => void ) => void,
-		options: { priority?: PriorityString | number } = {}
+		options: { readonly priority?: PriorityString | number } = {}
 	): void {
 		const keyCode = parseKeystroke( keystroke );
 		const priority = options.priority;
@@ -124,7 +124,7 @@ export default class KeystrokeHandler {
 	 * @param {module:engine/view/observer/keyobserver~KeyEventData} keyEvtData Key event data.
 	 * @returns {Boolean} Whether the keystroke was handled.
 	 */
-	press( keyEvtData: KeystrokeInfo ): boolean {
+	press( keyEvtData: Readonly<KeystrokeInfo> ): boolean {
 		return !!this._listener.fire( '_keydown:' + getCode( keyEvtData ), keyEvtData );
 	}
 

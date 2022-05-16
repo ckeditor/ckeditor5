@@ -32,7 +32,7 @@ export default class ElementReplacer {
 	 * @param {HTMLElement} element The element to replace.
 	 * @param {HTMLElement} [newElement] The replacement element. If not passed, then the `element` will just be hidden.
 	 */
-	replace( element: HTMLElement, newElement?: HTMLElement ) {
+	replace( element: HTMLElement, newElement?: HTMLElement ): void {
 		this._replacedElements.push( { element, newElement } );
 
 		element.style.display = 'none';

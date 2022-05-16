@@ -51,7 +51,7 @@ export default class ResizeObserver {
 	 * the [`ResizeObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry)
 	 * object with information about the resize event.
 	 */
-	constructor( element: HTMLElement, callback: ( entry: ResizeObserverEntry) => void ) {
+	constructor( element: HTMLElement, callback: ( entry: ResizeObserverEntry ) => void ) {
 		// **Note**: For the maximum performance, this class ensures only a single instance of the native
 		// (or polyfilled) observer is used no matter how many instances of this class were created.
 		if ( !ResizeObserver._observerInstance ) {

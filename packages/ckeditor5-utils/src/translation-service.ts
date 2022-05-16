@@ -14,7 +14,7 @@ import CKEditorError from './ckeditorerror';
 declare global {
 	var CKEDITOR_TRANSLATIONS: {
 		[ language: string ]: {
-			dictionary: { [ messageId: string ]: string | string[] },
+			dictionary: { [ messageId: string ]: string | readonly string[] },
 			getPluralForm?: ( n: number ) => number
 		};
 	};
@@ -102,7 +102,7 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  */
 export function add(
 	language: string,
-	translations: { [ messageId: string ]: string | string[] },
+	translations: { readonly [ messageId: string ]: string | readonly string[] },
 	getPluralForm?: ( n: number ) => number
 ): void {
 	if ( !window.CKEDITOR_TRANSLATIONS[ language ] ) {

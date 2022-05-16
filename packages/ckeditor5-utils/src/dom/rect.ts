@@ -436,7 +436,7 @@ export default class Rect {
  * 
  * @typedef {HTMLElement|Range|Window|ClientRect|DOMRect|module:utils/dom/rect~Rect|Object} module:utils/dom/rect~RectSource
  */
-export type RectSource = HTMLElement | Range | Window | { readonly [ prop in RectProperty ]: number };
+export type RectSource = HTMLElement | Range | Window | { readonly [ Prop in RectProperty ]: number };
 
 // Acquires all the rect properties from the passed source.
 //

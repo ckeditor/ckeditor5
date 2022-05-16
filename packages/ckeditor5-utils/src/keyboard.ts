@@ -54,7 +54,7 @@ const keyCodeNames = Object.fromEntries(
  * or a keystroke data object.
  * @returns {Number} Key or keystroke code.
  */
-export function getCode( key: string | KeystrokeInfo ): number {
+export function getCode( key: string | Readonly<KeystrokeInfo> ): number {
 	let keyCode: number | undefined;
 
 	if ( typeof key == 'string' ) {
