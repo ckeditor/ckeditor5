@@ -40,6 +40,16 @@ Put the caret anywhere inside the table to invoke the table toolbar. Then click 
 	By default, table styling tools are not included in the {@link installation/advanced/predefined-builds ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
 </info-box>
 
+### Table column resize
+
+The {@link module:table-resize/tablecolumnresize~TableColumnResize} plugin adds support for resizing tables and table columns.
+
+{@snippet features/table-column-resize}
+
+<info-box>
+	By default, the table column resize feature is not included in the {@link installation/advanced/predefined-builds ready–to–use editor builds} and must be installed separately.
+</info-box>
+
 ### Table caption
 
 The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions. These work very much like image captions &mdash; the caption informs the reader about the content of the table. Using captions is also beneficial from the accessability point of view as they would be read by screen readers.
