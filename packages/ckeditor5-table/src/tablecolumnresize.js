@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table-resize/tablecolumnresize
+ * @module table/tablecolumnresize
  */
 
 import { Plugin } from 'ckeditor5/src/core';

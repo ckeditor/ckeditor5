@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table-resize/tablecolumnresize/tablecolumnresizeediting
+ * @module table/tablecolumnresize/tablecolumnresizeediting
  */
 
 /* istanbul ignore file */
