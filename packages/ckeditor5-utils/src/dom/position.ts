@@ -277,7 +277,7 @@ export class Position {
 	 * @param {Object} [options] options object.
 	 * @param {module:utils/dom/rect~Rect} options.elementRect The positioned element rect.
 	 * @param {module:utils/dom/rect~Rect} options.targetRect The target element rect.
-	 * @param {module:utils/dom/rect~Rect} options.viewportRect The viewport rect.
+	 * @param {module:utils/dom/rect~Rect|null} options.viewportRect The viewport rect.
 	 * @param {module:utils/dom/rect~Rect} [options.limiterRect] The limiter rect.
 	 * @param {HTMLElement|null} [options.positionedElementAncestor] Nearest element ancestor element which CSS position is not "static".
 	 */
