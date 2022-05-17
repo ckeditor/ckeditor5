@@ -1066,7 +1066,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'<table columnWidths="45.45%,54.55%" tableWidth="77.13%">' +
+									'<table columnWidths="45.45%,54.55%" tableWidth="77.14%">' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>foo</paragraph>' +
