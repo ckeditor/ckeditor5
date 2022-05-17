@@ -7,6 +7,8 @@
  * @module table-resize/tablecolumnresize/tablecolumnresizeediting
  */
 
+/* istanbul ignore file */
+
 import { throttle } from 'lodash-es';
 import { global, DomEmitterMixin } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';

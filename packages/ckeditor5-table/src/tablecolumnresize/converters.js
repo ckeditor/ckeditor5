@@ -7,6 +7,8 @@
  * @module table-resize/tablecolumnresize/converters
  */
 
+/* istanbul ignore file */
+
 import { getNumberOfColumn } from './utils';
 
 /**
