@@ -2583,6 +2583,9 @@ describe( 'TableKeyboard', () => {
 							padding: 0 !important;
 							border: 0 !important
 						}
+						table {
+							table-layout: initial !important;
+						}
 						td { width: 30px !important; }
 						tr:nth-child(2) td:nth-child(2) { width: 300px !important; }
 						`
