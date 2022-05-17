@@ -10,6 +10,9 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';
 import MoveOperation from '@ckeditor/ckeditor5-engine/src/model/operation/moveoperation';
@@ -360,25 +363,85 @@ describe( 'TableColumnResize utils', () => {
 	} );
 
 	describe( 'getColumnIndex()', () => {
+		let editor;
+
+		beforeEach( () => {
+			return ClassicEditor
+				.create( '', {
+					plugins: [ Table, TableColumnResize, Paragraph ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
+		} );
+
 		it( 'should properly calculate column edge indexes', () => {
+			setModelData( editor.model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '25%,25%,50%' } ) );
+
+			const table = editor.model.document.getRoot().getChild( 0 );
+			const row0 = [ ...table.getChildren() ][ 0 ];
+			const cell00 = [ ...row0.getChildren() ][ 0 ];
+
 			expect(
-				getColumnIndex( new Element( 'tableCell', { columnIndex: 0 } ) )
+				getColumnIndex( cell00, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 0, rightEdge: 0 } );
 
+			const cell01 = [ ...row0.getChildren() ][ 1 ];
+
 			expect(
-				getColumnIndex( new Element( 'tableCell', { columnIndex: 1 } ) )
+				getColumnIndex( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 1 } );
+		} );
+
+		it( 'should properly calculate column edge indexes when colspan = 2', () => {
+			setModelData( editor.model, modelTable( [
+				[ '00', { contents: '01', colspan: 2 } ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '25%,25%,50%' } ) );
+
+			const table = editor.model.document.getRoot().getChild( 0 );
+			const row0 = [ ...table.getChildren() ][ 0 ];
+			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( new Element( 'tableCell', { columnIndex: 1, colspan: 2 } ) )
+				getColumnIndex( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 2 } );
+		} );
+
+		it( 'should properly calculate column edge indexes when colspan = 3', () => {
+			setModelData( editor.model, modelTable( [
+				[ '00', { contents: '01', colspan: 3 } ],
+				[ '10', '11', '12', '13' ]
+			], { columnWidths: '25%,25%,25%,25%' } ) );
+
+			const table = editor.model.document.getRoot().getChild( 0 );
+			const row0 = [ ...table.getChildren() ][ 0 ];
+			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( new Element( 'tableCell', { columnIndex: 1, colspan: 3 } ) )
+				getColumnIndex( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 3 } );
+		} );
+
+		it( 'should properly calculate column edge indexes when colspan = 4', () => {
+			setModelData( editor.model, modelTable( [
+				[ '00', '01', { contents: '02', colspan: 4 } ],
+				[ '10', '11', '12', '13', '14', '15' ]
+			], { columnWidths: '20%,20%,20%,20%,10%,10%' } ) );
+
+			const table = editor.model.document.getRoot().getChild( 0 );
+			const row0 = [ ...table.getChildren() ][ 0 ];
+			const cell02 = [ ...row0.getChildren() ][ 2 ];
 
 			expect(
-				getColumnIndex( new Element( 'tableCell', { columnIndex: 2, colspan: 4 } ) )
+				getColumnIndex( cell02, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 2, rightEdge: 5 } );
 		} );
 	} );
@@ -545,4 +608,8 @@ function attribute( model, range, key, oldValue, newValue ) {
 	const operation = new AttributeOperation( range, key, oldValue, newValue, doc.version );
 
 	model.applyOperation( operation );
+}
+
+function getColumnIndexMap( editor ) {
+	return editor.plugins.get( 'TableColumnResizeEditing' )._columnIndexMap;
 }

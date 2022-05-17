@@ -16,8 +16,7 @@ import MouseEventsObserver from '@ckeditor/ckeditor5-table/src/tablemouse/mousee
 
 import {
 	upcastColgroupElement,
-	downcastTableColumnWidthsAttribute,
-	downcastCellColumnIndexAttribute
+	downcastTableColumnWidthsAttribute
 } from './converters';
 
 import {
@@ -33,7 +32,9 @@ import {
 	getNumberOfColumn,
 	isTableRendered,
 	normalizeColumnWidthsAttribute,
-	toPrecision
+	toPrecision,
+	insertColumnResizerElements,
+	removeColumnResizerElements
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -89,6 +90,24 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * @member {Object|null}
 		 */
 		this._resizingData = null;
+
+		/**
+		 * Internal map to store reference between a cell and its columnIndex. This information is required in postfixer to properly
+		 * recognize if the cell was inserted or deleted.
+		 *
+		 * @private
+		 * @member {Map}
+		 */
+		this._columnIndexMap = new Map();
+
+		/**
+		 * Internal map to store reference between a cell and operation that was performed on it (insert/remove). This is required
+		 * in order to add/remove resizers based on operation performed (which is done on 'render').
+		 *
+		 * @private
+		 * @member {Map}
+		 */
+		this._cellsModified = new Map();
 	}
 
 	/**
@@ -100,6 +119,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._setupPostFixer();
 		this._setupColumnResizers();
 		this._registerColgroupFixer();
+		this._registerResizerInserter();
 
 		const editor = this.editor;
 		const columnResizePlugin = editor.plugins.get( 'TableColumnResize' );
@@ -122,10 +142,6 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		schema.extend( 'table', {
 			allowAttributes: [ 'tableWidth', 'columnWidths' ]
-		} );
-
-		schema.extend( 'tableCell', {
-			allowAttributes: 'columnIndex'
 		} );
 	}
 
@@ -169,7 +185,6 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		conversion.for( 'upcast' ).add( upcastColgroupElement( editor ) );
 		conversion.for( 'downcast' ).add( downcastTableColumnWidthsAttribute() );
-		conversion.for( 'editingDowncast' ).add( downcastCellColumnIndexAttribute() );
 	}
 
 	/**
@@ -178,9 +193,10 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * It checks if the change from the differ concerns a table-related element or an attribute. If yes, then it is responsible for the
 	 * following:
 	 * (1) Depending on whether the `enableResize` event is not prevented...
-	 *    (1.1) ...removing the `columnWidths` attribute from the table and the `columnIndex` attributes from all the table cells, or
-	 *    (1.2) ...adding the `columnWidths` attribute to the table and the `columnIndex` attributes to all the table cells.
+	 *    (1.1) ...removing the `columnWidths` attribute from the table and all the cells from column index map, or
+	 *    (1.2) ...adding the `columnWidths` attribute to the table.
 	 * (2) Adjusting the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
+	 *    (2.1) Add all cells to column index map with its column index (to properly handle column insertion and deletion).
 	 * (3) Checking if columns have been added or removed...
 	 *    (3.1) ... in the middle of the table, or
 	 *    (3.2) ... at the table end.
@@ -191,6 +207,8 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	_setupPostFixer() {
 		const editor = this.editor;
+		const columnIndexMap = this._columnIndexMap;
+		const cellsModified = this._cellsModified;
 
 		editor.model.document.registerPostFixer( writer => {
 			const changes = editor.model.document.differ.getChanges();
@@ -198,14 +216,15 @@ export default class TableColumnResizeEditing extends Plugin {
 			let changed = false;
 
 			for ( const table of getAffectedTables( changes, editor.model ) ) {
-				// (1.1) Remove the `columnWidths` attribute from the table and the `columnIndex` attributes from all the table cells if the
+				// (1.1) Remove the `columnWidths` attribute from the table and all the cells from column index map if the
 				// manual width is not allowed for a given cell. There is no need to process the given table anymore.
 				if ( this.fire( 'disableResize', table ) ) {
 					if ( table.hasAttribute( 'columnWidths' ) ) {
 						writer.removeAttribute( 'columnWidths', table );
 
 						for ( const { cell } of new TableWalker( table ) ) {
-							writer.removeAttribute( 'columnIndex', cell );
+							columnIndexMap.delete( cell );
+							cellsModified.set( cell, 'remove' );
 						}
 
 						changed = true;
@@ -234,26 +253,27 @@ export default class TableColumnResizeEditing extends Plugin {
 				let isColumnDeletionHandled = false;
 
 				for ( const { cell, cellWidth: cellColumnWidth, column } of new TableWalker( table ) ) {
-					// (1.2) Add the `columnIndex` attribute to the all cells. Do not process the given cell anymore, because the
-					// `columnIndex` attribute is required to properly handle column insertion and deletion.
-					if ( !cell.hasAttribute( 'columnIndex' ) ) {
-						writer.setAttribute( 'columnIndex', column, cell );
+					// (2.1) Add all cells to column index map with its column index. Do not process the given cell anymore, because the
+					// `columnIndex` reference in the map is required to properly handle column insertion and deletion.
+					if ( !columnIndexMap.has( cell ) ) {
+						columnIndexMap.set( cell, column );
+						cellsModified.set( cell, 'insert' );
 
 						changed = true;
 
 						continue;
 					}
 
-					const previousColumn = cell.getAttribute( 'columnIndex' );
+					const previousColumn = columnIndexMap.get( cell );
 
 					const isColumnInsertion = previousColumn < column;
 					const isColumnDeletion = previousColumn > column;
 
-					// (3.1) Handle column insertion and update the `columnIndex` attributes in affected cells.
+					// (3.1) Handle column insertion and update the `columnIndex` references in column index map for affected cells.
 					if ( isColumnInsertion ) {
 						if ( !isColumnInsertionHandled ) {
 							const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
-							const isColumnSwapped = cell.previousSibling.getAttribute( 'columnIndex' ) === column;
+							const isColumnSwapped = columnIndexMap.get( cell.previousSibling ) === column;
 							const columnWidthsToInsert = isColumnSwapped ?
 								removedColumnWidths :
 								fillArray( column - previousColumn, columnMinWidthAsPercentage );
@@ -263,17 +283,18 @@ export default class TableColumnResizeEditing extends Plugin {
 							isColumnInsertionHandled = true;
 						}
 
-						writer.setAttribute( 'columnIndex', column, cell );
+						columnIndexMap.set( cell, column );
+						cellsModified.set( cell, 'insert' );
 
 						changed = true;
 					}
 
-					// (3.1) Handle column deletion and update the `columnIndex` attributes in affected cells.
+					// (3.1) Handle column deletion and update the `columnIndex` references in column index map for affected cells.
 					if ( isColumnDeletion ) {
 						if ( !isColumnDeletionHandled ) {
 							removedColumnWidths = columnWidths.splice( column, previousColumn - column );
 
-							const isColumnSwapped = cell.nextSibling && cell.nextSibling.getAttribute( 'columnIndex' ) === column;
+							const isColumnSwapped = cell.nextSibling && columnIndexMap.get( cell.nextSibling ) === column;
 
 							if ( !isColumnSwapped ) {
 								const columnToExpand = column > 0 ? column - 1 : column;
@@ -284,7 +305,8 @@ export default class TableColumnResizeEditing extends Plugin {
 							isColumnDeletionHandled = true;
 						}
 
-						writer.setAttribute( 'columnIndex', column, cell );
+						columnIndexMap.set( cell, column );
+						cellsModified.set( cell, 'insert' );
 
 						changed = true;
 					}
@@ -639,7 +661,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelLeftCell = editor.editing.mapper.toModelElement( viewLeftCell );
 		const modelTable = modelLeftCell.findAncestor( 'table' );
 
-		const leftColumnIndex = getColumnIndex( modelLeftCell ).rightEdge;
+		const leftColumnIndex = getColumnIndex( modelLeftCell, this._columnIndexMap ).rightEdge;
 		const lastColumnIndex = getNumberOfColumn( modelTable, editor ) - 1;
 
 		const isRightEdge = leftColumnIndex === lastColumnIndex;
@@ -703,5 +725,31 @@ export default class TableColumnResizeEditing extends Plugin {
 				editor.editing.reconvertItem( table );
 			}
 		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Registers a handler on 'render' to properly insert/remove resizers after all postfixers finished their job.
+	 *
+	 * @private
+	 */
+	_registerResizerInserter() {
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const cellsModified = this._cellsModified;
+
+		view.on( 'render', () => {
+			for ( const [ cell, operation ] of cellsModified.entries() ) {
+				const viewCell = editor.editing.mapper.toViewElement( cell );
+
+				view.change( viewWriter => {
+					if ( operation === 'insert' ) {
+						insertColumnResizerElements( viewWriter, viewCell );
+					} else if ( operation === 'remove' ) {
+						removeColumnResizerElements( viewWriter, viewCell );
+					}
+				} );
+			}
+			cellsModified.clear();
+		}, { priority: 'lowest' } );
 	}
 }

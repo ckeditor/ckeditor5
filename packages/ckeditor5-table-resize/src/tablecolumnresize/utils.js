@@ -143,8 +143,8 @@ export function getColumnMinWidthAsPercentage( table, editor ) {
  * @param {module:engine/model/element~Element} cell
  * @returns {Object}
  */
-export function getColumnIndex( cell ) {
-	const cellColumnIndex = cell.getAttribute( 'columnIndex' );
+export function getColumnIndex( cell, columnIndexMap ) {
+	const cellColumnIndex = columnIndexMap.get( cell );
 	const cellWidth = cell.getAttribute( 'colspan' ) || 1;
 
 	return {
@@ -325,4 +325,41 @@ function prepareColumnWidths( columnWidthsAttribute ) {
 	return columnWidths
 		.map( columnWidth => columnWidth === 'auto' ? widthForUninitializedColumn : columnWidth )
 		.map( columnWidth => toPrecision( columnWidth ) );
+}
+
+// Inserts column resizer element into a view cell.
+//
+// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
+// @param {module:engine/view/element~Element} viewCell View cell.
+export function insertColumnResizerElements( viewWriter, viewCell ) {
+	let viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
+		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
+
+	if ( viewTableColumnResizerElement ) {
+		return;
+	}
+
+	viewTableColumnResizerElement = viewWriter.createUIElement( 'div', {
+		class: 'table-column-resizer'
+	} );
+
+	viewWriter.insert(
+		viewWriter.createPositionAt( viewCell, 'end' ),
+		viewTableColumnResizerElement
+	);
+}
+
+// Removes column resizer element from a view cell.
+//
+// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
+// @param {module:engine/view/element~Element} viewCell View cell.
+export function removeColumnResizerElements( viewWriter, viewCell ) {
+	const viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
+		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
+
+	if ( !viewTableColumnResizerElement ) {
+		return;
+	}
+
+	viewWriter.remove( viewTableColumnResizerElement );
 }

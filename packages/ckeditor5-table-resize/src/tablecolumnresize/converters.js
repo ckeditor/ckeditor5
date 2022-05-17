@@ -78,27 +78,6 @@ export function downcastTableColumnWidthsAttribute() {
 	} );
 }
 
-/**
- * Returns a helper for converting a table cell `columnIndex` attribute to view column resize element.
- *
- * @returns {Function} Conversion helper.
- */
-export function downcastCellColumnIndexAttribute() {
-	return dispatcher => dispatcher.on( 'attribute:columnIndex:tableCell', ( evt, data, conversionApi ) => {
-		const viewWriter = conversionApi.writer;
-		const modelCell = data.item;
-		const viewCell = conversionApi.mapper.toViewElement( modelCell );
-
-		if ( data.attributeNewValue !== null ) {
-			if ( data.attributeNewValue !== data.attributeOldValue ) {
-				insertColumnResizerElements( viewWriter, viewCell );
-			}
-		} else {
-			removeColumnResizerElements( viewWriter, viewCell );
-		}
-	} );
-}
-
 // Inserts the `<colgroup>` with `<col>` elements as the first child in the view table. Each `<col>` element represents a single column
 // and it has the inline width style set, taken from the appropriate slot from the `columnWidths` table attribute.
 //
@@ -142,43 +121,4 @@ function removeColgroupElement( viewWriter, viewTable ) {
 	}
 
 	viewWriter.remove( viewColgroupElement );
-}
-
-// Inserts column resizer element into a view cell.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
-// @param {module:engine/view/element~Element} viewCell View cell.
-function insertColumnResizerElements( viewWriter, viewCell ) {
-	let viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
-		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
-
-	if ( viewTableColumnResizerElement ) {
-		return;
-	}
-
-	viewTableColumnResizerElement = viewWriter.createUIElement( 'div', {
-		class: 'table-column-resizer'
-	} );
-
-	viewWriter.insert(
-		viewWriter.createPositionAt( viewCell, 'end' ),
-		viewTableColumnResizerElement
-	);
-}
-
-// Removes column resizer element from a view cell.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
-// @param {module:engine/view/element~Element} viewCell View cell.
-function removeColumnResizerElements( viewWriter, viewCell ) {
-	const viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
-		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
-
-	if ( !viewTableColumnResizerElement ) {
-		return;
-	}
-
-	viewWriter.remove( viewTableColumnResizerElement );
 }
