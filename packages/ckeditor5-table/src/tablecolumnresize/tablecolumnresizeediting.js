@@ -10,9 +10,10 @@
 import { throttle } from 'lodash-es';
 import { global, DomEmitterMixin } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import TableWalker from '@ckeditor/ckeditor5-table/src/tablewalker';
-import MouseEventsObserver from '@ckeditor/ckeditor5-table/src/tablemouse/mouseeventsobserver';
+
+import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
+import TableEditing from '../tableediting';
+import TableWalker from '../tablewalker';
 
 import {
 	upcastColgroupElement,

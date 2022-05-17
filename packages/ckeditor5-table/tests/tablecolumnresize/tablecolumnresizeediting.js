@@ -7,20 +7,20 @@
 
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
 import TableColumnResize from '../../src/tablecolumnresize';
+import TableCaption from '../../src/tablecaption';
+import TableToolbar from '../../src/tabletoolbar';
+import Table from '../../src/table';
+import TableProperties from '../../src/tableproperties';
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
+import { modelTable } from '../_utils/utils';
 import {
 	getDomTable,
 	getModelTable,

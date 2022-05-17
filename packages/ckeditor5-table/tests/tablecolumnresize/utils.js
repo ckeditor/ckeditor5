@@ -9,9 +9,9 @@ import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Table from '@ckeditor/ckeditor5-table/src/table';
+import Table from '../../src/table';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
+import { modelTable } from '../_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';

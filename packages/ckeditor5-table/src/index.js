@@ -26,3 +26,5 @@ export { default as TableMouse } from './tablemouse';
 export { default as TableKeyboard } from './tablekeyboard';
 export { default as TableSelection } from './tableselection';
 export { default as TableUtils } from './tableutils';
+export { default as TableColumnResize } from './tablecolumnresize';
+export { default as TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting';

@@ -7,11 +7,11 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import TableSelection from '@ckeditor/ckeditor5-table/src/tableselection';
-import TableClipboard from '@ckeditor/ckeditor5-table/src/tableclipboard';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import Table from '../../src/table';
+import TableToolbar from '../../src/tabletoolbar';
+import TableSelection from '../../src/tableselection';
+import TableClipboard from '../../src/tableclipboard';
+import TableCaption from '../../src/tablecaption';
 
 import TableColumnResize from '../../src/tablecolumnresize';
 
