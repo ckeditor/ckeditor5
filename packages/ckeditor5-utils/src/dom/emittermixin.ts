@@ -58,7 +58,7 @@ const DomEmitterMixin: Emitter = extend( {}, EmitterMixin, {
 		emitter: BaseEmitter | Node | Window,
 		event: string,
 		callback: ( ev: EventInfo, ...args: any[] ) => void,
-		options: CallbackOptions & { readonly useCapture?: boolean; readonly usePassive?: boolean }
+		options: CallbackOptions & { readonly useCapture?: boolean; readonly usePassive?: boolean } = {}
 	): void {
 		// Check if emitter is an instance of DOM Node. If so, use corresponding ProxyEmitter (or create one if not existing).
 		if ( isNode( emitter ) || isWindow( emitter ) ) {

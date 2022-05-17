@@ -101,7 +101,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	// @if CK_DEBUG_POSITION // RectDrawer.clear();
 	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, { outlineWidth: '5px' }, 'Target' );
 
-	const viewportRect = getConstrainedViewportRect( viewportOffsetConfig );
+	const viewportRect = fitInViewport && getConstrainedViewportRect( viewportOffsetConfig ) || null;
 	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
 
 	// If there are no limits, just grab the very first position and be done with that drama.
@@ -110,7 +110,9 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	} else {
 		const limiterRect = limiter && new Rect( limiter ).getVisible();
 
-		// @if CK_DEBUG_POSITION // RectDrawer.draw( viewportRect, { outlineWidth: '5px' }, 'Viewport' );
+		// @if CK_DEBUG_POSITION // if ( viewportRect ) {
+		// @if CK_DEBUG_POSITION //		RectDrawer.draw( viewportRect, { outlineWidth: '5px' }, 'Viewport' );
+		// @if CK_DEBUG_POSITION // }
 
 		// @if CK_DEBUG_POSITION // if ( limiter ) {
 		// @if CK_DEBUG_POSITION // 	RectDrawer.draw( limiterRect, { outlineWidth: '5px', outlineColor: 'green' }, 'Visible limiter' );
@@ -284,7 +286,7 @@ export class Position {
 		options: {
 			readonly elementRect: Rect,
 			readonly targetRect: Rect,
-			readonly viewportRect: Rect,
+			readonly viewportRect: Rect | null,
 			readonly positionedElementAncestor?: HTMLElement | null
 			readonly limiterRect?: Rect
 		}
@@ -529,7 +531,7 @@ export interface Options {
  * @callback module:utils/dom/position~PositioningFunction
  * @param {module:utils/dom/rect~Rect} elementRect The rect of the element to be positioned.
  * @param {module:utils/dom/rect~Rect} targetRect The rect of the target the element (its rect) is relatively positioned to.
- * @param {module:utils/dom/rect~Rect} viewportRect The rect of the visual browser viewport.
+ * @param {module:utils/dom/rect~Rect|null} viewportRect The rect of the visual browser viewport.
  * @returns {Object|null} return When the function returns `null`, it will not be considered by
  * {@link module:utils/dom/position~getOptimalPosition}.
  * @returns {Number} return.top The `top` value of the element rect that would represent the position.
@@ -542,7 +544,7 @@ export interface Options {
  * This configuration may, for instance, let the user of {@link module:utils/dom/position~getOptimalPosition} know that this particular
  * position comes with a certain presentation.
  */
-export type PositioningFunction = ( elementRect: Rect, targetRect: Rect, viewportRect: Rect ) => ( {
+export type PositioningFunction = ( elementRect: Rect, targetRect: Rect, viewportRect: Rect | null ) => ( {
 	top: number;
 	left: number;
 	name: string;
