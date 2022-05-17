@@ -3,15 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, console, window, CKEditorInspector */
+/* global document, console, window */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import ImageResize from '../../src/imageresize';
+import ImageSizeAttributes from '../../src/imagesizeattributes';
 import ImageUpload from '../../src/imageupload';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
@@ -20,6 +22,8 @@ const commonConfig = {
 	plugins: [
 		ArticlePluginSet,
 		ImageResize,
+		Code,
+		ImageSizeAttributes,
 		ImageUpload,
 		Indent,
 		IndentBlock,
@@ -39,27 +43,9 @@ const commonConfig = {
 };
 
 ( async function initTest() {
-	window.basicEditor = await ClassicEditor
-		.create( document.querySelector( '#editor' ), commonConfig )
+	window.editor = await ClassicEditor
+		.create( document.querySelector( '#editor-width-height-attributes' ), commonConfig )
 		.catch( err => {
 			console.error( err.stack );
 		} );
-
-	window.fancyEditor = await ClassicEditor
-		.create( document.querySelector( '#fancy-editor' ), commonConfig )
-		.catch( err => {
-			console.error( err.stack );
-		} );
-
-	window.editorOtherUnits = await ClassicEditor
-		.create( document.querySelector( '#editor-other-units' ), commonConfig )
-		.catch( err => {
-			console.error( err.stack );
-		} );
-
-	CKEditorInspector.attach( {
-		basic: window.basicEditor,
-		fancy: window.fancyEditor,
-		'other units': window.editorOtherUnits
-	} );
 }() );
