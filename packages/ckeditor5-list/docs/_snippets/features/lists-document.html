@@ -13,7 +13,7 @@
 		<li>
 			<h4>Florence, Italy</h4>
 			<p>Florence, established in 59BC by Julius Caesar himself got its name from two rivers that surrounded the settlement. Thanks to centuries of history, the capital of Tuscany has plenty to offer to tourists hungry for sightseeing. Some of the most interesting places to visit include:</p>
-			<ul>
+			<ul style="list-style-type:square">
 				<li><a href="https://en.wikipedia.org/wiki/Piazza_della_Signoria">Piazza della Signoria</a></li>
 				<li><a href="https://en.wikipedia.org/wiki/Mercato_Centrale_(Florence)">Mercato Centrale and the San Lorenzo Market</a></li>
 				<li><a href="https://en.wikipedia.org/wiki/La_Specola">Museum of Zoology and Natural History "La Specola"</a></li>
@@ -49,19 +49,10 @@
 #snippet-lists-document + .ck-editor .ck-content {
 	font-family: 'Nunito', sans-serif;
 	padding: 40px;
-	position: relative;
-}
 
-#snippet-lists-document + .ck-editor .ck-content::before {
-	content: "";
-	position: absolute;
-	height: 250px;
-	top: 0px;
-	left: 0px;
-	width: 100%;
-	background: url(%BASE_PATH%/assets/img/document-lists-cover.jpg);
-	background-size: cover;
-	clip-path: polygon(0 0, 100% 0%, 100% 53%, 0% 100%);
+	background: linear-gradient(171.5deg, transparent 0%, transparent 250px, white 250px), url(../../assets/img/document-lists-cover.jpg);
+	background-size: contain;
+	background-repeat: no-repeat;
 }
 
 #snippet-lists-document + .ck-editor .ck-content > h2 {
