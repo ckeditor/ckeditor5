@@ -1062,23 +1062,25 @@ describe( 'TableColumnResizeEditing', () => {
 
 					assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="100%">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<table columnWidths="45.45%,54.55%" tableWidth="77.14%">' +
-										'<tableRow>' +
-											'<tableCell>' +
-												'<paragraph>foo</paragraph>' +
-											'</tableCell>' +
-											'<tableCell>' +
-												'<paragraph>bar</paragraph>' +
-											'</tableCell>' +
-										'</tableRow>' +
-									'</table>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>'
+					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
+						new RegExp(
+							'<table columnWidths="100%">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<table columnWidths="45\\.45%,54\\.55%" tableWidth="77\\.1[\\d]%">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>foo</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>bar</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+										'</table>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						)
 					);
 				} );
 
