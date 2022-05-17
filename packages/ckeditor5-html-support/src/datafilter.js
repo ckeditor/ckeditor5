@@ -623,9 +623,8 @@ function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
 		// We only want to consume attributes, so element can be still processed by other converters.
 		delete match.match.name;
 
-		if ( consumable.consume( viewElement, match.match ) ) {
-			consumedMatches.push( match );
-		}
+		consumable.consume( viewElement, match.match );
+		consumedMatches.push( match );
 	}
 
 	return consumedMatches;
@@ -645,7 +644,10 @@ function removeConsumedAttributes( consumable, viewElement, match ) {
 			continue;
 		}
 
-		for ( const value of attributes ) {
+		// Iterating from the end so removing items doesn't influence iteration
+		for ( let i = attributes.length; i > 0; i-- ) {
+			const value = attributes[ i - 1 ];
+
 			if ( !consumable.test( viewElement, ( { [ key ]: [ value ] } ) ) ) {
 				removeItemFromArray( attributes, value );
 			}

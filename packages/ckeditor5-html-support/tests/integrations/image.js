@@ -314,7 +314,7 @@ describe( 'ImageElementSupport', () => {
 			);
 		} );
 
-		it( 'should create a marker before GHS converts attributes', () => {
+		it( 'should create a marker before GHS converts attributes and convert custom attributes after', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /.*/,
 				attributes: true,
@@ -328,13 +328,13 @@ describe( 'ImageElementSupport', () => {
 			} );
 
 			editor.setData(
-				'<figure class="image" data-commented-end-after="foo:id" data-commented-start-before="foo:id">' +
+				'<figure class="image" data-commented-end-after="foo:id" data-commented-start-before="foo:id" foo="bar">' +
 					'<img src="/assets/sample.png" data-foo="foo">' +
                 '</figure>'
 			);
 
 			expect( editor.getData() ).to.deep.equal(
-				'<figure class="image">' +
+				'<figure class="image" foo="bar">' +
 					'<img src="/assets/sample.png" data-foo="foo">' +
                 '</figure>'
 			);

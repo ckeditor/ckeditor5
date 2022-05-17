@@ -754,7 +754,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			);
 
 			expect( editor.getData() ).to.equal(
-				'<figure class="media">' +
+				'<figure class="media" data-foo="foo">' +
 					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
 				'</figure>'
 			);
@@ -1273,7 +1273,9 @@ describe( 'MediaEmbedElementSupport', () => {
 			);
 
 			expect( editor.getData() ).to.equal(
-				'<figure class="media"><p><oembed data-foo="foo" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed></p></figure>'
+				'<figure class="media" data-foo="foo">' +
+					'<p><oembed data-foo="foo" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed></p>' +
+				'</figure>'
 			);
 
 			const marker = model.markers.get( 'commented:foo:id' );

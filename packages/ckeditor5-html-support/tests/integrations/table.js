@@ -1394,5 +1394,54 @@ describe( 'TableElementSupport', () => {
 			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
 			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
 		} );
+
+		it( 'should upcast custom attributes with marker', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /.*/,
+				attributes: true,
+				styles: true,
+				classes: true
+			} ] );
+
+			editor.conversion.for( 'upcast' ).dataToMarker( {
+				view: 'commented',
+				converterPriority: priorities.get( 'high' )
+			} );
+
+			editor.setData(
+				'<figure data-commented-end-after="foo:id" data-commented-start-before="foo:id" class="table" foo="bar">' +
+                    '<table>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td>1.1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                '</figure>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+                '<table htmlFigureAttributes="(1)">' +
+                    '<tableRow>' +
+                        '<tableCell>' +
+                            '<paragraph>1.1</paragraph>' +
+                        '</tableCell>' +
+                    '</tableRow>' +
+                '</table>',
+				attributes: {
+					1: {
+						attributes: {
+							foo: 'bar'
+						}
+					}
+				}
+			} );
+
+			const marker = model.markers.get( 'commented:foo:id' );
+
+			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+		} );
 	} );
 } );
