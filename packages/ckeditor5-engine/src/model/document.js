@@ -168,6 +168,10 @@ export default class Document {
 		return this.history.version;
 	}
 
+	set version( version ) {
+		this.history.version = version;
+	}
+
 	/**
 	 * The graveyard tree root. A document always has a graveyard root that stores removed nodes.
 	 *

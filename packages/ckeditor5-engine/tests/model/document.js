@@ -96,6 +96,20 @@ describe( 'Document', () => {
 		} );
 	} );
 
+	describe( '#version', () => {
+		it( 'should equal to document.history.version', () => {
+			model.document.history.version = 20;
+
+			expect( model.document.version ).to.equal( 20 );
+		} );
+
+		it( 'should set document.history.version', () => {
+			model.document.version = 20;
+
+			expect( model.document.history.version ).to.equal( 20 );
+		} );
+	} );
+
 	describe( 'getRootNames()', () => {
 		it( 'should return empty iterator if no roots exist', () => {
 			expect( count( doc.getRootNames() ) ).to.equal( 0 );
