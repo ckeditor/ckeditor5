@@ -250,3 +250,62 @@ export function dataViewToModelTextNewlinesInsertion() {
 		data.modelCursor = position;
 	};
 }
+
+/**
+ * A view-to-model converter that handles orphan text nodes (white spaces, new lines, etc.)
+ * that surround `<code>` inside `<pre>`.
+ *
+ * Sample input:
+ *
+ *		// White spaces
+ *		<pre> <code>foo()</code> </pre>
+ *
+ *		// White spaces
+ *		<pre>      <code>foo()</code>      </pre>
+ *
+ *		// White spaces
+ *		<pre>			<code>foo()</code>			</pre>
+ *
+ *		// New lines
+ *		<pre>
+ *			<code>foo()</code>
+ *		</pre>
+ *
+ *		// Redundant text
+ *		<pre>ABC<code>foo()</code>DEF</pre>
+ *
+ * Unified output for each case:
+ *
+ *		<codeBlock language="plaintext">foo()</codeBlock>
+ *
+ * @returns {Function} Returns a conversion callback.
+ */
+export function dataViewToModelOrphanNodeConsumer() {
+	return ( evt, data, { consumable } ) => {
+		const preElement = data.viewItem;
+
+		// Don't clean up nested pre elements. Their content should stay as it is, they are not upcasted
+		// to code blocks.
+		if ( preElement.findAncestor( 'pre' ) ) {
+			return;
+		}
+
+		const preChildren = Array.from( preElement.getChildren() );
+		const childCodeElement = preChildren.find( node => node.is( 'element', 'code' ) );
+
+		// <code>-less <pre>. It will not upcast to code block in the model, skipping.
+		if ( !childCodeElement ) {
+			return;
+		}
+
+		for ( const child of preChildren ) {
+			if ( child === childCodeElement || !child.is( '$text' ) ) {
+				continue;
+			}
+
+			// Consuming the orphan to remove it from the input data.
+			// Second argument in `consumable.consume` is discarded for text nodes.
+			consumable.consume( child, { name: true } );
+		}
+	};
+}

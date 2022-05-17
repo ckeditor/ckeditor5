@@ -4,9 +4,9 @@ category: frameworks
 order: 50
 ---
 
-{@snippet builds/frameworks/framework-integration}
+{@snippet installation/frameworks/framework-integration}
 
-# Rich text editor component for Vue.js 3+
+# Vue.js 3+ rich text editor component
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue" target="_blank" rel="noopener">

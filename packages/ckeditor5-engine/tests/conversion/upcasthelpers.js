@@ -333,7 +333,7 @@ describe( 'UpcastHelpers', () => {
 			);
 		} );
 
-		it( 'should consume element only when only is name specified', () => {
+		it( 'should allow to convert an attribute if an element was already consumed', () => {
 			upcastHelpers.elementToAttribute( {
 				model: 'bold',
 				view: { name: 'strong' }
@@ -352,6 +352,29 @@ describe( 'UpcastHelpers', () => {
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'strong', { class: 'foo' }, new ViewText( viewDocument, 'foo' ) ),
 				'<$text attribB="true" bold="true">foo</$text>'
+			);
+		} );
+
+		it( 'should consume an element even if only attributes were converted', () => {
+			upcastHelpers.elementToAttribute( {
+				model: 'attribA',
+				view: { name: 'strong', classes: 'foo' }
+			} );
+
+			upcastHelpers.elementToAttribute( {
+				model: 'attribB',
+				view: { name: 'strong', classes: 'bar' }
+			} );
+
+			// This one should not get converted because element itself is already consumed.
+			upcastHelpers.elementToAttribute( {
+				model: 'bold',
+				view: { name: 'strong' }
+			} );
+
+			expectResult(
+				new ViewAttributeElement( viewDocument, 'strong', { class: 'foo bar' }, new ViewText( viewDocument, 'foo' ) ),
+				'<$text attribA="true" attribB="true">foo</$text>'
 			);
 		} );
 
@@ -709,6 +732,30 @@ describe( 'UpcastHelpers', () => {
 					new ViewContainerElement( viewDocument, 'div', { class: 'shade' } )
 				),
 				'<div border="border"><div shade="shade"></div></div>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/11000
+		it( 'should not set an attribute on child nodes if parent was not converted', () => {
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
+			upcastHelpers.attributeToAttribute( { view: { key: 'foo' }, model: 'foo' } );
+
+			schema.extend( 'paragraph', {
+				allowAttributes: [ 'foo' ]
+			} );
+
+			schema.extend( '$text', {
+				allowAttributes: [ 'foo' ]
+			} );
+
+			const viewElement = viewParse(
+				'<div foo="foo-value">abc</div>' +
+				'<p foo="foo-value">def</p>'
+			);
+
+			expectResult(
+				viewElement,
+				'abc<paragraph foo="foo-value">def</paragraph>'
 			);
 		} );
 

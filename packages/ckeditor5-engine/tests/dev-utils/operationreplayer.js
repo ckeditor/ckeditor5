@@ -148,7 +148,7 @@ describe( 'OperationReplayer', () => {
 				.then( () => {
 					throw new Error( 'It should throw an error' );
 				}, err => {
-					expect( err.message ).to.match( /model-document-applyoperation-wrong-version/ );
+					expect( err.message ).to.match( /model-document-history-addoperation-incorrect-version/ );
 				} );
 		} );
 	} );

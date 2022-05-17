@@ -5,7 +5,7 @@
 
 import PasteFromOffice from '../src/pastefromoffice';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { createDataTransfer } from './_utils/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -13,22 +13,33 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
+import CodeBlockUI from '@ckeditor/ckeditor5-code-block/src/codeblockui';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+/* global document */
 
 describe( 'PasteFromOffice', () => {
 	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
-	let editor, pasteFromOffice, clipboard;
+	let editor, pasteFromOffice, clipboard, element;
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ PasteFromOffice, Paragraph ]
-		} )
-			.then( _editor => {
-				editor = _editor;
-				pasteFromOffice = editor.plugins.get( 'PasteFromOffice' );
-				clipboard = editor.plugins.get( 'ClipboardPipeline' );
-			} );
+	beforeEach( async () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ PasteFromOffice, Paragraph, CodeBlockEditing, CodeBlockUI ]
+		} );
+		pasteFromOffice = editor.plugins.get( 'PasteFromOffice' );
+		clipboard = editor.plugins.get( 'ClipboardPipeline' );
+	} );
+
+	afterEach( () => {
+		element.remove();
+
+		return editor.destroy();
 	} );
 
 	it( 'should be loaded', () => {
@@ -81,6 +92,20 @@ describe( 'PasteFromOffice', () => {
 
 			it( 'should process data with similar headers to MS Word', () => {
 				checkNotProcessedData( '<meta name=Generator content="Other">' );
+			} );
+
+			it( 'should process data for codeBlock', () => {
+				setModelData( editor.model, '<codeBlock language="plaintext">[]</codeBlock>' );
+
+				const data = setUpData( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' );
+				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
+
+				clipboard.fire( 'inputTransformation', data );
+
+				expect( data._isTransformedWithPasteFromOffice ).to.be.undefined;
+				expect( data._parsedData ).to.be.undefined;
+
+				sinon.assert.notCalled( getDataSpy );
 			} );
 
 			function checkNotProcessedData( inputString ) {

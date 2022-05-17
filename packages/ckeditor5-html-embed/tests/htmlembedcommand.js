@@ -253,5 +253,68 @@ describe( 'HtmlEmbedCommand', () => {
 				expect( model.document.getRoot().getChild( 0 ) ).to.equal( initialEmbedElement );
 			} );
 		} );
+
+		describe( 'inheriting attributes', () => {
+			beforeEach( () => {
+				const attributes = [ 'smart', 'pretty' ];
+
+				model.schema.extend( '$block', {
+					allowAttributes: attributes
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: attributes
+				} );
+
+				for ( const attribute of attributes ) {
+					model.schema.setAttributeProperties( attribute, {
+						copyOnReplace: true
+					} );
+				}
+			} );
+
+			it( 'should copy $block attributes on a html embed element when inserting it in $block', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true">[]</paragraph>' );
+
+				command.execute( '<b>Foo.</b>' );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<rawHtml pretty="true" smart="true" value="<b>Foo.</b>"></rawHtml>]'
+				);
+			} );
+
+			it( 'should copy attributes from first selected element', () => {
+				setModelData( model, '<paragraph pretty="true">[foo</paragraph><paragraph smart="true">bar]</paragraph>' );
+
+				command.execute( '<b>Foo.</b>' );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<rawHtml pretty="true" value="<b>Foo.</b>"></rawHtml>]'
+				);
+			} );
+
+			it( 'should only copy $block attributes marked with copyOnReplace', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true" nice="true">[]</paragraph>' );
+
+				command.execute( '<b>Foo.</b>' );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<rawHtml pretty="true" smart="true" value="<b>Foo.</b>"></rawHtml>]'
+				);
+			} );
+
+			it( 'should copy attributes from object when it is selected during insertion', () => {
+				model.schema.register( 'object', { isObject: true, inheritAllFrom: '$blockObject' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setModelData( model, '[<object pretty="true" smart="true"></object>]' );
+
+				command.execute( '<b>Foo.</b>' );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<rawHtml pretty="true" smart="true" value="<b>Foo.</b>"></rawHtml>]'
+				);
+			} );
+		} );
 	} );
 } );

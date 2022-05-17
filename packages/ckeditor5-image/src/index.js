@@ -30,3 +30,4 @@ export { default as ImageUpload } from './imageupload';
 export { default as ImageUploadEditing } from './imageupload/imageuploadediting';
 export { default as ImageUploadProgress } from './imageupload/imageuploadprogress';
 export { default as ImageUploadUI } from './imageupload/imageuploadui';
+export { default as PictureEditing } from './pictureediting';

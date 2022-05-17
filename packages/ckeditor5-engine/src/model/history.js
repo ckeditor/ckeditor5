@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+
 /**
  * @module engine/model/history
  */
@@ -18,8 +20,9 @@ export default class History {
 		/**
 		 * Operations added to the history.
 		 *
-		 * @protected
-		 * @member {Array.<module:engine/model/operation/operation~Operation>} module:engine/model/history~History#_operations
+		 * @private
+		 * @readonly
+		 * @type {Array.<module:engine/model/operation/operation~Operation>}
 		 */
 		this._operations = [];
 
@@ -39,43 +42,164 @@ export default class History {
 		 * Holds all undone operations.
 		 *
 		 * @private
-		 * @member {Set.<module:engine/model/operation/operation~Operation>} module:engine/model/history~History#_undoneOperations
+		 * @type {Set.<module:engine/model/operation/operation~Operation>}
 		 */
 		this._undoneOperations = new Set();
+
+		/**
+		 * A map that allows retrieving the operations fast based on the given base version.
+		 *
+		 * @private
+		 * @type Map.<Number,Number>
+		 */
+		this._baseVersionToOperationIndex = new Map();
+
+		/**
+		 * The history version.
+		 *
+		 * @private
+		 * @type {Number}
+		 */
+		this._version = 0;
+
+		/**
+		 * The gap pairs kept in the <from,to> format.
+		 *
+		 * Anytime the `history.version` is set to a version larger than `history.version + 1`,
+		 * a new <lastHistoryVersion, newHistoryVersion> entry is added to the map.
+		 *
+		 * @private
+		 * @type Map.<number,number>
+		 */
+		this._gaps = new Map();
 	}
 
 	/**
-	 * Adds an operation to the history.
+	 * The version of the last operation in the history.
+	 *
+	 * The history version is incremented automatically when a new operation is added to the history.
+	 * Setting the version manually should be done only in rare circumstances when a gap is planned
+	 * between history versions. When doing so, a gap will be created and the history will accept adding
+	 * an operation with base version equal to the new history version.
+	 *
+	 * @type {Number}
+	 */
+	get version() {
+		return this._version;
+	}
+
+	set version( version ) {
+		// Store a gap if there are some operations already in the history and the
+		// new version does not increment the latest one.
+		if ( this._operations.length && version > this._version + 1 ) {
+			this._gaps.set( this._version, version );
+		}
+
+		this._version = version;
+	}
+
+	/**
+	 * The last history operation.
+	 *
+	 * @readonly
+	 * @type {module:engine/model/operation/operation~Operation|undefined}
+	 */
+	get lastOperation() {
+		return this._operations[ this._operations.length - 1 ];
+	}
+
+	/**
+	 * Adds an operation to the history and increments the history version.
+	 *
+	 * The operation's base version should be equal to the history version. Otherwise an error is thrown.
 	 *
 	 * @param {module:engine/model/operation/operation~Operation} operation Operation to add.
 	 */
 	addOperation( operation ) {
-		if ( this._operations.includes( operation ) ) {
-			return;
+		if ( operation.baseVersion !== this.version ) {
+			/**
+			 * Only operations with matching versions can be added to the history.
+			 *
+			 * @error model-document-history-addoperation-incorrect-version
+			 * @param {Object} errorData The operation and the current document history version.
+			 */
+			throw new CKEditorError( 'model-document-history-addoperation-incorrect-version', this, {
+				operation,
+				historyVersion: this.version
+			} );
 		}
 
 		this._operations.push( operation );
+		this._version++;
+
+		this._baseVersionToOperationIndex.set( operation.baseVersion, this._operations.length - 1 );
 	}
 
 	/**
-	 * Returns operations added to the history.
+	 * Returns operations from the given range of operation base versions that were added to the history.
 	 *
-	 * @param {Number} [from=Number.NEGATIVE_INFINITY] Base version from which operations should be returned (inclusive).
-	 * Defaults to `Number.NEGATIVE_INFINITY`, which means that operations from the first one will be returned.
-	 * @param {Number} [to=Number.POSITIVE_INFINITY] Base version up to which operations should be returned (exclusive).
-	 * Defaults to `Number.POSITIVE_INFINITY` which means that operations up to the last one will be returned.
-	 * @returns {Array.<module:engine/model/operation/operation~Operation>} Operations added to the history.
+	 * Note that there may be gaps in operations base versions.
+	 *
+	 * @param {Number} [fromBaseVersion] Base version from which operations should be returned (inclusive).
+	 * @param {Number} [toBaseVersion] Base version up to which operations should be returned (exclusive).
+     * @returns {Array.<module:engine/model/operation/operation~Operation>} History operations for the given range, in chronological order.
 	 */
-	getOperations( from = Number.NEGATIVE_INFINITY, to = Number.POSITIVE_INFINITY ) {
-		const operations = [];
+	getOperations( fromBaseVersion, toBaseVersion = this.version ) {
+		// When there is no operation in the history, return an empty array.
+		// After that we can be sure that `firstOperation`, `lastOperation` are not nullish.
+		if ( !this._operations.length ) {
+			return [];
+		}
 
-		for ( const operation of this._operations ) {
-			if ( operation.baseVersion >= from && operation.baseVersion < to ) {
-				operations.push( operation );
+		const firstOperation = this._operations[ 0 ];
+
+		if ( fromBaseVersion === undefined ) {
+			fromBaseVersion = firstOperation.baseVersion;
+		}
+
+		// Change exclusive `toBaseVersion` to inclusive, so it will refer to the actual index.
+		// Thanks to that mapping from base versions to operation indexes are possible.
+		let inclusiveTo = toBaseVersion - 1;
+
+		// Check if "from" or "to" point to a gap between versions.
+		// If yes, then change the incorrect position to the proper side of the gap.
+		// Thanks to it, it will be possible to get index of the operation.
+		for ( const [ gapFrom, gapTo ] of this._gaps ) {
+			if ( fromBaseVersion > gapFrom && fromBaseVersion < gapTo ) {
+				fromBaseVersion = gapTo;
+			}
+
+			if ( inclusiveTo > gapFrom && inclusiveTo < gapTo ) {
+				inclusiveTo = gapFrom - 1;
 			}
 		}
 
-		return operations;
+		// If the whole range is outside of the operation versions, then return an empty array.
+		if ( inclusiveTo < firstOperation.baseVersion || fromBaseVersion > this.lastOperation.baseVersion ) {
+			return [];
+		}
+
+		let fromIndex = this._baseVersionToOperationIndex.get( fromBaseVersion );
+
+		// If the range starts before the first operation, then use the first operation as the range's start.
+		if ( fromIndex === undefined ) {
+			fromIndex = 0;
+		}
+
+		let toIndex = this._baseVersionToOperationIndex.get( inclusiveTo );
+
+		// If the range ends after the last operation, then use the last operation as the range's end.
+		if ( toIndex === undefined ) {
+			toIndex = this._operations.length - 1;
+		}
+
+		// Return the part of the history operations based on the calculated start index and end index.
+		return this._operations.slice(
+			fromIndex,
+
+			// The `toIndex` should be included in the returned operations, so add `1`.
+			toIndex + 1
+		);
 	}
 
 	/**
@@ -86,11 +210,13 @@ export default class History {
 	 * there is no such operation in history.
 	 */
 	getOperation( baseVersion ) {
-		for ( const operation of this._operations ) {
-			if ( operation.baseVersion == baseVersion ) {
-				return operation;
-			}
+		const operationIndex = this._baseVersionToOperationIndex.get( baseVersion );
+
+		if ( operationIndex === undefined ) {
+			return;
 		}
+
+		return this._operations[ operationIndex ];
 	}
 
 	/**
@@ -134,5 +260,17 @@ export default class History {
 	 */
 	getUndoneOperation( undoingOperation ) {
 		return this._undoPairs.get( undoingOperation );
+	}
+
+	/**
+	 * Resets the history of operations.
+	 */
+	reset() {
+		this._version = 0;
+		this._undoPairs = new Map();
+		this._operations = [];
+		this._undoneOperations = new Set();
+		this._gaps = new Map();
+		this._baseVersionToOperationIndex = new Map();
 	}
 }

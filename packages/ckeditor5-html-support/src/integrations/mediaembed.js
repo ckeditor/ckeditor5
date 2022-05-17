@@ -9,9 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import { setViewAttributes } from '../conversionutils.js';
 import DataFilter from '../datafilter';
 import DataSchema from '../dataschema';
+import { updateViewAttributes } from '../conversionutils.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:media-embed/mediaembed~MediaEmbed Media Embed} feature.
@@ -80,7 +80,7 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 		}
 
 		function preserveElementAttributes( viewElement, attributeName ) {
-			const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+			const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 			if ( viewAttributes ) {
 				conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
@@ -100,10 +100,11 @@ function modelToViewMediaAttributeConverter( mediaElementName ) {
 					return;
 				}
 
+				const { attributeOldValue, attributeNewValue } = data;
 				const containerElement = conversionApi.mapper.toViewElement( data.item );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
+				updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewElement );
 			} );
 		}
 	};

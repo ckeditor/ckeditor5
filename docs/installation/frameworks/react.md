@@ -4,9 +4,9 @@ category: frameworks
 order: 30
 ---
 
-{@snippet builds/frameworks/framework-integration}
+{@snippet installation/frameworks/framework-integration}
 
-# Rich text editor component for React
+# React rich text editor component
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">

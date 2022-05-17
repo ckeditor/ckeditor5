@@ -23,14 +23,6 @@ describe( 'EmptyElement', () => {
 		} );
 	} );
 
-	describe( 'constructor()', () => {
-		it( 'should have the default value for isAllowedInsideAttributeElement set to true', () => {
-			const el = new EmptyElement( document, 'span' );
-
-			expect( el.isAllowedInsideAttributeElement ).to.be.true;
-		} );
-	} );
-
 	describe( 'is()', () => {
 		let el;
 
