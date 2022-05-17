@@ -42,7 +42,7 @@ Put the caret anywhere inside the table to invoke the table toolbar. Then click 
 
 ### Table column resize
 
-The {@link module:table-resize/tablecolumnresize~TableColumnResize} plugin adds support for resizing tables and table columns.
+The {@link module:table/tablecolumnresize~TableColumnResize} plugin adds support for resizing tables and table columns.
 
 {@snippet features/table-column-resize}
 

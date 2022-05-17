@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table-resize/tablecolumnresize/constants
+ * @module table/tablecolumnresize/constants
  */
 
 /* istanbul ignore file */
