@@ -61,17 +61,9 @@ export default class ImageEditing extends Plugin {
 				},
 				model: {
 					key: 'srcset',
-					value: viewImage => {
-						const value = {
-							data: viewImage.getAttribute( 'srcset' )
-						};
-
-						if ( viewImage.hasAttribute( 'width' ) ) {
-							value.width = viewImage.getAttribute( 'width' );
-						}
-
-						return value;
-					}
+					value: viewImage => ( {
+						data: viewImage.getAttribute( 'srcset' )
+					} )
 				}
 			} );
 

@@ -20,6 +20,7 @@ import {
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
+import ImageSizeAttributes from '../imagesizeattributes';
 import {
 	getImgViewElementMatcher,
 	createBlockImageViewElement,
@@ -43,7 +44,7 @@ export default class ImageBlockEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing, ImageUtils, ClipboardPipeline ];
+		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ClipboardPipeline ];
 	}
 
 	/**

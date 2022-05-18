@@ -19,6 +19,7 @@ import {
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
+import ImageSizeAttributes from '../imagesizeattributes';
 import {
 	getImgViewElementMatcher,
 	createInlineImageViewElement,
@@ -42,7 +43,7 @@ export default class ImageInlineEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing, ImageUtils, ClipboardPipeline ];
+		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ClipboardPipeline ];
 	}
 
 	/**

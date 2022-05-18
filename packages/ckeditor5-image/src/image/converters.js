@@ -189,10 +189,6 @@ export function downcastSrcsetAttribute( imageUtils, imageType ) {
 			if ( srcset.data ) {
 				writer.removeAttribute( 'srcset', img );
 				writer.removeAttribute( 'sizes', img );
-
-				if ( srcset.width ) {
-					writer.removeAttribute( 'width', img );
-				}
 			}
 		} else {
 			const srcset = data.attributeNewValue;
@@ -201,10 +197,6 @@ export function downcastSrcsetAttribute( imageUtils, imageType ) {
 				writer.setAttribute( 'srcset', srcset.data, img );
 				// Always outputting `100vw`. See https://github.com/ckeditor/ckeditor5-image/issues/2.
 				writer.setAttribute( 'sizes', '100vw', img );
-
-				if ( srcset.width ) {
-					writer.setAttribute( 'width', srcset.width, img );
-				}
 			}
 		}
 	}
