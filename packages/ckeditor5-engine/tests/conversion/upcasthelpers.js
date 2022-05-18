@@ -735,6 +735,30 @@ describe( 'UpcastHelpers', () => {
 			);
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/11000
+		it( 'should not set an attribute on child nodes if parent was not converted', () => {
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
+			upcastHelpers.attributeToAttribute( { view: { key: 'foo' }, model: 'foo' } );
+
+			schema.extend( 'paragraph', {
+				allowAttributes: [ 'foo' ]
+			} );
+
+			schema.extend( '$text', {
+				allowAttributes: [ 'foo' ]
+			} );
+
+			const viewElement = viewParse(
+				'<div foo="foo-value">abc</div>' +
+				'<p foo="foo-value">def</p>'
+			);
+
+			expectResult(
+				viewElement,
+				'abc<paragraph foo="foo-value">def</paragraph>'
+			);
+		} );
+
 		// #9536.
 		describe( 'calling the `model.value()` callback', () => {
 			it( 'should not call the `model.view()` callback if the attribute was already consumed', () => {

@@ -29,8 +29,9 @@ export default class DocumentListStyleCommand extends Command {
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {String} defaultType The list type that will be used by default if the value was not specified during
 	 * the command execution.
+	 * @param {Array.<String>} [supportedTypes] The list of supported style types by this command.
 	 */
-	constructor( editor, defaultType ) {
+	constructor( editor, defaultType, supportedTypes ) {
 		super( editor );
 
 		/**
@@ -40,6 +41,14 @@ export default class DocumentListStyleCommand extends Command {
 		 * @member {String}
 		 */
 		this._defaultType = defaultType;
+
+		/**
+		 * The list of supported style types by this command.
+		 *
+		 * @private
+		 * @member {Array.<String>|undefined}
+		 */
+		this._supportedTypes = supportedTypes;
 	}
 
 	/**
@@ -78,6 +87,20 @@ export default class DocumentListStyleCommand extends Command {
 				writer.setAttribute( 'listStyle', options.type || this._defaultType, block );
 			}
 		} );
+	}
+
+	/**
+	 * Checks if the given style type is supported by this plugin.
+	 *
+	 * @param {String} value
+	 * @returns {Boolean}
+	 */
+	isStyleTypeSupported( value ) {
+		if ( !this._supportedTypes ) {
+			return true;
+		}
+
+		return this._supportedTypes.includes( value );
 	}
 
 	/**

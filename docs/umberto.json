@@ -6,6 +6,13 @@
 			"../scripts/docs/build-content-styles.js"
 		]
 	},
+	"reportIssueWidget": {
+		"enabled": true,
+		"issueUrl": "https://github.com/ckeditor/ckeditor5/issues/new?labels=squad%3Accx%2Ctype%3Adocs&template=7-docs-issue-community.yml",
+		"skipPages": [
+			"**/index.html"
+		]
+	},
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
 	"extraScripts": "assets/buildwarningbanner.js",
@@ -52,8 +59,8 @@
 		"features/image-upload/ckfinder.html": "features/images/image-upload/ckfinder.html",
 		"features/image-upload/base64-upload-adapter.html": "features/images/image-upload/base64-upload-adapter.html",
 		"features/image-upload/simple-upload-adapter.html": "features/images/image-upload/simple-upload-adapter.html",
-		"latest/features/lists.html": "latest/features/lists/lists.html",
-		"latest/features/todo-lists.html": "latest/features/lists/todo-lists.html",
+		"features/lists.html": "features/lists/lists.html",
+		"features/todo-lists.html": "features/lists/todo-lists.html",
 		"features/easy-video.html": "features/media-embed.html",
 		"features/iframe-embed.html": "features/media-embed.html",
 		"features/video.html": "features/media-embed.html",
@@ -116,6 +123,7 @@
 		"framework/guides/support/license-and-legal.html":"support/license-and-legal.html",
 		"framework/guides/support/getting-support.html":"support/getting-support.html",
 		"framework/guides/support/browser-compatibility.html":"support/browser-compatibility.html",
+		"framework/guides/support/error-codes.html": "support/error-codes.html",
 		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
 		"framework/guides/deep-dive/conversion/conversion-introduction.html": "framework/guides/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/conversion-extending-output.html": "framework/guides/deep-dive/conversion/intro.html",

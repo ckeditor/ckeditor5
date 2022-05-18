@@ -65,10 +65,14 @@ export default class ListProperties extends Plugin {
  */
 
 /**
- * When set, the list style feature will be enabled. It allows changing the `list-style-type` HTML attribute of the lists.
+ * When set, the list style feature will be enabled. It allows changing the `list-style-type` style or the `type` HTML attribute of a list.
+ *
+ * **Note**: Styling using the `type` HTML attribute is only available in
+ * {@link module:list/documentlistproperties~DocumentListProperties document list properties}
+ * ({@link module:list/listproperties~ListPropertiesStyleConfig learn more}).
  *
  * @default true
- * @member {Boolean} module:list/listproperties~ListPropertiesConfig#styles
+ * @member {Boolean|module:list/listproperties~ListPropertiesStyleConfig} module:list/listproperties~ListPropertiesConfig#styles
  */
 
 /**
@@ -98,4 +102,34 @@ export default class ListProperties extends Plugin {
  * Read more in {@link module:list/listproperties~ListPropertiesConfig}.
  *
  * @member {module:list/listproperties~ListPropertiesConfig} module:list/list~ListConfig#properties
+ */
+
+/**
+ * @interface ListPropertiesStyleConfig
+ */
+
+/**
+ * When set `true`, the list style feature will use the `type` attribute of `<ul>` and `<ol>` elements instead of the `list-style-type`
+ * style.
+ *
+ *		{
+ *			list: {
+ *				properties: {
+ *					styles: {
+ *						useAttribute: true
+ *					},
+ *
+ *					// ...
+ *				}
+ *			},
+ *
+ *			// ...
+ *		}
+ *
+ * **Note**: Due to limitations of HTML, the "Decimal with leading zero" style is impossible to set using the `type` attribute.
+ *
+ * **Note**: This configuration works only with {@link module:list/documentlistproperties~DocumentListProperties document list properties}.
+ *
+ * @default false
+ * @member {Boolean} module:list/listproperties~ListPropertiesStyleConfig#useAttribute
  */

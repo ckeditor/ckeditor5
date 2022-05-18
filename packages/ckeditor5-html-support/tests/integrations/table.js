@@ -880,6 +880,61 @@ describe( 'TableElementSupport', () => {
 		);
 	} );
 
+	// https://github.com/ckeditor/ckeditor5/issues/11000
+	it( 'should not strip allowed attributes from elements that are not directly upcasted (like <thead> or <tbody>) ' +
+		'if another upcast converter exists for all possible view elements', async () => {
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, function( editor ) {
+				editor.conversion.for( 'upcast' ).attributeToAttribute( {
+					view: 'align',
+					model: 'alignment'
+				} );
+			} ],
+			htmlSupport: {
+				allow: [
+					{
+						name: /^(figure|table|tbody|thead|tr|th|td)$/,
+						attributes: true
+					}
+				]
+			}
+		} );
+
+		editor.setData(
+			'<table>' +
+				'<thead align="right" dir="ltr" lang="en" valign="bottom">' +
+					'<tr>' +
+						'<th>Bar</th>' +
+					'</tr>' +
+				'</thead>' +
+				'<tbody align="right" dir="ltr" lang="en" valign="bottom">' +
+					'<tr align="right" valign="bottom">' +
+						'<td align="right" valign="bottom">Foo</td>' +
+					'</tr>' +
+				'</tbody>' +
+			'</table>'
+		);
+
+		expect( editor.getData() ).to.equalMarkup(
+			'<figure class="table">' +
+				'<table>' +
+					'<thead valign="bottom" lang="en" dir="ltr" align="right">' +
+						'<tr>' +
+							'<th>Bar</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody valign="bottom" lang="en" dir="ltr" align="right">' +
+						'<tr valign="bottom" align="right">' +
+							'<td valign="bottom" align="right">Foo</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		await editor.destroy();
+	} );
+
 	describe( 'TableCaption', () => {
 		// Sanity tests verifying if table caption is correctly handled by default converters.
 
