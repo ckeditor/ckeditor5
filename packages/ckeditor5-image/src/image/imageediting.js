@@ -57,13 +57,13 @@ export default class ImageEditing extends Plugin {
 			.attributeToAttribute( {
 				view: {
 					name: 'img',
-					key: 'srcset'
+					attributes: {
+						srcset: /.+/
+					}
 				},
 				model: {
 					key: 'srcset',
-					value: viewImage => ( {
-						data: viewImage.getAttribute( 'srcset' )
-					} )
+					value: viewImage => viewImage.getAttribute( 'srcset' )
 				}
 			} );
 

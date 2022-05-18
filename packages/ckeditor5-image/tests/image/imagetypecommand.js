@@ -186,14 +186,14 @@ describe( 'ImageTypeCommand', () => {
 			it( 'should convert inline image with srcset attribute to block image', () => {
 				setModelData( model,
 					`<paragraph>
-						[<imageInline src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageInline>]
+						[<imageInline src="${ imgSrc }" srcset="small.png 148w, big.png 1024w"></imageInline>]
 					</paragraph>`
 				);
 
 				blockCommand.execute();
 
 				expect( getModelData( model ) ).to.equal(
-					`[<imageBlock src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageBlock>]`
+					`[<imageBlock src="${ imgSrc }" srcset="small.png 148w, big.png 1024w"></imageBlock>]`
 				);
 			} );
 
@@ -423,14 +423,14 @@ describe( 'ImageTypeCommand', () => {
 
 			it( 'should convert block image with srcset attribute to inline image', () => {
 				setModelData( model,
-					`[<imageBlock src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageBlock>]`
+					`[<imageBlock src="${ imgSrc }" srcset="small.png 148w, big.png 1024w"></imageBlock>]`
 				);
 
 				inlineCommand.execute();
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>' +
-						`[<imageInline src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]` +
+						`[<imageInline src="${ imgSrc }" srcset="small.png 148w, big.png 1024w"></imageInline>]` +
 					'</paragraph>'
 				);
 			} );
