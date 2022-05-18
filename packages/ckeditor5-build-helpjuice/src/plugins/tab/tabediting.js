@@ -49,6 +49,11 @@ export default class TabEditing extends Plugin {
 			isLimit: true,
 			allowIn: "tab"
 		});
+		schema.register("tabDelete", {
+			isObject: true,
+			isLimit: true,
+			allowIn: "tab"
+		});
 	}
 
 	_defineConverters() {
@@ -104,7 +109,6 @@ export default class TabEditing extends Plugin {
 		conversion.for("editingDowncast").elementToElement({
 			model: "tabTitle",
 			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
 				const h2 = viewWriter.createEditableElement("h2", { class: "helpjuice-tab-title" });
 
 				return toWidgetEditable(h2, viewWriter);
@@ -161,8 +165,30 @@ export default class TabEditing extends Plugin {
 		conversion.for("editingDowncast").elementToElement({
 			model: "tabToggle",
 			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
 				const div = viewWriter.createEditableElement("div", { class: "helpjuice-tab-toggle", "data-action": "click->editor--toggle-element#toggle" });
+
+				return toWidget(div, viewWriter);
+			}
+		});
+
+		conversion.for("upcast").elementToElement({
+			model: "tabDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-tab-delete"
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "tabDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-tab-delete"
+			}
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "tabDelete",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-tab-delete" });
 
 				return toWidget(div, viewWriter);
 			}

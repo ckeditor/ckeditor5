@@ -202,6 +202,18 @@ HelpjuiceEditor
 					}
 				})
 			}
+
+			// DELETE CUSTOM ELEMENTS
+			if (modelElement.name == "accordionDelete"
+				|| modelElement.name == "tabDelete"
+				|| modelElement.name == "infoDelete"
+				|| modelElement.name == "successDelete"
+				|| modelElement.name == "warningDelete"
+				|| modelElement.name == "dangerDelete") {
+				editor.model.change(writer => {
+					writer.remove(modelElement.parent);
+				})
+			}
 		});
 	})
 	.catch(error => {

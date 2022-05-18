@@ -34,6 +34,12 @@ export default class DangerEditing extends Plugin {
 				return false;
 			}
 		});
+
+		schema.register("dangerDelete", {
+			isObject: true,
+			isLimit: true,
+			allowIn: "danger"
+		});
 	}
 
 	_defineConverters() {
@@ -92,6 +98,28 @@ export default class DangerEditing extends Plugin {
 				});
 
 				return toWidgetEditable(div, viewWriter);
+			}
+		});
+
+		conversion.for("upcast").elementToElement({
+			model: "dangerDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-callout-delete"
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "dangerDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-callout-delete"
+			}
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "dangerDelete",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-callout-delete" });
+				return toWidget(div, viewWriter);
 			}
 		});
 	}

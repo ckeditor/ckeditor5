@@ -19,6 +19,9 @@ export default class InsertInfoCommand extends Command {
 }
 
 function createInfoCallout(writer) {
+	const docFrag = writer.createDocumentFragment();
+
+	// CREATE INFO CALLOUT
 	const infoCallout = writer.createElement('info');
 	const infoCalloutBody = writer.createElement('infoBody');
 
@@ -28,9 +31,18 @@ function createInfoCallout(writer) {
 	const infoCalloutContent = writer.createElement('paragraph');
 	writer.insertText("Helpjuice Info Callout Body", infoCalloutContent);
 
+	const infoDelete = writer.createElement("infoDelete");
+
 	writer.append(infoCalloutTitle, infoCalloutBody);
 	writer.append(infoCalloutContent, infoCalloutBody);
 	writer.append(infoCalloutBody, infoCallout);
+	writer.append(infoDelete, infoCallout);
 
-	return infoCallout;
+	// CREATE EMPTY PARAGRAPH
+	const emptyParagraph = writer.createElement("paragraph");
+
+	writer.append(infoCallout, docFrag);
+	writer.append(emptyParagraph, docFrag);
+
+	return docFrag;
 }

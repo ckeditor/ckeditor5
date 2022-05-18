@@ -9,9 +9,44 @@
 	box-shadow: none!important;
 }
 
+.helpjuice-callout.ck-widget,
+.ck-blurred .helpjuice-callout.ck-widget {
+	outline: 3px solid #e1e1e1!important;
+}
+.helpjuice-callout.ck-widget:hover,
+.helpjuice-callout.success.ck-widget:hover,
+.helpjuice-callout.info.ck-widget:hover,
+.helpjuice-callout.warning.ck-widget:hover,
+.helpjuice-callout.danger.ck-widget:hover {
+	outline-color: #ffc83d!important;
+}
+
+.ck-focused .helpjuice-callout.ck-widget.ck-widget_selected,
+.ck-focused .helpjuice-callout.ck-widget.ck-widget_selected:hover,
+.ck-focused .helpjuice-callout.success.ck-widget.ck-widget_selected,
+.ck-focused .helpjuice-callout.success.ck-widget.ck-widget_selected:hover,
+.ck-focused .helpjuice-callout.info.ck-widget.ck-widget_selected,
+.ck-focused .helpjuice-callout.info.ck-widget.ck-widget_selected:hover,
+.ck-focused .helpjuice-callout.warning.ck-widget.ck-widget_selected,
+.ck-focused .helpjuice-callout.warning.ck-widget.ck-widget_selected:hover,
+.ck-focused .helpjuice-callout.danger.ck-widget.ck-widget_selected,
+.ck-focused .helpjuice-callout.danger.ck-widget.ck-widget_selected:hover {
+	outline-color: #1f89e5!important;
+}
+
+
+.helpjuice-callout-title, .helpjuice-callout-body {
+	background: #FFFFFF;
+	border-radius: 5px;
+}
+
 /* Success Callout */
 .helpjuice-callout.success {
 	background: #d4edda;
+}
+.helpjuice-callout.success.ck-widget,
+.ck-blurred .helpjuice-callout.success.ck-widget {
+	outline: 3px solid #155724!important;
 }
 .helpjuice-callout.success .helpjuice-callout-body {
 	background: #d4edda!important;
@@ -24,6 +59,10 @@
 .helpjuice-callout.info {
 	background: #cce5ff;
 }
+.helpjuice-callout.info.ck-widget,
+.ck-blurred .helpjuice-callout.info.ck-widget {
+	outline: 3px solid #004085!important;
+}
 .helpjuice-callout.info .helpjuice-callout-body {
 	background: #cce5ff!important;
 }
@@ -34,6 +73,10 @@
 /* Warning Callout */
 .helpjuice-callout.warning {
 	background: #fff3cd;
+}
+.helpjuice-callout.helpjuice-callout.warning.ck-widget,
+.ck-blurred .helpjuice-callout.helpjuice-callout.warning.ck-widget {
+	outline: 3px solid #856404!important;
 }
 .helpjuice-callout.warning .helpjuice-callout-body {
 	background: #fff3cd!important;
@@ -46,9 +89,46 @@
 .helpjuice-callout.danger {
 	background: #f8d7da;
 }
+.helpjuice-callout.danger.ck-widget,
+.ck-blurred .helpjuice-callout.danger.ck-widget {
+	outline: 3px solid #721c24!important;
+}
 .helpjuice-callout.danger .helpjuice-callout-body {
 	background: #f8d7da!important;
 }
 .helpjuice-callout.danger .helpjuice-callout-body h3:first-of-type {
 	color: #721c24;
+}
+
+/* Toggle button */
+.helpjuice-callout-delete {
+	position: absolute!important;
+	top: -10px;
+	right: -10px;
+	z-index: 10;
+	outline: none!important;
+	cursor: pointer;
+	width: 20px;
+	height: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #757575;
+	border-radius: 50%;
+}
+
+.helpjuice-callout-delete::before {
+	content: "\f00d";
+	font-family: "Font Awesome 6 Pro";
+	font-size: 12px;
+	display: block;
+	color: #FFFFFF;
+}
+
+.helpjuice-callout-delete:hover {
+	outline-color: none!important;
+}
+
+.helpjuice-callout-delete div {
+	display: none;
 }

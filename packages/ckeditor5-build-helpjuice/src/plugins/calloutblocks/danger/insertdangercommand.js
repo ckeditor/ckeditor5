@@ -3,8 +3,6 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 export default class InsertDangerCommand extends Command {
 	execute() {
 		this.editor.model.change(writer => {
-			// Insert <success> at the current selection position
-			// in a way that will result in creating a valid model structure.
 			this.editor.model.insertContent(createDangerCallout(writer));
 		});
 	}
@@ -19,6 +17,9 @@ export default class InsertDangerCommand extends Command {
 }
 
 function createDangerCallout(writer) {
+	const docFrag = writer.createDocumentFragment();
+
+	// CREATE DANGER CALLOUT
 	const dangerCallout = writer.createElement('danger');
 	const dangerCalloutBody = writer.createElement('dangerBody');
 
@@ -28,9 +29,18 @@ function createDangerCallout(writer) {
 	const dangerCalloutContent = writer.createElement('paragraph');
 	writer.insertText("Helpjuice Danger Callout Body", dangerCalloutContent);
 
+	const dangerDelete = writer.createElement("dangerDelete");
+
 	writer.append(dangerCalloutTitle, dangerCalloutBody);
 	writer.append(dangerCalloutContent, dangerCalloutBody);
 	writer.append(dangerCalloutBody, dangerCallout);
+	writer.append(dangerDelete, dangerCallout);
 
-	return dangerCallout;
+	// CREATE EMPTY PARAGRAPH
+	const emptyParagraph = writer.createElement("paragraph");
+
+	writer.append(dangerCallout, docFrag);
+	writer.append(emptyParagraph, docFrag);
+
+	return docFrag;
 }

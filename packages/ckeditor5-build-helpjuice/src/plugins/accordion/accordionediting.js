@@ -48,6 +48,11 @@ export default class AccordionEditing extends Plugin {
 			isLimit: true,
 			allowIn: "accordion"
 		});
+		schema.register("accordionDelete", {
+			isObject: true,
+			isLimit: true,
+			allowIn: "accordion"
+		});
 	}
 
 	_defineConverters() {
@@ -161,6 +166,28 @@ export default class AccordionEditing extends Plugin {
 			view: (modelElement, { writer: viewWriter }) => {
 				const div = viewWriter.createEditableElement("div", { class: "helpjuice-accordion-toggle", "data-action": "click->editor--toggle-element#toggle" });
 
+				return toWidget(div, viewWriter);
+			}
+		});
+
+		conversion.for("upcast").elementToElement({
+			model: "accordionDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-accordion-delete"
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "accordionDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-accordion-delete"
+			}
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "accordionDelete",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-accordion-delete" });
 				return toWidget(div, viewWriter);
 			}
 		});

@@ -98,3 +98,36 @@
 .helpjuice-tab-toggle div {
 	display: none;
 }
+
+/* Toggle button */
+.helpjuice-tab-delete {
+	position: absolute!important;
+	top: -10px;
+	right: -10px;
+	z-index: 10;
+	outline: none!important;
+	cursor: pointer;
+	width: 20px;
+	height: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #757575;
+	border-radius: 50%;
+}
+
+.helpjuice-tab-delete::before {
+	content: "\f00d";
+	font-family: "Font Awesome 6 Pro";
+	font-size: 12px;
+	display: block;
+	color: #FFFFFF;
+}
+
+.helpjuice-tab-delete:hover {
+	outline-color: none!important;
+}
+
+.helpjuice-tab-delete div {
+	display: none;
+}

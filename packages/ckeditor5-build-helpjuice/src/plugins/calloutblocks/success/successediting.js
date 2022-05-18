@@ -35,6 +35,12 @@ export default class SuccessEditing extends Plugin {
 				return false;
 			}
 		});
+
+		schema.register("successDelete", {
+			isObject: true,
+			isLimit: true,
+			allowIn: "success"
+		});
 	}
 
 	_defineConverters() {
@@ -85,10 +91,31 @@ export default class SuccessEditing extends Plugin {
 		conversion.for("editingDowncast").elementToElement({
 			model: "successBody",
 			view: (modelElement, { writer: viewWriter }) => {
-				// Note: You use a more specialized createEditableElement() method here.
 				const div = viewWriter.createEditableElement("div", { class: "helpjuice-callout-body" });
 
 				return toWidgetEditable(div, viewWriter);
+			}
+		});
+
+		conversion.for("upcast").elementToElement({
+			model: "successDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-callout-delete"
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "successDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-callout-delete"
+			}
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "successDelete",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-callout-delete" });
+				return toWidget(div, viewWriter);
 			}
 		});
 	}

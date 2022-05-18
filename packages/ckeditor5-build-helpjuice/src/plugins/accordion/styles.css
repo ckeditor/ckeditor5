@@ -98,3 +98,36 @@
 .helpjuice-accordion-toggle div {
 	display: none;
 }
+
+/* Toggle button */
+.helpjuice-accordion-delete {
+	position: absolute!important;
+	top: -10px;
+	right: -10px;
+	z-index: 10;
+	outline: none!important;
+	cursor: pointer;
+	width: 20px;
+	height: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #757575;
+	border-radius: 50%;
+}
+
+.helpjuice-accordion-delete::before {
+	content: "\f00d";
+	font-family: "Font Awesome 6 Pro";
+	font-size: 12px;
+	display: block;
+	color: #FFFFFF;
+}
+
+.helpjuice-accordion-delete:hover {
+	outline-color: none!important;
+}
+
+.helpjuice-accordion-delete div {
+	display: none;
+}

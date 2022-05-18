@@ -11,7 +11,6 @@ export default class WarningEditing extends Plugin {
 	init() {
 		this._defineSchema();
 		this._defineConverters();
-
 		this.editor.commands.add("insertWarning", new InsertWarningCommand(this.editor));
 	}
 
@@ -34,6 +33,12 @@ export default class WarningEditing extends Plugin {
 			if (context.endsWith("warningBody") && childDefinition.name == "warning") {
 				return false;
 			}
+		});
+
+		schema.register("warningDelete", {
+			isObject: true,
+			isLimit: true,
+			allowIn: "warning"
 		});
 	}
 
@@ -89,6 +94,28 @@ export default class WarningEditing extends Plugin {
 				const div = viewWriter.createEditableElement("div", { class: "helpjuice-callout-body" });
 
 				return toWidgetEditable(div, viewWriter);
+			}
+		});
+
+		conversion.for("upcast").elementToElement({
+			model: "warningDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-callout-delete"
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "warningDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-callout-delete"
+			}
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "warningDelete",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-callout-delete" });
+				return toWidget(div, viewWriter);
 			}
 		});
 	}

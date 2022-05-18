@@ -3,8 +3,6 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 export default class InsertWarningCommand extends Command {
 	execute() {
 		this.editor.model.change(writer => {
-			// Insert <success> at the current selection position
-			// in a way that will result in creating a valid model structure.
 			this.editor.model.insertContent(createWarningCallout(writer));
 		});
 	}
@@ -19,6 +17,9 @@ export default class InsertWarningCommand extends Command {
 }
 
 function createWarningCallout(writer) {
+	const docFrag = writer.createDocumentFragment();
+
+	// CREATE WARNING CALLOUT
 	const warningCallout = writer.createElement('warning');
 	const warningCalloutBody = writer.createElement('warningBody');
 
@@ -28,9 +29,18 @@ function createWarningCallout(writer) {
 	const warningCalloutContent = writer.createElement('paragraph');
 	writer.insertText("Helpjuice Warning Callout Body", warningCalloutContent);
 
+	const warningDelete = writer.createElement("warningDelete");
+
 	writer.append(warningCalloutTitle, warningCalloutBody);
 	writer.append(warningCalloutContent, warningCalloutBody);
 	writer.append(warningCalloutBody, warningCallout);
+	writer.append(warningDelete, warningCallout);
 
-	return warningCallout;
+	// CREATE EMPTY ELEMENT TO BE INSERTED AFTER THE ACCORDION
+	const emptyParagraph = writer.createElement("paragraph");
+
+	writer.append(warningCallout, docFrag);
+	writer.append(emptyParagraph, docFrag);
+
+	return docFrag;
 }

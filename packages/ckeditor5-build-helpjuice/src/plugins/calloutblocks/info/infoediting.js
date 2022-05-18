@@ -35,6 +35,12 @@ export default class InfoEditing extends Plugin {
 				return false;
 			}
 		});
+
+		schema.register("infoDelete", {
+			isObject: true,
+			isLimit: true,
+			allowIn: "info"
+		});
 	}
 
 	_defineConverters() {
@@ -87,6 +93,28 @@ export default class InfoEditing extends Plugin {
 			view: (modelElement, { writer: viewWriter }) => {
 				const div = viewWriter.createEditableElement("div", { class: "helpjuice-callout-body" });
 				return toWidgetEditable(div, viewWriter);
+			}
+		});
+
+		conversion.for("upcast").elementToElement({
+			model: "infoDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-callout-delete"
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "infoDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-callout-delete"
+			}
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "infoDelete",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-callout-delete" });
+				return toWidget(div, viewWriter);
 			}
 		});
 	}

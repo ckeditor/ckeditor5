@@ -3,8 +3,6 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 export default class InsertSuccessCommand extends Command {
 	execute() {
 		this.editor.model.change(writer => {
-			// Insert <success> at the current selection position
-			// in a way that will result in creating a valid model structure.
 			this.editor.model.insertContent(createSuccessCallout(writer));
 		});
 	}
@@ -19,6 +17,9 @@ export default class InsertSuccessCommand extends Command {
 }
 
 function createSuccessCallout(writer) {
+	const docFrag = writer.createDocumentFragment()
+
+	// CREATE SUCCESS CALLOUT
 	const successCallout = writer.createElement('success');
 	const successCalloutBody = writer.createElement('successBody');
 
@@ -28,9 +29,18 @@ function createSuccessCallout(writer) {
 	const successCalloutContent = writer.createElement('paragraph');
 	writer.insertText("Helpjuice Success Callout Body", successCalloutContent);
 
+	const successDelete = writer.createElement("successDelete");
+
 	writer.append(successCalloutTitle, successCalloutBody);
 	writer.append(successCalloutContent, successCalloutBody);
 	writer.append(successCalloutBody, successCallout);
+	writer.append(successDelete, successCallout);
 
-	return successCallout;
+	// CREATE EMPTY ELEMENT TO BE INSERTED AFTER THE ACCORDION
+	const emptyParagraph = writer.createElement("paragraph");
+
+	writer.append(successCallout, docFrag);
+	writer.append(emptyParagraph, docFrag);
+
+	return docFrag;
 }

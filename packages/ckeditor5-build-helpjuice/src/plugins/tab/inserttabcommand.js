@@ -3,8 +3,6 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 export default class InsertTabCommand extends Command {
 	execute() {
 		this.editor.model.change(writer => {
-			// Insert <tab> at the current selection position
-			// in a way that will result in creating a valid model structure.
 			this.editor.model.insertContent(createTab(writer));
 		});
 	}
@@ -19,6 +17,8 @@ export default class InsertTabCommand extends Command {
 }
 
 function createTab(writer) {
+	const docFrag = writer.createDocumentFragment();
+	// CREATE TAB
 	const tab = writer.createElement('tab');
 	writer.setAttribute("data-controller", "editor--toggle-element", tab);
 
@@ -32,10 +32,18 @@ function createTab(writer) {
 	writer.append(tabBodyContent, tabBody);
 
 	const tabToggle = writer.createElement('tabToggle');
+	const tabDelete = writer.createElement('tabDelete');
 
 	writer.append(tabTitle, tab);
 	writer.append(tabBody, tab);
 	writer.append(tabToggle, tab);
+	writer.append(tabDelete, tab);
 
-	return tab;
+	// CREATE EMPTY PARAGRAPH
+	const emptyParagraph = writer.createElement("paragraph")
+
+	writer.append(tab, docFrag);
+	writer.append(emptyParagraph, docFrag);
+
+	return docFrag;
 }
