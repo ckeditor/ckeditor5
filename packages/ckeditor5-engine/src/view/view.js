@@ -181,7 +181,7 @@ export default class View {
 		this._writer = new DowncastWriter( this.document );
 
 		// Add default observers.
-		this.addObserver( MutationObserver );
+		// this.addObserver( MutationObserver );
 		this.addObserver( SelectionObserver );
 		this.addObserver( FocusObserver );
 		this.addObserver( KeyObserver );

@@ -22,7 +22,10 @@ const TYPING_INPUT_TYPES = [
 
 	// This one is used by Safari when typing accented letter (Mac).
 	// This one is used by Safari when accepting spell check suggestions from the autocorrection pop-up (Mac).
-	'insertReplacementText'
+	'insertReplacementText',
+
+	// TODO only when isComposing?
+	'insertCompositionText'
 ];
 
 /**

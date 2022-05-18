@@ -160,6 +160,15 @@ export default class SelectionObserver extends Observer {
 	}
 
 	/**
+	 * TODO
+	 */
+	flush( domDocument ) {
+		// TODO think about using isComposing to trigger it
+		console.log( 'SelectionObserver flush' );
+		this._handleSelectionChange( null, domDocument );
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	destroy() {
@@ -190,7 +199,7 @@ export default class SelectionObserver extends Observer {
 		}
 
 		// Ensure the mutation event will be before selection event on all browsers.
-		this.mutationObserver.flush();
+		// this.mutationObserver.flush();
 
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 

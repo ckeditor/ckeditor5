@@ -51,6 +51,7 @@ export default class InputObserver extends DomEventObserver {
 			// Future proof: in case of multi-range fake selections being possible.
 			targetRanges = [ ...viewDocument.selection.getRanges() ];
 		} else {
+			console.log( 'input observer', Array.from( domTargetRanges ), domEvent.target.ownerDocument.defaultView.getSelection().getRangeAt( 0 ) );
 			if ( !domTargetRanges.length ) {
 				const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
 

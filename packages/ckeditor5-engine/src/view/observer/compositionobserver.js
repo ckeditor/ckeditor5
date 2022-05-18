@@ -8,7 +8,7 @@
  */
 
 import DomEventObserver from './domeventobserver';
-import DomEventData from './domeventdata';
+import SelectionObserver from './selectionobserver';
 
 /**
  * {@link module:engine/view/document~Document#event:compositionstart Compositionstart},
@@ -26,52 +26,56 @@ export default class CompositionObserver extends DomEventObserver {
 		this.domEventType = [ 'compositionstart', 'compositionupdate', 'compositionend' ];
 		const document = this.document;
 
+		const selectionObserver = view.getObserver( SelectionObserver );
+
 		document.on( 'compositionstart', () => {
 			document.isComposing = true;
 		} );
 
 		document.on( 'compositionend', ( evt, { domEvent } ) => {
-			// TODO maybe this should be after 'insertText'
-			document.isComposing = false;
-
 			const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
 			const firstDomRange = domSelection.getRangeAt( 0 );
 
-			console.log( 'firstDomRange', firstDomRange );
+			console.log( 'compositionend firstDomRange', firstDomRange, view.domConverter.domSelectionToView( domSelection ).getFirstRange() );
+
+			selectionObserver.flush( domEvent.target.ownerDocument );
+
+			document.isComposing = false;
 
 			// In case of aborted composition.
 			if ( !domEvent.data ) {
 				return;
 			}
 
-			console.log( '[CompositionObserver] insertText', {
-				text: domEvent.data,
-				selection: document.selection
-			} );
+			// console.log( '[CompositionObserver] insertText', {
+			// 	text: domEvent.data,
+			// 	selection: document.selection
+			// } );
 
 			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
-			document.fire( 'insertText', new DomEventData( document, domEvent, {
-				text: domEvent.data,
-				selection: document.selection
-			} ) );
+			// document.fire( 'insertText', new DomEventData( document, domEvent, {
+			// 	text: domEvent.data,
+			// 	selection: document.selection
+			// } ) );
 		} );
 
 		document.on( 'compositionupdate', ( evt, { domEvent } ) => {
-			console.log( 'compositionupdate', domEvent );
 			const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
 			const firstDomRange = domSelection.getRangeAt( 0 );
+
+			console.log( 'compositionupdate firstDomRange', firstDomRange, view.domConverter.domSelectionToView( domSelection ).getFirstRange() );
 
 			if ( domSelection.isCollapsed ) {
 				console.log( 'compositionupdate in collapsed selection: aborting' );
 				return;
 			}
 
-			console.log( 'getFirstRange', view.domConverter.domSelectionToView( domSelection ).getFirstRange() );
+			// console.log( 'getFirstRange', view.domConverter.domSelectionToView( domSelection ).getFirstRange() );
 
-			document.fire( 'insertText', new DomEventData( document, domEvent, {
-				text: domEvent.data,
-				selection: view.domConverter.domSelectionToView( domSelection )
-			} ) );
+			// document.fire( 'insertText', new DomEventData( document, domEvent, {
+			// 	text: domEvent.data,
+			// 	selection: view.domConverter.domSelectionToView( domSelection )
+			// } ) );
 		} );
 	}
 

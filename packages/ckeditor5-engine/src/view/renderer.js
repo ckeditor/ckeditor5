@@ -260,11 +260,13 @@ export default class Renderer {
 		}
 
 		for ( const element of this.markedChildren ) {
+			console.log( 'renderer update children', element );
 			this._updateChildren( element, { inlineFillerPosition } );
 		}
 
 		for ( const node of this.markedTexts ) {
 			if ( !this.markedChildren.has( node.parent ) && this.domConverter.mapViewToDom( node.parent ) ) {
+				console.log( 'renderer update text', node );
 				this._updateText( node, { inlineFillerPosition } );
 			}
 		}
