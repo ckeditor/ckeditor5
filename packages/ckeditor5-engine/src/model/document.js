@@ -153,15 +153,14 @@ export default class Document {
 	}
 
 	/**
-     * The document version. Every applied operation increases the version number. It is used to
-     * ensure that operations are applied on a proper document version.
-     *
-     * This property is equal to the {@link module:engine/model/history~History#version `model.Document#history#version`}.
-     *
-     * If the {@link module:engine/model/operation/operation~Operation#baseVersion base version} does not match the document version,
-     * a {@link module:utils/ckeditorerror~CKEditorError model-document-applyoperation-wrong-version} error is thrown.
+	 * The document version. Every applied operation increases the version number. It is used to
+	 * ensure that operations are applied on a proper document version.
 	 *
-	 * @readonly
+	 * This property is equal to {@link module:engine/model/history~History#version `model.Document#history#version`}.
+	 *
+	 * If the {@link module:engine/model/operation/operation~Operation#baseVersion base version} does not match the document version,
+	 * a {@link module:utils/ckeditorerror~CKEditorError model-document-applyoperation-wrong-version} error is thrown.
+	 *
 	 * @type {Number}
 	 */
 	get version() {
