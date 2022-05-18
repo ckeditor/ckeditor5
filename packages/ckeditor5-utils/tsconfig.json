@@ -8,6 +8,7 @@
     "strict": true,
     "module": "es6",
     "target": "es2017",
+    "sourceMap": true,
     "allowJs": true,
     "moduleResolution": "node"
   }
