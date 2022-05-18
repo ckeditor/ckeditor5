@@ -26,7 +26,11 @@ export default class GlossaryEditing extends Plugin {
 				classes: 'hj-glossary-item',
 				attributes: {
 					'data-id': true,
-					'data-definition': true
+					'data-definition': true,
+					'data-upvotes': true,
+					'data-downvotes': true,
+					'data-user-name': true,
+					'data-user-id': true
 				}
 			},
 			model: {
@@ -34,7 +38,11 @@ export default class GlossaryEditing extends Plugin {
 				value: viewItem => {
 					const glossaryAttribute = editor.plugins.get('Glossary').toGlossaryAttribute(viewItem, {
 						id: viewItem.getAttribute('data-id'),
-						definition: viewItem.getAttribute('data-definition')
+						definition: viewItem.getAttribute('data-definition'),
+						upvotes: viewItem.getAttribute('data-upvotes'),
+						downvotes: viewItem.getAttribute('data-downvotes'),
+						userid: viewItem.getAttribute('data-user-id'),
+						username: viewItem.getAttribute('data-user-name')
 					});
 
 					return glossaryAttribute;
@@ -54,7 +62,11 @@ export default class GlossaryEditing extends Plugin {
 				return writer.createAttributeElement('span', {
 					class: 'hj-glossary-item',
 					'data-id': modelAttributeValue.id,
-					'data-definition': modelAttributeValue.definition
+					'data-definition': modelAttributeValue.definition,
+					'data-upvotes': modelAttributeValue.upvotes,
+					'data-downvotes': modelAttributeValue.downvotes,
+					'data-user-id': modelAttributeValue.userid,
+					'data-user-name': modelAttributeValue.username
 				});
 			},
 			converterPriority: 'high'

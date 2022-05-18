@@ -27,6 +27,20 @@ function createDecisionTreeTabContent(writer, id) {
 	return decisionTreeTabContent;
 }
 
+function findAllEditorTextNodes(writer, root) {
+	const nodes = [];
+	const range = writer.createRangeIn(root);
+
+	for (const value of range.getWalker({ ignoreElementEnd: true })) {
+		const node = value.item;
+		if (node.textNode) {
+			nodes.push(node);
+		}
+	}
+
+	return nodes;
+};
+
 const findNodes = function(writer, type, root) {
 	const nodes = [];
 	const range = writer.createRangeIn(root);

@@ -40,7 +40,7 @@ export default class GlossaryUI extends Plugin {
 					glossaryModal.style.top = position.top + 20 + "px";
 					glossaryModal.style.left = position.left - 165 + position.width/2 + "px";
 					// SET TERM EXPRESSION
-					glossaryTermExpression.value = selection;
+					glossaryTermExpression.value = selection.trim();
 					glossaryTermDefinition.value = "";
 					// WE NEED TO USE SET TIMEOUT IN ORDER TO FOCUS TEXTAREA
 					setTimeout(() => {
