@@ -8,7 +8,7 @@
 ClassicEditor
 	.create( document.querySelector( '#snippet-table-column-resize' ), {
 		extraPlugins: [
-			CKEditorPlugins.TableColumnResize, CKEditorPlugins.TableProperties, CKEditorPlugins.TableCaption
+			CKEditorPlugins.TableColumnResize, CKEditorPlugins.TableProperties, CKEditorPlugins.TableCaption, CKEditorPlugins.Superscript
 		],
 		table: {
 			contentToolbar: [ 'toggleTableCaption', 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties' ]
