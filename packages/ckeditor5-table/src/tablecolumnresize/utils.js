@@ -218,7 +218,7 @@ export function toPrecision( value ) {
 
 /**
  * Clamps the number within the inclusive lower (min) and upper (max) bounds. Returned number is rounded using the
- * {@link #toPrecision `toPrecision()`} function.
+ * {@link ~toPrecision `toPrecision()`} function.
  *
  * @param {Number} number
  * @param {Number} min
