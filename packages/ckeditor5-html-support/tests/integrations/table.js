@@ -48,69 +48,70 @@ describe( 'TableElementSupport', () => {
 		} ] );
 
 		const expectedHtml =
-         '<figure class="table" data-figure="figure">' +
-             '<table data-table="table">' +
-                 '<thead data-thead="thead">' +
-                     '<tr data-tr="tr">' +
-                         '<th data-th="th">1</th>' +
-                         '<th data-th="th">2</th>' +
-                         '<th data-th="th">3</th>' +
-                     '</tr>' +
-                 '</thead>' +
-                 '<tbody data-tbody="tbody">' +
-                     '<tr data-tr="tr">' +
-                         '<td data-td="td">1.1</td>' +
-                         '<td data-td="td">1.2</td>' +
-                         '<td data-td="td">1.3</td>' +
-                     '</tr>' +
-                     '<tr data-tr="tr">' +
-                         '<td data-td="td">2.1</td>' +
-                         '<td data-td="td">2.2</td>' +
-                         '<td data-td="td">2.3</td>' +
-                     '</tr>' +
-                 '</tbody>' +
-             '</table>' +
-         '</figure>';
+			'<figure class="table" data-figure="figure">' +
+				'<table data-table="table">' +
+					'<thead data-thead="thead">' +
+						'<tr data-tr="tr">' +
+							'<th data-th="th">1</th>' +
+							'<th data-th="th">2</th>' +
+							'<th data-th="th">3</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody data-tbody="tbody">' +
+						'<tr data-tr="tr">' +
+							'<td data-td="td">1.1</td>' +
+							'<td data-td="td">1.2</td>' +
+							'<td data-td="td">1.3</td>' +
+						'</tr>' +
+						'<tr data-tr="tr">' +
+							'<td data-td="td">2.1</td>' +
+							'<td data-td="td">2.2</td>' +
+							'<td data-td="td">2.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>';
 
 		editor.setData( expectedHtml );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-             '<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
-                 '<tableRow htmlAttributes="(5)">' +
-                     '<tableCell htmlAttributes="(6)">' +
-                         '<paragraph>1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(7)">' +
-                         '<paragraph>2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(8)">' +
-                         '<paragraph>3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow htmlAttributes="(9)">' +
-                     '<tableCell htmlAttributes="(10)">' +
-                         '<paragraph>1.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(11)">' +
-                         '<paragraph>1.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(12)">' +
-                         '<paragraph>1.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow htmlAttributes="(13)">' +
-                     '<tableCell htmlAttributes="(14)">' +
-                         '<paragraph>2.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(15)">' +
-                         '<paragraph>2.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(16)">' +
-                         '<paragraph>2.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-             '</table>',
+				'<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" ' +
+					'htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
+					'<tableRow htmlAttributes="(5)">' +
+						'<tableCell htmlAttributes="(6)">' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(7)">' +
+							'<paragraph>2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(8)">' +
+							'<paragraph>3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow htmlAttributes="(9)">' +
+						'<tableCell htmlAttributes="(10)">' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(11)">' +
+							'<paragraph>1.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(12)">' +
+							'<paragraph>1.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow htmlAttributes="(13)">' +
+						'<tableCell htmlAttributes="(14)">' +
+							'<paragraph>2.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(15)">' +
+							'<paragraph>2.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(16)">' +
+							'<paragraph>2.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
 			attributes: {
 				1: {
 					attributes: {
@@ -205,69 +206,70 @@ describe( 'TableElementSupport', () => {
 		} ] );
 
 		const expectedHtml =
-         '<figure class="table foobar">' +
-             '<table class="foobar">' +
-                 '<thead class="foobar">' +
-                     '<tr class="foobar">' +
-                         '<th class="foobar">1</th>' +
-                         '<th class="foobar">2</th>' +
-                         '<th class="foobar">3</th>' +
-                     '</tr>' +
-                 '</thead>' +
-                 '<tbody class="foobar">' +
-                     '<tr class="foobar">' +
-                         '<td class="foobar">1.1</td>' +
-                         '<td class="foobar">1.2</td>' +
-                         '<td class="foobar">1.3</td>' +
-                     '</tr>' +
-                     '<tr class="foobar">' +
-                         '<td class="foobar">2.1</td>' +
-                         '<td class="foobar">2.2</td>' +
-                         '<td class="foobar">2.3</td>' +
-                     '</tr>' +
-                 '</tbody>' +
-             '</table>' +
-         '</figure>';
+			'<figure class="table foobar">' +
+				'<table class="foobar">' +
+					'<thead class="foobar">' +
+						'<tr class="foobar">' +
+							'<th class="foobar">1</th>' +
+							'<th class="foobar">2</th>' +
+							'<th class="foobar">3</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody class="foobar">' +
+						'<tr class="foobar">' +
+							'<td class="foobar">1.1</td>' +
+							'<td class="foobar">1.2</td>' +
+							'<td class="foobar">1.3</td>' +
+						'</tr>' +
+						'<tr class="foobar">' +
+							'<td class="foobar">2.1</td>' +
+							'<td class="foobar">2.2</td>' +
+							'<td class="foobar">2.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>';
 
 		editor.setData( expectedHtml );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-             '<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
-                 '<tableRow htmlAttributes="(5)">' +
-                     '<tableCell htmlAttributes="(6)">' +
-                         '<paragraph>1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(7)">' +
-                         '<paragraph>2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(8)">' +
-                         '<paragraph>3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow htmlAttributes="(9)">' +
-                     '<tableCell htmlAttributes="(10)">' +
-                         '<paragraph>1.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(11)">' +
-                         '<paragraph>1.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(12)">' +
-                         '<paragraph>1.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow htmlAttributes="(13)">' +
-                     '<tableCell htmlAttributes="(14)">' +
-                         '<paragraph>2.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(15)">' +
-                         '<paragraph>2.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(16)">' +
-                         '<paragraph>2.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-             '</table>',
+				'<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" ' +
+					'htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
+					'<tableRow htmlAttributes="(5)">' +
+						'<tableCell htmlAttributes="(6)">' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(7)">' +
+							'<paragraph>2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(8)">' +
+							'<paragraph>3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow htmlAttributes="(9)">' +
+						'<tableCell htmlAttributes="(10)">' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(11)">' +
+							'<paragraph>1.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(12)">' +
+							'<paragraph>1.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow htmlAttributes="(13)">' +
+						'<tableCell htmlAttributes="(14)">' +
+							'<paragraph>2.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(15)">' +
+							'<paragraph>2.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(16)">' +
+							'<paragraph>2.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
 			attributes: range( 1, 17 ).reduce( ( attributes, index ) => {
 				attributes[ index ] = {
 					classes: [ 'foobar' ]
@@ -286,69 +288,70 @@ describe( 'TableElementSupport', () => {
 		} ] );
 
 		const expectedHtml =
-         '<figure class="table" style="color:red;">' +
-             '<table style="color:red;">' +
-                 '<thead style="color:red;">' +
-                     '<tr style="color:red;">' +
-                         '<th style="color:red;">1</th>' +
-                         '<th style="color:red;">2</th>' +
-                         '<th style="color:red;">3</th>' +
-                     '</tr>' +
-                 '</thead>' +
-                 '<tbody style="color:red;">' +
-                     '<tr style="color:red;">' +
-                         '<td style="color:red;">1.1</td>' +
-                         '<td style="color:red;">1.2</td>' +
-                         '<td style="color:red;">1.3</td>' +
-                     '</tr>' +
-                     '<tr style="color:red;">' +
-                         '<td style="color:red;">2.1</td>' +
-                         '<td style="color:red;">2.2</td>' +
-                         '<td style="color:red;">2.3</td>' +
-                     '</tr>' +
-                 '</tbody>' +
-             '</table>' +
-         '</figure>';
+			'<figure class="table" style="color:red;">' +
+				'<table style="color:red;">' +
+					'<thead style="color:red;">' +
+						'<tr style="color:red;">' +
+							'<th style="color:red;">1</th>' +
+							'<th style="color:red;">2</th>' +
+							'<th style="color:red;">3</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody style="color:red;">' +
+						'<tr style="color:red;">' +
+							'<td style="color:red;">1.1</td>' +
+							'<td style="color:red;">1.2</td>' +
+							'<td style="color:red;">1.3</td>' +
+						'</tr>' +
+						'<tr style="color:red;">' +
+							'<td style="color:red;">2.1</td>' +
+							'<td style="color:red;">2.2</td>' +
+							'<td style="color:red;">2.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>';
 
 		editor.setData( expectedHtml );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-             '<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
-                 '<tableRow htmlAttributes="(5)">' +
-                     '<tableCell htmlAttributes="(6)">' +
-                         '<paragraph>1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(7)">' +
-                         '<paragraph>2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(8)">' +
-                         '<paragraph>3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow htmlAttributes="(9)">' +
-                     '<tableCell htmlAttributes="(10)">' +
-                         '<paragraph>1.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(11)">' +
-                         '<paragraph>1.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(12)">' +
-                         '<paragraph>1.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow htmlAttributes="(13)">' +
-                     '<tableCell htmlAttributes="(14)">' +
-                         '<paragraph>2.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(15)">' +
-                         '<paragraph>2.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell htmlAttributes="(16)">' +
-                         '<paragraph>2.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-             '</table>',
+				'<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" ' +
+					'htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
+					'<tableRow htmlAttributes="(5)">' +
+						'<tableCell htmlAttributes="(6)">' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(7)">' +
+							'<paragraph>2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(8)">' +
+							'<paragraph>3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow htmlAttributes="(9)">' +
+						'<tableCell htmlAttributes="(10)">' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(11)">' +
+							'<paragraph>1.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(12)">' +
+							'<paragraph>1.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow htmlAttributes="(13)">' +
+						'<tableCell htmlAttributes="(14)">' +
+							'<paragraph>2.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(15)">' +
+							'<paragraph>2.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(16)">' +
+							'<paragraph>2.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
 			attributes: range( 1, 17 ).reduce( ( attributes, index ) => {
 				attributes[ index ] = {
 					styles: {
@@ -375,94 +378,94 @@ describe( 'TableElementSupport', () => {
 
 		editor.setData(
 			'<figure class="table" data-figure="figure">' +
-                 '<table data-table="table">' +
-                     '<thead data-thead="thead">' +
-                         '<tr data-tr="tr">' +
-                             '<th data-th="th">1</th>' +
-                             '<th data-th="th">2</th>' +
-                             '<th data-th="th">3</th>' +
-                         '</tr>' +
-                     '</thead>' +
-                     '<tbody data-tbody="tbody">' +
-                         '<tr data-tr="tr">' +
-                             '<td data-td="td">1.1</td>' +
-                             '<td data-td="td">1.2</td>' +
-                             '<td data-td="td">1.3</td>' +
-                         '</tr>' +
-                         '<tr data-tr="tr">' +
-                             '<td data-td="td">2.1</td>' +
-                             '<td data-td="td">2.2</td>' +
-                             '<td data-td="td">2.3</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>'
+				'<table data-table="table">' +
+					'<thead data-thead="thead">' +
+						'<tr data-tr="tr">' +
+							'<th data-th="th">1</th>' +
+							'<th data-th="th">2</th>' +
+							'<th data-th="th">3</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody data-tbody="tbody">' +
+						'<tr data-tr="tr">' +
+							'<td data-td="td">1.1</td>' +
+							'<td data-td="td">1.2</td>' +
+							'<td data-td="td">1.3</td>' +
+						'</tr>' +
+						'<tr data-tr="tr">' +
+							'<td data-td="td">2.1</td>' +
+							'<td data-td="td">2.2</td>' +
+							'<td data-td="td">2.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-             '<table headingRows="1">' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>1.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>1.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>1.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>2.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>2.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>2.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-             '</table>',
+				'<table headingRows="1">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>1.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>1.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>2.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>2.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>2.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
 			attributes: {}
 		} );
 
 		expect( editor.getData() ).to.equal(
 			'<figure class="table">' +
-                 '<table>' +
-                     '<thead>' +
-                         '<tr>' +
-                             '<th>1</th>' +
-                             '<th>2</th>' +
-                             '<th>3</th>' +
-                         '</tr>' +
-                     '</thead>' +
-                     '<tbody>' +
-                         '<tr>' +
-                             '<td>1.1</td>' +
-                             '<td>1.2</td>' +
-                             '<td>1.3</td>' +
-                         '</tr>' +
-                         '<tr>' +
-                             '<td>2.1</td>' +
-                             '<td>2.2</td>' +
-                             '<td>2.3</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>'
+				'<table>' +
+					'<thead>' +
+						'<tr>' +
+							'<th>1</th>' +
+							'<th>2</th>' +
+							'<th>3</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1.1</td>' +
+							'<td>1.2</td>' +
+							'<td>1.3</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<td>2.1</td>' +
+							'<td>2.2</td>' +
+							'<td>2.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
 		);
 	} );
 
@@ -479,94 +482,94 @@ describe( 'TableElementSupport', () => {
 
 		editor.setData(
 			'<figure class="table foobar">' +
-                 '<table class="foobar">' +
-                     '<thead class="foobar">' +
-                         '<tr class="foobar">' +
-                             '<th class="foobar">1</th>' +
-                             '<th class="foobar">2</th>' +
-                             '<th class="foobar">3</th>' +
-                         '</tr>' +
-                     '</thead>' +
-                     '<tbody class="foobar">' +
-                         '<tr class="foobar">' +
-                             '<td class="foobar">1.1</td>' +
-                             '<td class="foobar">1.2</td>' +
-                             '<td class="foobar">1.3</td>' +
-                         '</tr>' +
-                         '<tr class="foobar">' +
-                             '<td class="foobar">2.1</td>' +
-                             '<td class="foobar">2.2</td>' +
-                             '<td class="foobar">2.3</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>'
+				'<table class="foobar">' +
+					'<thead class="foobar">' +
+						'<tr class="foobar">' +
+							'<th class="foobar">1</th>' +
+							'<th class="foobar">2</th>' +
+							'<th class="foobar">3</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody class="foobar">' +
+						'<tr class="foobar">' +
+							'<td class="foobar">1.1</td>' +
+							'<td class="foobar">1.2</td>' +
+							'<td class="foobar">1.3</td>' +
+						'</tr>' +
+						'<tr class="foobar">' +
+							'<td class="foobar">2.1</td>' +
+							'<td class="foobar">2.2</td>' +
+							'<td class="foobar">2.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-             '<table headingRows="1">' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>1.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>1.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>1.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>2.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>2.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>2.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-             '</table>',
+				'<table headingRows="1">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>1.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>1.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>2.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>2.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>2.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
 			attributes: {}
 		} );
 
 		expect( editor.getData() ).to.equal(
 			'<figure class="table">' +
-                 '<table>' +
-                     '<thead>' +
-                         '<tr>' +
-                             '<th>1</th>' +
-                             '<th>2</th>' +
-                             '<th>3</th>' +
-                         '</tr>' +
-                     '</thead>' +
-                     '<tbody>' +
-                         '<tr>' +
-                             '<td>1.1</td>' +
-                             '<td>1.2</td>' +
-                             '<td>1.3</td>' +
-                         '</tr>' +
-                         '<tr>' +
-                             '<td>2.1</td>' +
-                             '<td>2.2</td>' +
-                             '<td>2.3</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>'
+				'<table>' +
+					'<thead>' +
+						'<tr>' +
+							'<th>1</th>' +
+							'<th>2</th>' +
+							'<th>3</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1.1</td>' +
+							'<td>1.2</td>' +
+							'<td>1.3</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<td>2.1</td>' +
+							'<td>2.2</td>' +
+							'<td>2.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
 		);
 	} );
 
@@ -583,94 +586,94 @@ describe( 'TableElementSupport', () => {
 
 		editor.setData(
 			'<figure class="table" style="color:red;">' +
-                 '<table style="color:red;">' +
-                     '<thead style="color:red;">' +
-                         '<tr style="color:red;">' +
-                             '<th style="color:red;">1</th>' +
-                             '<th style="color:red;">2</th>' +
-                             '<th style="color:red;">3</th>' +
-                         '</tr>' +
-                     '</thead>' +
-                     '<tbody style="color:red;">' +
-                         '<tr style="color:red;">' +
-                             '<td style="color:red;">1.1</td>' +
-                             '<td style="color:red;">1.2</td>' +
-                             '<td style="color:red;">1.3</td>' +
-                         '</tr>' +
-                         '<tr style="color:red;">' +
-                             '<td style="color:red;">2.1</td>' +
-                             '<td style="color:red;">2.2</td>' +
-                             '<td style="color:red;">2.3</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>'
+				'<table style="color:red;">' +
+					'<thead style="color:red;">' +
+						'<tr style="color:red;">' +
+							'<th style="color:red;">1</th>' +
+							'<th style="color:red;">2</th>' +
+							'<th style="color:red;">3</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody style="color:red;">' +
+						'<tr style="color:red;">' +
+							'<td style="color:red;">1.1</td>' +
+							'<td style="color:red;">1.2</td>' +
+							'<td style="color:red;">1.3</td>' +
+						'</tr>' +
+						'<tr style="color:red;">' +
+							'<td style="color:red;">2.1</td>' +
+							'<td style="color:red;">2.2</td>' +
+							'<td style="color:red;">2.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-             '<table headingRows="1">' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>1.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>1.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>1.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>2.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>2.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>2.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-             '</table>',
+				'<table headingRows="1">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>1.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>1.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>2.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>2.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>2.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
 			attributes: {}
 		} );
 
 		expect( editor.getData() ).to.equal(
 			'<figure class="table">' +
-                 '<table>' +
-                     '<thead>' +
-                         '<tr>' +
-                             '<th>1</th>' +
-                             '<th>2</th>' +
-                             '<th>3</th>' +
-                         '</tr>' +
-                     '</thead>' +
-                     '<tbody>' +
-                         '<tr>' +
-                             '<td>1.1</td>' +
-                             '<td>1.2</td>' +
-                             '<td>1.3</td>' +
-                         '</tr>' +
-                         '<tr>' +
-                             '<td>2.1</td>' +
-                             '<td>2.2</td>' +
-                             '<td>2.3</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>'
+				'<table>' +
+					'<thead>' +
+						'<tr>' +
+							'<th>1</th>' +
+							'<th>2</th>' +
+							'<th>3</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1.1</td>' +
+							'<td>1.2</td>' +
+							'<td>1.3</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<td>2.1</td>' +
+							'<td>2.2</td>' +
+							'<td>2.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
 		);
 	} );
 
@@ -682,31 +685,31 @@ describe( 'TableElementSupport', () => {
 
 		editor.setData(
 			'<table data-foo="foo">' +
-                 '<tbody>' +
-                     '<tr>' +
-                         '<td>1.1</td>' +
-                         '<td>1.2</td>' +
-                         '<td>1.3</td>' +
-                     '</tr>' +
-                 '</tbody>' +
-             '</table>'
+				'<tbody>' +
+					'<tr>' +
+						'<td>1.1</td>' +
+						'<td>1.2</td>' +
+						'<td>1.3</td>' +
+					'</tr>' +
+				'</tbody>' +
+			'</table>'
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-             '<table htmlAttributes="(1)">' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>1.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>1.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>1.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-             '</table>',
+				'<table htmlAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>1.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>1.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
 			attributes: {
 				1: {
 					attributes: { 'data-foo': 'foo' }
@@ -716,16 +719,16 @@ describe( 'TableElementSupport', () => {
 
 		expect( editor.getData() ).to.equal(
 			'<figure class="table">' +
-                 '<table data-foo="foo">' +
-                     '<tbody>' +
-                         '<tr>' +
-                             '<td>1.1</td>' +
-                             '<td>1.2</td>' +
-                             '<td>1.3</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>'
+				'<table data-foo="foo">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1.1</td>' +
+							'<td>1.2</td>' +
+							'<td>1.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
 		);
 	} );
 
@@ -736,41 +739,41 @@ describe( 'TableElementSupport', () => {
 		} ] );
 
 		const expectedHtml =
-             '<figure class="table" data-figure="table">' +
-                 '<table>' +
-                     '<tbody>' +
-                         '<tr>' +
-                             '<td>1.1</td>' +
-                             '<td>1.2</td>' +
-                             '<td>1.3</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>' +
-             '<figure data-figure="standalone">' +
-                 '<figcaption data-figcaption="figcaption">foobar</figcaption>' +
-             '</figure>';
+			'<figure class="table" data-figure="table">' +
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1.1</td>' +
+							'<td>1.2</td>' +
+							'<td>1.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>' +
+			'<figure data-figure="standalone">' +
+				'<figcaption data-figcaption="figcaption">foobar</figcaption>' +
+			'</figure>';
 
 		editor.setData( expectedHtml );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-             '<table htmlFigureAttributes="(1)">' +
-                 '<tableRow>' +
-                     '<tableCell>' +
-                         '<paragraph>1.1</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>1.2</paragraph>' +
-                     '</tableCell>' +
-                     '<tableCell>' +
-                         '<paragraph>1.3</paragraph>' +
-                     '</tableCell>' +
-                 '</tableRow>' +
-             '</table>' +
-             '<htmlFigure htmlAttributes="(2)">' +
-                 '<htmlFigcaption htmlAttributes="(3)">foobar</htmlFigcaption>' +
-             '</htmlFigure>',
+				'<table htmlFigureAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>1.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>1.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>' +
+				'<htmlFigure htmlAttributes="(2)">' +
+					'<htmlFigcaption htmlAttributes="(3)">foobar</htmlFigcaption>' +
+				'</htmlFigure>',
 			attributes: {
 				1: {
 					attributes: {
@@ -802,15 +805,15 @@ describe( 'TableElementSupport', () => {
 		} ] );
 
 		const expectedHtml =
-             '<figure class="table">' +
-                 '<table>' +
-                     '<tbody>' +
-                         '<tr>' +
-                             '<td>foo</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>';
+			'<figure class="table">' +
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>';
 
 		editor.setData( expectedHtml );
 
@@ -839,44 +842,44 @@ describe( 'TableElementSupport', () => {
 
 		editor.setData(
 			'<figure class="table" data-foo="foo">' +
-                 '<table data-foo="foo">' +
-                     '<thead data-foo="foo">' +
-                         '<tr>' +
-                             '<th>1</th>' +
-                             '<th>2</th>' +
-                             '<th>3</th>' +
-                         '</tr>' +
-                     '</tbody>' +
-                     '<tbody data-foo="foo">' +
-                         '<tr>' +
-                             '<td>1.1</td>' +
-                             '<td>1.2</td>' +
-                             '<td>1.3</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>'
+				'<table data-foo="foo">' +
+					'<thead data-foo="foo">' +
+						'<tr>' +
+							'<th>1</th>' +
+							'<th>2</th>' +
+							'<th>3</th>' +
+						'</tr>' +
+					'</tbody>' +
+					'<tbody data-foo="foo">' +
+						'<tr>' +
+							'<td>1.1</td>' +
+							'<td>1.2</td>' +
+							'<td>1.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
 		);
 
 		expect( editor.getData() ).to.equal(
 			'<figure class="table">' +
-                 '<table>' +
-                     '<thead>' +
-                         '<tr>' +
-                             '<th>1</th>' +
-                             '<th>2</th>' +
-                             '<th>3</th>' +
-                         '</tr>' +
-                     '</thead>' +
-                     '<tbody>' +
-                         '<tr>' +
-                             '<td>1.1</td>' +
-                             '<td>1.2</td>' +
-                             '<td>1.3</td>' +
-                         '</tr>' +
-                     '</tbody>' +
-                 '</table>' +
-             '</figure>'
+				'<table>' +
+					'<thead>' +
+						'<tr>' +
+							'<th>1</th>' +
+							'<th>2</th>' +
+							'<th>3</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1.1</td>' +
+							'<td>1.2</td>' +
+							'<td>1.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
 		);
 	} );
 
@@ -949,35 +952,35 @@ describe( 'TableElementSupport', () => {
 
 			editor.setData(
 				'<figure class="table">' +
-                     '<table>' +
-                         '<caption class="foobar" style="color:red;" data-foo="foo">caption</caption>' +
-                         '<tbody>' +
-                             '<tr>' +
-                                 '<td>1.1</td>' +
-                                 '<td>1.2</td>' +
-                                 '<td>1.3</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                 '</figure>'
+					'<table>' +
+						'<caption class="foobar" style="color:red;" data-foo="foo">caption</caption>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+								'<td>1.2</td>' +
+								'<td>1.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-                 '<table>' +
-                     '<tableRow>' +
-                         '<tableCell>' +
-                             '<paragraph>1.1</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell>' +
-                             '<paragraph>1.2</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell>' +
-                             '<paragraph>1.3</paragraph>' +
-                         '</tableCell>' +
-                     '</tableRow>' +
-                     '<caption htmlAttributes="(1)">caption</caption>' +
-                 '</table>',
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>1.1</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>1.2</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>1.3</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption htmlAttributes="(1)">caption</caption>' +
+					'</table>',
 				attributes: {
 					1: {
 						attributes: { 'data-foo': 'foo' },
@@ -989,17 +992,17 @@ describe( 'TableElementSupport', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<figure class="table">' +
-                     '<table>' +
-                         '<tbody>' +
-                             '<tr>' +
-                                 '<td>1.1</td>' +
-                                 '<td>1.2</td>' +
-                                 '<td>1.3</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                     '<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
-                 '</figure>'
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+								'<td>1.2</td>' +
+								'<td>1.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+					'<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
+				'</figure>'
 			);
 		} );
 
@@ -1022,51 +1025,51 @@ describe( 'TableElementSupport', () => {
 
 			editor.setData(
 				'<figure class="table">' +
-                     '<table>' +
-                         '<caption class="foobar" style="color:red;" data-foo="foo">caption</caption>' +
-                         '<tbody>' +
-                             '<tr>' +
-                                 '<td>1.1</td>' +
-                                 '<td>1.2</td>' +
-                                 '<td>1.3</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                 '</figure>'
+					'<table>' +
+						'<caption class="foobar" style="color:red;" data-foo="foo">caption</caption>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+								'<td>1.2</td>' +
+								'<td>1.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-                 '<table>' +
-                     '<tableRow>' +
-                         '<tableCell>' +
-                             '<paragraph>1.1</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell>' +
-                             '<paragraph>1.2</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell>' +
-                             '<paragraph>1.3</paragraph>' +
-                         '</tableCell>' +
-                     '</tableRow>' +
-                     '<caption>caption</caption>' +
-                 '</table>',
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>1.1</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>1.2</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>1.3</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption>caption</caption>' +
+					'</table>',
 				attributes: {}
 			} );
 
 			expect( editor.getData() ).to.equal(
 				'<figure class="table">' +
-                     '<table>' +
-                         '<tbody>' +
-                             '<tr>' +
-                                 '<td>1.1</td>' +
-                                 '<td>1.2</td>' +
-                                 '<td>1.3</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                     '<figcaption>caption</figcaption>' +
-                 '</figure>'
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+								'<td>1.2</td>' +
+								'<td>1.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+					'<figcaption>caption</figcaption>' +
+				'</figure>'
 			);
 		} );
 
@@ -1080,35 +1083,35 @@ describe( 'TableElementSupport', () => {
 
 			editor.setData(
 				'<figure class="table">' +
-                     '<table>' +
-                         '<tbody>' +
-                             '<tr>' +
-                                 '<td>1.1</td>' +
-                                 '<td>1.2</td>' +
-                                 '<td>1.3</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                     '<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
-                 '</figure>'
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+								'<td>1.2</td>' +
+								'<td>1.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+					'<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
+				'</figure>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-                 '<table>' +
-                     '<tableRow>' +
-                         '<tableCell>' +
-                             '<paragraph>1.1</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell>' +
-                             '<paragraph>1.2</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell>' +
-                             '<paragraph>1.3</paragraph>' +
-                         '</tableCell>' +
-                     '</tableRow>' +
-                     '<caption htmlAttributes="(1)">caption</caption>' +
-                 '</table>',
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>1.1</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>1.2</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>1.3</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption htmlAttributes="(1)">caption</caption>' +
+					'</table>',
 				attributes: {
 					1: {
 						attributes: { 'data-foo': 'foo' },
@@ -1120,17 +1123,17 @@ describe( 'TableElementSupport', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<figure class="table">' +
-                     '<table>' +
-                         '<tbody>' +
-                             '<tr>' +
-                                 '<td>1.1</td>' +
-                                 '<td>1.2</td>' +
-                                 '<td>1.3</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                     '<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
-                 '</figure>'
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+								'<td>1.2</td>' +
+								'<td>1.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+					'<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
+				'</figure>'
 			);
 		} );
 
@@ -1151,51 +1154,51 @@ describe( 'TableElementSupport', () => {
 
 			editor.setData(
 				'<figure class="table">' +
-                     '<table>' +
-                         '<tbody>' +
-                             '<tr>' +
-                                 '<td>1.1</td>' +
-                                 '<td>1.2</td>' +
-                                 '<td>1.3</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                     '<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
-                 '</figure>'
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+								'<td>1.2</td>' +
+								'<td>1.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+					'<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
+				'</figure>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-                 '<table>' +
-                     '<tableRow>' +
-                         '<tableCell>' +
-                             '<paragraph>1.1</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell>' +
-                             '<paragraph>1.2</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell>' +
-                             '<paragraph>1.3</paragraph>' +
-                         '</tableCell>' +
-                     '</tableRow>' +
-                     '<caption>caption</caption>' +
-                 '</table>',
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>1.1</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>1.2</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>1.3</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption>caption</caption>' +
+					'</table>',
 				attributes: {}
 			} );
 
 			expect( editor.getData() ).to.equal(
 				'<figure class="table">' +
-                     '<table>' +
-                         '<tbody>' +
-                             '<tr>' +
-                                 '<td>1.1</td>' +
-                                 '<td>1.2</td>' +
-                                 '<td>1.3</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                     '<figcaption>caption</figcaption>' +
-                 '</figure>'
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+								'<td>1.2</td>' +
+								'<td>1.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+					'<figcaption>caption</figcaption>' +
+				'</figure>'
 			);
 		} );
 
@@ -1217,67 +1220,67 @@ describe( 'TableElementSupport', () => {
 			/* eslint-disable max-len */
 			editor.setData(
 				'<figure class="table allow disallow" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-                     '<table class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-                         '<thead class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-                             '<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-                                 '<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1</th>' +
-                                 '<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2</th>' +
-                                 '<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">3</th>' +
-                             '</tr>' +
-                         '</thead>' +
-                         '<tbody class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-                             '<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-                                 '<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.1</td>' +
-                                 '<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.2</td>' +
-                                 '<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.3</td>' +
-                             '</tr>' +
-                             '<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-                                 '<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.1</td>' +
-                                 '<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.2</td>' +
-                                 '<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.3</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                 '</figure>'
+					'<table class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+						'<thead class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+							'<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+								'<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1</th>' +
+								'<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2</th>' +
+								'<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">3</th>' +
+							'</tr>' +
+						'</thead>' +
+						'<tbody class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+							'<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.1</td>' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.2</td>' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.3</td>' +
+							'</tr>' +
+							'<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.1</td>' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.2</td>' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-                 '<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
-                     '<tableRow htmlAttributes="(5)">' +
-                         '<tableCell htmlAttributes="(6)">' +
-                             '<paragraph>1</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell htmlAttributes="(7)">' +
-                             '<paragraph>2</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell htmlAttributes="(8)">' +
-                             '<paragraph>3</paragraph>' +
-                         '</tableCell>' +
-                     '</tableRow>' +
-                     '<tableRow htmlAttributes="(9)">' +
-                         '<tableCell htmlAttributes="(10)">' +
-                             '<paragraph>1.1</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell htmlAttributes="(11)">' +
-                             '<paragraph>1.2</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell htmlAttributes="(12)">' +
-                             '<paragraph>1.3</paragraph>' +
-                         '</tableCell>' +
-                     '</tableRow>' +
-                     '<tableRow htmlAttributes="(13)">' +
-                         '<tableCell htmlAttributes="(14)">' +
-                             '<paragraph>2.1</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell htmlAttributes="(15)">' +
-                             '<paragraph>2.2</paragraph>' +
-                         '</tableCell>' +
-                         '<tableCell htmlAttributes="(16)">' +
-                             '<paragraph>2.3</paragraph>' +
-                         '</tableCell>' +
-                     '</tableRow>' +
-                 '</table>',
+					'<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
+						'<tableRow htmlAttributes="(5)">' +
+							'<tableCell htmlAttributes="(6)">' +
+								'<paragraph>1</paragraph>' +
+							'</tableCell>' +
+							'<tableCell htmlAttributes="(7)">' +
+								'<paragraph>2</paragraph>' +
+							'</tableCell>' +
+							'<tableCell htmlAttributes="(8)">' +
+								'<paragraph>3</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableRow htmlAttributes="(9)">' +
+							'<tableCell htmlAttributes="(10)">' +
+								'<paragraph>1.1</paragraph>' +
+							'</tableCell>' +
+							'<tableCell htmlAttributes="(11)">' +
+								'<paragraph>1.2</paragraph>' +
+							'</tableCell>' +
+							'<tableCell htmlAttributes="(12)">' +
+								'<paragraph>1.3</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableRow htmlAttributes="(13)">' +
+							'<tableCell htmlAttributes="(14)">' +
+								'<paragraph>2.1</paragraph>' +
+							'</tableCell>' +
+							'<tableCell htmlAttributes="(15)">' +
+								'<paragraph>2.2</paragraph>' +
+							'</tableCell>' +
+							'<tableCell htmlAttributes="(16)">' +
+								'<paragraph>2.3</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>',
 				attributes: range( 1, 17 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						attributes: {
@@ -1294,34 +1297,34 @@ describe( 'TableElementSupport', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<figure class="table allow" style="color:red;" data-allow="allow">' +
-                     '<table class="allow" style="color:red;" data-allow="allow">' +
-                         '<thead class="allow" style="color:red;" data-allow="allow">' +
-                             '<tr class="allow" style="color:red;" data-allow="allow">' +
-                                 '<th class="allow" style="color:red;" data-allow="allow">1</th>' +
-                                 '<th class="allow" style="color:red;" data-allow="allow">2</th>' +
-                                 '<th class="allow" style="color:red;" data-allow="allow">3</th>' +
-                             '</tr>' +
-                         '</thead>' +
-                         '<tbody class="allow" style="color:red;" data-allow="allow">' +
-                             '<tr class="allow" style="color:red;" data-allow="allow">' +
-                                 '<td class="allow" style="color:red;" data-allow="allow">1.1</td>' +
-                                 '<td class="allow" style="color:red;" data-allow="allow">1.2</td>' +
-                                 '<td class="allow" style="color:red;" data-allow="allow">1.3</td>' +
-                             '</tr>' +
-                             '<tr class="allow" style="color:red;" data-allow="allow">' +
-                                 '<td class="allow" style="color:red;" data-allow="allow">2.1</td>' +
-                                 '<td class="allow" style="color:red;" data-allow="allow">2.2</td>' +
-                                 '<td class="allow" style="color:red;" data-allow="allow">2.3</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                 '</figure>'
+					'<table class="allow" style="color:red;" data-allow="allow">' +
+						'<thead class="allow" style="color:red;" data-allow="allow">' +
+							'<tr class="allow" style="color:red;" data-allow="allow">' +
+								'<th class="allow" style="color:red;" data-allow="allow">1</th>' +
+								'<th class="allow" style="color:red;" data-allow="allow">2</th>' +
+								'<th class="allow" style="color:red;" data-allow="allow">3</th>' +
+							'</tr>' +
+						'</thead>' +
+						'<tbody class="allow" style="color:red;" data-allow="allow">' +
+							'<tr class="allow" style="color:red;" data-allow="allow">' +
+								'<td class="allow" style="color:red;" data-allow="allow">1.1</td>' +
+								'<td class="allow" style="color:red;" data-allow="allow">1.2</td>' +
+								'<td class="allow" style="color:red;" data-allow="allow">1.3</td>' +
+							'</tr>' +
+							'<tr class="allow" style="color:red;" data-allow="allow">' +
+								'<td class="allow" style="color:red;" data-allow="allow">2.1</td>' +
+								'<td class="allow" style="color:red;" data-allow="allow">2.2</td>' +
+								'<td class="allow" style="color:red;" data-allow="allow">2.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
 			);
 			/* eslint-enable max-len */
 		} );
 
 		it( 'should run attributes upcast converter with priority higher ' +
-            'then low before GHS preserves remaining attributes on table model element', () => {
+			'then low before GHS preserves remaining attributes on table model element', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /.*/,
 				attributes: true,
@@ -1339,31 +1342,31 @@ describe( 'TableElementSupport', () => {
 
 			editor.setData(
 				'<figure class="table" foo-attr="100">' +
-                    '<table>' +
-                         '<tbody>' +
-                             '<tr>' +
-                                 '<td>1.1</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                 '</figure>'
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-                 '<table barAttr="100">' +
-                     '<tableRow>' +
-                         '<tableCell>' +
-                             '<paragraph>1.1</paragraph>' +
-                         '</tableCell>' +
-                     '</tableRow>' +
-                 '</table>',
+					'<table barAttr="100">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>1.1</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>',
 				attributes: { }
 			} );
 		} );
 
 		it( 'should run attributes upcast converter with priority low ' +
-            'after GHS preserves remaining attributes on table model element', () => {
+			'after GHS preserves remaining attributes on table model element', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /.*/,
 				attributes: true,
@@ -1381,25 +1384,25 @@ describe( 'TableElementSupport', () => {
 
 			editor.setData(
 				'<figure class="table" foo-attr="100">' +
-                    '<table>' +
-                         '<tbody>' +
-                             '<tr>' +
-                                 '<td>1.1</td>' +
-                             '</tr>' +
-                         '</tbody>' +
-                     '</table>' +
-                 '</figure>'
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-                 '<table htmlFigureAttributes="(1)">' +
-                     '<tableRow>' +
-                         '<tableCell>' +
-                             '<paragraph>1.1</paragraph>' +
-                         '</tableCell>' +
-                     '</tableRow>' +
-                 '</table>',
+					'<table htmlFigureAttributes="(1)">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>1.1</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>',
 				attributes: {
 					1: { attributes: { 'foo-attr': '100' } }
 				}
@@ -1407,7 +1410,7 @@ describe( 'TableElementSupport', () => {
 		} );
 
 		it( 'should run marker upcast converter with priority higher ' +
-        'then low before GHS preserves remaining attributes on table model element', () => {
+		'then low before GHS preserves remaining attributes on table model element', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /.*/,
 				attributes: true,
@@ -1422,25 +1425,25 @@ describe( 'TableElementSupport', () => {
 
 			editor.setData(
 				'<figure data-commented-end-after="foo:id" data-commented-start-before="foo:id" class="table">' +
-                    '<table>' +
-                        '<tbody>' +
-                            '<tr>' +
-                                '<td>1.1</td>' +
-                            '</tr>' +
-                        '</tbody>' +
-                    '</table>' +
-                '</figure>'
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-                '<table>' +
-                    '<tableRow>' +
-                        '<tableCell>' +
-                            '<paragraph>1.1</paragraph>' +
-                        '</tableCell>' +
-                    '</tableRow>' +
-                '</table>',
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>1.1</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>',
 				attributes: { }
 			} );
 
@@ -1465,25 +1468,25 @@ describe( 'TableElementSupport', () => {
 
 			editor.setData(
 				'<figure data-commented-end-after="foo:id" data-commented-start-before="foo:id" class="table" foo="bar">' +
-                    '<table>' +
-                        '<tbody>' +
-                            '<tr>' +
-                                '<td>1.1</td>' +
-                            '</tr>' +
-                        '</tbody>' +
-                    '</table>' +
-                '</figure>'
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>1.1</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-                '<table htmlFigureAttributes="(1)">' +
-                    '<tableRow>' +
-                        '<tableCell>' +
-                            '<paragraph>1.1</paragraph>' +
-                        '</tableCell>' +
-                    '</tableRow>' +
-                '</table>',
+					'<table htmlFigureAttributes="(1)">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>1.1</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>',
 				attributes: {
 					1: {
 						attributes: {
