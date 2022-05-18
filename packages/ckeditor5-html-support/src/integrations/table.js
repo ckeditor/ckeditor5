@@ -74,6 +74,7 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTableElement = data.viewItem;
+
 			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
 
 			for ( const childNode of viewTableElement.getChildren() ) {

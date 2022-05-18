@@ -88,7 +88,7 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 	}
 }
 
-// View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
+// View-to-model conversion helper preserving allowed attributes on {@link module:media-embed/mediaembed~MediaEmbed MediaEmbed}
 // feature model element from figure view element.
 //
 // @private

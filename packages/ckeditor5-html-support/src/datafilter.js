@@ -644,10 +644,8 @@ function removeConsumedAttributes( consumable, viewElement, match ) {
 			continue;
 		}
 
-		// Iterating from the end so removing items doesn't influence iteration
-		for ( let i = attributes.length; i > 0; i-- ) {
-			const value = attributes[ i - 1 ];
-
+		// Iterating over a copy of an array so removing items doesn't influence iteration.
+		for ( const value of Array.from( attributes ) ) {
 			if ( !consumable.test( viewElement, ( { [ key ]: [ value ] } ) ) ) {
 				removeItemFromArray( attributes, value );
 			}

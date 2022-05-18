@@ -121,7 +121,7 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 	};
 }
 
-// View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
+// View-to-model conversion helper preserving allowed attributes on {@link module:image/image~Image Image}
 // feature model element from figure view element.
 //
 // @private
