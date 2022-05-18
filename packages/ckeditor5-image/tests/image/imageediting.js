@@ -182,48 +182,6 @@ describe( 'ImageEditing', () => {
 				);
 			} );
 
-			it( 'should convert srcset attribute to width, srcset and add sizes attribute', () => {
-				setModelData( model,
-					'<imageBlock ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageBlock>'
-				);
-
-				expect( normalizeHtml( editor.getData() ) ).to.equal(
-					'<figure class="image">' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</figure>'
-				);
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageInline></paragraph>'
-				);
-
-				expect( normalizeHtml( editor.getData() ) ).to.equal(
-					'<p>' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</p>'
-				);
-			} );
-
 			it( 'should not convert srcset attribute if is already consumed', () => {
 				editor.data.downcastDispatcher.on( 'attribute:srcset:imageBlock', ( evt, data, conversionApi ) => {
 					const modelImage = data.item;
@@ -235,7 +193,7 @@ describe( 'ImageEditing', () => {
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{"data":"small.png 148w, big.png 1024w"}\'>' +
 					'</imageBlock>'
 				);
 
@@ -255,7 +213,7 @@ describe( 'ImageEditing', () => {
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{"data":"small.png 148w, big.png 1024w"}\'>' +
 					'</imageInline></paragraph>'
 				);
 
@@ -476,34 +434,6 @@ describe( 'ImageEditing', () => {
 							'</imageInline>' +
 						'</paragraph>'
 					);
-			} );
-
-			it( 'should convert image with srcset and width attributes', () => {
-				editor.setData(
-					'<figure class="image">' +
-					'<img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" width="1024" />' +
-					'</figure>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<imageBlock ' +
-						'alt="alt text" ' +
-						'src="/assets/sample.png" ' +
-						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
-					'</imageBlock>'
-				);
-
-				editor.setData(
-					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" width="1024" /></p>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><imageInline ' +
-						'alt="alt text" ' +
-						'src="/assets/sample.png" ' +
-						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
-					'</imageInline></paragraph>'
-				);
 			} );
 
 			it( 'should ignore sizes attribute', () => {
@@ -896,46 +826,6 @@ describe( 'ImageEditing', () => {
 				);
 			} );
 
-			it( 'should convert srcset attribute to srcset, width and sizes', () => {
-				setModelData( model,
-					'<imageBlock ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
-					'</imageBlock>' );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck-widget image" contenteditable="false">' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</figure>'
-				);
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
-					'</imageInline></paragraph>' );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-					'<img ' +
-						'alt="alt text" ' +
-						'sizes="100vw" ' +
-						'src="/assets/sample.png" ' +
-						'srcset="small.png 148w, big.png 1024w" ' +
-						'width="1024">' +
-					'</img>' +
-					'</span></p>'
-				);
-			} );
-
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				setModelData( model,
 					'<imageBlock src="/assets/sample.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'>' +
@@ -966,45 +856,7 @@ describe( 'ImageEditing', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-					'<img src="/assets/sample.png"></img>' +
-					'</span></p>'
-				);
-			} );
-
-			it( 'should remove width, sizes and srcsset attribute when srcset attribute is removed from model', () => {
-				setModelData( model,
-					'<imageBlock ' +
-						'src="/assets/sample.png" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageBlock>'
-				);
-				let image = doc.getRoot().getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'srcset', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck-widget image" contenteditable="false">' +
-					'<img src="/assets/sample.png"></img>' +
-					'</figure>'
-				);
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageInline></paragraph>'
-				);
-				image = doc.getRoot().getChild( 0 ).getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'srcset', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-					'<img src="/assets/sample.png"></img>' +
+						'<img src="/assets/sample.png"></img>' +
 					'</span></p>'
 				);
 			} );
@@ -1020,7 +872,7 @@ describe( 'ImageEditing', () => {
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{"data":"small.png 148w, big.png 1024w"}\'>' +
 					'</imageBlock>'
 				);
 
@@ -1040,7 +892,7 @@ describe( 'ImageEditing', () => {
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{"data":"small.png 148w, big.png 1024w"}\'>' +
 					'</imageInline></paragraph>'
 				);
 

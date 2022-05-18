@@ -384,7 +384,10 @@ describe( 'ImageResizeHandles', () => {
 					writer.removeAttribute( 'srcset', model );
 				} );
 
-				const expectedHtml = '<figure class="image image_resized" style="width:80px;"><img src="/assets/sample.png"></figure>';
+				const expectedHtml = '<figure class="image image_resized" style="width:80px;">' +
+					'<img src="/assets/sample.png" width="96">' +
+				'</figure>';
+
 				expect( editor.getData() ).to.equal( expectedHtml );
 			} );
 
