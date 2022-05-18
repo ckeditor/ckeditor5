@@ -148,12 +148,12 @@ export default class ResizeObserver {
 	 * @param {HTMLElement} element
 	 * @returns {Set.<Function>|null}
 	 */
-	private static _getElementCallbacks( element: HTMLElement ): Set<( entry: ResizeObserverEntry ) => void> | null {
+	private static _getElementCallbacks( element: HTMLElement ): Set<( entry: ResizeObserverEntry ) => void> | null | undefined {
 		if ( !ResizeObserver._elementCallbacks ) {
 			return null;
 		}
 
-		return ResizeObserver._elementCallbacks.get( element ) || null;
+		return ResizeObserver._elementCallbacks.get( element );
 	}
 
 	/**
