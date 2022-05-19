@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Dutch (https://www.transifex.com/ckeditor/teams/11143/nl/)\n"
-"Language: nl\n"
+"Language-Team: Urdu (https://www.transifex.com/ckeditor/teams/11143/ur/)\n"
+"Language: ur\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "The label of the remove format toolbar button."
-msgid "Remove Format"
-msgstr "Verwijder opmaak"
+msgctxt "Toolbar button tooltip for the Block quote feature."
+msgid "Block quote"
+msgstr "خانہ اقتباس"

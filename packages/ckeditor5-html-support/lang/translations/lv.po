@@ -16,14 +16,6 @@ msgstr ""
 "Language: lv\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
-msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
-msgid "Widget toolbar"
-msgstr "Sīkrīku rīkjosla"
-
-msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
-msgid "Insert paragraph before block"
-msgstr "Ievietot paragrāfu pirms bloka"
-
-msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
-msgid "Insert paragraph after block"
-msgstr "Ievietot paragrāfu aiz bloka"
+msgctxt "A label describing an HTML object widget."
+msgid "HTML object"
+msgstr "HTML objekts"

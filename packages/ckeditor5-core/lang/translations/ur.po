@@ -12,30 +12,30 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Latvian (https://www.transifex.com/ckeditor/teams/11143/lv/)\n"
-"Language: lv\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"Language-Team: Urdu (https://www.transifex.com/ckeditor/teams/11143/ur/)\n"
+"Language: ur\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
-msgstr "Atcelt"
+msgstr "منسوخ"
 
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
 msgid "Remove color"
-msgstr "Noņemt krāsu"
+msgstr "رنگ حذف کریں"
 
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"
-msgstr "Atgriezt noklusējumu"
+msgstr "طے شدہ بحال"
 
 msgctxt "Label for the Save button."
 msgid "Save"
-msgstr "Saglabāt"
+msgstr "محفوظ"
 
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
-msgstr "Parādīt vairāk vienumus"
+msgstr "مزید مواد کی نمائش کریں"
 
 msgctxt "Label for an ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or 'Search result 5 of 20'."
 msgid "%0 of %1"
-msgstr "%0 no %1"
+msgstr "0% میں سے 1%"

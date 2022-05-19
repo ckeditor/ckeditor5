@@ -12,10 +12,14 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Dutch (https://www.transifex.com/ckeditor/teams/11143/nl/)\n"
-"Language: nl\n"
+"Language-Team: Urdu (https://www.transifex.com/ckeditor/teams/11143/ur/)\n"
+"Language: ur\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "The label of the remove format toolbar button."
-msgid "Remove Format"
-msgstr "Verwijder opmaak"
+msgctxt "A label of the button that allows inserting a new code block into the editor content."
+msgid "Insert code block"
+msgstr "کوڈ خانہ نصب کیرں"
+
+msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
+msgid "Plain text"
+msgstr "سادہ متن"

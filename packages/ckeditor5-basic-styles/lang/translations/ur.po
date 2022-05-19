@@ -12,34 +12,34 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Afrikaans (https://www.transifex.com/ckeditor/teams/11143/af/)\n"
-"Language: af\n"
+"Language-Team: Urdu (https://www.transifex.com/ckeditor/teams/11143/ur/)\n"
+"Language: ur\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
-msgstr "Vet"
+msgstr "جلّی"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr "Kursief"
+msgstr "ترچھا"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr "Onderstreep"
+msgstr "ترچھا"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr "Bronkode"
+msgstr "کوڈ"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr "Deurstreep"
+msgstr "خط کشیدہ"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr "Onderskrif"
+msgstr "زير نوشت"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr "Boskrif"
+msgstr "بالا نوشت"

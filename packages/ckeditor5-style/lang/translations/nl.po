@@ -16,6 +16,18 @@ msgstr ""
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "The label of the remove format toolbar button."
-msgid "Remove Format"
-msgstr "Verwijder opmaak"
+msgctxt "The label of the styles dropdown button in the toolbar displayed when no style is currently active."
+msgid "Styles"
+msgstr "Stijlen"
+
+msgctxt "The label of the styles dropdown button in the toolbar displayed when multiple styles are currently active."
+msgid "Multiple styles"
+msgstr "Meerdere stijlen"
+
+msgctxt "The label of the group in the styles dropdown containing styles applicable to blocks only (paragraphs, headings, etc.)."
+msgid "Block styles"
+msgstr "Blok stijlen"
+
+msgctxt "The label of the group in the styles dropdown containing inline applicable to text only."
+msgid "Text styles"
+msgstr "Tekst stijlen"
