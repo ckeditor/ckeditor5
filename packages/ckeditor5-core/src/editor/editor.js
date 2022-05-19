@@ -246,16 +246,16 @@ export default class Editor {
 
 	set isReadOnly( value ) {
 		/**
-		 * {@link #isReadOnly Editor#isReadOnly} property is read-only since the version 34.0.0 and can be set only using
-		 * {@link #enableReadOnlyMode Editor#enableReadOnlyMode( lockId )} and
-		 * {@link #disableReadOnlyMode Editor#disableReadOnlyMode( lockId )}.
+		 * {@link #isReadOnly Editor#isReadOnly} property is read-only since version `34.0.0` and can be set only using
+		 * {@link #enableReadOnlyMode `Editor#enableReadOnlyMode( lockId )`} and
+		 * {@link #disableReadOnlyMode `Editor#disableReadOnlyMode( lockId )`}.
 		 *
-		 * Before the version 34.0.0:
+		 * Before version `34.0.0`:
 		 *
 		 *		editor.isReadOnly = true;
 		 * 		editor.isReadOnly = false;
 		 *
-		 * Since the version 34.0.0:
+		 * Since version `34.0.0`:
 		 *
 		 *		editor.enableReadOnlyMode( 'my-feature-id' );
 		 * 		editor.disableReadOnlyMode( 'my-feature-id' );
