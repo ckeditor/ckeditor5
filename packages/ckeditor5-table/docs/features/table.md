@@ -1,7 +1,7 @@
 ---
 title: Tables
 category: features
-modified_at: 2021-06-07
+modified_at: 2022-05-19
 ---
 
 {@snippet features/build-table-source}
