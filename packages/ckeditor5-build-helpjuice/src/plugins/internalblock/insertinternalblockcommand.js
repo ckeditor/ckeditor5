@@ -17,6 +17,9 @@ export default class InsertInternalBlockCommand extends Command {
 }
 
 function createInternalBlock(writer) {
+	const docFrag = writer.createDocumentFragment();
+
+	// CREATE INTERNAL BLOCK
 	const internalBlock = writer.createElement('internalBlock');
 	const id = Math.random().toString(8).slice(2);
 
@@ -35,8 +38,17 @@ function createInternalBlock(writer) {
 	const internalBlockSettings = writer.createElement("internalBlockSettings");
 	writer.setAttribute("data-action", "click->editor--internal-block#toggleSettings", internalBlockSettings);
 
+	const deleteInternalBlock = writer.createElement("internalBlockDelete");
+
 	writer.append(internalBlockSettings, internalBlock);
 	writer.append(internalBlockBody, internalBlock);
+	writer.append(deleteInternalBlock, internalBlock);
 
-	return internalBlock;
+	// CREATE EMPTY ELEMENT TO BE INSERTED AFTER THE ACCORDION
+	const emptyParagraph = writer.createElement("paragraph");
+
+	writer.append(internalBlock, docFrag);
+	writer.append(emptyParagraph, docFrag);
+
+	return docFrag;
 }

@@ -89,7 +89,7 @@ HelpjuiceEditor
 			}
 
 			// DECISION TREE BUTTON ACTIVE CLASS
-			if (modelElement.parent.name == "decisionTreeButtonText") {
+			if (modelElement.name != "$root" && modelElement.parent.name == "decisionTreeButtonText") {
 				editor.model.change(writer => {
 					const button = modelElement.parent.parent;
 					const buttonId = button.getAttribute("data-id");
@@ -209,7 +209,10 @@ HelpjuiceEditor
 				|| modelElement.name == "infoDelete"
 				|| modelElement.name == "successDelete"
 				|| modelElement.name == "warningDelete"
-				|| modelElement.name == "dangerDelete") {
+				|| modelElement.name == "dangerDelete"
+				|| modelElement.name == "internalBlockDelete"
+				|| modelElement.name == "decisionTreeDelete"
+				|| modelElement.name == "insertedArticleDelete") {
 				editor.model.change(writer => {
 					writer.remove(modelElement.parent);
 				})

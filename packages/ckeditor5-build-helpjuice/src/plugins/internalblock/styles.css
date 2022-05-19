@@ -36,7 +36,7 @@
 .helpjuice-internal-block-settings {
 	position: absolute!important;
 	top: 0;
-	right: -3px;
+	right: 30px;
 	outline: none!important;
 	z-index: 10;
 }
@@ -66,4 +66,36 @@
 	box-shadow: none!important;
 	padding: 0 10px;
 	background-color: none;
+}
+
+.helpjuice-internal-block-delete {
+	position: absolute!important;
+	top: -10px;
+	right: -10px;
+	z-index: 10;
+	outline: none!important;
+	cursor: pointer;
+	width: 20px;
+	height: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #757575;
+	border-radius: 50%;
+}
+
+.helpjuice-internal-block-delete::before {
+	content: "\f00d";
+	font-family: "Font Awesome 6 Pro";
+	font-size: 12px;
+	display: block;
+	color: #FFFFFF;
+}
+
+.helpjuice-internal-block-delete:hover {
+	outline-color: none!important;
+}
+
+.helpjuice-internal-block-delete div {
+	display: none;
 }

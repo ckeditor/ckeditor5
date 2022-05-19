@@ -31,6 +31,12 @@ export default class InfoEditing extends Plugin {
 				return false;
 			}
 		});
+
+		schema.register("insertedArticleDelete", {
+			isObject: true,
+			isLimit: true,
+			allowIn: "insertedArticle"
+		});
 	}
 
 	_defineConverters() {
@@ -80,6 +86,28 @@ export default class InfoEditing extends Plugin {
 			view: (modelElement, { writer: viewWriter }) => {
 				const div = viewWriter.createContainerElement('div', { class: 'helpjuice-inserted-article-body' });
 
+				return toWidget(div, viewWriter);
+			}
+		});
+
+		conversion.for("upcast").elementToElement({
+			model: "insertedArticleDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-inserted-article-delete"
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "insertedArticleDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-inserted-article-delete"
+			}
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "insertedArticleDelete",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-inserted-article-delete" });
 				return toWidget(div, viewWriter);
 			}
 		});

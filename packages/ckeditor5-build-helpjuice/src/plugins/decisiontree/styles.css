@@ -40,7 +40,9 @@
 	background: none!important;
 }
 
-.helpjuice-decision-tree .ck-widget {
+.helpjuice-decision-tree .helpjuice-decision-tree-add-answers.ck-widget,
+.helpjuice-decision-tree .helpjuice-decision-tree-add-tab-button.ck-widget,
+.helpjuice-decision-tree .helpjuice-decision-tree-delete-button.ck-widget {
 	outline: none!important;
 }
 
@@ -185,4 +187,36 @@
 	font-size: 14px;
 	color: rgba(0, 0, 0, .87);
 	display: block;
+}
+
+.helpjuice-decision-tree-delete {
+	position: absolute!important;
+	top: -10px;
+	right: -10px;
+	z-index: 10;
+	outline: none!important;
+	cursor: pointer;
+	width: 20px;
+	height: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #757575;
+	border-radius: 50%;
+}
+
+.helpjuice-decision-tree-delete::before {
+	content: "\f00d";
+	font-family: "Font Awesome 6 Pro";
+	font-size: 12px;
+	display: block;
+	color: #FFFFFF;
+}
+
+.helpjuice-decision-tree-delete:hover {
+	outline-color: none!important;
+}
+
+.helpjuice-decision-tree-delete div {
+	display: none;
 }

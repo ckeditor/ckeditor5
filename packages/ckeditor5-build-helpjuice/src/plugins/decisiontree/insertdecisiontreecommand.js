@@ -17,6 +17,9 @@ export default class InsertDecisionTreeCommand extends Command {
 }
 
 function createDecisionTree(writer) {
+	const docFrag = writer.createDocumentFragment();
+
+	// CREATE DECISION TREE
 	const id = Math.random().toString(16).slice(2);
 	const decisionTree = writer.createElement("decisionTree");
 
@@ -77,9 +80,19 @@ function createDecisionTree(writer) {
 	writer.setAttribute("data-behavior", "back", decisionTreeAddAnswers);
 	writer.append(decisionTreeAddAnswers, decisionTreeTabs);
 
-	// // Append All Content into Decision Tree Root Element
+	// Create delete button
+	const decisionTreeDelete = writer.createElement("decisionTreeDelete");
+
+	// Append All Content into Decision Tree Root Element
 	writer.append(decisionTreeFirstQuestion, decisionTree);
 	writer.append(decisionTreeTabs, decisionTree);
+	writer.append(decisionTreeDelete, decisionTree);
 
-	return decisionTree;
+	// CREATE EMPTY PARAGRAPH
+	const emptyParagraph = writer.createElement("paragraph");
+
+	writer.append(decisionTree, docFrag);
+	writer.append(emptyParagraph, docFrag);
+
+	return docFrag;
 }

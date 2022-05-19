@@ -49,6 +49,12 @@ export default class InternalBlockEditing extends Plugin {
 				return false;
 			}
 		});
+
+		schema.register("internalBlockDelete", {
+			isObject: true,
+			isLimit: true,
+			allowIn: "internalBlock"
+		});
 	}
 
 	_defineConverters() {
@@ -150,6 +156,28 @@ export default class InternalBlockEditing extends Plugin {
 					"data-action": modelElement.getAttribute("data-action")
 				});
 
+				return toWidget(div, viewWriter);
+			}
+		});
+
+		conversion.for("upcast").elementToElement({
+			model: "internalBlockDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-internal-block-delete"
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "internalBlockDelete",
+			view: {
+				name: "div",
+				classes: "helpjuice-internal-block-delete"
+			}
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "internalBlockDelete",
+			view: (modelElement, { writer: viewWriter }) => {
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-internal-block-delete" });
 				return toWidget(div, viewWriter);
 			}
 		});
