@@ -53,7 +53,7 @@ export default class InsertTextObserver extends Observer {
 				return;
 			}
 
-			const eventInfo = new EventInfo( viewDocument, 'insertText' );
+			const eventInfo = new EventInfo( viewDocument, inputType != 'insertCompositionText' ? 'insertText' : 'insertCompositionText' );
 
 			viewDocument.fire( eventInfo, new DomEventData( viewDocument, domEvent, {
 				text,

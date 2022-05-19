@@ -8,7 +8,6 @@
  */
 
 import DomEventObserver from './domeventobserver';
-import SelectionObserver from './selectionobserver';
 
 /**
  * {@link module:engine/view/document~Document#event:compositionstart Compositionstart},
@@ -26,61 +25,23 @@ export default class CompositionObserver extends DomEventObserver {
 		this.domEventType = [ 'compositionstart', 'compositionupdate', 'compositionend' ];
 		const document = this.document;
 
-		const selectionObserver = view.getObserver( SelectionObserver );
-
 		document.on( 'compositionstart', () => {
 			document.isComposing = true;
 		} );
 
-		document.on( 'compositionend', ( evt, { domEvent } ) => {
-			const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
-			const firstDomRange = domSelection.getRangeAt( 0 );
-
-			console.log( 'compositionend firstDomRange', firstDomRange, view.domConverter.domSelectionToView( domSelection ).getFirstRange() );
-
-			selectionObserver.flush( domEvent.target.ownerDocument );
-
+		document.on( 'compositionend', () => {
 			document.isComposing = false;
-
-			// In case of aborted composition.
-			if ( !domEvent.data ) {
-				return;
-			}
-
-			// console.log( '[CompositionObserver] insertText', {
-			// 	text: domEvent.data,
-			// 	selection: document.selection
-			// } );
-
-			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
-			// document.fire( 'insertText', new DomEventData( document, domEvent, {
-			// 	text: domEvent.data,
-			// 	selection: document.selection
-			// } ) );
-		} );
-
-		document.on( 'compositionupdate', ( evt, { domEvent } ) => {
-			const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
-			const firstDomRange = domSelection.getRangeAt( 0 );
-
-			console.log( 'compositionupdate firstDomRange', firstDomRange, view.domConverter.domSelectionToView( domSelection ).getFirstRange() );
-
-			if ( domSelection.isCollapsed ) {
-				console.log( 'compositionupdate in collapsed selection: aborting' );
-				return;
-			}
-
-			// console.log( 'getFirstRange', view.domConverter.domSelectionToView( domSelection ).getFirstRange() );
-
-			// document.fire( 'insertText', new DomEventData( document, domEvent, {
-			// 	text: domEvent.data,
-			// 	selection: view.domConverter.domSelectionToView( domSelection )
-			// } ) );
 		} );
 	}
 
 	onDomEvent( domEvent ) {
-		this.fire( domEvent.type, domEvent );
+		const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
+		const firstDomRange = domSelection.getRangeAt( 0 );
+		const firstViewPosition = this.view.domConverter.domPositionToView( firstDomRange.startContainer, firstDomRange.startOffset );
+
+		this.fire( domEvent.type, domEvent, {
+			targetRangeStart: firstViewPosition
+		} );
 	}
 }
 
