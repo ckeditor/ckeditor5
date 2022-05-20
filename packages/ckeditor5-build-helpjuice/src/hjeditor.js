@@ -329,9 +329,7 @@ HelpjuiceEditor.defaultConfig = {
 				mode: 'manual',
 				label: 'Style as Button',
 				defaultValue: false,
-				attributes: {
-					class: 'link-button'
-				}
+				classes: 'link-button'
 			}
 		}
 	},
