@@ -24,7 +24,7 @@ export default class CommentsEditing extends Plugin {
             view: {
                 name: 'i',
                 classes: ['helpjuice-thread'],
-                attributes: ['data-id', 'data-definition']
+                attributes: ['data-id']
             },
             model: {
                 key: 'comment',

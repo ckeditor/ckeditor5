@@ -318,11 +318,19 @@ HelpjuiceEditor.defaultConfig = {
 			},
 			openInNewTab: {
 				mode: 'manual',
-				label: 'Open in a new tab',
-				defaultValue: true,
+				label: 'Open In a New Tab',
+				defaultValue: false,
 				attributes: {
 					target: '_blank',
 					rel: 'noopener noreferrer'
+				}
+			},
+			buttonLink: {
+				mode: 'manual',
+				label: 'Style as Button',
+				defaultValue: false,
+				attributes: {
+					class: 'link-button'
 				}
 			}
 		}
@@ -344,20 +352,36 @@ HelpjuiceEditor.defaultConfig = {
 				name: "Disable Text Selecting",
 				element: "span",
 				classes: ["hj-unselectable"]
+			},
+			{
+				name: "Bordered",
+				element: "span",
+				classes: ["fr-text-bordered"]
+			},
+			{
+				name: "Spaced",
+				element: "span",
+				classes: ["fr-text-spaced"]
+			},
+			{
+				name: "Uppercase",
+				element: "span",
+				classes: ["fr-text-uppercase"]
 			}
 		]
 	},
 	toolbar: {
 		items: [
+			'undo',
+			'redo',
 			'heading',
+			'fontFamily',
+			'fontSize',
+			'style',
 			'|',
 			'bold',
 			'underline',
 			'italic',
-			'style',
-			'|',
-			'fontFamily',
-			'fontSize',
 			'fontColor',
 			'fontBackgroundColor',
 			'highlight',
@@ -367,23 +391,18 @@ HelpjuiceEditor.defaultConfig = {
 			'todoList',
 			'outdent',
 			'indent',
-			'|',
-			'link',
-			'filesmanager',
-			'imageInsert',
-			'mediaEmbed',
-			'|',
-			'findAndReplace',
+			'removeFormat',
 			'alignment',
 			'blockQuote',
-			'insertTable',
+			'link',
+			'|',
 			'horizontalLine',
 			'htmlembed',
 			'codeblock',
-			'sourceEditing',
-			'removeFormat',
-			'undo',
-			'redo',
+			'filesmanager',
+			'imageInsert',
+			'mediaEmbed',
+			'insertTable',
 			'|',
 			'insertarticle',
 			'accordion',
@@ -391,7 +410,10 @@ HelpjuiceEditor.defaultConfig = {
 			'calloutblocksdropdown',
 			'internalblock',
 			'decisiontree',
-			'glossary'
+			'glossary',
+			'|',
+			'findAndReplace',
+			'sourceEditing'
 		],
 		shouldNotGroupWhenFull: true
 	},

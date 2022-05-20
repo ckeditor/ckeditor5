@@ -109,7 +109,7 @@
 
 .helpjuice-decision-tree-button .helpjuice-decision-tree-delete-button::before {
 	content: "\f2ed";
-	font-family: "Font Awesome 6 Pro";
+	font-family: "Font Awesome 5 Pro";
 	font-size: 12px;
 	color: #cc0808;
 	display: block;
@@ -146,7 +146,7 @@
 }
 .helpjuice-decision-tree-add-tab-button::before {
 	content: "\2b";
-	font-family: "Font Awesome 6 Pro";
+	font-family: "Font Awesome 5 Pro";
 	font-size: 14px;
 	color: rgba(0, 0, 0, .87);
 	display: block;
@@ -183,7 +183,7 @@
 
 .helpjuice-decision-tree-add-answers::before {
 	content: "\2b";
-	font-family: "Font Awesome 6 Pro";
+	font-family: "Font Awesome 5 Pro";
 	font-size: 14px;
 	color: rgba(0, 0, 0, .87);
 	display: block;
@@ -207,7 +207,7 @@
 
 .helpjuice-decision-tree-delete::before {
 	content: "\f00d";
-	font-family: "Font Awesome 6 Pro";
+	font-family: "Font Awesome 5 Pro";
 	font-size: 12px;
 	display: block;
 	color: #FFFFFF;

@@ -119,7 +119,7 @@
 
 .helpjuice-callout-delete::before {
 	content: "\f00d";
-	font-family: "Font Awesome 6 Pro";
+	font-family: "Font Awesome 5 Pro";
 	font-size: 12px;
 	display: block;
 	color: #FFFFFF;
