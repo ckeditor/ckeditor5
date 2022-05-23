@@ -18,11 +18,19 @@ There were also a few bug fixes:
 
 <!-- TODO: Add a link to the blog post. -->
 
+### Cloud Services compatibility
+
+⚠️ **Important message for CKEditor 5 Cloud Services On-Premise users.**
+
+The new version of CKEditor 5 real-time collaboration is not compatible with the current version of CKEditor 5 Cloud Services On-Premise (`4.6.0`).
+
+Please wait for the new release of the CKEditor 5 Cloud Services On-Premise solution and update the backend service first, before updating the CKEditor 5 packages.
+
 ### Features
 
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improved the `History` API. Changes summary you can find in the related issue. Closes [#11226](https://github.com/ckeditor/ckeditor5/issues/11226). ([commit](https://github.com/ckeditor/ckeditor5/commit/8e9636428186bd058577cef0704ad6b326e895d6))
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Added support for the `type` attribute of `<ul>` and `<ol>` elements in addition to the `list-style-type` style. Closes [#11615](https://github.com/ckeditor/ckeditor5/issues/11615). ([commit](https://github.com/ckeditor/ckeditor5/commit/a6c677fa403ad0f907bab5c56a0040bcc8c87abd))
-* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Introduced better support for revision history when editor bundle is used. Greatly reduced number of calls and revision data passed to Cloud Services.
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Introduced better support for revision history when editor bundle is used. This greatly reduced number of calls and revision data passed to Cloud Services.
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Added support for a table column resizing, which allows to set the width of each column in a table using a resize handle. ([commit](https://github.com/ckeditor/ckeditor5/commit/38c6c378e11327e84be40230381a8713c12117d6))
 
 ### Bug fixes
