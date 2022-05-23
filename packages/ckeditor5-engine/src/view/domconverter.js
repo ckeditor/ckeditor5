@@ -127,7 +127,8 @@ export default class DomConverter {
 		];
 
 		/**
-		 * TODO
+		 * A list of elements which may affect the editing experience. To avoid this, those elements are replaced with
+		 * `<span data-ck-unsafe-element="[element name]"></span>` while rendering in the editing mode.
 		 *
 		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#unsafeElements

@@ -107,16 +107,17 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		} );
 
 		// Controversial result. See https://github.com/ckeditor/ckeditor5-engine/issues/987.
-		it( 'nbsp between blocks is not ignored (between paragraphs)', () => {
+		// https://github.com/ckeditor/ckeditor5/pull/11744/files#r871377976.
+		it( 'nbsp between blocks is ignored (between paragraphs)', () => {
 			editor.setData( '<p>foo</p>&nbsp;<p>bar</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo</paragraph><paragraph> </paragraph><paragraph>bar</paragraph>' );
+				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
-		it( 'nbsp between blocks is not ignored (different blocks)', () => {
+		it( 'nbsp between blocks is ignored (different blocks)', () => {
 			editor.model.schema.register( 'block', { inheritAllFrom: '$block' } );
 			editor.conversion.elementToElement( { model: 'block', view: 'block' } );
 			editor.setData( '<block>foo</block>&nbsp;<p>bar</p>' );
@@ -124,14 +125,43 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal(
 					'<block>foo</block>' +
-					'<paragraph> </paragraph>' +
 					'<paragraph>bar</paragraph>'
 				);
 
 			expect( editor.getData() )
 				.to.equal(
 					'<block>foo</block>' +
-					'<p>&nbsp;</p>' +
+					'<p>bar</p>'
+				);
+		} );
+
+		it( 'whitespaces between custom elements at block level are ignored', () => {
+			editor.model.schema.register( 'custom-foo-element', {
+				allowWhere: [ '$text', '$block' ],
+				allowChildren: '$text',
+				isInline: true
+			} );
+			editor.conversion.elementToElement( { model: 'custom-foo-element', view: 'custom-foo-element' } );
+			editor.setData(
+				'<p>foo</p>' +
+				' <custom-foo-element>a</custom-foo-element>' +
+				' <custom-foo-element>b</custom-foo-element>' +
+				' <p>bar</p>'
+			);
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<custom-foo-element>a</custom-foo-element>' +
+					'<custom-foo-element>b</custom-foo-element>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+			expect( editor.getData() )
+				.to.equal(
+					'<p>foo</p>' +
+					'<custom-foo-element>a</custom-foo-element>' +
+					'<custom-foo-element>b</custom-foo-element>' +
 					'<p>bar</p>'
 				);
 		} );
