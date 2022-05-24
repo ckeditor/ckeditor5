@@ -51,11 +51,15 @@ import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting'
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 import Style from '@ckeditor/ckeditor5-style/src/style';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 
 // Custom Plugins
 import Accordion from './plugins/accordion/accordion';
 import Tab from './plugins/tab/tab';
 import CalloutBlocks from './plugins/calloutblocks/calloutblocks';
+import ExtraFormatting from './plugins/extraformatting/extraformatting';
 import InternalBlock from './plugins/internalblock/internalblock';
 import DecisionTree from './plugins/decisiontree/decisiontree';
 import InsertArticle from './plugins/insertarticle/insertarticle';
@@ -123,7 +127,11 @@ HelpjuiceEditor.builtinPlugins = [
 	MentionCustomization,
 	Style,
 	Comments,
-	Glossary
+	Glossary,
+	ExtraFormatting,
+	Strikethrough,
+	Subscript,
+	Superscript
 ];
 
 function MentionCustomization(editor) {
@@ -380,6 +388,7 @@ HelpjuiceEditor.defaultConfig = {
 			'bold',
 			'underline',
 			'italic',
+			'extraformattingdropdown',
 			'fontColor',
 			'fontBackgroundColor',
 			'highlight',
