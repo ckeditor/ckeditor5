@@ -18,6 +18,7 @@ import DataTransfer from '../datatransfer';
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
+
 export default class InputObserver extends DomEventObserver {
 	constructor( view ) {
 		super( view );
@@ -55,7 +56,26 @@ export default class InputObserver extends DomEventObserver {
 			if ( !domTargetRanges.length ) {
 				const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
 
-				targetRanges = [ view.domConverter.domSelectionToView( domSelection ).getFirstRange() ];
+				let anchorViewPosition = null;
+				let focusViewPosition = null;
+
+				try {
+					anchorViewPosition = this.view.domConverter.domPositionToView( domSelection.anchorNode, domSelection.anchorOffset );
+				} catch ( err ) {
+					console.warn( 'cant map dom selection anchor to view', domSelection.anchorNode, domSelection.anchorOffset );
+				}
+
+				try {
+					focusViewPosition = this.view.domConverter.domPositionToView( domSelection.focusNode, domSelection.focusOffset );
+				} catch ( err ) {
+					console.warn( 'cant map dom selection focus to view', domSelection.focusNode, domSelection.focusOffset );
+				}
+
+				if ( anchorViewPosition ) {
+					targetRanges = [ view.createRange( anchorViewPosition, focusViewPosition ) ];
+				} else {
+					targetRanges = [];
+				}
 			} else {
 				targetRanges = domTargetRanges.map( domRange => {
 					return view.domConverter.domRangeToView( domRange );

@@ -95,6 +95,7 @@ export default class InsertTextCommand extends Command {
 			model.deleteContent( selection );
 
 			if ( text ) {
+				console.log( '-- insertText command:', text );
 				model.insertContent( writer.createText( text, doc.selection.getAttributes() ), selection );
 			}
 

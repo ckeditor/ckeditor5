@@ -825,6 +825,11 @@ export default class DomConverter {
 				offset = offset < 0 ? 0 : offset;
 			}
 
+			if ( offset > viewParent.data.length ) {
+				console.warn( '!!!!! offset bigger than text node length' );
+				offset = viewParent.data.length;
+			}
+
 			return new ViewPosition( viewParent, offset );
 		}
 		// domParent instanceof HTMLElement.

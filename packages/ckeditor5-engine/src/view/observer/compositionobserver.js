@@ -36,11 +36,16 @@ export default class CompositionObserver extends DomEventObserver {
 
 	onDomEvent( domEvent ) {
 		const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
-		const firstDomRange = domSelection.getRangeAt( 0 );
-		const firstViewPosition = this.view.domConverter.domPositionToView( firstDomRange.startContainer, firstDomRange.startOffset );
+		let anchorViewPosition = null;
+
+		try {
+			anchorViewPosition = this.view.domConverter.domPositionToView( domSelection.anchorNode, domSelection.anchorOffset );
+		} catch ( err ) {
+			console.warn( 'cant map dom selection anchor to view', domSelection.anchorNode, domSelection.anchorOffset );
+		}
 
 		this.fire( domEvent.type, domEvent, {
-			targetRangeStart: firstViewPosition
+			targetRangeStart: anchorViewPosition
 		} );
 	}
 }

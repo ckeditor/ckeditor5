@@ -12,6 +12,7 @@ import InsertTextCommand from './inserttextcommand';
 import InsertTextObserver from './inserttextobserver';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { LiveRange } from '@ckeditor/ckeditor5-engine';
+import SelectionObserver from '@ckeditor/ckeditor5-engine/src/view/observer/selectionobserver';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -68,59 +69,67 @@ export default class Input extends Plugin {
 			editor.execute( 'insertText', insertTextCommandData );
 		} );
 
-		this.listenTo( viewDocument, 'compositionupdate', ( evt, data ) => {
+		const compositionUpdate = ( evt, data ) => {
 			console.log( '----- compositionupdate', data.targetRangeStart );
 
 			if ( !this._compositionModelRange ) {
+				console.log( '!! no composition model range' );
 				return;
 			}
 
-			const compoositionModelPosition = editor.editing.mapper.toModelPosition( data.targetRangeStart );
+			const compositionModelPosition = data.targetRangeStart ? editor.editing.mapper.toModelPosition( data.targetRangeStart ) : null;
 
-			if ( this._compositionModelRange.start.isEqual( compoositionModelPosition ) ) {
+			if ( compositionModelPosition && this._compositionModelRange.start.isEqual( compositionModelPosition ) ) {
+				console.log( '!! same composition model range start' );
 				return;
 			}
 
-			console.log( '---------- stop composition (on update)', this._compositionModelRange, compoositionModelPosition );
+			console.log( '---------- stop composition', evt.name, this._compositionModelRange, compositionModelPosition );
 
-			const viewRange = editor.editing.mapper.toViewRange( this._compositionModelRange );
+			const compositionModelRange = this._compositionModelRange.toRange();
 
-			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
-			if ( this._compositionText ) {
+			const selectedText = Array.from( compositionModelRange.getItems() ).reduce( ( rangeText, node ) => {
+				return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
+			}, '' );
+
+			console.log( '------ fragment:', selectedText );
+
+			if ( selectedText ) {
+				if ( selectedText.length <= this._compositionText.length ) {
+					if ( this._compositionText.startsWith( selectedText ) ) {
+						this._compositionText = this._compositionText.substring( selectedText.length );
+						compositionModelRange.start = compositionModelRange.start.getShiftedBy( selectedText.length );
+					}
+				} else {
+					if ( selectedText.startsWith( this._compositionText ) ) {
+						// TODO this should be mapped as delete
+						compositionModelRange.start = compositionModelRange.start.getShiftedBy( this._compositionText.length );
+						this._compositionText = '';
+					}
+				}
+			}
+
+			const viewRange = editor.editing.mapper.toViewRange( compositionModelRange );
+
+			if ( this._compositionText || !viewRange.isCollapsed ) {
+				// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
 				viewDocument.fire( 'insertText', new DomEventData( viewDocument, data.domEvent, {
 					text: this._compositionText,
 					selection: view.createSelection( viewRange )
 				} ) );
+
+				view.getObserver( SelectionObserver ).flush( data.domEvent.target.ownerDocument );
 			}
 
 			this._compositionModelRange.detach();
 			this._compositionModelRange = null;
 			this._compositionText = '';
-		} );
+			// viewDocument.isComposing = false;
+			// viewDocument.isComposing = true;
+		};
 
-		this.listenTo( viewDocument, 'compositionend', ( evt, data ) => {
-			console.log( '----- compositionend', data.targetRangeStart );
-
-			if ( !this._compositionModelRange ) {
-				return;
-			}
-
-			console.log( '---------- stop composition (on end)', this._compositionModelRange );
-
-			const viewRange = editor.editing.mapper.toViewRange( this._compositionModelRange );
-
-			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
-			if ( this._compositionText ) {
-				viewDocument.fire( 'insertText', new DomEventData( viewDocument, data.domEvent, {
-					text: this._compositionText,
-					selection: view.createSelection( viewRange )
-				} ) );
-			}
-
-			this._compositionModelRange.detach();
-			this._compositionModelRange = null;
-			this._compositionText = '';
-		} );
+		this.listenTo( viewDocument, 'compositionupdate', compositionUpdate );
+		this.listenTo( viewDocument, 'compositionend', compositionUpdate );
 
 		this.listenTo( viewDocument, 'insertCompositionText', ( evt, data ) => {
 			const { text, selection } = data;
