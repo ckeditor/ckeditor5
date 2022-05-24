@@ -27,7 +27,8 @@ import {
 	fillArray,
 	sumArray,
 	normalizeColumnWidthsAttribute,
-	getTableWidthInPixels
+	getTableWidthInPixels,
+	setResizersVisibility
 } from '../../src/tablecolumnresize/utils';
 
 /* globals window */
@@ -572,6 +573,44 @@ describe( 'TableColumnResize utils', () => {
 			getComputedStyleStub.restore();
 
 			expect( result ).to.not.equal( 0 );
+		} );
+	} );
+
+	describe( 'setResizersVisibility()', () => {
+		let editor;
+
+		beforeEach( () => {
+			return ClassicEditor
+				.create( '', {
+					plugins: [ Table, TableColumnResize, Paragraph ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
+		} );
+
+		it( 'should add and remove ck-resizers-hidden class to/from the closest parent table', () => {
+			setModelData( editor.model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '25%,25%,50%' } ) );
+
+			const table = editor.model.document.getRoot().getChild( 0 );
+			const row0 = [ ...table.getChildren() ][ 0 ];
+			const cell00 = [ ...row0.getChildren() ][ 0 ];
+			const paragraph = [ ...cell00.getChildren() ][ 0 ];
+
+			setResizersVisibility( editor.editing.view, editor.editing.mapper.toViewElement( paragraph ), false );
+
+			expect( editor.editing.mapper.toViewElement( table ).hasClass( 'ck-resizers-hidden' ) ).to.be.true;
+
+			setResizersVisibility( editor.editing.view, editor.editing.mapper.toViewElement( paragraph ), true );
+
+			expect( editor.editing.mapper.toViewElement( table ).hasClass( 'ck-resizers-hidden' ) ).to.be.false;
 		} );
 	} );
 } );
