@@ -10,7 +10,7 @@
 // A hash table of hex numbers to avoid using toString() in uid() which is costly.
 // [ '00', '01', '02', ..., 'fe', 'ff' ]
 const HEX_NUMBERS = new Array( 256 ).fill( '' )
-	.map( ( val, index ) => ( '0' + ( index ).toString( 16 ) ).slice( -2 ) );
+	.map( ( _, index ) => ( '0' + ( index ).toString( 16 ) ).slice( -2 ) );
 
 /**
  * Returns a unique id. The id starts with an "e" character and a randomly generated string of

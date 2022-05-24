@@ -14,7 +14,7 @@
  * @param {String} unit An unit like "px" or "em".
  * @returns {module:utils/dom/tounit~helper}
  */
-export default function toUnit( unit: string ): ( value: unknown ) => string {
+export default function toUnit( unit: string ): ( value: string | number ) => string {
 	/**
 	 * A function, which adds a pre–defined trailing `unit`
 	 * to the passed `value`.

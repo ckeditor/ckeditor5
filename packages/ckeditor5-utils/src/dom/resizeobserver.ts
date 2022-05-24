@@ -7,14 +7,7 @@
  * @module utils/dom/resizeobserver
  */
 
-/* globals setTimeout, clearTimeout */
-
-import mix from '../mix';
 import global from './global';
-import Rect from './rect';
-import DomEmitterMixin, { Emitter } from './emittermixin';
-
-const RESIZE_CHECK_INTERVAL = 100;
 
 /**
  * A helper class which instances allow performing custom actions when native DOM elements are resized.
@@ -32,48 +25,62 @@ const RESIZE_CHECK_INTERVAL = 100;
  * used instead.
  */
 export default class ResizeObserver {
-	private readonly _element: HTMLElement;
+	/**
+	 * The element observer by this observer.
+	 *
+	 * @readonly
+	 * @private
+	 * @member {Element}
+	 */
+	private readonly _element: Element;
+
+	/**
+	 * The callback executed each time {@link #_element} is resized.
+	 *
+	 * @readonly
+	 * @private
+	 * @member {Function}
+	 */
 	private readonly _callback: ( entry: ResizeObserverEntry ) => void;
 
-	static _observerInstance: {
-		observe( element: HTMLElement ): void;
-		unobserve( element: HTMLElement ): void;
-	} | null;
+	/**
+	 * The single native observer instance (or polyfill in browsers that do not support the API)
+	 * shared across all {@link module:utils/dom/resizeobserver~ResizeObserver} instances.
+	 *
+	 * @static
+	 * @protected
+	 * @readonly
+	 * @property {Object|null}
+	 */
+	static _observerInstance: InstanceType<typeof global.window.ResizeObserver> | null = null;
 
-	static _elementCallbacks: Map<HTMLElement, Set<( entry: ResizeObserverEntry ) => void>> | null;
+	/**
+	 * A mapping of native DOM elements and their callbacks shared across all
+	 * {@link module:utils/dom/resizeobserver~ResizeObserver} instances.
+	 *
+	 * @static
+	 * @private
+	 * @property {Map.<Element,Set>|null}
+	 */
+	static _elementCallbacks: Map<Element, Set<( entry: ResizeObserverEntry ) => void>> | null = null;
 
 	/**
 	 * Creates an instance of the `ResizeObserver` class.
 	 *
-	 * @param {HTMLElement} element A DOM element that is to be observed for resizing. Note that
+	 * @param {Element} element A DOM element that is to be observed for resizing. Note that
 	 * the element must be visible (i.e. not detached from DOM) for the observer to work.
 	 * @param {Function} callback A function called when the observed element was resized. It passes
 	 * the [`ResizeObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry)
 	 * object with information about the resize event.
 	 */
-	constructor( element: HTMLElement, callback: ( entry: ResizeObserverEntry ) => void ) {
+	constructor( element: Element, callback: ( entry: ResizeObserverEntry ) => void ) {
 		// **Note**: For the maximum performance, this class ensures only a single instance of the native
 		// (or polyfilled) observer is used no matter how many instances of this class were created.
 		if ( !ResizeObserver._observerInstance ) {
 			ResizeObserver._createObserver();
 		}
 
-		/**
-		 * The element observer by this observer.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {HTMLElement}
-		 */
 		this._element = element;
-
-		/**
-		 * The callback executed each time {@link #_element} is resized.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {Function}
-		 */
 		this._callback = callback;
 
 		ResizeObserver._addElementCallback( element, callback );
@@ -92,10 +99,10 @@ export default class ResizeObserver {
 	 *
 	 * @private
 	 * @static
-	 * @param {HTMLElement} element
+	 * @param {Element} element
 	 * @param {Function} callback
 	 */
-	private static _addElementCallback( element: HTMLElement, callback: ( entry: ResizeObserverEntry ) => void ): void {
+	private static _addElementCallback( element: Element, callback: ( entry: ResizeObserverEntry ) => void ): void {
 		if ( !ResizeObserver._elementCallbacks ) {
 			ResizeObserver._elementCallbacks = new Map();
 		}
@@ -116,10 +123,10 @@ export default class ResizeObserver {
 	 *
 	 * @private
 	 * @static
-	 * @param {HTMLElement} element
+	 * @param {Element} element
 	 * @param {Function} callback
 	 */
-	private static _deleteElementCallback( element: HTMLElement, callback: ( entry: ResizeObserverEntry ) => void ): void {
+	private static _deleteElementCallback( element: Element, callback: ( entry: ResizeObserverEntry ) => void ): void {
 		const callbacks = ResizeObserver._getElementCallbacks( element );
 
 		// Remove the element callback. Check if exist first in case someone
@@ -145,10 +152,10 @@ export default class ResizeObserver {
 	 *
 	 * @private
 	 * @static
-	 * @param {HTMLElement} element
-	 * @returns {Set.<Function>|null}
+	 * @param {Element} element
+	 * @returns {Set.<Function>|null|undefined}
 	 */
-	private static _getElementCallbacks( element: HTMLElement ): Set<( entry: ResizeObserverEntry ) => void> | null | undefined {
+	private static _getElementCallbacks( element: Element ): Set<( entry: ResizeObserverEntry ) => void> | null | undefined {
 		if ( !ResizeObserver._elementCallbacks ) {
 			return null;
 		}
@@ -164,21 +171,9 @@ export default class ResizeObserver {
 	 * @static
 	 */
 	private static _createObserver(): void {
-		let ObserverConstructor;
-
-		// TODO: One day, the `ResizeObserver` API will be supported in all modern web browsers.
-		// When it happens, this module will no longer make sense and should be removed and
-		// the native implementation should be used across the project to save bytes.
-		// Check out https://caniuse.com/#feat=resizeobserver.
-		if ( typeof global.window.ResizeObserver === 'function' ) {
-			ObserverConstructor = global.window.ResizeObserver;
-		} else {
-			ObserverConstructor = ResizeObserverPolyfill;
-		}
-
-		ResizeObserver._observerInstance = new ObserverConstructor( entries => {
+		ResizeObserver._observerInstance = new global.window.ResizeObserver( entries => {
 			for ( const entry of entries ) {
-				const callbacks = ResizeObserver._getElementCallbacks( entry.target as HTMLElement );
+				const callbacks = ResizeObserver._getElementCallbacks( entry.target );
 
 				if ( callbacks ) {
 					for ( const callback of callbacks ) {
@@ -189,207 +184,3 @@ export default class ResizeObserver {
 		} );
 	}
 }
-
-/**
- * The single native observer instance (or polyfill in browsers that do not support the API)
- * shared across all {@link module:utils/dom/resizeobserver~ResizeObserver} instances.
- *
- * @static
- * @protected
- * @readonly
- * @property {Object|null} module:utils/dom/resizeobserver~ResizeObserver#_observerInstance
- */
-ResizeObserver._observerInstance = null;
-
-/**
- * A mapping of native DOM elements and their callbacks shared across all
- * {@link module:utils/dom/resizeobserver~ResizeObserver} instances.
- *
- * @static
- * @private
- * @readonly
- * @property {Map.<HTMLElement,Set>|null} module:utils/dom/resizeobserver~ResizeObserver#_elementCallbacks
- */
-ResizeObserver._elementCallbacks = null;
-
-/**
- * A polyfill class for the native [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver).
- *
- * @private
- * @mixes module:utils/domemittermixin~DomEmitterMixin
- */
-class ResizeObserverPolyfill {
-	private readonly _callback: ( entries: ResizeObserverEntry[] ) => void;
-	private readonly _elements: Set<HTMLElement>;
-	private readonly _previousRects: Map<HTMLElement, Rect>;
-	private _periodicCheckTimeout: ReturnType<typeof setTimeout> | null;
-
-	/**
-	 * Creates an instance of the {@link module:utils/dom/resizeobserver~ResizeObserverPolyfill} class.
-	 *
-	 * It synchronously reacts to resize of the window to check if observed elements' geometry changed.
-	 *
-	 * Additionally, the polyfilled observer uses a timeout to check if observed elements' geometry has changed
-	 * in some other way (dynamic layouts, scrollbars showing up, etc.), so its response can also be asynchronous.
-	 *
-	 * @param {Function} callback A function called when any observed element was resized. Refer to the
-	 * native [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) API to
-	 * learn more.
-	 */
-	constructor( callback: ( entries: ResizeObserverEntry[] ) => void ) {
-		/**
-		 * A function called when any observed {@link #_elements element} was resized.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {Function}
-		 */
-		this._callback = callback;
-
-		/**
-		 * DOM elements currently observed by the observer instance.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {Set}
-		 */
-		this._elements = new Set();
-
-		/**
-		 * Cached DOM {@link #_elements elements} bounding rects to compare to upon the next check.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {Map.<HTMLElement,module:utils/dom/rect~Rect>}
-		 */
-		this._previousRects = new Map();
-
-		/**
-		 * An UID of the current timeout upon which the observed elements rects
-		 * will be compared to the {@link #_previousRects previous rects} from the past.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {Map.<HTMLElement,module:utils/dom/rect~Rect>}
-		 */
-		this._periodicCheckTimeout = null;
-	}
-
-	/**
-	 * Starts observing a DOM element.
-	 *
-	 * Learn more in the
-	 * [native method documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/observe).
-	 *
-	 * @param {HTMLElement} element
-	 */
-	observe( element: HTMLElement ): void {
-		this._elements.add( element );
-
-		this._checkElementRectsAndExecuteCallback();
-
-		if ( this._elements.size === 1 ) {
-			this._startPeriodicCheck();
-		}
-	}
-
-	/**
-	 * Stops observing a DOM element.
-	 *
-	 * Learn more in the
-	 * [native method documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/unobserve).
-	 *
-	 * @param {HTMLElement} element
-	 */
-	unobserve( element: HTMLElement ): void {
-		this._elements.delete( element );
-		this._previousRects.delete( element );
-
-		if ( !this._elements.size ) {
-			this._stopPeriodicCheck();
-		}
-	}
-
-	/**
-	 * When called, the observer calls the {@link #_callback resize callback} for all observed
-	 * {@link #_elements elements} but also starts checking periodically for changes in the elements' geometry.
-	 * If some are detected, {@link #_callback resize callback} is called for relevant elements that were resized.
-	 *
-	 * @protected
-	 */
-	_startPeriodicCheck(): void {
-		const periodicCheck = () => {
-			this._checkElementRectsAndExecuteCallback();
-			this._periodicCheckTimeout = setTimeout( periodicCheck, RESIZE_CHECK_INTERVAL );
-		};
-
-		this.listenTo( global.window, 'resize', () => {
-			this._checkElementRectsAndExecuteCallback();
-		} );
-
-		this._periodicCheckTimeout = setTimeout( periodicCheck, RESIZE_CHECK_INTERVAL );
-	}
-
-	/**
-	 * Stops checking for changes in all observed {@link #_elements elements} geometry.
-	 *
-	 * @protected
-	 */
-	_stopPeriodicCheck(): void {
-		clearTimeout( this._periodicCheckTimeout! );
-		this.stopListening();
-		this._previousRects.clear();
-	}
-
-	/**
-	 * Checks if the geometry of any of the {@link #_elements element} has changed. If so, executes
-	 * the {@link #_callback resize callback} with element geometry data.
-	 *
-	 * @protected
-	 */
-	_checkElementRectsAndExecuteCallback(): void {
-		const entries: ResizeObserverEntry[] = [];
-
-		for ( const element of this._elements ) {
-			if ( this._hasRectChanged( element ) ) {
-				entries.push( {
-					target: element,
-					contentRect: this._previousRects.get( element )
-				} as any );
-			}
-		}
-
-		if ( entries.length ) {
-			this._callback( entries );
-		}
-	}
-
-	/**
-	 * Compares the DOM element geometry to the {@link #_previousRects cached geometry} from the past.
-	 * Returns `true` if geometry has changed or the element is checked for the first time.
-	 *
-	 * @protected
-	 * @param {HTMLElement} element
-	 * @returns {Boolean}
-	 */
-	_hasRectChanged( element: HTMLElement ): boolean {
-		if ( !element.ownerDocument.body.contains( element ) ) {
-			return false;
-		}
-
-		const currentRect = new Rect( element );
-		const previousRect = this._previousRects.get( element );
-
-		// The first check should always yield true despite no Previous rect to compare to.
-		// The native ResizeObserver does that and... that makes sense. Sort of.
-		const hasChanged = !previousRect || !previousRect.isEqual( currentRect );
-
-		this._previousRects.set( element, currentRect );
-
-		return hasChanged;
-	}
-}
-
-mix( ResizeObserverPolyfill, DomEmitterMixin );
-
-interface ResizeObserverPolyfill extends Emitter {}

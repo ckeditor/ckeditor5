@@ -9,7 +9,7 @@
 
 import EmitterMixin, { Emitter } from './emittermixin';
 import CKEditorError from './ckeditorerror';
-import { extend, isObject } from 'lodash-es';
+import { isObject } from 'lodash-es';
 
 const observablePropertiesSymbol = Symbol( 'observableProperties' );
 const boundObservablesSymbol = Symbol( 'boundObservables' );
@@ -49,7 +49,7 @@ const ObservableMixin: Observable = {
 
 		const properties = this[ observablePropertiesSymbol ];
 
-		if ( ( name in this ) && !properties.has( name ) ) {
+		if ( ( name in this ) && !properties!.has( name ) ) {
 			/**
 			 * Cannot override an existing property.
 			 *
@@ -73,11 +73,11 @@ const ObservableMixin: Observable = {
 			configurable: true,
 
 			get() {
-				return properties.get( name );
+				return properties!.get( name );
 			},
 
 			set( value ) {
-				const oldValue = properties.get( name );
+				const oldValue = properties!.get( name );
 
 				// Fire `set` event before the new value will be set to make it possible
 				// to override observable property without affecting `change` event.
@@ -90,8 +90,8 @@ const ObservableMixin: Observable = {
 
 				// Allow undefined as an initial value like A.define( 'x', undefined ) (#132).
 				// Note: When properties map has no such own property, then its value is undefined.
-				if ( oldValue !== newValue || !properties.has( name ) ) {
-					properties.set( name, newValue );
+				if ( oldValue !== newValue || !properties!.has( name ) ) {
+					properties!.set( name, newValue );
 					this.fire( 'change:' + name, name, newValue, oldValue );
 				}
 			}
@@ -127,7 +127,7 @@ const ObservableMixin: Observable = {
 		const boundProperties = this[ boundPropertiesSymbol ];
 
 		bindProperties.forEach( propertyName => {
-			if ( boundProperties.has( propertyName ) ) {
+			if ( boundProperties!.has( propertyName ) ) {
 				/**
 				 * Cannot bind the same property more than once.
 				 *
@@ -146,7 +146,7 @@ const ObservableMixin: Observable = {
 		bindProperties.forEach( a => {
 			const binding = { property: a, to: [] };
 
-			boundProperties.set( a, binding );
+			boundProperties!.set( a, binding );
 			bindings.set( a, binding );
 		} );
 
@@ -265,7 +265,7 @@ const ObservableMixin: Observable = {
 			this[ decoratedMethods ] = [];
 		}
 
-		this[ decoratedMethods ].push( methodName );
+		this[ decoratedMethods ]!.push( methodName );
 	},
 
 	...EmitterMixin
@@ -317,11 +317,7 @@ interface BindChainInternal {
 //
 // @private
 // @param {module:utils/observablemixin~ObservableMixin} observable
-function initObservable<T extends Observable>( observable: T ): asserts observable is T & {
-	[ observablePropertiesSymbol ]: {},
-	[ decoratedMethods ]: {},
-	[ boundPropertiesSymbol ]: {}
-} {
+function initObservable<T extends Observable>( observable: T ): void {
 	// Do nothing if already inited.
 	if ( observable[ observablePropertiesSymbol ] ) {
 		return;
@@ -699,6 +695,7 @@ function updateBoundObservableProperty( observable: Observable, propertyName: st
 // initial state of {@link BindChain._observable}.
 //
 // @private
+// @param {Observable} observable
 // @param {BindChain} chain The chain initialized by {@link Observable#bind}.
 function attachBindToListeners( observable: Observable, toBindings: BindChainInternal[ '_to' ] ): void {
 	toBindings.forEach( to => {
@@ -737,6 +734,20 @@ function attachBindToListeners( observable: Observable, toBindings: BindChainInt
  * @extends module:utils/emittermixin~Emitter
  */
 export interface Observable extends Emitter {
+	/**
+	 * Creates and sets the value of an observable property of this object. Such a property becomes a part
+	 * of the state and is observable.
+	 *
+	 * It accepts also a single object literal containing key/value pairs with properties to be set.
+	 *
+	 * This method throws the `observable-set-cannot-override` error if the observable instance already
+	 * has a property with the given property name. This prevents from mistakenly overriding existing
+	 * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
+	 *
+	 * @method #set
+	 * @param {String|Object} name The property's name or object with `name=>value` pairs.
+	 * @param {*} [value] The property's value (if `name` was passed in the first parameter).
+	 */
 	set<K extends keyof this & string>( name: K, value: this[ K ] ): void;
 	set( values: { readonly [ K in keyof this ]?: unknown } ): void;
 
@@ -747,11 +758,191 @@ export interface Observable extends Emitter {
 		bindProperty1: K1,
 		bindProperty2: K2
 	): DualBindChain<this[ K1 ], this[ K2 ]>;
+	/**
+	 * Binds {@link #set observable properties} to other objects implementing the
+	 * {@link module:utils/observablemixin~Observable} interface.
+	 *
+	 * Read more in the {@glink framework/guides/deep-dive/observables#property-bindings dedicated guide}
+	 * covering the topic of property bindings with some additional examples.
+	 *
+	 * Consider two objects: a `button` and an associated `command` (both `Observable`).
+	 *
+	 * A simple property binding could be as follows:
+	 *
+	 *		button.bind( 'isEnabled' ).to( command, 'isEnabled' );
+	 *
+	 * or even shorter:
+	 *
+	 *		button.bind( 'isEnabled' ).to( command );
+	 *
+	 * which works in the following way:
+	 *
+	 * * `button.isEnabled` **instantly equals** `command.isEnabled`,
+	 * * whenever `command.isEnabled` changes, `button.isEnabled` will immediately reflect its value.
+	 *
+	 * **Note**: To release the binding, use {@link module:utils/observablemixin~Observable#unbind}.
+	 *
+	 * You can also "rename" the property in the binding by specifying the new name in the `to()` chain:
+	 *
+	 *		button.bind( 'isEnabled' ).to( command, 'isWorking' );
+	 *
+	 * It is possible to bind more than one property at a time to shorten the code:
+	 *
+	 *		button.bind( 'isEnabled', 'value' ).to( command );
+	 *
+	 * which corresponds to:
+	 *
+	 *		button.bind( 'isEnabled' ).to( command );
+	 *		button.bind( 'value' ).to( command );
+	 *
+	 * The binding can include more than one observable, combining multiple data sources in a custom callback:
+	 *
+	 *		button.bind( 'isEnabled' ).to( command, 'isEnabled', ui, 'isVisible',
+	 *			( isCommandEnabled, isUIVisible ) => isCommandEnabled && isUIVisible );
+	 *
+	 * Using a custom callback allows processing the value before passing it to the target property:
+	 *
+	 *		button.bind( 'isEnabled' ).to( command, 'value', value => value === 'heading1' );
+	 *
+	 * It is also possible to bind to the same property in an array of observables.
+	 * To bind a `button` to multiple commands (also `Observables`) so that each and every one of them
+	 * must be enabled for the button to become enabled, use the following code:
+	 *
+	 *		button.bind( 'isEnabled' ).toMany( [ commandA, commandB, commandC ], 'isEnabled',
+	 *			( isAEnabled, isBEnabled, isCEnabled ) => isAEnabled && isBEnabled && isCEnabled );
+	 *
+	 * @method #bind
+	 * @param {...String} bindProperties Observable properties that will be bound to other observable(s).
+	 * @returns {Object} The bind chain with the `to()` and `toMany()` methods.
+	 */
 	bind( ...bindProperties: ( keyof this & string )[] ): MultiBindChain;
 
+	/**
+	 * Removes the binding created with {@link #bind}.
+	 *
+	 *		// Removes the binding for the 'a' property.
+	 *		A.unbind( 'a' );
+	 *
+	 *		// Removes bindings for all properties.
+	 *		A.unbind();
+	 *
+	 * @method
+	 * @param {...String} [unbindProperties] Observable properties to be unbound. All the bindings will
+	 * be released if no properties are provided.
+	 */
 	unbind( ...unbindProperties: ( keyof this & string )[] ): void;
 
+	/**
+	 * Turns the given methods of this object into event-based ones. This means that the new method will fire an event
+	 * (named after the method) and the original action will be plugged as a listener to that event.
+	 *
+	 * Read more in the {@glink framework/guides/deep-dive/observables#decorating-object-methods dedicated guide}
+	 * covering the topic of decorating methods with some additional examples.
+	 *
+	 * Decorating the method does not change its behavior (it only adds an event),
+	 * but it allows to modify it later on by listening to the method's event.
+	 *
+	 * For example, to cancel the method execution the event can be {@link module:utils/eventinfo~EventInfo#stop stopped}:
+	 *
+	 *		class Foo {
+	 *			constructor() {
+	 *				this.decorate( 'method' );
+	 *			}
+	 *
+	 *			method() {
+	 *				console.log( 'called!' );
+	 *			}
+	 *		}
+	 *
+	 *		const foo = new Foo();
+	 *		foo.on( 'method', ( evt ) => {
+	 *			evt.stop();
+	 *		}, { priority: 'high' } );
+	 *
+	 *		foo.method(); // Nothing is logged.
+	 *
+	 *
+	 * **Note**: The high {@link module:utils/priorities~PriorityString priority} listener
+	 * has been used to execute this particular callback before the one which calls the original method
+	 * (which uses the "normal" priority).
+	 *
+	 * It is also possible to change the returned value:
+	 *
+	 *		foo.on( 'method', ( evt ) => {
+	 *			evt.return = 'Foo!';
+	 *		} );
+	 *
+	 *		foo.method(); // -> 'Foo'
+	 *
+	 * Finally, it is possible to access and modify the arguments the method is called with:
+	 *
+	 *		method( a, b ) {
+	 *			console.log( `${ a }, ${ b }`  );
+	 *		}
+	 *
+	 *		// ...
+	 *
+	 *		foo.on( 'method', ( evt, args ) => {
+	 *			args[ 0 ] = 3;
+	 *
+	 *			console.log( args[ 1 ] ); // -> 2
+	 *		}, { priority: 'high' } );
+	 *
+	 *		foo.method( 1, 2 ); // -> '3, 2'
+	 *
+	 * @method #decorate
+	 * @param {String} methodName Name of the method to decorate.
+	 */
 	decorate( methodName: keyof this & string ): void;
+
+	/**
+	 * Fired when a property changed value.
+	 *
+	 *		observable.set( 'prop', 1 );
+	 *
+	 *		observable.on( 'change:prop', ( evt, propertyName, newValue, oldValue ) => {
+	 *			console.log( `${ propertyName } has changed from ${ oldValue } to ${ newValue }` );
+	 *		} );
+	 *
+	 *		observable.prop = 2; // -> 'prop has changed from 1 to 2'
+	 *
+	 * @event change:{property}
+	 * @param {String} name The property name.
+	 * @param {*} value The new property value.
+	 * @param {*} oldValue The previous property value.
+	 */
+
+	/**
+	 * Fired when a property value is going to be set but is not set yet (before the `change` event is fired).
+	 *
+	 * You can control the final value of the property by using
+	 * the {@link module:utils/eventinfo~EventInfo#return event's `return` property}.
+	 *
+	 *		observable.set( 'prop', 1 );
+	 *
+	 *		observable.on( 'set:prop', ( evt, propertyName, newValue, oldValue ) => {
+	 *			console.log( `Value is going to be changed from ${ oldValue } to ${ newValue }` );
+	 *			console.log( `Current property value is ${ observable[ propertyName ] }` );
+	 *
+	 *			// Let's override the value.
+	 *			evt.return = 3;
+	 *		} );
+	 *
+	 *		observable.on( 'change:prop', ( evt, propertyName, newValue, oldValue ) => {
+	 *			console.log( `Value has changed from ${ oldValue } to ${ newValue }` );
+	 *		} );
+	 *
+	 *		observable.prop = 2; // -> 'Value is going to be changed from 1 to 2'
+	 *		                     // -> 'Current property value is 1'
+	 *		                     // -> 'Value has changed from 1 to 3'
+	 *
+	 * **Note:** The event is fired even when the new value is the same as the old value.
+	 *
+	 * @event set:{property}
+	 * @param {String} name The property name.
+	 * @param {*} value The new property value.
+	 * @param {*} oldValue The previous property value.
+	 */
 
 	/** @internal */
 	[ observablePropertiesSymbol ]?: Map<string, unknown>;
@@ -765,204 +956,6 @@ export interface Observable extends Emitter {
 	/** @internal */
 	[ boundObservablesSymbol]?: Map<Observable, Record<string, Set<Binding>>>;
 }
-
-/**
- * Fired when a property changed value.
- *
- *		observable.set( 'prop', 1 );
- *
- *		observable.on( 'change:prop', ( evt, propertyName, newValue, oldValue ) => {
- *			console.log( `${ propertyName } has changed from ${ oldValue } to ${ newValue }` );
- *		} );
- *
- *		observable.prop = 2; // -> 'prop has changed from 1 to 2'
- *
- * @event change:{property}
- * @param {String} name The property name.
- * @param {*} value The new property value.
- * @param {*} oldValue The previous property value.
- */
-
-/**
- * Fired when a property value is going to be set but is not set yet (before the `change` event is fired).
- *
- * You can control the final value of the property by using
- * the {@link module:utils/eventinfo~EventInfo#return event's `return` property}.
- *
- *		observable.set( 'prop', 1 );
- *
- *		observable.on( 'set:prop', ( evt, propertyName, newValue, oldValue ) => {
- *			console.log( `Value is going to be changed from ${ oldValue } to ${ newValue }` );
- *			console.log( `Current property value is ${ observable[ propertyName ] }` );
- *
- *			// Let's override the value.
- *			evt.return = 3;
- *		} );
- *
- *		observable.on( 'change:prop', ( evt, propertyName, newValue, oldValue ) => {
- *			console.log( `Value has changed from ${ oldValue } to ${ newValue }` );
- *		} );
- *
- *		observable.prop = 2; // -> 'Value is going to be changed from 1 to 2'
- *		                     // -> 'Current property value is 1'
- *		                     // -> 'Value has changed from 1 to 3'
- *
- * **Note:** The event is fired even when the new value is the same as the old value.
- *
- * @event set:{property}
- * @param {String} name The property name.
- * @param {*} value The new property value.
- * @param {*} oldValue The previous property value.
- */
-
-/**
- * Creates and sets the value of an observable property of this object. Such a property becomes a part
- * of the state and is observable.
- *
- * It accepts also a single object literal containing key/value pairs with properties to be set.
- *
- * This method throws the `observable-set-cannot-override` error if the observable instance already
- * has a property with the given property name. This prevents from mistakenly overriding existing
- * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
- *
- * @method #set
- * @param {String|Object} name The property's name or object with `name=>value` pairs.
- * @param {*} [value] The property's value (if `name` was passed in the first parameter).
- */
-
-/**
- * Binds {@link #set observable properties} to other objects implementing the
- * {@link module:utils/observablemixin~Observable} interface.
- *
- * Read more in the {@glink framework/guides/deep-dive/observables#property-bindings dedicated guide}
- * covering the topic of property bindings with some additional examples.
- *
- * Consider two objects: a `button` and an associated `command` (both `Observable`).
- *
- * A simple property binding could be as follows:
- *
- *		button.bind( 'isEnabled' ).to( command, 'isEnabled' );
- *
- * or even shorter:
- *
- *		button.bind( 'isEnabled' ).to( command );
- *
- * which works in the following way:
- *
- * * `button.isEnabled` **instantly equals** `command.isEnabled`,
- * * whenever `command.isEnabled` changes, `button.isEnabled` will immediately reflect its value.
- *
- * **Note**: To release the binding, use {@link module:utils/observablemixin~Observable#unbind}.
- *
- * You can also "rename" the property in the binding by specifying the new name in the `to()` chain:
- *
- *		button.bind( 'isEnabled' ).to( command, 'isWorking' );
- *
- * It is possible to bind more than one property at a time to shorten the code:
- *
- *		button.bind( 'isEnabled', 'value' ).to( command );
- *
- * which corresponds to:
- *
- *		button.bind( 'isEnabled' ).to( command );
- *		button.bind( 'value' ).to( command );
- *
- * The binding can include more than one observable, combining multiple data sources in a custom callback:
- *
- *		button.bind( 'isEnabled' ).to( command, 'isEnabled', ui, 'isVisible',
- *			( isCommandEnabled, isUIVisible ) => isCommandEnabled && isUIVisible );
- *
- * Using a custom callback allows processing the value before passing it to the target property:
- *
- *		button.bind( 'isEnabled' ).to( command, 'value', value => value === 'heading1' );
- *
- * It is also possible to bind to the same property in an array of observables.
- * To bind a `button` to multiple commands (also `Observables`) so that each and every one of them
- * must be enabled for the button to become enabled, use the following code:
- *
- *		button.bind( 'isEnabled' ).toMany( [ commandA, commandB, commandC ], 'isEnabled',
- *			( isAEnabled, isBEnabled, isCEnabled ) => isAEnabled && isBEnabled && isCEnabled );
- *
- * @method #bind
- * @param {...String} bindProperties Observable properties that will be bound to other observable(s).
- * @returns {Object} The bind chain with the `to()` and `toMany()` methods.
- */
-
-/**
- * Removes the binding created with {@link #bind}.
- *
- *		// Removes the binding for the 'a' property.
- *		A.unbind( 'a' );
- *
- *		// Removes bindings for all properties.
- *		A.unbind();
- *
- * @method #unbind
- * @param {...String} [unbindProperties] Observable properties to be unbound. All the bindings will
- * be released if no properties are provided.
- */
-
-/**
- * Turns the given methods of this object into event-based ones. This means that the new method will fire an event
- * (named after the method) and the original action will be plugged as a listener to that event.
- *
- * Read more in the {@glink framework/guides/deep-dive/observables#decorating-object-methods dedicated guide}
- * covering the topic of decorating methods with some additional examples.
- *
- * Decorating the method does not change its behavior (it only adds an event),
- * but it allows to modify it later on by listening to the method's event.
- *
- * For example, to cancel the method execution the event can be {@link module:utils/eventinfo~EventInfo#stop stopped}:
- *
- *		class Foo {
- *			constructor() {
- *				this.decorate( 'method' );
- *			}
- *
- *			method() {
- *				console.log( 'called!' );
- *			}
- *		}
- *
- *		const foo = new Foo();
- *		foo.on( 'method', ( evt ) => {
- *			evt.stop();
- *		}, { priority: 'high' } );
- *
- *		foo.method(); // Nothing is logged.
- *
- *
- * **Note**: The high {@link module:utils/priorities~PriorityString priority} listener
- * has been used to execute this particular callback before the one which calls the original method
- * (which uses the "normal" priority).
- *
- * It is also possible to change the returned value:
- *
- *		foo.on( 'method', ( evt ) => {
- *			evt.return = 'Foo!';
- *		} );
- *
- *		foo.method(); // -> 'Foo'
- *
- * Finally, it is possible to access and modify the arguments the method is called with:
- *
- *		method( a, b ) {
- *			console.log( `${ a }, ${ b }`  );
- *		}
- *
- *		// ...
- *
- *		foo.on( 'method', ( evt, args ) => {
- *			args[ 0 ] = 3;
- *
- *			console.log( args[ 1 ] ); // -> 2
- *		}, { priority: 'high' } );
- *
- *		foo.method( 1, 2 ); // -> '3, 2'
- *
- * @method #decorate
- * @param {String} methodName Name of the method to decorate.
- */
 
 interface SingleBindChain<TKey extends string, TVal> {
 	toMany<O extends Observable, K extends keyof O>(

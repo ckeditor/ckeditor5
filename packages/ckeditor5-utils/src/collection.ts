@@ -34,6 +34,8 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	private readonly _bindToInternalToExternalMap: WeakMap<T, any>;
 	private _skippedIndexesFromExternal: number[];
 
+	constructor( options?: { readonly idProperty?: I } );
+	constructor( initialItems: Iterable<T>, options?: { readonly idProperty?: I } );
 	/**
 	 * Creates a new Collection instance.
 	 *
@@ -70,9 +72,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @param {String} [options.idProperty='id'] The name of the property which is used to identify an item.
 	 * Items that do not have such a property will be assigned one when added to the collection.
 	 */
-	constructor( options?: { idProperty?: I } )
-	constructor( initialItems: Iterable<T>, options?: { idProperty?: I } )
-	constructor( initialItemsOrOptions: Iterable<T> | { idProperty?: I } = {}, options: { idProperty?: I } = {} ) {
+	constructor( initialItemsOrOptions: Iterable<T> | { readonly idProperty?: I } = {}, options: { readonly idProperty?: I } = {} ) {
 		const hasInitialItems = isIterable( initialItemsOrOptions );
 
 		if ( !hasInitialItems ) {
@@ -110,7 +110,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 		 *
 		 * See {@link #_bindToInternalToExternalMap}.
 		 *
-		 * @protected
+		 * @private
 		 * @member {WeakMap}
 		 */
 		this._bindToExternalToInternalMap = new WeakMap();
@@ -122,7 +122,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 		 *
 		 * See {@link #_bindToExternalToInternalMap}.
 		 *
-		 * @protected
+		 * @private
 		 * @member {WeakMap}
 		 */
 		this._bindToInternalToExternalMap = new WeakMap();
@@ -147,7 +147,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 		 * A collection instance this collection is bound to as a result
 		 * of calling {@link #bindTo} method.
 		 *
-		 * @protected
+		 * @private
 		 * @member {module:utils/collection~Collection} #_bindToCollection
 		 */
 	}
@@ -201,7 +201,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * Any item not containing an id will get an automatically generated one.
 	 *
 	 * @chainable
-	 * @param {Iterable.<Object>} item
+	 * @param {Iterable.<Object>} items
 	 * @param {Number} [index] The position of the insertion. Items will be appended if no `index` is specified.
 	 * @fires add
 	 * @fires change
@@ -362,7 +362,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @param {Object} callback.item
 	 * @param {Number} callback.index
 	 * @param {Object} [ctx] Context in which the `callback` will be called.
-	 * @returns {Object[]} The array with matching items.
+	 * @returns {Array} The array with matching items.
 	 */
 	filter(
 		callback: ( item: T, index: number ) => boolean,
@@ -792,25 +792,24 @@ export default Collection;
  *
  * See the {@link module:utils/collection~Collection#bindTo `bindTo()`} documentation for examples.
  *
- * @interface module:utils/collection~CollectionBindToChain
- */
-
-/**
- * Creates a callback or a property binding.
- *
- * @method #using
- * @param {Function|String} callbackOrProperty  When the function is passed, it should return
- * the collection items. When the string is provided, the property value is used to create the bound collection items.
- */
-
-/**
- * Creates the class factory binding in which items of the source collection are passed to
- * the constructor of the specified class.
- *
- * @method #as
- * @param {Function} Class The class constructor used to create instances in the factory.
+ * @interface
  */
 export interface CollectionBindToChain<S, T> {
+	/**
+	 * Creates the class factory binding in which items of the source collection are passed to
+	 * the constructor of the specified class.
+	 *
+	 * @method #as
+	 * @param {Function} Class The class constructor used to create instances in the factory.
+	 */
 	as( Class: new ( item: S ) => T ): void;
+
+	/**
+	 * Creates a callback or a property binding.
+	 *
+	 * @method #using
+	 * @param {Function|String} callbackOrProperty  When the function is passed, it should return
+	 * the collection items. When the string is provided, the property value is used to create the bound collection items.
+	 */
 	using( callbackOrProperty: keyof S | ( ( item: S ) => T | null ) ): void;
 }

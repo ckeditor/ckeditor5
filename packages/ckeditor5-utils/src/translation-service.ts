@@ -229,7 +229,7 @@ function getNumberOfLanguages(): number {
  * to support plural forms. Otherwise it should always be set to a string with the English plural form of the message.
  */
 export interface Message {
-	string: string;
-	id?: string;
-	plural?: string;
+	readonly string: string;
+	readonly id?: string;
+	readonly plural?: string;
 }

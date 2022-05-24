@@ -15,12 +15,12 @@ import CKEditorError from './ckeditorerror';
 import mix from './mix';
 
 /**
- * Allows observing a group of `HTMLElement`s whether at least one of them is focused.
+ * Allows observing a group of `Element`s whether at least one of them is focused.
  *
  * Used by the {@link module:core/editor/editor~Editor} in order to track whether the focus is still within the application,
  * or were used outside of its UI.
  *
- * **Note** `focus` and `blur` listeners use event capturing, so it is only needed to register wrapper `HTMLElement`
+ * **Note** `focus` and `blur` listeners use event capturing, so it is only needed to register wrapper `Element`
  * which contain other `focusable` elements. But note that this wrapper element has to be focusable too
  * (have e.g. `tabindex="-1"`).
  *
@@ -30,58 +30,58 @@ import mix from './mix';
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 class FocusTracker {
+	/**
+	 * True when one of the registered elements is focused.
+	 *
+	 * @readonly
+	 * @observable
+	 * @member {Boolean}
+	 */
 	isFocused!: boolean;
-	focusedElement!: HTMLElement | null;
 
-	private _elements: Set<HTMLElement>;
+	/**
+	 * The currently focused element.
+	 *
+	 * While {@link #isFocused `isFocused`} remains `true`, the focus can
+	 * move between different UI elements. This property tracks those
+	 * elements and tells which one is currently focused.
+	 *
+	 * @readonly
+	 * @observable
+	 * @member {Element|null}
+	 */
+	focusedElement!: Element | null;
+
+	/**
+	 * List of registered elements.
+	 *
+	 * @private
+	 * @member {Set.<Element>}
+	 */
+	private _elements: Set<Element>;
+
+	/**
+	 * Event loop timeout.
+	 *
+	 * @private
+	 * @member {Number}
+	 */
 	private _nextEventLoopTimeout: ReturnType<typeof setTimeout> | null;
 
 	constructor() {
-		/**
-		 * True when one of the registered elements is focused.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isFocused
-		 */
 		this.set( 'isFocused', false );
-
-		/**
-		 * The currently focused element.
-		 *
-		 * While {@link #isFocused `isFocused`} remains `true`, the focus can
-		 * move between different UI elements. This property tracks those
-		 * elements and tells which one is currently focused.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {HTMLElement|null} #focusedElement
-		 */
 		this.set( 'focusedElement', null );
 
-		/**
-		 * List of registered elements.
-		 *
-		 * @private
-		 * @member {Set.<HTMLElement>}
-		 */
 		this._elements = new Set();
-
-		/**
-		 * Event loop timeout.
-		 *
-		 * @private
-		 * @member {Number}
-		 */
 		this._nextEventLoopTimeout = null;
 	}
 
 	/**
 	 * Starts tracking the specified element.
 	 *
-	 * @param {HTMLElement} element
+	 * @param {Element} element
 	 */
-	add( element: HTMLElement ): void {
+	add( element: Element ): void {
 		if ( this._elements.has( element ) ) {
 			/**
 			 * This element is already tracked by {@link module:utils/focustracker~FocusTracker}.
@@ -99,9 +99,9 @@ class FocusTracker {
 	/**
 	 * Stops tracking the specified element and stops listening on this element.
 	 *
-	 * @param {HTMLElement} element
+	 * @param {Element} element
 	 */
-	remove( element: HTMLElement ): void {
+	remove( element: Element ): void {
 		if ( element === this.focusedElement ) {
 			this._blur();
 		}
@@ -125,9 +125,9 @@ class FocusTracker {
 	 * Stores currently focused element and set {#isFocused} as `true`.
 	 *
 	 * @private
-	 * @param {HTMLElement} element Element which has been focused.
+	 * @param {Element} element Element which has been focused.
 	 */
-	private _focus( element: HTMLElement ): void {
+	private _focus( element: Element ): void {
 		clearTimeout( this._nextEventLoopTimeout! );
 
 		this.focusedElement = element;
@@ -149,14 +149,6 @@ class FocusTracker {
 			this.isFocused = false;
 		}, 0 );
 	}
-
-	/**
-	 * @event focus
-	 */
-
-	/**
-	 * @event blur
-	 */
 }
 
 mix( FocusTracker, DomEmitterMixin );

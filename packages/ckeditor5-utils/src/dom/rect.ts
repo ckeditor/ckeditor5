@@ -13,8 +13,7 @@ import getBorderWidths from './getborderwidths';
 import isText from './istext';
 import { isElement } from 'lodash-es';
 
-type RectProperty =  'top' | 'right' | 'bottom' | 'left' | 'width' | 'height';
-const rectProperties: RectProperty[] = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
+const rectProperties: ( keyof RectLike )[] = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
@@ -22,12 +21,61 @@ const rectProperties: RectProperty[] = [ 'top', 'right', 'bottom', 'left', 'widt
  * to manipulate the rect and compare it against other rect instances.
  */
 export default class Rect {
+	/**
+	 * The "top" value of the rect.
+	 *
+	 * @readonly
+	 * @member {Number}
+	 */
 	top!: number;
+
+	/**
+	 * The "right" value of the rect.
+	 *
+	 * @readonly
+	 * @member {Number}
+	 */
 	right!: number;
+
+	/**
+	 * The "bottom" value of the rect.
+	 *
+	 * @readonly
+	 * @member {Number}
+	 */
 	bottom!: number;
+
+	/**
+	 * The "left" value of the rect.
+	 *
+	 * @readonly
+	 * @member {Number}
+	 */
 	left!: number;
+
+	/**
+	 * The "width" value of the rect.
+	 *
+	 * @readonly
+	 * @member {Number}
+	 */
 	width!: number;
+
+	/**
+	 * The "height" value of the rect.
+	 *
+	 * @readonly
+	 * @member {Number}
+	 */
 	height!: number;
+
+	/**
+	 * The object this rect is for.
+	 *
+	 * @protected
+	 * @readonly
+	 * @member {module:utils/dom/rect~RectSource}
+	 */
 	private _source!: RectSource;
 
 	/**
@@ -60,13 +108,6 @@ export default class Rect {
 	constructor( source: RectSource ) {
 		const isSourceRange = isRange( source );
 
-		/**
-		 * The object this rect is for.
-		 *
-		 * @protected
-		 * @readonly
-		 * @member {HTMLElement|Range|Window|ClientRect|DOMRect|module:utils/dom/rect~Rect|Object} #_source
-		 */
 		Object.defineProperty( this, '_source', {
 			// If the source is a Rect instance, copy it's #_source.
 			value: ( source as any )._source || source,
@@ -107,47 +148,6 @@ export default class Rect {
 			copyRectProperties( this, source );
 		}
 
-		/**
-		 * The "top" value of the rect.
-		 *
-		 * @readonly
-		 * @member {Number} #top
-		 */
-
-		/**
-		 * The "right" value of the rect.
-		 *
-		 * @readonly
-		 * @member {Number} #right
-		 */
-
-		/**
-		 * The "bottom" value of the rect.
-		 *
-		 * @readonly
-		 * @member {Number} #bottom
-		 */
-
-		/**
-		 * The "left" value of the rect.
-		 *
-		 * @readonly
-		 * @member {Number} #left
-		 */
-
-		/**
-		 * The "width" value of the rect.
-		 *
-		 * @readonly
-		 * @member {Number} #width
-		 */
-
-		/**
-		 * The "height" value of the rect.
-		 *
-		 * @readonly
-		 * @member {Number} #height
-		 */
 	}
 
 	/**
@@ -287,7 +287,7 @@ export default class Rect {
 	 * {@link #bottom}, {@link #width} and {@link #height}) are the equal in both rect
 	 * instances.
 	 *
-	 * @param {module:utils/dom/rect~Rect} rect A rect instance to compare with.
+	 * @param {module:utils/dom/rect~Rect} anotherRect A rect instance to compare with.
 	 * @returns {Boolean} `true` when Rects are equal. `false` otherwise.
 	 */
 	isEqual( anotherRect: Rect ): boolean {
@@ -434,16 +434,36 @@ export default class Rect {
 /**
  * A source of {@link module:utils/dom/rect~Rect}.
  * 
- * @typedef {HTMLElement|Range|Window|ClientRect|DOMRect|module:utils/dom/rect~Rect|Object} module:utils/dom/rect~RectSource
+ * @typedef {HTMLElement|Range|Window|module:utils/dom/rect~RectLike} module:utils/dom/rect~RectSource
  */
-export type RectSource = HTMLElement | Range | Window | { readonly [ Prop in RectProperty ]: number };
+export type RectSource = HTMLElement | Range | Window | RectLike;
+
+/**
+ * An object that describes properties of `ClientRect` object.
+ *
+ * @typedef {Object} module:utils/dom/rect~RectLike
+ * @property {Number} top
+ * @property {Number} right
+ * @property {Number} bottom
+ * @property {Number} left
+ * @property {Number} width
+ * @property {Number} height
+ */
+export interface RectLike {
+	readonly top: number;
+	readonly right: number;
+	readonly bottom: number;
+	readonly left: number;
+	readonly width: number;
+	readonly height: number;
+}
 
 // Acquires all the rect properties from the passed source.
 //
 // @private
 // @param {module:utils/dom/rect~Rect} rect
-// @param {ClientRect|module:utils/dom/rect~Rect|Object} source
-function copyRectProperties( rect: Rect, source: { readonly [ prop in RectProperty ]: number } ): void {
+// @param {module:utils/dom/rect~RectLike} source
+function copyRectProperties( rect: Rect, source: RectLike ): void {
 	for ( const p of rectProperties ) {
 		rect[ p ] = source[ p ];
 	}

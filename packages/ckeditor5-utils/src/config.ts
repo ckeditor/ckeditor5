@@ -43,6 +43,8 @@ export default class Config {
 		}
 	}
 
+	set( name: string, value: any ): void;
+	set( config: Record<string, any> ): void;
 	/**
 	 * Set configuration values.
 	 *
@@ -80,12 +82,12 @@ export default class Config {
 	 * configuration entries. Configuration names are case-sensitive.
 	 * @param {*} value The configuration value. Used if a name is passed.
 	 */
-	set( name: string, value: any ): void;
-	set( config: Record<string, any> ): void;
 	set( name: string | Record<string, any>, value?: any ): void {
 		this._setToTarget( this._config, name, value );
 	}
 
+	define( name: string, value: any ): void;
+	define( config: Record<string, any> ): void;
 	/**
 	 * Does exactly the same as {@link #set} with one exception – passed configuration extends
 	 * existing one, but does not overwrite already defined values.
@@ -97,8 +99,6 @@ export default class Config {
 	 * configuration entries. Configuration names are case-sensitive.
 	 * @param {*} value The configuration value. Used if a name is passed.
 	 */
-	define( name: string, value: any ): void;
-	define( config: Record<string, any> ): void;
 	define( name: string | Record<string, any>, value?: any ): void {
 		const isDefine = true;
 

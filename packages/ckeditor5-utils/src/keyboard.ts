@@ -228,7 +228,7 @@ export function isForwardArrowKeyCode(
 	return localizedKeyCodeDirection === 'down' || localizedKeyCodeDirection === 'right';
 }
 
-function generateKnownKeyCodes(): { [keyCode: string]: number } {
+function generateKnownKeyCodes(): { readonly [ keyCode: string ]: number } {
 	const keyCodes: { [keyCode: string]: number } = {
 		arrowleft: 37,
 		arrowup: 38,
@@ -281,42 +281,41 @@ function splitKeystrokeText( keystroke: string ): string[] {
 /**
  * Information about the keystroke.
  *
- * @interface module:utils/keyboard~KeystrokeInfo
+ * @interface
  */
 export interface KeystrokeInfo {
-	altKey: boolean,
-	metaKey: boolean,
-	ctrlKey: boolean,
-	shiftKey: boolean,
+	/**
+	 * The [key code](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode).
+	 *
+	 * @member {Number}
+	 */
 	keyCode: number
+
+	/**
+	 * Whether the <kbd>Alt</kbd> modifier was pressed.
+	 *
+	 * @member {Boolean}
+	 */
+	altKey: boolean,
+
+	/**
+	 * Whether the <kbd>Cmd</kbd> modifier was pressed.
+	 *
+	 * @member {Boolean} module:utils/keyboard~KeystrokeInfo#metaKey
+	 */
+	metaKey: boolean,
+
+	/**
+	 * Whether the <kbd>Ctrl</kbd> modifier was pressed.
+	 *
+	 * @member {Boolean}
+	 */
+	ctrlKey: boolean,
+
+	/**
+	 * Whether the <kbd>Shift</kbd> modifier was pressed.
+	 *
+	 * @member {Boolean}
+	 */
+	shiftKey: boolean,
 }
-
-/**
- * The [key code](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode).
- *
- * @member {Number} module:utils/keyboard~KeystrokeInfo#keyCode
- */
-
-/**
- * Whether the <kbd>Alt</kbd> modifier was pressed.
- *
- * @member {Boolean} module:utils/keyboard~KeystrokeInfo#altKey
- */
-
-/**
- * Whether the <kbd>Ctrl</kbd> modifier was pressed.
- *
- * @member {Boolean} module:utils/keyboard~KeystrokeInfo#ctrlKey
- */
-
-/**
- * Whether the <kbd>Shift</kbd> modifier was pressed.
- *
- * @member {Boolean} module:utils/keyboard~KeystrokeInfo#shiftKey
- */
-
-/**
- * Whether the <kbd>Cmd</kbd> modifier was pressed.
- *
- * @member {Boolean} module:utils/keyboard~KeystrokeInfo#metaKey
- */

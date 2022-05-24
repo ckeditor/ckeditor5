@@ -7,7 +7,8 @@
  * @module utils/keystrokehandler
  */
 
-import DomEmitterMixin, { Emitter } from './dom/emittermixin';
+import DomEmitterMixin, { Emitter as DomEmitter } from './dom/emittermixin';
+import type { Emitter } from './emittermixin';
 import { getCode, parseKeystroke, KeystrokeInfo } from './keyboard';
 import type { PriorityString } from './priorities';
 
@@ -43,27 +44,28 @@ import type { PriorityString } from './priorities';
  *
  */
 export default class KeystrokeHandler {
-	private readonly _listener: Emitter;
+	/**
+	 * Listener used to listen to events for easier keystroke handler destruction.
+	 *
+	 * @protected
+	 * @readonly
+	 * @member {module:utils/dom/emittermixin~Emitter}
+	 */
+	private readonly _listener: DomEmitter;
 
 	/**
 	 * Creates an instance of the keystroke handler.
 	 */
 	constructor() {
-		/**
-		 * Listener used to listen to events for easier keystroke handler destruction.
-		 *
-		 * @protected
-		 * @member {module:utils/dom/emittermixin~Emitter}
-		 */
 		this._listener = Object.create( DomEmitterMixin );
 	}
 
 	/**
 	 * Starts listening for `keydown` events from a given emitter.
 	 *
-	 * @param {module:utils/emittermixin~Emitter} emitter
+	 * @param {module:utils/emittermixin~Emitter|HTMLElement|Window} emitter
 	 */
-	listenTo( emitter: HTMLElement | Window ): void {
+	listenTo( emitter: Emitter | HTMLElement | Window ): void {
 		// The #_listener works here as a kind of dispatcher. It groups the events coming from the same
 		// keystroke so the listeners can be attached to them with different priorities.
 		//
@@ -73,7 +75,7 @@ export default class KeystrokeHandler {
 		// only with other listeners of this particular event, thus making it possible to prioritize
 		// the listeners and safely cancel execution, when needed. Instead of duplicating the Emitter logic,
 		// the KeystrokeHandler re–uses it to do its job.
-		this._listener.listenTo( emitter, 'keydown', ( evt, keyEvtData ) => {
+		this._listener.listenTo( emitter as HTMLElement | Window, 'keydown', ( evt, keyEvtData ) => {
 			this._listener.fire( '_keydown:' + getCode( keyEvtData ), keyEvtData );
 		} );
 	}

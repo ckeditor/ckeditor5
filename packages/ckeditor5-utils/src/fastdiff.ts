@@ -10,6 +10,18 @@ import type { Change } from "./difftochanges";
  * @module utils/fastdiff
  */
 
+export default function fastDiff<T>(
+	a: ArrayLike<T>,
+	b: ArrayLike<T>,
+	cmp?: ( a: T, b: T ) => boolean,
+	atomicChanges?: false
+): Change<T>[];
+export default function fastDiff<T>(
+	a: ArrayLike<T>,
+	b: ArrayLike<T>,
+	cmp: ( ( a: T, b: T ) => boolean ) | undefined,
+	atomicChanges: true
+): DiffResult[];
 /**
  * Finds positions of the first and last change in the given string/array and generates a set of changes:
  *
@@ -97,18 +109,6 @@ import type { Change } from "./difftochanges";
  * be returned instead of changes set. This makes this function compatible with {@link module:utils/diff~diff `diff()`}.
  * @returns {Array} Array of changes.
  */
-export default function fastDiff<T>(
-	a: ArrayLike<T>,
-	b: ArrayLike<T>,
-	cmp?: ( a: T, b: T ) => boolean,
-	atomicChanges?: false
-): Change<T>[];
-export default function fastDiff<T>(
-	a: ArrayLike<T>,
-	b: ArrayLike<T>,
-	cmp: ( ( a: T, b: T ) => boolean ) | undefined,
-	atomicChanges: true
-): DiffResult[];
 export default function fastDiff<T>(
 	a: ArrayLike<T>,
 	b: ArrayLike<T>,

@@ -27,9 +27,9 @@ const priorities = {
 	 * @param {module:utils/priorities~PriorityString|Number} [priority] Priority to convert.
 	 * @returns {Number} Converted priority.
 	 */
-	get( priority?: PriorityString | number ): number {
+	get( priority: PriorityString | number = 'normal' ): number {
 		if ( typeof priority != 'number' ) {
-			return this[ priority! ] || this.normal;
+			return this[ priority ] || this.normal;
 		} else {
 			return priority;
 		}

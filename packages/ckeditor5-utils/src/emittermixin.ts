@@ -122,7 +122,7 @@ const EmitterMixin: Emitter = {
 	/**
 	 * @inheritDoc
 	 */
-	stopListening( emitter?, event?, callback? ) {
+	stopListening( emitter?: Emitter, event?: string, callback?: Function ) {
 		const emitters = this[ _listeningTo ];
 		let emitterId = emitter && _getEmitterId( emitter );
 		const emitterInfo = ( emitters && emitterId ) ? emitters[ emitterId ] : undefined;
@@ -336,23 +336,86 @@ export default EmitterMixin;
  * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
  * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
  *
- * @interface Emitter
+ * @interface
  */
 export interface Emitter {
+	/**
+	 * Registers a callback function to be executed when an event is fired.
+	 *
+	 * Shorthand for {@link #listenTo `this.listenTo( this, event, callback, options )`} (it makes the emitter
+	 * listen on itself).
+	 *
+	 * @method
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to be called on event.
+	 * @param {module:utils/emittermixin~CallbackOptions} [options={}] Additional options.
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+	 * order they were added.
+	 */
 	on(
 		event: string,
 		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
 		options?: CallbackOptions
 	): void;
 
+	/**
+	 * Registers a callback function to be executed on the next time the event is fired only. This is similar to
+	 * calling {@link #on} followed by {@link #off} in the callback.
+	 *
+	 * @method
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to be called on event.
+	 * @param {module:utils/emittermixin~CallbackOptions} [options={}] Additional options.
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+	 * order they were added.
+	 */
 	once(
 		event: string,
 		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
 		options?: CallbackOptions
 	): void;
 
+	/**
+	 * Stops executing the callback on the given event.
+	 * Shorthand for {@link #stopListening `this.stopListening( this, event, callback )`}.
+	 *
+	 * @method
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to stop being called.
+	 */
 	off( event: string, callback: Function ): void;
 
+	/**
+	 * Registers a callback function to be executed when an event is fired in a specific (emitter) object.
+	 *
+	 * Events can be grouped in namespaces using `:`.
+	 * When namespaced event is fired, it additionally fires all callbacks for that namespace.
+	 *
+	 *		// myEmitter.on( ... ) is a shorthand for myEmitter.listenTo( myEmitter, ... ).
+	 *		myEmitter.on( 'myGroup', genericCallback );
+	 *		myEmitter.on( 'myGroup:myEvent', specificCallback );
+	 *
+	 *		// genericCallback is fired.
+	 *		myEmitter.fire( 'myGroup' );
+	 *		// both genericCallback and specificCallback are fired.
+	 *		myEmitter.fire( 'myGroup:myEvent' );
+	 *		// genericCallback is fired even though there are no callbacks for "foo".
+	 *		myEmitter.fire( 'myGroup:foo' );
+	 *
+	 * An event callback can {@link module:utils/eventinfo~EventInfo#stop stop the event} and
+	 * set the {@link module:utils/eventinfo~EventInfo#return return value} of the {@link #fire} method.
+	 *
+	 * @method
+	 * @param {module:utils/emittermixin~Emitter} emitter The object that fires the event.
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to be called on event.
+	 * @param {module:utils/emittermixin~CallbackOptions} [options={}] Additional options.
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+	 * order they were added.
+	 */
 	listenTo(
 		emitter: Emitter,
 		event: string,
@@ -360,23 +423,100 @@ export interface Emitter {
 		options?: CallbackOptions
 	): void;
 
+	/**
+	 * Stops listening for events. It can be used at different levels:
+	 *
+	 * * To stop listening to a specific callback.
+	 * * To stop listening to a specific event.
+	 * * To stop listening to all events fired by a specific object.
+	 * * To stop listening to all events fired by all objects.
+	 *
+	 * @method
+	 * @param {module:utils/emittermixin~Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
+	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
+	 * for all events from `emitter`.
+	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
+	 * `event`.
+	 */
 	stopListening( emitter?: Emitter, event?: string, callback?: Function ): void;
 
+	/**
+	 * Fires an event, executing all callbacks registered for it.
+	 *
+	 * The first parameter passed to callbacks is an {@link module:utils/eventinfo~EventInfo} object,
+	 * followed by the optional `args` provided in the `fire()` method call.
+	 *
+	 * @method
+	 * @param {String|module:utils/eventinfo~EventInfo} eventOrInfo The name of the event or `EventInfo` object if event is delegated.
+	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
+	 * @returns {*} By default the method returns `undefined`. However, the return value can be changed by listeners
+	 * through modification of the {@link module:utils/eventinfo~EventInfo#return `evt.return`}'s property (the event info
+	 * is the first param of every callback).
+	 */
 	fire( eventOrInfo: string | EventInfo, ...args: unknown[] ): unknown;
 
+	/**
+	 * Delegates selected events to another {@link module:utils/emittermixin~Emitter}. For instance:
+	 *
+	 *		emitterA.delegate( 'eventX' ).to( emitterB );
+	 *		emitterA.delegate( 'eventX', 'eventY' ).to( emitterC );
+	 *
+	 * then `eventX` is delegated (fired by) `emitterB` and `emitterC` along with `data`:
+	 *
+	 *		emitterA.fire( 'eventX', data );
+	 *
+	 * and `eventY` is delegated (fired by) `emitterC` along with `data`:
+	 *
+	 *		emitterA.fire( 'eventY', data );
+	 *
+	 * @method
+	 * @param {...String} events Event names that will be delegated to another emitter.
+	 * @returns {module:utils/emittermixin~EmitterMixinDelegateChain}
+	 */
 	delegate( ...events: string[] ): EmitterMixinDelegateChain;
 
-	stopDelegating( event?: string ): void;
-	stopDelegating( event: string, emitter: Emitter ): void;
+	/**
+	 * Stops delegating events. It can be used at different levels:
+	 *
+	 * * To stop delegating all events.
+	 * * To stop delegating a specific event to all emitters.
+	 * * To stop delegating a specific event to a specific emitter.
+	 *
+	 * @method
+	 * @param {String} [event] The name of the event to stop delegating. If omitted, stops it all delegations.
+	 * @param {module:utils/emittermixin~Emitter} [emitter] (requires `event`) The object to stop delegating a particular event to.
+	 * If omitted, stops delegation of `event` to all emitters.
+	 */
+	stopDelegating( event?: string, emitter?: Emitter ): void;
 
-	/** @internal */
+	/**
+	 * Adds callback to emitter for given event.
+	 *
+	 * @internal
+	 * @protected
+	 * @method #_addEventListener
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to be called on event.
+	 * @param {module:utils/emittermixin~CallbackOptions} options={} Additional options.
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+	 * order they were added.
+	 */
 	_addEventListener(
 		event: string,
 		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
 		options: CallbackOptions
 	): void;
 
-	/** @internal */
+	/**
+	 * Removes callback from emitter for given event.
+	 *
+	 * @internal
+	 * @protected
+	 * @method #_removeEventListener
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to stop being called.
+	 */
 	_removeEventListener( event: string, callback: Function ): void;
 
 	/** @internal */
@@ -398,167 +538,6 @@ export interface Emitter {
 }
 
 /**
- * Registers a callback function to be executed when an event is fired.
- *
- * Shorthand for {@link #listenTo `this.listenTo( this, event, callback, options )`} (it makes the emitter
- * listen on itself).
- *
- * @method #on
- * @param {String} event The name of the event.
- * @param {Function} callback The function to be called on event.
- * @param {module:utils/emittermixin~CallbackOptions} [options={}] Additional options.
- * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
- * the priority value the sooner the callback will be fired. Events having the same priority are called in the
- * order they were added.
- */
-
-/**
- * Registers a callback function to be executed on the next time the event is fired only. This is similar to
- * calling {@link #on} followed by {@link #off} in the callback.
- *
- * @method #once
- * @param {String} event The name of the event.
- * @param {Function} callback The function to be called on event.
- * @param {module:utils/emittermixin~CallbackOptions} [options={}] Additional options.
- * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
- * the priority value the sooner the callback will be fired. Events having the same priority are called in the
- * order they were added.
- */
-
-/**
- * Stops executing the callback on the given event.
- * Shorthand for {@link #stopListening `this.stopListening( this, event, callback )`}.
- *
- * @method #off
- * @param {String} event The name of the event.
- * @param {Function} callback The function to stop being called.
- */
-
-/**
- * Registers a callback function to be executed when an event is fired in a specific (emitter) object.
- *
- * Events can be grouped in namespaces using `:`.
- * When namespaced event is fired, it additionally fires all callbacks for that namespace.
- *
- *		// myEmitter.on( ... ) is a shorthand for myEmitter.listenTo( myEmitter, ... ).
- *		myEmitter.on( 'myGroup', genericCallback );
- *		myEmitter.on( 'myGroup:myEvent', specificCallback );
- *
- *		// genericCallback is fired.
- *		myEmitter.fire( 'myGroup' );
- *		// both genericCallback and specificCallback are fired.
- *		myEmitter.fire( 'myGroup:myEvent' );
- *		// genericCallback is fired even though there are no callbacks for "foo".
- *		myEmitter.fire( 'myGroup:foo' );
- *
- * An event callback can {@link module:utils/eventinfo~EventInfo#stop stop the event} and
- * set the {@link module:utils/eventinfo~EventInfo#return return value} of the {@link #fire} method.
- *
- * @method #listenTo
- * @param {module:utils/emittermixin~Emitter} emitter The object that fires the event.
- * @param {String} event The name of the event.
- * @param {Function} callback The function to be called on event.
- * @param {module:utils/emittermixin~CallbackOptions} [options={}] Additional options.
- * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
- * the priority value the sooner the callback will be fired. Events having the same priority are called in the
- * order they were added.
- */
-
-/**
- * Stops listening for events. It can be used at different levels:
- *
- * * To stop listening to a specific callback.
- * * To stop listening to a specific event.
- * * To stop listening to all events fired by a specific object.
- * * To stop listening to all events fired by all objects.
- *
- * @method #stopListening
- * @param {module:utils/emittermixin~Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
- * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
- * for all events from `emitter`.
- * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
- * `event`.
- */
-
-/**
- * Fires an event, executing all callbacks registered for it.
- *
- * The first parameter passed to callbacks is an {@link module:utils/eventinfo~EventInfo} object,
- * followed by the optional `args` provided in the `fire()` method call.
- *
- * @method #fire
- * @param {String|module:utils/eventinfo~EventInfo} eventOrInfo The name of the event or `EventInfo` object if event is delegated.
- * @param {...*} [args] Additional arguments to be passed to the callbacks.
- * @returns {*} By default the method returns `undefined`. However, the return value can be changed by listeners
- * through modification of the {@link module:utils/eventinfo~EventInfo#return `evt.return`}'s property (the event info
- * is the first param of every callback).
- */
-
-/**
- * Delegates selected events to another {@link module:utils/emittermixin~Emitter}. For instance:
- *
- *		emitterA.delegate( 'eventX' ).to( emitterB );
- *		emitterA.delegate( 'eventX', 'eventY' ).to( emitterC );
- *
- * then `eventX` is delegated (fired by) `emitterB` and `emitterC` along with `data`:
- *
- *		emitterA.fire( 'eventX', data );
- *
- * and `eventY` is delegated (fired by) `emitterC` along with `data`:
- *
- *		emitterA.fire( 'eventY', data );
- *
- * @method #delegate
- * @param {...String} events Event names that will be delegated to another emitter.
- * @returns {module:utils/emittermixin~EmitterMixinDelegateChain}
- */
-
-/**
- * Stops delegating events. It can be used at different levels:
- *
- * * To stop delegating all events.
- * * To stop delegating a specific event to all emitters.
- * * To stop delegating a specific event to a specific emitter.
- *
- * @method #stopDelegating
- * @param {String} [event] The name of the event to stop delegating. If omitted, stops it all delegations.
- * @param {module:utils/emittermixin~Emitter} [emitter] (requires `event`) The object to stop delegating a particular event to.
- * If omitted, stops delegation of `event` to all emitters.
- */
-
-/**
- * Adds callback to emitter for given event.
- *
- * @protected
- * @method #_addEventListener
- * @param {String} event The name of the event.
- * @param {Function} callback The function to be called on event.
- * @param {module:utils/emittermixin~CallbackOptions} options={} Additional options.
- * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
- * the priority value the sooner the callback will be fired. Events having the same priority are called in the
- * order they were added.
- */
-
-/**
- * Removes callback from emitter for given event.
- *
- * @protected
- * @method #_removeEventListener
- * @param {String} event The name of the event.
- * @param {Function} callback The function to stop being called.
- */
-
-/**
- * Checks if `listeningEmitter` listens to an emitter with given `listenedToEmitterId` and if so, returns that emitter.
- * If not, returns `null`.
- *
- * @protected
- * @param {module:utils/emittermixin~Emitter} listeningEmitter An emitter that listens.
- * @param {String} listenedToEmitterId Unique emitter id of emitter listened to.
- * @returns {module:utils/emittermixin~Emitter|null}
- */
-
-/**
  * Additional options for registering a callback.
  *
  * @typedef {Object} module:utils/emittermixin~CallbackOptions
@@ -571,10 +550,13 @@ export interface CallbackOptions {
 }
 
 /**
- * Returns the emitter of the given listening one by its id.
- * 
- * @param {module:utils/emittermixin~Emitter} listeningEmitter
- * @param {String} listenedToEmitterId
+ * Checks if `listeningEmitter` listens to an emitter with given `listenedToEmitterId` and if so, returns that emitter.
+ * If not, returns `null`.
+ *
+ * @internal
+ * @protected
+ * @param {module:utils/emittermixin~Emitter} listeningEmitter An emitter that listens.
+ * @param {String} listenedToEmitterId Unique emitter id of emitter listened to.
  * @returns {module:utils/emittermixin~Emitter|null}
  */
 export function _getEmitterListenedTo( listeningEmitter: Emitter, listenedToEmitterId: string ): Emitter | null {
@@ -591,6 +573,7 @@ export function _getEmitterListenedTo( listeningEmitter: Emitter, listenedToEmit
  *
  * **Note:** `_emitterId` can be set only once.
  *
+ * @internal
  * @protected
  * @param {module:utils/emittermixin~Emitter} emitter An emitter for which id will be set.
  * @param {String} [id] Unique id to set. If not passed, random unique id will be set.
@@ -604,6 +587,7 @@ export function _setEmitterId( emitter: Emitter, id?: string ): void {
 /**
  * Returns emitter's unique id.
  *
+ * @internal
  * @protected
  * @param {module:utils/emittermixin~Emitter} emitter An emitter which id will be returned.
  * @returns {String|undefined}
@@ -803,18 +787,17 @@ function removeEventListener( listener: Emitter, emitter: Emitter, event: string
 }
 
 /**
- * The return value of {@link ~EmitterMixin#delegate}.
+ * The return value of {@link ~Emitter#delegate}.
  *
- * @interface module:utils/emittermixin~EmitterMixinDelegateChain
+ * @interface
  */
 export interface EmitterMixinDelegateChain {
+	/**
+	 * Selects destination for {@link module:utils/emittermixin~EmitterMixin#delegate} events.
+	 *
+	 * @method
+	 * @param {module:utils/emittermixin~Emitter} emitter An `EmitterMixin` instance which is the destination for delegated events.
+	 * @param {String|Function} [nameOrFunction] A custom event name or function which converts the original name string.
+	 */
 	to( emitter: Emitter, nameOrFunction?: string | ( ( name: string ) => string ) ): void;
 }
-
-/**
- * Selects destination for {@link module:utils/emittermixin~EmitterMixin#delegate} events.
- *
- * @method #to
- * @param {module:utils/emittermixin~Emitter} emitter An `EmitterMixin` instance which is the destination for delegated events.
- * @param {String|Function} [nameOrFunction] A custom event name or function which converts the original name string.
- */
