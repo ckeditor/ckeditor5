@@ -37,7 +37,8 @@ import {
 	normalizeColumnWidthsAttribute,
 	toPrecision,
 	insertColumnResizerElements,
-	removeColumnResizerElements
+	removeColumnResizerElements,
+	setResizersVisibility
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -111,6 +112,12 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * @member {Map}
 		 */
 		this._cellsModified = new Map();
+
+		/**
+		 * Internal flag storing the element clicked on mousedown event if it was not a resizer. It's required to hide resizers
+		 * temporarily (until mouseup is fired) to make it possible e.g. to select text in a spanned table cell.
+		 */
+		this._clickedElement = null;
 	}
 
 	/**
@@ -474,6 +481,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editingView = editor.editing.view;
 
 		if ( !domEventData.target.hasClass( 'table-column-resizer' ) ) {
+			this._clickedElement = domEventData.target;
+			setResizersVisibility( editingView, this._clickedElement, false );
 			return;
 		}
 
@@ -504,6 +513,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editingView = editor.editing.view;
 
 		if ( !this._isResizingActive ) {
+			setResizersVisibility( editingView, this._clickedElement, true );
+			this._clickedElement = null;
 			return;
 		}
 

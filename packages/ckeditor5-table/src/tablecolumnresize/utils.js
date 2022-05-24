@@ -365,3 +365,28 @@ export function removeColumnResizerElements( viewWriter, viewCell ) {
 
 	viewWriter.remove( viewTableColumnResizerElement );
 }
+
+// Shows/hides resizers of the closest parent table.
+//
+// @param {module:ui/view~View} view
+// @param @param {module:engine/view/element~Element} clickedElement
+// @param {true|false} value
+export function setResizersVisibility( view, clickedElement, value ) {
+	if ( !clickedElement ) {
+		return;
+	}
+
+	const table = clickedElement.findAncestor( 'figure' );
+
+	if ( !table ) {
+		return;
+	}
+
+	view.change( viewWriter => {
+		if ( value ) {
+			viewWriter.removeClass( 'ck-resizers-hidden', table );
+		} else {
+			viewWriter.addClass( 'ck-resizers-hidden', table );
+		}
+	} );
+}
