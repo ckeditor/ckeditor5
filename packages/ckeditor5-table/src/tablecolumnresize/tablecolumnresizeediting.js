@@ -112,12 +112,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * @member {Map}
 		 */
 		this._cellsModified = new Map();
-
-		/**
-		 * Internal flag storing the element clicked on mousedown event if it was not a resizer. It's required to hide resizers
-		 * temporarily (until mouseup is fired) to make it possible e.g. to select text in a spanned table cell.
-		 */
-		this._clickedElement = null;
 	}
 
 	/**
@@ -465,6 +459,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		const domEmitter = Object.create( DomEmitterMixin );
 
+		domEmitter.listenTo( global.window.document, 'mousedown', this._onDocumentMouseDownHandler.bind( this ) );
 		domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 		domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
 	}
@@ -481,8 +476,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editingView = editor.editing.view;
 
 		if ( !domEventData.target.hasClass( 'table-column-resizer' ) ) {
-			this._clickedElement = domEventData.target;
-			setResizersVisibility( editingView, this._clickedElement, false );
 			return;
 		}
 
@@ -502,6 +495,21 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
+	 * Handles the `mousedown` event on the document to make it possible to hide resizers if element clicked is not a resizer.
+	 *
+	 * @private
+	 * @param {EventInfo} eventInfo
+	 * @param {MouseEvent} mouseEventData
+	 */
+	_onDocumentMouseDownHandler( eventInfo, mouseEventData ) {
+		if ( mouseEventData.target.classList.contains( 'table-column-resizer' ) ) {
+			return;
+		}
+
+		setResizersVisibility( this.editor.editing.view, false );
+	}
+
+	/**
 	 * Handles the `mouseup` event if previously the `mousedown` event was triggered from the column resizer element.
 	 *
 	 * @private
@@ -513,8 +521,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editingView = editor.editing.view;
 
 		if ( !this._isResizingActive ) {
-			setResizersVisibility( editingView, this._clickedElement, true );
-			this._clickedElement = null;
+			setResizersVisibility( editingView, true );
 			return;
 		}
 
