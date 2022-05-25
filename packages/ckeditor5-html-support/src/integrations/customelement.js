@@ -52,6 +52,11 @@ export default class CustomElementSupport extends Plugin {
 			conversion.for( 'upcast' ).elementToElement( {
 				view: /.*/,
 				model: ( viewElement, conversionApi ) => {
+					// Do not try to convert $comment fake element.
+					if ( viewElement.name == '$comment' ) {
+						return;
+					}
+
 					// Allow for fallback only if this element is not defined in data schema to make sure
 					// that this will handle only custom elements not registered in the data schema.
 					if ( dataSchema.getDefinitionsForView( viewElement.name ).size ) {

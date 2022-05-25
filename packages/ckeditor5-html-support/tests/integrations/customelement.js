@@ -364,4 +364,17 @@ describe( 'CustomElementSupport', () => {
 			expect( editor.getData() ).to.equal( '<custom-foo-element>bar</custom-foo-element>' );
 		} );
 	} );
+
+	it( 'should not convert html comments as a custom element', () => {
+		dataFilter.allowElement( /.*/ );
+
+		editor.setData( '<!-- foo --><custom>bar</custom>' );
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
+			data: '<htmlCustomElement htmlContent="<custom>bar</custom>" htmlElementName="custom"></htmlCustomElement>',
+			attributes: {}
+		} );
+
+		expect( editor.getData() ).to.equal( '<custom>bar</custom>' );
+	} );
 } );
