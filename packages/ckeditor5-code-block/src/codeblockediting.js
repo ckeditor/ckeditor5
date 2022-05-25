@@ -23,7 +23,8 @@ import {
 	modelToViewCodeBlockInsertion,
 	modelToDataViewSoftBreakInsertion,
 	dataViewToModelCodeBlockInsertion,
-	dataViewToModelTextNewlinesInsertion
+	dataViewToModelTextNewlinesInsertion,
+	dataViewToModelOrphanNodeConsumer
 } from './converters';
 
 const DEFAULT_ELEMENT = 'paragraph';
@@ -150,6 +151,8 @@ export default class CodeBlockEditing extends Plugin {
 
 		editor.data.upcastDispatcher.on( 'element:code', dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs ) );
 		editor.data.upcastDispatcher.on( 'text', dataViewToModelTextNewlinesInsertion() );
+
+		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelOrphanNodeConsumer(), { priority: 'high' } );
 
 		// Intercept the clipboard input (paste) when the selection is anchored in the code block and force the clipboard
 		// data to be pasted as a single plain text. Otherwise, the code lines will split the code block and

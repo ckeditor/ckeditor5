@@ -109,7 +109,7 @@ export default class StyleGridButtonView extends ButtonView {
 	 * be used instead. This avoids previewing a standalone `<td>`, `<li>`, etc. without a parent.
 	 *
 	 * @private
-	 * @param {module:style/style~StyleDefinition} styleDefinition
+	 * @param {String} elementName
 	 * @returns {Boolean} `true` when the element can be rendered. `false` otherwise.
 	 */
 	_isPreviewable( elementName ) {

@@ -397,7 +397,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 						  * B1 {style:circle}
 						    B2
 						    * [C1 {style:square}
-						      C2]
+						    * C2]
 					` ) );
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
@@ -406,10 +406,8 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 					expect( data ).to.equal(
 						'<ul style="list-style-type:square;">' +
-							'<li>' +
-								'<p>C1</p>' +
-								'<p>C2</p>' +
-							'</li>' +
+							'<li>C1</li>' +
+							'<li>C2</li>' +
 						'</ul>'
 					);
 				} );
@@ -1114,7 +1112,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 						  # B1 {reversed:true}
 						    B2
 						    # [C1 {reversed:true}
-						      C2]
+						    # C2]
 					` ) );
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
@@ -1123,10 +1121,8 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 					expect( data ).to.equal(
 						'<ol reversed="reversed">' +
-							'<li>' +
-								'<p>C1</p>' +
-								'<p>C2</p>' +
-							'</li>' +
+							'<li>C1</li>' +
+							'<li>C2</li>' +
 						'</ol>'
 					);
 				} );
@@ -1758,7 +1754,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 						  # B1 {start:4}
 						    B2
 						    # [C1 {start:7}
-						      C2]
+						    # C2]
 					` ) );
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
@@ -1767,10 +1763,8 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 					expect( data ).to.equal(
 						'<ol start="7">' +
-							'<li>' +
-								'<p>C1</p>' +
-								'<p>C2</p>' +
-							'</li>' +
+							'<li>C1</li>' +
+							'<li>C2</li>' +
 						'</ol>'
 					);
 				} );

@@ -18,29 +18,28 @@ import { logWarning, first } from 'ckeditor5/src/utils';
  * @extends module:core/command~Command
  */
 export default class StyleCommand extends Command {
-	constructor( editor, styles ) {
+	/**
+	 * Creates an instance of the command.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {Object} styleDefinitions Normalized definitions of the styles.
+	 * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions.block Definitions of block styles.
+	 * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions.inline Definitions of inline styles.
+	 */
+	constructor( editor, styleDefinitions ) {
 		super( editor );
 
 		/**
-		 * Set of currently applied styles on current selection.
+		 * Set of currently applied styles on the current selection.
 		 *
 		 * Names of styles correspond to the `name` property of
 		 * {@link module:style/style~StyleDefinition configured definitions}.
 		 *
+		 * @readonly
 		 * @observable
-		 * @readonly
-		 * @member {Boolean|String} #value
+		 * @member {Array.<String>} #value
 		 */
-
-		/**
-		 * Styles object. Helps in getting styles definitions by
-		 * class name, style name and model element name.
-		 *
-		 * @private
-		 * @readonly
-		 * @member {module:style/styleediting~Styles}
-		 */
-		this.styles = styles;
+		this.set( 'value', [] );
 
 		/**
 		 * Names of enabled styles (styles that can be applied to the current selection).
@@ -55,33 +54,80 @@ export default class StyleCommand extends Command {
 		this.set( 'enabledStyles', [] );
 
 		/**
-		 * Refresh state.
+		 * Normalized definitions of the styles.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {Object} #styleDefinitions
 		 */
-		this.refresh();
+		this._styleDefinitions = styleDefinitions;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	refresh() {
-		let value = [];
-		const editor = this.editor;
-		const selection = editor.model.document.selection;
-		const block = first( selection.getSelectedBlocks() );
+		const model = this.editor.model;
+		const selection = model.document.selection;
 
-		this.enabledStyles = [];
+		const value = new Set();
+		const enabledStyles = new Set();
 
-		if ( !block || !editor.model.schema.isObject( block ) ) {
-			value = this._prepareNewInlineElementValue( value, selection );
-			this.enabledStyles = this.styles.getInlineElementsNames();
+		// Inline styles.
+		for ( const definition of this._styleDefinitions.inline ) {
+			for ( const ghsAttributeName of definition.ghsAttributes ) {
+				// Check if this inline style is enabled.
+				if ( model.schema.checkAttributeInSelection( selection, ghsAttributeName ) ) {
+					enabledStyles.add( definition.name );
+				}
 
-			if ( block ) {
-				value = this._prepareNewBlockElementValue( value, block );
+				// Check if this inline style is active.
+				const ghsAttributeValue = this._getValueFromFirstAllowedNode( ghsAttributeName );
+
+				if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+					value.add( definition.name );
+				}
 			}
 		}
 
+		// Block styles.
+		const firstBlock = first( selection.getSelectedBlocks() );
+
+		if ( firstBlock ) {
+			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } );
+
+			for ( const block of ancestorBlocks ) {
+				// E.g. reached a model table when the selection is in a cell. The command should not modify
+				// ancestors of a table.
+				if ( model.schema.isLimit( block ) ) {
+					break;
+				}
+
+				if ( !model.schema.checkAttribute( block, 'htmlAttributes' ) ) {
+					continue;
+				}
+
+				for ( const definition of this._styleDefinitions.block ) {
+					// Check if this block style is enabled.
+					if ( !definition.modelElements.includes( block.name ) ) {
+						continue;
+					}
+
+					enabledStyles.add( definition.name );
+
+					// Check if this block style is active.
+					const ghsAttributeValue = block.getAttribute( 'htmlAttributes' );
+
+					if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+						value.add( definition.name );
+					}
+				}
+			}
+		}
+
+		this.enabledStyles = Array.from( enabledStyles ).sort();
 		this.isEnabled = this.enabledStyles.length > 0;
-		this.value = this.isEnabled ? value : [];
+		this.value = this.isEnabled ? Array.from( value ).sort() : [];
 	}
 
 	/**
@@ -95,145 +141,68 @@ export default class StyleCommand extends Command {
 	 * * When applying inline styles:
 	 *   * If the selection is on a range, the command applies the style classes to all nodes in that range.
 	 *   * If the selection is collapsed in a non-empty node, the command applies the style classes to the
-	 * {@link module:engine/model/document~Document#selection} itself (note that typed characters copy style classes from the selection).
+	 * {@link module:engine/model/document~Document#selection}.
 	 *
 	 * * When applying block styles:
 	 *   * If the selection is on a range, the command applies the style classes to the nearest block parent element.
 	 *
-	 * * When selection is set on a widget object:
-	 *   * Do nothing. Widgets are not yet supported by the style command.
-	 *
 	 * @fires execute
-	 * @param {String} styleName Style name matching the one defined in the config.
+	 * @param {String} styleName Style name matching the one defined in the
+	 * {@link module:style/style~StyleConfig#definitions configuration}.
 	 */
 	execute( styleName ) {
 		if ( !this.enabledStyles.includes( styleName ) ) {
 			/**
-			 * Style command can be executed only on a correct style name.
-			 * This warning may be caused by passing name that it not specified in any of the
-			 * definitions in the styles config, when trying to apply style that is not allowed
-			 * on given element or passing class name instead of the style name.
+			 * Style command can be executed only with a correct style name.
+			 *
+			 * This warning may be caused by:
+			 *
+			 * * passing a name that is not specified in the {@link module:style/style~StyleConfig#definitions configuration}
+			 * (e.g. a CSS class name),
+			 * * when trying to apply a style that is not allowed on a given element.
 			 *
 			 * @error style-command-executed-with-incorrect-style-name
 			 */
 			logWarning( 'style-command-executed-with-incorrect-style-name' );
+
 			return;
 		}
 
-		const editor = this.editor;
-		const model = editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
-
-		const selectedBlockElement = first( selection.getSelectedBlocks() );
-		const definition = this.styles.getDefinitionsByName( styleName );
-
-		if ( selectedBlockElement && definition.isBlock ) {
-			this._handleStyleUpdate( definition, selectedBlockElement );
-		} else {
-			this._handleStyleUpdate( definition, selection );
-		}
-	}
-
-	/**
-	 * Adds or removes classes to element, range or selection.
-	 *
-	 * @private
-	 * @param {Object} definition Style definition object.
-	 * @param {module:engine/model/selection~Selectable} selectable Selection, range or element to update the style on.
-	 */
-	_handleStyleUpdate( definition, selectable ) {
-		const { name, element, classes } = definition;
+		const model = this.editor.model;
+		const selection = model.document.selection;
 		const htmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
-		if ( this.value.includes( name ) ) {
-			htmlSupport.removeModelHtmlClass( element, classes, selectable );
-		} else {
-			htmlSupport.addModelHtmlClass( element, classes, selectable );
-		}
+		const definition = [
+			...this._styleDefinitions.inline,
+			...this._styleDefinitions.block
+		].find( ( { name } ) => name == styleName );
+
+		model.change( () => {
+			let selectables;
+
+			if ( definition.isBlock ) {
+				selectables = getAffectedBlocks( selection.getSelectedBlocks(), definition.modelElements, model.schema );
+			} else {
+				selectables = [ selection ];
+			}
+
+			for ( const selectable of selectables ) {
+				if ( this.value.includes( definition.name ) ) {
+					htmlSupport.removeModelHtmlClass( definition.element, definition.classes, selectable );
+				} else {
+					htmlSupport.addModelHtmlClass( definition.element, definition.classes, selectable );
+				}
+			}
+		} );
 	}
 
 	/**
-	 * Returns inline element value.
+	 * Checks the attribute value of the first node in the selection that allows the attribute.
+	 * For the collapsed selection, returns the selection attribute.
 	 *
 	 * @private
-	 * @param {Array} value
-	 * @param {module:engine/model/selection~Selection} selection
-	 */
-	_prepareNewInlineElementValue( value, selection ) {
-		let newValue = [ ...value ];
-
-		const attributes = selection.getAttributes();
-
-		for ( const [ attribute ] of attributes ) {
-			newValue = [ ...newValue, ...this._getAttributeValue( attribute ) ];
-		}
-
-		return newValue;
-	}
-
-	/**
-	 * Returns element value and sets enabled styles.
-	 *
-	 * @private
-	 * @param {Array} value
-	 * @param {Object|null} element
-	 * @return {Array} Current block element styles value.
-	 */
-	_prepareNewBlockElementValue( value, element ) {
-		const availableDefinitions = this.styles.getDefinitionsByElementName( element.name );
-
-		if ( availableDefinitions ) {
-			const blockStyleNames = availableDefinitions.map( ( { name } ) => name );
-			this.enabledStyles = [ ...this.enabledStyles, ...blockStyleNames ];
-		}
-
-		return [ ...value, ...this._getAttributeValue( 'htmlAttributes' ) ];
-	}
-
-	/**
-	 * Get classes attribute value.
-	 *
-	 * @private
-	 * @param {String} attribute
-	 */
-	_getAttributeValue( attribute ) {
-		const value = [];
-		const classes = attribute === 'htmlAttributes' ?
-			this._getValueFromBlockElement() :
-			this._getValueFromFirstAllowedNode( attribute );
-
-		for ( const htmlClass of classes ) {
-			const { name } = this.styles.getDefinitionsByClassName( htmlClass ) || {};
-
-			value.push( name );
-		}
-
-		return value;
-	}
-
-	/**
-	 * Gets classes from currently selected block element.
-	 *
-	 * @private
-	 */
-	_getValueFromBlockElement() {
-		const selection = this.editor.model.document.selection;
-		const block = first( selection.getSelectedBlocks() );
-		const attributes = block.getAttribute( 'htmlAttributes' );
-
-		if ( attributes ) {
-			return attributes.classes;
-		}
-
-		return [];
-	}
-
-	/**
-	 * Gets classes from currently selected text element.
-	 *
-	 * @private
-	 * @param {String} attributeName Text attribute name.
+	 * @param {String} attributeName Name of the GHS attribute.
+	 * @returns {Object|null} The attribute value.
 	 */
 	_getValueFromFirstAllowedNode( attributeName ) {
 		const model = this.editor.model;
@@ -241,27 +210,49 @@ export default class StyleCommand extends Command {
 		const selection = model.document.selection;
 
 		if ( selection.isCollapsed ) {
-			/* istanbul ignore next */
-			const { classes } = selection.getAttribute( attributeName ) || {};
-
-			/* istanbul ignore next */
-			return classes || [];
+			return selection.getAttribute( attributeName );
 		}
 
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
-				/* istanbul ignore else */
 				if ( schema.checkAttribute( item, attributeName ) ) {
-					/* istanbul ignore next */
-					const { classes } = item.getAttribute( attributeName ) || {};
-
-					/* istanbul ignore next */
-					return classes || [];
+					return item.getAttribute( attributeName );
 				}
 			}
 		}
 
-		/* istanbul ignore next */
-		return [];
+		return null;
 	}
+}
+
+// Verifies if all classes are present in the given GHS attribute.
+function hasAllClasses( ghsAttributeValue, classes ) {
+	if ( !ghsAttributeValue || !ghsAttributeValue.classes ) {
+		return false;
+	}
+
+	return classes.every( className => ghsAttributeValue.classes.includes( className ) );
+}
+
+// Returns a set of elements that should be affected by the block-style change.
+function getAffectedBlocks( selectedBlocks, elementNames, schema ) {
+	const blocks = new Set();
+
+	for ( const selectedBlock of selectedBlocks ) {
+		const ancestorBlocks = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } );
+
+		for ( const block of ancestorBlocks ) {
+			if ( schema.isLimit( block ) ) {
+				break;
+			}
+
+			if ( elementNames.includes( block.name ) ) {
+				blocks.add( block );
+
+				break;
+			}
+		}
+	}
+
+	return blocks;
 }

@@ -4,14 +4,18 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
 import { modelList } from '../documentlist/_utils/utils';
+import stubUid from '../documentlist/_utils/uid';
 
 describe( 'DocumentListPropertiesEditing', () => {
 	let editor, model;
+
+	testUtils.createSinonSandbox();
 
 	it( 'should have pluginName', () => {
 		expect( DocumentListPropertiesEditing.pluginName ).to.equal( 'DocumentListPropertiesEditing' );
@@ -53,10 +57,30 @@ describe( 'DocumentListPropertiesEditing', () => {
 			} );
 
 			model = editor.model;
+
+			stubUid();
 		} );
 
 		afterEach( () => {
 			return editor.destroy();
+		} );
+
+		describe( 'command', () => {
+			it( 'should register `listStyle` command with support for all style types', () => {
+				const command = editor.commands.get( 'listStyle' );
+
+				expect( command.isStyleTypeSupported( 'disc' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'circle' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'square' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'decimal' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'decimal-leading-zero' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'lower-roman' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-roman' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'lower-alpha' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-alpha' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'lower-latin' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-latin' ) ).to.be.true;
+			} );
 		} );
 
 		describe( 'schema rules', () => {
@@ -160,6 +184,108 @@ describe( 'DocumentListPropertiesEditing', () => {
 			} );
 		} );
 
+		describe( 'conversion', () => {
+			describe( 'upcast', () => {
+				it( 'should upcast to `listStyle` property (bulleted, default)', () => {
+					editor.setData( '<ul><li>Foo</li></ul>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						* Foo {id:a00} {style:default}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (numbered, default)', () => {
+					editor.setData( '<ol><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:default}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (bulleted, listStyleType="circle")', () => {
+					editor.setData( '<ul style="list-style-type:circle;"><li>Foo</li></ul>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						* Foo {id:a00} {style:circle}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (numbered, listStyleType="decimal")', () => {
+					editor.setData( '<ol style="list-style-type:decimal;"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:decimal}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (bulleted, type="square")', () => {
+					editor.setData( '<ul type="square"><li>Foo</li></ul>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						* Foo {id:a00} {style:square}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (numbered, type="A")', () => {
+					editor.setData( '<ol type="A"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:upper-latin}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (bulleted, list-style-type="circle" type="square")', () => {
+					editor.setData( '<ul style="list-style-type:circle;" type="circle"><li>Foo</li></ul>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						* Foo {id:a00} {style:circle}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (numbered, list-style-type="decimal" type="A")', () => {
+					editor.setData( '<ol type="A" style="list-style-type:decimal"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:decimal}
+					` ) );
+				} );
+			} );
+
+			describe( 'downcast', () => {
+				it( 'should downcast to `list-style-type` style (bulleted, default)', () => {
+					setData( model, modelList( `
+						* Foo {style:default}
+					` ) );
+
+					expect( editor.getData() ).to.equal( '<ul><li>Foo</li></ul>' );
+				} );
+
+				it( 'should downcast to `list-style-type` style (bulleted, circle)', () => {
+					setData( model, modelList( `
+						* Foo {style:circle}
+					` ) );
+
+					expect( editor.getData() ).to.equal( '<ul style="list-style-type:circle;"><li>Foo</li></ul>' );
+				} );
+
+				it( 'should downcast to `list-style-type` style (numbered, default)', () => {
+					setData( model, modelList( `
+						# Foo {style:default}
+					` ) );
+
+					expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol>' );
+				} );
+
+				it( 'should downcast to `list-style-type` style (numbered, decimal)', () => {
+					setData( model, modelList( `
+						# Foo {style:decimal}
+					` ) );
+
+					expect( editor.getData() ).to.equal( '<ol style="list-style-type:decimal;"><li>Foo</li></ol>' );
+				} );
+			} );
+		} );
+
 		describe( 'indenting lists', () => {
 			it( 'should reset `listStyle` attribute after indenting a single item', () => {
 				setData( model, modelList( `
@@ -237,6 +363,149 @@ describe( 'DocumentListPropertiesEditing', () => {
 					  * 3.]
 					* 4.
 				` ) );
+			} );
+		} );
+	} );
+
+	describe( 'listStyle (type attribute)', () => {
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, DocumentListPropertiesEditing, UndoEditing ],
+				list: {
+					properties: { styles: { useAttribute: true }, startIndex: false, reversed: false }
+				}
+			} );
+
+			model = editor.model;
+
+			stubUid();
+		} );
+
+		describe( 'command', () => {
+			it( 'should register `listStyle` command with support for all style types except `decimal-leading-zero`', () => {
+				const command = editor.commands.get( 'listStyle' );
+
+				expect( command.isStyleTypeSupported( 'disc' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'circle' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'square' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'decimal' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'decimal-leading-zero' ) ).to.be.false;
+				expect( command.isStyleTypeSupported( 'lower-roman' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-roman' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'lower-alpha' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-alpha' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'lower-latin' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'upper-latin' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'conversion', () => {
+			describe( 'upcast', () => {
+				it( 'should upcast to `listStyle` property (bulleted, default)', () => {
+					editor.setData( '<ul><li>Foo</li></ul>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						* Foo {id:a00} {style:default}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (numbered, default)', () => {
+					editor.setData( '<ol><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:default}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (bulleted, listStyleType="circle")', () => {
+					editor.setData( '<ul style="list-style-type:circle;"><li>Foo</li></ul>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						* Foo {id:a00} {style:circle}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (numbered, listStyleType="decimal")', () => {
+					editor.setData( '<ol style="list-style-type:decimal;"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:decimal}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (bulleted, type="square")', () => {
+					editor.setData( '<ul type="square"><li>Foo</li></ul>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						* Foo {id:a00} {style:square}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (numbered, type="A")', () => {
+					editor.setData( '<ol type="A"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:upper-latin}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (bulleted, list-style-type="circle" type="square")', () => {
+					editor.setData( '<ul style="list-style-type:circle;" type="circle"><li>Foo</li></ul>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						* Foo {id:a00} {style:circle}
+					` ) );
+				} );
+
+				it( 'should upcast to `listStyle` property (numbered, list-style-type="decimal" type="A")', () => {
+					editor.setData( '<ol type="A" style="list-style-type:decimal"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+						# Foo {id:a00} {style:decimal}
+					` ) );
+				} );
+			} );
+
+			describe( 'downcast', () => {
+				it( 'should downcast to `type` attribute (bulleted, default)', () => {
+					setData( model, modelList( `
+						* Foo {style:default}
+					` ) );
+
+					expect( editor.getData() ).to.equal( '<ul><li>Foo</li></ul>' );
+				} );
+
+				it( 'should downcast to `type` attribute (bulleted, circle)', () => {
+					setData( model, modelList( `
+						* Foo {style:circle}
+					` ) );
+
+					expect( editor.getData() ).to.equal( '<ul type="circle"><li>Foo</li></ul>' );
+				} );
+
+				it( 'should downcast to `type` attribute (numbered, default)', () => {
+					setData( model, modelList( `
+						# Foo {style:default}
+					` ) );
+
+					expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol>' );
+				} );
+
+				it( 'should downcast to `type` attribute (numbered, decimal)', () => {
+					setData( model, modelList( `
+						# Foo {style:decimal}
+					` ) );
+
+					expect( editor.getData() ).to.equal( '<ol type="1"><li>Foo</li></ol>' );
+				} );
+
+				it( 'should downcast to `type` attribute (numbered, decimal-leading-zero)', () => {
+					setData( model, modelList( `
+						# Foo {style:decimal-leading-zero}
+					` ) );
+
+					expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol>' );
+				} );
 			} );
 		} );
 	} );
