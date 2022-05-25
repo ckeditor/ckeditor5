@@ -122,17 +122,15 @@ export default class CustomElementSupport extends Plugin {
 					const htmlContent = modelElement.getAttribute( 'htmlContent' );
 
 					const viewElement = writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
-						if ( htmlContent ) {
-							domConverter.setContentOf( domElement, htmlContent );
+						domConverter.setContentOf( domElement, htmlContent );
 
-							// Unwrap the custom element content (it was stored in the attribute as the whole custom element).
-							const customElement = domElement.firstChild;
+						// Unwrap the custom element content (it was stored in the attribute as the whole custom element).
+						const customElement = domElement.firstChild;
 
-							customElement.remove();
+						customElement.remove();
 
-							while ( customElement.firstChild ) {
-								domElement.appendChild( customElement.firstChild );
-							}
+						while ( customElement.firstChild ) {
+							domElement.appendChild( customElement.firstChild );
 						}
 					} );
 
