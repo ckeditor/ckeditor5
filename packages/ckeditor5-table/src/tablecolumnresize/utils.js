@@ -366,21 +366,19 @@ export function removeColumnResizerElements( viewWriter, viewCell ) {
 	viewWriter.remove( viewTableColumnResizerElement );
 }
 
-// Shows/hides resizers of all the tables in specified view.
+// Shows/hides resizers in specified view.
 //
 // @param {module:ui/view~View} view
 // @param {true|false} value
 export function setResizersVisibility( view, value ) {
-	const tables = view.getDomRoot().querySelectorAll( 'figure' );
-
 	view.change( viewWriter => {
-		for ( const table of tables ) {
-			const viewTable = view.domConverter.mapDomToView( table );
+		for ( const root of view.domRoots.values() ) {
+			const viewRoot = view.domConverter.mapDomToView( root );
 
 			if ( value ) {
-				viewWriter.removeClass( 'ck-resizers-hidden', viewTable );
+				viewWriter.removeClass( 'ck-resizers-hidden', viewRoot );
 			} else {
-				viewWriter.addClass( 'ck-resizers-hidden', viewTable );
+				viewWriter.addClass( 'ck-resizers-hidden', viewRoot );
 			}
 		}
 	} );

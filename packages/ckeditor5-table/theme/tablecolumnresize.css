@@ -37,7 +37,7 @@
 	z-index: var(--ck-z-default);
 }
 
-.ck-content .table.ck-resizers-hidden .table-column-resizer {
+.ck-content.ck-resizers-hidden .table .table-column-resizer {
 	display: none;
 }
 
