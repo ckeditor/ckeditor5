@@ -6,7 +6,7 @@ order: 20
 
 {@snippet installation/frameworks/framework-integration}
 
-# Rich text editor component for Angular
+# Angular rich text editor component
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
