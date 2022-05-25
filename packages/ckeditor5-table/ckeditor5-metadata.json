@@ -174,7 +174,7 @@
 			"name": "Table column resize",
 			"className": "TableColumnResize",
 			"description": "Adds support for table column resize, which allows to set the width of each column in a table using a resize handle.",
-			"docs": "",
+			"docs": "features/table.html#table-column-resize",
 			"path": "src/tablecolumnresize.js",
 			"requires": [
 				"Table"
