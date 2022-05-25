@@ -8,6 +8,7 @@
  */
 
 import DomEventObserver from './domeventobserver';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * {@link module:engine/view/document~Document#event:compositionstart Compositionstart},
@@ -25,13 +26,15 @@ export default class CompositionObserver extends DomEventObserver {
 		this.domEventType = [ 'compositionstart', 'compositionupdate', 'compositionend' ];
 		const document = this.document;
 
-		// document.on( 'compositionstart', () => {
-		// 	document.isComposing = true;
-		// } );
-		//
-		// document.on( 'compositionend', () => {
-		// 	document.isComposing = false;
-		// } );
+		if ( !env.isAndroid ) {
+			document.on( 'compositionstart', () => {
+				document.isComposing = true;
+			} );
+
+			document.on( 'compositionend', () => {
+				document.isComposing = false;
+			} );
+		}
 	}
 
 	onDomEvent( domEvent ) {

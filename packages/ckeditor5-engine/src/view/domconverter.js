@@ -817,7 +817,7 @@ export default class DomConverter {
 			let offset = domOffset;
 
 			if ( !viewParent ) {
-				return null;
+				return this.domPositionToView( domParent.parentNode, Array.from( domParent.parentNode.childNodes ).indexOf( domParent ) );
 			}
 
 			if ( startsWithFiller( domParent ) ) {

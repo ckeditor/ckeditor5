@@ -70,7 +70,7 @@ export default class Input extends Plugin {
 		} );
 
 		const compositionUpdate = ( evt, data ) => {
-			console.log( '----- compositionupdate', data.targetRangeStart );
+			console.log( '----- composition', evt.name, data.targetRangeStart );
 
 			if ( !this._compositionModelRange ) {
 				console.log( '!! no composition model range' );
@@ -79,7 +79,11 @@ export default class Input extends Plugin {
 
 			const compositionModelPosition = data.targetRangeStart ? editor.editing.mapper.toModelPosition( data.targetRangeStart ) : null;
 
-			if ( compositionModelPosition && this._compositionModelRange.start.isEqual( compositionModelPosition ) ) {
+			if (
+				evt.name == 'compositionupdate' &&
+				compositionModelPosition &&
+				this._compositionModelRange.start.isEqual( compositionModelPosition )
+			) {
 				console.log( '!! same composition model range start' );
 				return;
 			}
