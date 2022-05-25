@@ -13,7 +13,6 @@ import { throttle } from 'lodash-es';
 import { global, DomEmitterMixin } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
 
-import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
 import TableEditing from '../tableediting';
 import TableWalker from '../tablewalker';
 
@@ -451,31 +450,34 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @private
 	 */
 	_setupColumnResizers() {
-		const editor = this.editor;
-		const editingView = editor.editing.view;
-
-		editingView.addObserver( MouseEventsObserver );
-		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
-
 		const domEmitter = Object.create( DomEmitterMixin );
 
-		domEmitter.listenTo( global.window.document, 'mousedown', this._onDocumentMouseDownHandler.bind( this ) );
+		domEmitter.listenTo( global.window.document, 'mousedown', this._onMouseDownHandler.bind( this ) );
 		domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 		domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
 	}
 
 	/**
-	 * Handles the `mousedown` event on column resizer element.
+	 * Handles the `mousedown` event on the document.
+	 *
+	 * The element clicked can be a resizer (then we handle it by enabling resizing process) or other element (then we hide resizers).
 	 *
 	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @param {EventInfo} eventInfo
+	 * @param {MouseEvent} domEvent
 	 */
-	_onMouseDownHandler( eventInfo, domEventData ) {
+	_onMouseDownHandler( eventInfo, domEvent ) {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		if ( !domEventData.target.hasClass( 'table-column-resizer' ) ) {
+		if ( !domEvent.target.classList.contains( 'table-column-resizer' ) ) {
+			setResizersVisibility( this.editor.editing.view, false );
+			return;
+		}
+
+		const resizer = editingView.domConverter.mapDomToView( domEvent.target );
+
+		if ( !resizer ) {
 			return;
 		}
 
@@ -483,30 +485,15 @@ export default class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		domEventData.preventDefault();
+		domEvent.preventDefault();
 		eventInfo.stop();
 
 		this._isResizingActive = true;
-		this._resizingData = this._getResizingData( domEventData );
+		this._resizingData = this._getResizingData( domEvent, resizer );
 
 		editingView.change( writer => {
 			writer.addClass( 'table-column-resizer__active', this._resizingData.elements.viewResizer );
 		} );
-	}
-
-	/**
-	 * Handles the `mousedown` event on the document to make it possible to hide resizers if element clicked is not a resizer.
-	 *
-	 * @private
-	 * @param {EventInfo} eventInfo
-	 * @param {MouseEvent} mouseEventData
-	 */
-	_onDocumentMouseDownHandler( eventInfo, mouseEventData ) {
-		if ( mouseEventData.target.classList.contains( 'table-column-resizer' ) ) {
-			return;
-		}
-
-		setResizersVisibility( this.editor.editing.view, false );
 	}
 
 	/**
@@ -669,15 +656,16 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * Retrieves and returns required data needed to correctly calculate the widths of the resized columns.
 	 *
 	 * @private
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @param {MouseEvent} domEvent
+	 * @param {module:engine/view/element~Element} resizer
 	 * @returns {Object}
 	 */
-	_getResizingData( domEventData ) {
+	_getResizingData( domEvent, resizer ) {
 		const editor = this.editor;
 
-		const columnPosition = domEventData.domEvent.clientX;
+		const columnPosition = domEvent.clientX;
 
-		const viewResizer = domEventData.target;
+		const viewResizer = resizer;
 		const viewLeftCell = viewResizer.findAncestor( 'td' ) || viewResizer.findAncestor( 'th' );
 		const modelLeftCell = editor.editing.mapper.toModelElement( viewLeftCell );
 		const modelTable = modelLeftCell.findAncestor( 'table' );
