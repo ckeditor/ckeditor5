@@ -162,6 +162,12 @@ createEditor( 'style', {
 	reversed: false
 } );
 
+createEditor( 'style-attribute', {
+	styles: { useAttribute: true },
+	startIndex: false,
+	reversed: false
+} );
+
 createEditor( 'none', {
 	styles: false,
 	startIndex: false,

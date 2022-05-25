@@ -246,8 +246,19 @@ export default class Editor {
 
 	set isReadOnly( value ) {
 		/**
-		 * `Editor#isReadOnly` does not have a setter and should be set using `Editor#enableReadOnlyMode( lockId )` and
-		 * `Editor#disableReadOnlyMode( lockId )`.
+		 * The {@link #isReadOnly Editor#isReadOnly} property is read-only since version `34.0.0` and can be set only using
+		 * {@link #enableReadOnlyMode `Editor#enableReadOnlyMode( lockId )`} and
+		 * {@link #disableReadOnlyMode `Editor#disableReadOnlyMode( lockId )`}.
+		 *
+		 * Usage before version `34.0.0`:
+		 *
+		 *		editor.isReadOnly = true;
+		 * 		editor.isReadOnly = false;
+		 *
+		 * Usage since version `34.0.0`:
+		 *
+		 *		editor.enableReadOnlyMode( 'my-feature-id' );
+		 * 		editor.disableReadOnlyMode( 'my-feature-id' );
 		 *
 		 * @error editor-isreadonly-has-no-setter
 		 */
