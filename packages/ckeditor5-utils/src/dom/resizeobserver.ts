@@ -20,9 +20,8 @@ import global from './global';
  *			console.log( entry.contentRect.width ); // -> e.g. '423px'
  *		} );
  *
- * By default, it uses the [native DOM resize observer](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
- * under the hood and in browsers that do not support the native API yet, a polyfilled observer is
- * used instead.
+ * It uses the [native DOM resize observer](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
+ * under the hood.
  */
 export default class ResizeObserver {
 	/**
@@ -44,8 +43,7 @@ export default class ResizeObserver {
 	private readonly _callback: ( entry: ResizeObserverEntry ) => void;
 
 	/**
-	 * The single native observer instance (or polyfill in browsers that do not support the API)
-	 * shared across all {@link module:utils/dom/resizeobserver~ResizeObserver} instances.
+	 * The single native observer instance shared across all {@link module:utils/dom/resizeobserver~ResizeObserver} instances.
 	 *
 	 * @static
 	 * @protected
@@ -75,7 +73,7 @@ export default class ResizeObserver {
 	 */
 	constructor( element: Element, callback: ( entry: ResizeObserverEntry ) => void ) {
 		// **Note**: For the maximum performance, this class ensures only a single instance of the native
-		// (or polyfilled) observer is used no matter how many instances of this class were created.
+		// observer is used no matter how many instances of this class were created.
 		if ( !ResizeObserver._observerInstance ) {
 			ResizeObserver._createObserver();
 		}
@@ -165,7 +163,6 @@ export default class ResizeObserver {
 
 	/**
 	 * Creates the single native observer shared across all `ResizeObserver` instances.
-	 * If the browser does not support the native API, it creates a polyfill.
 	 *
 	 * @private
 	 * @static
