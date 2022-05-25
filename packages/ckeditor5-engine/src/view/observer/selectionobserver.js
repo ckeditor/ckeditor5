@@ -199,7 +199,7 @@ export default class SelectionObserver extends Observer {
 		}
 
 		// Ensure the mutation event will be before selection event on all browsers.
-		// this.mutationObserver.flush();
+		this.mutationObserver.flush();
 
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 

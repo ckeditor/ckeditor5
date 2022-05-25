@@ -217,6 +217,8 @@ export default class Renderer {
 			return;
 		}
 
+		console.info( '[Renderer] Rendering' );
+
 		let inlineFillerPosition;
 		const isInlineFillerRenderingPossible = env.isBlink && !env.isAndroid ? !this.isSelecting : true;
 
