@@ -593,24 +593,42 @@ describe( 'TableColumnResize utils', () => {
 			editor.destroy();
 		} );
 
-		it( 'should add and remove ck-resizers-hidden class to/from the closest parent table', () => {
-			setModelData( editor.model, modelTable( [
-				[ '00', '01', '02' ],
-				[ '10', '11', '12' ]
-			], { columnWidths: '25%,25%,50%' } ) );
+		it( 'should add and remove ck-resizers-hidden class to/from all the tables', () => {
+			editor.setData(
+				`<figure class="table">
+					<table>
+						<tbody>
+							<tr>
+								<td>11</td>
+								<td>12</td>
+							</tr>
+						</tbody>
+					</table>
+				</figure>
+				<figure class="table">
+					<table>
+						<tbody>
+							<tr>
+								<td>11</td>
+								<td>12</td>
+							</tr>
+						</tbody>
+					</table>
+				</figure>`
+			);
 
-			const table = editor.model.document.getRoot().getChild( 0 );
-			const row0 = [ ...table.getChildren() ][ 0 ];
-			const cell00 = [ ...row0.getChildren() ][ 0 ];
-			const paragraph = [ ...cell00.getChildren() ][ 0 ];
+			const table1 = editor.model.document.getRoot().getChild( 0 );
+			const table2 = editor.model.document.getRoot().getChild( 1 );
 
-			setResizersVisibility( editor.editing.view, editor.editing.mapper.toViewElement( paragraph ), false );
+			setResizersVisibility( editor.editing.view, false );
 
-			expect( editor.editing.mapper.toViewElement( table ).hasClass( 'ck-resizers-hidden' ) ).to.be.true;
+			expect( editor.editing.mapper.toViewElement( table1 ).hasClass( 'ck-resizers-hidden' ) ).to.be.true;
+			expect( editor.editing.mapper.toViewElement( table2 ).hasClass( 'ck-resizers-hidden' ) ).to.be.true;
 
-			setResizersVisibility( editor.editing.view, editor.editing.mapper.toViewElement( paragraph ), true );
+			setResizersVisibility( editor.editing.view, true );
 
-			expect( editor.editing.mapper.toViewElement( table ).hasClass( 'ck-resizers-hidden' ) ).to.be.false;
+			expect( editor.editing.mapper.toViewElement( table1 ).hasClass( 'ck-resizers-hidden' ) ).to.be.false;
+			expect( editor.editing.mapper.toViewElement( table2 ).hasClass( 'ck-resizers-hidden' ) ).to.be.false;
 		} );
 	} );
 } );
