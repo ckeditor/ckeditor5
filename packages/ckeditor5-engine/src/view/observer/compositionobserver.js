@@ -25,13 +25,13 @@ export default class CompositionObserver extends DomEventObserver {
 		this.domEventType = [ 'compositionstart', 'compositionupdate', 'compositionend' ];
 		const document = this.document;
 
-		document.on( 'compositionstart', () => {
-			document.isComposing = true;
-		} );
-
-		document.on( 'compositionend', () => {
-			document.isComposing = false;
-		} );
+		// document.on( 'compositionstart', () => {
+		// 	document.isComposing = true;
+		// } );
+		//
+		// document.on( 'compositionend', () => {
+		// 	document.isComposing = false;
+		// } );
 	}
 
 	onDomEvent( domEvent ) {

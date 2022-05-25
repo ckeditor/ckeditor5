@@ -115,7 +115,7 @@ export default class EditingController {
 		// }, { priority: 'low' } );
 
 		this.listenTo( this.view.document, 'keydown', ( evt, domEventData ) => {
-			if ( domEventData.keyCode === 229 && !this.view.document.isComposing ) {
+			if ( domEventData.keyCode === 229 && !this.view.document.isComposing && !model.document.selection.isCollapsed ) {
 				console.log( 'initial delete content' );
 				model.deleteContent( model.document.selection );
 			}

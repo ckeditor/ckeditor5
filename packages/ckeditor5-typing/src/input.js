@@ -124,12 +124,16 @@ export default class Input extends Plugin {
 			this._compositionModelRange.detach();
 			this._compositionModelRange = null;
 			this._compositionText = '';
-			// viewDocument.isComposing = false;
-			// viewDocument.isComposing = true;
+
+			viewDocument.isComposing = false;
 		};
 
 		this.listenTo( viewDocument, 'compositionupdate', compositionUpdate );
 		this.listenTo( viewDocument, 'compositionend', compositionUpdate );
+		this.listenTo( viewDocument, 'compositionend', () => {
+			// Additional case to make sure that the isComposing flag is not lost.
+			viewDocument.isComposing = false;
+		} );
 
 		this.listenTo( viewDocument, 'insertCompositionText', ( evt, data ) => {
 			const { text, selection } = data;
@@ -138,16 +142,16 @@ export default class Input extends Plugin {
 
 			this._compositionText = text;
 
-			// TODO this should probably be in the view document and should map to model live range and maybe be converted in a way that selection does
-			//  or maybe it could use the selection?
 			if ( this._compositionModelRange ) {
 				if ( !this._compositionModelRange.start.isEqual( compositionModelPosition ) ) {
-					console.log( '-- fake composition end (on insert composition)', this._compositionModelRange, compositionModelPosition, text );
+					console.warn( '-- fake composition end (on insert composition)',
+						this._compositionModelRange, compositionModelPosition, text );
 				}
 			} else {
 				const firstRange = editor.editing.mapper.toModelRange( selection.getFirstRange() );
 
 				console.log( '------ start composing on', firstRange );
+				viewDocument.isComposing = true;
 				this._compositionModelRange = LiveRange.fromRange( firstRange );
 			}
 		} );
