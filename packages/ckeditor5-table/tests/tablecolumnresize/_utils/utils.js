@@ -18,8 +18,8 @@ export const tableColumnResizeMouseSimulator = {
 		const eventInfo = { stop };
 
 		const domEventData = {
-			target: editor.editing.view.domConverter.domToView( domTarget ),
-			domEvent: { clientX },
+			target: domTarget,
+			clientX,
 			preventDefault
 		};
 		this._getPlugin( editor )._onMouseDownHandler( eventInfo, domEventData );
