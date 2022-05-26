@@ -454,6 +454,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		domEmitter.listenTo( global.window.document, 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
 		domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
+		domEmitter.listenTo( global.window.document, 'drop', this._onMouseUpHandler.bind( this ), { useCapture: true } );
 		domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
 	}
 
