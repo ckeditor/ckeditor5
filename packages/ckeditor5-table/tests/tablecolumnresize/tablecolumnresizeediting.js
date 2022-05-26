@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, MouseEvent */
 
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
 import TableColumnResize from '../../src/tablecolumnresize';
@@ -1943,6 +1943,77 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'Hide/show resizers on mousedown/mouseup', () => {
+		let model, editor, view, editorElement;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+			editor = await createEditor();
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			if ( editorElement ) {
+				editorElement.remove();
+			}
+
+			if ( editor ) {
+				await editor.destroy();
+			}
+		} );
+
+		it( 'should not hide resizers when resizer is clicked', () => {
+			setModelData( model,
+				'<table columnWidths="100%">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>' +
+								'[foo]' +
+							'</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			const resizer = view.getDomRoot().querySelector( '.table-column-resizer' );
+
+			resizer.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+
+			const viewRoot = view.domConverter.mapDomToView( view.getDomRoot() );
+
+			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.false;
+		} );
+
+		it( 'should hide resizers when table cell is clicked and show resizers on mouseup', () => {
+			setModelData( model,
+				'<table columnWidths="100%">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>' +
+								'[foo]' +
+							'</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			const td = view.getDomRoot().querySelector( 'td' );
+
+			td.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+
+			const viewRoot = view.domConverter.mapDomToView( view.getDomRoot() );
+
+			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.true;
+
+			td.dispatchEvent( new MouseEvent( 'mouseup', { bubbles: true } ) );
+
+			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.false;
 		} );
 	} );
 
