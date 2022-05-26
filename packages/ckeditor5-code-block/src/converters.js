@@ -29,9 +29,10 @@ import { getPropertyAssociation } from './utils';
  * configuration passed to the feature.
  * @param {Boolean} [useLabels=false] When `true`, the `<pre>` element will get a `data-language` attribute with a
  * human–readable label of the language. Used only in the editing.
+ * @param {String} [editorType='simple'] Determines the type of editor used for this code block.
  * @returns {Function} Returns a conversion callback.
  */
-export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = false ) {
+export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = false, editorType = 'simple' ) {
 	// Language CSS classes:
 	//
 	//		{
@@ -61,7 +62,9 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 
 		const codeBlockLanguage = data.item.getAttribute( 'language' );
 		const targetViewPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-		const preAttributes = {};
+		const preAttributes = {
+			class: [ `code-block-editor_${ editorType }` ]
+		};
 
 		// Attributes added only in the editing view.
 		if ( useLabels ) {

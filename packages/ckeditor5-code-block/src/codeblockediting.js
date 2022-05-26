@@ -144,9 +144,13 @@ export default class CodeBlockEditing extends Plugin {
 			}
 		} );
 
+		const codeEditorType = editor.config.get( 'codeBlock.editor' ) || 'simple';
+
 		// Conversion.
-		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true ) );
-		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs ) );
+		editor.editing.downcastDispatcher.on( 'insert:codeBlock',
+			modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true, codeEditorType ) );
+		editor.data.downcastDispatcher.on( 'insert:codeBlock',
+			modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, false, codeEditorType ) );
 		editor.data.downcastDispatcher.on( 'insert:softBreak', modelToDataViewSoftBreakInsertion( model ), { priority: 'high' } );
 
 		editor.data.upcastDispatcher.on( 'element:code', dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs ) );

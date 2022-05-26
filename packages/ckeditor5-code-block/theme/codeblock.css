@@ -37,4 +37,8 @@
 		content: attr(data-language);
 		position: absolute;
 	}
+
+	&.code-block-editor_advanced {
+		color: hsl(0, 100%, 50%);
+	}
 }

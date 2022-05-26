@@ -29,3 +29,24 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+ClassicEditor
+	.create( document.querySelector( '#advanced_editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
+		plugins: [ Code, CodeBlock, Autoformat, Indent, ArticlePluginSet ],
+		toolbar: [
+			'heading', '|',
+			'bold', 'italic', 'code', 'blockQuote', 'codeBlock', '|',
+			'outdent', 'indent', '|',
+			'undo', 'redo'
+		],
+		codeBlock: {
+			editor: 'advanced'
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
