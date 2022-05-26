@@ -18,7 +18,7 @@ export const conversionStrategies = {
 
 		data: {
 			simple: modelToViewCodeBlockInsertion,
-			advanced: modelToViewAdvancedCodeBlockInsertion
+			advanced: modelToViewCodeBlockInsertion
 		}
 	}
 };
@@ -129,26 +129,26 @@ export function modelToViewAdvancedCodeBlockInsertion( model, languageDefs, useL
 
 		const codeBlockLanguage = data.item.getAttribute( 'language' );
 		const targetViewPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-		const preAttributes = {};
+		const textareaAttributes = {};
 
 		if ( editingViewConversion ) {
-			preAttributes.class = [ 'code-block-editor_advanced' ];
+			textareaAttributes.class = [ 'code-block-editor_advanced' ];
 		}
 
 		// Attributes added only in the editing view.
 		if ( useLabels ) {
-			preAttributes[ 'data-language' ] = languagesToLabels[ codeBlockLanguage ];
-			preAttributes.spellcheck = 'false';
+			textareaAttributes[ 'data-language' ] = languagesToLabels[ codeBlockLanguage ];
+			textareaAttributes.spellcheck = 'false';
 		}
 
-		const code = writer.createContainerElement( 'code', {
+		const textarea = writer.createUIElement( 'textarea', textareaAttributes );
+
+		const wrapper = writer.createContainerElement( 'div', {
 			class: languagesToClasses[ codeBlockLanguage ] || null
-		} );
+		}, textarea );
 
-		const pre = writer.createContainerElement( 'pre', preAttributes, code );
-
-		writer.insert( targetViewPosition, pre );
-		mapper.bindElements( data.item, code );
+		writer.insert( targetViewPosition, wrapper );
+		mapper.bindElements( data.item, wrapper );
 	};
 }
 
