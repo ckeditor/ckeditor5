@@ -20,7 +20,7 @@ import {
 	rawSnippetTextToViewDocumentFragment
 } from './utils';
 import {
-	modelToViewCodeBlockInsertion,
+	conversionStrategies,
 	modelToDataViewSoftBreakInsertion,
 	dataViewToModelCodeBlockInsertion,
 	dataViewToModelTextNewlinesInsertion,
@@ -145,12 +145,12 @@ export default class CodeBlockEditing extends Plugin {
 		} );
 
 		const codeEditorType = editor.config.get( 'codeBlock.editor' ) || 'simple';
+		const editingDowncastConverter = conversionStrategies.downcast.editing[ codeEditorType ];
+		const dataDowncastConverter = conversionStrategies.downcast.data[ codeEditorType ];
 
 		// Conversion.
-		editor.editing.downcastDispatcher.on( 'insert:codeBlock',
-			modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true, codeEditorType ) );
-		editor.data.downcastDispatcher.on( 'insert:codeBlock',
-			modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, false, codeEditorType ) );
+		editor.editing.downcastDispatcher.on( 'insert:codeBlock', editingDowncastConverter( model, normalizedLanguagesDefs, true, true ) );
+		editor.data.downcastDispatcher.on( 'insert:codeBlock', dataDowncastConverter( model, normalizedLanguagesDefs ) );
 		editor.data.downcastDispatcher.on( 'insert:softBreak', modelToDataViewSoftBreakInsertion( model ), { priority: 'high' } );
 
 		editor.data.upcastDispatcher.on( 'element:code', dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs ) );

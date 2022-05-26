@@ -9,6 +9,20 @@
 
 import { getPropertyAssociation } from './utils';
 
+export const conversionStrategies = {
+	downcast: {
+		editing: {
+			simple: modelToViewCodeBlockInsertion,
+			advanced: modelToViewAdvancedCodeBlockInsertion
+		},
+
+		data: {
+			simple: modelToViewCodeBlockInsertion,
+			advanced: modelToViewAdvancedCodeBlockInsertion
+		}
+	}
+};
+
 /**
  * A model-to-view (both editing and data) converter for the `codeBlock` element.
  *
@@ -29,10 +43,10 @@ import { getPropertyAssociation } from './utils';
  * configuration passed to the feature.
  * @param {Boolean} [useLabels=false] When `true`, the `<pre>` element will get a `data-language` attribute with a
  * human–readable label of the language. Used only in the editing.
- * @param {String} [editorType='simple'] Determines the type of editor used for this code block.
+ * @param {Boolean} [editingViewConversion=false] `true` if it's a conversion for editing pipeline.
  * @returns {Function} Returns a conversion callback.
  */
-export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = false, editorType = 'simple' ) {
+export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = false, editingViewConversion = false ) {
 	// Language CSS classes:
 	//
 	//		{
@@ -62,9 +76,64 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 
 		const codeBlockLanguage = data.item.getAttribute( 'language' );
 		const targetViewPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-		const preAttributes = {
-			class: [ `code-block-editor_${ editorType }` ]
-		};
+		const preAttributes = {};
+
+		if ( editingViewConversion ) {
+			preAttributes.class = [ 'code-block-editor_simple' ];
+		}
+
+		// Attributes added only in the editing view.
+		if ( useLabels ) {
+			preAttributes[ 'data-language' ] = languagesToLabels[ codeBlockLanguage ];
+			preAttributes.spellcheck = 'false';
+		}
+
+		const code = writer.createContainerElement( 'code', {
+			class: languagesToClasses[ codeBlockLanguage ] || null
+		} );
+
+		const pre = writer.createContainerElement( 'pre', preAttributes, code );
+
+		writer.insert( targetViewPosition, pre );
+		mapper.bindElements( data.item, code );
+	};
+}
+
+export function modelToViewAdvancedCodeBlockInsertion( model, languageDefs, useLabels = false, editingViewConversion = false ) {
+	// Language CSS classes:
+	//
+	//		{
+	//			php: 'language-php',
+	//			python: 'language-python',
+	//			javascript: 'js',
+	//			...
+	//		}
+	const languagesToClasses = getPropertyAssociation( languageDefs, 'language', 'class' );
+
+	// Language labels:
+	//
+	//		{
+	//			php: 'PHP',
+	//			python: 'Python',
+	//			javascript: 'JavaScript',
+	//			...
+	//		}
+	const languagesToLabels = getPropertyAssociation( languageDefs, 'language', 'label' );
+
+	return ( evt, data, conversionApi ) => {
+		const { writer, mapper, consumable } = conversionApi;
+
+		if ( !consumable.consume( data.item, 'insert' ) ) {
+			return;
+		}
+
+		const codeBlockLanguage = data.item.getAttribute( 'language' );
+		const targetViewPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
+		const preAttributes = {};
+
+		if ( editingViewConversion ) {
+			preAttributes.class = [ 'code-block-editor_advanced' ];
+		}
 
 		// Attributes added only in the editing view.
 		if ( useLabels ) {
