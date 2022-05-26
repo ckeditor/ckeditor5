@@ -593,42 +593,23 @@ describe( 'TableColumnResize utils', () => {
 			editor.destroy();
 		} );
 
-		it( 'should add and remove ck-resizers-hidden class to/from all the tables', () => {
-			editor.setData(
-				`<figure class="table">
-					<table>
-						<tbody>
-							<tr>
-								<td>11</td>
-								<td>12</td>
-							</tr>
-						</tbody>
-					</table>
-				</figure>
-				<figure class="table">
-					<table>
-						<tbody>
-							<tr>
-								<td>11</td>
-								<td>12</td>
-							</tr>
-						</tbody>
-					</table>
-				</figure>`
-			);
+		it( 'should add and remove ck-resizers-hidden class to/from root', () => {
+			setModelData( editor.model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '25%,25%,50%' } ) );
 
-			const table1 = editor.model.document.getRoot().getChild( 0 );
-			const table2 = editor.model.document.getRoot().getChild( 1 );
+			const view = editor.editing.view;
 
-			setResizersVisibility( editor.editing.view, false );
+			const viewRoot = view.domConverter.mapDomToView( view.getDomRoot() );
 
-			expect( editor.editing.mapper.toViewElement( table1 ).hasClass( 'ck-resizers-hidden' ) ).to.be.true;
-			expect( editor.editing.mapper.toViewElement( table2 ).hasClass( 'ck-resizers-hidden' ) ).to.be.true;
+			setResizersVisibility( view, false );
 
-			setResizersVisibility( editor.editing.view, true );
+			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.true;
 
-			expect( editor.editing.mapper.toViewElement( table1 ).hasClass( 'ck-resizers-hidden' ) ).to.be.false;
-			expect( editor.editing.mapper.toViewElement( table2 ).hasClass( 'ck-resizers-hidden' ) ).to.be.false;
+			setResizersVisibility( view, true );
+
+			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.false;
 		} );
 	} );
 } );
