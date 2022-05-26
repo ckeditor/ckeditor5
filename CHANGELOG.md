@@ -24,7 +24,7 @@ There were also a few bug fixes:
 
 The new version of CKEditor 5 real-time collaboration is not compatible with the current version of CKEditor 5 Collaboration Server On-Premises (`4.6.0`).
 
-Please wait for the new release of the CKEditor 5 Cloud Services On-Premises solution and update the backend service first, before updating the CKEditor 5 packages.
+Please wait for the new release of the CKEditor 5 Collaboration Server On-Premises solution and update the backend service first, before updating the CKEditor 5 packages.
 
 ### Features
 
