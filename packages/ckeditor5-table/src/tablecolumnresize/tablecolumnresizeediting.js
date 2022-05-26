@@ -470,7 +470,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		if ( !domEvent.target.classList.contains( 'table-column-resizer' ) ) {
+		if ( domEvent.target.classList && !domEvent.target.classList.contains( 'table-column-resizer' ) ) {
 			setResizersVisibility( this.editor.editing.view, false );
 			return;
 		}
