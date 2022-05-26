@@ -452,7 +452,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	_setupColumnResizers() {
 		const domEmitter = Object.create( DomEmitterMixin );
 
-		domEmitter.listenTo( global.window.document, 'mousedown', this._onMouseDownHandler.bind( this ) );
+		domEmitter.listenTo( global.window.document, 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
 		domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 		domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
 	}
