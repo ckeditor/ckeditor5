@@ -24,27 +24,33 @@ export default class CompositionObserver extends DomEventObserver {
 		super( view );
 
 		this.domEventType = [ 'compositionstart', 'compositionupdate', 'compositionend' ];
-		const document = this.document;
-
-		if ( !env.isAndroid ) {
-			document.on( 'compositionstart', () => {
-				document.isComposing = true;
-			} );
-
-			document.on( 'compositionend', () => {
-				document.isComposing = false;
-			} );
-		}
+		// const document = this.document;
+		//
+		// if ( !env.isAndroid ) {
+		// 	document.on( 'compositionstart', () => {
+		// 		document.isComposing = true;
+		// 	} );
+		//
+		// 	document.on( 'compositionend', () => {
+		// 		document.isComposing = false;
+		// 	} );
+		// }
 	}
 
 	onDomEvent( domEvent ) {
-		const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
 		let anchorViewPosition = null;
 
-		try {
-			anchorViewPosition = this.view.domConverter.domPositionToView( domSelection.anchorNode, domSelection.anchorOffset );
-		} catch ( err ) {
-			console.warn( 'cant map dom selection anchor to view', domSelection.anchorNode, domSelection.anchorOffset );
+		if ( this.view.document.selection.isFake ) {
+			// Future proof: in case of multi-range fake selections being possible.
+			anchorViewPosition = this.view.document.selection.anchor;
+		} else {
+			const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
+
+			try {
+				anchorViewPosition = this.view.domConverter.domPositionToView( domSelection.anchorNode, domSelection.anchorOffset );
+			} catch ( err ) {
+				console.warn( 'cant map dom selection anchor to view', domSelection.anchorNode, domSelection.anchorOffset );
+			}
 		}
 
 		this.fire( domEvent.type, domEvent, {

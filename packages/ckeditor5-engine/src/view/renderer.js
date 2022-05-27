@@ -234,7 +234,9 @@ export default class Renderer {
 			// There was inline filler rendered in the DOM but it's not
 			// at the selection position any more, so we can remove it
 			// (cause even if it's needed, it must be placed in another location).
-			if ( this._inlineFiller && !this._isSelectionInInlineFiller() ) {
+			// TODO describe - always remove inline filler to force Android to not break it (remove part of it).
+			//  also this solves the issue with Android that does not respect prevent default on the delete backward.
+			if ( this._inlineFiller /*&& !this._isSelectionInInlineFiller()*/ ) {
 				this._removeInlineFiller();
 			}
 
@@ -843,6 +845,7 @@ export default class Renderer {
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor );
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus );
 
+		console.log( 'update dom selection', anchor, focus );
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );
 

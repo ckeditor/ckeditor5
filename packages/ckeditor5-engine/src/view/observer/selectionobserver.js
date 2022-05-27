@@ -147,6 +147,12 @@ export default class SelectionObserver extends Observer {
 				return;
 			}
 
+			if ( this._ignoreSelectionChange ) {
+				console.info( '[SelectiobObserver] Selection change aborted on timeout after delete content.' );
+
+				return;
+			}
+
 			console.log( '[SelectiobObserver] _handleSelectionChange()' );
 
 			this._handleSelectionChange( domEvent, domDocument );

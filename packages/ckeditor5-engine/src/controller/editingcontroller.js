@@ -24,6 +24,7 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
+import SelectionObserver from '../view/observer/selectionobserver';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -116,8 +117,21 @@ export default class EditingController {
 
 		this.listenTo( this.view.document, 'keydown', ( evt, domEventData ) => {
 			if ( domEventData.keyCode === 229 && !this.view.document.isComposing && !model.document.selection.isCollapsed ) {
-				console.log( 'initial delete content' );
+				console.log( 'initial delete content', model.document.selection.anchor, model.document.selection.focus );
 				model.deleteContent( model.document.selection );
+
+				const selectionObserver = this.view.getObserver( SelectionObserver );
+
+				selectionObserver._ignoreSelectionChange = true;
+
+				setTimeout( () => {
+					selectionObserver._ignoreSelectionChange = false;
+
+					console.log( 'force render after timeout', this.view.document.selection.anchor, this.view.document.selection.focus,
+						window.getSelection().anchor, window.getSelection().focus );
+
+					this.view.forceRender();
+				}, 0 );
 			}
 		}, { priority: 'lowest' } );
 
