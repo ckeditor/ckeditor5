@@ -144,7 +144,7 @@ export default class Input extends Plugin {
 			const firstViewPosition = selection.getFirstPosition();
 			const compositionModelPosition = editor.editing.mapper.toModelPosition( firstViewPosition );
 
-			this._compositionText = text;
+			this._compositionText = text || '';
 
 			if ( this._compositionModelRange ) {
 				if ( !this._compositionModelRange.start.isEqual( compositionModelPosition ) ) {
