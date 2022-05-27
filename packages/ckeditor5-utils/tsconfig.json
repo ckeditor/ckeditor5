@@ -5,6 +5,7 @@
     ],
     "noEmitOnError": true,
     "noImplicitAny": true,
+    "noImplicitOverride": true,
     "outDir": "./dist/",
     "strict": true,
     "module": "es6",

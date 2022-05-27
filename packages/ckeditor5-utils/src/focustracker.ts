@@ -37,7 +37,7 @@ class FocusTracker {
 	 * @observable
 	 * @member {Boolean}
 	 */
-	isFocused!: boolean;
+	declare isFocused: boolean;
 
 	/**
 	 * The currently focused element.
@@ -50,7 +50,7 @@ class FocusTracker {
 	 * @observable
 	 * @member {Element|null}
 	 */
-	focusedElement!: Element | null;
+	declare focusedElement: Element | null;
 
 	/**
 	 * List of registered elements.
