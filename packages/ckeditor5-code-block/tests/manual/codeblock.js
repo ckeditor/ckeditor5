@@ -13,24 +13,6 @@ import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
-		plugins: [ Code, CodeBlock, Autoformat, Indent, ArticlePluginSet ],
-		toolbar: [
-			'heading', '|',
-			'bold', 'italic', 'code', 'blockQuote', 'codeBlock', '|',
-			'outdent', 'indent', '|',
-			'undo', 'redo'
-		]
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
-
-ClassicEditor
 	.create( document.querySelector( '#advanced_editor' ), {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ Code, CodeBlock, Autoformat, Indent, ArticlePluginSet ],
@@ -43,6 +25,24 @@ ClassicEditor
 		codeBlock: {
 			editor: 'advanced'
 		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
+		plugins: [ Code, CodeBlock, Autoformat, Indent, ArticlePluginSet ],
+		toolbar: [
+			'heading', '|',
+			'bold', 'italic', 'code', 'blockQuote', 'codeBlock', '|',
+			'outdent', 'indent', '|',
+			'undo', 'redo'
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;
