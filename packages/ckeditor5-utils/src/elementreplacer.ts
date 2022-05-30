@@ -12,15 +12,15 @@
  * the original elements from the DOM.
  */
 export default class ElementReplacer {
-	private _replacedElements: { element: HTMLElement, newElement?: HTMLElement }[];
+	/**
+	 * The elements replaced by {@link #replace} and their replacements.
+	 *
+	 * @private
+	 * @member {Array.<Object>}
+	 */
+	private _replacedElements: { element: HTMLElement; newElement?: HTMLElement }[];
 
 	constructor() {
-		/**
-		 * The elements replaced by {@link #replace} and their replacements.
-		 *
-		 * @private
-		 * @member {Array.<Object>}
-		 */
 		this._replacedElements = [];
 	}
 

@@ -26,16 +26,74 @@ import mix from './mix';
  * @mixes module:utils/emittermixin~EmitterMixin
  */
 class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> implements Iterable<T> {
+	/**
+	 * The internal list of items in the collection.
+	 *
+	 * @private
+	 * @member {Object[]}
+	 */
 	private readonly _items: T[];
+
+	/**
+	 * The internal map of items in the collection.
+	 *
+	 * @private
+	 * @member {Map}
+	 */
 	private readonly _itemMap: Map<string, T>;
+
+	/**
+	 * The name of the property which is considered to identify an item.
+	 *
+	 * @private
+	 * @member {String}
+	 */
 	private readonly _idProperty: I;
+
+	/**
+	 * A collection instance this collection is bound to as a result
+	 * of calling {@link #bindTo} method.
+	 *
+	 * @private
+	 * @member {module:utils/collection~Collection} #_bindToCollection
+	 */
 	private _bindToCollection?: Collection<any, any> | null;
+
+	/**
+	 * A helper mapping external items of a bound collection ({@link #bindTo})
+	 * and actual items of this collection. It provides information
+	 * necessary to properly remove items bound to another collection.
+	 *
+	 * See {@link #_bindToInternalToExternalMap}.
+	 *
+	 * @private
+	 * @member {WeakMap}
+	 */
 	private readonly _bindToExternalToInternalMap: WeakMap<any, T>;
+
+	/**
+	 * A helper mapping items of this collection to external items of a bound collection
+	 * ({@link #bindTo}). It provides information necessary to manage the bindings, e.g.
+	 * to avoid loops in two–way bindings.
+	 *
+	 * See {@link #_bindToExternalToInternalMap}.
+	 *
+	 * @private
+	 * @member {WeakMap}
+	 */
 	private readonly _bindToInternalToExternalMap: WeakMap<T, any>;
+
+	/**
+	 * Stores indexes of skipped items from bound external collection.
+	 *
+	 * @private
+	 * @member {Array}
+	 */
 	private _skippedIndexesFromExternal: number[];
 
 	constructor( options?: { readonly idProperty?: I } );
 	constructor( initialItems: Iterable<T>, options?: { readonly idProperty?: I } );
+
 	/**
 	 * Creates a new Collection instance.
 	 *
@@ -79,60 +137,11 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 			options = initialItemsOrOptions;
 		}
 
-		/**
-		 * The internal list of items in the collection.
-		 *
-		 * @private
-		 * @member {Object[]}
-		 */
 		this._items = [];
-
-		/**
-		 * The internal map of items in the collection.
-		 *
-		 * @private
-		 * @member {Map}
-		 */
 		this._itemMap = new Map();
-
-		/**
-		 * The name of the property which is considered to identify an item.
-		 *
-		 * @private
-		 * @member {String}
-		 */
 		this._idProperty = options.idProperty || 'id' as I;
-
-		/**
-		 * A helper mapping external items of a bound collection ({@link #bindTo})
-		 * and actual items of this collection. It provides information
-		 * necessary to properly remove items bound to another collection.
-		 *
-		 * See {@link #_bindToInternalToExternalMap}.
-		 *
-		 * @private
-		 * @member {WeakMap}
-		 */
 		this._bindToExternalToInternalMap = new WeakMap();
-
-		/**
-		 * A helper mapping items of this collection to external items of a bound collection
-		 * ({@link #bindTo}). It provides information necessary to manage the bindings, e.g.
-		 * to avoid loops in two–way bindings.
-		 *
-		 * See {@link #_bindToExternalToInternalMap}.
-		 *
-		 * @private
-		 * @member {WeakMap}
-		 */
 		this._bindToInternalToExternalMap = new WeakMap();
-
-		/**
-		 * Stores indexes of skipped items from bound external collection.
-		 *
-		 * @private
-		 * @member {Array}
-		 */
 		this._skippedIndexesFromExternal = [];
 
 		// Set the initial content of the collection (if provided in the constructor).
@@ -142,14 +151,6 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 				this._itemMap.set( this._getItemIdBeforeAdding( item ), item );
 			}
 		}
-
-		/**
-		 * A collection instance this collection is bound to as a result
-		 * of calling {@link #bindTo} method.
-		 *
-		 * @private
-		 * @member {module:utils/collection~Collection} #_bindToCollection
-		 */
 	}
 
 	/**
