@@ -13,5 +13,9 @@ yarn.lock
 # Ignore `mrgit.json` this file contains info about external repositories.
 mrgit.json
 
+# Ignore yalc
+.yalc
+yalc.lock
+
 build/
 !packages/ckeditor5-build-*/build
