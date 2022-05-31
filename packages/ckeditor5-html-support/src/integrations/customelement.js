@@ -100,6 +100,8 @@ export default class CustomElementSupport extends Plugin {
 				converterPriority: 'low'
 			} );
 
+			// Because this element is unsafe (DomConverter#unsafeElements), it will render as a transparent <span> but it must
+			// be rendered anyway for the mapping between the model and the view to exist.
 			conversion.for( 'editingDowncast' ).elementToElement( {
 				model: {
 					name: definition.model,
@@ -130,6 +132,7 @@ export default class CustomElementSupport extends Plugin {
 						domConverter.setContentOf( domElement, htmlContent );
 
 						// Unwrap the custom element content (it was stored in the attribute as the whole custom element).
+						// See the upcast conversion for the "htmlContent" attribute to learn more.
 						const customElement = domElement.firstChild;
 
 						customElement.remove();
