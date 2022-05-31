@@ -38,6 +38,10 @@ describe( 'MediaEmbedElementSupport', () => {
 			return editor.destroy();
 		} );
 
+		it( 'should be named', () => {
+			expect( editor.plugins.has( 'MediaEmbedElementSupport' ) ).to.be.true;
+		} );
+
 		it( 'should allow attributes', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /^(figure|oembed)$/,
