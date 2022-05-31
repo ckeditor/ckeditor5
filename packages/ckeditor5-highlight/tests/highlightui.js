@@ -83,6 +83,12 @@ describe( 'HighlightUI', () => {
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );
 
+		it( 'button arrow has the base properties', () => {
+			const button = dropdown.buttonView.arrowView;
+
+			expect( button ).to.have.property( 'tooltip', 'Highlight' );
+		} );
+
 		it( 'toolbar nas the basic properties', () => {
 			const toolbarView = dropdown.toolbarView;
 

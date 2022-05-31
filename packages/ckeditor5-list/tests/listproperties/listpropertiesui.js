@@ -207,6 +207,22 @@ describe( 'ListPropertiesUI', () => {
 				} );
 			} );
 
+			describe( 'main split button arrow', () => {
+				let mainButtonViewArrow;
+
+				beforeEach( () => {
+					mainButtonViewArrow = bulletedListDropdown.buttonView.arrowView;
+				} );
+
+				it( 'should have a #label', () => {
+					expect( mainButtonViewArrow.label ).to.equal( 'Bulleted List' );
+				} );
+
+				it( 'should have a #tooltip based on a label', () => {
+					expect( mainButtonViewArrow.tooltip ).to.be.true;
+				} );
+			} );
+
 			describe( 'grid with style buttons', () => {
 				let stylesView;
 

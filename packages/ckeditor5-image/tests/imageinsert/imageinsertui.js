@@ -74,10 +74,26 @@ describe( 'ImageInsertUI', () => {
 			return editor.destroy();
 		} );
 
-		it( 'should register the "insertImage" dropdown', () => {
-			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+		describe( 'should register the "insertImage" dropdown', () => {
+			it( 'button with proper properties set', () => {
+				expect( dropdown ).to.be.instanceOf( DropdownView );
 
-			expect( dropdown ).to.be.instanceOf( DropdownView );
+				const button = dropdown.buttonView;
+
+				expect( button.isOn ).to.be.false;
+				expect( button.tooltip ).to.be.true;
+				expect( button.label ).to.equal( 'Insert image' );
+				expect( button.icon ).to.match( /<svg / );
+			} );
+
+			it( 'button arrow with proper properties set', () => {
+				expect( dropdown ).to.be.instanceOf( DropdownView );
+
+				const buttonArrow = dropdown.buttonView.arrowView;
+
+				expect( buttonArrow.tooltip ).to.be.true;
+				expect( buttonArrow.label ).to.equal( 'Insert image' );
+			} );
 		} );
 
 		it( 'should register "imageInsert" dropdown as an alias for the "insertImage" dropdown', () => {

@@ -248,6 +248,9 @@ describe( 'ImageStyleUI', () => {
 				expect( buttonView.tooltip ).to.be.true;
 				expect( buttonView.class ).to.be.null;
 
+				expect( buttonView.arrowView.label ).to.equal( ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title );
+				expect( buttonView.arrowView.tooltip ).to.be.true;
+
 				expect( view.toolbarView.items ).to.have.lengthOf( config.items.length );
 
 				view.toolbarView.items.map( item => {
