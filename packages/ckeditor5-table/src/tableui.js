@@ -291,6 +291,11 @@ export default class TableUI extends Plugin {
 			isEnabled: true
 		} );
 
+		dropdownView.buttonView.arrowView.set( {
+			label,
+			tooltip: true
+		} );
+
 		// Make dropdown button disabled when all options are disabled together with the main command.
 		dropdownView.bind( 'isEnabled' ).toMany( [ mergeCommand, ...commands ], 'isEnabled', ( ...areEnabled ) => {
 			return areEnabled.some( isEnabled => isEnabled );

@@ -44,12 +44,18 @@ export default class CodeBlockUI extends Plugin {
 			const command = editor.commands.get( 'codeBlock' );
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
+			const splitButtonViewArrow = dropdownView.buttonView.arrowView;
 
 			splitButtonView.set( {
 				label: t( 'Insert code block' ),
 				tooltip: true,
 				icon: codeBlockIcon,
 				isToggleable: true
+			} );
+
+			splitButtonViewArrow.set( {
+				label: t( 'Insert code block' ),
+				tooltip: true
 			} );
 
 			splitButtonView.bind( 'isOn' ).to( command, 'value', value => !!value );
