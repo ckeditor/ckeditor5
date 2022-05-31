@@ -49,6 +49,7 @@ export default class CustomElementSupport extends Plugin {
 				isContent: true
 			} );
 
+			// Being executed on the low priority, it will catch all elements that were not caught by other converters.
 			conversion.for( 'upcast' ).elementToElement( {
 				view: /.*/,
 				model: ( viewElement, conversionApi ) => {

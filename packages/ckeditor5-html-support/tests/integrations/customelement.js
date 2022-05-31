@@ -57,6 +57,7 @@ describe( 'CustomElementSupport', () => {
 	} );
 
 	it( 'should not allow unknown custom element if allow-all is not enabled', () => {
+		// Note that this one does not match any element in the DataSchema. As a result, no upcast conversion will occur.
 		dataFilter.allowElement( /custom-foo-element/ );
 		editor.setData( '<custom-foo-element>bar</custom-foo-element>' );
 
@@ -121,6 +122,7 @@ describe( 'CustomElementSupport', () => {
 			'<custom-foo-element><nested> b </nested></custom-foo-element>'
 		);
 
+		// Note: Some white spaces were trimmed in the data processor but this is still better than injecting NBSPs instead of white spaces.
 		expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 			data:
 				'<htmlCustomElement' +
