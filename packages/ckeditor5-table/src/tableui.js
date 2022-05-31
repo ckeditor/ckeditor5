@@ -277,6 +277,7 @@ export default class TableUI extends Plugin {
 		const editor = this.editor;
 		const dropdownView = createDropdown( locale, SplitButtonView );
 		const mergeCommandName = 'mergeTableCells';
+		const splitButtonView = dropdownView.buttonView;
 
 		// Main command.
 		const mergeCommand = editor.commands.get( mergeCommandName );
@@ -284,14 +285,14 @@ export default class TableUI extends Plugin {
 		// Subcommands in the dropdown.
 		const commands = this._fillDropdownWithListOptions( dropdownView, options );
 
-		dropdownView.buttonView.set( {
+		splitButtonView.set( {
 			label,
 			icon,
 			tooltip: true,
 			isEnabled: true
 		} );
 
-		dropdownView.buttonView.arrowView.set( {
+		splitButtonView.arrowView.set( {
 			label,
 			tooltip: true
 		} );

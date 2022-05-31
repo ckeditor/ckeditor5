@@ -235,7 +235,7 @@ export default class ImageInsertPanelView extends View {
 		const t = locale.t;
 		const dropdownView = createDropdown( locale, SplitButtonView );
 		const splitButtonView = dropdownView.buttonView;
-		const splitButtonViewArrow = dropdownView.buttonView.arrowView;
+		const splitButtonViewArrow = splitButtonView.arrowView;
 		const panelView = dropdownView.panelView;
 
 		splitButtonView.set( {

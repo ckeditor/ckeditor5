@@ -180,7 +180,7 @@ export default class HighlightUI extends Plugin {
 			const command = editor.commands.get( 'highlight' );
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
-			const splitButtonViewArrow = dropdownView.buttonView.arrowView;
+			const splitButtonViewArrow = splitButtonView.arrowView;
 
 			splitButtonView.set( {
 				label: t( 'Highlight' ),

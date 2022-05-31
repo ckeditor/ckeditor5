@@ -129,7 +129,7 @@ export default class ImageStyleUI extends Plugin {
 
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
-			const splitButtonViewArrow = dropdownView.buttonView.arrowView;
+			const splitButtonViewArrow = splitButtonView.arrowView;
 
 			addToolbarToDropdown( dropdownView, buttonViews );
 

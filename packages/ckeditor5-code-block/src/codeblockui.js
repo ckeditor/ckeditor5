@@ -44,7 +44,7 @@ export default class CodeBlockUI extends Plugin {
 			const command = editor.commands.get( 'codeBlock' );
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
-			const splitButtonViewArrow = dropdownView.buttonView.arrowView;
+			const splitButtonViewArrow = splitButtonView.arrowView;
 
 			splitButtonView.set( {
 				label: t( 'Insert code block' ),
