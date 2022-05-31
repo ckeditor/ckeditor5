@@ -15,7 +15,7 @@ import DataFilter from '../datafilter';
 import { setViewAttributes } from '../conversionutils';
 
 /**
- * Provides the General HTML Support for custom elements (not registered in the DataSchema).
+ * Provides the General HTML Support for custom elements (not registered in the {@link module:html-support/dataschema~DataSchema}).
  *
  * @extends module:core/plugin~Plugin
  */
