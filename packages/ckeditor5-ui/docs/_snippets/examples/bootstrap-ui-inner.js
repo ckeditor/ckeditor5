@@ -309,14 +309,19 @@ BootstrapEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
+		const readOnlyLock = Symbol( 'read-only-lock' );
 		const button = window.document.getElementById( 'toggle-readonly' );
 		let isReadOnly = false;
 
 		button.addEventListener( 'click', () => {
-			isReadOnly = !isReadOnly;
+			if ( isReadOnly ) {
+				editor.disableReadOnlyMode( readOnlyLock );
+			}
+			else {
+				editor.enableReadOnlyMode( readOnlyLock );
+			}
 
-			editor.enableReadOnlyMode( 'docs-snippet', isReadOnly );
+			isReadOnly = !isReadOnly;
 
 			button.textContent = isReadOnly ?
 				'Turn off read-only mode' :

@@ -22,7 +22,7 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
 3. **If none exists, integrate CKEditor 5 with your framework by yourself.**
 
-	CKEditor 5 offers {@link installation/advanced/predefined-builds ready-to-use builds} that expose a {@link installation/getting-started/basic-api rich JavaScript API} which you can use to {@link installation/getting-started/basic-api#creating-an-editor create editors} and {@link installation/getting-started/basic-api#interacting-with-the-editor control them}.
+	CKEditor 5 offers {@link installation/advanced/predefined-builds predefined builds} that expose a {@link installation/getting-started/basic-api rich JavaScript API} which you can use to {@link installation/getting-started/basic-api#creating-an-editor create editors} and {@link installation/getting-started/basic-api#interacting-with-the-editor control them}.
 
 ## Official WYSIWYG editor integrations
 

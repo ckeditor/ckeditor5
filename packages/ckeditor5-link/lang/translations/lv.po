@@ -30,7 +30,7 @@ msgstr "Saites URL"
 
 msgctxt "Label for the image link button."
 msgid "Link image"
-msgstr ""
+msgstr "Ievietot saiti uz attēla"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"

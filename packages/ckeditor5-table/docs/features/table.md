@@ -1,7 +1,7 @@
 ---
 title: Tables
 category: features
-modified_at: 2021-06-07
+modified_at: 2022-05-19
 ---
 
 {@snippet features/build-table-source}
@@ -22,7 +22,7 @@ You may look for more interesting details in the [Tables in CKEditor 5](https://
 
 The editor bellow shows the basic set of table features focusing on the **structure and semantics**. Use the **Insert table** toolbar button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table} in the editor below to create new tables. Focus any cell in the table to display the toolbar with buttons that will help you further shape the structure of the table.
 
-Click anywhere inside the table to invoke the table toolbar. The features available in there allow users to add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}. It is also worth noting that you will find them out–of–the–box in all {@link installation/advanced/predefined-builds ready–to–use editor builds}.
+Click anywhere inside the table to invoke the table toolbar. The features available in there allow users to add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}. It is also worth noting that you will find them out–of–the–box in all {@link installation/advanced/predefined-builds predefined builds}.
 
 {@snippet features/table}
 
@@ -37,7 +37,21 @@ Put the caret anywhere inside the table to invoke the table toolbar. Then click 
 [Learn more](#configuring-styling-tools) about configuring color palettes in the table styling pop–up interfaces.
 
 <info-box>
-	By default, table styling tools are not included in the {@link installation/advanced/predefined-builds ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
+	By default, table styling tools are not included in the {@link installation/advanced/predefined-builds predefined builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
+</info-box>
+
+### Table column resize
+
+The {@link module:table/tablecolumnresize~TableColumnResize} plugin adds support for resizing tables and table columns. It gives the content creator full control over the column width. It is a great tool to control both the content and the look of the table. By resizing individual columns, the authors can adjust them to their needs, depending on content inside.
+
+To resize a column, simply hover you pointer over the column edge until it gets highlighted. Just drag the column edge until you achieve the desired size and release.
+
+The column resize feature is compatible with the {@link features/export-word Export to Word} feature. The converter will respect the column width set in the editor and retain it in the effecting .DOCX file.
+
+{@snippet features/table-column-resize}
+
+<info-box>
+	By default, the table column resize feature is not included in the {@link installation/advanced/predefined-builds predefined builds} and must be installed separately.
 </info-box>
 
 ### Table caption
@@ -49,7 +63,7 @@ Click on the table caption in the demo to edit it or use the table toolbar butto
 {@snippet features/table-caption}
 
 <info-box>
-	By default, the table caption feature is not included in the {@link installation/advanced/predefined-builds ready–to–use editor builds} and must be installed separately. See the [installation](#table-caption-2) section to learn how to enable it in your editor.
+	By default, the table caption feature is not included in the {@link installation/advanced/predefined-builds predefined builds} and must be installed separately. See the [installation](#table-caption-2) section to learn how to enable it in your editor.
 </info-box>
 
 
@@ -176,10 +190,28 @@ ClassicEditor
 	Learn more about [configuring color palettes](#configuring-styling-tools) in the table and table cell property pop–ups.
 </info-box>
 
-<info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
-</info-box>
+### Table column resize
 
+To enable the table column resize feature in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
+
+```
+npm install --save @ckeditor/ckeditor5-table
+```
+
+Then add the `Table` and **`TableColumnResize`** plugins to your plugin list and configure the table toolbar:
+
+```js
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Table, TableColumnResize, ... ],
+		toolbar: [ 'insertTable', ... ],
+	} )
+	.then( ... )
+	.catch( ... );
+```
 ### Table caption
 
 To enable the table caption feature in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
