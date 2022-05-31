@@ -183,7 +183,8 @@ export default class HighlightUI extends Plugin {
 			const splitButtonViewArrow = dropdownView.buttonView.arrowView;
 
 			splitButtonView.set( {
-				tooltip: t( 'Highlight' ),
+				label: t( 'Highlight' ),
+				tooltip: true,
 				// Holds last executed highlighter.
 				lastExecuted: startingHighlighter.model,
 				// Holds current highlighter to execute (might be different then last used).
@@ -192,7 +193,8 @@ export default class HighlightUI extends Plugin {
 			} );
 
 			splitButtonViewArrow.set( {
-				tooltip: t( 'Highlight' )
+				label: t( 'Highlight' ),
+				tooltip: true
 			} );
 
 			// Dropdown button changes to selection (command.value):
