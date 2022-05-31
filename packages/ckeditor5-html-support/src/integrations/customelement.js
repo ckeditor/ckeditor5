@@ -30,6 +30,13 @@ export default class CustomElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'CustomElementSupport';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 		const dataSchema = this.editor.plugins.get( DataSchema );

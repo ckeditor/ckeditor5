@@ -42,6 +42,10 @@ describe( 'DocumentListElementSupport', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( editor.plugins.has( 'DocumentListElementSupport' ) ).to.be.true;
+	} );
+
 	describe( 'downcast', () => {
 		it( 'should downcast list attributes', () => {
 			setModelData( model, makeList( 'bulleted', 0, { attributes: { 'data-foo': 'foo', 'data-bar': 'bar' } }, [

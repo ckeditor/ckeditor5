@@ -41,6 +41,10 @@ describe( 'DualContentModelElementSupport', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( editor.plugins.has( 'DualContentModelElementSupport' ) ).to.be.true;
+	} );
+
 	it( 'should be only applied to newly enabled elements', () => {
 		model.schema.register( 'htmlDiv', {} );
 		dataFilter.allowElement( 'div' );

@@ -52,6 +52,10 @@ describe( 'HeadingElementSupport', () => {
 			} ] );
 		} );
 
+		it( 'should be named', () => {
+			expect( editor.plugins.has( 'HeadingElementSupport' ) ).to.be.true;
+		} );
+
 		it( 'should register heading schemas', () => {
 			expect( Array.from( dataSchema.getDefinitionsForView( 'h1' ) ) ).to.deep.include( {
 				model: 'heading1',

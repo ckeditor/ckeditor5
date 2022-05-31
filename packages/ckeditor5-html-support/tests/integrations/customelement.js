@@ -42,6 +42,10 @@ describe( 'CustomElementSupport', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( editor.plugins.has( 'CustomElementSupport' ) ).to.be.true;
+	} );
+
 	it( 'should allow unknown custom element', () => {
 		dataFilter.allowElement( /.*/ );
 		editor.setData( '<custom-foo-element>bar</custom-foo-element>' );
