@@ -27,11 +27,11 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ck
 DecoupledEditor
 	.create( document.querySelector( '.document-editor__editable' ), {
 		cloudServices: {
-					// PROVIDE CORRECT VALUES HERE:
-					tokenUrl: 'https://example.com/cs-token-endpoint',
-					uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/',
-					webSocketUrl: 'your-organization-id.cke-cs.com/ws/'
-				},
+			// PROVIDE CORRECT VALUES HERE:
+			tokenUrl: 'https://example.com/cs-token-endpoint',
+			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/',
+			webSocketUrl: 'your-organization-id.cke-cs.com/ws/'
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

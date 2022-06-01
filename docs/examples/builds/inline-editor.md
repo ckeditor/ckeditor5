@@ -35,11 +35,11 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		},
 		toolbar: {},
 		cloudServices: {
-					// PROVIDE CORRECT VALUES HERE:
-					tokenUrl: 'https://example.com/cs-token-endpoint',
-					uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/',
-					webSocketUrl: 'your-organization-id.cke-cs.com/ws/'
-				},
+			// PROVIDE CORRECT VALUES HERE:
+			tokenUrl: 'https://example.com/cs-token-endpoint',
+			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/',
+			webSocketUrl: 'your-organization-id.cke-cs.com/ws/'
+		},
 	};
 
 	if ( inlineElement.tagName.toLowerCase() == 'header' ) {
