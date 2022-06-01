@@ -51,7 +51,7 @@ export default class OutdentCodeBlockCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 
-		model.change( writer => {
+		model.change( () => {
 			const positions = getIndentOutdentPositions( model );
 
 			// Outdent all positions, for instance assuming the indent sequence is 4x space ("    "):
@@ -76,10 +76,10 @@ export default class OutdentCodeBlockCommand extends Command {
 			//			bazqux
 			//		</codeBlock>
 			for ( const position of positions ) {
-				const range = getLastOutdentableSequenceRange( this.editor.model, position, this._indentSequence );
+				const range = getLastOutdentableSequenceRange( model, position, this._indentSequence );
 
 				if ( range ) {
-					writer.remove( range );
+					model.deleteContent( model.createSelection( range ) );
 				}
 			}
 		} );

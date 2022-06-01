@@ -179,7 +179,7 @@ export default class CodeBlockCommand extends Command {
 	}
 }
 
-function canBeCodeBlock( schema, element ) {
+export function canBeCodeBlock( schema, element ) {
 	if ( element.is( 'rootElement' ) || schema.isLimit( element ) ) {
 		return false;
 	}
