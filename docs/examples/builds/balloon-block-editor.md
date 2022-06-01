@@ -24,16 +24,15 @@ Check out the {@link installation/advanced/predefined-builds#installation-exampl
 ```js
 
 import BalloonEditor from '@ckeditor/ckeditor5-build-balloon-block/src/ckeditor';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 BalloonEditor
 	.create( document.querySelector( '#snippet-balloon-block-editor' ), {
-        cloudServices: {
-                    // PROVIDE CORRECT VALUES HERE:
-                    tokenUrl: 'https://example.com/cs-token-endpoint',
-                    uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/',
-                    webSocketUrl: 'your-organization-id.cke-cs.com/ws/'
-                },
+		cloudServices: {
+					// PROVIDE CORRECT VALUES HERE:
+					tokenUrl: 'https://example.com/cs-token-endpoint',
+					uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/',
+					webSocketUrl: 'your-organization-id.cke-cs.com/ws/'
+				},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
