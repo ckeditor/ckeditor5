@@ -344,20 +344,20 @@ export default class DecisionTreeEditing extends Plugin {
 			model: "decisionTreeButtonText",
 			view: {
 				name: "div",
-				classes: "helpjuice-decision-tree-button-text"
+				classes: "helpjuice-decision-tree-button-text notranslate"
 			}
 		});
 		conversion.for("dataDowncast").elementToElement({
 			model: "decisionTreeButtonText",
 			view: {
 				name: "div",
-				classes: "helpjuice-decision-tree-button-text"
+				classes: "helpjuice-decision-tree-button-text notranslate"
 			}
 		});
 		conversion.for("editingDowncast").elementToElement({
 			model: "decisionTreeButtonText",
 			view: (modelElement, { writer: viewWriter }) => {
-				const div = viewWriter.createEditableElement("div", { class: "helpjuice-decision-tree-button-text" });
+				const div = viewWriter.createEditableElement("div", { class: "helpjuice-decision-tree-button-text notranslate" });
 
 				return toWidgetEditable(div, viewWriter);
 			}

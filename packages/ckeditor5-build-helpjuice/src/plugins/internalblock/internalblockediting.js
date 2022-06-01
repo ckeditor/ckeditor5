@@ -130,7 +130,7 @@ export default class InternalBlockEditing extends Plugin {
 		conversion.for("upcast").elementToElement({
 			view: {
 				name: "div",
-				classes: "helpjuice-internal-block-settings",
+				classes: "helpjuice-internal-block-settings notranslate",
 				attributes: ["data-action"]
 			},
 			model: ( viewElement, { writer } ) => {
@@ -143,7 +143,7 @@ export default class InternalBlockEditing extends Plugin {
 			model: "internalBlockSettings",
 			view: ( modelElement, { writer } ) => {
 				return writer.createContainerElement("div", {
-					class: "helpjuice-internal-block-settings",
+					class: "helpjuice-internal-block-settings notranslate",
 					"data-action": modelElement.getAttribute("data-action")
 				});
 			},
@@ -152,7 +152,7 @@ export default class InternalBlockEditing extends Plugin {
 			model: "internalBlockSettings",
 			view: (modelElement, { writer: viewWriter }) => {
 				const div = viewWriter.createContainerElement("div", {
-					class: "helpjuice-internal-block-settings",
+					class: "helpjuice-internal-block-settings notranslate",
 					"data-action": modelElement.getAttribute("data-action")
 				});
 
