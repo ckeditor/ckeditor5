@@ -76,8 +76,9 @@ export default class IndentCodeBlockCommand extends Command {
 			//		</codeBlock>
 			//
 			for ( const position of positions ) {
-				// writer.insertText( this._indentSequence, position );
-				editor.model.insertContent( writer.createText( this._indentSequence ), position );
+				const indentSequenceTextElement = writer.createText( this._indentSequence );
+
+				editor.model.insertContent( indentSequenceTextElement, position );
 			}
 		} );
 	}
