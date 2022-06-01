@@ -375,6 +375,33 @@ describe( 'DomConverter', () => {
 				);
 			} );
 
+			it( 'should replace registered custom element with span and add special data attribute', () => {
+				const viewScript = new ViewElement( viewDocument, 'custom-foo-element' );
+				const viewText = new ViewText( viewDocument, 'foo' );
+				const viewP = new ViewElement( viewDocument, 'p', { class: 'foo' } );
+
+				viewP._appendChild( viewScript );
+				viewP._appendChild( viewText );
+
+				converter = new DomConverter( viewDocument, {
+					renderingMode: 'editing'
+				} );
+
+				converter.unsafeElements.push( 'custom-foo-element' );
+
+				const domP = converter.viewToDom( viewP, document );
+
+				expect( domP ).to.be.an.instanceof( HTMLElement );
+				expect( domP.tagName ).to.equal( 'P' );
+				expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
+				expect( domP.attributes.length ).to.equal( 1 );
+
+				expect( domP.childNodes.length ).to.equal( 2 );
+				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'SPAN' );
+				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-unsafe-element' ) ).to.equal( 'custom-foo-element' );
+				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+			} );
+
 			describe( 'unsafe attribute names that were declaratively permitted', () => {
 				let writer;
 

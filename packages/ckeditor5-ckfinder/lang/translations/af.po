@@ -22,11 +22,11 @@ msgstr "Voeg beeld of lêer in"
 
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."
-msgstr ""
+msgstr "Kon nie die beeld URL vir die aanpassing kry nie."
 
 msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
 msgid "Selecting resized image failed"
-msgstr ""
+msgstr "Kon nie die beeld se grootte verander nie"
 
 msgctxt "Error message displayed when an image cannot be inserted at the current position."
 msgid "Could not insert image at the current position."
@@ -34,4 +34,4 @@ msgstr "Beeld kan nie in die posisie toegevoeg word nie."
 
 msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
 msgid "Inserting image failed"
-msgstr ""
+msgstr "Beeld kan nie toegevoeg word nie"

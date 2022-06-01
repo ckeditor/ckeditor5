@@ -182,6 +182,8 @@
   "packages/ckeditor5-table/src/tablecellproperties/tablecellpropertiesediting.js": "Tablecellpropertiesediting",
   "packages/ckeditor5-table/src/tablecellproperties/tablecellpropertiesui.js": "Tablecellpropertiesui",
   "packages/ckeditor5-table/src/tableclipboard.js": "Tableclipboard",
+  "packages/ckeditor5-table/src/tablecolumnresize.js": "Tablecolumnresize",
+  "packages/ckeditor5-table/src/tablecolumnresize/tablecolumnresizeediting.js": "Tablecolumnresizeediting",
   "packages/ckeditor5-table/src/tableediting.js": "Tableediting",
   "packages/ckeditor5-table/src/tablekeyboard.js": "Tablekeyboard",
   "packages/ckeditor5-table/src/tablemouse.js": "Tablemouse",
