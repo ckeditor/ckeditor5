@@ -1,6 +1,7 @@
 ---
 category: examples-builds
-order: 30
+order: 50
+toc: false
 classes: 'main__content-wide main__content--no-toc'
 ---
 
@@ -12,3 +13,288 @@ See the {@link framework/guides/document-editor tutorial} to learn how to create
 
 {@snippet examples/document-editor}
 
+## Editor example configuration
+
+Check out the {@link installation/advanced/predefined-builds#installation-example-5 Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
+
+<details>
+<summary>View editor configuration script</summary>
+
+```js
+
+import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+
+DecoupledEditor
+	.create( document.querySelector( '.document-editor__editable' ), {
+        cloudServices: {
+                    // PROVIDE CORRECT VALUES HERE:
+                    tokenUrl: 'https://example.com/cs-token-endpoint',
+                    uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/',
+                    webSocketUrl: 'your-organization-id.cke-cs.com/ws/'
+                },
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		}
+	} )
+	.then( editor => {
+		const toolbarContainer = document.querySelector( '.document-editor__toolbar' );
+
+		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err );
+	} );
+
+
+```
+
+</details>
+
+<details>
+<summary>View editor content listing</summary>
+
+```html
+<div class="document-editor">
+	<div class="document-editor__toolbar"></div>
+	<div class="document-editor__editable-container">
+		<div class="document-editor__editable">
+			<h2 style="text-align:center;">The Flavorful Tuscany Meetup</h2>
+			<h3 style="text-align:center;">Welcome letter</h3>
+
+			<p>Dear Guest,</p>
+			<p>We are delighted to welcome you to the annual <i>Flavorful Tuscany Meetup</i> and hope you will enjoy the programme as well as your stay at the <a href="http://ckeditor.com">Bilancino Hotel</a>.</p>
+			<figure class="image"><img src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg" alt="Bilancino Hotel" /><figcaption>Bilancino Hotel</figcaption></figure>
+			<p>Please find below the full schedule of the event.</p>
+
+			<figure class="table">
+				<table>
+					<thead>
+						<tr>
+							<th colspan="2">Saturday, July 14</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>9:30 AM - 11:30 AM</td>
+							<td>
+								<p><strong>Americano vs. Brewed</strong> - “know your coffee” with:&nbsp;</p>
+								<ul style="list-style-type:circle;">
+									<li>Giulia Bianchi</li>
+									<li>Stefano Garau</li>
+									<li>Giuseppe Russo</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>1:00 PM - 3:00 PM</td>
+							<td>
+								<p><strong>Pappardelle al pomodoro</strong> - live cooking</p>
+								<p>Incorporate the freshest ingredients&nbsp;<br>with Rita Fresco</p>
+							</td>
+						</tr>
+						<tr>
+							<td>5:00 PM - 8:00 PM</td>
+							<td><strong>Tuscan vineyards at a glance</strong> - wine-tasting&nbsp;<br>with Frederico Riscoli</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<blockquote>
+				<p>The annual Flavorful Tuscany meetups are always a culinary discovery. You get the best of Tuscan flavors during an intense one-day stay at one of the top hotels of the region. All the sessions are lead by top chefs passionate about their profession. I would certainly recommend to save the date in your calendar for this one!</p>
+
+				<p>Angelina Calvino, food journalist</p>
+			</blockquote>
+
+			<p>Please arrive at the <a href="http://ckeditor.com">Bilancino Hotel</a> reception desk <span style="background-color:hsl(60, 75%, 60%)">at least half an hour earlier</span> to make sure that the registration process goes as smoothly as possible.</p>
+
+			<p>We look forward to welcoming you to the event.</p>
+			<p><img class="image_resized" style="width: 180px;" src="https://c.cksource.com/a/1/img/docs/signature.png" alt="Victoria Valc signature" /></p>
+			<p><strong>Victoria Valc</strong></p>
+			<p><strong>Event Manager</strong></p>
+			<p><strong>Bilancino Hotel</strong></p>
+		</div>
+	</div>
+</div>
+
+<style>
+	.document-editor {
+		border: 1px solid var(--ck-color-base-border);
+		border-radius: var(--ck-border-radius);
+
+		/* Set vertical boundaries for the document editor. */
+		max-height: 700px;
+
+		/* This element is a flex container for easier rendering. */
+		display: flex;
+		flex-flow: column nowrap;
+	}
+
+	.document-editor__toolbar {
+		/* Make sure the toolbar container is always above the editable. */
+		z-index: 1;
+
+		/* Create the illusion of the toolbar floating over the editable. */
+		box-shadow: 0 0 5px hsla( 0,0%,0%,.2 );
+
+		/* Use the CKEditor CSS variables to keep the UI consistent. */
+		border-bottom: 1px solid var(--ck-color-toolbar-border);
+	}
+
+	/* Adjust the look of the toolbar inside of the container. */
+	.document-editor__toolbar .ck-toolbar {
+		border: 0;
+		border-radius: 0;
+	}
+
+	/* Make the editable container look like the inside of a native word processor app. */
+	.document-editor__editable-container {
+		padding: calc( 2 * var(--ck-spacing-large) );
+		background: var(--ck-color-base-foreground);
+
+		/* Make it possible to scroll the "page" of the edited content. */
+		overflow-y: scroll;
+	}
+
+	.document-editor__editable-container .document-editor__editable.ck-editor__editable {
+		/* Set the dimensions of the "page". */
+		width: 15.8cm;
+		min-height: 21cm;
+
+		/* Keep the "page" off the boundaries of the container. */
+		padding: 1cm 2cm 2cm;
+
+		border: 1px hsl( 0,0%,82.7% ) solid;
+		border-radius: var(--ck-border-radius);
+		background: white;
+
+		/* The "page" should cast a slight shadow (3D illusion). */
+		box-shadow: 0 0 5px hsla( 0,0%,0%,.1 );
+
+		/* Center the "page". */
+		margin: 0 auto;
+	}
+
+	/* Override the page's width in the "Examples" section which is wider. */
+	.main__content-wide .document-editor__editable-container .document-editor__editable.ck-editor__editable {
+		width: 18cm;
+	}
+
+	/* Set the default font for the "page" of the content. */
+	.document-editor .ck-content,
+	.document-editor .ck-heading-dropdown .ck-list .ck-button__label {
+		font: 16px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	}
+
+	/* Adjust the headings dropdown to host some larger heading styles. */
+	.document-editor .ck-heading-dropdown .ck-list .ck-button__label {
+		line-height: calc( 1.7 * var(--ck-line-height-base) * var(--ck-font-size-base) );
+		min-width: 6em;
+	}
+
+	/* Scale down all heading previews because they are way too big to be presented in the UI.
+	Preserve the relative scale, though. */
+	.document-editor .ck-heading-dropdown .ck-list .ck-heading_heading1 .ck-button__label,
+	.document-editor .ck-heading-dropdown .ck-list .ck-heading_heading2 .ck-button__label {
+		transform: scale(0.8);
+		transform-origin: left;
+	}
+
+	/* Set the styles for "Heading 1". */
+	.document-editor .ck-content h2,
+	.document-editor .ck-heading-dropdown .ck-heading_heading1 .ck-button__label {
+		font-size: 2.18em;
+		font-weight: normal;
+	}
+
+	.document-editor .ck-content h2 {
+		line-height: 1.37em;
+		padding-top: .342em;
+		margin-bottom: .142em;
+	}
+
+	/* Set the styles for "Heading 2". */
+	.document-editor .ck-content h3,
+	.document-editor .ck-heading-dropdown .ck-heading_heading2 .ck-button__label {
+		font-size: 1.75em;
+		font-weight: normal;
+		color: hsl( 203, 100%, 50% );
+	}
+
+	.document-editor .ck-heading-dropdown .ck-heading_heading2.ck-on .ck-button__label {
+		color: var(--ck-color-list-button-on-text);
+	}
+
+	/* Set the styles for "Heading 2". */
+	.document-editor .ck-content h3 {
+		line-height: 1.86em;
+		padding-top: .171em;
+		margin-bottom: .357em;
+	}
+
+	/* Set the styles for "Heading 3". */
+	.document-editor .ck-content h4,
+	.document-editor .ck-heading-dropdown .ck-heading_heading3 .ck-button__label {
+		font-size: 1.31em;
+		font-weight: bold;
+	}
+
+	.document-editor .ck-content h4 {
+		line-height: 1.24em;
+		padding-top: .286em;
+		margin-bottom: .952em;
+	}
+
+	/* Make the block quoted text serif with some additional spacing. */
+	.document-editor .ck-content blockquote {
+		font-family: Georgia, serif;
+		margin-left: calc( 2 * var(--ck-spacing-large) );
+		margin-right: calc( 2 * var(--ck-spacing-large) );
+	}
+
+	@media only screen and (max-width: 960px) {
+		/* Because on mobile 2cm paddings are to big. */
+		.document-editor__editable-container .document-editor__editable.ck-editor__editable {
+			padding: 1.5em;
+		}
+	}
+
+	@media only screen and (max-width: 1200px) {
+		.main__content-wide .document-editor__editable-container .document-editor__editable.ck-editor__editable {
+			width: 100%;
+		}
+	}
+
+	/* Style document editor a'ka Google Docs.*/
+	@media only screen and (min-width: 1360px) {
+		.main .main__content.main__content-wide {
+			padding-right: 0;
+		}
+	}
+
+	@media only screen and (min-width: 1600px) {
+		.main .main__content.main__content-wide {
+			width: 24cm;
+		}
+
+		.main .main__content.main__content-wide .main__content-inner {
+			width: auto;
+			margin: 0 50px;
+		}
+
+		/* Keep "page" look based on viewport width. */
+		.main__content-wide .document-editor__editable-container .document-editor__editable.ck-editor__editable {
+			width: 60%;
+		}
+	}
+</style>
+
+
+```
+
+</details>
