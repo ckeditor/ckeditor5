@@ -1,3 +1,4 @@
+
 ---
 menu-title: Ordered and unordered lists
 category: features-lists
@@ -129,7 +130,7 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](htt
 npm install --save @ckeditor/ckeditor5-list
 ```
 
-Then add the `DocumentList` plugin to your plugin list and the toolbar configuration:
+Then add the `List` plugin to your plugin list and the toolbar configuration:
 
 ```js
 import List from '@ckeditor/ckeditor5-list/src/list';
@@ -191,7 +192,7 @@ npm install --save @ckeditor/ckeditor5-list
 Then add the `DocumentList` plugin to your plugin list and the toolbar configuration:
 
 ```js
-import List from '@ckeditor/ckeditor5-list/src/list';
+import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -262,7 +263,7 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 
     * For bulleted lists: `'disc'`, `'circle'` and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'` and `'upper-latin'`.
-* The {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`} command which is a Boolean and defaults to `false` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
+* The {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`} command which is a Number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
     editor.execute( 'listStart', { startIndex: 3 } );
@@ -271,7 +272,7 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 * The {@link module:list/listproperties/listreversedcommand~ListReversedCommand `listReversed`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
-    editor.execute( 'listReversed', { reversed: 'true' } );
+    editor.execute( 'listReversed', { reversed: true } );
     ```
 
 * The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.
@@ -298,7 +299,7 @@ The {@link module:list/documentlistproperties~DocumentListProperties} plugin reg
 
     * For bulleted lists: `'disc'`, `'circle'` and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'` and `'upper-latin'`.
-* The {@link module:list/documentlistproperties/documentliststartcommand~DocumentListStartCommand `documentListStart`} command which is a Boolean and defaults to `false` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
+* The {@link module:list/documentlistproperties/documentliststartcommand~DocumentListStartCommand `documentListStart`} command which is a Number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
     editor.execute( 'documentListStart', { startIndex: 3 } );
@@ -307,7 +308,7 @@ The {@link module:list/documentlistproperties~DocumentListProperties} plugin reg
 * The {@link module:list/documentlistproperties/documentlistreversedcommand~DocumentListReversedCommand `documentListReversed`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
-    editor.execute( 'documentListReversed', { reversed: 'true' } );
+    editor.execute( 'documentListReversed', { reversed: true } );
     ```
 
 * The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.
