@@ -135,7 +135,7 @@ export default class ImageCaptionEditing extends Plugin {
 				const imageAlt = modelElement.parent.getAttribute( 'alt' );
 				const label = ( imageAlt ) ? t( 'Caption for %0 image', [ imageAlt ] ) : t( 'Caption for the image' );
 
-				return toWidgetEditable( figcaptionElement, writer, label );
+				return toWidgetEditable( figcaptionElement, writer, { label } );
 			}
 		} );
 	}
