@@ -14,7 +14,7 @@
 
 .ck-content .table table {
 	overflow: hidden;
-	table-layout: fixed;
+	/* table-layout: fixed; */
 }
 
 .ck-content .table td,

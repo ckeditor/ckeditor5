@@ -36,8 +36,7 @@ import {
 	isTableRendered,
 	normalizeColumnWidthsAttribute,
 	toPrecision,
-	insertColumnResizerElements,
-	removeColumnResizerElements
+	insertColumnResizerElements
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -119,11 +118,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	init() {
 		this._extendSchema();
 		this._setupConversion();
-		this._setupPostFixer();
 		this._setupColumnResizers();
 		this._registerColgroupFixer();
-		this._registerFirstResizerInserter();
-		// this._registerResizerInserter();
+		this._registerResizerInserter();
 
 		const editor = this.editor;
 		const columnResizePlugin = editor.plugins.get( 'TableColumnResize' );
@@ -482,7 +479,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		// console.log('down');
+		this._setupPostFixer();
 
 		domEventData.preventDefault();
 		eventInfo.stop();
@@ -491,6 +488,24 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' ) );
 		const viewTable = target.findAncestor( 'table' );
+
+		const tableWalker = new TableWalker( modelTable );
+		const widths = Array( getNumberOfColumn( modelTable, editor ) );
+
+		for ( const cellSlot of tableWalker ) {
+			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
+			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
+			const computedStyles = window.getComputedStyle( domCell );
+			const domCellWidth = parseFloat( computedStyles.width ) + parseFloat( computedStyles.paddingLeft ) + parseFloat( computedStyles.paddingRight ) + parseFloat( computedStyles.borderWidth );
+
+			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
+				this._columnIndexMap.set( cellSlot.cell, cellSlot.column );
+			}
+
+			if ( !widths[ cellSlot.column ] || domCellWidth < widths[ cellSlot.column ] ) {
+				widths[ cellSlot.column ] = domCellWidth;
+			}
+		}
 
 		if ( ![ ...domEventData.target.findAncestor( 'table' ).getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
 			editingView.change( viewWriter => {
@@ -501,7 +516,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				for ( let i = 0; i < numberOfColumns; i++ ) {
 					const viewColElement = viewWriter.createEmptyElement( 'col' );
 
-					// viewWriter.setStyle( 'width', columnWidths[ columnIndex ], viewColElement );
+					viewWriter.setStyle( 'width', `${ widths[ i ] / sumArray( widths ) * 100 }%`, viewColElement );
 					viewWriter.insert( viewWriter.createPositionAt( colgroup, 'end' ), viewColElement );
 				}
 
@@ -510,32 +525,11 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		this._isResizingActive = true;
-		// collect only necessary data at this point.
 		this._resizingData = this._getResizingData( domEventData );
 
-		this._resizingDataDup = this._onMouseDownData( domEventData );
-
-		// console.log(this._resizingData);
-		// console.log(this._resizingDataDup);
 		editingView.change( writer => {
 			writer.addClass( 'table-column-resizer__active', this._resizingData.elements.viewResizer );
 		} );
-	}
-
-	_onMouseDownData( domEventData ) {
-		const editor = this.editor;
-
-		const columnPosition = domEventData.domEvent.clientX;
-
-		const viewResizer = domEventData.target;
-		const viewLeftCell = viewResizer.findAncestor( 'td' ) || viewResizer.findAncestor( 'th' );
-		const modelLeftCell = editor.editing.mapper.toModelElement( viewLeftCell );
-		const modelTable = modelLeftCell.findAncestor( 'table' );
-
-		const leftColumnIndex = getColumnIndex( modelLeftCell, this._columnIndexMap ).rightEdge;
-		const lastColumnIndex = getNumberOfColumn( modelTable, editor ) - 1;
-
-
 	}
 
 	/**
@@ -543,7 +537,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData // not true, its native dom event - same for mousemove
 	 */
 	_onMouseUpHandler() {
 		const editor = this.editor;
@@ -552,16 +546,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		if ( !this._isResizingActive ) {
 			return;
 		}
-
-		if ( this._moved ) {
-			console.log( 'moved' );
-		}
-
-		this._moved = false;
-
-		// console.log('up');
-
-		// Add the columnWidths attribute to model table. That should result in colgroups element appearing in the view.
 
 		const {
 			modelTable,
@@ -713,7 +697,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * Retrieves and returns required data needed to correctly calculate the widths of the resized columns.
 	 *
 	 * @private
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData // not true, its native dom event - same for mousemove
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 * @returns {Object}
 	 */
 	_getResizingData( domEventData ) {
@@ -725,6 +709,24 @@ export default class TableColumnResizeEditing extends Plugin {
 		const viewLeftCell = viewResizer.findAncestor( 'td' ) || viewResizer.findAncestor( 'th' );
 		const modelLeftCell = editor.editing.mapper.toModelElement( viewLeftCell );
 		const modelTable = modelLeftCell.findAncestor( 'table' );
+
+		const tableWalker = new TableWalker( modelTable );
+		const widths = Array( getNumberOfColumn( modelTable, editor ) );
+
+		for ( const cellSlot of tableWalker ) {
+			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
+			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
+			const computedStyles = window.getComputedStyle( domCell );
+			const domCellWidth = parseFloat( computedStyles.width ) + parseFloat( computedStyles.paddingLeft ) + parseFloat( computedStyles.paddingRight ) + parseFloat( computedStyles.borderWidth );
+
+			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
+				this._columnIndexMap.set( cellSlot.cell, cellSlot.column );
+			}
+
+			if ( !widths[ cellSlot.column ] || domCellWidth < widths[ cellSlot.column ] ) {
+				widths[ cellSlot.column ] = domCellWidth;
+			}
+		}
 
 		const leftColumnIndex = getColumnIndex( modelLeftCell, this._columnIndexMap ).rightEdge;
 		const lastColumnIndex = getNumberOfColumn( modelTable, editor ) - 1;
@@ -741,25 +743,6 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		const viewFigureParentWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure.parent ) );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
-		// const columnWidths = getColumnWidthsInPixels( modelTable, editor );
-
-		const tableWalker = new TableWalker( modelTable );
-
-		const widths = Array( getNumberOfColumn( modelTable, editor ) );
-
-		for ( const cellSlot of tableWalker ) {
-			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
-			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
-			const computedStyles = window.getComputedStyle( domCell );
-			const domCellWidth = parseFloat( computedStyles.width ) + parseFloat( computedStyles.paddingLeft ) + parseFloat( computedStyles.paddingRight ) + parseFloat( computedStyles.borderWidth);
-
-			if ( !widths[ cellSlot.column ] || domCellWidth < widths[ cellSlot.column ] ) {
-				widths[ cellSlot.column ] = domCellWidth;
-			}
-		}
-
-		console.log(widths);
-		console.log( leftColumnIndex );
 
 		const leftColumnWidth = widths[ leftColumnIndex ];
 		const rightColumnWidth = isRightEdge ? undefined : widths[ leftColumnIndex + 1 ];
@@ -816,27 +799,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 */
-	// _registerResizerInserter() {
-	// 	const editor = this.editor;
-	// 	const view = editor.editing.view;
-	// 	const cellsModified = this._cellsModified;
-
-	// 	view.on( 'render', () => {
-	// 		for ( const [ cell, operation ] of cellsModified.entries() ) {
-	// 			const viewCell = editor.editing.mapper.toViewElement( cell );
-
-	// 			view.change( viewWriter => {
-	// 				if ( operation === 'insert' ) {
-	// 					insertColumnResizerElements( viewWriter, viewCell );
-	// 				} else if ( operation === 'remove' ) {
-	// 					removeColumnResizerElements( viewWriter, viewCell );
-	// 				}
-	// 			} );
-	// 		}
-	// 		cellsModified.clear();
-	// 	}, { priority: 'lowest' } );
-	// }
-	_registerFirstResizerInserter() {
+	_registerResizerInserter() {
 		const editor = this.editor;
 		const view = editor.editing.view;
 
