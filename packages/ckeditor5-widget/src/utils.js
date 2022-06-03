@@ -259,10 +259,14 @@ export function getLabel( element ) {
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  * @returns {module:engine/view/editableelement~EditableElement} Returns the same element that was provided in the `editable` parameter
  */
-export function toWidgetEditable( editable, writer ) {
+export function toWidgetEditable( editable, writer, label ) {
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
 	writer.setAttribute( 'role', 'textbox', editable );
+
+	if ( label ) {
+		writer.setAttribute( 'aria-label', label, editable );
+	}
 
 	// Set initial contenteditable value.
 	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
