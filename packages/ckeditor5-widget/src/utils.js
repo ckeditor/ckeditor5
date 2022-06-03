@@ -262,6 +262,8 @@ export function getLabel( element ) {
 export function toWidgetEditable( editable, writer ) {
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
+	writer.setAttribute( 'role', 'textbox', editable );
+
 	// Set initial contenteditable value.
 	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
 
