@@ -518,8 +518,9 @@ describe( 'LinkImageEditing', () => {
 								'<a href="http://ckeditor.com">' +
 									'<img alt="alt text" src="/assets/sample.png"></img>' +
 								'</a>' +
-								'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-									'contenteditable="true" data-placeholder="Enter image caption">' +
+								'<figcaption aria-label="Caption for alt text image" ' +
+									'class="ck-editor__editable ck-editor__nested-editable" ' +
+									'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
 										'Foo Bar.' +
 								'</figcaption>' +
 							'</figure>'
