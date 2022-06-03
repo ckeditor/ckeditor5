@@ -111,6 +111,14 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * @member {Map}
 		 */
 		this._cellsModified = new Map();
+
+		/**
+		 * DOM emitter.
+		 *
+		 * @private
+		 * @type {DomEmitterMixin}
+		 */
+		this._domEmitter = Object.create( DomEmitterMixin );
 	}
 
 	/**
@@ -132,6 +140,14 @@ export default class TableColumnResizeEditing extends Plugin {
 			columnResizePlugin, 'isEnabled',
 			( isEditorReadOnly, isPluginEnabled ) => !isEditorReadOnly && isPluginEnabled
 		);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this._domEmitter.stopListening();
+		super.destroy();
 	}
 
 	/**
@@ -456,10 +472,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		editingView.addObserver( MouseEventsObserver );
 		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
 
-		const domEmitter = Object.create( DomEmitterMixin );
-
-		domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
-		domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
+		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
+		this._domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
 	}
 
 	/**
