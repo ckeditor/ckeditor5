@@ -240,7 +240,7 @@ export function getLabel( element ) {
  *				view: ( modelItem, { writer } ) => {
  *					const div = writer.createEditableElement( 'div', { class: 'nested' } );
  *
- *					return toWidgetEditable( nested, writer );
+ *					return toWidgetEditable( nested, writer, { label: 'label for editable' } );
  *				}
  *			} );
  *
