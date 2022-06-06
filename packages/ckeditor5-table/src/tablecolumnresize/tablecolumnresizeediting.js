@@ -17,6 +17,9 @@ import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
 import TableEditing from '../tableediting';
 import TableWalker from '../tablewalker';
 
+import TableResizeWidthCommand from './tableresizewidthcommand';
+import TableColumnWidths from './tablecolumnwidthscommand';
+
 import {
 	upcastColgroupElement,
 	downcastTableColumnWidthsAttribute
@@ -130,6 +133,9 @@ export default class TableColumnResizeEditing extends Plugin {
 			columnResizePlugin, 'isEnabled',
 			( isEditorReadOnly, isPluginEnabled ) => !isEditorReadOnly && isPluginEnabled
 		);
+
+		editor.commands.add( 'columnResizeTableWidth', new TableResizeWidthCommand( editor ) );
+		editor.commands.add( 'columnResizeColumnWidths', new TableColumnWidths( editor ) );
 	}
 
 	/**
@@ -569,15 +575,18 @@ export default class TableColumnResizeEditing extends Plugin {
 		if ( isColumnWidthsAttributeChanged || isTableWidthAttributeChanged ) {
 			if ( this._isResizingAllowed ) {
 				// Commit all changes to the model.
-				editor.model.change( writer => {
-					if ( isColumnWidthsAttributeChanged ) {
-						writer.setAttribute( 'columnWidths', columnWidthsAttributeNew, modelTable );
-					}
-
-					if ( isTableWidthAttributeChanged ) {
-						writer.setAttribute( 'tableWidth', `${ toPrecision( tableWidthAttributeNew ) }%`, modelTable );
-					}
-				} );
+				if ( isTableWidthAttributeChanged ) {
+					editor.execute(
+						'columnResizeTableWidth',
+						{
+							table: modelTable,
+							tableWidth: `${ toPrecision( tableWidthAttributeNew ) }%`,
+							columnWidths: columnWidthsAttributeNew
+						}
+					);
+				} else if ( isColumnWidthsAttributeChanged ) {
+					editor.execute( 'columnResizeColumnWidths', { columnWidths: columnWidthsAttributeNew, table: modelTable } );
+				}
 			} else {
 				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
 				editingView.change( writer => {
