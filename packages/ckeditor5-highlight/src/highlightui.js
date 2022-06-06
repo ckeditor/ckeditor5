@@ -180,7 +180,6 @@ export default class HighlightUI extends Plugin {
 			const command = editor.commands.get( 'highlight' );
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
-			const splitButtonViewArrow = splitButtonView.arrowView;
 
 			splitButtonView.set( {
 				label: t( 'Highlight' ),
@@ -190,11 +189,6 @@ export default class HighlightUI extends Plugin {
 				// Holds current highlighter to execute (might be different then last used).
 				commandValue: startingHighlighter.model,
 				isToggleable: true
-			} );
-
-			splitButtonViewArrow.set( {
-				label: t( 'Highlight' ),
-				tooltip: true
 			} );
 
 			// Dropdown button changes to selection (command.value):

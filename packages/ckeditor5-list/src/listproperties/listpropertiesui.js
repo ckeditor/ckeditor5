@@ -155,7 +155,6 @@ function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, butto
 	return locale => {
 		const dropdownView = createDropdown( locale, SplitButtonView );
 		const mainButtonView = dropdownView.buttonView;
-		const mainButtonViewArrow = mainButtonView.arrowView;
 
 		dropdownView.bind( 'isEnabled' ).to( parentCommand );
 		dropdownView.class = 'ck-list-styles-dropdown';
@@ -171,11 +170,6 @@ function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, butto
 			icon: buttonIcon,
 			tooltip: true,
 			isToggleable: true
-		} );
-
-		mainButtonViewArrow.set( {
-			label: buttonLabel,
-			tooltip: true
 		} );
 
 		mainButtonView.bind( 'isOn' ).to( parentCommand, 'value', value => !!value );

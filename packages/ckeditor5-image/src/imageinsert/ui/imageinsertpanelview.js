@@ -235,17 +235,11 @@ export default class ImageInsertPanelView extends View {
 		const t = locale.t;
 		const dropdownView = createDropdown( locale, SplitButtonView );
 		const splitButtonView = dropdownView.buttonView;
-		const splitButtonViewArrow = splitButtonView.arrowView;
 		const panelView = dropdownView.panelView;
 
 		splitButtonView.set( {
 			label: t( 'Insert image' ),
 			icon: icons.image,
-			tooltip: true
-		} );
-
-		splitButtonViewArrow.set( {
-			label: t( 'Insert image' ),
 			tooltip: true
 		} );
 
