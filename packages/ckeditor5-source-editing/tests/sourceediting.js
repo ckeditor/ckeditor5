@@ -17,6 +17,10 @@ import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 
 import SourceEditing from '../src/sourceediting';
 
@@ -30,6 +34,7 @@ describe( 'SourceEditing', () => {
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ SourceEditing, Paragraph, Essentials ],
+			toolbar: [ 'sourceEditing' ],
 			initialData: '<p>Foo</p>'
 		} );
 
@@ -500,6 +505,96 @@ describe( 'SourceEditing', () => {
 				'    Foo\n' +
 				'</p>'
 			);
+		} );
+	} );
+
+	describe( 'focus toolbar', () => {
+		let originFocusTracker, originKeystrokeHandler, toolbar, toolbarFocusTracker;
+
+		beforeEach( () => {
+			originFocusTracker = new FocusTracker();
+			originKeystrokeHandler = plugin._keystrokes;
+			toolbar = new ToolbarView( { t: langString => langString } );
+
+			toolbar.render();
+
+			toolbarFocusTracker = toolbar.focusTracker;
+
+			// Switch to the source view
+			button.fire( 'execute' );
+		} );
+
+		it( 'should allow the `alt+f10` key combination to focus the editor toolbar when in source editing mode ', () => {
+			const spy = sinon.spy( toolbar, 'focus' );
+			const keyEventData = {
+				keyCode: keyCodes.f10,
+				altKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			enableToolbarKeyboardFocus( {
+				originFocusTracker,
+				originKeystrokeHandler,
+				toolbar
+			} );
+
+			const textarea = document.querySelector( '.ck-source-editing-area > textarea' );
+
+			// Initially focused element should be the textarea
+			expect( document.activeElement ).to.equal( textarea );
+			toolbarFocusTracker.isFocused = false;
+			originFocusTracker.isFocused = false;
+
+			originKeystrokeHandler.press( keyEventData );
+
+			sinon.assert.notCalled( spy );
+
+			toolbarFocusTracker.isFocused = true;
+			originFocusTracker.isFocused = true;
+
+			originKeystrokeHandler.press( keyEventData );
+
+			sinon.assert.notCalled( spy );
+
+			toolbarFocusTracker.isFocused = false;
+			originFocusTracker.isFocused = true;
+
+			originKeystrokeHandler.press( keyEventData );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( keyEventData.preventDefault );
+			sinon.assert.calledOnce( keyEventData.stopPropagation );
+		} );
+
+		it( 'should re–focus the origin on Esc when in source editing mode', () => {
+			const origin = document.querySelector( '.ck-source-editing-area > textarea' );
+			const spy = sinon.spy( origin, 'focus' );
+			const keyEventData = {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			enableToolbarKeyboardFocus( {
+				origin,
+				originFocusTracker,
+				originKeystrokeHandler,
+				toolbar
+			} );
+
+			toolbarFocusTracker.isFocused = false;
+
+			toolbar.keystrokes.press( keyEventData );
+			sinon.assert.notCalled( spy );
+
+			toolbarFocusTracker.isFocused = true;
+
+			toolbar.keystrokes.press( keyEventData );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( keyEventData.preventDefault );
+			sinon.assert.calledOnce( keyEventData.stopPropagation );
 		} );
 	} );
 
