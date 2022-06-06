@@ -27,7 +27,8 @@ export default class AccordionEditing extends Plugin {
 		schema.register("accordionTitle", {
 			isLimit: true,
 			allowIn: "accordion",
-			allowContentOf: "$block"
+			allowContentOf: "$block",
+			allowAttributes: ["id"]
 		});
 
 		schema.register("accordionBody", {

@@ -28,7 +28,8 @@ export default class TabEditing extends Plugin {
 		schema.register("tabTitle", {
 			isLimit: true,
 			allowIn: "tab",
-			allowContentOf: "$block"
+			allowContentOf: "$block",
+			allowAttributes: ["id"]
 		});
 
 		schema.register("tabBody", {
