@@ -344,14 +344,14 @@ export default class DecisionTreeEditing extends Plugin {
 			model: "decisionTreeButtonText",
 			view: {
 				name: "div",
-				classes: "helpjuice-decision-tree-button-text notranslate"
+				classes: ["helpjuice-decision-tree-button-text", "notranslate"]
 			}
 		});
 		conversion.for("dataDowncast").elementToElement({
 			model: "decisionTreeButtonText",
 			view: {
 				name: "div",
-				classes: "helpjuice-decision-tree-button-text notranslate"
+				classes: ["helpjuice-decision-tree-button-text", "notranslate"]
 			}
 		});
 		conversion.for("editingDowncast").elementToElement({
@@ -363,7 +363,7 @@ export default class DecisionTreeEditing extends Plugin {
 			}
 		});
 
-		// // Converison for Delete Button Text
+		// Converison for Delete Button Text
 		conversion.for("upcast").elementToElement({
 			model: "decisionTreeDeleteButton",
 			view: {
