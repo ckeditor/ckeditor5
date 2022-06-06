@@ -495,7 +495,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		for ( const cellSlot of tableWalker ) {
 			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
 			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
-			const computedStyles = window.getComputedStyle( domCell );
+			const computedStyles = global.window.getComputedStyle( domCell );
 			const domCellWidth = parseFloat( computedStyles.width ) + parseFloat( computedStyles.paddingLeft ) + parseFloat( computedStyles.paddingRight ) + parseFloat( computedStyles.borderWidth );
 
 			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
@@ -719,7 +719,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		for ( const cellSlot of tableWalker ) {
 			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
 			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
-			const computedStyles = window.getComputedStyle( domCell );
+			const computedStyles = global.window.getComputedStyle( domCell );
 			const domCellWidth = parseFloat( computedStyles.width ) + parseFloat( computedStyles.paddingLeft ) + parseFloat( computedStyles.paddingRight ) + parseFloat( computedStyles.borderWidth );
 
 			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
