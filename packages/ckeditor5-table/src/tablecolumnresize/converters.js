@@ -76,6 +76,7 @@ export function downcastTableColumnWidthsAttribute() {
 			}
 		} else {
 			removeColgroupElement( viewWriter, viewTable );
+			viewWriter.removeClass( 'ck-table-resized', viewTable );
 		}
 	} );
 }
