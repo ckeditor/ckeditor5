@@ -238,15 +238,19 @@ export default class TableColumnResizeEditing extends Plugin {
 				// calculated proportionally to the whole table width.
 				const numberOfColumns = getNumberOfColumn( table, editor );
 
-				if ( !table.hasAttribute( 'columnWidths' ) ) {
-					const columnWidthsAttribute = fillArray( numberOfColumns, 'auto' ).join( ',' );
+				// if ( !table.hasAttribute( 'columnWidths' ) ) {
+				// 	const columnWidthsAttribute = fillArray( numberOfColumns, 'auto' ).join( ',' );
 
-					writer.setAttribute( 'columnWidths', columnWidthsAttribute, table );
+				// 	writer.setAttribute( 'columnWidths', columnWidthsAttribute, table );
 
-					changed = true;
-				}
+				// 	changed = true;
+				// }
 
 				// (2) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
+				if ( !table.getAttribute( 'columnWidths' ) ) {
+					continue;
+				}
+
 				const columnWidths = normalizeColumnWidthsAttribute( table.getAttribute( 'columnWidths' ) );
 
 				let removedColumnWidths = null;
