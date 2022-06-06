@@ -507,7 +507,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 
 			if ( !widths[ cellSlot.column ] || domCellWidth < widths[ cellSlot.column ] ) {
-				widths[ cellSlot.column ] = domCellWidth;
+				widths[ cellSlot.column ] = toPrecision( domCellWidth );
 			}
 		}
 
@@ -520,7 +520,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				for ( let i = 0; i < numberOfColumns; i++ ) {
 					const viewColElement = viewWriter.createEmptyElement( 'col' );
 
-					viewWriter.setStyle( 'width', `${ widths[ i ] / sumArray( widths ) * 100 }%`, viewColElement );
+					viewWriter.setStyle( 'width', `${ toPrecision( widths[ i ] / sumArray( widths ) * 100 ) }%`, viewColElement );
 					viewWriter.insert( viewWriter.createPositionAt( colgroup, 'end' ), viewColElement );
 				}
 
@@ -534,7 +534,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		editingView.change( writer => {
 			const figureInitialPcWidth = this._resizingData.widths.viewFigureWidth / this._resizingData.widths.viewFigureParentWidth;
 
-			writer.setStyle( 'width', `${ figureInitialPcWidth * 100 }%`, domEventData.target.findAncestor( 'figure' ) );
+			writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, domEventData.target.findAncestor( 'figure' ) );
 			writer.addClass( 'table-column-resizer__active', this._resizingData.elements.viewResizer );
 			writer.addClass( 'ck-table-resized', domEventData.target.findAncestor( 'table' ) );
 		} );
