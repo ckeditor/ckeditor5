@@ -41,6 +41,10 @@ describe( 'TableElementSupport', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( editor.plugins.has( 'TableElementSupport' ) ).to.be.true;
+	} );
+
 	it( 'should allow attributes', () => {
 		dataFilter.loadAllowedConfig( [ {
 			name: /^(figure|table|tbody|thead|tr|th|td)$/,
