@@ -223,7 +223,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			let changed = false;
 
 			for ( const table of getAffectedTables( changes, editor.model ) ) {
-				// (1.1) Remove the `columnWidths` attribute from the table and all the cells from column index map if the
+				// (1) Remove the `columnWidths` attribute from the table and all the cells from column index map if the
 				// manual width is not allowed for a given cell. There is no need to process the given table anymore.
 				if ( this.fire( 'disableResize', table ) ) {
 					if ( table.hasAttribute( 'columnWidths' ) ) {
@@ -240,17 +240,11 @@ export default class TableColumnResizeEditing extends Plugin {
 					continue;
 				}
 
-				// (1.2) Add the `columnWidths` attribute to the table with the 'auto' special value for each column, what means that it is
-				// calculated proportionally to the whole table width.
-				const numberOfColumns = getNumberOfColumn( table, editor );
-
-				if ( !table.hasAttribute( 'columnWidths' ) ) {
-					const columnWidthsAttribute = fillArray( numberOfColumns, 'auto' ).join( ',' );
-
-					writer.setAttribute( 'columnWidths', columnWidthsAttribute, table );
-
-					changed = true;
+				if ( !table.getAttribute( 'columnWidths' ) ) {
+					continue;
 				}
+
+				const numberOfColumns = getNumberOfColumn( table, editor );
 
 				// (2) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				const columnWidths = normalizeColumnWidthsAttribute( table.getAttribute( 'columnWidths' ) );
@@ -509,7 +503,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 
 			if ( !widths[ cellSlot.column ] || domCellWidth < widths[ cellSlot.column ] ) {
-				widths[ cellSlot.column ] = domCellWidth;
+				widths[ cellSlot.column ] = toPrecision( domCellWidth );
 			}
 		}
 
@@ -522,7 +516,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				for ( let i = 0; i < numberOfColumns; i++ ) {
 					const viewColElement = viewWriter.createEmptyElement( 'col' );
 
-					viewWriter.setStyle( 'width', `${ widths[ i ] / sumArray( widths ) * 100 }%`, viewColElement );
+					viewWriter.setStyle( 'width', `${ toPrecision( widths[ i ] / sumArray( widths ) * 100 ) }%`, viewColElement );
 					viewWriter.insert( viewWriter.createPositionAt( colgroup, 'end' ), viewColElement );
 				}
 
@@ -534,7 +528,11 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._resizingData = this._getResizingData( domEventData );
 
 		editingView.change( writer => {
+			const figureInitialPcWidth = this._resizingData.widths.viewFigureWidth / this._resizingData.widths.viewFigureParentWidth;
+
+			writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, domEventData.target.findAncestor( 'figure' ) );
 			writer.addClass( 'table-column-resizer__active', this._resizingData.elements.viewResizer );
+			writer.addClass( 'ck-table-resized', domEventData.target.findAncestor( 'table' ) );
 		} );
 	}
 
@@ -625,7 +623,6 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onMouseMoveHandler( eventInfo, domEventData ) {
-		// console.log('move');
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
@@ -640,8 +637,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		this._moved = true;
-
-		// We should add a colgroup here if it is not present in the table yet.
 
 		const {
 			columnPosition,
@@ -683,7 +678,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		if ( dx === 0 ) {
 			return;
 		}
-		// console.log( viewLeftColumn );
 
 		editingView.change( writer => {
 			const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
@@ -751,6 +745,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex + 1 );
 
 		const viewFigureParentWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure.parent ) );
+		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure ) );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
 
 		const leftColumnWidth = widths[ leftColumnIndex ];
@@ -768,6 +763,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			},
 			widths: {
 				viewFigureParentWidth, // move
+				viewFigureWidth, // down
 				tableWidth, // move
 				leftColumnWidth, // move
 				rightColumnWidth // move
