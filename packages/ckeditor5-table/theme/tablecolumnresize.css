@@ -12,9 +12,12 @@
 	--ck-table-column-resizer-position-offset: calc(var(--ck-table-column-resizer-width) * -0.5 - 0.5px);
 }
 
+.ck-content .table .ck-table-resized {
+	table-layout: fixed;
+}
+
 .ck-content .table table {
 	overflow: hidden;
-	/* table-layout: fixed; */
 }
 
 .ck-content .table td,

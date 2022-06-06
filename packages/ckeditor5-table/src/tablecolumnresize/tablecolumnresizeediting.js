@@ -529,6 +529,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		editingView.change( writer => {
 			writer.addClass( 'table-column-resizer__active', this._resizingData.elements.viewResizer );
+			writer.addClass( 'ck-table-resized', domEventData.target.findAncestor( 'table' ) );
 		} );
 	}
 
