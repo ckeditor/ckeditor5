@@ -217,7 +217,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			let changed = false;
 
 			for ( const table of getAffectedTables( changes, editor.model ) ) {
-				// (1.1) Remove the `columnWidths` attribute from the table and all the cells from column index map if the
+				// (1) Remove the `columnWidths` attribute from the table and all the cells from column index map if the
 				// manual width is not allowed for a given cell. There is no need to process the given table anymore.
 				if ( this.fire( 'disableResize', table ) ) {
 					if ( table.hasAttribute( 'columnWidths' ) ) {
@@ -234,23 +234,13 @@ export default class TableColumnResizeEditing extends Plugin {
 					continue;
 				}
 
-				// (1.2) Add the `columnWidths` attribute to the table with the 'auto' special value for each column, what means that it is
-				// calculated proportionally to the whole table width.
-				const numberOfColumns = getNumberOfColumn( table, editor );
-
-				// if ( !table.hasAttribute( 'columnWidths' ) ) {
-				// 	const columnWidthsAttribute = fillArray( numberOfColumns, 'auto' ).join( ',' );
-
-				// 	writer.setAttribute( 'columnWidths', columnWidthsAttribute, table );
-
-				// 	changed = true;
-				// }
-
-				// (2) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				if ( !table.getAttribute( 'columnWidths' ) ) {
 					continue;
 				}
 
+				const numberOfColumns = getNumberOfColumn( table, editor );
+
+				// (2) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				const columnWidths = normalizeColumnWidthsAttribute( table.getAttribute( 'columnWidths' ) );
 
 				let removedColumnWidths = null;
