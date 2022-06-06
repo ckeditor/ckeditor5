@@ -269,13 +269,13 @@ export default class SourceEditing extends Plugin {
 			const textarea = document.querySelector( '.ck-source-editing-area > textarea' );
 			const toolbar = editor.ui.view.toolbar;
 
-			// Start listening for the keystrokes coming from the textarea and the toolbar.
+			// Start listening for the keystrokes coming from the textarea.
 			this._keystrokes.listenTo( textarea );
-			if ( document.querySelector( '.ck.ck-toolbar.ck-toolbar_grouping' ) ) {
-				this._keystrokes.listenTo( document.querySelector( '.ck.ck-toolbar.ck-toolbar_grouping' ) );
-			}
 
 			if ( toolbar ) {
+				// Listen for the keystrokes coming from the editor's toolbar.
+				this._keystrokes.listenTo( toolbar.element );
+
 				this._keystrokes.set( 'Alt+F10', ( data, cancel ) => {
 					if ( document.activeElement === textarea && !toolbar.focusTracker.isFocused ) {
 						toolbar.focus();

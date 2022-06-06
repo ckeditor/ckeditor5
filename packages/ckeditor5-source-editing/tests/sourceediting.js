@@ -6,21 +6,16 @@
 /* globals document, Event, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { ButtonView, InlineEditableUIView, ToolbarView, enableToolbarKeyboardFocus } from '@ckeditor/ckeditor5-ui';
+import { keyCodes, FocusTracker } from '@ckeditor/ckeditor5-utils';
+import { Plugin, PendingActions } from '@ckeditor/ckeditor5-core';
 
 import SourceEditing from '../src/sourceediting';
 
@@ -525,6 +520,7 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should allow the `alt+f10` key combination to focus the editor toolbar when in source editing mode ', () => {
+			const textarea = document.querySelector( '.ck-source-editing-area > textarea' );
 			const spy = sinon.spy( toolbar, 'focus' );
 			const keyEventData = {
 				keyCode: keyCodes.f10,
@@ -539,10 +535,9 @@ describe( 'SourceEditing', () => {
 				toolbar
 			} );
 
-			const textarea = document.querySelector( '.ck-source-editing-area > textarea' );
-
 			// Initially focused element should be the textarea
 			expect( document.activeElement ).to.equal( textarea );
+
 			toolbarFocusTracker.isFocused = false;
 			originFocusTracker.isFocused = false;
 
