@@ -810,7 +810,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		view.on( 'render', () => {
 			for ( const item of view.createRangeIn( view.document.getRoot() ) ) {
-				if ( item.item.name !== 'td' ) {
+				if ( ![ 'td', 'th' ].includes( item.item.name ) ) {
 					continue;
 				}
 
