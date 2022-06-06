@@ -7,11 +7,11 @@
  * @module source-editing/sourceediting
  */
 
-/* global console */
+/* global console, document */
 
 import { Plugin, PendingActions } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
+import { createElement, ElementReplacer, KeystrokeHandler } from 'ckeditor5/src/utils';
 import { formatHtml } from './utils/formathtml';
 
 import '../theme/sourceediting.css';
@@ -82,6 +82,15 @@ export default class SourceEditing extends Plugin {
 		 * @member {Map.<String,String>}
 		 */
 		this._dataFromRoots = new Map();
+
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this._keystrokes = new KeystrokeHandler();
 	}
 
 	/**
@@ -254,6 +263,34 @@ export default class SourceEditing extends Plugin {
 			this._elementReplacer.replace( domRootElement, domSourceEditingElementWrapper );
 
 			this._dataFromRoots.set( rootName, data );
+		}
+
+		if ( document.querySelector( '.ck-source-editing-area > textarea' ) ) {
+			const textarea = document.querySelector( '.ck-source-editing-area > textarea' );
+			const toolbar = editor.ui.view.toolbar;
+
+			// Start listening for the keystrokes coming from the textarea and the toolbar.
+			this._keystrokes.listenTo( textarea );
+			if ( document.querySelector( '.ck.ck-toolbar.ck-toolbar_grouping' ) ) {
+				this._keystrokes.listenTo( document.querySelector( '.ck.ck-toolbar.ck-toolbar_grouping' ) );
+			}
+
+			if ( toolbar ) {
+				this._keystrokes.set( 'Alt+F10', ( data, cancel ) => {
+					if ( document.activeElement === textarea && !toolbar.focusTracker.isFocused ) {
+						toolbar.focus();
+						cancel();
+					}
+				} );
+
+				this._keystrokes.set( 'Esc', ( data, cancel ) => {
+					if ( toolbar.focusTracker.isFocused ) {
+						textarea.focus();
+
+						cancel();
+					}
+				} );
+			}
 		}
 
 		this._focusSourceEditing();
