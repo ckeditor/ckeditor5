@@ -532,6 +532,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._resizingData = this._getResizingData( domEventData );
 
 		editingView.change( writer => {
+			const figureInitialPcWidth = this._resizingData.widths.viewFigureWidth / this._resizingData.widths.viewFigureParentWidth;
+
+			writer.setStyle( 'width', `${ figureInitialPcWidth * 100 }%`, domEventData.target.findAncestor( 'figure' ) );
 			writer.addClass( 'table-column-resizer__active', this._resizingData.elements.viewResizer );
 			writer.addClass( 'ck-table-resized', domEventData.target.findAncestor( 'table' ) );
 		} );
@@ -621,7 +624,6 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onMouseMoveHandler( eventInfo, domEventData ) {
-		// console.log('move');
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
@@ -636,8 +638,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		this._moved = true;
-
-		// We should add a colgroup here if it is not present in the table yet.
 
 		const {
 			columnPosition,
@@ -679,7 +679,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		if ( dx === 0 ) {
 			return;
 		}
-		// console.log( viewLeftColumn );
 
 		editingView.change( writer => {
 			const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
@@ -747,6 +746,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex + 1 );
 
 		const viewFigureParentWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure.parent ) );
+		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure ) );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
 
 		const leftColumnWidth = widths[ leftColumnIndex ];
@@ -764,6 +764,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			},
 			widths: {
 				viewFigureParentWidth, // move
+				viewFigureWidth, // down
 				tableWidth, // move
 				leftColumnWidth, // move
 				rightColumnWidth // move
