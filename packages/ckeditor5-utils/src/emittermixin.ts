@@ -9,7 +9,7 @@
 
 import EventInfo from './eventinfo';
 import uid from './uid';
-import priorities, { PriorityString } from './priorities';
+import priorities, { type PriorityString } from './priorities';
 import insertToPriorityArray from './inserttopriorityarray';
 
 // To check if component is loaded more than once.
@@ -339,6 +339,7 @@ export default EmitterMixin;
  * @interface
  */
 export interface Emitter {
+
 	/**
 	 * Registers a callback function to be executed when an event is fired.
 	 *
@@ -528,9 +529,9 @@ export interface Emitter {
 	/** @internal */
 	[ _listeningTo ]?: {
 		[ emitterId: string ]: {
-			emitter: Emitter,
-			callbacks: { [ event: string]: Function[] }
-		}
+			emitter: Emitter;
+			callbacks: { [ event: string]: Function[] };
+		};
 	};
 
 	/** @internal */
@@ -597,7 +598,7 @@ export function _getEmitterId( emitter: Emitter ): string | undefined {
 }
 
 interface EventNode {
-	callbacks: { callback: Function, priority: number }[];
+	callbacks: { callback: Function; priority: number }[];
 	childEvents: string[];
 }
 
@@ -792,6 +793,7 @@ function removeEventListener( listener: Emitter, emitter: Emitter, event: string
  * @interface
  */
 export interface EmitterMixinDelegateChain {
+
 	/**
 	 * Selects destination for {@link module:utils/emittermixin~EmitterMixin#delegate} events.
 	 *

@@ -46,11 +46,11 @@ export default class ResizeObserver {
 	 * The single native observer instance shared across all {@link module:utils/dom/resizeobserver~ResizeObserver} instances.
 	 *
 	 * @static
-	 * @protected
+	 * @private
 	 * @readonly
 	 * @property {Object|null}
 	 */
-	static _observerInstance: InstanceType<typeof global.window.ResizeObserver> | null = null;
+	private static _observerInstance: InstanceType<typeof global.window.ResizeObserver> | null = null;
 
 	/**
 	 * A mapping of native DOM elements and their callbacks shared across all
@@ -60,7 +60,7 @@ export default class ResizeObserver {
 	 * @private
 	 * @property {Map.<Element,Set>|null}
 	 */
-	static _elementCallbacks: Map<Element, Set<( entry: ResizeObserverEntry ) => void>> | null = null;
+	private static _elementCallbacks: Map<Element, Set<( entry: ResizeObserverEntry ) => void>> | null = null;
 
 	/**
 	 * Creates an instance of the `ResizeObserver` class.
@@ -88,7 +88,7 @@ export default class ResizeObserver {
 	/**
 	 * Destroys the observer which disables the `callback` passed to the {@link #constructor}.
 	 */
-	destroy(): void {
+	public destroy(): void {
 		ResizeObserver._deleteElementCallback( this._element, this._callback );
 	}
 

@@ -7,7 +7,13 @@
  * @module utils/dom/emittermixin
  */
 
-import { default as EmitterMixin, _getEmitterListenedTo, _setEmitterId, Emitter as BaseEmitter, CallbackOptions } from '../emittermixin';
+import {
+	default as EmitterMixin,
+	_getEmitterListenedTo,
+	_setEmitterId,
+	type Emitter as BaseEmitter,
+	type CallbackOptions
+} from '../emittermixin';
 import uid from '../uid';
 import isNode from './isnode';
 import isWindow from './iswindow';
@@ -85,7 +91,8 @@ const DomEmitterMixin: Emitter = extend( {}, EmitterMixin, {
 	 * * To stop listening to all events fired by a specific object.
 	 * * To stop listening to all events fired by all object.
 	 *
-	 * @param {module:utils/emittermixin~Emitter|Node|Window} [emitter] The object to stop listening to. If omitted, stops it for all objects.
+	 * @param {module:utils/emittermixin~Emitter|Node|Window} [emitter] The object to stop listening to.
+	 * If omitted, stops it for all objects.
 	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
 	 * for all events from `emitter`.
 	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
@@ -123,7 +130,7 @@ const DomEmitterMixin: Emitter = extend( {}, EmitterMixin, {
 	 */
 	_getProxyEmitter(
 		node: Node | Window,
-		options: { capture: boolean, passive: boolean }
+		options: { capture: boolean; passive: boolean }
 	): BaseEmitter | null {
 		return _getEmitterListenedTo( this as any, getProxyEmitterId( node, options ) );
 	},
@@ -181,7 +188,7 @@ export default DomEmitterMixin;
  */
 class ProxyEmitter {
 	private readonly _domNode: Node | Window;
-	private readonly _options: { capture: boolean, passive: boolean };
+	private readonly _options: { capture: boolean; passive: boolean };
 
 	/**
 	 * @param {Node|Window} node DOM Node that fires events.
@@ -193,7 +200,7 @@ class ProxyEmitter {
 	 */
 	constructor(
 		node: Node | Window,
-		options: { capture: boolean, passive: boolean }
+		options: { capture: boolean; passive: boolean }
 	) {
 		// Set emitter ID to match DOM Node "expando" property.
 		_setEmitterId( this, getProxyEmitterId( node, options ) );
@@ -215,8 +222,8 @@ class ProxyEmitter {
 		[ event: string ]: {
 			( domEvent: unknown ): void;
 			removeListener(): void;
-		}
-	}
+		};
+	};
 
 	/**
 	 * Registers a callback function to be executed when an event is fired.
@@ -230,7 +237,7 @@ class ProxyEmitter {
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#attach
 	 * @param {String} event The name of the event.
 	 */
-	attach( event: string ): void {
+	public attach( event: string ): void {
 		// If the DOM Listener for given event already exist it is pointless
 		// to attach another one.
 		if ( this._domListeners && this._domListeners[ event ] ) {
@@ -260,7 +267,7 @@ class ProxyEmitter {
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#detach
 	 * @param {String} event The name of the event.
 	 */
-	detach( event: string ): void {
+	public detach( event: string ): void {
 		let events;
 
 		// Remove native DOM listeners which are orphans. If no callbacks
@@ -268,7 +275,7 @@ class ProxyEmitter {
 		// See: {@link attach}.
 
 		if ( this._domListeners![ event ] && ( !( events = this._events![ event ] ) || !events.callbacks.length ) ) {
-			this._domListeners! [ event ].removeListener();
+			this._domListeners![ event ].removeListener();
 		}
 	}
 
@@ -284,7 +291,7 @@ class ProxyEmitter {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	_addEventListener(
+	public _addEventListener(
 		event: string,
 		callback: ( ev: EventInfo, ...args: any[] ) => void,
 		options: CallbackOptions
@@ -301,7 +308,7 @@ class ProxyEmitter {
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to stop being called.
 	 */
-	_removeEventListener( event: string, callback: Function ) {
+	public _removeEventListener( event: string, callback: Function ) {
 		EmitterMixin._removeEventListener.call( this, event, callback );
 		this.detach( event );
 	}
@@ -371,7 +378,7 @@ function getProxyEmitterId( node: Node | Window, options: { [ option: string ]: 
  *
  * @interface Emitter
  */
- export interface Emitter extends BaseEmitter {
+export interface Emitter extends BaseEmitter {
 	listenTo<K extends keyof HTMLElementEventMap>(
 		emitter: Node | Window,
 		event: K,

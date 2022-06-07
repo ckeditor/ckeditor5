@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { DiffResult } from "./diff";
+import type { DiffResult } from './diff';
 
 /**
  * @module utils/difftochanges
@@ -85,7 +85,7 @@ export default function diffToChanges<T>( diff: readonly DiffResult[], output: A
 
 /**
  * An object describing insertion change.
- * 
+ *
  * @typedef {Object} module:utils/difftochanges~InsertChange
  * @property {'insert'} type
  * @property {Number} index
@@ -99,7 +99,7 @@ export interface InsertChange<T> {
 
 /**
  * An object describing deletion change.
- * 
+ *
  * @typedef {Object} module:utils/difftochanges~DeleteChange
  * @property {'delete'} type
  * @property {Number} index
@@ -113,7 +113,7 @@ export interface DeleteChange {
 
 /**
  * The element of the result of {@link module:utils/difftochanges~diffToChanges} function.
- * 
+ *
  * @typedef {module:utils/difftochanges~InsertChange|module:utils/difftochanges~DeleteChange} module:utils/difftochanges~Change
  */
 export type Change<T> = InsertChange<T> | DeleteChange;

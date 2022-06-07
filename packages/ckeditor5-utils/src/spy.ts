@@ -16,7 +16,7 @@
  *
  * @returns {Function} The spy function.
  */
-function spy(): { (): void, called?: boolean } {
+function spy(): { (): void; called?: boolean } {
 	return function spy() {
 		( spy as any ).called = true;
 	};

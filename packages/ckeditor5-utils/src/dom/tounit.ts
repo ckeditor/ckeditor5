@@ -20,7 +20,7 @@ export default function toUnit( unit: string ): ( value: string | number ) => st
 	 * to the passed `value`.
 	 *
 	 * @function helper
- 	 * @param {*} value A value to be given the unit.
+ 	 * @param {String|Number} value A value to be given the unit.
  	 * @returns {String} A value with the trailing unit.
 	 */
 	return value => value + unit;

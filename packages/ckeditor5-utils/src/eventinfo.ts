@@ -20,7 +20,7 @@ export default class EventInfo {
 	 * @readonly
 	 * @member {Object}
 	 */
-	readonly source: object;
+	public readonly source: object;
 
 	/**
 	 * The event name.
@@ -28,7 +28,7 @@ export default class EventInfo {
 	 * @readonly
 	 * @member {String}
 	 */
-	readonly name: string;
+	public readonly name: string;
 
 	/**
 	 * Path this event has followed. See {@link module:utils/emittermixin~EmitterMixin#delegate}.
@@ -36,21 +36,21 @@ export default class EventInfo {
 	 * @readonly
 	 * @member {Array.<Object>}
 	 */
-	path: object[];
+	public path: object[];
 
 	/**
 	 * Stops the event emitter to call further callbacks for this event interaction.
 	 *
 	 * @method #stop
 	 */
-	readonly stop: { (): void, called?: boolean };
+	public readonly stop: { (): void; called?: boolean };
 
 	/**
 	 * Removes the current callback from future interactions of this event.
 	 *
 	 * @method #off
 	 */
-	readonly off: { (): void, called?: boolean };
+	public readonly off: { (): void; called?: boolean };
 
 	/**
 	 * The value which will be returned by {@link module:utils/emittermixin~EmitterMixin#fire}.
@@ -68,7 +68,7 @@ export default class EventInfo {
 	 *
 	 * @member #return
 	 */
-	return: unknown;
+	public return: unknown;
 
 	/**
 	 * @param {Object} source The emitter.

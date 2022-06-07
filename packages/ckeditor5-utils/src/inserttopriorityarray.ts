@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import priorities, { PriorityString } from './priorities';
+import priorities, { type PriorityString } from './priorities';
 
 /**
  * @module utils/inserttopriorityarray

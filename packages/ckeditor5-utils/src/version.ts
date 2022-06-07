@@ -19,6 +19,7 @@ export default version;
 const windowOrGlobal = typeof window === 'object' ? window : global;
 
 declare global {
+	// eslint-disable-next-line no-var
 	var CKEDITOR_VERSION: string;
 }
 

@@ -284,38 +284,39 @@ function splitKeystrokeText( keystroke: string ): string[] {
  * @interface
  */
 export interface KeystrokeInfo {
+
 	/**
 	 * The [key code](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode).
 	 *
 	 * @member {Number}
 	 */
-	keyCode: number
+	keyCode: number;
 
 	/**
 	 * Whether the <kbd>Alt</kbd> modifier was pressed.
 	 *
 	 * @member {Boolean}
 	 */
-	altKey: boolean,
+	altKey: boolean;
 
 	/**
 	 * Whether the <kbd>Cmd</kbd> modifier was pressed.
 	 *
 	 * @member {Boolean} module:utils/keyboard~KeystrokeInfo#metaKey
 	 */
-	metaKey: boolean,
+	metaKey: boolean;
 
 	/**
 	 * Whether the <kbd>Ctrl</kbd> modifier was pressed.
 	 *
 	 * @member {Boolean}
 	 */
-	ctrlKey: boolean,
+	ctrlKey: boolean;
 
 	/**
 	 * Whether the <kbd>Shift</kbd> modifier was pressed.
 	 *
 	 * @member {Boolean}
 	 */
-	shiftKey: boolean,
+	shiftKey: boolean;
 }

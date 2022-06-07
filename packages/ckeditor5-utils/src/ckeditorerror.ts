@@ -43,8 +43,8 @@ export const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/sup
  * @extends Error
  */
 export default class CKEditorError extends Error {
-	readonly context: object | null;
-	readonly data?: object;
+	public readonly context: object | null;
+	public readonly data?: object;
 
 	/**
 	 * Creates an instance of the CKEditorError class.
@@ -87,7 +87,7 @@ export default class CKEditorError extends Error {
 	 * Checks if the error is of the `CKEditorError` type.
 	 * @returns {Boolean}
 	 */
-	is( type: string ): boolean {
+	public is( type: string ): boolean {
 		return type === 'CKEditorError';
 	}
 
@@ -101,7 +101,7 @@ export default class CKEditorError extends Error {
 	 * @param {Object} context An object connected through properties with the editor instance. This context will be used
 	 * by the watchdog to verify which editor should be restarted.
 	 */
-	static rethrowUnexpectedError( err: Error, context: object ): never {
+	public static rethrowUnexpectedError( err: Error, context: object ): never {
 		if ( ( err as any ).is && ( err as any ).is( 'CKEditorError' ) ) {
 			throw err;
 		}

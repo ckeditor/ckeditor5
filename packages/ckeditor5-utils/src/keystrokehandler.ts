@@ -7,9 +7,9 @@
  * @module utils/keystrokehandler
  */
 
-import DomEmitterMixin, { Emitter as DomEmitter } from './dom/emittermixin';
+import DomEmitterMixin, { type Emitter as DomEmitter } from './dom/emittermixin';
 import type { Emitter } from './emittermixin';
-import { getCode, parseKeystroke, KeystrokeInfo } from './keyboard';
+import { getCode, parseKeystroke, type KeystrokeInfo } from './keyboard';
 import type { PriorityString } from './priorities';
 
 /**
@@ -65,7 +65,7 @@ export default class KeystrokeHandler {
 	 *
 	 * @param {module:utils/emittermixin~Emitter|HTMLElement|Window} emitter
 	 */
-	listenTo( emitter: Emitter | HTMLElement | Window ): void {
+	public listenTo( emitter: Emitter | HTMLElement | Window ): void {
 		// The #_listener works here as a kind of dispatcher. It groups the events coming from the same
 		// keystroke so the listeners can be attached to them with different priorities.
 		//
@@ -93,7 +93,7 @@ export default class KeystrokeHandler {
 	 * callback. The higher the priority value the sooner the callback will be executed. Keystrokes having the same priority
 	 * are called in the order they were added.
 	 */
-	set(
+	public set(
 		keystroke: string | readonly ( string | number )[],
 		callback: ( ev: KeyboardEvent, cancel: () => void ) => void,
 		options: { readonly priority?: PriorityString | number } = {}
@@ -126,14 +126,14 @@ export default class KeystrokeHandler {
 	 * @param {module:engine/view/observer/keyobserver~KeyEventData} keyEvtData Key event data.
 	 * @returns {Boolean} Whether the keystroke was handled.
 	 */
-	press( keyEvtData: Readonly<KeystrokeInfo> ): boolean {
+	public press( keyEvtData: Readonly<KeystrokeInfo> ): boolean {
 		return !!this._listener.fire( '_keydown:' + getCode( keyEvtData ), keyEvtData );
 	}
 
 	/**
 	 * Destroys the keystroke handler.
 	 */
-	destroy(): void {
+	public destroy(): void {
 		this._listener.stopListening();
 	}
 }

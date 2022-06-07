@@ -24,7 +24,7 @@ import isText from './istext';
  * read or edit by the user.
  */
 export function scrollViewportToShowTarget(
-	{ target, viewportOffset = 0 }: { readonly target: HTMLElement | Range, readonly viewportOffset?: number}
+	{ target, viewportOffset = 0 }: { readonly target: HTMLElement | Range; readonly viewportOffset?: number }
 ): void {
 	const targetWindow = getWindow( target );
 	let currentWindow: Window | null = targetWindow;

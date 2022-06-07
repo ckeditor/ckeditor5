@@ -7,7 +7,7 @@
  * @module utils/collection
  */
 
-import EmitterMixin, { Emitter } from './emittermixin';
+import EmitterMixin, { type Emitter } from './emittermixin';
 import CKEditorError from './ckeditorerror';
 import uid from './uid';
 import isIterable from './isiterable';
@@ -158,7 +158,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 *
 	 * @member {Number} #length
 	 */
-	get length(): number {
+	public get length(): number {
 		return this._items.length;
 	}
 
@@ -167,7 +167,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 *
 	 * @returns {Object|null} The first item or `null` if collection is empty.
 	 */
-	get first(): T | null {
+	public get first(): T | null {
 		return this._items[ 0 ] || null;
 	}
 
@@ -176,7 +176,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 *
 	 * @returns {Object|null} The last item or `null` if collection is empty.
 	 */
-	get last(): T | null {
+	public get last(): T | null {
 		return this._items[ this.length - 1 ] || null;
 	}
 
@@ -192,7 +192,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @fires add
 	 * @fires change
 	 */
-	add( item: T, index?: number ): this {
+	public add( item: T, index?: number ): this {
 		return this.addMany( [ item ], index );
 	}
 
@@ -207,7 +207,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @fires add
 	 * @fires change
 	 */
-	addMany( items: Iterable<T>, index?: number ): this {
+	public addMany( items: Iterable<T>, index?: number ): this {
 		if ( index === undefined ) {
 			index = this._items.length;
 		} else if ( index > this._items.length || index < 0 ) {
@@ -249,7 +249,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @param {String|Number} idOrIndex The item ID or index in the collection.
 	 * @returns {Object|null} The requested item or `null` if such item does not exist.
 	 */
-	get( idOrIndex: string | number ): T | null {
+	public get( idOrIndex: string | number ): T | null {
 		let item: T | undefined;
 
 		if ( typeof idOrIndex == 'string' ) {
@@ -274,7 +274,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @param {Object|String} itemOrId The item or its ID in the collection.
 	 * @returns {Boolean} `true` if the collection contains the item, `false` otherwise.
 	 */
-	has( itemOrId: T | string ): boolean {
+	public has( itemOrId: T | string ): boolean {
 		if ( typeof itemOrId == 'string' ) {
 			return this._itemMap.has( itemOrId );
 		} else { // Object
@@ -292,7 +292,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @param {Object|String} itemOrId The item or its ID in the collection.
 	 * @returns {Number} The index of a given item.
 	 */
-	getIndex( itemOrId: T | string ): number {
+	public getIndex( itemOrId: T | string ): number {
 		let item: T | undefined;
 
 		if ( typeof itemOrId == 'string' ) {
@@ -312,7 +312,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @fires remove
 	 * @fires change
 	 */
-	remove( subject: T | number | string ): T {
+	public remove( subject: T | number | string ): T {
 		const [ item, index ] = this._remove( subject );
 
 		this.fire( 'change', {
@@ -333,7 +333,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @param {Object} [ctx] Context in which the `callback` will be called.
 	 * @returns {Array} The result of mapping.
 	 */
-	map<U>(
+	public map<U>(
 		callback: ( item: T, index: number ) => U,
 		ctx?: any
 	): U[] {
@@ -349,7 +349,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @param {Object} [ctx] Context in which the `callback` will be called.
 	 * @returns {Object|undefined} The item for which `callback` returned a true value.
 	 */
-	find(
+	public find(
 		callback: ( item: T, index: number ) => boolean,
 		ctx?: any
 	): T | undefined {
@@ -365,7 +365,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @param {Object} [ctx] Context in which the `callback` will be called.
 	 * @returns {Array} The array with matching items.
 	 */
-	filter(
+	public filter(
 		callback: ( item: T, index: number ) => boolean,
 		ctx?: any
 	): T[] {
@@ -379,7 +379,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @fires remove
 	 * @fires change
 	 */
-	clear(): void {
+	public clear(): void {
 		if ( this._bindToCollection ) {
 			this.stopListening( this._bindToCollection );
 			this._bindToCollection = null;
@@ -494,7 +494,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @param {module:utils/collection~Collection} externalCollection A collection to be bound.
 	 * @returns {module:utils/collection~CollectionBindToChain} The binding chain object.
 	 */
-	bindTo<S extends { [id in I2]?: string }, I2 extends string>(
+	public bindTo<S extends { [id in I2]?: string }, I2 extends string>(
 		externalCollection: Collection<S, I2>
 	): CollectionBindToChain<S, T> {
 		if ( this._bindToCollection ) {
@@ -752,7 +752,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 *
 	 * @returns {Iterator.<*>}
 	 */
-	[ Symbol.iterator ](): Iterator<T> {
+	public [ Symbol.iterator ](): Iterator<T> {
 		return this._items[ Symbol.iterator ]();
 	}
 
@@ -796,6 +796,7 @@ export default Collection;
  * @interface
  */
 export interface CollectionBindToChain<S, T> {
+
 	/**
 	 * Creates the class factory binding in which items of the source collection are passed to
 	 * the constructor of the specified class.

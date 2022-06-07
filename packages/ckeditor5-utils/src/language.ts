@@ -9,7 +9,7 @@
 
 /**
  * String representing a language direction.
- * 
+ *
  * @typedef {'ltr'|'rtl'} module:utils/language~LanguageDirection
  */
 export type LanguageDirection = 'ltr' | 'rtl';

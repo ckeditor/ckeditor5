@@ -43,8 +43,9 @@ export default class Config {
 		}
 	}
 
-	set( name: string, value: any ): void;
-	set( config: Record<string, any> ): void;
+	public set( name: string, value: any ): void;
+	public set( config: Record<string, any> ): void;
+
 	/**
 	 * Set configuration values.
 	 *
@@ -82,12 +83,13 @@ export default class Config {
 	 * configuration entries. Configuration names are case-sensitive.
 	 * @param {*} value The configuration value. Used if a name is passed.
 	 */
-	set( name: string | Record<string, any>, value?: any ): void {
+	public set( name: string | Record<string, any>, value?: any ): void {
 		this._setToTarget( this._config, name, value );
 	}
 
-	define( name: string, value: any ): void;
-	define( config: Record<string, any> ): void;
+	public define( name: string, value: any ): void;
+	public define( config: Record<string, any> ): void;
+
 	/**
 	 * Does exactly the same as {@link #set} with one exception – passed configuration extends
 	 * existing one, but does not overwrite already defined values.
@@ -99,7 +101,7 @@ export default class Config {
 	 * configuration entries. Configuration names are case-sensitive.
 	 * @param {*} value The configuration value. Used if a name is passed.
 	 */
-	define( name: string | Record<string, any>, value?: any ): void {
+	public define( name: string | Record<string, any>, value?: any ): void {
 		const isDefine = true;
 
 		this._setToTarget( this._config, name, value, isDefine );
@@ -117,7 +119,7 @@ export default class Config {
 	 * @param {String} name The configuration name. Configuration names are case-sensitive.
 	 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.
 	 */
-	get( name: string ): unknown {
+	public get( name: string ): unknown {
 		return this._getFromSource( this._config, name );
 	}
 
@@ -126,7 +128,7 @@ export default class Config {
 	 *
 	 * @returns {Iterable.<String>}
 	 */
-	* names(): Iterable<string> {
+	public* names(): Iterable<string> {
 		for ( const name of Object.keys( this._config ) ) {
 			yield name;
 		}

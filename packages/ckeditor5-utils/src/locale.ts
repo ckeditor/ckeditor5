@@ -10,8 +10,8 @@
 /* globals console */
 
 import toArray from './toarray';
-import { _translate, Message } from './translation-service';
-import { getLanguageDirection, LanguageDirection } from './language';
+import { _translate, type Message } from './translation-service';
+import { getLanguageDirection, type LanguageDirection } from './language';
 
 /**
  * Represents the localization services.
@@ -26,7 +26,7 @@ export default class Locale {
 	 * @readonly
 	 * @member {String}
 	 */
-	readonly uiLanguage: string;
+	public readonly uiLanguage: string;
 
 	/**
 	 * Text direction of the {@link #uiLanguage editor UI language}. Either `'ltr'` or `'rtl'`.
@@ -34,7 +34,7 @@ export default class Locale {
 	 * @readonly
 	 * @member {String}
 	 */
-	readonly uiLanguageDirection: LanguageDirection;
+	public readonly uiLanguageDirection: LanguageDirection;
 
 	/**
 	 * The editor content language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
@@ -45,7 +45,7 @@ export default class Locale {
 	 * @readonly
 	 * @member {String}
 	 */
-	readonly contentLanguage: string;
+	public readonly contentLanguage: string;
 
 	/**
 	 * Text direction of the {@link #contentLanguage editor content language}.
@@ -61,7 +61,7 @@ export default class Locale {
 	 * @readonly
 	 * @member {String}
 	 */
-	readonly contentLanguageDirection: LanguageDirection;
+	public readonly contentLanguageDirection: LanguageDirection;
 
 	/**
 	 * Translates the given message to the {@link #uiLanguage}. This method is also available in
@@ -105,7 +105,7 @@ export default class Locale {
 	 * For messages supporting plural forms the first value will determine the plural form.
 	 * @returns {String}
 	 */
-	readonly t: ( message: string | Message, values?: number | string | readonly ( number | string )[] ) => string;
+	public readonly t: ( message: string | Message, values?: number | string | readonly ( number | string )[] ) => string;
 
 	/**
 	 * Creates a new instance of the locale class. Learn more about
@@ -136,7 +136,7 @@ export default class Locale {
 	 * @deprecated
 	 * @member {String}
 	 */
-	get language(): string {
+	public get language(): string {
 		/**
 		 * The {@link module:utils/locale~Locale#language `Locale#language`} property was deprecated and will
 		 * be removed in the near future. Please use the {@link #uiLanguage} and {@link #contentLanguage} properties instead.

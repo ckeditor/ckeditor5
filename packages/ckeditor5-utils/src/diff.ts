@@ -143,7 +143,7 @@ diff.fastDiff = fastDiff;
 
 /**
  * The element of the result of {@link module:utils/diff~diff} function.
- * 
+ *
  * @typedef {'equal'|'insert'|'delete'} module:utils/diff~DiffResult
  */
 export type DiffResult = 'equal' | 'insert' | 'delete';

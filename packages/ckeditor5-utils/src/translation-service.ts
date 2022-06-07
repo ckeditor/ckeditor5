@@ -4,6 +4,7 @@
  */
 
 /* globals window */
+/* eslint-disable no-var */
 
 /**
  * @module utils/translation-service
@@ -14,8 +15,8 @@ import CKEditorError from './ckeditorerror';
 declare global {
 	var CKEDITOR_TRANSLATIONS: {
 		[ language: string ]: {
-			dictionary: { [ messageId: string ]: string | readonly string[] },
-			getPluralForm?: ( n: number ) => number
+			dictionary: { [ messageId: string ]: string | readonly string[] };
+			getPluralForm?: ( n: number ) => number;
 		};
 	};
 }

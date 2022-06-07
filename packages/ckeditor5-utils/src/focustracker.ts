@@ -9,8 +9,8 @@
  * @module utils/focustracker
  */
 
-import DomEmitterMixin, { Emitter as DomEmitter } from './dom/emittermixin';
-import ObservableMixin, { Observable } from './observablemixin';
+import DomEmitterMixin, { type Emitter as DomEmitter } from './dom/emittermixin';
+import ObservableMixin, { type Observable } from './observablemixin';
 import CKEditorError from './ckeditorerror';
 import mix from './mix';
 
@@ -37,7 +37,7 @@ class FocusTracker {
 	 * @observable
 	 * @member {Boolean}
 	 */
-	declare isFocused: boolean;
+	declare public isFocused: boolean;
 
 	/**
 	 * The currently focused element.
@@ -50,7 +50,7 @@ class FocusTracker {
 	 * @observable
 	 * @member {Element|null}
 	 */
-	declare focusedElement: Element | null;
+	declare public focusedElement: Element | null;
 
 	/**
 	 * List of registered elements.
@@ -81,7 +81,7 @@ class FocusTracker {
 	 *
 	 * @param {Element} element
 	 */
-	add( element: Element ): void {
+	public add( element: Element ): void {
 		if ( this._elements.has( element ) ) {
 			/**
 			 * This element is already tracked by {@link module:utils/focustracker~FocusTracker}.
@@ -101,7 +101,7 @@ class FocusTracker {
 	 *
 	 * @param {Element} element
 	 */
-	remove( element: Element ): void {
+	public remove( element: Element ): void {
 		if ( element === this.focusedElement ) {
 			this._blur();
 		}
@@ -117,7 +117,7 @@ class FocusTracker {
 	 * - Disabling all event listeners attached to tracked elements.
 	 * - Removing all tracked elements that were previously added.
 	 */
-	destroy(): void {
+	public destroy(): void {
 		this.stopListening();
 	}
 

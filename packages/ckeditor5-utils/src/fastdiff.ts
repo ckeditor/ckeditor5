@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { DiffResult } from "./diff";
-import type { Change } from "./difftochanges";
+import type { DiffResult } from './diff';
+import type { Change } from './difftochanges';
 
 /**
  * @module utils/fastdiff
@@ -22,6 +22,7 @@ export default function fastDiff<T>(
 	cmp: ( ( a: T, b: T ) => boolean ) | undefined,
 	atomicChanges: true
 ): DiffResult[];
+
 /**
  * Finds positions of the first and last change in the given string/array and generates a set of changes:
  *
@@ -215,7 +216,8 @@ function cutAndReverse<T>( arr: readonly T[], howMany: number ): T[] {
 //
 // @param {Array} newArray New array for which change indexes were calculated.
 // @param {Object} changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
-// @returns {Array.<module:utils/difftochanges~Change>} Array of changes compatible with {@link module:utils/difftochanges~diffToChanges} format.
+// @returns {Array.<module:utils/difftochanges~Change>} Array of changes compatible with
+// {@link module:utils/difftochanges~diffToChanges} format.
 function changeIndexesToChanges<T>( newArray: readonly T[], changeIndexes: ChangeIndexes ): Change<T>[] {
 	const result: Change<T>[] = [];
 	const { firstIndex, lastIndexOld, lastIndexNew } = changeIndexes;

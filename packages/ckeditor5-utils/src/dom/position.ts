@@ -8,7 +8,7 @@
  */
 
 import global from './global';
-import Rect, { RectSource } from './rect';
+import Rect, { type RectSource } from './rect';
 import getPositionedAncestor from './getpositionedancestor';
 import getBorderWidths from './getborderwidths';
 import { isFunction } from 'lodash-es';
@@ -161,7 +161,10 @@ function getConstrainedViewportRect( viewportOffsetConfig: Options[ 'viewportOff
 // @param {HTMLElement|null} [options.positionedElementAncestor] Nearest element ancestor element which CSS position is not "static".
 //
 // @returns {module:utils/dom/position~Position|null} An array containing the name of the position and it's rect.
-function getBestPosition( positions: readonly PositioningFunction[], options: ConstructorParameters<typeof PositionObject>[ 1 ] ): Position | null {
+function getBestPosition(
+	positions: readonly PositioningFunction[],
+	options: ConstructorParameters<typeof PositionObject>[ 1 ]
+): Position | null {
 	const { elementRect } = options;
 
 	// This is when element is fully visible.
@@ -262,6 +265,7 @@ function getRectForAbsolutePositioning( rect: Rect ): Rect {
  * @interface
  */
 export interface Position {
+
 	/**
 	 * Position name.
 	 *
@@ -308,10 +312,10 @@ export interface Position {
 // @private
 // @implements {Position}
 class PositionObject implements Position {
-	name!: string;
-	config?: object;
+	public name!: string;
+	public config?: object;
 
-	private _positioningFunctionCorrdinates!: { left: number, top: number };
+	private _positioningFunctionCorrdinates!: { left: number; top: number };
 	private _options!: ConstructorParameters<typeof PositionObject>[ 1 ];
 	private _cachedRect?: Rect;
 	private _cachedAbsoluteRect?: Rect;
@@ -329,11 +333,11 @@ class PositionObject implements Position {
 	constructor(
 		positioningFunction: PositioningFunction,
 		options: {
-			readonly elementRect: Rect,
-			readonly targetRect: Rect,
-			readonly viewportRect: Rect | null,
-			readonly positionedElementAncestor?: HTMLElement | null
-			readonly limiterRect?: Rect
+			readonly elementRect: Rect;
+			readonly targetRect: Rect;
+			readonly viewportRect: Rect | null;
+			readonly positionedElementAncestor?: HTMLElement | null;
+			readonly limiterRect?: Rect;
 		}
 	) {
 		const positioningFunctionOutput = positioningFunction( options.targetRect, options.elementRect, options.viewportRect );
@@ -357,7 +361,7 @@ class PositionObject implements Position {
 	//
 	// @readonly
 	// @type {Number}
-	get left(): number {
+	public get left(): number {
 		return this._absoluteRect.left;
 	}
 
@@ -366,7 +370,7 @@ class PositionObject implements Position {
 	//
 	// @readonly
 	// @type {Number}
-	get top(): number {
+	public get top(): number {
 		return this._absoluteRect.top;
 	}
 
@@ -374,7 +378,7 @@ class PositionObject implements Position {
 	//
 	// @readonly
 	// @type {Number}
-	get limiterIntersectionArea(): number {
+	public get limiterIntersectionArea(): number {
 		const limiterRect = this._options.limiterRect;
 
 		if ( limiterRect ) {
@@ -401,7 +405,7 @@ class PositionObject implements Position {
 	//
 	// @readonly
 	// @type {Number}
-	get viewportIntersectionArea(): number {
+	public get viewportIntersectionArea(): number {
 		const viewportRect = this._options.viewportRect;
 
 		if ( viewportRect ) {
@@ -456,6 +460,7 @@ class PositionObject implements Position {
  * @interface
  */
 export interface Options {
+
 	/**
 	 * Element that is to be positioned.
 	 *
@@ -516,7 +521,7 @@ export interface Options {
 		readonly right?: number;
 		readonly bottom?: number;
 		readonly left?: number;
-	}
+	};
 }
 
 /**

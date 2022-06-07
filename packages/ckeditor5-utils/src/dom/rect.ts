@@ -27,7 +27,7 @@ export default class Rect {
 	 * @readonly
 	 * @member {Number}
 	 */
-	top!: number;
+	declare public top: number;
 
 	/**
 	 * The "right" value of the rect.
@@ -35,7 +35,7 @@ export default class Rect {
 	 * @readonly
 	 * @member {Number}
 	 */
-	right!: number;
+	declare public right: number;
 
 	/**
 	 * The "bottom" value of the rect.
@@ -43,7 +43,7 @@ export default class Rect {
 	 * @readonly
 	 * @member {Number}
 	 */
-	bottom!: number;
+	declare public bottom: number;
 
 	/**
 	 * The "left" value of the rect.
@@ -51,7 +51,7 @@ export default class Rect {
 	 * @readonly
 	 * @member {Number}
 	 */
-	left!: number;
+	declare public left: number;
 
 	/**
 	 * The "width" value of the rect.
@@ -59,7 +59,7 @@ export default class Rect {
 	 * @readonly
 	 * @member {Number}
 	 */
-	width!: number;
+	declare public width: number;
 
 	/**
 	 * The "height" value of the rect.
@@ -67,7 +67,7 @@ export default class Rect {
 	 * @readonly
 	 * @member {Number}
 	 */
-	height!: number;
+	declare public height: number;
 
 	/**
 	 * The object this rect is for.
@@ -147,7 +147,6 @@ export default class Rect {
 		} else {
 			copyRectProperties( this, source );
 		}
-
 	}
 
 	/**
@@ -155,7 +154,7 @@ export default class Rect {
 	 *
 	 * @returns {module:utils/dom/rect~Rect} A cloned rect.
 	 */
-	clone(): Rect {
+	public clone(): Rect {
 		return new Rect( this );
 	}
 
@@ -166,7 +165,7 @@ export default class Rect {
 	 * @param {Number} y Desired vertical location.
 	 * @returns {module:utils/dom/rect~Rect} A rect which has been moved.
 	 */
-	moveTo( x: number, y: number ): this {
+	public moveTo( x: number, y: number ): this {
 		this.top = y;
 		this.right = x + this.width;
 		this.bottom = y + this.height;
@@ -182,7 +181,7 @@ export default class Rect {
 	 * @param {Number} y A vertical offset
 	 * @returns {module:utils/dom/rect~Rect} A rect which has been moved.
 	 */
-	moveBy( x: number, y: number ): this {
+	public moveBy( x: number, y: number ): this {
 		this.top += y;
 		this.right += x;
 		this.left += x;
@@ -197,7 +196,7 @@ export default class Rect {
 	 * @param {module:utils/dom/rect~Rect} anotherRect
 	 * @returns {module:utils/dom/rect~Rect|null}
 	 */
-	getIntersection( anotherRect: Rect ): Rect | null {
+	public getIntersection( anotherRect: Rect ): Rect | null {
 		const rect = {
 			top: Math.max( this.top, anotherRect.top ),
 			right: Math.min( this.right, anotherRect.right ),
@@ -223,7 +222,7 @@ export default class Rect {
 	 * @param {module:utils/dom/rect~Rect} anotherRect
 	 * @returns {Number} Area of intersection.
 	 */
-	getIntersectionArea( anotherRect: Rect ): number {
+	public getIntersectionArea( anotherRect: Rect ): number {
 		const rect = this.getIntersection( anotherRect );
 
 		if ( rect ) {
@@ -238,7 +237,7 @@ export default class Rect {
 	 *
 	 * @returns {Number}
 	 */
-	getArea(): number {
+	public getArea(): number {
 		return this.width * this.height;
 	}
 
@@ -252,8 +251,8 @@ export default class Rect {
 	 *
 	 * @returns {module:utils/dom/rect~Rect|null} A visible rect instance or `null`, if there's none.
 	 */
-	getVisible(): Rect | null {
-		const source: RectSource & { parentNode?: Node | null, commonAncestorContainer?: Node | null } = this._source;
+	public getVisible(): Rect | null {
+		const source: RectSource & { parentNode?: Node | null; commonAncestorContainer?: Node | null } = this._source;
 		let visibleRect = this.clone();
 
 		// There's no ancestor to crop <body> with the overflow.
@@ -290,7 +289,7 @@ export default class Rect {
 	 * @param {module:utils/dom/rect~Rect} anotherRect A rect instance to compare with.
 	 * @returns {Boolean} `true` when Rects are equal. `false` otherwise.
 	 */
-	isEqual( anotherRect: Rect ): boolean {
+	public isEqual( anotherRect: Rect ): boolean {
 		for ( const prop of rectProperties ) {
 			if ( this[ prop ] !== anotherRect[ prop ] ) {
 				return false;
@@ -306,7 +305,7 @@ export default class Rect {
 	 * @param {module:utils/dom/rect~Rect} anotherRect
 	 * @returns {Boolean} `true` if contains, `false` otherwise.
 	 */
-	contains( anotherRect: Rect ): boolean {
+	public contains( anotherRect: Rect ): boolean {
 		const intersectRect = this.getIntersection( anotherRect );
 
 		return !!( intersectRect && intersectRect.isEqual( anotherRect ) );
@@ -320,7 +319,7 @@ export default class Rect {
 	 *
 	 * @returns {module:utils/dom/rect~Rect} A rect which has been updated.
 	 */
-	excludeScrollbarsAndBorders(): this {
+	public excludeScrollbarsAndBorders(): this {
 		const source = this._source as ( HTMLElement | Window );
 		let scrollBarWidth, scrollBarHeight, direction;
 
@@ -363,7 +362,7 @@ export default class Rect {
 	 * @param {Range} range A native DOM range.
 	 * @returns {Array.<module:utils/dom/rect~Rect>} DOM Range rects.
 	 */
-	static getDomRangeRects( range: Range ): Rect[] {
+	public static getDomRangeRects( range: Range ): Rect[] {
 		const rects: Rect[] = [];
 		// Safari does not iterate over ClientRectList using for...of loop.
 		const clientRects = Array.from( range.getClientRects() );
@@ -400,7 +399,7 @@ export default class Rect {
 	 * @param {Iterable.<module:utils/dom/rect~Rect>} rects A list of rectangles that should be contained in the result rectangle.
 	 * @returns {module:utils/dom/rect~Rect|null} Bounding rectangle or `null` if no `rects` were given.
 	 */
-	static getBoundingRect( rects: Iterable<Rect> ): Rect | null {
+	public static getBoundingRect( rects: Iterable<Rect> ): Rect | null {
 		const boundingRectData = {
 			left: Number.POSITIVE_INFINITY,
 			top: Number.POSITIVE_INFINITY,
@@ -433,7 +432,7 @@ export default class Rect {
 
 /**
  * A source of {@link module:utils/dom/rect~Rect}.
- * 
+ *
  * @typedef {HTMLElement|Range|Window|module:utils/dom/rect~RectLike} module:utils/dom/rect~RectSource
  */
 export type RectSource = HTMLElement | Range | Window | RectLike;

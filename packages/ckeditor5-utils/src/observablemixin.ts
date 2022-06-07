@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable @typescript-eslint/unified-signatures */
+
 /**
  * @module utils/observablemixin
  */
 
-import EmitterMixin, { Emitter } from './emittermixin';
+import EmitterMixin, { type Emitter } from './emittermixin';
 import CKEditorError from './ckeditorerror';
 import { isObject } from 'lodash-es';
 
@@ -557,8 +559,8 @@ function parseBindToArgs( ...args: ( Observable | string | Function )[] ) {
 		throw new CKEditorError( 'observable-bind-to-parse-error', null );
 	}
 
-	const parsed: { to: BindChainInternal[ '_to' ], callback?: Function } = { to: [] };
-	let lastObservable: { observable: Observable, properties: string[] };
+	const parsed: { to: BindChainInternal[ '_to' ]; callback?: Function } = { to: [] };
+	let lastObservable: { observable: Observable; properties: string[] };
 
 	if ( typeof args[ args.length - 1 ] == 'function' ) {
 		parsed.callback = args.pop() as Function;
@@ -734,6 +736,7 @@ function attachBindToListeners( observable: Observable, toBindings: BindChainInt
  * @extends module:utils/emittermixin~Emitter
  */
 export interface Observable extends Emitter {
+
 	/**
 	 * Creates and sets the value of an observable property of this object. Such a property becomes a part
 	 * of the state and is observable.
@@ -758,6 +761,7 @@ export interface Observable extends Emitter {
 		bindProperty1: K1,
 		bindProperty2: K2
 	): DualBindChain<this[ K1 ], this[ K2 ]>;
+
 	/**
 	 * Binds {@link #set observable properties} to other objects implementing the
 	 * {@link module:utils/observablemixin~Observable} interface.
@@ -1016,7 +1020,7 @@ interface SingleBindChain<TKey extends string, TVal> {
 		O2 extends Observable,
 		K2 extends keyof O2,
 		O3 extends Observable,
-		K3 extends keyof O3,
+		K3 extends keyof O3
 	>(
 		observable1: O1,
 		key1: K1,
@@ -1046,7 +1050,7 @@ interface SingleBindChain<TKey extends string, TVal> {
 		O3 extends Observable,
 		K3 extends keyof O3,
 		O4 extends Observable,
-		K4 extends keyof O4,
+		K4 extends keyof O4
 	>(
 		observable1: O1,
 		key1: K1,
