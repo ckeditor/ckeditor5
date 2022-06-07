@@ -104,6 +104,13 @@ export function showPlaceholder( writer, element ) {
 	if ( !element.hasClass( 'ck-placeholder' ) ) {
 		writer.addClass( 'ck-placeholder', element );
 
+		writer.setAttribute( 'aria-hidden', true, element );
+		writer.setAttribute(
+			'aria-placeholder',
+			element.getAttribute( 'data-placeholder' ),
+			element.root === element.parent ? element.parent : element
+		);
+
 		return true;
 	}
 
@@ -126,6 +133,12 @@ export function showPlaceholder( writer, element ) {
 export function hidePlaceholder( writer, element ) {
 	if ( element.hasClass( 'ck-placeholder' ) ) {
 		writer.removeClass( 'ck-placeholder', element );
+
+		writer.removeAttribute( 'aria-hidden', element );
+		writer.removeAttribute(
+			'aria-placeholder',
+			element.root === element.parent ? element.parent : element
+		);
 
 		return true;
 	}
