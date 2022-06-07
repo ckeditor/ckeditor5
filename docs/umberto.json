@@ -34,7 +34,7 @@
 		"api/module_cloud-services-core_token-Token.html": "api/module_cloud-services_token-Token.html",
 		"api/module_html-embed_inserthtmlembedcommand.html": "api/module_html-embed_htmlembedcommand.html",
 		"api/module_html-embed_inserthtmlembedcommand-InsertHtmlEmbedCommand.html": "api/module_html-embed_htmlembedcommand-HtmlEmbedCommand.html",
-		"api/module_html-embed_updatehtmlembedcommand.html": "api/module_html-embed_htmlembedcommand-HtmlEmbedCommand.html",
+		"api/module_html-embed_updatehtmlembedcommand.html": "api/module_html-embed_htmlembedcommand.html",
 		"api/module_html-embed_updatehtmlembedcommand-UpdateHtmlEmbedCommand.html": "api/module_html-embed_htmlembedcommand-HtmlEmbedCommand.html",
 		"api/module_editor-balloon_ballooneditor-BallonEditor.html": "api/module_editor-balloon_ballooneditor-BalloonEditor.html",
 		"api/module_list_checktodolistcommand.html":"api/module_list_todolist_checktodolistcommand.html",
