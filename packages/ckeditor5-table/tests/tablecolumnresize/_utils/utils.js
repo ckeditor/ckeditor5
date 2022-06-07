@@ -9,7 +9,7 @@ import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/util
 import TableColumnResizeEditing from '../../../src/tablecolumnresize/tablecolumnresizeediting';
 
 export const tableColumnResizeMouseSimulator = {
-	down( editor, domTarget, options ) {
+	down( editor, domTarget, options = {} ) {
 		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
 		const stop = options.stop || sinon.spy().named( 'stop' );
 
