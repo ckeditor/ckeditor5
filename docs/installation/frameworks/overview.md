@@ -9,12 +9,12 @@ menu-title: Overview
 <info-box hint>
 **Quick recap**
 
-In the previous guides you have learned several different methods of getting you CKEditor 5 installation up and running. Now you will learn how to utilize the power of Java Script framework to include your editor as a component.
+In the previous guides you have learned several different methods of getting you CKEditor 5 installation up and running. Now you will learn how to utilize the power of popular JavaScript frameworks with our dedicated, ready-to-use CKEditor 5 components.
 </info-box>
 
 ## Is CKEditor 5 compatible with framework XYZ?
 
-Yes. CKEditor 5 is compatible with every JavaScript framework that we have heard of so far. CKEditor 5 is a JavaScript rich text editing component (a pretty complex one but still) and it does not require any uncommon techniques or technologies to be used. Therefore, unless the framework that you use has very non-typical limitations, CKEditor 5 is compatible with it.
+Yes. CKEditor 5 is compatible with every JavaScript framework that we have heard of so far. CKEditor 5 is a JavaScript rich text editing component (a pretty complex one but still) and it does not require any uncommon techniques or technologies to be used. Therefore, unless the framework that you use has very atypical limitations, CKEditor 5 is compatible with it.
 
 ## How do I use CKEditor 5 with my framework?
 
