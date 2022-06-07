@@ -61,7 +61,7 @@ There is also a known [issue](https://github.com/ckeditor/ckeditor5-table/issues
 
 ## Compatibility with Foundation
 
-CKEditor 5 requires some minor adjustments to the `z-index` of the UI to work properly with [Foundation](https://foundation.zurb.com/sites.html) (and with the [Reveal](https://foundation.zurb.com/sites/docs/reveal.html) modal, too).
+CKEditor 5 requires some minor adjustments to the `z-index` of the UI to work properly with [Foundation](https://get.foundation/) (and with the [Reveal](https://revealjs.com/) modal, too).
 
 ```css
 /*

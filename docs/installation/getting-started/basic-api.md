@@ -217,5 +217,7 @@ ClassicEditor.create( ... ); // [Function]
 
 Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
 
-You have almost completed the CKEditor 5's quick start path for beginners, well done! It is important to know how you can maintain your editor, so take a look at the {@link installation/getting-started/maintenance last article from this section} to learn more.
+If you would like to integrate you CKEditor 5 installation with one of the popular Java Script frameworks, {@link installation/frameworks/overview we have a dedicated guide for that}.
+
+Whatever the installation method and approach, it is important to know how you can maintain your editor, so take a look at the {@link installation/getting-started/maintenance last article from this section} to learn more.
 </info-box>
