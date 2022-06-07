@@ -214,7 +214,7 @@ describe( 'TableColumnResizeEditing', () => {
 								<colgroup>
 									<col style="width:33.33%;">
 									<col style="width:33.33%;">
-									<col style="width:33.33%;">
+									<col style="width:33.34%;">
 									<col style="width:33.33%;">
 								</colgroup>
 								<tbody>
@@ -1773,7 +1773,7 @@ describe( 'TableColumnResizeEditing', () => {
 				} );
 
 				it( 'is not being added when any of the middle columns is resized', () => {
-					const columnToResizeIndex = 1;
+					const columnToResizeIndex = 0;
 					const mouseMovementVector = { x: -40, y: 0 };
 
 					setModelData( model, modelTable( [
