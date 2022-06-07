@@ -21,9 +21,6 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import ToolbarLineBreakView from '../../src/toolbar/toolbarlinebreakview';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
@@ -1291,50 +1288,6 @@ describe( 'ToolbarView', () => {
 				view.element.remove();
 			} );
 		} );
-	} );
-} );
-
-describe( 'Tooltip in toolbar button', () => {
-	let editor, editorElement;
-
-	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
-
-		return ClassicEditor
-			.create( editorElement, {
-				plugins: [ ArticlePluginSet ],
-				toolbar: [
-					'heading', 'bold', 'italic'
-				]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-			} );
-	} );
-
-	afterEach( () => {
-		editorElement.remove();
-
-		return editor.destroy();
-	} );
-
-	it( 'which is a dropdown, displays the tooltip when the button is focused', () => {
-		const heading = global.document.querySelector( '.ck-heading-dropdown > .ck-button' );
-		const tooltip = heading.children[ 0 ];
-
-		heading.focus();
-
-		expect( isVisible( tooltip ) ).to.be.true;
-	} );
-
-	it( 'which is a regular button, displays the tooltip when the button is focused', () => {
-		const button = global.document.querySelector( '.ck-toolbar__items > .ck-button' );
-		const tooltip = button.children[ 0 ];
-
-		button.focus();
-
-		expect( isVisible( tooltip ) ).to.be.true;
 	} );
 } );
 

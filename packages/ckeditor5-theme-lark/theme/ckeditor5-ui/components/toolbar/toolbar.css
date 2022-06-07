@@ -5,7 +5,6 @@
 
 @import "../../../mixins/_rounded.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
-@import "@ckeditor/ckeditor5-ui/theme/components/tooltip/mixins/_tooltip.css";
 
 .ck.ck-toolbar {
 	@mixin ck-rounded-corners;
@@ -99,14 +98,6 @@
 
 	@nest .ck-toolbar-container & {
 		border: 0;
-	}
-
-	& .ck.ck-button {
-		/* Enable toolbar button tooltips for keyboard users. See https://github.com/ckeditor/ckeditor5/issues/5581. */
-		&:focus {
-			@mixin ck-tooltip_enabled;
-			@mixin ck-tooltip_visible;
-		}
 	}
 }
 

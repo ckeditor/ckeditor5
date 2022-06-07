@@ -40,3 +40,13 @@ a.ck.ck-button {
 		@mixin ck-tooltip_disabled;
 	}
 }
+
+.ck.ck-toolbar {
+	& .ck.ck-button {
+		/* Enable toolbar button tooltips for keyboard users. See https://github.com/ckeditor/ckeditor5/issues/5581. */
+		&:focus {
+			@mixin ck-tooltip_enabled;
+			@mixin ck-tooltip_visible;
+		}
+	}
+}
