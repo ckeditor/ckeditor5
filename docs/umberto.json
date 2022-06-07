@@ -64,6 +64,7 @@
 		"api/module_list_todolistui.html":"api/module_list_todolist_todolistui.html",
 		"api/module_list_todolistui-TodoListUI.html":"api/module_list_todolist_todolistui-TodoListUI.html",
 		"api/module_list_utils.html":"api/module_list_list_utils.html",
+		"api/module_cloud-services-core_token-Token.html": "api/module_cloud-services_token-Token.html",
 		"builds/guides/browser-compatibility.html": "support/browser-compatibility.html",
 		"builds/guides/development/installing-plugins.html": "installation/getting-started/installing-plugins.html",
 		"builds/guides/integration/frameworks/vuejs.html": "installation/frameworks/vuejs-v3.html",
