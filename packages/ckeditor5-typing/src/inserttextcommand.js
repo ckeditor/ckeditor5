@@ -92,10 +92,14 @@ export default class InsertTextCommand extends Command {
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
 
+			console.log( '[InsertTextCommand] execute:',
+				`"${ text }"`,
+				`[${ selection.getFirstPosition().path }]-[${ selection.getLastPosition().path }]`
+			);
+
 			model.deleteContent( selection );
 
 			if ( text ) {
-				console.log( '-- insertText command:', text );
 				model.insertContent( writer.createText( text, doc.selection.getAttributes() ), selection );
 			}
 

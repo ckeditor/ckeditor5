@@ -70,10 +70,10 @@ export default class Input extends Plugin {
 		} );
 
 		const compositionUpdate = ( evt, data ) => {
-			console.log( '----- composition', evt.name, data.targetRangeStart );
+			console.log( '[Input] composition', evt.name, data.targetRangeStart );
 
 			if ( !this._compositionModelRange ) {
-				console.log( '!! no composition model range' );
+				console.log( '[Input] composition ignore - no composition model range' );
 				return;
 			}
 
@@ -84,19 +84,20 @@ export default class Input extends Plugin {
 				compositionModelPosition &&
 				this._compositionModelRange.start.isEqual( compositionModelPosition )
 			) {
-				console.log( '!! same composition model range start' );
+				console.log( '[Input] composition ignore - same composition model range start' );
 				return;
 			}
 
-			console.log( '---------- stop composition', evt.name, this._compositionModelRange, compositionModelPosition );
+			console.log( '[Input] composition commit', evt.name,
+				`[${ this._compositionModelRange.start.path }]-[${ this._compositionModelRange.end.path }]`,
+				compositionModelPosition
+			);
 
 			const compositionModelRange = this._compositionModelRange.toRange();
 
 			const selectedText = Array.from( compositionModelRange.getItems() ).reduce( ( rangeText, node ) => {
 				return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
 			}, '' );
-
-			console.log( '------ fragment:', selectedText );
 
 			if ( selectedText ) {
 				if ( selectedText.length <= this._compositionText.length ) {
@@ -106,7 +107,7 @@ export default class Input extends Plugin {
 					}
 				} else {
 					if ( selectedText.startsWith( this._compositionText ) ) {
-						// TODO this should be mapped as delete
+						// TODO this should be mapped as delete?
 						compositionModelRange.start = compositionModelRange.start.getShiftedBy( this._compositionText.length );
 						this._compositionText = '';
 					}
@@ -148,13 +149,14 @@ export default class Input extends Plugin {
 
 			if ( this._compositionModelRange ) {
 				if ( !this._compositionModelRange.start.isEqual( compositionModelPosition ) ) {
-					console.warn( '-- fake composition end (on insert composition)',
+					console.warn( '[Input] insertCompositionText - fake composition end',
 						this._compositionModelRange, compositionModelPosition, text );
 				}
 			} else {
 				const firstRange = editor.editing.mapper.toModelRange( selection.getFirstRange() );
 
-				console.log( '------ start composing on', firstRange );
+				console.log( '[Input] insertCompositionText - start composing on', firstRange );
+
 				viewDocument.isComposing = true;
 				this._compositionModelRange = LiveRange.fromRange( firstRange );
 			}

@@ -108,16 +108,31 @@ export default class EditingController {
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
-		// this.listenTo( this.view.document, 'change:isComposing', () => {
-		// 	if ( this.view.document.isComposing && !model.document.selection.isCollapsed ) {
-		// 		console.log( 'initial delete content' );
-		// 		model.deleteContent( model.document.selection );
-		// 	}
-		// }, { priority: 'low' } );
+		this.listenTo( this.view.document, 'change:isComposing', () => {
+			if ( this.view.document.isComposing ) {
+				console.log(
+					'%c┌───────────────────────────── isComposing = true ─────────────────────────────┐',
+					'font-weight: bold; color: green'
+				);
+			} else {
+				console.log(
+					'%c└───────────────────────────── isComposing = false ─────────────────────────────┘',
+					'font-weight: bold; color: green'
+				);
+			}
+		}, { priority: 'low' } );
 
 		this.listenTo( this.view.document, 'keydown', ( evt, domEventData ) => {
+			console.group( '[EditingController] keydown', domEventData.keyCode );
+			console.groupCollapsed( '[EditingController] DOM event' );
+			console.info( domEventData );
+			console.groupEnd();
+
 			if ( domEventData.keyCode === 229 && !this.view.document.isComposing && !model.document.selection.isCollapsed ) {
-				console.log( 'initial delete content', model.document.selection.anchor, model.document.selection.focus );
+				console.log( '[EditingController] keyCode 229 before isComposing -> delete content',
+					`[${ model.document.selection.getFirstPosition().path }]-[${ model.document.selection.getLastPosition().path }]`
+				);
+
 				model.deleteContent( model.document.selection );
 
 				const selectionObserver = this.view.getObserver( SelectionObserver );
@@ -127,12 +142,16 @@ export default class EditingController {
 				setTimeout( () => {
 					selectionObserver._ignoreSelectionChange = false;
 
-					console.log( 'force render after timeout', this.view.document.selection.anchor, this.view.document.selection.focus,
-						window.getSelection().anchor, window.getSelection().focus );
+					console.log( '[EditingController] force render after timeout',
+						this.view.document.selection.anchor, this.view.document.selection.focus,
+						window.getSelection().anchor, window.getSelection().focus
+					);
 
 					this.view.forceRender();
 				}, 0 );
 			}
+
+			console.groupEnd();
 		}, { priority: 'lowest' } );
 
 		// Attach default model converters.

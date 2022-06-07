@@ -27,8 +27,9 @@ export default class InputObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvent ) {
+		console.group( '[InputObserver]', domEvent.type, domEvent.inputType );
+
 		const domTargetRanges = domEvent.getTargetRanges();
-		console.log( 'domTargetRanges', domTargetRanges );
 		const view = this.view;
 		const viewDocument = view.document;
 
@@ -49,11 +50,13 @@ export default class InputObserver extends DomEventObserver {
 		// If the editor selection is fake (an object is selected), the DOM range does not make sense because it is anchored
 		// in the fake selection container.
 		if ( viewDocument.selection.isFake ) {
-			// Future proof: in case of multi-range fake selections being possible.
+			// Future-proof: in case of multi-range fake selections being possible.
 			targetRanges = [ ...viewDocument.selection.getRanges() ];
+			console.info( '[InputObserver] using fake selection', targetRanges );
 		} else {
-			console.log( 'input observer', Array.from( domTargetRanges ), domEvent.target.ownerDocument.defaultView.getSelection().getRangeAt( 0 ) );
 			if ( !domTargetRanges.length ) {
+				console.info( '[InputObserver] no target ranges' );
+
 				const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
 
 				let anchorViewPosition = null;
@@ -62,13 +65,17 @@ export default class InputObserver extends DomEventObserver {
 				try {
 					anchorViewPosition = this.view.domConverter.domPositionToView( domSelection.anchorNode, domSelection.anchorOffset );
 				} catch ( err ) {
-					console.warn( 'cant map dom selection anchor to view', domSelection.anchorNode, domSelection.anchorOffset );
+					console.warn( '[InputObserver] can\'t map DOM selection anchor to view',
+						domSelection.anchorNode, domSelection.anchorOffset
+					);
 				}
 
 				try {
 					focusViewPosition = this.view.domConverter.domPositionToView( domSelection.focusNode, domSelection.focusOffset );
 				} catch ( err ) {
-					console.warn( 'cant map dom selection focus to view', domSelection.focusNode, domSelection.focusOffset );
+					console.warn( '[InputObserver] can\'t map DOM selection focus to view',
+						domSelection.focusNode, domSelection.focusOffset
+					);
 				}
 
 				if ( anchorViewPosition ) {
@@ -76,10 +83,14 @@ export default class InputObserver extends DomEventObserver {
 				} else {
 					targetRanges = [];
 				}
+
+				console.info( '[InputObserver] using DOM selection', targetRanges );
 			} else {
 				targetRanges = domTargetRanges.map( domRange => {
 					return view.domConverter.domRangeToView( domRange );
 				} );
+
+				console.info( '[InputObserver] using target ranges', targetRanges );
 			}
 		}
 
@@ -90,6 +101,8 @@ export default class InputObserver extends DomEventObserver {
 			targetRanges,
 			inputType: domEvent.inputType
 		} );
+
+		console.groupEnd();
 	}
 }
 

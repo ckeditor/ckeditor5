@@ -155,6 +155,8 @@ export default class DeleteObserver extends Observer {
 				deleteData.selectionToRemove = view.createSelection( targetRanges[ 0 ] );
 			}
 
+			console.group( '[DeleteObserver] on beforeInput', data );
+
 			// Android IMEs have a quirk. Sometimes it may change the DOM selection on `beforeinput` event so that
 			// the selection contains all the text that the IME wants to remove. But sometimes it is only expanding
 			// it by a single character (in case of the collapsed selection).
@@ -172,9 +174,9 @@ export default class DeleteObserver extends Observer {
 
 				// This is the former scenario when the IME wants more than a single character to be removed.
 				if ( anchorNode === focusNode && anchorOffset + 1 !== focusOffset ) {
-					return;
-					// deleteData.unit = DELETE_SELECTION;
-					// deleteData.selectionToRemove = view.domConverter.domSelectionToView( domSelection );
+					// return;
+					deleteData.unit = DELETE_SELECTION;
+					deleteData.selectionToRemove = view.domConverter.domSelectionToView( domSelection );
 				}
 			}
 
@@ -187,6 +189,8 @@ export default class DeleteObserver extends Observer {
 			if ( eventInfo.stop.called ) {
 				evt.stop();
 			}
+
+			console.groupEnd();
 		} );
 	}
 

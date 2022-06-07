@@ -69,7 +69,9 @@ export default class Delete extends Plugin {
 				commandData.selection = editor.model.createSelection( modelRanges );
 			}
 
+			console.group( '[Delete] execute', commandData );
 			editor.execute( commandName, commandData );
+			console.groupEnd();
 
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );

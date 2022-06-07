@@ -75,6 +75,8 @@ export default class DeleteCommand extends Command {
 		const doc = model.document;
 
 		model.enqueueChange( this._buffer.batch, writer => {
+			console.group( '[DeleteCommand] execute' );
+
 			this._buffer.lock();
 
 			const selection = writer.createSelection( options.selection || doc.selection );
@@ -89,6 +91,8 @@ export default class DeleteCommand extends Command {
 
 			// Try to extend the selection in the specified direction.
 			if ( selection.isCollapsed ) {
+				console.info( 'modify selection', this.direction, options.unit );
+
 				model.modifySelection( selection, {
 					direction: this.direction,
 					unit: options.unit,
@@ -98,21 +102,29 @@ export default class DeleteCommand extends Command {
 
 			// Check if deleting in an empty editor. See #61.
 			if ( this._shouldEntireContentBeReplacedWithParagraph( sequence ) ) {
+				console.info( 'replace entire content' );
+
 				this._replaceEntireContentWithParagraph( writer );
 
+				console.groupEnd();
 				return;
 			}
 
 			// Check if deleting in the first empty block.
 			// See https://github.com/ckeditor/ckeditor5/issues/8137.
 			if ( this._shouldReplaceFirstBlockWithParagraph( selection, sequence ) ) {
+				console.info( 'replace with paragraph', selection.getFirstRange() );
+
 				this.editor.execute( 'paragraph', { selection } );
 
+				console.groupEnd();
 				return;
 			}
 
 			// If selection is still collapsed, then there's nothing to delete.
 			if ( selection.isCollapsed ) {
+				console.info( 'selection is collapsed - return' );
+				console.groupEnd();
 				return;
 			}
 
@@ -124,6 +136,8 @@ export default class DeleteCommand extends Command {
 				);
 			} );
 
+			console.info( 'delete content', selection.getFirstRange() );
+
 			model.deleteContent( selection, {
 				doNotResetEntireContent,
 				direction: this.direction
@@ -131,9 +145,12 @@ export default class DeleteCommand extends Command {
 
 			this._buffer.input( changeCount );
 
+			console.info( 'set selection', selection.getFirstRange() );
 			writer.setSelection( selection );
 
 			this._buffer.unlock();
+
+			console.groupEnd();
 		} );
 	}
 

@@ -141,21 +141,25 @@ export default class SelectionObserver extends Observer {
 
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
+			console.group( '[SelectionObserver] selectionchange' );
+
 			if ( this.document.isComposing ) {
-				console.info( '[SelectiobObserver] Selection change when composing aborted.' );
+				console.info( '[SelectionObserver] Selection change ignored (isComposing)' );
+				console.groupEnd();
 
 				return;
 			}
 
 			if ( this._ignoreSelectionChange ) {
-				console.info( '[SelectiobObserver] Selection change aborted on timeout after delete content.' );
+				console.info( '[SelectionObserver] Selection change ignored (timeout after delete content)' );
+				console.groupEnd();
 
 				return;
 			}
 
-			console.log( '[SelectiobObserver] _handleSelectionChange()' );
-
 			this._handleSelectionChange( domEvent, domDocument );
+
+			console.groupEnd();
 
 			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
 			// using their mouse).
@@ -170,7 +174,7 @@ export default class SelectionObserver extends Observer {
 	 */
 	flush( domDocument ) {
 		// TODO think about using isComposing to trigger it
-		console.log( 'SelectionObserver flush' );
+		console.info( '[SelectionObserver] flush' );
 		this._handleSelectionChange( null, domDocument );
 	}
 
@@ -215,7 +219,6 @@ export default class SelectionObserver extends Observer {
 		// converted to the view. This happens when the DOM selection was moved outside of the editable element.
 		if ( newViewSelection.rangeCount == 0 ) {
 			this.view.hasDomSelection = false;
-
 			return;
 		}
 
@@ -240,6 +243,7 @@ export default class SelectionObserver extends Observer {
 		}
 
 		if ( this.selection.isSimilar( newViewSelection ) ) {
+			console.info( '[SelectionObserver] is similar -> force render' );
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
 			// Just re-render it, no need to fire any events, etc.
 			this.view.forceRender();
@@ -249,6 +253,8 @@ export default class SelectionObserver extends Observer {
 				newSelection: newViewSelection,
 				domSelection
 			};
+
+			console.info( '[SelectionObserver] fire selection change', newViewSelection.getFirstRange() );
 
 			// Prepare data for new selection and fire appropriate events.
 			this.document.fire( 'selectionChange', data );

@@ -38,24 +38,35 @@ export default class CompositionObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvent ) {
+		console.group( '[CompositionObserver]', domEvent.type );
+		console.info( '[CompositionObserver] DOM event:', domEvent );
+
 		let anchorViewPosition = null;
 
 		if ( this.view.document.selection.isFake ) {
-			// Future proof: in case of multi-range fake selections being possible.
+			// Future-proof: in case of multi-range fake selections being possible.
 			anchorViewPosition = this.view.document.selection.anchor;
+
+			console.info( '[CompositionObserver] using fake selection', anchorViewPosition );
 		} else {
 			const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
 
 			try {
 				anchorViewPosition = this.view.domConverter.domPositionToView( domSelection.anchorNode, domSelection.anchorOffset );
+
+				console.info( '[CompositionObserver] using DOM selection', anchorViewPosition );
 			} catch ( err ) {
-				console.warn( 'cant map dom selection anchor to view', domSelection.anchorNode, domSelection.anchorOffset );
+				console.warn( '[CompositionObserver] can\'t map dom selection anchor to view',
+					domSelection.anchorNode, domSelection.anchorOffset
+				);
 			}
 		}
 
 		this.fire( domEvent.type, domEvent, {
 			targetRangeStart: anchorViewPosition
 		} );
+
+		console.groupEnd();
 	}
 }
 
@@ -96,4 +107,32 @@ export default class CompositionObserver extends DomEventObserver {
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
  * @event module:engine/view/document~Document#event:compositionend
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
+ */
+
+/*
+test
+zamien na sugestie
+nie zamienil tylko wstawil przed
+ */
+
+/*
+type kanji
+backspace
+nie usunal nic
+ */
+
+/*
+bold
+type kanji
+crash
+ */
+
+/*
+backspace na poczatku linii w japonskim
+nie dziala
+ */
+
+/*
+backspace na poczatku linii w english
+zla pozycja selekcji po
  */
