@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-color-table-column-resizer-hover: var(--ck-color-base-active);
+	--ck-table-column-resizer-width: 7px;
+
+	/* The offset used for absolute positioning of the resizer element, so that it is placed exactly above the cell border.
+	   The value is: minus half the width of the resizer decreased additionaly by the half the width of the border (0.5px). */
+	--ck-table-column-resizer-position-offset: calc(var(--ck-table-column-resizer-width) * -0.5 - 0.5px);
+}
+
+.ck-content .table table {
+	overflow: hidden;
+	table-layout: fixed;
+}
+
+.ck-content .table td,
+.ck-content .table th {
+	position: relative;
+}
+
+.ck-content .table .table-column-resizer {
+	position: absolute;
+	/* The resizer element resides in each cell so to occupy the entire height of the table, which is unknown from a CSS point of view,
+	   it is extended to an extremely high height. Even for screens with a very high pixel density, the resizer will fulfill its role as
+	   it should, i.e. for a screen of 476 ppi the total height of the resizer will take over 350 sheets of A4 format, which is totally
+	   unrealistic height for a single table. */
+	top: -999999px;
+	bottom: -999999px;
+	right: var(--ck-table-column-resizer-position-offset);
+	width: var(--ck-table-column-resizer-width);
+	cursor: col-resize;
+	user-select: none;
+	z-index: var(--ck-z-default);
+}
+
+/* The resizer elements, which are extended to an extremely high height, break the drag & drop feature in Chrome. To make it work again,
+   all resizers must be hidden while the table is dragged. */
+.ck-content .table[draggable] .table-column-resizer {
+	display: none;
+}
+
+.ck-content .table .table-column-resizer:hover,
+.ck-content .table .table-column-resizer__active {
+	background-color: var(--ck-color-table-column-resizer-hover);
+	opacity: 0.25;
+}
+
+.ck-content[dir=rtl] .table .table-column-resizer {
+	left: var(--ck-table-column-resizer-position-offset);
+	right: unset;
+}
+
+.ck-content.ck-read-only .table .table-column-resizer {
+	display: none;
+}

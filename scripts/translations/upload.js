@@ -29,6 +29,12 @@ async function main() {
 			return fs.existsSync( normalizePath( options.cwd, relativePath ) );
 		} );
 
+	if ( packages.length === 0 ) {
+		console.log( 'No package has been found.' );
+
+		return;
+	}
+
 	return uploadPotFiles( {
 		// Token used for authentication with the Transifex service.
 		token: await getToken(),

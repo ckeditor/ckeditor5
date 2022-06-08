@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
-msgstr "Vetgedruk"
+msgstr "Vet"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr "Skuinsgedruk"
+msgstr "Kursief"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
@@ -30,11 +30,11 @@ msgstr "Onderstreep"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr "Kode"
+msgstr "Bronkode"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr "Deurgetrek"
+msgstr "Deurstreep"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
