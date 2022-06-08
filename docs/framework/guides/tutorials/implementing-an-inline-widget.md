@@ -747,7 +747,7 @@ You can see the placeholder widget implementation in action in the editor below.
 
 {@snippet framework/tutorials/inline-widget}
 
-## Full source code
+## Final solution
 
 The following code snippet contains a complete implementation of the `Placeholder` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box:
 

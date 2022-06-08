@@ -987,7 +987,7 @@ You can see the block widget implementation in action in the editor below. You c
 
 {@snippet framework/tutorials/block-widget}
 
-## Full source code
+## Final solution
 
 The following code contains a complete implementation of the `SimpleBox` plugin (and all its dependencies) and the code to run the editor. You can paste it into the [`app.js`](#plugin-structure) file and it will run out–of–the–box:
 

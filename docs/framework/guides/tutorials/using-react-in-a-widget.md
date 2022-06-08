@@ -871,7 +871,7 @@ You can see the entire application working below. Click the products in the side
 
 {@snippet framework/tutorials/using-react-in-widget}
 
-## Full source code
+## Final solution
 
 The following code snippets present the complete implementation of the application (and all its dependencies). Follow the [application structure](#application-structure) diagram to re–create the application.
 
