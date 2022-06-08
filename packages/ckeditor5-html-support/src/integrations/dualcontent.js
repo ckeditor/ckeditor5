@@ -46,6 +46,13 @@ export default class DualContentModelElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'DualContentModelElementSupport';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
