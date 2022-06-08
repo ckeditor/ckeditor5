@@ -743,7 +743,7 @@ If you open the dropdown in the toolbar, you will see a new list of placeholders
 
 ## Demo
 
-You can see the placeholder widget implementation in action in the editor below. You can also check out the full [source code](#full-source-code) of this tutorial if you want to develop your own inline widgets.
+You can see the placeholder widget implementation in action in the editor below. You can also check out the full [source code](#final-solution) of this tutorial if you want to develop your own inline widgets.
 
 {@snippet framework/tutorials/inline-widget}
 
