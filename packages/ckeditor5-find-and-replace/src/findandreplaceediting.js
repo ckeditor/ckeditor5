@@ -16,8 +16,7 @@ import FindNextCommand from './findnextcommand';
 import FindPreviousCommand from './findpreviouscommand';
 import FindAndReplaceState from './findandreplacestate';
 
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import { scrollViewportToShowTarget } from 'ckeditor5/src/utils';
 
 import { debounce } from 'lodash-es';
 

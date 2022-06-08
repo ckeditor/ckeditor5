@@ -13,7 +13,6 @@
   "main": "src/index.js",
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "^34.1.0",
-    "@ckeditor/ckeditor5-utils": "^34.1.0",
     "ckeditor5": "^34.1.0",
     "lodash-es": "^4.17.15"
   },
