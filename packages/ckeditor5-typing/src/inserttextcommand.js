@@ -92,7 +92,8 @@ export default class InsertTextCommand extends Command {
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
 
-			console.log( '[InsertTextCommand] execute:',
+			console.group( '[InsertTextCommand] execute' );
+			console.log( '[InsertTextCommand] details:',
 				`"${ text }"`,
 				`[${ selection.getFirstPosition().path }]-[${ selection.getLastPosition().path }]`
 			);
@@ -112,6 +113,8 @@ export default class InsertTextCommand extends Command {
 			this._buffer.unlock();
 
 			this._buffer.input( textInsertions );
+
+			console.groupEnd();
 		} );
 	}
 }

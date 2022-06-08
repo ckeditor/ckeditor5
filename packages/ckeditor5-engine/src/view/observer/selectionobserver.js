@@ -141,7 +141,15 @@ export default class SelectionObserver extends Observer {
 
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
+			const domSelection = domDocument.defaultView.getSelection();
+
 			console.group( '[SelectionObserver] selectionchange' );
+			console.groupCollapsed( '[SelectionObserver] DOM selection' );
+			console.info(
+				domSelection.anchorNode, domSelection.anchorOffset,
+				domSelection.focusNode, domSelection.focusOffset
+			);
+			console.groupEnd();
 
 			if ( this.document.isComposing ) {
 				console.info( '[SelectionObserver] Selection change ignored (isComposing)' );

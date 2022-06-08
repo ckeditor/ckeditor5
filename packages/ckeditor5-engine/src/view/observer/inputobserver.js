@@ -84,13 +84,13 @@ export default class InputObserver extends DomEventObserver {
 					targetRanges = [];
 				}
 
-				console.info( '[InputObserver] using DOM selection', targetRanges );
+				console.info( '[InputObserver] using DOM selection:', targetRanges );
 			} else {
 				targetRanges = domTargetRanges.map( domRange => {
 					return view.domConverter.domRangeToView( domRange );
 				} );
 
-				console.info( '[InputObserver] using target ranges', targetRanges );
+				console.info( '[InputObserver] using target ranges:', targetRanges );
 			}
 		}
 

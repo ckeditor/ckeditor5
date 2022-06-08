@@ -174,7 +174,6 @@ export default class DeleteObserver extends Observer {
 
 				// This is the former scenario when the IME wants more than a single character to be removed.
 				if ( anchorNode === focusNode && anchorOffset + 1 !== focusOffset ) {
-					// return;
 					deleteData.unit = DELETE_SELECTION;
 					deleteData.selectionToRemove = view.domConverter.domSelectionToView( domSelection );
 				}

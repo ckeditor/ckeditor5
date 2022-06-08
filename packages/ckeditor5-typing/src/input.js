@@ -70,10 +70,12 @@ export default class Input extends Plugin {
 		} );
 
 		const compositionUpdate = ( evt, data ) => {
-			console.log( '[Input] composition', evt.name, data.targetRangeStart );
+			console.group( '[Input] composition', evt.name );
+			console.log( '[Input] target ranges:', data.targetRangeStart );
 
 			if ( !this._compositionModelRange ) {
 				console.log( '[Input] composition ignore - no composition model range' );
+				console.groupEnd();
 				return;
 			}
 
@@ -85,6 +87,7 @@ export default class Input extends Plugin {
 				this._compositionModelRange.start.isEqual( compositionModelPosition )
 			) {
 				console.log( '[Input] composition ignore - same composition model range start' );
+				console.groupEnd();
 				return;
 			}
 
@@ -99,42 +102,51 @@ export default class Input extends Plugin {
 				return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
 			}, '' );
 
+			let insertText = this._compositionText;
+
 			if ( selectedText ) {
 				if ( selectedText.length <= this._compositionText.length ) {
 					if ( this._compositionText.startsWith( selectedText ) ) {
-						this._compositionText = this._compositionText.substring( selectedText.length );
+						insertText = this._compositionText.substring( selectedText.length );
 						compositionModelRange.start = compositionModelRange.start.getShiftedBy( selectedText.length );
 					}
 				} else {
 					if ( selectedText.startsWith( this._compositionText ) ) {
 						// TODO this should be mapped as delete?
+						insertText = '';
 						compositionModelRange.start = compositionModelRange.start.getShiftedBy( this._compositionText.length );
-						this._compositionText = '';
 					}
 				}
-			}
-
-			const viewRange = editor.editing.mapper.toViewRange( compositionModelRange );
-
-			if ( this._compositionText || !viewRange.isCollapsed ) {
-				// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
-				viewDocument.fire( 'insertText', new DomEventData( viewDocument, data.domEvent, {
-					text: this._compositionText,
-					selection: view.createSelection( viewRange )
-				} ) );
-
-				view.getObserver( SelectionObserver ).flush( data.domEvent.target.ownerDocument );
 			}
 
 			this._compositionModelRange.detach();
 			this._compositionModelRange = null;
 			this._compositionText = '';
 
+			const viewRange = editor.editing.mapper.toViewRange( compositionModelRange );
+
+			// Enable rendering before inserting the text.
 			viewDocument.isComposing = false;
+
+			if ( insertText || !viewRange.isCollapsed ) {
+				// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
+				viewDocument.fire( 'insertText', new DomEventData( viewDocument, data.domEvent, {
+					text: insertText,
+					selection: view.createSelection( viewRange )
+				} ) );
+
+				view.getObserver( SelectionObserver ).flush( data.domEvent.target.ownerDocument );
+			}
+
+			console.groupEnd();
 		};
 
 		this.listenTo( viewDocument, 'compositionupdate', compositionUpdate );
 		this.listenTo( viewDocument, 'compositionend', compositionUpdate );
+
+		// TODO how can we commit composition if local user triggers some model change,
+		//  for example undo - changes model and composition must commit before it happens
+
 		this.listenTo( viewDocument, 'compositionend', () => {
 			// Additional case to make sure that the isComposing flag is not lost.
 			viewDocument.isComposing = false;
@@ -144,6 +156,8 @@ export default class Input extends Plugin {
 			const { text, selection } = data;
 			const firstViewPosition = selection.getFirstPosition();
 			const compositionModelPosition = editor.editing.mapper.toModelPosition( firstViewPosition );
+
+			console.group( '[Input] insertCompositionText' );
 
 			this._compositionText = text || '';
 
@@ -160,6 +174,8 @@ export default class Input extends Plugin {
 				viewDocument.isComposing = true;
 				this._compositionModelRange = LiveRange.fromRange( firstRange );
 			}
+
+			console.groupEnd();
 		} );
 	}
 }

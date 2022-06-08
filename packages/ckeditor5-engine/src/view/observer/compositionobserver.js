@@ -39,7 +39,9 @@ export default class CompositionObserver extends DomEventObserver {
 
 	onDomEvent( domEvent ) {
 		console.group( '[CompositionObserver]', domEvent.type );
-		console.info( '[CompositionObserver] DOM event:', domEvent );
+		console.groupCollapsed( '[CompositionObserver] DOM event' );
+		console.dir( domEvent );
+		console.groupEnd();
 
 		let anchorViewPosition = null;
 
@@ -107,32 +109,4 @@ export default class CompositionObserver extends DomEventObserver {
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
  * @event module:engine/view/document~Document#event:compositionend
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
- */
-
-/*
-test
-zamien na sugestie
-nie zamienil tylko wstawil przed
- */
-
-/*
-type kanji
-backspace
-nie usunal nic
- */
-
-/*
-bold
-type kanji
-crash
- */
-
-/*
-backspace na poczatku linii w japonskim
-nie dziala
- */
-
-/*
-backspace na poczatku linii w english
-zla pozycja selekcji po
  */
