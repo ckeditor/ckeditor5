@@ -465,6 +465,11 @@ export function convertText() {
 				return;
 			}
 
+			// Do not auto-paragraph whitespaces.
+			if ( data.viewItem.data.trim().length == 0 ) {
+				return;
+			}
+
 			position = wrapInParagraph( position, writer );
 		}
 

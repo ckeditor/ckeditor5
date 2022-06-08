@@ -38,6 +38,10 @@ describe( 'StyleElementSupport', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( editor.plugins.has( 'StyleElementSupport' ) ).to.be.true;
+	} );
+
 	it( 'should allow element', () => {
 		editor.setData( `<p>Foo</p><style>${ STYLE }</style>` );
 
