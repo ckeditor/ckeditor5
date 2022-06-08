@@ -114,7 +114,7 @@ ClassicEditor
 			const clone = document.querySelector( '.chat__posts li' ).cloneNode( true );
 
 			clone.classList.add( 'new-post' );
-			clone.querySelector( 'img' ).src = '../../assets/img/m_0.jpg';
+			clone.querySelector( 'img' ).src = 'https://ckeditor.com/docs/ckeditor5/latest/assets/img/m_0.jpg';
 			clone.querySelector( 'strong' ).textContent = 'CKEditor User';
 
 			const mailtoUser = clone.querySelector( '.chat__posts__post__mailto-user' );
@@ -210,7 +210,7 @@ function customItemRenderer( item ) {
 
 	itemElement.classList.add( 'mention__item' );
 
-	avatar.src = `../../assets/img/${ item.avatar }.jpg`;
+	avatar.src = `https://ckeditor.com/docs/ckeditor5/latest/assets/img/${ item.avatar }.jpg`;
 
 	userNameElement.classList.add( 'mention__item__user-name' );
 	userNameElement.textContent = item.id;
