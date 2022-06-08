@@ -23,7 +23,7 @@ The HTML code of the application is listed below:
 <div class="chat">
 	<ul class="chat__posts">
 		<li>
-			<img src="../../assets/img/m_1.jpg" alt="avatar" class="photo">
+			<img src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/m_1.jpg" alt="avatar" class="photo">
 			<div class="chat__posts__post__message">
 				<strong>Charles Flores</strong>
 				<a class="chat__posts__post__mailto-user" href="mailto:cflores@example.com">@cflores</a>
@@ -38,7 +38,7 @@ The HTML code of the application is listed below:
 			</div>
 		</li>
 		<li>
-			<img src="../../assets/img/w_1.jpg" alt="avatar" class="photo">
+			<img src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/w_1.jpg" alt="avatar" class="photo">
 			<div class="chat__posts__post__message">
 				<strong>Mildred Wilson</strong>
 				<a class="chat__posts__post__mailto-user" href="mailto:mwilson@example.com">@mwilson</a>
@@ -281,7 +281,7 @@ ClassicEditor
 			const clone = document.querySelector( '.chat__posts li' ).cloneNode( true );
 
 			clone.classList.add( 'new-post' );
-			clone.querySelector( 'img' ).src = '../../assets/img/m_0.jpg';
+			clone.querySelector( 'img' ).src = 'https://ckeditor.com/docs/ckeditor5/latest/assets/img/m_0.jpg';
 			clone.querySelector( 'strong' ).textContent = 'CKEditor User';
 
 			const mailtoUser = clone.querySelector( '.chat__posts__post__mailto-user' );
@@ -377,7 +377,7 @@ function customItemRenderer( item ) {
 
 	itemElement.classList.add( 'mention__item' );
 
-	avatar.src = `../../assets/img/${ item.avatar }.jpg`;
+	avatar.src = `https://ckeditor.com/docs/ckeditor5/latest/assets/img/${ item.avatar }.jpg`;
 
 	userNameElement.classList.add( 'mention__item__user-name' );
 	userNameElement.textContent = item.id;
