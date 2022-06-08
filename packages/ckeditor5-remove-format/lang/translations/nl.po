@@ -18,4 +18,4 @@ msgstr ""
 
 msgctxt "The label of the remove format toolbar button."
 msgid "Remove Format"
-msgstr "Verwijder format"
+msgstr "Verwijder opmaak"

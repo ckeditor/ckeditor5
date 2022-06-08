@@ -18,10 +18,6 @@ The changes made to the document source will be applied to the editor's {@link f
 
 Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing}, make some changes in the HTML code (i.e. add new paragraphs or an ordered list), and go back to see that they are present in the document content. You can also use one of the numerous CKEditor 5 features available via the toolbar and observe how they render in the HTML source. Notice the collapsible table of contents, available thanks to the {@link features/general-html-support General HTML support} feature and introducing HTML elements not yet covered by official plugins.
 
-<info-box>
-	The General HTML Support feature is **experimental and not yet production-ready**. Follow the ["Stabilize and release a production-ready General HTML Support feature"](https://github.com/ckeditor/ckeditor5/issues/9856) issue for more updates and related issues.
-</info-box>
-
 {@snippet features/source-editing}
 
 ## Markdown source view

@@ -24,6 +24,12 @@ async function main() {
 	const options = parseArguments( process.argv.slice( 2 ) );
 	const packages = getCKEditor5PackageNames( 'download', options );
 
+	if ( packages.length === 0 ) {
+		console.log( 'No package has been found.' );
+
+		return;
+	}
+
 	return downloadTranslations( {
 		// Token used for authentication with the Transifex service.
 		token: await getToken(),
