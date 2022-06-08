@@ -1,0 +1,57 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Urdu (https://www.transifex.com/ckeditor/teams/11143/ur/)\n"
+"Language: ur\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Tooltip for the font size dropdown."
+msgid "Font Size"
+msgstr "فانٹ کا حجم"
+
+msgctxt "Dropdown option label for the 'tiny' font size preset."
+msgid "Tiny"
+msgstr "ننھا"
+
+msgctxt "Dropdown option label for the 'small' font size preset."
+msgid "Small"
+msgstr "چھوٹا"
+
+msgctxt "Dropdown option label for the 'big' font size preset."
+msgid "Big"
+msgstr "بڑا"
+
+msgctxt "Dropdown option label for the 'huge' font size preset."
+msgid "Huge"
+msgstr "جسيم"
+
+msgctxt "Tooltip for the font family dropdown."
+msgid "Font Family"
+msgstr "فانٹ خاندان"
+
+msgctxt "Dropdown option label for the default font family."
+msgid "Default"
+msgstr "طے شدہ"
+
+msgctxt "Label of a button that allows selecting a font color."
+msgid "Font Color"
+msgstr "فانٹ کا رنگ"
+
+msgctxt "Label of a button that allows selecting a font background color."
+msgid "Font Background Color"
+msgstr "فانٹ کے پس منظر کا رنگ"
+
+msgctxt "Title of a color picker section containing the colors currently used in the document."
+msgid "Document colors"
+msgstr "دستاویز کے رنگ"
