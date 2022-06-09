@@ -28,8 +28,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
-initEditor( ClassicEditor, document.querySelector( '#editor-classic' ), 'classic' );
-initEditor( BalloonEditor, document.querySelector( '#editor-balloon' ), 'balloon' );
+// initEditor( ClassicEditor, document.querySelector( '#editor-classic' ), 'classic' );
+// initEditor( BalloonEditor, document.querySelector( '#editor-balloon' ), 'balloon' );
 
 async function initEditor( editorConstructor, element, name ) {
 	const editor = await editorConstructor.create( element, {
@@ -114,131 +114,75 @@ async function initEditor( editorConstructor, element, name ) {
 	} );
 
 	CKEditorInspector.attach( { [ name ]: editor } );
-
-	// let beforeInputEventCount = 0;
-	// let compositionEventCount = 0;
-	//
-	// editor.editing.view.document.on( 'keydown', ( evt, evtData ) => {
-	// 	if ( evtData.keyCode === 229 ) {
-	// 		console.log( '229 was fired' );
-	// 	}
-	// } );
-	//
-	// editor.editing.view.document.on( 'beforeinput', ( evt, evtData ) => {
-	// 	const { targetRanges, data, inputType, isComposing } = evtData;
-	//
-	// 	console.log( 'data', evtData );
-	//
-	// 	console.group(
-	// 		`#${ ++beforeInputEventCount } ` +
-	// 		'beforeInput ' +
-	// 		`(%c"${ inputType }"%c${ isComposing ? ',%c isComposing' : '%c' }%c)`,
-	// 		'color: blue', 'color: default', 'color: green', 'color: default'
-	// 	);
-	//
-	// 	if ( data ) {
-	// 		console.log( `%cdata:%c "${ data }"`, 'font-weight: bold', 'font-weight: default' );
-	// 	} else {
-	// 		console.log( '%cdata:', 'font-weight: bold', data );
-	// 	}
-	// 	console.log( '%ctargetRanges:', 'font-weight: bold', targetRanges );
-	//
-	// 	// TODO: Note: In FF sometimes it exists but is null. This should be fixed in inputobserver.
-	// 	if ( targetRanges.length && targetRanges[ 0 ] ) {
-	// 		console.group( 'first range' );
-	// 		console.log( '%cstart:', 'font-weight: bold', targetRanges[ 0 ].start );
-	// 		console.log( '%cend:', 'font-weight: bold', targetRanges[ 0 ].end );
-	// 		console.log( '%cisCollapsed:', 'font-weight: bold', targetRanges[ 0 ].isCollapsed );
-	// 		console.groupEnd( 'first range' );
-	// 	}
-	//
-	// 	// console.log( '%cdataTransfer:', 'font-weight: bold', evtData.dataTransfer );
-	// 	// console.log( '%cfull event data:', 'font-weight: bold', evtData );
-	//
-	// 	console.groupEnd();
-	// }, { priority: 'highest' } );
-	//
-	// editor.editing.view.document.on( 'compositionstart', ( evt, data ) => {
-	// 	console.log(
-	// 		`%c┌───────────────────────────── ＃${ ++compositionEventCount } compositionstart ─────────────────────────────┐`,
-	// 		'font-weight: bold; color: green'
-	// 	);
-	//
-	// 	console.log( 'compositionstart', data.domEvent );
-	// }, { priority: 'highest' } );
-	//
-	// editor.editing.view.document.on( 'compositionend', ( evt, data ) => {
-	// 	console.log(
-	// 		`%c└───────────────────────────── ＃${ compositionEventCount } compositionend ─────────────────────────────┘`,
-	// 		'font-weight: bold; color: green'
-	// 	);
-	//
-	// 	console.log( 'compositionend', data.domEvent );
-	// }, { priority: 'highest' } );
 }
 
-let beforeInputEventCount = 0;
-let compositionEventCount = 0;
+document.addEventListener( 'beforeinput', logEvent );
+document.addEventListener( 'compositionstart', logEvent );
+document.addEventListener( 'compositionend', logEvent );
 
-document.addEventListener( 'beforeinput', evt => {
+document.addEventListener( 'selectionchange', logEvent );
+
+document.addEventListener( 'keydown', logEvent );
+document.addEventListener( 'keyup', logEvent );
+
+function logEvent( evt ) {
 	// Don't log for the editor.
-	if ( evt.target.closest( '.ck-content' ) ) {
+	if ( evt.target.closest && evt.target.closest( '.ck-content' ) ) {
 		return;
 	}
 
-	const { inputType, data, isComposing } = evt;
+	console.group( `%c${ evt.type }`, 'color:red' );
 
-	console.log( 'data', evt, evt.getTargetRanges(), document.getSelection().getRangeAt( 0 ) );
-
-	console.group(
-		`#${ ++beforeInputEventCount } ` +
-		'native beforeInput ' +
-		`(%c"${ inputType }"%c${ isComposing ? ',%c isComposing' : '%c' }%c)`,
-		'color: blue', 'color: default', 'color: green', 'color: default'
-	);
-
-	if ( data ) {
-		console.log( `%cdata:%c "${ data }"`, 'font-weight: bold', 'font-weight: default' );
-	} else {
-		console.log( '%cdata:', 'font-weight: bold', data );
+	if ( 'inputType' in evt ) {
+		console.log( `%cinput type:%c "${ evt.inputType }"`, 'font-weight: bold', 'font-weight: default; color: blue' );
 	}
+
+	if ( 'isComposing' in evt ) {
+		console.log( `%cisComposing:%c ${ evt.isComposing }`, 'font-weight: bold', 'font-weight: default; color: green' );
+	}
+
+	if ( 'data' in evt ) {
+		console.log( `%cdata:%c "${ evt.data }"`, 'font-weight: bold', 'font-weight: default; color: red' );
+	}
+
+	if ( 'keyCode' in evt ) {
+		console.log( `%ckeyCode:%c ${ evt.keyCode }`, 'font-weight: bold', 'font-weight: default; color: green' );
+	}
+
+	logTargetRanges( evt );
+	logSelection();
 
 	console.groupEnd();
-} );
+}
 
-document.addEventListener( 'compositionstart', evt => {
-	// Don't log for the editor.
-	if ( evt.target.closest( '.ck-content' ) ) {
-		return;
+function logTargetRanges( evt ) {
+	if ( evt.getTargetRanges ) {
+		console.group( '%cevent target ranges:', 'font-weight: bold' );
+		logRanges( evt.getTargetRanges() );
+		console.groupEnd();
+	}
+}
+
+function logSelection() {
+	const selection = document.getSelection();
+	const ranges = [];
+
+	for ( let i = 0; i < selection.rangeCount; i++ ) {
+		ranges.push( selection.getRangeAt( i ) );
 	}
 
-	console.log(
-		`%c┌───────────────────────────── ＃${ ++compositionEventCount } native compositionstart ─────────────────────────────┐`,
-		'font-weight: bold; color: green'
-	);
+	console.group( '%cselection:', 'font-weight: bold' );
+	logRanges( ranges );
+	console.groupEnd();
+}
 
-	console.log( 'compositionstart', evt );
-} );
-
-document.addEventListener( 'compositionend', evt => {
-	// Don't log for the editor.
-	if ( evt.target.closest( '.ck-content' ) ) {
-		return;
+function logRanges( ranges ) {
+	if ( !ranges || !ranges.length ) {
+		console.log( '  %cno ranges', 'font-style: italic' );
+	} else {
+		for ( const range of ranges ) {
+			console.log( '  start:', range.startContainer, range.startOffset );
+			console.log( '  end:', range.endContainer, range.endOffset );
+		}
 	}
-
-	console.log(
-		`%c└───────────────────────────── ＃${ compositionEventCount } native compositionend ─────────────────────────────┘`,
-		'font-weight: bold; color: green'
-	);
-
-	console.log( 'compositionend', evt );
-} );
-
-document.addEventListener( 'keydown', evt => {
-	// Don't log for the editor.
-	if ( evt.target.closest( '.ck-content' ) ) {
-		return;
-	}
-
-	console.log( 'keydown', evt.keyCode, evt );
-} );
+}
