@@ -77,6 +77,20 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 
 		const pre = writer.createContainerElement( 'pre', preAttributes, code );
 
+		const monaco = writer.createUIElement( 'div', {
+			style: 'width: 800px; height: 600px; border: 1px solid grey'
+		}, function( domDocument ) {
+			const domElement = this.toDomElement( domDocument );
+			setTimeout( () => {
+				getMonacoEditor( domElement );
+			}, 0 );
+
+			return domElement;
+		} );
+
+		// writer.insert( pre, monaco, 'end' );
+		writer.insert( targetViewPosition, monaco );
+
 		writer.insert( targetViewPosition, pre );
 		mapper.bindElements( data.item, code );
 	};
