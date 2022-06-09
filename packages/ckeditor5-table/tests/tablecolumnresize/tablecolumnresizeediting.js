@@ -42,7 +42,7 @@ import {
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-describe.only( 'TableColumnResizeEditing', () => {
+describe( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection;
 	const PERCENTAGE_PRECISION = 0.001;
 	const PIXEL_PRECISION = 1;
@@ -558,7 +558,7 @@ describe.only( 'TableColumnResizeEditing', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ]
-			], { columnWidths: '20%,25%,55%' } ) );
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
 			// Test-agnostic.
 			const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -595,7 +595,7 @@ describe.only( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
+				], { columnWidths: '25%,25%,50%', tableWidth: '500px' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -629,7 +629,7 @@ describe.only( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
+				], { columnWidths: '25%,25%,50%', tableWidth: '500px' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -663,7 +663,7 @@ describe.only( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
+				], { columnWidths: '25%,25%,50%', tableWidth: '500px' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -694,7 +694,7 @@ describe.only( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
 				const columnToResizeIndex = 1;
 				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
@@ -737,7 +737,7 @@ describe.only( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
 				const columnToResizeIndex = 0;
 				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
@@ -784,7 +784,7 @@ describe.only( 'TableColumnResizeEditing', () => {
 					[ { contents: '00', colspan: 2 }, '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -819,7 +819,7 @@ describe.only( 'TableColumnResizeEditing', () => {
 					[ '00', '01', { contents: '02', rowspan: 3 } ],
 					[ '10', '11' ],
 					[ '20', '21' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -1969,7 +1969,7 @@ describe.only( 'TableColumnResizeEditing', () => {
 			return sum;
 		}, 0 );
 
-		expect( ( Math.abs( 100 - widthsSum ) ) < PERCENTAGE_PRECISION ).to.be.true;
+		expect( ( Math.abs( 100 - widthsSum ) ) < PERCENTAGE_PRECISION, 'Models widths dont sum up well' ).to.be.true;
 	}
 
 	function calculateExpectedWidthPixels( initialWidths, vector, contentDirection, columnIndex ) {
