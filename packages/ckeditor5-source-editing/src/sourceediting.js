@@ -11,7 +11,7 @@
 
 import { Plugin, PendingActions } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import { createElement, ElementReplacer, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { createElement, ElementReplacer, KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
 import { formatHtml } from './utils/formathtml';
 
 import '../theme/sourceediting.css';
@@ -91,6 +91,15 @@ export default class SourceEditing extends Plugin {
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
 		 */
 		this._keystrokes = new KeystrokeHandler();
+
+		/**
+		 * Stores the information about the editor UI focus and propagates it so various plugins and components
+		 * are unified as a focus group.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker} #focusTracker
+		 */
+		this._focusTracker = new FocusTracker();
 	}
 
 	/**
@@ -224,6 +233,10 @@ export default class SourceEditing extends Plugin {
 		const editingView = editor.editing.view;
 		const model = editor.model;
 
+		// We're overwriting the focusTracker each time the source editing is being shown because
+		// `focusTracker.destroy()` doesn't correctly clear the tracked element list.
+		this._focusTracker = new FocusTracker();
+
 		model.change( writer => {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
@@ -272,12 +285,15 @@ export default class SourceEditing extends Plugin {
 			// Start listening for the keystrokes coming from the textarea.
 			this._keystrokes.listenTo( textarea );
 
+			this._focusTracker.add( toolbar.element );
+			this._focusTracker.add( textarea );
+
 			if ( toolbar ) {
 				// Listen for the keystrokes coming from the editor's toolbar.
 				this._keystrokes.listenTo( toolbar.element );
 
 				this._keystrokes.set( 'Alt+F10', ( data, cancel ) => {
-					if ( document.activeElement === textarea && !toolbar.focusTracker.isFocused ) {
+					if ( this._focusTracker.isFocused && !toolbar.focusTracker.isFocused ) {
 						toolbar.focus();
 						cancel();
 					}
@@ -292,7 +308,6 @@ export default class SourceEditing extends Plugin {
 				} );
 			}
 		}
-
 		this._focusSourceEditing();
 	}
 
@@ -319,6 +334,9 @@ export default class SourceEditing extends Plugin {
 		this._dataFromRoots.clear();
 
 		editingView.focus();
+
+		this._keystrokes.destroy();
+		this._focusTracker.destroy();
 	}
 
 	/**
