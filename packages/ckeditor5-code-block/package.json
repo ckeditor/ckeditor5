@@ -12,8 +12,7 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^34.1.0",
-    "monaco-editor": "0.33.0"
+    "ckeditor5": "^34.1.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^34.1.0",

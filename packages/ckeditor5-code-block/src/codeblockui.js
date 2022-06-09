@@ -8,13 +8,14 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Collection } from 'ckeditor5/src/utils';
+import { Collection, global } from 'ckeditor5/src/utils';
 import { Model, SplitButtonView, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
 
 import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
 
 import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
+import { getMonacoEditor } from './converters';
 
 /**
  * The code block UI plugin.
@@ -35,6 +36,7 @@ export default class CodeBlockUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		getMonacoEditor( global.document.getElementById( 'container' ) );
 		const editor = this.editor;
 		const t = editor.t;
 		const componentFactory = editor.ui.componentFactory;

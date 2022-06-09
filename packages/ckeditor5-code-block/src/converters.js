@@ -9,6 +9,8 @@
 
 import { getPropertyAssociation } from './utils';
 
+import { global } from 'ckeditor5/src/utils';
+
 /**
  * A model-to-view (both editing and data) converter for the `codeBlock` element.
  *
@@ -308,4 +310,13 @@ export function dataViewToModelOrphanNodeConsumer() {
 			consumable.consume( child, { name: true } );
 		}
 	};
+}
+
+export function getMonacoEditor( domElement ) {
+	return new Promise( resolve => {
+		resolve( global.window.monaco.editor.create( domElement, {
+			value: [ 'function x() {', '\tconsole.log("Hello world2!");', '}' ].join( '\n' ),
+			language: 'javascript'
+		} ) );
+	} );
 }
