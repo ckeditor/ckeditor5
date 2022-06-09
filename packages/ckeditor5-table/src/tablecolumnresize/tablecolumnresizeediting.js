@@ -392,8 +392,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' ) );
 		const viewTable = target.findAncestor( 'table' );
 
-		const tableWalker = new TableWalker( modelTable );
+		// Calculate the dom cell widths.
 		const widths = Array( getNumberOfColumn( modelTable, editor ) );
+		const tableWalker = new TableWalker( modelTable );
 
 		for ( const cellSlot of tableWalker ) {
 			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
@@ -409,6 +410,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 		}
 
+		// Insert colgroup for table that is resized for the first time.
 		if ( ![ ...domEventData.target.findAncestor( 'table' ).getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
 			editingView.change( viewWriter => {
 				const colgroup = viewWriter.createContainerElement( 'colgroup' );
@@ -615,8 +617,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelLeftCell = editor.editing.mapper.toModelElement( viewLeftCell );
 		const modelTable = modelLeftCell.findAncestor( 'table' );
 
-		const tableWalker = new TableWalker( modelTable );
+		// Calculate the dom cell widths.
 		const widths = Array( getNumberOfColumn( modelTable, editor ) );
+		const tableWalker = new TableWalker( modelTable );
 
 		for ( const cellSlot of tableWalker ) {
 			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
