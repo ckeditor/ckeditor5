@@ -61,7 +61,7 @@ export function getAffectedTables( changes, model ) {
 				const range = model.createRangeOn( tableNode );
 
 				for ( const node of range.getItems() ) {
-					if ( node.is( 'element' ) && node.name === 'table' ) {
+					if ( node.is( 'element' ) && node.name === 'table' && node.hasAttribute( 'columnWidths' ) ) {
 						affectedTables.push( node );
 					}
 				}

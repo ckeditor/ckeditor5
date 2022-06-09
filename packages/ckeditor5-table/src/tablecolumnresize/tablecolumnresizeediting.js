@@ -118,6 +118,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	init() {
 		this._extendSchema();
+		this._setupPostFixer();
 		this._setupConversion();
 		this._setupColumnResizers();
 		this._registerColgroupFixer();
@@ -381,8 +382,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		if ( !this._isResizingAllowed ) {
 			return;
 		}
-
-		this._setupPostFixer();
 
 		domEventData.preventDefault();
 		eventInfo.stop();
