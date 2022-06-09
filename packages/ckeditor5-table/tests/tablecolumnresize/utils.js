@@ -586,7 +586,11 @@ describe( 'TableColumnResize utils', () => {
 } );
 
 function createTable( rows, cols ) {
-	return new Element( 'table', {}, createTableRows( rows, cols ) );
+	// We need to set the `columnWidths` attribute because tables without it are ignored.
+	const colWidth = `${ 100 / cols }%`;
+	const columnWidths = new Array( cols ).fill( colWidth ).join( ',' );
+
+	return new Element( 'table', { columnWidths }, createTableRows( rows, cols ) );
 }
 
 function createTableRows( rows, cols ) {
