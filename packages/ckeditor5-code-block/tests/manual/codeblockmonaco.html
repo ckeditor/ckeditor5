@@ -1,1 +1,37 @@
-<div id="editor"></div>
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Security-Policy" content="
+				default-src https://unpkg.com;
+				media-src 'self';
+				connect-src 'self' https://cksource.com http://*.cke-cs.com https://unpkg.com;
+				script-src 'self' 'unsafe-inline' https://cksource.com https://unpkg.com * blob:;
+				img-src * data:;
+				style-src 'self' 'unsafe-inline' https://unpkg.com;
+				frame-src *
+			">
+	<link rel="stylesheet" data-name="vs/editor/editor.main"
+		href="https://unpkg.com/monaco-editor@0.33.0/min/vs/editor/editor.main.css" />
+</head>
+
+<body>
+	<h2>Monaco Editor Sync Loading Sample</h2>
+	<div id="container" style="width: 800px; height: 600px; border: 1px solid grey"></div>
+
+	<script>
+		var require = { paths: { vs: 'https://unpkg.com/monaco-editor@0.33.0/min/vs' } };
+	</script>
+	<script src="https://unpkg.com/monaco-editor@0.33.0/min/vs/loader.js"></script>
+	<script src="https://unpkg.com/monaco-editor@0.33.0/min/vs/editor/editor.main.nls.js"></script>
+	<script src="https://unpkg.com/monaco-editor@0.33.0/min/vs/editor/editor.main.js"></script>
+
+	<script>
+		var monacoEditor = monaco.editor.create( document.getElementById( 'container' ), {
+			value: [ 'function x() {', '\tconsole.log("Hello world!");', '}' ].join( '\n' ),
+			language: 'javascript'
+		} );
+	</script>
+</body>
+
+</html>
