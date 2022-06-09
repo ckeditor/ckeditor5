@@ -28,8 +28,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
-// initEditor( ClassicEditor, document.querySelector( '#editor-classic' ), 'classic' );
-// initEditor( BalloonEditor, document.querySelector( '#editor-balloon' ), 'balloon' );
+initEditor( ClassicEditor, document.querySelector( '#editor-classic' ), 'classic' );
+initEditor( BalloonEditor, document.querySelector( '#editor-balloon' ), 'balloon' );
 
 async function initEditor( editorConstructor, element, name ) {
 	const editor = await editorConstructor.create( element, {
@@ -126,8 +126,7 @@ document.addEventListener( 'keydown', logEvent );
 document.addEventListener( 'keyup', logEvent );
 
 function logEvent( evt ) {
-	// Don't log for the editor.
-	if ( evt.target.closest && evt.target.closest( '.ck-content' ) ) {
+	if ( !document.activeElement || document.activeElement.getAttribute( 'id' ) != 'raw-contenteditable' ) {
 		return;
 	}
 
