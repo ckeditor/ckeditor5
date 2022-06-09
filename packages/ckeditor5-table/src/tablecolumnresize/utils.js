@@ -365,3 +365,13 @@ export function removeColumnResizerElements( viewWriter, viewCell ) {
 
 	viewWriter.remove( viewTableColumnResizerElement );
 }
+
+//
+export function getDomCellWidth( domCell ) {
+	const styles = global.window.getComputedStyle( domCell );
+
+	return parseFloat( styles.width ) +
+		parseFloat( styles.paddingLeft ) +
+		parseFloat( styles.paddingRight ) +
+		parseFloat( styles.borderWidth );
+}

@@ -37,7 +37,8 @@ import {
 	getNumberOfColumn,
 	normalizeColumnWidthsAttribute,
 	toPrecision,
-	insertColumnResizerElements
+	insertColumnResizerElements,
+	getDomCellWidth
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -397,8 +398,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		for ( const cellSlot of tableWalker ) {
 			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
 			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
-			const computedStyles = global.window.getComputedStyle( domCell );
-			const domCellWidth = parseFloat( computedStyles.width ) + parseFloat( computedStyles.paddingLeft ) + parseFloat( computedStyles.paddingRight ) + parseFloat( computedStyles.borderWidth );
+			const domCellWidth = getDomCellWidth( domCell );
 
 			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
 				this._columnIndexMap.set( cellSlot.cell, cellSlot.column );
@@ -621,8 +621,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		for ( const cellSlot of tableWalker ) {
 			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
 			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
-			const computedStyles = global.window.getComputedStyle( domCell );
-			const domCellWidth = parseFloat( computedStyles.width ) + parseFloat( computedStyles.paddingLeft ) + parseFloat( computedStyles.paddingRight ) + parseFloat( computedStyles.borderWidth );
+			const domCellWidth = getDomCellWidth( domCell );
 
 			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
 				this._columnIndexMap.set( cellSlot.cell, cellSlot.column );
