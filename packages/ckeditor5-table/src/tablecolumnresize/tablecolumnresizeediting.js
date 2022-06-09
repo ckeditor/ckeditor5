@@ -31,12 +31,10 @@ import {
 	sumArray,
 	getAffectedTables,
 	getColumnIndex,
-	getColumnWidthsInPixels,
 	getColumnMinWidthAsPercentage,
 	getElementWidthInPixels,
 	getTableWidthInPixels,
 	getNumberOfColumn,
-	isTableRendered,
 	normalizeColumnWidthsAttribute,
 	toPrecision,
 	insertColumnResizerElements
@@ -253,7 +251,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				let isColumnInsertionHandled = false;
 				let isColumnDeletionHandled = false;
 
-				for ( const { cell, cellWidth: cellColumnWidth, column } of new TableWalker( table ) ) {
+				for ( const { cell, column } of new TableWalker( table ) ) {
 					// (2.1) Add all cells to column index map with its column index. Do not process the given cell anymore, because the
 					// `columnIndex` reference in the map is required to properly handle column insertion and deletion.
 					if ( !columnIndexMap.has( cell ) ) {
@@ -308,101 +306,6 @@ export default class TableColumnResizeEditing extends Plugin {
 
 						columnIndexMap.set( cell, column );
 						cellsModified.set( cell, 'insert' );
-
-						changed = true;
-					}
-
-					// (4) Check if the inline cell width has been configured and transfer its value to the appropriate column.
-					if ( cell.hasAttribute( 'width' ) ) {
-						// Currently, only the inline width from the cells that are not horizontally spanned are supported.
-						if ( cellColumnWidth !== 1 ) {
-							continue;
-						}
-
-						// It may happen that the table is not yet fully rendered in the editing view (i.e. it does not contain the
-						// `<colgroup>` yet), but the cell has an inline width set. In that case it is not possible to properly convert the
-						// inline cell width as a percentage value to the whole table width. Currently, we just ignore this case and
-						// initialize the table with all the default (equal) column widths.
-						if ( !isTableRendered( table, editor ) ) {
-							writer.removeAttribute( 'width', cell );
-
-							changed = true;
-
-							continue;
-						}
-
-						const tableWidthInPixels = getTableWidthInPixels( table, editor );
-						const columnWidthsInPixels = getColumnWidthsInPixels( table, editor );
-						const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
-
-						const cellWidth = parseFloat( cell.getAttribute( 'width' ) );
-
-						const isWidthInPixels = cell.getAttribute( 'width' ).endsWith( 'px' );
-						const isWidthAsPercentage = cell.getAttribute( 'width' ).endsWith( '%' );
-
-						// Currently, only inline width in pixels or as percentage is supported.
-						if ( !isWidthInPixels && !isWidthAsPercentage ) {
-							continue;
-						}
-
-						const isRightEdge = !cell.nextSibling;
-
-						if ( isRightEdge ) {
-							const rootWidthInPixels = getElementWidthInPixels( editor.editing.view.getDomRoot() );
-							const lastColumnIndex = numberOfColumns - 1;
-							const lastColumnWidthInPixels = columnWidthsInPixels[ lastColumnIndex ];
-
-							let tableWidthNew;
-
-							if ( isWidthInPixels ) {
-								const cellWidthLowerBound = COLUMN_MIN_WIDTH_IN_PIXELS;
-								const cellWidthUpperBound = rootWidthInPixels - ( tableWidthInPixels - lastColumnWidthInPixels );
-
-								columnWidthsInPixels[ lastColumnIndex ] = clamp( cellWidth, cellWidthLowerBound, cellWidthUpperBound );
-
-								tableWidthNew = sumArray( columnWidthsInPixels );
-
-								// Update all the column widths.
-								for ( let columnIndex = 0; columnIndex <= lastColumnIndex; columnIndex++ ) {
-									columnWidths[ columnIndex ] = toPrecision( columnWidthsInPixels[ columnIndex ] * 100 / tableWidthNew );
-								}
-							} else {
-								const cellWidthLowerBound = columnMinWidthAsPercentage;
-								const cellWidthUpperBound = 100 - ( tableWidthInPixels - lastColumnWidthInPixels ) * 100 /
-									rootWidthInPixels;
-
-								columnWidths[ lastColumnIndex ] = clamp( cellWidth, cellWidthLowerBound, cellWidthUpperBound );
-
-								tableWidthNew = ( tableWidthInPixels - lastColumnWidthInPixels ) * 100 /
-									( 100 - columnWidths[ lastColumnIndex ] );
-
-								// Update all the column widths, except the last one, which has been already adjusted.
-								for ( let columnIndex = 0; columnIndex <= lastColumnIndex - 1; columnIndex++ ) {
-									columnWidths[ columnIndex ] = toPrecision( columnWidthsInPixels[ columnIndex ] * 100 / tableWidthNew );
-								}
-							}
-
-							writer.setAttribute( 'width', `${ toPrecision( tableWidthNew * 100 / rootWidthInPixels ) }%`, table );
-						} else {
-							const currentColumnWidth = columnWidthsInPixels[ column ];
-							const nextColumnWidth = columnWidthsInPixels[ column + 1 ];
-							const bothColumnWidth = currentColumnWidth + nextColumnWidth;
-
-							const cellMaxWidthAsPercentage = ( bothColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS ) * 100 / tableWidthInPixels;
-
-							let cellWidthAsPercentage = isWidthInPixels ?
-								cellWidth * 100 / tableWidthInPixels :
-								cellWidth;
-
-							cellWidthAsPercentage = clamp( cellWidthAsPercentage, columnMinWidthAsPercentage, cellMaxWidthAsPercentage );
-
-							const dxAsPercentage = cellWidthAsPercentage - columnWidths[ column ];
-
-							columnWidths[ column ] += dxAsPercentage;
-							columnWidths[ column + 1 ] -= dxAsPercentage;
-						}
-
-						writer.removeAttribute( 'width', cell );
 
 						changed = true;
 					}

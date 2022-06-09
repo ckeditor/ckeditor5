@@ -42,7 +42,7 @@ import {
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-describe( 'TableColumnResizeEditing', () => {
+describe.only( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection;
 	const PERCENTAGE_PRECISION = 0.001;
 	const PIXEL_PRECISION = 1;
@@ -518,31 +518,6 @@ describe( 'TableColumnResizeEditing', () => {
 					}
 				}
 			} );
-		} );
-
-		it( 'transfers the inline cell width to the whole column', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01', '[02]' ],
-				[ '10', '11', '12' ]
-			], { columnWidths: '25%,25%,50%' } ) );
-
-			const table = model.document.getRoot().getChild( 0 );
-
-			setInitialWidthsInPx( editor, null, 201 );
-
-			model.change( writer => {
-				const cell = table.getChild( 1 ).getChild( 1 );
-
-				writer.setAttribute( 'width', '100px', cell );
-			} );
-
-			const tableWidths = table.getAttribute( 'columnWidths' );
-
-			expect( tableWidths ).to.be.equal( '25%,50%,25%' );
-
-			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
-
-			expect( Math.abs( 100 - finalViewColumnWidthsPx[ 1 ] ) < PIXEL_PRECISION ).to.be.true;
 		} );
 
 		it( 'should find and allow for resizing nested tables', () => {
