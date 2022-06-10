@@ -646,7 +646,7 @@ describe( 'SourceEditing toolbar keyboard focus integration', () => {
 		it( 'not do anything if the `toolbarFocusTracker` is not focused', () => {
 			toolbarFocusTracker.isFocused = false;
 
-			toolbar.keystrokes.press( keyEventData );
+			originKeystrokeHandler.press( keyEventData );
 			sinon.assert.notCalled( spy );
 		} );
 

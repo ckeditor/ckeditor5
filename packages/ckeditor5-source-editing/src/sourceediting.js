@@ -278,36 +278,34 @@ export default class SourceEditing extends Plugin {
 			this._dataFromRoots.set( rootName, data );
 		}
 
-		if ( document.querySelector( '.ck-source-editing-area > textarea' ) ) {
-			const textarea = document.querySelector( '.ck-source-editing-area > textarea' );
-			const toolbar = editor.ui.view.toolbar;
+		const textarea = document.querySelector( '.ck-source-editing-area > textarea' );
+		const toolbar = editor.ui.view.toolbar;
 
-			// Start listening for the keystrokes coming from the textarea.
-			this._keystrokes.listenTo( textarea );
+		// Start listening for the keystrokes coming from the textarea.
+		this._keystrokes.listenTo( textarea );
 
-			if ( toolbar ) {
-				this._focusTracker.add( toolbar.element );
-				this._focusTracker.add( textarea );
+		if ( toolbar ) {
+			this._focusTracker.add( toolbar.element );
+			this._focusTracker.add( textarea );
 
-				// Listen for the keystrokes coming from the editor's toolbar.
-				this._keystrokes.listenTo( toolbar.element );
+			// Listen for the keystrokes coming from the editor's toolbar.
+			this._keystrokes.listenTo( toolbar.element );
 
-				this._keystrokes.set( 'Alt+F10', ( data, cancel ) => {
-					if ( this._focusTracker.isFocused && !toolbar.focusTracker.isFocused ) {
-						toolbar.focus();
+			this._keystrokes.set( 'Alt+F10', ( data, cancel ) => {
+				if ( this._focusTracker.isFocused && !toolbar.focusTracker.isFocused ) {
+					toolbar.focus();
 
-						cancel();
-					}
-				} );
+					cancel();
+				}
+			} );
 
-				this._keystrokes.set( 'Esc', ( data, cancel ) => {
-					if ( toolbar.focusTracker.isFocused ) {
-						textarea.focus();
+			this._keystrokes.set( 'Esc', ( data, cancel ) => {
+				if ( toolbar.focusTracker.isFocused ) {
+					textarea.focus();
 
-						cancel();
-					}
-				} );
-			}
+					cancel();
+				}
+			} );
 		}
 		this._focusSourceEditing();
 	}
