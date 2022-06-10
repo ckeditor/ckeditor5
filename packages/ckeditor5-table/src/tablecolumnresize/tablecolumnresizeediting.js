@@ -376,7 +376,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		if ( !domEventData.target.hasClass( 'table-column-resizer' ) ) {
+		if ( !domEventData.target.hasClass( 'ck-table-column-resizer' ) ) {
 			return;
 		}
 
@@ -435,7 +435,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			const figureInitialPcWidth = this._resizingData.widths.viewFigureWidth / this._resizingData.widths.viewFigureParentWidth;
 
 			writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, domEventData.target.findAncestor( 'figure' ) );
-			writer.addClass( 'table-column-resizer__active', this._resizingData.elements.viewResizer );
+			writer.addClass( 'ck-table-column-resizer__active', this._resizingData.elements.viewResizer );
 			writer.addClass( 'ck-table-resized', domEventData.target.findAncestor( 'table' ) );
 		} );
 	}
@@ -593,7 +593,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		editingView.change( writer => {
-			writer.removeClass( 'table-column-resizer__active', viewResizer );
+			writer.removeClass( 'ck-table-column-resizer__active', viewResizer );
 		} );
 
 		this._isResizingActive = false;

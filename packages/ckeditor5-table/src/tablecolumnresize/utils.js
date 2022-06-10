@@ -335,14 +335,14 @@ function prepareColumnWidths( columnWidthsAttribute ) {
 // @param {module:engine/view/element~Element} viewCell View cell.
 export function insertColumnResizerElement( viewWriter, viewCell ) {
 	let viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
-		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
+		.find( viewElement => viewElement.hasClass( 'ck-table-column-resizer' ) );
 
 	if ( viewTableColumnResizerElement ) {
 		return;
 	}
 
 	viewTableColumnResizerElement = viewWriter.createUIElement( 'div', {
-		class: 'table-column-resizer'
+		class: 'ck-table-column-resizer'
 	} );
 
 	viewWriter.insert(
@@ -357,7 +357,7 @@ export function insertColumnResizerElement( viewWriter, viewCell ) {
 // @param {module:engine/view/element~Element} viewCell View cell.
 export function removeColumnResizerElements( viewWriter, viewCell ) {
 	const viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
-		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
+		.find( viewElement => viewElement.hasClass( 'ck-table-column-resizer' ) );
 
 	if ( !viewTableColumnResizerElement ) {
 		return;

@@ -319,7 +319,7 @@ describe( 'TableColumnResizeEditing', () => {
 					} );
 
 					const domTable = getDomTable( view );
-					const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
+					const resizers = Array.from( domTable.querySelectorAll( '.ck-table-column-resizer' ) );
 
 					expect( resizers.length ).to.equal( 4 );
 				} );
@@ -333,7 +333,7 @@ describe( 'TableColumnResizeEditing', () => {
 					editor.execute( 'insertTableRowBelow' );
 
 					const domTable = getDomTable( view );
-					const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
+					const resizers = Array.from( domTable.querySelectorAll( '.ck-table-column-resizer' ) );
 
 					expect( resizers.length ).to.equal( 9 );
 				} );
@@ -347,7 +347,7 @@ describe( 'TableColumnResizeEditing', () => {
 					editor.execute( 'splitTableCellVertically' );
 
 					const domTable = getDomTable( view );
-					const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
+					const resizers = Array.from( domTable.querySelectorAll( '.ck-table-column-resizer' ) );
 
 					expect( resizers.length ).to.equal( 7 );
 				} );
@@ -545,7 +545,7 @@ describe( 'TableColumnResizeEditing', () => {
 				</figure>`
 			);
 
-			expect( document.getElementsByClassName( 'table-column-resizer' ).length ).to.equal( 4 );
+			expect( document.getElementsByClassName( 'ck-table-column-resizer' ).length ).to.equal( 4 );
 		} );
 	} );
 

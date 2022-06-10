@@ -99,7 +99,7 @@ export function getViewColumnWidthsPc( viewTable ) {
 export function getDomResizer( domTable, columnIndex, rowIndex ) {
 	const rows = Array.from( domTable.querySelectorAll( 'tr' ) );
 	const row = rows[ rowIndex ? rowIndex : 0 ];
-	const domResizer = Array.from( row.querySelectorAll( '.table-column-resizer' ) )[ columnIndex ];
+	const domResizer = Array.from( row.querySelectorAll( '.ck-table-column-resizer' ) )[ columnIndex ];
 
 	return domResizer;
 }
