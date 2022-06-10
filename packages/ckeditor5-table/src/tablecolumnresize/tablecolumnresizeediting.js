@@ -37,7 +37,7 @@ import {
 	getNumberOfColumn,
 	normalizeColumnWidthsAttribute,
 	toPrecision,
-	insertColumnResizerElements,
+	insertColumnResizerElement,
 	getDomCellWidth
 } from './utils';
 
@@ -701,7 +701,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				}
 
 				view.change( viewWriter => {
-					insertColumnResizerElements( viewWriter, item.item );
+					insertColumnResizerElement( viewWriter, item.item );
 				} );
 			}
 		}, { priority: 'lowest' } );

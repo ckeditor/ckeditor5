@@ -333,7 +333,7 @@ function prepareColumnWidths( columnWidthsAttribute ) {
 //
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
 // @param {module:engine/view/element~Element} viewCell View cell.
-export function insertColumnResizerElements( viewWriter, viewCell ) {
+export function insertColumnResizerElement( viewWriter, viewCell ) {
 	let viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
 		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
 
