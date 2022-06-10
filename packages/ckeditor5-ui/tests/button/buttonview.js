@@ -420,15 +420,16 @@ describe( 'ButtonView', () => {
 		beforeEach( () => {
 			toolbar = new ToolbarView( locale );
 			toolbar.render();
+			document.body.append( toolbar.element );
 		} );
 
 		afterEach( () => {
+			toolbar.element.remove();
 			toolbar.destroy();
 		} );
 
 		it( 'is displayed when the button is focused', () => {
 			toolbar.items.add( view );
-			document.body.append( toolbar.element );
 
 			const tooltip = view.element.children[ 0 ];
 
@@ -437,8 +438,6 @@ describe( 'ButtonView', () => {
 			view.focus();
 
 			expect( getComputedStyle( tooltip ).visibility ).to.equal( 'visible' );
-
-			document.body.innerHTML = '';
 		} );
 	} );
 } );
