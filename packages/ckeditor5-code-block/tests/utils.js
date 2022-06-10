@@ -7,7 +7,7 @@ import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 
 import { canBeCodeBlock } from '../src/utils';
 
-describe( 'utils', () => {
+describe( 'CodeBlock - utils', () => {
 	describe( 'canBecomeCodeBlock()', () => {
 		it( 'should not allow a root element to become a code block', () => {
 			const model = new Model();
