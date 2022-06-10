@@ -551,9 +551,8 @@ describe( 'SourceEditing', () => {
 	} );
 } );
 
-describe( 'SourceEditing toolbar keyboard focus', () => {
-	let originFocusTracker, originKeystrokeHandler, toolbar, toolbarFocusTracker;
-	let editor, editorElement, plugin, button;
+describe( 'SourceEditing toolbar keyboard focus integration', () => {
+	let editorElement, editor, toolbar, plugin, button, originFocusTracker, originKeystrokeHandler, toolbarFocusTracker;
 
 	testUtils.createSinonSandbox();
 
@@ -584,64 +583,82 @@ describe( 'SourceEditing toolbar keyboard focus', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should allow the `alt+f10` key combination to focus the editor toolbar when in source editing mode ', () => {
-		const textarea = document.querySelector( '.ck-source-editing-area > textarea' );
-		const spy = sinon.spy( toolbar, 'focus' );
-		const keyEventData = {
-			keyCode: keyCodes.f10,
-			altKey: true,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		};
+	describe( 'should make sure that the `alt+f10` key combination will', () => {
+		let textarea, spy, keyEventData;
 
-		// Initially focused element should be the textarea
-		expect( document.activeElement ).to.equal( textarea );
+		beforeEach( () => {
+			textarea = document.querySelector( '.ck-source-editing-area > textarea' );
+			spy = sinon.spy( toolbar, 'focus' );
+			keyEventData = {
+				keyCode: keyCodes.f10,
+				altKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
 
-		toolbarFocusTracker.isFocused = false;
-		originFocusTracker.isFocused = false;
+			// Initially focused element should be the textarea
+			expect( document.activeElement ).to.equal( textarea );
+		} );
 
-		originKeystrokeHandler.press( keyEventData );
+		it( 'not do anything when `originFocusTracker` and `toolbarFocusTracker` are not focused', () => {
+			toolbarFocusTracker.isFocused = false;
+			originFocusTracker.isFocused = false;
 
-		sinon.assert.notCalled( spy );
+			originKeystrokeHandler.press( keyEventData );
 
-		toolbarFocusTracker.isFocused = true;
-		originFocusTracker.isFocused = true;
+			sinon.assert.notCalled( spy );
+		} );
 
-		originKeystrokeHandler.press( keyEventData );
+		it( 'not do anything when `originFocusTracker` and `toolbarFocusTracker` are both focused', () => {
+			toolbarFocusTracker.isFocused = true;
+			originFocusTracker.isFocused = true;
 
-		sinon.assert.notCalled( spy );
+			originKeystrokeHandler.press( keyEventData );
 
-		toolbarFocusTracker.isFocused = false;
-		originFocusTracker.isFocused = true;
+			sinon.assert.notCalled( spy );
+		} );
 
-		originKeystrokeHandler.press( keyEventData );
+		it( 'focus the toolbar when `originFocusTracker` has been focused', () => {
+			toolbarFocusTracker.isFocused = false;
+			originFocusTracker.isFocused = true;
 
-		sinon.assert.calledOnce( spy );
-		sinon.assert.calledOnce( keyEventData.preventDefault );
-		sinon.assert.calledOnce( keyEventData.stopPropagation );
+			originKeystrokeHandler.press( keyEventData );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( keyEventData.preventDefault );
+			sinon.assert.calledOnce( keyEventData.stopPropagation );
+		} );
 	} );
 
-	it( 'should re–focus the origin on Esc when in source editing mode', () => {
-		const origin = document.querySelector( '.ck-source-editing-area > textarea' );
-		const spy = sinon.spy( origin, 'focus' );
-		const keyEventData = {
-			keyCode: keyCodes.esc,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		};
+	describe( 'should make sure that the `Esc` key will', () => {
+		let origin, spy, keyEventData;
 
-		toolbarFocusTracker.isFocused = false;
+		beforeEach( () => {
+			origin = document.querySelector( '.ck-source-editing-area > textarea' );
+			spy = sinon.spy( origin, 'focus' );
+			keyEventData = {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+		} );
 
-		toolbar.keystrokes.press( keyEventData );
-		sinon.assert.notCalled( spy );
+		it( 'not do anything if the `toolbarFocusTracker` is not focused', () => {
+			toolbarFocusTracker.isFocused = false;
 
-		toolbarFocusTracker.isFocused = true;
+			toolbar.keystrokes.press( keyEventData );
+			sinon.assert.notCalled( spy );
+		} );
 
-		originKeystrokeHandler.press( keyEventData );
+		it( 're–focus the origin if the `toolbarFocusTracker` is focused', () => {
+			toolbarFocusTracker.isFocused = true;
 
-		sinon.assert.calledOnce( spy );
-		sinon.assert.calledOnce( keyEventData.preventDefault );
-		sinon.assert.calledOnce( keyEventData.stopPropagation );
+			originKeystrokeHandler.press( keyEventData );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( keyEventData.preventDefault );
+			sinon.assert.calledOnce( keyEventData.stopPropagation );
+		} );
 	} );
 } );
 
