@@ -82,7 +82,7 @@ export default class IndentCodeBlockCommand extends Command {
 				// integration of code block with track changes. It's the easiest way of integration because insertContent()
 				// is already integrated with track changes, but if it ever cause any troubles it can be reverted, however
 				// some additional work will be required in track changes integration of code block.
-				editor.model.insertContent( indentSequenceTextElement, position );
+				model.insertContent( indentSequenceTextElement, position );
 			}
 		} );
 	}
