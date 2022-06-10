@@ -233,7 +233,7 @@ describe( 'SourceEditing utils', () => {
 					'</iframe>' +
 				'</p>';
 
-			// This is not pretty but it does not crash and was the point of it.
+			// This is not pretty but at least it does not crash.
 			const sourceFormatted =
 			'<p>\n' +
 			'    <iframe>\n' +
