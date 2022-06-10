@@ -441,6 +441,87 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
+	 * Handles the `mousemove` event if previously the `mousedown` event was triggered from the column resizer element.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 */
+	_onMouseMoveHandler( eventInfo, domEventData ) {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+
+		if ( !this._isResizingActive ) {
+			return;
+		}
+
+		if ( !this._isResizingAllowed ) {
+			this._onMouseUpHandler();
+
+			return;
+		}
+
+		this._moved = true;
+
+		const {
+			columnPosition,
+			flags: {
+				isRightEdge,
+				isTableCentered,
+				isLtrContent
+			},
+			elements: {
+				viewFigure,
+				viewLeftColumn,
+				viewRightColumn
+			},
+			widths: {
+				viewFigureParentWidth,
+				tableWidth,
+				leftColumnWidth,
+				rightColumnWidth
+			}
+		} = this._resizingData;
+
+		const dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
+
+		const dxUpperBound = isRightEdge ?
+			viewFigureParentWidth - tableWidth :
+			rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
+
+		// The multiplier is needed for calculating the proper movement offset:
+		// - it should negate the sign if content language direction is right-to-left,
+		// - it should double the offset if the table edge is resized and table is centered.
+		const multiplier = ( isLtrContent ? 1 : -1 ) * ( isRightEdge && isTableCentered ? 2 : 1 );
+
+		const dx = clamp(
+			( domEventData.clientX - columnPosition ) * multiplier,
+			Math.min( dxLowerBound, 0 ),
+			Math.max( dxUpperBound, 0 )
+		);
+
+		if ( dx === 0 ) {
+			return;
+		}
+
+		editingView.change( writer => {
+			const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
+
+			writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
+
+			if ( isRightEdge ) {
+				const tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / viewFigureParentWidth );
+
+				writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
+			} else {
+				const rightColumnWidthAsPercentage = toPrecision( ( rightColumnWidth - dx ) * 100 / tableWidth );
+
+				writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn );
+			}
+		} );
+	}
+
+	/**
 	 * Handles the `mouseup` event if previously the `mousedown` event was triggered from the column resizer element.
 	 *
 	 * @private
@@ -456,10 +537,10 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		const {
+			viewResizer,
 			modelTable,
-			viewColgroup,
 			viewFigure,
-			viewResizer
+			viewColgroup
 		} = this._resizingData.elements;
 
 		const columnWidthsAttributeOld = modelTable.getAttribute( 'columnWidths' );
@@ -520,87 +601,6 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Handles the `mousemove` event if previously the `mousedown` event was triggered from the column resizer element.
-	 *
-	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
-	 */
-	_onMouseMoveHandler( eventInfo, domEventData ) {
-		const editor = this.editor;
-		const editingView = editor.editing.view;
-
-		if ( !this._isResizingActive ) {
-			return;
-		}
-
-		if ( !this._isResizingAllowed ) {
-			this._onMouseUpHandler();
-
-			return;
-		}
-
-		this._moved = true;
-
-		const {
-			columnPosition,
-			flags: {
-				isRightEdge,
-				isLtrContent,
-				isTableCentered
-			},
-			widths: {
-				viewFigureParentWidth,
-				tableWidth,
-				leftColumnWidth,
-				rightColumnWidth
-			},
-			elements: {
-				viewFigure,
-				viewLeftColumn,
-				viewRightColumn
-			}
-		} = this._resizingData;
-
-		const dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
-
-		const dxUpperBound = isRightEdge ?
-			viewFigureParentWidth - tableWidth :
-			rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
-
-		// The multiplier is needed for calculating the proper movement offset:
-		// - it should negate the sign if content language direction is right-to-left,
-		// - it should double the offset if the table edge is resized and table is centered.
-		const multiplier = ( isLtrContent ? 1 : -1 ) * ( isRightEdge && isTableCentered ? 2 : 1 );
-
-		const dx = clamp(
-			( domEventData.clientX - columnPosition ) * multiplier,
-			Math.min( dxLowerBound, 0 ),
-			Math.max( dxUpperBound, 0 )
-		);
-
-		if ( dx === 0 ) {
-			return;
-		}
-
-		editingView.change( writer => {
-			const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
-
-			writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
-
-			if ( isRightEdge ) {
-				const tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / viewFigureParentWidth );
-
-				writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
-			} else {
-				const rightColumnWidthAsPercentage = toPrecision( ( rightColumnWidth - dx ) * 100 / tableWidth );
-
-				writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn );
-			}
-		} );
-	}
-
-	/**
 	 * Retrieves and returns required data needed to correctly calculate the widths of the resized columns.
 	 *
 	 * @private
@@ -633,19 +633,23 @@ export default class TableColumnResizeEditing extends Plugin {
 		const viewFigureParentWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure.parent ) );
 		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure ) );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
-
 		const leftColumnWidth = widths[ leftColumnIndex ];
 		const rightColumnWidth = isRightEdge ? undefined : widths[ leftColumnIndex + 1 ];
 
 		return {
 			columnPosition,
+			flags: {
+				isRightEdge, // move
+				isTableCentered, // move
+				isLtrContent // move
+			},
 			elements: {
+				viewResizer, // down up
 				modelTable, // up
 				viewFigure, // up move
 				viewColgroup, // up
 				viewLeftColumn, // move
-				viewRightColumn, // move
-				viewResizer // down up
+				viewRightColumn // move
 			},
 			widths: {
 				viewFigureParentWidth, // move
@@ -653,11 +657,6 @@ export default class TableColumnResizeEditing extends Plugin {
 				tableWidth, // move
 				leftColumnWidth, // move
 				rightColumnWidth // move
-			},
-			flags: {
-				isRightEdge, // move
-				isTableCentered, // move
-				isLtrContent // move
 			}
 		};
 	}
