@@ -1,6 +1,6 @@
 ---
 category: examples-builds-custom
-order: 30
+order: 70
 classes: main__content--no-toc
 toc: false
 menu-title: Bottom toolbar with formatting options grouped
