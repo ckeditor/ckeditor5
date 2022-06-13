@@ -36,6 +36,10 @@ describe( 'CodeBlockElementSupport', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( editor.plugins.has( 'CodeBlockElementSupport' ) ).to.be.true;
+	} );
+
 	it( 'should allow attributes', () => {
 		dataFilter.allowElement( /^(pre|code)$/ );
 		dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
