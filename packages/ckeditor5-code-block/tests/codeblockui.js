@@ -197,7 +197,7 @@ describe( 'CodeBlockUI', () => {
 				expect( button ).to.have.property( 'isToggleable', true );
 			} );
 
-			it( 'and it\'s arrow has the base properties', () => {
+			it( 'arrow has the base properties', () => {
 				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
 				const buttonArrow = dropdown.buttonView.arrowView;
 

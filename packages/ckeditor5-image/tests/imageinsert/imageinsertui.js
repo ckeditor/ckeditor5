@@ -74,10 +74,14 @@ describe( 'ImageInsertUI', () => {
 			return editor.destroy();
 		} );
 
-		describe( 'should register the "insertImage" dropdown', () => {
-			it( 'button with proper properties set', () => {
-				expect( dropdown ).to.be.instanceOf( DropdownView );
+		it( 'should register the "insertImage" dropdown', () => {
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
+			expect( dropdown ).to.be.instanceOf( DropdownView );
+		} );
+
+		describe( 'button', () => {
+			it( 'should have the base properties set correctly', () => {
 				const button = dropdown.buttonView;
 
 				expect( button.isOn ).to.be.false;
@@ -86,9 +90,7 @@ describe( 'ImageInsertUI', () => {
 				expect( button.icon ).to.match( /<svg / );
 			} );
 
-			it( 'button arrow with proper properties set', () => {
-				expect( dropdown ).to.be.instanceOf( DropdownView );
-
+			it( 'should have an arrow with the base properties set correctly', () => {
 				const buttonArrow = dropdown.buttonView.arrowView;
 
 				expect( buttonArrow.tooltip ).to.be.true;
