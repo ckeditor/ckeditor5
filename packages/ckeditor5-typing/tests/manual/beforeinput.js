@@ -152,7 +152,7 @@ ClassicEditor
 			);
 		}, { priority: 'highest' } );
 
-		editor.editing.view.document.on( 'compositionend', ( evt, data ) => {
+		editor.editing.view.document.on( 'compositionend', () => {
 			console.log(
 				`%c└───────────────────────────── ＃${ compositionEventCount } compositionend ─────────────────────────────┘`,
 				'font-weight: bold; color: green'
@@ -162,54 +162,3 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-let beforeInputEventCount = 0;
-let compositionEventCount = 0;
-
-document.addEventListener( 'beforeinput', evt => {
-	// Don't log for the editor.
-	if ( evt.target.closest( '.ck-content' ) ) {
-		return;
-	}
-
-	const { inputType, data, isComposing } = evt;
-
-	console.group(
-		`#${ ++beforeInputEventCount } ` +
-		'native beforeInput ' +
-		`(%c"${ inputType }"%c${ isComposing ? ',%c isComposing' : '%c' }%c)`,
-		'color: blue', 'color: default', 'color: green', 'color: default'
-	);
-
-	if ( data ) {
-		console.log( `%cdata:%c "${ data }"`, 'font-weight: bold', 'font-weight: default' );
-	} else {
-		console.log( '%cdata:', 'font-weight: bold', data );
-	}
-
-	console.groupEnd();
-} );
-
-document.addEventListener( 'compositionstart', evt => {
-	// Don't log for the editor.
-	if ( evt.target.closest( '.ck-content' ) ) {
-		return;
-	}
-
-	console.log(
-		`%c┌───────────────────────────── ＃${ ++compositionEventCount } native compositionstart ─────────────────────────────┐`,
-		'font-weight: bold; color: green'
-	);
-} );
-
-document.addEventListener( 'compositionend', evt => {
-	// Don't log for the editor.
-	if ( evt.target.closest( '.ck-content' ) ) {
-		return;
-	}
-
-	console.log(
-		`%c└───────────────────────────── ＃${ compositionEventCount } native compositionend ─────────────────────────────┘`,
-		'font-weight: bold; color: green'
-	);
-} );
