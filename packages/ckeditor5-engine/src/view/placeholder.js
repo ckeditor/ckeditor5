@@ -264,10 +264,10 @@ function updatePlaceholder( writer, element, config ) {
 
 			wasViewModified = true;
 		}
-	} else if ( hidePlaceholder( writer, hostElement ) ) {
+	} else if ( hidePlaceholder( writer, hostElement ) && hostElement.parent ) {
 		writer.removeAttribute(
 			'aria-placeholder',
-			hostElement.parent === hostElement.root ? hostElement.parent : hostElement
+			hostElement.parent === hostElement.root ? hostElement : hostElement.parent
 		);
 		writer.removeAttribute( 'aria-hidden', hostElement );
 
