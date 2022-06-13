@@ -9,7 +9,7 @@ meta-description: Learn how to install, integrate, configure and develop CKEdito
 
 # Updating CKEditor 5
 
-Learn how to update from previous versions of CKEditor 5 to the most current one. Find out what breaking changes were introduced between releases and how they affect your CKEditor 5 integration. Please refer to the {@link updating/index Updating CKEditor 5} guide first, if you have not done such operations before.
+Learn how to update from previous versions of CKEditor 5 to the most current one. Find out what breaking changes were introduced between releases and how they affect your CKEditor 5 integration. Please refer to the {@link updating/updating Updating CKEditor 5} guide first, if you have not done such operations before.
 
 
 

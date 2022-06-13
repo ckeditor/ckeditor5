@@ -1,6 +1,6 @@
 ---
 category: examples-framework
-order: 30
+order: 110
 ---
 
 # Multi-root editor
