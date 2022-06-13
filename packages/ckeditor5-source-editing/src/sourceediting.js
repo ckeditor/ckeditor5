@@ -233,10 +233,6 @@ export default class SourceEditing extends Plugin {
 		const editingView = editor.editing.view;
 		const model = editor.model;
 
-		// We're overwriting the focusTracker each time the source editing is being shown because
-		// `focusTracker.destroy()` doesn't correctly clear the tracked element list.
-		this._focusTracker = new FocusTracker();
-
 		model.change( writer => {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
@@ -282,10 +278,7 @@ export default class SourceEditing extends Plugin {
 		const toolbar = editor.ui.view.toolbar;
 
 		if ( toolbar && textarea ) {
-			// Start listening for the keystrokes coming from the textarea.
 			this._keystrokes.listenTo( textarea );
-
-			// Listen for the keystrokes coming from the editor's toolbar.
 			this._keystrokes.listenTo( toolbar.element );
 
 			this._focusTracker.add( toolbar.element );
@@ -301,7 +294,7 @@ export default class SourceEditing extends Plugin {
 
 			this._keystrokes.set( 'Esc', ( data, cancel ) => {
 				if ( toolbar.focusTracker.isFocused ) {
-					textarea.focus();
+					this._focusSourceEditing();
 
 					cancel();
 				}
@@ -336,7 +329,13 @@ export default class SourceEditing extends Plugin {
 		editingView.focus();
 
 		this._keystrokes.destroy();
-		this._focusTracker.destroy();
+
+		// We have to remove all the tracker elements manually as `focusTracker.destroy()`
+		// doesn't do that. If we don't cleare the list, each time the source editing mode is enabled
+		// a new textarea is created, so the list of tracked elements will grow making it messy.
+		for ( const element of ( this._focusTracker._elements ) ) {
+			this._focusTracker.remove( element );
+		}
 	}
 
 	/**
