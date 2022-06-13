@@ -249,7 +249,6 @@ DecoupledEditor
 				'mergeTableCells'
 			]
 		},
-
 		cloudServices: {
 			// This editor configuration includes the Easy Image feature.
 			// Provide correct configuration values to use it.
