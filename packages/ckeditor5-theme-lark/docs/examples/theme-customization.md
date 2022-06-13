@@ -1,6 +1,6 @@
 ---
 category: examples-framework
-order: 10
+order: 90
 ---
 
 # Theme customization
