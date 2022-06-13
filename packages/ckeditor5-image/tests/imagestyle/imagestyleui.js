@@ -240,15 +240,16 @@ describe( 'ImageStyleUI', () => {
 		it( 'should define the drop-down properties and children properly', () => {
 			for ( const { config, view, buttonView } of dropdowns ) {
 				const defaultItem = allStyles.find( style => style.name === config.defaultItem.replace( 'imageStyle:', '' ) );
+				const expectedLabel = ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title;
 
 				expect( view ).to.be.instanceOf( DropdownView );
 				expect( buttonView ).to.be.instanceOf( SplitButtonView );
 
-				expect( buttonView.label ).to.equal( ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title );
+				expect( buttonView.label ).to.equal( expectedLabel );
 				expect( buttonView.tooltip ).to.be.true;
 				expect( buttonView.class ).to.be.null;
 
-				expect( buttonView.arrowView.label ).to.equal( ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title );
+				expect( buttonView.arrowView.label ).to.equal( expectedLabel );
 				expect( buttonView.arrowView.tooltip ).to.be.true;
 
 				expect( view.toolbarView.items ).to.have.lengthOf( config.items.length );

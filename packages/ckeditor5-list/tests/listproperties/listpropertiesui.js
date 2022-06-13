@@ -205,21 +205,15 @@ describe( 'ListPropertiesUI', () => {
 					sinon.assert.calledOnce( editor.editing.view.focus );
 					sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 				} );
-			} );
 
-			describe( 'main split button arrow', () => {
-				let mainButtonViewArrow;
+				describe( 'arrow', () => {
+					it( 'should have a #label', () => {
+						expect( mainButtonView.arrowView.label ).to.equal( 'Bulleted List' );
+					} );
 
-				beforeEach( () => {
-					mainButtonViewArrow = bulletedListDropdown.buttonView.arrowView;
-				} );
-
-				it( 'should have a #label', () => {
-					expect( mainButtonViewArrow.label ).to.equal( 'Bulleted List' );
-				} );
-
-				it( 'should have a #tooltip based on a label', () => {
-					expect( mainButtonViewArrow.tooltip ).to.be.true;
+					it( 'should have a #tooltip based on a label', () => {
+						expect( mainButtonView.arrowView.tooltip ).to.be.true;
+					} );
 				} );
 			} );
 
