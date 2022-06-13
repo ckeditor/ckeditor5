@@ -330,12 +330,10 @@ export default class SourceEditing extends Plugin {
 
 		this._keystrokes.destroy();
 
-		// We have to remove all the tracker elements manually as `focusTracker.destroy()`
+		// We have to remove all the tracker elements directly as `focusTracker.destroy()`
 		// doesn't do that. If we don't cleare the list, each time the source editing mode is enabled
 		// a new textarea is created, so the list of tracked elements will grow making it messy.
-		for ( const element of ( this._focusTracker._elements ) ) {
-			this._focusTracker.remove( element );
-		}
+		this._focusTracker._elements.clear();
 	}
 
 	/**
