@@ -80,24 +80,6 @@ describe( 'ImageInsertUI', () => {
 			expect( dropdown ).to.be.instanceOf( DropdownView );
 		} );
 
-		describe( 'button', () => {
-			it( 'should have the base properties set correctly', () => {
-				const button = dropdown.buttonView;
-
-				expect( button.isOn ).to.be.false;
-				expect( button.tooltip ).to.be.true;
-				expect( button.label ).to.equal( 'Insert image' );
-				expect( button.icon ).to.match( /<svg / );
-			} );
-
-			it( 'should have an arrow with the base properties set correctly', () => {
-				const buttonArrow = dropdown.buttonView.arrowView;
-
-				expect( buttonArrow.tooltip ).to.be.true;
-				expect( buttonArrow.label ).to.equal( 'Insert image' );
-			} );
-		} );
-
 		it( 'should register "imageInsert" dropdown as an alias for the "insertImage" dropdown', () => {
 			const dropdownCreator = editor.ui.componentFactory._components.get( 'insertImage'.toLowerCase() );
 			const dropdownAliasCreator = editor.ui.componentFactory._components.get( 'imageInsert'.toLowerCase() );

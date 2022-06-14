@@ -382,15 +382,6 @@ describe( 'TableUI', () => {
 			expect( button.icon ).to.match( /<svg / );
 		} );
 
-		it( 'have button arrow with proper properties set', () => {
-			expect( dropdown ).to.be.instanceOf( DropdownView );
-
-			const buttonArrow = dropdown.buttonView.arrowView;
-
-			expect( buttonArrow.tooltip ).to.be.true;
-			expect( buttonArrow.label ).to.equal( 'Merge cells' );
-		} );
-
 		it( 'should have a split button', () => {
 			expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
 		} );
