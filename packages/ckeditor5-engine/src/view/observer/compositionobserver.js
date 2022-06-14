@@ -7,6 +7,8 @@
  * @module engine/view/observer/compositionobserver
  */
 
+/* globals window, console */
+
 import DomEventObserver from './domeventobserver';
 import DomEventData from './domeventdata';
 
@@ -48,7 +50,19 @@ export default class CompositionObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvent ) {
+		if ( window.logCKEEvents ) {
+			console.group( '[CompositionObserver]', domEvent.type );
+
+			console.groupCollapsed( '[CompositionObserver] DOM event' );
+			console.dir( domEvent );
+			console.groupEnd();
+		}
+
 		this.fire( domEvent.type, domEvent );
+
+		if ( window.logCKEEvents ) {
+			console.groupEnd();
+		}
 	}
 }
 

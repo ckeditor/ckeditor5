@@ -7,6 +7,8 @@
  * @module engine/controller/editingcontroller
  */
 
+/* globals window, console */
+
 import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
 import Mapper from '../conversion/mapper';
@@ -106,6 +108,47 @@ export default class EditingController {
 
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
+
+		this.listenTo( this.view.document, 'change:isComposing', () => {
+			if ( !window.logCKEEvents ) {
+				return;
+			}
+
+			if ( this.view.document.isComposing ) {
+				console.log(
+					'%c┌───────────────────────────── isComposing = true ─────────────────────────────┐',
+					'font-weight: bold; color: green'
+				);
+			} else {
+				console.log(
+					'%c└───────────────────────────── isComposing = false ─────────────────────────────┘',
+					'font-weight: bold; color: green'
+				);
+			}
+		}, { priority: 'low' } );
+
+		this.listenTo( this.view.document, 'keydown', ( evt, domEventData ) => {
+			if ( window.logCKEEvents ) {
+				console.group( '[EditingController] keydown', domEventData.keyCode );
+				console.groupCollapsed( '[EditingController] DOM event' );
+				console.info( domEventData );
+				console.groupEnd();
+			}
+
+			if ( domEventData.keyCode === 229 && !this.view.document.isComposing && !model.document.selection.isCollapsed ) {
+				if ( window.logCKEEvents ) {
+					console.log( '[EditingController] keyCode 229 before isComposing -> delete content',
+						`[${ model.document.selection.getFirstPosition().path }]-[${ model.document.selection.getLastPosition().path }]`
+					);
+				}
+
+				model.deleteContent( model.document.selection );
+			}
+
+			if ( window.logCKEEvents ) {
+				console.groupEnd();
+			}
+		}, { priority: 'lowest' } );
 
 		// Attach default model converters.
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );

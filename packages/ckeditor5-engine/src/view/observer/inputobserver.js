@@ -7,6 +7,8 @@
  * @module engine/view/observer/inputobserver
  */
 
+/* globals window, console */
+
 import DomEventObserver from './domeventobserver';
 import DataTransfer from '../datatransfer';
 
@@ -26,6 +28,10 @@ export default class InputObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvent ) {
+		if ( window.logCKEEvents ) {
+			console.group( '[InputObserver]', domEvent.type, domEvent.inputType );
+		}
+
 		const domTargetRanges = domEvent.getTargetRanges();
 		const view = this.view;
 		const viewDocument = view.document;
@@ -49,10 +55,18 @@ export default class InputObserver extends DomEventObserver {
 		if ( viewDocument.selection.isFake ) {
 			// Future proof: in case of multi-range fake selections being possible.
 			targetRanges = [ ...viewDocument.selection.getRanges() ];
+
+			if ( window.logCKEEvents ) {
+				console.info( '[InputObserver] using fake selection', targetRanges );
+			}
 		} else {
 			targetRanges = domTargetRanges.map( domRange => {
 				return view.domConverter.domRangeToView( domRange );
 			} );
+
+			if ( window.logCKEEvents ) {
+				console.info( '[InputObserver] using target ranges:', targetRanges );
+			}
 		}
 
 		this.fire( domEvent.type, domEvent, {
@@ -62,6 +76,10 @@ export default class InputObserver extends DomEventObserver {
 			targetRanges,
 			inputType: domEvent.inputType
 		} );
+
+		if ( window.logCKEEvents ) {
+			console.groupEnd();
+		}
 	}
 }
 

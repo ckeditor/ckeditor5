@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Node */
+/* globals Node, window, console */
 
 /**
  * @module engine/view/renderer
@@ -11,7 +11,6 @@
 
 import ViewText from './text';
 import ViewPosition from './position';
-import ViewRange from './range';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -210,11 +209,16 @@ export default class Renderer {
 	 * removed as long as the selection is in the text node which needed it at first.
 	 */
 	render() {
-		// console.info( '[Renderer] Rendering.' );
 		if ( this.isComposing ) {
-			console.info( '[Renderer] Rendering while composing aborted.' );
+			if ( window.logCKEEvents ) {
+				console.info( '[Renderer] Rendering aborted while isComposing' );
+			}
 
 			return;
+		}
+
+		if ( window.logCKEEvents ) {
+			console.info( '[Renderer] Rendering' );
 		}
 
 		let inlineFillerPosition;
@@ -838,6 +842,10 @@ export default class Renderer {
 		// selected. If there is any editable selected, it is okay (editable is taken from selection anchor).
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor );
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus );
+
+		if ( window.logCKEEvents ) {
+			console.info( '[Renderer] update DOM selection', anchor, focus );
+		}
 
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );

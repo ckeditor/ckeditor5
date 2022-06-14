@@ -12,12 +12,10 @@ import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobs
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import verticalNavigationHandler from './verticalnavigation';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
 
 import '../theme/widget.css';
 
@@ -175,75 +173,6 @@ export default class Widget extends Plugin {
 				evt.stop();
 			}
 		}, { context: '$root' } );
-
-		let widgetToolbarRepositoryPlugin;
-
-		if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
-			widgetToolbarRepositoryPlugin = editor.plugins.get( 'WidgetToolbarRepository' );
-		}
-
-		// TODO here or in the fake selection observer?
-
-		this.listenTo( viewDocument, 'change:isComposing', () => {
-			if ( viewDocument.isComposing ) {
-				const model = editor.model;
-				const selection = model.document.selection;
-				const selectedElement = selection.getSelectedElement();
-
-				if ( !selectedElement || !model.schema.isObject( selectedElement ) ) {
-					return;
-				}
-
-				if ( widgetToolbarRepositoryPlugin ) {
-					widgetToolbarRepositoryPlugin.forceDisabled( 'WidgetComposition' );
-				}
-
-				const sel = global.document.getSelection();
-				const inlineFSC = global.document.createElement( model.schema.isInline( selectedElement ) ? 'span' : 'p' );
-
-				// TODO this should be moved to renderer
-				if ( model.schema.isInline( selectedElement ) ) {
-					inlineFSC.innerHTML = '\u2060';
-				} else {
-					inlineFSC.innerHTML = '<br>';
-				}
-
-				const viewSelectedElement = editor.editing.mapper.toViewElement( selectedElement );
-				const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
-
-				const domSelectedElement = view.domConverter.mapViewToDom( viewSelectedElement );
-
-				// Composing on a widget.
-				if ( !typeAroundFakeCaretPosition ) {
-					domSelectedElement.parentElement.replaceChild( inlineFSC, domSelectedElement );
-				}
-				// Composing on a fake caret (before or after a widget).
-				else {
-					if ( typeAroundFakeCaretPosition == 'before' ) {
-						domSelectedElement.parentElement.insertBefore( inlineFSC, domSelectedElement );
-					} else if ( typeAroundFakeCaretPosition == 'after' ) {
-						domSelectedElement.parentElement.insertBefore( inlineFSC, domSelectedElement.nextSibling );
-					}
-
-					// Make it look like not selected and without fake caret.
-					domSelectedElement.classList.remove(
-						`ck-widget_type-around_show-fake-caret_${ typeAroundFakeCaretPosition }`,
-						'ck-widget_selected'
-					);
-				}
-
-				// Move DOM selection to the inline container to compose in the correct place.
-				if ( model.schema.isInline( selectedElement ) ) {
-					sel.collapse( inlineFSC.firstChild, 1 );
-				} else {
-					sel.collapse( inlineFSC, 0 );
-				}
-			}
-			// Composition end.
-			else if ( widgetToolbarRepositoryPlugin ) {
-				widgetToolbarRepositoryPlugin.clearForceDisabled( 'WidgetComposition' );
-			}
-		} );
 	}
 
 	/**

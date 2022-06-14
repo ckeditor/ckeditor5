@@ -27,6 +27,17 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
+for ( const input of document.querySelectorAll( 'input[name=logEvents]' ) ) {
+	window[ input.value ] = input.checked;
+
+	input.addEventListener( 'change', ( { target } ) => {
+		window[ target.value ] = target.checked;
+	} );
+}
+
+// Importing native event listeners after the above window properties are initialized.
+import './beforeinput-contenteditable';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
@@ -109,55 +120,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		let beforeInputEventCount = 0;
-		let compositionEventCount = 0;
-
-		editor.editing.view.document.on( 'beforeinput', ( evt, evtData ) => {
-			const { targetRanges, data, inputType, isComposing } = evtData;
-
-			console.group(
-				`#${ ++beforeInputEventCount } ` +
-				'beforeInput ' +
-				`(%c"${ inputType }"%c${ isComposing ? ',%c isComposing' : '%c' }%c)`,
-				'color: blue', 'color: default', 'color: green', 'color: default'
-			);
-
-			if ( data ) {
-				console.log( `%cdata:%c "${ data }"`, 'font-weight: bold', 'font-weight: default' );
-			} else {
-				console.log( '%cdata:', 'font-weight: bold', data );
-			}
-			console.log( '%ctargetRanges:', 'font-weight: bold', targetRanges );
-
-			// TODO: Note: In FF sometimes it exists but is null. This should be fixed in inputobserver.
-			if ( targetRanges.length && targetRanges[ 0 ] ) {
-				console.group( 'first range' );
-				console.log( '%cstart:', 'font-weight: bold', targetRanges[ 0 ].start );
-				console.log( '%cend:', 'font-weight: bold', targetRanges[ 0 ].end );
-				console.log( '%cisCollapsed:', 'font-weight: bold', targetRanges[ 0 ].isCollapsed );
-				console.groupEnd( 'first range' );
-			}
-
-			// console.log( '%cdataTransfer:', 'font-weight: bold', evtData.dataTransfer );
-			// console.log( '%cfull event data:', 'font-weight: bold', evtData );
-
-			console.groupEnd();
-		}, { priority: 'highest' } );
-
-		editor.editing.view.document.on( 'compositionstart', () => {
-			console.log(
-				`%c┌───────────────────────────── ＃${ ++compositionEventCount } compositionstart ─────────────────────────────┐`,
-				'font-weight: bold; color: green'
-			);
-		}, { priority: 'highest' } );
-
-		editor.editing.view.document.on( 'compositionend', () => {
-			console.log(
-				`%c└───────────────────────────── ＃${ compositionEventCount } compositionend ─────────────────────────────┘`,
-				'font-weight: bold; color: green'
-			);
-		}, { priority: 'highest' } );
 	} )
 	.catch( err => {
 		console.error( err.stack );

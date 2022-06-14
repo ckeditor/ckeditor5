@@ -7,7 +7,7 @@
  * @module engine/view/observer/selectionobserver
  */
 
-/* global setInterval, clearInterval */
+/* global setInterval, clearInterval, window, console */
 
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
@@ -141,15 +141,32 @@ export default class SelectionObserver extends Observer {
 
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
+			if ( window.logCKEEvents ) {
+				const domSelection = domDocument.defaultView.getSelection();
+
+				console.group( '[SelectionObserver] selectionchange' );
+				console.groupCollapsed( '[SelectionObserver] DOM selection' );
+				console.info(
+					domSelection.anchorNode, domSelection.anchorOffset,
+					domSelection.focusNode, domSelection.focusOffset
+				);
+				console.groupEnd();
+			}
+
 			if ( this.document.isComposing ) {
-				console.info( '[SelectiobObserver] Selection change when composing aborted.' );
+				if ( window.logCKEEvents ) {
+					console.info( '[SelectionObserver] Selection change ignored (isComposing)' );
+					console.groupEnd();
+				}
 
 				return;
 			}
 
-			console.log( '[SelectiobObserver] _handleSelectionChange()' );
-
 			this._handleSelectionChange( domEvent, domDocument );
+
+			if ( window.logCKEEvents ) {
+				console.groupEnd();
+			}
 
 			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
 			// using their mouse).
@@ -225,6 +242,10 @@ export default class SelectionObserver extends Observer {
 		}
 
 		if ( this.selection.isSimilar( newViewSelection ) ) {
+			if ( window.logCKEEvents ) {
+				console.info( '[SelectionObserver] is similar -> force render' );
+			}
+
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
 			// Just re-render it, no need to fire any events, etc.
 			this.view.forceRender();
@@ -234,6 +255,10 @@ export default class SelectionObserver extends Observer {
 				newSelection: newViewSelection,
 				domSelection
 			};
+
+			if ( window.logCKEEvents ) {
+				console.info( '[SelectionObserver] fire selection change', newViewSelection.getFirstRange() );
+			}
 
 			// Prepare data for new selection and fire appropriate events.
 			this.document.fire( 'selectionChange', data );

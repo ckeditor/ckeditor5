@@ -3,9 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, document */
+/* globals console, window, document */
 
 import { debounce } from 'lodash-es';
+
+if ( window.logNative === undefined ) {
+	window.logNative = true;
+}
 
 document.addEventListener( 'beforeinput', logEvent );
 document.addEventListener( 'compositionstart', logEvent );
@@ -22,7 +26,11 @@ const debouncedLine = debounce( () => {
 }, 300 );
 
 function logEvent( evt ) {
-	if ( !document.activeElement || document.activeElement.getAttribute( 'id' ) != 'raw-contenteditable' ) {
+	if ( !window.logNative ) {
+		return;
+	}
+
+	if ( !document.activeElement || !document.activeElement.getAttribute( 'contenteditable' ) ) {
 		return;
 	}
 
