@@ -81,6 +81,7 @@ export default class ImageCaptionEditing extends Plugin {
 
 		this._setupConversion();
 		this._setupImageTypeCommandsIntegration();
+		this._registerCaptionReconversion();
 	}
 
 	/**
@@ -244,5 +245,37 @@ export default class ImageCaptionEditing extends Plugin {
 	 */
 	_saveCaption( imageModelElement, caption ) {
 		this._savedCaptionsMap.set( imageModelElement, caption.toJSON() );
+	}
+
+	/**
+	 * Reconverts image caption when image alt attribute changes.
+	 * The change of alt attribute is reflected in caption's aria-label attribute.
+	 *
+	 * @private
+	 */
+	_registerCaptionReconversion() {
+		const model = this.editor.model;
+
+		model.document.on( 'change:data', () => {
+			const changes = model.document.differ.getChanges();
+
+			for ( const change of changes ) {
+				if ( change.attributeKey !== 'alt' ) {
+					return;
+				}
+
+				const image = change.range.start.nodeAfter;
+
+				if ( image.name === 'imageBlock' ) {
+					const caption = change.range.end.nodeAfter;
+
+					if ( !caption ) {
+						return;
+					}
+
+					this.editor.editing.reconvertItem( caption );
+				}
+			}
+		} );
 	}
 }
