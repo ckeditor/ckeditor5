@@ -197,14 +197,6 @@ describe( 'CodeBlockUI', () => {
 				expect( button ).to.have.property( 'isToggleable', true );
 			} );
 
-			it( 'arrow has the base properties', () => {
-				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
-				const buttonArrow = dropdown.buttonView.arrowView;
-
-				expect( buttonArrow ).to.have.property( 'label', 'Insert code block' );
-				expect( buttonArrow ).to.have.property( 'tooltip', true );
-			} );
-
 			it( 'has #isOn bound to command\'s value', () => {
 				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
 				const button = dropdown.buttonView;
