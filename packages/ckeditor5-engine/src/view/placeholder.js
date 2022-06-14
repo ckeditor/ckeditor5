@@ -256,21 +256,9 @@ function updatePlaceholder( writer, element, config ) {
 
 	if ( isOnlyChild && needsPlaceholder( hostElement, config.keepOnFocus ) ) {
 		if ( showPlaceholder( writer, hostElement ) ) {
-			writer.setAttribute(
-				'aria-placeholder',
-				text,
-				hostElement.parent === hostElement.root ? hostElement.parent : hostElement );
-			writer.setAttribute( 'aria-hidden', true, hostElement );
-
 			wasViewModified = true;
 		}
-	} else if ( hidePlaceholder( writer, hostElement ) && hostElement.parent ) {
-		writer.removeAttribute(
-			'aria-placeholder',
-			hostElement.parent === hostElement.root ? hostElement : hostElement.parent
-		);
-		writer.removeAttribute( 'aria-hidden', hostElement );
-
+	} else if ( hidePlaceholder( writer, hostElement ) ) {
 		wasViewModified = true;
 	}
 

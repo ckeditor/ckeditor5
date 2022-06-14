@@ -41,134 +41,9 @@ describe( 'placeholder', () => {
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
-		describe( 'should attach aria attributes', () => {
-			it( 'proper CSS class and data attribute to an only element in the editor', () => {
-				setData( view, '<div><div></div></div>' );
-				const element = viewRoot.getChild( 0 ).getChild( 0 );
-
-				enablePlaceholder( {
-					view,
-					element,
-					text: 'foo bar baz'
-				} );
-
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
-				expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
-			} );
-
-			it( 'proper CSS class and data attribute to the table caption', () => {
-				setData( view,
-					'<figure class="table">' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td></td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-						'<figcaption></figcaption>' +
-					'</figure>'
-				);
-				const element = viewRoot.getChild( 0 ).getChild( 1 );
-
-				enablePlaceholder( {
-					view,
-					element,
-					text: 'foo bar baz'
-				} );
-
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
-				expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
-			} );
-
-			it( 'proper CSS class and data attribute to the image caption', () => {
-				setData( view,
-					'<figure class="image"><img /><figcaption></figcaption></figure>'
-				);
-				const element = viewRoot.getChild( 0 ).getChild( 1 );
-
-				enablePlaceholder( {
-					view,
-					element,
-					text: 'foo bar baz'
-				} );
-
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
-				expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
-			} );
-
-			it( 'and remove it when text has been added to an only element in the editor', () => {
-				setData( view, '<div><div>foo</div></div>' );
-				const element = viewRoot.getChild( 0 ).getChild( 0 );
-
-				enablePlaceholder( {
-					view,
-					element,
-					text: 'foo bar baz'
-				} );
-
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasAttribute( 'aria-hidden' ) ).to.be.false;
-				expect( element.hasAttribute( 'aria-placeholder' ) ).to.be.false;
-				expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
-			} );
-
-			it( 'and remove it when text has been added to the table caption', () => {
-				setData( view,
-					'<figure class="table">' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td></td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-						'<figcaption>foo</figcaption>' +
-					'</figure>'
-				);
-				const element = viewRoot.getChild( 0 ).getChild( 1 );
-
-				enablePlaceholder( {
-					view,
-					element,
-					text: 'foo bar baz'
-				} );
-
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasAttribute( 'aria-hidden' ) ).to.be.false;
-				expect( element.hasAttribute( 'aria-placeholder' ) ).to.be.false;
-				expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
-			} );
-
-			it( 'and remove it when text has been added to the image caption', () => {
-				setData( view,
-					'<figure class="image"><img /><figcaption>foo</figcaption></figure>'
-				);
-				const element = viewRoot.getChild( 0 ).getChild( 1 );
-
-				enablePlaceholder( {
-					view,
-					element,
-					text: 'foo bar baz'
-				} );
-
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasAttribute( 'aria-hidden' ) ).to.be.false;
-				expect( element.hasAttribute( 'aria-placeholder' ) ).to.be.false;
-				expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
-			} );
-		} );
-
 		it( 'should attach proper CSS class and data attribute (isDirectHost=false)', () => {
 			setData( view, '<p></p>' );
 			viewDocument.isFocused = false;
-			const element = viewRoot.getChild( 0 );
 
 			enablePlaceholder( {
 				view,
@@ -177,8 +52,8 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
 		it( 'if element has children set only data attribute', () => {
