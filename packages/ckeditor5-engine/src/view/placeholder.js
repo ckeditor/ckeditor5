@@ -75,7 +75,7 @@ export function disablePlaceholder( view, element ) {
 		const placeholders = documentPlaceholders.get( doc );
 		const config = placeholders.get( element );
 
-		writer.removeAttribute( 'data-placeholder', config.hostElement );
+		writer.removeAttribute( 'aria-placeholder', config.hostElement );
 		hidePlaceholder( writer, config.hostElement );
 
 		placeholders.delete( element );
@@ -246,8 +246,8 @@ function updatePlaceholder( writer, element, config ) {
 	let wasViewModified = false;
 
 	// This may be necessary when updating the placeholder text to something else.
-	if ( hostElement.getAttribute( 'data-placeholder' ) !== text ) {
-		writer.setAttribute( 'data-placeholder', text, hostElement );
+	if ( hostElement.getAttribute( 'aria-placeholder' ) !== text ) {
+		writer.setAttribute( 'aria-placeholder', text, hostElement );
 		wasViewModified = true;
 	}
 

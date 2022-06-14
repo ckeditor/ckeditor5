@@ -361,10 +361,10 @@ export default class Title extends Plugin {
 			if ( body !== oldBody ) {
 				if ( oldBody ) {
 					hidePlaceholder( writer, oldBody );
-					writer.removeAttribute( 'data-placeholder', oldBody );
+					writer.removeAttribute( 'aria-placeholder', oldBody );
 				}
 
-				writer.setAttribute( 'data-placeholder', bodyPlaceholder, body );
+				writer.setAttribute( 'aria-placeholder', bodyPlaceholder, body );
 				oldBody = body;
 				hasChanged = true;
 			}

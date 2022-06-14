@@ -12,7 +12,7 @@
 		position: absolute;
 		left: 0;
 		right: 0;
-		content: attr(data-placeholder);
+		content: attr(aria-placeholder);
 
 		/* See ckeditor/ckeditor5#469. */
 		pointer-events: none;

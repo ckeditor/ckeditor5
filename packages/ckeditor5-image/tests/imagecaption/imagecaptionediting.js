@@ -200,8 +200,9 @@ describe( 'ImageCaptionEditing', () => {
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-							'contenteditable="true" data-placeholder="Enter image caption">' +
+						'<figcaption aria-placeholder="Enter image caption" ' +
+							'class="ck-editor__editable ck-editor__nested-editable" ' +
+							'contenteditable="true">' +
 							'Foo bar baz.' +
 						'</figcaption>' +
 					'</figure>'
@@ -256,8 +257,9 @@ describe( 'ImageCaptionEditing', () => {
 					'<p>{}foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-							'contenteditable="true" data-placeholder="Enter image caption">' +
+						'<figcaption aria-placeholder="Enter image caption" ' +
+							'class="ck-editor__editable ck-editor__nested-editable" ' +
+							'contenteditable="true">' +
 							'foo bar' +
 						'</figcaption>' +
 					'</figure>'
@@ -278,8 +280,9 @@ describe( 'ImageCaptionEditing', () => {
 					'<p>{}foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-							'contenteditable="true" data-placeholder="Enter image caption">' +
+						'<figcaption aria-placeholder="Enter image caption" ' +
+							'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+							'contenteditable="true">' +
 						'</figcaption>' +
 					'</figure>'
 				);
@@ -299,8 +302,9 @@ describe( 'ImageCaptionEditing', () => {
 					'<p>{}foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-							'contenteditable="true" data-placeholder="Enter image caption">baz</figcaption>' +
+						'<figcaption aria-placeholder="Enter image caption" ' +
+							'class="ck-editor__editable ck-editor__nested-editable" ' +
+							'contenteditable="true">baz</figcaption>' +
 					'</figure>'
 				);
 			} );
@@ -335,8 +339,9 @@ describe( 'ImageCaptionEditing', () => {
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable highlight-yellow" ' +
-								'contenteditable="true" data-foo="yellow" data-placeholder="Enter image caption">' +
+						'<figcaption aria-placeholder="Enter image caption" ' +
+							'class="ck-editor__editable ck-editor__nested-editable highlight-yellow" ' +
+							'contenteditable="true" data-foo="yellow">' +
 							'Foo bar baz.' +
 						'</figcaption>' +
 					'</figure>'
@@ -349,8 +354,9 @@ describe( 'ImageCaptionEditing', () => {
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-								'contenteditable="true" data-placeholder="Enter image caption">' +
+						'<figcaption aria-placeholder="Enter image caption" ' +
+							'class="ck-editor__editable ck-editor__nested-editable" ' +
+							'contenteditable="true">' +
 							'Foo bar baz.' +
 						'</figcaption>' +
 					'</figure>'
@@ -448,8 +454,9 @@ describe( 'ImageCaptionEditing', () => {
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img alt="" src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-						'contenteditable="true" data-placeholder="Enter image caption">' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable" ' +
+						'contenteditable="true">' +
 						'foo bar' +
 					'</figcaption>' +
 				'</figure>]' +
@@ -477,8 +484,9 @@ describe( 'ImageCaptionEditing', () => {
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img alt="" src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+						'contenteditable="true"></figcaption>' +
 				'</figure>]' +
 				'<p></p>'
 			);
@@ -528,8 +536,9 @@ describe( 'ImageCaptionEditing', () => {
 				'<p>foo</p>' +
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption">' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+						'contenteditable="true">' +
 					'</figcaption>' +
 				'</figure>]'
 			);
@@ -542,8 +551,9 @@ describe( 'ImageCaptionEditing', () => {
 				'<p>{}foo</p>' +
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption">' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+						'contenteditable="true">' +
 					'</figcaption>' +
 				'</figure>'
 			);
@@ -558,8 +568,9 @@ describe( 'ImageCaptionEditing', () => {
 				'<p>foo</p>' +
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption">' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+						'contenteditable="true">' +
 					'</figcaption>' +
 				'</figure>]'
 			);
@@ -578,8 +589,9 @@ describe( 'ImageCaptionEditing', () => {
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption ' +
+						'aria-placeholder="Enter image caption" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-editor__nested-editable_focused ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption">[]' +
+						'contenteditable="true">[]' +
 					'</figcaption>' +
 				'</figure>'
 			);
@@ -592,8 +604,9 @@ describe( 'ImageCaptionEditing', () => {
 				'<p>foo</p>' +
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-						'contenteditable="true" data-placeholder="Enter image caption">foo bar</figcaption>' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable" ' +
+						'contenteditable="true">foo bar</figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -609,8 +622,9 @@ describe( 'ImageCaptionEditing', () => {
 				'<p>{}foo</p>' +
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption">' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+						'contenteditable="true">' +
 					'</figcaption>' +
 				'</figure>'
 			);
@@ -626,8 +640,9 @@ describe( 'ImageCaptionEditing', () => {
 			expect( getViewData( view ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption">' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+						'contenteditable="true">' +
 						'[]' +
 					'</figcaption>' +
 				'</figure>'
@@ -646,8 +661,9 @@ describe( 'ImageCaptionEditing', () => {
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+						'contenteditable="true"></figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -665,13 +681,15 @@ describe( 'ImageCaptionEditing', () => {
 			expect( getViewData( view ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-						'contenteditable="true" data-placeholder="Enter image caption">foo bar</figcaption>' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable" ' +
+						'contenteditable="true">foo bar</figcaption>' +
 				'</figure>' +
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+						'contenteditable="true"></figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -684,8 +702,9 @@ describe( 'ImageCaptionEditing', () => {
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src="img.png"></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="false" data-placeholder="Enter image caption"></figcaption>' +
+					'<figcaption aria-placeholder="Enter image caption" ' +
+						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+						'contenteditable="false"></figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -709,8 +728,9 @@ describe( 'ImageCaptionEditing', () => {
 					'<p>{}foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src=""></img>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-							'contenteditable="true" data-placeholder="Enter image caption">' +
+						'<figcaption aria-placeholder="Enter image caption" ' +
+							'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+							'contenteditable="true">' +
 						'</figcaption>' +
 					'</figure>'
 				);
@@ -722,8 +742,9 @@ describe( 'ImageCaptionEditing', () => {
 					'<p>foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src=""></img>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-							'contenteditable="true" data-placeholder="Enter image caption">' +
+						'<figcaption aria-placeholder="Enter image caption" ' +
+							'class="ck-editor__editable ck-editor__nested-editable" ' +
+							'contenteditable="true">' +
 							'{foo bar baz}' +
 						'</figcaption>' +
 					'</figure>'

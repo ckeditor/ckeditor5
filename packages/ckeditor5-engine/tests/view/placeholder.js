@@ -37,7 +37,7 @@ describe( 'placeholder', () => {
 				text: 'foo bar baz'
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
@@ -52,7 +52,7 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
@@ -66,7 +66,7 @@ describe( 'placeholder', () => {
 				text: 'foo bar baz'
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -80,7 +80,7 @@ describe( 'placeholder', () => {
 				text: 'foo bar baz'
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
@@ -94,7 +94,7 @@ describe( 'placeholder', () => {
 				text: 'foo bar baz'
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -111,7 +111,7 @@ describe( 'placeholder', () => {
 
 			view.forceRender();
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
@@ -125,7 +125,7 @@ describe( 'placeholder', () => {
 				text: 'foo bar baz'
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			view.change( writer => {
@@ -151,7 +151,7 @@ describe( 'placeholder', () => {
 				text: 'new text'
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'new text' );
+			expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'new text' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
@@ -192,10 +192,10 @@ describe( 'placeholder', () => {
 				text: 'second placeholder'
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
+			expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'first placeholder' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
-			expect( secondElement.getAttribute( 'data-placeholder' ) ).to.equal( 'second placeholder' );
+			expect( secondElement.getAttribute( 'aria-placeholder' ) ).to.equal( 'second placeholder' );
 			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			// Move selection to the elements with placeholders.
@@ -207,10 +207,10 @@ describe( 'placeholder', () => {
 				writer.setSelection( ViewRange._createIn( secondElement ) );
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
+			expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'first placeholder' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 
-			expect( secondElement.getAttribute( 'data-placeholder' ) ).to.equal( 'second placeholder' );
+			expect( secondElement.getAttribute( 'aria-placeholder' ) ).to.equal( 'second placeholder' );
 			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -228,7 +228,7 @@ describe( 'placeholder', () => {
 				writer.setSelection( ViewRange._createIn( element ) );
 
 				// Here we are before rendering - placeholder is visible in first element;
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+				expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 			} );
 
@@ -247,7 +247,7 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'aria-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -263,7 +263,7 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'aria-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -286,7 +286,7 @@ describe( 'placeholder', () => {
 				isDirectHost: true
 			} );
 
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
+			expect( viewRoot.getChild( 0 ).getAttribute( 'aria-placeholder' ) ).to.equal( 'bar' );
 			expect( viewRoot.getChild( 0 ).isEmpty ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
@@ -304,7 +304,7 @@ describe( 'placeholder', () => {
 
 			view.forceRender();
 
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
@@ -319,7 +319,7 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'aria-placeholder' ) ).to.be.false;
 			expect( viewRoot.getChild( 0 ).isEmpty ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
@@ -335,7 +335,7 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'aria-placeholder' ) ).to.be.false;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -350,7 +350,7 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'aria-placeholder' ) ).to.be.false;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -365,18 +365,18 @@ describe( 'placeholder', () => {
 				keepOnFocus: true
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'aria-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			view.change( writer => {
 				writer.setSelection( ViewRange._createIn( element ) );
 
 				// Here we are before rendering - placeholder is visible in first element;
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+				expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'aria-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
@@ -391,18 +391,18 @@ describe( 'placeholder', () => {
 				// Defaults: keepOnFocus = false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'aria-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			view.change( writer => {
 				writer.setSelection( ViewRange._createIn( element ) );
 
 				// Here we are before rendering - placeholder is visible in first element;
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+				expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'aria-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 	} );
@@ -418,12 +418,12 @@ describe( 'placeholder', () => {
 				text: 'foo bar baz'
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( element.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			disablePlaceholder( view, element );
 
-			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( element.hasAttribute( 'aria-placeholder' ) ).to.be.false;
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -433,7 +433,7 @@ describe( 'placeholder', () => {
 
 			disablePlaceholder( view, element );
 
-			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( element.hasAttribute( 'aria-placeholder' ) ).to.be.false;
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -448,12 +448,12 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).getAttribute( 'aria-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			disablePlaceholder( view, viewRoot );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'aria-placeholder' ) ).to.be.false;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 	} );

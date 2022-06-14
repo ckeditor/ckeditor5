@@ -286,9 +286,9 @@
  *		};
  *
  * The placeholder text is displayed as a pseudo–element of an empty paragraph in the editor content.
- * The paragraph has the `.ck-placeholder` CSS class and the `data-placeholder` attribute.
+ * The paragraph has the `.ck-placeholder` CSS class and the `aria-placeholder` attribute.
  *
- *		<p data-placeholder="Type some text..." class="ck-placeholder">
+ *		<p aria-placeholder="Type some text..." class="ck-placeholder">
  *			::before
  *		</p>
  *

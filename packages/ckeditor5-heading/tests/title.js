@@ -602,8 +602,8 @@ describe( 'Title', () => {
 			const title = viewRoot.getChild( 0 );
 			const body = viewRoot.getChild( 1 );
 
-			expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'Type your title' );
-			expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'Type or paste your content here.' );
+			expect( title.getAttribute( 'aria-placeholder' ) ).to.equal( 'Type your title' );
+			expect( body.getAttribute( 'aria-placeholder' ) ).to.equal( 'Type or paste your content here.' );
 
 			expect( title.hasClass( 'ck-placeholder' ) ).to.equal( false );
 			expect( body.hasClass( 'ck-placeholder' ) ).to.equal( false );
@@ -618,8 +618,8 @@ describe( 'Title', () => {
 			const title = viewRoot.getChild( 0 );
 			const body = viewRoot.getChild( 1 );
 
-			expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'Type your title' );
-			expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'Type or paste your content here.' );
+			expect( title.getAttribute( 'aria-placeholder' ) ).to.equal( 'Type your title' );
+			expect( body.getAttribute( 'aria-placeholder' ) ).to.equal( 'Type or paste your content here.' );
 
 			expect( title.hasClass( 'ck-placeholder' ) ).to.equal( true );
 			expect( body.hasClass( 'ck-placeholder' ) ).to.equal( true );
@@ -634,7 +634,7 @@ describe( 'Title', () => {
 
 			const body = viewRoot.getChild( 1 );
 
-			expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'Type or paste your content here.' );
+			expect( body.getAttribute( 'aria-placeholder' ) ).to.equal( 'Type or paste your content here.' );
 			expect( body.hasClass( 'ck-placeholder' ) ).to.equal( false );
 		} );
 
@@ -646,7 +646,7 @@ describe( 'Title', () => {
 
 			const body = viewRoot.getChild( 1 );
 
-			expect( body.hasAttribute( 'data-placeholder' ) ).to.equal( true );
+			expect( body.hasAttribute( 'aria-placeholder' ) ).to.equal( true );
 			expect( body.hasClass( 'ck-placeholder' ) ).to.equal( false );
 		} );
 
@@ -694,14 +694,14 @@ describe( 'Title', () => {
 
 			bodyDomElement = domConverter.mapViewToDom( viewRoot.getChild( 1 ) );
 
-			expect( bodyDomElement.dataset.placeholder ).to.equal( 'Type or paste your content here.' );
+			expect( bodyDomElement.getAttribute( 'aria-placeholder' ) ).to.equal( 'Type or paste your content here.' );
 			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).to.equal( true );
 
 			editor.execute( 'undo' );
 
 			bodyDomElement = domConverter.mapViewToDom( viewRoot.getChild( 1 ) );
 
-			expect( bodyDomElement.dataset.placeholder ).to.equal( 'Type or paste your content here.' );
+			expect( bodyDomElement.getAttribute( 'aria-placeholder' ) ).to.equal( 'Type or paste your content here.' );
 			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).to.equal( false );
 		} );
 
@@ -739,8 +739,8 @@ describe( 'Title', () => {
 				const title = viewRoot.getChild( 0 );
 				const body = viewRoot.getChild( 1 );
 
-				expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'foo' );
-				expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
+				expect( title.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo' );
+				expect( body.getAttribute( 'aria-placeholder' ) ).to.equal( 'bar' );
 
 				expect( title.hasClass( 'ck-placeholder' ) ).to.equal( true );
 				expect( body.hasClass( 'ck-placeholder' ) ).to.equal( true );
@@ -781,8 +781,8 @@ describe( 'Title', () => {
 				const title = viewRoot.getChild( 0 );
 				const body = viewRoot.getChild( 1 );
 
-				expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'foo' );
-				expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'bom' );
+				expect( title.getAttribute( 'aria-placeholder' ) ).to.equal( 'foo' );
+				expect( body.getAttribute( 'aria-placeholder' ) ).to.equal( 'bom' );
 
 				expect( title.hasClass( 'ck-placeholder' ) ).to.equal( true );
 				expect( body.hasClass( 'ck-placeholder' ) ).to.equal( true );

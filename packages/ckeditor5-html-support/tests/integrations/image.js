@@ -1530,7 +1530,7 @@ describe( 'ImageElementSupport', () => {
 		// 				' style="font-size:12px;text-align:center">' +
 		// 			'<img class="bar baz" data-image="xyz" src="/assets/sample.png" style="background-color:blue;color:red"></img>' +
 		// 			'<figcaption class="bar baz ck-editor__editable ck-editor__nested-editable foo" contenteditable="true" ' +
-		// 						'data-figcaption="xxx" data-placeholder="Enter image caption" style="color:green">A caption</figcaption>' +
+		// 						'data-figcaption="xxx" aria-placeholder="Enter image caption" style="color:green">A caption</figcaption>' +
 		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 		// 		'</figure>'
 		// 	);
@@ -1592,7 +1592,7 @@ describe( 'ImageElementSupport', () => {
 		// 		'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 		// 			'<img src="/assets/sample.png"></img>' +
 		// 			'<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
-		// 						'data-placeholder="Enter image caption">A caption</figcaption>' +
+		// 						'aria-placeholder="Enter image caption">A caption</figcaption>' +
 		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 		// 		'</figure>'
 		// 	);

@@ -307,9 +307,10 @@ describe( 'TableCaptionEditing', () => {
 								'</tr>' +
 							'</tbody>' +
 						'</table>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-								'contenteditable="true" data-placeholder="Enter table caption">' +
-							'Foo caption' +
+						'<figcaption aria-placeholder="Enter table caption" ' +
+							'class="ck-editor__editable ck-editor__nested-editable" ' +
+							'contenteditable="true">' +
+								'Foo caption' +
 						'</figcaption>' +
 					'</figure>'
 				);

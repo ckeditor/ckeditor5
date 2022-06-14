@@ -3785,15 +3785,15 @@ describe( 'Renderer', () => {
 
 				const viewP = viewRoot.getChild( 0 );
 
-				writer.setAttribute( 'data-placeholder', 'Body', viewP );
+				writer.setAttribute( 'aria-placeholder', 'Body', viewP );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
 
-				expect( domRoot.innerHTML ).to.equal( '<p data-placeholder="Body">1</p>' );
+				expect( domRoot.innerHTML ).to.equal( '<p aria-placeholder="Body">1</p>' );
 
 				// 2. Modify view.
-				writer.removeAttribute( 'data-placeholder', viewP );
+				writer.removeAttribute( 'aria-placeholder', viewP );
 
 				viewRoot._removeChildren( 0, viewRoot.childCount );
 
@@ -3844,17 +3844,17 @@ describe( 'Renderer', () => {
 
 				const viewP = viewRoot.getChild( 0 );
 
-				writer.setAttribute( 'data-placeholder', 'Body', viewP );
+				writer.setAttribute( 'aria-placeholder', 'Body', viewP );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
 
-				expect( domRoot.innerHTML ).to.equal( '<p data-placeholder="Body">1</p>' );
+				expect( domRoot.innerHTML ).to.equal( '<p aria-placeholder="Body">1</p>' );
 
 				// 2. Modify view.
 				viewRoot._removeChildren( 0, viewRoot.childCount );
 
-				writer.removeAttribute( 'data-placeholder', viewP );
+				writer.removeAttribute( 'aria-placeholder', viewP );
 
 				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
 

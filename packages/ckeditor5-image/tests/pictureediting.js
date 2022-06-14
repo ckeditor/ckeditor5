@@ -1045,9 +1045,9 @@ describe( 'PictureEditing', () => {
 									'<img src="/assets/sample.png"></img>' +
 								'</picture>' +
 								'<figcaption ' +
+									'aria-placeholder="Enter image caption" ' +
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
-									'contenteditable="true" ' +
-									'data-placeholder="Enter image caption"' +
+									'contenteditable="true"' +
 								'>' +
 									'Caption' +
 								'</figcaption>' +
@@ -1215,9 +1215,9 @@ describe( 'PictureEditing', () => {
 									'<img src="/assets/sample.png"></img>' +
 								'</picture>' +
 								'<figcaption ' +
+									'aria-placeholder="Enter image caption" ' +
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
-									'contenteditable="true" ' +
-									'data-placeholder="Enter image caption"' +
+									'contenteditable="true"' +
 								'>' +
 									'Text of the caption' +
 								'</figcaption>' +
@@ -1377,9 +1377,9 @@ describe( 'PictureEditing', () => {
 								'[<figure class="ck-widget image" contenteditable="false">' +
 									'<img src="/assets/sample.png"></img>' +
 									'<figcaption ' +
+										'aria-placeholder="Enter image caption" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
-										'contenteditable="true" ' +
-										'data-placeholder="Enter image caption"' +
+										'contenteditable="true"' +
 									'>' +
 										'Caption' +
 									'</figcaption>' +
@@ -1421,9 +1421,9 @@ describe( 'PictureEditing', () => {
 										'<img src="/assets/sample.png"></img>' +
 									'</a>' +
 									'<figcaption ' +
+										'aria-placeholder="Enter image caption" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
-										'contenteditable="true" ' +
-										'data-placeholder="Enter image caption"' +
+										'contenteditable="true"' +
 									'>' +
 										'Text of the caption' +
 									'</figcaption>' +
@@ -1461,9 +1461,9 @@ describe( 'PictureEditing', () => {
 								'[<figure class="ck-widget image image_resized" contenteditable="false" style="width:123px">' +
 									'<img src="/assets/sample.png"></img>' +
 									'<figcaption ' +
+										'aria-placeholder="Enter image caption" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
-										'contenteditable="true" ' +
-										'data-placeholder="Enter image caption"' +
+										'contenteditable="true"' +
 									'>' +
 										'Text of the caption' +
 									'</figcaption>' +

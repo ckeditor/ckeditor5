@@ -166,7 +166,7 @@
 			"htmlOutput": [
 				{
 					"elements": "figcaption",
-					"attributes": "data-placeholder"
+					"attributes": "aria-placeholder"
 				}
 			]
 		},

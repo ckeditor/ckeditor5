@@ -125,7 +125,7 @@ describe( 'BalloonEditorUI', () => {
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+						expect( firstChild.getAttribute( 'aria-placeholder' ) ).to.equal( 'placeholder-text' );
 
 						return newEditor.destroy();
 					} );
@@ -144,7 +144,7 @@ describe( 'BalloonEditorUI', () => {
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+						expect( firstChild.getAttribute( 'aria-placeholder' ) ).to.equal( 'placeholder-text' );
 
 						return newEditor.destroy();
 					} );
@@ -164,7 +164,7 @@ describe( 'BalloonEditorUI', () => {
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
+						expect( firstChild.getAttribute( 'aria-placeholder' ) ).to.equal( 'config takes precedence' );
 
 						return newEditor.destroy();
 					} );

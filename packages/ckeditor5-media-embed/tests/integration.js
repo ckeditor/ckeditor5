@@ -53,7 +53,7 @@ describe( 'MediaEmbed integration', () => {
 			clock.tick( 100 );
 
 			expect( getViewData( editor.editing.view ) ).to.equal(
-				'[<figure class="ck-widget ck-widget_selected media" contenteditable="false" data-placeholder="foo">' +
+				'[<figure aria-placeholder="foo" class="ck-widget ck-widget_selected media" contenteditable="false">' +
 					'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=H08tGjXNHO4"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>]'
