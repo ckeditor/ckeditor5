@@ -68,6 +68,7 @@ import FilesManager from './plugins/filesmanager/filesmanager';
 import Mention from './plugins/mention/src/mention';
 import Comments from './plugins/comments/comments';
 import Glossary from './plugins/glossary/glossary';
+import CmdDelete from './plugins/cmddelete/cmddelete';
 
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
@@ -133,7 +134,8 @@ HelpjuiceEditor.builtinPlugins = [
 	ExtraFormatting,
 	Strikethrough,
 	Subscript,
-	Superscript
+	Superscript,
+	CmdDelete
 ];
 
 function MentionCustomization(editor) {
