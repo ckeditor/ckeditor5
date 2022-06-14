@@ -239,8 +239,7 @@ describe( 'ImageStyleUI', () => {
 
 		it( 'should define the drop-down properties and children properly', () => {
 			for ( const { config, view, buttonView } of dropdowns ) {
-				const defaultItem = allStyles.find( style => style.name === config.defaultItem.replace( 'imageStyle:', '' ) );
-				const expectedLabel = ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title;
+				const expectedLabel = ( config.title ? `${ config.title }` : '' );
 
 				expect( view ).to.be.instanceOf( DropdownView );
 				expect( buttonView ).to.be.instanceOf( SplitButtonView );
@@ -248,9 +247,6 @@ describe( 'ImageStyleUI', () => {
 				expect( buttonView.label ).to.equal( expectedLabel );
 				expect( buttonView.tooltip ).to.be.true;
 				expect( buttonView.class ).to.be.null;
-
-				expect( buttonView.arrowView.label ).to.equal( expectedLabel );
-				expect( buttonView.arrowView.tooltip ).to.be.true;
 
 				expect( view.toolbarView.items ).to.have.lengthOf( config.items.length );
 
@@ -278,7 +274,7 @@ describe( 'ImageStyleUI', () => {
 
 			const dropdownView = customEditor.ui.componentFactory.create( 'imageStyle:wrapText' );
 
-			expect( dropdownView.buttonView.label ).to.equal( 'Default title: Default title' );
+			expect( dropdownView.buttonView.label ).to.equal( 'Default title' );
 
 			customEditorElement.remove();
 			await customEditor.destroy();
@@ -298,7 +294,7 @@ describe( 'ImageStyleUI', () => {
 
 			const dropdownView = customEditor.ui.componentFactory.create( 'imageStyle:custom' );
 
-			expect( dropdownView.buttonView.label ).to.equal( 'Custom title: In line' );
+			expect( dropdownView.buttonView.label ).to.equal( 'Custom title' );
 
 			customEditorElement.remove();
 			await customEditor.destroy();
@@ -392,7 +388,7 @@ describe( 'ImageStyleUI', () => {
 			it( 'should inherit the icon, state and label from the active nested button', () => {
 				for ( const { config, buttonView, activeButton } of dropdowns ) {
 					expect( buttonView.icon ).to.equal( activeButton.icon );
-					expect( buttonView.label ).to.equal( ( config.title ? `${ config.title }: ` : '' ) + activeButton.label );
+					expect( buttonView.label ).to.equal( ( config.title ? `${ config.title }` : '' ) );
 					expect( buttonView.isOn ).to.be.true;
 				}
 			} );
@@ -433,7 +429,7 @@ describe( 'ImageStyleUI', () => {
 					const defaultItem = DEFAULT_OPTIONS[ config.defaultItem.replace( 'imageStyle:', '' ) ];
 
 					expect( buttonView.icon ).to.equal( defaultItem.icon );
-					expect( buttonView.label ).to.equal( ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title );
+					expect( buttonView.label ).to.equal( ( config.title ? `${ config.title }` : '' ) );
 				}
 			} );
 
