@@ -32,21 +32,15 @@ class AbbreviationUI extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		this.formView = null;
 		this._createToolbarAbbreviationButton();
 		this._balloon = editor.plugins.get( ContextualBalloon );
+		this.formView = this._createFormView();
 	}
 
 	_createFormView() {
 		const editor = this.editor;
 
-		// Grab selected text.
-		const ranges = this.editor.model.document.selection.getFirstRange();
-		let selectedText;
-		for ( const range of ranges.getItems() ) {
-			selectedText = range.data;
-		}
-		const formView = new FormView( editor.locale, selectedText );
+		const formView = new FormView( editor.locale );
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
@@ -55,24 +49,19 @@ class AbbreviationUI extends Plugin {
 				title: formView.titleInputView.fieldView.element.value
 			};
 			editor.execute( 'addAbbreviation', value );
-			this._balloon.remove( this.formView );
-			formView.abbrInputView.fieldView.element.value = '';
-			formView.titleInputView.fieldView.element.value = '';
+			this._hideUI();
 		} );
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( formView, 'cancel', () => {
-			formView.abbrInputView.fieldView.element.value = '';
-			formView.titleInputView.fieldView.element.value = '';
-
-			this._balloon.remove( this.formView );
+			this._hideUI();
 		} );
 
 		clickOutsideHandler( {
 			emitter: formView,
 			activator: () => this._balloon.visibleView === formView,
 			contextElements: [ this._balloon.view.element ],
-			callback: () => this._balloon.remove( formView )
+			callback: () => this._hideUI()
 		} );
 
 		return formView;
@@ -92,16 +81,36 @@ class AbbreviationUI extends Plugin {
 
 			// Show the panel on button click.
 			this.listenTo( button, 'execute', () => {
-				this.formView = this._createFormView();
-
-				this._balloon.add( {
-					view: this.formView,
-					position: this._getBalloonPositionData()
-				} );
+				this._showUI();
 			} );
 
 			return button;
 		} );
+	}
+
+	_showUI() {
+		let selectedText = '';
+		const selection = this.editor.model.document.selection;
+
+		if ( !selection.isCollapsed ) {
+			const ranges = selection.getFirstRange();
+			for ( const range of ranges.getItems() ) {
+				selectedText = range.data;
+			}
+		}
+		this.formView.abbrInputView.fieldView.value = selectedText;
+
+		this._balloon.add( {
+			view: this.formView,
+			position: this._getBalloonPositionData()
+		} );
+	}
+
+	_hideUI() {
+		this.formView.abbrInputView.fieldView.value = '';
+		this.formView.titleInputView.fieldView.value = '';
+
+		this._balloon.remove( this.formView );
 	}
 
 	_getBalloonPositionData() {

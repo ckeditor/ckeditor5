@@ -13,12 +13,13 @@ import {
 import { icons } from '@ckeditor/ckeditor5-core';
 
 export default class FormView extends View {
-	constructor( locale, selectedText ) {
+	constructor( locale ) {
 		super( locale );
 
 		const t = locale.t;
 
-		this.abbrInputView = this._createInput( 'abbreviation', selectedText );
+		this.abbrInputView = this._createInput( 'abbreviation' );
+
 		this.titleInputView = this._createInput( 'title' );
 		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
@@ -45,14 +46,13 @@ export default class FormView extends View {
 		} );
 	}
 
-	_createInput( inputType, selectedText ) {
+	_createInput( inputType ) {
 		const t = this.locale.t;
+
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
 		labeledInput.label = t( `Add ${ inputType }` );
-		if ( selectedText ) {
-			labeledInput.fieldView.value = selectedText;
-		}
+
 		labeledInput.extendTemplate( {
 			attributes: {
 				style: {
