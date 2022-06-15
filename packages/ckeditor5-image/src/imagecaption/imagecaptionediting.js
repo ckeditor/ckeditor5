@@ -261,7 +261,7 @@ export default class ImageCaptionEditing extends Plugin {
 
 			for ( const change of changes ) {
 				if ( change.attributeKey !== 'alt' ) {
-					return;
+					continue;
 				}
 
 				const image = change.range.start.nodeAfter;
