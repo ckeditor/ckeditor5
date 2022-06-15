@@ -552,14 +552,14 @@ export default class DataFilter extends Plugin {
 	 * as an event namespace, e.g. `register:span`.
 	 *
 	 * 		dataFilter.on( 'register', ( evt, definition ) => {
-	 * 			editor.schema.register( definition.model, definition.modelSchema );
+	 * 			editor.model.schema.register( definition.model, definition.modelSchema );
 	 * 			editor.conversion.elementToElement( { model: definition.model, view: definition.view } );
 	 *
 	 * 			evt.stop();
 	 * 		} );
 	 *
 	 * 		dataFilter.on( 'register:span', ( evt, definition ) => {
-	 * 			editor.schema.extend( '$text', { allowAttributes: 'htmlSpan' } );
+	 * 			editor.model.schema.extend( '$text', { allowAttributes: 'htmlSpan' } );
 	 *
 	 * 			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'span', model: 'htmlSpan' } );
 	 * 			editor.conversion.for( 'downcast' ).attributeToElement( { view: 'span', model: 'htmlSpan' } );
