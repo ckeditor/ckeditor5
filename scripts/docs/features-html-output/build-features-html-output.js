@@ -96,7 +96,7 @@ module.exports = function createHtmlOutputMarkup() {
 			} = packageMetadata.package;
 
 			const sourceFileLink = !isExternalPackage && !isThirdPartyPackage ?
-				`<a href="https://github.com/ckeditor/ckeditor5/blob/stable/packages/${ packageName }/ckeditor5-metadata.json">` +
+				`<a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/${ packageName }/ckeditor5-metadata.json">` +
 					sourceFileMarkup +
 				'</a>' :
 				sourceFileMarkup;
