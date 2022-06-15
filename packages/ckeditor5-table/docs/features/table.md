@@ -267,7 +267,7 @@ You can use these specific configuration options to define customized color pale
 * {@link module:table/table~TableConfig#tableCellProperties `tableCellProperties.backgroundColors`} &ndash; Defines the color palette for cell background.
 
 <info-box>
-	The above configurations **do not** impact the {@link installation/getting-started/basic-api#setting-the-editor-data data loaded into the editor}, i.e. they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
+	The above configurations **do not** impact the {@link installation/getting-started/basic-api#setting-the-editor-data-with-setdata data loaded into the editor}, i.e. they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
 </info-box>
 
 For instance, to define the same color palette for all border and background configurations, use the following code snippet:
@@ -401,7 +401,7 @@ The same will be applied for new tables and cells if they are inserted into the 
 Read more about all supported properties for the {@link module:table/tableproperties~TablePropertiesOptions table} and {@link module:table/tablecellproperties~TableCellPropertiesOptions table cell} features in their API documentation.
 
 <info-box>
-	The default table and table cell styles **do** impact the {@link installation/getting-started/basic-api#setting-the-editor-data data loaded into the editor}. Default properties will not be kept in the editor model.
+	The default table and table cell styles **do** impact the {@link installation/getting-started/basic-api#setting-the-editor-data-with-setdata data loaded into the editor}. Default properties will not be kept in the editor model.
 </info-box>
 
 ## Block vs inline content in table cells
