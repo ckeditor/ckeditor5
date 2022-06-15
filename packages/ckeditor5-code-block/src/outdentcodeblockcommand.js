@@ -51,7 +51,7 @@ export default class OutdentCodeBlockCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 
-		model.change( writer => {
+		model.change( () => {
 			const positions = getIndentOutdentPositions( model );
 
 			// Outdent all positions, for instance assuming the indent sequence is 4x space ("    "):
@@ -76,10 +76,14 @@ export default class OutdentCodeBlockCommand extends Command {
 			//			bazqux
 			//		</codeBlock>
 			for ( const position of positions ) {
-				const range = getLastOutdentableSequenceRange( this.editor.model, position, this._indentSequence );
+				const range = getLastOutdentableSequenceRange( model, position, this._indentSequence );
 
 				if ( range ) {
-					writer.remove( range );
+					// Previously deletion was done by writer.remove(). It was changed to deleteContent() to enable
+					// integration of code block with track changes. It's the easiest way of integration because deleteContent()
+					// is already integrated with track changes, but if it ever cause any troubles it can be reverted, however
+					// some additional work will be required in track changes integration of code block.
+					model.deleteContent( model.createSelection( range ) );
 				}
 			}
 		} );

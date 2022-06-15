@@ -1,6 +1,6 @@
 ---
 category: examples-builds-custom
-order: 30
+order: 70
 classes: main__content--no-toc
 toc: false
 menu-title: Bottom toolbar with formatting options grouped
@@ -249,13 +249,14 @@ DecoupledEditor
 				'mergeTableCells'
 			]
 		},
-
 		cloudServices: {
-                    // PROVIDE CORRECT VALUES HERE:
-                    tokenUrl: 'https://example.com/cs-token-endpoint',
-                    uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/',
-                    webSocketUrl: 'your-organization-id.cke-cs.com/ws/'
-                },
+			// This editor configuration includes the Easy Image feature.
+			// Provide correct configuration values to use it.
+			tokenUrl: 'https://example.com/cs-token-endpoint',
+			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
+			// Read more about Easy Image - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html.
+			// For other image upload methods see the guide - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html.
+		},
 	} )
 	.then( editor => {
 		window.editor = editor;
@@ -394,27 +395,7 @@ function overrideTooltipPositions( toolbarView ) {
 
 <div id="editor">
 	<div id="editor-content">
-		<figure class="image image_resized" style="width: 65px;">
-			<img
-				src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNjIgNjIiPgogIDxkZWZzPgogICAgPHBvbHlnb24gaWQ9ImEiIHBvaW50cz0iMTUgNTIgMTUgNDYuOTUxOTIzMSAxOS40MTMyODczIDQ2LjA4NjUzODUgMTkuNDEzMjg3MyAxNS45NDIzMDc3IDE1IDE1LjA3NjkyMzEgMTUgMTAgNDggMTAgNDggMjEuNTA5NjE1NCA0MS42MjIwODggMjEuNTA5NjE1NCA0MS4yNTE5NDEzIDE2LjQ5MDM4NDYgMjcuNzI3MzUxMiAxNi40OTAzODQ2IDI3LjcyNzM1MTIgMjguMDU3NjkyMyA0Mi4yNDg0OTAxIDI4LjA1NzY5MjMgNDIuMjQ4NDkwMSAzNC41NDgwNzY5IDI3LjcyNzM1MTIgMzQuNTQ4MDc2OSAyNy43MjczNTEyIDQ2LjA4NjUzODUgMzIuMTY5MTExMyA0Ni45NTE5MjMxIDMyLjE2OTExMTMgNTIiLz4KICA8L2RlZnM+CiAgPGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgIDxyZWN0IGZpbGw9IiMxOTE3MTciIHdpZHRoPSI2MiIgaGVpZ2h0PSI2MiIgcng9IjMiLz4KICAgIDx1c2UgZmlsbD0iI0ZGRiIgZmlsbC1ydWxlPSJub256ZXJvIiB4bGluazpocmVmPSIjYSIvPgogIDwvZz4KPC9zdmc+Cg=="
-				alt="Fabulous Dummy App logo"
-			/>
-		</figure>
-		<h2 style="text-align: center;">Welcome to Fabulous Dummy App!</h2>
-		<hr />
-		<p>We are so glad to have you, <strong>{user_name}</strong>! But before you can explore all the features, please verify your email address.</p>
-		<p>We use your email address to validate your account and to keep you updated. We respect your privacy and you can opt out of direct email marketing in your account <a href="https://fabulousdummyapp.com/preferences">preferences</a>.</p>
-		<p>If you did not create an account using this email address, please contact us at <a href="mailto:contact@fabulousdummyapp.com">contact@fabulousdummyapp.com</a>.</p>
-		<p style="text-align: center;">
-			<a href="https://fabulousdummyapp.com/verify">
-				<span class="text-big"><strong>Verify your account</strong></span>
-			</a>
-		</p>
-		<hr />
-		<p>
-			<a href="https://fabulousdummyapp.com/"><span class="text-small" style="color: hsl(0, 0%, 60%);"><strong>Fabulous Dummy App</strong></span></a><br /><span class="text-small" style="color: hsl(0, 0%, 60%);">One app that will do <i>anything</i> you want.</span>
-		</p>
-		<p><span class="text-small" style="color: hsl(0, 0%, 60%);">2776 Black Oak Hollow Road, San Jose, CA</span></p>
+			Editor content is inserted here.
 	</div>
 	<div id="editor-toolbar-container"></div>
 </div>

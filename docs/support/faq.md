@@ -87,7 +87,7 @@ The {@link features/images-overview Image} and {@link features/image-upload Imag
 
 For the full list of official integrations see the {@link installation/frameworks/overview#official-wysiwyg-editor-integrations "Official integrations"} section.
 
-If an official integration for the framework of your choice does not exist yet, make sure to read the {@link installation/frameworks/overview "Integrating CKEditor 5 with JavaScript frameworks"} guide. CKEditor 5 offers a rich JavaScript API and ready-to-use builds that make it possible to use CKEditor 5 with whichever framework you need.
+If an official integration for the framework of your choice does not exist yet, make sure to read the {@link installation/frameworks/overview "Integrating CKEditor 5 with JavaScript frameworks"} guide. CKEditor 5 offers a rich JavaScript API and predefined builds that make it possible to use CKEditor 5 with whichever framework you need.
 
 We plan to provide more official integrations with time. [Your feedback on what should we work on next](https://github.com/ckeditor/ckeditor5/issues/1002) will be most welcome!
 

@@ -564,7 +564,7 @@ You can read more about using CKEditor 5 from source in the {@link installation/
 
 CKEditor 5 supports {@link features/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor 5 in your React application.
 
-### Ready-to-use builds
+### Predefined builds
 
 When using one of the {@link installation/advanced/predefined-builds#available-builds official editor builds} or the editor built by the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), you need to import the translations first:
 
