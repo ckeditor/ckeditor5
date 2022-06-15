@@ -110,7 +110,7 @@ export function extendMarkerOnTypingPostFixer( editor ) {
 			}
 		}
 
-		return false;
+		return changeApplied;
 	};
 }
 

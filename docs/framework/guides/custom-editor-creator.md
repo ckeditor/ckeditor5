@@ -55,7 +55,7 @@ class MultirootEditor extends Editor {
 				initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
 			}
 
-			this.editor.config.set( 'initialData', initialData );
+			this.config.set( 'initialData', initialData );
 		}
 
 		// Create root and UIView element for each editable container.

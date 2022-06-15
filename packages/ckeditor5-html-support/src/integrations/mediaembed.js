@@ -44,6 +44,10 @@ export default class MediaEmbedElementSupport extends Plugin {
 			view: mediaElementName
 		} );
 
+		dataFilter.on( 'register:figure', ( ) => {
+			conversion.for( 'upcast' ).add( viewToModelFigureAttributesConverter( dataFilter ) );
+		} );
+
 		dataFilter.on( `register:${ mediaElementName }`, ( evt, definition ) => {
 			if ( definition.model !== 'media' ) {
 				return;
@@ -71,22 +75,41 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 
 	function upcastMedia( evt, data, conversionApi ) {
 		const viewMediaElement = data.viewItem;
-		const viewParent = viewMediaElement.parent;
 
 		preserveElementAttributes( viewMediaElement, 'htmlAttributes' );
 
-		if ( viewParent.is( 'element', 'figure' ) && viewParent.hasClass( 'media' ) ) {
-			preserveElementAttributes( viewParent, 'htmlFigureAttributes' );
-		}
-
 		function preserveElementAttributes( viewElement, attributeName ) {
-			const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+			const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 			if ( viewAttributes ) {
 				conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 			}
 		}
 	}
+}
+
+// View-to-model conversion helper preserving allowed attributes on {@link module:media-embed/mediaembed~MediaEmbed MediaEmbed}
+// feature model element from figure view element.
+//
+// @private
+// @param {module:html-support/datafilter~DataFilter} dataFilter
+// @returns {Function} Returns a conversion callback.
+function viewToModelFigureAttributesConverter( dataFilter ) {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			const viewFigureElement = data.viewItem;
+
+			if ( !data.modelRange || !viewFigureElement.hasClass( 'media' ) ) {
+				return;
+			}
+
+			const viewAttributes = dataFilter.processViewAttributes( viewFigureElement, conversionApi );
+
+			if ( viewAttributes ) {
+				conversionApi.writer.setAttribute( 'htmlFigureAttributes', viewAttributes, data.modelRange );
+			}
+		}, { priority: 'low' } );
+	};
 }
 
 function modelToViewMediaAttributeConverter( mediaElementName ) {
