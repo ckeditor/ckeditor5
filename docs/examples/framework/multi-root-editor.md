@@ -53,7 +53,6 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 /**
  * The multiroot editor implementation. It provides an inline editables and a toolbar.
@@ -431,11 +430,13 @@ MultirootEditor
 			footerleft: 'Left footer content',
 			footerright: 'Right footer content'
 		},
-		cloudServices: CS_CONFIG,
-		ui: {
-			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
-			}
+		cloudServices: {
+			// This editor configuration includes the Easy Image feature.
+			// Provide correct configuration values to use it.
+			tokenUrl: 'https://example.com/cs-token-endpoint',
+			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
+			// Read more about Easy Image - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html.
+			// For other image upload methods see the guide - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html.
 		}
 	} )
 	.then( newEditor => {

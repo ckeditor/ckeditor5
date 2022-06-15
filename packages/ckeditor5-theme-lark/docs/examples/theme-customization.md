@@ -18,7 +18,6 @@ Below, you can see an editor with the dark theme as a result of customizations d
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
@@ -26,7 +25,7 @@ import './custom.css';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
-		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices ],
+		plugins: [ EasyImage, ImageUpload, CloudServices ],
 		toolbar: {
 			items: [
 				'heading',
@@ -49,7 +48,7 @@ ClassicEditor
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		cloudServices: {
-            // This editor configuration includes the Easy Image feature.
+			// This editor configuration includes the Easy Image feature.
 			// Provide correct configuration values to use it.
 			tokenUrl: 'https://example.com/cs-token-endpoint',
 			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
