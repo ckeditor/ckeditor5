@@ -238,7 +238,7 @@ ClassicEditor.defaultConfig = {
 };
 ```
 
-This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use such editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/basic-api#creating-an-editor examples}.
+This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use such editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/basic-api#creating-an-editor-with-create examples}.
 
 ```js
 import ClassicEditor from './ckeditor';
