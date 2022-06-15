@@ -4062,7 +4062,7 @@ describe( 'Renderer', () => {
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p data-ck-unsafe-attribute-onclick="test">foo</p>' );
 			} );
 
-			it( 'should rename attributes that can affect editing pipeline unless permitted when the element was created', () => {
+			it( 'should rename attributes that can affect editing pipeline unless permitted when the container element was created', () => {
 				view.change( writer => {
 					const containerElement = writer.createContainerElement( 'p', {
 						onclick: 'foo',
@@ -4080,6 +4080,27 @@ describe( 'Renderer', () => {
 				expect( getViewData( view ) ).to.equal( '<p onclick="foo" onkeydown="bar">baz</p>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
 					'<p data-ck-unsafe-attribute-onkeydown="bar" onclick="foo">baz</p>'
+				);
+			} );
+
+			it( 'should rename attributes that can affect editing pipeline unless permitted when an attribute element was created', () => {
+				view.change( writer => {
+					const attributeElement = writer.createAttributeElement( 'span', {
+						onclick: 'foo',
+						onkeydown: 'bar'
+					}, {
+						renderUnsafeAttributes: [ 'onclick' ]
+					} );
+
+					writer.insert( writer.createPositionAt( view.document.getRoot(), 'start' ), writer.createText( 'baz' ) );
+					writer.wrap( writer.createRangeIn( view.document.getRoot() ), attributeElement );
+				} );
+
+				view.forceRender();
+
+				expect( getViewData( view ) ).to.equal( '<span onclick="foo" onkeydown="bar">baz</span>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
+					'<span data-ck-unsafe-attribute-onkeydown="bar" onclick="foo">baz</span>'
 				);
 			} );
 
