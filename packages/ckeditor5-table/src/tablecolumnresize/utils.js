@@ -17,7 +17,7 @@ import {
 } from './constants';
 
 /**
- * Collects all affected by the differ table model elements. The returned set may be empty.
+ * Collects all table model elements affected by the differ. The returned set may be empty.
  *
  * @param {Array.<module:engine/model/differ~DiffItem>} changes
  * @param {module:engine/model/model~Model} model
