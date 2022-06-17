@@ -33,7 +33,7 @@ CKEditor 5 allows for typing both at inner and outer boundaries of links to make
 
 ## Custom link attributes (decorators)
 
-By default, all links created in the editor have the `href="..."` attribute in the {@link installation/getting-started/basic-api#getting-the-editor-data editor data}. If you want your links to have additional link attributes, {@link module:link/link~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
+By default, all links created in the editor have the `href="..."` attribute in the {@link installation/getting-started/basic-api#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/link~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
 
 There are two types of link decorators you can use:
 

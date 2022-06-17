@@ -222,5 +222,27 @@ describe( 'SourceEditing utils', () => {
 
 			expect( formatHtml( source ) ).to.equal( sourceFormatted );
 		} );
+
+		// More about this case in https://github.com/ckeditor/ckeditor5/issues/10698.
+		it( 'should not crash when a pathological <iframe> content appears in source', () => {
+			const source =
+				'<p>' +
+					'<iframe>' +
+						'<br></br>' +
+						'</body>' +
+					'</iframe>' +
+				'</p>';
+
+			// This is not pretty but at least it does not crash.
+			const sourceFormatted =
+			'<p>\n' +
+			'    <iframe>\n' +
+			'    <br>\n' +
+			'</br>\n' +
+			'</body></iframe>\n' +
+			'</p>';
+
+			expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		} );
 	} );
 } );
