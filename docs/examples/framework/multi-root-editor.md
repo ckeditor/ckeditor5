@@ -454,7 +454,8 @@ MultirootEditor
 <details>
 <summary>View editor content listing</summary>
 
-<div id="snippet-inline-editor">
+```
+<div id="snippet-multiroot-editor">
 	<div id="toolbar"></div>
 
 	<header id="header">
@@ -465,26 +466,21 @@ MultirootEditor
 		Editor content is inserted here.
 	</div>
 
-	<div class="demo-row">
-		<div class="demo-row__half">
-			<div id="footer-left">
-				Editor content is inserted here.
-			</div>
-		</div>
+	<div id="footer-left">
+		Editor content is inserted here.
+	</div>
 
-		<div class="demo-row__half">
-			<div id="footer-right">
-				Editor content is inserted here.
-			</div>
-		</div>
+	<div id="footer-right">
+		Editor content is inserted here.
 	</div>
 </div>
 
 <style>
 	/* Give the toolbar some space so it does not look like it belongs to the header root only. */
-	#snippet-inline-editor #toolbar {
+	#snippet-multiroot-editor #toolbar {
 		margin-bottom: 1em;
 	}
 </style>
+```
 
 </details>

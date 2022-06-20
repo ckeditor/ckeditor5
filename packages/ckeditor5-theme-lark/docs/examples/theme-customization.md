@@ -36,7 +36,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import './custom.css';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
@@ -214,8 +213,10 @@ ClassicEditor
 <details>
 <summary>View editor content listing</summary>
 
+```
 <div id="snippet-classic-editor">
 	Editor content is inserted here.
 </div>
+```
 
 </details>
