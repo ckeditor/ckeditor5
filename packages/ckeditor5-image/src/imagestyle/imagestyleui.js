@@ -129,12 +129,18 @@ export default class ImageStyleUI extends Plugin {
 
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
+			const splitButtonViewArrow = dropdownView.buttonView.arrowView;
 
 			addToolbarToDropdown( dropdownView, buttonViews );
 
 			splitButtonView.set( {
-				label: getDropdownButtonTitle( title ),
+				label: getDropdownButtonTitle( title, defaultButton.label ),
 				class: null,
+				tooltip: true
+			} );
+
+			splitButtonViewArrow.set( {
+				label: title,
 				tooltip: true
 			} );
 
@@ -144,8 +150,10 @@ export default class ImageStyleUI extends Plugin {
 				return ( index < 0 ) ? defaultButton.icon : buttonViews[ index ].icon;
 			} );
 
-			splitButtonView.bind( 'label' ).toMany( buttonViews, 'isOn', ( ) => {
-				return getDropdownButtonTitle( title );
+			splitButtonView.bind( 'label' ).toMany( buttonViews, 'isOn', ( ...areOn ) => {
+				const index = areOn.findIndex( identity );
+
+				return getDropdownButtonTitle( title, ( index < 0 ) ? defaultButton.label : buttonViews[ index ].label );
 			} );
 
 			splitButtonView.bind( 'isOn' ).toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.some( identity ) );
@@ -229,12 +237,13 @@ function getUIComponentName( name ) {
 	return `imageStyle:${ name }`;
 }
 
-// Returns title for the splitbutton based on the dropdown title.
+// Returns title for the splitbutton containing the dropdown title and default action item title.
 //
 // @param {String|undefined} dropdownTitle
+// @param {String} buttonTitle
 // @returns {String}
-function getDropdownButtonTitle( dropdownTitle ) {
-	return ( dropdownTitle ? dropdownTitle : '' );
+function getDropdownButtonTitle( dropdownTitle, buttonTitle ) {
+	return ( dropdownTitle ? dropdownTitle + ': ' : '' ) + buttonTitle;
 }
 
 /**
