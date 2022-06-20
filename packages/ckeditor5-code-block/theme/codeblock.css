@@ -22,7 +22,7 @@
 
 	/* Don't let the code be squashed e.g. when in a table cell. */
 	min-width: 200px;
-	
+
 	& code {
 		background: unset;
 		padding: 0;
