@@ -22,11 +22,13 @@
 
 	/* Don't let the code be squashed e.g. when in a table cell. */
 	min-width: 200px;
-
+	
 	& code {
 		background: unset;
 		padding: 0;
 		border-radius: 0;
+		/* Break white space characters to a new line so it doesn't overflow the editor. */
+		white-space: break-spaces;
 	}
 }
 
