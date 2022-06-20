@@ -9,8 +9,9 @@
 
 import Operation from './operation';
 import Range from '../range';
-import type MarkerCollection from '../markercollection';
+
 import type Document from '../document';
+import type MarkerCollection from '../markercollection';
 
 /**
  * @extends module:engine/model/operation/operation~Operation

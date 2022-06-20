@@ -8,10 +8,11 @@
  */
 
 import { findOptimalInsertionRange } from './findoptimalinsertionrange';
-import Selection, { type Selectable } from '../selection';
 import DocumentSelection from '../documentselection';
-import type Model from '../model';
+import Selection, { type Selectable } from '../selection';
+
 import type Element from '../element';
+import type Model from '../model';
 import type Range from '../range';
 import type Writer from '../writer';
 
