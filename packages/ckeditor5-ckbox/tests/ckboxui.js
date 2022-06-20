@@ -20,7 +20,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import CKBoxUI from '../src/ckboxui';
 import CKBoxEditing from '../src/ckboxediting';
 import browseFilesIcon from '../theme/icons/browse-files.svg';
-import { expect } from 'chai';
 
 describe( 'CKBoxUI', () => {
 	let editorElement, editor, button, command, originalCKBox;
