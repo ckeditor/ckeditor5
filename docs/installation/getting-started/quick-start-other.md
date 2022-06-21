@@ -7,7 +7,7 @@ order: 15
 modified_at: 2022-03-15
 ---
 
-# Other installation methods
+# Customized installation
 
 ## Introduction
 
