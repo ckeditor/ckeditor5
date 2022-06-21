@@ -575,7 +575,7 @@ describe( 'ClipboardPipeline feature', () => {
 					'<li>ol item</li>' +
 				'</ol>' +
 				'<figure>' +
-					'<img alt="image foo" src="foo.jpg">' + // Weird attributes ordering behavior + no closing "/>".
+					'<img src="foo.jpg" alt="image foo">' +
 					'<figcaption>caption</figcaption>' +
 				'</figure>';
 
