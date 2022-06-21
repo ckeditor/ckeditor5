@@ -263,15 +263,16 @@ export function sumArray( array ) {
 
 /**
  * Makes sure that the sum of the widths from all columns is 100%. If the sum of all the widths is not equal 100%, all the widths are
- * changed proportionally so that they all sum back to 100%.
+ * changed proportionally so that they all sum back to 100%. If there are columns without specified width, it will be distributed
+ * equally between them based on the amount remaining after assigning the known widths.
  *
  * Currently, only widths provided as percentage values are supported.
  *
- * @param {String} columnWidthsAttribute
+ * @param {Array.<Number>} columnWidths
  * @returns {Array.<Number>}
  */
-export function normalizeColumnWidthsAttribute( columnWidthsAttribute ) {
-	const columnWidths = prepareColumnWidths( columnWidthsAttribute );
+export function normalizeColumnWidths( columnWidths ) {
+	columnWidths = calculateMissingColumnWidths( columnWidths );
 	const totalWidth = sumArray( columnWidths );
 
 	if ( totalWidth === 100 ) {
@@ -304,12 +305,10 @@ export function normalizeColumnWidthsAttribute( columnWidthsAttribute ) {
 //   but then it will be adjusted proportionally to 100% in {@link #normalizeColumnWidthsAttribute `normalizeColumnWidthsAttribute()`}.
 //
 // @private
-// @param {String} columnWidthsAttribute
+// @param {Array.<Number>}
 // @returns {Array.<Number>}
-function prepareColumnWidths( columnWidthsAttribute ) {
-	const columnWidths = columnWidthsAttribute
-		.split( ',' )
-		.map( columnWidth => columnWidth.trim() );
+function calculateMissingColumnWidths( columnWidthsAttribute ) {
+	const columnWidths = columnWidthsAttribute.map( columnWidth => columnWidth.trim() );
 
 	const numberOfUninitializedColumns = columnWidths.filter( columnWidth => columnWidth === 'auto' ).length;
 

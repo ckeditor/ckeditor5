@@ -9,7 +9,7 @@
 
 /* istanbul ignore file */
 
-import { getNumberOfColumn, normalizeColumnWidthsAttribute } from './utils';
+import { getNumberOfColumn, normalizeColumnWidths } from './utils';
 
 /**
  * Returns a helper for converting a view `<colgroup>` and `<col>` elements to the model table `columnWidths` attribute.
@@ -35,7 +35,7 @@ export function upcastColgroupElement( editor ) {
 		const viewColgroupElement = data.viewItem;
 		const numberOfColumns = getNumberOfColumn( modelTable, editor );
 
-		let columnWidthsAttribute = [ ...Array( numberOfColumns ).keys() ]
+		let columnWidths = [ ...Array( numberOfColumns ).keys() ]
 			.map( columnIndex => {
 				const viewChild = viewColgroupElement.getChild( columnIndex );
 
@@ -50,14 +50,13 @@ export function upcastColgroupElement( editor ) {
 				}
 
 				return viewColWidth;
-			} )
-			.join( ',' );
+			} );
 
-		if ( columnWidthsAttribute.match( 'auto' ) ) {
-			columnWidthsAttribute = normalizeColumnWidthsAttribute( columnWidthsAttribute ).map( width => width + '%' ).join( ',' );
+		if ( columnWidths.includes( 'auto' ) ) {
+			columnWidths = normalizeColumnWidths( columnWidths ).map( width => width + '%' );
 		}
 
-		modelWriter.setAttribute( 'columnWidths', columnWidthsAttribute, modelTable );
+		modelWriter.setAttribute( 'columnWidths', columnWidths.join( ',' ), modelTable );
 	} );
 }
 

@@ -35,7 +35,7 @@ import {
 	getElementWidthInPixels,
 	getTableWidthInPixels,
 	getNumberOfColumn,
-	normalizeColumnWidthsAttribute,
+	normalizeColumnWidths,
 	toPrecision,
 	insertColumnResizerElement,
 	getDomCellWidth
@@ -247,7 +247,8 @@ export default class TableColumnResizeEditing extends Plugin {
 				const numberOfColumns = getNumberOfColumn( table, editor );
 
 				// (2) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
-				const columnWidths = normalizeColumnWidthsAttribute( table.getAttribute( 'columnWidths' ) );
+				// It's an array at this point.
+				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );
 
 				let removedColumnWidths = null;
 				let isColumnInsertionHandled = false;
