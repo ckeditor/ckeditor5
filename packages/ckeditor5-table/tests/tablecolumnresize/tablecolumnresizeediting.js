@@ -968,7 +968,7 @@ describe( 'TableColumnResizeEditing', () => {
 						'<table columnWidths="100%" tableWidth="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'<table columnWidths="55.56%,44.44%" tableWidth="46.72%">' +
+									'<table columnWidths="55.55%,44.45%" tableWidth="46.73%">' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>foo</paragraph>' +
@@ -1675,7 +1675,7 @@ describe( 'TableColumnResizeEditing', () => {
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="29.1%,29.1%,41.8%" tableWidth="52.46%">' +
+						'[<table columnWidths="29.1%,29.1%,41.8%" tableWidth="52.44%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>00</paragraph>' +
@@ -1731,7 +1731,7 @@ describe( 'TableColumnResizeEditing', () => {
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="25%,27.18%,47.82%" tableWidth="40%">' +
+						'[<table columnWidths="25%,27.19%,47.81%" tableWidth="40%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>00</paragraph>' +
