@@ -245,6 +245,41 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 				} );
 
+				it( 'should adjust the missing column widths proportionally', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:50%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table columnWidths="50%,25%,25%">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
 				it( 'should handle the incorrect elements inside', () => {
 					editor.setData(
 						`<figure class="table">
