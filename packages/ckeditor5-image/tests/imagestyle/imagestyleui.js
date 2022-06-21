@@ -261,14 +261,14 @@ describe( 'ImageStyleUI', () => {
 		} );
 
 		it( 'should keep the same label of the secondary (arrow) button when the user changes styles of the image', () => {
-			const dropdown = dropdowns[ 1 ];
+			const dropdownView = editor.ui.componentFactory.create( 'imageStyle:breakText' );
 
-			expect( dropdown.buttonView.arrowView.label ).to.equal( 'Break text' );
+			expect( dropdownView.buttonView.arrowView.label ).to.equal( 'Default title' );
 
 			// Simulate the user changing the style of an image.
-			dropdown.view.toolbarView.items.get( 0 ).isOn = true;
+			dropdownView.toolbarView.items.get( 0 ).isOn = true;
 
-			expect( dropdown.buttonView.arrowView.label ).to.equal( 'Break text' );
+			expect( dropdownView.buttonView.arrowView.label ).to.equal( 'Default title' );
 		} );
 
 		it( 'should translate the drop-down title if taken from default styles', async () => {
