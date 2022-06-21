@@ -89,7 +89,7 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 <info-box>
 	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in you implementation, so using the superbuild should rather be considered for evaluation purposes and for tests, than for production environment.
 
-	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create efficient edn-user solutions.
+	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create efficient end-user solutions.
 </info-box>
 
 ### Multiple editors
