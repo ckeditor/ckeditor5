@@ -1235,16 +1235,6 @@ export default class Writer {
 		applyMarkerOperation( this, name, oldRange, null, marker.affectsData );
 	}
 
-	public setSelection(
-		selectable: Selectable,
-		placeOrOffset?: number | 'before' | 'after' | 'on' | 'in',
-		options?: { backward?: boolean }
-	): void;
-	public setSelection(
-		selectable: Selectable,
-		options: { backward?: boolean }
-	): void;
-
 	/**
 	 * Sets the document's selection (ranges and direction) to the specified location based on the given
 	 * {@link module:engine/model/selection~Selectable selectable} or creates an empty selection if no arguments were passed.
@@ -1296,18 +1286,10 @@ export default class Writer {
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 */
-	public setSelection(
-		selectable: Selectable,
-		optionsOrPlaceOrOffset?: { backward?: boolean } | number | 'before' | 'after' | 'on' | 'in',
-		options?: { backward?: boolean }
-	): void {
+	public setSelection( ...args: Parameters<Selection[ 'setTo' ]> ): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( typeof optionsOrPlaceOrOffset == 'object' ) {
-			this.model.document.selection._setTo( selectable, undefined, optionsOrPlaceOrOffset );
-		} else {
-			this.model.document.selection._setTo( selectable, optionsOrPlaceOrOffset, options );
-		}
+		this.model.document.selection._setTo( ...args );
 	}
 
 	/**
