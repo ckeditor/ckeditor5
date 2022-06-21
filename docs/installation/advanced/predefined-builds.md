@@ -54,7 +54,7 @@ The following are **some** common use cases:
 
 ### When NOT to use predefined builds?
 
-{@link framework/index CKEditor 5 Framework} or a {@link installation/getting-started/quick-start custom build} should be used, instead of predefined builds, in the following cases:
+{@link framework/index CKEditor 5 Framework} or a {@link installation/getting-started/quick-start-other custom build} should be used, instead of predefined builds, in the following cases:
 
 * When you want to create your own text editor and have full control over its every aspect, from UI to features.
 * When the solution proposed by the builds does not fit your specific use case.
@@ -76,7 +76,7 @@ There are several options to download predefined CKEditor 5 builds:
 
 #### CDN
 
-Predefined CKEditor 5 builds can be loaded inside pages directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed.
+Predefined CKEditor 5 builds {@link installation/getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed.
 
 #### npm
 
