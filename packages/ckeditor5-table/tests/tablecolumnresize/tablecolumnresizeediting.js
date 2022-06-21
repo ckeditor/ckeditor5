@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, MouseEvent, DragEvent */
+/* global document, MouseEvent */
 
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
 import TableColumnResize from '../../src/tablecolumnresize';
@@ -2012,32 +2012,6 @@ describe( 'TableColumnResizeEditing', () => {
 			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.true;
 
 			td.dispatchEvent( new MouseEvent( 'mouseup', { bubbles: true } ) );
-
-			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.false;
-		} );
-
-		it( 'should hide resizers when content is clicked and show resizers on content drop', () => {
-			setModelData( model,
-				'<table columnWidths="100%">' +
-					'<tableRow>' +
-						'<tableCell>' +
-							'<paragraph>' +
-								'[foo]' +
-							'</paragraph>' +
-						'</tableCell>' +
-					'</tableRow>' +
-				'</table>'
-			);
-
-			const span = view.getDomRoot().querySelector( 'span' );
-
-			span.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
-
-			const viewRoot = view.domConverter.mapDomToView( view.getDomRoot() );
-
-			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.true;
-
-			span.dispatchEvent( new DragEvent( 'drop' ) );
 
 			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.false;
 		} );
