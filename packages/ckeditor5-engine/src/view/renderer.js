@@ -234,6 +234,10 @@ export default class Renderer {
 		else if ( this._inlineFiller && this._inlineFiller.parentNode ) {
 			// While the user is making selection, preserve the inline filler at its original position.
 			inlineFillerPosition = this.domConverter.domPositionToView( this._inlineFiller );
+
+			if ( inlineFillerPosition.parent.is( '$text' ) ) {
+				inlineFillerPosition = ViewPosition._createBefore( inlineFillerPosition.parent );
+			}
 		}
 
 		for ( const element of this.markedAttributes ) {
