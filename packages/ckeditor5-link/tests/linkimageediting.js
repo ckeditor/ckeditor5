@@ -159,8 +159,8 @@ describe( 'LinkImageEditing', () => {
 
 				setModelData( model,
 					'<imageBlock src="/assets/sample.png" ' +
-						'linkHref="http://ckeditor.com" ' +
-						'sources=\'[ { "srcset": "small.png" } ]\'>' +
+						'sources=\'[ { "srcset": "small.png" } ]\' ' +
+						'linkHref="http://ckeditor.com">' +
 					'</imageBlock>'
 				);
 
@@ -1134,8 +1134,8 @@ describe( 'LinkImageEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image">' +
-							'<img alt="bar" src="sample.jpg">' +
-						'</figure>'
+						'<img alt="bar" src="sample.jpg">' +
+					'</figure>'
 				);
 			} );
 
