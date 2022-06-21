@@ -32,7 +32,7 @@ export const tableColumnResizeMouseSimulator = {
 			clientX: getColumnResizerRect( domTarget ).moveBy( vector.x, vector.y ).x
 		};
 
-		this._getPlugin( editor )._onMouseMoveHandler( eventInfo, domEventData );
+		this._getPlugin( editor )._onMouseMoveThrottledHandler( eventInfo, domEventData );
 	},
 
 	up( editor ) {
