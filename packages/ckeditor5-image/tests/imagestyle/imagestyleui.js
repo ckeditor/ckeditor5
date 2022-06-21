@@ -260,6 +260,17 @@ describe( 'ImageStyleUI', () => {
 			}
 		} );
 
+		it( 'should keep the same label of the secondary (arrow) button when the user changes styles of the image', () => {
+			const dropdown = dropdowns[ 1 ];
+
+			expect( dropdown.buttonView.arrowView.label ).to.equal( 'Break text' );
+
+			// Simulate the user changing the style of an image.
+			dropdown.view.toolbarView.items.get( 0 ).isOn = true;
+
+			expect( dropdown.buttonView.arrowView.label ).to.equal( 'Break text' );
+		} );
+
 		it( 'should translate the drop-down title if taken from default styles', async () => {
 			const customEditorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( customEditorElement );
