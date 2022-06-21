@@ -95,9 +95,74 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 ### Multiple editors
 
 Text placeholder
-### Superbuild
+### Using the CKEditor 5 superbuild
 
-Text placeholder
+First add the editor placeholder to your document.
+
+```html
+<div id="editor"></div>
+```
+
+Then include the code from CDN to superbuild to load the editor.
+
+<!-- superbuild links and calls need to be updated in this section -->
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/XXX/ckeditor.js"></script>
+```
+
+Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
+
+```html
+<script>
+	ClassicEditor
+		.create( document.querySelector( '#editor' ) )
+		.catch( error => {
+			console.error( error );
+		} );
+</script>
+```
+
+Remove the plugins you do not need with the `removePlugins` method. Then, configure the toolbar to display only the desired options. You can read more about toolbar configuration the the {@link features/toolbar toolbar guide}.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		removePlugins: [ 'Comments, TrackChanges, etc.' ],
+		toolbar: {
+			items: [
+				'undo', 'redo',
+				'|',
+				'exportPdf', 'exportWord',
+				'|',
+				'wproofreader', 'findAndReplace', 'selectAll',
+				'|',
+				'heading',
+				'|',
+				'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript',
+				'|',
+				'specialCharacters', 'horizontalLine', 'pageBreak',
+				'|',
+				'-',
+				'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+				'|',
+				'link', 'blockQuote', 'insertTable', 'uploadImage', 'mediaEmbed', 'codeBlock', 'htmlEmbed',
+				'|',
+				'bulletedList', 'numberedList', 'todoList',
+				'|',
+				'outdent', 'indent', 'alignment',
+				'|',
+				'textPartLanguage',
+				'|',
+				'sourceEditing'
+			],
+			shouldNotGroupWhenFull: true
+		},
+	} )
+	.catch( error => {
+		console.log( error );
+	} );
+```
 
 <info-box hint>
 **What's next?**
