@@ -31,6 +31,12 @@ export function upcastColgroupElement( editor ) {
 			return;
 		}
 
+		if ( !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
+			return;
+		}
+
+		conversionApi.consumable.consume( data.viewItem, { name: true } );
+
 		const modelWriter = conversionApi.writer;
 		const viewColgroupElement = data.viewItem;
 		const numberOfColumns = getNumberOfColumn( modelTable, editor );
