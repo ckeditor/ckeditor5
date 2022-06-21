@@ -26,7 +26,7 @@ import RootElement from './rootelement';
 import Text from './text';
 
 import { type Marker } from './markercollection';
-import type { default as Selection, Selectable } from './selection';
+import type Selection from './selection';
 import type Batch from './batch';
 import type Item from './item';
 import type Model from './model';
