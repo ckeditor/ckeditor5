@@ -26,7 +26,7 @@ import {
 	clamp,
 	fillArray,
 	sumArray,
-	normalizeColumnWidthsAttribute,
+	normalizeColumnWidths,
 	getTableWidthInPixels
 } from '../../src/tablecolumnresize/utils';
 import { getDomResizer, getDomTable, tableColumnResizeMouseSimulator } from './_utils/utils';
@@ -501,34 +501,34 @@ describe( 'TableColumnResize utils', () => {
 		} );
 	} );
 
-	describe( 'normalizeColumnWidthsAttribute()', () => {
+	describe( 'normalizeColumnWidths()', () => {
 		it( 'should not change the widths of the columns if they sum up to 100%', () => {
-			expect( normalizeColumnWidthsAttribute( '25%, 25%, 25%, 25%' ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidthsAttribute( '10%, 20%, 30%, 40%' ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
-			expect( normalizeColumnWidthsAttribute( '10.32%, 20.12%, 30.87%, 38.69%' ) ).to.deep.equal( [ 10.32, 20.12, 30.87, 38.69 ] );
-			expect( normalizeColumnWidthsAttribute( '100%' ) ).to.deep.equal( [ 100 ] );
+			expect( normalizeColumnWidths( [ '25%', '25%', '25%', '25%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
+			expect( normalizeColumnWidths( [ '10%', '20%', '30%', '40%' ] ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
+			expect( normalizeColumnWidths( [ '10.32%', '20.12%', '30.87%', '38.69%' ] ) ).to.deep.equal( [ 10.32, 20.12, 30.87, 38.69 ] );
+			expect( normalizeColumnWidths( [ '100%' ] ) ).to.deep.equal( [ 100 ] );
 		} );
 
 		it( 'should extend uninitialized columns equally if the free space per column is wider than the minimum column width', () => {
-			expect( normalizeColumnWidthsAttribute( 'auto, auto, auto, auto' ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto, 25%, auto, 25%' ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto, auto, auto, 40%' ) ).to.deep.equal( [ 20, 20, 20, 40 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto, 45%, 45%, auto' ) ).to.deep.equal( [ 5, 45, 45, 5 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto' ) ).to.deep.equal( [ 100 ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', 'auto' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
+			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '40%' ] ) ).to.deep.equal( [ 20, 20, 20, 40 ] );
+			expect( normalizeColumnWidths( [ 'auto', '45%', '45%', 'auto' ] ) ).to.deep.equal( [ 5, 45, 45, 5 ] );
+			expect( normalizeColumnWidths( [ 'auto' ] ) ).to.deep.equal( [ 100 ] );
 		} );
 
 		it( 'should set the minimum column width for uninitialized columns if there is not enough free space per column', () => {
-			expect( normalizeColumnWidthsAttribute( 'auto, auto, auto, 90%' ) ).to.deep.equal( [ 4.76, 4.76, 4.76, 85.72 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto, 50%, auto, 50%' ) ).to.deep.equal( [ 4.55, 45.45, 4.55, 45.45 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto, 50%, 50%, 50%' ) ).to.deep.equal( [ 3.23, 32.26, 32.26, 32.25 ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '90%' ] ) ).to.deep.equal( [ 4.76, 4.76, 4.76, 85.72 ] );
+			expect( normalizeColumnWidths( [ 'auto', '50%', 'auto', '50%' ] ) ).to.deep.equal( [ 4.55, 45.45, 4.55, 45.45 ] );
+			expect( normalizeColumnWidths( [ 'auto', '50%', '50%', '50%' ] ) ).to.deep.equal( [ 3.23, 32.26, 32.26, 32.25 ] );
 		} );
 
 		it( 'should proportionally align all the column widths if their sum is not exactly 100%', () => {
-			expect( normalizeColumnWidthsAttribute( '10%, 20%, 30%, 50%' ) ).to.deep.equal( [ 9.09, 18.18, 27.27, 45.46 ] );
-			expect( normalizeColumnWidthsAttribute( '10%, 10%, 10%, 10%' ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidthsAttribute( '100%, 100%, 100%, 100%' ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidthsAttribute( '1%, 2%, 3%, 4%' ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
-			expect( normalizeColumnWidthsAttribute( '12.33%, 17.4%, 21.49%, 33.52%, 26.6%, 10.43%' ) )
+			expect( normalizeColumnWidths( [ '10%', '20%', '30%', '50%' ] ) ).to.deep.equal( [ 9.09, 18.18, 27.27, 45.46 ] );
+			expect( normalizeColumnWidths( [ '10%', '10%', '10%', '10%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
+			expect( normalizeColumnWidths( [ '100%', '100%', '100%', '100%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
+			expect( normalizeColumnWidths( [ '1%', '2%', '3%', '4%' ] ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
+			expect( normalizeColumnWidths( [ '12.33%', '17.4%', '21.49%', '33.52%', '26.6%', '10.43%' ] ) )
 				.to.deep.equal( [ 10.13, 14.29, 17.65, 27.53, 21.84, 8.56 ] );
 		} );
 	} );

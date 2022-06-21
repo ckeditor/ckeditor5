@@ -302,7 +302,7 @@ export function normalizeColumnWidths( columnWidths ) {
 // - If there is enough free space in the table for all uninitialized columns to have at least the minimum allowed width for all of them,
 //   then set this width equally for all uninitialized columns.
 // - Otherwise, just set the minimum allowed width for all uninitialized columns. The sum of all column widths will be greater than 100%,
-//   but then it will be adjusted proportionally to 100% in {@link #normalizeColumnWidthsAttribute `normalizeColumnWidthsAttribute()`}.
+//   but then it will be adjusted proportionally to 100% in {@link #normalizeColumnWidths `normalizeColumnWidths()`}.
 //
 // @private
 // @param {Array.<Number>}
