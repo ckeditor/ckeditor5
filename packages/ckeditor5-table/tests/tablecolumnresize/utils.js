@@ -29,7 +29,6 @@ import {
 	normalizeColumnWidths,
 	getTableWidthInPixels
 } from '../../src/tablecolumnresize/utils';
-import { getDomResizer, getDomTable, tableColumnResizeMouseSimulator } from './_utils/utils';
 
 /* globals window */
 
@@ -390,8 +389,6 @@ describe( 'TableColumnResize utils', () => {
 			const row0 = [ ...table.getChildren() ][ 0 ];
 			const cell00 = [ ...row0.getChildren() ][ 0 ];
 
-			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( editor.editing.view ), 1, 0 ) );
-
 			expect(
 				getColumnIndex( cell00, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 0, rightEdge: 0 } );
@@ -413,8 +410,6 @@ describe( 'TableColumnResize utils', () => {
 			const row0 = [ ...table.getChildren() ][ 0 ];
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
-			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( editor.editing.view ), 1, 0 ) );
-
 			expect(
 				getColumnIndex( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 2 } );
@@ -430,8 +425,6 @@ describe( 'TableColumnResize utils', () => {
 			const row0 = [ ...table.getChildren() ][ 0 ];
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
-			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( editor.editing.view ), 1, 0 ) );
-
 			expect(
 				getColumnIndex( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 3 } );
@@ -446,8 +439,6 @@ describe( 'TableColumnResize utils', () => {
 			const table = editor.model.document.getRoot().getChild( 0 );
 			const row0 = [ ...table.getChildren() ][ 0 ];
 			const cell02 = [ ...row0.getChildren() ][ 2 ];
-
-			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( editor.editing.view ), 1, 0 ) );
 
 			expect(
 				getColumnIndex( cell02, getColumnIndexMap( editor ) )
