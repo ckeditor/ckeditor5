@@ -11,8 +11,6 @@ modified_at: 2022-06-21
 
 ## Introduction
 
-CKEditor 5 can provide any WYSIWYG editor type. From online editors similar to Google Docs and Medium, to Slack or Twitter like applications, the CKEditor 5 editing framework provides solutions for every user, both customized and out-of-the-box. This modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM was written from scratch in ES6 with excellent webpack support.
-
 In this guide you will find the fastest and easiest way to run ready-to-use CKEditor 5 with minimal effort &ndash; running the editor from [CDN](https://cdn.ckeditor.com/). This is the fastest method that lets you set up a running copy of CKEditor 5 in literally seconds. CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
 
 <info-box>

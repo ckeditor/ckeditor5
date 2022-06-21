@@ -11,6 +11,8 @@ modified_at: 2022-03-15
 
 ## Introduction
 
+CKEditor 5 can provide any WYSIWYG editor type. From online editors similar to Google Docs and Medium, to Slack or Twitter like applications, the CKEditor 5 editing framework provides solutions for every user, both customized and out-of-the-box. This modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM was written from scratch in ES6 with excellent webpack support.
+
 In this guide, you will learn how to run your own CKEditor 5 instance. Below you can find two unique paths describing the installation process. Choose one (or both!) and start your CKEditor 5 journey!
 
 Available paths:
