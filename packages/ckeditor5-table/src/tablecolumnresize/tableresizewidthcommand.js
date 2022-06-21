@@ -23,15 +23,28 @@ export default class TableResizeWidthCommand extends TableWidthCommand {
 		super( editor, 'tableWidth', defaultValue );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	refresh() {
+		// The command is always enabled as it doesn't care about the actual selection - table can be resized
+		// even if the selection is elsewhere.
+		this.isEnabled = true;
+	}
+
+	/**
+	 * Changes the `tableWidth` and `columnWidths` attribute values for the given or currently selected table.
+	 *
+	 * @param {Object} options
+	 * @param {String} [options.tableWidth] The new table width.
+	 * @param {String} [options.columnWidths] The new table column widths.
+	 */
 	execute( options = {} ) {
-		const editor = this.editor;
-		const model = editor.model;
-
-		const { tableWidth, batch, columnWidths } = options;
-
+		const model = this.editor.model;
 		const table = options.table || model.document.selection.getSelectedElement();
+		const { tableWidth, columnWidths } = options;
 
-		model.enqueueChange( batch, writer => {
+		model.change( writer => {
 			if ( tableWidth ) {
 				writer.setAttribute( this.attributeName, tableWidth, table );
 				writer.setAttribute( 'columnWidths', columnWidths, table );
@@ -39,9 +52,5 @@ export default class TableResizeWidthCommand extends TableWidthCommand {
 				writer.removeAttribute( this.attributeName, table );
 			}
 		} );
-	}
-
-	refresh() {
-		this.isEnabled = true;
 	}
 }

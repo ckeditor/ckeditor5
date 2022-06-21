@@ -37,7 +37,6 @@ export function upcastColgroupElement( editor ) {
 
 		conversionApi.consumable.consume( data.viewItem, { name: true } );
 
-		const modelWriter = conversionApi.writer;
 		const viewColgroupElement = data.viewItem;
 		const numberOfColumns = getNumberOfColumn( modelTable, editor );
 
@@ -62,7 +61,7 @@ export function upcastColgroupElement( editor ) {
 			columnWidths = normalizeColumnWidths( columnWidths ).map( width => width + '%' );
 		}
 
-		modelWriter.setAttribute( 'columnWidths', columnWidths.join( ',' ), modelTable );
+		conversionApi.writer.setAttribute( 'columnWidths', columnWidths.join( ',' ), modelTable );
 	} );
 }
 
