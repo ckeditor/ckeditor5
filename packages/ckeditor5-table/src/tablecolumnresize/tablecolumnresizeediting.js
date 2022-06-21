@@ -455,7 +455,12 @@ export default class TableColumnResizeEditing extends Plugin {
 		domEmitter.listenTo( global.window.document, 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
 		domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 		domEmitter.listenTo( global.window.document, 'drop', this._onMouseUpHandler.bind( this ), { useCapture: true } );
-		domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
+		domEmitter.listenTo(
+			global.window.document, 'mousemove', throttle( this._onMouseMoveThrottledHandler.bind( this ), 50 ), { useCapture: true }
+		);
+		domEmitter.listenTo(
+			global.window.document, 'mousemove', this._onMouseMoveHandler.bind( this ), { priority: 'low', useCapture: true }
+		);
 	}
 
 	/**
@@ -581,7 +586,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_onMouseMoveHandler( eventInfo, domEventData ) {
+	_onMouseMoveThrottledHandler( eventInfo, domEventData ) {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
@@ -651,6 +656,21 @@ export default class TableColumnResizeEditing extends Plugin {
 				writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn );
 			}
 		} );
+	}
+
+	/**
+	 * Stops propagation of the `mousemove` event if column resizing is in progress.
+	 *
+	 * In particular, it stops selecting table cells using mouse, to prevent cell selection change while resizing columns. See: #11770.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 */
+	_onMouseMoveHandler( eventInfo, domEventData ) {
+		if ( this._isResizingActive ) {
+			domEventData.stopPropagation();
+		}
 	}
 
 	/**
