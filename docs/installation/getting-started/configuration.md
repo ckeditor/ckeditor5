@@ -161,7 +161,7 @@ ClassicEditor
 
 In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration. Check the detailed {@link features/toolbar toolbar feature guide} for the available options.
 
-When you create a {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder custom build using CKEditor 5 online builder}, setting up your toolbar configuration is one of the steps in the build creation process that uses an intuitive drag and drop interface.
+When you create a {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder custom build using CKEditor 5 online builder}, setting up your toolbar configuration is one of the steps in the build creation process that uses an intuitive drag and drop interface.
 
 ## Other configuration options
 
