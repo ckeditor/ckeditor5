@@ -50,6 +50,12 @@ function logEvent( evt ) {
 		console.log( `%cdata:%c "${ evt.data }"`, 'font-weight: bold', 'font-weight: default; color: blue' );
 	}
 
+	if ( 'dataTransfer' in evt ) {
+		const data = evt.dataTransfer.getData( 'text/plain' );
+
+		console.log( `%cdataTransfer:%c "${ data }"`, 'font-weight: bold', 'font-weight: default; color: blue' );
+	}
+
 	if ( 'keyCode' in evt ) {
 		console.log( `%ckeyCode:%c ${ evt.keyCode }`, 'font-weight: bold', 'font-weight: default; color: green' );
 	}

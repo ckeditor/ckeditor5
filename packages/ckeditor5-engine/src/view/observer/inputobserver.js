@@ -46,8 +46,16 @@ export default class InputObserver extends DomEventObserver {
 
 		if ( domEvent.data ) {
 			data = domEvent.data;
+
+			if ( window.logCKEEvents ) {
+				console.info( '[InputObserver] event data:', data );
+			}
 		} else if ( dataTransfer ) {
 			data = dataTransfer.getData( 'text/plain' );
+
+			if ( window.logCKEEvents ) {
+				console.info( '[InputObserver] data transfer data:', data );
+			}
 		}
 
 		// If the editor selection is fake (an object is selected), the DOM range does not make sense because it is anchored
