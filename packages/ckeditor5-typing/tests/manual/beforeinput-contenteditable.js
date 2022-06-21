@@ -50,7 +50,7 @@ function logEvent( evt ) {
 		console.log( `%cdata:%c "${ evt.data }"`, 'font-weight: bold', 'font-weight: default; color: blue' );
 	}
 
-	if ( 'dataTransfer' in evt ) {
+	if ( 'dataTransfer' in evt && evt.dataTransfer ) {
 		const data = evt.dataTransfer.getData( 'text/plain' );
 
 		console.log( `%cdataTransfer:%c "${ data }"`, 'font-weight: bold', 'font-weight: default; color: blue' );
