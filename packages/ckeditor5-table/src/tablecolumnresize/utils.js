@@ -98,6 +98,19 @@ export function getTableWidthInPixels( table, editor ) {
 	return getElementWidthInPixels( domTbody );
 }
 
+// Returns the `<tbody>` view element, if it exists in a table. Returns `undefined` otherwise.
+//
+// @private
+// @param {module:engine/model/element~Element} table
+// @param {module:core/editor/editor~Editor} editor
+// @returns {module:engine/view/element~Element|undefined}
+function getTbodyViewElement( table, editor ) {
+	const viewFigure = editor.editing.mapper.toViewElement( table );
+	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
+
+	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'tbody' ) );
+}
+
 /**
  * Calculates the column widths in pixels basing on the `columnWidths` table attribute:
  * - If the value for a given column is provided in pixels then it is just converted to a number and returned.
@@ -182,19 +195,6 @@ function getColgroupViewElement( table, editor ) {
 	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
 
 	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'colgroup' ) );
-}
-
-// Returns the `<tbody>` view element, if it exists in a table. Returns `undefined` otherwise.
-//
-// @private
-// @param {module:engine/model/element~Element} table
-// @param {module:core/editor/editor~Editor} editor
-// @returns {module:engine/view/element~Element|undefined}
-function getTbodyViewElement( table, editor ) {
-	const viewFigure = editor.editing.mapper.toViewElement( table );
-	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
-
-	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'tbody' ) );
 }
 
 /**
@@ -342,21 +342,6 @@ export function insertColumnResizerElement( viewWriter, viewCell ) {
 		viewWriter.createPositionAt( viewCell, 'end' ),
 		viewTableColumnResizerElement
 	);
-}
-
-// Removes column resizer element from a view cell.
-//
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
-// @param {module:engine/view/element~Element} viewCell View cell.
-export function removeColumnResizerElements( viewWriter, viewCell ) {
-	const viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
-		.find( viewElement => viewElement.hasClass( 'ck-table-column-resizer' ) );
-
-	if ( !viewTableColumnResizerElement ) {
-		return;
-	}
-
-	viewWriter.remove( viewTableColumnResizerElement );
 }
 
 // Calculates the total horizontal space taken by the cell. That includes:
