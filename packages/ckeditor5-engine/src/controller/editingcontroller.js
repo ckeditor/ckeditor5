@@ -110,45 +110,31 @@ export default class EditingController {
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		this.listenTo( this.view.document, 'change:isComposing', () => {
-			if ( !window.logCKEEvents ) {
-				return;
-			}
-
-			if ( this.view.document.isComposing ) {
-				console.log(
-					'%c┌───────────────────────────── isComposing = true ─────────────────────────────┐',
-					'font-weight: bold; color: green'
-				);
-			} else {
-				console.log(
-					'%c└───────────────────────────── isComposing = false ─────────────────────────────┘',
-					'font-weight: bold; color: green'
-				);
-			}
-		}, { priority: 'low' } );
-
-		this.listenTo( this.view.document, 'keydown', ( evt, domEventData ) => {
 			if ( window.logCKEEvents ) {
-				console.group( '[EditingController] keydown', domEventData.keyCode );
-				console.groupCollapsed( '[EditingController] DOM event' );
-				console.info( domEventData );
-				console.groupEnd();
+				if ( this.view.document.isComposing ) {
+					console.log(
+						'%c┌───────────────────────────── isComposing = true ─────────────────────────────┐',
+						'font-weight: bold; color: green'
+					);
+				} else {
+					console.log(
+						'%c└───────────────────────────── isComposing = false ─────────────────────────────┘',
+						'font-weight: bold; color: green'
+					);
+				}
 			}
 
-			if ( domEventData.keyCode === 229 && !this.view.document.isComposing && !model.document.selection.isCollapsed ) {
+			if ( this.view.document.isComposing && !model.document.selection.isCollapsed ) {
 				if ( window.logCKEEvents ) {
-					console.log( '[EditingController] keyCode 229 before isComposing -> delete content',
+					console.log( '[EditingController] Composition start -> delete content',
 						`[${ model.document.selection.getFirstPosition().path }]-[${ model.document.selection.getLastPosition().path }]`
 					);
 				}
 
 				model.deleteContent( model.document.selection );
 			}
-
-			if ( window.logCKEEvents ) {
-				console.groupEnd();
-			}
-		}, { priority: 'lowest' } );
+		}, { priority: 'high' } );
+		// 👆 High priority to call it before the renderer is blocked, because we want to render this change.
 
 		// Attach default model converters.
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
