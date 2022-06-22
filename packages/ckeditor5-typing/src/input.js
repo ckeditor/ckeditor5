@@ -7,10 +7,11 @@
  * @module typing/input
  */
 
+/* globals window, console */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import InsertTextCommand from './inserttextcommand';
 import InsertTextObserver from './inserttextobserver';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -30,8 +31,8 @@ export default class Input extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const model = editor.model;
 		const view = editor.editing.view;
-		const viewDocument = view.document;
 
 		view.addObserver( InsertTextObserver );
 
@@ -42,7 +43,7 @@ export default class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
-		this.listenTo( viewDocument, 'insertText', ( evt, data ) => {
+		this.listenTo( view.document, 'insertText', ( evt, data ) => {
 			data.preventDefault();
 
 			const { text, selection: viewSelection, resultRange: viewResultRange } = data;
@@ -54,7 +55,7 @@ export default class Input extends Plugin {
 
 			const insertTextCommandData = {
 				text,
-				selection: editor.model.createSelection( modelRanges )
+				selection: model.createSelection( modelRanges )
 			};
 
 			if ( viewResultRange ) {
@@ -63,5 +64,35 @@ export default class Input extends Plugin {
 
 			editor.execute( 'insertText', insertTextCommandData );
 		} );
+
+		this.listenTo( view.document, 'change:isComposing', () => {
+			if ( view.document.isComposing && !model.document.selection.isCollapsed ) {
+				if ( window.logCKEEvents ) {
+					console.log( '[EditingController] Composition start -> delete content',
+						`[${ model.document.selection.getFirstPosition().path }]-[${ model.document.selection.getLastPosition().path }]`
+					);
+				}
+
+				model.deleteContent( model.document.selection );
+			}
+		}, { priority: 'high' } );
+		// 👆 High priority to call it before the renderer is blocked, because we want to render this change.
+
+		this.listenTo( view.document, 'change:isComposing', () => {
+			if ( window.logCKEEvents && view.document.isComposing ) {
+				console.log(
+					'%c┌───────────────────────────── isComposing = true ─────────────────────────────┐',
+					'font-weight: bold; color: green'
+				);
+			}
+		}, { priority: 'highest' } );
+		this.listenTo( view.document, 'change:isComposing', () => {
+			if ( window.logCKEEvents && !view.document.isComposing ) {
+				console.log(
+					'%c└───────────────────────────── isComposing = false ─────────────────────────────┘',
+					'font-weight: bold; color: green'
+				);
+			}
+		}, { priority: 'lowest' } );
 	}
 }

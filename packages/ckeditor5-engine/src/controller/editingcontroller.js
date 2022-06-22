@@ -7,8 +7,6 @@
  * @module engine/controller/editingcontroller
  */
 
-/* globals window, console */
-
 import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
 import Mapper from '../conversion/mapper';
@@ -108,33 +106,6 @@ export default class EditingController {
 
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
-
-		this.listenTo( this.view.document, 'change:isComposing', () => {
-			if ( window.logCKEEvents ) {
-				if ( this.view.document.isComposing ) {
-					console.log(
-						'%c┌───────────────────────────── isComposing = true ─────────────────────────────┐',
-						'font-weight: bold; color: green'
-					);
-				} else {
-					console.log(
-						'%c└───────────────────────────── isComposing = false ─────────────────────────────┘',
-						'font-weight: bold; color: green'
-					);
-				}
-			}
-
-			if ( this.view.document.isComposing && !model.document.selection.isCollapsed ) {
-				if ( window.logCKEEvents ) {
-					console.log( '[EditingController] Composition start -> delete content',
-						`[${ model.document.selection.getFirstPosition().path }]-[${ model.document.selection.getLastPosition().path }]`
-					);
-				}
-
-				model.deleteContent( model.document.selection );
-			}
-		}, { priority: 'high' } );
-		// 👆 High priority to call it before the renderer is blocked, because we want to render this change.
 
 		// Attach default model converters.
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
