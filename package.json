@@ -152,7 +152,7 @@
     "clean": "npx rimraf package-lock.json yarn.lock ./**/node_modules",
     "reset": "rm -rf ./node_modules && yarn run bootstrap",
     "reinstall": "yarn run clean && yarn run bootstrap",
-    "docs": "node --max-old-space-size=4096 ./scripts/docs/build-docs.js",
+    "docs": "node --max-old-space-size=8192 ./scripts/docs/build-docs.js",
     "docs:api": "node ./scripts/docs/build-api-docs.js",
     "release:find-plugins": "node ./scripts/docs/find-new-plugins.js",
     "docs:serve": "http-server ./build/docs/",
