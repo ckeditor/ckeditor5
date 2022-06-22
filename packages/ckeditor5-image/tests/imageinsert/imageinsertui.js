@@ -87,6 +87,18 @@ describe( 'ImageInsertUI', () => {
 			expect( dropdownCreator.callback ).to.equal( dropdownAliasCreator.callback );
 		} );
 
+		it( 'should register the "insertImage" dropdown with basic properties', () => {
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+			const dropdownButtonView = dropdown.buttonView;
+
+			expect( dropdownButtonView ).to.have.property( 'label', 'Insert image' );
+			expect( dropdownButtonView ).to.have.property( 'icon' );
+			expect( dropdownButtonView ).to.have.property( 'tooltip', true );
+
+			expect( dropdownButtonView.arrowView.label ).to.equal( 'Insert image via URL' );
+			expect( dropdownButtonView.arrowView.tooltip ).to.be.true;
+		} );
+
 		it( 'should not insert panel view children until dropdown is not open for the first time', () => {
 			expect( dropdown.panelView.children.length ).to.equal( 0 );
 
