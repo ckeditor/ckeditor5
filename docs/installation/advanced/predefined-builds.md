@@ -30,12 +30,6 @@ Each build was designed to satisfy as many use cases as possible. They differ in
 * When you want to create your own text editor and have full control over its every aspect, from UI to features.
 * When the solution proposed by the builds does not fit your specific use case.
 
-In the following cases [CKEditor 4](https://ckeditor.com/ckeditor-4/) should be used instead:
-
-* When compatibility with old browsers is a requirement.
-* If CKEditor 4 contains features that are essential for you, which are not available in CKEditor 5 yet.
-* If CKEditor 4 is already in use in your application and you are still not ready to replace it with CKEditor 5.
-
 ### Download options
 
 There are several options to download predefined CKEditor 5 builds:
