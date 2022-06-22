@@ -365,8 +365,14 @@ export function removeColumnResizerElements( viewWriter, viewCell ) {
 	viewWriter.remove( viewTableColumnResizerElement );
 }
 
+// Calculates the total horizontal space taken by the cell. That includes:
+// * width;
+// * left and red padding;
+// * border width.
 //
-export function getDomCellWidth( domCell ) {
+// @param {HTMLElement} domCell
+// @returns {Number} Width in pixels without `px` at the end
+export function getDomCellOuterWidth( domCell ) {
 	const styles = global.window.getComputedStyle( domCell );
 
 	return parseFloat( styles.width ) +

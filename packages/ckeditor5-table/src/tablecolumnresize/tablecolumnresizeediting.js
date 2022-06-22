@@ -38,7 +38,7 @@ import {
 	normalizeColumnWidths,
 	toPrecision,
 	insertColumnResizerElement,
-	getDomCellWidth
+	getDomCellOuterWidth
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -392,14 +392,16 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' ) );
 		const viewTable = target.findAncestor( 'table' );
 
-		// Calculate the dom cell widths.
+		// Calculate the dom column widths. It is done by taking the width of the widest cell
+		// from each table column (we relay on the TableWalker in terms of determining
+		// to which column the cell belongs).
 		const columnWidthsInPx = Array( getNumberOfColumn( modelTable, editor ) );
 		const tableWalker = new TableWalker( modelTable );
 
 		for ( const cellSlot of tableWalker ) {
 			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
 			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
-			const domCellWidth = getDomCellWidth( domCell );
+			const domCellWidth = getDomCellOuterWidth( domCell );
 
 			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
 				this._columnIndexMap.set( cellSlot.cell, cellSlot.column );
@@ -410,7 +412,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 		}
 
-		// Insert colgroup for table that is resized for the first time.
+		// Insert colgroup for the table that is resized for the first time.
 		if ( ![ ...domEventData.target.findAncestor( 'table' ).getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
 			editingView.change( viewWriter => {
 				const colgroup = viewWriter.createContainerElement( 'colgroup' );
