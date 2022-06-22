@@ -686,13 +686,12 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Registers a handler on 'render' to properly insert/remove resizers after all postfixers finished their job.
+	 * Registers a handler on 'render' event to properly insert missing resizers after all postfixers finished their job.
 	 *
 	 * @private
 	 */
 	_registerResizerInserter() {
-		const editor = this.editor;
-		const view = editor.editing.view;
+		const view = this.editor.editing.view;
 
 		view.on( 'render', () => {
 			for ( const item of view.createRangeIn( view.document.getRoot() ) ) {
