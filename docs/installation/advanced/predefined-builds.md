@@ -21,36 +21,7 @@ The following CKEditor 5 builds are currently available:
 
 ## Basic information
 
-### How builds were designed
-
-Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features, and are based on the following approach:
-
-* Include the set of features proposed by the [Editor Recommendations project](https://ckeditor.github.io/editor-recommendations/).
-* Include features that contribute to creating quality content.
-* Provide setups as generic as possible, based on research and community feedback.
-
-### Use cases
-
-Each of the builds fits several different use cases. Just think about any possible use for writing rich text in applications.
-
-The following are **some** common use cases:
-
-* In content management systems:
-	* Forms for writing articles or website content.
-	* Inline writing in a frontend-like editing page.
-	* Comments.
-* In marketing and sales automation applications:
-	* Composing email campaigns.
-	* Creating templates.
-* In forum applications:
-	* Creating topics and their replies.
-* In team collaboration applications:
-	* Creating shared documents.
-* Other uses:
-	* User profile editing pages.
-	* Book writing applications.
-	* Social messaging and content sharing.
-	* Creation of ads in recruitment software.
+Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features.
 
 ### When NOT to use predefined builds?
 
@@ -76,7 +47,9 @@ There are several options to download predefined CKEditor 5 builds:
 
 #### CDN
 
-Predefined CKEditor 5 builds {@link installation/getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed.
+Predefined CKEditor 5 builds {@link installation/getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed.  CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
+
+However, CDN only offers ready-to-use, predefined packages &ndash; the builds &ndash; and as does not offer much customization capabilities.
 
 #### npm
 

@@ -18,9 +18,9 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 	**Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
 </info-box>
 
-## Using CDN
+## Start using CKEditor 5 instantly with CDN
 
-Start using CKEditor 5 in literally seconds thanks to the {@link installation/getting-started/quick-start power of our CDN}.
+Start using CKEditor 5 in literally seconds thanks to the power of our CDN. Check out the {@link installation/getting-started/quick-start Quick start guide}.
 ## Installing CKEditor 5
 
 Learn how to install CKEditor 5 easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, learn to {@link installation/getting-started/quick-start-other#building-the-editor-from-source create a custom build}, {@link installation/getting-started/configuration configure it}, and {@link installation/advanced/csp secure}.
@@ -73,7 +73,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 
 		'quiz-question-usingCDN': {
 			content: 'Do you need an immediate pre-made solution?',
-			hint: 'CKEditor 5 can be instantly run from <a href="#using-cdn">CDN</a> providing working editor in seconds. This is the fastest way to start.',
+			hint: 'CKEditor 5 can be instantly run from <a href="#start-using-ckeditor-5-instantly-with-cdn">CDN</a> providing working editor in seconds. This is the fastest way to start.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingCDN' ),
 				getDecisionButtonDefinition( false, 'quiz-question-onlineBuilds' ),

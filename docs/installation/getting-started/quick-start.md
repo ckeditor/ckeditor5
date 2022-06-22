@@ -11,7 +11,7 @@ modified_at: 2022-06-21
 
 ## Introduction
 
-In this guide you will find the fastest and easiest way to run ready-to-use CKEditor 5 with minimal effort &ndash; running the editor from [CDN](https://cdn.ckeditor.com/). This is the fastest method that lets you set up a running copy of CKEditor 5 in literally seconds. CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
+In this guide you will find the fastest and easiest way to run ready-to-use CKEditor 5 with minimal effort &ndash; running the editor from [CDN](https://cdn.ckeditor.com/). This is the fastest method that lets you set up a running copy of CKEditor 5 in literally seconds.
 
 <info-box>
 	Please bear in mind that the CDN solution only offers ready-to-use editor builds, hence it is not possible to add new plugins and the features available in the editor are preset.
@@ -82,19 +82,16 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 	You can learn more about other available predefined editor builds in the {@link installation/advanced/predefined-builds dedicated builds guide}.
 </info-box>
 
-## Running a more advanced editor
+## Running a full-featured editor from CDN
 
-The fastest way to run an advanced editor using the {@link features/index rich editing features offered by CKEditor 5} is using a superbuild. The superbuild, available instantly from CDN, is a preconfigured editor instance that offers access to all available plugins. Starting from that point and using the `removePlugins` configuration option, you can trim and customize the editor to your exact needs with minimal effort.
+The fastest way to run an advanced editor using the {@link features/index rich editing features offered by CKEditor 5} is using a superbuild. The superbuild, available instantly from CDN, is a preconfigured editor instance that offers access to all available plugins and all predefined editor types. Starting from that point and using the `removePlugins` configuration option, you can trim and customize the editor to your exact needs with minimal effort.
 
 <info-box>
 	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in you implementation, so using the superbuild should rather be considered for evaluation purposes and for tests, than for production environment.
 
-	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create efficient end-user solutions.
+	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link installation/advanced/predefined-builds predefined builds} tailored for specific needs.
 </info-box>
 
-### Multiple editors
-
-Text placeholder
 ### Using the CKEditor 5 superbuild
 
 First add the editor placeholder to your document.
@@ -108,14 +105,14 @@ Then include the code from CDN to superbuild to load the editor.
 <!-- superbuild links and calls need to be updated in this section -->
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/XXX/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
 ```
 
 Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
 
 ```html
 <script>
-	ClassicEditor
+	CKEDITOR.ClassicEditor
 		.create( document.querySelector( '#editor' ) )
 		.catch( error => {
 			console.error( error );
@@ -123,12 +120,16 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 </script>
 ```
 
-Remove the plugins you do not need with the `removePlugins` method. Then, configure the toolbar to display only the desired options. You can read more about toolbar configuration the the {@link features/toolbar toolbar guide}.
+Remove the plugins you do not need with the `removePlugins` method. In this example, we will remove the premium collaboration features that require credentials to work. We need to do this, otherwise the editor will throw an error.
+
+Then, configure the toolbar to display only the desired options. You can read more about toolbar configuration the the {@link features/toolbar toolbar guide}.
+
+The correct source code listing for the configuration can be seen below.
 
 ```js
-ClassicEditor
+CKEDITOR.ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		removePlugins: [ 'Comments, TrackChanges, etc.' ],
+		removePlugins: [ 'Comments, TrackChanges, RevisionHistory, ExportWord, ExportPdf, Pagination, WProofreader, MathType' ],
 		toolbar: {
 			items: [
 				'undo', 'redo',
