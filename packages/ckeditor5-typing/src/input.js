@@ -65,34 +65,19 @@ export default class Input extends Plugin {
 			editor.execute( 'insertText', insertTextCommandData );
 		} );
 
-		this.listenTo( view.document, 'change:isComposing', () => {
-			if ( view.document.isComposing && !model.document.selection.isCollapsed ) {
-				if ( window.logCKEEvents ) {
-					console.log( '[EditingController] Composition start -> delete content',
-						`[${ model.document.selection.getFirstPosition().path }]-[${ model.document.selection.getLastPosition().path }]`
-					);
-				}
-
-				model.deleteContent( model.document.selection );
+		this.listenTo( view.document, 'compositionstart', () => {
+			if ( model.document.selection.isCollapsed ) {
+				return;
 			}
+
+			if ( window.logCKEEvents ) {
+				console.log( '[EditingController] Composition start -> delete content',
+					`[${ model.document.selection.getFirstPosition().path }]-[${ model.document.selection.getLastPosition().path }]`
+				);
+			}
+
+			model.deleteContent( model.document.selection );
 		}, { priority: 'high' } );
 		// 👆 High priority to call it before the renderer is blocked, because we want to render this change.
-
-		this.listenTo( view.document, 'change:isComposing', () => {
-			if ( window.logCKEEvents && view.document.isComposing ) {
-				console.log(
-					'%c┌───────────────────────────── isComposing = true ─────────────────────────────┐',
-					'font-weight: bold; color: green'
-				);
-			}
-		}, { priority: 'highest' } );
-		this.listenTo( view.document, 'change:isComposing', () => {
-			if ( window.logCKEEvents && !view.document.isComposing ) {
-				console.log(
-					'%c└───────────────────────────── isComposing = false ─────────────────────────────┘',
-					'font-weight: bold; color: green'
-				);
-			}
-		}, { priority: 'lowest' } );
 	}
 }

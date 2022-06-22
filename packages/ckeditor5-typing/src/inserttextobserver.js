@@ -39,6 +39,13 @@ export default class InsertTextObserver extends Observer {
 
 		const viewDocument = view.document;
 
+		/**
+		 * TODO
+		 *
+		 * @private
+		 */
+		this._compositionStartPosition = null;
+
 		viewDocument.on( 'beforeinput', ( evt, data ) => {
 			if ( !this.isEnabled ) {
 				return;
@@ -63,6 +70,33 @@ export default class InsertTextObserver extends Observer {
 				evt.stop();
 			}
 		} );
+
+		viewDocument.on( 'compositionstart', () => {
+			this._compositionStartPosition = view.createPositionAt( viewDocument.selection.getFirstPosition() );
+		} );
+
+		viewDocument.on( 'compositionend', ( evt, { domEvent } ) => {
+			// In case of aborted composition.
+			if ( !domEvent.data ) {
+				return;
+			}
+
+			let compositionStartPosition = this._compositionStartPosition;
+
+			// In case the model and view got modified in the background (while the Renderer is locked).
+			if ( !compositionStartPosition.root.is( 'rootElement' ) ) {
+				compositionStartPosition = viewDocument.selection.getFirstPosition();
+			}
+
+			this._compositionStartPosition = null;
+
+			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
+			viewDocument.fire( 'insertText', new DomEventData( viewDocument, domEvent, {
+				text: domEvent.data,
+				selection: view.createSelection( compositionStartPosition )
+			} ) );
+		}, { priority: 'low' } );
+		// Low priority to handle it after isComposing = false and renderer enabled.
 	}
 
 	/**
