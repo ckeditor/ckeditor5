@@ -348,7 +348,14 @@
 							"name": "Developing custom plugins",
 							"id": "framework-plugins",
 							"slug": "plugins",
-							"order": 200
+							"order": 200,
+							"categories": [
+								{
+									"name": "Creating a simple plugin",
+									"id": "simple-plugin",
+									"slug": "simple-plugin"
+								}
+							]
 						},
 						{
 							"name": "Advanced tutorials",
