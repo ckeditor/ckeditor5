@@ -7,12 +7,12 @@
  * @module
  */
 
-import TableWidthCommand from '../tableproperties/commands/tablewidthcommand';
+import TablePropertyCommand from '../tableproperties/commands/tablepropertycommand';
 
 /**
- * @extends module:table/tableproperties/commands/tablewidthcommand~TableWidthCommand
+ * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
-export default class TableResizeWidthCommand extends TableWidthCommand {
+export default class TableResizeWidthCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableResizeWidthCommand` instance.
 	 *
@@ -38,6 +38,7 @@ export default class TableResizeWidthCommand extends TableWidthCommand {
 	 * @param {Object} options
 	 * @param {String} [options.tableWidth] The new table width.
 	 * @param {String} [options.columnWidths] The new table column widths.
+	 * @param {module:engine/model/element~Element} [options.table] The table that is affected by the resize.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
