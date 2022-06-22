@@ -17,14 +17,15 @@ import {
 } from './constants';
 
 /**
- * Collects all table model elements affected by the differ. The returned set may be empty.
+ * Collects all table model elements affected by the differ. Only tables with 'columnsWidth' attribute
+ * are taken into account. The returned set may be empty.
  *
  * @param {Array.<module:engine/model/differ~DiffItem>} changes
  * @param {module:engine/model/model~Model} model
  * @returns {Set.<module:engine/model/element~Element>}
  */
 export function getAffectedTables( changes, model ) {
-	const tablesToProcess = new Set();
+	const affectedTables = new Set();
 
 	for ( const change of changes ) {
 		let referencePosition = null;
@@ -51,33 +52,26 @@ export function getAffectedTables( changes, model ) {
 				break;
 		}
 
-		const affectedTables = [];
-
-		if ( referencePosition ) {
-			const tableNode = ( referencePosition.nodeAfter && referencePosition.nodeAfter.name === 'table' ) ?
-				referencePosition.nodeAfter : referencePosition.findAncestor( 'table' );
-
-			if ( tableNode ) {
-				const range = model.createRangeOn( tableNode );
-
-				for ( const node of range.getItems() ) {
-					if ( node.is( 'element' ) && node.name === 'table' && node.hasAttribute( 'columnWidths' ) ) {
-						affectedTables.push( node );
-					}
-				}
-			}
+		if ( !referencePosition ) {
+			continue;
 		}
 
-		const table = affectedTables;
+		const tableNode = ( referencePosition.nodeAfter && referencePosition.nodeAfter.name === 'table' ) ?
+			referencePosition.nodeAfter : referencePosition.findAncestor( 'table' );
 
-		if ( table ) {
-			for ( const tableItem of table ) {
-				tablesToProcess.add( tableItem );
+		if ( !tableNode ) {
+			continue;
+		}
+
+		// We iterate over the whole table looking for the nested tables that are also affected.
+		for ( const node of model.createRangeOn( tableNode ).getItems() ) {
+			if ( node.is( 'element' ) && node.name === 'table' && node.hasAttribute( 'columnWidths' ) ) {
+				affectedTables.add( node );
 			}
 		}
 	}
 
-	return tablesToProcess;
+	return affectedTables;
 }
 
 /**
