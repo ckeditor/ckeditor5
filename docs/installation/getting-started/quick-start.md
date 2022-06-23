@@ -127,7 +127,7 @@ A source code listing for the configuration can be seen below.
 ```js
 CKEDITOR.ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		removePlugins: [ 'Comments, RealTimeCollaborativeComments, TrackChanges, RealTimeCollaborativeTrackChanges, RevisionHistory, RealTimeCollaborativeRevisionHistory, RealTimeCollaborativeEditing, ExportWord, ExportPdf, Pagination, WProofreader, MathType' ],
+		removePlugins: [ 'Comments', 'TrackChanges', 'TrackChangesData', 'RevisionHistory', 'RealTimeCollaborativeComments', 'RealTimeCollaborativeTrackChanges', 'RealTimeCollaborativeRevisionHistory', 'RealTimeCollaborativeEditing', 'PresenceList', 'ExportWord', 'ExportPdf', 'Pagination', 'WProofreader', 'MathType' ],
 		toolbar: {
 			items: [
 				'undo', 'redo',
