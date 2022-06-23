@@ -132,9 +132,7 @@ CKEDITOR.ClassicEditor
 			items: [
 				'undo', 'redo',
 				'|',
-				'exportPdf', 'exportWord',
-				'|',
-				'wproofreader', 'findAndReplace', 'selectAll',
+				'findAndReplace', 'selectAll',
 				'|',
 				'heading',
 				'|',
@@ -255,14 +253,12 @@ CKEDITOR.ClassicEditor
 	<script>
 		CKEDITOR.ClassicEditor
 			.create( document.querySelector( '#editor' ), {
-				removePlugins: [ 'Comments, RealTimeCollaborativeComments, TrackChanges, RealTimeCollaborativeTrackChanges, RevisionHistory, RealTimeCollaborativeRevisionHistory, RealTimeCollaborativeEditing, ExportWord, ExportPdf, Pagination, WProofreader, MathType' ],
+				removePlugins: [ 'Comments', 'TrackChanges', 'TrackChangesData', 'RevisionHistory', 'RealTimeCollaborativeComments', 'RealTimeCollaborativeTrackChanges', 'RealTimeCollaborativeRevisionHistory', 'RealTimeCollaborativeEditing', 'PresenceList', 'ExportWord', 'ExportPdf', 'Pagination', 'WProofreader', 'MathType' ],
 				toolbar: {
 					items: [
 						'undo', 'redo',
 						'|',
-						'exportPdf', 'exportWord',
-						'|',
-						'wproofreader', 'findAndReplace', 'selectAll',
+						'findAndReplace', 'selectAll',
 						'|',
 						'heading',
 						'|',
