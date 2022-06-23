@@ -409,9 +409,9 @@ CKEDITOR.ClassicEditor
 			items: [
 				'undo', 'redo',
 				'|',
-				'exportPdf', 'exportWord',
+				'exportPdf', 'exportWord', 'pagination',
 				'|',
-				'wproofreader', 'findAndReplace', 'selectAll',
+				'wproofreader', 'MathType', 'findAndReplace', 'selectAll',
 				'|',
 				'heading',
 				'|',
@@ -432,11 +432,7 @@ CKEDITOR.ClassicEditor
 				'|',
 				'sourceEditing',
 				'|',
-				'Comments', 'TrackChanges', 'RevisionHistory',
-				'|',
-				'ExportWord', 'ExportPdf', 'Pagination',
-				'|',
-				'WProofreader', 'MathType'
+				'Comments', 'TrackChanges', 'RevisionHistory'
 			],
 			shouldNotGroupWhenFull: true
 		},
@@ -597,9 +593,9 @@ You can compare this sample configuration with a {@link examples/builds-custom/f
 					items: [
 						'undo', 'redo',
 						'|',
-						'exportPdf', 'exportWord',
+						'exportPdf', 'exportWord', 'pagination',
 						'|',
-						'wproofreader', 'findAndReplace', 'selectAll',
+						'wproofreader', 'MathType', 'findAndReplace', 'selectAll',
 						'|',
 						'heading',
 						'|',
@@ -620,11 +616,7 @@ You can compare this sample configuration with a {@link examples/builds-custom/f
 						'|',
 						'sourceEditing',
 						'|',
-						'Comments', 'TrackChanges', 'RevisionHistory',
-						'|',
-						'ExportWord', 'ExportPdf', 'Pagination',
-						'|',
-						'WProofreader', 'MathType'
+						'Comments', 'TrackChanges', 'RevisionHistory'
 					],
 					shouldNotGroupWhenFull: true
 				},
