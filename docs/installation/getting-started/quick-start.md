@@ -106,7 +106,7 @@ Then include the code from CDN to superbuild to load the editor.
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
 ```
 
-Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
+In the superbuild, all editor classes are stored under the `CKEDITOR` object. To create the classic editor, you need to access `CKEDITOR` object first, then call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
 
 ```html
 <script>
