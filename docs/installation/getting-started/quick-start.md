@@ -415,7 +415,9 @@ Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `
 
 This time we do not remove the Premium features. Instead, we configure the toolbar to include all available plugins. We also need to configure all of these options and provide correct credentials where indicated.
 
+<info-box hint>
 CKEditor 5 Premium features can be easily tested without commitment via the [Premium features free trial](https://ckeditor.com/docs/trial/latest/guides/overview.html) package.
+</info-box>
 
 The correct source code listing for the configuration can be seen below.
 
@@ -432,8 +434,14 @@ CKEDITOR.DecoupledEditor
                 },
                 toolbar: {
                     items: [
-                        'undo', 'redo',
+						'revisionHistory',
                         '|',
+                        'pageNavigation',
+						'previousPage',
+						'nextPage',
+                        '|',
+						'comment', 'trackChanges', 
+						'|',
                         'exportPdf', 'exportWord',
                         '|',
                         'wproofreader', 'MathType', 'findAndReplace', 'selectAll',
@@ -455,7 +463,7 @@ CKEDITOR.DecoupledEditor
                         '|',
                         'textPartLanguage',
                         '|',
-                        'comment', 'trackChanges', 'revisionHistory'
+						'undo', 'redo'
                     ],
                     shouldNotGroupWhenFull: true
                 },
@@ -772,7 +780,13 @@ CKEDITOR.DecoupledEditor
                 },
                 toolbar: {
                     items: [
-                        'undo', 'redo',
+						'revisionHistory',
+                        '|',
+                        'pageNavigation',
+						'previousPage',
+						'nextPage',
+                        '|',
+						'comment', 'trackChanges', 
                         '|',
                         'exportPdf', 'exportWord',
                         '|',
@@ -795,7 +809,7 @@ CKEDITOR.DecoupledEditor
                         '|',
                         'textPartLanguage',
                         '|',
-                        'comment', 'trackChanges', 'revisionHistory'
+						'undo', 'redo',
                     ],
                     shouldNotGroupWhenFull: true
                 },
@@ -998,9 +1012,639 @@ CKEDITOR.DecoupledEditor
 ```
 
 #### Editor with non-real-time collaboration
-TODO
+
+To unleash the full potential of CKEditor 5 with Premium features, we will use the decoupled editor and create more complex markup, including structure required by Revision History.
+
+```html
+<div class="editors-holder">
+	<div class="editor-toolbar"></div>
+
+	<div class="editor-container" id="editor-container">
+		<div class="editor-element">
+			<div id="editor"></div>
+		</div>
+		<div class="sidebar-container" id="sidebar-container"></div>
+	</div>
+
+	<div class="editor-container" id="revision-viewer-container">
+		<div class="editor-element">
+			<div id="revision-viewer-editor"></div>
+		</div>
+		<div class="sidebar-container" id="revision-viewer-sidebar"></div>
+	</div>
+</div>
+```
+
+Include the code from CDN to superbuild to load the editor.
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
+```
+
+Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
+
+```html
+<script>
+	CKEDITOR.DecoupledEditor
+		.create( document.querySelector( '#editor' ) )
+		.then( editor => {
+			const toolbarContainer = document.querySelector( '.editor-toolbar' );
+
+			toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+		} )
+		.catch( error => {
+			console.error( error );
+		} );
+</script>
+```
+
+This time we need to remove all real-time collaborative plugins. As previously, we configure the toolbar to include all available plugins. We also need to configure all of these options and provide correct credentials where indicated.
+
+<info-box hint>
+CKEditor 5 Premium features can be easily tested without commitment via the [Premium features free trial](https://ckeditor.com/docs/trial/latest/guides/overview.html) package.
+</info-box>
+
+The correct source code listing for the configuration can be seen below.
+
+```js
+CKEDITOR.DecoupledEditor
+	.create( document.querySelector( '#editor' ), {
+		removePlugins: [ 
+			'RealTimeCollaborativeComments', 
+			'RealTimeCollaborativeTrackChanges',
+			'RealTimeCollaborativeRevisionHistory',
+			'PresenceList'
+		],
+		cloudServices: {
+			// PROVIDE CORRECT VALUES HERE:
+			tokenUrl: 'https://example.com/cs-token-endpoint',
+			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
+		},
+		toolbar: {
+			items: [
+				'revisionHistory',
+				'|',
+				'pageNavigation',
+				'previousPage',
+				'nextPage',
+				'|',
+				'comment', 'trackChanges', 
+				'|',
+				'exportPdf', 'exportWord',
+				'|',
+				'wproofreader', 'MathType', 'findAndReplace', 'selectAll',
+				'|',
+				'heading',
+				'|',
+				'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript',
+				'|',
+				'specialCharacters', 'horizontalLine', 'pageBreak',
+				'|',
+				'-',
+				'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+				'|',
+				'link', 'blockQuote', 'insertTable', 'uploadImage', 'mediaEmbed', 'codeBlock', 'htmlEmbed',
+				'|',
+				'bulletedList', 'numberedList', 'todoList',
+				'|',
+				'outdent', 'indent', 'alignment',
+				'|',
+				'textPartLanguage',
+				'|',
+				'undo', 'redo',
+			],
+			shouldNotGroupWhenFull: true
+		},
+		exportPdf: {
+			stylesheets: [
+				// Add your custom styles before 'EDITOR_STYLES'
+				'EDITOR_STYLES'
+			],
+			fileName: 'export-pdf-demo.pdf',
+			converterOptions: {
+				format: 'A4',
+				margin_top: '20mm',
+				margin_bottom: '20mm',
+				margin_right: '12mm',
+				margin_left: '12mm',
+				page_orientation: 'portrait'
+			},
+			// PROVIDE CORRECT VALUES HERE:
+			tokenUrl: 'https://example.com/cs-token-endpoint',
+			dataCallback: ( editor ) => editor.getData( {
+				showSuggestionHighlights: true
+			} ),
+		},
+		exportWord: {
+			stylesheets: [
+				// Add your custom styles before 'EDITOR_STYLES'
+				'EDITOR_STYLES'
+			],
+			fileName: 'export-word-demo.docx',
+			converterOptions: {
+				format: 'A4',
+				margin_top: '20mm',
+				margin_bottom: '20mm',
+				margin_right: '12mm',
+				margin_left: '12mm',
+				page_orientation: 'portrait'
+			},
+			// PROVIDE CORRECT VALUES HERE:
+			tokenUrl: 'https://example.com/cs-token-endpoint'
+		},
+		fontFamily: {
+			supportAllValues: true
+		},
+		fontSize: {
+			options: [ 10, 12, 14, 'default', 18, 20, 22 ],
+			supportAllValues: true
+		},
+		htmlEmbed: {
+			showPreviews: true
+		},
+		image: {
+			styles: [
+				'alignCenter',
+				'alignLeft',
+				'alignRight'
+			],
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					label: 'Original',
+					value: null
+				},
+				{
+					name: 'resizeImage:50',
+					label: '50%',
+					value: '50'
+				},
+				{
+					name: 'resizeImage:75',
+					label: '75%',
+					value: '75'
+				}
+			],
+			toolbar: [
+				'imageTextAlternative', 'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+				'resizeImage'
+			],
+			insert: {
+				integrations: [
+					'insertImageViaUrl'
+				]
+			}
+		},
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		},
+		link: {
+			decorators: {
+				addTargetToExternalLinks: true,
+				defaultProtocol: 'https://',
+				toggleDownloadable: {
+					mode: 'manual',
+					label: 'Downloadable',
+					attributes: {
+						download: 'file'
+					}
+				}
+			}
+		},
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: [
+						'@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
+						'@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
+						'@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
+						'@sugar', '@sweet', '@topping', '@wafer'
+					],
+					minimumCharacters: 1
+				}
+			]
+		},
+		placeholder: 'Type or paste your content here!',
+		table: {
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+			]
+		},
+		wproofreader: {
+		// PROVIDE CORRECT VALUE HERE:
+			serviceId: 'service ID',
+			lang: 'auto',
+			srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
+		},
+		pagination: {
+			// A4
+			pageWidth: '21cm',
+			pageHeight: '29.7cm',
+
+			pageMargins: {
+				top: '20mm',
+				bottom: '20mm',
+				right: '12mm',
+				left: '12mm'
+			}
+		},
+		licenseKey: '', // Provide the correct vaule.
+		sidebar: {
+			container: document.querySelector( '.sidebar-container' )
+		},
+		revisionHistory: {
+			showRevisionViewerCallback: config => {
+				const editorContainer = document.querySelector( '#editor-container' );
+				const viewerContainer = document.querySelector( '#revision-viewer-container' );
+				const viewerElement = document.querySelector( '#revision-viewer-editor' );
+
+				config.revisionHistory.viewerSidebarContainer = document.querySelector( '#revision-viewer-sidebar' );
+
+				return CKEDITOR.DecoupledEditor.create( viewerElement, config ).then( viewerEditor => {
+					viewerContainer.style.display = 'flex';
+					editorContainer.style.display = 'none';
+
+					const toolbarContainer = document.querySelector( '.editor-toolbar' );
+					toolbarContainer.innerHTML = '';
+					toolbarContainer.appendChild( viewerEditor.ui.view.toolbar.element );
+
+					return viewerEditor;
+				} );
+			},
+			closeRevisionViewerCallback: viewerEditor => {
+				const editorContainer = document.querySelector( '#editor-container' );
+				const viewerContainer = document.querySelector( '#revision-viewer-container' );
+
+				viewerContainer.style.display = 'none';
+				editorContainer.style.display = '';
+
+				return viewerEditor.destroy().then( () => {
+					const toolbarContainer = document.querySelector( '.editor-toolbar' );
+					toolbarContainer.innerHTML = '';
+					toolbarContainer.appendChild( window.editor.ui.view.toolbar.element );
+				} );
+			}
+		},
+	} )
+	.then( editor => {
+		const toolbarContainer = document.querySelector( '.editor-toolbar' );
+
+		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	} )
+	.catch( error => {
+		console.log( error );
+	} );
+```
 
 ##### Sample implementation
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>CKEditor 5 – Full-featured editor with Premium features and non-real-time collaboration</title>
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/super-build/ckeditor.js"></script>
+    <style>
+        .editors-holder {
+            position: relative;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            position: relative;
+            width: 1260px;
+        }
+
+        #revision-viewer-container {
+            display: none;
+        }
+
+        .editor-toolbar {
+            width: 1260px;
+            margin-bottom: -1px;
+        }
+
+        .editor-element {
+            width: 950px;
+            border: 1px solid var(--ck-color-toolbar-border);
+        }
+
+        .editor-container > .ck-editor {
+            position: relative;
+            width: 950px;
+        }
+
+        .editor-container .ck-editor__top .ck-toolbar {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .editor-container .ck-editor__editable_inline {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .ck.ck-content:not(.ck-comment__input *) {
+			/* A4 size */
+			width: calc( 210mm + 2px ); /* Those 2px are from border (box-sizing: border-box) */
+			min-height: calc( 297mm + 2px );
+			height: auto;
+			padding: 20mm 12mm;
+			box-sizing: border-box;
+			background: hsl( 0, 0%, 100% );
+			border: 1px solid hsl( 0, 0%, 88% );
+			box-shadow: 0 2px 8px hsla( 0, 0%, 0%, .08 );
+			margin: 40px auto;
+			overflow: hidden;
+		}
+
+        .sidebar-container {
+            position: relative;
+            width: 310px;
+            overflow: hidden;
+            background: var(--ck-color-toolbar-background);
+            border: 1px solid var(--ck-color-toolbar-border);
+            margin-left: -1px;
+        }
+
+        /* Move the square with page number from the Pagination plugin to the left side,
+        so that it does not cover the sidebar. */
+        .ck.ck-pagination-view-line::after {
+            transform: translateX(-100%);
+            left: -1px;
+            right: unset;
+        }
+    </style>
+</head>
+<body>
+    <h1>Full-featured editor with Premium features and non-real-time collaboration</h1>
+
+    <div class="editors-holder">
+        <div class="editor-toolbar"></div>
+
+        <div class="editor-container" id="editor-container">
+            <div class="editor-element">
+                <div id="editor"></div>
+            </div>
+            <div class="sidebar-container" id="sidebar-container"></div>
+        </div>
+
+        <div class="editor-container" id="revision-viewer-container">
+            <div class="editor-element">
+                <div id="revision-viewer-editor"></div>
+            </div>
+            <div class="sidebar-container" id="revision-viewer-sidebar"></div>
+        </div>
+    </div>
+    <script>
+        CKEDITOR.DecoupledEditor
+            .create( document.querySelector( '#editor' ), {
+				removePlugins: [ 
+					'RealTimeCollaborativeComments', 
+					'RealTimeCollaborativeTrackChanges',
+					'RealTimeCollaborativeRevisionHistory',
+					'PresenceList'
+				],
+                cloudServices: {
+                    // PROVIDE CORRECT VALUES HERE:
+                    tokenUrl: 'https://example.com/cs-token-endpoint',
+                    uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
+                },
+                toolbar: {
+                    items: [
+						'revisionHistory',
+                        '|',
+                        'pageNavigation',
+						'previousPage',
+						'nextPage',
+                        '|',
+						'comment', 'trackChanges', 
+                        '|',
+                        'exportPdf', 'exportWord',
+                        '|',
+                        'wproofreader', 'MathType', 'findAndReplace', 'selectAll',
+                        '|',
+                        'heading',
+                        '|',
+                        'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript',
+                        '|',
+                        'specialCharacters', 'horizontalLine', 'pageBreak',
+                        '|',
+                        '-',
+                        'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+                        '|',
+                        'link', 'blockQuote', 'insertTable', 'uploadImage', 'mediaEmbed', 'codeBlock', 'htmlEmbed',
+                        '|',
+                        'bulletedList', 'numberedList', 'todoList',
+                        '|',
+                        'outdent', 'indent', 'alignment',
+                        '|',
+                        'textPartLanguage',
+                        '|',
+						'undo', 'redo',
+                    ],
+                    shouldNotGroupWhenFull: true
+                },
+                exportPdf: {
+                    stylesheets: [
+                        // Add your custom styles before 'EDITOR_STYLES'
+                        'EDITOR_STYLES'
+                    ],
+                    fileName: 'export-pdf-demo.pdf',
+                    converterOptions: {
+                        format: 'A4',
+                        margin_top: '20mm',
+                        margin_bottom: '20mm',
+                        margin_right: '12mm',
+                        margin_left: '12mm',
+                        page_orientation: 'portrait'
+                    },
+                    // PROVIDE CORRECT VALUES HERE:
+                    tokenUrl: 'https://example.com/cs-token-endpoint',
+                    dataCallback: ( editor ) => editor.getData( {
+                        showSuggestionHighlights: true
+                    } ),
+                },
+                exportWord: {
+					stylesheets: [
+                        // Add your custom styles before 'EDITOR_STYLES'
+                        'EDITOR_STYLES'
+                    ],
+                    fileName: 'export-word-demo.docx',
+                    converterOptions: {
+                        format: 'A4',
+                        margin_top: '20mm',
+                        margin_bottom: '20mm',
+                        margin_right: '12mm',
+                        margin_left: '12mm',
+                        page_orientation: 'portrait'
+                    },
+                    // PROVIDE CORRECT VALUES HERE:
+                    tokenUrl: 'https://example.com/cs-token-endpoint'
+                },
+                fontFamily: {
+                    supportAllValues: true
+                },
+                fontSize: {
+                    options: [ 10, 12, 14, 'default', 18, 20, 22 ],
+                    supportAllValues: true
+                },
+                htmlEmbed: {
+                    showPreviews: true
+                },
+                image: {
+                    styles: [
+                        'alignCenter',
+                        'alignLeft',
+                        'alignRight'
+                    ],
+                    resizeOptions: [
+                        {
+                            name: 'resizeImage:original',
+                            label: 'Original',
+                            value: null
+                        },
+                        {
+                            name: 'resizeImage:50',
+                            label: '50%',
+                            value: '50'
+                        },
+                        {
+                            name: 'resizeImage:75',
+                            label: '75%',
+                            value: '75'
+                        }
+                    ],
+                    toolbar: [
+                        'imageTextAlternative', 'toggleImageCaption', '|',
+                        'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+                        'resizeImage'
+                    ],
+                    insert: {
+                        integrations: [
+                            'insertImageViaUrl'
+                        ]
+                    }
+                },
+                list: {
+                    properties: {
+                        styles: true,
+                        startIndex: true,
+                        reversed: true
+                    }
+                },
+                link: {
+                    decorators: {
+                        addTargetToExternalLinks: true,
+                        defaultProtocol: 'https://',
+                        toggleDownloadable: {
+                            mode: 'manual',
+                            label: 'Downloadable',
+                            attributes: {
+                                download: 'file'
+                            }
+                        }
+                    }
+                },
+                mention: {
+                    feeds: [
+                        {
+                            marker: '@',
+                            feed: [
+                                '@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
+                                '@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
+                                '@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
+                                '@sugar', '@sweet', '@topping', '@wafer'
+                            ],
+                            minimumCharacters: 1
+                        }
+                    ]
+                },
+                placeholder: 'Type or paste your content here!',
+                table: {
+                    contentToolbar: [
+                        'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+                    ]
+                },
+                wproofreader: {
+                // PROVIDE CORRECT VALUE HERE:
+                    serviceId: 'service ID',
+                    lang: 'auto',
+                    srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
+                },
+                pagination: {
+                    // A4
+                    pageWidth: '21cm',
+                    pageHeight: '29.7cm',
+
+                    pageMargins: {
+                        top: '20mm',
+                        bottom: '20mm',
+                        right: '12mm',
+                        left: '12mm'
+                    }
+                },
+                licenseKey: '', // Provide the correct vaule.
+                sidebar: {
+                    container: document.querySelector( '.sidebar-container' )
+                },
+                revisionHistory: {
+                    showRevisionViewerCallback: config => {
+                        const editorContainer = document.querySelector( '#editor-container' );
+                        const viewerContainer = document.querySelector( '#revision-viewer-container' );
+                        const viewerElement = document.querySelector( '#revision-viewer-editor' );
+
+                        config.revisionHistory.viewerSidebarContainer = document.querySelector( '#revision-viewer-sidebar' );
+
+                        return CKEDITOR.DecoupledEditor.create( viewerElement, config ).then( viewerEditor => {
+                            viewerContainer.style.display = 'flex';
+                            editorContainer.style.display = 'none';
+
+                            const toolbarContainer = document.querySelector( '.editor-toolbar' );
+                            toolbarContainer.innerHTML = '';
+                            toolbarContainer.appendChild( viewerEditor.ui.view.toolbar.element );
+
+                            return viewerEditor;
+                        } );
+                    },
+                    closeRevisionViewerCallback: viewerEditor => {
+                        const editorContainer = document.querySelector( '#editor-container' );
+                        const viewerContainer = document.querySelector( '#revision-viewer-container' );
+
+                        viewerContainer.style.display = 'none';
+                        editorContainer.style.display = '';
+
+                        return viewerEditor.destroy().then( () => {
+                            const toolbarContainer = document.querySelector( '.editor-toolbar' );
+                            toolbarContainer.innerHTML = '';
+                            toolbarContainer.appendChild( window.editor.ui.view.toolbar.element );
+                        } );
+                    }
+                },
+            } )
+            .then( editor => {
+                window.editor = editor;
+
+                const toolbarContainer = document.querySelector( '.editor-toolbar' );
+
+                toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+            } )
+            .catch( error => {
+                console.log( error );
+            } );
+    </script>
+</body>
+</html>
+```
 
 <info-box hint>
 **What's next?**
