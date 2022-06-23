@@ -38,7 +38,7 @@ To use this feature in your application, you must first load the CKBox library a
 The easiest way to load the CKBox library is to include the `<script>` tag loading the `ckbox.js` file first:
 
 ```html
-<script src="https://cdn.ckbox.io/CKBox/0.0.2-dev.3/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/0.0.3/ckbox.js"></script>
 ```
 
 Then, install the [`@ckeditor/ckeditor5-ckbox`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox) package:
