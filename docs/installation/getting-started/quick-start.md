@@ -118,7 +118,7 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 </script>
 ```
 
-Remove the plugins you do not need with the `removePlugins` method. In this example, we will remove the premium collaboration features that require credentials to work. We need to do this, otherwise the editor will throw an error.
+Remove the plugins you do not need with the `removePlugins` configuration option. In this example, we will remove the premium collaboration features that require credentials to work. We need to do this, otherwise the editor will throw an error.
 
 Then, configure the toolbar to display only the desired options. You can read more about toolbar configuration the the {@link features/toolbar toolbar guide}. Several plugins, like the image feature or the list feature need additional configuration for their own toolbars.
 
