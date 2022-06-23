@@ -13,9 +13,12 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'IndentCodeBlockCommand', () => {
 	let editor, model, indentCommand;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return ModelTestEditor
@@ -141,6 +144,20 @@ describe( 'IndentCodeBlockCommand', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="foo">    	f[oo<softBreak></softBreak>    	b]ar</codeBlock>' );
+		} );
+
+		// Need to ensure that insertContent() will not be reverted to model.change() to not break integration
+		// with Track Changes.
+		it( 'should insert indent with insertContent()', () => {
+			const insertContentSpy = sinon.spy( model, 'insertContent' );
+			const modelChangeSpy = sinon.spy( model, 'change' );
+
+			setModelData( model, '<codeBlock language="foo">[]Foo</codeBlock>' );
+
+			indentCommand.execute();
+
+			expect( insertContentSpy.calledOnce ).to.be.true;
+			expect( modelChangeSpy.calledAfter( insertContentSpy ) ).to.be.true;
 		} );
 
 		describe( 'config.codeBlock.indentSequence', () => {
