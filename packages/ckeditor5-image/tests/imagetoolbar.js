@@ -89,6 +89,7 @@ describe( 'ImageToolbar', () => {
 
 		it( 'should convert the declarative dropdown definition to the component factory item name', () => {
 			expect( toolbar.items.get( 1 ).buttonView.label ).to.equal( 'Fake dropdown: Centered image' );
+			expect( toolbar.items.get( 1 ).buttonView.arrowView.label ).to.equal( 'Fake dropdown' );
 		} );
 
 		it( 'should set proper CSS classes', () => {
