@@ -614,24 +614,21 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * Similar to the {@link #_enableInsertingParagraphsOnEnterKeypress}, it allows the user
 	 * to insert a paragraph next to a widget when the fake caret was activated using arrow
-	 * keys but it responds to typing keystrokes instead of <kbd>Enter</kbd>.
+	 * keys but it responds to typing instead of <kbd>Enter</kbd>.
 	 *
-	 * "Typing keystrokes" are keystrokes that insert new content into the document,
-	 * for instance, letters ("a") or numbers ("4"). The "keydown" listener enabled by this method
-	 * will insert a new paragraph according to the `widget-type-around` model selection attribute
-	 * as the user simply starts typing, which creates the impression that the fake caret
+	 * Listener enabled by this method will insert a new paragraph according to the `widget-type-around`
+	 * model selection attribute as the user simply starts typing, which creates the impression that the fake caret
 	 * behaves like a real one rendered by the browser (AKA your text appears where the caret was).
 	 *
 	 * **Note**: At the moment this listener creates 2 undo steps: one for the `insertParagraph` command
 	 * and another one for actual typing. It is not a disaster but this may need to be fixed
 	 * sooner or later.
 	 *
-	 * Learn more in {@link module:typing/utils/injectunsafekeystrokeshandling}.
-	 *
 	 * @private
 	 */
 	_enableInsertingParagraphsOnTypingKeystroke() {
 		const editor = this.editor;
+		const model = editor.model;
 		const viewDocument = editor.editing.view.document;
 
 		// Note: The priority must precede the default Input plugin insertText handler.
@@ -645,10 +642,13 @@ export default class WidgetTypeAround extends Plugin {
 			}
 		}, { priority: 'high' } );
 
-		this._listenToIfEnabled( viewDocument, 'keydown', ( evt, domEventData ) => {
-			if ( domEventData.keyCode === 229 && !viewDocument.isComposing ) {
-				this._insertParagraphAccordingToFakeCaretPosition();
+		// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
+		this.listenTo( viewDocument, 'compositionstart', () => {
+			if ( model.document.selection.isCollapsed ) {
+				return;
 			}
+
+			this._insertParagraphAccordingToFakeCaretPosition();
 		}, { priority: 'high' } );
 	}
 

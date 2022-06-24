@@ -7,8 +7,6 @@
  * @module engine/view/observer/compositionobserver
  */
 
-/* globals window, console */
-
 import DomEventObserver from './domeventobserver';
 
 /**
@@ -29,42 +27,36 @@ export default class CompositionObserver extends DomEventObserver {
 		const document = this.document;
 
 		document.on( 'compositionstart', () => {
-			if ( window.logCKEEvents ) {
-				console.log(
-					'%c┌───────────────────────────── isComposing = true ─────────────────────────────┐',
-					'font-weight: bold; color: green'
-				);
-			}
+			// @if CK_DEBUG_TYPING // console.log(
+			// @if CK_DEBUG_TYPING // 	'%c┌───────────────────────────── isComposing = true ─────────────────────────────┐',
+			// @if CK_DEBUG_TYPING // 	'font-weight: bold; color: green'
+			// @if CK_DEBUG_TYPING // );
 
 			document.isComposing = true;
-		} );
+		}, { priority: 'low' } );
 
 		document.on( 'compositionend', () => {
-			document.isComposing = false;
+			// @if CK_DEBUG_TYPING // console.log(
+			// @if CK_DEBUG_TYPING // 	'%c└───────────────────────────── isComposing = false ─────────────────────────────┘',
+			// @if CK_DEBUG_TYPING // 	'font-weight: bold; color: green'
+			// @if CK_DEBUG_TYPING // );
 
-			if ( window.logCKEEvents ) {
-				console.log(
-					'%c└───────────────────────────── isComposing = false ─────────────────────────────┘',
-					'font-weight: bold; color: green'
-				);
-			}
-		} );
+			document.isComposing = false;
+		}, { priority: 'low' } );
 	}
 
 	onDomEvent( domEvent ) {
-		if ( window.logCKEEvents ) {
-			console.group( '[CompositionObserver]', domEvent.type );
+		// @if CK_DEBUG_TYPING // console.group( '[CompositionObserver]', domEvent.type );
 
-			console.groupCollapsed( '[CompositionObserver] DOM event' );
-			console.dir( domEvent );
-			console.groupEnd();
-		}
+		// @if CK_DEBUG_TYPING // console.groupCollapsed( '[CompositionObserver] DOM event' );
+		// @if CK_DEBUG_TYPING // console.dir( domEvent );
+		// @if CK_DEBUG_TYPING // console.groupEnd();
 
-		this.fire( domEvent.type, domEvent );
+		this.fire( domEvent.type, domEvent, {
+			data: domEvent.data
+		} );
 
-		if ( window.logCKEEvents ) {
-			console.groupEnd();
-		}
+		// @if CK_DEBUG_TYPING // console.groupEnd();
 	}
 }
 

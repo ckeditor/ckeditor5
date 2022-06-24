@@ -7,7 +7,7 @@
  * @module engine/view/observer/selectionobserver
  */
 
-/* global setInterval, clearInterval, window, console */
+/* global setInterval, clearInterval */
 
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
@@ -141,32 +141,25 @@ export default class SelectionObserver extends Observer {
 
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
-			if ( window.logCKEEvents ) {
-				const domSelection = domDocument.defaultView.getSelection();
-
-				console.group( '[SelectionObserver] selectionchange' );
-				console.groupCollapsed( '[SelectionObserver] DOM selection' );
-				console.info(
-					domSelection.anchorNode, domSelection.anchorOffset,
-					domSelection.focusNode, domSelection.focusOffset
-				);
-				console.groupEnd();
-			}
+			// @if CK_DEBUG_TYPING // const domSelection = domDocument.defaultView.getSelection();
+			// @if CK_DEBUG_TYPING // console.group( '[SelectionObserver] selectionchange' );
+			// @if CK_DEBUG_TYPING // console.groupCollapsed( '[SelectionObserver] DOM selection' );
+			// @if CK_DEBUG_TYPING // console.info(
+			// @if CK_DEBUG_TYPING // 	domSelection.anchorNode, domSelection.anchorOffset,
+			// @if CK_DEBUG_TYPING // 	domSelection.focusNode, domSelection.focusOffset
+			// @if CK_DEBUG_TYPING // );
+			// @if CK_DEBUG_TYPING // console.groupEnd();
 
 			if ( this.document.isComposing ) {
-				if ( window.logCKEEvents ) {
-					console.info( '[SelectionObserver] Selection change ignored (isComposing)' );
-					console.groupEnd();
-				}
+				// @if CK_DEBUG_TYPING // console.info( '[SelectionObserver] Selection change ignored (isComposing)' );
+				// @if CK_DEBUG_TYPING // console.groupEnd();
 
 				return;
 			}
 
 			this._handleSelectionChange( domEvent, domDocument );
 
-			if ( window.logCKEEvents ) {
-				console.groupEnd();
-			}
+			// @if CK_DEBUG_TYPING // console.groupEnd();
 
 			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
 			// using their mouse).
@@ -242,9 +235,7 @@ export default class SelectionObserver extends Observer {
 		}
 
 		if ( this.selection.isSimilar( newViewSelection ) ) {
-			if ( window.logCKEEvents ) {
-				console.info( '[SelectionObserver] is similar -> force render' );
-			}
+			// @if CK_DEBUG_TYPING // console.info( '[SelectionObserver] is similar -> force render' );
 
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
 			// Just re-render it, no need to fire any events, etc.
@@ -256,9 +247,7 @@ export default class SelectionObserver extends Observer {
 				domSelection
 			};
 
-			if ( window.logCKEEvents ) {
-				console.info( '[SelectionObserver] fire selection change', newViewSelection.getFirstRange() );
-			}
+			// @if CK_DEBUG_TYPING // console.info( '[SelectionObserver] fire selection change', newViewSelection.getFirstRange() );
 
 			// Prepare data for new selection and fire appropriate events.
 			this.document.fire( 'selectionChange', data );

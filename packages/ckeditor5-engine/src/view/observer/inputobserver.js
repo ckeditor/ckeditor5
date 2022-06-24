@@ -7,8 +7,6 @@
  * @module engine/view/observer/inputobserver
  */
 
-/* globals window, console */
-
 import DomEventObserver from './domeventobserver';
 import DataTransfer from '../datatransfer';
 
@@ -28,9 +26,7 @@ export default class InputObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvent ) {
-		if ( window.logCKEEvents ) {
-			console.group( '[InputObserver]', domEvent.type, domEvent.inputType );
-		}
+		// @if CK_DEBUG_TYPING // console.group( '[InputObserver]', domEvent.type, domEvent.inputType );
 
 		const domTargetRanges = domEvent.getTargetRanges();
 		const view = this.view;
@@ -47,34 +43,26 @@ export default class InputObserver extends DomEventObserver {
 		if ( domEvent.data ) {
 			data = domEvent.data;
 
-			if ( window.logCKEEvents ) {
-				console.info( '[InputObserver] event data:', data );
-			}
+			// @if CK_DEBUG_TYPING // console.info( '[InputObserver] event data:', data );
 		} else if ( dataTransfer ) {
 			data = dataTransfer.getData( 'text/plain' );
 
-			if ( window.logCKEEvents ) {
-				console.info( '[InputObserver] data transfer data:', data );
-			}
+			// @if CK_DEBUG_TYPING // console.info( '[InputObserver] data transfer data:', data );
 		}
 
 		// If the editor selection is fake (an object is selected), the DOM range does not make sense because it is anchored
 		// in the fake selection container.
 		if ( viewDocument.selection.isFake ) {
-			// Future proof: in case of multi-range fake selections being possible.
+			// Future-proof: in case of multi-range fake selections being possible.
 			targetRanges = [ ...viewDocument.selection.getRanges() ];
 
-			if ( window.logCKEEvents ) {
-				console.info( '[InputObserver] using fake selection', targetRanges );
-			}
+			// @if CK_DEBUG_TYPING // console.info( '[InputObserver] using fake selection', targetRanges );
 		} else {
 			targetRanges = domTargetRanges.map( domRange => {
 				return view.domConverter.domRangeToView( domRange );
 			} );
 
-			if ( window.logCKEEvents ) {
-				console.info( '[InputObserver] using target ranges:', targetRanges );
-			}
+			// @if CK_DEBUG_TYPING // console.info( '[InputObserver] using target ranges:', targetRanges );
 		}
 
 		this.fire( domEvent.type, domEvent, {
@@ -85,9 +73,7 @@ export default class InputObserver extends DomEventObserver {
 			inputType: domEvent.inputType
 		} );
 
-		if ( window.logCKEEvents ) {
-			console.groupEnd();
-		}
+		// @if CK_DEBUG_TYPING // console.groupEnd();
 	}
 }
 

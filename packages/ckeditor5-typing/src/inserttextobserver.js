@@ -64,9 +64,10 @@ export default class InsertTextObserver extends Observer {
 			}
 		} );
 
-		viewDocument.on( 'compositionend', ( evt, { domEvent } ) => {
+		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
+		viewDocument.on( 'compositionend', ( evt, { data, domEvent } ) => {
 			// In case of aborted composition.
-			if ( !domEvent.data ) {
+			if ( !data ) {
 				return;
 			}
 
@@ -88,11 +89,10 @@ export default class InsertTextObserver extends Observer {
 			// We decided to go with the 2nd option for its simplicity and stability.
 			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
 			viewDocument.fire( 'insertText', new DomEventData( viewDocument, domEvent, {
-				text: domEvent.data,
+				text: data,
 				selection: viewDocument.selection
 			} ) );
-		}, { priority: 'low' } );
-		// Low priority to handle it after isComposing = false and renderer enabled.
+		}, { priority: 'lowest' } );
 	}
 
 	/**

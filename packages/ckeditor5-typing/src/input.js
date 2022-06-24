@@ -7,8 +7,6 @@
  * @module typing/input
  */
 
-/* globals window, console */
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import InsertTextCommand from './inserttextcommand';
 import InsertTextObserver from './inserttextobserver';
@@ -33,6 +31,7 @@ export default class Input extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
+		const modelSelection = model.document.selection;
 
 		view.addObserver( InsertTextObserver );
 
@@ -65,19 +64,18 @@ export default class Input extends Plugin {
 			editor.execute( 'insertText', insertTextCommandData );
 		} );
 
+		// Note: The priority must precede the CompositionObserver handler to call it before
+		// the renderer is blocked, because we want to render this change.
 		this.listenTo( view.document, 'compositionstart', () => {
-			if ( model.document.selection.isCollapsed ) {
+			if ( modelSelection.isCollapsed ) {
 				return;
 			}
 
-			if ( window.logCKEEvents ) {
-				console.log( '[EditingController] Composition start -> delete content',
-					`[${ model.document.selection.getFirstPosition().path }]-[${ model.document.selection.getLastPosition().path }]`
-				);
-			}
+			// @if CK_DEBUG_TYPING // console.log( '[EditingController] Composition start -> delete content',
+			// @if CK_DEBUG_TYPING // 	`[${ modelSelection.getFirstPosition().path }]-[${ modelSelection.getLastPosition().path }]`
+			// @if CK_DEBUG_TYPING // );
 
-			model.deleteContent( model.document.selection );
-		}, { priority: 'high' } );
-		// 👆 High priority to call it before the renderer is blocked, because we want to render this change.
+			model.deleteContent( modelSelection );
+		} );
 	}
 }

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Node, window, console */
+/* globals Node */
 
 /**
  * @module engine/view/renderer
@@ -210,16 +210,12 @@ export default class Renderer {
 	 */
 	render() {
 		if ( this.isComposing ) {
-			if ( window.logCKEEvents ) {
-				console.info( '[Renderer] Rendering aborted while isComposing' );
-			}
+			// @if CK_DEBUG_TYPING // console.info( '[Renderer] Rendering aborted while isComposing' );
 
 			return;
 		}
 
-		if ( window.logCKEEvents ) {
-			console.info( '[Renderer] Rendering' );
-		}
+		// @if CK_DEBUG_TYPING // console.info( '[Renderer] Rendering' );
 
 		let inlineFillerPosition;
 		const isInlineFillerRenderingPossible = env.isBlink && !env.isAndroid ? !this.isSelecting : true;
@@ -843,9 +839,7 @@ export default class Renderer {
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor );
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus );
 
-		if ( window.logCKEEvents ) {
-			console.info( '[Renderer] update DOM selection', anchor, focus );
-		}
+		// @if CK_DEBUG_TYPING // console.info( '[Renderer] update DOM selection', anchor, focus );
 
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );
