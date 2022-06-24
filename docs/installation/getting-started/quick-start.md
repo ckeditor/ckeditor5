@@ -1072,11 +1072,34 @@ This time we need to remove all the real-time collaborative plugins. As previous
 CKEditor 5 Premium features can be easily tested without commitment via the [Premium features free trial](https://ckeditor.com/docs/trial/latest/guides/overview.html) package.
 </info-box>
 
-The correct source code listing for the configuration can be seen below.
+The correct source code listing for the configuration can be seen below. Note that this snippet contains a custom plugin that handles Users integration required by non-real-time Track Changes, Comments and Revision History.
 
 ```js
+class UsersIntegration  {
+	constructor( editor ) {
+		this.editor = editor;
+	}
+
+	static get requires() {
+		return [ 'Users', 'Comments', 'RevisionHistory' ];
+	}
+
+	init() {
+		const user = {
+			id: 'user-1',
+			name: 'John Doe'
+		}
+
+		const usersPlugin = this.editor.plugins.get( 'Users' );
+
+		usersPlugin.addUser( user );
+		usersPlugin.defineMe( 'user-1' );
+	}
+}
+
 CKEDITOR.DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
+		extraPlugins: [ UsersIntegration ],
 		removePlugins: [
 			'RealTimeCollaborativeComments',
 			'RealTimeCollaborativeTrackChanges',
@@ -1416,8 +1439,31 @@ CKEDITOR.DecoupledEditor
 		</div>
 	</div>
 	<script>
+		class UsersIntegration  {
+            constructor( editor ) {
+                this.editor = editor;
+            }
+
+            static get requires() {
+                return [ 'Users', 'Comments', 'RevisionHistory' ];
+            }
+
+            init() {
+                const user = {
+                    id: 'user-1',
+                    name: 'John Doe'
+                }
+
+                const usersPlugin = this.editor.plugins.get( 'Users' );
+
+                usersPlugin.addUser( user );
+                usersPlugin.defineMe( 'user-1' );
+            }
+        }
+
 		CKEDITOR.DecoupledEditor
 			.create( document.querySelector( '#editor' ), {
+				extraPlugins: [ UsersIntegration ],
 				removePlugins: [
 					'RealTimeCollaborativeComments',
 					'RealTimeCollaborativeTrackChanges',
