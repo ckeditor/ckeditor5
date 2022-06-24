@@ -94,9 +94,19 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link installation/advanced/predefined-builds predefined builds} tailored for specific needs.
 </info-box>
 
+### The CKEditor 5 superbuild limitations
+
+CKEditor 5 provides a multitude of plugins offering {@link features/index various features} addressing versatile needs. While the superbuild is designed to provide as many of them as possible, it some of these plugins may conflict with each other. Due to that fact, several of those needed to be excluded from the superbuild and are not available that way.
+
+The plugins not available currently in the superbuild include:
+* Watchdog
+* ContextWatchdog
+* Context
+* Title
+
 ### Using the CKEditor 5 superbuild
 
-First, add the editor placeholder to your document.
+To start using the CKEditor 5 superbuild from CDN, first add the editor placeholder to your document.
 
 ```html
 <div id="editor"></div>
