@@ -190,11 +190,11 @@ export default class CKBoxCommand extends Command {
 			const imageCommand = editor.commands.get( 'insertImage' );
 			const linkCommand = editor.commands.get( 'link' );
 			const ckboxEditing = editor.plugins.get( 'CKBoxEditing' );
-			const aassetsOrigin = editor.config.get( 'ckbox.assetsOrigin' );
+			const assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' );
 
 			const assetsToProcess = prepareAssets( {
 				assets,
-				origin: aassetsOrigin,
+				origin: assetsOrigin,
 				token: ckboxEditing.getToken(),
 				isImageAllowed: imageCommand.isEnabled,
 				isLinkAllowed: linkCommand.isEnabled
