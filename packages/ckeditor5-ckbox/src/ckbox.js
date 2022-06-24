@@ -130,8 +130,15 @@ export default class CKBox extends Plugin {
 /**
  * Configures the base URL of the API service. Required only in on-premises installations.
  *
- * @default ''
+ * @default 'https://api.ckbox.io'
  * @member {String} [module:ckbox/ckbox~CKBoxConfig#serviceOrigin]
+ */
+
+/**
+ * Configures the base URL for assets inserted into the editor. Required only in on-premises installations.
+ *
+ * @default 'https://ckbox.cloud'
+ * @member {String} [module:ckbox/ckbox~CKBoxConfig#assetsOrigin]
  */
 
 /**

@@ -9,5 +9,3 @@
 // Images uploaded during the free trial will not be deleted for the whole trial period and additionally the trial service can be converted
 // into a subscription at any moment, allowing you to preserve all uploaded images.
 export const TOKEN_URL = 'https://dev.ckbox.io/demo/token/';
-
-export const SERVICE_ORIGIN = 'https://ckbox.cke-cs.com';
