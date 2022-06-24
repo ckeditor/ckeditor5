@@ -332,6 +332,31 @@ export default class AbbreviationEditing extends Plugin {
 				} );
 			}
 		} );
+		
+	}
+}
+```
+
+```js
+// abbreviation/abbreviationediting.js
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+export default class AbbreviationEditing extends Plugin {
+	init() {
+		// ...                                          
+	}
+
+	_defineSchema() {
+		// ...
+	}
+
+	_defineConverters() {                                                      
+		const conversion = this.editor.conversion;
+
+		conversion.for( 'downcast' ).attributeToElement( 
+			// ...
+		);
 
 		conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
@@ -362,7 +387,7 @@ We'll create a simple command to insert a text with our abbreviation attribute i
 	Read more about {@link framework/guides/architecture/core-editor-architecture#commands commands}.
 </info-box>
 
-We'll pass an object with the title value and the abbreviation value into the command. We'll use the {@link module:engine/model/model~Model#insertText `model.insertText()`} method to add the abbreviation to the model, along with the title attribute. We'll also need to give it a position of the user's current selection to indicate where to insert our abbreviation. Finally, if the user's selection has a range (so it's a letter, word, or a whole text fragment), we'll remove that and replace it with our abbreviation.
+We'll pass an object with the title value and the abbreviation value into the command. We'll use the {link module:engine/model/writer~Writer#insertText `writer.insertText()`} method to add the abbreviation to the model, along with the title attribute. We'll also need to give it a position of the user's current selection to indicate where to insert our abbreviation. Finally, if the user's selection has a range (so it's a letter, word, or a whole text fragment), we'll remove that and replace it with our abbreviation.
 
 Create a new file `abbreviationcommand.js` in the `abbreviation/` directory.
 
