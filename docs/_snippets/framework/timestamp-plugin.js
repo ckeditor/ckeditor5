@@ -23,22 +23,27 @@ class Timestamp extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'timestamp', locale => {
-			const view = new ButtonView( locale );
+			const button = new ButtonView( locale );
 
-			view.set( {
+			button.set( {
 				label: 'Timestamp',
 				withText: true
 			} );
 
-			view.on( 'execute', () => {
+			button.on( 'execute', () => {
 				const now = new Date();
 				const selection = editor.model.document.selection;
 
 				editor.model.change( writer => {
-					writer.insertText( `The current date and time is: ${ now.toString() }.`, selection.getFirstPosition() );
+					writer.insertText( `${ now.toString() }`, selection.getFirstPosition() );
+
+					for ( const range of selection.getRanges() ) {
+						writer.remove( range );
+					}
 				} );
 			} );
-			return view;
+
+			return button;
 		} );
 	}
 }

@@ -94,8 +94,8 @@ class AbbreviationUI extends Plugin {
 	}
 
 	_hideFormView() {
-		this.formView.abbrInputView.fieldView.value = '';
-		this.formView.titleInputView.fieldView.value = '';
+		this.formView.abbrInputView.fieldView.element.value = '';
+		this.formView.titleInputView.fieldView.element.value = '';
 
 		this._balloon.remove( this.formView );
 	}

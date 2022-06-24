@@ -11,7 +11,7 @@ This guide will show you how to create a simple abbreviation plugin for CKEditor
 	Before you get to work, you should check out the {@link framework/guides/quick-start Quick start} guide first to set up the framework and building tools. Be sure to check out the {@link framework/guides/package-generator package generator guide} as well.
 </info-box>
 
-We’ll create a toolbar button that lets the users insert abbreviations into their document.  The abbreviations will use the `<abbr>` <abbr title="HyperText Markup Language"> HTML </abbr> element, with a ‘title’ property that will show up in a tooltip when the user hovers over the element.  
+We’ll create a toolbar button that lets the users insert abbreviations into their document.  The abbreviations will use the `<abbr>` <abbr title="HyperText Markup Language"> HTML </abbr> element, with a ‘title’ attribute that will show up in a tooltip when the user hovers over the element.  
 
 This first part will cover only the basics, and we'll just insert one possible abbreviation: "WYSIWYG". We'll get user input in the next part of this tutorial series.
 
@@ -79,9 +79,9 @@ Now look at `index.html`. We'll add here the `<abbr>` element - it won't work ju
 
 ## Plugin structure
 
-We’ll divide our abbreviation plugin into four components - `Abbreviation`, `AbbreviationUI`, and `AbbreviationEditing`:
+We’ll divide our abbreviation plugin into three components - `Abbreviation`, `AbbreviationUI`, and `AbbreviationEditing`:
 
-* `AbbreviationEditing` will hold the model and the view layers. 
+* `AbbreviationEditing` will enable the abbreviation attribute in the model and introduce a proper model ←→ view conversion.
 * `AbbreviationUI` will be responsible for the UI - the toolbar button. 
 * `Abbreviation` will be the glue that holds the UI and the editing together. 
 
@@ -143,7 +143,7 @@ export default class AbbreviationEditing extends Plugin {
 }
 ```
 
-Now you need to load the `Abbreviation` plugin in your `app.js` file:
+Now you need to load the `Abbreviation` plugin in your `app.js` file. The editor will load the `AbbreviationUI` and the `AbbreviationEditing` by itself, as they are reqiured by our 'glue' plugin.
 
 ```js
 // app.js
@@ -183,7 +183,7 @@ CKEditor 5 implements its own custom data model, which does not map to the DOM 1
 	Read more about the {@link framework/guides/architecture/editing-engine#model model} and the {@link framework/guides/architecture/editing-engine#view view}.
 </info-box>
 
-In the view layer, we'll have the `<abbr>` HTML element, with a title property.
+In the view layer, we'll have the `<abbr>` HTML element, with a title attribute.
 
 In the model, inline elements, such as `<abbr>`, are represented as attributes, not as seperate elements. In order for our plugin to work, we'll need to make sure that we can add abbreviation attribute to the text node. 
 
@@ -287,7 +287,7 @@ Thanks to the upcast conversion, our abbreviation added in the `index.html` shou
 
 Now we can create our `Abbreviation` toolbar button using the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class. 
 
-We need to register it in the editor's UI componentFactory, so it can be displayed in the toolbar. We can localize the button by using the editor's {@link module:utils/locale~Locale} instance, and the translation {@link module:utils/locale~Locale#t `t()` function}.
+We need to register it in the editor's UI {@link module:ui/componentFactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar. We can localize the button by using the editor's {@link module:utils/locale~Locale} instance, and the translation {@link module:utils/locale~Locale#t `t()` function}.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -312,7 +312,8 @@ class AbbreviationUI extends Plugin {
 	}
 }
 ```
-Let's add it to the toolbar: 
+We passed the name of the button in the `componentFactory.add`, so it's now available to use in the toolbar config.
+You can now simply add it to the toolbar in `app.js`: 
 
 ```js
 // app.js
@@ -332,7 +333,9 @@ ClassicEditor
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic, Abbreviation                                                          
 		],
-		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'abbreviation' ]	// ADDED
+		toolbar: [ 
+			'abbreviation', '|', 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' // ADDED
+		]	
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
@@ -342,9 +345,9 @@ ClassicEditor
 	} );
 ```
 
-We have the button, so let's add a simple click listener. 
+We have the button, so let's define what should happen after the user clicks it.
 
-We'll use the [`model.insertText()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_writer-Writer.html#function-insertText) method to add the abbreviation to the model, along with the title attribute. We'll also need to give it a position of the user's current selection to indicate where to insert our abbreviation. 
+We'll use the [`writer.insertText()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_writer-Writer.html#function-insertText) method to insert a text with the abbreviation model attribute to the editor. We'll also need to give it a position of the user's current selection to indicate where to insert our abbreviation (using the {@link module:engine/model/position~Position `Position`} class). 
 
 Finally, if the user's selection has a range (so it's a letter, word, or a whole text fragment), we'll remove that and replace it with our abbreviation.
 
@@ -381,7 +384,7 @@ class AbbreviationUI extends Plugin {
 }
 ```
 
-That's it for the first part of this tutorial! Your plugin should now work (in its most basic form). Go on to the second part, where you will create a balloon with a form to get user's input, replacing our hard-coded abbreviation. 
+That's it for the first part of this tutorial! Your plugin should now work (in its most basic form). Go on to @link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-2 the second part}, where you will create a balloon with a form to get user's input, replacing our hard-coded "WYSIWYG" abbreviation. 
 
 ## Demo
 
