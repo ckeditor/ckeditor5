@@ -208,6 +208,7 @@ export default class ColorInputView extends View {
 
 		dropdown.buttonView.children.add( colorPreview );
 		dropdown.buttonView.tooltip = t( 'Color picker' );
+		dropdown.buttonView.label = t( 'Color picker' );
 
 		dropdown.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
 		dropdown.panelView.children.add( removeColorButton );
