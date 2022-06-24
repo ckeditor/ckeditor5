@@ -96,7 +96,7 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 
 ### The CKEditor 5 superbuild limitations
 
-CKEditor 5 provides a multitude of plugins offering {@link features/index various features} addressing versatile needs. While the superbuild is designed to provide as many of them as possible, it some of these plugins may conflict with each other. Due to that fact, several of those needed to be excluded from the superbuild and are not available that way.
+CKEditor 5 provides a multitude of plugins offering {@link features/index various features} addressing versatile needs. While the superbuild is designed to provide as many of them as possible, some of these plugins may conflict with each other. Due to that fact, several of those needed to be excluded from the superbuild and are not available that way.
 
 The plugins not available currently in the superbuild include:
 * Watchdog
