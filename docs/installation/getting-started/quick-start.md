@@ -237,7 +237,7 @@ CKEDITOR.ClassicEditor
 	} );
 ```
 
-### Sample implementation
+#### Sample implementation
 
 A full webpage with embedded CKEditor 5 from the above example would look like this:
 
@@ -368,8 +368,8 @@ A full webpage with embedded CKEditor 5 from the above example would look like t
 </html>
 ```
 
-### Using the CKEditor 5 superbuild with Premium features
-#### An editor with real-time collaboration
+## Using the CKEditor 5 superbuild with Premium features
+### An editor with real-time collaboration
 
 To unleash the full potential of CKEditor 5 with Premium features, we will use the decoupled editor and create a more complex markup, including the structure required by the Revision History feature.
 
@@ -664,7 +664,7 @@ CKEDITOR.DecoupledEditor
 	} );
 ```
 
-##### Sample implementation
+#### Sample implementation
 
 A full webpage with embedded CKEditor 5 from the above example would look like this:
 
@@ -1017,7 +1017,7 @@ A full webpage with embedded CKEditor 5 from the above example would look like t
 </html>
 ```
 
-#### Editor with non-real-time collaboration
+### An editor with non-real-time collaboration
 
 To unleash the full potential of CKEditor 5 with Premium features, we will use the decoupled editor and create a more complex markup, including the structure required by the Revision History feature.
 
@@ -1308,7 +1308,7 @@ CKEDITOR.DecoupledEditor
 	} );
 ```
 
-##### Sample implementation
+#### Sample implementation
 
 ```html
 <!DOCTYPE html>
