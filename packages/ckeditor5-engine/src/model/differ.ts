@@ -425,7 +425,7 @@ export default class Differ {
 		}
 
 		// Will contain returned results.
-		let diffSet: DiffItem[] = [];
+		let diffSet: ( DiffItem & DiffItemInternal )[] = [];
 
 		// Check all changed elements.
 		for ( const element of this._changesInElement.keys() ) {
@@ -973,7 +973,7 @@ export default class Differ {
 		parent: Element | DocumentFragment,
 		offset: number,
 		elementSnapshot: { name: string; attributes: Map<string, unknown> }
-	): DiffItemInsert {
+	): DiffItemInsert & DiffItemInternal {
 		return {
 			type: 'insert',
 			position: Position._createAt( parent, offset ),
@@ -997,7 +997,7 @@ export default class Differ {
 		parent: Element | DocumentFragment,
 		offset: number,
 		elementSnapshot: { name: string; attributes: Map<string, unknown> }
-	): DiffItemRemove {
+	): DiffItemRemove & DiffItemInternal {
 		return {
 			type: 'remove',
 			position: Position._createAt( parent, offset ),
@@ -1021,9 +1021,9 @@ export default class Differ {
 		range: Range,
 		oldAttributes: Map<string, unknown>,
 		newAttributes: Map<string, unknown>
-	): DiffItemAttribute[] {
+	): ( DiffItemAttribute & DiffItemInternal )[] {
 		// Results holder.
-		const diffs: DiffItemAttribute[] = [];
+		const diffs: ( DiffItemAttribute & DiffItemInternal )[] = [];
 
 		// Clone new attributes as we will be performing changes on this object.
 		newAttributes = new Map( newAttributes );
@@ -1288,7 +1288,6 @@ export interface DiffItemInsert {
 	attributes: Map<string, unknown>;
 	position: Position;
 	length: number;
-	changeCount?: number;
 }
 
 /**
@@ -1334,7 +1333,6 @@ export interface DiffItemRemove {
 	attributes: Map<string, unknown>;
 	position: Position;
 	length: number;
-	changeCount?: number;
 }
 
 /**
@@ -1380,8 +1378,11 @@ export interface DiffItemAttribute {
 	attributeOldValue: unknown;
 	attributeNewValue: unknown;
 	range: Range;
-	position?: Position;
+}
+
+interface DiffItemInternal {
 	changeCount?: number;
+	position?: Position;
 	length?: number;
 }
 
