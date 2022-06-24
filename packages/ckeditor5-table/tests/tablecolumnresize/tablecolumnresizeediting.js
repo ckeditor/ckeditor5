@@ -20,7 +20,7 @@ import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import { modelTable } from '../_utils/utils';
+import { modelTable, assertSelectedCells } from '../_utils/utils';
 import {
 	getDomTable,
 	getModelTable,
@@ -1946,7 +1946,7 @@ describe( 'TableColumnResizeEditing', () => {
 		} );
 	} );
 
-	describe( 'Hide/show resizers on mousedown/mouseup', () => {
+	describe( 'Hide/show resizers', () => {
 		let model, editor, view, editorElement;
 
 		beforeEach( async () => {
@@ -1968,52 +1968,79 @@ describe( 'TableColumnResizeEditing', () => {
 			}
 		} );
 
-		it( 'should not hide resizers when resizer is clicked', () => {
-			setModelData( model,
-				'<table columnWidths="100%">' +
+		describe( 'on mousedown/mouseup', () => {
+			it( 'should not hide resizers when resizer is clicked', () => {
+				setModelData( model,
+					'<table columnWidths="100%">' +
 					'<tableRow>' +
-						'<tableCell>' +
-							'<paragraph>' +
-								'[foo]' +
-							'</paragraph>' +
-						'</tableCell>' +
+					'<tableCell>' +
+					'<paragraph>' +
+					'[foo]' +
+					'</paragraph>' +
+					'</tableCell>' +
 					'</tableRow>' +
-				'</table>'
-			);
+					'</table>'
+				);
 
-			const resizer = view.getDomRoot().querySelector( '.table-column-resizer' );
+				const resizer = view.getDomRoot().querySelector( '.table-column-resizer' );
 
-			resizer.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+				resizer.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
 
-			const viewRoot = view.domConverter.mapDomToView( view.getDomRoot() );
+				const viewRoot = view.domConverter.mapDomToView( view.getDomRoot() );
 
-			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.false;
+				expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.false;
+			} );
+
+			it( 'should hide resizers when table cell is clicked and show resizers on mouseup', () => {
+				setModelData( model,
+					'<table columnWidths="100%">' +
+					'<tableRow>' +
+					'<tableCell>' +
+					'<paragraph>' +
+					'[foo]' +
+					'</paragraph>' +
+					'</tableCell>' +
+					'</tableRow>' +
+					'</table>'
+				);
+
+				const td = view.getDomRoot().querySelector( 'td' );
+
+				td.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+
+				const viewRoot = view.domConverter.mapDomToView( view.getDomRoot() );
+
+				expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.true;
+
+				td.dispatchEvent( new MouseEvent( 'mouseup', { bubbles: true } ) );
+
+				expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.false;
+			} );
 		} );
 
-		it( 'should hide resizers when table cell is clicked and show resizers on mouseup', () => {
-			setModelData( model,
-				'<table columnWidths="100%">' +
-					'<tableRow>' +
-						'<tableCell>' +
-							'<paragraph>' +
-								'[foo]' +
-							'</paragraph>' +
-						'</tableCell>' +
-					'</tableRow>' +
-				'</table>'
-			);
+		describe( 'on resizer mouse drag', () => {
+			it( 'does not change table selection', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', { contents: '01', colspan: 2 } ],
+					[ '10', '11', '12' ]
+				], { columnWidths: '50%,25%,25%' } ) );
 
-			const td = view.getDomRoot().querySelector( 'td' );
+				const paragraph = view.domConverter.mapViewToDom(
+					view.document.getRoot().getChild( 0 ).getChild( 1 ).getChild( 1 ).getChild( 1 ).getChild( 2 ).getChild( 0 )
+				);
 
-			td.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+				const resizer = view.domConverter.mapViewToDom(
+					view.document.getRoot().getChild( 0 ).getChild( 1 ).getChild( 1 ).getChild( 1 ).getChild( 1 ).getChild( 1 )
+				);
 
-			const viewRoot = view.domConverter.mapDomToView( view.getDomRoot() );
+				resizer.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+				paragraph.dispatchEvent( new MouseEvent( 'mousemove', { bubbles: true, clientX: 20, buttons: 1 } ) );
 
-			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.true;
-
-			td.dispatchEvent( new MouseEvent( 'mouseup', { bubbles: true } ) );
-
-			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.false;
+				assertSelectedCells( model, [
+					[ 0, 0 ],
+					[ 0, 0, 0 ]
+				] );
+			} );
 		} );
 	} );
 
