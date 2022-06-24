@@ -134,7 +134,7 @@ Remove the plugins you do not need with the `removePlugins` configuration option
 
 Then, configure the toolbar to display only the desired options. You can read more about toolbar configuration the {@link features/toolbar toolbar guide}. Several plugins, like the image feature or the list feature, need additional configuration for their own toolbars.
 
-A source code listing for the configuration can be seen below.
+A source code listing for the configuration can be seen below. Due to the complex nature of editor configuration, the final solution may differ depending on the active plugins. Please refer to the sample implementation listed in the next section for a working code example.
 
 ```js
 CKEDITOR.ClassicEditor
@@ -249,7 +249,10 @@ CKEDITOR.ClassicEditor
 
 #### Sample implementation
 
-A full webpage with embedded CKEditor 5 from the above example would look like this:
+You can see a full webpage with embedded CKEditor 5 from the above example after expanding the code listing below.
+
+<details>
+<summary>View editor configuration script</summary>
 
 ```html
 <!DOCTYPE html>
@@ -377,6 +380,7 @@ A full webpage with embedded CKEditor 5 from the above example would look like t
 </body>
 </html>
 ```
+</details>
 
 ## Using the CKEditor 5 superbuild with Premium features
 ### An editor with real-time collaboration
@@ -676,7 +680,10 @@ CKEDITOR.DecoupledEditor
 
 #### Sample implementation
 
-A full webpage with embedded CKEditor 5 from the above example would look like this:
+You can see a full webpage with embedded CKEditor 5 from the above example after expanding the code listing below.
+
+<details>
+<summary>View editor configuration script</summary>
 
 ```html
 <!DOCTYPE html>
@@ -1028,6 +1035,7 @@ A full webpage with embedded CKEditor 5 from the above example would look like t
 </body>
 </html>
 ```
+</details>
 
 ### An editor with non-real-time collaboration
 
@@ -1344,6 +1352,11 @@ CKEDITOR.DecoupledEditor
 ```
 
 #### Sample implementation
+
+You can see a full webpage with embedded CKEditor 5 from the above example after expanding the code listing below.
+
+<details>
+<summary>View editor configuration script</summary>
 
 ```html
 <!DOCTYPE html>
@@ -1711,6 +1724,7 @@ CKEDITOR.DecoupledEditor
 </body>
 </html>
 ```
+</details>
 
 <info-box hint>
 **What's next?**
