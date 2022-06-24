@@ -39,13 +39,6 @@ export default class InsertTextObserver extends Observer {
 
 		const viewDocument = view.document;
 
-		/**
-		 * TODO
-		 *
-		 * @private
-		 */
-		this._compositionStartPosition = null;
-
 		viewDocument.on( 'beforeinput', ( evt, data ) => {
 			if ( !this.isEnabled ) {
 				return;
@@ -71,29 +64,32 @@ export default class InsertTextObserver extends Observer {
 			}
 		} );
 
-		viewDocument.on( 'compositionstart', () => {
-			this._compositionStartPosition = view.createPositionAt( viewDocument.selection.getFirstPosition() );
-		} );
-
 		viewDocument.on( 'compositionend', ( evt, { domEvent } ) => {
 			// In case of aborted composition.
 			if ( !domEvent.data ) {
 				return;
 			}
 
-			let compositionStartPosition = this._compositionStartPosition;
-
-			// In case the model and view got modified in the background (while the Renderer is locked).
-			if ( !compositionStartPosition.root.is( 'rootElement' ) ) {
-				compositionStartPosition = viewDocument.selection.getFirstPosition();
-			}
-
-			this._compositionStartPosition = null;
-
+			// How do we know where to insert the composed text?
+			// The selection observer is blocked and the view is not updated with the composition changes.
+			// There were three options:
+			//   - Store the selection on `compositionstart` and use it now. This wouldn't work in RTC
+			//     where the view would change and the stored selection might get incorrect.
+			//     We'd need to fallback to the current view selection anyway.
+			//   - Use the current view selection. This is a bit weird and non-intuitive because
+			//     this isn't necessarily the selection on which the user started composing.
+			//     We cannot even know whether it's still collapsed (there might be some weird
+			//     editor feature that changed it in unpredictable ways for us). But it's by far
+			//     the simplest solution and should be stable (the selection is definitely correct)
+			//     and probably mostly predictable (features usually don't modify the selection
+			//     unless called explicitly by the user).
+			//   - Try to follow it from the `beforeinput` events. This would be really complex as each
+			//     `beforeinput` would come with just the range it's changing and we'd need to calculate that.
+			// We decided to go with the 2nd option for its simplicity and stability.
 			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
 			viewDocument.fire( 'insertText', new DomEventData( viewDocument, domEvent, {
 				text: domEvent.data,
-				selection: view.createSelection( compositionStartPosition )
+				selection: viewDocument.selection
 			} ) );
 		}, { priority: 'low' } );
 		// Low priority to handle it after isComposing = false and renderer enabled.
