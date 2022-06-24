@@ -131,7 +131,7 @@ class Adapter {
 		/**
 		 * The base URL from where all assets are served.
 		 *
-		 * @member {String} #serviceOrigin
+		 * @member {String} #assetsOrigin
 		 */
 		this.assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' );
 	}
