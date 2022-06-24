@@ -704,9 +704,11 @@ A full webpage with embedded CKEditor 5 from the above example would look like t
 		}
 
 		.editor-element {
-			width: 950px;
-			border: 1px solid var(--ck-color-toolbar-border);
-		}
+            width: 950px;
+            border: 1px solid var(--ck-color-toolbar-border);
+            height: calc( 297mm + 2px );
+            overflow: scroll;
+        }
 
 		.editor-container > .ck-editor {
 			position: relative;
@@ -1340,9 +1342,11 @@ CKEDITOR.DecoupledEditor
 		}
 
 		.editor-element {
-			width: 950px;
-			border: 1px solid var(--ck-color-toolbar-border);
-		}
+            width: 950px;
+            border: 1px solid var(--ck-color-toolbar-border);
+            height: calc( 297mm + 2px );
+            overflow: scroll;
+        }
 
 		.editor-container > .ck-editor {
 			position: relative;
