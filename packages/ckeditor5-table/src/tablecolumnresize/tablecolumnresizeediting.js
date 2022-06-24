@@ -37,7 +37,7 @@ import {
 	toPrecision,
 	insertColumnResizerElements,
 	removeColumnResizerElements,
-	setResizersVisibility
+	setResizersEnablement
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -476,7 +476,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editingView = editor.editing.view;
 
 		if ( !domEvent.target.classList.contains( 'table-column-resizer' ) ) {
-			setResizersVisibility( this.editor.editing.view, false );
+			setResizersEnablement( this.editor.editing.view, false );
 			return;
 		}
 
@@ -513,7 +513,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editingView = editor.editing.view;
 
 		if ( !this._isResizingActive ) {
-			setResizersVisibility( editingView, true );
+			setResizersEnablement( editingView, true );
 			return;
 		}
 

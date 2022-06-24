@@ -366,16 +366,16 @@ export function removeColumnResizerElements( viewWriter, viewCell ) {
 	viewWriter.remove( viewTableColumnResizerElement );
 }
 
-// Shows/hides resizers in specified view.
+// Enables/disables resizers in specified view.
 //
 // @param {module:ui/view~View} view
-// @param {true|false} value
-export function setResizersVisibility( view, value ) {
+// @param {Boolean} isEnabled
+export function setResizersEnablement( view, isEnabled ) {
 	view.change( viewWriter => {
 		for ( const root of view.domRoots.values() ) {
 			const viewRoot = view.domConverter.mapDomToView( root );
 
-			if ( value ) {
+			if ( isEnabled ) {
 				viewWriter.removeClass( 'ck-resizers-hidden', viewRoot );
 			} else {
 				viewWriter.addClass( 'ck-resizers-hidden', viewRoot );

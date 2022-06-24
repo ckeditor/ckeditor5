@@ -28,7 +28,7 @@ import {
 	sumArray,
 	normalizeColumnWidthsAttribute,
 	getTableWidthInPixels,
-	setResizersVisibility
+	setResizersEnablement
 } from '../../src/tablecolumnresize/utils';
 
 /* globals window */
@@ -576,7 +576,7 @@ describe( 'TableColumnResize utils', () => {
 		} );
 	} );
 
-	describe( 'setResizersVisibility()', () => {
+	describe( 'setResizersEnablement()', () => {
 		let editor;
 
 		beforeEach( () => {
@@ -603,11 +603,11 @@ describe( 'TableColumnResize utils', () => {
 
 			const viewRoot = view.domConverter.mapDomToView( view.getDomRoot() );
 
-			setResizersVisibility( view, false );
+			setResizersEnablement( view, false );
 
 			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.true;
 
-			setResizersVisibility( view, true );
+			setResizersEnablement( view, true );
 
 			expect( viewRoot.hasClass( 'ck-resizers-hidden' ) ).to.be.false;
 		} );
