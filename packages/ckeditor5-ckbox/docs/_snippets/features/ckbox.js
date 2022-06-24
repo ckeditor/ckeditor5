@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import { SERVICE_ORIGIN, TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-ckbox' ), {
@@ -30,8 +30,7 @@ ClassicEditor
 			}
 		},
 		ckbox: {
-			tokenUrl: TOKEN_URL,
-			serviceOrigin: SERVICE_ORIGIN
+			tokenUrl: TOKEN_URL
 		}
 	} )
 	.then( editor => {
