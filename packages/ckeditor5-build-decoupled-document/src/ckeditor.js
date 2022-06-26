@@ -83,7 +83,7 @@ DecoupledEditor.builtinPlugins = [
 	LocalImage
 ];
 
-// Editor configuration.
+// Editor configuration. test
 DecoupledEditor.defaultConfig = {
 	toolbar: {
 		items: [
