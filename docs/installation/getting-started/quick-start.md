@@ -296,7 +296,7 @@ If you would like to quickly evaluate CKEditor 5 with premium features such as r
 
 After you sign up, you will find in the customer dashboard the full code snippet to run the editor with premium features with all the necessary configurations.
 
-## List of all plugins included in CKEditor 5 superbuild
+## List of all plugins included in the CKEditor 5 superbuild
 
 The table below presents the list of all plugins included in the superbuild. You may disable any of them using the `removePlugins` configuration option.
 
