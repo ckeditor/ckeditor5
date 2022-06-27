@@ -306,8 +306,12 @@ https://github.com/ckeditor/ckeditor5-build-super/blob/master/src/ckeditor.js
 <table border="1" cellpadding="1" cellspacing="1" style="width:500px">
 	<tbody>
 		<tr>
-			<td>Alignment</td>
+			<td>Plugin</td>
 			<td>Documentation</td>
+		</tr>
+		<tr>
+			<td>`Alignment`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html</a></td>
 		</tr>
 		<tr>
 			<td>`Autoformat`</td>
