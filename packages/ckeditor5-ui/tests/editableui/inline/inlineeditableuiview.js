@@ -43,7 +43,7 @@ describe( 'InlineEditableUIView', () => {
 	} );
 
 	describe( 'editableElement', () => {
-		const ariaLabel = 'Rich Text Editor, main';
+		const ariaLabel = 'main';
 
 		it( 'has proper accessibility role', () => {
 			expect( view.element.attributes.getNamedItem( 'role' ).value ).to.equal( 'textbox' );
