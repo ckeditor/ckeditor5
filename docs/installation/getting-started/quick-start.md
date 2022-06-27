@@ -259,6 +259,7 @@ In this example, we remove the premium collaboration features as well as several
 					// 'ExportPdf',
 					// 'ExportWord',
 					'CKBox',
+					'CKFinder',
 					'EasyImage',
 					'RealTimeCollaborativeComments',
 					'RealTimeCollaborativeTrackChanges',
