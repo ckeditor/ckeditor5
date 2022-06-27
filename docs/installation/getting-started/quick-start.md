@@ -261,6 +261,12 @@ In this example, we remove the premium collaboration features as well as several
 					'CKBox',
 					'CKFinder',
 					'EasyImage',
+					// This sample uses the Base64UploadAdapter to handle image uploads as it requires no configuration.
+					// https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html
+					// Storing images as Base64 is usually a very bad idea.
+					// Replace it on production website with other solutions:
+					// https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html
+					// 'Base64UploadAdapter',
 					'RealTimeCollaborativeComments',
 					'RealTimeCollaborativeTrackChanges',
 					'RealTimeCollaborativeRevisionHistory',
