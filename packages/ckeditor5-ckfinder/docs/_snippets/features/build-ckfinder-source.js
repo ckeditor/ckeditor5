@@ -15,13 +15,14 @@ import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 
-ClassicEditor.builtinPlugins.push( CKFinder );
-ClassicEditor.builtinPlugins.push( LinkImageEditing );
-ClassicEditor.builtinPlugins.push( PictureEditing );
-ClassicEditor.builtinPlugins.push( ImageResize );
-ClassicEditor.builtinPlugins.push( ImageInsert );
-ClassicEditor.builtinPlugins.push( AutoImage );
-ClassicEditor.builtinPlugins.push( LinkImage );
-ClassicEditor.builtinPlugins.push( Alignment );
+ClassicEditor.builtinPlugins.push(
+	CKFinder,
+	LinkImageEditing,
+	PictureEditing,
+	ImageResize,
+	ImageInsert,
+	AutoImage,
+	LinkImage,
+	Alignment );
 
 window.ClassicEditor = ClassicEditor;
