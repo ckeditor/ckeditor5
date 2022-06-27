@@ -5,6 +5,14 @@ Changelog
 
 ### Release highlights
 
+We are happy to announce the release of CKEditor 5 v34.2.0.
+
+This release introduces the following new features:
+
+* Revision history: make it possible to continue working on previously unsaved revisions after the editor was re-initialized. **Note, that currently, this feature does not work for real-time editing integrations that use an editor bundle uploaded to Cloud Services.**
+* Integration the Track changes feature with code block and HTML embed.
+* Integration CKEditor 5 and the CKBox service.
+
 <!-- TODO: Add a link to the blog post. -->
 
 ### Features
@@ -14,8 +22,7 @@ Changelog
 * **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Custom elements should be preserved by the General HTML Support feature. Closes [#11432](https://github.com/ckeditor/ckeditor5/issues/11432). ([commit](https://github.com/ckeditor/ckeditor5/commit/efd6f84ddc1d78f18e88d21fd7fa3d4af334af6e))
 * **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Introduced `cloudServices.connectionTimeout` and `cloudServices.requestTimeout` configuration options that allow for changing timeout values for connecting to Cloud Services and for handling a single request.
 * **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Revision with unsaved changes will now be resumed when the editor is re-initialized instead of creating a new revision. Introduced `revisionHistory.resumeUnsavedRevision` configuration option that turns on and off this behavior (defaults to `true`).
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added track changes integration for HTML embed feature.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added track changes integration for code block feature.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added track changes integration for code block and HTML embed features.
 
 ### Bug fixes
 
