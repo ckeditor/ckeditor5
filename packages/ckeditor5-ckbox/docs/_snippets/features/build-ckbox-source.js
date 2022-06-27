@@ -8,13 +8,21 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor.builtinPlugins.push(
 	LinkImageEditing,
 	PictureEditing,
+	ImageResize,
+	ImageInsert,
 	AutoImage,
+	LinkImage,
+	Alignment,
 	CKBox
 );
 

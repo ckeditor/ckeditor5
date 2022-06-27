@@ -24,6 +24,38 @@ ClassicEditor
 				'ckbox'
 			]
 		},
+		image: {
+			toolbar: [
+				'toggleImageCaption',
+				'imageTextAlternative',
+				'|',
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'resizeImage:100',
+				'resizeImage:200',
+				'resizeImage:original'
+			],
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					value: null,
+					icon: 'original'
+				},
+				{
+					name: 'resizeImage:100',
+					value: '100',
+					icon: 'medium'
+				},
+				{
+					name: 'resizeImage:200',
+					value: '200',
+					icon: 'large'
+				}
+			],
+			resizeUnit: 'px'
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
