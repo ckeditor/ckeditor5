@@ -303,8 +303,8 @@ The table below presents the list of all plugins included in the superbuild. You
 <table border="1" cellpadding="1" cellspacing="1" style="width:500px">
 	<tbody>
 		<tr>
-			<td>Plugin</td>
-			<td>Documentation</td>
+			<td><b>Plugin</b></td>
+			<td><b>Documentation</b></td>
 		</tr>
 		<tr>
 			<td>Alignment</td>
@@ -312,15 +312,15 @@ The table below presents the list of all plugins included in the superbuild. You
 		</tr>
 		<tr>
 			<td>Autoformat</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html</a></td>
-		</tr>
-		<tr>
-			<td>Basic text styles (including Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Code)</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html</a></td>
 		</tr>
 		<tr>
 			<td>BlockQuote</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html">https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html</a></td>
+		</tr>
+		<tr>
+			<td>Bold</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
 		</tr>
 		<tr>
 			<td>CKBox</td>
@@ -335,6 +335,10 @@ The table below presents the list of all plugins included in the superbuild. You
 			<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">https://ckeditor.com/docs/cs/latest/guides/overview.html</a></td>
 		</tr>
 		<tr>
+			<td>Code</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+		</tr>
+		<tr>
 			<td>CodeBlock</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html">https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html</a></td>
 		</tr>
@@ -347,52 +351,12 @@ The table below presents the list of all plugins included in the superbuild. You
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html</a></td>
 		</tr>
 		<tr>
-			<td>Essentials</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
 			<td>ExportPdf</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html">https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html</a></td>
 		</tr>
 		<tr>
 			<td>ExportWord</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html</a></td>
-		</tr>
-		<tr>
-			<td>Heading</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">https://ckeditor.com/docs/ckeditor5/latest/features/headings.html</a></td>
-		</tr>
-		<tr>
-			<td>Image, ImageCaption, ImageStyle, ImageToolbar, AutoImage, ImageResize, ImageUpload, PictureEditing</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html</a></td>
-		</tr>
-		<tr>
-			<td>Indent, IndentBlock</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">https://ckeditor.com/docs/ckeditor5/latest/features/indent.html</a></td>
-		</tr>
-		<tr>
-			<td>TextPartLanguage</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html">https://ckeditor.com/docs/ckeditor5/latest/features/language.html</a></td>
-		</tr>
-		<tr>
-			<td>Link, Autolink, LinkImage</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">https://ckeditor.com/docs/ckeditor5/latest/features/link.html</a></td>
-		</tr>
-		<tr>
-			<td>List, ListProperties</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
-		</tr>
-		<tr>
-			<td>TodoList</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html</a></td>
-		</tr>
-		<tr>
-			<td>MediaEmbed</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html</a></td>
-		</tr>
-		<tr>
-			<td>Paragraph</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">https://ckeditor.com/docs/ckeditor5/latest/features/headings.html</a></td>
 		</tr>
 		<tr>
 			<td>FindAndReplace</td>
@@ -403,6 +367,14 @@ The table below presents the list of all plugins included in the superbuild. You
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">https://ckeditor.com/docs/ckeditor5/latest/features/font.html</a></td>
 		</tr>
 		<tr>
+			<td>GeneralHtmlSupport</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html">https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html</a></td>
+		</tr>
+		<tr>
+			<td>Heading</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">https://ckeditor.com/docs/ckeditor5/latest/features/headings.html</a></td>
+		</tr>
+		<tr>
 			<td>Highlight</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html">https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html</a></td>
 		</tr>
@@ -411,20 +383,40 @@ The table below presents the list of all plugins included in the superbuild. You
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html">https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html</a></td>
 		</tr>
 		<tr>
-			<td>HtmlEmbed</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html</a></td>
-		</tr>
-		<tr>
-			<td>GeneralHtmlSupport</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html">https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html</a></td>
-		</tr>
-		<tr>
 			<td>HtmlComment</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html">https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html</a></td>
 		</tr>
 		<tr>
+			<td>HtmlEmbed</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html</a></td>
+		</tr>
+		<tr>
+			<td>Image, ImageCaption, ImageStyle, ImageToolbar, AutoImage, ImageResize, ImageUpload, PictureEditing</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html</a></td>
+		</tr>
+		<tr>
+			<td>Indent, IndentBlock</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">https://ckeditor.com/docs/ckeditor5/latest/features/indent.html</a></td>
+		</tr>
+		<tr>
+			<td>Italic</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+		</tr>
+		<tr>
+			<td>Link, Autolink, LinkImage</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">https://ckeditor.com/docs/ckeditor5/latest/features/link.html</a></td>
+		</tr>
+		<tr>
+			<td>List, ListProperties, TodoList</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
+		</tr>
+		<tr>
 			<td>MathType</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html">https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html</a></td>
+		</tr>
+		<tr>
+			<td>MediaEmbed</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html</a></td>
 		</tr>
 		<tr>
 			<td>Mention</td>
@@ -435,20 +427,24 @@ The table below presents the list of all plugins included in the superbuild. You
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html">https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html</a></td>
 		</tr>
 		<tr>
-			<td>PasteFromOffice</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html</a></td>
-		</tr>
-		<tr>
 			<td>Pagination</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html">https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html</a></td>
 		</tr>
 		<tr>
-			<td>RealTimeCollaborativeComments, RealTimeCollaborativeRevisionHistory, RealTimeCollaborativeTrackChanges</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html</a></td>
+			<td>Paragraph</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">https://ckeditor.com/docs/ckeditor5/latest/features/headings.html</a></td>
+		</tr>
+		<tr>
+			<td>PasteFromOffice</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html</a></td>
 		</tr>
 		<tr>
 			<td>PresenceList</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html</a></td>
+		</tr>
+		<tr>
+			<td>RealTimeCollaborativeComments, RealTimeCollaborativeRevisionHistory, RealTimeCollaborativeTrackChanges</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html</a></td>
 		</tr>
 		<tr>
 			<td>RemoveFormat</td>
@@ -467,16 +463,36 @@ The table below presents the list of all plugins included in the superbuild. You
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html">https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html</a></td>
 		</tr>
 		<tr>
+			<td>Strikethrough</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+		</tr>
+		<tr>
+			<td>Subscript</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+		</tr>
+		<tr>
+			<td>Superscript</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+		</tr>
+		<tr>
 			<td>Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">https://ckeditor.com/docs/ckeditor5/latest/features/table.html</a></td>
 		</tr>
 		<tr>
-			<td>TrackChanges</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html</a></td>
+			<td>TextPartLanguage</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html">https://ckeditor.com/docs/ckeditor5/latest/features/language.html</a></td>
 		</tr>
 		<tr>
 			<td>TextTransformation</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html</a></td>
+		</tr>
+		<tr>
+			<td>TrackChanges, TrackChangesData</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html</a></td>
+		</tr>
+		<tr>
+			<td>Underline</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
 		</tr>
 		<tr>
 			<td>WordCount</td>
