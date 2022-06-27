@@ -7,7 +7,8 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
 
-ClassicEditor.builtinPlugins.push( CKFinder );
+ClassicEditor.builtinPlugins.push( CKFinder, AutoImage );
 
 window.ClassicEditor = ClassicEditor;
