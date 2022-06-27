@@ -288,6 +288,7 @@ While the superbuild is designed to provide as many of them as possible, some of
 * ContextWatchdog
 * Context
 * Title
+* Restricted editing
 
 ## Running a full-featured editor with Premium features
 
@@ -305,16 +306,184 @@ https://github.com/ckeditor/ckeditor5-build-super/blob/master/src/ckeditor.js
 <table border="1" cellpadding="1" cellspacing="1" style="width:500px">
 	<tbody>
 		<tr>
-			<th style="min-width:120px">Plugin name</th>
-			<th>Documentation</th>
+			<td>Alignment</td>
+			<td>Documentation</td>
 		</tr>
 		<tr>
-			<td><code>Alignment</code></td>
+			<td>`Autoformat`</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html</a></td>
 		</tr>
 		<tr>
-			<td><code>Autoformat</code></td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html</a></td>
+			<td>Basic text styles (including `Bold`, `Italic`, `Underline`, `Strikethrough`, `Superscript`, `Subscript`, `Code`)</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+		</tr>
+		<tr>
+			<td>`BlockQuote`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html">https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html</a></td>
+		</tr>
+		<tr>
+			<td>`CKBox`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckbox.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckbox.html</a></td>
+		</tr>
+		<tr>
+			<td>`CKFinder`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html</a></td>
+		</tr>
+		<tr>
+			<td>`CloudServices`</td>
+			<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">https://ckeditor.com/docs/cs/latest/guides/overview.html</a></td>
+		</tr>
+		<tr>
+			<td>`CodeBlock`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html">https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html</a></td>
+		</tr>
+		<tr>
+			<td>`Comments`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html</a></td>
+		</tr>
+		<tr>
+			<td>`EasyImage`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html</a></td>
+		</tr>
+		<tr>
+			<td>`Essentials`</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>`ExportPdf`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html">https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html</a></td>
+		</tr>
+		<tr>
+			<td>`ExportWord`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html</a></td>
+		</tr>
+		<tr>
+			<td>`Heading`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">https://ckeditor.com/docs/ckeditor5/latest/features/headings.html</a></td>
+		</tr>
+		<tr>
+			<td>`Image`, `ImageCaption`, `ImageStyle`, `ImageToolbar`, `AutoImage`, `ImageResize`, `ImageUpload`, `PictureEditing`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html</a></td>
+		</tr>
+		<tr>
+			<td>Indent`, `IndentBlock`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">https://ckeditor.com/docs/ckeditor5/latest/features/indent.html</a></td>
+		</tr>
+		<tr>
+			<td>`TextPartLanguage`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html">https://ckeditor.com/docs/ckeditor5/latest/features/language.html</a></td>
+		</tr>
+		<tr>
+			<td>`Link`, `Autolink`, `LinkImage`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">https://ckeditor.com/docs/ckeditor5/latest/features/link.html</a></td>
+		</tr>
+		<tr>
+			<td>`List`, `ListProperties`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
+		</tr>
+		<tr>
+			<td>`TodoList`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html</a></td>
+		</tr>
+		<tr>
+			<td>`MediaEmbed`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html</a></td>
+		</tr>
+		<tr>
+			<td>`Paragraph`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">https://ckeditor.com/docs/ckeditor5/latest/features/headings.html</a></td>
+		</tr>
+		<tr>
+			<td>`FindAndReplace`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html">https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html</a></td>
+		</tr>
+		<tr>
+			<td>`FontBackgroundColor`, `FontColor`, `FontFamily`, `FontSize`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">https://ckeditor.com/docs/ckeditor5/latest/features/font.html</a></td>
+		</tr>
+		<tr>
+			<td>`Highlight`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html">https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html</a></td>
+		</tr>
+		<tr>
+			<td>`HorizontalLine`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html">https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html</a></td>
+		</tr>
+		<tr>
+			<td>`HtmlEmbed`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html</a></td>
+		</tr>
+		<tr>
+			<td>`GeneralHtmlSupport`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html">https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html</a></td>
+		</tr>
+		<tr>
+			<td>`HtmlComment`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html">https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html</a></td>
+		</tr>
+		<tr>
+			<td>`MathType`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html">https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html</a></td>
+		</tr>
+		<tr>
+			<td>`Mention`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html</a></td>
+		</tr>
+		<tr>
+			<td>`PageBreak`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html">https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html</a></td>
+		</tr>
+		<tr>
+			<td>`PasteFromOffice`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html</a></td>
+		</tr>
+		<tr>
+			<td>`Pagination`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html">https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html</a></td>
+		</tr>
+		<tr>
+			<td>`RealTimeCollaborativeComments`, `RealTimeCollaborativeRevisionHistory`, `RealTimeCollaborativeTrackChanges`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html</a></td>
+		</tr>
+		<tr>
+			<td>`PresenceList`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html</a></td>
+		</tr>
+		<tr>
+			<td>R`emoveFormat`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html">https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html</a></td>
+		</tr>
+		<tr>
+			<td>`RevisionHistory`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/revision-history/revision-history.html">https://ckeditor.com/docs/ckeditor5/latest/features/revision-history/revision-history.html</a></td>
+		</tr>
+		<tr>
+			<td>`StandardEditingMode`</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>`SpecialCharacters`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html">https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html</a></td>
+		</tr>
+		<tr>
+			<td>`Table`, `TableToolbar`, `TableCellProperties`, `TableProperties`, `TableCaption`, `TableColumnResize`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">https://ckeditor.com/docs/ckeditor5/latest/features/table.html</a></td>
+		</tr>
+		<tr>
+			<td>`TrackChanges`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html</a></td>
+		</tr>
+		<tr>
+			<td>`TextTransformation`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html</a></td>
+		</tr>
+		<tr>
+			<td>`WordCount`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html">https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html</a></td>
+		</tr>
+		<tr>
+			<td>`WProofReader`</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html">https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html</a></td>
 		</tr>
 	</tbody>
 </table>
