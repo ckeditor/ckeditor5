@@ -77,9 +77,8 @@ export default class CKBox extends Plugin {
  *						Scans: [ 'png', 'tiff' ]
  *					},
  *					ignoreDataId: true,
- *					language: 'en',
- *					theme: 'default',
  *					serviceOrigin: 'https://example.com/',
+ *					assetsOrigin: 'https://example.cloud/',
  *					tokenUrl: 'https://example.com/cs-token-endpoint'
  *				}
  *			} )
