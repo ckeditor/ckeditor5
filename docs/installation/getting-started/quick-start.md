@@ -4,14 +4,13 @@
 
 category: getting-started
 order: 10
-modified_at: 2022-06-21
+modified_at: 2022-06-27
 ---
 
 # Quick start
 
 ## Introduction
-
-In this guide you will find the quickest and easiest way to run ready-to-use CKEditor 5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/). This is the fastest method that lets you set up a running copy of CKEditor 5 in literally minutes.
+In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor 5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).
 
 <info-box>
 	Please bear in mind that the CDN solution only offers {@link installation/advanced/predefined-builds ready-to-use predefined editor builds}, hence it is not possible to add new plugins and all the features available in the editor are preset.
@@ -32,7 +31,7 @@ Let us run a classic editor build as an example. In your HTML page add an elemen
 <div id="editor"></div>
 ```
 
-Load the classic editor build (here a [CDN](https://cdn.ckeditor.com/) location is used). The link format with a variable will ensure you are using the latest available CKEditor 5 release.
+Load the classic editor build (here a [CDN](https://cdn.ckeditor.com/) location is used).
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
@@ -86,1043 +85,244 @@ A full webpage with embedded CKEditor 5 from the above example would look like t
 
 ## Running a full-featured editor from CDN
 
-The fastest way to run an advanced editor using the {@link features/index rich editing features offered by CKEditor 5} is using a superbuild. The superbuild, available instantly from CDN, is a preconfigured editor instance that offers access to all available plugins and all predefined editor types. Starting from that point and using the `removePlugins` configuration option as well as toolbar configuration, you can trim down and customize the editor to your exact needs with minimal effort.
+The fastest way to run an advanced editor using the {@link features/index rich editing features offered by CKEditor 5} is using a superbuild. The superbuild, available instantly from CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
 
 <info-box>
-	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in you implementation, so using the superbuild should be considered for evaluation purposes and for tests rather, than for production environment.
+	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in your implementation, so using the superbuild should be considered for evaluation purposes and tests rather, than for the production environment.
 
 	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link installation/advanced/predefined-builds predefined builds} tailored for specific needs.
 </info-box>
 
+### Using the CKEditor 5 superbuild
+
+In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link installation/advanced/predefined-builds#available-builds available builds documentation}.
+
+Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the <code>removePlugins</code> configuration option and adjust the toolbar configuration.
+
+### Sample implementation
+
+In this example, we remove the premium collaboration features as well as several other plugins that require credentials to work. We need to do this, otherwise the editor would throw an error.
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+	</head>
+	<body>
+		<style>
+			#container {
+				width: 1000px;
+				margin: 20px auto;
+			}
+			.ck-editor__editable[role="textbox"] {
+				/* editing area */
+				min-height: 200px;
+			}
+			.ck-content .image {
+				/* block images */
+				max-width: 80%;
+				margin: 20px auto;
+			}
+		</style>
+		<div id="container">
+			<div id="editor">
+			</div>
+		</div>
+		<!--
+			The "super-build" of CKEditor 5 served via CDN contains a large set of plugins and multiple editor types.
+			See https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html#running-a-full-featured-editor-from-cdn
+		-->
+		<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/super-build/ckeditor.js"></script>
+		<!--
+			Uncomment to load the Spanish translation
+			<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/super-build/translations/es.js"></script>
+		-->
+		<script>
+			// This sample still does not showcase all CKEditor 5 features (!)
+			// Visit https://ckeditor.com/docs/ckeditor5/latest/features/index.html to browse all the features.
+			CKEDITOR.ClassicEditor.create(document.getElementById("editor"), {
+				// https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html#extended-toolbar-configuration-format
+				toolbar: {
+					items: [
+						'exportPDF','exportWord', '|',
+						'findAndReplace', 'selectAll', '|',
+						'heading', '|',
+						'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
+						'bulletedList', 'numberedList', 'todoList', '|',
+						'outdent', 'indent', '|',
+						'undo', 'redo',
+						'-',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+						'alignment', '|',
+						'link', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+						'specialCharacters', 'horizontalLine', 'pageBreak', '|',
+						'textPartLanguage', '|',
+						'sourceEditing'
+					],
+					shouldNotGroupWhenFull: true
+				},
+				// Changing the language of the interface requires loading the language file using the <script> tag.
+				// language: 'es',
+				list: {
+					properties: {
+						styles: true,
+						startIndex: true,
+						reversed: true
+					}
+				},
+				// https://ckeditor.com/docs/ckeditor5/latest/features/headings.html#configuration
+				heading: {
+					options: [
+						{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+						{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+						{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+						{ model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+						{ model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+						{ model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+						{ model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+					]
+				},
+				// https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html#using-the-editor-configuration
+				placeholder: 'Welcome to CKEditor 5 + CKBox!',
+				// https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-family-feature
+				fontFamily: {
+					options: [
+						'default',
+						'Arial, Helvetica, sans-serif',
+						'Courier New, Courier, monospace',
+						'Georgia, serif',
+						'Lucida Sans Unicode, Lucida Grande, sans-serif',
+						'Tahoma, Geneva, sans-serif',
+						'Times New Roman, Times, serif',
+						'Trebuchet MS, Helvetica, sans-serif',
+						'Verdana, Geneva, sans-serif'
+					],
+					supportAllValues: true
+				},
+				// https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-size-feature
+				fontSize: {
+					options: [ 10, 12, 14, 'default', 18, 20, 22 ],
+					supportAllValues: true
+				},
+				// Be careful with the setting below. It instructs CKEditor to accept ALL HTML markup.
+				// https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#enabling-all-html-features
+				htmlSupport: {
+					allow: [
+						{
+							name: /.*/,
+							attributes: true,
+							classes: true,
+							styles: true
+						}
+					]
+				},
+				// Be careful with enabling previews
+				// https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html#content-previews
+				htmlEmbed: {
+					showPreviews: true
+				},
+				// https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators
+				link: {
+					decorators: {
+						addTargetToExternalLinks: true,
+						defaultProtocol: 'https://',
+						toggleDownloadable: {
+							mode: 'manual',
+							label: 'Downloadable',
+							attributes: {
+								download: 'file'
+							}
+						}
+					}
+				},
+				// https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html#configuration
+				mention: {
+					feeds: [
+						{
+							marker: '@',
+							feed: [
+								'@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
+								'@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
+								'@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
+								'@sugar', '@sweet', '@topping', '@wafer'
+							],
+							minimumCharacters: 1
+						}
+					]
+				},
+				// The "super-build" contains more premium features that require additional configuration, disable them below.
+				// Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
+				removePlugins: [
+					// These two are commercial, but you can try them out without registering to a trial.
+					// 'ExportPdf',
+					// 'ExportWord',
+					'CKBox',
+					'EasyImage',
+					'RealTimeCollaborativeComments',
+					'RealTimeCollaborativeTrackChanges',
+					'RealTimeCollaborativeRevisionHistory',
+					'PresenceList',
+					'Comments',
+					'TrackChanges',
+					'TrackChangesData',
+					'RevisionHistory',
+					'Pagination',
+					'WProofreader',
+					// Careful, with the Mathtype plugin CKEditor will not load when loading this sample
+					// from a local file system (file://) - load this site via HTTP server if you enable MathType
+					'MathType'
+				]
+			});
+		</script>
+	</body>
+</html>
+```
+
 ### The CKEditor 5 superbuild limitations
 
-CKEditor 5 provides a multitude of plugins offering {@link features/index various features} addressing versatile needs. While the superbuild is designed to provide as many of them as possible, some of these plugins may conflict with each other. Due to that fact, several of those needed to be excluded from the superbuild and are not available that way.
+While the superbuild is designed to provide as many of them as possible, some of these plugins may conflict with each other. Due to that fact, several of those needed to be excluded from the superbuild and are not available that way:
 
-The plugins not available currently in the superbuild include:
 * Watchdog
 * ContextWatchdog
 * Context
 * Title
 
-### Using the CKEditor 5 superbuild
-
-To start using the CKEditor 5 superbuild from CDN, first add the editor placeholder to your document.
-
-```html
-<div id="editor"></div>
-```
-
-Then, include the code from CDN to superbuild to load the editor.
-
-```html
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
-```
-
-In the superbuild, all editor classes are stored under the `CKEDITOR` object. To create the classic editor, you need to access the `CKEDITOR` object first, then call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
-
-```html
-<script>
-	CKEDITOR.ClassicEditor
-		.create( document.querySelector( '#editor' ) )
-		.catch( error => {
-			console.error( error );
-		} );
-</script>
-```
-
-Remove the plugins you do not need with the `removePlugins` configuration option. In this example, we remove the premium collaboration features as well as several other plugins that require credentials to work. We need to do this, otherwise the editor will throw an error.
-
-Then, configure the toolbar to display only the desired options. You can read more about toolbar configuration the {@link features/toolbar toolbar guide}. Several plugins, like the image feature or the list feature, need additional configuration for their own toolbars.
-
-A source code listing for the configuration can be seen in the next section. Please refer to the sample implementation listed in the next section for a working code example. Due to the complex nature of editor configuration, the final solution may differ depending on the active plugins. 
-
-#### Sample implementation
-
-You can see a full webpage with embedded CKEditor 5 from the above example after expanding the code listing below.
-
-<details>
-<summary>View editor configuration script</summary>
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>CKEditor 5 – Full-featured editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
-</head>
-<body>
-	<h1>Full-featured editor</h1>
-	<div id="editor">
-		<p>This is some sample content.</p>
-	</div>
-	<script>
-		CKEDITOR.ClassicEditor
-			.create( document.querySelector( '#editor' ), {
-				removePlugins: [ 'Comments', 'TrackChanges', 'TrackChangesData', 'RevisionHistory', 'RealTimeCollaborativeComments', 'RealTimeCollaborativeTrackChanges', 'RealTimeCollaborativeRevisionHistory', 'RealTimeCollaborativeEditing', 'PresenceList', 'ExportWord', 'ExportPdf', 'Pagination', 'WProofreader', 'MathType' ],
-				toolbar: {
-					items: [
-						'undo', 'redo',
-						'|',
-						'findAndReplace', 'selectAll',
-						'|',
-						'heading',
-						'|',
-						'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript',
-						'|',
-						'specialCharacters', 'horizontalLine', 'pageBreak',
-						'|',
-						'-',
-						'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
-						'|',
-						'link', 'blockQuote', 'insertTable', 'uploadImage', 'mediaEmbed', 'codeBlock', 'htmlEmbed',
-						'|',
-						'bulletedList', 'numberedList', 'todoList',
-						'|',
-						'outdent', 'indent', 'alignment',
-						'|',
-						'textPartLanguage',
-						'|',
-						'sourceEditing'
-					],
-					shouldNotGroupWhenFull: true
-				},
-			image: {
-					styles: [
-						'alignCenter',
-						'alignLeft',
-						'alignRight'
-					],
-					resizeOptions: [
-						{
-							name: 'resizeImage:original',
-							label: 'Original',
-							value: null
-						},
-						{
-							name: 'resizeImage:50',
-							label: '50%',
-							value: '50'
-						},
-						{
-							name: 'resizeImage:75',
-							label: '75%',
-							value: '75'
-						}
-					],
-					toolbar: [
-						'imageTextAlternative', 'toggleImageCaption', '|',
-						'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
-						'resizeImage'
-					],
-					insert: {
-						integrations: [
-							'insertImageViaUrl'
-						]
-					}
-				},
-				list: {
-					properties: {
-						styles: true,
-						startIndex: true,
-						reversed: true
-					}
-				},
-				link: {
-					decorators: {
-						addTargetToExternalLinks: true,
-						defaultProtocol: 'https://',
-						toggleDownloadable: {
-							mode: 'manual',
-							label: 'Downloadable',
-							attributes: {
-								download: 'file'
-							}
-						}
-					}
-				},
-				mention: {
-					feeds: [
-						{
-							marker: '@',
-							feed: [
-								'@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
-								'@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
-								'@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
-								'@sugar', '@sweet', '@topping', '@wafer'
-							],
-							minimumCharacters: 1
-						}
-					]
-				},
-				placeholder: 'Type or paste your content here!',
-				table: {
-					contentToolbar: [
-						'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
-					]
-				},
-			} )
-			.catch( error => {
-				console.log( error );
-			} );
-	</script>
-</body>
-</html>
-```
-</details>
-
-## Using the CKEditor 5 superbuild with Premium features
-### An editor with real-time collaboration
-
-To unleash the full potential of CKEditor 5 with Premium features, we will use the decoupled editor and create a more complex markup, including the structure required by the Revision History feature.
-
-```html
-<div id="presence-list"></div>
-<div class="editors-holder">
-	<div class="editor-toolbar"></div>
-
-	<div class="editor-container" id="editor-container">
-		<div class="editor-element">
-			<div id="editor"></div>
-		</div>
-		<div class="sidebar-container" id="sidebar-container"></div>
-	</div>
-
-	<div class="editor-container" id="revision-viewer-container">
-		<div class="editor-element">
-			<div id="revision-viewer-editor"></div>
-		</div>
-		<div class="sidebar-container" id="revision-viewer-sidebar"></div>
-	</div>
-</div>
-```
-
-Include the code from CDN to superbuild to load the editor.
-
-```html
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
-```
-
-Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
-
-```html
-<script>
-	CKEDITOR.DecoupledEditor
-		.create( document.querySelector( '#editor' ) )
-		.then( editor => {
-			const toolbarContainer = document.querySelector( '.editor-toolbar' );
-
-			toolbarContainer.appendChild( editor.ui.view.toolbar.element );
-		} )
-		.catch( error => {
-			console.error( error );
-		} );
-</script>
-```
-
-This time we do not remove the Premium features. Instead, we configure the toolbar to include all available plugins. We also need to configure all of these options and provide correct credentials where indicated.
-
-<info-box hint>
-CKEditor 5 Premium features can be easily tested without commitment via the [Premium features free trial](https://ckeditor.com/docs/trial/latest/guides/overview.html) package.
-</info-box>
-
-The correct source code listing for this configuration can be seen in the section below.
-
-#### Sample implementation
-
-You can see a full webpage with embedded CKEditor 5 from the above example after expanding the code listing below.
-
-<details>
-<summary>View editor configuration script</summary>
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>CKEditor 5 – Full-featured editor with Premium features and real-time collaboration</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/super-build/ckeditor.js"></script>
-	<style>
-		.editors-holder {
-			position: relative;
-		}
-
-		.editor-container {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			position: relative;
-			width: 1260px;
-		}
-
-		.presence {
-			position: relative;
-			margin: 15px 25px;
-			height: 46px;
-		}
-
-		#revision-viewer-container {
-			display: none;
-		}
-
-		.editor-toolbar {
-			width: 1260px;
-			margin-bottom: -1px;
-		}
-
-		.editor-element {
-            width: 950px;
-            border: 1px solid var(--ck-color-toolbar-border);
-            height: calc( 297mm + 2px );
-            overflow: scroll;
-        }
-
-		.editor-container > .ck-editor {
-			position: relative;
-			width: 950px;
-		}
-
-		.editor-container .ck-editor__top .ck-toolbar {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-
-		.editor-container .ck-editor__editable_inline {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-
-		.ck.ck-content:not(.ck-comment__input *) {
-			/* A4 size */
-			width: calc( 210mm + 2px ); /* Those 2px are from border (box-sizing: border-box) */
-			min-height: calc( 297mm + 2px );
-			height: auto;
-			padding: 20mm 12mm;
-			box-sizing: border-box;
-			background: hsl( 0, 0%, 100% );
-			border: 1px solid hsl( 0, 0%, 88% );
-			box-shadow: 0 2px 8px hsla( 0, 0%, 0%, .08 );
-			margin: 40px auto;
-			overflow: hidden;
-		}
-
-		.sidebar-container {
-			position: relative;
-			width: 310px;
-			overflow: hidden;
-			background: var(--ck-color-toolbar-background);
-			border: 1px solid var(--ck-color-toolbar-border);
-			margin-left: -1px;
-		}
-
-		/* Move the square with page number from the Pagination plugin to the left side,
-		so that it does not cover the sidebar. */
-		.ck.ck-pagination-view-line::after {
-			transform: translateX(-100%);
-			left: -1px;
-			right: unset;
-		}
-	</style>
-</head>
-<body>
-	<h1>Full-featured editor with Premium features and real-time collaboration</h1>
-	<div class="presence"></div>
-	<div class="editors-holder">
-		<div class="editor-toolbar"></div>
-
-		<div class="editor-container" id="editor-container">
-			<div class="editor-element">
-				<div id="editor"></div>
-			</div>
-			<div class="sidebar-container" id="sidebar-container"></div>
-		</div>
-
-		<div class="editor-container" id="revision-viewer-container">
-			<div class="editor-element">
-				<div id="revision-viewer-editor"></div>
-			</div>
-			<div class="sidebar-container" id="revision-viewer-sidebar"></div>
-		</div>
-	</div>
-	<script>
-		CKEDITOR.DecoupledEditor
-			.create( document.querySelector( '#editor' ), {
-				cloudServices: {
-					// PROVIDE CORRECT VALUES HERE:
-					tokenUrl: 'https://example.com/cs-token-endpoint',
-					uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/',
-					webSocketUrl: 'your-organization-id.cke-cs.com/ws/'
-				},
-				toolbar: {
-					items: [
-						'revisionHistory',
-						'|',
-						'pageNavigation',
-						'previousPage',
-						'nextPage',
-						'|',
-						'comment', 'trackChanges',
-						'|',
-						'exportPdf', 'exportWord',
-						'|',
-						'wproofreader', 'MathType', 'findAndReplace', 'selectAll',
-						'|',
-						'heading',
-						'|',
-						'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript',
-						'|',
-						'specialCharacters', 'horizontalLine', 'pageBreak',
-						'|',
-						'-',
-						'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
-						'|',
-						'link', 'blockQuote', 'insertTable', 'uploadImage', 'mediaEmbed', 'codeBlock', 'htmlEmbed',
-						'|',
-						'bulletedList', 'numberedList', 'todoList',
-						'|',
-						'outdent', 'indent', 'alignment',
-						'|',
-						'textPartLanguage',
-						'|',
-						'undo', 'redo',
-					],
-					shouldNotGroupWhenFull: true
-				},
-				exportPdf: {
-					stylesheets: [
-						// Add your custom styles before 'EDITOR_STYLES'
-						'EDITOR_STYLES'
-					],
-					fileName: 'export-pdf-demo.pdf',
-					converterOptions: {
-						format: 'A4',
-						margin_top: '20mm',
-						margin_bottom: '20mm',
-						margin_right: '12mm',
-						margin_left: '12mm',
-						page_orientation: 'portrait'
-					},
-					// PROVIDE CORRECT VALUES HERE:
-					tokenUrl: 'https://example.com/cs-token-endpoint',
-					dataCallback: ( editor ) => editor.getData( {
-						showSuggestionHighlights: true
-					} ),
-				},
-				exportWord: {
-					stylesheets: [
-						// Add your custom styles before 'EDITOR_STYLES'
-						'EDITOR_STYLES'
-					],
-					fileName: 'export-word-demo.docx',
-					converterOptions: {
-						format: 'A4',
-						margin_top: '20mm',
-						margin_bottom: '20mm',
-						margin_right: '12mm',
-						margin_left: '12mm',
-						page_orientation: 'portrait'
-					},
-					// PROVIDE CORRECT VALUES HERE:
-					tokenUrl: 'https://example.com/cs-token-endpoint'
-				},
-				fontFamily: {
-					supportAllValues: true
-				},
-				fontSize: {
-					options: [ 10, 12, 14, 'default', 18, 20, 22 ],
-					supportAllValues: true
-				},
-				htmlEmbed: {
-					showPreviews: true
-				},
-				image: {
-					styles: [
-						'alignCenter',
-						'alignLeft',
-						'alignRight'
-					],
-					resizeOptions: [
-						{
-							name: 'resizeImage:original',
-							label: 'Original',
-							value: null
-						},
-						{
-							name: 'resizeImage:50',
-							label: '50%',
-							value: '50'
-						},
-						{
-							name: 'resizeImage:75',
-							label: '75%',
-							value: '75'
-						}
-					],
-					toolbar: [
-						'imageTextAlternative', 'toggleImageCaption', '|',
-						'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
-						'resizeImage'
-					],
-					insert: {
-						integrations: [
-							'insertImageViaUrl'
-						]
-					}
-				},
-				list: {
-					properties: {
-						styles: true,
-						startIndex: true,
-						reversed: true
-					}
-				},
-				link: {
-					decorators: {
-						addTargetToExternalLinks: true,
-						defaultProtocol: 'https://',
-						toggleDownloadable: {
-							mode: 'manual',
-							label: 'Downloadable',
-							attributes: {
-								download: 'file'
-							}
-						}
-					}
-				},
-				mention: {
-					feeds: [
-						{
-							marker: '@',
-							feed: [
-								'@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
-								'@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
-								'@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
-								'@sugar', '@sweet', '@topping', '@wafer'
-							],
-							minimumCharacters: 1
-						}
-					]
-				},
-				placeholder: 'Type or paste your content here!',
-				table: {
-					contentToolbar: [
-						'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
-					]
-				},
-				wproofreader: {
-				// PROVIDE CORRECT VALUE HERE:
-					serviceId: 'service ID',
-					lang: 'auto',
-					srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
-				},
-				pagination: {
-					// A4
-					pageWidth: '21cm',
-					pageHeight: '29.7cm',
-
-					pageMargins: {
-						top: '20mm',
-						bottom: '20mm',
-						right: '12mm',
-						left: '12mm'
-					}
-				},
-				licenseKey: '', // PROVIDE CORRECT VALUE.
-				collaboration: {
-					channelId: 'super-build'
-				},
-				presenceList: {
-					container: document.querySelector( '.presence' )
-				},
-				sidebar: {
-					container: document.querySelector( '.sidebar-container' )
-				},
-				revisionHistory: {
-					showRevisionViewerCallback: config => {
-						const editorContainer = document.querySelector( '#editor-container' );
-						const viewerContainer = document.querySelector( '#revision-viewer-container' );
-						const viewerElement = document.querySelector( '#revision-viewer-editor' );
-
-						config.revisionHistory.viewerSidebarContainer = document.querySelector( '#revision-viewer-sidebar' );
-
-						return CKEDITOR.DecoupledEditor.create( viewerElement, config ).then( viewerEditor => {
-							viewerContainer.style.display = 'flex';
-							editorContainer.style.display = 'none';
-
-							const toolbarContainer = document.querySelector( '.editor-toolbar' );
-							toolbarContainer.innerHTML = '';
-							toolbarContainer.appendChild( viewerEditor.ui.view.toolbar.element );
-
-							return viewerEditor;
-						} );
-					},
-					closeRevisionViewerCallback: viewerEditor => {
-						const editorContainer = document.querySelector( '#editor-container' );
-						const viewerContainer = document.querySelector( '#revision-viewer-container' );
-
-						viewerContainer.style.display = 'none';
-						editorContainer.style.display = '';
-
-						return viewerEditor.destroy().then( () => {
-							const toolbarContainer = document.querySelector( '.editor-toolbar' );
-							toolbarContainer.innerHTML = '';
-							toolbarContainer.appendChild( window.editor.ui.view.toolbar.element );
-						} );
-					}
-				},
-			} )
-			.then( editor => {
-				window.editor = editor;
-
-				const toolbarContainer = document.querySelector( '.editor-toolbar' );
-
-				toolbarContainer.appendChild( editor.ui.view.toolbar.element );
-			} )
-			.catch( error => {
-				console.log( error );
-			} );
-	</script>
-</body>
-</html>
-```
-</details>
-
-### An editor with non-real-time collaboration
-
-To unleash the full potential of CKEditor 5 with Premium features, we will use the decoupled editor and create a more complex markup, including the structure required by the Revision History feature.
-
-```html
-<div class="editors-holder">
-	<div class="editor-toolbar"></div>
-
-	<div class="editor-container" id="editor-container">
-		<div class="editor-element">
-			<div id="editor"></div>
-		</div>
-		<div class="sidebar-container" id="sidebar-container"></div>
-	</div>
-
-	<div class="editor-container" id="revision-viewer-container">
-		<div class="editor-element">
-			<div id="revision-viewer-editor"></div>
-		</div>
-		<div class="sidebar-container" id="revision-viewer-sidebar"></div>
-	</div>
-</div>
-```
-
-Include the code from CDN to superbuild to load the editor.
-
-```html
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
-```
-
-Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
-
-```html
-<script>
-	CKEDITOR.DecoupledEditor
-		.create( document.querySelector( '#editor' ) )
-		.then( editor => {
-			const toolbarContainer = document.querySelector( '.editor-toolbar' );
-
-			toolbarContainer.appendChild( editor.ui.view.toolbar.element );
-		} )
-		.catch( error => {
-			console.error( error );
-		} );
-</script>
-```
-
-This time we need to remove all the real-time collaborative plugins. As previously, we configure the toolbar to include all available plugins. We also need to configure all of these options and provide correct credentials where indicated.
-
-<info-box hint>
-CKEditor 5 Premium features can be easily tested without commitment via the [Premium features free trial](https://ckeditor.com/docs/trial/latest/guides/overview.html) package.
-</info-box>
-
-The correct source code listing for the configuration can be seen in the section below. Note that the snippet contains a custom plugin that handles Users integration required by non-real-time Track Changes, Comments and Revision History.
-
-#### Sample implementation
-
-You can see a full webpage with embedded CKEditor 5 from the above example after expanding the code listing below.
-
-<details>
-<summary>View editor configuration script</summary>
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>CKEditor 5 – Full-featured editor with Premium features and non-real-time collaboration</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/super-build/ckeditor.js"></script>
-	<style>
-		.editors-holder {
-			position: relative;
-		}
-
-		.editor-container {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			position: relative;
-			width: 1260px;
-		}
-
-		#revision-viewer-container {
-			display: none;
-		}
-
-		.editor-toolbar {
-			width: 1260px;
-			margin-bottom: -1px;
-		}
-
-		.editor-element {
-            width: 950px;
-            border: 1px solid var(--ck-color-toolbar-border);
-            height: calc( 297mm + 2px );
-            overflow: scroll;
-        }
-
-		.editor-container > .ck-editor {
-			position: relative;
-			width: 950px;
-		}
-
-		.editor-container .ck-editor__top .ck-toolbar {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-
-		.editor-container .ck-editor__editable_inline {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-
-		.ck.ck-content:not(.ck-comment__input *) {
-			/* A4 size */
-			width: calc( 210mm + 2px ); /* Those 2px are from border (box-sizing: border-box) */
-			min-height: calc( 297mm + 2px );
-			height: auto;
-			padding: 20mm 12mm;
-			box-sizing: border-box;
-			background: hsl( 0, 0%, 100% );
-			border: 1px solid hsl( 0, 0%, 88% );
-			box-shadow: 0 2px 8px hsla( 0, 0%, 0%, .08 );
-			margin: 40px auto;
-			overflow: hidden;
-		}
-
-		.sidebar-container {
-			position: relative;
-			width: 310px;
-			overflow: hidden;
-			background: var(--ck-color-toolbar-background);
-			border: 1px solid var(--ck-color-toolbar-border);
-			margin-left: -1px;
-		}
-
-		/* Move the square with page number from the Pagination plugin to the left side,
-		so that it does not cover the sidebar. */
-		.ck.ck-pagination-view-line::after {
-			transform: translateX(-100%);
-			left: -1px;
-			right: unset;
-		}
-	</style>
-</head>
-<body>
-	<h1>Full-featured editor with Premium features and non-real-time collaboration</h1>
-
-	<div class="editors-holder">
-		<div class="editor-toolbar"></div>
-
-		<div class="editor-container" id="editor-container">
-			<div class="editor-element">
-				<div id="editor"></div>
-			</div>
-			<div class="sidebar-container" id="sidebar-container"></div>
-		</div>
-
-		<div class="editor-container" id="revision-viewer-container">
-			<div class="editor-element">
-				<div id="revision-viewer-editor"></div>
-			</div>
-			<div class="sidebar-container" id="revision-viewer-sidebar"></div>
-		</div>
-	</div>
-	<script>
-		class UsersIntegration  {
-            constructor( editor ) {
-                this.editor = editor;
-            }
-
-            static get requires() {
-                return [ 'Users', 'Comments', 'RevisionHistory' ];
-            }
-
-            init() {
-                const user = {
-                    id: 'user-1',
-                    name: 'John Doe'
-                }
-
-                const usersPlugin = this.editor.plugins.get( 'Users' );
-
-                usersPlugin.addUser( user );
-                usersPlugin.defineMe( 'user-1' );
-            }
-        }
-
-		CKEDITOR.DecoupledEditor
-			.create( document.querySelector( '#editor' ), {
-				extraPlugins: [ UsersIntegration ],
-				removePlugins: [
-					'RealTimeCollaborativeComments',
-					'RealTimeCollaborativeTrackChanges',
-					'RealTimeCollaborativeRevisionHistory',
-					'PresenceList'
-				],
-				cloudServices: {
-					// PROVIDE CORRECT VALUES HERE:
-					tokenUrl: 'https://example.com/cs-token-endpoint',
-					uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
-				},
-				toolbar: {
-					items: [
-						'revisionHistory',
-						'|',
-						'pageNavigation',
-						'previousPage',
-						'nextPage',
-						'|',
-						'comment', 'trackChanges',
-						'|',
-						'exportPdf', 'exportWord',
-						'|',
-						'wproofreader', 'MathType', 'findAndReplace', 'selectAll',
-						'|',
-						'heading',
-						'|',
-						'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript',
-						'|',
-						'specialCharacters', 'horizontalLine', 'pageBreak',
-						'|',
-						'-',
-						'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
-						'|',
-						'link', 'blockQuote', 'insertTable', 'uploadImage', 'mediaEmbed', 'codeBlock', 'htmlEmbed',
-						'|',
-						'bulletedList', 'numberedList', 'todoList',
-						'|',
-						'outdent', 'indent', 'alignment',
-						'|',
-						'textPartLanguage',
-						'|',
-						'undo', 'redo',
-					],
-					shouldNotGroupWhenFull: true
-				},
-				exportPdf: {
-					stylesheets: [
-						// Add your custom styles before 'EDITOR_STYLES'
-						'EDITOR_STYLES'
-					],
-					fileName: 'export-pdf-demo.pdf',
-					converterOptions: {
-						format: 'A4',
-						margin_top: '20mm',
-						margin_bottom: '20mm',
-						margin_right: '12mm',
-						margin_left: '12mm',
-						page_orientation: 'portrait'
-					},
-					// PROVIDE CORRECT VALUES HERE:
-					tokenUrl: 'https://example.com/cs-token-endpoint',
-					dataCallback: ( editor ) => editor.getData( {
-						showSuggestionHighlights: true
-					} ),
-				},
-				exportWord: {
-					stylesheets: [
-						// Add your custom styles before 'EDITOR_STYLES'
-						'EDITOR_STYLES'
-					],
-					fileName: 'export-word-demo.docx',
-					converterOptions: {
-						format: 'A4',
-						margin_top: '20mm',
-						margin_bottom: '20mm',
-						margin_right: '12mm',
-						margin_left: '12mm',
-						page_orientation: 'portrait'
-					},
-					// PROVIDE CORRECT VALUES HERE:
-					tokenUrl: 'https://example.com/cs-token-endpoint'
-				},
-				fontFamily: {
-					supportAllValues: true
-				},
-				fontSize: {
-					options: [ 10, 12, 14, 'default', 18, 20, 22 ],
-					supportAllValues: true
-				},
-				htmlEmbed: {
-					showPreviews: true
-				},
-				image: {
-					styles: [
-						'alignCenter',
-						'alignLeft',
-						'alignRight'
-					],
-					resizeOptions: [
-						{
-							name: 'resizeImage:original',
-							label: 'Original',
-							value: null
-						},
-						{
-							name: 'resizeImage:50',
-							label: '50%',
-							value: '50'
-						},
-						{
-							name: 'resizeImage:75',
-							label: '75%',
-							value: '75'
-						}
-					],
-					toolbar: [
-						'imageTextAlternative', 'toggleImageCaption', '|',
-						'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
-						'resizeImage'
-					],
-					insert: {
-						integrations: [
-							'insertImageViaUrl'
-						]
-					}
-				},
-				list: {
-					properties: {
-						styles: true,
-						startIndex: true,
-						reversed: true
-					}
-				},
-				link: {
-					decorators: {
-						addTargetToExternalLinks: true,
-						defaultProtocol: 'https://',
-						toggleDownloadable: {
-							mode: 'manual',
-							label: 'Downloadable',
-							attributes: {
-								download: 'file'
-							}
-						}
-					}
-				},
-				mention: {
-					feeds: [
-						{
-							marker: '@',
-							feed: [
-								'@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
-								'@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
-								'@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
-								'@sugar', '@sweet', '@topping', '@wafer'
-							],
-							minimumCharacters: 1
-						}
-					]
-				},
-				placeholder: 'Type or paste your content here!',
-				table: {
-					contentToolbar: [
-						'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
-					]
-				},
-				wproofreader: {
-				// PROVIDE CORRECT VALUE HERE:
-					serviceId: 'service ID',
-					lang: 'auto',
-					srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
-				},
-				pagination: {
-					// A4
-					pageWidth: '21cm',
-					pageHeight: '29.7cm',
-
-					pageMargins: {
-						top: '20mm',
-						bottom: '20mm',
-						right: '12mm',
-						left: '12mm'
-					}
-				},
-				licenseKey: '', // PROVIDE THE CORRECT VALUE.
-				sidebar: {
-					container: document.querySelector( '.sidebar-container' )
-				},
-				revisionHistory: {
-					showRevisionViewerCallback: config => {
-						const editorContainer = document.querySelector( '#editor-container' );
-						const viewerContainer = document.querySelector( '#revision-viewer-container' );
-						const viewerElement = document.querySelector( '#revision-viewer-editor' );
-
-						config.revisionHistory.viewerSidebarContainer = document.querySelector( '#revision-viewer-sidebar' );
-
-						return CKEDITOR.DecoupledEditor.create( viewerElement, config ).then( viewerEditor => {
-							viewerContainer.style.display = 'flex';
-							editorContainer.style.display = 'none';
-
-							const toolbarContainer = document.querySelector( '.editor-toolbar' );
-							toolbarContainer.innerHTML = '';
-							toolbarContainer.appendChild( viewerEditor.ui.view.toolbar.element );
-
-							return viewerEditor;
-						} );
-					},
-					closeRevisionViewerCallback: viewerEditor => {
-						const editorContainer = document.querySelector( '#editor-container' );
-						const viewerContainer = document.querySelector( '#revision-viewer-container' );
-
-						viewerContainer.style.display = 'none';
-						editorContainer.style.display = '';
-
-						return viewerEditor.destroy().then( () => {
-							const toolbarContainer = document.querySelector( '.editor-toolbar' );
-							toolbarContainer.innerHTML = '';
-							toolbarContainer.appendChild( window.editor.ui.view.toolbar.element );
-						} );
-					}
-				},
-			} )
-			.then( editor => {
-				window.editor = editor;
-
-				const toolbarContainer = document.querySelector( '.editor-toolbar' );
-
-				toolbarContainer.appendChild( editor.ui.view.toolbar.element );
-			} )
-			.catch( error => {
-				console.log( error );
-			} );
-	</script>
-</body>
-</html>
-```
-</details>
-
-<info-box hint>
-**What's next?**
+## Running a full-featured editor with Premium features
+
+If you would like to quickly evaluate CKEditor 5 with premium features such as real-time collaboration, track changes and revision history then sign up for a [30-day free trial](https://orders.ckeditor.com/trial/premium-features).
+
+After you sign up, you will find in the customer dashboard the full code snippet to run the editor with premium features with all the necessary configurations.
+
+## (Reference) The list of all plugins included in CKEditor 5 superbuild
+
+The table below presents the list of all plugins included in the superbuild. You may disable any of them using the `removePlugins` configuration option.
+
+TODO: A table listing all plugins taken from
+https://github.com/ckeditor/ckeditor5-build-super/blob/master/src/ckeditor.js
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:500px">
+	<tbody>
+		<tr>
+			<th style="min-width:120px">Plugin name</th>
+			<th>Documentation</th>
+		</tr>
+		<tr>
+			<td><code>Alignment</code></td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html</a></td>
+		</tr>
+		<tr>
+			<td><code>Autoformat</code></td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html</a></td>
+		</tr>
+	</tbody>
+</table>
+
+## What's next?
 
 Congratulations, you have just run your first CKEditor 5 instance!
 
 You can also try another simple installation method, like the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
 
 And if you use Angular, React or Vue.js and want to integrate CKEditor 5 in your application, refer to the {@link installation/frameworks/overview Frameworks section}.
-</info-box>
