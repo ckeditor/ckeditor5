@@ -311,8 +311,12 @@ The table below presents the list of all plugins included in the superbuild. You
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html</a></td>
 		</tr>
 		<tr>
-			<td>Autoformat</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html</a></td>
+			<td>Base64 upload adapter</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html">hhttps://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html</a></td>
+		</tr>
+		<tr>
+			<td>BlockQuote</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html">https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html</a></td>
 		</tr>
 		<tr>
 			<td>BlockQuote</td>
@@ -393,6 +397,10 @@ The table below presents the list of all plugins included in the superbuild. You
 		<tr>
 			<td>Image, ImageCaption, ImageStyle, ImageToolbar, AutoImage, ImageResize, ImageUpload, PictureEditing</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html</a></td>
+		</tr>
+		<tr>
+			<td>ImageInsert upload adapter</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html</a></td>
 		</tr>
 		<tr>
 			<td>Indent, IndentBlock</td>
