@@ -130,7 +130,7 @@ export default class InternalBlockEditing extends Plugin {
 		conversion.for("upcast").elementToElement({
 			view: {
 				name: "div",
-				classes: "helpjuice-internal-block-settings notranslate",
+				classes: ["helpjuice-internal-block-settings", "notranslate"],
 				attributes: ["data-action"]
 			},
 			model: ( viewElement, { writer } ) => {
