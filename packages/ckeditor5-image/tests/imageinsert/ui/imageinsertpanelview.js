@@ -12,6 +12,7 @@ import ImageUploadPanelView from '../../../src/imageinsert/ui/imageinsertpanelvi
 import ImageUploadFormRowView from '../../../src/imageinsert/ui/imageinsertformrowview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -98,6 +99,22 @@ describe( 'ImageUploadPanelView', () => {
 
 				expect( view._integrations ).to.be.instanceOf( Collection );
 				expect( view._integrations.length ).to.equal( 0 );
+			} );
+		} );
+
+		describe( 'options', () => {
+			it( 'should use DropdownButtonView if useSplitButton flag is equal false', () => {
+				const view = new ImageUploadPanelView( { t: val => val }, {
+					'insertImageViaUrl': createLabeledInputView( { t: val => val } )
+				}, {
+					useSplitButton: false
+				} );
+
+				expect( view._integrations ).to.be.instanceOf( Collection );
+				expect( view._integrations.length ).to.equal( 1 );
+				expect( view._integrations.first ).to.be.instanceOf( LabeledFieldView );
+
+				expect( view.dropdownView.buttonView ).to.be.instanceOf( DropdownButtonView );
 			} );
 		} );
 

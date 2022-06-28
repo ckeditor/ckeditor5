@@ -54,24 +54,32 @@ export default class ImageInsertUI extends Plugin {
 	 */
 	_createDropdownView( locale ) {
 		const editor = this.editor;
-		const imageInsertView = new ImageInsertPanelView( locale, prepareIntegrations( editor ) );
-		const command = editor.commands.get( 'uploadImage' );
 
-		const dropdownView = imageInsertView.dropdownView;
-		const splitButtonView = dropdownView.buttonView;
+		const uploadImageCommand = editor.commands.get( 'uploadImage' );
+		const insertImageCommand = editor.commands.get( 'insertImage' );
 
-		splitButtonView.actionView = editor.ui.componentFactory.create( 'uploadImage' );
-		// After we replaced action button with `uploadImage` component,
-		// we have lost a proper styling and some minor visual quirks have appeared.
-		// Brining back original split button classes helps fix the button styling
-		// See https://github.com/ckeditor/ckeditor5/issues/7986.
-		splitButtonView.actionView.extendTemplate( {
-			attributes: {
-				class: 'ck ck-button ck-splitbutton__action'
-			}
+		const imageInsertView = new ImageInsertPanelView( locale, prepareIntegrations( editor ), {
+			useSplitButton: !!uploadImageCommand
 		} );
 
-		return this._setUpDropdown( dropdownView, imageInsertView, command );
+		const dropdownView = imageInsertView.dropdownView;
+
+		if ( uploadImageCommand ) {
+			const splitButtonView = dropdownView.buttonView;
+
+			splitButtonView.actionView = editor.ui.componentFactory.create( 'uploadImage' );
+			// After we replaced action button with `uploadImage` component,
+			// we have lost a proper styling and some minor visual quirks have appeared.
+			// Brining back original split button classes helps fix the button styling
+			// See https://github.com/ckeditor/ckeditor5/issues/7986.
+			splitButtonView.actionView.extendTemplate( {
+				attributes: {
+					class: 'ck ck-button ck-splitbutton__action'
+				}
+			} );
+		}
+
+		return this._setUpDropdown( dropdownView, imageInsertView, uploadImageCommand || insertImageCommand );
 	}
 
 	/**
@@ -79,7 +87,7 @@ export default class ImageInsertUI extends Plugin {
 	 *
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdownView.
 	 * @param {module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView} imageInsertView An imageInsertView.
-	 * @param {module:core/command~Command} command An insertImage command
+	 * @param {module:core/command~Command} command An uploadImage or insertImage command.
 	 *
 	 * @private
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}

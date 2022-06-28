@@ -29,8 +29,10 @@ export default class ImageInsertPanelView extends View {
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} [integrations] An integrations object that contains
 	 * components (or tokens for components) to be shown in the panel view.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.useSplitButton = true]
 	 */
-	constructor( locale, integrations ) {
+	constructor( locale, integrations, options = { useSplitButton: true } ) {
 		super( locale );
 
 		const { insertButtonView, cancelButtonView } = this._createActionButtons( locale );
@@ -54,7 +56,7 @@ export default class ImageInsertPanelView extends View {
 		 *
 		 * @member {module:ui/dropdown/dropdownview~DropdownView}
 		 */
-		this.dropdownView = this._createDropdownView( locale );
+		this.dropdownView = this._createDropdownView( locale, options );
 
 		/**
 		 * The value of the URL input.
@@ -227,17 +229,19 @@ export default class ImageInsertPanelView extends View {
 	 * Creates the dropdown view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.useSplitButton = true]
 	 *
 	 * @private
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
-	_createDropdownView( locale ) {
+	_createDropdownView( locale, options ) {
 		const t = locale.t;
-		const dropdownView = createDropdown( locale, SplitButtonView );
-		const splitButtonView = dropdownView.buttonView;
+		const dropdownView = createDropdown( locale, options.useSplitButton ? SplitButtonView : undefined );
+		const buttonView = dropdownView.buttonView;
 		const panelView = dropdownView.panelView;
 
-		splitButtonView.set( {
+		buttonView.set( {
 			label: t( 'Insert image' ),
 			icon: icons.image,
 			tooltip: true
