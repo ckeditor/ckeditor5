@@ -18,7 +18,7 @@ To see the all image features in action, check out the [**demo**](#demo) below. 
 
 ## Base image feature
 
-The base image feature does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (listed below) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows the developers to build their own customized experience by implementing specific subfeatures differently.
+The base image feature does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (listed below) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows the developers to build their own customized experience by implementing specific subfeatures differently. The {@link module:image/pictureediting~PictureEditing `PictureEditing`} class enables displaying the images in the editor view.
 
 ## Image features
 

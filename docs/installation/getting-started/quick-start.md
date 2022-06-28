@@ -322,6 +322,10 @@ The table below presents the list of all plugins included in the superbuild. You
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html</a></td>
 		</tr>
 		<tr>
+			<td>AutoImage</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor</a></td>
+		</tr>
+		<tr>
 			<td>Base64UploadAdapter</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html</a></td>
 		</tr>
@@ -402,8 +406,28 @@ The table below presents the list of all plugins included in the superbuild. You
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html</a></td>
 		</tr>
 		<tr>
-			<td>Image, ImageCaption, ImageStyle, ImageToolbar, AutoImage, ImageResize, ImageUpload, PictureEditing</td>
+			<td>Image</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html</a></td>
+		</tr>
+		<tr>
+			<td>ImageCaption</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html</a></td>
+		</tr>
+		<tr>
+			<td>ImageResize</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html</a></td>
+		</tr>
+		<tr>
+			<td>ImageStyle</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html</a></td>
+		</tr>
+		<tr>
+			<td>ImageToolbar</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar</a></td>
+		</tr>
+		<tr>
+			<td>ImageUpload</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html</a></td>
 		</tr>
 		<tr>
 			<td>ImageInsert</td>
@@ -448,6 +472,10 @@ The table below presents the list of all plugins included in the superbuild. You
 		<tr>
 			<td>PasteFromOffice</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html</a></td>
+		</tr>
+		<tr>
+			<td>PictureEditing</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#base-image-feature">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#base-image-feature</a></td>
 		</tr>
 		<tr>
 			<td>PresenceList</td>
