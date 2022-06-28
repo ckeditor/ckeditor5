@@ -18,7 +18,7 @@ To see the all image features in action, check out the [**demo**](#demo) below. 
 
 ## Base image feature
 
-The base image feature does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (listed below) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows the developers to build their own customized experience by implementing specific subfeatures differently. The {@link module:image/pictureediting~PictureEditing `PictureEditing`} plugin enables the `<picture>` element support in the editor. The` <picture>` element allows for offering alternative image formats and is used for serving responsive images - saving bandwidth and speeding page load times by loading the most appropriate image for the viewer's display.
+The base image feature does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (listed below) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows the developers to build their own customized experience by implementing specific subfeatures differently.
 
 ## Image features
 
@@ -69,14 +69,6 @@ The availability of these plugins varies in different {@link installation/advanc
 				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
-				<th colspan="2">{@link module:image/pictureediting~PictureEditing}</th>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-			</tr>
-			<tr>
 				<th colspan="2">{@link module:image/imagetoolbar~ImageToolbar}</th>
 				<td>✅&nbsp; yes</td>
 				<td>✅&nbsp; yes</td>
@@ -110,6 +102,14 @@ The availability of these plugins varies in different {@link installation/advanc
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imageupload~ImageUpload}</th>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+			</tr>
+			<tr>
+				<th colspan="2">{@link module:image/pictureediting~PictureEditing}</th>
 				<td>✅&nbsp; yes</td>
 				<td>✅&nbsp; yes</td>
 				<td>✅&nbsp; yes</td>
