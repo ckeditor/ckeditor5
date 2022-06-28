@@ -470,10 +470,6 @@ The table below presents the list of all plugins included in the superbuild. You
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html">https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html</a></td>
 		</tr>
 		<tr>
-			<td>Paragraph</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">https://ckeditor.com/docs/ckeditor5/latest/features/headings.html</a></td>
-		</tr>
-		<tr>
 			<td>PasteFromOffice</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html</a></td>
 		</tr>
