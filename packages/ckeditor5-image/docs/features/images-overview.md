@@ -109,6 +109,14 @@ The availability of these plugins varies in different {@link installation/advanc
 				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
+				<th colspan="2">{@link module:image/pictureediting~PictureEditing}</th>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+			</tr>
+			<tr>
 				<th colspan="2">{@link module:image/imageresize~ImageResize}</th>
 				<td>❌&nbsp; no</td>
 				<td>❌&nbsp; no</td>
