@@ -130,7 +130,7 @@ ClassicEditor
 
 ### Changing the language
 
-The CKBox dialog takes the current language from the editor, but if you want to display it in a different language, you can set the language code in the {@link module:ckbox/ckbox~CKBoxConfig#language `config.ckbox.language`} option:
+By default, the CKBox dialog takes the current language from the editor. If you want to use a different language, you can set the language code in the {@link module:ckbox/ckbox~CKBoxConfig#language `config.ckbox.language`} option:
 
 ```js
 import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
@@ -147,7 +147,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-Also make sure to include the translations file after loading the CKBox library:
+Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
 <script src="https://cdn.ckbox.io/CKBox/1.0.0/ckbox.js"></script>
