@@ -347,7 +347,7 @@ The table below presents the list of all plugins included in the superbuild. You
 		</tr>
 		<tr>
 			<td>CloudServices</td>
-			<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">https://ckeditor.com/docs/cs/latest/guides/overview.html</a></td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_cloud-services_cloudservices-CloudServices.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_cloud-services_cloudservices-CloudServices.html</a></td>
 		</tr>
 		<tr>
 			<td>Code</td>
@@ -399,7 +399,7 @@ The table below presents the list of all plugins included in the superbuild. You
 		</tr>
 		<tr>
 			<td>HtmlComment</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html">https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html</a></td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#html-comments">https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#html-comments</a></td>
 		</tr>
 		<tr>
 			<td>HtmlEmbed</td>
@@ -475,7 +475,7 @@ The table below presents the list of all plugins included in the superbuild. You
 		</tr>
 		<tr>
 			<td>PictureEditing</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#base-image-feature">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#base-image-feature</a></td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html</a></td>
 		</tr>
 		<tr>
 			<td>PresenceList</td>
