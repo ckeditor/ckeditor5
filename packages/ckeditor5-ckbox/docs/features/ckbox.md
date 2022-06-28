@@ -128,6 +128,32 @@ ClassicEditor
 	.catch( ... );
 ```
 
+### Changing the language
+
+The CKBox dialog takes the current language from the editor, but if you want to display it in a different language, you can set the language code in the {@link module:ckbox/ckbox~CKBoxConfig#language `config.ckbox.language`} option:
+
+```js
+import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKBox, ... ],
+		toolbar: [ 'ckbox', ... ],
+		ckbox: {
+			language: 'es'
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+Also make sure to include the translations file after loading the CKBox library:
+
+```html
+<script src="https://cdn.ckbox.io/CKBox/1.0.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/1.0.0/translations/es.js"></script>
+```
+
 ### Providing the token URL
 
 The CKBox feature requires the token endpoint URL configured in the {@link module:ckbox/ckbox~CKBoxConfig#tokenUrl `config.ckbox.tokenUrl`} key. If not explicitly provided, the token URL from {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`} is used instead. If both are provided, the token URL defined in `config.ckbox.tokenUrl` takes precedence over the `config.cloudServices.tokenUrl`.

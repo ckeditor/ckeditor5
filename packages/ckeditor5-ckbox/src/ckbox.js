@@ -141,6 +141,14 @@ export default class CKBox extends Plugin {
  */
 
 /**
+ * Configures the language for the CKBox dialog.
+ *
+ * Defaults to {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`}
+ *
+ * @member {String} [module:ckbox/ckbox~CKBoxConfig#language]
+ */
+
+/**
  * Asset definition.
  *
  * The definition contains the unique `id`, asset `type` and an `attributes` definition.
