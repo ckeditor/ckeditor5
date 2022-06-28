@@ -20,4 +20,4 @@ Learn how to update from previous versions of CKEditor 5 to the most current one
 **Related links**
 
  * {@link installation/getting-started/migration-from-ckeditor-4 Migrating from CKEditor 4} &ndash; Learn how to switch from the previous version of our editor.
- * {@link installation/getting-started/quick-start CKEditor 5 installation} &ndash; Learn how to install, integrate and configure CKEditor 5. More complex aspects, like creating custom builds, are explained here, too.
+ * {@link installation/index CKEditor 5 installation} &ndash; Learn how to install, integrate and configure CKEditor 5. More complex aspects, like creating custom builds, are explained here, too.

@@ -191,7 +191,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>
 				<p>Refer to the {@link features/code-blocks Code block feature} guide to learn more about support for blocks of pre–formatted code in CKEditor 5.</p>
 				<p>A plugin adding support for the inline <code>&lt;code&gt;</code> element is included in the {@link features/basic-styles Basic styles} package.<br>
-				Note: The {@link module:basic-styles/code~Code Code feature} is not available by default in any build, but can be enabled in a {@link installation/getting-started/quick-start#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
+				Note: The {@link module:basic-styles/code~Code Code feature} is not available by default in any build, but can be enabled in a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
 		<tr>
@@ -237,21 +237,21 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_subscript">coreStyles_subscript</a></td>
 			<td>
 				<p>CKEditor 5 uses the <code>&lt;sub&gt;</code> element.
-				<p>Note: The {@link module:basic-styles/subscript~Subscript Subscript feature} is not available by default in any build, but can be enabled in a {@link installation/getting-started/quick-start#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
+				<p>Note: The {@link module:basic-styles/subscript~Subscript Subscript feature} is not available by default in any build, but can be enabled in a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_superscript">coreStyles_superscript</a></td>
 			<td>
 				<p>CKEditor 5 uses the <code>&lt;sup&gt;</code> element.
-				<p>Note: The {@link module:basic-styles/superscript~Superscript Superscript feature} is not available by default in any build, but can be enabled in a {@link installation/getting-started/quick-start#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
+				<p>Note: The {@link module:basic-styles/superscript~Superscript Superscript feature} is not available by default in any build, but can be enabled in a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_underline">coreStyles_underline</a></td>
 			<td>
 				<p>CKEditor 5 uses the <code>&lt;u&gt;</code> element, see <a href="https://github.com/ckeditor/editor-recommendations/issues/4" target="_blank" rel="noopener">Editor Recommendations - Underline</a>.</p>
-				<p>Note: The {@link module:basic-styles/underline~Underline Underline feature} is not available by default in any build, but can be enabled in a {@link installation/getting-started/quick-start#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
+				<p>Note: The {@link module:basic-styles/underline~Underline Underline feature} is not available by default in any build, but can be enabled in a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
 		<tr>
@@ -548,7 +548,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-plugins">plugins</a></td>
-			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor 5 has changed in general. Check the articles about {@link installation/advanced/plugins plugins} and {@link installation/getting-started/quick-start#building-the-editor-from-source custom builds} for more information.</td>
+			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor 5 has changed in general. Check the articles about {@link installation/advanced/plugins plugins} and {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom builds} for more information.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-protectedSource">protectedSource</a></td>

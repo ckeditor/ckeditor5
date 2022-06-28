@@ -169,7 +169,9 @@
 		"framework/guides/deep-dive/conversion/conversion-extending-output.html": "framework/guides/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/conversion-preserving-custom-content.html": "framework/guides/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/custom-element-conversion.html": "framework/guides/deep-dive/conversion/intro.html",
-		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/guides/deep-dive/conversion/intro.html"
+		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/guides/deep-dive/conversion/intro.html",
+		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
+		"installation/getting-started/quick-start-other.html#building-the-editor-from-source": "installation/getting-started/quick-start.html#building-the-editor-from-source"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
