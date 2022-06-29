@@ -220,6 +220,14 @@ export default class Editor {
 		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view.document );
+
+		/**
+		 * A unique editor's name.
+		 *
+		 * @readonly
+		 * @member {String} #name
+		 */
+		this.name = this.generateEditorName();
 	}
 
 	/**
@@ -431,6 +439,22 @@ export default class Editor {
 	 */
 	focus() {
 		this.editing.view.focus();
+	}
+
+	/**
+	 * Generates a name for the editor.
+	 *
+	 * It will be based on the editor.config.get( 'editorTitle' ), otherwise a name
+	 * pattern of `'editor{n}'` will be used.
+	 *
+	 * @readonly
+	 * @returns {String} editorName
+	 */
+	generateEditorName() {
+		const nameCounter = 1;
+
+		const editorName = this.config.get( 'editorTitle' ) ? this.config.get( 'editorTitle' ) : 'editor' + ( nameCounter );
+		return editorName;
 	}
 
 	/**

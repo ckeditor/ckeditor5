@@ -21,8 +21,9 @@ export default class BoxedEditorUIView extends EditorUIView {
 	 * Creates an instance of the boxed editor UI view class.
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance..
+	 * @param {Object} [options]
 	 */
-	constructor( locale ) {
+	constructor( locale, options ) {
 		super( locale );
 
 		/**
@@ -42,6 +43,13 @@ export default class BoxedEditorUIView extends EditorUIView {
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this.main = this.createCollection();
+
+		/**
+		 * Editor's title based on the passed options.editorTitle.
+		 *
+		 * @readonly
+		 */
+		this.editorTitle = options.editorTitle;
 
 		/**
 		 * Voice label of the UI.
@@ -107,7 +115,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 		const t = this.t;
 		const voiceLabel = new LabelView();
 
-		voiceLabel.text = t( 'Rich Text Editor' );
+		voiceLabel.text = this.editorTitle ? t( 'Rich Text Editor, ' + this.editorTitle ) : t( 'Rich Text Editor' );
 
 		voiceLabel.extendTemplate( {
 			attributes: {
