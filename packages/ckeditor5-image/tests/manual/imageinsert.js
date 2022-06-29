@@ -7,13 +7,15 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import ImageInsertViaUrl from '../../src/imageinsertviaurl';
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import ImageInsert from '../../src/imageinsert';
 import AutoImage from '../../src/autoimage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, AutoImage, LinkImage, ImageInsertViaUrl ],
+		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, LinkImage, CKFinderUploadAdapter, CKFinder ],
 		toolbar: [
 			'heading',
 			'|',
@@ -30,7 +32,17 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
+			insert: {
+				integrations: [
+					'insertImageViaUrl',
+					'openCKFinder'
+				]
+			}
+		},
+		ckfinder: {
+			// eslint-disable-next-line max-len
+			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 		}
 	} )
 	.then( editor => {
