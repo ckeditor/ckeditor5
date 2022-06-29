@@ -20,6 +20,9 @@ export default class TableResizeWidthCommand extends TablePropertyCommand {
 	 * @param {String} defaultValue The default value of the attribute.
 	 */
 	constructor( editor, defaultValue ) {
+		// We create a custom command instead of using the existing `TableWidthCommand`
+		// as we also need to change the `columnWidths` property and running both commands
+		// separately would make the integration with Track Changes feature more troublesome.
 		super( editor, 'tableWidth', defaultValue );
 	}
 
