@@ -7,8 +7,9 @@
  * @module image/imageinsert/imageinsertui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core';
 import ImageInsertPanelView from './ui/imageinsertpanelview';
+import { SplitButtonView, createDropdown } from 'ckeditor5/src/ui';
 import { prepareIntegrations } from './utils';
 
 /**
@@ -54,15 +55,26 @@ export default class ImageInsertUI extends Plugin {
 	 */
 	_createDropdownView( locale ) {
 		const editor = this.editor;
+		const t = locale.t;
 
 		const uploadImageCommand = editor.commands.get( 'uploadImage' );
 		const insertImageCommand = editor.commands.get( 'insertImage' );
 
-		const imageInsertView = new ImageInsertPanelView( locale, prepareIntegrations( editor ), {
-			useSplitButton: !!uploadImageCommand
+		const dropdownView = createDropdown( locale, uploadImageCommand ? SplitButtonView : undefined );
+		const buttonView = dropdownView.buttonView;
+		const panelView = dropdownView.panelView;
+
+		buttonView.set( {
+			label: t( 'Insert image' ),
+			icon: icons.image,
+			tooltip: true
 		} );
 
-		const dropdownView = imageInsertView.dropdownView;
+		panelView.extendTemplate( {
+			attributes: {
+				class: 'ck-image-insert__panel'
+			}
+		} );
 
 		if ( uploadImageCommand ) {
 			const splitButtonView = dropdownView.buttonView;
@@ -79,7 +91,7 @@ export default class ImageInsertUI extends Plugin {
 			} );
 		}
 
-		return this._setUpDropdown( dropdownView, imageInsertView, uploadImageCommand || insertImageCommand );
+		return this._setUpDropdown( dropdownView, uploadImageCommand || insertImageCommand );
 	}
 
 	/**
@@ -92,9 +104,10 @@ export default class ImageInsertUI extends Plugin {
 	 * @private
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
-	_setUpDropdown( dropdownView, imageInsertView, command ) {
+	_setUpDropdown( dropdownView, command ) {
 		const editor = this.editor;
 		const t = editor.t;
+		const imageInsertView = new ImageInsertPanelView( editor.locale, prepareIntegrations( editor ) );
 		const insertButtonView = imageInsertView.insertButtonView;
 		const insertImageViaUrlForm = imageInsertView.getIntegration( 'insertImageViaUrl' );
 		const panelView = dropdownView.panelView;

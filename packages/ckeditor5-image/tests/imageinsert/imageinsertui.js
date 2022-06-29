@@ -25,6 +25,7 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
@@ -95,6 +96,10 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		describe( 'dropdown action button', () => {
+			it( 'should belong to a split button', () => {
+				expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
+			} );
+
 			it( 'should be an instance of FileDialogButtonView', () => {
 				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
@@ -379,10 +384,8 @@ describe( 'ImageInsertUI', () => {
 			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
 		} );
 
-		describe( 'dropdown action button', () => {
+		describe( 'dropdown button', () => {
 			it( 'should be an instance of DropdownButtonView', () => {
-				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
-
 				expect( dropdown.buttonView ).to.be.instanceOf( DropdownButtonView );
 			} );
 		} );

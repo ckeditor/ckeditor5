@@ -8,7 +8,7 @@
  */
 
 import { icons } from 'ckeditor5/src/core';
-import { ButtonView, View, SplitButtonView, ViewCollection, submitHandler, createDropdown, FocusCycler } from 'ckeditor5/src/ui';
+import { ButtonView, View, ViewCollection, submitHandler, FocusCycler } from 'ckeditor5/src/ui';
 import { Collection, FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import ImageInsertFormRowView from './imageinsertformrowview';
@@ -29,10 +29,8 @@ export default class ImageInsertPanelView extends View {
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} [integrations] An integrations object that contains
 	 * components (or tokens for components) to be shown in the panel view.
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.useSplitButton = true]
 	 */
-	constructor( locale, integrations, options = { useSplitButton: true } ) {
+	constructor( locale, integrations ) {
 		super( locale );
 
 		const { insertButtonView, cancelButtonView } = this._createActionButtons( locale );
@@ -50,13 +48,6 @@ export default class ImageInsertPanelView extends View {
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.cancelButtonView = cancelButtonView;
-
-		/**
-		 * The dropdown view.
-		 *
-		 * @member {module:ui/dropdown/dropdownview~DropdownView}
-		 */
-		this.dropdownView = this._createDropdownView( locale, options );
 
 		/**
 		 * The value of the URL input.
@@ -223,37 +214,6 @@ export default class ImageInsertPanelView extends View {
 	 */
 	getIntegration( name ) {
 		return this._integrations.find( integration => integration.name === name );
-	}
-
-	/**
-	 * Creates the dropdown view.
-	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.useSplitButton = true]
-	 *
-	 * @private
-	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
-	 */
-	_createDropdownView( locale, options ) {
-		const t = locale.t;
-		const dropdownView = createDropdown( locale, options.useSplitButton ? SplitButtonView : undefined );
-		const buttonView = dropdownView.buttonView;
-		const panelView = dropdownView.panelView;
-
-		buttonView.set( {
-			label: t( 'Insert image' ),
-			icon: icons.image,
-			tooltip: true
-		} );
-
-		panelView.extendTemplate( {
-			attributes: {
-				class: 'ck-image-insert__panel'
-			}
-		} );
-
-		return dropdownView;
 	}
 
 	/**
