@@ -265,6 +265,15 @@ export default class DropdownView extends View {
 			}
 		} );
 
+		// Focus the first item in the dropdown when the dropdown opened
+		this.on( 'change:isOpen', () => {
+			if ( !this.isOpen ) {
+				return;
+			}
+
+			this.panelView.focus();
+		} );
+
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element );
 
