@@ -223,29 +223,6 @@ export default class TableColumnResizeEditing extends Plugin {
 			let changed = false;
 
 			for ( const table of getAffectedTables( changes, editor.model ) ) {
-				// (1) Remove the `columnWidths` attribute from the table and all the cells from column index map if the
-				// manual width is not allowed for a given cell. There is no need to process the given table anymore.
-				if ( this.fire( 'disableResize', table ) ) {
-					if ( table.hasAttribute( 'columnWidths' ) ) {
-						writer.removeAttribute( 'columnWidths', table );
-
-						for ( const { cell } of new TableWalker( table ) ) {
-							columnIndexMap.delete( cell );
-							cellsModified.set( cell, 'remove' );
-						}
-
-						changed = true;
-					}
-
-					continue;
-				}
-
-				if ( !table.getAttribute( 'columnWidths' ) ) {
-					continue;
-				}
-
-				const numberOfColumns = getNumberOfColumn( table, editor );
-
 				// (2) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				// It's an array at this point.
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );
@@ -314,6 +291,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					}
 				}
 
+				const numberOfColumns = getNumberOfColumn( table, editor );
 				const isColumnInsertionAtEnd = numberOfColumns > columnWidths.length;
 				const isColumnDeletionAtEnd = numberOfColumns < columnWidths.length;
 
