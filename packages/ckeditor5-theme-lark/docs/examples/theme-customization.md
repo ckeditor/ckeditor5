@@ -1,6 +1,8 @@
 ---
 category: examples-framework
 order: 90
+toc: false
+classes: main__content--no-toc
 ---
 
 # Theme customization

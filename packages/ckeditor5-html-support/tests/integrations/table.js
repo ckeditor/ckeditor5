@@ -41,6 +41,10 @@ describe( 'TableElementSupport', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( editor.plugins.has( 'TableElementSupport' ) ).to.be.true;
+	} );
+
 	it( 'should allow attributes', () => {
 		dataFilter.loadAllowedConfig( [ {
 			name: /^(figure|table|tbody|thead|tr|th|td)$/,
@@ -921,14 +925,14 @@ describe( 'TableElementSupport', () => {
 		expect( editor.getData() ).to.equalMarkup(
 			'<figure class="table">' +
 				'<table>' +
-					'<thead valign="bottom" lang="en" dir="ltr" align="right">' +
+					'<thead align="right" dir="ltr" lang="en" valign="bottom">' +
 						'<tr>' +
 							'<th>Bar</th>' +
 						'</tr>' +
 					'</thead>' +
-					'<tbody valign="bottom" lang="en" dir="ltr" align="right">' +
-						'<tr valign="bottom" align="right">' +
-							'<td valign="bottom" align="right">Foo</td>' +
+					'<tbody align="right" dir="ltr" lang="en" valign="bottom">' +
+						'<tr align="right" valign="bottom">' +
+							'<td align="right" valign="bottom">Foo</td>' +
 						'</tr>' +
 					'</tbody>' +
 				'</table>' +

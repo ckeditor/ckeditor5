@@ -39,6 +39,10 @@ describe( 'ScriptElementSupport', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( editor.plugins.has( 'ScriptElementSupport' ) ).to.be.true;
+	} );
+
 	it( 'should allow element', () => {
 		editor.setData( `<p>Foo</p><script>${ CODE }</script>` );
 

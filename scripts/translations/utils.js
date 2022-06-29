@@ -30,7 +30,8 @@ module.exports = {
 function parseArguments( args ) {
 	const config = {
 		string: [
-			'cwd'
+			'cwd',
+			'packages'
 		],
 
 		boolean: [
@@ -39,6 +40,7 @@ function parseArguments( args ) {
 
 		default: {
 			cwd: process.cwd(),
+			packages: [],
 			'include-external-directory': false
 		}
 	};
@@ -51,6 +53,11 @@ function parseArguments( args ) {
 
 	// Normalize the current work directory path.
 	options.cwd = normalizePath( path.resolve( options.cwd ) );
+
+	// Convert packages to an array.
+	if ( typeof options.packages === 'string' ) {
+		options.packages = options.packages.split( ',' );
+	}
 
 	return options;
 }
@@ -106,11 +113,20 @@ function getCKEditor5PackagePaths( { cwd, includeExternalDirectory } ) {
  * @param {TranslationOptions} options
  * @return {Array.<CKEditor5Entry>}
  */
-function getCKEditor5PackageNames( transifexProcess, { cwd } ) {
+function getCKEditor5PackageNames( transifexProcess, { cwd, packages } ) {
 	const packagesPath = normalizePath( cwd, 'packages' );
 
 	return fs.readdirSync( packagesPath )
 		.filter( item => item.startsWith( 'ckeditor5-' ) )
+		.filter( item => {
+			// If no packages to process have been specified, handle all found.
+			if ( packages.length === 0 ) {
+				return true;
+			}
+
+			// Otherwise, process only specified packages.
+			return packages.includes( item );
+		} )
 		.map( packageName => {
 			let resourceName = packageName;
 
@@ -146,6 +162,8 @@ function normalizePath( ...values ) {
  * @typedef {Object} TranslationOptions
  *
  * @property {String} cwd An absolute path to the root directory from which a command is called.
+ *
+ * @property {Array.<String>} packages Package names to be processed. If empty, all found packages will be processed.
  *
  * @property {Boolean} includeExternalDirectory Whether to look for packages located in the `external/` directory.
  */

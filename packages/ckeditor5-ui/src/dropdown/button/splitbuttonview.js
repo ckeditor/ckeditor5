@@ -229,6 +229,8 @@ export default class SplitButtonView extends View {
 		} );
 
 		arrowView.bind( 'isEnabled' ).to( this );
+		arrowView.bind( 'label' ).to( this );
+		arrowView.bind( 'tooltip' ).to( this );
 
 		arrowView.delegate( 'execute' ).to( this, 'open' );
 
