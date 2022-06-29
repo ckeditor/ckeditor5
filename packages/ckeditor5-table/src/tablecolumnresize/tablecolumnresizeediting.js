@@ -395,6 +395,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._isResizingActive = true;
 		this._resizingData = this._getResizingData( domEventData, columnWidthsInPx );
 
+		// At this point we change only the editor view - we don't want other users to see our changes yet,
+		// so we can't apply them in the model.
 		editingView.change( writer => {
 			const figureInitialPcWidth = this._resizingData.widths.viewFigureWidth / this._resizingData.widths.viewFigureParentWidth;
 
