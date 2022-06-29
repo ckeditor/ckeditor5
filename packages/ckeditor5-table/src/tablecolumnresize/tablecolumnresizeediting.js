@@ -385,13 +385,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		// At this point we change only the editor view - we don't want other users to see our changes yet,
 		// so we can't apply them in the model.
-		editingView.change( writer => {
-			const figureInitialPcWidth = this._resizingData.widths.viewFigureWidth / this._resizingData.widths.viewFigureParentWidth;
-
-			writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, target.findAncestor( 'figure' ) );
-			writer.addClass( 'ck-table-column-resizer__active', this._resizingData.elements.viewResizer );
-			writer.addClass( 'ck-table-resized', viewTable );
-		} );
+		editingView.change( writer => this._applyResizingAttributesToTable( writer, target, viewTable ) );
 	}
 
 	/**
@@ -429,10 +423,10 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * Creates a <colgroup> element with <col>s and inserts it into a given view table.
 	 *
 	 * @private
-	 * @param { module:engine/view/downcastwriter~DowncastWriter} viewWriter A writer instance.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter A writer instance.
 	 * @param {module:engine/model/element~Element} modelTable A table model element.
 	 * @param {Array.<Number>} columnWidthsInPx Column widths.
-	 * @param {module:engine/model/element~Element} viewTable A table view element.
+	 * @param {module:engine/view/element~Element} viewTable A table view element.
 	 */
 	_insertColgroupElement( viewWriter, modelTable, columnWidthsInPx, viewTable ) {
 		const colgroup = viewWriter.createContainerElement( 'colgroup' );
@@ -448,6 +442,22 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' ), colgroup );
+	}
+
+	/**
+	 * Applies the style and classes to the view table as the resizing begun.
+	 *
+	 * @private
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter A writer instance.
+	 * @param {HTMLElement} activeResizer The clicked resizer.
+	 * @param {module:engine/view/element~Element} viewTable A table containing the clicked resizer.
+	 */
+	_applyResizingAttributesToTable( writer, activeResizer, viewTable ) {
+		const figureInitialPcWidth = this._resizingData.widths.viewFigureWidth / this._resizingData.widths.viewFigureParentWidth;
+
+		writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, activeResizer.findAncestor( 'figure' ) );
+		writer.addClass( 'ck-table-column-resizer__active', this._resizingData.elements.viewResizer );
+		writer.addClass( 'ck-table-resized', viewTable );
 	}
 
 	/**
