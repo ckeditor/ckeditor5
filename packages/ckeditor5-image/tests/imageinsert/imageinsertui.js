@@ -79,6 +79,10 @@ describe( 'ImageInsertUI', () => {
 			expect( dropdown ).to.be.instanceOf( DropdownView );
 		} );
 
+		it( 'should make the "insertImage" dropdown accessible via the property of the plugin', () => {
+			expect( editor.plugins.get( 'ImageInsertUI' ).dropdownView ).to.be.instanceOf( DropdownView );
+		} );
+
 		it( 'should register "imageInsert" dropdown as an alias for the "insertImage" dropdown', () => {
 			const dropdownCreator = editor.ui.componentFactory._components.get( 'insertImage'.toLowerCase() );
 			const dropdownAliasCreator = editor.ui.componentFactory._components.get( 'imageInsert'.toLowerCase() );
@@ -366,6 +370,10 @@ describe( 'ImageInsertUI', () => {
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
 			expect( dropdown ).to.be.instanceOf( DropdownView );
+		} );
+
+		it( 'should make the "insertImage" dropdown accessible via the property of the plugin', () => {
+			expect( editor.plugins.get( 'ImageInsertUI' ).dropdownView ).to.be.instanceOf( DropdownView );
 		} );
 
 		it( 'should register "imageInsert" dropdown as an alias for the "insertImage" dropdown', () => {
