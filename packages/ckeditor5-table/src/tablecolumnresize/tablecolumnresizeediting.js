@@ -370,25 +370,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' ) );
 		const viewTable = target.findAncestor( 'table' );
 
-		// Calculate the dom column widths. It is done by taking the width of the widest cell
-		// from each table column (we relay on the TableWalker in terms of determining
-		// to which column the cell belongs).
-		const columnWidthsInPx = Array( getNumberOfColumn( modelTable, editor ) );
-		const tableWalker = new TableWalker( modelTable );
-
-		for ( const cellSlot of tableWalker ) {
-			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
-			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
-			const domCellWidth = getDomCellOuterWidth( domCell );
-
-			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
-				this._columnIndexMap.set( cellSlot.cell, cellSlot.column );
-			}
-
-			if ( !columnWidthsInPx[ cellSlot.column ] || domCellWidth < columnWidthsInPx[ cellSlot.column ] ) {
-				columnWidthsInPx[ cellSlot.column ] = toPrecision( domCellWidth );
-			}
-		}
+		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
+		const columnWidthsInPx = this._calculateDomColumnWidths( modelTable );
 
 		// Insert colgroup for the table that is resized for the first time.
 		if ( ![ ...viewTable.getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
@@ -415,10 +398,39 @@ export default class TableColumnResizeEditing extends Plugin {
 		editingView.change( writer => {
 			const figureInitialPcWidth = this._resizingData.widths.viewFigureWidth / this._resizingData.widths.viewFigureParentWidth;
 
-			writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, domEventData.target.findAncestor( 'figure' ) );
+			writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, target.findAncestor( 'figure' ) );
 			writer.addClass( 'ck-table-column-resizer__active', this._resizingData.elements.viewResizer );
 			writer.addClass( 'ck-table-resized', viewTable );
 		} );
+	}
+
+	/**
+	 * Calculate the dom column widths. It is done by taking the width of the widest cell
+	 * from each table column (we relay on the TableWalker in terms of determining
+	 * to which column the cell belongs).
+	 * @param {module:engine/model/element~Element} modelTable A table which columns should be measured.
+	 * @returns {Array.<Number>} Widths expressed in pixels (without unit).
+	 */
+	_calculateDomColumnWidths( modelTable ) {
+		const editor = this.editor;
+		const columnWidthsInPx = Array( getNumberOfColumn( modelTable, editor ) );
+		const tableWalker = new TableWalker( modelTable );
+
+		for ( const cellSlot of tableWalker ) {
+			const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell );
+			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
+			const domCellWidth = getDomCellOuterWidth( domCell );
+
+			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
+				this._columnIndexMap.set( cellSlot.cell, cellSlot.column );
+			}
+
+			if ( !columnWidthsInPx[ cellSlot.column ] || domCellWidth < columnWidthsInPx[ cellSlot.column ] ) {
+				columnWidthsInPx[ cellSlot.column ] = toPrecision( domCellWidth );
+			}
+		}
+
+		return columnWidthsInPx;
 	}
 
 	/**
