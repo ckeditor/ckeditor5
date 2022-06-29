@@ -121,7 +121,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._extendSchema();
 		this._setupPostFixer();
 		this._setupConversion();
-		this._setupColumnResizers();
+		this._setupResizingListeners();
 		this._registerColgroupFixer();
 		this._registerResizerInserter();
 
@@ -199,16 +199,11 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * It checks if the change from the differ concerns a table-related element or an attribute. If yes, then it is responsible for the
 	 * following:
-	 * (1) Depending on whether the `enableResize` event is not prevented...
-	 *    (1.1) ...removing the `columnWidths` attribute from the table and all the cells from column index map, or
-	 *    (1.2) ...adding the `columnWidths` attribute to the table.
-	 * (2) Adjusting the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
-	 *    (2.1) Add all cells to column index map with its column index (to properly handle column insertion and deletion).
+	 * (1) Adjusting the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
+	 * (2) Add all cells to column index map with its column index (to properly handle column insertion and deletion).
 	 * (3) Checking if columns have been added or removed...
 	 *    (3.1) ... in the middle of the table, or
 	 *    (3.2) ... at the table end.
-	 * (4) Checking if the inline cell width has been configured and transferring its value to the appropriate column, but currently only
-	 * for a cell that is not spanned horizontally.
 	 *
 	 * @private
 	 */
@@ -223,7 +218,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			let changed = false;
 
 			for ( const table of getAffectedTables( changes, editor.model ) ) {
-				// (2) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
+				// (1) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				// It's an array at this point.
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );
 
@@ -232,7 +227,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				let isColumnDeletionHandled = false;
 
 				for ( const { cell, column } of new TableWalker( table ) ) {
-					// (2.1) Add all cells to column index map with its column index. Do not process the given cell anymore, because the
+					// (2) Add all cells to column index map with its column index. Do not process the given cell anymore, because the
 					// `columnIndex` reference in the map is required to properly handle column insertion and deletion.
 					if ( !columnIndexMap.has( cell ) ) {
 						columnIndexMap.set( cell, column );
@@ -327,21 +322,20 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Initializes column resizing feature by registering mouse event handlers for `mousedown`, `mouseup` and `mousemove` events.
+	 * Registers the mouse event listeners for `mousedown`, `mousemove` and `mouseup` events.
 	 *
 	 * @private
 	 */
-	_setupColumnResizers() {
-		const editor = this.editor;
-		const editingView = editor.editing.view;
+	_setupResizingListeners() {
+		const editingView = this.editor.editing.view;
 
 		editingView.addObserver( MouseEventsObserver );
 		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
 
 		const domEmitter = Object.create( DomEmitterMixin );
 
-		domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 		domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
+		domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 	}
 
 	/**
