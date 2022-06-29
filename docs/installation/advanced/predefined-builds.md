@@ -166,7 +166,7 @@ Full code example:
 </html>
 ```
 
-#### List of all plugins included in the CKEditor 5 Classic build
+#### List of all plugins included in the predefined Classic build
 
 The table below presents the list of all plugins included in the Classic build.
 
@@ -333,7 +333,7 @@ Full code example:
 </html>
 ```
 
-#### List of all plugins included in the CKEditor 5 Inline build
+#### List of all plugins included in the predefined Inline build
 
 The table below presents the list of all plugins included in the Inline build.
 
@@ -502,6 +502,115 @@ Full example:
 </html>
 ```
 
+#### List of all plugins included in the predefined Ballon build
+
+The table below presents the list of all plugins included in the Balloon build.
+
+<details>
+<summary>Click to view a table listing all Ballon build plugins</summary>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:500px">
+	<tbody>
+		<tr>
+			<td><b>Plugin</b></td>
+			<td><b>Documentation</b></td>
+		</tr>
+		<tr>
+			<td>Alignment</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html</a></td>
+		</tr>
+		<tr>
+			<td>Autoformat</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html</a></td>
+		</tr>
+		<tr>
+			<td>BlockQuote</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html">https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html</a></td>
+		</tr>
+		<tr>
+			<td>Bold</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+		</tr>
+		<tr>
+			<td>CKBox</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckbox.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckbox.html</a></td>
+		</tr>
+		<tr>
+			<td>CKFinder</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html</a></td>
+		</tr>
+		<tr>
+			<td>EasyImage</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html</a></td>
+		</tr>
+		<tr>
+			<td>Heading</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">https://ckeditor.com/docs/ckeditor5/latest/features/headings.html</a></td>
+		</tr>
+		<tr>
+			<td>Image</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html</a></td>
+		</tr>
+		<tr>
+			<td>ImageCaption</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html</a></td>
+		</tr>
+		<tr>
+			<td>ImageStyle</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html</a></td>
+		</tr>
+		<tr>
+			<td>ImageToolbar</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar</a></td>
+		</tr>
+		<tr>
+			<td>ImageUpload</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html</a></td>
+		</tr>
+		<tr>
+			<td>Indent, IndentBlock</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">https://ckeditor.com/docs/ckeditor5/latest/features/indent.html</a></td>
+		</tr>
+		<tr>
+			<td>Italic</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+		</tr>
+		<tr>
+			<td>Link, Autolink, LinkImage</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">https://ckeditor.com/docs/ckeditor5/latest/features/link.html</a></td>
+		</tr>
+		<tr>
+			<td>List, ListProperties, TodoList</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
+		</tr>
+		<tr>
+			<td>MediaEmbed</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html</a></td>
+		</tr>
+		<tr>
+			<td>Paragraph</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">https://ckeditor.com/docs/ckeditor5/latest/features/headings.html</a></td>
+		</tr>
+		<tr>
+			<td>PasteFromOffice</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html</a></td>
+		</tr>
+		<tr>
+			<td>PictureEditing</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html</a></td>
+		</tr>
+		<tr>
+			<td>Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">https://ckeditor.com/docs/ckeditor5/latest/features/table.html</a></td>
+		</tr>
+		<tr>
+			<td>TextTransformation</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html</a></td>
+		</tr>
+	</tbody>
+</table>
+</details>
+
 ### Balloon block editor
 
 Balloon block is essentially the [balloon editor](#balloon-editor) with an extra block toolbar which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives an access to additional, block–level editing features.
@@ -649,6 +758,8 @@ The superbuild, available instantly from CDN, is a preconfigured package that of
 </info-box>
 
 #### Installation example
+
+Please refer to the {@link installation/getting-started/quick-start CDN installation quick start} to learn how to utilize the superbuild.
 
 #### List of all plugins included in the CKEditor 5 superbuild
 
