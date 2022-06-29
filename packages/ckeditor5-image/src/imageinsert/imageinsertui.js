@@ -97,13 +97,12 @@ export default class ImageInsertUI extends Plugin {
 			} );
 		}
 
-		return this._setUpDropdown( this.dropdownView, uploadImageCommand || insertImageCommand );
+		return this._setUpDropdown( uploadImageCommand || insertImageCommand );
 	}
 
 	/**
 	 * Sets up the dropdown view.
 	 *
-	 * @param {module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView} imageInsertView An imageInsertView.
 	 * @param {module:core/command~Command} command An uploadImage or insertImage command.
 	 *
 	 * @private

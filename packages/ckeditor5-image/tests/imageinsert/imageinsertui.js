@@ -90,6 +90,17 @@ describe( 'ImageInsertUI', () => {
 			expect( dropdownCreator.callback ).to.equal( dropdownAliasCreator.callback );
 		} );
 
+		it( 'should bind the enabled state of the dropdown to the UploadImageCommand command', () => {
+			const command = editor.commands.get( 'uploadImage' );
+
+			expect( command.isEnabled, 'command state' ).to.be.true;
+			expect( dropdown.isEnabled, 'dropdown state #1' ).to.be.true;
+
+			command.forceDisabled( 'foo' );
+
+			expect( dropdown.isEnabled, 'dropdown state #2' ).to.be.false;
+		} );
+
 		it( 'should not insert panel view children until dropdown is not open for the first time', () => {
 			expect( dropdown.panelView.children.length ).to.equal( 0 );
 
@@ -381,6 +392,17 @@ describe( 'ImageInsertUI', () => {
 			const dropdownAliasCreator = editor.ui.componentFactory._components.get( 'imageInsert'.toLowerCase() );
 
 			expect( dropdownCreator.callback ).to.equal( dropdownAliasCreator.callback );
+		} );
+
+		it( 'should bind the enabled state of the dropdown to the InsertImageCommand command', () => {
+			const command = editor.commands.get( 'insertImage' );
+
+			expect( command.isEnabled, 'command state' ).to.be.true;
+			expect( dropdown.isEnabled, 'dropdown state #1' ).to.be.true;
+
+			command.forceDisabled( 'foo' );
+
+			expect( dropdown.isEnabled, 'dropdown state #2' ).to.be.false;
 		} );
 
 		it( 'should not insert panel view children until dropdown is not open for the first time', () => {
