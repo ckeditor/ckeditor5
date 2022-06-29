@@ -391,7 +391,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		// Insert colgroup for the table that is resized for the first time.
-		if ( ![ ...domEventData.target.findAncestor( 'table' ).getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
+		if ( ![ ...viewTable.getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
 			editingView.change( viewWriter => {
 				const colgroup = viewWriter.createContainerElement( 'colgroup' );
 
@@ -417,7 +417,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 			writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, domEventData.target.findAncestor( 'figure' ) );
 			writer.addClass( 'ck-table-column-resizer__active', this._resizingData.elements.viewResizer );
-			writer.addClass( 'ck-table-resized', domEventData.target.findAncestor( 'table' ) );
+			writer.addClass( 'ck-table-resized', viewTable );
 		} );
 	}
 
