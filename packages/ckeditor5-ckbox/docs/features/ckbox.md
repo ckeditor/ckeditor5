@@ -101,14 +101,13 @@ ClassicEditor
 	.catch( ... );
 ```
 
-Please keep in mind that if you define your own upload category mappings, only these will be taken into account while finding the appropriate category for the uploaded image type as the cloud service configuration will be overridden. Category mappings configured on the server will not be searched in that case. The image will not be uploaded (and inserted) into the editor in the following cases:
+Please keep in mind that if you define your own upload category mappings for a particular image type, only your first found category will be taken into account while finding the appropriate category for the uploaded image. Category mappings configured on the server will not be searched in that case. The image will not be uploaded (and hence inserted into the editor) in the following cases:
 
-* If you have defined your own category mappings in `defaultUploadCategories`:
-   * the category for the uploaded image type is not defined there,
+* If you have defined your own category mapping in `defaultUploadCategories` for the uploaded image type:
    * the category does not exist on the server,
-   * the category exists on the server, but it does not allow the uploaded image type.
-* If you have not defined your own category mappings in `defaultUploadCategories`:
-   * there is no category mapping for the uploaded image on the server.
+   * the category exists on the server, but the server configuration does not allow the uploaded image type.
+* If you have not defined your own category mapping in `defaultUploadCategories` for the uploaded image type:
+   * there is no category mapping for the uploaded image type on the server.
 
 ### Adding the ID for inserted assets
 
@@ -127,6 +126,32 @@ ClassicEditor
 	} )
 	.then( ... )
 	.catch( ... );
+```
+
+### Changing the language
+
+By default, the CKBox dialog takes the current language from the editor. If you want to use a different language, you can set the language code in the {@link module:ckbox/ckbox~CKBoxConfig#language `config.ckbox.language`} option:
+
+```js
+import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKBox, ... ],
+		toolbar: [ 'ckbox', ... ],
+		ckbox: {
+			language: 'es'
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+Also, make sure to include the translation file after loading the CKBox library:
+
+```html
+<script src="https://cdn.ckbox.io/CKBox/1.0.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/1.0.0/translations/es.js"></script>
 ```
 
 ### Providing the token URL
