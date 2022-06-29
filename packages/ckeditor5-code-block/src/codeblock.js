@@ -132,20 +132,23 @@ export default class CodeBlock extends Plugin {
  * The default value of the language configuration is as follows:
  *
  *		languages: [
- *			{ language: 'plaintext', label: 'Plain text' }, // The default language.
- *			{ language: 'c', label: 'C' },
- *			{ language: 'cs', label: 'C#' },
- *			{ language: 'cpp', label: 'C++' },
- *			{ language: 'css', label: 'CSS' },
- *			{ language: 'diff', label: 'Diff' },
- *			{ language: 'html', label: 'HTML' },
- *			{ language: 'java', label: 'Java' },
- *			{ language: 'javascript', label: 'JavaScript' },
- *			{ language: 'php', label: 'PHP' },
- *			{ language: 'python', label: 'Python' },
- *			{ language: 'ruby', label: 'Ruby' },
- *			{ language: 'typescript', label: 'TypeScript' },
- *			{ language: 'xml', label: 'XML' }
+*          { language: 'plaintext', label: 'Plain text' },
+*          { language: 'c', label: 'C' },
+*          { language: 'cs', label: 'C#' },
+*          { language: 'cpp', label: 'C++' },
+*          { language: 'css', label: 'CSS' },
+*          { language: 'dart', label: 'Dart' },
+*          { language: 'diff', label: 'Diff' },
+*          { language: 'golang', label: 'Golang' },
+*          { language: 'html', label: 'HTML' },
+*          { language: 'java', label: 'Java' },
+*          { language: 'javascript', label: 'JavaScript' },
+*          { language: 'kotlin', label: 'Kotlin' },
+*          { language: 'php', label: 'PHP' },
+*          { language: 'python', label: 'Python' },
+*          { language: 'ruby', label: 'Ruby' },
+*          { language: 'typescript', label: 'TypeScript' },
+*          { language: 'xml', label: 'XML' }
  *		]
  *
  * **Note**: The first language defined in the configuration is considered the default one. This means it will be
