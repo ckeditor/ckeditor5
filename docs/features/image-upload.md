@@ -43,7 +43,7 @@ The demo below uses the {@link installation/advanced/predefined-builds#classic-e
 
 CKBox is a modern SaaS file management platform with a clean interface, responsive images and top-notch UX. If you are part of an organization with many different files to manage, such as images or documents, and regularly have issues finding the right files for the task at hand, CKBox is the right solution.
 
-CKBox is part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product that:
+CKBox is part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer.
 
 With the CKBox platform, users can upload files and categorize them into different groups. They can also change the way the files are organized as various interface modification options exist – like changing the image thumbnail sizes or changing how many files are displayed within the navigation that users can view. Files can be uploaded, deleted, renamed. File properties like dimensions, upload date or size are also easily accessible and can be used to sort the files view.
 
