@@ -38,6 +38,10 @@ describe( 'MediaEmbedElementSupport', () => {
 			return editor.destroy();
 		} );
 
+		it( 'should be named', () => {
+			expect( editor.plugins.has( 'MediaEmbedElementSupport' ) ).to.be.true;
+		} );
+
 		it( 'should allow attributes', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /^(figure|oembed)$/,
@@ -1155,7 +1159,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			} );
 
 			expect( editor.getData() ).to.equal(
-				'<p><oembed data-foo="foo" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed></p>'
+				'<p><oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed></p>'
 			);
 		} );
 
@@ -1274,7 +1278,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<figure class="media" data-foo="foo">' +
-					'<p><oembed data-foo="foo" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed></p>' +
+					'<p><oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed></p>' +
 				'</figure>'
 			);
 

@@ -1,7 +1,7 @@
 ---
 category: features-image-upload
 menu-title: Base64 upload adapter
-order: 40
+order: 50
 ---
 
 # Base64 image upload adapter

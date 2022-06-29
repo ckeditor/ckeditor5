@@ -78,7 +78,8 @@ describe( 'HighlightUI', () => {
 		it( 'button has the base properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'tooltip', 'Highlight' );
+			expect( button ).to.have.property( 'label', 'Highlight' );
+			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'icon', markerIcon );
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );
@@ -208,7 +209,7 @@ describe( 'HighlightUI', () => {
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
-				expect( buttonView.tooltip ).to.equal( 'Zakreślacz' );
+				expect( buttonView.label ).to.equal( 'Zakreślacz' );
 			} );
 
 			it( 'works for the listView#items in the panel', () => {

@@ -605,6 +605,24 @@ describe( 'DataFilter', () => {
 			);
 		} );
 
+		it( 'should not change order of attributes', () => {
+			dataFilter.allowElement( 'section' );
+			dataFilter.allowAttributes( {
+				name: 'section',
+				attributes: true
+			} );
+
+			editor.setData( '<section data-foo="a" data-bar="b"><p>foobar</p></section>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.deep.equal(
+				'<htmlSection htmlAttributes="{"attributes":{"data-foo":"a","data-bar":"b"}}"><paragraph>foobar</paragraph></htmlSection>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<section data-foo="a" data-bar="b"><p>foobar</p></section>'
+			);
+		} );
+
 		it( 'should disallow attributes', () => {
 			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( { name: 'section', attributes: { 'data-foo': /[\s\S]+/ } } );
@@ -1765,7 +1783,7 @@ describe( 'DataFilter', () => {
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<p><input data-bar="bar" data-foo="baz"></p>'
+					'<p><input data-foo="baz" data-bar="bar"></p>'
 				);
 			} );
 
@@ -2346,7 +2364,7 @@ describe( 'DataFilter', () => {
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<section data-bar="baz bar" data-foo="bar baz"><p>foobar</p></section>'
+					'<section data-foo="bar baz" data-bar="baz bar"><p>foobar</p></section>'
 				);
 			} );
 

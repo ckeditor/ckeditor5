@@ -29,6 +29,13 @@ export default class DocumentListElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'DocumentListElementSupport';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
