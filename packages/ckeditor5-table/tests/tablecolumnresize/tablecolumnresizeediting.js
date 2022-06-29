@@ -999,23 +999,25 @@ describe( 'TableColumnResizeEditing', () => {
 
 					assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="100%" tableWidth="100%">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<table columnWidths="55.55%,44.45%" tableWidth="46.73%">' +
-										'<tableRow>' +
-											'<tableCell>' +
-												'<paragraph>foo</paragraph>' +
-											'</tableCell>' +
-											'<tableCell>' +
-												'<paragraph>bar</paragraph>' +
-											'</tableCell>' +
-										'</tableRow>' +
-									'</table>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>'
+					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
+						new RegExp(
+							'<table columnWidths="100%" tableWidth="100%">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<table columnWidths="55\\.5[\\d]%,44\\.4[\\d]%" tableWidth="46\\.7[\\d]%">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>foo</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>bar</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+										'</table>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						)
 					);
 				} );
 
@@ -1709,20 +1711,22 @@ describe( 'TableColumnResizeEditing', () => {
 
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="29.1%,29.1%,41.8%" tableWidth="52.44%">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<paragraph>00</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>01</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>02</paragraph>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>]'
+					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
+						new RegExp(
+							'<table columnWidths="29\\.1%,29\\.1%,41\\.8%" tableWidth="52\\.4[\\d]%">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>00</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>01</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>02</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						)
 					);
 				} );
 
@@ -1765,20 +1769,22 @@ describe( 'TableColumnResizeEditing', () => {
 
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="25%,27.19%,47.81%" tableWidth="40%">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<paragraph>00</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>01</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>02</paragraph>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>]'
+					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
+						new RegExp(
+							'<table columnWidths="25%,27\\.1[\\d]%,47\\.8[\\d]%" tableWidth="40%">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>00</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>01</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>02</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						)
 					);
 				} );
 			} );
