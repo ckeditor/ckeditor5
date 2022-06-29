@@ -71,6 +71,12 @@ export default class InsertTextObserver extends Observer {
 				return;
 			}
 
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( `%c[InsertTextObserver]%c Fire insertText event, text: ${ JSON.stringify( data ) }`,
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
 			// How do we know where to insert the composed text?
 			// The selection observer is blocked and the view is not updated with the composition changes.
 			// There were three options:

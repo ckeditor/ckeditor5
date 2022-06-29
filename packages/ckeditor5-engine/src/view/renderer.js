@@ -210,12 +210,20 @@ export default class Renderer {
 	 */
 	render() {
 		if ( this.isComposing ) {
-			// @if CK_DEBUG_TYPING // console.info( '[Renderer] Rendering aborted while isComposing' );
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 
 			return;
 		}
 
-		// @if CK_DEBUG_TYPING // console.info( '[Renderer] Rendering' );
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
 
 		let inlineFillerPosition;
 		const isInlineFillerRenderingPossible = env.isBlink && !env.isAndroid ? !this.isSelecting : true;
@@ -839,7 +847,11 @@ export default class Renderer {
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor );
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus );
 
-		// @if CK_DEBUG_TYPING // console.info( '[Renderer] update DOM selection', anchor, focus );
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update DOM selection:',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', anchor, focus
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
 
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );

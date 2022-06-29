@@ -141,25 +141,32 @@ export default class SelectionObserver extends Observer {
 
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
-			// @if CK_DEBUG_TYPING // const domSelection = domDocument.defaultView.getSelection();
-			// @if CK_DEBUG_TYPING // console.group( '[SelectionObserver] selectionchange' );
-			// @if CK_DEBUG_TYPING // console.groupCollapsed( '[SelectionObserver] DOM selection' );
-			// @if CK_DEBUG_TYPING // console.info(
-			// @if CK_DEBUG_TYPING // 	domSelection.anchorNode, domSelection.anchorOffset,
-			// @if CK_DEBUG_TYPING // 	domSelection.focusNode, domSelection.focusOffset
-			// @if CK_DEBUG_TYPING // );
-			// @if CK_DEBUG_TYPING // console.groupEnd();
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView.getSelection();
+			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c selectionchange', 'color:green', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 		{ node: domSelection.anchorNode, offset: domSelection.anchorOffset },
+			// @if CK_DEBUG_TYPING // 		{ node: domSelection.focusNode, offset: domSelection.focusOffset }
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 
 			if ( this.document.isComposing ) {
-				// @if CK_DEBUG_TYPING // console.info( '[SelectionObserver] Selection change ignored (isComposing)' );
-				// @if CK_DEBUG_TYPING // console.groupEnd();
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Selection change ignored (isComposing)',
+				// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 	console.groupEnd();
+				// @if CK_DEBUG_TYPING // }
 
 				return;
 			}
 
 			this._handleSelectionChange( domEvent, domDocument );
 
-			// @if CK_DEBUG_TYPING // console.groupEnd();
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
 
 			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
 			// using their mouse).
@@ -235,8 +242,6 @@ export default class SelectionObserver extends Observer {
 		}
 
 		if ( this.selection.isSimilar( newViewSelection ) ) {
-			// @if CK_DEBUG_TYPING // console.info( '[SelectionObserver] is similar -> force render' );
-
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
 			// Just re-render it, no need to fire any events, etc.
 			this.view.forceRender();
@@ -247,7 +252,12 @@ export default class SelectionObserver extends Observer {
 				domSelection
 			};
 
-			// @if CK_DEBUG_TYPING // console.info( '[SelectionObserver] fire selection change', newViewSelection.getFirstRange() );
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Fire selection change:',
+			// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 		newViewSelection.getFirstRange()
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 
 			// Prepare data for new selection and fire appropriate events.
 			this.document.fire( 'selectionChange', data );

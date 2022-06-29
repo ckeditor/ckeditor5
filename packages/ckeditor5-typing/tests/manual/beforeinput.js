@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, console, document */
+/* globals window, console, document, sessionStorage */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -28,10 +28,15 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 for ( const input of document.querySelectorAll( 'input[name=logEvents]' ) ) {
-	window[ input.value ] = input.checked;
+	if ( sessionStorage.getItem( input.value ) === null ) {
+		sessionStorage.setItem( input.value, JSON.stringify( input.checked ) );
+	}
+
+	window[ input.value ] = input.checked = JSON.parse( sessionStorage.getItem( input.value ) );
 
 	input.addEventListener( 'change', ( { target } ) => {
 		window[ target.value ] = target.checked;
+		sessionStorage.setItem( input.value, JSON.stringify( input.checked ) );
 	} );
 }
 

@@ -71,9 +71,12 @@ export default class Input extends Plugin {
 				return;
 			}
 
-			// @if CK_DEBUG_TYPING // console.log( '[EditingController] Composition start -> delete content',
-			// @if CK_DEBUG_TYPING // 	`[${ modelSelection.getFirstPosition().path }]-[${ modelSelection.getLastPosition().path }]`
-			// @if CK_DEBUG_TYPING // );
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Composition start -> model.deleteContent()',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
+			// @if CK_DEBUG_TYPING // 		`[${ modelSelection.getFirstPosition().path }]-[${ modelSelection.getLastPosition().path }]`
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 
 			model.deleteContent( modelSelection );
 		} );

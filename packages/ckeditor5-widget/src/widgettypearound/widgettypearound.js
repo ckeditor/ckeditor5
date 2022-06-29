@@ -194,6 +194,12 @@ export default class WidgetTypeAround extends Plugin {
 			return false;
 		}
 
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[WidgetTypeAround]%c Fake caret -> insert paragraph',
+		// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
 		const selectedModelElement = modelSelection.getSelectedElement();
 
 		this._insertParagraph( selectedModelElement, typeAroundFakeCaretPosition );

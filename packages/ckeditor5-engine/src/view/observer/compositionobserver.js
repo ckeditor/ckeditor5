@@ -27,36 +27,40 @@ export default class CompositionObserver extends DomEventObserver {
 		const document = this.document;
 
 		document.on( 'compositionstart', () => {
-			// @if CK_DEBUG_TYPING // console.log(
-			// @if CK_DEBUG_TYPING // 	'%c┌───────────────────────────── isComposing = true ─────────────────────────────┐',
-			// @if CK_DEBUG_TYPING // 	'font-weight: bold; color: green'
-			// @if CK_DEBUG_TYPING // );
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
+			// @if CK_DEBUG_TYPING // 		'┌───────────────────────────── isComposing = true ─────────────────────────────┐',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green'
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 
 			document.isComposing = true;
 		}, { priority: 'low' } );
 
 		document.on( 'compositionend', () => {
-			// @if CK_DEBUG_TYPING // console.log(
-			// @if CK_DEBUG_TYPING // 	'%c└───────────────────────────── isComposing = false ─────────────────────────────┘',
-			// @if CK_DEBUG_TYPING // 	'font-weight: bold; color: green'
-			// @if CK_DEBUG_TYPING // );
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
+			// @if CK_DEBUG_TYPING // 		'└───────────────────────────── isComposing = false ─────────────────────────────┘',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green'
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 
 			document.isComposing = false;
 		}, { priority: 'low' } );
 	}
 
 	onDomEvent( domEvent ) {
-		// @if CK_DEBUG_TYPING // console.group( '[CompositionObserver]', domEvent.type );
-
-		// @if CK_DEBUG_TYPING // console.groupCollapsed( '[CompositionObserver] DOM event' );
-		// @if CK_DEBUG_TYPING // console.dir( domEvent );
-		// @if CK_DEBUG_TYPING // console.groupEnd();
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( `%c[CompositionObserver]%c ${ domEvent.type }`, 'color: green', '' );
+		// @if CK_DEBUG_TYPING // }
 
 		this.fire( domEvent.type, domEvent, {
 			data: domEvent.data
 		} );
 
-		// @if CK_DEBUG_TYPING // console.groupEnd();
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 }
 
