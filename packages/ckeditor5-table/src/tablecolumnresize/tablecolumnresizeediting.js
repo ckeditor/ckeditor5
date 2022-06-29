@@ -353,9 +353,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	_onMouseDownHandler( eventInfo, domEventData ) {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
+		const target = domEventData.target;
 
-		if ( !domEventData.target.hasClass( 'ck-table-column-resizer' ) ) {
+		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
 			return;
 		}
 
@@ -366,9 +366,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		domEventData.preventDefault();
 		eventInfo.stop();
 
-		const target = domEventData.target;
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' ) );
 		const viewTable = target.findAncestor( 'table' );
+		const editingView = editor.editing.view;
 
 		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
 		const columnWidthsInPx = this._calculateDomColumnWidths( modelTable );
@@ -376,19 +376,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		// Insert colgroup for the table that is resized for the first time.
 		if ( ![ ...viewTable.getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
 			editingView.change( viewWriter => {
-				const colgroup = viewWriter.createContainerElement( 'colgroup' );
-
-				const numberOfColumns = getNumberOfColumn( modelTable, editor );
-
-				for ( let i = 0; i < numberOfColumns; i++ ) {
-					const viewColElement = viewWriter.createEmptyElement( 'col' );
-					const columnWidthInPc = `${ toPrecision( columnWidthsInPx[ i ] / sumArray( columnWidthsInPx ) * 100 ) }%`;
-
-					viewWriter.setStyle( 'width', columnWidthInPc, viewColElement );
-					viewWriter.insert( viewWriter.createPositionAt( colgroup, 'end' ), viewColElement );
-				}
-
-				viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' ), colgroup );
+				this._insertColgroupElement( viewWriter, modelTable, columnWidthsInPx, viewTable );
 			} );
 		}
 
@@ -410,6 +398,8 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * Calculate the dom column widths. It is done by taking the width of the widest cell
 	 * from each table column (we relay on the TableWalker in terms of determining
 	 * to which column the cell belongs).
+	 *
+	 * @private
 	 * @param {module:engine/model/element~Element} modelTable A table which columns should be measured.
 	 * @returns {Array.<Number>} Widths expressed in pixels (without unit).
 	 */
@@ -433,6 +423,31 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		return columnWidthsInPx;
+	}
+
+	/**
+	 * Creates a <colgroup> element with <col>s and inserts it into a given view table.
+	 *
+	 * @private
+	 * @param { module:engine/view/downcastwriter~DowncastWriter} viewWriter A writer instance.
+	 * @param {module:engine/model/element~Element} modelTable A table model element.
+	 * @param {Array.<Number>} columnWidthsInPx Column widths.
+	 * @param {module:engine/model/element~Element} viewTable A table view element.
+	 */
+	_insertColgroupElement( viewWriter, modelTable, columnWidthsInPx, viewTable ) {
+		const colgroup = viewWriter.createContainerElement( 'colgroup' );
+
+		const numberOfColumns = getNumberOfColumn( modelTable, this.editor );
+
+		for ( let i = 0; i < numberOfColumns; i++ ) {
+			const viewColElement = viewWriter.createEmptyElement( 'col' );
+			const columnWidthInPc = `${ toPrecision( columnWidthsInPx[ i ] / sumArray( columnWidthsInPx ) * 100 ) }%`;
+
+			viewWriter.setStyle( 'width', columnWidthInPc, viewColElement );
+			viewWriter.insert( viewWriter.createPositionAt( colgroup, 'end' ), viewColElement );
+		}
+
+		viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' ), colgroup );
 	}
 
 	/**
