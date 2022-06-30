@@ -1769,9 +1769,13 @@ describe( 'TableColumnResizeEditing', () => {
 
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
+					// The actual column widths will vary depending on the screen properties.
+					// In different tests it is handled by setting the particular editor and table width,
+					// but here we want to make sure that once set, `tableWidth` prop doesn't change,
+					// while the rest (column widths) is covered elsewhere not very important.
 					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
 						new RegExp(
-							'<table columnWidths="25%,27\\.1[\\d]%,47\\.8[\\d]%" tableWidth="40%">' +
+							'<table columnWidths="25%,2[\\d]\\.[\\d][\\d]%,4[\\d]\\.[\\d][\\d]%" tableWidth="40%">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>00</paragraph>' +
