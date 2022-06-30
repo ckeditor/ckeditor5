@@ -277,7 +277,10 @@ HelpjuiceEditor.defaultConfig = {
 			'linkImage',
 			'toggleImageCaption',
 			'imageTextAlternative'
-		]
+		],
+		upload: {
+			types: [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff', 'svg+xml' ]
+		}
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en',
