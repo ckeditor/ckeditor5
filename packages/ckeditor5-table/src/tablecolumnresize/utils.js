@@ -112,28 +112,6 @@ function getTbodyViewElement( table, editor ) {
 }
 
 /**
- * Calculates the column widths in pixels basing on the `columnWidths` table attribute:
- * - If the value for a given column is provided in pixels then it is just converted to a number and returned.
- * - Otherwise, it is assumed that unit is percentage and the column width is calculated proportionally to the whole table width.
- *
- * @param {module:engine/model/element~Element} table
- * @param {module:core/editor/editor~Editor} editor
- * @returns {Array.<Number>}
- */
-export function getColumnWidthsInPixels( table, editor ) {
-	const tableWidthInPixels = getTableWidthInPixels( table, editor );
-
-	return table.getAttribute( 'columnWidths' )
-		.split( ',' )
-		.map( columnWidth => columnWidth.trim() )
-		.map( columnWidth => {
-			return columnWidth.endsWith( 'px' ) ?
-				parseFloat( columnWidth ) :
-				parseFloat( columnWidth ) * tableWidthInPixels / 100;
-		} );
-}
-
-/**
  * Calculates the percentage of the minimum column width given in pixels for a given table.
  *
  * @param {module:engine/model/element~Element} table
@@ -190,8 +168,8 @@ export function isTableRendered( table, editor ) {
 // @param {module:engine/model/element~Element} table
 // @param {module:core/editor/editor~Editor} editor
 // @returns {module:engine/view/element~Element|undefined}
-function getColgroupViewElement( table, editor ) {
-	const viewFigure = editor.editing.mapper.toViewElement( table );
+function getColgroupViewElement( modelTable, editor ) {
+	const viewFigure = editor.editing.mapper.toViewElement( modelTable );
 	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
 
 	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'colgroup' ) );

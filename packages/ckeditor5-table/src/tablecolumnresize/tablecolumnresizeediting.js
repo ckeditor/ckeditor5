@@ -462,9 +462,6 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onMouseMoveHandler( eventInfo, domEventData ) {
-		const editor = this.editor;
-		const editingView = editor.editing.view;
-
 		if ( !this._isResizingActive ) {
 			return;
 		}
@@ -474,8 +471,6 @@ export default class TableColumnResizeEditing extends Plugin {
 
 			return;
 		}
-
-		this._moved = true;
 
 		const {
 			columnPosition,
@@ -518,7 +513,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		editingView.change( writer => {
+		this.editor.editing.view.change( writer => {
 			const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
 
 			writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
@@ -619,9 +614,10 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @param {Array.<Number>} columnWidths
 	 * @returns {Object}
 	 */
-	_getResizingData( domEventData, widths ) {
+	_getResizingData( domEventData, columnWidths ) {
 		const editor = this.editor;
 
 		const columnPosition = domEventData.domEvent.clientX;
@@ -647,30 +643,30 @@ export default class TableColumnResizeEditing extends Plugin {
 		const viewFigureParentWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure.parent ) );
 		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure ) );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
-		const leftColumnWidth = widths[ leftColumnIndex ];
-		const rightColumnWidth = isRightEdge ? undefined : widths[ leftColumnIndex + 1 ];
+		const leftColumnWidth = columnWidths[ leftColumnIndex ];
+		const rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex + 1 ];
 
 		return {
 			columnPosition,
 			flags: {
-				isRightEdge, // move
-				isTableCentered, // move
-				isLtrContent // move
+				isRightEdge,
+				isTableCentered,
+				isLtrContent
 			},
 			elements: {
-				viewResizer, // down up
-				modelTable, // up
-				viewFigure, // up move
-				viewColgroup, // up
-				viewLeftColumn, // move
-				viewRightColumn // move
+				viewResizer,
+				modelTable,
+				viewFigure,
+				viewColgroup,
+				viewLeftColumn,
+				viewRightColumn
 			},
 			widths: {
-				viewFigureParentWidth, // move
-				viewFigureWidth, // down
-				tableWidth, // move
-				leftColumnWidth, // move
-				rightColumnWidth // move
+				viewFigureParentWidth,
+				viewFigureWidth,
+				tableWidth,
+				leftColumnWidth,
+				rightColumnWidth
 			}
 		};
 	}
