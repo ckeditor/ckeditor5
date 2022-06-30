@@ -49,7 +49,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 		 *
 		 * @readonly
 		 */
-		this.label = options.editorName;
+		this.label = options ? options.editorName : '';
 
 		/**
 		 * Voice label of the UI.
@@ -115,7 +115,11 @@ export default class BoxedEditorUIView extends EditorUIView {
 		const t = this.t;
 		const voiceLabel = new LabelView();
 
-		voiceLabel.text = this.label ? t( 'Rich Text Editor, ' + this.label ) : t( 'Rich Text Editor' );
+		if ( this.label && this.label !== '' ) {
+			voiceLabel.text = t( 'Rich Text Editor, ' + this.label );
+		} else {
+			voiceLabel.text = t( 'Rich Text Editor' );
+		}
 
 		voiceLabel.extendTemplate( {
 			attributes: {
