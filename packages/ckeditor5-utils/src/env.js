@@ -9,7 +9,9 @@
  * @module utils/env
  */
 
-const userAgent = navigator.userAgent.toLowerCase();
+// This file might be imported in environments without the navigator API.
+/* istanbul ignore next */
+const userAgent = navigator ? navigator.userAgent.toLowerCase() : '';
 
 /**
  * A namespace containing environment and browser information.
