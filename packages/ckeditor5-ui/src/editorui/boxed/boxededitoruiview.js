@@ -45,11 +45,11 @@ export default class BoxedEditorUIView extends EditorUIView {
 		this.main = this.createCollection();
 
 		/**
-		 * Editor's title based on the passed options.editorTitle.
+		 * Editor's title based on the passed object options.editorName.
 		 *
 		 * @readonly
 		 */
-		this.editorTitle = options.editorTitle;
+		this.label = options.editorName;
 
 		/**
 		 * Voice label of the UI.
@@ -115,7 +115,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 		const t = this.t;
 		const voiceLabel = new LabelView();
 
-		voiceLabel.text = this.editorTitle ? t( 'Rich Text Editor, ' + this.editorTitle ) : t( 'Rich Text Editor' );
+		voiceLabel.text = this.label ? t( 'Rich Text Editor, ' + this.label ) : t( 'Rich Text Editor' );
 
 		voiceLabel.extendTemplate( {
 			attributes: {

@@ -77,9 +77,9 @@ export default class ClassicEditor extends Editor {
 		this.model.document.createRoot();
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
-		const editorTitle = this.config.get( 'editorTitle' );
+		const editorName = this.name;
 		const view = new ClassicEditorUIView( this.locale, this.editing.view, {
-			shouldToolbarGroupWhenFull, editorTitle
+			shouldToolbarGroupWhenFull, editorName
 		} );
 
 		this.ui = new ClassicEditorUI( this, view );

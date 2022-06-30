@@ -222,12 +222,29 @@ export default class Editor {
 		this.keystrokes.listenTo( this.editing.view.document );
 
 		/**
+		 * Current number of editors instances created.
+		 *
+		 * @private
+		 * @type {Number}
+		 */
+		Editor._editorCount = Editor._editorCount ? ++Editor._editorCount : 1;
+
+		/**
 		 * A unique editor's name.
 		 *
-		 * @readonly
+		 * @observable
 		 * @member {String} #name
 		 */
-		this.name = this.generateEditorName();
+		this.name = this.generateEditorLabel();
+	}
+
+	/**
+	 *  Static getter for the _editorCount property.
+	 *
+	 * @returns {module:core/editor/editor~Editor._editorCount}
+	 */
+	static get editorCount() {
+		return Editor._editorCount;
 	}
 
 	/**
@@ -442,19 +459,18 @@ export default class Editor {
 	}
 
 	/**
-	 * Generates a name for the editor.
+	 * Generates a label for the editor.
 	 *
-	 * It will be based on the editor.config.get( 'editorTitle' ), otherwise a name
+	 * It will be based on the editor.config.get( 'label' ), otherwise a name
 	 * pattern of `'editor{n}'` will be used.
 	 *
 	 * @readonly
-	 * @returns {String} editorName
+	 * @returns {String} label
 	 */
-	generateEditorName() {
-		const nameCounter = 1;
+	generateEditorLabel() {
+		const label = this.config.get( 'label' ) ? this.config.get( 'label' ) : 'editor' + Editor.editorCount;
 
-		const editorName = this.config.get( 'editorTitle' ) ? this.config.get( 'editorTitle' ) : 'editor' + ( nameCounter );
-		return editorName;
+		return label;
 	}
 
 	/**
@@ -473,6 +489,8 @@ export default class Editor {
 	 * @method module:core/editor/editor~Editor.create
 	 */
 }
+
+// Editor.generateNumber();
 
 mix( Editor, ObservableMixin );
 
