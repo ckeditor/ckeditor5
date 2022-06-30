@@ -490,8 +490,6 @@ export default class Editor {
 	 */
 }
 
-// Editor.generateNumber();
-
 mix( Editor, ObservableMixin );
 
 /**
