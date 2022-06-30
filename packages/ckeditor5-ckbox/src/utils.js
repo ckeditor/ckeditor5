@@ -69,7 +69,7 @@ export function getEnvironmentId( token ) {
 	return payload.aud;
 }
 
-// Calculates the image breakpoints for provided image width in the following way:
+// Calculates the image breakpoints for the provided image width in the following way:
 //
 // 1) The breakpoint threshold (the breakpoint step in the calculations) should be equal to 10% of the image width, but not less than 80
 // pixels.

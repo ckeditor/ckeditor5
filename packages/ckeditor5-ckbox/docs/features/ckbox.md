@@ -14,6 +14,8 @@ This CKBox integration feature allows you to effortlessly and intuitively insert
 <info-box info>
 	CKBox is a commercial solution. Please [contact us](https://ckeditor.com/contact/) if you would like to purchase a license. Let us know if you have any feedback or questions!
 
+	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features).
+
 	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds} for convenience, but the editor will still work properly without activating it.
 </info-box>
 
