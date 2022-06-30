@@ -19,3 +19,7 @@ yalc.lock
 
 build/
 !packages/ckeditor5-build-*/build
+
+# Ignore compiled TypeScript files.
+packages/*/src/**/*.js
+packages/*/src/**/*.d.ts
