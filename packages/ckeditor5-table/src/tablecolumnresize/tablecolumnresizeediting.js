@@ -384,8 +384,8 @@ export default class TableColumnResizeEditing extends Plugin {
 
 	/**
 	 * Calculate the dom column widths. It is done by taking the width of the widest cell
-	 * from each table column (we relay on the TableWalker in terms of determining
-	 * to which column the cell belongs).
+	 * from each table column (we rely on the TableWalker to determine
+	 * which column the cell belongs to).
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} modelTable A table which columns should be measured.
@@ -414,7 +414,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Creates a <colgroup> element with <col>s and inserts it into a given view table.
+	 * Creates a `<colgroup>` element with `<col>`s and inserts it into a given view table.
 	 *
 	 * @private
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter A writer instance.
