@@ -460,5 +460,82 @@ describe( 'utils', () => {
 				} );
 			} );
 		} );
+
+		describe( 'extra dropdown open listener', () => {
+			it( 'focuses active item upon dropdown opening', () => {
+				const buttonModels = [
+					new Model( { label: 'a', isOn: true } ),
+					new Model( { label: 'b' } )
+				];
+
+				definitions.add( {
+					type: 'button',
+					model: buttonModels[ 0 ]
+				} );
+
+				definitions.add( {
+					type: 'button',
+					model: buttonModels[ 1 ]
+				} );
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( dropdownView.listView.focusTracker.isFocused ).to.be.true;
+				expect( dropdownView.listView.focusTracker.focusedElement ).to.equal( listItems.get( 0 ) );
+			} );
+
+			it( 'focuses nth active item upon dropdown opening', () => {
+				const buttonModels = [
+					new Model( { label: 'a' } ),
+					new Model( { label: 'b', isOn: true } )
+				];
+
+				definitions.add( {
+					type: 'button',
+					model: buttonModels[ 0 ]
+				} );
+
+				definitions.add( {
+					type: 'button',
+					model: buttonModels[ 1 ]
+				} );
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( dropdownView.listView.focusTracker.isFocused ).to.be.true;
+				expect( dropdownView.listView.focusTracker.focusedElement ).to.equal( listItems.get( 1 ) );
+			} );
+
+			it( 'focuses the item if multiple items are active', () => {
+				const buttonModels = [
+					new Model( { label: 'a' } ),
+					new Model( { label: 'b', isOn: true } ),
+					new Model( { label: 'c', isOn: true } )
+				];
+
+				definitions.add( {
+					type: 'button',
+					model: buttonModels[ 0 ]
+				} );
+
+				definitions.add( {
+					type: 'button',
+					model: buttonModels[ 1 ]
+				} );
+
+				definitions.add( {
+					type: 'button',
+					model: buttonModels[ 2 ]
+				} );
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( dropdownView.listView.focusTracker.isFocused ).to.be.true;
+				expect( dropdownView.listView.focusTracker.focusedElement ).to.equal( listItems.get( 1 ) );
+			} );
+		} );
 	} );
 } );
