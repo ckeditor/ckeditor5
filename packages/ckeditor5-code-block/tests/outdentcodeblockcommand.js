@@ -13,9 +13,12 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'OutdentCodeBlockCommand', () => {
 	let editor, model, outdentCommand;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return ModelTestEditor
@@ -276,6 +279,24 @@ describe( 'OutdentCodeBlockCommand', () => {
 			outdentCommand.execute();
 
 			expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
+		} );
+
+		// Need to ensure that deleteContent() will not be reverted to model.change() to not break integration
+		// with Track Changes.
+		it( 'should outdent with deleteContent()', () => {
+			const deleteContentSpy = sinon.spy( model, 'deleteContent' );
+			const modelChangeSpy = sinon.spy( model, 'change' );
+
+			setModelData( model, '<codeBlock language="foo">[]Foo</codeBlock>' );
+
+			model.change( writer => {
+				writer.insertText( '	', model.document.getRoot().getChild( 0 ), 0 );
+			} );
+
+			outdentCommand.execute();
+
+			expect( deleteContentSpy.calledOnce ).to.be.true;
+			expect( modelChangeSpy.calledAfter( deleteContentSpy ) ).to.be.true;
 		} );
 
 		describe( 'config.codeBlock.indentSequence', () => {
