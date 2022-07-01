@@ -81,13 +81,13 @@ export default class MentionCommand extends Command {
 		const mentionID = mentionData.id;
 		const mentionName = mentionData.name;
 		const mentionLink = mentionData.link;
-		const mentionCodename = mentionData.codename;
+		const mentionCodename = `/${mentionData.codename}`;
 
 		const range = options.range || selection.getFirstRange();
 
 		const mentionText = options.text || mentionName;
 
-		const mention = _addMentionAttributes( { _text: mentionText, id: mentionID, link: mentionLink, codename: mentionCodename }, mentionData );
+		const mention = _addMentionAttributes( { _text: mentionText, id: mentionID, link: mentionLink, codename: mentionCodename }, mentionData);
 
 		if ( options.marker.length != 1 ) {
 			/**
