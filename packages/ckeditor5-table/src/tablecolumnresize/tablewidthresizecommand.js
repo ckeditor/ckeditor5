@@ -12,9 +12,9 @@ import TablePropertyCommand from '../tableproperties/commands/tablepropertycomma
 /**
  * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
-export default class TableResizeWidthCommand extends TablePropertyCommand {
+export default class TableWidthResizeCommand extends TablePropertyCommand {
 	/**
-	 * Creates a new `TableResizeWidthCommand` instance.
+	 * Creates a new `TableWidthResizeCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 * @param {String} defaultValue The default value of the attribute.

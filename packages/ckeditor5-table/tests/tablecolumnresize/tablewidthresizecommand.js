@@ -9,13 +9,13 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import TableResizeWidthCommand from '../../src/tablecolumnresize/tableresizewidthcommand';
+import TableWidthResizeCommand from '../../src/tablecolumnresize/tablewidthresizecommand';
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
 import TableColumnResize from '../../src/tablecolumnresize';
 import Table from '../../src/table';
 import { modelTable } from '../_utils/utils';
 
-describe( 'TableResizeWidthCommand', () => {
+describe( 'TableWidthResizeCommand', () => {
 	let model, editor, editorElement, command;
 
 	beforeEach( async () => {
@@ -27,7 +27,7 @@ describe( 'TableResizeWidthCommand', () => {
 		} ).then( newEditor => {
 			editor = newEditor;
 			model = editor.model;
-			command = new TableResizeWidthCommand( editor );
+			command = new TableWidthResizeCommand( editor );
 		} );
 	} );
 
