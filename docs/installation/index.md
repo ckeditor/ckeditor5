@@ -18,9 +18,12 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 	**Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
 </info-box>
 
+## Start using CKEditor 5 instantly with CDN
+
+Start using CKEditor 5 instantly thanks to the power of our CDN. Check out the {@link installation/getting-started/quick-start Quick start guide}.
 ## Installing CKEditor 5
 
-Learn how to install CKEditor 5 easily with the use of {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start#building-the-editor-from-source build the editor from scratch}, learn to {@link installation/getting-started/quick-start#building-the-editor-from-source create a custom build}, {@link installation/getting-started/configuration configure it}, and {@link installation/advanced/csp secure}.
+Learn how to install a custom CKEditor 5 easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, and learn to {@link installation/getting-started/configuration configure it}.
 
 ## Predefined CKEditor 5 builds
 
@@ -61,16 +64,25 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 				{
 					classes: [ 'quiz-button', 'quiz-button_start' ],
 					text: 'Take a short quiz',
-					navigateToPaneId: 'quiz-question-usingBuilds',
+					navigateToPaneId: 'quiz-question-usingCDN',
 				}
 			]
 		},
 
 		// ------------------------------ Questions -----------------------------------------------
 
+		'quiz-question-usingCDN': {
+			content: 'Do you need an immediate pre-made solution?',
+			hint: 'CKEditor 5 can be instantly run from <a href="#start-using-ckeditor-5-instantly-with-cdn">CDN</a> providing working editor in seconds. This is the fastest way to start.',
+			buttons: [
+				getDecisionButtonDefinition( true, 'quiz-resolution-usingCDN' ),
+				getDecisionButtonDefinition( false, 'quiz-question-onlineBuilds' ),
+			]
+		},
+
 		'quiz-question-usingBuilds': {
 			content: 'Do you need a working, out-of-the box solution?',
-			hint: 'CKEditor 5 comes with ready-to-use <a href="#predefined-ckeditor-5-builds">predefined builds</a> that offer working solutions for different use cases. This is the fastest way to start.',
+			hint: 'CKEditor 5 comes with ready-to-use <a href="#predefined-ckeditor-5-builds">predefined builds</a> that offer working solutions for different use cases. This is a quick way to start.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingBuilds' ),
 				getDecisionButtonDefinition( false, 'quiz-question-onlineBuilder' ),
@@ -79,7 +91,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 
 		'quiz-question-onlineBuilder': {
 			content: 'Do you need a ready-to-use, custom solution?',
-			hint: 'CKEditor 5 online builder allows users to create a downloadable working copy with custom set of features.',
+			hint: 'CKEditor 5 online builder allows users to create a downloadable working copy with custom set of features. This is the easiest way to prepare a custom editor',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-onlineBuilder' ),
 				getDecisionButtonDefinition( false, 'quiz-question-fromSource' ),
@@ -123,18 +135,23 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 
 		// ------------------------------ Resolutions ----------------------------------------------
 
+		'quiz-resolution-usingCDN': {
+			content: 'Based on your answers, you should check out the {@link installation/getting-started/quick-start CDN installation}. You can also browse other installation methods listed below.',
+			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
+		},
+
 		'quiz-resolution-usingBuilds': {
 			content: 'Based on your answers, you should check out the {@link installation/advanced/predefined-builds predefined builds}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
 		'quiz-resolution-onlineBuilder': {
-			content: 'Based on your answers, you should check out the {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder online builder}. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
 		'quiz-resolution-fromSource': {
-			content: 'Based on your answers, you should check out the {@link installation/getting-started/quick-start#building-the-editor-from-source building CKEditor 5 from source}. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out the {@link installation/getting-started/quick-start-other#building-the-editor-from-source building CKEditor 5 from source}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 

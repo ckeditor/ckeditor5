@@ -5,13 +5,11 @@
 
 /* globals document, Event */
 
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 
-import ImageUploadPanelView from '../../../src/imageinsert/ui/imageinsertpanelview';
+import ImageInsertPanelView from '../../../src/imageinsert/ui/imageinsertpanelview';
 import ImageUploadFormRowView from '../../../src/imageinsert/ui/imageinsertformrowview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -25,11 +23,11 @@ import { createLabeledInputView } from '../../../src/imageinsert/utils';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'ImageUploadPanelView', () => {
+describe( 'ImageInsertPanelView', () => {
 	let view;
 
 	beforeEach( () => {
-		view = new ImageUploadPanelView( { t: val => val }, {
+		view = new ImageInsertPanelView( { t: val => val }, {
 			'insertImageViaUrl': createLabeledInputView( { t: val => val } )
 		} );
 		view.render();
@@ -53,15 +51,6 @@ describe( 'ImageUploadPanelView', () => {
 			expect( view.cancelButtonView.label ).to.equal( 'Cancel' );
 		} );
 
-		it( 'should contain instance of DropdownView as #dropdownView', () => {
-			expect( view.dropdownView ).to.be.instanceOf( DropdownView );
-		} );
-
-		it( 'should contain instance of SplitButtonView for the #dropdownView button', () => {
-			expect( view.dropdownView ).to.be.instanceOf( DropdownView );
-			expect( view.dropdownView.buttonView ).to.be.instanceOf( SplitButtonView );
-		} );
-
 		it( 'should contain #imageURLInputValue', () => {
 			expect( view.imageURLInputValue ).to.equal( '' );
 		} );
@@ -71,8 +60,8 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 
 		describe( 'integrations', () => {
-			it( 'should contain 2 integrations when they were passed to the ImageUploadPanelView as integrations object', () => {
-				const view = new ImageUploadPanelView( { t: val => val }, {
+			it( 'should contain 2 integrations when they were passed to the ImageInsertPanelView as integrations object', () => {
+				const view = new ImageInsertPanelView( { t: val => val }, {
 					'integration1': new View(),
 					'integration2': new ButtonView()
 				} );
@@ -82,7 +71,7 @@ describe( 'ImageUploadPanelView', () => {
 			} );
 
 			it( 'should contain insertImageViaUrl view when it is passed via integrations object', () => {
-				const view = new ImageUploadPanelView( { t: val => val }, {
+				const view = new ImageInsertPanelView( { t: val => val }, {
 					'insertImageViaUrl': createLabeledInputView( { t: val => val } ),
 					'integration1': new View(),
 					'integration2': new ButtonView()
@@ -94,7 +83,7 @@ describe( 'ImageUploadPanelView', () => {
 			} );
 
 			it( 'should contain no integrations when they were not provided', () => {
-				const view = new ImageUploadPanelView( { t: val => val } );
+				const view = new ImageInsertPanelView( { t: val => val } );
 
 				expect( view._integrations ).to.be.instanceOf( Collection );
 				expect( view._integrations.length ).to.equal( 0 );
@@ -164,7 +153,7 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker with no integrations', () => {
-			const view = new ImageUploadPanelView( { t: () => {} } );
+			const view = new ImageInsertPanelView( { t: () => {} } );
 
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 			view.render();
@@ -176,7 +165,7 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker with "insertImageViaUrl" integration', () => {
-			const view = new ImageUploadPanelView( { t: () => {} }, {
+			const view = new ImageInsertPanelView( { t: () => {} }, {
 				'insertImageViaUrl': createLabeledInputView( { t: val => val } )
 			} );
 
@@ -192,7 +181,7 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new ImageUploadPanelView( { t: () => {} } );
+			const view = new ImageInsertPanelView( { t: () => {} } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 

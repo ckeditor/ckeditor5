@@ -486,7 +486,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://upload.example.com/environment/assets/image-1/images/100.jpeg'
+						'https://ckbox.cloud/environment/assets/image-1/images/100.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -526,7 +526,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://upload.example.com/environment/assets/image-1/images/300.jpeg'
+						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -565,7 +565,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://upload.example.com/environment/assets/image-1/images/300.jpeg'
+						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -604,7 +604,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://upload.example.com/environment/assets/image-1/images/300.jpeg'
+						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -643,7 +643,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://upload.example.com/environment/assets/image-1/images/300.jpeg'
+						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -679,14 +679,14 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data.sources ).to.be.an( 'array' );
 					expect( data.sources ).to.deep.equal( [
 						{
-							srcset: 'https://upload.example.com/environment/assets/image-1/images/500.webp 500w,' +
-								'https://upload.example.com/environment/assets/image-1/images/1000.webp 1000w,' +
-								'https://upload.example.com/environment/assets/image-1/images/1500.webp 1500w,' +
-								'https://upload.example.com/environment/assets/image-1/images/2000.webp 2000w,' +
-								'https://upload.example.com/environment/assets/image-1/images/2500.webp 2500w,' +
-								'https://upload.example.com/environment/assets/image-1/images/3000.webp 3000w,' +
-								'https://upload.example.com/environment/assets/image-1/images/3500.webp 3500w,' +
-								'https://upload.example.com/environment/assets/image-1/images/4000.webp 4000w',
+							srcset: 'https://ckbox.cloud/environment/assets/image-1/images/500.webp 500w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/1000.webp 1000w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/1500.webp 1500w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/2000.webp 2000w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/2500.webp 2500w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/3000.webp 3000w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/3500.webp 3500w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/4000.webp 4000w',
 							sizes: '(max-width: 5000px) 100vw, 5000px',
 							type: 'image/webp'
 						}
@@ -721,14 +721,14 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data.sources ).to.be.an( 'array' );
 					expect( data.sources ).to.deep.equal( [
 						{
-							srcset: 'https://upload.example.com/environment/assets/image-1/images/140.webp 140w,' +
-								'https://upload.example.com/environment/assets/image-1/images/220.webp 220w,' +
-								'https://upload.example.com/environment/assets/image-1/images/300.webp 300w,' +
-								'https://upload.example.com/environment/assets/image-1/images/380.webp 380w,' +
-								'https://upload.example.com/environment/assets/image-1/images/460.webp 460w,' +
-								'https://upload.example.com/environment/assets/image-1/images/540.webp 540w,' +
-								'https://upload.example.com/environment/assets/image-1/images/620.webp 620w,' +
-								'https://upload.example.com/environment/assets/image-1/images/700.webp 700w',
+							srcset: 'https://ckbox.cloud/environment/assets/image-1/images/140.webp 140w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/220.webp 220w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/300.webp 300w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/380.webp 380w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/460.webp 460w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/540.webp 540w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/620.webp 620w,' +
+								'https://ckbox.cloud/environment/assets/image-1/images/700.webp 700w',
 							sizes: '(max-width: 700px) 100vw, 700px',
 							type: 'image/webp'
 						}
@@ -823,6 +823,51 @@ describe( 'CKBoxUploadAdapter', () => {
 			} );
 
 			return adapter.upload();
+		} );
+
+		it( 'should allow overriding the assets origin (`ckbox.assetsOrigin`)', () => {
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					items: [
+						{ name: 'category 1', id: 'id-category-1', extensions: [ 'png' ] },
+						{ name: 'category 2', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
+						{ name: 'category 3', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
+					], offset: 0, limit: 50, totalCount: 3
+				} )
+			] );
+
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+				201,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( { id: 'image-1' } )
+			] );
+
+			editor.config.set( 'ckbox.assetsOrigin', 'https://cloud.example.com' );
+			const adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loader );
+
+			sinon.stub( adapter, '_getImageWidth' ).resolves( 5000 );
+
+			return adapter.upload()
+				.then( data => {
+					expect( data ).to.contain.property( 'sources' );
+					expect( data.sources ).to.be.an( 'array' );
+					expect( data.sources ).to.deep.equal( [
+						{
+							srcset: 'https://cloud.example.com/environment/assets/image-1/images/500.webp 500w,' +
+								'https://cloud.example.com/environment/assets/image-1/images/1000.webp 1000w,' +
+								'https://cloud.example.com/environment/assets/image-1/images/1500.webp 1500w,' +
+								'https://cloud.example.com/environment/assets/image-1/images/2000.webp 2000w,' +
+								'https://cloud.example.com/environment/assets/image-1/images/2500.webp 2500w,' +
+								'https://cloud.example.com/environment/assets/image-1/images/3000.webp 3000w,' +
+								'https://cloud.example.com/environment/assets/image-1/images/3500.webp 3500w,' +
+								'https://cloud.example.com/environment/assets/image-1/images/4000.webp 4000w',
+							sizes: '(max-width: 5000px) 100vw, 5000px',
+							type: 'image/webp'
+						}
+					] );
+				} );
 		} );
 	} );
 

@@ -2,17 +2,19 @@
 category: features-image-upload
 menu-title: CKBox file manager
 modified_at: 2022-06-20
-order: 30
+order: 20
 ---
 
 {@snippet features/build-ckbox-source}
 
 # CKBox file manager
 
-This CKBox integration feature allows you to effortlessly and intuitively insert images as well as links to other files into the rich-text editor content. <!-- TODO: need to be linked once the product page is ready-->CKBox is a file manager and a file uploader that acts as a convenient interface for the cloud storage service. The CKBox feature provides a simple integration with this service for the CKEditor 5 WYSIWYG editor.
+This CKBox integration feature allows you to effortlessly and intuitively insert images as well as links to other files into the rich-text editor content. CKBox is a file manager and a file uploader that acts as a convenient interface for the cloud storage service. The CKBox feature provides a simple integration with this service for the CKEditor 5 WYSIWYG editor. To find out more about CKBox, the brand-new file manager, visit the [CKBox website](https://ckeditor.com/ckbox/).
 
 <info-box info>
 	CKBox is a commercial solution. Please [contact us](https://ckeditor.com/contact/) if you would like to purchase a license. Let us know if you have any feedback or questions!
+
+	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features).
 
 	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds} for convenience, but the editor will still work properly without activating it.
 </info-box>
@@ -38,7 +40,7 @@ To use this feature in your application, you must first load the CKBox library a
 The easiest way to load the CKBox library is to include the `<script>` tag loading the `ckbox.js` file first:
 
 ```html
-<script src="https://cdn.ckbox.io/CKBox/0.0.3/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/1.0.0/ckbox.js"></script>
 ```
 
 Then, install the [`@ckeditor/ckeditor5-ckbox`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox) package:
@@ -101,14 +103,13 @@ ClassicEditor
 	.catch( ... );
 ```
 
-Please keep in mind that if you define your own upload category mappings, only these will be taken into account while finding the appropriate category for the uploaded image type as the cloud service configuration will be overridden. Category mappings configured on the server will not be searched in that case. The image will not be uploaded (and inserted) into the editor in the following cases:
+Please keep in mind that if you define your own upload category mappings for a particular image type, only your first found category will be taken into account while finding the appropriate category for the uploaded image. Category mappings configured on the server will not be searched in that case. The image will not be uploaded (and hence inserted into the editor) in the following cases:
 
-* If you have defined your own category mappings in `defaultUploadCategories`:
-   * the category for the uploaded image type is not defined there,
+* If you have defined your own category mapping in `defaultUploadCategories` for the uploaded image type:
    * the category does not exist on the server,
-   * the category exists on the server, but it does not allow the uploaded image type.
-* If you have not defined your own category mappings in `defaultUploadCategories`:
-   * there is no category mapping for the uploaded image on the server.
+   * the category exists on the server, but the server configuration does not allow the uploaded image type.
+* If you have not defined your own category mapping in `defaultUploadCategories` for the uploaded image type:
+   * there is no category mapping for the uploaded image type on the server.
 
 ### Adding the ID for inserted assets
 
@@ -127,6 +128,32 @@ ClassicEditor
 	} )
 	.then( ... )
 	.catch( ... );
+```
+
+### Changing the language
+
+By default, the CKBox dialog takes the current language from the editor. If you want to use a different language, you can set the language code in the {@link module:ckbox/ckbox~CKBoxConfig#language `config.ckbox.language`} option:
+
+```js
+import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKBox, ... ],
+		toolbar: [ 'ckbox', ... ],
+		ckbox: {
+			language: 'es'
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+Also, make sure to include the translation file after loading the CKBox library:
+
+```html
+<script src="https://cdn.ckbox.io/CKBox/1.0.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/1.0.0/translations/es.js"></script>
 ```
 
 ### Providing the token URL
@@ -148,9 +175,9 @@ ClassicEditor
 	.catch( ... );
 ```
 
-### Configuring the API service origin
+### Configuring the API service and assets origin
 
-If the cloud service is hosted in your own environment you should configure the base URL of the API service via the {@link module:ckbox/ckbox~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option:
+If the cloud service is hosted in your own environment you should configure the base URL of the API service via the {@link module:ckbox/ckbox~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`}, and {@link module:ckbox/ckbox~CKBoxConfig#assetsOrigin `config.ckbox.assetsOrigin`} options:
 
 ```js
 import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
@@ -160,7 +187,8 @@ ClassicEditor
 		plugins: [ CKBox, ... ],
 		toolbar: [ 'ckbox', ... ],
 		ckbox: {
-			serviceOrigin: 'https://example.com/'
+			serviceOrigin: 'https://example.com/',
+			assetsOrigin: 'https://cloud.example.com/',
 		}
 	} )
 	.then( ... )
