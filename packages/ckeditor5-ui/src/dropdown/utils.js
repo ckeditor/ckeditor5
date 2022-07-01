@@ -143,6 +143,20 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
 
 	buttons.map( view => toolbarView.items.add( view ) );
 
+	dropdownView.on( 'change:isOpen', () => {
+		// A listener to focus the first active dropdown option upon opening, see #11838.
+		if ( !dropdownView.isOpen ) {
+			return;
+		}
+
+		for ( const toolbarItem of toolbarView.items ) {
+			if ( toolbarItem.isOn ) {
+				toolbarItem.focus();
+				break;
+			}
+		}
+	}, { priority: 'low' } );
+
 	dropdownView.panelView.children.add( toolbarView );
 	toolbarView.items.delegate( 'execute' ).to( dropdownView );
 }
@@ -227,11 +241,7 @@ export function addListToDropdown( dropdownView, items ) {
 
 			if ( item.model && item.model.isOn ) {
 				const listItemView = listView.items.get( i );
-
-				// Calling focus tracker to focus the view is not enough. It sets the focused element
-				// internally, but doesn't actually call focus method on a given view.
-				listView.focusTracker._focus( listItemView );
-				listView._focusCycler._focus( listItemView );
+				listItemView.focus();
 				break;
 			}
 		}
