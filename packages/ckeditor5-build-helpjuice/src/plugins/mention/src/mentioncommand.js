@@ -87,7 +87,7 @@ export default class MentionCommand extends Command {
 
 		const mentionText = options.text || mentionName;
 
-		const mention = _addMentionAttributes( { _text: mentionText, id: mentionID, link: mentionLink, codename: mentionCodename }, mentionData);
+		const mention = _addMentionAttributes( mentionData, { _text: mentionText, id: mentionID, link: mentionLink, codename: mentionCodename } );
 
 		if ( options.marker.length != 1 ) {
 			/**
