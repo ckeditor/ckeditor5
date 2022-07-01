@@ -296,6 +296,35 @@ describe( 'utils', () => {
 				dropdownView.toolbarView.items.first.fire( 'execute' );
 			} );
 		} );
+
+		describe( 'extra dropdown open listener', () => {
+			it( 'focuses active item upon dropdown opening', () => {
+				dropdownView.toolbarView.items.get( 0 ).isOn = true;
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( dropdownView.toolbarView.items.get( 0 ).element );
+			} );
+
+			it( 'focuses nth active item upon dropdown opening', () => {
+				dropdownView.toolbarView.items.get( 1 ).isOn = true;
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( dropdownView.toolbarView.items.get( 1 ).element );
+			} );
+
+			it( 'focuses the first item if multiple items are active', () => {
+				dropdownView.toolbarView.items.get( 0 ).isOn = true;
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( dropdownView.toolbarView.items.get( 0 ).element );
+			} );
+		} );
 	} );
 
 	describe( 'addListToDropdown()', () => {
@@ -481,8 +510,7 @@ describe( 'utils', () => {
 				// The focus logic happens when the dropdown is opened.
 				dropdownView.isOpen = true;
 
-				expect( dropdownView.listView.focusTracker.isFocused ).to.be.true;
-				expect( dropdownView.listView.focusTracker.focusedElement ).to.equal( listItems.get( 0 ) );
+				expect( document.activeElement ).to.equal( getFirstListViewDomButton( listItems.get( 0 ) ) );
 			} );
 
 			it( 'focuses nth active item upon dropdown opening', () => {
@@ -504,11 +532,10 @@ describe( 'utils', () => {
 				// The focus logic happens when the dropdown is opened.
 				dropdownView.isOpen = true;
 
-				expect( dropdownView.listView.focusTracker.isFocused ).to.be.true;
-				expect( dropdownView.listView.focusTracker.focusedElement ).to.equal( listItems.get( 1 ) );
+				expect( document.activeElement ).to.equal( getFirstListViewDomButton( listItems.get( 1 ) ) );
 			} );
 
-			it( 'focuses the item if multiple items are active', () => {
+			it( 'focuses the first item if multiple items are active', () => {
 				const buttonModels = [
 					new Model( { label: 'a' } ),
 					new Model( { label: 'b', isOn: true } ),
@@ -533,9 +560,12 @@ describe( 'utils', () => {
 				// The focus logic happens when the dropdown is opened.
 				dropdownView.isOpen = true;
 
-				expect( dropdownView.listView.focusTracker.isFocused ).to.be.true;
-				expect( dropdownView.listView.focusTracker.focusedElement ).to.equal( listItems.get( 1 ) );
+				expect( document.activeElement ).to.equal( getFirstListViewDomButton( listItems.get( 1 ) ) );
 			} );
+
+			function getFirstListViewDomButton( listView ) {
+				return listView.children.first.element;
+			}
 		} );
 	} );
 } );
