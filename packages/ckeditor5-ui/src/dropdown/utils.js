@@ -216,6 +216,27 @@ export function addListToDropdown( dropdownView, items ) {
 		}
 	} );
 
+	dropdownView.on( 'change:isOpen', () => {
+		// A listener to focus the first active dropdown option upon opening, see #11838.
+		if ( !dropdownView.isOpen ) {
+			return;
+		}
+
+		for ( let i = 0; i < items.length; i++ ) {
+			const item = items.get( i );
+
+			if ( item.model && item.model.isOn ) {
+				const listItemView = listView.items.get( i );
+
+				// Calling focus tracker to focus the view is not enough. It sets the focused element
+				// internally, but doesn't actually call focus method on a given view.
+				listView.focusTracker._focus( listItemView );
+				listView._focusCycler._focus( listItemView );
+				break;
+			}
+		}
+	}, { priority: 'low' } );
+
 	dropdownView.panelView.children.add( listView );
 
 	listView.items.delegate( 'execute' ).to( dropdownView );
