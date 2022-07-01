@@ -17,14 +17,15 @@ import {
 } from './constants';
 
 /**
- * Collects all affected by the differ table model elements. The returned set may be empty.
+ * Collects all table model elements affected by the differ. Only tables with 'columnsWidth' attribute
+ * are taken into account. The returned set may be empty.
  *
  * @param {Array.<module:engine/model/differ~DiffItem>} changes
  * @param {module:engine/model/model~Model} model
  * @returns {Set.<module:engine/model/element~Element>}
  */
 export function getAffectedTables( changes, model ) {
-	const tablesToProcess = new Set();
+	const affectedTables = new Set();
 
 	for ( const change of changes ) {
 		let referencePosition = null;
@@ -51,33 +52,26 @@ export function getAffectedTables( changes, model ) {
 				break;
 		}
 
-		const affectedTables = [];
-
-		if ( referencePosition ) {
-			const tableNode = ( referencePosition.nodeAfter && referencePosition.nodeAfter.name === 'table' ) ?
-				referencePosition.nodeAfter : referencePosition.findAncestor( 'table' );
-
-			if ( tableNode ) {
-				const range = model.createRangeOn( tableNode );
-
-				for ( const node of range.getItems() ) {
-					if ( node.is( 'element' ) && node.name === 'table' ) {
-						affectedTables.push( node );
-					}
-				}
-			}
+		if ( !referencePosition ) {
+			continue;
 		}
 
-		const table = affectedTables;
+		const tableNode = ( referencePosition.nodeAfter && referencePosition.nodeAfter.name === 'table' ) ?
+			referencePosition.nodeAfter : referencePosition.findAncestor( 'table' );
 
-		if ( table ) {
-			for ( const tableItem of table ) {
-				tablesToProcess.add( tableItem );
+		if ( !tableNode ) {
+			continue;
+		}
+
+		// We iterate over the whole table looking for the nested tables that are also affected.
+		for ( const node of model.createRangeOn( tableNode ).getItems() ) {
+			if ( node.is( 'element' ) && node.name === 'table' && node.hasAttribute( 'columnWidths' ) ) {
+				affectedTables.add( node );
 			}
 		}
 	}
 
-	return tablesToProcess;
+	return affectedTables;
 }
 
 /**
@@ -104,26 +98,17 @@ export function getTableWidthInPixels( table, editor ) {
 	return getElementWidthInPixels( domTbody );
 }
 
-/**
- * Calculates the column widths in pixels basing on the `columnWidths` table attribute:
- * - If the value for a given column is provided in pixels then it is just converted to a number and returned.
- * - Otherwise, it is assumed that unit is percentage and the column width is calculated proportionally to the whole table width.
- *
- * @param {module:engine/model/element~Element} table
- * @param {module:core/editor/editor~Editor} editor
- * @returns {Array.<Number>}
- */
-export function getColumnWidthsInPixels( table, editor ) {
-	const tableWidthInPixels = getTableWidthInPixels( table, editor );
+// Returns the `<tbody>` view element, if it exists in a table. Returns `undefined` otherwise.
+//
+// @private
+// @param {module:engine/model/element~Element} table
+// @param {module:core/editor/editor~Editor} editor
+// @returns {module:engine/view/element~Element|undefined}
+function getTbodyViewElement( table, editor ) {
+	const viewFigure = editor.editing.mapper.toViewElement( table );
+	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
 
-	return table.getAttribute( 'columnWidths' )
-		.split( ',' )
-		.map( columnWidth => columnWidth.trim() )
-		.map( columnWidth => {
-			return columnWidth.endsWith( 'px' ) ?
-				parseFloat( columnWidth ) :
-				parseFloat( columnWidth ) * tableWidthInPixels / 100;
-		} );
+	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'tbody' ) );
 }
 
 /**
@@ -183,24 +168,11 @@ export function isTableRendered( table, editor ) {
 // @param {module:engine/model/element~Element} table
 // @param {module:core/editor/editor~Editor} editor
 // @returns {module:engine/view/element~Element|undefined}
-function getColgroupViewElement( table, editor ) {
-	const viewFigure = editor.editing.mapper.toViewElement( table );
+function getColgroupViewElement( modelTable, editor ) {
+	const viewFigure = editor.editing.mapper.toViewElement( modelTable );
 	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
 
 	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'colgroup' ) );
-}
-
-// Returns the `<tbody>` view element, if it exists in a table. Returns `undefined` otherwise.
-//
-// @private
-// @param {module:engine/model/element~Element} table
-// @param {module:core/editor/editor~Editor} editor
-// @returns {module:engine/view/element~Element|undefined}
-function getTbodyViewElement( table, editor ) {
-	const viewFigure = editor.editing.mapper.toViewElement( table );
-	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
-
-	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'tbody' ) );
 }
 
 /**
@@ -263,15 +235,16 @@ export function sumArray( array ) {
 
 /**
  * Makes sure that the sum of the widths from all columns is 100%. If the sum of all the widths is not equal 100%, all the widths are
- * changed proportionally so that they all sum back to 100%.
+ * changed proportionally so that they all sum back to 100%. If there are columns without specified width, it will be distributed
+ * equally between them based on the amount remaining after assigning the known widths.
  *
  * Currently, only widths provided as percentage values are supported.
  *
- * @param {String} columnWidthsAttribute
+ * @param {Array.<Number>} columnWidths
  * @returns {Array.<Number>}
  */
-export function normalizeColumnWidthsAttribute( columnWidthsAttribute ) {
-	const columnWidths = prepareColumnWidths( columnWidthsAttribute );
+export function normalizeColumnWidths( columnWidths ) {
+	columnWidths = calculateMissingColumnWidths( columnWidths );
 	const totalWidth = sumArray( columnWidths );
 
 	if ( totalWidth === 100 ) {
@@ -301,15 +274,13 @@ export function normalizeColumnWidthsAttribute( columnWidthsAttribute ) {
 // - If there is enough free space in the table for all uninitialized columns to have at least the minimum allowed width for all of them,
 //   then set this width equally for all uninitialized columns.
 // - Otherwise, just set the minimum allowed width for all uninitialized columns. The sum of all column widths will be greater than 100%,
-//   but then it will be adjusted proportionally to 100% in {@link #normalizeColumnWidthsAttribute `normalizeColumnWidthsAttribute()`}.
+//   but then it will be adjusted proportionally to 100% in {@link #normalizeColumnWidths `normalizeColumnWidths()`}.
 //
 // @private
-// @param {String} columnWidthsAttribute
+// @param {Array.<Number>}
 // @returns {Array.<Number>}
-function prepareColumnWidths( columnWidthsAttribute ) {
-	const columnWidths = columnWidthsAttribute
-		.split( ',' )
-		.map( columnWidth => columnWidth.trim() );
+function calculateMissingColumnWidths( columnWidthsAttribute ) {
+	const columnWidths = columnWidthsAttribute.map( columnWidth => columnWidth.trim() );
 
 	const numberOfUninitializedColumns = columnWidths.filter( columnWidth => columnWidth === 'auto' ).length;
 
@@ -333,16 +304,16 @@ function prepareColumnWidths( columnWidthsAttribute ) {
 //
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
 // @param {module:engine/view/element~Element} viewCell View cell.
-export function insertColumnResizerElements( viewWriter, viewCell ) {
+export function insertColumnResizerElement( viewWriter, viewCell ) {
 	let viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
-		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
+		.find( viewElement => viewElement.hasClass( 'ck-table-column-resizer' ) );
 
 	if ( viewTableColumnResizerElement ) {
 		return;
 	}
 
 	viewTableColumnResizerElement = viewWriter.createUIElement( 'div', {
-		class: 'table-column-resizer'
+		class: 'ck-table-column-resizer'
 	} );
 
 	viewWriter.insert(
@@ -351,17 +322,18 @@ export function insertColumnResizerElements( viewWriter, viewCell ) {
 	);
 }
 
-// Removes column resizer element from a view cell.
+// Calculates the total horizontal space taken by the cell. That includes:
+// * width;
+// * left and red padding;
+// * border width.
 //
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
-// @param {module:engine/view/element~Element} viewCell View cell.
-export function removeColumnResizerElements( viewWriter, viewCell ) {
-	const viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
-		.find( viewElement => viewElement.hasClass( 'table-column-resizer' ) );
+// @param {HTMLElement} domCell
+// @returns {Number} Width in pixels without `px` at the end
+export function getDomCellOuterWidth( domCell ) {
+	const styles = global.window.getComputedStyle( domCell );
 
-	if ( !viewTableColumnResizerElement ) {
-		return;
-	}
-
-	viewWriter.remove( viewTableColumnResizerElement );
+	return parseFloat( styles.width ) +
+		parseFloat( styles.paddingLeft ) +
+		parseFloat( styles.paddingRight ) +
+		parseFloat( styles.borderWidth );
 }

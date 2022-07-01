@@ -214,7 +214,7 @@ describe( 'TableColumnResizeEditing', () => {
 								<colgroup>
 									<col style="width:33.33%;">
 									<col style="width:33.33%;">
-									<col style="width:33.33%;">
+									<col style="width:33.34%;">
 									<col style="width:33.33%;">
 								</colgroup>
 								<tbody>
@@ -230,6 +230,41 @@ describe( 'TableColumnResizeEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table columnWidths="33.33%,33.33%,33.34%">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should adjust the missing column widths proportionally', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:50%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table columnWidths="50%,25%,25%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>11</paragraph>' +
@@ -319,7 +354,7 @@ describe( 'TableColumnResizeEditing', () => {
 					} );
 
 					const domTable = getDomTable( view );
-					const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
+					const resizers = Array.from( domTable.querySelectorAll( '.ck-table-column-resizer' ) );
 
 					expect( resizers.length ).to.equal( 4 );
 				} );
@@ -333,7 +368,7 @@ describe( 'TableColumnResizeEditing', () => {
 					editor.execute( 'insertTableRowBelow' );
 
 					const domTable = getDomTable( view );
-					const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
+					const resizers = Array.from( domTable.querySelectorAll( '.ck-table-column-resizer' ) );
 
 					expect( resizers.length ).to.equal( 9 );
 				} );
@@ -347,7 +382,7 @@ describe( 'TableColumnResizeEditing', () => {
 					editor.execute( 'splitTableCellVertically' );
 
 					const domTable = getDomTable( view );
-					const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
+					const resizers = Array.from( domTable.querySelectorAll( '.ck-table-column-resizer' ) );
 
 					expect( resizers.length ).to.equal( 7 );
 				} );
@@ -520,31 +555,6 @@ describe( 'TableColumnResizeEditing', () => {
 			} );
 		} );
 
-		it( 'transfers the inline cell width to the whole column', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01', '[02]' ],
-				[ '10', '11', '12' ]
-			], { columnWidths: '25%,25%,50%' } ) );
-
-			const table = model.document.getRoot().getChild( 0 );
-
-			setInitialWidthsInPx( editor, null, 201 );
-
-			model.change( writer => {
-				const cell = table.getChild( 1 ).getChild( 1 );
-
-				writer.setAttribute( 'width', '100px', cell );
-			} );
-
-			const tableWidths = table.getAttribute( 'columnWidths' );
-
-			expect( tableWidths ).to.be.equal( '25%,50%,25%' );
-
-			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
-
-			expect( Math.abs( 100 - finalViewColumnWidthsPx[ 1 ] ) < PIXEL_PRECISION ).to.be.true;
-		} );
-
 		it( 'should find and allow for resizing nested tables', () => {
 			editor.setData(
 				`<figure class="table">
@@ -570,7 +580,7 @@ describe( 'TableColumnResizeEditing', () => {
 				</figure>`
 			);
 
-			expect( document.getElementsByClassName( 'table-column-resizer' ).length ).to.equal( 4 );
+			expect( document.getElementsByClassName( 'ck-table-column-resizer' ).length ).to.equal( 4 );
 		} );
 	} );
 
@@ -583,7 +593,7 @@ describe( 'TableColumnResizeEditing', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ]
-			], { columnWidths: '20%,25%,55%' } ) );
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
 			// Test-agnostic.
 			const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -620,7 +630,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
+				], { columnWidths: '25%,25%,50%', tableWidth: '500px' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -654,7 +664,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
+				], { columnWidths: '25%,25%,50%', tableWidth: '500px' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -688,7 +698,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
+				], { columnWidths: '25%,25%,50%', tableWidth: '500px' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -719,7 +729,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
 				const columnToResizeIndex = 1;
 				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
@@ -762,7 +772,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
 				const columnToResizeIndex = 0;
 				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
@@ -809,7 +819,7 @@ describe( 'TableColumnResizeEditing', () => {
 					[ { contents: '00', colspan: 2 }, '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -844,7 +854,7 @@ describe( 'TableColumnResizeEditing', () => {
 					[ '00', '01', { contents: '02', rowspan: 3 } ],
 					[ '10', '11' ],
 					[ '20', '21' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -897,7 +907,7 @@ describe( 'TableColumnResizeEditing', () => {
 					const mouseMovementVector = { x: -10, y: 0 };
 
 					editor.setData(
-						`<figure class="table" style="float:left;">
+						`<figure class="table" style="float:left;width:500px;">
 							<table>
 								<tbody>
 									<tr>
@@ -914,7 +924,7 @@ describe( 'TableColumnResizeEditing', () => {
 					const alignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 					editor.setData(
-						`<figure class="table">
+						`<figure class="table" style="width:500px;">
 							<table>
 								<tbody>
 									<tr>
@@ -942,7 +952,7 @@ describe( 'TableColumnResizeEditing', () => {
 					const mouseMovementVector = { x: -10, y: 0 };
 
 					setModelData( editor.model,
-						'<table columnWidths="100%">' +
+						'<table columnWidths="100%" tableWidth="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'[<table columnWidths="50%,50%">' +
@@ -964,7 +974,7 @@ describe( 'TableColumnResizeEditing', () => {
 					const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
 					const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
 
-					setInitialWidthsInPx( editor, viewNestedTable, 201, 300 );
+					setInitialWidthsInPx( editor, viewNestedTable, 201, 400 );
 
 					// Test-agnostic.
 					const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
@@ -989,23 +999,25 @@ describe( 'TableColumnResizeEditing', () => {
 
 					assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="100%">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<table columnWidths="55.56%,44.44%" tableWidth="63.11%">' +
-										'<tableRow>' +
-											'<tableCell>' +
-												'<paragraph>foo</paragraph>' +
-											'</tableCell>' +
-											'<tableCell>' +
-												'<paragraph>bar</paragraph>' +
-											'</tableCell>' +
-										'</tableRow>' +
-									'</table>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>'
+					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
+						new RegExp(
+							'<table columnWidths="100%" tableWidth="100%">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<table columnWidths="55\\.5[\\d]%,44\\.4[\\d]%" tableWidth="46\\.7[\\d]%">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>foo</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>bar</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+										'</table>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						)
 					);
 				} );
 
@@ -1015,7 +1027,7 @@ describe( 'TableColumnResizeEditing', () => {
 					const mouseMovementVector = { x: 10, y: 0 };
 
 					setModelData( editor.model,
-						'<table columnWidths="100%">' +
+						'<table columnWidths="100%" tableWidth="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'[<table tableWidth="90%" columnWidths="50%,50%">' +
@@ -1064,7 +1076,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
 						new RegExp(
-							'<table columnWidths="100%">' +
+							'<table columnWidths="100%" tableWidth="100%">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<table columnWidths="45\\.45%,54\\.55%" tableWidth="77\\.1[\\d]%">' +
@@ -1090,7 +1102,7 @@ describe( 'TableColumnResizeEditing', () => {
 					const mouseMovementVector = { x: 10, y: 0 };
 
 					setModelData( editor.model,
-						'<table columnWidths="100%">' +
+						'<table columnWidths="100%" tableWidth="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'[<table columnWidths="25%,25%,50%" tableWidth="100%">' +
@@ -1141,7 +1153,7 @@ describe( 'TableColumnResizeEditing', () => {
 					assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="100%">' +
+						'<table columnWidths="100%" tableWidth="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<table columnWidths="25%,28.52%,46.48%" tableWidth="100%">' +
@@ -1185,7 +1197,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
+				], { columnWidths: '25%,25%,50%', tableWidth: '100%' } ) );
 
 				const columnToResizeIndex = 0;
 				const mouseMovementVector = { x: 10, y: 0 };
@@ -1219,7 +1231,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
+				], { columnWidths: '25%,25%,50%', tableWidth: '100%' } ) );
 
 				const columnToResizeIndex = 0;
 				const mouseMovementVector = { x: -10, y: 0 };
@@ -1256,7 +1268,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
+				], { columnWidths: '25%,25%,50%', tableWidth: '100%' } ) );
 
 				// Test-agnostic.
 				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -1287,7 +1299,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '100%' } ) );
 
 				const columnToResizeIndex = 1;
 				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
@@ -1330,7 +1342,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '100%' } ) );
 
 				const columnToResizeIndex = 0;
 				const initialColumnWidth = getColumnWidth( getDomTable( view ), columnToResizeIndex );
@@ -1367,7 +1379,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '100%' } ) );
 
 				const columnToResizeIndex = 0;
 				const cellRect = getDomTableCellRects( getDomTable( view ), columnToResizeIndex );
@@ -1402,7 +1414,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '100%' } ) );
 
 				const columnToResizeIndex = 0;
 				const tableRect = getDomTableRects( getDomTable( view ) );
@@ -1437,7 +1449,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '100%' } ) );
 
 				const columnToResizeIndex = 0;
 				const cellRect = getDomTableCellRects( getDomTable( view ), columnToResizeIndex );
@@ -1472,7 +1484,7 @@ describe( 'TableColumnResizeEditing', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				], { columnWidths: '20%,25%,55%' } ) );
+				], { columnWidths: '20%,25%,55%', tableWidth: '100%' } ) );
 
 				const columnToResizeIndex = 1;
 				// We need the width of the last cell to move the cursor beyond it.
@@ -1677,7 +1689,7 @@ describe( 'TableColumnResizeEditing', () => {
 					setModelData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '100px' } ) );
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'<table columnWidths="100%" tableWidth="100px">' +
+						'<table tableWidth="100px">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>[]foo</paragraph>' +
@@ -1689,30 +1701,32 @@ describe( 'TableColumnResizeEditing', () => {
 
 				it( 'should be added to the table after the last column has been resized', () => {
 					const columnToResizeIndex = 2;
-					const mouseMovementVector = { x: -10, y: 0 };
+					const mouseMovementVector = { x: 10, y: 0 };
 
 					setModelData( model, modelTable( [
 						[ '00', '01', '02' ]
-					], { columnWidths: '20%,25%,55%' } ) );
+					] ) );
 
-					setInitialWidthsInPx( editor, null, 201, 300 );
+					setInitialWidthsInPx( editor, null, null, 300 );
 
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="22.22%,27.78%,50%" tableWidth="60%">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<paragraph>00</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>01</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>02</paragraph>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>]'
+					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
+						new RegExp(
+							'<table columnWidths="29\\.1%,29\\.1%,41\\.8%" tableWidth="52\\.4[\\d]%">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>00</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>01</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>02</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						)
 					);
 				} );
 
@@ -1751,53 +1765,30 @@ describe( 'TableColumnResizeEditing', () => {
 
 					setModelData( model, modelTable( [
 						[ '[00', '01', '02]' ]
-					], { tableWidth: '100px', columnWidths: '25%,25%,50%' } ) );
+					], { tableWidth: '40%', columnWidths: '25%,25%,50%' } ) );
 
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
-					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="25%,34.6%,40.4%" tableWidth="100px">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<paragraph>00</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>01</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>02</paragraph>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>]'
-					);
-				} );
-
-				it( 'is not being added when any of the middle columns is resized', () => {
-					const columnToResizeIndex = 1;
-					const mouseMovementVector = { x: -40, y: 0 };
-
-					setModelData( model, modelTable( [
-						[ '00', '01', '02' ]
-					], { columnWidths: '20%,25%,55%' } ) );
-
-					setInitialWidthsInPx( editor, null, null, 300 );
-
-					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
-
-					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="20%,13.38%,66.62%">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<paragraph>00</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>01</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>02</paragraph>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>]'
+					// The actual column widths will vary depending on the screen properties.
+					// In different tests it is handled by setting the particular editor and table width,
+					// but here we want to make sure that once set, `tableWidth` prop doesn't change,
+					// while the rest (column widths) is covered elsewhere not very important.
+					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
+						new RegExp(
+							'<table columnWidths="25%,2[\\d]\\.[\\d][\\d]%,4[\\d]\\.[\\d][\\d]%" tableWidth="40%">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>00</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>01</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>02</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						)
 					);
 				} );
 			} );
@@ -1994,7 +1985,7 @@ describe( 'TableColumnResizeEditing', () => {
 			return sum;
 		}, 0 );
 
-		expect( ( Math.abs( 100 - widthsSum ) ) < PERCENTAGE_PRECISION ).to.be.true;
+		expect( ( Math.abs( 100 - widthsSum ) ) < PERCENTAGE_PRECISION, 'Models widths dont sum up well' ).to.be.true;
 	}
 
 	function calculateExpectedWidthPixels( initialWidths, vector, contentDirection, columnIndex ) {

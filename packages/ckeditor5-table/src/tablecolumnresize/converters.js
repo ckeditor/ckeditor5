@@ -9,7 +9,7 @@
 
 /* istanbul ignore file */
 
-import { getNumberOfColumn } from './utils';
+import { getNumberOfColumn, normalizeColumnWidths } from './utils';
 
 /**
  * Returns a helper for converting a view `<colgroup>` and `<col>` elements to the model table `columnWidths` attribute.
@@ -31,11 +31,16 @@ export function upcastColgroupElement( editor ) {
 			return;
 		}
 
-		const modelWriter = conversionApi.writer;
+		if ( !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
+			return;
+		}
+
+		conversionApi.consumable.consume( data.viewItem, { name: true } );
+
 		const viewColgroupElement = data.viewItem;
 		const numberOfColumns = getNumberOfColumn( modelTable, editor );
 
-		const columnWidthsAttribute = [ ...Array( numberOfColumns ).keys() ]
+		let columnWidths = [ ...Array( numberOfColumns ).keys() ]
 			.map( columnIndex => {
 				const viewChild = viewColgroupElement.getChild( columnIndex );
 
@@ -50,10 +55,13 @@ export function upcastColgroupElement( editor ) {
 				}
 
 				return viewColWidth;
-			} )
-			.join( ',' );
+			} );
 
-		modelWriter.setAttribute( 'columnWidths', columnWidthsAttribute, modelTable );
+		if ( columnWidths.includes( 'auto' ) ) {
+			columnWidths = normalizeColumnWidths( columnWidths ).map( width => width + '%' );
+		}
+
+		conversionApi.writer.setAttribute( 'columnWidths', columnWidths.join( ',' ), modelTable );
 	} );
 }
 
@@ -76,6 +84,7 @@ export function downcastTableColumnWidthsAttribute() {
 			}
 		} else {
 			removeColgroupElement( viewWriter, viewTable );
+			viewWriter.removeClass( 'ck-table-resized', viewTable );
 		}
 	} );
 }
