@@ -78,13 +78,25 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._isResizingActive = false;
 
 		/**
-		 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only mode or the
-		 * `TableColumnResize` plugin is disabled.
+		 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only
+		 * or comments-only mode or the `TableColumnResize` plugin is disabled.
 		 *
 		 * @private
+		 * @observable
 		 * @member {Boolean}
 		 */
-		this._isResizingAllowed = true;
+		this.set( '_isResizingAllowed', true );
+		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
+			if ( value ) {
+				editor.editing.view.change( writer => {
+					writer.removeClass( 'ck-comments-only', editor.editing.view.document.getRoot() );
+				} );
+			} else {
+				editor.editing.view.change( writer => {
+					writer.addClass( 'ck-comments-only', editor.editing.view.document.getRoot() );
+				} );
+			}
+		} );
 
 		/**
 		 * A temporary storage for the required data needed to correctly calculate the widths of the resized columns. This storage is
@@ -128,14 +140,20 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 		const columnResizePlugin = editor.plugins.get( 'TableColumnResize' );
 
+		editor.commands.add( 'resizeTableWidth', new TableWidthResizeCommand( editor ) );
+		editor.commands.add( 'resizeColumnWidths', new TableColumnWidthsCommand( editor ) );
+
+		const resizeTableWidthCommand = editor.commands.get( 'resizeTableWidth' );
+		const resizeColumnWidthsCommand = editor.commands.get( 'resizeColumnWidths' );
+
 		this.bind( '_isResizingAllowed' ).to(
 			editor, 'isReadOnly',
 			columnResizePlugin, 'isEnabled',
-			( isEditorReadOnly, isPluginEnabled ) => !isEditorReadOnly && isPluginEnabled
+			resizeTableWidthCommand, 'isEnabled',
+			resizeColumnWidthsCommand, 'isEnabled',
+			( isEditorReadOnly, isPluginEnabled, isResizeTableWidthCommandEnabled, isResizeColumnWidthsCommandEnabled ) =>
+				!isEditorReadOnly && isPluginEnabled && isResizeTableWidthCommandEnabled && isResizeColumnWidthsCommandEnabled
 		);
-
-		editor.commands.add( 'resizeTableWidth', new TableWidthResizeCommand( editor ) );
-		editor.commands.add( 'resizeColumnWidths', new TableColumnWidthsCommand( editor ) );
 	}
 
 	/**

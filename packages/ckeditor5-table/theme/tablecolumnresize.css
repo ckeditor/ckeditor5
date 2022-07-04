@@ -60,3 +60,7 @@
 .ck-content.ck-read-only .table .ck-table-column-resizer {
 	display: none;
 }
+
+.ck-content.ck-comments-only .table .ck-table-column-resizer {
+	display: none;
+}
