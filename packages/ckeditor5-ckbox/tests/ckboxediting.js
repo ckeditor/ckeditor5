@@ -226,6 +226,7 @@ describe( 'CKBoxEditing', () => {
 
 			expect( editor.config.get( 'ckbox' ) ).to.deep.equal( {
 				serviceOrigin: 'https://api.ckbox.io',
+				assetsOrigin: 'https://ckbox.cloud',
 				defaultUploadCategories: null,
 				ignoreDataId: false,
 				language: 'pl',
@@ -247,6 +248,7 @@ describe( 'CKBoxEditing', () => {
 
 			expect( editor.config.get( 'ckbox' ) ).to.deep.equal( {
 				serviceOrigin: 'https://api.ckbox.io',
+				assetsOrigin: 'https://ckbox.cloud',
 				defaultUploadCategories: null,
 				ignoreDataId: false,
 				language: 'en',

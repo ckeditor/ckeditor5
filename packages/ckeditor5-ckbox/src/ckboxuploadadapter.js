@@ -127,6 +127,13 @@ class Adapter {
 		 * @member {String} #serviceOrigin
 		 */
 		this.serviceOrigin = editor.config.get( 'ckbox.serviceOrigin' );
+
+		/**
+		 * The base URL from where all assets are served.
+		 *
+		 * @member {String} #assetsOrigin
+		 */
+		this.assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' );
 	}
 
 	/**
@@ -259,7 +266,7 @@ class Adapter {
 				const imageUrls = getImageUrls( {
 					token: this.token,
 					id: data.id,
-					origin: this.serviceOrigin,
+					origin: this.assetsOrigin,
 					width,
 					extension
 				} );

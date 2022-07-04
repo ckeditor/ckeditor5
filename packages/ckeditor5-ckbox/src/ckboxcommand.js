@@ -120,7 +120,8 @@ export default class CKBoxCommand extends Command {
 	 * @returns {String} options.theme The theme for CKBox dialog.
 	 * @returns {String} options.language The language for CKBox dialog.
 	 * @returns {String} options.tokenUrl The token endpoint URL.
-	 * @returns {String} options.serviceOrigin the base URL of the API service.
+	 * @returns {String} options.serviceOrigin The base URL of the API service.
+	 * @returns {String} options.assetsOrigin The base URL for assets inserted into the editor.
 	 * @returns {Object} options.dialog
 	 * @returns {Function} options.dialog.onClose The callback function invoked after closing the CKBox dialog.
 	 * @returns {Object} options.assets
@@ -135,6 +136,7 @@ export default class CKBoxCommand extends Command {
 			language: ckboxConfig.language,
 			tokenUrl: ckboxConfig.tokenUrl,
 			serviceOrigin: ckboxConfig.serviceOrigin,
+			assetsOrigin: ckboxConfig.assetsOrigin,
 			dialog: {
 				onClose: () => this.fire( 'ckbox:close' )
 			},
@@ -190,9 +192,11 @@ export default class CKBoxCommand extends Command {
 			const imageCommand = editor.commands.get( 'insertImage' );
 			const linkCommand = editor.commands.get( 'link' );
 			const ckboxEditing = editor.plugins.get( 'CKBoxEditing' );
+			const assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' );
 
 			const assetsToProcess = prepareAssets( {
 				assets,
+				origin: assetsOrigin,
 				token: ckboxEditing.getToken(),
 				isImageAllowed: imageCommand.isEnabled,
 				isLinkAllowed: linkCommand.isEnabled
@@ -306,16 +310,17 @@ export default class CKBoxCommand extends Command {
 // @private
 // @param {Object} data
 // @param {Array.<module:ckbox/ckbox~CKBoxRawAssetDefinition>} data.assets
+// @param {String} data.origin The base URL for assets inserted into the editor.
 // @param {module:cloud-services/token~Token} data.token
 // @param {Boolean} data.isImageAllowed
 // @param {Boolean} data.isLinkAllowed
 // @returns {Array.<module:ckbox/ckbox~CKBoxAssetDefinition>}
-function prepareAssets( { assets, token, isImageAllowed, isLinkAllowed } ) {
+function prepareAssets( { assets, origin, token, isImageAllowed, isLinkAllowed } ) {
 	return assets
 		.map( asset => ( {
 			id: asset.data.id,
 			type: isImage( asset ) ? 'image' : 'link',
-			attributes: prepareAssetAttributes( asset, token )
+			attributes: prepareAssetAttributes( asset, token, origin )
 		} ) )
 		.filter( asset => asset.type === 'image' ? isImageAllowed : isLinkAllowed );
 }
@@ -325,13 +330,14 @@ function prepareAssets( { assets, token, isImageAllowed, isLinkAllowed } ) {
 // @private
 // @param {module:ckbox/ckbox~CKBoxRawAssetDefinition} asset
 // @param {module:cloud-services/token~Token} token
+// @param {String} origin The base URL for assets inserted into the editor.
 // @returns {module:ckbox/ckbox~CKBoxAssetImageAttributesDefinition|module:ckbox/ckbox~CKBoxAssetLinkAttributesDefinition}
-function prepareAssetAttributes( asset, token ) {
+function prepareAssetAttributes( asset, token, origin ) {
 	if ( isImage( asset ) ) {
 		const { imageFallbackUrl, imageSources } = getImageUrls( {
 			token,
+			origin,
 			id: asset.data.id,
-			origin: asset.origin,
 			width: asset.data.metadata.width,
 			extension: asset.data.extension
 		} );
@@ -345,7 +351,7 @@ function prepareAssetAttributes( asset, token ) {
 
 	return {
 		linkName: asset.data.name,
-		linkHref: getAssetUrl( asset, token )
+		linkHref: getAssetUrl( asset, token, origin )
 	};
 }
 
@@ -369,10 +375,11 @@ function isImage( asset ) {
 // @private
 // @param {module:ckbox/ckbox~CKBoxRawAssetDefinition} asset
 // @param {module:cloud-services/token~Token} token
+// @param {String} origin The base URL for assets inserted into the editor.
 // @returns {String}
-function getAssetUrl( asset, token ) {
+function getAssetUrl( asset, token, origin ) {
 	const environmentId = getEnvironmentId( token );
-	const url = new URL( `${ environmentId }/assets/${ asset.data.id }/file`, asset.origin );
+	const url = new URL( `${ environmentId }/assets/${ asset.data.id }/file`, origin );
 
 	url.searchParams.set( 'download', 'true' );
 

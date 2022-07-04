@@ -1,6 +1,8 @@
 ---
 category: examples-framework
 order: 110
+toc: false
+classes: main__content--no-toc
 ---
 
 # Multi-root editor

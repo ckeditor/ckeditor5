@@ -11,7 +11,7 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import { TOKEN_URL, SERVICE_ORIGIN } from '../_utils/ckbox-config';
+import { TOKEN_URL } from '../_utils/ckbox-config';
 import CKBox from '../../src/ckbox';
 
 ClassicEditor
@@ -41,8 +41,7 @@ ClassicEditor
 			]
 		},
 		ckbox: {
-			tokenUrl: TOKEN_URL,
-			serviceOrigin: SERVICE_ORIGIN
+			tokenUrl: TOKEN_URL
 		}
 	} )
 	.then( editor => {

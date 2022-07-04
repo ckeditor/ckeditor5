@@ -1,6 +1,8 @@
 ---
 category: examples-framework
 order: 100
+toc: false
+classes: main__content--no-toc
 ---
 
 # Custom UI (with Bootstrap)

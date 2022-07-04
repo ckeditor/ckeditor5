@@ -77,9 +77,8 @@ export default class CKBox extends Plugin {
  *						Scans: [ 'png', 'tiff' ]
  *					},
  *					ignoreDataId: true,
- *					language: 'en',
- *					theme: 'default',
  *					serviceOrigin: 'https://example.com/',
+ *					assetsOrigin: 'https://example.cloud/',
  *					tokenUrl: 'https://example.com/cs-token-endpoint'
  *				}
  *			} )
@@ -130,8 +129,23 @@ export default class CKBox extends Plugin {
 /**
  * Configures the base URL of the API service. Required only in on-premises installations.
  *
- * @default ''
+ * @default 'https://api.ckbox.io'
  * @member {String} [module:ckbox/ckbox~CKBoxConfig#serviceOrigin]
+ */
+
+/**
+ * Configures the base URL for assets inserted into the editor. Required only in on-premises installations.
+ *
+ * @default 'https://ckbox.cloud'
+ * @member {String} [module:ckbox/ckbox~CKBoxConfig#assetsOrigin]
+ */
+
+/**
+ * Configures the language for the CKBox dialog.
+ *
+ * Defaults to {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`}
+ *
+ * @member {String} [module:ckbox/ckbox~CKBoxConfig#language]
  */
 
 /**

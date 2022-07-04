@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import { SERVICE_ORIGIN, TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-ckbox' ), {
@@ -24,14 +24,45 @@ ClassicEditor
 				'ckbox'
 			]
 		},
+		image: {
+			toolbar: [
+				'toggleImageCaption',
+				'imageTextAlternative',
+				'|',
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'resizeImage:100',
+				'resizeImage:200',
+				'resizeImage:original'
+			],
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					value: null,
+					icon: 'original'
+				},
+				{
+					name: 'resizeImage:100',
+					value: '100',
+					icon: 'medium'
+				},
+				{
+					name: 'resizeImage:200',
+					value: '200',
+					icon: 'large'
+				}
+			],
+			resizeUnit: 'px'
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
-			tokenUrl: TOKEN_URL,
-			serviceOrigin: SERVICE_ORIGIN
+			tokenUrl: TOKEN_URL
 		}
 	} )
 	.then( editor => {
