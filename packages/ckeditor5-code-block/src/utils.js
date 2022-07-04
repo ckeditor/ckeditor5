@@ -219,3 +219,18 @@ export function isModelSelectionInCodeBlock( selection ) {
 
 	return firstBlock && firstBlock.is( 'element', 'codeBlock' );
 }
+
+/**
+ * Checks if an {@link module:engine/model/element~Element Element} can become a code block.
+ *
+ * @param {module:engine/model/schema~Schema} schema Model's schema.
+ * @param {module:engine/model/element~Element} element The element to be checked.
+ * @returns {Boolean} Check result.
+ */
+export function canBeCodeBlock( schema, element ) {
+	if ( element.is( 'rootElement' ) || schema.isLimit( element ) ) {
+		return false;
+	}
+
+	return schema.checkChild( element.parent, 'codeBlock' );
+}

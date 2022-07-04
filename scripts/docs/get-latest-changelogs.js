@@ -38,8 +38,15 @@ module.exports = () => {
 			const changelog = getChangesForVersion( version, ROOT_DIRECTORY )
 				// Remove the `ℹ️` character along with its link from breaking change headers.
 				.replace( / \[ℹ️\]\(.+\)$/gm, '' )
-				// Remove `Release highlights` section.
-				.replace( getSectionRegexp( 'Release highlights' ), '' )
+				// Replace `Release highlights` section with just a single paragraph containing the link to the blog post.
+				.replace( getSectionRegexp( 'Release highlights' ), section => {
+					// Blog post paragraph starts with a new line, contains the link and ends with a new line.
+					const blogPostLink = 'https://ckeditor.com/blog/';
+					const blogPostParagraphRegexp = new RegExp( `(?<=\n).*?${ blogPostLink }.*?(?=\n)` );
+					const result = section.match( blogPostParagraphRegexp );
+
+					return result ? result[ 0 ] : '';
+				} )
 				// Remove `Released packages` section.
 				.replace( getSectionRegexp( 'Released packages' ), '' );
 

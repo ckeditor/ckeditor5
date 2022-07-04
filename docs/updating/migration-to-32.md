@@ -36,7 +36,7 @@ In case of any problems with migrating to CKEditor 5 v32.0.0, please [contact ou
 
 The revision model has changed along with the list of properties stored in the database. Below is the summary of the changes:
 
-* New properties {@link module:revision-history/revision~Revision#fromVersion `#fromVersion`} and {@link module:revision-history/revision~Revision#toVersion `#toVersion`} were added and need to be stored in your database. For existing revisions, set the value of these properties.
+* New properties {@link module:revision-history/revision~Revision#fromVersion `#fromVersion`} and {@link module:revision-history/revision~Revision#toVersion `#toVersion`} were added and need to be stored in your database. For existing revisions, set the value of these properties to `0`.
 * Revision ID for the initial revision will be set to the document ID or to the `'initial'` value. Make sure that you either set the `collaboration.channelId` configuration variable or allow for storing multiple revisions with the same ID (among different documents).
 * The `Revision#isLocked` property was removed as it is no longer needed. You may remove it from the revisions saved in your database.
 * The `Revision#data` property was renamed to {@link module:revision-history/revision~Revision#diffData `#diffData`}. Rename this property for revisions stored in your database.
