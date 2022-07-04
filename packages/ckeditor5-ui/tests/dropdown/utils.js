@@ -212,11 +212,6 @@ describe( 'utils', () => {
 
 					dropdownView.isOpen = false;
 					dropdownView.keystrokes.press( keyEvtData );
-					sinon.assert.notCalled( spy );
-
-					dropdownView.isOpen = true;
-					dropdownView.keystrokes.press( keyEvtData );
-
 					sinon.assert.calledOnce( spy );
 				} );
 
