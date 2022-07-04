@@ -109,6 +109,14 @@ The availability of these plugins varies in different {@link installation/advanc
 				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
+				<th colspan="2">{@link module:image/pictureediting~PictureEditing}</th>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+			</tr>
+			<tr>
 				<th colspan="2">{@link module:image/imageresize~ImageResize}</th>
 				<td>❌&nbsp; no</td>
 				<td>❌&nbsp; no</td>
@@ -170,7 +178,7 @@ See the common API of image-related features such as {@link module:image/imagest
 
 ## Responsive images
 
-Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.
+Support for responsive images in CKEditor 5 is brought by the {@link features/ckbox CKBox} management platform. The {@link features/easy-image Easy Image} feature can also be used without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.
 
 ## Contribute
 

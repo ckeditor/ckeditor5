@@ -22,7 +22,7 @@ If the documentation is insufficient, do not be afraid to look into the source c
 
 **Related links**
 
- * {@link installation/getting-started/quick-start CKEditor 5 installation} &ndash; Learn how to install, integrate and configure CKEditor 5.
+ * {@link installation/index CKEditor 5 installation} &ndash; Learn how to install, integrate and configure CKEditor 5.
  * {@link features/index CKEditor 5 features} &ndash; Learn about some of the features available for CKEditor 5.
  * {@link examples/index Implementation examples} &ndash; Try live demos of all available predefined builds. View some of the possible customizations of CKEditor.
 

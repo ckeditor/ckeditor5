@@ -867,11 +867,11 @@ The product preview (`.product-preview` class) uses `background-image: var(--pro
 
 ## Demo
 
-You can see the entire application working below. Click the products in the sidebar to add them to the editor. You can also check out the [full source code](#full-source-code) of this tutorial if you want to extend it further or use it as base for your application.
+You can see the entire application working below. Click the products in the sidebar to add them to the editor. You can also check out the [full source code](#final-solution) of this tutorial if you want to extend it further or use it as base for your application.
 
 {@snippet framework/tutorials/using-react-in-widget}
 
-## Full source code
+## Final solution
 
 The following code snippets present the complete implementation of the application (and all its dependencies). Follow the [application structure](#application-structure) diagram to re–create the application.
 
