@@ -215,6 +215,21 @@ describe( 'utils', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 
+				it( '"arrowdown" focuses the #innerPanelView if dropdown was already open', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					dropdownView.isOpen = true;
+
+					const spy = sinon.spy( panelChildView, 'focus' );
+
+					dropdownView.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( spy );
+				} );
+
 				it( '"arrowup" focuses the last #item in #innerPanelView if dropdown is open', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.arrowup,
