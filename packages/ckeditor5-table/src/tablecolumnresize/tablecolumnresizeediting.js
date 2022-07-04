@@ -598,12 +598,18 @@ export default class TableColumnResizeEditing extends Plugin {
 				}
 			} else {
 				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
+				// This case can occur if the read-only mode kicks in during the resizing process.
 				editingView.change( writer => {
 					if ( isColumnWidthsAttributeChanged ) {
-						const columnWidths = columnWidthsAttributeOld.split( ',' );
+						if ( columnWidthsAttributeOld ) {
+							const columnWidths = columnWidthsAttributeOld.split( ',' );
 
-						for ( const viewCol of viewColgroup.getChildren() ) {
-							writer.setStyle( 'width', columnWidths.shift(), viewCol );
+							for ( const viewCol of viewColgroup.getChildren() ) {
+								writer.setStyle( 'width', columnWidths.shift(), viewCol );
+							}
+						} else {
+							writer.removeClass( 'ck-table-resized', viewColgroup.findAncestor( 'table' ) );
+							writer.remove( viewColgroup );
 						}
 					}
 
