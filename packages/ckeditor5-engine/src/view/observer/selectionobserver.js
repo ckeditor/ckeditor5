@@ -188,8 +188,9 @@ export default class SelectionObserver extends Observer {
 	}
 
 	/**
-	 * Selection change listener. Check if a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange}
-	 * event on every change and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
+	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
+	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
+	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
 	 * @private
 	 * @param {Event} domEvent DOM event.

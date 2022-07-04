@@ -131,7 +131,12 @@ export default class Renderer {
 		}
 
 		/**
-		 * TODO
+		 * True if composition is in progress inside the document.
+		 *
+		 * This property is bound to the {@link module:engine/view/document~Document#isComposing}.
+		 *
+		 * @member {Boolean}
+		 * @observable
 		 */
 		this.set( 'isComposing', false );
 
