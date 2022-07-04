@@ -75,7 +75,7 @@ export function injectSelectionPostFixer( model: Model ): void {
 //
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/model~Model} model
-function selectionPostFixer( writer: Writer, model: Model ) {
+function selectionPostFixer( writer: Writer, model: Model ): boolean {
 	const selection = model.document.selection;
 	const schema = model.schema;
 
@@ -107,6 +107,8 @@ function selectionPostFixer( writer: Writer, model: Model ) {
 	if ( wasFixed ) {
 		writer.setSelection( mergeIntersectingRanges( ranges ), { backward: selection.isBackward } );
 	}
+
+	return false;
 }
 
 // Tries fixing a range if it's incorrect.
