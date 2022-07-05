@@ -200,8 +200,16 @@ The table below presents the list of all plugins included in the Classic build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html</a></td>
 		</tr>
 		<tr>
+			<td>CloudServices</td>
+			<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">https://ckeditor.com/docs/cs/latest/guides/overview.html</a></td>
+		</tr>
+		<tr>
 			<td>EasyImage</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html</a></td>
+		</tr>
+		<tr>
+			<td>Essentials</td>
+			<td>Supports several features: Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo</td>
 		</tr>
 		<tr>
 			<td>Heading</td>
@@ -228,7 +236,7 @@ The table below presents the list of all plugins included in the Classic build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html</a></td>
 		</tr>
 		<tr>
-			<td>Indent, IndentBlock</td>
+			<td>Indent</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">https://ckeditor.com/docs/ckeditor5/latest/features/indent.html</a></td>
 		</tr>
 		<tr>
@@ -240,7 +248,7 @@ The table below presents the list of all plugins included in the Classic build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">https://ckeditor.com/docs/ckeditor5/latest/features/link.html</a></td>
 		</tr>
 		<tr>
-			<td>List, ListProperties, TodoList</td>
+			<td>List, TodoList</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
 		</tr>
 		<tr>
@@ -260,12 +268,15 @@ The table below presents the list of all plugins included in the Classic build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html</a></td>
 		</tr>
 		<tr>
-			<td>Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize</td>
+			<td>Table, TableToolbar</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">https://ckeditor.com/docs/ckeditor5/latest/features/table.html</a></td>
 		</tr>
 		<tr>
 			<td>TextTransformation</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html</a></td>
+		</tr>
+			<td>UploadAdapter</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html</a></td>
 		</tr>
 	</tbody>
 </table>
@@ -367,8 +378,16 @@ The table below presents the list of all plugins included in the Inline build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html</a></td>
 		</tr>
 		<tr>
+			<td>CloudServices</td>
+			<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">https://ckeditor.com/docs/cs/latest/guides/overview.html</a></td>
+		</tr>
+		<tr>
 			<td>EasyImage</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html</a></td>
+		</tr>
+		<tr>
+			<td>Essentials</td>
+			<td>Supports several features: Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo</td>
 		</tr>
 		<tr>
 			<td>Heading</td>
@@ -395,7 +414,7 @@ The table below presents the list of all plugins included in the Inline build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html</a></td>
 		</tr>
 		<tr>
-			<td>Indent, IndentBlock</td>
+			<td>Indent</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">https://ckeditor.com/docs/ckeditor5/latest/features/indent.html</a></td>
 		</tr>
 		<tr>
@@ -407,7 +426,7 @@ The table below presents the list of all plugins included in the Inline build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">https://ckeditor.com/docs/ckeditor5/latest/features/link.html</a></td>
 		</tr>
 		<tr>
-			<td>List, ListProperties, TodoList</td>
+			<td>List, TodoList</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
 		</tr>
 		<tr>
@@ -427,7 +446,7 @@ The table below presents the list of all plugins included in the Inline build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html</a></td>
 		</tr>
 		<tr>
-			<td>Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize</td>
+			<td>Table, TableToolbar</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">https://ckeditor.com/docs/ckeditor5/latest/features/table.html</a></td>
 		</tr>
 		<tr>
@@ -437,6 +456,9 @@ The table below presents the list of all plugins included in the Inline build.
 		<tr>
 			<td>TextTransformation</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html</a></td>
+		</tr>
+			<td>UploadAdapter</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html</a></td>
 		</tr>
 	</tbody>
 </table>
@@ -540,8 +562,16 @@ The table below presents the list of all plugins included in the Balloon build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html</a></td>
 		</tr>
 		<tr>
+			<td>CloudServices</td>
+			<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">https://ckeditor.com/docs/cs/latest/guides/overview.html</a></td>
+		</tr>
+		<tr>
 			<td>EasyImage</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html</a></td>
+		</tr>
+		<tr>
+			<td>Essentials</td>
+			<td>Supports several features: Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo</td>
 		</tr>
 		<tr>
 			<td>Heading</td>
@@ -568,7 +598,7 @@ The table below presents the list of all plugins included in the Balloon build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html</a></td>
 		</tr>
 		<tr>
-			<td>Indent, IndentBlock</td>
+			<td>Indent</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">https://ckeditor.com/docs/ckeditor5/latest/features/indent.html</a></td>
 		</tr>
 		<tr>
@@ -580,7 +610,7 @@ The table below presents the list of all plugins included in the Balloon build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">https://ckeditor.com/docs/ckeditor5/latest/features/link.html</a></td>
 		</tr>
 		<tr>
-			<td>List, ListProperties, TodoList</td>
+			<td>List, TodoList</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
 		</tr>
 		<tr>
@@ -600,12 +630,15 @@ The table below presents the list of all plugins included in the Balloon build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html</a></td>
 		</tr>
 		<tr>
-			<td>Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize</td>
+			<td>Table, TableToolbar</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">https://ckeditor.com/docs/ckeditor5/latest/features/table.html</a></td>
 		</tr>
 		<tr>
 			<td>TextTransformation</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html</a></td>
+		</tr>
+			<td>UploadAdapter</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html</a></td>
 		</tr>
 	</tbody>
 </table>
@@ -711,8 +744,16 @@ The table below presents the list of all plugins included in the Balloon block b
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html</a></td>
 		</tr>
 		<tr>
+			<td>CloudServices</td>
+			<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">https://ckeditor.com/docs/cs/latest/guides/overview.html</a></td>
+		</tr>
+		<tr>
 			<td>EasyImage</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html</a></td>
+		</tr>
+		<tr>
+			<td>Essentials</td>
+			<td>Supports several features: Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo</td>
 		</tr>
 		<tr>
 			<td>Heading</td>
@@ -739,7 +780,7 @@ The table below presents the list of all plugins included in the Balloon block b
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html</a></td>
 		</tr>
 		<tr>
-			<td>Indent, IndentBlock</td>
+			<td>Indent</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">https://ckeditor.com/docs/ckeditor5/latest/features/indent.html</a></td>
 		</tr>
 		<tr>
@@ -751,7 +792,7 @@ The table below presents the list of all plugins included in the Balloon block b
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">https://ckeditor.com/docs/ckeditor5/latest/features/link.html</a></td>
 		</tr>
 		<tr>
-			<td>List, ListProperties, TodoList</td>
+			<td>List, TodoList</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
 		</tr>
 		<tr>
@@ -771,12 +812,15 @@ The table below presents the list of all plugins included in the Balloon block b
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html</a></td>
 		</tr>
 		<tr>
-			<td>Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize</td>
+			<td>Table, TableToolbar</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">https://ckeditor.com/docs/ckeditor5/latest/features/table.html</a></td>
 		</tr>
 		<tr>
 			<td>TextTransformation</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html</a></td>
+		</tr>
+			<td>UploadAdapter</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html</a></td>
 		</tr>
 	</tbody>
 </table>
@@ -894,8 +938,16 @@ The table below presents the list of all plugins included in the Document build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html</a></td>
 		</tr>
 		<tr>
+			<td>CloudServices</td>
+			<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">https://ckeditor.com/docs/cs/latest/guides/overview.html</a></td>
+		</tr>
+		<tr>
 			<td>EasyImage</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html</a></td>
+		</tr>
+		<tr>
+			<td>Essentials</td>
+			<td>Supports several features: Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo</td>
 		</tr>
 		<tr>
 			<td>FontBackgroundColor, FontColor, FontFamily, FontSize</td>
@@ -912,6 +964,10 @@ The table below presents the list of all plugins included in the Document build.
 		<tr>
 			<td>ImageCaption</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html</a></td>
+		</tr>
+		<tr>
+			<td>ImageResize</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html</a></td>
 		</tr>
 		<tr>
 			<td>ImageStyle</td>
@@ -942,10 +998,6 @@ The table below presents the list of all plugins included in the Document build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
 		</tr>
 		<tr>
-			<td>MathType</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html">https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html</a></td>
-		</tr>
-		<tr>
 			<td>MediaEmbed</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html</a></td>
 		</tr>
@@ -966,7 +1018,7 @@ The table below presents the list of all plugins included in the Document build.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
 		</tr>
 		<tr>
-			<td>Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize</td>
+			<td>Table, TableToolbar</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">https://ckeditor.com/docs/ckeditor5/latest/features/table.html</a></td>
 		</tr>
 		<tr>
@@ -976,6 +1028,10 @@ The table below presents the list of all plugins included in the Document build.
 		<tr>
 			<td>Underline</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+		</tr>
+		<tr>
+			<td>UploadAdapter</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html</a></td>
 		</tr>
 	</tbody>
 </table>
@@ -1042,6 +1098,10 @@ The table below presents the list of all plugins included in the superbuild.
 		</tr>
 		<tr>
 			<td>CloudServices</td>
+			<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">https://ckeditor.com/docs/cs/latest/guides/overview.html</a></td>
+		</tr>
+		<tr>
+			<td>CloudServices</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_cloud-services_cloudservices-CloudServices.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_cloud-services_cloudservices-CloudServices.html</a></td>
 		</tr>
 		<tr>
@@ -1059,6 +1119,10 @@ The table below presents the list of all plugins included in the superbuild.
 		<tr>
 			<td>EasyImage</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html</a></td>
+		</tr>
+		<tr>
+			<td>Essentials</td>
+			<td>Supports several features: Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo</td>
 		</tr>
 		<tr>
 			<td>ExportPdf</td>
@@ -1129,7 +1193,7 @@ The table below presents the list of all plugins included in the superbuild.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html</a></td>
 		</tr>
 		<tr>
-			<td>Indent, IndentBlock</td>
+			<td>Indent</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">https://ckeditor.com/docs/ckeditor5/latest/features/indent.html</a></td>
 		</tr>
 		<tr>
@@ -1141,7 +1205,7 @@ The table below presents the list of all plugins included in the superbuild.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">https://ckeditor.com/docs/ckeditor5/latest/features/link.html</a></td>
 		</tr>
 		<tr>
-			<td>List, ListProperties, TodoList</td>
+			<td>List, TodoList</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
 		</tr>
 		<tr>
@@ -1213,7 +1277,7 @@ The table below presents the list of all plugins included in the superbuild.
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
 		</tr>
 		<tr>
-			<td>Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize</td>
+			<td>Table, TableToolbar</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">https://ckeditor.com/docs/ckeditor5/latest/features/table.html</a></td>
 		</tr>
 		<tr>
@@ -1235,6 +1299,10 @@ The table below presents the list of all plugins included in the superbuild.
 		<tr>
 			<td>Underline</td>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
+		</tr>
+		<tr>
+			<td>UploadAdapter</td>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html</a></td>
 		</tr>
 		<tr>
 			<td>WordCount</td>
