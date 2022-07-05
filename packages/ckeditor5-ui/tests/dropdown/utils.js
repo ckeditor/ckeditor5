@@ -308,6 +308,29 @@ describe( 'utils', () => {
 		} );
 
 		describe( 'extra dropdown open listener', () => {
+			let buttons;
+
+			beforeEach( () => {
+				buttons = [ '<svg>foo</svg>', '<svg>bar</svg>' ].map( icon => {
+					const button = new ButtonView();
+
+					button.icon = icon;
+
+					return button;
+				} );
+
+				dropdownView = createDropdown( locale );
+
+				addToolbarToDropdown( dropdownView, buttons, { enableFocusingActiveElement: true } );
+
+				dropdownView.render();
+				document.body.appendChild( dropdownView.element );
+			} );
+
+			afterEach( () => {
+				dropdownView.element.remove();
+			} );
+
 			it( 'focuses active item upon dropdown opening', () => {
 				dropdownView.toolbarView.items.get( 0 ).isOn = true;
 
@@ -333,38 +356,6 @@ describe( 'utils', () => {
 				dropdownView.isOpen = true;
 
 				expect( document.activeElement ).to.equal( dropdownView.toolbarView.items.get( 0 ).element );
-			} );
-
-			it( 'can be turned off', () => {
-				// Remove old dropdown (created in test case's setup procedure).
-				dropdownView.element.remove();
-
-				// Create a new one.
-				buttons = [ '<svg>foo</svg>', '<svg>bar</svg>' ].map( icon => {
-					const button = new ButtonView();
-
-					button.icon = icon;
-
-					return button;
-				} );
-
-				dropdownView = createDropdown( locale );
-
-				addToolbarToDropdown( dropdownView, buttons, {
-					skipAutoFocus: true
-				} );
-
-				dropdownView.render();
-				document.body.appendChild( dropdownView.element );
-
-				// And the test itself.
-
-				dropdownView.toolbarView.items.get( 1 ).isOn = true;
-
-				// The focus logic happens when the dropdown is opened.
-				dropdownView.isOpen = true;
-
-				expect( document.activeElement ).to.not.equal( dropdownView.toolbarView.items.get( 1 ).element );
 			} );
 		} );
 	} );

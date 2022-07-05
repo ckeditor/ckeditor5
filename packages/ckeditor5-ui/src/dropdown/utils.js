@@ -128,7 +128,7 @@ export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ToolbarView` will be added.
  * @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttons
  * @param {Object} [options]
- * @param {Boolean} [options.skipAutoFocus=false]
+ * @param {Boolean} [options.enableFocusingActiveElement=false]
  */
 export function addToolbarToDropdown( dropdownView, buttons, options = {} ) {
 	const locale = dropdownView.locale;
@@ -145,7 +145,7 @@ export function addToolbarToDropdown( dropdownView, buttons, options = {} ) {
 
 	buttons.map( view => toolbarView.items.add( view ) );
 
-	if ( !options.skipAutoFocus ) {
+	if ( options.enableFocusingActiveElement ) {
 		dropdownView.on( 'change:isOpen', () => {
 			// A listener to focus the first active dropdown option upon opening, see #11838.
 			if ( !dropdownView.isOpen ) {
