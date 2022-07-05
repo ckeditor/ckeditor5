@@ -21,8 +21,6 @@ import List from '../../ckeditor5-list/src/list';
 import Paragraph from '../../ckeditor5-paragraph/src/paragraph';
 import RemoveFormat from '../../ckeditor5-remove-format/src/removeformat';
 import Strikethrough from '../../ckeditor5-basic-styles/src/strikethrough';
-import Table from '../../ckeditor5-table/src/table';
-import TableToolbar from '../../ckeditor5-table/src/tabletoolbar';
 import Markdown from '../../ckeditor5-markdown-gfm/src/markdown';
 import Mention from '../../ckeditor5-mention/src/mention';
 
@@ -46,9 +44,7 @@ ClassicEditor.builtinPlugins = [
 	Mention,
 	Paragraph,
 	RemoveFormat,
-	Strikethrough,
-	Table,
-	TableToolbar
+	Strikethrough
 ];
 
 // Editor configuration.
@@ -62,22 +58,7 @@ ClassicEditor.defaultConfig = {
 			'bulletedList',
 			'numberedList',
 			'blockQuote',
-			'link',
-			'|',
-			'insertTable'
+			'link'
 		]
-	},
-	table: {
-		// See https://ckeditor.com/docs/ckeditor5/latest/features/table.html#configuring-styling-tools
-		tableProperties: {
-			defaultProperties: {
-				alignment: 'left'
-			}
-		},
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
-		]
-	},
+	}
 };
