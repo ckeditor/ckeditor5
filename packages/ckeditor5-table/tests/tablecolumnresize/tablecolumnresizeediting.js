@@ -584,6 +584,164 @@ describe( 'TableColumnResizeEditing', () => {
 		} );
 	} );
 
+	describe( '_isResizingAllowed property', () => {
+		describe( 'should be set to "false"', () => {
+			it( 'if editor is in the read-only mode', () => {
+				editor.enableReadOnlyMode( 'test' );
+
+				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( false );
+			} );
+
+			it( 'if the TableColumnResize plugin is disabled', () => {
+				editor.plugins.get( 'TableColumnResize' ).isEnabled = false;
+
+				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( false );
+			} );
+
+			it( 'if resizeTableWidth command is disabled', () => {
+				editor.commands.get( 'resizeTableWidth' ).isEnabled = false;
+
+				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( false );
+			} );
+
+			it( 'if resizeColumnWidths command is disabled', () => {
+				editor.commands.get( 'resizeColumnWidths' ).isEnabled = false;
+
+				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( false );
+			} );
+		} );
+
+		describe( 'should be set to "true"', () => {
+			it( 'if the editor is not read-only and plugin and commands are enabled', () => {
+				editor.plugins.get( 'TableColumnResize' ).isEnabled = true;
+				editor.commands.get( 'resizeTableWidth' ).isEnabled = true;
+				editor.commands.get( 'resizeColumnWidths' ).isEnabled = true;
+
+				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( true );
+			} );
+		} );
+
+		describe( 'should change value to "false"', () => {
+			it( 'if editor was switched to the read-only mode at runtime', () => {
+				const spy = sinon.spy();
+				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+
+				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+
+				editor.enableReadOnlyMode( 'test' );
+
+				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
+				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( false );
+			} );
+
+			it( 'if the TableResizeEditing plugin was disabled at runtime', () => {
+				const spy = sinon.spy();
+				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+
+				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+
+				editor.plugins.get( 'TableColumnResize' ).isEnabled = false;
+
+				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
+				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( false );
+			} );
+
+			it( 'if resizeTableWidth command was disabled at runtime', () => {
+				const spy = sinon.spy();
+				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+
+				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+
+				editor.commands.get( 'resizeTableWidth' ).isEnabled = false;
+
+				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
+				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( false );
+			} );
+
+			it( 'if resizeColumnWidths command was disabled at runtime', () => {
+				const spy = sinon.spy();
+				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+
+				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+
+				editor.commands.get( 'resizeColumnWidths' ).isEnabled = false;
+
+				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
+				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( false );
+			} );
+		} );
+
+		describe( 'should change value to "true"', () => {
+			it( 'if read-only mode was disabled at runtime', () => {
+				editor.enableReadOnlyMode( 'test' );
+
+				const spy = sinon.spy();
+				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+
+				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+
+				editor.disableReadOnlyMode( 'test' );
+
+				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
+				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( true );
+			} );
+
+			it( 'if the TableResizeEditing plugin was enabled at runtime', () => {
+				editor.plugins.get( 'TableColumnResize' ).isEnabled = false;
+
+				const spy = sinon.spy();
+				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+
+				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+
+				editor.plugins.get( 'TableColumnResize' ).isEnabled = true;
+
+				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
+				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( true );
+			} );
+
+			it( 'if resizeTableWidth command was enabled at runtime', () => {
+				editor.commands.get( 'resizeTableWidth' ).isEnabled = false;
+
+				const spy = sinon.spy();
+				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+
+				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+
+				editor.commands.get( 'resizeTableWidth' ).isEnabled = true;
+
+				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
+				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( true );
+			} );
+
+			it( 'if resizeColumnWidths command was enabled at runtime', () => {
+				editor.commands.get( 'resizeColumnWidths' ).isEnabled = false;
+
+				const spy = sinon.spy();
+				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+
+				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+
+				editor.commands.get( 'resizeColumnWidths' ).isEnabled = true;
+
+				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
+				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( true );
+			} );
+		} );
+
+		it( 'editable should not have the "ck-column-resize-disabled" class if "_isResizingAllowed" is set to "true"', () => {
+			editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = true;
+
+			expect( editor.editing.view.document.getRoot().hasClass( 'ck-column-resize-disabled' ) ).to.equal( false );
+		} );
+
+		it( 'editable should have the "ck-column-resize-disabled" class if "_isResizingAllowed" is set to "false"', () => {
+			editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
+
+			expect( editor.editing.view.document.getRoot().hasClass( 'ck-column-resize-disabled' ) ).to.equal( true );
+		} );
+	} );
+
 	describe( 'does not resize', () => {
 		it( 'without dragging', () => {
 			// Test-specific.
