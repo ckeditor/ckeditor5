@@ -132,7 +132,7 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editingView, editableElement );
+		this.editable = new InlineEditableUIView( locale, editingView, this, editableElement );
 
 		/**
 		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar

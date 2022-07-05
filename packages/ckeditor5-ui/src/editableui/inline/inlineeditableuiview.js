@@ -20,11 +20,12 @@ export default class InlineEditableUIView extends EditableUIView {
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The locale instance.
 	 * @param {module:engine/view/view~View} editingView The editing view instance the editable is related to.
+	 * @param {module:core/editor/editor~EditorUIView} editorUiView The main view of the editor UI.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, the
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}
 	 * will create it. Otherwise, the existing element will be used.
 	 */
-	constructor( locale, editingView, editableElement ) {
+	constructor( locale, editingView, editorUiView, editableElement ) {
 		super( locale, editingView, editableElement );
 
 		this.extendTemplate( {
@@ -33,6 +34,14 @@ export default class InlineEditableUIView extends EditableUIView {
 				class: 'ck-editor__editable_inline'
 			}
 		} );
+
+		/**
+		 * The main view of the editor UI.
+		 *
+		 * @readonly
+		 * @param {mmodule:core/editor/editor~EditorUIView|null} #editorUiView.
+		 */
+		this._editorUiView = editorUiView;
 	}
 
 	/**
@@ -47,7 +56,11 @@ export default class InlineEditableUIView extends EditableUIView {
 		editingView.change( writer => {
 			const viewRoot = editingView.document.getRoot( this.name );
 
-			writer.setAttribute( 'aria-label', t( '%0', this.name ), viewRoot );
+			if ( this._editorUiView.element ) {
+				writer.setAttribute( 'aria-label', t( '%0', this.name ), viewRoot );
+			} else {
+				writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', this.name ), viewRoot );
+			}
 		} );
 	}
 }

@@ -56,7 +56,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editingView );
+		this.editable = new InlineEditableUIView( locale, editingView, this );
 	}
 
 	/**

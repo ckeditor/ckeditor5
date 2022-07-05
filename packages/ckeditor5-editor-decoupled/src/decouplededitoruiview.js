@@ -52,7 +52,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement );
+		this.editable = new InlineEditableUIView( locale, editingView, this, options.editableElement );
 
 		// This toolbar may be placed anywhere in the page so things like font size need to be reset in it.
 		// Because of the above, make sure the toolbar supports rounded corners.
