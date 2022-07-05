@@ -30,7 +30,7 @@ import { _addMentionAttributes } from './mentionediting';
  *				name: 'Foo',
  *				title: 'Big Foo'
  *			},
- *			range: editor.model.createRange( focus, focus.getShiftedBy( -1 ) )
+ *			range: editor.model.createRange( focus.getShiftedBy( -1 ), focus )
  *		} );
  *
  *		// It will replace one character before the selection focus with the 'The "Big Foo"' text
@@ -43,7 +43,7 @@ import { _addMentionAttributes } from './mentionediting';
  *				title: 'Big Foo'
  *			},
  *			text: 'The "Big Foo"',
- *			range: editor.model.createRange( focus, focus.getShiftedBy( -1 ) )
+ *			range: editor.model.createRange( focus.getShiftedBy( -1 ), focus )
  *		} );
  *
  * @extends module:core/command~Command
