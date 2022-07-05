@@ -209,6 +209,8 @@ export default class AbbreviationEditing extends Plugin {
 
 	_defineSchema() {                                                          // ADDED
 		const schema = this.editor.model.schema;
+
+		// Extend the text node's schema to accept the abbreviation attribute.
 		schema.extend( '$text', {
 			allowAttributes: [ 'abbreviation' ]
 		} );
@@ -224,7 +226,7 @@ Converters tell the editor how to transform the view to the model (e.g. when loa
 	Conversion is one of the more complex topics in our editing engine architecture. It's definitely worth to read up on it before you move on. more about the {@link framework/guides/deep-dive/conversion/downcast conversion in the editor}.
 </info-box>
 
-We'll need to convert the model abbreviation attribute into an HTML element in the view (downcast) and vice versa (upcast). We'll do that by using our {@link framework/guides/deep-dive/conversion/helpers conversion helpers} and defining what the model and the view is supposed to look like for both conversions. 
+We'll need to convert the model abbreviation attribute into an HTML element in the view (downcast) and vice versa (upcast). We'll do that by using our {@link framework/guides/deep-dive/conversion/helpers/intro conversion helpers} and defining what the model and the view is supposed to look like for both conversions. 
 
 Converting the full title of the abbreviation is a little bit tricky, because we need to make sure that its value is synchronized between the model and the view. 
 
@@ -390,6 +392,7 @@ We'll use the [`writer.insertText()`](https://ckeditor.com/docs/ckeditor5/latest
 Finally, if the user's selection has a range (so it's a letter, word, or a whole text fragment), we'll remove that and replace it with our abbreviation.
 
 ```js
+// abbreviation/abbreviationui.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -408,8 +411,11 @@ class AbbreviationUI extends Plugin {
 				const abbr = 'WYSIWYG';
 
 				editor.model.change( writer => {
+
+					// Insert abbreviation and it's title attribute, at the selected position.
 					writer.insertText( abbr, { 'abbreviation': title }, selection.getFirstPosition() );
 					
+					// Remove selected range.
 					for ( const range of selection.getRanges() ) {
 						writer.remove( range );
 					}
@@ -422,7 +428,7 @@ class AbbreviationUI extends Plugin {
 }
 ```
 
-That's it for the first part of this tutorial! Your plugin should now work (in its most basic form). Go on to @link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-2 the second part}, where you will create a balloon with a form to get user's input, replacing our hard-coded "WYSIWYG" abbreviation. 
+That's it for the first part of this tutorial! Your plugin should now work (in its most basic form). Go on to {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-2 the second part}, where you will create a balloon with a form to get user's input, replacing our hard-coded "WYSIWYG" abbreviation. 
 
 ## Demo
 

@@ -8,10 +8,8 @@ import {
 	LabeledFieldView,
 	createLabeledInputText,
 	ButtonView,
-	submitHandler,
-	FocusCycler
+	submitHandler
 } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 import { icons } from '@ckeditor/ckeditor5-core';
 
 export default class FormView extends View {
@@ -19,13 +17,10 @@ export default class FormView extends View {
 		super( locale );
 
 		const t = locale.t;
-		this.focusTracker = new FocusTracker();
-		this.keystrokes = new KeystrokeHandler();
 
 		this.abbrInputView = this._createInput( 'abbreviation' );
 		this.titleInputView = this._createInput( 'title' );
-		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
-		this.saveButtonView.type = 'submit';
+		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save', 'submit' );
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
 
 		this.childViews = this.createCollection( [
@@ -35,23 +30,11 @@ export default class FormView extends View {
 			this.cancelButtonView
 		] );
 
-		this._focusCycler = new FocusCycler( {
-			focusables: this.childViews,
-			focusTracker: this.focusTracker,
-			keystrokeHandler: this.keystrokes,
-			actions: {
-				// Navigate form fields backwards using the Shift + Tab keystroke.
-				focusPrevious: 'shift + tab',
-
-				// Navigate form fields forwards using the Tab key.
-				focusNext: 'tab'
-			}
-		} );
-
 		this.setTemplate( {
 			tag: 'form',
 			attributes: {
 				class: [ 'ck', 'ck-responsive-form' ],
+				tabindex: '-1',
 				style: { 'padding': '2px' }
 			},
 			children: this.childViews
@@ -64,25 +47,10 @@ export default class FormView extends View {
 		submitHandler( {
 			view: this
 		} );
-
-		this.childViews._items.forEach( v => {
-			// Register the view in the focus tracker.
-			this.focusTracker.add( v.element );
-		} );
-
-		// Start listening for the keystrokes coming from #element.
-		this.keystrokes.listenTo( this.element );
-	}
-
-	destroy() {
-		super.destroy();
-
-		this.focusTracker.destroy();
-		this.keystrokes.destroy();
 	}
 
 	focus() {
-		this._focusCycler.focusFirst();
+		this.childViews.first.focus();
 	}
 
 	_createInput( inputName ) {
@@ -100,6 +68,7 @@ export default class FormView extends View {
 				}
 			}
 		} );
+
 		return labeledInput;
 	}
 
@@ -118,9 +87,7 @@ export default class FormView extends View {
 			}
 		} );
 
-		if ( eventName ) {
-			button.delegate( 'execute' ).to( this, eventName );
-		}
+		button.delegate( 'execute' ).to( this, eventName );
 
 		return button;
 	}

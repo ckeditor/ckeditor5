@@ -205,7 +205,7 @@ class Timestamp extends Plugin {
 
 Well done! Your timestamp plugin is now ready. 
 
-What's next? You can read more about the {@link framework/guides/overview CKEditor 5 framework}, or continue with our next tutorial, where we'll create {@link framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1 an abbreviation plugin}. 
+What's next? You can read more about the {@link framework/guides/overview CKEditor 5 framework}, or continue with our next tutorial, where we'll create {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin}. 
 
 ## Demo
 
