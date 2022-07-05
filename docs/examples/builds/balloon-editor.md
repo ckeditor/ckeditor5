@@ -10,6 +10,7 @@ classes: main__content--no-toc
 {@link installation/advanced/predefined-builds#balloon-editor Balloon editor} lets you create your content directly in its target location with the help of a balloon toolbar that appears next to the selected editable document element.
 
 {@snippet examples/balloon-editor}
+
 ## Editor example configuration
 
 Check out the {@link installation/advanced/predefined-builds#installation-example-3 Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.

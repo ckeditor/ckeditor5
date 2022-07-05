@@ -204,6 +204,7 @@ describe( 'CKBoxCommand', () => {
 						ignoreDataId: true,
 						language: 'es',
 						serviceOrigin: 'https://service.ckeditor.com',
+						assetsOrigin: 'https://assets.ckeditor.com',
 						tokenUrl: 'token-url',
 						unsupportedOption: 'bar'
 					}
@@ -221,6 +222,7 @@ describe( 'CKBoxCommand', () => {
 				expect( options ).to.have.property( 'theme', 'theme-01' );
 				expect( options ).to.have.property( 'language', 'es' );
 				expect( options ).to.have.property( 'serviceOrigin', 'https://service.ckeditor.com' );
+				expect( options ).to.have.property( 'assetsOrigin', 'https://assets.ckeditor.com' );
 				expect( options ).to.have.property( 'tokenUrl', 'token-url' );
 				expect( options ).to.not.have.property( 'defaultUploadCategories' );
 				expect( options ).to.not.have.property( 'ignoreDataId' );
