@@ -9,7 +9,7 @@ menu-title: Overview
 <info-box hint>
 **Quick recap**
 
-In the previous guides you have learned several different methods of getting you CKEditor 5 installation up and running. Now you will learn how to utilize the power of popular JavaScript frameworks with our dedicated, ready-to-use CKEditor 5 components.
+In the previous guides you have learned several different methods of getting your CKEditor 5 installation up and running. Now you will learn how to utilize the power of popular JavaScript frameworks with our dedicated, ready-to-use CKEditor 5 components.
 </info-box>
 
 ## Is CKEditor 5 compatible with framework XYZ?
@@ -62,7 +62,7 @@ ckeditor {
 
 ## Compatibility with CSS frameworks
 
-CKEditor 5 is compatible with popular CSS frameworks, such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments {@link installation/frameworks/css gathered in this guide}.
+CKEditor 5 is compatible with popular CSS frameworks, such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments that we have gathered {@link installation/frameworks/css in this guide}.
 
 <info-box hint>
 **What's next?**
