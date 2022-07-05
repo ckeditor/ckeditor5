@@ -19,6 +19,7 @@ import Indent from '../../ckeditor5-indent/src/indent';
 import Link from '../../ckeditor5-link/src/link';
 import List from '../../ckeditor5-list/src/list';
 import Paragraph from '../../ckeditor5-paragraph/src/paragraph';
+import RemoveFormat from '../../ckeditor5-remove-format/src/removeformat';
 import Strikethrough from '../../ckeditor5-basic-styles/src/strikethrough';
 import Table from '../../ckeditor5-table/src/table';
 import TableToolbar from '../../ckeditor5-table/src/tabletoolbar';
@@ -44,6 +45,7 @@ ClassicEditor.builtinPlugins = [
 	Markdown,
 	Mention,
 	Paragraph,
+	RemoveFormat,
 	Strikethrough,
 	Table,
 	TableToolbar
