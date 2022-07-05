@@ -5232,7 +5232,7 @@ describe( 'ListPropertiesEditing', () => {
 					);
 
 					expect( editor.getData() ).to.equal(
-						'<ol style="list-style-type:circle;" reversed="reversed" start="5"><li>Foo</li><li>Bar</li></ol>'
+						'<ol style="list-style-type:circle;" start="5" reversed="reversed"><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
 
@@ -5282,7 +5282,7 @@ describe( 'ListPropertiesEditing', () => {
 							'</li>' +
 							'<li>2</li>' +
 							'<li>3' +
-								'<ol style="list-style-type:circle;" reversed="reversed" start="3">' +
+								'<ol style="list-style-type:circle;" start="3" reversed="reversed">' +
 									'<li>3.1</li>' +
 								'</ol>' +
 							'</li>' +
