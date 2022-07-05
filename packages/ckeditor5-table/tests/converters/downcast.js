@@ -398,7 +398,7 @@ describe( 'downcast converters', () => {
 								'<tbody>' +
 									'<tr><th rowspan="2">00</th><th>01</th><th rowspan="3">02</th><td>03</td></tr>' +
 									'<tr><th>11</th><td>13</td></tr>' +
-									'<tr><th rowspan="2" colspan="2">20</th><td>23</td></tr>' +
+									'<tr><th colspan="2" rowspan="2">20</th><td>23</td></tr>' +
 									'<tr><th>32</th><td>33</td></tr>' +
 								'</tbody>' +
 							'</table>' +
