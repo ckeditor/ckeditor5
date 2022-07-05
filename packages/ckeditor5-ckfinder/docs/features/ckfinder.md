@@ -2,6 +2,7 @@
 category: features-image-upload
 menu-title: CKFinder file manager
 order: 40
+badges: [ premium ]
 ---
 
 {@snippet features/build-ckfinder-source}

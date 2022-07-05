@@ -3,6 +3,7 @@ category: features-image-upload
 menu-title: CKBox file manager
 modified_at: 2022-06-20
 order: 20
+badges: [ premium ]
 ---
 
 {@snippet features/build-ckbox-source}
