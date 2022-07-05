@@ -3,7 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { getListTypeFromListStyleType } from '../../../src/documentlistproperties/utils/style';
+import {
+	getListTypeFromListStyleType,
+	getTypeAttributeFromListStyleType,
+	getListStyleTypeFromTypeAttribute
+} from '../../../src/documentlistproperties/utils/style';
 
 describe( 'DocumentListProperties - utils - style', () => {
 	describe( 'getListTypeFromListStyleType()', () => {
@@ -26,5 +30,45 @@ describe( 'DocumentListProperties - utils - style', () => {
 				expect( getListTypeFromListStyleType( style ) ).to.equal( type );
 			} );
 		}
+	} );
+
+	describe( 'converting between `style:list-style-type` and `type`', () => {
+		const testData = [
+			[ 'decimal', '1' ],
+			[ 'lower-roman', 'i' ],
+			[ 'upper-roman', 'I' ],
+			[ 'lower-alpha', 'a' ],
+			[ 'upper-alpha', 'A' ],
+			[ 'lower-latin', 'a' ],
+			[ 'upper-latin', 'A' ]
+		];
+
+		describe( 'getTypeAttributeFromListStyleType()', () => {
+			for ( const [ styleType, typeAttribute ] of testData ) {
+				it( `should return "${ typeAttribute }" for "${ styleType }" style`, () => {
+					expect( getTypeAttributeFromListStyleType( styleType ) ).to.equal( typeAttribute );
+				} );
+			}
+
+			it( 'should return null for "default" style', () => {
+				expect( getTypeAttributeFromListStyleType( 'default' ) ).to.be.null;
+			} );
+
+			it( 'should return null for unknown style', () => {
+				expect( getTypeAttributeFromListStyleType( 'strange-style' ) ).to.be.null;
+			} );
+		} );
+
+		describe( 'getListStyleTypeFromTypeAttribute()', () => {
+			for ( const [ styleType, typeAttribute ] of testData.filter( ( [ style ] ) => !style.endsWith( '-alpha' ) ) ) {
+				it( `should return "${ typeAttribute }" for "${ styleType }" attribute value`, () => {
+					expect( getListStyleTypeFromTypeAttribute( typeAttribute ) ).to.equal( styleType );
+				} );
+			}
+
+			it( 'should return null for unknown attribute value', () => {
+				expect( getListStyleTypeFromTypeAttribute( 'Q' ) ).to.be.null;
+			} );
+		} );
 	} );
 } );

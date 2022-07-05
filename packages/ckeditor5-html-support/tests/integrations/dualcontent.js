@@ -8,6 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -23,7 +24,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Bold, Italic, ShiftEnter, GeneralHtmlSupport ]
+				plugins: [ Paragraph, Bold, Italic, ShiftEnter, LinkEditing, GeneralHtmlSupport ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -38,6 +39,10 @@ describe( 'DualContentModelElementSupport', () => {
 		editorElement.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'should be named', () => {
+		expect( editor.plugins.has( 'DualContentModelElementSupport' ) ).to.be.true;
 	} );
 
 	it( 'should be only applied to newly enabled elements', () => {
@@ -79,6 +84,22 @@ describe( 'DualContentModelElementSupport', () => {
 		expect( editor.getData() ).to.equal( '<div>foo<br>bar</div>' );
 	} );
 
+	it( 'should recognize paragraph-like elements with nested structure', () => {
+		dataFilter.allowElement( 'div' );
+
+		editor.setData( '<div><a href="example.com"><i>foo</i>bar</a>baz</div>' );
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			'<htmlDivParagraph>' +
+				'<$text italic="true" linkHref="example.com">foo</$text>' +
+				'<$text linkHref="example.com">bar</$text>' +
+				'baz' +
+			'</htmlDivParagraph>'
+		);
+
+		expect( editor.getData() ).to.equal( '<div><a href="example.com"><i>foo</i>bar</a>baz</div>' );
+	} );
+
 	it( 'should recognize block elements', () => {
 		dataFilter.allowElement( 'div' );
 
@@ -89,6 +110,21 @@ describe( 'DualContentModelElementSupport', () => {
 		);
 
 		expect( editor.getData() ).to.equal( '<div><p>foobar</p></div>' );
+	} );
+
+	it( 'should recognize block elements with nested structure', () => {
+		dataFilter.allowElement( 'div' );
+
+		editor.setData( '<div><a href="example.com"><p>foo</p></a>bar</div>' );
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			'<htmlDiv>' +
+				'<paragraph><$text linkHref="example.com">foo</$text></paragraph>' +
+				'<paragraph>bar</paragraph>' +
+			'</htmlDiv>'
+		);
+
+		expect( editor.getData() ).to.equal( '<div><p><a href="example.com">foo</a></p><p>bar</p></div>' );
 	} );
 
 	it( 'should autoparagraph mixed content', () => {

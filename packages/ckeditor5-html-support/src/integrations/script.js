@@ -33,6 +33,13 @@ export default class ScriptElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'ScriptElementSupport';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 

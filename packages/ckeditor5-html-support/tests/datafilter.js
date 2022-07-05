@@ -605,6 +605,24 @@ describe( 'DataFilter', () => {
 			);
 		} );
 
+		it( 'should not change order of attributes', () => {
+			dataFilter.allowElement( 'section' );
+			dataFilter.allowAttributes( {
+				name: 'section',
+				attributes: true
+			} );
+
+			editor.setData( '<section data-foo="a" data-bar="b"><p>foobar</p></section>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.deep.equal(
+				'<htmlSection htmlAttributes="{"attributes":{"data-foo":"a","data-bar":"b"}}"><paragraph>foobar</paragraph></htmlSection>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<section data-foo="a" data-bar="b"><p>foobar</p></section>'
+			);
+		} );
+
 		it( 'should disallow attributes', () => {
 			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( { name: 'section', attributes: { 'data-foo': /[\s\S]+/ } } );
@@ -720,6 +738,26 @@ describe( 'DataFilter', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/11000
+		it( 'should not consume element attributes if the element was consumed into a collapsed range', () => {
+			dataFilter.allowElement( 'input' );
+			dataFilter.allowAttributes( { name: 'input', attributes: true } );
+
+			editor.data.upcastDispatcher.on( 'element:input', ( evt, data, conversionApi ) => {
+				if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+					data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+				}
+			} );
+
+			editor.data.upcastDispatcher.on( 'element:input', ( evt, data, conversionApi ) => {
+				const areConsumable = conversionApi.consumable.test( data.viewItem, { attributes: [ 'type', 'disabled' ] } );
+
+				expect( areConsumable ).to.be.true;
+			}, { priority: 'lowest' } );
+
+			editor.setData( '<p>foo<input type="checkbox" disabled="disabled">bar</p>' );
 		} );
 
 		it( 'should not create empty htmlA (upcast)', () => {
@@ -1745,7 +1783,7 @@ describe( 'DataFilter', () => {
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<p><input data-bar="bar" data-foo="baz"></p>'
+					'<p><input data-foo="baz" data-bar="bar"></p>'
 				);
 			} );
 
@@ -2326,7 +2364,7 @@ describe( 'DataFilter', () => {
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<section data-bar="baz bar" data-foo="bar baz"><p>foobar</p></section>'
+					'<section data-foo="bar baz" data-bar="baz bar"><p>foobar</p></section>'
 				);
 			} );
 
@@ -3298,19 +3336,21 @@ describe( 'DataFilter', () => {
 
 	it( 'should allow using attributes by other features', () => {
 		dataFilter.allowElement( 'span' );
-		dataFilter.allowAttributes( { name: 'span', styles: { 'color': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: 'span', styles: { 'color': /[\s\S]+/, 'font-size': /[\s\S]+/ } } );
 
-		editor.setData( '<p><span style="color:blue;">foobar</span></p>' );
+		editor.setData( '<p><span style="color:blue;font-size:30px;">foobar</span></p>' );
 
 		// Font feature should take over color CSS property.
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: '<paragraph><$text fontColor="blue" htmlSpan="(1)">foobar</$text></paragraph>',
 			attributes: {
-				1: {}
+				1: {
+					styles: { 'font-size': '30px' }
+				}
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span>foobar</span></span></p>' );
+		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span style="font-size:30px;">foobar</span></span></p>' );
 	} );
 
 	describe( 'existing features', () => {
@@ -3501,6 +3541,117 @@ describe( 'DataFilter', () => {
 		editor.setData( '<p style="background:red;">foobar</p>' );
 
 		expect( editor.getData() ).to.equal( '<p style="background-color:red;">foobar</p>' );
+	} );
+
+	describe( 'attribute coupling', () => {
+		it( 'should remove GHS attribute for the same range as a coupled feature attribute was removed', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			} ] );
+
+			editor.setData( '<p><a href="foo" class="bar">foobar</a></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlA="(1)" linkHref="foo">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'bar' ]
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><a class="bar" href="foo">foobar</a></p>' );
+
+			model.change( writer => {
+				const root = model.document.getRoot();
+				const range = model.createRange(
+					model.createPositionAt( root.getChild( 0 ), 3 ),
+					model.createPositionAt( root.getChild( 0 ), 'end' )
+				);
+
+				writer.removeAttribute( 'linkHref', range );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlA="(1)" linkHref="foo">foo</$text>bar</paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'bar' ]
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><a class="bar" href="foo">foo</a>bar</p>' );
+		} );
+
+		it( 'should not remove other GHS attribute when other coupled one is removed', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			} ] );
+
+			editor.setData( '<p><span style="color:red;text-transform:uppercase;"><strong>foobar</strong></span></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text fontColor="red" htmlSpan="(1)" htmlStrong="(2)">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'text-transform': 'uppercase'
+						}
+					},
+					2: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:red;"><span style="text-transform:uppercase;"><strong>foobar</strong></span></span></p>'
+			);
+
+			model.change( writer => {
+				const root = model.document.getRoot();
+				const range = model.createRange(
+					model.createPositionAt( root.getChild( 0 ), 0 ),
+					model.createPositionAt( root.getChild( 0 ), 3 )
+				);
+
+				writer.removeAttribute( 'fontColor', range );
+			} );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph>' +
+						'<$text htmlSpan="(1)" htmlStrong="(2)">foo</$text>' +
+						'<$text fontColor="red" htmlSpan="(3)" htmlStrong="(4)">bar</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'text-transform': 'uppercase'
+						}
+					},
+					2: {},
+					3: {
+						styles: {
+							'text-transform': 'uppercase'
+						}
+					},
+					4: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="text-transform:uppercase;"><strong>foo</strong></span>' +
+					'<span style="color:red;"><span style="text-transform:uppercase;"><strong>bar</strong></span></span>' +
+				'</p>'
+			);
+		} );
 	} );
 
 	describe( 'loadAllowedConfig', () => {

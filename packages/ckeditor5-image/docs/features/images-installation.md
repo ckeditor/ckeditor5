@@ -5,7 +5,7 @@ order: 15
 modified_at: 2021-06-17
 ---
 
-The vast majority of image-related features {@link features/images-overview#image-features is available} out-of-the-box in all {@link installation/advanced/predefined-builds ready-to-use editor builds} and does not require additional installation steps. If the default configuration does not match your needs or you want to create a {@link installation/getting-started/quick-start#building-the-editor-from-source custom editor build} you can add image features to your rich-text editor by installing the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
+The vast majority of image-related features {@link features/images-overview#image-features is available} out-of-the-box in all {@link installation/advanced/predefined-builds ready-to-use editor builds} and does not require additional installation steps. If the default configuration does not match your needs or you want to create a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom editor build} you can add image features to your rich-text editor by installing the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
 
 ```plaintext
 npm install --save @ckeditor/ckeditor5-image

@@ -9,7 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { setViewAttributes } from '../conversionutils.js';
-
 import DataFilter from '../datafilter';
 
 /**
@@ -28,6 +27,13 @@ export default class TableElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'TableElementSupport';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
@@ -38,6 +44,10 @@ export default class TableElementSupport extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
+
+		dataFilter.on( 'register:figure', ( ) => {
+			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
+		} );
 
 		dataFilter.on( 'register:table', ( evt, definition ) => {
 			if ( definition.model !== 'table' ) {
@@ -74,11 +84,6 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 
 			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
 
-			const viewFigureElement = viewTableElement.parent;
-			if ( viewFigureElement.is( 'element', 'figure' ) ) {
-				preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
-			}
-
 			for ( const childNode of viewTableElement.getChildren() ) {
 				if ( childNode.is( 'element', 'thead' ) ) {
 					preserveElementAttributes( childNode, 'htmlTheadAttributes' );
@@ -90,11 +95,35 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 			}
 
 			function preserveElementAttributes( viewElement, attributeName ) {
-				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+				const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 				if ( viewAttributes ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
+			}
+		} );
+	};
+}
+
+// View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
+// feature model element from figure view element.
+//
+// @private
+// @param {module:html-support/datafilter~DataFilter} dataFilter
+// @returns {Function} Returns a conversion callback.
+function viewToModelFigureAttributeConverter( dataFilter ) {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			const viewFigureElement = data.viewItem;
+
+			if ( !data.modelRange || !viewFigureElement.hasClass( 'table' ) ) {
+				return;
+			}
+
+			const viewAttributes = dataFilter.processViewAttributes( viewFigureElement, conversionApi );
+
+			if ( viewAttributes ) {
+				conversionApi.writer.setAttribute( 'htmlFigureAttributes', viewAttributes, data.modelRange );
 			}
 		}, { priority: 'low' } );
 	};

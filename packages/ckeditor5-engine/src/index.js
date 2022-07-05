@@ -38,6 +38,11 @@ export { default as Renderer } from './view/renderer';
 export { default as ViewDocument } from './view/document';
 export { default as ViewText } from './view/text';
 export { default as ViewElement } from './view/element';
+export { default as ViewContainerElement } from './view/containerelement';
+export { default as ViewAttributeElement } from './view/attributeelement';
+export { default as ViewEmptyElement } from './view/emptyelement';
+export { default as ViewRawElement } from './view/rawelement';
+export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
 
 export { getFillerOffset } from './view/containerelement';

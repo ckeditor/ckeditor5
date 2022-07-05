@@ -13,7 +13,7 @@ order: 20
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/quick-start previous tutorial} you have learned about the quickest ways for setting up CKEditor 5 in the project. Now, you know how to use online builder or create the editor from source. It is time to play a bit with the configuration!
+In the {@link installation/getting-started/quick-start-other previous tutorial} you have learned about various ways for setting up CKEditor 5 in the project. Now, you know how to use online builder or create the editor from source. It is time to play a bit with the configuration!
 </info-box>
 
 When creating an editor in your page, it is possible to set up {@link module:core/editor/editorconfig~EditorConfig configurations} that change many of its aspects. For example:
@@ -74,7 +74,7 @@ ClassicEditor
 However, using this snippet with the official classic build of CKEditor 5 will result in an error thrown in the console of the browser:
 ```
 CKEditorError: plugincollection-required {"plugin":"Link","requiredBy":"CKFinder"}`
-Read more: https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/error-codes.html#error-plugincollection-required
+Read more: https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required
 ```
 This is a good time to remind you that some plugins in CKEditor 5 depend on each other. In this case, the `CKFinder` plugin requires the `Link` plugin to work. To make the above snippet work, the `CKFinder` plugin must also be deleted:
 
@@ -106,7 +106,7 @@ ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName );
 
 ### Adding complex features
 
-As predefined CKEditor 5 builds do not include all possible features, the only way to add more features to them is to {@link installation/getting-started/quick-start create a custom build}.
+As predefined CKEditor 5 builds do not include all possible features, the only way to add more features to them is to {@link installation/getting-started/quick-start-other create a custom build}.
 
 ### Adding simple (standalone) features
 
@@ -161,13 +161,13 @@ ClassicEditor
 
 In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration. Check the detailed {@link features/toolbar toolbar feature guide} for the available options.
 
-When you create a {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder custom build using CKEditor 5 online builder}, setting up your toolbar configuration is one of the steps in the build creation process that uses an intuitive drag and drop interface.
+When you create a {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder custom build using CKEditor 5 online builder}, setting up your toolbar configuration is one of the steps in the build creation process that uses an intuitive drag and drop interface.
 
 ## Other configuration options
 
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options.
 
-Some of the options may require loading plugins which are not available in the build you use. Return to the {@link installation/getting-started/quick-start Quick start} guide for instructions on creating a custom build.
+Some of the options may require loading plugins which are not available in the build you use. Return to the {@link installation/getting-started/quick-start-other Quick start} guide for instructions on creating a custom build.
 
 <info-box hint>
 **What's next?**

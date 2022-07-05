@@ -22,7 +22,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Paragraph, GeneralHtmlSupport, MediaEmbed ]
+					plugins: [ Paragraph, MediaEmbed, GeneralHtmlSupport ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -36,6 +36,10 @@ describe( 'MediaEmbedElementSupport', () => {
 			editorElement.remove();
 
 			return editor.destroy();
+		} );
+
+		it( 'should be named', () => {
+			expect( editor.plugins.has( 'MediaEmbedElementSupport' ) ).to.be.true;
 		} );
 
 		it( 'should allow attributes', () => {
@@ -362,6 +366,38 @@ describe( 'MediaEmbedElementSupport', () => {
 					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 				'</figure>'
 			);
+		} );
+
+		it( 'should run marker upcast converter with priority higher ' +
+			'then low before GHS preserves remaining attributes on table model element', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /.*/,
+				attributes: true,
+				styles: true,
+				classes: true
+			} ] );
+
+			editor.conversion.for( 'upcast' ).dataToMarker( {
+				view: 'commented',
+				converterPriority: 100000 // For marker this priority equals to -999
+			} );
+
+			editor.setData(
+				'<figure class="media" data-commented-end-after="foo:id" data-commented-start-before="foo:id">' +
+					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="media">' +
+					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
+				'</figure>'
+			);
+
+			const marker = model.markers.get( 'commented:foo:id' );
+
+			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
 		} );
 	} );
 
@@ -699,6 +735,38 @@ describe( 'MediaEmbedElementSupport', () => {
 					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
 				'</figure>'
 			);
+		} );
+
+		it( 'should run marker upcast converter with priority higher ' +
+			'then low before GHS preserves remaining attributes on table model element', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /.*/,
+				attributes: true,
+				styles: true,
+				classes: true
+			} ] );
+
+			editor.conversion.for( 'upcast' ).dataToMarker( {
+				view: 'commented',
+				converterPriority: 100000 // For marker this priority equals to -999
+			} );
+
+			editor.setData(
+				'<figure class="media" data-foo="foo" data-commented-end-after="foo:id" data-commented-start-before="foo:id">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="media" data-foo="foo">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
+				'</figure>'
+			);
+
+			const marker = model.markers.get( 'commented:foo:id' );
+
+			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes ', () => {
@@ -1091,7 +1159,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			} );
 
 			expect( editor.getData() ).to.equal(
-				'<p><oembed data-foo="foo" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed></p>'
+				'<p><oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed></p>'
 			);
 		} );
 
@@ -1186,6 +1254,38 @@ describe( 'MediaEmbedElementSupport', () => {
 			expect( editor.getData() ).to.equal(
 				'<figure><p><oembed></oembed></p></figure>'
 			);
+		} );
+
+		it( 'should run marker upcast converter with priority higher ' +
+			'then low before GHS preserves remaining attributes on table model element', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /.*/,
+				attributes: true,
+				styles: true,
+				classes: true
+			} ] );
+
+			editor.conversion.for( 'upcast' ).dataToMarker( {
+				view: 'commented',
+				converterPriority: 100000 // For marker this priority equals to -999
+			} );
+
+			editor.setData(
+				'<figure class="media" data-foo="foo" data-commented-end-after="foo:id" data-commented-start-before="foo:id">' +
+					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="media" data-foo="foo">' +
+					'<p><oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed></p>' +
+				'</figure>'
+			);
+
+			const marker = model.markers.get( 'commented:foo:id' );
+
+			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes ', () => {

@@ -180,7 +180,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
 		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
-		model.markers.on( 'update:restrictedEditingException', ensureNewMarkerIsFlat( editor ) );
+		doc.registerPostFixer( ensureNewMarkerIsFlatPostFixer( editor ) );
 
 		setupExceptionHighlighting( editor );
 	}
@@ -447,12 +447,18 @@ function isRangeInsideSingleMarker( editor, range ) {
 // Markers created by developer in the data might break in many other ways.
 //
 // See #6003.
-function ensureNewMarkerIsFlat( editor ) {
-	const model = editor.model;
+function ensureNewMarkerIsFlatPostFixer( editor ) {
+	return writer => {
+		let changeApplied = false;
 
-	return ( evt, marker, oldRange, newRange ) => {
-		if ( !oldRange && !newRange.isFlat ) {
-			model.change( writer => {
+		const changedMarkers = editor.model.document.differ.getChangedMarkers();
+
+		for ( const { data: { newRange, oldRange }, name } of changedMarkers ) {
+			if ( !name.startsWith( 'restrictedEditingException' ) ) {
+				continue;
+			}
+
+			if ( !oldRange && !newRange.isFlat ) {
 				const start = newRange.start;
 				const end = newRange.end;
 
@@ -461,11 +467,15 @@ function ensureNewMarkerIsFlat( editor ) {
 				const fixedStart = startIsHigherInTree ? newRange.start : writer.createPositionAt( end.parent, 0 );
 				const fixedEnd = startIsHigherInTree ? writer.createPositionAt( start.parent, 'end' ) : newRange.end;
 
-				writer.updateMarker( marker, {
+				writer.updateMarker( name, {
 					range: writer.createRange( fixedStart, fixedEnd )
 				} );
-			} );
+
+				changeApplied = true;
+			}
 		}
+
+		return changeApplied;
 	};
 }
 
