@@ -25,3 +25,13 @@ declare module '@taskworld/ckeditor5' {
 		onFocus?: (event: any, editor: ClassicEditor) => void
 	}>{ }
 }
+
+declare global {
+	interface Window {
+		CKEDITOR_TRANSLATIONS: {
+			[language: string]: {
+				dictionary: Record<string, string>
+			}
+		}
+	}
+}
