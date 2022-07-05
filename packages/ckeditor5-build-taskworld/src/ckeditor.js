@@ -14,6 +14,7 @@ import Code from '../../ckeditor5-basic-styles/src/code';
 import CodeBlock from '../../ckeditor5-code-block/src/codeblock';
 import Essentials from '../../ckeditor5-essentials/src/essentials';
 import Heading from '../../ckeditor5-heading/src/heading';
+import HorizontalLine from '../../ckeditor5-horizontal-line/src/horizontalline';
 import Italic from '../../ckeditor5-basic-styles/src/italic';
 import Indent from '../../ckeditor5-indent/src/indent';
 import Link from '../../ckeditor5-link/src/link';
@@ -23,6 +24,7 @@ import RemoveFormat from '../../ckeditor5-remove-format/src/removeformat';
 import Strikethrough from '../../ckeditor5-basic-styles/src/strikethrough';
 import Markdown from '../../ckeditor5-markdown-gfm/src/markdown';
 import Mention from '../../ckeditor5-mention/src/mention';
+import Underline from '../../ckeditor5-basic-styles/src/underline';
 
 export default class ClassicEditor extends ClassicEditorBase { }
 
@@ -36,6 +38,7 @@ ClassicEditor.builtinPlugins = [
 	CodeBlock,
 	Essentials,
 	Heading,
+	HorizontalLine,
 	Italic,
 	Indent,
 	Link,
@@ -44,7 +47,8 @@ ClassicEditor.builtinPlugins = [
 	Mention,
 	Paragraph,
 	RemoveFormat,
-	Strikethrough
+	Strikethrough,
+	Underline
 ];
 
 // Editor configuration.
