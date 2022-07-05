@@ -214,8 +214,7 @@ export default class LinkActionsView extends View {
 		const t = this.t;
 
 		button.set( {
-			withText: true,
-			tooltip: t( 'Open link in new tab' )
+			withText: true
 		} );
 
 		button.extendTemplate( {
