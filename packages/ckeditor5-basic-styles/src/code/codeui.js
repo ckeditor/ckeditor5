@@ -44,6 +44,7 @@ export default class CodeUI extends Plugin {
 			view.set( {
 				label: t( 'Code' ),
 				icon: codeIcon,
+				keystroke: 'CTRL+E',
 				tooltip: true,
 				isToggleable: true
 			} );
@@ -55,6 +56,8 @@ export default class CodeUI extends Plugin {
 				editor.execute( CODE );
 				editor.editing.view.focus();
 			} );
+
+			editor.keystrokes.set( 'CTRL+E', CODE );
 
 			return view;
 		} );

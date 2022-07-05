@@ -42,7 +42,7 @@ export default class StrikethroughUI extends Plugin {
 			view.set( {
 				label: t( 'Strikethrough' ),
 				icon: strikethroughIcon,
-				keystroke: 'CTRL+SHIFT+X',
+				keystroke: 'CTRL+SHIFT+S',
 				tooltip: true,
 				isToggleable: true
 			} );

@@ -59,7 +59,6 @@ export default class StrikethroughEditing extends Plugin {
 		// Create strikethrough command.
 		editor.commands.add( STRIKETHROUGH, new AttributeCommand( editor, STRIKETHROUGH ) );
 
-		// Set the Ctrl+Shift+X keystroke.
-		editor.keystrokes.set( 'CTRL+SHIFT+X', 'strikethrough' );
+		editor.keystrokes.set( 'CTRL+SHIFT+S', 'strikethrough' );
 	}
 }
