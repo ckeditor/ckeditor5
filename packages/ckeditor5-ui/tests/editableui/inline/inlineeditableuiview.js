@@ -11,7 +11,7 @@ import InlineEditableUIView from '../../../src/editableui/inline/inlineeditableu
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 describe( 'InlineEditableUIView', () => {
-	let view, editableElement, editingView, editingViewRoot, locale;
+	let view, editableElement, editingView, editingViewRoot, locale, editorUiView;
 
 	beforeEach( () => {
 		locale = new Locale();
@@ -32,7 +32,7 @@ describe( 'InlineEditableUIView', () => {
 		} );
 
 		it( 'accepts editableElement', () => {
-			view = new InlineEditableUIView( locale, editingView, editableElement );
+			view = new InlineEditableUIView( locale, editingView, editorUiView, editableElement );
 
 			expect( view._editableElement ).to.equal( editableElement );
 		} );
@@ -43,7 +43,7 @@ describe( 'InlineEditableUIView', () => {
 	} );
 
 	describe( 'editableElement', () => {
-		const ariaLabel = 'main';
+		const ariaLabel = 'Rich Text Editor, main';
 
 		it( 'has proper accessibility role', () => {
 			expect( view.element.attributes.getNamedItem( 'role' ).value ).to.equal( 'textbox' );

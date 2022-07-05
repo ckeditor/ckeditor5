@@ -56,7 +56,7 @@ export default class InlineEditableUIView extends EditableUIView {
 		editingView.change( writer => {
 			const viewRoot = editingView.document.getRoot( this.name );
 
-			if ( this._editorUiView.element ) {
+			if ( this._editorUiView && this._editorUiView.element ) {
 				writer.setAttribute( 'aria-label', t( '%0', this.name ), viewRoot );
 			} else {
 				writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', this.name ), viewRoot );
