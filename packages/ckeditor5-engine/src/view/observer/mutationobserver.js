@@ -14,16 +14,10 @@ import { startsWithFiller } from '../filler';
 import { isEqualWith } from 'lodash-es';
 
 /**
- * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#event:mutations} event, mark view
- * elements as changed and call {@link module:engine/view/renderer~Renderer#render}.
- * Because all mutated nodes are marked as "to be rendered" and the
- * {@link module:engine/view/renderer~Renderer#render} is called, all changes will be reverted, unless the mutation will be handled by the
- * {@link module:engine/view/document~Document#event:mutations} event listener. It means user will see only handled changes, and the editor
- * will block all changes which are not handled.
- *
- * Mutation Observer also take care of reducing number of mutations which are fired. It removes duplicates and
- * mutations on elements which do not have corresponding view elements. Also
- * {@link module:engine/view/observer/mutationobserver~MutatedText text mutation} is fired only if parent element do not change child list.
+ * Mutation observer class observes changes in the DOM, mark view elements as changed and call
+ * {@link module:engine/view/renderer~Renderer#render}. Because all mutated nodes are marked as
+ * "to be rendered" and the {@link module:engine/view/renderer~Renderer#render} is called,
+ * all changes will be reverted. It means user will not see any changes, the editor will block all changes.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
@@ -78,8 +72,7 @@ export default class MutationObserver extends Observer {
 	}
 
 	/**
-	 * Synchronously fires {@link module:engine/view/document~Document#event:mutations} event with all mutations in record queue.
-	 * At the same time empties the queue so mutations will not be fired twice.
+	 * Synchronously handles mutations and empties the queue.
 	 */
 	flush() {
 		this._onMutations( this._mutationObserver.takeRecords() );
@@ -126,7 +119,7 @@ export default class MutationObserver extends Observer {
 	}
 
 	/**
-	 * Handles mutations. Deduplicates, mark view elements to sync, fire event and call render.
+	 * Handles mutations. Mark view elements to sync and call render.
 	 *
 	 * @private
 	 * @param {Array.<Object>} domMutations Array of native mutations.
@@ -144,7 +137,7 @@ export default class MutationObserver extends Observer {
 		const elementsWithMutatedChildren = new Set();
 		const elementsWithMutatedAttributes = new Set();
 
-		// Handle `childList` mutations first, so we will be able to check if the `characterData` mutation is in the
+		// Handle `childList` and `attributes` mutations first, so we will be able to check if the `characterData` mutation is in the
 		// element with changed structure anyway.
 		for ( const mutation of domMutations ) {
 			const element = domConverter.mapDomToView( mutation.target );
@@ -178,20 +171,18 @@ export default class MutationObserver extends Observer {
 				const text = domConverter.findCorrespondingViewText( mutation.target );
 
 				if ( text && !elementsWithMutatedChildren.has( text.parent ) ) {
-					// Use text as a key, for deduplication. If there will be another mutation on the same text element
-					// we will have only one in the map.
 					mutatedTextNodes.add( text );
 				}
 				// When we added first letter to the text node which had only inline filler, for the DOM it is mutation
 				// on text, but for the view, where filler text node did not exist, new text node was created, so we
-				// need to fire 'children' mutation instead of 'text'.
+				// need to handle it as a 'children' mutation instead of 'text'.
 				else if ( !text && startsWithFiller( mutation.target ) ) {
 					elementsWithMutatedChildren.add( domConverter.mapDomToView( mutation.target.parentNode ) );
 				}
 			}
 		}
 
-		// Now we build the list of mutations to fire and mark elements. We did not do it earlier to avoid marking the
+		// Now we build the list of mutations to mark elements. We did not do it earlier to avoid marking the
 		// same node multiple times in case of duplication.
 
 		let hasMutations = false;
@@ -221,8 +212,8 @@ export default class MutationObserver extends Observer {
 
 		// In case only non-relevant mutations were recorded it skips the event and force render (#5600).
 		if ( hasMutations ) {
-			// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
-			// view (which has not been changed). In order to "reset DOM" we render the view again.
+			// At this point we have "dirty DOM" (changed) and de-synched view (which has not been changed).
+			// In order to "reset DOM" we render the view again.
 			this.view.forceRender();
 		}
 	}
@@ -249,54 +240,6 @@ export default class MutationObserver extends Observer {
 		return addedNode && addedNode.is( 'element', 'br' );
 	}
 }
-
-/**
- * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverted to the state before
- * mutation, so all changes which should be applied, should be handled on this event.
- *
- * Introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver}.
- *
- * Note that because {@link module:engine/view/observer/mutationobserver~MutationObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
- *
- * @see module:engine/view/observer/mutationobserver~MutationObserver
- * @event module:engine/view/document~Document#event:mutations
- * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|module:engine/view/observer/mutationobserver~MutatedChildren>}
- * viewMutations Array of mutations.
- * For mutated texts it will be {@link module:engine/view/observer/mutationobserver~MutatedText} and for mutated elements it will be
- * {@link module:engine/view/observer/mutationobserver~MutatedChildren}. You can recognize the type based on the `type` property.
- * @param {module:engine/view/selection~Selection|null} viewSelection View selection that is a result of converting DOM selection to view.
- * Keep in
- * mind that the DOM selection is already "updated", meaning that it already acknowledges changes done in mutation.
- */
-
-/**
- * Mutation item for text.
- *
- * @see module:engine/view/document~Document#event:mutations
- * @see module:engine/view/observer/mutationobserver~MutatedChildren
- *
- * @typedef {Object} module:engine/view/observer/mutationobserver~MutatedText
- *
- * @property {String} type For text mutations it is always 'text'.
- * @property {module:engine/view/text~Text} node Mutated text node.
- * @property {String} oldText Old text.
- * @property {String} newText New text.
- */
-
-/**
- * Mutation item for child nodes.
- *
- * @see module:engine/view/document~Document#event:mutations
- * @see module:engine/view/observer/mutationobserver~MutatedText
- *
- * @typedef {Object} module:engine/view/observer/mutationobserver~MutatedChildren
- *
- * @property {String} type For child nodes mutations it is always 'children'.
- * @property {module:engine/view/element~Element} node Parent of the mutated children.
- * @property {Array.<module:engine/view/node~Node>} oldChildren Old child nodes.
- * @property {Array.<module:engine/view/node~Node>} newChildren New child nodes.
- */
 
 function sameNodes( child1, child2 ) {
 	// First level of comparison (array of children vs array of children) – use the Lodash's default behavior.
