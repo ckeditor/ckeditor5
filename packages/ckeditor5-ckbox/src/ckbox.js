@@ -77,9 +77,8 @@ export default class CKBox extends Plugin {
  *						Scans: [ 'png', 'tiff' ]
  *					},
  *					ignoreDataId: true,
- *					language: 'en',
- *					theme: 'default',
  *					serviceOrigin: 'https://example.com/',
+ *					assetsOrigin: 'https://example.cloud/',
  *					tokenUrl: 'https://example.com/cs-token-endpoint'
  *				}
  *			} )
@@ -139,6 +138,14 @@ export default class CKBox extends Plugin {
  *
  * @default 'https://ckbox.cloud'
  * @member {String} [module:ckbox/ckbox~CKBoxConfig#assetsOrigin]
+ */
+
+/**
+ * Configures the language for the CKBox dialog.
+ *
+ * Defaults to {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`}
+ *
+ * @member {String} [module:ckbox/ckbox~CKBoxConfig#language]
  */
 
 /**

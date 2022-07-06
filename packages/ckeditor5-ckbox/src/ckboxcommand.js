@@ -120,7 +120,8 @@ export default class CKBoxCommand extends Command {
 	 * @returns {String} options.theme The theme for CKBox dialog.
 	 * @returns {String} options.language The language for CKBox dialog.
 	 * @returns {String} options.tokenUrl The token endpoint URL.
-	 * @returns {String} options.serviceOrigin the base URL of the API service.
+	 * @returns {String} options.serviceOrigin The base URL of the API service.
+	 * @returns {String} options.assetsOrigin The base URL for assets inserted into the editor.
 	 * @returns {Object} options.dialog
 	 * @returns {Function} options.dialog.onClose The callback function invoked after closing the CKBox dialog.
 	 * @returns {Object} options.assets
@@ -135,6 +136,7 @@ export default class CKBoxCommand extends Command {
 			language: ckboxConfig.language,
 			tokenUrl: ckboxConfig.tokenUrl,
 			serviceOrigin: ckboxConfig.serviceOrigin,
+			assetsOrigin: ckboxConfig.assetsOrigin,
 			dialog: {
 				onClose: () => this.fire( 'ckbox:close' )
 			},
