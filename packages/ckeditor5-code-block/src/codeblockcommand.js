@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 
-import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
+import { getNormalizedAndLocalizedLanguageDefinitions, canBeCodeBlock } from './utils';
 
 /**
  * The code block command plugin.
@@ -177,14 +177,6 @@ export default class CodeBlockCommand extends Command {
 			writer.removeAttribute( 'language', block );
 		}
 	}
-}
-
-function canBeCodeBlock( schema, element ) {
-	if ( element.is( 'rootElement' ) || schema.isLimit( element ) ) {
-		return false;
-	}
-
-	return schema.checkChild( element.parent, 'codeBlock' );
 }
 
 // Picks the language for the new code block. If any language is passed as an option,

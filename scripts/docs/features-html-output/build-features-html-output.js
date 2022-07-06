@@ -124,7 +124,7 @@ module.exports = function createHtmlOutputMarkup() {
 };
 
 /**
- * Reads and parses all package metadata files, that match the glob pattern. The returned array is sorted alphabetically by package name.
+ * Reads and parses all package metadata files that match the glob pattern. The returned array is sorted alphabetically by package name.
  *
  * @returns {Array.<ParsedFile>}
  */
