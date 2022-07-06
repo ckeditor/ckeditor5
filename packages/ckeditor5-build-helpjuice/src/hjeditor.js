@@ -32,6 +32,7 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
@@ -102,6 +103,7 @@ HelpjuiceEditor.builtinPlugins = [
 	Indent,
 	Link,
 	List,
+	ListProperties,
 	TodoList,
 	FindAndReplace,
 	MediaEmbed,
@@ -352,13 +354,6 @@ HelpjuiceEditor.defaultConfig = {
 		showPreviews: true,
 		sanitizeHtml: html => ( { html, hasChange: false } )
 	},
-	list: {
-		properties: {
-			styles: true,
-			startIndex: true,
-			reversed: true
-		}
-	},
 	style: {
 		definitions: [
 			{
@@ -431,4 +426,11 @@ HelpjuiceEditor.defaultConfig = {
 		],
 		shouldNotGroupWhenFull: true
 	},
+	list: {
+		properties: {
+			styles: true,
+			startIndex: true,
+			reversed: true
+		}
+	}
 };
