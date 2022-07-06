@@ -308,7 +308,7 @@ describe( 'utils', () => {
 		} );
 
 		describe( 'extra dropdown open listener', () => {
-			let buttons;
+			let buttons, dropdownView;
 
 			beforeEach( () => {
 				buttons = [ '<svg>foo</svg>', '<svg>bar</svg>' ].map( icon => {
