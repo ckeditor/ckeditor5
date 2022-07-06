@@ -1218,6 +1218,56 @@ describe( 'WidgetTypeAround', () => {
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 			} );
+
+			describe( 'on composition start when the "fake caret" is activated ', () => {
+				it( 'should insert a character inside a new paragraph before a widget if the caret was "before" it', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+					fireKeyboardEvent( 'arrowleft' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+
+					fireCompositionStartEvent();
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+				} );
+
+				it( 'should insert a character inside a new paragraph after a widget if the caret was "after" it', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+					fireKeyboardEvent( 'arrowright' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
+
+					fireCompositionStartEvent();
+
+					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+				} );
+
+				it( 'should not work when the plugin is disabled', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+					model.change( writer => {
+						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+					} );
+
+					fireCompositionStartEvent();
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+				} );
+
+				it( 'should do nothing if selection is collapsed', () => {
+					setModelData( editor.model, '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
+
+					fireCompositionStartEvent();
+
+					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+				} );
+			} );
 		} );
 
 		describe( 'delete integration', () => {
@@ -1634,6 +1684,13 @@ describe( 'WidgetTypeAround', () => {
 			Object.assign( data, modifiers );
 
 			domEventDataStub = new DomEventData( viewDocument, getDomEvent(), data );
+
+			viewDocument.fire( eventInfoStub, domEventDataStub );
+		}
+
+		function fireCompositionStartEvent() {
+			eventInfoStub = new BubblingEventInfo( viewDocument, 'compositionstart' );
+			domEventDataStub = new DomEventData( viewDocument, getDomEvent(), {} );
 
 			viewDocument.fire( eventInfoStub, domEventDataStub );
 		}

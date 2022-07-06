@@ -649,7 +649,7 @@ export default class WidgetTypeAround extends Plugin {
 		}, { priority: 'high' } );
 
 		// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
-		this.listenTo( viewDocument, 'compositionstart', () => {
+		this._listenToIfEnabled( viewDocument, 'compositionstart', () => {
 			if ( model.document.selection.isCollapsed ) {
 				return;
 			}
