@@ -222,29 +222,12 @@ export default class Editor {
 		this.keystrokes.listenTo( this.editing.view.document );
 
 		/**
-		 * Current number of editors instances created.
-		 *
-		 * @private
-		 * @type {Number}
-		 */
-		Editor._editorCount = Editor._editorCount ? ++Editor._editorCount : 1;
-
-		/**
 		 * A unique editor's name.
 		 *
-		 * @observable
+		 * @readony
 		 * @member {String} #name
 		 */
-		this.name = this.generateEditorLabel();
-	}
-
-	/**
-	 *  Static getter for the _editorCount property.
-	 *
-	 * @returns {module:core/editor/editor~Editor._editorCount}
-	 */
-	static get editorCount() {
-		return Editor._editorCount;
+		this._name = this._generateEditorLabel();
 	}
 
 	/**
@@ -464,11 +447,11 @@ export default class Editor {
 	 * It will be based on the editor.config.get( 'label' ), otherwise a name
 	 * pattern of `'editor{n}'` will be used.
 	 *
-	 * @readonly
+	 * @private
 	 * @returns {String} label
 	 */
-	generateEditorLabel() {
-		const label = this.config.get( 'label' ) ? this.config.get( 'label' ) : 'editor' + Editor.editorCount;
+	_generateEditorLabel() {
+		const label = this.config.get( 'label' ) ? this.config.get( 'label' ) : 'editor' + ++Editor._editorCount;
 
 		return label;
 	}
@@ -489,6 +472,8 @@ export default class Editor {
 	 * @method module:core/editor/editor~Editor.create
 	 */
 }
+
+Editor._editorCount = 0;
 
 mix( Editor, ObservableMixin );
 
@@ -609,4 +594,20 @@ mix( Editor, ObservableMixin );
  *
  * @static
  * @member {Object} module:core/editor/editor~Editor.defaultConfig
+ */
+
+/**
+ * The editor's label.
+ *
+ *		ClassicEditor
+ *			.create( {
+ *				label: 'foo'
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * An editors label that if configured will be used to update the editor's aria-label.
+ * If not specified, the label is generated automatically following a pattern of `'editor{n}'`.
+ *
+ * @member {String} module:core/editor/editorconfig~EditorConfig#label
  */
