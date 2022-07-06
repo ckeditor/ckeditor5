@@ -16,11 +16,11 @@ order: 30
 
 CKEditor 5 consists of {@link installation/getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor 5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link installation/getting-started/predefined-builds#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-built-from-source) into your application. You can also use a customized editor built by using [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) in any React application.
+The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link installation/advanced/predefined-builds#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-built-from-source) into your application. You can also use a customized editor built by using [CKEditor 5 online builder](#using-the-ckeditor-5-online-builder) in any React application.
 
 ## Quick start
 
-Install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/getting-started/predefined-builds#available-builds editor build of your choice}.
+If you want an out-of-the-box editor, install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/advanced/predefined-builds#available-builds editor build of your choice}. For more flexible options, learn about [customizing the builds](#customizing-the-builds).
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -66,129 +66,6 @@ class App extends Component {
 export default App;
 ```
 
-## Component properties
-
-The `<CKEditor>` component supports the following properties:
-
-* `editor` (required) &ndash; The {@link module:core/editor/editor~Editor `Editor`} constructor to use.
-* `data` &ndash; The initial data for the created editor. See the {@link installation/getting-started/basic-api#interacting-with-the-editor Basic API} guide.
-* `config` &ndash; The editor configuration. See the {@link installation/getting-started/configuration Configuration} guide.
-* `id` &ndash; The editor ID. When this property changes, the component restarts the editor with new data instead of setting it on an initialized editor.
-* `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
-* `onReady` &ndash; A function called when the editor is ready with an {@link module:core/editor/editor~Editor `editor`} instance. This callback is also called after the reinitialization of the component if an error occurred.
-* `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
-* `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
-* `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
-* `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
-    Error details is an object that contains two properties:
-    * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
-     * `{Boolean} willEditorRestart` &ndash; When `true`, it means that the editor component will restart itself.
-
-The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
-
-1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
-2. An {@link module:core/editor/editor~Editor `Editor`} instance.
-
-## Context feature
-
-The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor 5 collaboration features}.
-
-```jsx
-// This sample assumes that the application is using a CKEditor 5 editor built from source.
-import React, { Component } from 'react';
-import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
-
-import Context from '@ckeditor/ckeditor5-core/src/context';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-
-class App extends Component {
-	render() {
-		return (
-			<div className="App">
-				<CKEditorContext context={ Context }>
-					<h2>Using the CKeditor 5 context feature in React</h2>
-					<CKEditor
-						editor={ ClassicEditor }
-						config={ {
-							plugins: [ Paragraph, Bold, Italic, Essentials ],
-							toolbar: [ 'bold', 'italic' ]
-						} }
-						data="<p>Hello from the first editor working with the context!</p>"
-						onReady={ editor => {
-							// You can store the "editor" and use when it is needed.
-							console.log( 'Editor1 is ready to use!', editor );
-						} }
-					/>
-
-					<CKEditor
-						editor={ ClassicEditor }
-						config={ {
-							plugins: [ Paragraph, Bold, Italic, Essentials ],
-							toolbar: [ 'bold', 'italic' ]
-						} }
-						data="<p>Hello from the first editor working with the context!</p>"
-						onReady={ editor => {
-							// You can store the "editor" and use when it is needed.
-							console.log( 'Editor1 is ready to use!', editor );
-						} }
-					/>
-				</CKEditorContext>
-			</div>
-		);
-	}
-}
-```
-
-### Context feature properties
-
-The `CKEditorContext` component supports the following properties:
-
-* `context` (required) &ndash; {@link module:core/context~Context The CKEditor 5 context class}.
-* `config` &ndash; The CKEditor 5 context configuration.
-* `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor 5 annotations or a presence list are used.
-* `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
-* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
-* `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
-    Error details is an object that contains two properties:
-    * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
-     * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
-
-<info-box>
-	An example build that exposes both context and classic editor can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
-</info-box>
-
-## Customizing the builds
-
-The {@link installation/getting-started/predefined-builds CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/getting-started/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
-
-There are three main ways to do that.
-
-### Using the CKEditor 5 online builder
-
-Create your own CKEditor 5 build with customized plugins, toolbar and language in five simple steps using our dedicated [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a fast, intuitive tool that allows for customizing your editing experience with a set of plugins of your own choice. Read more about this option in the [Integrating a build from the online builder](#integrating-a-build-from-the-online-builder) section.
-
-<info-box>
-	If you want to use the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/), make sure that the [watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) is not selected. The React integration comes with the watchdog feature already integrated into the core.
-</info-box>
-
-### Customizing one of the predefined builds
-
-This option requires making changes to a {@link installation/getting-started/quick-start-other#building-the-editor-from-source predefined build} of your choice. Much like in [the case of online builder](#integrating-a-build-from-the-online-builder), you then need to place the custom editor's folder next to `src/` directory and add it as a dependency using `yarn add file` command.
-
-Read more about customising a predefined build in the {@link installation/getting-started/installing-plugins Installing plugins} guide.
-
-### Integrating the editor from source
-
-In this approach, you will include a CKEditor 5 {@link installation/advanced/integrating-from-source built from source}, so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
-
-Read more about this option in the [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source) section.
-
-### Using the document editor build
-
 If you use the {@link framework/guides/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
 ```jsx
@@ -233,22 +110,42 @@ class App extends Component {
 export default App;
 ```
 
-### Using the editor with collaboration plugins
+## Component properties
 
-The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
+The `<CKEditor>` component supports the following properties:
 
-For such a scenario we provide a few ready-to-use integrations featuring collaborative editing in React applications:
+* `editor` (required) &ndash; The {@link module:core/editor/editor~Editor `Editor`} constructor to use.
+* `data` &ndash; The initial data for the created editor. See the {@link installation/getting-started/basic-api#interacting-with-the-editor Basic API} guide.
+* `config` &ndash; The editor configuration. See the {@link installation/getting-started/configuration Configuration} guide.
+* `id` &ndash; The editor ID. When this property changes, the component restarts the editor with new data instead of setting it on an initialized editor.
+* `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
+* `onReady` &ndash; A function called when the editor is ready with an {@link module:core/editor/editor~Editor `editor`} instance. This callback is also called after the reinitialization of the component if an error occurred.
+* `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
+* `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
+* `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
+* `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
+    Error details is an object that contains two properties:
+    * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
+     * `{Boolean} willEditorRestart` &ndash; When `true`, it means that the editor component will restart itself.
 
-* [CKEditor 5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
-* [CKEditor 5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
+The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
 
-It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
+2. An {@link module:core/editor/editor~Editor `Editor`} instance.
 
-Note: These integrations are meant to be as simple as possible, so they do not use the Create React App CLI. However, you should have no problem starting from `CRA` after reading the sections below.
+## Customizing the builds
 
-## Integrating a build from the online builder
+The {@link installation/advanced/predefined-builds CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/getting-started/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
 
-This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+There are three main ways to do that.
+
+### 1. Using the CKEditor 5 online builder
+
+Create your own CKEditor 5 build with customized plugins, toolbar and language in five simple steps using our dedicated [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a fast, intuitive tool that allows for customizing your editing experience with a set of plugins of your own choice.
+
+<info-box>
+	If you want to use the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/), make sure that the [watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) is not selected. The React integration comes with the watchdog feature already integrated into the core.
+</info-box>
 
 The directory with the editor's build cannot be placed inside the `src/` directory because Node could return an error:
 
@@ -322,7 +219,7 @@ class App extends Component {
 export default App;
 ```
 
-### The `JavaScript heap out of memory` error
+#### The `JavaScript heap out of memory` error
 
 When building the application for the production using the `yarn build` command, it may produce an error related to the memory available on the build machine:
 
@@ -360,13 +257,21 @@ It can also be set on-demand, per command call:
 NODE_OPTIONS="--max-old-space-size=4096" yarn build
 ```
 
-## Integrating CKEditor 5 built from source
+### 2. Customizing one of the predefined builds
+
+This option requires making changes to a {@link installation/getting-started/quick-start-other#building-the-editor-from-source predefined build} of your choice. Much like in [the case of online builder](#integrating-a-build-from-the-online-builder), you then need to place the custom editor's folder next to `src/` directory and add it as a dependency using `yarn add file` command.
+
+Read more about customising a predefined build in the {@link installation/getting-started/installing-plugins Installing plugins} guide.
+
+### 3. Integrating the editor from source
 
 Integrating the rich text editor from source allows you to use the full power of the {@link framework/index CKEditor 5 Framework}.
 
+In this approach, you will include a CKEditor 5 {@link installation/advanced/integrating-from-source built from source}, so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
+
 This guide assumes that you are using the [Create React App CLI](https://github.com/facebook/create-react-app) as your boilerplate and it goes through adjusting it to fit CKEditor 5 needs. If you use your custom webpack setup, please read more about {@link installation/advanced/integrating-from-source including CKEditor 5 built from source}.
 
-### Using `create-react-app@3+`
+#### Using `create-react-app@3+`
 
 The configuration needs to be ejected to make it possible to customize the webpack configuration. In order to be able to build CKEditor 5 from source, you need to tell webpack how to handle CKEditor 5's SVG and CSS files (by adding loaders configuration). Additionally, you need to exclude the CKEditor 5 source from the existing loaders.
 
@@ -559,6 +464,91 @@ yarn start
 ```
 
 You can read more about using CKEditor 5 from source in the {@link installation/advanced/integrating-from-source Advanced setup guide}.
+
+#### Using the editor with collaboration plugins
+
+The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
+
+For such a scenario we provide a few ready-to-use integrations featuring collaborative editing in React applications:
+
+* [CKEditor 5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
+* [CKEditor 5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
+
+It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+
+Note: These integrations are meant to be as simple as possible, so they do not use the Create React App CLI.
+
+## Context feature
+
+The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor 5 collaboration features}.
+
+```jsx
+// This sample assumes that the application is using a CKEditor 5 editor built from source.
+import React, { Component } from 'react';
+import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
+
+import Context from '@ckeditor/ckeditor5-core/src/context';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
+class App extends Component {
+	render() {
+		return (
+			<div className="App">
+				<CKEditorContext context={ Context }>
+					<h2>Using the CKeditor 5 context feature in React</h2>
+					<CKEditor
+						editor={ ClassicEditor }
+						config={ {
+							plugins: [ Paragraph, Bold, Italic, Essentials ],
+							toolbar: [ 'bold', 'italic' ]
+						} }
+						data="<p>Hello from the first editor working with the context!</p>"
+						onReady={ editor => {
+							// You can store the "editor" and use when it is needed.
+							console.log( 'Editor1 is ready to use!', editor );
+						} }
+					/>
+
+					<CKEditor
+						editor={ ClassicEditor }
+						config={ {
+							plugins: [ Paragraph, Bold, Italic, Essentials ],
+							toolbar: [ 'bold', 'italic' ]
+						} }
+						data="<p>Hello from the first editor working with the context!</p>"
+						onReady={ editor => {
+							// You can store the "editor" and use when it is needed.
+							console.log( 'Editor1 is ready to use!', editor );
+						} }
+					/>
+				</CKEditorContext>
+			</div>
+		);
+	}
+}
+```
+
+### Context feature properties
+
+The `CKEditorContext` component supports the following properties:
+
+* `context` (required) &ndash; {@link module:core/context~Context The CKEditor 5 context class}.
+* `config` &ndash; The CKEditor 5 context configuration.
+* `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor 5 annotations or a presence list are used.
+* `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
+* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
+* `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
+    Error details is an object that contains two properties:
+    * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
+     * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
+
+<info-box>
+	An example build that exposes both context and classic editor can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
+</info-box>
 
 ## Localization
 
