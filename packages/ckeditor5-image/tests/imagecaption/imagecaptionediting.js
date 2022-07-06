@@ -764,7 +764,7 @@ describe( 'ImageCaptionEditing', () => {
 		it( 'should reflect the change of image\'s alt attribute in caption\'s aria-label attribute', () => {
 			setModelData( model, '[<imageBlock alt="foo" src="img.png"><caption></caption></imageBlock>]' );
 
-			expect( view.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'aria-label' ) ).to.equal( 'Caption for foo image' );
+			expect( view.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'aria-label' ) ).to.equal( 'Caption for image: foo' );
 
 			const image = doc.getRoot().getChild( 0 );
 
@@ -772,7 +772,7 @@ describe( 'ImageCaptionEditing', () => {
 				writer.setAttribute( 'alt', 'bar', image );
 			} );
 
-			expect( view.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'aria-label' ) ).to.equal( 'Caption for bar image' );
+			expect( view.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'aria-label' ) ).to.equal( 'Caption for image: bar' );
 		} );
 	} );
 } );
