@@ -210,7 +210,7 @@ describe( 'Editor', () => {
 
 				expect( editor1.name ).to.equal( 'editor1' );
 				expect( editor2.name ).to.equal( 'foo' );
-				expect( editor3.name ).to.equal( 'editor3' );
+				expect( editor3.name ).to.equal( 'editor2' );
 			} );
 		} );
 	} );

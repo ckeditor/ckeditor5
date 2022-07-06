@@ -94,6 +94,14 @@ describe( 'ClassicEditorUIView', () => {
 			it( 'is put into the "main" collection', () => {
 				expect( view.main.get( 0 ) ).to.equal( view.editable );
 			} );
+
+			it( 'should have the _editorName set based on passed editorName constructor option', () => {
+				const newView = new ClassicEditorUIView( locale, editingView, { editorName: 'foo' } );
+
+				expect( newView._editorName ).to.be.equal( 'foo' );
+
+				newView.destroy();
+			} );
 		} );
 	} );
 } );

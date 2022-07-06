@@ -26,6 +26,17 @@ describe( 'BoxedEditorUIView', () => {
 			expect( view.main ).to.be.instanceof( ViewCollection );
 		} );
 
+		it( 'sets the _editorName property accordingly', () => {
+			expect( view._editorName ).to.be.equal( '' );
+
+			view.destroy();
+
+			view = new BoxedEditorUIView( new Locale(), { editorName: 'foo' } );
+			view.render();
+
+			expect( view._editorName ).to.be.equal( 'foo' );
+		} );
+
 		it( 'bootstraps the view element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-editor' ) ).to.be.true;
@@ -42,6 +53,17 @@ describe( 'BoxedEditorUIView', () => {
 
 			expect( voiceLabel.classList.contains( 'ck-voice-label' ) ).to.be.true;
 			expect( voiceLabel.textContent ).to.equal( 'Rich Text Editor' );
+		} );
+
+		it( 'updated the voice label if options.editorName has been passed', () => {
+			view.destroy();
+
+			view = new BoxedEditorUIView( new Locale(), { editorName: 'test' } );
+			view.render();
+			const voiceLabel = view.element.firstChild;
+
+			expect( voiceLabel.classList.contains( 'ck-voice-label' ) ).to.be.true;
+			expect( voiceLabel.textContent ).to.equal( 'Rich Text Editor, test' );
 		} );
 
 		it( 'setups accessibility of the view element', () => {
