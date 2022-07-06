@@ -1078,12 +1078,66 @@ export default class DomConverter {
 		}
 
 		// Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode. See ckeditor5#5564.
-		if ( domNode.tagName === 'BR' && hasBlockParent( domNode, this.blockElements ) && domNode.parentNode.childNodes.length === 1 ) {
-			return true;
+		// if ( domNode.tagName === 'BR' && hasBlockParent( domNode, this.blockElements ) && domNode.parentNode.childNodes.length === 1 ) {
+		// 	return true;
+		// }
+
+		if ( domNode.tagName === 'BR' ) {
+			if ( hasBlockParent( domNode, this.blockElements ) || this.isDocumentFragment( domNode.parentNode ) ) {
+				if ( this._isLastNodeInBlock( domNode ) ) {
+					return true;
+				}
+			}
 		}
 
 		// If not in 'br' mode, try recognizing both marked and regular nbsp block fillers.
-		return domNode.isEqualNode( MARKED_NBSP_FILLER_REF ) || isNbspBlockFiller( domNode, this.blockElements );
+		if ( domNode.isEqualNode( MARKED_NBSP_FILLER_REF ) ) {
+			return true;
+		}
+
+		if (
+			domNode.isEqualNode( NBSP_FILLER_REF ) &&
+			( hasBlockParent( domNode, this.blockElements ) || this.isDocumentFragment( domNode.parentNode ) )
+		) {
+			// The only one in the block.
+			if ( domNode.parentNode.childNodes.length === 1 ) {
+				return true;
+			}
+
+			const previousSibling = domNode.previousSibling;
+
+			// The block filler after a BR without any meaningful content in the block.
+			if ( previousSibling && previousSibling.tagName == 'BR' && this._isLastNodeInBlock( domNode ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * TODO
+	 * @private
+	 */
+	_isLastNodeInBlock( domNode ) {
+		const nextSibling = domNode.nextSibling;
+
+		// This is the last node in the block element or in the document fragment.
+		if ( !nextSibling ) {
+			return true;
+		}
+
+		// This is the last node before a block element.
+		if ( this.isElement( nextSibling ) && this.blockElements.includes( nextSibling.tagName.toLowerCase() ) ) {
+			return true;
+		}
+
+		// There are only whitespaces (nbsp is not considered as a whitespace here) until the end of the block.
+		if ( isText( nextSibling ) && this._processDataFromDomText( nextSibling ) === '' && this._isLastNodeInBlock( nextSibling ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -1626,19 +1680,6 @@ function forEachDomNodeAncestor( node, callback ) {
 		callback( node );
 		node = node.parentNode;
 	}
-}
-
-// Checks if given node is a nbsp block filler.
-//
-// A &nbsp; is a block filler only if it is a single child of a block element.
-//
-// @param {Node} domNode DOM node.
-// @param {Array.<String>} blockElements
-// @returns {Boolean}
-function isNbspBlockFiller( domNode, blockElements ) {
-	const isNBSP = domNode.isEqualNode( NBSP_FILLER_REF );
-
-	return isNBSP && hasBlockParent( domNode, blockElements ) && domNode.parentNode.childNodes.length === 1;
 }
 
 // Checks if domNode has block parent.
