@@ -21,49 +21,14 @@ The following CKEditor 5 builds are currently available:
 
 ## Basic information
 
-### How builds were designed
-
-Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features, and are based on the following approach:
-
-* Include the set of features proposed by the [Editor Recommendations project](https://ckeditor.github.io/editor-recommendations/).
-* Include features that contribute to creating quality content.
-* Provide setups as generic as possible, based on research and community feedback.
-
-### Use cases
-
-Each of the builds fits several different use cases. Just think about any possible use for writing rich text in applications.
-
-The following are **some** common use cases:
-
-* In content management systems:
-	* Forms for writing articles or website content.
-	* Inline writing in a frontend-like editing page.
-	* Comments.
-* In marketing and sales automation applications:
-	* Composing email campaigns.
-	* Creating templates.
-* In forum applications:
-	* Creating topics and their replies.
-* In team collaboration applications:
-	* Creating shared documents.
-* Other uses:
-	* User profile editing pages.
-	* Book writing applications.
-	* Social messaging and content sharing.
-	* Creation of ads in recruitment software.
+Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features.
 
 ### When NOT to use predefined builds?
 
-{@link framework/index CKEditor 5 Framework} or a {@link installation/getting-started/quick-start custom build} should be used, instead of predefined builds, in the following cases:
+{@link framework/index CKEditor 5 Framework} or a {@link installation/getting-started/quick-start-other custom build} should be used, instead of predefined builds, in the following cases:
 
 * When you want to create your own text editor and have full control over its every aspect, from UI to features.
 * When the solution proposed by the builds does not fit your specific use case.
-
-In the following cases [CKEditor 4](https://ckeditor.com/ckeditor-4/) should be used instead:
-
-* When compatibility with old browsers is a requirement.
-* If CKEditor 4 contains features that are essential for you, which are not available in CKEditor 5 yet.
-* If CKEditor 4 is already in use in your application and you are still not ready to replace it with CKEditor 5.
 
 ### Download options
 
@@ -76,7 +41,9 @@ There are several options to download predefined CKEditor 5 builds:
 
 #### CDN
 
-Predefined CKEditor 5 builds can be loaded inside pages directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed.
+Predefined CKEditor 5 builds {@link installation/getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed.  CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
+
+However, CDN only offers ready-to-use, predefined packages &ndash; the builds &ndash; and as does not offer much customization capabilities.
 
 #### npm
 
@@ -475,7 +442,7 @@ Some of the reasons for creating custom builds are:
 
 * Adding features which are not included in the existing builds, either from a third party or custom developed.
 * Removing unnecessary features present in a build.
-* Changing the {@link installation/getting-started/basic-api#creating-an-editor editor creator}.
+* Changing the {@link installation/getting-started/basic-api#creating-an-editor-with-create editor creator}.
 * Changing the {@link framework/guides/theme-customization editor theme}.
 * Changing the {@link features/ui-language localization language} of the editor.
 * Enabling bug fixes which are still not a part of any public release.

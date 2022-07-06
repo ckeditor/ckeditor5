@@ -35,7 +35,7 @@ Creating your own plugins is a straightforward task but it requires good knowled
 * The {@link framework/guides/creating-simple-plugin Plugin development guide} in the {@link framework/index CKEditor 5 Framework} documentation.
 * The {@link framework/guides/package-generator Using package generator} that provides plugin development environment.
 * The {@link framework/guides/quick-start Quick start guide} in the {@link framework/index CKEditor 5 Framework} documentation.
-* {@link installation/getting-started/quick-start#building-the-editor-from-source Creating custom builds} which is necessary to have your plugin included inside a CKEditor 5 build.
+* {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds} which is necessary to have your plugin included inside a CKEditor 5 build.
 
 A good understanding of the {@link framework/index CKEditor 5 Framework} is also very welcome when it comes to creating plugins.
 
