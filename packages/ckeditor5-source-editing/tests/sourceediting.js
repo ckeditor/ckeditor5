@@ -210,7 +210,7 @@ describe( 'SourceEditing', () => {
 					const editingView = this.editing.view;
 
 					uiView.editable.destroy();
-					uiView.editable = new InlineEditableUIView( uiView.locale, editingView, document.createElement( 'div' ) );
+					uiView.editable = new InlineEditableUIView( uiView.locale, editingView, this, document.createElement( 'div' ) );
 				}
 			}
 
