@@ -18,19 +18,19 @@ msgstr ""
 
 msgctxt "The label for the image widget."
 msgid "image widget"
-msgstr "图像小部件"
+msgstr "图片组件"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "文字环绕"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "文字断行"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "行内"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"
@@ -38,7 +38,7 @@ msgstr "图片侧边显示"
 
 msgctxt "The label for the Full size image option."
 msgid "Full size image"
-msgstr "图片通栏显示"
+msgstr "全尺寸图片"
 
 msgctxt "The label for the Left aligned image option."
 msgid "Left aligned image"
