@@ -22,8 +22,8 @@ class Timestamp extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( 'timestamp', locale => {
-			const button = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'timestamp', () => {
+			const button = new ButtonView();
 
 			button.set( {
 				label: 'Timestamp',
@@ -32,14 +32,9 @@ class Timestamp extends Plugin {
 
 			button.on( 'execute', () => {
 				const now = new Date();
-				const selection = editor.model.document.selection;
 
 				editor.model.change( writer => {
-					writer.insertText( `${ now.toString() }`, selection.getFirstPosition() );
-
-					for ( const range of selection.getRanges() ) {
-						writer.remove( range );
-					}
+					editor.model.insertContent( writer.createText( now.toString() ) );
 				} );
 			} );
 
@@ -61,6 +56,12 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Timestamp' ),
+			text: 'Click to add timestamp.',
+			editor
+		} );
 	} )
 	.catch( err => {
 		console.error( err );

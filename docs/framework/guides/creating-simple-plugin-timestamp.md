@@ -64,9 +64,8 @@ Your `index.html` should look like this. The editor will load with HTML content 
 ```
 ## Creating a plugin
 
-All features in the CKEditor 5 are introduced by plugins implementing the {@link module:core/plugin~PluginInterface}. Your custom timestamp plugin is no exception, so it needs to extend the {@link module:core/plugin~Plugin base `Plugin` class}.
-
-Once we have `Plugin` imported, we're ready to create our custom timestamp plugin. After we define it, we can add it into the editor's `config.plugins` array.
+All features in the CKEditor 5 are introduced by plugins. In order to create our custom timestamp plugin, we need to import the {@link module:core/plugin~Plugin base `Plugin` class}.
+You can now create a `Timestamp` class that extends `Plugin`. After we define it, we can add it into the editor's {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} array.
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -87,11 +86,10 @@ class Timestamp extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-
 		//Add the Timestamp plugin to config.plugins array
-		plugins: [ 
+		plugins: [
 			Timestamp, Essentials, Paragraph, Heading, List, Bold, Italic
-			], 
+		],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 	} )
 	.then( editor => {
@@ -105,13 +103,14 @@ Rebuild and check in your console if the timestamp was initialized. You should s
 
 ## Registering a toolbar button
 
-CKEditor 5 has a rich UI library, from where we'll grab the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class for our toolbar button. 
+CKEditor 5 has a rich UI library, from where we'll grab the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class for our toolbar button.
 
-Once we create a new instance of the `ButtonView`, we'll be able to customize it by setting its properties. We'll create a label, which will be visible on the button thanks to the `withText` property. 
+Once we create a new instance of the `ButtonView`, we'll be able to customize it by setting its properties. We'll create a label, which will be visible on the button thanks to the {@link module:ui/button/buttonview~ButtonView#withText `withText`} property.
 
-We need to register our button in the editor's UI {@link module:ui/componentfactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar. We'll pass the name of the button in the `componentFactory.add` method, so we'll be able to add it into the `config.toolbar` array.
+We need to register our button in the editor's UI {@link module:ui/componentfactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar. We'll pass the name of the button in the {@link module:ui/componentfactory~ComponentFactory#add `componentFactory.add`} method, so we'll be able to add it into the {@link features/toolbar `config.toolbar`} array.
 
 ```js
+// ...
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 class Timestamp extends Plugin {
@@ -120,10 +119,10 @@ class Timestamp extends Plugin {
 
 		// The button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
-		editor.ui.componentFactory.add( 'timestamp', locale => {
-			
+		editor.ui.componentFactory.add( 'timestamp', () => {
+
 			// The button will be an instance of ButtonView
-			const button = new ButtonView( locale );
+			const button = new ButtonView();
 
 			button.set( {
 				label: 'Timestamp',
@@ -137,14 +136,13 @@ class Timestamp extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ 
-			Timestamp, Essentials, Paragraph, Heading, List, Bold, Italic 
-			], 
-
+		plugins: [
+			Timestamp, Essentials, Paragraph, Heading, List, Bold, Italic
+		],
 		//Add the Timestamp button to the config.toolbar array
-		toolbar: [ 
+		toolbar: [
 			'timestamp', 'heading', 'bold', 'italic', 'numberedList', 'bulletedList'
-			] 
+		]
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
@@ -154,21 +152,19 @@ ClassicEditor
 	} );
 
 ```
-You should be able to see the timestamp button now. It doesn't do anything just yet, so let's change that. 
+You should be able to see the timestamp button now. It doesn't do anything just yet, so let's change that.
 
 ## Inserting a timestamp
 
-We can now define the core funcitonality of our plugin, the action that should be executed once our button is clicked. 
+We can now define the core functionality of our plugin, the action that should be executed once our button is clicked.
 
-When we want to insert something into the document structure (or change it in any other way), we need to use the model writer, available in the model's `change()` method. 
+When we want to insert something into the document structure, we need to {@link framework/guides/architecture/editing-engine#changing-the-model change the model} using the model's `change()` method. This way we get access to {@link module:engine/model/writer~Writer the model writer}.
 
 <info-box>
-	What is the model? It's a DOM-like structure, that is converted into the view, which is what the user interacts with. If you want to learn more, you can read about it in the {@link framework/guides/architecture/editing-engine#overview editing engine architecture}. Don't be intimidated by the diagram you can find there, as you don't need to understand it in its full complexity to implement custom plugins.   
+	What is the model? It's a DOM-like structure, that is converted into the view, which is what the user interacts with. If you want to learn more, you can read more about {@link framework/guides/architecture/editing-engine#model the model} and {@link framework/guides/architecture/editing-engine#view the view}.
 </info-box>
 
-We'll use the {link module:engine/model/writer~Writer#insertText `writer.insertText()`} method to insert our timestamp into the document. We'll also need to give it a position of the user's current selection to indicate where to insert our timestamp (using the {@link module:engine/model/position~Position `Position`} class). 
-
-Finally, if the user's selection has a range (so it's a letter, word, or a whole text fragment), we'll remove that and replace it with our timestamp.
+We'll use the {@link module:engine/model/writer~Writer#insertContent `writer.insertContent()`} method to insert our timestamp into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~Writer#createText `writer.createText()`}.
 
 ```js
 class Timestamp extends Plugin {
@@ -176,24 +172,18 @@ class Timestamp extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'timestamp', locale => {
-			
+
 			//...
 
 			//Execute a callback function when the button is clicked
 			button.on( 'execute', () => {
 				const now = new Date();
-				const selection = editor.model.document.selection;
 
 				//Change the model using the model writer
 				editor.model.change( writer => {
 
 					//Insert the text at the user's current position
-					writer.insertText( `${ now.toString() }`, selection.getFirstPosition() );
-
-					//Remove selected elements
-					for ( const range of selection.getRanges() ) {
-						writer.remove( range );
-					}
+					editor.model.insertContent( writer.createText( now.toString() ) );
 				} );
 			} );
 
@@ -203,9 +193,9 @@ class Timestamp extends Plugin {
 }
 ```
 
-Well done! Your timestamp plugin is now ready. 
+Well done! Your timestamp plugin is now ready.
 
-What's next? You can read more about the {@link framework/guides/overview CKEditor 5 framework}, or continue with our next tutorial, where we'll create {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin}. 
+What's next? You can read more about the {@link framework/guides/overview CKEditor 5 framework}, or continue with our next tutorial, where we'll create {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin}.
 
 ## Demo
 
@@ -230,8 +220,8 @@ class Timestamp extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( 'timestamp', locale => {
-			const button = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'timestamp', () => {
+			const button = new ButtonView();
 
 			button.set( {
 				label: 'Timestamp',
@@ -240,14 +230,9 @@ class Timestamp extends Plugin {
 
 			button.on( 'execute', () => {
 				const now = new Date();
-				const selection = editor.model.document.selection;
 
 				editor.model.change( writer => {
-					writer.insertText( `${ now.toString() }`, selection.getFirstPosition() );
-
-					for ( const range of selection.getRanges() ) {
-						writer.remove( range );
-					}
+					editor.model.insertContent( writer.createText( now.toString() ) );
 				} );
 			} );
 
@@ -258,8 +243,8 @@ class Timestamp extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-timestamp-plugin' ), {
-		plugins: [ Essentials, Bold, Italic, Heading, List, Paragraph, Timestamp ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'timestamp' ]
+		plugins: [ Timestamp, Essentials, Bold, Italic, Heading, List, Paragraph ],
+		toolbar: [ 'timestamp', '|', 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
