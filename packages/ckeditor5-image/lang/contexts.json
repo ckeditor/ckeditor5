@@ -22,5 +22,6 @@
 	"Insert": "The label of the form submit button if the image source URL input has no value.",
 	"Update": "The label of the form submit button if the image source URL input has a value.",
 	"Insert image via URL": "The input label for the Insert image via URL form.",
-	"Update image URL": "The input label for the Insert image via URL form for a pre-existing image."
+	"Update image URL": "The input label for the Insert image via URL form for a pre-existing image.",
+	"Caption for image: %0": "Text used by screen readers do describe an image, e.g. 'Caption for image: this is a description of the image.'"
 }
