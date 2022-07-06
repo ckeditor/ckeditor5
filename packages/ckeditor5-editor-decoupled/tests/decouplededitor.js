@@ -392,10 +392,38 @@ describe( 'DecoupledEditor', () => {
 					.create( editableElement, { plugins: [ Paragraph ] } )
 					.then( newEditor => {
 						editor = newEditor;
+
+						const schema = editor.model.schema;
+
+						schema.register( 'heading', {
+							allowIn: '$root',
+							allowChildren: '$text'
+						} );
+
+						editor.conversion.for( 'upcast' ).elementToElement( { model: 'heading', view: 'heading' } );
+						editor.conversion.for( 'dataDowncast' ).elementToElement( { model: 'heading', view: 'heading' } );
+						editor.conversion.for( 'editingDowncast' ).elementToElement( {
+							model: 'heading',
+							view: 'heading-editing'
+						} );
 					} );
 			} );
 
+			// We don't update the source element by default, so after destroy, it should contain the data
+			// from the editing pipeline.
+			it( 'don\'t set data back to the element', () => {
+				editor.setData( '<p>foo</p><heading>bar</heading>' );
+
+				return editor.destroy()
+					.then( () => {
+						expect( editableElement.innerHTML ).to.equal( '<p>foo</p><heading-editing>bar</heading-editing>' );
+					} );
+			} );
+
+			// Adding `updateSourceElementOnDestroy` config to the editor allows setting the data
+			// back to the source element after destroy.
 			it( 'sets data back to the element', () => {
+				editor.config.set( 'updateSourceElementOnDestroy', true );
 				editor.setData( '<p>foo</p>' );
 
 				return editor.destroy()
