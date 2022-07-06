@@ -66,6 +66,10 @@ export default class InsertTextObserver extends Observer {
 
 		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
 		viewDocument.on( 'compositionend', ( evt, { data, domEvent } ) => {
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			// In case of aborted composition.
 			if ( !data ) {
 				return;

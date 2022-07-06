@@ -30,3 +30,14 @@ export function fireBeforeInputDomEvent( domRoot, evtData ) {
 
 	domRoot.dispatchEvent( event );
 }
+
+/**
+ * Fires the `compositionend` DOM event on the editor's editing root DOM
+ * element with given data.
+ *
+ * @param {HTMLElement} domRoot
+ * @param {Object} evtData
+ */
+export function fireCompositionEndDomEvent( domRoot, evtData ) {
+	domRoot.dispatchEvent( Object.assign( new Event( 'compositionend' ), evtData ) );
+}

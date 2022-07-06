@@ -6,7 +6,7 @@
 /* globals document */
 
 import InsertTextObserver from '../src/inserttextobserver';
-import { fireBeforeInputDomEvent } from './_utils/utils';
+import { fireBeforeInputDomEvent, fireCompositionEndDomEvent } from './_utils/utils';
 
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
@@ -49,11 +49,21 @@ describe( 'InsertTextObserver', () => {
 		} ).to.not.throw();
 	} );
 
-	it( 'should not work if the observer is disabled', () => {
+	it( 'should not work if the observer is disabled (beforeinput)', () => {
 		view.getObserver( InsertTextObserver ).isEnabled = false;
 
 		fireBeforeInputDomEvent( domRoot, {
 			inputType: 'insertParagraph'
+		} );
+
+		sinon.assert.notCalled( insertTextEventSpy );
+	} );
+
+	it( 'should not work if the observer is disabled (composition)', () => {
+		view.getObserver( InsertTextObserver ).isEnabled = false;
+
+		fireCompositionEndDomEvent( domRoot, {
+			data: 'foo'
 		} );
 
 		sinon.assert.notCalled( insertTextEventSpy );
@@ -121,7 +131,7 @@ describe( 'InsertTextObserver', () => {
 		sinon.assert.notCalled( interceptedEventData.preventDefault );
 	} );
 
-	it( 'should handle the insertText input type and execute the input command', () => {
+	it( 'should handle the insertText input type and fire the insertText event', () => {
 		viewSetData( view, '<p>fo{}o</p>' );
 
 		const viewRange = view.document.selection.getFirstRange();
@@ -142,7 +152,7 @@ describe( 'InsertTextObserver', () => {
 		expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
 	} );
 
-	it( 'should handle the insertReplacementText input type and execute the input command', () => {
+	it( 'should handle the insertReplacementText input type and fire the insertText event', () => {
 		viewSetData( view, '<p>fo{}o</p>' );
 
 		const viewRange = view.document.selection.getFirstRange();
@@ -161,5 +171,30 @@ describe( 'InsertTextObserver', () => {
 
 		expect( firstCallArgs.text ).to.equal( 'bar' );
 		expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
+	} );
+
+	it( 'should handle the compositionend event and fire fire the insertText event', () => {
+		viewSetData( view, '<p>fo{}o</p>' );
+
+		fireCompositionEndDomEvent( domRoot, {
+			data: 'bar'
+		} );
+
+		sinon.assert.calledOnce( insertTextEventSpy );
+
+		const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+
+		expect( firstCallArgs.text ).to.equal( 'bar' );
+		expect( firstCallArgs.selection.isEqual( view.document.selection ) ).to.be.true;
+	} );
+
+	it( 'should ignore the empty compositionend event (without any data)', () => {
+		viewSetData( view, '<p>fo{}o</p>' );
+
+		fireCompositionEndDomEvent( domRoot, {
+			data: ''
+		} );
+
+		sinon.assert.notCalled( insertTextEventSpy );
 	} );
 } );
