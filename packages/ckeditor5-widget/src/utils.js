@@ -257,6 +257,7 @@ export function getLabel( element ) {
  *
  * @param {module:engine/view/editableelement~EditableElement} editable
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {Object} [options] Additional options.
  * @param {String} [options.label] Editable's label used by assistive technologies (e.g. screen readers).
  * @returns {module:engine/view/editableelement~EditableElement} Returns the same element that was provided in the `editable` parameter
  */
