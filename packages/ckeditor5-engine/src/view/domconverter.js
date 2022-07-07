@@ -631,7 +631,18 @@ export default class DomConverter {
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
+		// Ignore block fillers.
 		if ( this.isBlockFiller( domNode ) ) {
+			// Special case for <br> element between blocks in which <br> should be treated
+			// as a paragraph even when we are not in the 'br' mode.
+			if (
+				this.blockFillerMode != 'br' && domNode.tagName === 'BR' &&
+				domNode.parentNode.childNodes.length > 1 &&
+				this._isLastNodeInBlock( domNode, 'forward' ) && this._isLastNodeInBlock( domNode, 'backward' )
+			) {
+				return new ViewElement( this.document, 'p' );
+			}
+
 			return null;
 		}
 
@@ -1077,17 +1088,14 @@ export default class DomConverter {
 			return domNode.isEqualNode( BR_FILLER_REF );
 		}
 
-		// Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode. See ckeditor5#5564.
-		// if ( domNode.tagName === 'BR' && hasBlockParent( domNode, this.blockElements ) && domNode.parentNode.childNodes.length === 1 ) {
-		// 	return true;
-		// }
-
-		if ( domNode.tagName === 'BR' ) {
-			if ( hasBlockParent( domNode, this.blockElements ) || this.isDocumentFragment( domNode.parentNode ) ) {
-				if ( this._isLastNodeInBlock( domNode ) ) {
-					return true;
-				}
-			}
+		// Special case for <p>foo<br></p> or <p></p>foo<br><p></p> in which <br> should be treated
+		// as filler even when we are not in the 'br' mode. See ckeditor5#5564.
+		if (
+			domNode.tagName === 'BR' &&
+			( hasBlockParent( domNode, this.blockElements ) || this.isDocumentFragment( domNode.parentNode ) ) &&
+			this._isLastNodeInBlock( domNode )
+		) {
+			return true;
 		}
 
 		// If not in 'br' mode, try recognizing both marked and regular nbsp block fillers.
@@ -1095,6 +1103,7 @@ export default class DomConverter {
 			return true;
 		}
 
+		// For non-marked filler we should also check if it's not NBSP filler after a <br>.
 		if (
 			domNode.isEqualNode( NBSP_FILLER_REF ) &&
 			( hasBlockParent( domNode, this.blockElements ) || this.isDocumentFragment( domNode.parentNode ) )
@@ -1106,35 +1115,10 @@ export default class DomConverter {
 
 			const previousSibling = domNode.previousSibling;
 
-			// The block filler after a BR without any meaningful content in the block.
+			// The block filler after a <br> without any following meaningful content in the block.
 			if ( previousSibling && previousSibling.tagName == 'BR' && this._isLastNodeInBlock( domNode ) ) {
 				return true;
 			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * TODO
-	 * @private
-	 */
-	_isLastNodeInBlock( domNode ) {
-		const nextSibling = domNode.nextSibling;
-
-		// This is the last node in the block element or in the document fragment.
-		if ( !nextSibling ) {
-			return true;
-		}
-
-		// This is the last node before a block element.
-		if ( this.isElement( nextSibling ) && this.blockElements.includes( nextSibling.tagName.toLowerCase() ) ) {
-			return true;
-		}
-
-		// There are only whitespaces (nbsp is not considered as a whitespace here) until the end of the block.
-		if ( isText( nextSibling ) && this._processDataFromDomText( nextSibling ) === '' && this._isLastNodeInBlock( nextSibling ) ) {
-			return true;
 		}
 
 		return false;
@@ -1655,6 +1639,40 @@ export default class DomConverter {
 		}
 
 		return newDomElement;
+	}
+
+	/**
+	 * Returns `true` if the given DOM node is the last one in the block or there is a sibling block in the given direction.
+	 * It ignores whitespaces (but not NBSPs).
+	 *
+	 * @private
+	 * @param {Node} domNode
+	 * @param {'forward'|'backward'} [direction='forward']
+	 * @returns {Boolean}
+	 */
+	_isLastNodeInBlock( domNode, direction = 'forward' ) {
+		const siblingNode = direction == 'forward' ? domNode.nextSibling : domNode.previousSibling;
+
+		// This is the last node in the block element or in the document fragment.
+		if ( !siblingNode ) {
+			return true;
+		}
+
+		// This is the last node before a block element.
+		if ( this.isElement( siblingNode ) && this.blockElements.includes( siblingNode.tagName.toLowerCase() ) ) {
+			return true;
+		}
+
+		// There are only whitespaces (nbsp is not considered as a whitespace here) until the end of the block.
+		if (
+			isText( siblingNode ) &&
+			this._processDataFromDomText( siblingNode ) === '' &&
+			this._isLastNodeInBlock( siblingNode, direction )
+		) {
+			return true;
+		}
+
+		return false;
 	}
 }
 
