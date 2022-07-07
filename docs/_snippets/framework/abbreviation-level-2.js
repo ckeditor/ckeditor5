@@ -21,6 +21,10 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
 import FormView from './abbreviationView-level-2';
 
+// TODO
+// import '../styles.css';
+//    \-> styles.css should contain the content of <style> tag from the manual test.
+
 class AbbreviationUI extends Plugin {
 	static get requires() {
 		return [ ContextualBalloon ];

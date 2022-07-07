@@ -12,27 +12,44 @@ import {
 } from '@ckeditor/ckeditor5-ui';
 import { icons } from '@ckeditor/ckeditor5-core';
 
+// [cancel button]
+//		-> clicked
+//			-> fires ButtonView#execute
+//				-> delegated to ForView#cancel
+//					-> FormView#cancel is fired (and AbbrUI can listen to it).
+
+// [submit button]
+//		-> clicked
+//			-> fires ButtonView#execute -> ignored
+//			-> fires <form> submit in DOM
+//				-> submit handler listens to <form> submit event
+//					-> it cancels it to NOT reload the web page
+//						-> it fires FormView#submit instead
+//							-> AbbrUI can listen to this event
+
 export default class FormView extends View {
 	constructor( locale ) {
 		super( locale );
 
 		const t = locale.t;
 
-		this.abbrInputView = this._createInput( 'abbreviation' );
+		this.abbrInputView = this._createInput( t( 'Add abbreviation' ) );
+		this.titleInputView = this._createInput( t( 'Add title' ) );
 
-		this.titleInputView = this._createInput( 'title' );
 		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
+		// Submit type of the button will trigger the submit event on entire form when clicked (see submitHandler() in render() below).
 		this.saveButtonView.type = 'submit';
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
 
-		const classList = [ 'ck', 'ck-responsive-form', 'ck-vertical-form' ];
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel' );
+
+		// TODO: Comment
+		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
 
 		this.setTemplate( {
 			tag: 'form',
 			attributes: {
-				classList,
-				tabindex: '-1',
-				style: { 'padding': '2px' }
+				class: [ 'ck', 'ck-abbr-form' ],
+				tabindex: '-1'
 			},
 			children: [ this.abbrInputView, this.titleInputView, this.saveButtonView, this.cancelButtonView ]
 		} );
@@ -41,47 +58,29 @@ export default class FormView extends View {
 	render() {
 		super.render();
 
+		// Submit the form when the user clicked the save button or pressed enter in the input.
 		submitHandler( {
 			view: this
 		} );
 	}
 
-	_createInput( inputType ) {
-		const t = this.locale.t;
-
+	_createInput( label ) {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
-		labeledInput.label = t( `Add ${ inputType }` );
+		labeledInput.label = label;
 
-		labeledInput.extendTemplate( {
-			attributes: {
-				style: {
-					'padding': '2px',
-					'padding-top': '6px'
-				}
-			}
-		} );
 		return labeledInput;
 	}
 
-	_createButton( label, icon, className, eventName ) {
+	_createButton( label, icon, className ) {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
 			label,
 			icon,
-			tooltip: true
+			tooltip: true,
+			class: className
 		} );
-
-		button.extendTemplate( {
-			attributes: {
-				class: className
-			}
-		} );
-
-		if ( eventName ) {
-			button.delegate( 'execute' ).to( this, eventName );
-		}
 
 		return button;
 	}

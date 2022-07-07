@@ -94,10 +94,12 @@ class AbbreviationUI extends Plugin {
 
 		if ( !selection.isCollapsed ) {
 			const ranges = selection.getFirstRange();
+
 			for ( const range of ranges.getItems() ) {
 				selectedText = range.data;
 			}
 		}
+
 		this.formView.abbrInputView.fieldView.value = selectedText;
 
 		this._balloon.add( {
@@ -119,7 +121,10 @@ class AbbreviationUI extends Plugin {
 		let target = null;
 
 		target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
-		return { target };
+
+		return {
+			target
+		};
 	}
 }
 
