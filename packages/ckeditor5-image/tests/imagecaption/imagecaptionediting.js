@@ -788,5 +788,19 @@ describe( 'ImageCaptionEditing', () => {
 
 			expect( spy.called ).to.be.false;
 		} );
+
+		it( 'should not try to update caption\'s aria-label attribute if the image is not an imageBlock', () => {
+			setModelData( model, '<paragraph>[<imageInline alt="foo" src="img.png"></imageInline>]</paragraph>' );
+
+			const image = doc.getRoot().getChild( 0 );
+
+			const spy = sinon.spy( editor.editing, 'reconvertItem' );
+
+			model.change( writer => {
+				writer.setAttribute( 'alt', 'bar', image );
+			} );
+
+			expect( spy.called ).to.be.false;
+		} );
 	} );
 } );
