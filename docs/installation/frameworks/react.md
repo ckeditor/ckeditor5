@@ -14,11 +14,11 @@ order: 30
 	</a>
 </p>
 
-The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link installation/advanced/predefined-builds#available-builds rich text editor builds}. You can also use a customized editor built by using [CKEditor 5 online builder](#using-the-ckeditor-5-online-builder) in any React application. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-the-editor-from-source) into your application, which will allow you to use the full power of the {@link framework/guides/overview CKEditor 5 Framework}.
+The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link installation/advanced/predefined-builds#available-builds rich text editor builds}. You can also use a customized editor built by using [the online builder](#using-the-ckeditor-5-online-builder) in any React application. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-the-editor-from-source) into your application, which will allow you to use the full power of the {@link framework/guides/overview CKEditor 5 Framework}.
 
 ## Quick start
 
-If you want an out-of-the-box editor, install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/advanced/predefined-builds#available-builds editor build of your choice}. For more flexible options, learn about [customizing the builds](#customizing-the-builds).
+If you want an out-of-the-box editor, install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/advanced/predefined-builds#available-builds editor build of your choice}.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
