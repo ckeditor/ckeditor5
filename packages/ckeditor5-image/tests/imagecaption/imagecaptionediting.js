@@ -774,5 +774,19 @@ describe( 'ImageCaptionEditing', () => {
 
 			expect( view.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'aria-label' ) ).to.equal( 'Caption for image: bar' );
 		} );
+
+		it( 'should not try to update caption\'s aria-label attribute if the image does not have a caption', () => {
+			setModelData( model, '[<imageBlock alt="foo" src="img.png"></imageBlock>]' );
+
+			const image = doc.getRoot().getChild( 0 );
+
+			const spy = sinon.spy( editor.editing, 'reconvertItem' );
+
+			model.change( writer => {
+				writer.setAttribute( 'alt', 'bar', image );
+			} );
+
+			expect( spy.called ).to.be.false;
+		} );
 	} );
 } );
