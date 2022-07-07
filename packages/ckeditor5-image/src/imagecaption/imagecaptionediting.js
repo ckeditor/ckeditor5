@@ -254,7 +254,9 @@ export default class ImageCaptionEditing extends Plugin {
 	 * @private
 	 */
 	_registerCaptionReconversion() {
-		const model = this.editor.model;
+		const editor = this.editor;
+		const model = editor.model;
+		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 
 		model.document.on( 'change:data', () => {
 			const changes = model.document.differ.getChanges();
@@ -267,13 +269,13 @@ export default class ImageCaptionEditing extends Plugin {
 				const image = change.range.start.nodeAfter;
 
 				if ( image.name === 'imageBlock' ) {
-					const caption = change.range.end.nodeAfter;
+					const caption = imageCaptionUtils.getCaptionFromImageModelElement( image );
 
 					if ( !caption ) {
 						return;
 					}
 
-					this.editor.editing.reconvertItem( caption );
+					editor.editing.reconvertItem( caption );
 				}
 			}
 		} );
