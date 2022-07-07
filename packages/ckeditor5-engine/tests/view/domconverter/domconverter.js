@@ -349,10 +349,36 @@ describe( 'DomConverter', () => {
 
 							expect( converter.isBlockFiller( context.firstChild ) ).to.be.true;
 						} );
+
+						it( 'should return true if br is the last element of a block', () => {
+							const context = document.createElement( elementName );
+							context.innerHTML = 'foo<br>';
+
+							expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.true;
+						} );
+
+						it( 'should return true if br is just before block element', () => {
+							const context = document.createDocumentFragment();
+							context.appendChild( document.createTextNode( 'foo' ) );
+							context.appendChild( document.createElement( 'br' ) );
+							context.appendChild( document.createElement( elementName ) );
+
+							expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.true;
+						} );
+
+						it( 'should return true if br is before block element (only whitespaces between them)', () => {
+							const context = document.createDocumentFragment();
+							context.appendChild( document.createTextNode( 'foo' ) );
+							context.appendChild( document.createElement( 'br' ) );
+							context.appendChild( document.createTextNode( '   ' ) );
+							context.appendChild( document.createElement( elementName ) );
+
+							expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.true;
+						} );
 					} );
 				}
 
-				it( 'should return false filler is placed in a non-block element', () => {
+				it( 'should return false if filler is placed in a non-block element', () => {
 					const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 
 					const context = document.createElement( 'span' );
@@ -379,10 +405,38 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'should return false for a <br> element which is followed by an nbsp', () => {
-					const context = document.createElement( 'span' );
+					const context = document.createElement( 'p' );
 					context.innerHTML = '<br>&nbsp;';
 
 					expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
+				} );
+
+				it( 'should return true for an nbsp after a <br> element', () => {
+					const context = document.createElement( 'p' );
+					context.innerHTML = '<br>&nbsp;';
+
+					expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.true;
+				} );
+
+				it( 'should return false for an nbsp after a <br> element when followed by spaces', () => {
+					const context = document.createElement( 'p' );
+					context.innerHTML = '<br>&nbsp;    ';
+
+					expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.false;
+				} );
+
+				it( 'should return false for an nbsp after a <br> element when followed by other element', () => {
+					const context = document.createElement( 'p' );
+					context.innerHTML = '<br>&nbsp;<span>x</span>';
+
+					expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.false;
+				} );
+
+				it( 'should return false for an nbsp after a <br> element when followed by spaces and other element', () => {
+					const context = document.createElement( 'p' );
+					context.innerHTML = '<br>&nbsp;    <span>x</span>';
+
+					expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.false;
 				} );
 
 				it( 'should return true if the node is an instance of the marked nbsp block filler', () => {

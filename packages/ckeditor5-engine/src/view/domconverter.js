@@ -31,6 +31,7 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
 
 const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
+const PLAIN_BR_FILLER_REF = document.createElement( 'br' );
 const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
 const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
 const UNSAFE_ATTRIBUTE_NAME_PREFIX = 'data-ck-unsafe-attribute-';
@@ -636,7 +637,7 @@ export default class DomConverter {
 			// Special case for <br> element between blocks in which <br> should be treated
 			// as a paragraph even when we are not in the 'br' mode.
 			if (
-				this.blockFillerMode != 'br' && domNode.tagName === 'BR' &&
+				this.blockFillerMode != 'br' && domNode.isEqualNode( PLAIN_BR_FILLER_REF ) &&
 				domNode.parentNode.childNodes.length > 1 &&
 				this._isLastNodeInBlock( domNode, 'forward' ) && this._isLastNodeInBlock( domNode, 'backward' )
 			) {
@@ -1091,7 +1092,7 @@ export default class DomConverter {
 		// Special case for <p>foo<br></p> or <p></p>foo<br><p></p> in which <br> should be treated
 		// as filler even when we are not in the 'br' mode. See ckeditor5#5564.
 		if (
-			domNode.tagName === 'BR' &&
+			domNode.isEqualNode( PLAIN_BR_FILLER_REF ) &&
 			( hasBlockParent( domNode, this.blockElements ) || this.isDocumentFragment( domNode.parentNode ) ) &&
 			this._isLastNodeInBlock( domNode )
 		) {
@@ -1116,7 +1117,7 @@ export default class DomConverter {
 			const previousSibling = domNode.previousSibling;
 
 			// The block filler after a <br> without any following meaningful content in the block.
-			if ( previousSibling && previousSibling.tagName == 'BR' && this._isLastNodeInBlock( domNode ) ) {
+			if ( previousSibling && domNode.isEqualNode( PLAIN_BR_FILLER_REF ) && this._isLastNodeInBlock( domNode ) ) {
 				return true;
 			}
 		}
