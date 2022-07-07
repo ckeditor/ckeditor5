@@ -21,6 +21,10 @@
 		margin-bottom: var(--ck-spacing-small);
 	}
 
+	& .ck.ck-toolbar__spacer {
+		flex: 1;
+	}
+
 	& .ck-toolbar__line-break {
 		height: 0;
 	}

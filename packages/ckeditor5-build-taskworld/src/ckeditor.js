@@ -23,6 +23,7 @@ import Paragraph from '../../ckeditor5-paragraph/src/paragraph';
 import RemoveFormat from '../../ckeditor5-remove-format/src/removeformat';
 import Strikethrough from '../../ckeditor5-basic-styles/src/strikethrough';
 import Markdown from '../../ckeditor5-markdown-gfm/src/markdown';
+import MarkdownGuide from '../../ckeditor5-markdown-guide/src/markdownguide';
 import Mention from '../../ckeditor5-mention/src/mention';
 import Underline from '../../ckeditor5-basic-styles/src/underline';
 
@@ -44,6 +45,7 @@ ClassicEditor.builtinPlugins = [
 	Link,
 	List,
 	Markdown,
+	MarkdownGuide,
 	Mention,
 	Paragraph,
 	RemoveFormat,

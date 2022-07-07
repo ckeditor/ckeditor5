@@ -7,7 +7,7 @@
  * @module editor-classic/classiceditoruiview
  */
 
-import { BoxedEditorUIView, InlineEditableUIView, StickyPanelView, ToolbarView } from 'ckeditor5/src/ui';
+import { BoxedEditorUIView, InlineEditableUIView, StickyPanelView, ToolbarView } from '../../ckeditor5-ui/src';
 
 import '../theme/classiceditor.css';
 

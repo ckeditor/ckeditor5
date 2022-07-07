@@ -12,6 +12,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
+import ToolbarSpacerView from './toolbarspacerview';
 import ToolbarLineBreakView from './toolbarlinebreakview';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
@@ -292,7 +293,7 @@ export default class ToolbarView extends View {
 
 		const itemsToClean = config.items
 			.filter( ( name, idx, items ) => {
-				if ( name === '|' ) {
+				if ( name === '|' || name === '*' ) {
 					return true;
 				}
 
@@ -363,6 +364,8 @@ export default class ToolbarView extends View {
 					return new ToolbarSeparatorView();
 				} else if ( name === '-' ) {
 					return new ToolbarLineBreakView();
+				} else if ( name === '*' ) {
+					return new ToolbarSpacerView();
 				}
 
 				return factory.create( name );
@@ -378,7 +381,7 @@ export default class ToolbarView extends View {
 	 * @param {Array.<String>} items
 	 */
 	_cleanSeparators( items ) {
-		const nonSeparatorPredicate = item => ( item !== '-' && item !== '|' );
+		const nonSeparatorPredicate = item => ( item !== '-' && item !== '|' && item !== '*' );
 		const count = items.length;
 
 		// Find an index of the first item that is not a separator.

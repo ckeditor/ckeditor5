@@ -8,7 +8,7 @@
  */
 
 import { EditorUI } from 'ckeditor5/src/core';
-import { enableToolbarKeyboardFocus, normalizeToolbarConfig } from 'ckeditor5/src/ui';
+import { enableToolbarKeyboardFocus, normalizeToolbarConfig } from '../../ckeditor5-ui/src';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 import { ElementReplacer } from 'ckeditor5/src/utils';
 

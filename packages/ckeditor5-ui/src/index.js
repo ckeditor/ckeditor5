@@ -15,6 +15,7 @@ export { default as BodyCollection } from './editorui/bodycollection';
 
 export { default as ButtonView } from './button/buttonview';
 export { default as SwitchButtonView } from './button/switchbuttonview';
+export { default as LinkView } from './button/linkview';
 
 export * from './colorgrid/utils';
 export { default as ColorGridView } from './colorgrid/colorgridview';
