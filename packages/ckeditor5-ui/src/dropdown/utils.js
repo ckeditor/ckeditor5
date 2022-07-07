@@ -146,19 +146,8 @@ export function addToolbarToDropdown( dropdownView, buttons, options = {} ) {
 	buttons.map( view => toolbarView.items.add( view ) );
 
 	if ( options.enableFocusingActiveElement ) {
-		dropdownView.on( 'change:isOpen', () => {
-			// A listener to focus the first active dropdown option upon opening, see #11838.
-			if ( !dropdownView.isOpen ) {
-				return;
-			}
-
-			for ( const toolbarItem of toolbarView.items ) {
-				if ( toolbarItem.isOn ) {
-					toolbarItem.focus();
-					break;
-				}
-			}
-		}, { priority: 'low' } );
+		// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.
+		focusChildOnDropdownOpen( dropdownView, () => toolbarView.items.find( item => item.isOn ) );
 	}
 
 	dropdownView.panelView.children.add( toolbarView );
@@ -234,26 +223,41 @@ export function addListToDropdown( dropdownView, items ) {
 		}
 	} );
 
+	dropdownView.panelView.children.add( listView );
+
+	listView.items.delegate( 'execute' ).to( dropdownView );
+
+	// Accessibility: Focus the first active button in the list when the dropdown gets open.
+	focusChildOnDropdownOpen( dropdownView, () => listView.items.find( item => {
+		if ( item instanceof ListItemView ) {
+			return item.children.first.isOn;
+		}
+
+		return false;
+	} ) );
+}
+
+/**
+ * A helper to be used on an existing {@link module:ui/dropdown/dropdownview~DropdownView} that focuses
+ * a specific child in DOM when the dropdown gets open.
+ *
+ * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which the focus behavior will be added.
+ * @param {Function} childSelectorCallback A callback executed when the dropdown gets open. It should return a {@link module:ui/view~View}
+ * instance (descendant of the dropdown view) that will get focused or a falsy value. If falsy value is returned, a default behavior of
+ * the dropdown will engage focusing the first focusable child in the {@link module:ui/dropdown/dropdownview~DropdownView#panelView}.
+ */
+export function focusChildOnDropdownOpen( dropdownView, childSelectorCallback ) {
 	dropdownView.on( 'change:isOpen', () => {
-		// A listener to focus the first active dropdown option upon opening, see #11838.
 		if ( !dropdownView.isOpen ) {
 			return;
 		}
 
-		for ( let i = 0; i < items.length; i++ ) {
-			const item = items.get( i );
+		const childToFocus = childSelectorCallback();
 
-			if ( item.model && item.model.isOn ) {
-				const listItemView = listView.items.get( i );
-				listItemView.focus();
-				break;
-			}
+		if ( childToFocus ) {
+			childToFocus.focus();
 		}
 	}, { priority: 'low' } );
-
-	dropdownView.panelView.children.add( listView );
-
-	listView.items.delegate( 'execute' ).to( dropdownView );
 }
 
 // Add a set of default behaviors to dropdown view.

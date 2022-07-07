@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { createDropdown, normalizeColorOptions, getLocalizedColorOptions } from 'ckeditor5/src/ui';
+import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
 
 import { addColorTableToDropdown } from '../utils';
 
@@ -140,6 +140,9 @@ export default class ColorUI extends Plugin {
 					this.colorTableView.updateSelectedColors();
 				}
 			} );
+
+			// Accessibility: focus the first active color when opening the dropdown.
+			focusChildOnDropdownOpen( dropdownView, () => dropdownView.colorTableView.staticColorsGrid.items.find( item => item.isOn ) );
 
 			return dropdownView;
 		} );
