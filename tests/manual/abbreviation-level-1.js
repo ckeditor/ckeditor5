@@ -31,15 +31,11 @@ class AbbreviationUI extends Plugin {
 			button.withText = true;
 
 			this.listenTo( button, 'execute', () => {
-				const selection = editor.model.document.selection;
 				const title = 'What You See Is What You Get';
 				const abbr = 'WYSIWYG';
 
 				editor.model.change( writer => {
-					writer.insertText( abbr, { 'abbreviation': title }, selection.getFirstPosition() );
-					for ( const range of selection.getRanges() ) {
-						writer.remove( range );
-					}
+					editor.model.insertContent( writer.createText( abbr, { abbreviation: title } ) );
 				} );
 			} );
 

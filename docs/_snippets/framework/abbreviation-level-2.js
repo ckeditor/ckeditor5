@@ -71,10 +71,7 @@ class AbbreviationUI extends Plugin {
 			const abbr = formView.abbrInputView.fieldView.element.value;
 
 			editor.model.change( writer => {
-				const writerAbbr = writer.createText( abbr );
-				writerAbbr._attrs.set( 'abbreviation', title );
-
-				editor.model.insertContent( writerAbbr );
+				editor.model.insertContent( writer.createText( abbr, { abbreviation: title } ) );
 			} );
 
 			this._hideFormView();

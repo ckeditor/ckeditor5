@@ -380,7 +380,9 @@ class AbbreviationUI extends Plugin {
 			const title = formView.titleInputView.fieldView.element.value;
 			const abbr = formView.abbrInputView.fieldView.element.value;
 
-			editor.model.insertContent( writer.createText( abbr ), { 'abbreviation': title } );
+			editor.model.change( writer => {
+				editor.model.insertContent( writer.createText( abbr, { abbreviation: title } ) );
+			} );
 
 		} );
 
@@ -401,9 +403,9 @@ We'll need to hide the form view on three occasions:
 * when the user clicks the "Cancel" button; and
 * when the user clicks outside of the balloon.
 
-So, let's write a simple `_hideFormView()` function, which will clear the input field values and remove the view from our balloon.
+So, let's write a simple `_hideUI()` function, which will clear the input field values and remove the view from our balloon.
 
-Additionally, we'll import {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler `clickOutsideHandler()`} method, which take our `_hideFormView()` function as a callback. It will be emitted from our form view, and activated when the form view is visible. We also need to set `contextElements` for the handler to determine its scope. Clicking on listed there HTML elements will not fire the callback.
+Additionally, we'll import {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler `clickOutsideHandler()`} method, which take our `_hideUI()` function as a callback. It will be emitted from our form view, and activated when the form view is visible. We also need to set `contextElements` for the handler to determine its scope. Clicking on listed there HTML elements will not fire the callback.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -428,12 +430,12 @@ class AbbreviationUI extends Plugin {
             // ...
 
             // Hide the form view after submit.
-			this._hideFormView();
+			this._hideUI();
 		} );
 
 		// Hide the form view after clicking the "Cancel" button.
 		this.listenTo( formView, 'cancel', () => {
-			this._hideFormView();
+			this._hideUI();
 		} );
 
         // Hide the form view when clicking outside the balloon.
@@ -441,13 +443,13 @@ class AbbreviationUI extends Plugin {
 			emitter: formView,
 			activator: () => this._balloon.visibleView === formView,
 			contextElements: [ this._balloon.view.element ],
-			callback: () => this._hideFormView()
+			callback: () => this._hideUI()
 		} );
 
 		return formView;
 	}
 
-	_hideFormView() {
+	_hideUI() {
 		this.formView.abbrInputView.fieldView.element.value = '';
 		this.formView.titleInputView.fieldView.element.value = '';
 

@@ -71,31 +71,32 @@ class AbbreviationUI extends Plugin {
 			const abbr = formView.abbrInputView.fieldView.element.value;
 
 			editor.model.change( writer => {
-				const writerAbbr = writer.createText( abbr );
-				writerAbbr._attrs.set( 'abbreviation', title );
-
-				editor.model.insertContent( writerAbbr );
+				editor.model.insertContent( writer.createText( abbr, { abbreviation: title } ) );
 			} );
 
-			this._hideFormView();
+			// Focus the editing view after inserting the abbreviation so the user can start typing the content
+			// right away and keep the editor focused.
+			editor.editing.view.focus();
+
+			this._hideUI();
 		} );
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( formView, 'cancel', () => {
-			this._hideFormView();
+			this._hideUI();
 		} );
 
 		clickOutsideHandler( {
 			emitter: formView,
 			activator: () => this._balloon.visibleView === formView,
 			contextElements: [ this._balloon.view.element ],
-			callback: () => this._hideFormView()
+			callback: () => this._hideUI()
 		} );
 
 		return formView;
 	}
 
-	_hideFormView() {
+	_hideUI() {
 		this.formView.abbrInputView.fieldView.element.value = '';
 		this.formView.titleInputView.fieldView.element.value = '';
 
