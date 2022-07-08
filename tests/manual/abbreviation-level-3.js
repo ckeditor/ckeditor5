@@ -70,6 +70,12 @@ class AbbreviationUI extends Plugin {
 			callback: () => this._hideUI()
 		} );
 
+		// Close the panel on esc key press when the **form has focus**.
+		formView.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this._hideUI();
+			cancel();
+		} );
+
 		return formView;
 	}
 
@@ -139,6 +145,8 @@ class AbbreviationUI extends Plugin {
 		this.formView.element.reset();
 
 		this._balloon.remove( this.formView );
+
+		this.editor.editing.view.focus();
 	}
 
 	_getBalloonPositionData() {
