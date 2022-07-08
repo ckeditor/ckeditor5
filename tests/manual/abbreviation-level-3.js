@@ -52,9 +52,6 @@ class AbbreviationUI extends Plugin {
 			};
 			editor.execute( 'addAbbreviation', value );
 
-			// Focus the editing view after inserting the abbreviation so the user can start typing the content
-			// right away and keep the editor focused.
-			editor.editing.view.focus();
 			this._hideUI();
 		} );
 
@@ -146,6 +143,8 @@ class AbbreviationUI extends Plugin {
 
 		this._balloon.remove( this.formView );
 
+		// Focus the editing view after inserting the abbreviation so the user can start typing the content
+		// right away and keep the editor focused.
 		this.editor.editing.view.focus();
 	}
 
