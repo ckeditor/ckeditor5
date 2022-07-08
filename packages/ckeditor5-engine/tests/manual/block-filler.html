@@ -1,46 +1,49 @@
 <table class="test"><tr>
 	<td>
 		<h1>Plain HTML</h1>
-		<div>
+		<div style="border:4px solid black;">
+			<br>
 			<h2>Outside paragraph</h2>
 
-			<h3><code>&lt;br&gt;</code> → <code>&lt;p&gt;&lt;/p&gt;</code></h3>
+			<h3><code>&lt;br&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
 			<br>
-			<h3><code>1</code> → <code>&lt;p&gt;1&lt;/p&gt;</code></h3>
+			<h3><code>1</code> &rarr; <code>&lt;p&gt;1&lt;/p&gt;</code></h3>
 			1
-			<h3><code>&lt;br&gt;2</code> → <code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
+			<h3><code>&lt;br&gt;2</code> &rarr; <code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
 			<br>2
-			<h3><code>3&lt;br&gt;</code> → <code>&lt;p&gt;3&lt;/p&gt;</code></h3>
+			<h3><code>3&lt;br&gt;</code> &rarr; <code>&lt;p&gt;3&lt;/p&gt;</code></h3>
 			3<br>
-			<h3><code>4&lt;br&gt;5</code> → <code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
+			<h3><code>4&lt;br&gt;5</code> &rarr; <code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
 			4<br>5
-			<h3><code>6&lt;br&gt;&amp;nbsp;</code> → <code>&lt;p&gt;6&lt;br&gt;&lt;/p&gt;</code></h3>
+			<h3><code>6&lt;br&gt;&amp;nbsp;</code> &rarr; <code>&lt;p&gt;6&lt;br&gt;&lt;/p&gt;</code></h3>
 			6<br>&nbsp;
-			<h3><code>7&lt;br&gt;_</code> → <code>&lt;p&gt;7&lt;/p&gt;</code></h3>
+			<h3><code>7&lt;br&gt;&blank;</code> &rarr; <code>&lt;p&gt;7&lt;/p&gt;</code></h3>
 			7<br>
 			<h3>END</h3>
 
 			<h2>In paragraph</h2>
 
-			<h3><code>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</code> → <code>&lt;p&gt;&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
 			<p><br></p>
-			<h3><code>&lt;p&gt;1&lt;/p&gt;</code> → <code>&lt;p&gt;1&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;1&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;1&lt;/p&gt;</code></h3>
 			<p>1</p>
-			<h3><code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code> → <code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
 			<p><br>2</p>
-			<h3><code>&lt;p&gt;3&lt;br&gt;&lt;/p&gt;</code> → <code>&lt;p&gt;3&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;3&lt;br&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;3&lt;/p&gt;</code></h3>
 			<p>3<br></p>
-			<h3><code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code> → <code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
 			<p>4<br>5</p>
-			<h3><code>&lt;p&gt;6&lt;br&gt;&amp;nbsp;&lt;/p&gt;</code> → <code>&lt;p&gt;6&lt;br&gt;&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;6&lt;br&gt;&amp;nbsp;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;6&lt;br&gt;&lt;/p&gt;</code></h3>
 			<p>6<br>&nbsp;</p>
-			<h3><code>&lt;p&gt;7&lt;br&gt;_&lt;/p&gt;</code> → <code>&lt;p&gt;7&lt;/p&gt;</code></h3>
-			7<br>
+			<h3><code>&lt;p&gt;7&lt;br&gt;&blank;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;7&lt;/p&gt;</code></h3>
+			<p>7<br> </p>
 			<h3>END</h3>
+			<br>
 		</div>
 	</td><td>
 		<h1>In editor</h1>
 		<div id="editor">
+			<br>
 			<h2>Outside paragraph</h2>
 
 			<h3><code>&lt;br&gt;</code></h3>
@@ -55,7 +58,7 @@
 			4<br>5
 			<h3><code>6&lt;br&gt;&amp;nbsp;</code></h3>
 			6<br>&nbsp;
-			<h3><code>7&lt;br&gt;_</code></h3>
+			<h3><code>7&lt;br&gt;&blank;</code></h3>
 			7<br>
 			<h3>END</h3>
 
@@ -73,21 +76,48 @@
 			<p>4<br>5</p>
 			<h3><code>&lt;p&gt;6&lt;br&gt;&amp;nbsp;&lt;/p&gt;</code></h3>
 			<p>6<br>&nbsp;</p>
-			<h3><code>&lt;p&gt;7&lt;br&gt;_&lt;/p&gt;</code></h3>
-			7<br>
+			<h3><code>&lt;p&gt;7&lt;br&gt;&blank;&lt;/p&gt;</code></h3>
+			<p>7<br> </p>
 			<h3>END</h3>
+			<br>
 		</div>
 
 	</td>
 </tr></table>
 
 <style>
-	table.test td { font-family: Arial; }
-	table.test h2 { margin: 0 !important; outline: 2px solid blue; }
-	table.test h3 { margin: 0 !important; outline: 2px solid blue; background: gray; font-size: 1em; }
-	table.test p { background: lightgray; margin: 0 !important; outline: 2px solid red; }
-	table.test { border-collapse: collapse; table-layout: fixed; width: 100%; }
-	table.test td { outline: 1px solid yellow; vertical-align: bottom; }
-	table.test .ck.ck-editor__editable_inline { padding: 0; border: none !important; }
-	table.test .ck.ck-editor__top { display: none; }
+	table.test {
+		border-collapse: collapse;
+		table-layout: fixed;
+		width: 100%;
+	}
+	table.test .ck.ck-editor__editable_inline {
+		padding: 0;
+		border: 4px solid black !important;
+	}
+	table.test .ck.ck-editor__top {
+		display: none;
+	}
+	table.test td {
+		font-family: sans-serif;
+		line-height: 1.7em;
+	}
+	table.test h2 {
+		margin: 0 !important;
+		padding: 10px 10px 4px 10px;
+		border-bottom: 4px solid black;
+		border-top: 4px solid black;
+	}
+	table.test h3 {
+		margin: 0 !important; padding: 0 10px;
+		background: #02529f;
+		color: white;
+		font-size: 1em;
+		font-weight: normal;
+	}
+	table.test p {
+		margin: 0 !important;
+		padding: 0 10px;
+		background: #00b0f0;
+	}
 </style>

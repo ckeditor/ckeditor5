@@ -34,6 +34,7 @@ export default class ShiftEnter extends Plugin {
 		const conversion = editor.conversion;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const blockElements = editor.data.htmlProcessor.domConverter.blockElements;
 
 		// Configure the schema.
 		schema.register( 'softBreak', {
@@ -44,8 +45,46 @@ export default class ShiftEnter extends Plugin {
 		// Configure converters.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				model: 'softBreak',
-				view: 'br'
+				view: 'br',
+				model: ( viewElement, { writer } ) => {
+					const nextSibling = viewElement.nextSibling;
+					const previousSibling = viewElement.previousSibling;
+
+					// This element is the last in the current parent block so should be ignored (same as browser).
+					// Cases:
+					// * <p><br></p> -> <p></p>
+					// * <p>foo<br></p> -> <p>foo</p>
+					//
+					// Ignore cases when <br> is wrapped with an inline element:
+					// * <p><span>foo<br></span></p>
+					if ( !nextSibling && isBlockViewElement( viewElement.parent, blockElements ) ) {
+						return null;
+					}
+
+					const nextSiblingIsBlock = isBlockViewElement( nextSibling, blockElements );
+					const previousSiblingIsBlock = isBlockViewElement( previousSibling, blockElements );
+
+					// If the <br> is surrounded by blocks then convert it to a paragraph:
+					// * <p>foo</p><br><p>bar</p> -> <p>foo</p><p></p><p>bar</p>
+					// * <br><p>foo</p><br> -> <p></p><p>foo</p><p></p>
+					// * <br> -> <br>
+					if (
+						( previousSibling || nextSibling ) &&
+						( !previousSibling || previousSiblingIsBlock ) &&
+						( !nextSibling || nextSiblingIsBlock )
+					) {
+						return writer.createElement( 'paragraph' );
+					}
+
+					// There is a block element next to a <br>.
+					if ( nextSiblingIsBlock ) {
+						// Ignore <br> that is followed by a block element (same as browser).
+						// * foo<br><p>bar</p> -> <p>foo</p><p>bar</p>
+						return null;
+					}
+
+					return writer.createElement( 'softBreak' );
+				}
 			} );
 
 		conversion.for( 'downcast' )
@@ -70,4 +109,8 @@ export default class ShiftEnter extends Plugin {
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 	}
+}
+
+function isBlockViewElement( node, blockElements ) {
+	return !!node && node.is( 'element' ) && blockElements.includes( node.name );
 }

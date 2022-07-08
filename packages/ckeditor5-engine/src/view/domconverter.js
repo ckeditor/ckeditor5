@@ -31,7 +31,6 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
 
 const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
-const PLAIN_BR_FILLER_REF = document.createElement( 'br' );
 const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
 const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
 const UNSAFE_ATTRIBUTE_NAME_PREFIX = 'data-ck-unsafe-attribute-';
@@ -632,18 +631,7 @@ export default class DomConverter {
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
-		// Ignore block fillers.
 		if ( this.isBlockFiller( domNode ) ) {
-			// Special case for <br> element between blocks in which <br> should be treated
-			// as a paragraph even when we are not in the 'br' mode.
-			if (
-				this.blockFillerMode != 'br' && domNode.isEqualNode( PLAIN_BR_FILLER_REF ) &&
-				domNode.parentNode.childNodes.length > 1 &&
-				this._isLastNodeInBlock( domNode, 'forward' ) && this._isLastNodeInBlock( domNode, 'backward' )
-			) {
-				return new ViewElement( this.document, 'p' );
-			}
-
 			return null;
 		}
 
@@ -1089,40 +1077,8 @@ export default class DomConverter {
 			return domNode.isEqualNode( BR_FILLER_REF );
 		}
 
-		// Special case for <p>foo<br></p> or <p></p>foo<br><p></p> in which <br> should be treated
-		// as filler even when we are not in the 'br' mode. See ckeditor5#5564.
-		if (
-			domNode.isEqualNode( PLAIN_BR_FILLER_REF ) &&
-			( hasBlockParent( domNode, this.blockElements ) || this.isDocumentFragment( domNode.parentNode ) ) &&
-			this._isLastNodeInBlock( domNode )
-		) {
-			return true;
-		}
-
 		// If not in 'br' mode, try recognizing both marked and regular nbsp block fillers.
-		if ( domNode.isEqualNode( MARKED_NBSP_FILLER_REF ) ) {
-			return true;
-		}
-
-		// For non-marked filler we should also check if it's not NBSP filler after a <br>.
-		if (
-			domNode.isEqualNode( NBSP_FILLER_REF ) &&
-			( hasBlockParent( domNode, this.blockElements ) || this.isDocumentFragment( domNode.parentNode ) )
-		) {
-			// The only one in the block.
-			if ( domNode.parentNode.childNodes.length === 1 ) {
-				return true;
-			}
-
-			const previousSibling = domNode.previousSibling;
-
-			// The block filler after a <br> without any following meaningful content in the block.
-			if ( previousSibling && domNode.isEqualNode( PLAIN_BR_FILLER_REF ) && this._isLastNodeInBlock( domNode ) ) {
-				return true;
-			}
-		}
-
-		return false;
+		return domNode.isEqualNode( MARKED_NBSP_FILLER_REF ) || isNbspBlockFiller( domNode, this.blockElements );
 	}
 
 	/**
@@ -1641,40 +1597,6 @@ export default class DomConverter {
 
 		return newDomElement;
 	}
-
-	/**
-	 * Returns `true` if the given DOM node is the last one in the block or there is a sibling block in the given direction.
-	 * It ignores whitespaces (but not NBSPs).
-	 *
-	 * @private
-	 * @param {Node} domNode
-	 * @param {'forward'|'backward'} [direction='forward']
-	 * @returns {Boolean}
-	 */
-	_isLastNodeInBlock( domNode, direction = 'forward' ) {
-		const siblingNode = direction == 'forward' ? domNode.nextSibling : domNode.previousSibling;
-
-		// This is the last node in the block element or in the document fragment.
-		if ( !siblingNode ) {
-			return true;
-		}
-
-		// This is the last node before a block element.
-		if ( this.isElement( siblingNode ) && this.blockElements.includes( siblingNode.tagName.toLowerCase() ) ) {
-			return true;
-		}
-
-		// There are only whitespaces (nbsp is not considered as a whitespace here) until the end of the block.
-		if (
-			isText( siblingNode ) &&
-			this._processDataFromDomText( siblingNode ) === '' &&
-			this._isLastNodeInBlock( siblingNode, direction )
-		) {
-			return true;
-		}
-
-		return false;
-	}
 }
 
 // Helper function.
@@ -1699,6 +1621,19 @@ function forEachDomNodeAncestor( node, callback ) {
 		callback( node );
 		node = node.parentNode;
 	}
+}
+
+// Checks if given node is a nbsp block filler.
+//
+// A &nbsp; is a block filler only if it is a single child of a block element.
+//
+// @param {Node} domNode DOM node.
+// @param {Array.<String>} blockElements
+// @returns {Boolean}
+function isNbspBlockFiller( domNode, blockElements ) {
+	const isNBSP = domNode.isEqualNode( NBSP_FILLER_REF );
+
+	return isNBSP && hasBlockParent( domNode, blockElements ) && domNode.parentNode.childNodes.length === 1;
 }
 
 // Checks if domNode has block parent.
