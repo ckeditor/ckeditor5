@@ -125,14 +125,7 @@ class AbbreviationUI extends Plugin {
 			this.formView.titleInputView.fieldView.value = '';
 		}
 
-		// If the abbreviation text field is enabled, focus it straight away to allow the user to type.
-		if ( this.formView.abbrInputView.isEnabled ) {
-			this.formView.abbrInputView.focus();
-		}
-		// Focus the abbreviation title field if the former is disabled.
-		else {
-			this.formView.titleInputView.focus();
-		}
+		this.formView.focus();
 	}
 
 	_hideUI() {
