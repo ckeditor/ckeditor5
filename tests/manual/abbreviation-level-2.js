@@ -21,10 +21,6 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
 import FormView from '../_utils/abbreviationView-level-2';
 
-// TODO
-// import '../styles.css';
-//    \-> styles.css should contain the content of <style> tag from the manual test.
-
 class AbbreviationUI extends Plugin {
 	static get requires() {
 		return [ ContextualBalloon ];
@@ -74,10 +70,6 @@ class AbbreviationUI extends Plugin {
 				editor.model.insertContent( writer.createText( abbr, { abbreviation: title } ) );
 			} );
 
-			// Focus the editing view after inserting the abbreviation so the user can start typing the content
-			// right away and keep the editor focused.
-			editor.editing.view.focus();
-
 			this._hideUI();
 		} );
 
@@ -97,11 +89,15 @@ class AbbreviationUI extends Plugin {
 	}
 
 	_hideUI() {
-		this.formView.abbrInputView.fieldView.element.value = '';
-		this.formView.titleInputView.fieldView.element.value = '';
+		this.formView.abbrInputView.fieldView.value = '';
+		this.formView.titleInputView.fieldView.value = '';
 		this.formView.element.reset();
 
 		this._balloon.remove( this.formView );
+
+		// Focus the editing view after inserting the abbreviation so the user can start typing the content
+		// right away and keep the editor focused.
+		this.editor.editing.view.focus();
 	}
 
 	_getBalloonPositionData() {
