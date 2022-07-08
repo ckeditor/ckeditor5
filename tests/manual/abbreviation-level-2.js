@@ -16,11 +16,14 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
-import FormView from '../_utils/abbreviationView';
+import FormView from '../_utils/abbreviationView-level-2';
+
+// TODO
+// import '../styles.css';
+//    \-> styles.css should contain the content of <style> tag from the manual test.
 
 class AbbreviationUI extends Plugin {
 	static get requires() {
@@ -32,85 +35,69 @@ class AbbreviationUI extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		this._createToolbarAbbreviationButton();
-		this._balloon = editor.plugins.get( ContextualBalloon );
+		const { t } = editor.locale;
+
+		this._balloon = this.editor.plugins.get( ContextualBalloon );
 		this.formView = this._createFormView();
-	}
-
-	_createFormView() {
-		const editor = this.editor;
-
-		const formView = new FormView( editor.locale );
-
-		// Execute link command after clicking the "Save" button.
-		this.listenTo( formView, 'submit', () => {
-			const value = {
-				abbr: formView.abbrInputView.fieldView.element.value,
-				title: formView.titleInputView.fieldView.element.value
-			};
-			editor.execute( 'addAbbreviation', value );
-			this._hideUI();
-		} );
-
-		// Hide the panel after clicking the "Cancel" button.
-		this.listenTo( formView, 'cancel', () => {
-			this._hideUI();
-		} );
-
-		clickOutsideHandler( {
-			emitter: formView,
-			activator: () => this._balloon.visibleView === formView,
-			contextElements: [ this._balloon.view.element ],
-			callback: () => this._hideUI()
-		} );
-
-		return formView;
-	}
-
-	_createToolbarAbbreviationButton() {
-		const editor = this.editor;
-		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'abbreviation', locale => {
 			const button = new ButtonView( locale );
 
-			button.isEnabled = true;
 			button.label = t( 'Abbreviation' );
 			button.tooltip = true;
 			button.withText = true;
 
 			// Show the panel on button click.
 			this.listenTo( button, 'execute', () => {
-				this._showUI();
+				this._balloon.add( {
+					view: this.formView,
+					position: this._getBalloonPositionData()
+				} );
+
+				this.formView.focus();
 			} );
 
 			return button;
 		} );
 	}
 
-	_showUI() {
-		let selectedText = '';
-		const selection = this.editor.model.document.selection;
+	_createFormView() {
+		const editor = this.editor;
+		const formView = new FormView( editor.locale );
 
-		if ( !selection.isCollapsed ) {
-			const ranges = selection.getFirstRange();
+		// Execute the command after clicking the "Save" button.
+		this.listenTo( formView, 'submit', () => {
+			const title = formView.titleInputView.fieldView.element.value;
+			const abbr = formView.abbrInputView.fieldView.element.value;
 
-			for ( const range of ranges.getItems() ) {
-				selectedText = range.data;
-			}
-		}
+			editor.model.change( writer => {
+				const writerAbbr = writer.createText( abbr );
+				writerAbbr._attrs.set( 'abbreviation', title );
 
-		this.formView.abbrInputView.fieldView.value = selectedText;
+				editor.model.insertContent( writerAbbr );
+			} );
 
-		this._balloon.add( {
-			view: this.formView,
-			position: this._getBalloonPositionData()
+			this._hideFormView();
 		} );
+
+		// Hide the panel after clicking the "Cancel" button.
+		this.listenTo( formView, 'cancel', () => {
+			this._hideFormView();
+		} );
+
+		clickOutsideHandler( {
+			emitter: formView,
+			activator: () => this._balloon.visibleView === formView,
+			contextElements: [ this._balloon.view.element ],
+			callback: () => this._hideFormView()
+		} );
+
+		return formView;
 	}
 
-	_hideUI() {
-		this.formView.abbrInputView.fieldView.value = '';
-		this.formView.titleInputView.fieldView.value = '';
+	_hideFormView() {
+		this.formView.abbrInputView.fieldView.element.value = '';
+		this.formView.titleInputView.fieldView.element.value = '';
 
 		this._balloon.remove( this.formView );
 	}
@@ -128,25 +115,10 @@ class AbbreviationUI extends Plugin {
 	}
 }
 
-class AbbreviationCommand extends Command {
-	execute( value ) {
-		const editor = this.editor;
-
-		const title = value.title;
-		const abbr = value.abbr;
-
-		editor.model.change( writer => {
-			editor.model.insertContent( writer.createText( abbr ), { 'abbreviation': title } );
-		} );
-	}
-}
-
 class AbbreviationEditing extends Plugin {
 	init() {
 		this._defineSchema();
 		this._defineConverters();
-
-		this.editor.commands.add( 'addAbbreviation', new AbbreviationCommand( this.editor ) );
 	}
 	_defineSchema() {
 		const schema = this.editor.model.schema;
@@ -156,6 +128,7 @@ class AbbreviationEditing extends Plugin {
 	}
 	_defineConverters() {
 		const conversion = this.editor.conversion;
+
 		conversion.for( 'downcast' ).attributeToElement( {
 			model: 'abbreviation',
 			view: ( modelAttributeValue, conversionApi ) => {
@@ -169,9 +142,7 @@ class AbbreviationEditing extends Plugin {
 		conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
 				name: 'abbr',
-				attributes: {
-					title: true
-				}
+				attributes: [ 'title' ]
 			},
 			model: {
 				key: 'abbreviation',

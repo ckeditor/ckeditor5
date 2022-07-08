@@ -107,22 +107,24 @@ class AbbreviationUI extends Plugin {
 
 		target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
 
-		return { target };
+		return {
+			target
+		};
 	}
 }
 
 class AbbreviationCommand extends Command {
 	execute( value ) {
 		const editor = this.editor;
-		const selection = editor.model.document.selection;
+
 		const title = value.title;
 		const abbr = value.abbr;
 
 		editor.model.change( writer => {
-			writer.insertText( abbr, { 'abbreviation': title }, selection.getFirstPosition() );
-			for ( const range of selection.getRanges() ) {
-				writer.remove( range );
-			}
+			const writerAbbr = writer.createText( abbr );
+			writerAbbr._attrs.set( 'abbreviation', title );
+
+			editor.model.insertContent( writerAbbr );
 		} );
 	}
 }

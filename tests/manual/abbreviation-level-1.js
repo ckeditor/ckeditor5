@@ -16,29 +16,12 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
-import FormView from './abbreviationView-level-2';
-
-// TODO
-// import '../styles.css';
-//    \-> styles.css should contain the content of <style> tag from the manual test.
 
 class AbbreviationUI extends Plugin {
-	static get requires() {
-		return [ ContextualBalloon ];
-	}
-	static get pluginName() {
-		return 'AbbreviationUI';
-	}
-
 	init() {
 		const editor = this.editor;
 		const { t } = editor.locale;
-
-		this._balloon = this.editor.plugins.get( ContextualBalloon );
-		this.formView = this._createFormView();
 
 		editor.ui.componentFactory.add( 'abbreviation', locale => {
 			const button = new ButtonView( locale );
@@ -47,71 +30,21 @@ class AbbreviationUI extends Plugin {
 			button.tooltip = true;
 			button.withText = true;
 
-			// Show the panel on button click.
 			this.listenTo( button, 'execute', () => {
-				this._balloon.add( {
-					view: this.formView,
-					position: this._getBalloonPositionData()
-				} );
+				const selection = editor.model.document.selection;
+				const title = 'What You See Is What You Get';
+				const abbr = 'WYSIWYG';
 
-				this.formView.focus();
+				editor.model.change( writer => {
+					writer.insertText( abbr, { 'abbreviation': title }, selection.getFirstPosition() );
+					for ( const range of selection.getRanges() ) {
+						writer.remove( range );
+					}
+				} );
 			} );
 
 			return button;
 		} );
-	}
-
-	_createFormView() {
-		const editor = this.editor;
-		const formView = new FormView( editor.locale );
-
-		// Execute the command after clicking the "Save" button.
-		this.listenTo( formView, 'submit', () => {
-			const title = formView.titleInputView.fieldView.element.value;
-			const abbr = formView.abbrInputView.fieldView.element.value;
-
-			editor.model.change( writer => {
-				const writerAbbr = writer.createText( abbr );
-				writerAbbr._attrs.set( 'abbreviation', title );
-
-				editor.model.insertContent( writerAbbr );
-			} );
-
-			this._hideFormView();
-		} );
-
-		// Hide the panel after clicking the "Cancel" button.
-		this.listenTo( formView, 'cancel', () => {
-			this._hideFormView();
-		} );
-
-		clickOutsideHandler( {
-			emitter: formView,
-			activator: () => this._balloon.visibleView === formView,
-			contextElements: [ this._balloon.view.element ],
-			callback: () => this._hideFormView()
-		} );
-
-		return formView;
-	}
-
-	_hideFormView() {
-		this.formView.abbrInputView.fieldView.element.value = '';
-		this.formView.titleInputView.fieldView.element.value = '';
-
-		this._balloon.remove( this.formView );
-	}
-
-	_getBalloonPositionData() {
-		const view = this.editor.editing.view;
-		const viewDocument = view.document;
-		let target = null;
-
-		target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
-
-		return {
-			target
-		};
 	}
 }
 
@@ -164,11 +97,6 @@ class Abbreviation extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#snippet-abbreviation-plugin' ), {
 		cloudServices: CS_CONFIG,
-		ui: {
-			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
-			}
-		},
 		plugins: [ Essentials, Bold, Italic, Heading, List, Paragraph, Abbreviation ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'abbreviation' ]
 	} )

@@ -15,7 +15,7 @@ import { icons } from '@ckeditor/ckeditor5-core';
 // [cancel button]
 //		-> clicked
 //			-> fires ButtonView#execute
-//				-> delegated to ForView#cancel
+//				-> delegated to FormView#cancel
 //					-> FormView#cancel is fired (and AbbrUI can listen to it).
 
 // [submit button]
@@ -42,7 +42,7 @@ export default class FormView extends View {
 
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel' );
 
-		// TODO: Comment
+		// Delegate ButtonView#execute to FormView#cancel
 		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
 
 		this.setTemplate( {
