@@ -1,0 +1,38 @@
+{
+	"plugins": [
+		{
+			"name": "CKBox",
+			"className": "CKBox",
+			"description": "Allows inserting images as well as links to files into the rich-text editor content.",
+			"docs": "features/images/image-upload/ckbox.html",
+			"path": "src/ckbox.js",
+			"requires": [
+				"CloudServices",
+				"Link",
+				"Image",
+				"ImageUpload",
+				"PictureEditing"
+			],
+			"uiComponents": [
+				{
+					"name": "ckbox",
+					"type": "Button",
+					"iconPath": "theme/icons/browse-files.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": [
+						"a",
+						"figure",
+						"img"
+					],
+					"attributes": [
+						"data-ckbox-resource-id"
+					],
+					"_comment": "If `config.ckbox.ignoreDataId` is set to false (off), the asset ID as the `data-ckbox-resource-id` attribute is added on the inserted elements (by default)."
+				}
+			]
+		}
+	]
+}

@@ -1159,7 +1159,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			} );
 
 			expect( editor.getData() ).to.equal(
-				'<p><oembed data-foo="foo" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed></p>'
+				'<p><oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed></p>'
 			);
 		} );
 
@@ -1278,7 +1278,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<figure class="media" data-foo="foo">' +
-					'<p><oembed data-foo="foo" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed></p>' +
+					'<p><oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed></p>' +
 				'</figure>'
 			);
 

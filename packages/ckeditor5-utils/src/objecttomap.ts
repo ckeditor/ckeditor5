@@ -15,10 +15,10 @@
  *
  * **Note**: For mixed data (`Object` or `Iterable`) there's a dedicated {@link module:utils/tomap~toMap} function.
  *
- * @param {Object} obj Object to transform.
+ * @param {Object|null} obj Object to transform.
  * @returns {Map} Map created from object.
  */
-export default function objectToMap<T>( obj: { readonly [ key: string ]: T } ): Map<string, T> {
+export default function objectToMap<T>( obj: { readonly [ key: string ]: T } | null ): Map<string, T> {
 	const map = new Map<string, T>();
 
 	for ( const key in obj ) {

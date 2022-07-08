@@ -47,12 +47,12 @@ $( '#modal-container' ).modal( {
 
 ### Bootstrap table styles
 
-There is also a known [issue](https://github.com/ckeditor/ckeditor5-table/issues/154) concerning table styles brought by Bootstrap breaking the table (widget) layout during editing. If you do not want any additional space around edited tables when using Bootstrap, add the following styles to your application:
+There is also a known [issue](https://github.com/ckeditor/ckeditor5/issues/3253) concerning table styles brought by Bootstrap breaking the table (widget) layout during editing. If you do not want any additional space around edited tables when using Bootstrap, add the following styles to your application:
 
 ```css
 /*
  * Override the width of the table set by Bootstrap content styles.
- * See: https://github.com/ckeditor/ckeditor5-table/issues/154.
+ * See: https://github.com/ckeditor/ckeditor5/issues/3253.
  */
 .ck-content .table {
 	width: auto;
@@ -61,7 +61,7 @@ There is also a known [issue](https://github.com/ckeditor/ckeditor5-table/issues
 
 ## Compatibility with Foundation
 
-CKEditor 5 requires some minor adjustments to the `z-index` of the UI to work properly with [Foundation](https://foundation.zurb.com/sites.html) (and with the [Reveal](https://foundation.zurb.com/sites/docs/reveal.html) modal, too).
+CKEditor 5 requires some minor adjustments to the `z-index` of the UI to work properly with [Foundation](https://get.foundation/) (and with the [Reveal](https://revealjs.com/) modal, too).
 
 ```css
 /*

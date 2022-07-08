@@ -206,6 +206,22 @@ describe( 'DomConverter', () => {
 			expect( viewComment ).to.be.null;
 		} );
 
+		it( 'should set attributes in the same order as in the DOM', () => {
+			const domP = createElement( document, 'p', { 'data-foo': 'a', 'data-bar': 'b' } );
+			const viewP = converter.domToView( domP );
+
+			expect( viewP ).to.be.an.instanceof( ViewElement );
+			expect( viewP.name ).to.equal( 'p' );
+
+			const attributes = Array.from( viewP.getAttributes() );
+
+			expect( attributes.length ).to.equal( 2 );
+			expect( attributes ).to.deep.equal( [
+				[ 'data-foo', 'a' ],
+				[ 'data-bar', 'b' ]
+			] );
+		} );
+
 		describe( 'it should clear whitespaces', () => {
 			it( 'at the beginning of block element', () => {
 				const domDiv = createElement( document, 'div', {}, [
