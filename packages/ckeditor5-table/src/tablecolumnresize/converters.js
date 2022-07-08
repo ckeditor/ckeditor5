@@ -7,8 +7,6 @@
  * @module table/tablecolumnresize/converters
  */
 
-/* istanbul ignore file */
-
 import { getNumberOfColumn, normalizeColumnWidths } from './utils';
 
 /**

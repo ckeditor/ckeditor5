@@ -7,8 +7,6 @@
  * @module table/tablecolumnresize/utils
  */
 
-/* istanbul ignore file */
-
 import { global } from 'ckeditor5/src/utils';
 import {
 	COLUMN_WIDTH_PRECISION,
