@@ -26,13 +26,17 @@ export default class BalloonEditorUIView extends EditorUIView {
 	constructor( locale, editingView, editableElement ) {
 		super( locale );
 
+		const t = locale.t;
+
 		/**
 		 * The editable UI view.
 		 *
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editingView, this, editableElement );
+		this.editable = new InlineEditableUIView( locale, editingView, editableElement, editable => {
+			return t( 'Rich Text Editor. Editing area: "%0"', editable.name );
+		} );
 	}
 
 	/**

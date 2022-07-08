@@ -20,13 +20,15 @@ export default class InlineEditableUIView extends EditableUIView {
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The locale instance.
 	 * @param {module:engine/view/view~View} editingView The editing view instance the editable is related to.
-	 * @param {module:core/editor/editor~EditorUIView} editorUiView The main view of the editor UI.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, the
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}
 	 * will create it. Otherwise, the existing element will be used.
+	 * @param {String} [accessibleLabelGenerator] TODO
 	 */
-	constructor( locale, editingView, editorUiView, editableElement ) {
+	constructor( locale, editingView, editableElement, accessibleLabelGenerator ) {
 		super( locale, editingView, editableElement );
+
+		const t = locale.t;
 
 		this.extendTemplate( {
 			attributes: {
@@ -36,12 +38,11 @@ export default class InlineEditableUIView extends EditableUIView {
 		} );
 
 		/**
-		 * The main view of the editor UI.
+		 * TODO
 		 *
-		 * @readonly
-		 * @param {mmodule:core/editor/editor~EditorUIView|null} #editorUiView.
+		 * @private
 		 */
-		this._editorUiView = editorUiView;
+		this._accessibleLabelGenerator = accessibleLabelGenerator || ( () => t( 'Editor editing area: "%0"', this.name ) );
 	}
 
 	/**
@@ -51,16 +52,11 @@ export default class InlineEditableUIView extends EditableUIView {
 		super.render();
 
 		const editingView = this._editingView;
-		const t = this.t;
 
 		editingView.change( writer => {
 			const viewRoot = editingView.document.getRoot( this.name );
 
-			if ( this._editorUiView && this._editorUiView.element ) {
-				writer.setAttribute( 'aria-label', t( '%0', this.name ), viewRoot );
-			} else {
-				writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', this.name ), viewRoot );
-			}
+			writer.setAttribute( 'aria-label', this._accessibleLabelGenerator( this ), viewRoot );
 		} );
 	}
 }
