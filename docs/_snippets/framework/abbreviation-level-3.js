@@ -49,19 +49,19 @@ class AbbreviationUI extends Plugin {
 				title: formView.titleInputView.fieldView.element.value
 			};
 			editor.execute( 'addAbbreviation', value );
-			this._hideFormView();
+			this._hideUI();
 		} );
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( formView, 'cancel', () => {
-			this._hideFormView();
+			this._hideUI();
 		} );
 
 		clickOutsideHandler( {
 			emitter: formView,
 			activator: () => this._balloon.visibleView === formView,
 			contextElements: [ this._balloon.view.element ],
-			callback: () => this._hideFormView()
+			callback: () => this._hideUI()
 		} );
 
 		return formView;
@@ -93,9 +93,10 @@ class AbbreviationUI extends Plugin {
 		} );
 	}
 
-	_hideFormView() {
+	_hideUI() {
 		this.formView.abbrInputView.fieldView.element.value = '';
 		this.formView.titleInputView.fieldView.element.value = '';
+		this.formView.element.reset();
 
 		this._balloon.remove( this.formView );
 	}

@@ -136,6 +136,7 @@ class AbbreviationUI extends Plugin {
 		// Reset the state of the form when it hides.
 		this.formView.abbrInputView.fieldView.element.value = '';
 		this.formView.titleInputView.fieldView.element.value = '';
+		this.formView.element.reset();
 
 		this._balloon.remove( this.formView );
 	}
