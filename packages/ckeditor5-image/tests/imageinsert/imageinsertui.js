@@ -97,9 +97,6 @@ describe( 'ImageInsertUI', () => {
 			expect( dropdownButtonView ).to.have.property( 'label', 'Insert image' );
 			expect( dropdownButtonView ).to.have.property( 'icon' );
 			expect( dropdownButtonView ).to.have.property( 'tooltip', true );
-
-			expect( dropdownButtonView.arrowView.label ).to.equal( 'Insert image via URL' );
-			expect( dropdownButtonView.arrowView.tooltip ).to.be.true;
 		} );
 
 		it( 'should bind the enabled state of the dropdown to the UploadImageCommand command', () => {

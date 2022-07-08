@@ -68,17 +68,12 @@ export default class ImageInsertUI extends Plugin {
 		this.dropdownView = createDropdown( locale, uploadImageCommand ? SplitButtonView : undefined );
 
 		const buttonView = this.dropdownView.buttonView;
-		const buttonViewArrow = buttonView.arrowView;
 		const panelView = this.dropdownView.panelView;
 
 		buttonView.set( {
 			label: t( 'Insert image' ),
 			icon: icons.image,
 			tooltip: true
-		} );
-
-		buttonViewArrow.set( {
-			label: t( 'Insert image via URL' )
 		} );
 
 		panelView.extendTemplate( {
