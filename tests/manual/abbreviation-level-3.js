@@ -130,8 +130,8 @@ class AbbreviationUI extends Plugin {
 
 	_hideUI() {
 		// Reset the state of the form when it hides.
-		this.formView.abbrInputView.fieldView.element.value = '';
-		this.formView.titleInputView.fieldView.element.value = '';
+		this.formView.abbrInputView.fieldView.value = '';
+		this.formView.titleInputView.fieldView.value = '';
 		this.formView.element.reset();
 
 		this._balloon.remove( this.formView );
@@ -160,7 +160,7 @@ class AbbreviationCommand extends Command {
 		const selection = model.document.selection;
 		const firstRange = selection.getFirstRange();
 
-		// The command has a value when the selection is collapsed and the caret is in an abbreviation.
+		// When the selection is collapsed, the command has a value if the caret is in an abbreviation.
 		if ( firstRange.isCollapsed ) {
 			if ( selection.hasAttribute( 'abbreviation' ) ) {
 				const attributeValue = selection.getAttribute( 'abbreviation' );
@@ -176,8 +176,28 @@ class AbbreviationCommand extends Command {
 			} else {
 				this.value = null;
 			}
-		} else {
-			this.value = null;
+		}
+		// When the selection is not collapsed, the command has a value if the selection contains a subset of a single abbreviation
+		// or an entire abbreviation.
+		else {
+			if ( selection.hasAttribute( 'abbreviation' ) ) {
+				const attributeValue = selection.getAttribute( 'abbreviation' );
+
+				// Find the entire range containing the abbreviation under the caret position.
+				const abbreviationRange = findAttributeRange( selection.getFirstPosition(), 'abbreviation', attributeValue, model );
+
+				if ( abbreviationRange.containsRange( firstRange, true ) ) {
+					this.value = {
+						abbr: getRangeText( firstRange ),
+						title: attributeValue,
+						range: firstRange
+					};
+				} else {
+					this.value = null;
+				}
+			} else {
+				this.value = null;
+			}
 		}
 
 		// The command is enabled when the "abbreviation" attribute can be set on the current model selection.
