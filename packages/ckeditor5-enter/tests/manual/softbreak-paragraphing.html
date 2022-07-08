@@ -46,37 +46,37 @@
 			<br>
 			<h2>Outside paragraph</h2>
 
-			<h3><code>&lt;br&gt;</code></h3>
+			<h3><code>&lt;br&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
 			<br>
-			<h3><code>1</code></h3>
+			<h3><code>1</code> &rarr; <code>&lt;p&gt;1&lt;/p&gt;</code></h3>
 			1
-			<h3><code>&lt;br&gt;2</code></h3>
+			<h3><code>&lt;br&gt;2</code> &rarr; <code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
 			<br>2
-			<h3><code>3&lt;br&gt;</code></h3>
+			<h3><code>3&lt;br&gt;</code> &rarr; <code>&lt;p&gt;3&lt;/p&gt;</code></h3>
 			3<br>
-			<h3><code>4&lt;br&gt;5</code></h3>
+			<h3><code>4&lt;br&gt;5</code> &rarr; <code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
 			4<br>5
-			<h3><code>6&lt;br&gt;&amp;nbsp;</code></h3>
+			<h3><code>6&lt;br&gt;&amp;nbsp;</code> &rarr; <code>&lt;p&gt;6&lt;br&gt;&lt;/p&gt;</code></h3>
 			6<br>&nbsp;
-			<h3><code>7&lt;br&gt;&blank;</code></h3>
+			<h3><code>7&lt;br&gt;&blank;</code> &rarr; <code>&lt;p&gt;7&lt;/p&gt;</code></h3>
 			7<br>
 			<h3>END</h3>
 
 			<h2>In paragraph</h2>
 
-			<h3><code>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;/p&gt;</code></h3>
 			<p><br></p>
-			<h3><code>&lt;p&gt;1&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;1&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;1&lt;/p&gt;</code></h3>
 			<p>1</p>
-			<h3><code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;&lt;br&gt;2&lt;/p&gt;</code></h3>
 			<p><br>2</p>
-			<h3><code>&lt;p&gt;3&lt;br&gt;&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;3&lt;br&gt;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;3&lt;/p&gt;</code></h3>
 			<p>3<br></p>
-			<h3><code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;4&lt;br&gt;5&lt;/p&gt;</code></h3>
 			<p>4<br>5</p>
-			<h3><code>&lt;p&gt;6&lt;br&gt;&amp;nbsp;&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;6&lt;br&gt;&amp;nbsp;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;6&lt;br&gt;&lt;/p&gt;</code></h3>
 			<p>6<br>&nbsp;</p>
-			<h3><code>&lt;p&gt;7&lt;br&gt;&blank;&lt;/p&gt;</code></h3>
+			<h3><code>&lt;p&gt;7&lt;br&gt;&blank;&lt;/p&gt;</code> &rarr; <code>&lt;p&gt;7&lt;/p&gt;</code></h3>
 			<p>7<br> </p>
 			<h3>END</h3>
 			<br>
@@ -119,5 +119,8 @@
 		margin: 0 !important;
 		padding: 0 10px;
 		background: #00b0f0;
+	}
+	table.test code {
+		background: none;
 	}
 </style>
