@@ -150,30 +150,6 @@ export function getNumberOfColumn( table, editor ) {
 }
 
 /**
- * Checks if the table is already fully rendered, with the `<colgroup>` element that defines the widths for each column.
- *
- * @param {module:engine/model/element~Element} table
- * @param {module:core/editor/editor~Editor} editor
- * @returns {Number}
- */
-export function isTableRendered( table, editor ) {
-	return !!getColgroupViewElement( table, editor );
-}
-
-// Returns the `<colgroup>` view element, if it exists in a table. Returns `undefined` otherwise.
-//
-// @private
-// @param {module:engine/model/element~Element} table
-// @param {module:core/editor/editor~Editor} editor
-// @returns {module:engine/view/element~Element|undefined}
-function getColgroupViewElement( modelTable, editor ) {
-	const viewFigure = editor.editing.mapper.toViewElement( modelTable );
-	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
-
-	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'colgroup' ) );
-}
-
-/**
  * Rounds the provided value to a fixed-point number with defined number of digits after the decimal point.
  *
  * @param {Number|String} value
