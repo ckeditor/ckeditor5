@@ -64,6 +64,8 @@ class App extends Component {
 export default App;
 ```
 
+### Using the document editor build
+
 If you use the {@link framework/guides/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
 ```jsx
@@ -131,11 +133,9 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:core/editor/editor~Editor `Editor`} instance.
 
-## Customizing the builds
+## Customized installation
 
 The {@link installation/advanced/predefined-builds CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/getting-started/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
-
-There are three main ways to do that.
 
 ### Using the CKEditor 5 online builder
 
@@ -254,12 +254,6 @@ It can also be set on-demand, per command call:
 ```bash
 NODE_OPTIONS="--max-old-space-size=4096" yarn build
 ```
-
-### Customizing one of the predefined builds
-
-This option requires making changes to a {@link installation/getting-started/quick-start-other#building-the-editor-from-source predefined build} of your choice. Much like in [the case of online builder](#using-the-ckeditor-5-online-builder), you then need to place the custom editor's folder next to `src/` directory and add it as a dependency using `yarn add file` command.
-
-Read more about customising a predefined build in the {@link installation/getting-started/installing-plugins Installing plugins} guide.
 
 ### Integrating the editor from source
 
@@ -461,7 +455,7 @@ yarn start
 
 You can read more about using CKEditor 5 from source in the {@link installation/advanced/integrating-from-source Advanced setup guide}.
 
-#### Using the editor with collaboration plugins
+### Using the editor with collaboration plugins
 
 The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
 
