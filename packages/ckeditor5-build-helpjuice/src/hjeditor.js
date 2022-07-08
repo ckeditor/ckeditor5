@@ -432,5 +432,24 @@ HelpjuiceEditor.defaultConfig = {
 			startIndex: true,
 			reversed: true
 		}
+	},
+	codeBlock: {
+		languages: [
+			{ language: 'plaintext', label: 'Plain text', class: 'language-plain' }, // The default language.
+			{ language: 'c', label: 'C', class: 'language-c' },
+			{ language: 'cs', label: 'C#', class: 'language-cs' },
+			{ language: 'cpp', label: 'C++', class: 'language-cpp' },
+			{ language: 'css', label: 'CSS', class: 'language-css' },
+			{ language: 'diff', label: 'Diff', class: 'language-diff' },
+			{ language: 'html', label: 'HTML', class: 'language-html' },
+			{ language: 'java', label: 'Java', class: 'language-java' },
+			{ language: 'javascript', label: 'JavaScript', class: 'language-javascript' },
+			{ language: 'php', label: 'PHP', class: 'language-php' },
+			{ language: 'python', label: 'Python', class: 'language-python' },
+			{ language: 'ruby', label: 'Ruby', class: 'language-ruby' },
+			{ language: 'sql', label: 'SQL', class: 'language-sql' },
+			{ language: 'typescript', label: 'TypeScript', class: 'language-typescript' },
+			{ language: 'xml', label: 'XML', class: 'language-xml' }
+		]
 	}
 };
