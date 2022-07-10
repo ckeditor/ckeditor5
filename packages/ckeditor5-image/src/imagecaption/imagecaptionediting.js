@@ -268,7 +268,7 @@ export default class ImageCaptionEditing extends Plugin {
 
 				const image = change.range.start.nodeAfter;
 
-				if ( image.name === 'imageBlock' ) {
+				if ( imageUtils.isBlockImage( image ) ) {
 					const caption = imageCaptionUtils.getCaptionFromImageModelElement( image );
 
 					if ( !caption ) {
