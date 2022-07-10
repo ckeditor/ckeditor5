@@ -256,6 +256,7 @@ export default class ImageCaptionEditing extends Plugin {
 	_registerCaptionReconversion() {
 		const editor = this.editor;
 		const model = editor.model;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 
 		model.document.on( 'change:data', () => {
