@@ -416,6 +416,56 @@ describe( 'TableColumnResizeEditing', () => {
 					'</figure>'
 				);
 			} );
+
+			it( 'should remove <colgroup> element if columnWidths attribute was removed', () => {
+				setModelData( model, modelTable( [
+					[ '11', '12' ]
+				], { columnWidths: '50%,50%', tableWidth: '100%' } ) );
+
+				model.change( writer => {
+					writer.removeAttribute( 'columnWidths', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="table" style="width:100%;">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>11</td>' +
+									'<td>12</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should do nothing if columnWidths value was changed to the same value', () => {
+				setModelData( model, modelTable( [
+					[ '11', '12' ]
+				], { columnWidths: '50%,50%', tableWidth: '100%' } ) );
+
+				model.change( writer => {
+					writer.setAttribute( 'columnWidths', '50%,50%', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="table" style="width:100%;">' +
+						'<table>' +
+							'<colgroup>' +
+								'<col style="width:50%;">' +
+								'<col style="width:50%;">' +
+							'</colgroup>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>11</td>' +
+									'<td>12</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
 		} );
 
 		describe( 'model change integration', () => {
