@@ -308,7 +308,7 @@ describe( 'utils', () => {
 			} );
 		} );
 
-		describe( 'extra dropdown open listener', () => {
+		describe( 'focus management on dropdown open', () => {
 			let buttons, dropdownView;
 
 			beforeEach( () => {
@@ -524,101 +524,84 @@ describe( 'utils', () => {
 			} );
 		} );
 
-		describe( 'extra dropdown open listener', () => {
+		describe( 'focus management on dropdown open', () => {
 			it( 'focuses active item upon dropdown opening', () => {
-				const buttonModels = [
-					new Model( { label: 'a', isOn: true } ),
-					new Model( { label: 'b' } )
-				];
-
-				definitions.add( {
-					type: 'button',
-					model: buttonModels[ 0 ]
-				} );
-
-				definitions.add( {
-					type: 'button',
-					model: buttonModels[ 1 ]
-				} );
+				definitions.addMany( [
+					{
+						type: 'button',
+						model: new Model( { label: 'a', isOn: true } )
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'b' } )
+					}
+				] );
 
 				// The focus logic happens when the dropdown is opened.
 				dropdownView.isOpen = true;
 
-				expect( document.activeElement ).to.equal( getFirstListViewDomButton( listItems.get( 0 ) ) );
+				expect( document.activeElement ).to.equal( getListViewDomButton( listItems.get( 0 ) ) );
 			} );
 
 			it( 'focuses nth active item upon dropdown opening', () => {
-				const buttonModels = [
-					new Model( { label: 'a' } ),
-					new Model( { label: 'b', isOn: true } )
-				];
-
-				definitions.add( {
-					type: 'button',
-					model: buttonModels[ 0 ]
-				} );
-
-				definitions.add( {
-					type: 'button',
-					model: buttonModels[ 1 ]
-				} );
+				definitions.addMany( [
+					{
+						type: 'button',
+						model: new Model( { label: 'a' } )
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'b', isOn: true } )
+					}
+				] );
 
 				// The focus logic happens when the dropdown is opened.
 				dropdownView.isOpen = true;
 
-				expect( document.activeElement ).to.equal( getFirstListViewDomButton( listItems.get( 1 ) ) );
+				expect( document.activeElement ).to.equal( getListViewDomButton( listItems.get( 1 ) ) );
 			} );
 
 			it( 'does not break for separator - still focuses nth active item upon dropdown opening', () => {
-				const buttonModels = [
-					new Model( { label: 'a' } ),
-					new Model( { label: 'b', isOn: true } )
-				];
-
-				definitions.add( {
-					type: 'button',
-					model: buttonModels[ 0 ]
-				} );
-
-				definitions.add( { type: 'separator' } );
-
-				definitions.add( {
-					type: 'button',
-					model: buttonModels[ 1 ]
-				} );
+				definitions.addMany( [
+					{
+						type: 'button',
+						model: new Model( { label: 'a' } )
+					},
+					{
+						type: 'separator'
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'b', isOn: true } )
+					}
+				] );
 
 				// The focus logic happens when the dropdown is opened.
 				dropdownView.isOpen = true;
 
-				expect( document.activeElement ).to.equal( getFirstListViewDomButton( listItems.get( 2 ) ) );
+				expect( document.activeElement ).to.equal( getListViewDomButton( listItems.get( 2 ) ) );
 			} );
 
 			it( 'focuses the first item if multiple items are active', () => {
-				const buttonModels = [
-					new Model( { label: 'a' } ),
-					new Model( { label: 'b', isOn: true } ),
-					new Model( { label: 'c', isOn: true } )
-				];
-
-				definitions.add( {
-					type: 'button',
-					model: buttonModels[ 0 ]
-				} );
-
-				definitions.add( {
-					type: 'button',
-					model: buttonModels[ 1 ]
-				} );
-
-				definitions.add( {
-					type: 'button',
-					model: buttonModels[ 2 ]
-				} );
+				definitions.addMany( [
+					{
+						type: 'button',
+						model: new Model( { label: 'a' } )
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'b', isOn: true } )
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'c', isOn: true } )
+					}
+				] );
 
 				// The focus logic happens when the dropdown is opened.
 				dropdownView.isOpen = true;
 
-				expect( document.activeElement ).to.equal( getFirstListViewDomButton( listItems.get( 1 ) ) );
+				expect( document.activeElement ).to.equal( getListViewDomButton( listItems.get( 1 ) ) );
 			} );
 
 			describe( 'should warn', () => {
@@ -631,20 +614,16 @@ describe( 'utils', () => {
 				} );
 
 				it( 'if the active view does not implement the focus() method and therefore cannot be focused', () => {
-					const buttonModels = [
-						new Model( { label: 'a' } ),
-						new Model( { label: 'b', isOn: true } )
-					];
-
-					definitions.add( {
-						type: 'button',
-						model: buttonModels[ 0 ]
-					} );
-
-					definitions.add( {
-						type: 'button',
-						model: buttonModels[ 1 ]
-					} );
+					definitions.addMany( [
+						{
+							type: 'button',
+							model: new Model( { label: 'a' } )
+						},
+						{
+							type: 'button',
+							model: new Model( { label: 'b', isOn: true } )
+						}
+					] );
 
 					const secondChildView = dropdownView.listView.items.get( 1 );
 
@@ -663,7 +642,7 @@ describe( 'utils', () => {
 				} );
 			} );
 
-			function getFirstListViewDomButton( listView ) {
+			function getListViewDomButton( listView ) {
 				return listView.children.first.element;
 			}
 		} );
