@@ -568,6 +568,30 @@ describe( 'utils', () => {
 				expect( document.activeElement ).to.equal( getFirstListViewDomButton( listItems.get( 1 ) ) );
 			} );
 
+			it( 'does not break for separator - still focuses nth active item upon dropdown opening', () => {
+				const buttonModels = [
+					new Model( { label: 'a' } ),
+					new Model( { label: 'b', isOn: true } )
+				];
+
+				definitions.add( {
+					type: 'button',
+					model: buttonModels[ 0 ]
+				} );
+
+				definitions.add( { type: 'separator' } );
+
+				definitions.add( {
+					type: 'button',
+					model: buttonModels[ 1 ]
+				} );
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( getFirstListViewDomButton( listItems.get( 2 ) ) );
+			} );
+
 			it( 'focuses the first item if multiple items are active', () => {
 				const buttonModels = [
 					new Model( { label: 'a' } ),
