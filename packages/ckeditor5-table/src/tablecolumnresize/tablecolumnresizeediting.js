@@ -245,10 +245,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					if ( isColumnInsertion ) {
 						if ( !isColumnInsertionHandled ) {
 							const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
-							const isColumnSwapped = columnIndexMap.get( cell.previousSibling ) === column;
-							const columnWidthsToInsert = isColumnSwapped ?
-								removedColumnWidths :
-								fillArray( column - previousColumn, columnMinWidthAsPercentage );
+							const columnWidthsToInsert = fillArray( column - previousColumn, columnMinWidthAsPercentage );
 
 							columnWidths.splice( previousColumn, 0, ...columnWidthsToInsert );
 
@@ -264,16 +261,10 @@ export default class TableColumnResizeEditing extends Plugin {
 					// (3.1) Handle column deletion and update the `columnIndex` references in column index map for affected cells.
 					if ( isColumnDeletion ) {
 						if ( !isColumnDeletionHandled ) {
+							const columnToExpand = column > 0 ? column - 1 : column;
+
 							removedColumnWidths = columnWidths.splice( column, previousColumn - column );
-
-							const isColumnSwapped = cell.nextSibling && columnIndexMap.get( cell.nextSibling ) === column;
-
-							if ( !isColumnSwapped ) {
-								const columnToExpand = column > 0 ? column - 1 : column;
-
-								columnWidths[ columnToExpand ] += sumArray( removedColumnWidths );
-							}
-
+							columnWidths[ columnToExpand ] += sumArray( removedColumnWidths );
 							isColumnDeletionHandled = true;
 						}
 
