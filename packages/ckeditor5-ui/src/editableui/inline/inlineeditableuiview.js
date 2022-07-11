@@ -48,7 +48,7 @@ export default class InlineEditableUIView extends EditableUIView {
 		 * @readonly
 		 * @param {Function}
 		 */
-		this._generateLabel = options.labelCreator || ( () => t( 'Editor Editing area: %0', this.name ) );
+		this._generateLabel = options.labelCreator || ( () => t( 'Editor editing area: %0', this.name ) );
 	}
 
 	/**
