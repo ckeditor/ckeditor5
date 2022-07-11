@@ -8,6 +8,7 @@
  */
 
 import View from '../view';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The dropdown panel view class.
@@ -87,7 +88,17 @@ export default class DropdownPanelView extends View {
 	 */
 	focus() {
 		if ( this.children.length ) {
-			this.children.first.focus();
+			if ( typeof this.children.first.focus === 'function' ) {
+				this.children.first.focus();
+			} else {
+				/**
+				 * This view is missing the focus() method. Therefore it could not be focused by default in the dropdown.
+				 *
+				 * @error ui-dropdown-view-missing-focus
+				 * @param {module:ui/view~View} view
+				 */
+				logWarning( 'ui-dropdown-view-missing-focus', this.children.first );
+			}
 		}
 	}
 
