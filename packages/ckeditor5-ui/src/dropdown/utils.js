@@ -22,6 +22,8 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler';
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
 
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
  * with a {@link module:ui/dropdown/button/dropdownbutton~DropdownButton button},
@@ -254,8 +256,20 @@ export function focusChildOnDropdownOpen( dropdownView, childSelectorCallback ) 
 
 		const childToFocus = childSelectorCallback();
 
-		if ( childToFocus ) {
+		if ( !childToFocus ) {
+			return;
+		}
+
+		if ( typeof childToFocus.focus === 'function' ) {
 			childToFocus.focus();
+		} else {
+			/**
+			 * This view is missing the focus() method. Therefore although it's an active element it could not be focused in the dropdown.
+			 *
+			 * @error ui-dropdown-view-missing-focus-for-active-element
+			 * @param {module:ui/view~View} view
+			 */
+			logWarning( 'ui-dropdown-view-missing-focus-for-active-element', childToFocus );
 		}
 	}, { priority: 'low' } );
 }
