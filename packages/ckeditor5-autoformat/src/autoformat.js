@@ -128,6 +128,12 @@ export default class Autoformat extends Plugin {
 			inlineAutoformatEditing( this.editor, this, /(~~)([^~]+)(~~)$/g, strikethroughCallback );
 			inlineAutoformatEditing( this.editor, this, /(~)([^~]+)(~)$/g, strikethroughCallback );
 		}
+
+		if ( commands.get( 'underline' ) ) {
+			const callback = getCallbackFunctionForInlineAutoformat( this.editor, 'underline' );
+
+			inlineAutoformatEditing( this.editor, this, /(\+\+)([^~]+)(\+\+)$/g, callback );
+		}
 	}
 
 	/**
