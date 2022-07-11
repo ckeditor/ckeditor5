@@ -126,6 +126,7 @@ export default class Autoformat extends Plugin {
 			const strikethroughCallback = getCallbackFunctionForInlineAutoformat( this.editor, 'strikethrough' );
 
 			inlineAutoformatEditing( this.editor, this, /(~~)([^~]+)(~~)$/g, strikethroughCallback );
+			inlineAutoformatEditing( this.editor, this, /(~)([^~]+)(~)$/g, strikethroughCallback );
 		}
 	}
 
