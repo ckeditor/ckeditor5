@@ -4,12 +4,6 @@
  */
 
 .ck-content pre {
-	padding: 1em;
-	color: hsl(0, 0%, 20.8%);
-	background: hsla(0, 0%, 78%, 0.3);
-	border: 1px solid hsl(0, 0%, 77%);
-	border-radius: 2px;
-
 	/* Code block are language direction–agnostic. */
 	text-align: left;
 	direction: ltr;
