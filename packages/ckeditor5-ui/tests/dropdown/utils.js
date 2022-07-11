@@ -322,7 +322,7 @@ describe( 'utils', () => {
 
 				dropdownView = createDropdown( locale );
 
-				addToolbarToDropdown( dropdownView, buttons, { enableFocusingActiveElement: true } );
+				addToolbarToDropdown( dropdownView, buttons, { enableActiveItemFocusOnDropdownOpen: true } );
 
 				dropdownView.render();
 				document.body.appendChild( dropdownView.element );

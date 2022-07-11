@@ -133,8 +133,8 @@ export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ToolbarView` will be added.
  * @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttons
  * @param {Object} [options]
- * @param {Boolean} [options.enableFocusingActiveElement=false] When set `true`, the focus will automatically move to the first active
- * {@link module:ui/toolbar/toolbar~ToolbarView#items item} of the toolbar upon
+ * @param {Boolean} [options.enableActiveItemFocusOnDropdownOpen=false] When set `true`, the focus will automatically move to the first
+ * active {@link module:ui/toolbar/toolbar~ToolbarView#items item} of the toolbar upon
  * {@link module:ui/dropdown/dropdownview~DropdownView#isOpen opening} the dropdown. Active items are those with the `isOn` property set
  * `true` (for instance {@link module:ui/button/buttonview~ButtonView buttons}). If no active items is found, the toolbar will be focused
  * as a whole resulting in the focus moving to its first focusable item (default behavior of
@@ -155,7 +155,7 @@ export function addToolbarToDropdown( dropdownView, buttons, options = {} ) {
 
 	buttons.map( view => toolbarView.items.add( view ) );
 
-	if ( options.enableFocusingActiveElement ) {
+	if ( options.enableActiveItemFocusOnDropdownOpen ) {
 		// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.
 		focusChildOnDropdownOpen( dropdownView, () => toolbarView.items.find( item => item.isOn ) );
 	}
