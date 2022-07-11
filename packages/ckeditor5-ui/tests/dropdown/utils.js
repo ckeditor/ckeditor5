@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document Event */
+/* globals document, Event, console */
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import Model from '../../src/model';
 
@@ -618,6 +619,48 @@ describe( 'utils', () => {
 				dropdownView.isOpen = true;
 
 				expect( document.activeElement ).to.equal( getFirstListViewDomButton( listItems.get( 1 ) ) );
+			} );
+
+			describe( 'should warn', () => {
+				beforeEach( () => {
+					testUtils.sinon.stub( console, 'warn' );
+				} );
+
+				afterEach( () => {
+					console.warn.restore();
+				} );
+
+				it( 'if the active view does not implement the focus() method and therefore cannot be focused', () => {
+					const buttonModels = [
+						new Model( { label: 'a' } ),
+						new Model( { label: 'b', isOn: true } )
+					];
+
+					definitions.add( {
+						type: 'button',
+						model: buttonModels[ 0 ]
+					} );
+
+					definitions.add( {
+						type: 'button',
+						model: buttonModels[ 1 ]
+					} );
+
+					const secondChildView = dropdownView.listView.items.get( 1 );
+
+					secondChildView.focus = undefined;
+
+					// The focus logic happens when the dropdown is opened.
+					dropdownView.isOpen = true;
+
+					sinon.assert.calledOnce( console.warn );
+					sinon.assert.calledWithExactly(
+						console.warn,
+						'ui-dropdown-view-missing-focus-for-active-element',
+						secondChildView,
+						sinon.match.string
+					);
+				} );
 			} );
 
 			function getFirstListViewDomButton( listView ) {
