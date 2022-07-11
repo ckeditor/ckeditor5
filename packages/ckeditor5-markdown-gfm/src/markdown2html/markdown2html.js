@@ -43,7 +43,6 @@ export default function markdown2html( markdown ) {
 	return marked.parse( markdown, {
 		gfm: true,
 		breaks: true,
-		tables: true,
 		xhtml: true,
 		headerIds: false
 	} );
