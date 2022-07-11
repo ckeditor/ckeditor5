@@ -23,15 +23,14 @@ import { getNumberOfColumn, normalizeColumnWidths } from './utils';
  */
 export function upcastColgroupElement( editor ) {
 	return dispatcher => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
-		// DOMParser won't allow `colgroup` element outside a `table` one, so we don't need a check.
-		const modelTable = data.modelCursor.findAncestor( 'table' );
-
 		if ( !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
 			return;
 		}
 
 		conversionApi.consumable.consume( data.viewItem, { name: true } );
 
+		// DOMParser won't allow `colgroup` element outside a `table` one, so we don't need a check.
+		const modelTable = data.modelCursor.findAncestor( 'table' );
 		const viewColgroupElement = data.viewItem;
 		const numberOfColumns = getNumberOfColumn( modelTable, editor );
 

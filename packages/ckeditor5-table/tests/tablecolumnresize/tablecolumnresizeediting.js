@@ -101,7 +101,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 	describe( 'conversion', () => {
 		describe( 'upcast', () => {
-			it( 'the width style to tableWidth attribute correctly', () => {
+			it( 'the table width style to tableWidth attribute correctly', () => {
 				editor.setData(
 					`<figure class="table" style="width: 100%">
 						<table>
@@ -133,7 +133,7 @@ describe( 'TableColumnResizeEditing', () => {
 				);
 			} );
 
-			describe( 'when upcasting <colgroup> attribute', () => {
+			describe( 'when upcasting <colgroup> element', () => {
 				it( 'should handle the correct number of <col> elements', () => {
 					editor.setData(
 						`<figure class="table">
@@ -309,6 +309,45 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 								'<tableCell>' +
 									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should not convert if colgroup was already converted', () => {
+					editor.conversion.for( 'upcast' ).add( dispatcher => {
+						dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.viewItem, { name: true } );
+							data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+						}, { priority: 'highest' } );
+					} );
+
+					editor.setData(
+						`<figure class="table" style="width: 100%">
+							<table>
+								<colgroup>
+									<col style="width:50%;">
+									<col style="width:50%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableWidth="100%">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
 						'</table>'
