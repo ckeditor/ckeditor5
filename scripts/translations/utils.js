@@ -70,11 +70,11 @@ function parseArguments( args ) {
  */
 function getCKEditor5SourceFiles( { cwd, includeExternalDirectory } ) {
 	const patterns = [
-		'packages/*/src/**/*.js'
+		'packages/*/src/**/*.[jt]s'
 	];
 
 	if ( includeExternalDirectory ) {
-		patterns.push( 'external/*/packages/*/src/**/*.js' );
+		patterns.push( 'external/*/packages/*/src/**/*.[jt]s' );
 	}
 
 	const globOptions = { cwd, absolute: true };
