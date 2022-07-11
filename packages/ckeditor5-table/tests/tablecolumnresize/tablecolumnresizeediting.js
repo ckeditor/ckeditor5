@@ -353,6 +353,43 @@ describe( 'TableColumnResizeEditing', () => {
 						'</table>'
 					);
 				} );
+
+				it( 'should apply auto width if <col> element does not have style specified', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col>
+									<col style="width:33.33%;">
+									<col style="width:33.34%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table columnWidths="33.33%,33.33%,33.34%">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+				} );
 			} );
 		} );
 
