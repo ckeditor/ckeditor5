@@ -270,9 +270,9 @@ export default class LinkEditing extends Plugin {
 		}, { context: '$capture' } );
 
 		// Open link on Alt+Enter.
-		this.listenTo( viewDocument, 'keydown', ( evt, { domEvent } ) => {
+		this.listenTo( viewDocument, 'keydown', ( evt, data ) => {
 			const url = editor.commands.get( 'link' ).value;
-			const shouldOpen = url && domEvent.keyCode === keyCodes.enter && domEvent.altKey;
+			const shouldOpen = url && data.keyCode === keyCodes.enter && data.altKey;
 
 			if ( !shouldOpen ) {
 				return;
