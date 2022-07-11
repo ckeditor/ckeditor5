@@ -34,8 +34,10 @@ export default class BalloonEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editingView, editableElement, editable => {
-			return t( 'Rich Text Editor. Editing area: "%0"', editable.name );
+		this.editable = new InlineEditableUIView( locale, editingView, editableElement, {
+			labelCreator: editableView => {
+				return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+			}
 		} );
 	}
 
