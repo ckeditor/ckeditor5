@@ -210,7 +210,7 @@ describe( 'SourceEditing', () => {
 					const editingView = this.editing.view;
 
 					uiView.editable.destroy();
-					uiView.editable = new InlineEditableUIView( uiView.locale, editingView, this, document.createElement( 'div' ) );
+					uiView.editable = new InlineEditableUIView( uiView.locale, editingView, document.createElement( 'div' ) );
 				}
 			}
 
@@ -284,6 +284,7 @@ describe( 'SourceEditing', () => {
 
 			expect( textarea.nodeName ).to.equal( 'TEXTAREA' );
 			expect( textarea.rows ).to.equal( 1 );
+			expect( textarea.getAttribute( 'aria-label' ) ).to.equal( 'Source code editing area' );
 			expect( textarea.value ).to.equal(
 				'<p>\n' +
 				'    Foo\n' +
