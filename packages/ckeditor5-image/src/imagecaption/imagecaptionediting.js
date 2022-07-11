@@ -81,6 +81,7 @@ export default class ImageCaptionEditing extends Plugin {
 
 		this._setupConversion();
 		this._setupImageTypeCommandsIntegration();
+		this._registerCaptionReconversion();
 	}
 
 	/**
@@ -132,7 +133,10 @@ export default class ImageCaptionEditing extends Plugin {
 					keepOnFocus: true
 				} );
 
-				return toWidgetEditable( figcaptionElement, writer );
+				const imageAlt = modelElement.parent.getAttribute( 'alt' );
+				const label = imageAlt ? t( 'Caption for image: %0', [ imageAlt ] ) : t( 'Caption for the image' );
+
+				return toWidgetEditable( figcaptionElement, writer, { label } );
 			}
 		} );
 	}
@@ -241,5 +245,40 @@ export default class ImageCaptionEditing extends Plugin {
 	 */
 	_saveCaption( imageModelElement, caption ) {
 		this._savedCaptionsMap.set( imageModelElement, caption.toJSON() );
+	}
+
+	/**
+	 * Reconverts image caption when image alt attribute changes.
+	 * The change of alt attribute is reflected in caption's aria-label attribute.
+	 *
+	 * @private
+	 */
+	_registerCaptionReconversion() {
+		const editor = this.editor;
+		const model = editor.model;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
+
+		model.document.on( 'change:data', () => {
+			const changes = model.document.differ.getChanges();
+
+			for ( const change of changes ) {
+				if ( change.attributeKey !== 'alt' ) {
+					continue;
+				}
+
+				const image = change.range.start.nodeAfter;
+
+				if ( imageUtils.isBlockImage( image ) ) {
+					const caption = imageCaptionUtils.getCaptionFromImageModelElement( image );
+
+					if ( !caption ) {
+						return;
+					}
+
+					editor.editing.reconvertItem( caption );
+				}
+			}
+		} );
 	}
 }

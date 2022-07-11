@@ -240,7 +240,7 @@ export function getLabel( element ) {
  *				view: ( modelItem, { writer } ) => {
  *					const div = writer.createEditableElement( 'div', { class: 'nested' } );
  *
- *					return toWidgetEditable( nested, writer );
+ *					return toWidgetEditable( nested, writer, { label: 'label for editable' } );
  *				}
  *			} );
  *
@@ -257,10 +257,18 @@ export function getLabel( element ) {
  *
  * @param {module:engine/view/editableelement~EditableElement} editable
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {Object} [options] Additional options.
+ * @param {String} [options.label] Editable's label used by assistive technologies (e.g. screen readers).
  * @returns {module:engine/view/editableelement~EditableElement} Returns the same element that was provided in the `editable` parameter
  */
-export function toWidgetEditable( editable, writer ) {
+export function toWidgetEditable( editable, writer, options = {} ) {
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
+
+	writer.setAttribute( 'role', 'textbox', editable );
+
+	if ( options.label ) {
+		writer.setAttribute( 'aria-label', options.label, editable );
+	}
 
 	// Set initial contenteditable value.
 	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
