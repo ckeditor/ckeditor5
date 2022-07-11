@@ -57,10 +57,6 @@ export function getAffectedTables( changes, model ) {
 		const tableNode = ( referencePosition.nodeAfter && referencePosition.nodeAfter.name === 'table' ) ?
 			referencePosition.nodeAfter : referencePosition.findAncestor( 'table' );
 
-		if ( !tableNode ) {
-			continue;
-		}
-
 		// We iterate over the whole table looking for the nested tables that are also affected.
 		for ( const node of model.createRangeOn( tableNode ).getItems() ) {
 			if ( node.is( 'element' ) && node.name === 'table' && node.hasAttribute( 'columnWidths' ) ) {
@@ -73,13 +69,14 @@ export function getAffectedTables( changes, model ) {
 }
 
 /**
- * Returns the computed width (in pixels) of the DOM element.
+ * Calculates the percentage of the minimum column width given in pixels for a given table.
  *
- * @param {HTMLElement} domElement
+ * @param {module:engine/model/element~Element} table
+ * @param {module:core/editor/editor~Editor} editor
  * @returns {Number}
  */
-export function getElementWidthInPixels( domElement ) {
-	return parseFloat( global.window.getComputedStyle( domElement ).width );
+export function getColumnMinWidthAsPercentage( table, editor ) {
+	return COLUMN_MIN_WIDTH_IN_PIXELS * 100 / getTableWidthInPixels( table, editor );
 }
 
 /**
@@ -110,16 +107,13 @@ function getTbodyViewElement( table, editor ) {
 }
 
 /**
- * Calculates the percentage of the minimum column width given in pixels for a given table.
+ * Returns the computed width (in pixels) of the DOM element.
  *
- * @param {module:engine/model/element~Element} table
- * @param {module:core/editor/editor~Editor} editor
+ * @param {HTMLElement} domElement
  * @returns {Number}
  */
-export function getColumnMinWidthAsPercentage( table, editor ) {
-	const tableWidthInPixels = getTableWidthInPixels( table, editor );
-
-	return COLUMN_MIN_WIDTH_IN_PIXELS * 100 / tableWidthInPixels;
+export function getElementWidthInPixels( domElement ) {
+	return parseFloat( global.window.getComputedStyle( domElement ).width );
 }
 
 /**
