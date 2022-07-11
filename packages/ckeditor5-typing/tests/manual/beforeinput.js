@@ -26,6 +26,7 @@ import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import { TypingSimulator } from '../_utils/utils';
 
 for ( const input of document.querySelectorAll( 'input[name=logEvents]' ) ) {
 	if ( sessionStorage.getItem( input.value ) === null ) {
@@ -125,6 +126,8 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		window.typingSimulator = new TypingSimulator( editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
