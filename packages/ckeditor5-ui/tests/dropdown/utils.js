@@ -656,8 +656,8 @@ describe( 'utils', () => {
 					sinon.assert.calledOnce( console.warn );
 					sinon.assert.calledWithExactly(
 						console.warn,
-						'ui-dropdown-view-missing-focus-for-active-element',
-						secondChildView,
+						'ui-dropdown-focus-child-on-open-child-missing-focus',
+						{ view: secondChildView },
 						sinon.match.string
 					);
 				} );
