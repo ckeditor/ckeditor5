@@ -112,7 +112,12 @@ describe( 'DropdownPanelView', () => {
 				view.focus();
 
 				sinon.assert.calledOnce( console.warn );
-				sinon.assert.calledWithExactly( console.warn, 'ui-dropdown-view-missing-focus', firstChildView, sinon.match.string );
+				sinon.assert.calledWithExactly(
+					console.warn,
+					'ui-dropdown-panel-focus-child-missing-focus',
+					{ childView: firstChildView, dropdownPanel: view },
+					sinon.match.string
+				);
 			} );
 		} );
 	} );
