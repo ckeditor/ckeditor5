@@ -11,11 +11,10 @@ import InlineEditableUIView from '../../../src/editableui/inline/inlineeditableu
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 describe( 'InlineEditableUIView', () => {
-	let view, editableElement, editingView, editingViewRoot, locale, editorUiView;
+	let view, editingView, editingViewRoot, locale;
 
 	beforeEach( () => {
 		locale = new Locale();
-		editableElement = document.createElement( 'div' );
 
 		editingView = new EditingView();
 		editingViewRoot = new ViewRootEditableElement( editingView.document, 'div' );
@@ -26,15 +25,25 @@ describe( 'InlineEditableUIView', () => {
 		view.render();
 	} );
 
+	afterEach( () => {
+		view.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'accepts locale', () => {
 			expect( view.locale ).to.equal( locale );
 		} );
 
 		it( 'accepts editableElement', () => {
-			view = new InlineEditableUIView( locale, editingView, editorUiView, editableElement );
+			const editableElement = document.createElement( 'div' );
+			const view = new InlineEditableUIView( locale, editingView, editableElement );
+			view.name = editingViewRoot.rootName;
+
+			view.render();
 
 			expect( view._editableElement ).to.equal( editableElement );
+
+			view.destroy();
 		} );
 
 		it( 'creates view#element from template when no editableElement provided', () => {
@@ -43,14 +52,28 @@ describe( 'InlineEditableUIView', () => {
 	} );
 
 	describe( 'editableElement', () => {
-		const ariaLabel = 'Rich Text Editor, main';
-
 		it( 'has proper accessibility role', () => {
 			expect( view.element.attributes.getNamedItem( 'role' ).value ).to.equal( 'textbox' );
 		} );
 
-		it( 'has proper ARIA label', () => {
-			expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( ariaLabel );
+		describe( 'aria-label', () => {
+			it( 'should fall back to the default value when no option was provided', () => {
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Editor Editing area: main' );
+			} );
+
+			it( 'should be set via options.labelCreator passed into constructor()', () => {
+				const view = new InlineEditableUIView( locale, editingView, null, {
+					labelCreator: view => `Custom label: ${ view.name }`
+				} );
+
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label: main' );
+
+				view.destroy();
+			} );
 		} );
 
 		it( 'has proper class name', () => {

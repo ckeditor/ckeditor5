@@ -23,9 +23,12 @@ export default class InlineEditableUIView extends EditableUIView {
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, the
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}
 	 * will create it. Otherwise, the existing element will be used.
-	 * @param {String} [accessibleLabelGenerator] TODO
+	 * @param {Object} [options] Additional configuration of the view.
+	 * @param {String} [options.labelCreator] A function that gets called with the instance of this view as an argument
+	 * and should return a string that represents the label of the editable for assistive technologies. If not provided,
+	 * a default label generator is used.
 	 */
-	constructor( locale, editingView, editableElement, accessibleLabelGenerator ) {
+	constructor( locale, editingView, editableElement, options = {} ) {
 		super( locale, editingView, editableElement );
 
 		const t = locale.t;
@@ -38,11 +41,14 @@ export default class InlineEditableUIView extends EditableUIView {
 		} );
 
 		/**
-		 * TODO
+		 * A function that gets called with the instance of this view as an argument and should return a string that
+		 * represents the label of the editable for assistive technologies.
 		 *
 		 * @private
+		 * @readonly
+		 * @param {Function}
 		 */
-		this._accessibleLabelGenerator = accessibleLabelGenerator || ( () => t( 'Editor editing area: "%0"', this.name ) );
+		this._generateLabel = options.labelCreator || ( () => t( 'Editor Editing area: %0', this.name ) );
 	}
 
 	/**
@@ -56,7 +62,7 @@ export default class InlineEditableUIView extends EditableUIView {
 		editingView.change( writer => {
 			const viewRoot = editingView.document.getRoot( this.name );
 
-			writer.setAttribute( 'aria-label', this._accessibleLabelGenerator( this ), viewRoot );
+			writer.setAttribute( 'aria-label', this._generateLabel( this ), viewRoot );
 		} );
 	}
 }
