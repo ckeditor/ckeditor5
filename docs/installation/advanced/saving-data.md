@@ -13,7 +13,7 @@ CKEditor 5 allows you to retrieve the data from and save it to your server (or t
 
 This is the classic way of integrating the editor. It is typically used in simpler CMSes, forums, comment sections, etc.
 
-This approach is only available in the {@link installation/advanced/predefined-builds#classic-editor Classic editor} and only if the editor was used to replace a `<textarea>` element:
+This approach is only available in the {@link installation/getting-started/predefined-builds#classic-editor Classic editor} and only if the editor was used to replace a `<textarea>` element:
 
 ```html
 <!DOCTYPE html>

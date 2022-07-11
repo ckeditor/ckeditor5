@@ -13,7 +13,7 @@ modified_at: 2022-06-27
 In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor 5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).
 
 <info-box>
-	Please bear in mind that the CDN solution only offers {@link installation/advanced/predefined-builds ready-to-use predefined editor builds}, hence it is not possible to add new plugins and all the features available in the editor are preset.
+	Please bear in mind that the CDN solution only offers {@link installation/getting-started/predefined-builds ready-to-use predefined editor builds}, hence it is not possible to add new plugins and all the features available in the editor are preset.
 
 	Should you need a more flexible solution, consider using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or try {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
 </info-box>
@@ -80,7 +80,7 @@ A full webpage with embedded CKEditor 5 from the above example would look like t
 <info-box>
 	This kind of installation will only provide features available in the build used.
 
-	You can learn more about other available predefined editor builds in the {@link installation/advanced/predefined-builds dedicated builds guide}.
+	You can learn more about other available predefined editor builds in the {@link installation/getting-started/predefined-builds dedicated builds guide}.
 </info-box>
 
 ## Running a full-featured editor from CDN
@@ -90,12 +90,12 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 <info-box>
 	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in your implementation, so using the superbuild should be considered for evaluation purposes and tests rather, than for the production environment.
 
-	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link installation/advanced/predefined-builds predefined builds} tailored for specific needs.
+	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link installation/getting-started/predefined-builds predefined builds} tailored for specific needs.
 </info-box>
 
 ### Using the CKEditor 5 superbuild
 
-In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link installation/advanced/predefined-builds#available-builds available builds documentation}.
+In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link installation/getting-started/predefined-builds#available-builds available builds documentation}.
 
 Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the <code>removePlugins</code> configuration option and adjust the toolbar configuration.
 

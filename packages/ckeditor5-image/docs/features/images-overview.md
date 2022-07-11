@@ -22,7 +22,7 @@ The base image feature does not support any user interface for inserting or mana
 
 ## Image features
 
-The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features. The {@link module:image/image~Image `Image`} plugin is at the core of the ecosystem. Available in all {@link installation/advanced/predefined-builds ready-to-use editor builds}, it provides the basic support for block and inline images. There are many other features that extend the editor capabilities:
+The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features. The {@link module:image/image~Image `Image`} plugin is at the core of the ecosystem. Available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}, it provides the basic support for block and inline images. There are many other features that extend the editor capabilities:
 
 * The [contextual toolbar](#image-contextual-toolbar) available on mouse click gives access to image features.
 * {@link features/images-captions Image captions} allow adding descriptive text under the image.
@@ -33,7 +33,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * A selection of {@link features/image-upload image upload methods} allows for the most convenient way of adding images. These include support for {@link features/images-inserting#inserting-images-via-pasting-url-into-editor inserting an image via URL} and even {@link features/images-inserting#inserting-images-via-source-url via pasting a URL into the editor} along with custom integrations.
 <!-- * [TODO] let's check if the list is complete -->
 
-The availability of these plugins varies in different {@link installation/advanced/predefined-builds ready-to-use editor builds} but the most important ones are present in all builds as presented in the table below:
+The availability of these plugins varies in different {@link installation/getting-started/predefined-builds ready-to-use editor builds} but the most important ones are present in all builds as presented in the table below:
 
 <figure class="table">
 	<table style="text-align: center">
@@ -43,11 +43,11 @@ The availability of these plugins varies in different {@link installation/advanc
 				<th colspan="5">Predefined editor build</th>
 			</tr>
 			<tr>
-				<th>{@link installation/advanced/predefined-builds#classic-editor Classic}</th>
-				<th>{@link installation/advanced/predefined-builds#inline-editor Inline}</th>
-				<th>{@link installation/advanced/predefined-builds#balloon-editor Balloon}</th>
-				<th>{@link installation/advanced/predefined-builds#balloon-block-editor Balloon block}</th>
-				<th>{@link installation/advanced/predefined-builds#document-editor Document}</th>
+				<th>{@link installation/getting-started/predefined-builds#classic-editor Classic}</th>
+				<th>{@link installation/getting-started/predefined-builds#inline-editor Inline}</th>
+				<th>{@link installation/getting-started/predefined-builds#balloon-editor Balloon}</th>
+				<th>{@link installation/getting-started/predefined-builds#balloon-block-editor Balloon block}</th>
+				<th>{@link installation/getting-started/predefined-builds#document-editor Document}</th>
 			</tr>
 		</thead>
 		<tbody>

@@ -156,7 +156,7 @@ $( '#modal-container' ).modal( {
 
 ## Compatibility with Semantic-UI
 
-CKEditor 5 works properly with [Semantic-UI](https://semantic-ui.com/) after a small CSS tweak. To use the {@link installation/advanced/predefined-builds#balloon-editor balloon editor} inside a modal, it is necessary to configure the `z-index` property of the floating editor UI to make it render over the modal:
+CKEditor 5 works properly with [Semantic-UI](https://semantic-ui.com/) after a small CSS tweak. To use the {@link installation/getting-started/predefined-builds#balloon-editor balloon editor} inside a modal, it is necessary to configure the `z-index` property of the floating editor UI to make it render over the modal:
 
 ```css
 /*

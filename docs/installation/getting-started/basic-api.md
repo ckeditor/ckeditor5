@@ -3,7 +3,7 @@
 # * Guide developers through the basic API to achieve their very first results with CKEditor.
 
 category: getting-started
-order: 40
+order: 60
 ---
 
 # Basic API
@@ -41,7 +41,7 @@ Add an element that CKEditor should replace to your HTML page:
 </div>
 ```
 
-Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<textarea>` element with a {@link installation/advanced/predefined-builds#classic-editor classic editor}:
+Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<textarea>` element with a {@link installation/getting-started/predefined-builds#classic-editor classic editor}:
 
 ```js
 ClassicEditor
@@ -66,7 +66,7 @@ Similarly to the previous example, add an element where CKEditor 5 should initia
 </div>
 ```
 
-Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link installation/advanced/predefined-builds#inline-editor inline editor} to the `<div>` element:
+Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link installation/getting-started/predefined-builds#inline-editor inline editor} to the `<div>` element:
 
 ```js
 InlineEditor
@@ -91,7 +91,7 @@ Add an element where CKEditor should initialize to your page:
 </div>
 ```
 
-Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link installation/advanced/predefined-builds#balloon-editor balloon editor} to the `<div>` element:
+Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link installation/getting-started/predefined-builds#balloon-editor balloon editor} to the `<div>` element:
 
 ```js
 BalloonEditor

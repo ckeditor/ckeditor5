@@ -15,7 +15,7 @@ See the screencast below for what you can expect from drag and drop support of t
 {@img assets/img/drag-drop.gif A screencast of drag and drop of text and blocks in CKEditor 5.}
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo

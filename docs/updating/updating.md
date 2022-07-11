@@ -23,7 +23,7 @@ To help you with a smooth update, we have prepared migration guides that describ
 
 CKEditor 5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
 
-If you use a {@link installation/advanced/predefined-builds predefined build}, you can simply visit our [CKEditor 5 download page](https://ckeditor.com/ckeditor-5/download/) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
+If you use a {@link installation/getting-started/predefined-builds predefined build}, you can simply visit our [CKEditor 5 download page](https://ckeditor.com/ckeditor-5/download/) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
 1. Read the changelog.
 2. Update your packages.
 3. Read the migration guide.
