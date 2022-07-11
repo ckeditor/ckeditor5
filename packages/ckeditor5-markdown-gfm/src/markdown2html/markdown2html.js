@@ -40,6 +40,7 @@ marked.use( {
  * @returns {String}
  */
 export default function markdown2html( markdown ) {
+	// Tabs inside a codeblock (```) get converted into 4 spaces which is unexpected and a known issue at https://github.com/markedjs/marked/issues/1668
 	return marked.parse( markdown, {
 		gfm: true,
 		breaks: true,
