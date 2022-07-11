@@ -111,6 +111,7 @@ export default class ShiftEnter extends Plugin {
 	}
 }
 
+// Returns true for view elements that are listed as block view elements.
 function isBlockViewElement( node, blockElements ) {
 	return !!node && node.is( 'element' ) && blockElements.includes( node.name );
 }

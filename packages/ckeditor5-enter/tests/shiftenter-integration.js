@@ -10,6 +10,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import ShiftEnter from '../src/shiftenter';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -26,7 +27,7 @@ describe( 'ShiftEnter integration', () => {
 
 		document.body.appendChild( div );
 
-		return ClassicEditor.create( div, { plugins: [ Paragraph, ShiftEnter, LinkEditing, Delete, BoldEditing ] } )
+		return ClassicEditor.create( div, { plugins: [ Paragraph, ShiftEnter, LinkEditing, Delete, BoldEditing, Heading ] } )
 			.then( newEditor => {
 				editor = newEditor;
 
@@ -149,6 +150,17 @@ describe( 'ShiftEnter integration', () => {
 			);
 		} );
 
+		it( 'should convert BR after a heading to a paragraph', () => {
+			editor.setData( '<h2>foo</h2><br>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<heading1>foo</heading1><paragraph></paragraph>'
+			);
+			expect( editor.getData() ).to.equalMarkup(
+				'<h2>foo</h2><p>&nbsp;</p>'
+			);
+		} );
+
 		it( 'should convert BR between paragraphs to a paragraph', () => {
 			editor.setData( '<p>foo</p><br><p>bar</p>' );
 
@@ -171,7 +183,18 @@ describe( 'ShiftEnter integration', () => {
 			);
 		} );
 
-		it( 'should ignore a BR at the end of a block', () => {
+		it( 'should ignore a BR if it is the only content of a block', () => {
+			editor.setData( '<p><br></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph></paragraph>'
+			);
+			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
+				'<p>&nbsp;</p>'
+			);
+		} );
+
+		it( 'should ignore a BR at the end of a block (paragraph)', () => {
 			editor.setData( '<p>foo<br></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
@@ -182,7 +205,18 @@ describe( 'ShiftEnter integration', () => {
 			);
 		} );
 
-		it( 'should not ignore a BR at the end of a block (wrapped with inline element)', () => {
+		it( 'should ignore a BR at the end of a block (heading)', () => {
+			editor.setData( '<h2>foo<br></h2>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<heading1>foo</heading1>'
+			);
+			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
+				'<h2>foo</h2>'
+			);
+		} );
+
+		it( 'should convert a BR at the end of a block (wrapped with inline element)', () => {
 			editor.setData( '<p><strong>foo<br></strong></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
@@ -193,7 +227,7 @@ describe( 'ShiftEnter integration', () => {
 			);
 		} );
 
-		it( 'should ignore a BR before a block', () => {
+		it( 'should ignore a BR before a block (paragraph)', () => {
 			editor.setData( 'foo<br><p>bar</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
@@ -201,6 +235,17 @@ describe( 'ShiftEnter integration', () => {
 			);
 			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
 				'<p>foo</p><p>bar</p>'
+			);
+		} );
+
+		it( 'should ignore a BR before a block (heading)', () => {
+			editor.setData( 'foo<br><h2>bar</h2>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph>foo</paragraph><heading1>bar</heading1>'
+			);
+			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
+				'<p>foo</p><h2>bar</h2>'
 			);
 		} );
 
@@ -212,6 +257,28 @@ describe( 'ShiftEnter integration', () => {
 			);
 			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
 				'<p>a</p><p>foo</p><p>bar</p>'
+			);
+		} );
+
+		it( 'should convert a BR with an NBSP at the end of content', () => {
+			editor.setData( 'foo<br>&nbsp;' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph>foo<softBreak></softBreak> </paragraph>'
+			);
+			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
+				'<p>foo<br>&nbsp;</p>'
+			);
+		} );
+
+		it( 'should convert a BR with an NBSP at the end of paragraph', () => {
+			editor.setData( '<p>foo<br>&nbsp;</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph>foo<softBreak></softBreak> </paragraph>'
+			);
+			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
+				'<p>foo<br>&nbsp;</p>'
 			);
 		} );
 	} );
