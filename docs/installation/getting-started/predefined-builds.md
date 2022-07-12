@@ -2,6 +2,7 @@
 menu-title: Predefined builds
 category: getting-started
 order: 20
+modified_at: 2022-07-12
 ---
 
 # Predefined CKEditor 5 builds
