@@ -58,7 +58,7 @@ describe( 'InlineEditableUIView', () => {
 
 		describe( 'aria-label', () => {
 			it( 'should fall back to the default value when no option was provided', () => {
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Editor Editing area: main' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Editor editing area: main' );
 			} );
 
 			it( 'should be set via options.labelCreator passed into constructor()', () => {
