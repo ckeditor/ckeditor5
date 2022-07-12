@@ -442,586 +442,588 @@ Please refer to the {@link installation/getting-started/quick-start CDN installa
 
 The table below presents the list of all plugins included in various builds.
 
-<table border="1" cellpadding="1" cellspacing="1">
-	<tbody>
-		<tr>
-			<td style="width:70px"><strong>Plugin</strong></td>
-			<td style="text-align:center; width:70px">Classic</td>
-			<td style="text-align:center; width:70px">Inline</td>
-			<td style="text-align:center; width:70px">Balloon</td>
-			<td style="text-align:center; width:70px">Ballon block</td>
-			<td style="text-align:center; width:70px">Document</td>
-			<td style="text-align:center; width:70px">Superbuild</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">Alignment</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">Autoformat</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor">AutoImage</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">Autolink</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html">Base64UploadAdapter</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html">BlockQuote</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Bold</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckbox.html">CKBox</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">CKFinder</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">CloudServices</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Code</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html">CodeBlock</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">Comments</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">EasyImage</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html">Essentials *</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html">ExportPdf</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html">ExportWord</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html">FindAndReplace</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">FontBackgroundColor, FontColor, FontFamily, FontSize</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html">GeneralHtmlSupport</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">Heading</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html">Highlight</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html">HorizontalLine</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#html-comments">HtmlComment</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html">HtmlEmbed</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">Image</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">ImageCaption</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html">ImageResize</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html">ImageStyle</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar">ImageToolbar</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">ImageUpload</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html">ImageInsert</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">Indent</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Italic</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">Link</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">LinkImage</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">List</a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html">TodoList</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html">MathType</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">MediaEmbed</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">Mention</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html">PageBreak</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html">Pagination</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">Paragraph *</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">PasteFromOffice</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html">PictureEditing</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html">PresenceList</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">RealTimeCollaborativeEditing</a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">RealTimeCollaborativeComments</a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">RealTimeCollaborativeRevisionHistory</a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">RealTimeCollaborativeTrackChanges</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html">RemoveFormat</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/revision-history/revision-history.html">RevisionHistory</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html">StandardEditingMode</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html">SpecialCharacters</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Strikethrough</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Subscript</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Superscript</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">Table, TableToolbar</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html">TextPartLanguage</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">TextTransformation</a></td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">TrackChanges</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes-data.html">TrackChangesData</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Underline</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html">UploadAdapter</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html">WordCount</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-		<tr>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html">WProofReader</a></td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">❌</td>
-			<td style="text-align:center; width:70px">✅</td>
-		</tr>
-	</tbody>
-</table>
+<figure class="table">
+	<table border="1" cellpadding="1" cellspacing="1">
+		<tbody>
+			<tr>
+				<td style="width:70px"><strong>Plugin</strong></td>
+				<td style="text-align:center; width:70px">Classic</td>
+				<td style="text-align:center; width:70px">Inline</td>
+				<td style="text-align:center; width:70px">Balloon</td>
+				<td style="text-align:center; width:70px">Ballon block</td>
+				<td style="text-align:center; width:70px">Document</td>
+				<td style="text-align:center; width:70px">Superbuild</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">Alignment</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">Autoformat</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor">AutoImage</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">Autolink</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html">Base64UploadAdapter</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html">BlockQuote</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Bold</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckbox.html">CKBox</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">CKFinder</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/cs/latest/guides/overview.html">CloudServices</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Code</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html">CodeBlock</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">Comments</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">EasyImage</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html">Essentials *</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html">ExportPdf</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html">ExportWord</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html">FindAndReplace</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">FontBackgroundColor, FontColor, FontFamily, FontSize</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html">GeneralHtmlSupport</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">Heading</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html">Highlight</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html">HorizontalLine</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#html-comments">HtmlComment</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html">HtmlEmbed</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">Image</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">ImageCaption</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html">ImageResize</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html">ImageStyle</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar">ImageToolbar</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">ImageUpload</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html">ImageInsert</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">Indent</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Italic</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">Link</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">LinkImage</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">List</a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html">TodoList</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html">MathType</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">MediaEmbed</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">Mention</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html">PageBreak</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html">Pagination</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">Paragraph *</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">PasteFromOffice</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html">PictureEditing</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html">PresenceList</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">RealTimeCollaborativeEditing</a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">RealTimeCollaborativeComments</a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">RealTimeCollaborativeRevisionHistory</a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">RealTimeCollaborativeTrackChanges</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html">RemoveFormat</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/revision-history/revision-history.html">RevisionHistory</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html">StandardEditingMode</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html">SpecialCharacters</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Strikethrough</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Subscript</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Superscript</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">Table, TableToolbar</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html">TextPartLanguage</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">TextTransformation</a></td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">TrackChanges</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes-data.html">TrackChangesData</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Underline</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_upload_filerepository-UploadAdapter.html">UploadAdapter</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html">WordCount</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html">WProofReader</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
 
 Plugins denoted with an asterisk (*) and essential for the editor to work and should never be removed.
 

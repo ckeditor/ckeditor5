@@ -40,7 +40,7 @@ The availability of these plugins varies in different {@link installation/gettin
 		<thead>
 			<tr>
 				<th rowspan="2" colspan="2" style="vertical-align: middle">Image feature (plugin)</th>
-				<th colspan="5">Predefined editor build</th>
+				<th colspan="6">Predefined editor build</th>
 			</tr>
 			<tr>
 				<th>{@link installation/getting-started/predefined-builds#classic-editor Classic}</th>
@@ -48,105 +48,118 @@ The availability of these plugins varies in different {@link installation/gettin
 				<th>{@link installation/getting-started/predefined-builds#balloon-editor Balloon}</th>
 				<th>{@link installation/getting-started/predefined-builds#balloon-block-editor Balloon block}</th>
 				<th>{@link installation/getting-started/predefined-builds#document-editor Document}</th>
+				<th>{@link installation/getting-started/predefined-builds#superbuild Superbuild}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<th rowspan="2" style="vertical-align: middle">{@link module:image/image~Image}</th>
 				<th>{@link module:image/imageblock~ImageBlock}</th>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th>{@link module:image/imageinline~ImageInline}</th>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imagetoolbar~ImageToolbar}</th>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imagecaption~ImageCaption}</th>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imagestyle~ImageStyle}</th>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imagetextalternative~ImageTextAlternative}</th>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imageupload~ImageUpload}</th>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/pictureediting~PictureEditing}</th>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
-				<td>✅&nbsp; yes</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imageresize~ImageResize}</th>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>✅&nbsp; yes</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>✅</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:link/linkimage~LinkImage}</th>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imageinsert~ImageInsert}</th>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>✅</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/autoimage~AutoImage}</th>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
-				<td>❌&nbsp; no</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>✅</td>
 			</tr>
 		</tbody>
 	</table>
