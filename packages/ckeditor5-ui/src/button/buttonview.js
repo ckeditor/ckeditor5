@@ -145,7 +145,7 @@ export default class ButtonView extends View {
 				tabindex: bind.to( 'tabindex' ),
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
-				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( value ) : false )
+				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( !!value ) : false )
 			},
 
 			children: this.children,
