@@ -608,6 +608,9 @@ export default class Element extends Node {
 		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
 		cloned.getFillerOffset = this.getFillerOffset;
 
+		// Clone unsafe attributes list.
+		cloned._unsafeAttributesToRender = this._unsafeAttributesToRender;
+
 		return cloned;
 	}
 

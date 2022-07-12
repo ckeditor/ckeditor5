@@ -17,10 +17,10 @@ import isIterable from './isiterable';
  *		map = toMap( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
  *		map = toMap( anotherMap );
  *
- * @param {Object|Iterable} data Object or iterable to transform.
+ * @param {Object|Iterable|null} data Object or iterable to transform.
  * @returns {Map} Map created from data.
  */
-export default function toMap<T>( data: { readonly [ key: string ]: T } | Iterable<readonly [ string, T ]> ): Map<string, T> {
+export default function toMap<T>( data: { readonly [ key: string ]: T } | Iterable<readonly [ string, T ]> | null ): Map<string, T> {
 	if ( isIterable( data ) ) {
 		return new Map( data );
 	} else {
