@@ -17,7 +17,7 @@ This CKBox integration feature allows you to effortlessly and intuitively insert
 
 	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features).
 
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds} for convenience, but the editor will still work properly without activating it.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds} for convenience, but the editor will still work properly without activating it.
 </info-box>
 
 ## Demo
