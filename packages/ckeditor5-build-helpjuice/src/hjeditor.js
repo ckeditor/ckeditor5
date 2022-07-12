@@ -257,6 +257,44 @@ HelpjuiceEditor.defaultConfig = {
 		}
 	},
 	image: {
+		resizeUnit: 'px',
+		resizeOptions: [
+			{
+				name: 'resizeImage:original',
+				value: null,
+				icon: 'original'
+			},
+			{
+				name: 'resizeImage:100',
+				value: '100',
+				icon: 'medium'
+			},
+			{
+				name: 'resizeImage:200',
+				value: '200',
+				icon: 'large'
+			},
+			{
+				name: 'resizeImage:300',
+				value: '300',
+				icon: 'large'
+			},
+			{
+				name: 'resizeImage:400',
+				value: '400',
+				icon: 'large'
+			},
+			{
+				name: 'resizeImage:500',
+				value: '500',
+				icon: 'large'
+			},
+			{
+				name: 'resizeImage:600',
+				value: '600',
+				icon: 'large'
+			}
+		],
 		toolbar: [
 			'imageStyle:inline',
 			'imageStyle:block',
@@ -267,12 +305,6 @@ HelpjuiceEditor.defaultConfig = {
 			'|',
 			{
 				name: 'resizeImage',
-				items: [
-					'resizeImage:original',
-					'resizeImage:25',
-					'resizeImage:50',
-					'resizeImage:75',
-				],
 				defaultItem: 'resizeImage:original'
 			},
 			'|',
@@ -289,6 +321,22 @@ HelpjuiceEditor.defaultConfig = {
 	mediaEmbed: {
 		previewsInData: true,
 		extraProviders: [
+			{
+				name: 'loomVideos',
+				url: /^loom\.com\/(\w+)/,
+				html: match => {
+					const getUrl = match.input;
+
+					return (
+						`<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 62.5%;">
+							<iframe src="https://${getUrl}"
+								style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;"
+								frameborder="0" allowtransparency="true" allow="encrypted-media">
+							</iframe>
+						</div>`
+					);
+				}
+			},
 			{
 				name: 'helpjuiceProvider',
 				url: /^static.helpjuice\.com\/(\w+)/,
