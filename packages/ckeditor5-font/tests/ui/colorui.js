@@ -164,6 +164,8 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'should focus the first active button when dropdown is opened', () => {
+			global.document.body.appendChild( dropdown.element );
+
 			const secondButton = dropdown.colorTableView.staticColorsGrid.items.get( 1 );
 			const spy = sinon.spy( secondButton, 'focus' );
 
@@ -171,6 +173,8 @@ describe( 'ColorUI', () => {
 			dropdown.isOpen = false;
 			dropdown.isOpen = true;
 			sinon.assert.calledOnce( spy );
+
+			dropdown.element.remove();
 		} );
 
 		describe( 'model to command binding', () => {
