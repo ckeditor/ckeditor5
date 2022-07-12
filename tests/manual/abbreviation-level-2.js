@@ -95,8 +95,7 @@ class AbbreviationUI extends Plugin {
 
 		this._balloon.remove( this.formView );
 
-		// Focus the editing view after inserting the abbreviation so the user can start typing the content
-		// right away and keep the editor focused.
+		// Focus the editing view after closing the form view.
 		this.editor.editing.view.focus();
 	}
 

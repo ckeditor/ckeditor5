@@ -89,7 +89,14 @@ export default class FormView extends View {
 	}
 
 	focus() {
-		this._focusCycler.focusFirst();
+		// If the abbreviation text field is enabled, focus it straight away to allow the user to type.
+		if ( this.abbrInputView.isEnabled ) {
+			this.abbrInputView.focus();
+		}
+		// Focus the abbreviation title field if the former is disabled.
+		else {
+			this.titleInputView.focus();
+		}
 	}
 
 	_createInput( label ) {

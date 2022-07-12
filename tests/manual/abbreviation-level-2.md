@@ -110,17 +110,18 @@ export default class FormView extends View {
 	constructor( locale ) {
         // ...
 
-        // Create the save and cancel buttons
+        // Create the save and cancel buttons.
         this.saveButtonView = this._createButton(
             t( 'Save' ), icons.check, 'ck-button-save'
         );
-		// Submit type of the button will trigger the submit event on entire form when clicked.
+		// Set the type to 'submit', which will trigger
+		// the submit event on entire form when clicked.
 		this.saveButtonView.type = 'submit';
 
 		this.cancelButtonView = this._createButton(
             t( 'Cancel' ), icons.cancel, 'ck-button-cancel'
         );
-		// Delegate ButtonView#execute to FormView#cancel
+		// Delegate ButtonView#execute to FormView#cancel.
 		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
 
 	}
@@ -149,15 +150,34 @@ You can now open `styles.css` and style the new UI elements.
 
 Let's add some padding to our form, and a margin at the bottom of our input fields. We can 'grab' them using `ck-labeled-field-view` class. We'll use our set spacing variables to keep things uniform.
 
+We'll use the [CSS grid layout](https://developer.mozilla.org/en-US/docs/Web/CSS/grid) to nicely display our four elements of the form.
+
 ```css
 /* style.css */
 
 .ck.ck-abbr-form {
 	padding: var(--ck-spacing-large);
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: repeat(3, 1fr);
+	grid-column-gap: 0px;
+	grid-row-gap: var(--ck-spacing-standard);
 }
 
-.ck.ck-abbr-form .ck.ck-labeled-field-view {
-	margin-bottom: var(--ck-spacing-standard);
+.ck.ck-abbr-form .ck.ck-labeled-field-view:nth-of-type(1) {
+	grid-area: 1 / 1 / 2 / 3;
+}
+
+.ck.ck-abbr-form .ck.ck-labeled-field-view:nth-of-type(2) {
+	grid-area: 2 / 1 / 3 / 3;
+}
+
+.ck.ck-abbr-form .ck-button:nth-of-type(1) {
+	grid-area: 3 / 1 / 4 / 2;
+}
+
+.ck.ck-abbr-form .ck-button:nth-of-type(2) {
+	grid-area: 3 / 2 / 4 / 3;
 }
 
 ```
@@ -220,7 +240,8 @@ export default class FormView extends View {
     render() {
         super.render();
 
-		// Submit the form when the user clicked the save button or pressed enter in the input.
+		// Submit the form when the user clicked the save button
+		// or pressed enter in the input.
         submitHandler( {
             view: this
         } );
@@ -271,7 +292,10 @@ class AbbreviationUI extends Plugin {
 				const abbr = 'WYSIWYG';
 
 				editor.model.change( writer => {
-					editor.model.insertContent( writer.createText( abbr ), { 'abbreviation': title } );
+					editor.model.insertContent(
+						writer.createText( abbr ),
+						{ 'abbreviation': title }
+					);
 
 				} );
 			} );
@@ -287,7 +311,7 @@ Let's write a basic `_createFormView()` function, just to create an instance of 
 
 We also need to create a function, which will give us the target position for our balloon from user's selection. We need to convert selected view range into DOM range. We can use {@link module:engine/view/domconverter~DomConverter#viewRangeToDom `viewRangeToDom()` method} to do so.
 
-Finally, let's add our balloon to the `init()` method, as well as our form view. We can now change what happens when we the user pushes the toolbar button. We'll replace inserting the hard-coded abbreviation with adding the view and the position to the balloon, and setting the focus on the form view.
+Finally, let's add our balloon amd fpr, view to the `init()` method.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -312,21 +336,6 @@ class AbbreviationUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'abbreviation', locale => {
             // ...
-
-			// Show the form view on button click.
-			this.listenTo( button, 'execute', () => {
-
-                // Add the form view and the target position to the balloon.
-				this._balloon.add( {
-					view: this.formView,
-					position: this._getBalloonPositionData()
-				} );
-
-                // Set a focus on the form view.
-				this.formView.focus();
-			} );
-
-			return button;
 		} );
 	}
 
@@ -343,7 +352,9 @@ class AbbreviationUI extends Plugin {
 		let target = null;
 
         // Set a target position by converting view selection range to DOM
-		target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+		target = () => view.domConverter.viewRangeToDom(
+			viewDocument.selection.getFirstRange()
+		);
 
 		return {
 			target
@@ -351,6 +362,44 @@ class AbbreviationUI extends Plugin {
 	}
 }
 ```
+We can now change what happens when we the user pushes the toolbar button. We'll replace inserting the hard-coded abbreviation.
+
+Let's write a function which will show our UI elements, adding the form view to our balloon and setting its position. Last thing is to focus the form view, so the user can immediately start typing in the first input field.
+
+```js
+// abbreviation/abbreviationui.js
+// ...
+
+class AbbreviationUI extends Plugin {
+	// ...
+
+	init() {
+		// ...
+
+		editor.ui.componentFactory.add( 'abbreviation', locale => {
+			this._showUI();
+		} );
+	}
+
+	_createFormView() {
+		// ...
+	}
+
+	_getBalloonPositionData() {
+		// ...
+	}
+
+	_showUI() {
+		this._balloon.add( {
+			view: this.formView,
+			position: this._getBalloonPositionData()
+		} );
+
+		this.formView.focus();
+	}
+}
+```
+
 You should be able to see your balloon and form now! Check and see your balloon pop up (we'll get to hiding it in a couple of steps). It should look like this:
 SCREENSHOT
 
@@ -375,12 +424,15 @@ class AbbreviationUI extends Plugin {
 		const editor = this.editor;
 		const formView = new FormView( editor.locale );
 
-		// Execute the command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
 			const title = formView.titleInputView.fieldView.element.value;
 			const abbr = formView.abbrInputView.fieldView.element.value;
 
-			editor.model.insertContent( writer.createText( abbr ), { 'abbreviation': title } );
+			editor.model.change( writer => {
+				editor.model.insertContent(
+					writer.createText( abbr, { abbreviation: title } )
+				);
+			} );
 
 		} );
 
@@ -389,6 +441,10 @@ class AbbreviationUI extends Plugin {
 
 	_getBalloonPositionData() {
         // ...
+	}
+
+	_showUI() {
+		// ...
 	}
 }
 ```
@@ -401,9 +457,9 @@ We'll need to hide the form view on three occasions:
 * when the user clicks the "Cancel" button; and
 * when the user clicks outside of the balloon.
 
-So, let's write a simple `_hideFormView()` function, which will clear the input field values and remove the view from our balloon.
+So, let's write a simple `_hideUI()` function, which will clear the input field values and remove the view from our balloon.
 
-Additionally, we'll import {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler `clickOutsideHandler()`} method, which take our `_hideFormView()` function as a callback. It will be emitted from our form view, and activated when the form view is visible. We also need to set `contextElements` for the handler to determine its scope. Clicking on listed there HTML elements will not fire the callback.
+Additionally, we'll import {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler `clickOutsideHandler()`} method, which take our `_hideUI()` function as a callback. It will be emitted from our form view, and activated when the form view is visible. We also need to set `contextElements` for the handler to determine its scope. Clicking on listed there HTML elements will not fire the callback.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -428,12 +484,12 @@ class AbbreviationUI extends Plugin {
             // ...
 
             // Hide the form view after submit.
-			this._hideFormView();
+			this._hideUI();
 		} );
 
 		// Hide the form view after clicking the "Cancel" button.
 		this.listenTo( formView, 'cancel', () => {
-			this._hideFormView();
+			this._hideUI();
 		} );
 
         // Hide the form view when clicking outside the balloon.
@@ -441,21 +497,29 @@ class AbbreviationUI extends Plugin {
 			emitter: formView,
 			activator: () => this._balloon.visibleView === formView,
 			contextElements: [ this._balloon.view.element ],
-			callback: () => this._hideFormView()
+			callback: () => this._hideUI()
 		} );
 
 		return formView;
 	}
 
-	_hideFormView() {
-		this.formView.abbrInputView.fieldView.element.value = '';
-		this.formView.titleInputView.fieldView.element.value = '';
+	_hideUI() {
+		this.formView.abbrInputView.fieldView.value = '';
+		this.formView.titleInputView.fieldView.value = '';
+		this.formView.element.reset();
 
 		this._balloon.remove( this.formView );
+
+		// Focus the editing view after closing the form view.
+		this.editor.editing.view.focus();
 	}
 
 	_getBalloonPositionData() {
         // ...
+	}
+
+	_showUI() {
+	// ...
 	}
 }
 ```

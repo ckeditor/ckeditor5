@@ -22,7 +22,8 @@ export default class FormView extends View {
 		this.titleInputView = this._createInput( t( 'Add title' ) );
 
 		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
-		// Submit type of the button will trigger the submit event on entire form when clicked (see submitHandler() in render() below).
+		// Set the type to 'submit', which will trigger the submit event on entire form
+		// when clicked (see submitHandler() in render() below).
 		this.saveButtonView.type = 'submit';
 
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel' );

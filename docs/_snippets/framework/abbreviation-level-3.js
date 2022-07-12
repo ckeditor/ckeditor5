@@ -108,7 +108,7 @@ class AbbreviationUI extends Plugin {
 
 		// If the selection is not collapsed, it's hard to change the text of the abbreviation because
 		// the selection could span multiple paragraphs. Disable the input in this case.
-		this.formView.abbrInputView.isEnabled = this.editor.model.document.selection.getFirstRange().isCollapsed;
+		this.formView.abbrInputView.isEnabled = selection.getFirstRange().isCollapsed;
 
 		// Fill the form using the state (value) of the command.
 		if ( commandValue ) {
@@ -217,7 +217,7 @@ class AbbreviationCommand extends Command {
 						writer.createText( abbr, { abbreviation: title } ),
 						this.value.range
 					);
-
+					console.log( positionAfter );
 					// Put the selection at the end of the inserted abbreviation.
 					writer.setSelection( positionAfter );
 				}

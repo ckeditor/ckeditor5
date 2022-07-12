@@ -43,14 +43,9 @@ class AbbreviationUI extends Plugin {
 			button.tooltip = true;
 			button.withText = true;
 
-			// Show the panel on button click.
+			// Show the UI on button click.
 			this.listenTo( button, 'execute', () => {
-				this._balloon.add( {
-					view: this.formView,
-					position: this._getBalloonPositionData()
-				} );
-
-				this.formView.focus();
+				this._showUI();
 			} );
 
 			return button;
@@ -86,6 +81,15 @@ class AbbreviationUI extends Plugin {
 		} );
 
 		return formView;
+	}
+
+	_showUI() {
+		this._balloon.add( {
+			view: this.formView,
+			position: this._getBalloonPositionData()
+		} );
+
+		this.formView.focus();
 	}
 
 	_hideUI() {

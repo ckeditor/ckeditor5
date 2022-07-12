@@ -4,6 +4,11 @@
 </div>
 
 <style>
+	.formatted abbr:hover::before,
+	.formatted abbr:hover::after {
+		display: none;
+	}
+
 	.ck.ck-abbr-form {
 		padding: var(--ck-spacing-large);
 		display: grid;
@@ -27,9 +32,5 @@
 
 	.ck.ck-abbr-form .ck-button:nth-of-type(2) {
 		grid-area: 3 / 2 / 4 / 3;
-	}
-
-	abbr::before, abbr::after {
-		display: none;
 	}
 </style>
