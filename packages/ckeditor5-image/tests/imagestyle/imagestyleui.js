@@ -260,6 +260,17 @@ describe( 'ImageStyleUI', () => {
 			}
 		} );
 
+		it( 'should focus the first active button when dropdown is opened', () => {
+			for ( const { view } of dropdowns ) {
+				const secondButton = view.toolbarView.items.get( 1 );
+				const spy = sinon.spy( secondButton, 'focus' );
+
+				secondButton.isOn = true;
+				view.isOpen = true;
+				sinon.assert.calledOnce( spy );
+			}
+		} );
+
 		it( 'should keep the same label of the secondary (arrow) button when the user changes styles of the image', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'imageStyle:breakText' );
 
