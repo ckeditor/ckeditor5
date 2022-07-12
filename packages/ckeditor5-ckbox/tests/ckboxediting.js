@@ -68,7 +68,7 @@ describe( 'CKBoxEditing', () => {
 	} );
 
 	it( 'should load link and picture features', () => {
-		expect( CKBoxEditing.requires ).to.deep.equal( [ 'CloudServicesCore', 'LinkEditing', 'PictureEditing', CKBoxUploadAdapter ] );
+		expect( CKBoxEditing.requires ).to.deep.equal( [ 'CloudServices', 'LinkEditing', 'PictureEditing', CKBoxUploadAdapter ] );
 	} );
 
 	it( 'should register the "ckbox" command if CKBox lib is loaded', () => {
