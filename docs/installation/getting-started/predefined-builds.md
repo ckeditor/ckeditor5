@@ -460,7 +460,7 @@ The table below presents the list of all plugins included in various builds.
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
@@ -622,7 +622,7 @@ The table below presents the list of all plugins included in various builds.
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
@@ -779,7 +779,7 @@ The table below presents the list of all plugins included in various builds.
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">List</a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html">TodoList</a></td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">List</a></td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
@@ -798,15 +798,15 @@ The table below presents the list of all plugins included in various builds.
 			</tr>
 			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">MediaEmbed</a></td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">Mention</a></td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">Mentions</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
@@ -965,6 +965,15 @@ The table below presents the list of all plugins included in various builds.
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html">TodoList</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
