@@ -127,7 +127,7 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		window.typingSimulator = new TypingSimulator( editor );
+		window.typingSimulator = new TypingSimulator( document.querySelector( '.ck-content' ) );
 	} )
 	.catch( err => {
 		console.error( err.stack );

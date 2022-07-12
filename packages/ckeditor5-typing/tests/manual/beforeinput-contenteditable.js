@@ -6,6 +6,7 @@
 /* globals console, window, document */
 
 import { debounce } from 'lodash-es';
+import { TypingSimulator } from '../_utils/utils';
 
 if ( window.logNative === undefined ) {
 	window.logNative = true;
@@ -19,6 +20,12 @@ document.addEventListener( 'selectionchange', logEvent );
 
 document.addEventListener( 'keydown', logEvent );
 document.addEventListener( 'keyup', logEvent );
+
+const editableElement = document.querySelector( '#raw-contenteditable' );
+
+if ( editableElement ) {
+	window.typingSimulator = new TypingSimulator( editableElement );
+}
 
 const debouncedLine = debounce( () => {
 	console.log( '%c────────────────────────────────────────────────────────────────────────────────────────────────────────────────────',

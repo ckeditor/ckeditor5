@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event */
+/* globals Event, Node */
 
 /**
  * Fires the `beforeinput` DOM event on the editor's editing root DOM
@@ -43,50 +43,76 @@ export function fireCompositionEndDomEvent( domRoot, evtData ) {
 }
 
 export class TypingSimulator {
-	constructor( editor, options = {} ) {
-		this.editor = editor;
-		this.domRoot = editor.editing.view.getDomRoot( options.rootName );
-		this.domSelection = this.domRoot.ownerDocument.getSelection();
+	constructor( domRoot ) {
+		this.domRoot = domRoot;
+		this.domSelection = domRoot.ownerDocument.getSelection();
 	}
 
 	setCaret( domNode, offset ) {
 		this.domSelection.collapse( domNode, offset );
 	}
 
-	type( key ) {
-		this._fireKeyDownEvent( key );
-		this._fireBeforeInputEvent( key );
-		this._fireSelectionChangeEvent();
-		this._fireKeyUpEvent( key );
+	moveCaret( shift ) {
+		this.setCaret( this.domSelection.focusNode, this.domSelection.focusOffset + shift );
 	}
 
-	_fireEvent( name, data = {} ) {
-		return this.domRoot.dispatchEvent( Object.assign( new Event( name ), data ) );
+	async typeChar( key ) {
+		await this._fireKeyDownEvent( key );
+
+		if ( await this._fireBeforeInputEvent( key, 'insertText' ) ) {
+			await this._insertDomText( key );
+			await this.moveCaret( 1 );
+		} else {
+			this._fireSelectionChangeEvent();
+		}
+
+		await this._fireKeyUpEvent( key );
 	}
 
-	_fireKeyDownEvent( key ) {
+	async _insertDomText( data, node = this.domSelection.focusNode, offset = this.domSelection.focusOffset ) {
+		if ( node.nodeType == Node.TEXT_NODE ) {
+			node.insertData( offset, data );
+		} else {
+			throw new Error( 'not yet' );
+		}
+	}
+
+	async _fireEvent( name, options, data = {} ) {
+		return this.domRoot.dispatchEvent( Object.assign( new Event( name, options ), data ) );
+	}
+
+	async _fireKeyDownEvent( key, keyCode = key.charCodeAt( 0 ) ) {
 		return this._fireEvent( 'keydown', {
-			keyCode: key.charCodeAt( 0 ),
+			bubbles: true,
+			cancelable: true
+		}, {
+			keyCode,
 			key
 		} );
 	}
 
-	_fireKeyUpEvent( key ) {
+	async _fireKeyUpEvent( key, keyCode = key.charCodeAt( 0 ) ) {
 		return this._fireEvent( 'keyup', {
-			keyCode: key.charCodeAt( 0 ),
+			bubbles: true,
+			cancelable: true
+		}, {
+			keyCode,
 			key
 		} );
 	}
 
-	_fireBeforeInputEvent( key ) {
+	async _fireBeforeInputEvent( data, type, ranges = [ this.domSelection.getRangeAt( 0 ) ] ) {
 		return this._fireEvent( 'beforeinput', {
-			inputType: 'insertText',
-			data: key,
-			getTargetRanges: () => [ this.domSelection.getRangeAt( 0 ) ]
+			bubbles: true,
+			cancelable: true
+		}, {
+			inputType: type,
+			data,
+			getTargetRanges: () => ranges
 		} );
 	}
 
-	_fireSelectionChangeEvent() {
-		return this._fireEvent( 'selectionchange' );
+	async _fireSelectionChangeEvent() {
+		return this.domRoot.ownerDocument.dispatchEvent( new Event( 'selectionchange' ) );
 	}
 }
