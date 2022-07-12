@@ -436,7 +436,7 @@ The superbuild, available instantly from CDN, is a preconfigured package that of
 
 #### Installation example
 
-Please refer to the {@link installation/getting-started/quick-start CDN installation quick start} to learn how to utilize the superbuild.
+Please refer to the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn CDN installation quick start} to learn how to utilize the superbuild.
 
 ## List of plugins included in the CKEditor 5 predefined builds
 
@@ -752,6 +752,15 @@ The table below presents the list of all plugins included in various builds.
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">IndentBlock</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">Italic</a></td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
@@ -784,6 +793,15 @@ The table below presents the list of all plugins included in various builds.
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">ListProperties</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
