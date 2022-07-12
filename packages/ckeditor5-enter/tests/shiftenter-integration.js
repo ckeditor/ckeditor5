@@ -73,6 +73,16 @@ describe( 'ShiftEnter integration', () => {
 	} );
 
 	describe( 'conversion', () => {
+		beforeEach( () => {
+			editor.conversion.for( 'upcast' ).elementToElement( {
+				view: 'br',
+				model: ( viewElement, { consumable } ) => {
+					expect( consumable.test( viewElement, { name: true } ) ).to.be.false;
+				},
+				converterPriority: 'low'
+			} );
+		} );
+
 		it( 'should convert BR inside text in paragraph', () => {
 			editor.setData( '<p>foo<br>bar</p>' );
 

@@ -46,7 +46,7 @@ export default class ShiftEnter extends Plugin {
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: 'br',
-				model: ( viewElement, { writer } ) => {
+				model: ( viewElement, { writer, consumable } ) => {
 					const nextSibling = viewElement.nextSibling;
 					const previousSibling = viewElement.previousSibling;
 
@@ -58,6 +58,8 @@ export default class ShiftEnter extends Plugin {
 					// Ignore cases when <br> is wrapped with an inline element:
 					// * <p><span>foo<br></span></p>
 					if ( !nextSibling && isBlockViewElement( viewElement.parent, blockElements ) ) {
+						consumable.consume( viewElement, { name: true } );
+
 						return null;
 					}
 
@@ -76,10 +78,11 @@ export default class ShiftEnter extends Plugin {
 						return writer.createElement( 'paragraph' );
 					}
 
-					// There is a block element next to a <br>.
+					// Ignore <br> that is followed by a block element (same as browser).
+					// * foo<br><p>bar</p> -> <p>foo</p><p>bar</p>
 					if ( nextSiblingIsBlock ) {
-						// Ignore <br> that is followed by a block element (same as browser).
-						// * foo<br><p>bar</p> -> <p>foo</p><p>bar</p>
+						consumable.consume( viewElement, { name: true } );
+
 						return null;
 					}
 
