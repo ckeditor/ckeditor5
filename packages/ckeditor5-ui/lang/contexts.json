@@ -1,5 +1,4 @@
 {
-	"Rich Text Editor, %0": "Title of the CKEditor5 editor.",
 	"Rich Text Editor": "Title of the CKEditor5 editor.",
 	"Editor editing area: %0": "Accessible label of the specific editing area belonging to a container with an ARIA application role.",
 	"Rich Text Editor. Editing area: %0": "Accessible label of the specific editing area of the editor acting as a root of the entire application.",
