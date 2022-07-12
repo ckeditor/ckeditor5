@@ -1,7 +1,7 @@
 ---
 category: features-image-upload
 menu-title: Simple upload adapter
-order: 50
+order: 60
 ---
 
 # Simple upload adapter

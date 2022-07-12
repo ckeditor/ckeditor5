@@ -44,6 +44,10 @@ describe( 'ImageElementSupport', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( editor.plugins.has( 'ImageElementSupport' ) ).to.be.true;
+	} );
+
 	describe( 'BlockImage', () => {
 		it( 'should allow attributes', () => {
 			dataFilter.loadAllowedConfig( [ {

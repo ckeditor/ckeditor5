@@ -19,10 +19,23 @@ import { updateViewAttributes } from '../conversionutils.js';
  * @extends module:core/plugin~Plugin
  */
 export default class MediaEmbedElementSupport extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ DataFilter ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'MediaEmbedElementSupport';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 

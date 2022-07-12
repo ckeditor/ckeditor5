@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Language-Team: Italian (https://www.transifex.com/ckeditor/teams/11143/it/)\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
 msgid "Disable editing"

@@ -14,6 +14,13 @@ body:
       description: On which page does the issue occur?
     validations:
       required: true
+  - type: input
+    id: project-version
+    attributes:
+      label: Project version
+      description: In which version of the project does the issue occur?
+    validations:
+      required: true
   - type: textarea
     id: information-outdated
     attributes:

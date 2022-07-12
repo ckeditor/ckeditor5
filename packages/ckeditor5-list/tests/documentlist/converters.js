@@ -627,10 +627,8 @@ describe( 'DocumentListEditing - converters', () => {
 				} );
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
-						'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-					'</ul>'
+					'<span class="ck-list-bogus-paragraph">a</span>' +
+					'<span class="ck-list-bogus-paragraph">b</span>'
 				);
 			} );
 

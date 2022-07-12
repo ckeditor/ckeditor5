@@ -134,10 +134,10 @@ In this example, we remove the premium collaboration features as well as several
 			The "super-build" of CKEditor 5 served via CDN contains a large set of plugins and multiple editor types.
 			See https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html#running-a-full-featured-editor-from-cdn
 		-->
-		<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/super-build/ckeditor.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
 		<!--
 			Uncomment to load the Spanish translation
-			<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/super-build/translations/es.js"></script>
+			<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/translations/es.js"></script>
 		-->
 		<script>
 			// This sample still does not showcase all CKEditor 5 features (!)

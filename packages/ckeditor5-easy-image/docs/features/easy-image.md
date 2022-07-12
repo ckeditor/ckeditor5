@@ -1,7 +1,8 @@
 ---
 category: features-image-upload
 menu-title: Easy Image
-order: 20
+order: 30
+badges: [ premium ]
 ---
 
 # Easy Image integration
