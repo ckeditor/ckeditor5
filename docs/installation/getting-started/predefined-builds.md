@@ -18,11 +18,12 @@ The following CKEditor 5 builds are currently available:
  * [Balloon editor](#balloon-editor)
  * [Balloon block editor](#balloon-block-editor)
  * [Document editor](#document-editor)
+ * [Superbuild](#superbuild)
 
 
 ## Basic information
 
-Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features.
+Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features. A [full list of plugins available in each build](#list-of-plugins-included-in-the-ckeditor-5-predefined-builds) can be found in a later part of this guide.
 
 ### When NOT to use predefined builds?
 
