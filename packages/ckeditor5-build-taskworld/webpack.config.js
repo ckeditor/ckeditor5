@@ -86,15 +86,18 @@ module.exports = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								// Use Taskworld theme
-								themePath: require.resolve( '../ckeditor5-theme-lark/theme/theme.css' )
-							},
-							minify: true
-						} )
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									// Use Taskworld theme
+									themePath: require.resolve( '../ckeditor5-theme-lark/theme/theme.css' )
+								},
+								minify: true
+							} )
+						}
 					}
 				]
 			}
