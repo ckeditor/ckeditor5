@@ -1143,7 +1143,8 @@ describe( 'LinkEditing', () => {
 						preventDefault: () => {},
 						target: document.body,
 						...options
-					}
+					},
+					...options
 				} );
 			}
 		} );
