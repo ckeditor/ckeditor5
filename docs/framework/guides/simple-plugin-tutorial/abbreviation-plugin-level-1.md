@@ -19,17 +19,15 @@ If you want to see the final product of this tutorial before you plunge in, chec
 
 ## Let's start
 
-Start by installing all the necessary dependencies:
+We prepared starter files in our Github repository for this tutorial, so you can clone them and start coding right away. Just run `npm install` and you're good to go.
 
-* The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package which contains the {@link module:core/plugin~Plugin} class.
-* The [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package which contains the UI library and framework.
+<info-box>
+Our starter files come with {@link framework/guides/development-tools#ckeditor-5-inspector the CKEditor 5 Inspector} attached to the editor, so you can easily debug and observe what's happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
 
-```
-npm install --save @ckeditor/ckeditor5-core \
-	@ckeditor/ckeditor5-ui
-```
+If you want to set up the project yourself, you should follow the steps listed in {@link framework/guides/quick-start the "Quick start" section}. You'll need to additionally install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the {@link module:core/plugin~Plugin} class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and framework. We also recommend installing {@link framework/guides/development-tools#ckeditor-5-inspector the CKEditor 5 Inspector}.
 
-Your entry point to the plugin is `app.js` and it should look like this (maybe with a couple of different imports):
+Your entry point to the plugin is `app.js`:
 
 ```js
 // app.js
@@ -49,13 +47,14 @@ ClassicEditor
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
+		CKEditorInspector.attach( editor );
 	} )
 	.catch( error => {
 		console.error( error.stack );
 	} );
 ```
 
-Now look at `index.html`. We'll add here the `<abbr>` element - it won't work just yet, but we'll fix that in a couple of steps.
+Now look at `index.html`. We added the `<abbr>` element - it won't work just yet, but we'll fix that in a couple of steps.
 
 ```html
 <!DOCTYPE html>
@@ -63,6 +62,7 @@ Now look at `index.html`. We'll add here the `<abbr>` element - it won't work ju
 	<head>
 		<meta charset="utf-8">
 		<title>CKEditor 5 Framework – abbreviation plugin</title>
+		<script src="../node_modules/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
 	</head>
 	<body>
 		<div id="editor">
@@ -77,13 +77,13 @@ Now look at `index.html`. We'll add here the `<abbr>` element - it won't work ju
 
 ## Plugin structure
 
-We’ll divide our abbreviation plugin into three components - `Abbreviation`, `AbbreviationUI`, and `AbbreviationEditing`:
+Our abbreviation plugin is divided into three components - `Abbreviation`, `AbbreviationUI`, and `AbbreviationEditing`:
 
 * `AbbreviationEditing` will enable the abbreviation attribute in the model and introduce a proper model ←→ view conversion.
 * `AbbreviationUI` will be responsible for the UI - the toolbar button.
 * `Abbreviation` will be the glue that holds the UI and the editing together.
 
-You could keep them all in one file, since this part of the tutorial won't have too much code. If you're planning to go through all parts of the tutorial, it's best to separate the components. We suggest creating this directory structure:
+We put them in a `/abbreviation` directory, where we'll be adding more files in the next part of the tutorial. This is our directory structure:
 
 ```
 ├── app.js
@@ -97,25 +97,10 @@ You could keep them all in one file, since this part of the tutorial won't have 
 │   ├── abbreviation.js
 │   ├── abbreviationediting.js
 │   └── abbreviationui.js
-│
 └── webpack.config.js
 ```
 
 Let's define the 3 components.
-
-```js
-// abbreviation/abbreviation.js
-
-import AbbreviationEditing from './abbreviationediting';
-import AbbreviationUI from './abbreviationui';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-export default class Abbreviation extends Plugin {
-	static get requires() {
-		return [ AbbreviationEditing, AbbreviationUI ];
-	}
-}
-```
 
 ```js
 // abbreviation/abbreviationui.js
@@ -137,6 +122,19 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 export default class AbbreviationEditing extends Plugin {
 	init() {
 		console.log( 'AbbreviationEditing#init() got called' );
+	}
+}
+```
+```js
+// abbreviation/abbreviation.js
+
+import AbbreviationEditing from './abbreviationediting';
+import AbbreviationUI from './abbreviationui';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+export default class Abbreviation extends Plugin {
+	static get requires() {
+		return [ AbbreviationEditing, AbbreviationUI ];
 	}
 }
 ```
@@ -193,7 +191,7 @@ In the model, inline elements, such as `<abbr>`, are represented as attributes, 
 We can do it by defining the model's schema. Thanks to a couple lines of code, we'll allow all text nodes to receive the model abbreviation attribute.
 
 <info-box>
-	Schema defines what is allowed in the model in terms of structures, attributes, and other characteristics. This information is then used by the features and the engine to make decisions on how to process the model, so it is crucial that your custom plugins have a well-defined schema. Read more about it in our{@link framework/guides/architecture/editing-engine#schema introduction to the editing engine architecture}.
+	Schema defines what is allowed in the model in terms of structures, attributes, and other characteristics. This information is then used by the features and the engine to make decisions on how to process the model, so it is crucial that your custom plugins have a well-defined schema. Read more about it in our {@link framework/guides/architecture/editing-engine#schema introduction to the editing engine architecture}.
 </info-box>
 
 So, we'll just extend the text node's schema to accept our abbreviation attribute, using the {@link module:engine/model/schema~Schema#extend `Schema#extend()`} method.
@@ -201,7 +199,7 @@ So, we'll just extend the text node's schema to accept our abbreviation attribut
 Update the `AbbreviationEditing` plugin with this definition:
 
 ```js
-// abbreviation/abbreviationediting.js)
+// abbreviation/abbreviationediting.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -226,7 +224,7 @@ export default class AbbreviationEditing extends Plugin {
 Converters tell the editor how to transform the view to the model (e.g. when loading the data to the editor or handling pasted content) and how to render the model to the view (for editing purposes, or when retrieving the editor data).
 
 <info-box>
-	Conversion is one of the more complex topics in our editing engine architecture. It's definitely worth to read up on it before you move on. more about the {@link framework/guides/deep-dive/conversion/downcast conversion in the editor}.
+	Conversion is one of the more complex topics in our editing engine architecture. It's definitely worth to read up on {@link framework/guides/deep-dive/conversion/intro the conversion in the editor} before we move on.
 </info-box>
 
 We'll need to convert the model abbreviation attribute into an HTML element in the view (downcast) and vice versa (upcast). We'll do that by using our {@link framework/guides/deep-dive/conversion/helpers/intro conversion helpers} and defining what the model and the view is supposed to look like for both conversions.
@@ -307,7 +305,7 @@ export default class AbbreviationEditing extends Plugin {
 		conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
 				name: 'abbr',
-				attributes: [ "title" ]
+				attributes: [ 'title' ]
 			},
 			model: {
 				key: 'abbreviation',
@@ -359,8 +357,7 @@ class AbbreviationUI extends Plugin {
 	}
 }
 ```
-We passed the name of the button in the `componentFactory.add`, so it's now available to use in the toolbar config.
-You can now simply add it to the toolbar in `app.js`:
+We passed the name of the button in the `componentFactory.add`, so it's now available to use in the toolbar config. You can now simply add it to the toolbar in `app.js`:
 
 ```js
 // app.js
