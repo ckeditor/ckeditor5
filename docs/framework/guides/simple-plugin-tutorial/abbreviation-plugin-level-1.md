@@ -369,7 +369,7 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import Abbreviation from './simplebox/abbreviation';
+import Abbreviation from './abbreviation/abbreviation';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
