@@ -32,6 +32,8 @@ export default class InlineEditorUIView extends EditorUIView {
 	constructor( locale, editingView, editableElement, options = {} ) {
 		super( locale );
 
+		const t = locale.t;
+
 		/**
 		 * A floating toolbar view instance.
 		 *
@@ -132,7 +134,11 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editingView, editableElement );
+		this.editable = new InlineEditableUIView( locale, editingView, editableElement, {
+			label: editableView => {
+				return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+			}
+		} );
 
 		/**
 		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
