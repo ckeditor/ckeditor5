@@ -130,8 +130,6 @@ export default class ImageInsertUI extends Plugin {
 			const selectedElement = editor.model.document.selection.getSelectedElement();
 
 			if ( dropdownView.isOpen ) {
-				imageInsertView.focus();
-
 				if ( imageUtils.isImage( selectedElement ) ) {
 					imageInsertView.imageURLInputValue = selectedElement.getAttribute( 'src' );
 					insertButtonView.label = t( 'Update' );
