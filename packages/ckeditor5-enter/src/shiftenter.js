@@ -43,58 +43,68 @@ export default class ShiftEnter extends Plugin {
 		} );
 
 		// Configure converters.
-		conversion.for( 'upcast' )
-			.elementToElement( {
-				view: 'br',
-				model: ( viewElement, { writer, consumable } ) => {
-					const nextSibling = viewElement.nextSibling;
-					const previousSibling = viewElement.previousSibling;
+		conversion.for( 'upcast' ).elementToElement( {
+			view: 'br',
+			model: ( viewElement, { writer, consumable } ) => {
+				// Find view sibling nodes (but ignore text nodes and inline elements).
+				const nextSibling = view.createPositionAfter( viewElement )
+					.getLastMatchingPosition( skipNonBlockElements )
+					.nodeAfter;
+				const previousSibling = view.createPositionBefore( viewElement )
+					.getLastMatchingPosition( skipNonBlockElements, { direction: 'backward' } )
+					.nodeBefore;
 
-					// This element is the last in the current parent block so should be ignored (same as browser).
-					// Cases:
-					// * <p><br></p> -> <p></p>
-					// * <p>foo<br></p> -> <p>foo</p>
-					//
-					// Ignore cases when <br> is wrapped with an inline element:
-					// * <p><span>foo<br></span></p>
-					if ( !nextSibling && isBlockViewElement( viewElement.parent, blockElements ) ) {
-						consumable.consume( viewElement, { name: true } );
-
-						return null;
-					}
-
-					const nextSiblingIsBlock = isBlockViewElement( nextSibling, blockElements );
-					const previousSiblingIsBlock = isBlockViewElement( previousSibling, blockElements );
-
-					// If the <br> is surrounded by blocks then convert it to a paragraph:
-					// * <p>foo</p><br><p>bar</p> -> <p>foo</p><p></p><p>bar</p>
-					// * <br><p>foo</p><br> -> <p></p><p>foo</p><p></p>
-					// * <br> -> <br>
-					if (
-						( previousSibling || nextSibling ) &&
-						( !previousSibling || previousSiblingIsBlock ) &&
-						( !nextSibling || nextSiblingIsBlock )
-					) {
-						return writer.createElement( 'paragraph' );
-					}
-
-					// Ignore <br> that is followed by a block element (same as browser).
-					// * foo<br><p>bar</p> -> <p>foo</p><p>bar</p>
-					if ( nextSiblingIsBlock ) {
-						consumable.consume( viewElement, { name: true } );
-
-						return null;
-					}
-
-					return writer.createElement( 'softBreak' );
+				function skipNonBlockElements( { item } ) {
+					return item.is( 'element' ) && !blockElements.includes( item.name );
 				}
-			} );
 
-		conversion.for( 'downcast' )
-			.elementToElement( {
-				model: 'softBreak',
-				view: ( modelElement, { writer } ) => writer.createEmptyElement( 'br' )
-			} );
+				const nextSiblingIsBlock = isBlockViewElement( nextSibling, blockElements );
+				const previousSiblingIsBlock = isBlockViewElement( previousSibling, blockElements );
+
+				// If the <br> is surrounded by blocks then convert it to a paragraph:
+				// * <p>foo</p><br><p>bar</p> -> <p>foo</p><p></p><p>bar</p>
+				// * <br><p>foo</p><br> -> <p></p><p>foo</p><p></p>
+				//
+				// But don't convert if it's a <br> alone:
+				// * <br> -> <br>
+				if (
+					( previousSibling || nextSibling ) &&
+					( !previousSibling || previousSiblingIsBlock ) &&
+					( !nextSibling || nextSiblingIsBlock )
+				) {
+					return writer.createElement( 'paragraph' );
+				}
+
+				const parentBlock = viewElement.findAncestor( node => blockElements.includes( node.name ) );
+
+				// This element is the last in the current parent block so should be ignored (same as browser).
+				// Cases:
+				// * <p><br></p> -> <p></p>
+				// * <p>foo<br></p> -> <p>foo</p>
+				// * <p><span>foo<br></span></p> -> <p><span>foo</span></p>
+				if ( !nextSibling && parentBlock ) {
+					consumable.consume( viewElement, { name: true } );
+
+					return null;
+				}
+
+				// Ignore <br> that is followed by a block element (same as browser).
+				// * foo<br><p>bar</p> -> <p>foo</p><p>bar</p>
+				if ( nextSiblingIsBlock ) {
+					consumable.consume( viewElement, { name: true } );
+
+					return null;
+				}
+
+				// Just convert a <br>.
+				return writer.createElement( 'softBreak' );
+			}
+		} );
+
+		conversion.for( 'downcast' ).elementToElement( {
+			model: 'softBreak',
+			view: ( modelElement, { writer } ) => writer.createEmptyElement( 'br' )
+		} );
 
 		view.addObserver( EnterObserver );
 
