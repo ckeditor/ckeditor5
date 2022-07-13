@@ -565,18 +565,24 @@ export default class TableColumnResizeEditing extends Plugin {
 							columnWidths: columnWidthsAttributeNew
 						}
 					);
-				} else if ( isColumnWidthsAttributeChanged ) {
+				} else {
 					editor.execute( 'resizeColumnWidths', { columnWidths: columnWidthsAttributeNew, table: modelTable } );
 				}
 			} else {
 				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
 				editingView.change( writer => {
-					if ( isColumnWidthsAttributeChanged ) {
+					if ( columnWidthsAttributeOld ) {
 						const columnWidths = columnWidthsAttributeOld.split( ',' );
 
 						for ( const viewCol of viewColgroup.getChildren() ) {
 							writer.setStyle( 'width', columnWidths.shift(), viewCol );
 						}
+					} else {
+						writer.remove( viewColgroup );
+						writer.removeClass(
+							'ck-table-resized',
+							[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
+						);
 					}
 
 					if ( isTableWidthAttributeChanged ) {
@@ -584,6 +590,10 @@ export default class TableColumnResizeEditing extends Plugin {
 							writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
 						} else {
 							writer.removeStyle( 'width', viewFigure );
+							writer.removeClass(
+								'ck-table-resized',
+								[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
+							);
 						}
 					}
 				} );
