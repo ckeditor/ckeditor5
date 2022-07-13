@@ -395,7 +395,8 @@
 								{
 									"name": "Creating a simple plugin",
 									"id": "simple-plugin",
-									"slug": "simple-plugin"
+									"slug": "simple-plugin",
+									"order": 20
 								}
 							]
 						},

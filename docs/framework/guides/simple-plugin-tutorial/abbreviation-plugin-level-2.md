@@ -56,7 +56,7 @@ Notice that we added two classes. All UI elements of the editor need to have the
 
 As we have two similar input fields to create and we don't want to repeat ourselves, let's define a method `_createInput()`, which will produce them for us. It will accept the label of our input field.
 
-We'll use {@link module:ui/labeledinput/labeledfieldview~LabeledFieldView `LabeledFieldView`} class, and we'll pass it the `createLabeledInputText()` function as the second argument.
+We'll use {@link module:ui/labeledinput/labeledfieldview~LabeledFieldView `LabeledFieldView`} class and we'll pass it the {@link module:ui/labeledfield/utils~createLabeledInputText `createLabeledInputText()`} function as the second argument. It's a helper coming from the CKEditor UI library that will take care of creating the input.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -88,6 +88,8 @@ export default class FormView extends View {
 ### Creating form buttons
 
 Now, we can add a `submit` and a `cancel` buttons to our form. You can start by importing `ButtonView` from our UI library and icons, which we'll use for labels.
+
+We can use a `check` and `cancel` icons from the core package's [icons library](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/theme/icons). Import the icons, and we'll use them for creating the buttons.
 
 Let's write a `_createButton` function, which will take three arguments - `label`, `icon` and `className`.
 
@@ -147,6 +149,7 @@ export default class FormView extends View {
 ### Adding styles
 
 You can now open `styles.css` and style the new UI elements. Let's add some padding to our form and use the [CSS grid layout](https://developer.mozilla.org/en-US/docs/Web/CSS/grid) to nicely display our four elements of the form.
+
 We'll use our set spacing variables to keep things uniform.
 
 ```css
@@ -187,7 +190,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import './styles.css';													// ADDED
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	// ...
 }
 ```
@@ -262,7 +265,7 @@ Our `FormView` is done! We can't see it just yet, so let's add it to our `Abbrev
 
 ## Adding the Contextual Balloon
 
-Our form needs to appear in a balloon, and we'll use the `ContextualBalloon` class from the CKEditor 5 UI library to make one.
+Our form needs to appear in a balloon, and we'll use the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon `ContextualBalloon` class} from the CKEditor 5 UI library to make one.
 
 This is where we ended up with our UI in the first part of the tutorial.
 
@@ -272,7 +275,7 @@ This is where we ended up with our UI in the first part of the tutorial.
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const { t } = editor.locale;
@@ -308,7 +311,7 @@ Let's write a basic `_createFormView()` function, just to create an instance of 
 
 We also need to create a function, which will give us the target position for our balloon from user's selection. We need to convert selected view range into DOM range. We can use {@link module:engine/view/domconverter~DomConverter#viewRangeToDom `viewRangeToDom()` method} to do so.
 
-Finally, let's add our balloon amd fpr, view to the `init()` method.
+Finally, let's add our balloon and the form view to the `init()` method.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -318,7 +321,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui';             // ADDED
 import FormView from './abbreviationview';                          // ADDED
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	static get requires() {
 		return [ ContextualBalloon ];
 	}
@@ -359,15 +362,15 @@ class AbbreviationUI extends Plugin {
 	}
 }
 ```
-We can now change what happens when we the user pushes the toolbar button. We'll replace inserting the hard-coded abbreviation.
+We can now change what happens when the user clicks the toolbar button. We'll replace inserting the hard-coded abbreviation with one defined by the user.
 
-Let's write a function which will show our UI elements, adding the form view to our balloon and setting its position. Last thing is to focus the form view, so the user can immediately start typing in the first input field.
+Let's write a `_showUI()` method which will show our UI elements by adding the form view to our balloon and setting its position. The last thing is to focus the form view, so the user can immediately start typing in the first input field.
 
 ```js
 // abbreviation/abbreviationui.js
 // ...
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	// ...
 
 	init() {
@@ -408,7 +411,7 @@ It's time to get the user input for the abbreviation and the title. We'll use th
 // abbreviation/abbreviationui.js
 // ...
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	static get requires() {
 		return [ ContextualBalloon ];
 	}
@@ -451,12 +454,12 @@ Our plugin is finally doing what it's supposed to. The last thing is to hide it 
 
 We'll need to hide the form view on three occasions:
 * after the user submits the form;
-* when the user clicks the "Cancel" button; and
+* when the user clicks the "Cancel" button;
 * when the user clicks outside of the balloon.
 
 So, let's write a simple `_hideUI()` function, which will clear the input field values and remove the view from our balloon.
 
-Additionally, we'll import {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler `clickOutsideHandler()`} method, which take our `_hideUI()` function as a callback. It will be emitted from our form view, and activated when the form view is visible. We also need to set `contextElements` for the handler to determine its scope. Clicking on listed there HTML elements will not fire the callback.
+Additionally, we'll import {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler `clickOutsideHandler()`} method, which will take our `_hideUI()` function as a callback. It will be emitted from our form view, and activated when the form view is visible. We also need to set `contextElements` for the handler to determine its scope. Clicking on listed there HTML elements will not fire the callback.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -464,7 +467,7 @@ Additionally, we'll import {@link module:ui/bindings/clickoutsidehandler~clickOu
 // ...
 import { ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui'; // ADDED
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	static get requires() {
 		return [ ContextualBalloon ];
 	}

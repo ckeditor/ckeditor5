@@ -11,7 +11,7 @@ This guide will show you how to create a simple abbreviation plugin for CKEditor
 	Before you get to work, you should check out the {@link framework/guides/quick-start Quick start} guide first to set up the framework and building tools. Be sure to check out the {@link framework/guides/package-generator package generator guide} as well.
 </info-box>
 
-We’ll create a toolbar button that lets the users insert abbreviations into their document.  The abbreviations will use [the `<abbr>` <abbr title="HyperText Markup Language"> HTML </abbr> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr), with a ‘title’ attribute that will show up in a tooltip when the user hovers over the element.
+We’ll create a toolbar button that lets the users insert abbreviations into their document. The abbreviations will use [the `<abbr>` <abbr title="HyperText Markup Language"> HTML </abbr> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr), with a ‘title’ attribute that will show up in a tooltip when the user hovers over the element.
 
 This first part will cover only the basics, and we'll just insert one possible abbreviation: "WYSIWYG". We'll get user input in the next part of this tutorial series.
 
@@ -19,13 +19,17 @@ If you want to see the final product of this tutorial before you plunge in, chec
 
 ## Let's start
 
-We prepared starter files in our Github repository for this tutorial, so you can clone them and start coding right away. Just run `npm install` and you're good to go.
+The easiest way to set up your project is to grab the starter files from our Github repository for this tutorial. We prepared template files for different components of the abbreviation plugin. We also gathered all the necessary dependencies, including some CK Editor 5 packages and others needed to build the editor.
+
+The editor is already created in `app.js` with some basic plugins. All you need to do is clone the repository, run `npm install`, and you can start coding right away.
+
+The webpack is configured already, so use `npm run build` to build your application. Whenever you want to check something in the browser, save the changes and run build, then refresh the page in your browser (remember about the cache).
 
 <info-box>
 Our starter files come with {@link framework/guides/development-tools#ckeditor-5-inspector the CKEditor 5 Inspector} attached to the editor, so you can easily debug and observe what's happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
-If you want to set up the project yourself, you should follow the steps listed in {@link framework/guides/quick-start the "Quick start" section}. You'll need to additionally install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the {@link module:core/plugin~Plugin} class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and framework. We also recommend installing {@link framework/guides/development-tools#ckeditor-5-inspector the CKEditor 5 Inspector}.
+If you want to set up the project yourself, you should follow the steps listed in {@link framework/guides/quick-start the "Quick start" section}. Additionally, you'll need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the {@link module:core/plugin~Plugin} class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and framework. We also recommend installing {@link framework/guides/development-tools#ckeditor-5-inspector the CKEditor 5 Inspector}.
 
 Your entry point to the plugin is `app.js`:
 

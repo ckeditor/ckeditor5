@@ -86,7 +86,7 @@ class Timestamp extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		//Add the Timestamp plugin to config.plugins array
+		// Add the Timestamp plugin to config.plugins array.
 		plugins: [
 			Timestamp, Essentials, Paragraph, Heading, List, Bold, Italic
 		],
@@ -99,7 +99,8 @@ ClassicEditor
 		console.error( error.stack );
 	} );
 ```
-Rebuild and check in your console if the timestamp was initialized. You should see this: SCREENSHOT
+Rebuild and check in your console if the timestamp was initialized. You should see this:
+SCREENSHOT
 
 ## Registering a toolbar button
 
@@ -120,8 +121,7 @@ class Timestamp extends Plugin {
 		// The button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
 		editor.ui.componentFactory.add( 'timestamp', () => {
-
-			// The button will be an instance of ButtonView
+			// The button will be an instance of ButtonView.
 			const button = new ButtonView();
 
 			button.set( {
@@ -139,7 +139,7 @@ ClassicEditor
 		plugins: [
 			Timestamp, Essentials, Paragraph, Heading, List, Bold, Italic
 		],
-		//Add the Timestamp button to the config.toolbar array
+		// Add the Timestamp button to the config.toolbar array.
 		toolbar: [
 			'timestamp', 'heading', 'bold', 'italic', 'numberedList', 'bulletedList'
 		]
@@ -172,7 +172,6 @@ class Timestamp extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'timestamp', locale => {
-
 			//...
 
 			//Execute a callback function when the button is clicked

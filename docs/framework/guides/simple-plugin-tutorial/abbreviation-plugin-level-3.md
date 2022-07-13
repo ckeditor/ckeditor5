@@ -55,9 +55,9 @@ export default class FormView extends View {
     render() {
 		// ...
 
-		this.childViews._items.forEach( v => {
+		this.childViews._items.forEach( view => {
 			// Register the view in the focus tracker.
-			this.focusTracker.add( v.element );
+			this.focusTracker.add( view.element );
 		} );
 
 		// Start listening for the keystrokes coming from #element.
@@ -158,7 +158,7 @@ When user selects a range (meaning a letter, a word, or a whole document fragmen
 As we'll be working with user's selection in the document, it's important to understand what exactly it means in the editor's model. Read our introduction to {@link framework/guides/architecture/editing-engine#positions-ranges-and-selections positions, ranges and selections}.
 </info-box>
 
-In order insert the user's selection in the form field, we need to first grab and concatenate all text from the selected range. If the user selects a couple of paragraphs, a heading, and an image, we need to go through all the nodes, and use only the ones containing text.
+In order to display the text from the user's selection in the form field, we need to first grab and concatenate all text from the selected range. If the user selects a couple of paragraphs, a heading, and an image, we need to go through all the nodes, and use only the ones containing text.
 
 Let's create a helper `getRangeText()` function in a separate `/utils.js` file. It will grab all items from a range using its `getItems()` method. Then, it will concatenate all text from {@link module:engine/model/text~Text `text`} and {@link module:engine/model/textproxy~TextProxy `textProxy`} nodes, and skip all others.
 
@@ -178,7 +178,7 @@ export default function getRangeText( range ) {
 
 ```
 
-Now, in `AbbreviationUI` we can adjust the `_showUI()` method to display the selected text in the abbreviation input field. Import `getRangeText` and pass it the first range in the selection (using {@link module:engine/model/documentselection~DocumentSelection#getFirstRange `getFirstRange()`} method).
+Now, in `AbbreviationUI` we can adjust the `_showUI()` method to display the selected text in the abbreviation input field. Import `getRangeText` and pass the first range in the selection (using {@link module:engine/model/documentselection~DocumentSelection#getFirstRange `getFirstRange()`} method) as an argument.
 
 We will also disable the input field when the selection is not collapsed, because it would be hard to change the text of the abbreviation if the selection spanned multiple paragraphs.
 
@@ -254,7 +254,7 @@ When the user makes a selection in the editor, the command will automatically ch
 
 Let's start by creating our command, and moving the existing action logic there.
 
-In the `/abbreviationcommand.js` file import {@link module:core/command~Command the `Command` class}, and create its instance.
+In the `/abbreviationcommand.js` file import the {@link module:core/command~Command `Command`} class, and create its instance.
 
 We'll start by simply moving there the action we already created for `submit` in our `_createFormView()` method, passing the title and the abbreviation text into the command's `execute()` method.
 
@@ -265,7 +265,6 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 
 export default class AbbreviationCommand extends Command {
 	execute( { title, abbr } ) {
-
 			editor.model.change( writer => {
 				editor.model.insertContent(
 					writer.createText( abbr, { abbreviation: title } )
@@ -276,7 +275,7 @@ export default class AbbreviationCommand extends Command {
 }
 ```
 
-Now, let's add initialize our `AbbreviationCommand`, by adding it to the list of editor's commands in `AbbreviationEditing`. We'll also pass there a name we'll use to call our command.
+Now, let's initialize our `AbbreviationCommand`, by adding it to the list of editor's commands in `AbbreviationEditing`. We'll also pass there a name we'll use to call our command.
 
 ```js
 // abreviation/abbreviationediting.js
@@ -335,7 +334,7 @@ The command should now work, and pressing the `submit` button should have the sa
 
 Thanks to the command's {@link module:core/command~Command#refresh `refresh()`} method, we can observe the state and the value of our command not just when the user presses the button, but whenever any changes are made in the editor. We'll use this to check if the user's selection has an abbreviation model attribute already.
 
-Before we do that, let's check if the command can be use at all on a given selection. If the user selects an image, the command should be disabled. Let's check if our `abbreviation` attribute is allowed in the schema, using it's {@link module:engine/model/schema~Schema#checkAttributeInSelection `checkAttributeInSelection()`} method.
+Before we do that, let's check if the command can be used at all on a given selection. If the user selects an image, the command should be disabled. Let's check if our `abbreviation` attribute is allowed in the schema, using its {@link module:engine/model/schema~Schema#checkAttributeInSelection `checkAttributeInSelection()`} method.
 
 ```js
 // abbreviation/abbreviationcommand.js
@@ -343,7 +342,7 @@ Before we do that, let's check if the command can be use at all on a given selec
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 export default class AbbreviationCommand extends Command {
-		refresh() {
+	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
@@ -373,7 +372,7 @@ import {
 import { getRangeText } from './utils.js';							// ADDED
 
 export default class AbbreviationCommand extends Command {
-		refresh() {
+	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const firstRange = selection.getFirstRange();
@@ -410,7 +409,7 @@ export default class AbbreviationCommand extends Command {
 ```
 If the selection is not collapsed, we'll check if it has the `abbreviation` model attribute. If so, we'll again grab the full range of the abbreviation and compare it with the user selection.
 
-When the user selects a bit of text with the abbreviation attribute, along with a bit without it, we don't want to change the command's value. So, we'll use the {@link module:engine/model/range~Range#containsRange `containsRange()`} method to see if the selected range is withing the abbreviation range. The second parameter makes it a `loose` check, meaning the selected range can start, end, or be equal to the abbreviation range.
+When the user selects a bit of text with the abbreviation attribute, along with a bit without it, we don't want to change the command's value. So, we'll use the {@link module:engine/model/range~Range#containsRange `containsRange()`} method to see if the selected range is within the abbreviation range. The second parameter makes it a `loose` check, meaning the selected range can start, end, or be equal to the abbreviation range.
 
 ```js
 // abbreviation/abbreviationcommand.js
@@ -418,7 +417,7 @@ When the user selects a bit of text with the abbreviation attribute, along with 
 //...
 
 export default class AbbreviationCommand extends Command {
-		refresh() {
+	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const firstRange = selection.getFirstRange();

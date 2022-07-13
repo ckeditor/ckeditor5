@@ -72,9 +72,9 @@ export default class FormView extends View {
 			view: this
 		} );
 
-		this.childViews._items.forEach( v => {
+		this.childViews._items.forEach( view => {
 			// Register the view in the focus tracker.
-			this.focusTracker.add( v.element );
+			this.focusTracker.add( view.element );
 		} );
 
 		// Start listening for the keystrokes coming from #element.
