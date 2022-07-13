@@ -45,7 +45,7 @@
     "ckeditor5-metadata.json"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.publish.json",
+    "build": "tsc -p ./tsconfig.release.json",
     "postversion": "npm run build"
   }
 }
