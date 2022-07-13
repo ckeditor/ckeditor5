@@ -225,7 +225,10 @@ export default class SourceEditing extends Plugin {
 		for ( const [ rootName, domRootElement ] of editingView.domRoots ) {
 			const data = formatSource( editor.data.get( { rootName } ) );
 
-			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', { rows: '1' } );
+			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', {
+				rows: '1',
+				'aria-label': 'Source code editing area'
+			} );
 
 			const domSourceEditingElementWrapper = createElement( domRootElement.ownerDocument, 'div', {
 				class: 'ck-source-editing-area',

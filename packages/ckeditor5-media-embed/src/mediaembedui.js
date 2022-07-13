@@ -87,7 +87,6 @@ export default class MediaEmbedUI extends Plugin {
 			// command.
 			form.url = command.value || '';
 			form.urlInputView.fieldView.select();
-			form.focus();
 			form.enableCssTransitions();
 		}, { priority: 'low' } );
 

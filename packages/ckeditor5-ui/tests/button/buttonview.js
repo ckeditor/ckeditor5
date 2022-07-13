@@ -281,10 +281,10 @@ describe( 'ButtonView', () => {
 		} );
 
 		describe( 'mousedown event', () => {
-			it( 'should be prevented', () => {
+			it( 'should not be prevented', () => {
 				const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-				expect( ret ).to.false;
+				expect( ret ).to.true;
 			} );
 		} );
 
