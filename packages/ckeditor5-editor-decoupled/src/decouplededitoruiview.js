@@ -55,7 +55,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
 		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement, {
-			labelCreator: editableView => {
+			label: editableView => {
 				return t( 'Rich Text Editor. Editing area: %0', editableView.name );
 			}
 		} );

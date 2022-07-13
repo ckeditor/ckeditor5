@@ -63,7 +63,7 @@ describe( 'InlineEditableUIView', () => {
 
 			it( 'should be set via options.labelCreator passed into constructor()', () => {
 				const view = new InlineEditableUIView( locale, editingView, null, {
-					labelCreator: view => `Custom label: ${ view.name }`
+					label: view => `Custom label: ${ view.name }`
 				} );
 
 				view.name = editingViewRoot.rootName;

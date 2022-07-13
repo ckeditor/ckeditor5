@@ -179,7 +179,7 @@ class MultirootEditorUIView extends EditorUIView {
 
 		for ( const editableName of Object.keys( editableElements ) ) {
 			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ], {
-				labelCreator: editableView => {
+				label: editableView => {
 					return t( 'Rich Text Editor. Editing area: %0', editableView.name );
 				}
 			} );

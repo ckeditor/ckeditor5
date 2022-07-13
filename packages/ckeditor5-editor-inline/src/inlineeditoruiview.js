@@ -135,7 +135,7 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
 		this.editable = new InlineEditableUIView( locale, editingView, editableElement, {
-			labelCreator: editableView => {
+			label: editableView => {
 				return t( 'Rich Text Editor. Editing area: %0', editableView.name );
 			}
 		} );

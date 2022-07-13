@@ -24,7 +24,7 @@ export default class InlineEditableUIView extends EditableUIView {
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}
 	 * will create it. Otherwise, the existing element will be used.
 	 * @param {Object} [options] Additional configuration of the view.
-	 * @param {String} [options.labelCreator] A function that gets called with the instance of this view as an argument
+	 * @param {Function} [options.label] A function that gets called with the instance of this view as an argument
 	 * and should return a string that represents the label of the editable for assistive technologies. If not provided,
 	 * a default label generator is used.
 	 */
@@ -48,7 +48,7 @@ export default class InlineEditableUIView extends EditableUIView {
 		 * @readonly
 		 * @param {Function}
 		 */
-		this._generateLabel = options.labelCreator || ( () => t( 'Editor editing area: %0', this.name ) );
+		this._generateLabel = options.label || ( () => t( 'Editor editing area: %0', this.name ) );
 	}
 
 	/**
