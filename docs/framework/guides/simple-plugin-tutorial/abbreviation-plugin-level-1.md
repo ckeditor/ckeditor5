@@ -182,9 +182,11 @@ CKEditor 5 implements its own custom data model, which does not map to the DOM 1
 	Before moving forward, it is important to understand the editor architecture. Read more about the {@link framework/guides/architecture/editing-engine#model model} and the {@link framework/guides/architecture/editing-engine#view view} to get familiar with the basic concepts.
 </info-box>
 
-In the view layer, we'll have the `<abbr>` HTML element, with a title attribute.
+In the view layer, we'll have the `<abbr>` HTML element, with a title attribute. See how it will look like in the inspector.
+{@img assets/img/abbreviation-part1-1.png Screenshot of a the inspector showing the view layer.}
 
 In the model, inline elements, such as `<abbr>`, are represented as attributes, not as separate elements. In order for our plugin to work, we'll need to make sure that we can add abbreviation attribute to the text node.
+{@img assets/img/abbreviation-part1-2.png Screenshot of a the inspector showing the model layer.}
 
 ### Defining the schema
 
@@ -323,6 +325,8 @@ export default class AbbreviationEditing extends Plugin {
 ```
 
 Thanks to the upcast conversion, our abbreviation added in the `index.html` should work now. Rebuild and check it out yourself.
+
+{@img assets/img/abbreviation-part1-3.png Screenshot of the editor showing working abbreviation.}
 
 ## Creating a toolbar button
 
