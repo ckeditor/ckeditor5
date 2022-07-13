@@ -27,6 +27,7 @@ describe( 'InlineEditableUIView', () => {
 
 	afterEach( () => {
 		view.destroy();
+		editingView.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -61,7 +62,11 @@ describe( 'InlineEditableUIView', () => {
 				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Editor editing area: main' );
 			} );
 
-			it( 'should be set via options.labelCreator passed into constructor()', () => {
+			it( 'should be set via options.label passed into constructor()', () => {
+				const editingViewRoot = new ViewRootEditableElement( editingView.document, 'div' );
+				editingViewRoot.rootName = 'custom-name';
+				editingView.document.roots.add( editingViewRoot );
+
 				const view = new InlineEditableUIView( locale, editingView, null, {
 					label: view => `Custom label: ${ view.name }`
 				} );
@@ -70,7 +75,7 @@ describe( 'InlineEditableUIView', () => {
 
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label: main' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label: custom-name' );
 
 				view.destroy();
 			} );
