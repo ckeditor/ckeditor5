@@ -31,7 +31,8 @@ import {
 	getViewColumnWidthsPc,
 	getDomTableRects,
 	getDomTableCellRects,
-	tableColumnResizeMouseSimulator
+	tableColumnResizeMouseSimulator,
+	getDomResizer
 } from './_utils/utils';
 import {
 	COLUMN_MIN_WIDTH_IN_PIXELS
@@ -710,7 +711,33 @@ describe( 'TableColumnResizeEditing', () => {
 		} );
 	} );
 
-	describe( 'does not resize', () => {
+	describe( 'does not start resizing', () => {
+		it( 'if not clicked on the resizer', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			tableColumnResizeMouseSimulator.down( editor, view.getDomRoot() );
+
+			expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingActive ).to.be.false;
+			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.equal( '20%,25%,55%' );
+		} );
+
+		it( 'if resizing is not allowed', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+
+			expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingActive ).to.be.false;
+			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.equal( '20%,25%,55%' );
+		} );
+
 		it( 'without dragging', () => {
 			// Test-specific.
 			const columnToResizeIndex = 0;
