@@ -68,6 +68,4 @@ CKEditor 5 is compatible with popular CSS frameworks, such as [Bootstrap](https:
 **What's next?**
 
 After reading this guide, you know how to integrate the editor with your own system. This step almost concludes the beginner's path with getting to know CKEditor 5.
-
-If you haven't done so yet, now is a great time to take a look at the {@link installation/getting-started/maintenance last article from this section} to learn more on how you can maintain your editor.
 </info-box>
