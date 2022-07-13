@@ -174,7 +174,7 @@ Rebuild your project, refresh the browser and you should see that the `Abbreviat
 
 ## The model and the view layers
 
-CKEditor 5 implements its own custom data model, which does not map to the DOM 1:1. The model document is converted into the view, which represents the content that the user is editing - the DOM structure you see in the browser.
+CKEditor 5 implements its own custom data model, which does not map to the DOM 1:1. The model document is converted into the view, which represents the content that the user is editing.
 
 <info-box>
 	Before moving forward, it is important to understand the editor architecture. Read more about the {@link framework/guides/architecture/editing-engine#model model} and the {@link framework/guides/architecture/editing-engine#view view} to get familiar with the basic concepts.
@@ -227,7 +227,7 @@ Converters tell the editor how to transform the view to the model (e.g. when loa
 	Conversion is one of the more complex topics in our editing engine architecture. It's definitely worth to read up on {@link framework/guides/deep-dive/conversion/intro the conversion in the editor} before we move on.
 </info-box>
 
-We'll need to convert the model abbreviation attribute into an HTML element in the view (downcast) and vice versa (upcast). We'll do that by using our {@link framework/guides/deep-dive/conversion/helpers/intro conversion helpers} and defining what the model and the view is supposed to look like for both conversions.
+We'll need to convert the model abbreviation attribute into a view element (downcast) and vice versa (upcast). We'll do that by using our {@link framework/guides/deep-dive/conversion/helpers/intro conversion helpers} and defining what the model and the view is supposed to look like for both conversions.
 
 Converting the full title of the abbreviation is a little bit tricky, because we need to make sure that its value is synchronized between the model and the view.
 
@@ -413,8 +413,12 @@ class AbbreviationUI extends Plugin {
 				const title = 'What You See Is What You Get';
 				const abbr = 'WYSIWYG';
 
+				// Change the model to insert the abbreviation.
 				editor.model.change( writer => {
-					editor.model.insertContent( writer.createText( abbr, { abbreviation: title } ) );
+					editor.model.insertContent(
+						// Create a text node with the abbreviation attribute.
+						writer.createText( abbr, { abbreviation: title } )
+					);
 				} );
 			} );
 
@@ -432,5 +436,5 @@ That's it for the first part of this tutorial! Your plugin should now work (in i
 
 ## Final code
 
-If you got lost at any point, this is the final implementation of the plugin. You can paste it into the `app.js` and it will run out-of-the-box.
+If you got lost at any point, this is the final implementation of the plugin. You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.
 
