@@ -11,12 +11,13 @@
 
 import { Plugin, PendingActions } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
+import { ElementReplacer } from 'ckeditor5/src/utils';
 import { formatHtml } from './utils/formathtml';
 
 import '../theme/sourceediting.css';
 
 import sourceEditingIcon from '../theme/icons/source-editing.svg';
+import SourceEditingWrapperView from './ui/sourceeditingwrapperview';
 
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
 
@@ -71,7 +72,7 @@ export default class SourceEditing extends Plugin {
 		 * Maps all root names to wrapper elements containing the document source.
 		 *
 		 * @private
-		 * @member {Map.<String,HTMLElement>}
+		 * @member {Map.<String,SourceEditingWrapperView>}
 		 */
 		this._replacedRoots = new Map();
 
@@ -82,6 +83,11 @@ export default class SourceEditing extends Plugin {
 		 * @member {Map.<String,String>}
 		 */
 		this._dataFromRoots = new Map();
+
+		/**
+		 * TODO
+		 */
+		this._rootNamesToWrapperViews = new Map();
 	}
 
 	/**
@@ -196,6 +202,13 @@ export default class SourceEditing extends Plugin {
 	}
 
 	/**
+	 * TODO
+	 */
+	destroy() {
+		this._rootNamesToWrapperViews.forEach( wrapperView => wrapperView.destroy() );
+	}
+
+	/**
 	 * Creates source editing wrappers that replace each editing root. Each wrapper contains the document source from the corresponding
 	 * root.
 	 *
@@ -224,27 +237,21 @@ export default class SourceEditing extends Plugin {
 		// main root, but this code may help understand and use this feature in external integrations.
 		for ( const [ rootName, domRootElement ] of editingView.domRoots ) {
 			const data = formatSource( editor.data.get( { rootName } ) );
+			let wrapperView;
 
-			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', {
-				rows: '1',
-				'aria-label': 'Source code editing area'
-			} );
+			if ( !this._rootNamesToWrapperViews.has( rootName ) ) {
+				wrapperView = new SourceEditingWrapperView( editor.locale );
+				wrapperView.render();
 
-			const domSourceEditingElementWrapper = createElement( domRootElement.ownerDocument, 'div', {
-				class: 'ck-source-editing-area',
-				'data-value': data
-			}, [ domSourceEditingElementTextarea ] );
+				this._rootNamesToWrapperViews.set( rootName, wrapperView );
+			} else {
+				wrapperView = this._rootNamesToWrapperViews.get( rootName );
+			}
 
-			domSourceEditingElementTextarea.value = data;
+			wrapperView.value = data;
 
 			// Setting a value to textarea moves the input cursor to the end. We want the selection at the beginning.
-			domSourceEditingElementTextarea.setSelectionRange( 0, 0 );
-
-			// Bind the textarea's value to the wrapper's `data-value` property. Each change of the textarea's value updates the
-			// wrapper's `data-value` property.
-			domSourceEditingElementTextarea.addEventListener( 'input', () => {
-				domSourceEditingElementWrapper.dataset.value = domSourceEditingElementTextarea.value;
-			} );
+			wrapperView.textareaView.setSelectionRange( 0, 0 );
 
 			editingView.change( writer => {
 				const viewRoot = editingView.document.getRoot( rootName );
@@ -252,9 +259,9 @@ export default class SourceEditing extends Plugin {
 				writer.addClass( 'ck-hidden', viewRoot );
 			} );
 
-			this._replacedRoots.set( rootName, domSourceEditingElementWrapper );
+			this._replacedRoots.set( rootName, wrapperView );
 
-			this._elementReplacer.replace( domRootElement, domSourceEditingElementWrapper );
+			this._elementReplacer.replace( domRootElement, wrapperView.element );
 
 			this._dataFromRoots.set( rootName, data );
 		}
@@ -296,9 +303,9 @@ export default class SourceEditing extends Plugin {
 		const editor = this.editor;
 		const data = {};
 
-		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
+		for ( const [ rootName, wrapperView ] of this._replacedRoots ) {
 			const oldData = this._dataFromRoots.get( rootName );
-			const newData = domSourceEditingElementWrapper.dataset.value;
+			const newData = wrapperView.value;
 
 			// Do not set the data unless some changes have been made in the meantime.
 			// This prevents empty undo steps after switching to the normal editor.
@@ -318,11 +325,24 @@ export default class SourceEditing extends Plugin {
 	 * @private
 	 */
 	_focusSourceEditing() {
-		const [ domSourceEditingElementWrapper ] = this._replacedRoots.values();
+		const editor = this.editor;
 
-		const textarea = domSourceEditingElementWrapper.querySelector( 'textarea' );
+		// Keep the editor UI focused while the editing goes in the <textarea>.
+		// editor.ui.focusTracker.add( textarea );
 
-		textarea.focus();
+		// The FocusObserver was disabled by View.render() while the DOM root was getting hidden and the replacer
+		// revealed the textarea. So it couldn't notice that the DOM root got blurred in the process.
+		// Let's sync this state manually here because otherwise Renderer will attempt to render selection
+		// in an invisible DOM root.
+		editor.editing.view.document.isFocused = false;
+
+		for ( const [ , wrapperView ] of this._rootNamesToWrapperViews ) {
+			if ( wrapperView.element.parentNode ) {
+				wrapperView.textareaView.focus();
+
+				break;
+			}
+		}
 	}
 
 	/**
@@ -361,9 +381,9 @@ export default class SourceEditing extends Plugin {
 			return;
 		}
 
-		for ( const [ , domSourceEditingElementWrapper ] of this._replacedRoots ) {
-			domSourceEditingElementWrapper.querySelector( 'textarea' ).readOnly = isReadOnly;
-		}
+		this._rootNamesToWrapperViews.forEach( wrapperView => {
+			wrapperView.textareaView.isReadOnly = isReadOnly;
+		} );
 	}
 
 	/**

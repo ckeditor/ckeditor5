@@ -268,7 +268,7 @@ describe( 'SourceEditing', () => {
 			const wrapper = domRoot.nextSibling;
 
 			expect( wrapper.nodeName ).to.equal( 'DIV' );
-			expect( wrapper.className ).to.equal( 'ck-source-editing-area' );
+			expect( wrapper.className ).to.equal( 'ck ck-source-editing-area' );
 			expect( wrapper.dataset.value ).to.equal(
 				'<p>\n' +
 				'    Foo\n' +
@@ -342,7 +342,7 @@ describe( 'SourceEditing', () => {
 			const domRoot = editor.editing.view.getDomRoot();
 			const wrapper = domRoot.nextSibling;
 
-			expect( plugin._replacedRoots.get( 'main' ) ).to.equal( wrapper );
+			expect( plugin._replacedRoots.get( 'main' ).element ).to.equal( wrapper );
 		} );
 
 		it( 'should remember document data from roots', () => {
