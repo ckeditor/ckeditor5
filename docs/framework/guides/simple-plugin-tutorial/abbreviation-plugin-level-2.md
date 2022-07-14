@@ -91,11 +91,7 @@ Now, we can add a `submit` and a `cancel` buttons to our form. You can start by 
 
 We can use a `check` and `cancel` icons from the core package's [icons library](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/theme/icons). Import the icons, and we'll use them for creating the buttons.
 
-Let's write a `_createButton` function, which will take three arguments - `label`, `icon` and `className`.
-
-We'll then set the button attributes, using the properties we passed into the function, and adding a tooltip option.
-
-Last thing is to delegate `cancelButtonView#execute` to the FormView, so pressing it will fire off `FormView#cancel`.
+Let's write a `_createButton` function, which will take three arguments - `label`, `icon` and `className`. We'll then set the button attributes, using the properties we passed into the function, and adding a tooltip option.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -123,9 +119,6 @@ export default class FormView extends View {
 		this.cancelButtonView = this._createButton(
             t( 'Cancel' ), icons.cancel, 'ck-button-cancel'
         );
-		// Delegate ButtonView#execute to FormView#cancel.
-		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
-
 	}
 
     _createInput( label ) {
@@ -143,6 +136,43 @@ export default class FormView extends View {
 		} );
 
 		return button;
+	}
+}
+```
+
+When the user presses these buttons, we want to either submit or cancel the form view. These events should be fired off from the form view, so we need to delegate them from the buttons to the form view.
+
+<info-box>
+Event delegation allows selected events of one {@link module:utils/emittermixin~Emitter emitter} to be fired off by another emitter. Read our {@link framework/guides/architecture/core-editor-architecture#event-system-and-observables introduction to the event system} and more on {@link framework/guides/deep-dive/event-system#delegating-events delegating events}.
+</info-box>
+
+For now, {@link module:utils/emittermixin~Emitter#delegate delegate} `cancelButtonView#execute` to the FormView, so pressing the `cancel` button will fire off `FormView#cancel`. We'll handle delegating the submit event in a couple of steps.
+
+```js
+// abbreviation/abbreviationview.js
+// ...
+
+export default class FormView extends View {
+	constructor( locale ) {
+        // ...
+
+        this.saveButtonView = this._createButton(
+            t( 'Save' ), icons.check, 'ck-button-save'
+        );
+		this.saveButtonView.type = 'submit';
+		this.cancelButtonView = this._createButton(
+            t( 'Cancel' ), icons.cancel, 'ck-button-cancel'
+        );
+		// Delegate ButtonView#execute to FormView#cancel.
+		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
+	}
+
+    _createInput( label ) {
+        // ...
+    }
+
+    _createButton( label, icon, className ) {
+		// ...
 	}
 }
 ```
@@ -405,7 +435,9 @@ SCREENSHOT
 
 ## Getting user input
 
-It's time to get the user input for the abbreviation and the title. We'll use the same callback function we had in the toolbar button in the first part of the tutorial. We just need to replace the hard-coded "WYSIWYG" abbreviation with values from our input views.
+It's time to replace the hard-coded "WYSIWYG" abbreviation with the user input. We'll be getting values from the form and listening to the `submit` event on the form view, which we delegated from the save button (with the help of {@link module:ui/bindings/submithandler~submitHandler `submitHandler`}).
+
+We'll use the same callback function we had in the toolbar button in the first part of the tutorial, We just need to replace the "WYSIWYG" abbreviation with values from our input views.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -531,5 +563,4 @@ That's it for this part of the tutorial! We have a working UI, and our plugin do
 
 ## Final code
 
-If you got lost at any point, this is the final implementation of the plugin.
-
+If you got lost at any point, this is the final implementation of the plugin. You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.

@@ -129,7 +129,7 @@ Now, we can add `esc` button handler in our `_createFromView()` function, which 
 
 // ...
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	// ...
 
 	_createFormView() {
@@ -187,7 +187,7 @@ We will also disable the input field when the selection is not collapsed, becaus
 // ...
 import { getRangeText } from './utils.js';
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 
 	// ...
 
@@ -283,7 +283,7 @@ Now, let's initialize our `AbbreviationCommand`, by adding it to the list of edi
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import AbbreviationCommand from './abbreviationcommand';					// ADDED
 
-class AbbreviationEditing extends Plugin {
+export default class AbbreviationEditing extends Plugin {
 	init() {
 		this._defineSchema();
 		this._defineConverters();
@@ -302,7 +302,7 @@ Now, we can replace the action called on `submit` with our new command, passing 
 // abbreviation/abbreviationui.js
 // ...
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 
 	// ...
 
@@ -413,7 +413,6 @@ When the user selects a bit of text with the abbreviation attribute, along with 
 
 ```js
 // abbreviation/abbreviationcommand.js
-
 //...
 
 export default class AbbreviationCommand extends Command {
@@ -469,7 +468,7 @@ In the `AbbreviationUI` add a simple `if` statement to fill the form using eithe
 // ...
 import { getRangeText } from './utils.js';
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 
 	// ...
 
@@ -520,7 +519,7 @@ If the selection is collapsed, we'll keep our `insertContent()` model method fro
 
 // ...
 
-class AbbreviationCommand extends Command {
+export default class AbbreviationCommand extends Command {
 	refresh() {
 		// ...
 	}
@@ -565,7 +564,7 @@ We'll create a position at the end of the inserted abbreviation, and set selecti
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
 
-class AbbreviationCommand extends Command {
+export default class AbbreviationCommand extends Command {
 	refresh() {
 		// ...
 	}
@@ -611,7 +610,7 @@ import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattribu
 import { getRangeText } from './utils.js';
 import { toMap } from '@ckeditor/ckeditor5-utils';							// ADDED
 
-class AbbreviationCommand extends Command {
+export default class AbbreviationCommand extends Command {
 	refresh() {
 		// ...
 	}
@@ -666,3 +665,5 @@ That's it, you've finished the tutorial! You're ready to create your own plugins
 {@snippet framework/abbreviation-level-3}
 
 ## Final code
+
+If you got lost at any point, this is the final implementation of the plugin. You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.
