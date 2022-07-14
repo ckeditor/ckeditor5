@@ -73,8 +73,10 @@ describe( 'ShiftEnter integration', () => {
 		expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 	} );
 
-	describe.only( 'conversion', () => {
+	describe( 'conversion', () => {
 		beforeEach( () => {
+			model.schema.extend( 'softBreak', { allowAttributesOf: '$text' } );
+
 			editor.conversion.for( 'upcast' ).elementToElement( {
 				view: 'br',
 				model: ( viewElement, { consumable } ) => {
@@ -95,6 +97,21 @@ describe( 'ShiftEnter integration', () => {
 			);
 		} );
 
+		it( 'should convert BR inside text in paragraph (inside bold)', () => {
+			editor.setData( '<p><strong>foo<br>bar</strong></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph>' +
+					'<$text bold="true">foo</$text>' +
+					'<softBreak bold="true"></softBreak>' +
+					'<$text bold="true">bar</$text>' +
+				'</paragraph>'
+			);
+			expect( editor.getData() ).to.equalMarkup(
+				'<p><strong>foo<br>bar</strong></p>'
+			);
+		} );
+
 		it( 'should convert multiple BRs inside text in paragraph', () => {
 			editor.setData( '<p>foo<br><br>bar</p>' );
 
@@ -103,6 +120,22 @@ describe( 'ShiftEnter integration', () => {
 			);
 			expect( editor.getData() ).to.equalMarkup(
 				'<p>foo<br><br>bar</p>'
+			);
+		} );
+
+		it( 'should convert multiple BRs inside text in paragraph (inside bold)', () => {
+			editor.setData( '<p><strong>foo<br><br></strong>bar</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph>' +
+					'<$text bold="true">foo</$text>' +
+					'<softBreak bold="true"></softBreak>' +
+					'<softBreak bold="true"></softBreak>' +
+					'bar' +
+				'</paragraph>'
+			);
+			expect( editor.getData() ).to.equalMarkup(
+				'<p><strong>foo<br><br></strong>bar</p>'
 			);
 		} );
 
@@ -117,6 +150,22 @@ describe( 'ShiftEnter integration', () => {
 			);
 		} );
 
+		it( 'should convert multiple BRs inside text (outside paragraph, inside bold)', () => {
+			editor.setData( 'f<strong>oo<br><br>ba</strong>r' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph>' +
+					'f<$text bold="true">oo</$text>' +
+					'<softBreak bold="true"></softBreak>' +
+					'<softBreak bold="true"></softBreak>' +
+					'<$text bold="true">ba</$text>r' +
+				'</paragraph>'
+			);
+			expect( editor.getData() ).to.equalMarkup(
+				'<p>f<strong>oo<br><br>ba</strong>r</p>'
+			);
+		} );
+
 		it( 'should convert BR at the beginning of text in paragraph', () => {
 			editor.setData( '<p><br>foo</p>' );
 
@@ -128,6 +177,17 @@ describe( 'ShiftEnter integration', () => {
 			);
 		} );
 
+		it( 'should convert BR at the beginning of text in paragraph (inside bold)', () => {
+			editor.setData( '<p><strong><br>foo</strong></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph><softBreak bold="true"></softBreak><$text bold="true">foo</$text></paragraph>'
+			);
+			expect( editor.getData() ).to.equalMarkup(
+				'<p><strong><br>foo</strong></p>'
+			);
+		} );
+
 		it( 'should convert BR at the beginning of text (outside paragraph)', () => {
 			editor.setData( '<br>foo' );
 
@@ -136,6 +196,17 @@ describe( 'ShiftEnter integration', () => {
 			);
 			expect( editor.getData() ).to.equalMarkup(
 				'<p><br>foo</p>'
+			);
+		} );
+
+		it( 'should convert BR at the beginning of text (outside paragraph, inside bold)', () => {
+			editor.setData( '<strong><br>foo</strong>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph><softBreak bold="true"></softBreak><$text bold="true">foo</$text></paragraph>'
+			);
+			expect( editor.getData() ).to.equalMarkup(
+				'<p><strong><br>foo</strong></p>'
 			);
 		} );
 
