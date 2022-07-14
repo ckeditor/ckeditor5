@@ -166,7 +166,7 @@ When we want to insert something into the document structure, we need to {@link 
 	What is the model? It's a DOM-like structure, that is converted into the view, which is what the user interacts with. If you want to learn more, you can read more about {@link framework/guides/architecture/editing-engine#model the model} and {@link framework/guides/architecture/editing-engine#view the view}.
 </info-box>
 
-We'll use the {@link module:engine/model/writer~Writer#insertContent `writer.insertContent()`} method to insert our timestamp into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~Writer#createText `writer.createText()`}.
+We'll use the {@link module:engine/model/model~Model#insertContent `writer.insertContent()`} method to insert our timestamp into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~Writer#createText `writer.createText()`}.
 
 ```js
 class Timestamp extends Plugin {

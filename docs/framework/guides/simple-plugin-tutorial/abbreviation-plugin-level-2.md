@@ -56,7 +56,7 @@ Notice that we added two classes. All UI elements of the editor need to have the
 
 As we have two similar input fields to create and we don't want to repeat ourselves, let's define a method `_createInput()`, which will produce them for us. It will accept the label of our input field.
 
-We'll use {@link module:ui/labeledinput/labeledfieldview~LabeledFieldView `LabeledFieldView`} class and we'll pass it the {@link module:ui/labeledfield/utils~createLabeledInputText `createLabeledInputText()`} function as the second argument. It's a helper coming from the CKEditor UI library that will take care of creating the input.
+We'll use {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class and we'll pass it the {@link module:ui/labeledfield/utils~createLabeledInputText `createLabeledInputText()`} function as the second argument. It's a helper coming from the CKEditor UI library that will take care of creating the input.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -228,7 +228,7 @@ export default class AbbreviationUI extends Plugin {
 
 We're almost done with our form view, we just need to add a couple of finishing touches.
 
-In the `constructor`, create a {@link module:ui:viewcollection~ViewCollection} with {@link module:ui/view~View#createCollection `createCollection()`} method. We'll put all our input and button views in the collection, and use it to update the `FormView` template with its newly created children.
+In the `constructor`, create a {@link module:ui/viewcollection~ViewCollection} with {@link module:ui/view~View#createCollection `createCollection()`} method. We'll put all our input and button views in the collection, and use it to update the `FormView` template with its newly created children.
 
 Let's also add `render()` method to our `FormView`.  We'll use there a helper {@link module:ui/bindings/submithandler~submitHandler `submitHandler()`} function, which intercepts a native DOM submit event, prevents the default web browser behavior (navigation and page reload) and fires the submit event on a view instead.
 

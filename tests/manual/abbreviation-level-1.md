@@ -389,7 +389,7 @@ ClassicEditor
 
 We have the button, so let's define what should happen after the user clicks it.
 
-We'll use the {@link module:engine/model/writer~Writer#insertContent `writer.insertContent()`} method to insert our abbreviation and its title attribute into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~Writer#createText `writer.createText()`}.
+We'll use the {@link module:engine/model/model~Model#insertContent `writer.insertContent()`} method to insert our abbreviation and its title attribute into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~Writer#createText `writer.createText()`}.
 
 ```js
 // abbreviation/abbreviationui.js
