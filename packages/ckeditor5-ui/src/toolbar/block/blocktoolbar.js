@@ -166,6 +166,11 @@ export default class BlockToolbar extends Plugin {
 				this._hidePanel();
 			}
 		} );
+
+		editor.ui.registerFocusableToolbar( this.toolbarView, {
+			beforeFocus: () => this._showPanel(),
+			afterBlur: () => this._hidePanel()
+		} );
 	}
 
 	/**
@@ -221,11 +226,15 @@ export default class BlockToolbar extends Plugin {
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	_createToolbarView() {
+		const t = this.editor.locale.t;
 		const shouldGroupWhenFull = !this._blockToolbarConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
 			shouldGroupWhenFull,
 			isFloating: true
 		} );
+
+		// TODO: Entry in contexts.json.
+		toolbarView.ariaLabel = t( 'Editor block content toolbar' );
 
 		// When toolbar lost focus then panel should hide.
 		toolbarView.focusTracker.on( 'change:isFocused', ( evt, name, is ) => {

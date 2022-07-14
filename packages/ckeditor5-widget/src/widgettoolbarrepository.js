@@ -160,6 +160,10 @@ export default class WidgetToolbarRepository extends Plugin {
 
 		toolbarView.fillFromConfig( items, editor.ui.componentFactory );
 
+		editor.ui.registerFocusableToolbar( toolbarView, {
+			isContextual: true
+		} );
+
 		this._toolbarDefinitions.set( toolbarId, {
 			view: toolbarView,
 			getRelatedElement,

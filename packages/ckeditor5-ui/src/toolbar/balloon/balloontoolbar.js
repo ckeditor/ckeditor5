@@ -79,6 +79,12 @@ export default class BalloonToolbar extends Plugin {
 			this.focusTracker.add( this.toolbarView.element );
 		} );
 
+		editor.ui.registerFocusableToolbar( this.toolbarView, {
+			beforeFocus: () => this.show( true ),
+			afterBlur: () => this.hide(),
+			isContextual: true
+		} );
+
 		/**
 		 * An instance of the resize observer that allows to respond to changes in editable's geometry
 		 * so the toolbar can stay within its boundaries (and group toolbar items that do not fit).
@@ -211,8 +217,10 @@ export default class BalloonToolbar extends Plugin {
 	 * Shows the toolbar and attaches it to the selection.
 	 *
 	 * Fires {@link #event:show} event which can be stopped to prevent the toolbar from showing up.
+	 *
+	 * @param {Boolean} showForCollapsedSelection TODO
 	 */
-	show() {
+	show( showForCollapsedSelection = false ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const schema = editor.model.schema;
@@ -223,7 +231,7 @@ export default class BalloonToolbar extends Plugin {
 		}
 
 		// Do not show the toolbar when the selection is collapsed.
-		if ( selection.isCollapsed ) {
+		if ( selection.isCollapsed && !showForCollapsedSelection ) {
 			return;
 		}
 
