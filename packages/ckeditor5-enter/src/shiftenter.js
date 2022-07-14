@@ -46,24 +46,21 @@ export default class ShiftEnter extends Plugin {
 		conversion.for( 'upcast' ).elementToElement( {
 			view: 'br',
 			model: ( viewElement, { writer, consumable } ) => {
-				// Find view sibling nodes (but ignore text nodes and inline elements).
-				const nextSibling = view.createPositionAfter( viewElement )
-					.getLastMatchingPosition( skipNonBlockElements )
-					.nodeAfter;
-				const previousSibling = view.createPositionBefore( viewElement )
-					.getLastMatchingPosition( skipNonBlockElements, { direction: 'backward' } )
-					.nodeBefore;
-
-				function skipNonBlockElements( { item } ) {
-					return item.is( 'element' ) && !blockElements.includes( item.name );
-				}
+				// Find view sibling nodes (threat inline elements as transparent):
+				// <p><strong>foo[<br>]</strong></p>[<p>bar</p>]
+				// <p><strong>foo[<br>]</strong></p>[]
+				// <p><strong>foo[<br>]</strong>[bar]</p>
+				// <p><strong>foo[<br>][bar]</strong></p>
+				const nextSibling = findSibling( viewElement, 'forward', view, blockElements );
+				const previousSibling = findSibling( viewElement, 'backward', view, blockElements );
 
 				const nextSiblingIsBlock = isBlockViewElement( nextSibling, blockElements );
 				const previousSiblingIsBlock = isBlockViewElement( previousSibling, blockElements );
 
 				// If the <br> is surrounded by blocks then convert it to a paragraph:
-				// * <p>foo</p><br><p>bar</p> -> <p>foo</p><p></p><p>bar</p>
-				// * <br><p>foo</p><br> -> <p></p><p>foo</p><p></p>
+				// * <p>foo</p>[<br>]<p>bar</p> -> <p>foo</p>[<p></p>]<p>bar</p>
+				// * <p>foo</p>[<br>] -> <p>foo</p>[<p></p>]
+				// * [<br>]<p>foo</p> -> [<p></p>]<p>foo</p>
 				//
 				// But don't convert if it's a <br> alone:
 				// * <br> -> <br>
@@ -79,9 +76,9 @@ export default class ShiftEnter extends Plugin {
 
 				// This element is the last in the current parent block so should be ignored (same as browser).
 				// Cases:
-				// * <p><br></p> -> <p></p>
-				// * <p>foo<br></p> -> <p>foo</p>
-				// * <p><span>foo<br></span></p> -> <p><span>foo</span></p>
+				// * <p>[<br>]</p> -> <p>[]</p>
+				// * <p>foo[<br>]</p> -> <p>foo[]</p>
+				// * <p><span>foo[<br>]</span></p> -> <p><span>foo[]</span></p>
 				if ( !nextSibling && parentBlock ) {
 					consumable.consume( viewElement, { name: true } );
 
@@ -89,7 +86,7 @@ export default class ShiftEnter extends Plugin {
 				}
 
 				// Ignore <br> that is followed by a block element (same as browser).
-				// * foo<br><p>bar</p> -> <p>foo</p><p>bar</p>
+				// * foo[<br>]<p>bar</p> -> <p>foo[]</p><p>bar</p>
 				if ( nextSiblingIsBlock ) {
 					consumable.consume( viewElement, { name: true } );
 
@@ -122,6 +119,17 @@ export default class ShiftEnter extends Plugin {
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 	}
+}
+
+// Returns sibling node, threats inline elements as transparent.
+function findSibling( viewElement, direction, view, blockElements ) {
+	let position = view.createPositionAt( viewElement, direction == 'forward' ? 'after' : 'before' );
+
+	position = position.getLastMatchingPosition( ( { item } ) => {
+		return item.is( 'element' ) && !blockElements.includes( item.name );
+	}, { direction } );
+
+	return direction == 'forward' ? position.nodeAfter : position.nodeBefore;
 }
 
 // Returns true for view elements that are listed as block view elements.

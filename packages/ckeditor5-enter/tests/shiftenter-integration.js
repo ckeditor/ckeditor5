@@ -11,6 +11,7 @@ import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import ShiftEnter from '../src/shiftenter';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -27,7 +28,7 @@ describe( 'ShiftEnter integration', () => {
 
 		document.body.appendChild( div );
 
-		return ClassicEditor.create( div, { plugins: [ Paragraph, ShiftEnter, LinkEditing, Delete, BoldEditing, Heading ] } )
+		return ClassicEditor.create( div, { plugins: [ Paragraph, ShiftEnter, LinkEditing, Delete, BoldEditing, Heading, BlockQuote ] } )
 			.then( newEditor => {
 				editor = newEditor;
 
@@ -72,7 +73,7 @@ describe( 'ShiftEnter integration', () => {
 		expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 	} );
 
-	describe( 'conversion', () => {
+	describe.only( 'conversion', () => {
 		beforeEach( () => {
 			editor.conversion.for( 'upcast' ).elementToElement( {
 				view: 'br',
@@ -160,6 +161,17 @@ describe( 'ShiftEnter integration', () => {
 			);
 		} );
 
+		it( 'should convert BR after a block to a paragraph (after first plain text of block-quote auto-paragraphed)', () => {
+			editor.setData( '<blockquote>foo<h2>bar</h2><br></blockquote>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<blockQuote><paragraph>foo</paragraph><heading1>bar</heading1><paragraph></paragraph></blockQuote>'
+			);
+			expect( editor.getData() ).to.equalMarkup(
+				'<blockquote><p>foo</p><h2>bar</h2><p>&nbsp;</p></blockquote>'
+			);
+		} );
+
 		it( 'should convert BR after a heading to a paragraph', () => {
 			editor.setData( '<h2>foo</h2><br>' );
 
@@ -223,17 +235,6 @@ describe( 'ShiftEnter integration', () => {
 			);
 			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
 				'<h2>foo</h2>'
-			);
-		} );
-
-		it( 'should convert a BR at the end of a block (wrapped with inline element)', () => {
-			editor.setData( '<p><strong>foo<br></strong></p>' );
-
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<paragraph><$text bold="true">foo</$text><softBreak></softBreak></paragraph>'
-			);
-			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
-				'<p><strong>foo</strong><br>&nbsp;</p>'
 			);
 		} );
 
