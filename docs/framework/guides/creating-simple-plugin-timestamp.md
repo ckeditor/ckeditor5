@@ -7,11 +7,11 @@ order: 10
 
 This guide will show you how to create a simple, basic plugin that will let the users insert timestamps into their document. This is a beginner friendly tutorial, perfect for your first interactions with the CKEditor 5 framework.
 
-We will create a toolbar button that will insert the current date and time at the caret position into the document. If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo) below.
+We will create a toolbar button that will insert the current date and time at the caret position into the document. If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo) below.
 
-## Let's start
+## Let's start!
 
-The easiest way to set up your project is to grab the starter files from our Github repository for this tutorial. We gathered all the necessary dependencies, including some CKEditor 5 packages and other files needed to build the editor.
+The easiest way to set up your project is to grab the starter files from our [Github repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/ci/1773/Timestamp%20plugin)<!-- Change link to final -->. We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to build the editor.
 
 The editor has already been created in the `app.js` file with some basic plugins. All you need to do, is clone the repository, run the `npm install` command, and you can start coding right away.
 
@@ -211,5 +211,6 @@ If you got lost at any point, see the final implementation of the plugin. You ca
 
 <info-box>
 	**What's next?**
+
 	You can read more about the {@link framework/guides/overview CKEditor 5 framework}, or continue with our next tutorial, where we will create {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin}.
 </info-box>
