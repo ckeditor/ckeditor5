@@ -3,23 +3,23 @@ category: framework-plugins
 order: 10
 ---
 
-# Creating a basic plugin - timestamp
+# Creating a basic plugin &ndash; timestamp
 
-This guide will show you how to create a most basic plugin that will let users insert timestamps into their document. This is a beginner friendly tutorial, perfect for your first interactions with CKEditor 5 and its framework.
+This guide will show you how to create a simple, basic plugin that will let the users insert timestamps into their document. This is a beginner friendly tutorial, perfect for your first interactions with the CKEditor 5 framework.
 
-We’ll create a toolbar button that will insert the current date and time at the caret position in the document. If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
+We will create a toolbar button that will insert the current date and time at the caret position into the document. If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo) below.
 
 ## Let's start
 
-The easiest way to set up your project is to grab the starter files from our Github repository for this tutorial. We gathered all the necessary dependencies, including some CK Editor 5 packages and others needed to build the editor.
+The easiest way to set up your project is to grab the starter files from our Github repository for this tutorial. We gathered all the necessary dependencies, including some CKEditor 5 packages and other files needed to build the editor.
 
-The editor is already created in `app.js` with some basic plugins. All you need to do is clone the repository, run `npm install`, and you can start coding right away.
+The editor has already been created in the `app.js` file with some basic plugins. All you need to do, is clone the repository, run the `npm install` command, and you can start coding right away.
 
-The webpack is configured already, so use `npm run build` to build your application. Whenever you want to check something in the browser, save the changes and run build, then refresh the page in your browser (remember about the cache).
+The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly).
 
-If you want to set up the project yourself, you should follow the steps listed in {@link framework/guides/quick-start the "Quick start" section}. Additionally, you'll need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the {@link module:core/plugin~Plugin} class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and framework.
+If you want to set up the project yourself, you should follow the steps listed in the {@link framework/guides/quick-start the "Quick start" section}. <!-- After adding the CDN QS this link is probably invalid-->Additionally, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the {@link module:core/plugin~Plugin} class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
 
-We're going to write the whole plugin in your base `app.js` file. It should look like this (maybe with a couple of different imports if you chose to set up the environment yourself):
+We are going to write the whole plugin in your base `app.js` file. It should look like the code listed below. There maybe a couple of different imports if you chose to set up the environment yourself.
 
 ```js
 // app.js
@@ -45,7 +45,7 @@ ClassicEditor
 	} );
 ```
 
-Your `index.html` should look like this. The editor will load with HTML content you put in the `<div id="editor">`.
+Your `index.html` should look as listed below. The editor will load with HTML content you put inside the `<div id="editor">` tags.
 
 ```html
 <!DOCTYPE html>
@@ -64,10 +64,12 @@ Your `index.html` should look like this. The editor will load with HTML content 
 	</body>
 </html>
 ```
+
 ## Creating a plugin
 
-All features in the CKEditor 5 are introduced by plugins. In order to create our custom timestamp plugin, we need to import the {@link module:core/plugin~Plugin base `Plugin` class}.
-You can now create a `Timestamp` class that extends `Plugin`. After we define it, we can add it into the editor's {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} array.
+All features in the CKEditor 5 are powered by plugins. In order to create our custom timestamp plugin, we need to import the {@link module:core/plugin~Plugin base `Plugin` class}.
+
+We can now create a `Timestamp` class that extends the basic `Plugin` class. After we define it, we can add it into the editor's {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} array.
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -101,16 +103,18 @@ ClassicEditor
 		console.error( error.stack );
 	} );
 ```
-Rebuild and check in your console if the timestamp was initialized. You should see this:
+
+Rebuild the editor and check in your console whether the timestamp was initialized. You should see this:
+
 SCREENSHOT
 
 ## Registering a toolbar button
 
-CKEditor 5 has a rich UI library, from where we'll grab the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class for our toolbar button.
+CKEditor 5 has a rich UI library. Form it, we will grab the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class for our toolbar button.
 
-Once we create a new instance of the `ButtonView`, we'll be able to customize it by setting its properties. We'll create a label, which will be visible on the button thanks to the {@link module:ui/button/buttonview~ButtonView#withText `withText`} property.
+Once we create a new instance of the `ButtonView`, we will be able to customize it by setting its properties. We will create a label, which will be visible on the button thanks to the {@link module:ui/button/buttonview~ButtonView#withText `withText`} property.
 
-We need to register our button in the editor's UI {@link module:ui/componentfactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar. We'll pass the name of the button in the {@link module:ui/componentfactory~ComponentFactory#add `componentFactory.add`} method, so we'll be able to add it into the {@link features/toolbar `config.toolbar`} array.
+We also need to register our button in the editor's UI {@link module:ui/componentfactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the {@link module:ui/componentfactory~ComponentFactory#add `componentFactory.add`} method, in order to be able to add it into the {@link features/toolbar `config.toolbar`} array.
 
 ```js
 // ...
@@ -154,19 +158,20 @@ ClassicEditor
 	} );
 
 ```
+
 You should be able to see the timestamp button now. It doesn't do anything just yet, so let's change that.
 
 ## Inserting a timestamp
 
-We can now define the core functionality of our plugin, the action that should be executed once our button is clicked.
+We can now define the core functionality of our plugin &ndash; the action that should be executed once our button is clicked.
 
-When we want to insert something into the document structure, we need to {@link framework/guides/architecture/editing-engine#changing-the-model change the model} using the model's `change()` method. This way we get access to {@link module:engine/model/writer~Writer the model writer}.
+In order to insert anything into the document structure, we need to {@link framework/guides/architecture/editing-engine#changing-the-model change the model} using the model's `change()` method. This way we get access to the {@link module:engine/model/writer~Writer model writer}.
 
 <info-box>
-	What is the model? It's a DOM-like structure, that is converted into the view, which is what the user interacts with. If you want to learn more, you can read more about {@link framework/guides/architecture/editing-engine#model the model} and {@link framework/guides/architecture/editing-engine#view the view}.
+	What is the model? It is a DOM-like structure, that is converted into the view, which is the layer that the user interacts with. You can read more about {@link framework/guides/architecture/editing-engine#model the model} and {@link framework/guides/architecture/editing-engine#view the view} in dedicated guides.
 </info-box>
 
-We'll use the {@link module:engine/model/model~Model#insertContent `writer.insertContent()`} method to insert our timestamp into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~Writer#createText `writer.createText()`}.
+We will use the {@link module:engine/model/model~Model#insertContent `writer.insertContent()`} method to insert our timestamp into the document. Inside, we just need to create a new text node with the {@link module:engine/model/writer~Writer#createText `writer.createText()`} method.
 
 ```js
 class Timestamp extends Plugin {
@@ -196,8 +201,6 @@ class Timestamp extends Plugin {
 
 Well done! Your timestamp plugin is now ready.
 
-What's next? You can read more about the {@link framework/guides/overview CKEditor 5 framework}, or continue with our next tutorial, where we'll create {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin}.
-
 ## Demo
 
 {@snippet framework/timestamp-plugin}
@@ -205,3 +208,8 @@ What's next? You can read more about the {@link framework/guides/overview CKEdit
 ## Full code
 
 If you got lost at any point, see the final implementation of the plugin. You can paste the code from `app.js`, or clone and install the whole thing, and it will run out-of-the-box.
+
+<info-box>
+	**What's next?**
+	You can read more about the {@link framework/guides/overview CKEditor 5 framework}, or continue with our next tutorial, where we will create {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin}.
+</info-box>
