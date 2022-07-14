@@ -252,6 +252,8 @@ export default class SourceEditing extends Plugin {
 				writer.addClass( 'ck-hidden', viewRoot );
 			} );
 
+			editor.ui.registerFocusableEditingArea( domSourceEditingElementTextarea );
+
 			this._replacedRoots.set( rootName, domSourceEditingElementWrapper );
 
 			this._elementReplacer.replace( domRootElement, domSourceEditingElementWrapper );
@@ -274,10 +276,8 @@ export default class SourceEditing extends Plugin {
 		this._updateEditorData();
 
 		editingView.change( writer => {
-			for ( const [ rootName, wrapper ] of this._replacedRoots ) {
+			for ( const [ rootName ] of this._replacedRoots ) {
 				writer.removeClass( 'ck-hidden', editingView.document.getRoot( rootName ) );
-
-				editor.ui.focusTracker.remove( wrapper.querySelector( 'textarea' ) );
 			}
 		} );
 
@@ -323,9 +323,6 @@ export default class SourceEditing extends Plugin {
 		const editor = this.editor;
 		const [ domSourceEditingElementWrapper ] = this._replacedRoots.values();
 		const textarea = domSourceEditingElementWrapper.querySelector( 'textarea' );
-
-		// Keep the editor UI focused while the editing goes in the <textarea>.
-		editor.ui.focusTracker.add( textarea );
 
 		// The FocusObserver was disabled by View.render() while the DOM root was getting hidden and the replacer
 		// revealed the textarea. So it couldn't notice that the DOM root got blurred in the process.
