@@ -106,7 +106,7 @@ ClassicEditor
 
 Rebuild the editor and check in your console whether the timestamp was initialized. You should see this:
 
-SCREENSHOT
+{@img assets/img/timestamp.png Screenshot of the editor and the console showing 'Editor was initialized".}
 
 ## Registering a toolbar button
 
@@ -171,7 +171,7 @@ In order to insert anything into the document structure, we need to {@link frame
 	What is the model? It is a DOM-like structure, that is converted into the view, which is the layer that the user interacts with. You can read more about {@link framework/guides/architecture/editing-engine#model the model} and {@link framework/guides/architecture/editing-engine#view the view} in dedicated guides.
 </info-box>
 
-We will use the {@link module:engine/model/model~Model#insertContent `writer.insertContent()`} method to insert our timestamp into the document. Inside, we just need to create a new text node with the {@link module:engine/model/writer~Writer#createText `writer.createText()`} method.
+We will use the {@link module:engine/model/model~Model#insertContent `insertContent()`} method to insert our timestamp into the document. Inside, we just need to create a new text node with the {@link module:engine/model/writer~Writer#createText `writer.createText()`} method.
 
 ```js
 class Timestamp extends Plugin {

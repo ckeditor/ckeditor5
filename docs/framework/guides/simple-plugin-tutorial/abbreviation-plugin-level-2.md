@@ -431,7 +431,8 @@ export default class AbbreviationUI extends Plugin {
 ```
 
 You should be able to see your balloon and form now! Check and see your balloon pop up (we'll get to hiding it in a couple of steps). It should look like this:
-SCREENSHOT
+
+{@img assets/img/abbreviation-part2.png Screenshot of the balloon with the form view.}
 
 ## Getting user input
 
