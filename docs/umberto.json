@@ -115,7 +115,7 @@
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
-		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html",
+		"framework/guides/creating-simple-plugin-timestamp.html": "framework/guides/plugins/creating-simple-plugin.html",
 		"builds/index.html": "installation/index.html",
 		"builds/guides/migrate.html": "installation/getting-started/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-to-25.0.0.html": "updating/migration-to-25.html",

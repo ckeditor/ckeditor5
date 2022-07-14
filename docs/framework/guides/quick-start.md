@@ -239,6 +239,6 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 
 ## What's next?
 
-If you finished this guide, you should definitely check out the {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide that will teach you some basics of developing features in the CKEditor 5 ecosystem.
+If you finished this guide, you should definitely check out the {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide that will teach you some basics of developing features in the CKEditor 5 ecosystem.
 
 If you are more into reading about the CKEditor 5 architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture}.
