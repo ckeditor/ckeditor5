@@ -245,26 +245,26 @@ export default class EditorUI {
 				console.log( 'adding', viewOrElement, 'to KH' );
 				this.editor.keystrokes.listenTo( viewOrElement );
 			}
-
-			return;
 		}
-
-		if ( viewOrElement.isRendered ) {
-			this.focusTracker.add( viewOrElement.element );
-
-			// The Editor class is already listening to the editing view (KeyObserver). Do not duplicate listeners.
-			if ( !isDomRootElement( viewOrElement.element ) ) {
-				this.editor.keystrokes.listenTo( viewOrElement.element );
-			}
-		} else {
-			viewOrElement.once( 'render', () => {
+		// TODO: When the source editing plugin is rewritten to use UI View, this will prove handy. For now, probably could be removed.
+		else {
+			if ( viewOrElement.isRendered ) {
 				this.focusTracker.add( viewOrElement.element );
 
 				// The Editor class is already listening to the editing view (KeyObserver). Do not duplicate listeners.
 				if ( !isDomRootElement( viewOrElement.element ) ) {
 					this.editor.keystrokes.listenTo( viewOrElement.element );
 				}
-			} );
+			} else {
+				viewOrElement.once( 'render', () => {
+					this.focusTracker.add( viewOrElement.element );
+
+					// The Editor class is already listening to the editing view (KeyObserver). Do not duplicate listeners.
+					if ( !isDomRootElement( viewOrElement.element ) ) {
+						this.editor.keystrokes.listenTo( viewOrElement.element );
+					}
+				} );
+			}
 		}
 
 		this._focusableEditingAreas.add( viewOrElement );
@@ -471,6 +471,8 @@ export default class EditorUI {
 			console.log( `✅ Finally focused ${ logToolbar( candidateToolbarDefToFocus.toolbarView ) }.` );
 		};
 
+		let lastFocusedEditingArea;
+
 		// Focus the toolbar on the keystroke, if not already focused.
 		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
 			// console.clear();
@@ -478,6 +480,11 @@ export default class EditorUI {
 
 			if ( !this.focusTracker.isFocused ) {
 				return;
+			}
+
+			console.log( this._focusableEditingAreas, this.focusTracker.focusedElement );
+			if ( this._focusableEditingAreas.has( this.focusTracker.focusedElement ) ) {
+				lastFocusedEditingArea = this.focusTracker.focusedElement;
 			}
 
 			const toolbarDefinitions = getFocusableToolbarDefinitions();
@@ -490,17 +497,48 @@ export default class EditorUI {
 		} );
 
 		// Blur the toolbar and bring the focus back to origin.
-		// toolbar.keystrokes.set( 'Esc', ( data, cancel ) => {
-		// 	if ( toolbar.focusTracker.isFocused ) {
-		// 		origin.focus();
+		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
+			console.group( 'Esc was pressed' );
+			const toolbarDefinitions = getFocusableToolbarDefinitions();
+			const focusedToolbarDef = getCurrentFocusedToolbarDefinition( toolbarDefinitions );
 
-		// 		if ( afterBlur ) {
-		// 			afterBlur();
-		// 		}
+			if ( !focusedToolbarDef ) {
+				console.log( 'No toolbar was focused. No action needed.' );
+				console.groupEnd( 'Esc was pressed' );
 
-		// 		cancel();
-		// 	}
-		// } );
+				return;
+			}
+
+			// Bring focus back to where it came from before focusing the toolbar.
+			if ( lastFocusedEditingArea ) {
+				console.log( 'Moving focus back where it came from', lastFocusedEditingArea );
+				lastFocusedEditingArea.focus();
+				lastFocusedEditingArea = null;
+			}
+			// It could be the focus went straight to the toolbar before even focusing the editing area.
+			// Focus the first visible editing area then.
+			else {
+				console.log( 'Looks like the focus went straight to the toolbar.' );
+
+				for ( const focusableEditingArea of this._focusableEditingAreas ) {
+					if ( isVisible( focusableEditingArea ) ) {
+						console.log( 'Focusing the first visible focusable editing area', focusableEditingArea );
+						focusableEditingArea.focus();
+
+						break;
+					}
+				}
+			}
+
+			// Clean up after the toolbar if there is anything to do there.
+			if ( focusedToolbarDef.options.afterBlur ) {
+				focusedToolbarDef.options.afterBlur();
+			}
+
+			cancel();
+
+			console.groupEnd( 'Esc was pressed' );
+		} );
 	}
 
 	/**
