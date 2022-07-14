@@ -7,15 +7,17 @@ order: 10
 
 This guide will show you how to create a most basic plugin that will let users insert timestamps into their document. This is a beginner friendly tutorial, perfect for your first interactions with CKEditor 5 and its framework.
 
-<info-box>
-	The easiest way to start is to clone the repository with our tutorials. Running webpack with the `-w` option will start it in the watch mode. This means that webpack will watch your files for changes and rebuild the application every time you save them.
-
-	If you'd like to set up the framework and building tools yourself, check out the {@link framework/guides/quick-start Quick start} and the {@link framework/guides/package-generator package generator guide}.
-</info-box>
-
 We’ll create a toolbar button that will insert the current date and time at the caret position in the document. If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
 
 ## Let's start
+
+The easiest way to set up your project is to grab the starter files from our Github repository for this tutorial. We gathered all the necessary dependencies, including some CK Editor 5 packages and others needed to build the editor.
+
+The editor is already created in `app.js` with some basic plugins. All you need to do is clone the repository, run `npm install`, and you can start coding right away.
+
+The webpack is configured already, so use `npm run build` to build your application. Whenever you want to check something in the browser, save the changes and run build, then refresh the page in your browser (remember about the cache).
+
+If you want to set up the project yourself, you should follow the steps listed in {@link framework/guides/quick-start the "Quick start" section}. Additionally, you'll need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the {@link module:core/plugin~Plugin} class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and framework.
 
 We're going to write the whole plugin in your base `app.js` file. It should look like this (maybe with a couple of different imports if you chose to set up the environment yourself):
 
@@ -202,54 +204,4 @@ What's next? You can read more about the {@link framework/guides/overview CKEdit
 
 ## Full code
 
-```js
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-class Timestamp extends Plugin {
-	init() {
-		const editor = this.editor;
-
-		editor.ui.componentFactory.add( 'timestamp', () => {
-			const button = new ButtonView();
-
-			button.set( {
-				label: 'Timestamp',
-				withText: true
-			} );
-
-			button.on( 'execute', () => {
-				const now = new Date();
-
-				editor.model.change( writer => {
-					editor.model.insertContent( writer.createText( now.toString() ) );
-				} );
-			} );
-
-			return button;
-		} );
-	}
-}
-
-ClassicEditor
-	.create( document.querySelector( '#snippet-timestamp-plugin' ), {
-		plugins: [ Timestamp, Essentials, Bold, Italic, Heading, List, Paragraph ],
-		toolbar: [ 'timestamp', '|', 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList' ]
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err );
-	} );
-
-```
+If you got lost at any point, see the final implementation of the plugin. You can paste the code from `app.js`, or clone and install the whole thing, and it will run out-of-the-box.
