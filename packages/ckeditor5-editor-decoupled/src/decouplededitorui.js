@@ -8,7 +8,6 @@
  */
 
 import { EditorUI } from 'ckeditor5/src/core';
-import { enableToolbarKeyboardFocus } from 'ckeditor5/src/ui';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 
 /**
@@ -59,11 +58,6 @@ export default class DecoupledEditorUI extends EditorUI {
 		// editable areas (roots) but the decoupled editor has only one.
 		this.setEditableElement( editable.name, editableElement );
 
-		// Let the global focus tracker know that the editable UI element is focusable and
-		// belongs to the editor. From now on, the focus tracker will sustain the editor focus
-		// as long as the editable is focused (e.g. the user is typing).
-		this.focusTracker.add( editableElement );
-
 		// Let the editable UI element respond to the changes in the global editor focus
 		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
 		// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
@@ -107,12 +101,7 @@ export default class DecoupledEditorUI extends EditorUI {
 
 		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
 
-		enableToolbarKeyboardFocus( {
-			origin: editor.editing.view,
-			originFocusTracker: this.focusTracker,
-			originKeystrokeHandler: editor.keystrokes,
-			toolbar
-		} );
+		this.registerFocusableToolbar( view.toolbar );
 	}
 
 	/**
