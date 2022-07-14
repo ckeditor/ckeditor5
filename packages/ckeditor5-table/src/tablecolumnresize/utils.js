@@ -92,23 +92,37 @@ export function getElementWidthInPixels( domElement ) {
  * @returns {Number}
  */
 export function getTableWidthInPixels( table, editor ) {
-	const viewTbody = getTbodyViewElement( table, editor );
-	const domTbody = editor.editing.view.domConverter.mapViewToDom( viewTbody );
+	// It is possible for table to not have a <tbody> element - see #11878.
+	const referenceElement = getTbodyViewElement( table, editor ) || getTheadViewElement( table, editor );
+	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement );
 
-	return getElementWidthInPixels( domTbody );
+	return getElementWidthInPixels( domReferenceElement );
 }
 
 // Returns the `<tbody>` view element, if it exists in a table. Returns `undefined` otherwise.
 //
 // @private
-// @param {module:engine/model/element~Element} table
+// @param {module:engine/model/element~Element} modelTable
 // @param {module:core/editor/editor~Editor} editor
 // @returns {module:engine/view/element~Element|undefined}
-function getTbodyViewElement( table, editor ) {
-	const viewFigure = editor.editing.mapper.toViewElement( table );
+function getTbodyViewElement( modelTable, editor ) {
+	const viewFigure = editor.editing.mapper.toViewElement( modelTable );
 	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
 
 	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'tbody' ) );
+}
+
+// Returns the `<thead>` view element, if it exists in a table. Returns `undefined` otherwise.
+//
+// @private
+// @param {module:engine/model/element~Element} modelTable
+// @param {module:core/editor/editor~Editor} editor
+// @returns {module:engine/view/element~Element|undefined}
+function getTheadViewElement( modelTable, editor ) {
+	const viewFigure = editor.editing.mapper.toViewElement( modelTable );
+	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
+
+	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'thead' ) );
 }
 
 /**
