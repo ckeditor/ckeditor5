@@ -291,6 +291,79 @@ export function focusChildOnDropdownOpen( dropdownView, childSelectorCallback ) 
 	}, { priority: 'low' } );
 }
 
+export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns ) {
+	console.log( 'grid' );
+	//dropdown.listenTo( document, 'arrowdown', ( evt, domEvt ) => {
+	//	console.log( 'arrowdown' );
+	//}, { priority: 'highest' } );
+
+	//const gridElements = [ ...gridElements2.children ];
+
+	
+
+	view.keystrokes.set( 'arrowright', ( evt ) => {
+		//console.log( gridElements[0].isOn );
+		//console.log( gridElements[1].isOn );
+		//console.log( getFocusedElement( gridElements ) );
+		//gridElements[1].focus();
+		//console.log( gridElements[0].isOn );
+		//console.log( gridElements[1].isOn );
+		//console.log( getFocusedElement( gridElements ) );
+
+		const focusedElementIndex = getFocusedElement( gridElements );
+		// TODO: for tables'd be ok, for others should not change row no
+		if ( focusedElementIndex === gridElements.length - 1 ) {
+			gridElements[ 0 ].focus();
+		} else {
+			gridElements[ focusedElementIndex + 1 ].focus();
+		}
+
+		evt.stopPropagation();
+	} );
+
+	view.keystrokes.set( 'arrowleft', ( evt ) => {
+		const focusedElementIndex = getFocusedElement( gridElements );
+		// TODO: for tables'd be ok, for others should not change row no
+		if ( focusedElementIndex === 0 ) {
+			gridElements[ gridElements.length - 1 ].focus();
+		} else {
+			gridElements[ focusedElementIndex - 1 ].focus();
+		}
+
+		evt.stopPropagation();
+	} );
+
+	view.keystrokes.set( 'arrowup', ( evt ) => {
+		const focusedElementIndex = getFocusedElement( gridElements );
+		let nextIndex = focusedElementIndex - numberOfColumns;
+
+		if ( nextIndex < 0 ) {
+			//todo
+		}
+
+		gridElements[ nextIndex ].focus();
+
+		evt.stopPropagation();
+	} );
+
+	view.keystrokes.set( 'arrowdown', ( evt ) => {
+		const focusedElementIndex = getFocusedElement( gridElements );
+		let nextIndex = focusedElementIndex + numberOfColumns;
+
+		if ( nextIndex > gridElements.length - 1 ) {
+			nextIndex = focusedElementIndex % numberOfColumns;
+		}
+
+		gridElements[ nextIndex ].focus();
+
+		evt.stopPropagation();
+	} );
+
+	function getFocusedElement( gridElements ) {
+		return gridElements.findIndex( ( elem ) => elem.element === document.activeElement );
+	}
+}
+
 // Add a set of default behaviors to dropdown view.
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView

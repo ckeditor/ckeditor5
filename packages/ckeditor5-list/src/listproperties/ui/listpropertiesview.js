@@ -13,7 +13,8 @@ import {
 	FocusCycler,
 	SwitchButtonView,
 	LabeledFieldView,
-	createLabeledInputNumber
+	createLabeledInputNumber,
+	addKeyboardHandlingForGrid
 } from 'ckeditor5/src/ui';
 import {
 	FocusTracker,
@@ -205,14 +206,21 @@ export default class ListPropertiesView extends View {
 			}, { priority: 'high' } );
 
 			const stopPropagation = data => data.stopPropagation();
+			const stopPropagation2 = data => {
+				console.log( 'stopPropagation2', this.children, this.stylesView );
+				data.stopPropagation()
+			};
 
 			// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
 			// keystroke handler would take over the key management in the input. We need to prevent
 			// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
-			this.keystrokes.set( 'arrowright', stopPropagation );
-			this.keystrokes.set( 'arrowleft', stopPropagation );
-			this.keystrokes.set( 'arrowup', stopPropagation );
-			this.keystrokes.set( 'arrowdown', stopPropagation );
+			//this.keystrokes.set( 'arrowright', stopPropagation );
+			//this.keystrokes.set( 'arrowleft', stopPropagation );
+			//this.keystrokes.set( 'arrowup', stopPropagation );
+			//this.keystrokes.set( 'arrowdown', stopPropagation );
+			//this.keystrokes.set( 'arrowdown', stopPropagation2 );
+
+			addKeyboardHandlingForGrid( this, [ ...this.stylesView.children ], 4 );
 		}
 
 		if ( this.reversedSwitchButtonView ) {
