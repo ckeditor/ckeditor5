@@ -13,7 +13,7 @@ import { normalizeColumnWidths } from './utils';
  * Returns a helper for converting a view `<colgroup>` and `<col>` elements to the model table `columnWidths` attribute.
  *
  * Only the inline width, provided as a percentage value, in the `<col>` element is taken into account. If there are not enough `<col>`
- * elements matching this condition, the special value 'auto' is returned. It indicates that the width of a column will be automatically
+ * elements matching this condition, the special value `auto` is returned. It indicates that the width of a column will be automatically
  * calculated in the
  * {@link module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing#_setupPostFixer post-fixer}, depending
  * on the available table space.

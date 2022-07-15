@@ -100,15 +100,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * @member {Map}
 		 */
 		this._columnIndexMap = new Map();
-
-		/**
-		 * Internal map to store reference between a cell and operation that was performed on it (insert/remove). This is required
-		 * in order to add/remove resizers based on operation performed (which is done on 'render').
-		 *
-		 * @private
-		 * @member {Map}
-		 */
-		this._cellsModified = new Map();
 	}
 
 	/**
@@ -208,7 +199,6 @@ export default class TableColumnResizeEditing extends Plugin {
 	_setupPostFixer() {
 		const editor = this.editor;
 		const columnIndexMap = this._columnIndexMap;
-		const cellsModified = this._cellsModified;
 
 		editor.model.document.registerPostFixer( writer => {
 			const changes = editor.model.document.differ.getChanges();
@@ -229,7 +219,6 @@ export default class TableColumnResizeEditing extends Plugin {
 					// `columnIndex` reference in the map is required to properly handle column insertion and deletion.
 					if ( !columnIndexMap.has( cell ) ) {
 						columnIndexMap.set( cell, column );
-						cellsModified.set( cell, 'insert' );
 
 						changed = true;
 
@@ -253,7 +242,6 @@ export default class TableColumnResizeEditing extends Plugin {
 						}
 
 						columnIndexMap.set( cell, column );
-						cellsModified.set( cell, 'insert' );
 
 						changed = true;
 					}
@@ -269,7 +257,6 @@ export default class TableColumnResizeEditing extends Plugin {
 						}
 
 						columnIndexMap.set( cell, column );
-						cellsModified.set( cell, 'insert' );
 
 						changed = true;
 					}
