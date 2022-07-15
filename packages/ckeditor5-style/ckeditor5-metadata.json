@@ -1,0 +1,25 @@
+{
+	"plugins": [
+		{
+			"name": "Style",
+			"className": "Style",
+			"description": "Allows applying pre-configured styles to editor content.",
+			"docs": "",
+			"path": "src/style.js",
+			"uiComponents": [
+				{
+					"type": "Dropdown",
+					"name": "style",
+					"label": "Style"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "*",
+					"classes": "*",
+					"_comment": "The plugin can output any arbitrary HTML depending on its configuration."
+				}
+			]
+		}
+	]
+}

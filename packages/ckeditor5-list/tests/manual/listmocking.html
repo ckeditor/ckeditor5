@@ -1,0 +1,105 @@
+<style>
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 14px;
+	}
+
+	pre, code {
+		font-size: 11px;
+		font-family: Menlo, Consolas, Lucida Console, Courier New, dejavu sans mono, monospace;
+	}
+
+	#data-input {
+		white-space: pre-wrap;
+		font-family: monospace;
+		display: block;
+		width: 100%;
+		height: 100px;
+		box-sizing: border-box;
+		margin: 10px 0;
+		height: 200px;
+	}
+
+	#data-output {
+		border: 1px black solid;
+		height: 200px;
+		padding: 1em;
+		background-color: rgb(246, 246, 246);
+	}
+
+	#copy-container {
+		position: absolute;
+	}
+
+	#btn-copy-output {
+		position: relative;
+	}
+
+	#btn-copy-label {
+		opacity: 1;
+		position: absolute;
+		right: -50px;
+		transition: opacity 1000ms;
+	}
+
+	#btn-copy-label.hide {
+		opacity: 0;
+	}
+
+	.highlight-lists .ck-content ul, .highlight-lists .ck-content ol {
+		border: 2px dashed blue;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin: 5px;
+	}
+
+	.highlight-lists .ck-content li {
+		border: 2px dotted red;
+		padding: 5px;
+		margin: 5px;
+	}
+
+	.block-widget {
+		width: 100%;
+		height: 50px;
+		background: hsl(120deg 54% 57%);
+		display: block;
+	}
+
+	.inline-widget {
+		width: 25px;
+		height: 25px;
+		background: hsl(303, 82%, 41%);
+		display: inline-block;
+		margin: 0 5px;
+	}
+</style>
+
+<h2>Input</h2>
+<div>
+	<input type="radio" id="input-model" name="input-type" value="model" checked>
+	<label for="input-model">Stringified model</label>
+
+	<input type="radio" id="input-ascii" name="input-type" value="ascii">
+	<label for="input-ascii"><code>modelList()</code> helper</label>
+</div>
+<textarea id="data-input"></textarea>
+<div style="margin: 16px 0px;">
+	<button id="btn-process-input">↓ Set model data ↓</button>
+	<button id="btn-process-editor-model">↑ Get model data ↑</button>
+	<input id="chbx-process-on-paste" type="checkbox" />
+	<label for="chbx-process-on-paste">Set model data on paste</label>
+	<input id="chbx-should-copy" type="checkbox" />
+	<label for="chbx-should-copy">Automatically copy output</label>
+	<input id="chbx-highlight-lists" type="checkbox" />
+	<label for="chbx-highlight-lists">Highlight list elements</label>
+</div>
+
+<div id="editor">
+</div>
+
+<h2>Output</h2>
+<div>
+	<button id="btn-copy-output">Copy</button>
+</div>
+<pre id="data-output"></pre>
