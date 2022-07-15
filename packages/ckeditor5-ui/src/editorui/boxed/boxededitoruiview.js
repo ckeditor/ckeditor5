@@ -8,7 +8,6 @@
  */
 
 import EditorUIView from '../../editorui/editoruiview';
-import LabelView from '../../label/labelview';
 
 /**
  * The boxed editor UI view class. This class represents an editor interface
@@ -43,15 +42,6 @@ export default class BoxedEditorUIView extends EditorUIView {
 		 */
 		this.main = this.createCollection();
 
-		/**
-		 * Voice label of the UI.
-		 *
-		 * @protected
-		 * @readonly
-		 * @member {module:ui/view~View} #_voiceLabelView
-		 */
-		this._voiceLabelView = this._createVoiceLabel();
-
 		this.setTemplate( {
 			tag: 'div',
 
@@ -64,12 +54,10 @@ export default class BoxedEditorUIView extends EditorUIView {
 				],
 				role: 'application',
 				dir: locale.uiLanguageDirection,
-				lang: locale.uiLanguage,
-				'aria-labelledby': this._voiceLabelView.id
+				lang: locale.uiLanguage
 			},
 
 			children: [
-				this._voiceLabelView,
 				{
 					tag: 'div',
 					attributes: {
@@ -95,26 +83,5 @@ export default class BoxedEditorUIView extends EditorUIView {
 				}
 			]
 		} );
-	}
-
-	/**
-	 * Creates a voice label view instance.
-	 *
-	 * @private
-	 * @returns {module:ui/label/labelview~LabelView}
-	 */
-	_createVoiceLabel() {
-		const t = this.t;
-		const voiceLabel = new LabelView();
-
-		voiceLabel.text = t( 'Rich Text Editor' );
-
-		voiceLabel.extendTemplate( {
-			attributes: {
-				class: 'ck-voice-label'
-			}
-		} );
-
-		return voiceLabel;
 	}
 }
