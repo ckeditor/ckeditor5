@@ -11,7 +11,7 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 
 CKEditor 5 is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM. It is written from scratch in ES6 and has excellent webpack support. It provides every type of WYSIWYG editing solution imaginable with extensive collaboration support. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all of which is possible within a single editing framework. As a market leader, it is constantly expanded and updated.
 
-![CKEditor 5 Classic rich text editor build screenshot](https://user-images.githubusercontent.com/68123541/160365501-894a609b-c890-4c4e-bc29-20ab0aeda788.png)
+![Composition of screenshots presenting various features of CKEditor 5 rich text editor](https://user-images.githubusercontent.com/1099479/179190754-f4aaf2b3-21cc-49c4-a454-8de4a00cc70e.jpg)
 
 ## Table of contents
 
