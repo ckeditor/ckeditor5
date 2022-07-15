@@ -32,7 +32,6 @@ import {
 	getColumnMinWidthAsPercentage,
 	getElementWidthInPixels,
 	getTableWidthInPixels,
-	getNumberOfColumn,
 	normalizeColumnWidths,
 	toPrecision,
 	insertColumnResizerElement,
@@ -158,8 +157,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	_setupConversion() {
 		const editor = this.editor;
 		const conversion = editor.conversion;
-
-		conversion.for( 'upcast' ).attributeToAttribute( {
+		const widthStyleToTableWidthDefinition = {
 			view: {
 				name: 'figure',
 				key: 'style',
@@ -172,9 +170,8 @@ export default class TableColumnResizeEditing extends Plugin {
 				key: 'tableWidth',
 				value: viewElement => viewElement.getStyle( 'width' )
 			}
-		} );
-
-		conversion.for( 'downcast' ).attributeToAttribute( {
+		};
+		const tableWidthToWidthStyleDefinition = {
 			model: {
 				name: 'table',
 				key: 'tableWidth'
@@ -186,9 +183,12 @@ export default class TableColumnResizeEditing extends Plugin {
 					width
 				}
 			} )
-		} );
+		};
 
-		conversion.for( 'upcast' ).add( upcastColgroupElement( editor ) );
+		conversion.for( 'upcast' ).attributeToAttribute( widthStyleToTableWidthDefinition );
+		conversion.for( 'upcast' ).add( upcastColgroupElement( editor.plugins.get( 'TableUtils' ) ) );
+
+		conversion.for( 'downcast' ).attributeToAttribute( tableWidthToWidthStyleDefinition );
 		conversion.for( 'downcast' ).add( downcastTableColumnWidthsAttribute() );
 	}
 
@@ -275,7 +275,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					}
 				}
 
-				const numberOfColumns = getNumberOfColumn( table, editor );
+				const numberOfColumns = editor.plugins.get( 'TableUtils' ).getColumns( table );
 				const isColumnInsertionAtEnd = numberOfColumns > columnWidths.length;
 				const isColumnDeletionAtEnd = numberOfColumns < columnWidths.length;
 
@@ -382,7 +382,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	_calculateDomColumnWidths( modelTable ) {
 		const editor = this.editor;
-		const columnWidthsInPx = Array( getNumberOfColumn( modelTable, editor ) );
+		const columnWidthsInPx = Array( editor.plugins.get( 'TableUtils' ).getColumns( modelTable ) );
 		const tableWalker = new TableWalker( modelTable );
 
 		for ( const cellSlot of tableWalker ) {
@@ -414,7 +414,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	_insertColgroupElement( viewWriter, modelTable, columnWidthsInPx, viewTable ) {
 		const colgroup = viewWriter.createContainerElement( 'colgroup' );
 
-		const numberOfColumns = getNumberOfColumn( modelTable, this.editor );
+		const numberOfColumns = this.editor.plugins.get( 'TableUtils' ).getColumns( modelTable );
 
 		for ( let i = 0; i < numberOfColumns; i++ ) {
 			const viewColElement = viewWriter.createEmptyElement( 'col' );
@@ -627,7 +627,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelTable = modelLeftCell.findAncestor( 'table' );
 
 		const leftColumnIndex = getColumnIndex( modelLeftCell, this._columnIndexMap ).rightEdge;
-		const lastColumnIndex = getNumberOfColumn( modelTable, editor ) - 1;
+		const lastColumnIndex = editor.plugins.get( 'TableUtils' ).getColumns( modelTable ) - 1;
 
 		const isRightEdge = leftColumnIndex === lastColumnIndex;
 		const isTableCentered = !modelTable.hasAttribute( 'tableAlignment' );

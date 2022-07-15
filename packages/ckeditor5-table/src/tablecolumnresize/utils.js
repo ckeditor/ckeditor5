@@ -133,17 +133,6 @@ export function getColumnIndex( cell, columnIndexMap ) {
 }
 
 /**
- * Returns the total number of columns in a table.
- *
- * @param {module:engine/model/element~Element} table
- * @param {module:core/editor/editor~Editor} editor
- * @returns {Number}
- */
-export function getNumberOfColumn( table, editor ) {
-	return editor.plugins.get( 'TableUtils' ).getColumns( table );
-}
-
-/**
  * Rounds the provided value to a fixed-point number with defined number of digits after the decimal point.
  *
  * @param {Number|String} value

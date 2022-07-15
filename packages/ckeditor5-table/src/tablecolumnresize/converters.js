@@ -7,7 +7,7 @@
  * @module table/tablecolumnresize/converters
  */
 
-import { getNumberOfColumn, normalizeColumnWidths } from './utils';
+import { normalizeColumnWidths } from './utils';
 
 /**
  * Returns a helper for converting a view `<colgroup>` and `<col>` elements to the model table `columnWidths` attribute.
@@ -18,21 +18,22 @@ import { getNumberOfColumn, normalizeColumnWidths } from './utils';
  * {@link module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing#_setupPostFixer post-fixer}, depending
  * on the available table space.
  *
- * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * @param {module:core/plugin~Plugin} tableUtilsPlugin The TableUtils plugin instance.
  * @returns {Function} Conversion helper.
  */
-export function upcastColgroupElement( editor ) {
+export function upcastColgroupElement( tableUtilsPlugin ) {
 	return dispatcher => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
-		if ( !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
+		const viewColgroupElement = data.viewItem;
+
+		if ( !conversionApi.consumable.test( viewColgroupElement, { name: true } ) ) {
 			return;
 		}
 
-		conversionApi.consumable.consume( data.viewItem, { name: true } );
+		conversionApi.consumable.consume( viewColgroupElement, { name: true } );
 
 		// DOMParser won't allow `colgroup` element outside a `table` one, so we don't need a check.
 		const modelTable = data.modelCursor.findAncestor( 'table' );
-		const viewColgroupElement = data.viewItem;
-		const numberOfColumns = getNumberOfColumn( modelTable, editor );
+		const numberOfColumns = tableUtilsPlugin.getColumns( modelTable );
 
 		let columnWidths = [ ...Array( numberOfColumns ).keys() ]
 			.map( columnIndex => {
@@ -90,7 +91,7 @@ export function downcastTableColumnWidthsAttribute() {
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
 // @param {module:engine/view/element~Element} viewTable View table.
-// @param {String} columnWidthsAttribute Column width attribute from model table.
+// @param {String} columnWidthsAttribute Column widths attribute from model table.
 function insertColgroupElement( viewWriter, viewTable, columnWidthsAttribute ) {
 	const columnWidths = columnWidthsAttribute.split( ',' );
 
