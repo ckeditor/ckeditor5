@@ -1,6 +1,6 @@
 ---
 category: simple-plugin
-order: 25
+order: 26
 ---
 
 # Abbreviation plugin tutorial - part 3

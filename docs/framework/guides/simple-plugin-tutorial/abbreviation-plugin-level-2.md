@@ -3,29 +3,29 @@ category: simple-plugin
 order: 25
 ---
 
-# Abbreviation plugin tutorial - part 2
+# Abbreviation plugin tutorial &ndash; part 2
 
-In this part of the tutorial we will focus on creating a dialog box, which will get user's input.
+In this part of the tutorial we will focus on creating a dialog box, which will get the user's input.
 
 We will pick up where we left off in the first part, so make sure you {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our starter files for this part.
 
 <info-box>
-As we will mostly work on the UI, we recommend reading up on our {@link framework/guides/architecture/ui-library UI library} before you start coding.
+As we will mostly work on the UI, we recommend reading about our {@link framework/guides/architecture/ui-library UI library} before you start coding.
 </info-box>
 
-If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
+If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo).
 
 ## Creating a view
 
-The most important part of the UI for this plugin is a dialog box with a form, which will get us user's input.
+The most important part of the UI for this plugin is a dialog box with a form, which will get us the user's input.
 
 ### Creating a form view template
 
-Let's start by creating a view with a form. It will include two input fields (for the abbreviation and the title), and the 'submit' and 'cancel' buttons. We will do it in a separate view. Create a new file `abbreviationview.js` in the `abbreviation/` directory.
+Let's start by creating a view with a form. It will include two input fields (for the abbreviation and the title), and the `submit` and `cancel` buttons. We will do it in a separate view. First, we create a new file `abbreviationview.js` in the `abbreviation/` directory.
 
-Our new `FormView` class will extend the {@link framework/guides/architecture/ui-library#views View} class, so start by importing it from the UI library.
+Our new `FormView` class will extend the {@link framework/guides/architecture/ui-library#views View} class, so let's start by importing it from the UI library.
 
-In the `FormView` constructor we will define a template for our abbreviation form. We need to set a tag of the HTML element, and a couple of its attributes. To make sure our view is focusable, let's add {@link framework/guides/deep-dive/focus-tracking#implementing-focusable-ui-components `tabindex="-1"`}.
+In the `FormView` constructor we define a template for our abbreviation form. We need to set the tag of the HTML element, and a couple of its attributes. To make sure our view is focusable, let's add {@link framework/guides/deep-dive/focus-tracking#implementing-focusable-ui-components `tabindex="-1"`}.
 
 We will also pass the editor's {@link module:utils/locale~Locale} instance to the constructor, so we can localize all our UI components with the help of the {@link module:utils/locale~Locale#t `t()` function}.
 
@@ -50,21 +50,22 @@ export default class FormView extends View {
 
 }
 ```
-Notice that we added two classes. All UI elements of the editor need to have the `ck` class (unless you want to create your own UI and not use our library). We also created a new class for our form, which we will use later on to style it.
+
+Notice that we added two classes. All UI elements of the editor need to have the `ck` class (unless you want to create your own UI and not use CKEditor 5's built-in library). We also created a new class for our form, which we will use later on to style it.
 
 ### Creating input fields
 
 As we have two similar input fields to create and we don't want to repeat ourselves, let's define a method `_createInput()`, which will produce them for us. It will accept the label of our input field.
 
-We will use {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class and we will pass it the {@link module:ui/labeledfield/utils~createLabeledInputText `createLabeledInputText()`} function as the second argument. It's a helper coming from the CKEditor UI library that will take care of creating the input.
+We will use {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class and we will pass it the {@link module:ui/labeledfield/utils~createLabeledInputText `createLabeledInputText()`} function as the second argument. It is a helper coming from the CKEditor UI library that will take care of creating the input.
 
 ```js
 // abbreviation/abbreviationview.js
 
 import {
     View,
-    LabeledFieldView,               // ADDED
-    createLabeledInputText          // ADDED
+    LabeledFieldView,				// ADDED
+    createLabeledInputText			// ADDED
     } from '@ckeditor/ckeditor5-ui';
 
 export default class FormView extends View {
@@ -87,11 +88,11 @@ export default class FormView extends View {
 
 ### Creating form buttons
 
-Now, we can add a `submit` and a `cancel` buttons to our form. You can start by importing `ButtonView` from our UI library and icons, which we will use for labels.
+Now, we add the `submit` and `cancel` buttons to our form. You can start by importing `ButtonView` from our UI library together with the icons, which we will use for labels.
 
-We can use a `check` and `cancel` icons from the core package's [icons library](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/theme/icons). Import the icons, and we will use them for creating the buttons.
+We will use the `check` and `cancel` icons from the core package's [icons library](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/theme/icons). After import the icons, we will use them for creating the buttons.
 
-Let's write a `_createButton` function, which will take three arguments - `label`, `icon` and `className`. We will then set the button attributes, using the properties we passed into the function, and adding a tooltip option.
+Let's write a `_createButton` function, which will take three arguments &ndash; `label`, `icon` and `className`. We then set the button attributes, using the properties we passed into the function before, and adding a tooltip option.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -100,9 +101,9 @@ import {
     View,
     LabeledFieldView,
     createLabeledInputText,
-    ButtonView                                      // ADDED
+    ButtonView										// ADDED
     } from '@ckeditor/ckeditor5-ui';
-import { icons } from '@ckeditor/ckeditor5-core';   // ADDED
+import { icons } from '@ckeditor/ckeditor5-core';	// ADDED
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -140,13 +141,13 @@ export default class FormView extends View {
 }
 ```
 
-When the user presses these buttons, we want to either submit or cancel the form view. These events should be fired off from the form view, so we need to delegate them from the buttons to the form view.
+When the user clicks one of these buttons, we want to either submit or cancel the form view. These events should be fired off from the form view, so we need to delegate them from the buttons to the form view.
 
 <info-box>
-Event delegation allows selected events of one {@link module:utils/emittermixin~Emitter emitter} to be fired off by another emitter. Read our {@link framework/guides/architecture/core-editor-architecture#event-system-and-observables introduction to the event system} and more on {@link framework/guides/deep-dive/event-system#delegating-events delegating events}.
+Event delegation allows selected events of one {@link module:utils/emittermixin~Emitter emitter} to be fired off by another emitter. Read about it in our {@link framework/guides/architecture/core-editor-architecture#event-system-and-observables introduction to the event system} and more on {@link framework/guides/deep-dive/event-system#delegating-events delegating events}.
 </info-box>
 
-For now, {@link module:utils/emittermixin~Emitter#delegate delegate} `cancelButtonView#execute` to the FormView, so pressing the `cancel` button will fire off `FormView#cancel`. We will handle delegating the submit event in a couple of steps.
+For now, we {@link module:utils/emittermixin~Emitter#delegate delegate} `cancelButtonView#execute` to the FormView, so pressing the `cancel` button will fire off `FormView#cancel`. We will handle delegating the submit event in a couple of steps.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -178,7 +179,7 @@ export default class FormView extends View {
 ```
 ### Adding styles
 
-You can now open `styles.css` and style the new UI elements. Let's add some padding to our form and use the [CSS grid layout](https://developer.mozilla.org/en-US/docs/Web/CSS/grid) to nicely display our four elements of the form.
+We use `styles.css` to style the new UI elements. Let's add some padding to our form and use the [CSS grid layout](https://developer.mozilla.org/en-US/docs/Web/CSS/grid) to nicely display all four elements of the form.
 
 We will use our set spacing variables to keep things uniform.
 
@@ -226,13 +227,13 @@ export default class AbbreviationUI extends Plugin {
 ```
 ### Wrapping up the form view
 
-We're almost done with our form view, we just need to add a couple of finishing touches.
+We are almost done with the form view, we just need to add a couple of finishing touches.
 
-In the `constructor`, create a {@link module:ui/viewcollection~ViewCollection} with {@link module:ui/view~View#createCollection `createCollection()`} method. We will put all our input and button views in the collection, and use it to update the `FormView` template with its newly created children.
+In the `constructor`, we create a {@link module:ui/viewcollection~ViewCollection} with the {@link module:ui/view~View#createCollection `createCollection()`} method. We put all our input and button views in the collection, and use it to update the `FormView` template with its newly created children.
 
-Let's also add `render()` method to our `FormView`.  We will use there a helper {@link module:ui/bindings/submithandler~submitHandler `submitHandler()`} function, which intercepts a native DOM submit event, prevents the default web browser behavior (navigation and page reload) and fires the submit event on a view instead.
+Let's also add `render()` method to our `FormView`.  We will use a helper {@link module:ui/bindings/submithandler~submitHandler `submitHandler()`} function there, which intercepts a native DOM submit event, prevents the default web browser behavior (navigation and page reload) and fires the `submit` event on a view instead.
 
-We also need a `focus()` method, which will focus on the first child, so our `abbreviation` input view each time the form is added to the editor. This is just a taste of what {@link framework/guides/deep-dive/focus-tracking focus tracking} can do in CKEditor 5, we will go into it more in next part of this tutorial.
+We also need a `focus()` method, which will focus on the first child of our `abbreviation` input view each time the form is added to the editor. This is just a taste of what {@link framework/guides/deep-dive/focus-tracking focus tracking} can do in CKEditor 5. We will get into it more in next part of this tutorial.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -242,7 +243,7 @@ import {
     LabeledFieldView,
     createLabeledInputText,
     ButtonView,
-    submitHandler                                   // ADDED
+    submitHandler									// ADDED
     } from '@ckeditor/ckeditor5-ui';
 import { icons } from '@ckeditor/ckeditor5-core';
 
@@ -263,7 +264,7 @@ export default class FormView extends View {
 			attributes: {
                 // ...
 			},
-			children: this.childViews               // ADDED
+			children: this.childViews				// ADDED
 		} );
 	}
 
@@ -291,7 +292,7 @@ export default class FormView extends View {
 }
 ```
 
-Our `FormView` is done! We can't see it just yet, so let's add it to our `AbbreviationUI` class.
+Our `FormView` is done! However, we cannot see it just yet, so let's add it to our `AbbreviationUI` class.
 
 ## Adding the Contextual Balloon
 
@@ -335,21 +336,22 @@ export default class AbbreviationUI extends Plugin {
 	}
 }
 ```
-We will need to change it quite a bit and add our `ContextualBalloon` and `FormView`. We will need to make sure Contextual Balloon is required when making an instance of our `AbbreviationUI`, so let's start with that.
+
+We will need to change it quite a bit and add `ContextualBalloon` and `FormView`. We need to make sure Contextual Balloon is required when making an instance of our `AbbreviationUI`, so we will start with that.
 
 Let's write a basic `_createFormView()` function, just to create an instance of our `FormView` class (we will expand it later).
 
-We also need to create a function, which will give us the target position for our balloon from user's selection. We need to convert selected view range into DOM range. We can use {@link module:engine/view/domconverter~DomConverter#viewRangeToDom `viewRangeToDom()` method} to do so.
+We also need to create a function, which will give us the target position for our balloon from user's selection. We need to convert the selected view range into DOM range. We can use the {@link module:engine/view/domconverter~DomConverter#viewRangeToDom `viewRangeToDom()`} method to do so.
 
-Finally, let's add our balloon and the form view to the `init()` method.
+Finally, we add our balloon and the form view to the `init()` method.
 
 ```js
 // abbreviation/abbreviationui.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui';             // ADDED
-import FormView from './abbreviationview';                          // ADDED
+import ContextualBalloon from '@ckeditor/ckeditor5-ui';				// ADDED
+import FormView from './abbreviationview';							// ADDED
 
 export default class AbbreviationUI extends Plugin {
 	static get requires() {
@@ -392,6 +394,7 @@ export default class AbbreviationUI extends Plugin {
 	}
 }
 ```
+
 We can now change what happens when the user clicks the toolbar button. We will replace inserting the hard-coded abbreviation with one defined by the user.
 
 Let's write a `_showUI()` method which will show our UI elements by adding the form view to our balloon and setting its position. The last thing is to focus the form view, so the user can immediately start typing in the first input field.
@@ -430,15 +433,15 @@ export default class AbbreviationUI extends Plugin {
 }
 ```
 
-You should be able to see your balloon and form now! Check and see your balloon pop up (we will get to hiding it in a couple of steps). It should look like this:
+You should be able to see your balloon and form now! Check and see your balloon pop up (we will get to hiding it soon). It should look like this:
 
 {@img assets/img/abbreviation-part2.png Screenshot of the balloon with the form view.}
 
 ## Getting user input
 
-It's time to replace the hard-coded "WYSIWYG" abbreviation with the user input. We will be getting values from the form and listening to the `submit` event on the form view, which we delegated from the save button (with the help of {@link module:ui/bindings/submithandler~submitHandler `submitHandler`}).
+Now is the time to replace the hard-coded "WYSIWYG" abbreviation with the user input. We will be getting values from the form and listening to the `submit` event on the form view, which we delegated from the save button (with the help of {@link module:ui/bindings/submithandler~submitHandler `submitHandler`}).
 
-We will use the same callback function we had in the toolbar button in the first part of the tutorial, We just need to replace the "WYSIWYG" abbreviation with values from our input views.
+We use the same callback function we had in the toolbar button in the first part of the tutorial. We just need to replace the "WYSIWYG" abbreviation with values from our input views.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -481,18 +484,19 @@ export default class AbbreviationUI extends Plugin {
 	}
 }
 ```
-Our plugin is finally doing what it's supposed to. The last thing is to hide it from our editor when we don't need it.
+
+Our plugin is finally doing what it is supposed to. The last thing is to hide it from our editor when we do not need it.
 
 ## Hiding the form view
 
-We will need to hide the form view on three occasions:
+We will need to hide the form view in these three situations:
 * after the user submits the form;
 * when the user clicks the "Cancel" button;
 * when the user clicks outside of the balloon.
 
-So, let's write a simple `_hideUI()` function, which will clear the input field values and remove the view from our balloon.
+We will write a simple `_hideUI()` function, which will clear the input field values and remove the view from our balloon.
 
-Additionally, we will import {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler `clickOutsideHandler()`} method, which will take our `_hideUI()` function as a callback. It will be emitted from our form view, and activated when the form view is visible. We also need to set `contextElements` for the handler to determine its scope. Clicking on listed there HTML elements will not fire the callback.
+Additionally, we will import the {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler `clickOutsideHandler()`} method, which will take our `_hideUI()` function as a callback. It will be emitted from our form view, and activated when the form view is visible. We also need to set `contextElements` for the handler to determine its scope. Clicking on HTML elements listed there will not fire the callback.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -556,7 +560,6 @@ export default class AbbreviationUI extends Plugin {
 	}
 }
 ```
-That's it for this part of the tutorial! We have a working UI, and our plugin does what we want it to do. We can improve it according to our best practices, adding {@link framework/guides/architecture/core-editor-architecture#commands a command}, focus tracking, and more. We will do it in {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-3 the third part of the tutorial}, so head there.
 
 ## Demo
 
@@ -565,3 +568,9 @@ That's it for this part of the tutorial! We have a working UI, and our plugin do
 ## Final code
 
 If you got lost at any point, this is the final implementation of the plugin. You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.
+
+<info-box>
+	**What's next?**
+
+	That's it for the second part of the tutorial! We have a working UI, and our plugin does what we want it to do. We can improve it according to our best practices, adding a {@link framework/guides/architecture/core-editor-architecture#commands command}, focus tracking, and more. We will do it in the {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-3 third part of the tutorial}, so head over there.
+</info-box>
