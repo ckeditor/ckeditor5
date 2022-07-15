@@ -151,10 +151,6 @@ export default class ButtonView extends View {
 			children: this.children,
 
 			on: {
-				mousedown: bind.to( evt => {
-					evt.preventDefault();
-				} ),
-
 				click: bind.to( evt => {
 					// We can't make the button disabled using the disabled attribute, because it won't be focusable.
 					// Though, shouldn't this condition be moved to the button controller?
