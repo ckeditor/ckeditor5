@@ -495,6 +495,19 @@ describe( 'MediaEmbedEditing', () => {
 				} );
 		} );
 
+		it( 'inherits attributes from $blockObject', () => {
+			return createTestEditor()
+				.then( newEditor => {
+					model = newEditor.model;
+
+					model.schema.extend( '$blockObject', {
+						allowAttributes: 'foo'
+					} );
+
+					expect( model.schema.checkAttribute( 'media', 'foo' ) ).to.be.true;
+				} );
+		} );
+
 		describe( 'conversion in the data pipeline', () => {
 			describe( 'elementName#o-embed', () => {
 				beforeEach( () => {

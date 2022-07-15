@@ -14,6 +14,8 @@ import EditorWatchdog from './editorwatchdog';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import getSubNodes from './utils/getsubnodes';
 
+const mainQueueId = Symbol( 'MainQueueId' );
+
 /**
  * A watchdog for the {@link module:core/context~Context} class.
  *
@@ -77,9 +79,9 @@ export default class ContextWatchdog extends Watchdog {
 		 * An action queue, which is used to handle async functions queuing.
 		 *
 		 * @private
-		 * @type {ActionQueue}
+		 * @type {ActionQueues}
 		 */
-		this._actionQueue = new ActionQueue();
+		this._actionQueues = new ActionQueues();
 
 		/**
 		 * The configuration for the {@link module:core/context~Context}.
@@ -99,7 +101,7 @@ export default class ContextWatchdog extends Watchdog {
 		this._creator = contextConfig => Context.create( contextConfig );
 		this._destructor = context => context.destroy();
 
-		this._actionQueue.onEmpty( () => {
+		this._actionQueues.onEmpty( () => {
 			if ( this.state === 'initializing' ) {
 				this.state = 'ready';
 				this._fire( 'stateChange' );
@@ -158,7 +160,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * @returns {Promise}
 	 */
 	create( contextConfig = {} ) {
-		return this._actionQueue.enqueue( () => {
+		return this._actionQueues.enqueue( mainQueueId, () => {
 			this._contextConfig = contextConfig;
 
 			return this._create();
@@ -236,17 +238,16 @@ export default class ContextWatchdog extends Watchdog {
 	add( itemConfigurationOrItemConfigurations ) {
 		const itemConfigurations = toArray( itemConfigurationOrItemConfigurations );
 
-		return this._actionQueue.enqueue( () => {
-			if ( this.state === 'destroyed' ) {
-				throw new Error( 'Cannot add items to destroyed watchdog.' );
-			}
+		return Promise.all( itemConfigurations.map( item => {
+			return this._actionQueues.enqueue( item.id, () => {
+				if ( this.state === 'destroyed' ) {
+					throw new Error( 'Cannot add items to destroyed watchdog.' );
+				}
 
-			if ( !this._context ) {
-				throw new Error( 'Context was not created yet. You should call the `ContextWatchdog#create()` method first.' );
-			}
+				if ( !this._context ) {
+					throw new Error( 'Context was not created yet. You should call the `ContextWatchdog#create()` method first.' );
+				}
 
-			// Create new watchdogs.
-			return Promise.all( itemConfigurations.map( item => {
 				let watchdog;
 
 				if ( this._watchdogs.has( item.id ) ) {
@@ -274,7 +275,7 @@ export default class ContextWatchdog extends Watchdog {
 							return;
 						}
 
-						this._actionQueue.enqueue( () => new Promise( res => {
+						this._actionQueues.enqueue( item.id, () => new Promise( res => {
 							watchdog.on( 'restart', rethrowRestartEventOnce.bind( this ) );
 
 							function rethrowRestartEventOnce() {
@@ -291,8 +292,8 @@ export default class ContextWatchdog extends Watchdog {
 				} else {
 					throw new Error( `Not supported item type: '${ item.type }'.` );
 				}
-			} ) );
-		} );
+			} );
+		} ) );
 	}
 
 	/**
@@ -310,15 +311,15 @@ export default class ContextWatchdog extends Watchdog {
 	remove( itemIdOrItemIds ) {
 		const itemIds = toArray( itemIdOrItemIds );
 
-		return this._actionQueue.enqueue( () => {
-			return Promise.all( itemIds.map( itemId => {
+		return Promise.all( itemIds.map( itemId => {
+			return this._actionQueues.enqueue( itemId, () => {
 				const watchdog = this._getWatchdog( itemId );
 
 				this._watchdogs.delete( itemId );
 
 				return watchdog.destroy();
-			} ) );
-		} );
+			} );
+		} ) );
 	}
 
 	/**
@@ -330,7 +331,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		return this._actionQueue.enqueue( () => {
+		return this._actionQueues.enqueue( mainQueueId, () => {
 			this.state = 'destroyed';
 			this._fire( 'stateChange' );
 
@@ -347,7 +348,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * @returns {Promise}
 	 */
 	_restart() {
-		return this._actionQueue.enqueue( () => {
+		return this._actionQueues.enqueue( mainQueueId, () => {
 			this.state = 'initializing';
 			this._fire( 'stateChange' );
 
@@ -476,14 +477,20 @@ export default class ContextWatchdog extends Watchdog {
 	 */
 }
 
-// An action queue that allows queuing async functions.
-class ActionQueue {
+// Manager of action queues that allows queuing async functions.
+class ActionQueues {
 	constructor() {
-		// @type {Promise}
-		this._promiseQueue = Promise.resolve();
-
 		// @type {Array.<Function>}
 		this._onEmptyCallbacks = [];
+
+		// @type {Map.<Promise>}
+		this._queues = new Map();
+
+		this._actions = new WeakMap();
+
+		this._lastActionId = 0;
+
+		this._activeActions = 0;
 	}
 
 	// Used to register callbacks that will be run when the queue becomes empty.
@@ -493,34 +500,50 @@ class ActionQueue {
 		this._onEmptyCallbacks.push( onEmptyCallback );
 	}
 
-	// It adds asynchronous actions (functions) to the queue and runs them one by one.
+	// It adds asynchronous actions (functions) to the proper queue and runs them one by one.
 	//
+	// @param {Symbol|String|Number} queueId The action queue ID.
 	// @param {Function} action A function that should be enqueued.
 	// @returns {Promise}
-	enqueue( action ) {
-		let nonErrorQueue;
+	enqueue( queueId, action ) {
+		const isMainAction = queueId === mainQueueId;
 
-		const queueWithAction = this._promiseQueue
-			.then( action )
-			.then( () => {
-				if ( this._promiseQueue === nonErrorQueue ) {
-					this._onEmptyCallbacks.forEach( cb => cb() );
-				}
-			} );
+		this._activeActions++;
+
+		if ( !this._queues.get( queueId ) ) {
+			this._queues.set( queueId, Promise.resolve() );
+		}
+
+		// List all sources of actions that the current action needs to await for.
+		// For the main action wait for all other actions.
+		// For the item action wait only for the item queue and the main queue.
+		const awaitedActions = isMainAction ?
+			Promise.all( this._queues.values() ) :
+			Promise.all( [ this._queues.get( mainQueueId ), this._queues.get( queueId ) ] );
+
+		const queueWithAction = awaitedActions.then( action );
 
 		// Catch all errors in the main queue to stack promises even if an error occurred in the past.
-		nonErrorQueue = this._promiseQueue = queueWithAction.catch( () => { } );
+		const nonErrorQueue = queueWithAction.catch( () => {} );
 
-		return queueWithAction;
+		this._queues.set( queueId, nonErrorQueue );
+
+		return queueWithAction.finally( () => {
+			this._activeActions--;
+
+			if ( this._queues.get( queueId ) === nonErrorQueue && this._activeActions === 0 ) {
+				this._onEmptyCallbacks.forEach( cb => cb() );
+			}
+		} );
 	}
 }
 
 // Transforms any value to an array. If the provided value is already an array, it is returned unchanged.
 //
-// @param {*} data The value to transform to an array.
+// @param {*} elementOrArray The value to transform to an array.
 // @returns {Array} An array created from data.
-function toArray( data ) {
-	return Array.isArray( data ) ? data : [ data ];
+function toArray( elementOrArray ) {
+	return Array.isArray( elementOrArray ) ? elementOrArray : [ elementOrArray ];
 }
 
 /**

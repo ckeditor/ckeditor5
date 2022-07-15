@@ -53,23 +53,12 @@ export default class Document {
 		this.model = model;
 
 		/**
-		 * The document version. It starts from `0` and every operation increases the version number. It is used to ensure that
-		 * operations are applied on a proper document version.
-		 *
-		 * If the {@link module:engine/model/operation/operation~Operation#baseVersion base version} does not match the document version,
-		 * a {@link module:utils/ckeditorerror~CKEditorError model-document-applyoperation-wrong-version} error is thrown.
-		 *
-		 * @type {Number}
-		 */
-		this.version = 0;
-
-		/**
 		 * The document's history.
 		 *
 		 * @readonly
 		 * @type {module:engine/model/history~History}
 		 */
-		this.history = new History( this );
+		this.history = new History();
 
 		/**
 		 * The selection in this document.
@@ -115,21 +104,6 @@ export default class Document {
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 		this.createRoot( '$root', graveyardName );
 
-		// First, if the operation is a document operation check if it's base version is correct.
-		this.listenTo( model, 'applyOperation', ( evt, args ) => {
-			const operation = args[ 0 ];
-
-			if ( operation.isDocumentOperation && operation.baseVersion !== this.version ) {
-				/**
-				 * Only operations with matching versions can be applied.
-				 *
-				 * @error model-document-applyoperation-wrong-version
-				 * @param {module:engine/model/operation/operation~Operation} operation
-				 */
-				throw new CKEditorError( 'model-document-applyoperation-wrong-version', this, { operation } );
-			}
-		}, { priority: 'highest' } );
-
 		// Then, still before an operation is applied on model, buffer the change in differ.
 		this.listenTo( model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
@@ -144,7 +118,6 @@ export default class Document {
 			const operation = args[ 0 ];
 
 			if ( operation.isDocumentOperation ) {
-				this.version++;
 				this.history.addOperation( operation );
 			}
 		}, { priority: 'low' } );
@@ -177,6 +150,25 @@ export default class Document {
 				} );
 			}
 		} );
+	}
+
+	/**
+	 * The document version. Every applied operation increases the version number. It is used to
+	 * ensure that operations are applied on a proper document version.
+	 *
+	 * This property is equal to {@link module:engine/model/history~History#version `model.Document#history#version`}.
+	 *
+	 * If the {@link module:engine/model/operation/operation~Operation#baseVersion base version} does not match the document version,
+	 * a {@link module:utils/ckeditorerror~CKEditorError model-document-applyoperation-wrong-version} error is thrown.
+	 *
+	 * @type {Number}
+	 */
+	get version() {
+		return this.history.version;
+	}
+
+	set version( version ) {
+		this.history.version = version;
 	}
 
 	/**

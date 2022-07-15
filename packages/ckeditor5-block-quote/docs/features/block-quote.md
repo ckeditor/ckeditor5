@@ -11,7 +11,7 @@ The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easil
 The block quote feature provides an attractive way to draw the readers' attention to selected parts of text and enriches the reading experience with additional data. It also helps organize the content in a structured, elegant way to manage the flow better.
 
 <info-box info>
-	This feature is enabled by default in all {@link builds/guides/overview predefined builds}.
+	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo
@@ -68,7 +68,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration

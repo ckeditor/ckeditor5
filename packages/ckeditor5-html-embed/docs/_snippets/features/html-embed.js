@@ -23,7 +23,7 @@ const initialData =
 	<p><a href="http://eepurl.com/c3zRPr"><img alt="Join newsletter" src="https://img.shields.io/badge/join-newsletter-00cc99.svg" /></a>&nbsp;<a href="https://twitter.com/ckeditor"><img alt="Follow twitter" src="https://img.shields.io/badge/follow-twitter-00cc99.svg" /></a></p>
 </div>
 
-<p>The classic editor build for CKEditor 5. Read more about the <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor"><strong>classic editor build</strong></a> and see the <a href="https://ckeditor.com/docs/ckeditor5/latest/examples/builds/classic-editor.html"><strong>demo</strong></a>.</p>
+<p>The classic editor build for CKEditor 5. Read more about the <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#classic-editor"><strong>classic editor build</strong></a> and see the <a href="https://ckeditor.com/docs/ckeditor5/latest/examples/builds/classic-editor.html"><strong>demo</strong></a>.</p>
 
 <figure class="image"><img src="https://c.cksource.com/a/1/img/npm/ckeditor5-build-classic.png" alt="CKEditor 5 classic editor build screenshot"></figure>
 
@@ -32,7 +32,7 @@ const initialData =
 <ul>
 	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html">Installation</a> for how to install this package and what it contains.</li>
 	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/basic-api.html">Basic API</a> for how to create an editor and interact with it.</li>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/configuration.html">Configuration</a> for how to configure the editor.</li>
+	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/configuration.html">Configuration</a> for how to configure the editor.</li>
 </ul>
 
 <h2>Quick start</h2>

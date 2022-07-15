@@ -336,23 +336,27 @@ export default class Differ {
 	 * @returns {Boolean}
 	 */
 	hasDataChanges() {
+		if ( this._changesInElement.size > 0 ) {
+			return true;
+		}
+
 		for ( const { newMarkerData, oldMarkerData } of this._changedMarkers.values() ) {
 			if ( newMarkerData.affectsData !== oldMarkerData.affectsData ) {
 				return true;
 			}
 
 			if ( newMarkerData.affectsData ) {
-				// Skip markers, which ranges have not changed.
-				if ( newMarkerData.range && oldMarkerData.range && newMarkerData.range.isEqual( oldMarkerData.range ) ) {
-					return false;
-				}
+				const markerAdded = newMarkerData.range && !oldMarkerData.range;
+				const markerRemoved = !newMarkerData.range && oldMarkerData.range;
+				const markerChanged = newMarkerData.range && oldMarkerData.range && !newMarkerData.range.isEqual( oldMarkerData.range );
 
-				return true;
+				if ( markerAdded || markerRemoved || markerChanged ) {
+					return true;
+				}
 			}
 		}
 
-		// If markers do not affect the data, check whether there are some changes in elements.
-		return this._changesInElement.size > 0;
+		return false;
 	}
 
 	/**
@@ -419,12 +423,12 @@ export default class Differ {
 			for ( const action of actions ) {
 				if ( action === 'i' ) {
 					// Generate diff item for this element and insert it into the diff set.
-					diffSet.push( this._getInsertDiff( element, i, elementChildren[ i ].name ) );
+					diffSet.push( this._getInsertDiff( element, i, elementChildren[ i ] ) );
 
 					i++;
 				} else if ( action === 'r' ) {
 					// Generate diff item for this element and insert it into the diff set.
-					diffSet.push( this._getRemoveDiff( element, i, snapshotChildren[ j ].name ) );
+					diffSet.push( this._getRemoveDiff( element, i, snapshotChildren[ j ] ) );
 
 					j++;
 				} else if ( action === 'a' ) {
@@ -925,14 +929,15 @@ export default class Differ {
 	 * @private
 	 * @param {module:engine/model/element~Element} parent The element in which the change happened.
 	 * @param {Number} offset The offset at which change happened.
-	 * @param {String} name The name of the removed element or `'$text'` for a character.
+	 * @param {Object} elementSnapshot The snapshot of the removed element a character.
 	 * @returns {Object} The diff item.
 	 */
-	_getInsertDiff( parent, offset, name ) {
+	_getInsertDiff( parent, offset, elementSnapshot ) {
 		return {
 			type: 'insert',
 			position: Position._createAt( parent, offset ),
-			name,
+			name: elementSnapshot.name,
+			attributes: new Map( elementSnapshot.attributes ),
 			length: 1,
 			changeCount: this._changeCount++
 		};
@@ -944,14 +949,15 @@ export default class Differ {
 	 * @private
 	 * @param {module:engine/model/element~Element} parent The element in which change happened.
 	 * @param {Number} offset The offset at which change happened.
-	 * @param {String} name The name of the removed element or `'$text'` for a character.
+	 * @param {Object} elementSnapshot The snapshot of the removed element a character.
 	 * @returns {Object} The diff item.
 	 */
-	_getRemoveDiff( parent, offset, name ) {
+	_getRemoveDiff( parent, offset, elementSnapshot ) {
 		return {
 			type: 'remove',
 			position: Position._createAt( parent, offset ),
-			name,
+			name: elementSnapshot.name,
+			attributes: new Map( elementSnapshot.attributes ),
 			length: 1,
 			changeCount: this._changeCount++
 		};
@@ -1230,6 +1236,12 @@ function _changesInGraveyardFilter( entry ) {
  */
 
 /**
+ * Map of attributes that were set on the item while it was inserted.
+ *
+ * @member {Map.<String,*>} module:engine/model/differ~DiffItemInsert#attributes
+ */
+
+/**
  * The position where the node was inserted.
  *
  * @member {module:engine/model/position~Position} module:engine/model/differ~DiffItemInsert#position
@@ -1258,6 +1270,12 @@ function _changesInGraveyardFilter( entry ) {
  * The name of the removed element or `'$text'` for a text node.
  *
  * @member {String} module:engine/model/differ~DiffItemRemove#name
+ */
+
+/**
+ * Map of attributes that were set on the item while it was removed.
+ *
+ * @member {Map.<String,*>} module:engine/model/differ~DiffItemRemove#attributes
  */
 
 /**

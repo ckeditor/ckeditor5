@@ -64,6 +64,14 @@ describe( 'ImageBlockEditing', () => {
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'imageBlock' ) ).to.be.false;
 	} );
 
+	it( 'inherits attributes from $blockObject', () => {
+		model.schema.extend( '$blockObject', {
+			allowAttributes: 'foo'
+		} );
+
+		expect( model.schema.checkAttribute( 'imageBlock', 'foo' ) ).to.be.true;
+	} );
+
 	it( 'should register ImageLoadObserver', () => {
 		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
 	} );
@@ -121,7 +129,7 @@ describe( 'ImageBlockEditing', () => {
 			it( 'should convert', () => {
 				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 
-				expect( editor.getData() ).to.equal( '<figure class="image"><img alt="alt text" src="/assets/sample.png"></figure>' );
+				expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
@@ -182,7 +190,7 @@ describe( 'ImageBlockEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<img alt="alt text" src="/assets/sample.png">' +
+						'<img src="/assets/sample.png" alt="alt text">' +
 					'</figure>'
 				);
 			} );
@@ -202,7 +210,7 @@ describe( 'ImageBlockEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<img alt="alt text" src="/assets/sample.png">' +
+						'<img src="/assets/sample.png" alt="alt text">' +
 					'</figure>'
 				);
 			} );
@@ -288,6 +296,14 @@ describe( 'ImageBlockEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
+			} );
+
+			it( 'should consume the src attribute on <img>', () => {
+				editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { attributes: 'src' } ) ).to.be.false;
+				}, { priority: 'low' } );
+
+				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );
 			} );
 
 			it( 'should dispatch conversion for nested elements', () => {

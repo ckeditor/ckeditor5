@@ -12,7 +12,7 @@ Coupled with the {@link features/markdown Markdown output} feature, the autoform
 If needed, the automattic change can be reverted simply by pressing <kbd>Backspace</kbd>.
 
 <info-box info>
-	This feature is enabled by default in all {@link builds/guides/overview predefined builds}.
+	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
 </info-box>
 
 ## Block formatting
@@ -87,7 +87,7 @@ ClassicEditor
 </info-box>
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Creating custom autoformatters

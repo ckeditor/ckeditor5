@@ -102,6 +102,33 @@ Here is a table listing various model elements and their properties registered i
 			<td class="value_negative"><code>false</code></td>
 		</tr>
 		<tr>
+			<td><code>$container</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>$blockObject</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
+			<td><code>$inlineObject</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
 			<td><code>$clipboardHolder</code></td>
 			<td class="value_negative"><code>false</code></td>
 			<td class="value_positive"><code>true</code></td>
@@ -202,7 +229,7 @@ Here is a table listing various model elements and their properties registered i
 		</tr>
 		<tr>
 			<td><code>horizontalLine</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
 			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
 			<td class="value_positive"><code>true</code></td>
 			<td class="value_negative"><code>false</code></td>
@@ -247,7 +274,7 @@ Here is a table listing various model elements and their properties registered i
 		</tr>
 		<tr>
 			<td><code>pageBreak</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
 			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
 			<td class="value_positive"><code>true</code></td>
 			<td class="value_negative"><code>false</code></td>
@@ -409,19 +436,39 @@ At the same time, elements like paragraphs, list items, or headings **are not** 
 
 ## Generic items
 
-There are three basic generic items: `$root`, `$block` and `$text`. They are defined as follows:
+There are several generic items (classes of elements) available: `$root`, `$container`, `$block`, `$blockObject`, `$inlineObject`, and `$text`. They are defined as follows:
 
 ```js
 schema.register( '$root', {
 	isLimit: true
 } );
+
+schema.register( '$container', {
+	allowIn: [ '$root', '$container' ]
+} );
+
 schema.register( '$block', {
-	allowIn: '$root',
+	allowIn: [ '$root', '$container' ],
 	isBlock: true
 } );
+
+schema.register( '$blockObject', {
+	allowWhere: '$block',
+	isBlock: true,
+	isObject: true
+} );
+
+schema.register( '$inlineObject', {
+	allowWhere: '$text',
+	allowAttributesOf: '$text',
+	isInline: true,
+	isObject: true
+} );
+
 schema.register( '$text', {
 	allowIn: '$block',
-	isInline: true
+	isInline: true,
+	isContent: true
 } );
 ```
 
@@ -455,12 +502,13 @@ Thanks to the fact that the `<paragraph>` definition is inherited from `<$block>
 
 ```js
 schema.register( 'blockQuote', {
-	allowWhere: '$block',
-	allowContentOf: '$root'
+	inheritAllFrom: '$container'
 } );
 ```
 
-Thanks to that, despite the fact that block quote and paragraph features know nothing about themselves, paragraphs will be allowed in block quotes and block quotes will be allowed in all places where blocks are allowed. So if anyone registers a `<section>` element (with the `allowContentOf: '$root'` rule), that `<section>` elements will allow block quotes, too.
+Because `<$block>` is allowed in `<$container>` (see `schema.register( '$block' ...)`), despite the fact that the block quote and paragraph features know nothing about each other, paragraphs will be allowed in block quotes: the schema rules allow chaining.
+
+Taking this even further, if anyone registers a `<section>` element (with the `allowContentOf: '$root'` rule), because `<$container>` is also allowed in `<$root>` (see `schema.register( '$container' ...)`) the `<section>` elements will allow block quotes out–of–the–box.
 
 <info-box>
 	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.

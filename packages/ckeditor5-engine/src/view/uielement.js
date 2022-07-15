@@ -50,9 +50,6 @@ export default class UIElement extends Element {
 	constructor( document, name, attributes, children ) {
 		super( document, name, attributes, children );
 
-		// Override the default of the base class.
-		this._isAllowedInsideAttributeElement = true;
-
 		/**
 		 * Returns `null` because filler is not needed for UIElements.
 		 *

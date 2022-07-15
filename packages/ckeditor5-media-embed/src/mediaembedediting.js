@@ -177,9 +177,7 @@ export default class MediaEmbedEditing extends Plugin {
 
 		// Configure the schema.
 		schema.register( 'media', {
-			isObject: true,
-			isBlock: true,
-			allowWhere: '$block',
+			inheritAllFrom: '$blockObject',
 			allowAttributes: [ 'url' ]
 		} );
 

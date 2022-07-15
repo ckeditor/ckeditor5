@@ -36,7 +36,7 @@ class ExtendHTMLSupport extends Plugin {
 			view: 'xyz',
 			model: 'htmlXyz',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container'
 			}
 		} );
 

@@ -55,7 +55,7 @@ export default class MediaEmbedCommand extends Command {
 				writer.setAttribute( 'url', url, selectedMedia );
 			} );
 		} else {
-			insertMedia( model, url, findOptimalInsertionRange( selection, model ) );
+			insertMedia( model, url, selection, true );
 		}
 	}
 }

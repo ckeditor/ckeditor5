@@ -182,7 +182,8 @@ export default class HighlightUI extends Plugin {
 			const splitButtonView = dropdownView.buttonView;
 
 			splitButtonView.set( {
-				tooltip: t( 'Highlight' ),
+				label: t( 'Highlight' ),
+				tooltip: true,
 				// Holds last executed highlighter.
 				lastExecuted: startingHighlighter.model,
 				// Holds current highlighter to execute (might be different then last used).
@@ -218,7 +219,7 @@ export default class HighlightUI extends Plugin {
 			buttons.push( new ToolbarSeparatorView() );
 			buttons.push( componentFactory.create( 'removeHighlight' ) );
 
-			addToolbarToDropdown( dropdownView, buttons );
+			addToolbarToDropdown( dropdownView, buttons, { enableActiveItemFocusOnDropdownOpen: true } );
 			bindToolbarIconStyleToActiveColor( dropdownView );
 
 			dropdownView.toolbarView.ariaLabel = t( 'Text highlight toolbar' );

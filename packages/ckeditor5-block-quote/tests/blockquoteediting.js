@@ -56,6 +56,14 @@ describe( 'BlockQuoteEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'foo' ) ).to.be.false;
 	} );
 
+	it( 'inherits attributes from $container', () => {
+		model.schema.extend( '$container', {
+			allowAttributes: 'foo'
+		} );
+
+		expect( model.schema.checkAttribute( 'blockQuote', 'foo' ) ).to.be.true;
+	} );
+
 	it( 'adds converters to the data pipeline', () => {
 		const data = '<blockquote><p>x</p></blockquote>';
 

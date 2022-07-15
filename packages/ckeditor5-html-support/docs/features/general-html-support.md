@@ -71,7 +71,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -200,7 +200,7 @@ The content inside the editor (what you see in the editing area) is filtered by 
 
 Moreover, as a general rule, not exclusive to GHS, there should always be a sanitization process present on the back-end side of your application. Even the best filtering done on the browser side of your application can be mitigated and every network call can be manipulated, thus bypassing the front-end filtering. This can quickly become a security risk.
 
-In addition to the sanitization process and safe GHS configuration, it is highly recommended to set strict {@link builds/guides/integration/csp Content Security Policy} rules.
+In addition to the sanitization process and safe GHS configuration, it is highly recommended to set strict {@link installation/advanced/csp Content Security Policy} rules.
 
 ### Enabling custom elements
 
@@ -288,7 +288,7 @@ dataSchema.registerInlineElement( {
 	model: 'myObjectInline',
 	isObject: true,
 	modelSchema: {
-		inheritAllFrom: '$htmlObjectInline'
+		inheritAllFrom: '$inlineObject'
 	}
 } );
 
@@ -300,7 +300,7 @@ dataSchema.registerBlockElement( {
 	model: 'myObjectBlock',
 	isObject: true,
 	modelSchema: {
-		inheritAllFrom: '$htmlObjectBlock'
+		inheritAllFrom: '$blockObject'
 	}
 } );
 
@@ -316,7 +316,7 @@ We are open for feedback, so if you find any issue, feel free to report it in th
 
 ## HTML comments
 
-By default, all HTML comments are filtered out during the editor initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature allows developers to keep them in the document content and retrieve them back, e.g. while {@link builds/guides/integration/saving-data saving the editor data}. The comments are transparent from the users point of view and they are not displayed in the editable content.
+By default, all HTML comments are filtered out during the editor initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature allows developers to keep them in the document content and retrieve them back, e.g. while {@link installation/advanced/saving-data saving the editor data}. The comments are transparent from the users point of view and they are not displayed in the editable content.
 
 <info-box>
 	The HTML comment feature is **experimental and not yet production-ready**.
@@ -352,7 +352,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 HTML comment feature does not require any configuration.

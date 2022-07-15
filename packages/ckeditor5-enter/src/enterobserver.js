@@ -13,7 +13,7 @@ import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubb
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
- * Enter observer introduces the {@link module:engine/view/document~Document#event:enter} event.
+ * Enter observer introduces the {@link module:engine/view/document~Document#event:enter `Document#enter`} event.
  *
  * @extends module:engine/view/observer/observer~Observer
  */

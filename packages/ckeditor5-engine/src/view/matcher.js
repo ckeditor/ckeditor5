@@ -739,7 +739,7 @@ function matchStyles( patterns, element ) {
  * 			styles: /^border.*$/
  * 		}
  *
- * Refer to the {@glink builds/guides/migration/migration-to-29##migration-to-ckeditor-5-v2910 Migration to v29.1.0} guide
+ * Refer to the {@glink updating/migration-to-29##migration-to-ckeditor-5-v2910 Migration to v29.1.0} guide
  * and {@link module:engine/view/matcher~MatcherPattern} documentation.
  *
  * @param {Object} pattern Pattern with missing properties.
@@ -769,7 +769,7 @@ function matchStyles( patterns, element ) {
  * 			classes: 'foobar'
  * 		}
  *
- * Refer to the {@glink builds/guides/migration/migration-to-29##migration-to-ckeditor-5-v2910 Migration to v29.1.0} guide
+ * Refer to the {@glink updating/migration-to-29##migration-to-ckeditor-5-v2910 Migration to v29.1.0} guide
  * and the {@link module:engine/view/matcher~MatcherPattern} documentation.
  *
  * @param {Object} pattern Pattern with missing properties.

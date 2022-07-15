@@ -64,11 +64,22 @@ ClassicEditor
 	} )
 	.then( editor => {
 		const button = document.querySelector( '#snippet-read-only-toggle' );
+		let isReadOnly = false;
 
 		button.addEventListener( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
+			isReadOnly = !isReadOnly;
 
-			button.innerText = editor.isReadOnly ? 'Switch to editable mode' : 'Switch to read-only mode';
+			if ( isReadOnly ) {
+				editor.enableReadOnlyMode( 'docs-snippet' );
+			} else {
+				editor.disableReadOnlyMode( 'docs-snippet' );
+			}
+
+			button.textContent = isReadOnly ?
+				'Turn off read-only mode' :
+				'Turn on read-only mode';
+
+			editor.editing.view.focus();
 		} );
 	} )
 	.catch( err => {

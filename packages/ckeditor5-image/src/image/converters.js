@@ -82,7 +82,7 @@ export function upcastImageFigure( imageUtils ) {
  * @returns {Function}
  */
 export function upcastPicture( imageUtils ) {
-	const sourceAttributeNames = [ 'srcset', 'media', 'type' ];
+	const sourceAttributeNames = [ 'srcset', 'media', 'type', 'sizes' ];
 
 	return dispatcher => {
 		dispatcher.on( 'element:picture', converter );
@@ -238,8 +238,7 @@ export function downcastSourcesAttribute( imageUtils ) {
 			const pictureElement = viewWriter.createContainerElement( 'picture', null,
 				data.attributeNewValue.map( sourceAttributes => {
 					return viewWriter.createEmptyElement( 'source', sourceAttributes );
-				} ),
-				{ isAllowedInsideAttributeElement: true }
+				} )
 			);
 
 			// Collect all wrapping attribute elements.

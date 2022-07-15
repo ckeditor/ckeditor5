@@ -92,6 +92,58 @@
 					"styles": "list-style-type"
 				}
 			]
+		},
+		{
+			"name": "Document list",
+			"className": "DocumentList",
+			"description": "Implements bulleted and numbered list features. Supports block content inside list elements. Incompatible with the List plugin.",
+			"path": "src/documentlist.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "numberedList",
+					"iconPath": "theme/icons/numberedlist.svg"
+				},
+				{
+					"type": "Button",
+					"name": "bulletedList",
+					"iconPath": "theme/icons/bulletedlist.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": [
+						"ol",
+						"ul"
+					]
+				},
+				{
+					"elements": "li"
+				}
+			]
+		},
+		{
+			"name": "Document list properties",
+			"className": "DocumentListProperties",
+			"description": "Enables styling the list item markers for both ordered and unordered lists created by the document list plugin. You can choose various types of numerals and letters or visual markers to use with these lists. Also enables setting start index (initial marker value) and list reversal (from ascending to descending) for numbered lists.",
+			"path": "src/documentlistproperties.js",
+			"requires": [
+				"DocumentList"
+			],
+			"htmlOutput": [
+				{
+					"elements": [
+						"ol",
+						"ul"
+					],
+					"attributes": [
+						"start",
+						"reversed",
+						"type"
+					],
+					"styles": "list-style-type"
+				}
+			]
 		}
 	]
 }

@@ -1,20 +1,20 @@
-node_modules/
-coverage/
-packages/*/node_modules/
-docs/api/output.json
-external/
-lerna-debug.log
+# All "dot directories".
+.*/**
+!.github/**
 
-# IDEs and editors
-/.idea
-*.iml
-.vscode
-
-# Ignore `yarn.lock` - this file might contain info from external repositories.
-yarn.lock
-
-# Ignore `mrgit.json` this file contains info about external repositories.
-mrgit.json
-
+# Files associated with CKEditor 5 repository.
+**/node_modules
 build/
 !packages/ckeditor5-build-*/build
+docs/api/output.json
+yarn.lock
+coverage/
+
+# Files associated with external repositories.
+external/
+mrgit.json
+
+# Files associated with specific development environments.
+.DS_Store
+.idea
+.vscode

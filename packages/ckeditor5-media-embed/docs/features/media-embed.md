@@ -11,7 +11,7 @@ modified_at: 2021-10-08
 The {@link module:media-embed/mediaembed~MediaEmbed} feature brings support for inserting embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
 
 <info-box info>
-	This feature is enabled by default in all {@link builds/guides/overview predefined builds}.
+	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo
@@ -58,7 +58,7 @@ ClassicEditor
 </info-box>
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Previewable and non-previewable media

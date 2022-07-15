@@ -84,6 +84,14 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'imageBlock' ) ).to.be.true;
 	} );
 
+	it( 'inherits attributes from $blockObject', () => {
+		model.schema.extend( '$blockObject', {
+			allowAttributes: 'foo'
+		} );
+
+		expect( model.schema.checkAttribute( 'table', 'foo' ) ).to.be.true;
+	} );
+
 	it( 'adds insertTable command', () => {
 		expect( editor.commands.get( 'insertTable' ) ).to.be.instanceOf( InsertTableCommand );
 	} );

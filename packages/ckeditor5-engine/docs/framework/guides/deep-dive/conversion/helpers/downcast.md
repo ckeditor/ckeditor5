@@ -1,16 +1,16 @@
 ---
 category: framework-deep-dive-conversion-helpers
-menu-title: Downcast helpers (model to view)
+menu-title: Downcast helpers
 order: 20
 since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Downcast helpers (model to view)
+# Downcast helpers &mdash; model to view conversion
 
 This article lists all editor helpers available in the {@link framework/guides/deep-dive/conversion/downcast downcast conversion}.
 
-## Element to element
+## Element to element conversion helper
 
 Converting a model element to a view element is the most common case of conversion. It is used to create view elements like `<p>` or `<h1>`, that we call "container elements".
 
@@ -117,7 +117,7 @@ In the example above, the first converter has no explicitly set priority hence i
 
 This solution may also be handy of you want your converter to act as a fallback when other converters for a given element are not present (e.g. a plugin has not been loaded). It can be easily achieved by setting the `converterProperty` to `low`.
 
-## Element to structure
+## Element to structure conversion helper
 
 Convert a single model element to multiple view elements (a structure of view elements).
 
@@ -178,7 +178,7 @@ editor.conversion
 	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
 
-## Attribute to element
+## Attribute to element conversion helper
 
 The attribute to element conversion is used to create formatting view elements like `<b>` or `<span style="font-family: ...">` (that we call attribute elements). In this case, we do not convert a model element but a text node’s attribute. It is important to note that text formatting, such as bold or font size, should be represented in the model as text node attributes.
 
@@ -261,7 +261,7 @@ editor.conversion
 
 In the example above, the first converter has no explicitly set priority hence it assumes default priority, which is `normal`. The second one overrides it by setting the priority to `high`. Using both of these converters at once will result in the `bold` attribute being converted to a `<b>` element.
 
-## Attribute to attribute
+## Attribute to attribute conversion helper
 
 The `attributeToAttribute()` helper allows registering a converter that handles a specific attribute and converts it to an attribute of a view element.
 

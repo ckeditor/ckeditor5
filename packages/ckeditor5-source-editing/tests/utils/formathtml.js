@@ -195,6 +195,20 @@ describe( 'SourceEditing utils', () => {
 			expect( formatHtml( source ) ).to.equal( sourceFormatted );
 		} );
 
+		it( 'should not format pre blocks', () => {
+			const source = '' +
+				'<blockquote>' +
+					'<pre><code>abc</code></pre>' +
+				'</blockquote>';
+
+			const sourceFormatted = '' +
+				'<blockquote>\n' +
+				'    <pre><code>abc</code></pre>\n' +
+				'</blockquote>';
+
+			expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		} );
+
 		it( 'should keep all attributes unchanged', () => {
 			const source = '' +
 				'<p id="foo" class="class1 class2" data-value="bar" onclick="fn();">' +
@@ -205,6 +219,28 @@ describe( 'SourceEditing utils', () => {
 				'<p id="foo" class="class1 class2" data-value="bar" onclick="fn();">\n' +
 				'    Paragraph\n' +
 				'</p>';
+
+			expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		} );
+
+		// More about this case in https://github.com/ckeditor/ckeditor5/issues/10698.
+		it( 'should not crash when a pathological <iframe> content appears in source', () => {
+			const source =
+				'<p>' +
+					'<iframe>' +
+						'<br></br>' +
+						'</body>' +
+					'</iframe>' +
+				'</p>';
+
+			// This is not pretty but at least it does not crash.
+			const sourceFormatted =
+			'<p>\n' +
+			'    <iframe>\n' +
+			'    <br>\n' +
+			'</br>\n' +
+			'</body></iframe>\n' +
+			'</p>';
 
 			expect( formatHtml( source ) ).to.equal( sourceFormatted );
 		} );

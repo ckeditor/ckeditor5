@@ -8,7 +8,11 @@
  */
 
 import { toWidget } from 'ckeditor5/src/widget';
-import { setViewAttributes, mergeViewElementAttributes } from './conversionutils';
+import {
+	setViewAttributes,
+	mergeViewElementAttributes,
+	updateViewAttributes
+} from './conversionutils';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -28,7 +32,7 @@ export function viewToModelObjectConverter( { model: modelName } ) {
 }
 
 /**
- * Conversion helper converting object element to HTML object widget.
+ * Conversion helper converting an object element to an HTML object widget.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
@@ -37,14 +41,15 @@ export function viewToModelObjectConverter( { model: modelName } ) {
 export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) {
 	const t = editor.t;
 
-	return ( modelElement, { writer, consumable } ) => {
+	return ( modelElement, { writer } ) => {
 		const widgetLabel = t( 'HTML object' );
 
 		const viewElement = createObjectView( viewName, modelElement, writer );
+		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
+
 		writer.addClass( 'html-object-embed__content', viewElement );
 
-		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
-		if ( viewAttributes && consumable.consume( modelElement, `attribute:htmlAttributes:${ modelElement.name }` ) ) {
+		if ( viewAttributes ) {
 			setViewAttributes( writer, viewAttributes, viewElement );
 		}
 
@@ -55,10 +60,7 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 				class: 'html-object-embed',
 				'data-html-object-embed-label': widgetLabel
 			},
-			viewElement,
-			{
-				isAllowedInsideAttributeElement: isInline
-			}
+			viewElement
 		);
 
 		return toWidget( viewContainer, writer, { widgetLabel } );
@@ -89,7 +91,19 @@ export function createObjectView( viewName, modelElement, writer ) {
 export function viewToAttributeInlineConverter( { view: viewName, model: attributeKey }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			const viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
+			let viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
+
+			// Do not apply the attribute if the element itself is already consumed and there are no view attributes to store.
+			if ( !viewAttributes && !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
+				return;
+			}
+
+			// Otherwise, we might need to convert it to an empty object just to preserve element itself,
+			// for example `<cite>` => <$text htmlCite="{}">.
+			viewAttributes = viewAttributes || {};
+
+			// Consume the element itself if it wasn't consumed by any other converter.
+			conversionApi.consumable.consume( data.viewItem, { name: true } );
 
 			// Since we are converting to attribute we need a range on which we will set the attribute.
 			// If the range is not created yet, we will create it.
@@ -103,7 +117,7 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 					// Node's children are converted recursively, so node can already include model attribute.
 					// We want to extend it, not replace.
 					const nodeAttributes = node.getAttribute( attributeKey );
-					const attributesToAdd = mergeViewElementAttributes( viewAttributes || {}, nodeAttributes || {} );
+					const attributesToAdd = mergeViewElementAttributes( viewAttributes, nodeAttributes || {} );
 
 					conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
 				}
@@ -145,11 +159,15 @@ export function attributeToViewInlineConverter( { priority, view: viewName } ) {
 export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			if ( !data.modelRange ) {
+			// Converting an attribute of an element that has not been converted to anything does not make sense
+			// because there will be nowhere to set that attribute on. At this stage, the element should've already
+			// been converted. A collapsed range can show up in to-do lists (<input>) or complex widgets (e.g. table).
+			// (https://github.com/ckeditor/ckeditor5/issues/11000).
+			if ( !data.modelRange || data.modelRange.isCollapsed ) {
 				return;
 			}
 
-			const viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
+			const viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
 
 			if ( viewAttributes ) {
 				conversionApi.writer.setAttribute( 'htmlAttributes', viewAttributes, data.modelRange );
@@ -168,16 +186,15 @@ export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilt
 export function modelToViewBlockAttributeConverter( { model: modelName } ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
-			const viewAttributes = data.attributeNewValue;
-
 			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 				return;
 			}
 
+			const { attributeOldValue, attributeNewValue } = data;
 			const viewWriter = conversionApi.writer;
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-			setViewAttributes( viewWriter, viewAttributes, viewElement );
+			updateViewAttributes( viewWriter, attributeOldValue, attributeNewValue, viewElement );
 		} );
 	};
 }

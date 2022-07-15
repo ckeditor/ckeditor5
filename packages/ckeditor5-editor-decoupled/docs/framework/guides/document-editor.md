@@ -5,7 +5,7 @@ order: 30
 
 # Document editor
 
-The {@link examples/builds/document-editor document editor example} showcases the {@link builds/guides/quick-start#document-editor document editor build} designed for document editing with a customized UI representing the layout of a sheet of paper. It was created on top of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} class and makes the best of what it offers: the freedom to choose the location of the crucial UI elements in the application.
+The {@link examples/builds/document-editor document editor example} showcases the {@link installation/advanced/predefined-builds#document-editor document editor build} designed for document editing with a customized UI representing the layout of a sheet of paper. It was created on top of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} class and makes the best of what it offers: the freedom to choose the location of the crucial UI elements in the application.
 
 In this tutorial you will learn how to create your own document editor with a customized user interface, step–by–step.
 
@@ -16,7 +16,7 @@ In this tutorial you will learn how to create your own document editor with a cu
 The document editor build includes all the necessary features for the task. All you need to do is import it and create a new instance.
 
 <info-box>
-	See the {@link builds/guides/quick-start#document-editor Quick start guide} to learn how to install the document editor build.
+	See the {@link installation/advanced/predefined-builds#document-editor Predefined builds guide} to learn how to install the document editor build.
 </info-box>
 
 Document editor can be created using the existing data container in the DOM. It can also accept a raw data string and create the editable by itself. To get the output data, use the {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} method.

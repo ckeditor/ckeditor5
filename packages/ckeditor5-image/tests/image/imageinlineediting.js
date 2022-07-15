@@ -136,7 +136,7 @@ describe( 'ImageInlineEditing', () => {
 			it( 'should convert', () => {
 				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
 
-				expect( editor.getData() ).to.equal( '<p><img alt="alt text" src="/assets/sample.png"></p>' );
+				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png" alt="alt text"></p>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
@@ -194,7 +194,7 @@ describe( 'ImageInlineEditing', () => {
 					'</imageInline></paragraph>'
 				);
 
-				expect( editor.getData() ).to.equal( '<p><img alt="alt text" src="/assets/sample.png"></p>' );
+				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png" alt="alt text"></p>' );
 			} );
 
 			it( 'should not convert srcset attribute if has wrong data', () => {
@@ -210,7 +210,7 @@ describe( 'ImageInlineEditing', () => {
 					writer.removeAttribute( 'srcset', imageInline );
 				} );
 
-				expect( editor.getData() ).to.equal( '<p><img alt="alt text" src="/assets/sample.png"></p>' );
+				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png" alt="alt text"></p>' );
 			} );
 		} );
 
@@ -276,6 +276,14 @@ describe( 'ImageInlineEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph></paragraph>' );
+			} );
+
+			it( 'should consume the src attribute on <img>', () => {
+				editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { attributes: 'src' } ) ).to.be.false;
+				}, { priority: 'low' } );
+
+				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
 			} );
 
 			it( 'should dispatch conversion for nested elements', () => {

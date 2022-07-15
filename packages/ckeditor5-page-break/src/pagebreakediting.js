@@ -37,8 +37,7 @@ export default class PageBreakEditing extends Plugin {
 		const conversion = editor.conversion;
 
 		schema.register( 'pageBreak', {
-			isObject: true,
-			allowWhere: '$block'
+			inheritAllFrom: '$blockObject'
 		} );
 
 		conversion.for( 'dataDowncast' ).elementToStructure( {

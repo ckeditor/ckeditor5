@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView, SplitButtonView, createDropdown } from 'ckeditor5/src/ui';
+import { ButtonView, SplitButtonView, createDropdown, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
 
 import ListPropertiesView from './ui/listpropertiesview';
 
@@ -184,6 +184,9 @@ function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, butto
 
 		dropdownView.panelView.children.add( listPropertiesView );
 
+		// Accessibility: focus the first active style when opening the dropdown.
+		focusChildOnDropdownOpen( dropdownView, () => listPropertiesView.stylesView.children.find( child => child.isOn ) );
+
 		return dropdownView;
 	};
 }
@@ -277,7 +280,12 @@ function createListPropertiesView( {
 			listStyleCommand
 		} );
 
-		styleButtonViews = styleDefinitions.map( styleButtonCreator );
+		// The command can be ListStyleCommand or DocumentListStyleCommand.
+		const isStyleTypeSupported = typeof listStyleCommand.isStyleTypeSupported == 'function' ?
+			styleDefinition => listStyleCommand.isStyleTypeSupported( styleDefinition.type ) :
+			() => true;
+
+		styleButtonViews = styleDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
 	}
 
 	const listPropertiesView = new ListPropertiesView( locale, {

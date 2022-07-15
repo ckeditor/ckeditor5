@@ -68,11 +68,11 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should disable button if editor is in read-only mode', () => {
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( button.isEnabled ).to.be.false;
 
-			editor.isReadOnly = false;
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( button.isEnabled ).to.be.true;
 		} );
@@ -284,6 +284,7 @@ describe( 'SourceEditing', () => {
 
 			expect( textarea.nodeName ).to.equal( 'TEXTAREA' );
 			expect( textarea.rows ).to.equal( 1 );
+			expect( textarea.getAttribute( 'aria-label' ) ).to.equal( 'Source code editing area' );
 			expect( textarea.value ).to.equal(
 				'<p>\n' +
 				'    Foo\n' +
@@ -311,11 +312,11 @@ describe( 'SourceEditing', () => {
 			const domRoot = editor.editing.view.getDomRoot();
 			const textarea = domRoot.nextSibling.children[ 0 ];
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( textarea.readOnly ).to.be.true;
 
-			editor.isReadOnly = false;
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( textarea.readOnly ).to.be.false;
 		} );

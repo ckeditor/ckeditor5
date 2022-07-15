@@ -35,7 +35,6 @@ const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
 const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
 const UNSAFE_ATTRIBUTE_NAME_PREFIX = 'data-ck-unsafe-attribute-';
 const UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE = 'data-ck-unsafe-element';
-const UNSAFE_ELEMENTS = [ 'script', 'style' ];
 
 /**
  * `DomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -126,6 +125,15 @@ export default class DomConverter {
 		this.inlineObjectElements = [
 			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'option', 'video', 'embed', 'audio', 'img', 'canvas'
 		];
+
+		/**
+		 * A list of elements which may affect the editing experience. To avoid this, those elements are replaced with
+		 * `<span data-ck-unsafe-element="[element name]"></span>` while rendering in the editing mode.
+		 *
+		 * @readonly
+		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#unsafeElements
+		 */
+		this.unsafeElements = [ 'script', 'style' ];
 
 		/**
 		 * The DOM-to-view mapping.
@@ -493,7 +501,22 @@ export default class DomConverter {
 				yield this._getBlockFiller( domDocument );
 			}
 
-			yield this.viewToDom( childView, domDocument, options );
+			const transparentRendering = childView.is( 'element' ) && childView.getCustomProperty( 'dataPipeline:transparentRendering' );
+
+			if ( transparentRendering && this.renderingMode == 'data' ) {
+				yield* this.viewChildrenToDom( childView, domDocument, options );
+			} else {
+				if ( transparentRendering ) {
+					/**
+					 * The `dataPipeline:transparentRendering` flag is supported only in the data pipeline.
+					 *
+					 * @error domconverter-transparent-rendering-unsupported-in-editing-pipeline
+					 */
+					logWarning( 'domconverter-transparent-rendering-unsupported-in-editing-pipeline', { viewElement: childView } );
+				}
+
+				yield this.viewToDom( childView, domDocument, options );
+			}
 
 			offset++;
 		}
@@ -657,7 +680,7 @@ export default class DomConverter {
 				const attrs = domNode.attributes;
 
 				if ( attrs ) {
-					for ( let i = attrs.length - 1; i >= 0; i-- ) {
+					for ( let l = attrs.length, i = 0; i < l; i++ ) {
 						viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
 					}
 				}
@@ -1549,7 +1572,7 @@ export default class DomConverter {
 	_shouldRenameElement( elementName ) {
 		const name = elementName.toLowerCase();
 
-		return this.renderingMode === 'editing' && UNSAFE_ELEMENTS.includes( name );
+		return this.renderingMode === 'editing' && this.unsafeElements.includes( name );
 	}
 
 	/**

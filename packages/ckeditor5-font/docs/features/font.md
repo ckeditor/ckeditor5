@@ -20,7 +20,7 @@ The plugin enables the following features in the rich-text editor:
 </info-box>
 
 <info-box info>
-	The font styles feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. See the [installation](#installation) section to learn how to enable it in your editor.
+	The font styles feature is enabled by default in the {@link installation/advanced/predefined-builds #document-editor document editor build} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
@@ -391,7 +391,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

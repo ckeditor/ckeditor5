@@ -78,7 +78,8 @@ describe( 'HighlightUI', () => {
 		it( 'button has the base properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'tooltip', 'Highlight' );
+			expect( button ).to.have.property( 'label', 'Highlight' );
+			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'icon', markerIcon );
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );
@@ -129,6 +130,15 @@ describe( 'HighlightUI', () => {
 			// The second item is 'greenMarker' highlighter.
 			expect( toolbar.items.map( item => item.isOn ) )
 				.to.deep.equal( [ false, true, false, false, false, false, undefined, false ] );
+		} );
+
+		it( 'should focus the first active button when dropdown is opened', () => {
+			const greenMarker = dropdown.toolbarView.items.get( 1 );
+			const spy = sinon.spy( greenMarker, 'focus' );
+
+			greenMarker.isOn = true;
+			dropdown.isOpen = true;
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should mark as toggleable all markers and pens', () => {
@@ -208,7 +218,7 @@ describe( 'HighlightUI', () => {
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
-				expect( buttonView.tooltip ).to.equal( 'Zakreślacz' );
+				expect( buttonView.label ).to.equal( 'Zakreślacz' );
 			} );
 
 			it( 'works for the listView#items in the panel', () => {

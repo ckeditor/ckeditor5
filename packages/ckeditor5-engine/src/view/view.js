@@ -23,6 +23,7 @@ import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
 import InputObserver from './observer/inputobserver';
 import ArrowKeysObserver from './observer/arrowkeysobserver';
+import TabObserver from './observer/tabobserver';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -54,6 +55,8 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * * {@link module:engine/view/observer/keyobserver~KeyObserver},
  * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
  * * {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
+ * * {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}.
+ * * {@link module:engine/view/observer/tabobserver~TabObserver}.
  *
  * This class also {@link module:engine/view/view~View#attachDomRoot binds the DOM and the view elements}.
  *
@@ -186,6 +189,7 @@ export default class View {
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
 		this.addObserver( ArrowKeysObserver );
+		this.addObserver( TabObserver );
 
 		if ( env.isAndroid ) {
 			this.addObserver( InputObserver );

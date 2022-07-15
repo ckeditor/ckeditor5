@@ -61,7 +61,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 
 				it( 'should be true when there is a marker after the selection position if editor is read-only', () => {
 					setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
-					editor.isReadOnly = true;
+					editor.enableReadOnlyMode( 'unit-test' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -166,7 +166,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 
 				it( 'should be true when there is a marker after the first selection position if editor is read-only', () => {
 					setModelData( model, '<paragraph>[fo]o bar baz</paragraph>' );
-					editor.isReadOnly = true;
+					editor.enableReadOnlyMode( 'unit-test' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -392,7 +392,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 
 				it( 'should be true when there is a marker before the selection position if editor is read-only', () => {
 					setModelData( model, '<paragraph>foo bar baz[]</paragraph>' );
-					editor.isReadOnly = true;
+					editor.enableReadOnlyMode( 'unit-test' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -497,7 +497,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 
 				it( 'should be true when there is a marker before the first selection position if editor is read-only', () => {
 					setModelData( model, '<paragraph>foo bar b[az]</paragraph>' );
-					editor.isReadOnly = true;
+					editor.enableReadOnlyMode( 'unit-test' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 

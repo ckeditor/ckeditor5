@@ -70,7 +70,7 @@ Enrich you content further by {@link features/html-embed embedding HTML code} - 
 
 ### Productivity features
 
-Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link builds/index editor build} to suit your needs.
+Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link installation/index editor build} to suit your needs.
 
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
 
@@ -80,7 +80,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 ### Customizable user experience
 
-Work as you like it - choose user interface approach from {@link builds/guides/overview several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link builds/guides/development/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
+Work as you like it - choose user interface approach from {@link installation/advanced/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link installation/advanced/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
 
 {@img assets/img/toolbar.png 800 CKEditor 5 customizable UI.}
 
@@ -92,15 +92,15 @@ Do not get stopped by technology differences - CKEditor 5 offers cross-platform 
 
 ## Backwards feature compatibility
 
-If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link builds/guides/migration/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
+If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link installation/getting-started/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
 
 ## Feature availability
 
-Plenty of these features are included by default in the predefined {@link builds/guides/overview CKEditor 5 builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
+Plenty of these features are included by default in the predefined {@link installation/advanced/predefined-builds CKEditor 5 builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
 
 However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. These plugins can also be easily and conveniently added to a custom build with the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
-We also offer the flexibility of the {@link builds/guides/development/dll-builds DLL builds}, enabling the addition of new plugins into an existing build without the need to rebuild the installation.
+We also offer the flexibility of the {@link installation/advanced/dll-builds DLL builds}, enabling the addition of new plugins into an existing build without the need to rebuild the installation.
 
 ## Feature examples
 

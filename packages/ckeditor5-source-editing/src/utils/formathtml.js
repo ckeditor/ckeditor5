@@ -25,6 +25,7 @@ export function formatHtml( input ) {
 	// The list is partially based on https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements that contains
 	// a full list of HTML block-level elements.
 	// A void element is an element that cannot have any child - https://html.spec.whatwg.org/multipage/syntax.html#void-elements.
+	// Note that <pre> element is not listed on this list to avoid breaking whitespace formatting.
 	const elementsToFormat = [
 		{ name: 'address', isVoid: false },
 		{ name: 'article', isVoid: false },
@@ -57,7 +58,6 @@ export function formatHtml( input ) {
 		{ name: 'nav', isVoid: false },
 		{ name: 'ol', isVoid: false },
 		{ name: 'p', isVoid: false },
-		{ name: 'pre', isVoid: false },
 		{ name: 'section', isVoid: false },
 		{ name: 'table', isVoid: false },
 		{ name: 'tbody', isVoid: false },
@@ -138,5 +138,6 @@ function isClosingTag( line, elementsToFormat ) {
 // @param {String} [indentChar] Indentation character(s). 4 spaces by default.
 // @returns {String}
 function indentLine( line, indentCount, indentChar = '    ' ) {
-	return `${ indentChar.repeat( indentCount ) }${ line }`;
+	// More about Math.max() here in https://github.com/ckeditor/ckeditor5/issues/10698.
+	return `${ indentChar.repeat( Math.max( 0, indentCount ) ) }${ line }`;
 }

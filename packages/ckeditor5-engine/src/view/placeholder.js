@@ -276,7 +276,7 @@ function getChildPlaceholderHostSubstitute( parent ) {
 	if ( parent.childCount ) {
 		const firstChild = parent.getChild( 0 );
 
-		if ( firstChild.is( 'element' ) && !firstChild.is( 'uiElement' ) ) {
+		if ( firstChild.is( 'element' ) && !firstChild.is( 'uiElement' ) && !firstChild.is( 'attributeElement' ) ) {
 			return firstChild;
 		}
 	}

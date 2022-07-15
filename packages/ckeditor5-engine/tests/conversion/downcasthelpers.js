@@ -137,6 +137,24 @@ describe( 'DowncastHelpers', () => {
 			expectResult( '' );
 		} );
 
+		it( 'config.view is a function that receives event data as a third argument', () => {
+			downcastHelpers.elementToElement( {
+				model: 'heading',
+				view: ( modelElement, { writer }, data ) => {
+					expect( data.item.is( 'element', 'heading' ) ).to.be.true;
+					expect( data.range.is( 'range' ) ).to.be.true;
+
+					return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
+				}
+			} );
+
+			model.change( writer => {
+				writer.insertElement( 'heading', { level: 2 }, modelRoot, 0 );
+			} );
+
+			expectResult( '<h2></h2>' );
+		} );
+
 		describe( 'converting element', () => {
 			beforeEach( () => {
 				model.schema.register( 'simpleBlock', {
@@ -927,6 +945,24 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '' );
+		} );
+
+		it( 'config.view is a function that receives event data as a third argument', () => {
+			downcastHelpers.elementToStructure( {
+				model: 'heading',
+				view: ( modelElement, { writer }, data ) => {
+					expect( data.item.is( 'element', 'heading' ) ).to.be.true;
+					expect( data.range.is( 'range' ) ).to.be.true;
+
+					return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
+				}
+			} );
+
+			model.change( writer => {
+				writer.insertElement( 'heading', { level: 2 }, modelRoot, 0 );
+			} );
+
+			expectResult( '<h2></h2>' );
 		} );
 
 		describe( 'converting element together with selected attributes', () => {
@@ -2530,6 +2566,36 @@ describe( 'DowncastHelpers', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
 
+		it( 'should allow element creator to return null for unsupported elements', () => {
+			const modelElement = new ModelElement( 'paragraph', { style: 'bold' }, new ModelText( 'foobar', { style: 'bold' } ) );
+
+			downcastHelpers.attributeToElement( {
+				model: 'style',
+				view: ( modelAttributeValue, { writer }, data ) => {
+					expect( data.item.is( 'element' ) || data.item.is( '$textProxy' ), 'item or text proxy' ).to.be.true;
+					expect( data.range.is( 'range' ), 'range' ).to.be.true;
+					expect( data.attributeKey, 'key' ).to.equal( 'style' );
+
+					if ( data.item.is( '$textProxy' ) && modelAttributeValue == 'bold' ) {
+						return writer.createAttributeElement( 'b' );
+					}
+				}
+			} );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ), 'after insert' ).to.equal( '<div><p><b>foobar</b></p></div>' );
+
+			model.change( writer => {
+				writer.removeAttribute( 'style', writer.createRangeOn( modelElement ) );
+				writer.removeAttribute( 'style', writer.createRangeIn( modelElement ) );
+			} );
+
+			expect( viewToString( viewRoot ), 'after remove attribute' ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
 		it( 'should update range on re-wrapping attribute (#475)', () => {
 			const modelElement = new ModelElement( 'paragraph', null, [
 				new ModelText( 'x' ),
@@ -2814,6 +2880,28 @@ describe( 'DowncastHelpers', () => {
 				view: ( attributeValue, conversionApi ) => {
 					// To ensure conversion API is provided.
 					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
+
+					return { key: 'class', value: 'styled-' + attributeValue };
+				}
+			} );
+
+			model.change( writer => {
+				writer.insertElement( 'imageBlock', { styled: 'pull-out' }, modelRoot, 0 );
+			} );
+
+			expectResult( '<img class="styled-pull-out"></img>' );
+		} );
+
+		it( 'config.view is a function that receives event data as a third argument', () => {
+			downcastHelpers.attributeToAttribute( {
+				model: 'styled',
+				view: ( attributeValue, conversionApi, data ) => {
+					// To ensure conversion API is provided.
+					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
+
+					expect( data.item.is( 'element', 'imageBlock' ) ).to.be.true;
+					expect( data.range.is( 'range' ) ).to.be.true;
+					expect( data.attributeKey ).to.equal( 'styled' );
 
 					return { key: 'class', value: 'styled-' + attributeValue };
 				}

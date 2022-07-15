@@ -9,11 +9,13 @@ import View from '../../../src/view/view';
 import Observer from '../../../src/view/observer/observer';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import KeyObserver from '../../../src/view/observer/keyobserver';
+import TabObserver from '../../../src/view/observer/tabobserver';
 import InputObserver from '../../../src/view/observer/inputobserver';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import CompositionObserver from '../../../src/view/observer/compositionobserver';
+import ArrowKeysObserver from '../../../src/view/observer/arrowkeysobserver';
 import ViewRange from '../../../src/view/range';
 import ViewElement from '../../../src/view/element';
 import ViewContainerElement from '../../../src/view/containerelement';
@@ -31,7 +33,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
-	const DEFAULT_OBSERVERS_COUNT = 7;
+	const DEFAULT_OBSERVERS_COUNT = 8;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
 	beforeEach( () => {
@@ -85,8 +87,10 @@ describe( 'view', () => {
 		expect( view.getObserver( SelectionObserver ) ).to.be.instanceof( SelectionObserver );
 		expect( view.getObserver( FocusObserver ) ).to.be.instanceof( FocusObserver );
 		expect( view.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
+		expect( view.getObserver( TabObserver ) ).to.be.instanceof( TabObserver );
 		expect( view.getObserver( FakeSelectionObserver ) ).to.be.instanceof( FakeSelectionObserver );
 		expect( view.getObserver( CompositionObserver ) ).to.be.instanceof( CompositionObserver );
+		expect( view.getObserver( ArrowKeysObserver ) ).to.be.instanceof( ArrowKeysObserver );
 	} );
 
 	it( 'should add InputObserver on Android devices', () => {

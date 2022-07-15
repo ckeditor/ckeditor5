@@ -1085,6 +1085,13 @@ describe( 'DataController', () => {
 			const downcastDispatcher = data.downcastDispatcher;
 			const dataProcessor = data.processor;
 
+			// Test whether list modelViewSplitOnInsert is not breaking conversion (see #11490).
+			downcastDispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+				if ( conversionApi.consumable.test( data.item, evt.name ) ) {
+					conversionApi.mapper.toViewPosition( data.range.start );
+				}
+			}, { priority: 'high' } );
+
 			downcastHelpers.elementToElement( { model: 'container', view: 'div' } );
 			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 

@@ -9,7 +9,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import CodeBlockUI from '../src/codeblockui';
 import CodeBlockEditing from '../src/codeblockediting';
@@ -152,6 +153,74 @@ describe( 'CodeBlock - integration', () => {
 			// Clicking the button once again should create the code block with the C# language instead of the default (plaintext).
 			codeBlock.fire( 'execute' );
 			expect( getData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
+		} );
+	} );
+
+	describe( 'with DocumentListEditing', () => {
+		let editor, model;
+
+		describe( 'when DocumentListEditing is loaded', () => {
+			beforeEach( async () => {
+				editor = await ClassicTestEditor
+					.create( '', {
+						plugins: [ CodeBlockEditing, DocumentListEditing, Enter, Paragraph ]
+					} );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should allow all attributes starting with list* in the schema', () => {
+				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+
+				const codeBlock = model.document.getRoot().getChild( 0 );
+
+				expect( model.schema.checkAttribute( codeBlock, 'listItemId' ), 'listItemId' ).to.be.true;
+				expect( model.schema.checkAttribute( codeBlock, 'listType' ), 'listType' ).to.be.true;
+				expect( model.schema.checkAttribute( codeBlock, 'listStart' ), 'listStart' ).to.be.true;
+				expect( model.schema.checkAttribute( codeBlock, 'listFoo' ), 'listFoo' ).to.be.true;
+			} );
+
+			it( 'should disallow attributes that do not start with "list" in the schema but include the sequence', () => {
+				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+
+				const codeBlock = model.document.getRoot().getChild( 0 );
+
+				expect( model.schema.checkAttribute( codeBlock, 'list' ), 'list' ).to.be.false;
+				expect( model.schema.checkAttribute( codeBlock, 'fooList' ), 'fooList' ).to.be.false;
+				expect( model.schema.checkAttribute( codeBlock, 'alist' ), 'alist' ).to.be.false;
+				expect( model.schema.checkAttribute( codeBlock, 'alistb' ), 'alistb' ).to.be.false;
+				expect( model.schema.checkAttribute( codeBlock, 'LISTbar' ), 'LISTbar' ).to.be.false;
+			} );
+		} );
+
+		describe( 'when DocumentListEditing is not loaded', () => {
+			beforeEach( async () => {
+				editor = await ClassicTestEditor
+					.create( '', {
+						plugins: [ CodeBlockEditing, Enter, Paragraph ]
+					} );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should disallow all attributes starting with list* in the schema', () => {
+				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+
+				const codeBlock = model.document.getRoot().getChild( 0 );
+
+				expect( model.schema.checkAttribute( codeBlock, 'listItemId' ), 'listItemId' ).to.be.false;
+				expect( model.schema.checkAttribute( codeBlock, 'listType' ), 'listType' ).to.be.false;
+				expect( model.schema.checkAttribute( codeBlock, 'listStart' ), 'listStart' ).to.be.false;
+				expect( model.schema.checkAttribute( codeBlock, 'listFoo' ), 'listFoo' ).to.be.false;
+			} );
 		} );
 	} );
 } );

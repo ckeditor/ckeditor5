@@ -61,10 +61,7 @@ export default class ImageInlineEditing extends Plugin {
 
 		// Converters 'alt' and 'srcset' are added in 'ImageEditing' plugin.
 		schema.register( 'imageInline', {
-			isObject: true,
-			isInline: true,
-			allowWhere: '$text',
-			allowAttributesOf: '$text',
+			inheritAllFrom: '$inlineObject',
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
