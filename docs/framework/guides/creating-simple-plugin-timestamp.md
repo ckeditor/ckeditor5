@@ -107,7 +107,7 @@ ClassicEditor
 
 Rebuild the editor and check in your console whether the timestamp was initialized. You should see this:
 
-{@img assets/img/timestamp.png Screenshot of the editor and the console showing 'Editor was initialized".}
+{@img assets/img/timestamp-1.png Screenshot of the editor and the console showing 'Editor was initialized".}
 
 ## Registering a toolbar button
 
