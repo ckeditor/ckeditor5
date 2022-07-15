@@ -15,6 +15,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
@@ -23,29 +24,34 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import {Link, LinkImage} from "@ckeditor/ckeditor5-link";
+import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import Font from "@ckeditor/ckeditor5-font/src/font";
-import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeBlock";
+import Font from '@ckeditor/ckeditor5-font/src/font';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeBlock';
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
-import {AutoImage, ImageInsert, ImageResize, ImageUpload} from "@ckeditor/ckeditor5-image";
-import {HorizontalLine} from "@ckeditor/ckeditor5-horizontal-line";
+import {
+	AutoImage,
+	ImageInsert,
+	ImageResize,
+	ImageUpload
+} from '@ckeditor/ckeditor5-image';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
-import {SourceEditing} from "@ckeditor/ckeditor5-source-editing";
-import {Subscript, Superscript} from "@ckeditor/ckeditor5-basic-styles";
-import {RemoveFormat} from "@ckeditor/ckeditor5-remove-format";
-import GeneralHtmlSupport from "@ckeditor/ckeditor5-html-support/src/generalhtmlsupport";
-
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 class ClassicEditor extends ClassicEditorBase {}
 class BalloonEditor extends BalloonEditorBase {}
@@ -64,6 +70,7 @@ const plugins = [
 	Superscript,
 	BlockQuote,
 	Font,
+	CKBox,
 	CKFinder,
 	CodeBlock,
 	CloudServices,
@@ -84,6 +91,7 @@ const plugins = [
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
+	PictureEditing,
 	Table,
 	TableToolbar,
 	RemoveFormat,
@@ -127,7 +135,7 @@ const defaultConfig = {
 			'mediaEmbed',
 			'undo',
 			'redo',
-			'fontSize',
+			'fontSize'
 		]
 	},
 	codeBlock: {
@@ -146,35 +154,65 @@ const defaultConfig = {
 			'imageTextAlternative'
 		]
 	},
-	fontSize: {options: [ 9, 10, 11, 12, 13, 14, 15 ]},
-	fontFamily: {supportAllValues: true},
-	fontColor: {supportAllValues: true},
-	fontBackgroundColor: {supportAllValues: true},
+	fontSize: { options: [ 9, 10, 11, 12, 13, 14, 15 ] },
+	fontFamily: { supportAllValues: true },
+	fontColor: { supportAllValues: true },
+	fontBackgroundColor: { supportAllValues: true },
 	heading: {
 		options: [
-			{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-			{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-			{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-			{ model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
-			{ model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
-			{ model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
-			{ model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' },
+			{
+				model: 'paragraph',
+				title: 'Paragraph',
+				class: 'ck-heading_paragraph'
+			},
+			{
+				model: 'heading1',
+				view: 'h1',
+				title: 'Heading 1',
+				class: 'ck-heading_heading1'
+			},
+			{
+				model: 'heading2',
+				view: 'h2',
+				title: 'Heading 2',
+				class: 'ck-heading_heading2'
+			},
+			{
+				model: 'heading3',
+				view: 'h3',
+				title: 'Heading 3',
+				class: 'ck-heading_heading3'
+			},
+			{
+				model: 'heading4',
+				view: 'h4',
+				title: 'Heading 4',
+				class: 'ck-heading_heading4'
+			},
+			{
+				model: 'heading5',
+				view: 'h5',
+				title: 'Heading 5',
+				class: 'ck-heading_heading5'
+			},
+			{
+				model: 'heading6',
+				view: 'h6',
+				title: 'Heading 6',
+				class: 'ck-heading_heading6'
+			}
 		]
 	},
 	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
-		]
+		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'de'
 };
 
 // a function to add
-function SpecialCharactersEmoji(editor) {
-	editor.plugins.get('SpecialCharacters').addItems('Emoji', [
+function SpecialCharactersEmoji( editor ) {
+	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
 		{ title: 'Smiley face', character: '😊' },
 		{ title: 'Slightly Frowning Face', character: '🙁' },
 		{ title: 'Winking Face', character: '😉' },
@@ -196,16 +234,14 @@ function SpecialCharactersEmoji(editor) {
 		{ title: 'Broken Heart', character: '💔' },
 		{ title: 'Kiss Mark', character: '💋' },
 		{ title: 'Envelope', character: '✉️' }
-	]);
+	] );
 }
 
-
-
 // Editor configuration.
-ClassicEditor.defaultConfig = defaultConfig
-BalloonEditor.defaultConfig = defaultConfig
+ClassicEditor.defaultConfig = defaultConfig;
+BalloonEditor.defaultConfig = defaultConfig;
 
 export default {
 	ClassicEditor,
 	BalloonEditor
-}
+};
