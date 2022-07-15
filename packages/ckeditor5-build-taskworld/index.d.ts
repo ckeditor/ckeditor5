@@ -12,6 +12,11 @@ declare module '@taskworld/ckeditor5' {
 		 */
 		readonly isReadOnly: boolean;
 
+		readonly config: {
+			get: ( fieldPath: string ) => any;
+			set: ( fieldPath: string, fieldValue: any ) => void;
+		};
+
 		focus: () => void;
 		getData: () => string;
 		setData: ( text: string ) => void;

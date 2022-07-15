@@ -71,25 +71,8 @@ export default class StickyPanelView extends View {
 		 */
 		this.set( 'limiterBottomOffset', 50 );
 
-		/**
-		 * The offset from the top edge of the web browser's viewport which makes the
-		 * panel become sticky. The default value is `0`, which means the panel becomes
-		 * sticky when it's upper edge touches the top of the page viewport.
-		 *
-		 * This attribute is useful when the web page has UI elements positioned to the top
-		 * either using `position: fixed` or `position: sticky`, which would cover the
-		 * sticky panel or vice–versa (depending on the `z-index` hierarchy).
-		 *
-		 * Bound to {@link module:core/editor/editorui~EditorUI#viewportOffset `EditorUI#viewportOffset`}.
-		 *
-		 * If {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset.top`} is defined, then
-		 * it will override the default value.
-		 *
-		 * @observable
-		 * @default 0
-		 * @member {Number} #viewportTopOffset
-		 */
-		this.set( 'viewportTopOffset', 0 );
+		this.set( 'viewport', () => global.window.document.body );
+		this.set( 'positionalReferenceFrame', () => global.window.document.body );
 
 		/**
 		 * Controls the `margin-left` CSS style of the panel.
@@ -194,7 +177,11 @@ export default class StickyPanelView extends View {
 					} ),
 
 					top: bind.to( '_hasViewportTopOffset', _hasViewportTopOffset => {
-						return _hasViewportTopOffset ? toPx( this.viewportTopOffset ) : null;
+						const viewportTopOffset = this.viewport().getBoundingClientRect().top;
+						const referenceTopOffset = this.positionalReferenceFrame().getBoundingClientRect().top;
+
+						// When sticky mode is on, the toolbar will have `position: fixed` which references to the closest parent having `position: absolute` but the `getBoundingClientRect` method only references to the browser's window, therefore we need to do the subtraction here
+						return _hasViewportTopOffset ? toPx( viewportTopOffset - referenceTopOffset ) : null;
 					} ),
 
 					bottom: bind.to( '_isStickyToTheLimiter', _isStickyToTheLimiter => {
@@ -233,7 +220,7 @@ export default class StickyPanelView extends View {
 		this._checkIfShouldBeSticky();
 
 		// Update sticky state of the panel as the window is being scrolled.
-		this.listenTo( global.window, 'scroll', () => {
+		this.listenTo( this.viewport(), 'scroll', () => {
 			this._checkIfShouldBeSticky();
 		} );
 
@@ -253,6 +240,8 @@ export default class StickyPanelView extends View {
 		const panelRect = this._panelRect = this._contentPanel.getBoundingClientRect();
 		let limiterRect;
 
+		const viewportTopOffset = this.viewport().getBoundingClientRect().top;
+
 		if ( !this.limiterElement ) {
 			this.isSticky = false;
 		} else {
@@ -261,7 +250,7 @@ export default class StickyPanelView extends View {
 			// The panel must be active to become sticky.
 			this.isSticky = this.isActive &&
 				// The limiter's top edge must be beyond the upper edge of the visible viewport (+the viewportTopOffset).
-				limiterRect.top < this.viewportTopOffset &&
+				limiterRect.top < viewportTopOffset &&
 				// The model#limiterElement's height mustn't be smaller than the panel's height and model#limiterBottomOffset.
 				// There's no point in entering the sticky mode if the model#limiterElement is very, very small, because
 				// it would immediately set model#_isStickyToTheLimiter true and, given model#limiterBottomOffset, the panel
@@ -273,8 +262,8 @@ export default class StickyPanelView extends View {
 		// TODO: Possibly replaced by CSS in the future http://caniuse.com/#feat=css-sticky
 		if ( this.isSticky ) {
 			this._isStickyToTheLimiter =
-				limiterRect.bottom < panelRect.height + this.limiterBottomOffset + this.viewportTopOffset;
-			this._hasViewportTopOffset = !this._isStickyToTheLimiter && !!this.viewportTopOffset;
+				limiterRect.bottom < panelRect.height + this.limiterBottomOffset + viewportTopOffset;
+			this._hasViewportTopOffset = !this._isStickyToTheLimiter && !!viewportTopOffset;
 			this._marginLeft = this._isStickyToTheLimiter ? null : toPx( -global.window.scrollX );
 		}
 		// Detach the panel from the top edge of the viewport.
