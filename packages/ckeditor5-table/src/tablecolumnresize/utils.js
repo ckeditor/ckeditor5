@@ -261,7 +261,7 @@ function calculateMissingColumnWidths( columnWidthsAttribute ) {
 //
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
 // @param {module:engine/view/element~Element} viewCell View cell.
-export function insertColumnResizerElement( viewWriter, viewCell ) {
+export function ensureColumnResizerElement( viewWriter, viewCell ) {
 	let viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
 		.find( viewElement => viewElement.hasClass( 'ck-table-column-resizer' ) );
 

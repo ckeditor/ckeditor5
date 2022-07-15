@@ -34,7 +34,7 @@ import {
 	getTableWidthInPixels,
 	normalizeColumnWidths,
 	toPrecision,
-	insertColumnResizerElement,
+	ensureColumnResizerElement,
 	getDomCellOuterWidth
 } from './utils';
 
@@ -127,60 +127,14 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Registers new attributes for a table and a table cell model elements.
+	 * Registers new attributes for a table model element.
 	 *
 	 * @private
 	 */
 	_extendSchema() {
-		const editor = this.editor;
-		const schema = editor.model.schema;
-
-		schema.extend( 'table', {
+		this.editor.model.schema.extend( 'table', {
 			allowAttributes: [ 'tableWidth', 'columnWidths' ]
 		} );
-	}
-
-	/**
-	 * Registers table column resizer converters.
-	 *
-	 * @private
-	 */
-	_setupConversion() {
-		const editor = this.editor;
-		const conversion = editor.conversion;
-		const widthStyleToTableWidthDefinition = {
-			view: {
-				name: 'figure',
-				key: 'style',
-				value: {
-					width: /[\s\S]+/
-				}
-			},
-			model: {
-				name: 'table',
-				key: 'tableWidth',
-				value: viewElement => viewElement.getStyle( 'width' )
-			}
-		};
-		const tableWidthToWidthStyleDefinition = {
-			model: {
-				name: 'table',
-				key: 'tableWidth'
-			},
-			view: width => ( {
-				name: 'figure',
-				key: 'style',
-				value: {
-					width
-				}
-			} )
-		};
-
-		conversion.for( 'upcast' ).attributeToAttribute( widthStyleToTableWidthDefinition );
-		conversion.for( 'upcast' ).add( upcastColgroupElement( editor.plugins.get( 'TableUtils' ) ) );
-
-		conversion.for( 'downcast' ).attributeToAttribute( tableWidthToWidthStyleDefinition );
-		conversion.for( 'downcast' ).add( downcastTableColumnWidthsAttribute() );
 	}
 
 	/**
@@ -192,20 +146,22 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * (2) Add all cells to column index map with its column index (to properly handle column insertion and deletion).
 	 * (3) Checking if columns have been added or removed...
 	 *    (3.1) ... in the middle of the table, or
-	 *    (3.2) ... at the table end.
+	 *    (3.2) ... at the table end,
+	 * and adjusting the widths of the affected columns.
 	 *
 	 * @private
 	 */
 	_setupPostFixer() {
 		const editor = this.editor;
+		const model = editor.model;
 		const columnIndexMap = this._columnIndexMap;
 
-		editor.model.document.registerPostFixer( writer => {
-			const changes = editor.model.document.differ.getChanges();
+		model.document.registerPostFixer( writer => {
+			const changes = model.document.differ.getChanges();
 
 			let changed = false;
 
-			for ( const table of getAffectedTables( changes, editor.model ) ) {
+			for ( const table of getAffectedTables( changes, model ) ) {
 				// (1) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				// It's an array at this point.
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );
@@ -298,7 +254,50 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Registers the mouse event listeners for `mousedown`, `mousemove` and `mouseup` events.
+	 * Registers table column resizer converters.
+	 *
+	 * @private
+	 */
+	_setupConversion() {
+		const editor = this.editor;
+		const conversion = editor.conversion;
+		const widthStyleToTableWidthDefinition = {
+			view: {
+				name: 'figure',
+				key: 'style',
+				value: {
+					width: /[\s\S]+/
+				}
+			},
+			model: {
+				name: 'table',
+				key: 'tableWidth',
+				value: viewElement => viewElement.getStyle( 'width' )
+			}
+		};
+		const tableWidthToWidthStyleDefinition = {
+			model: {
+				name: 'table',
+				key: 'tableWidth'
+			},
+			view: width => ( {
+				name: 'figure',
+				key: 'style',
+				value: {
+					width
+				}
+			} )
+		};
+
+		conversion.for( 'upcast' ).attributeToAttribute( widthStyleToTableWidthDefinition );
+		conversion.for( 'upcast' ).add( upcastColgroupElement( editor.plugins.get( 'TableUtils' ) ) );
+
+		conversion.for( 'downcast' ).attributeToAttribute( tableWidthToWidthStyleDefinition );
+		conversion.for( 'downcast' ).add( downcastTableColumnWidthsAttribute() );
+	}
+
+	/**
+	 * Registers the listeners for the `mousedown`, `mousemove` and `mouseup` events.
 	 *
 	 * @private
 	 */
@@ -315,14 +314,17 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Handles the `mousedown` event on column resizer element.
+	 * Handles the `mousedown` event on column resizer element:
+	 *  * calculates the initial column pixel widths;
+	 *  * inserts the `<colgroup>` element if it is not present in the `<table>`;
+	 *  * puts the necessary data in the temporary storage;
+	 *  * applies the attributes to the `<table>` view element.
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onMouseDownHandler( eventInfo, domEventData ) {
-		const editor = this.editor;
 		const target = domEventData.target;
 
 		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
@@ -336,17 +338,18 @@ export default class TableColumnResizeEditing extends Plugin {
 		domEventData.preventDefault();
 		eventInfo.stop();
 
+		const editor = this.editor;
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' ) );
-		const viewTable = target.findAncestor( 'table' );
-		const editingView = editor.editing.view;
 
 		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
 		const columnWidthsInPx = this._calculateDomColumnWidths( modelTable );
+		const viewTable = target.findAncestor( 'table' );
+		const editingView = editor.editing.view;
 
 		// Insert colgroup for the table that is resized for the first time.
 		if ( ![ ...viewTable.getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
 			editingView.change( viewWriter => {
-				this._insertColgroupElement( viewWriter, modelTable, columnWidthsInPx, viewTable );
+				this._insertColgroupElement( viewWriter, columnWidthsInPx, viewTable );
 			} );
 		}
 
@@ -355,17 +358,17 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		// At this point we change only the editor view - we don't want other users to see our changes yet,
 		// so we can't apply them in the model.
-		editingView.change( writer => this._applyResizingAttributesToTable( writer, target, viewTable ) );
+		editingView.change( writer => this._applyResizingAttributesToTable( writer, viewTable ) );
 	}
 
 	/**
-	 * Calculate the dom column widths. It is done by taking the width of the widest cell
-	 * from each table column (we rely on the TableWalker to determine
-	 * which column the cell belongs to).
+	 * Calculates the dom column widths. It is done by taking the width of the widest cell
+	 * from each table column (we rely on the  {@link module:table/tablewalker~TableWalker}
+	 * to determine which column the cell belongs to).
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} modelTable A table which columns should be measured.
-	 * @returns {Array.<Number>} Widths expressed in pixels (without unit).
+	 * @returns {Array.<Number>} Column widths expressed in pixels (without unit).
 	 */
 	_calculateDomColumnWidths( modelTable ) {
 		const editor = this.editor;
@@ -377,12 +380,12 @@ export default class TableColumnResizeEditing extends Plugin {
 			const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
 			const domCellWidth = getDomCellOuterWidth( domCell );
 
-			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
-				this._columnIndexMap.set( cellSlot.cell, cellSlot.column );
-			}
-
 			if ( !columnWidthsInPx[ cellSlot.column ] || domCellWidth < columnWidthsInPx[ cellSlot.column ] ) {
 				columnWidthsInPx[ cellSlot.column ] = toPrecision( domCellWidth );
+			}
+
+			if ( !this._columnIndexMap.has( cellSlot.cell ) ) {
+				this._columnIndexMap.set( cellSlot.cell, cellSlot.column );
 			}
 		}
 
@@ -394,16 +397,13 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter A writer instance.
-	 * @param {module:engine/model/element~Element} modelTable A table model element.
 	 * @param {Array.<Number>} columnWidthsInPx Column widths.
 	 * @param {module:engine/view/element~Element} viewTable A table view element.
 	 */
-	_insertColgroupElement( viewWriter, modelTable, columnWidthsInPx, viewTable ) {
+	_insertColgroupElement( viewWriter, columnWidthsInPx, viewTable ) {
 		const colgroup = viewWriter.createContainerElement( 'colgroup' );
 
-		const numberOfColumns = this.editor.plugins.get( 'TableUtils' ).getColumns( modelTable );
-
-		for ( let i = 0; i < numberOfColumns; i++ ) {
+		for ( let i = 0; i < columnWidthsInPx.length; i++ ) {
 			const viewColElement = viewWriter.createEmptyElement( 'col' );
 			const columnWidthInPc = `${ toPrecision( columnWidthsInPx[ i ] / sumArray( columnWidthsInPx ) * 100 ) }%`;
 
@@ -419,19 +419,21 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter A writer instance.
-	 * @param {HTMLElement} activeResizer The clicked resizer.
 	 * @param {module:engine/view/element~Element} viewTable A table containing the clicked resizer.
 	 */
-	_applyResizingAttributesToTable( writer, activeResizer, viewTable ) {
+	_applyResizingAttributesToTable( writer, viewTable ) {
 		const figureInitialPcWidth = this._resizingData.widths.viewFigureWidth / this._resizingData.widths.viewFigureParentWidth;
 
-		writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, activeResizer.findAncestor( 'figure' ) );
-		writer.addClass( 'ck-table-column-resizer__active', this._resizingData.elements.viewResizer );
 		writer.addClass( 'ck-table-resized', viewTable );
+		writer.addClass( 'ck-table-column-resizer__active', this._resizingData.elements.viewResizer );
+		writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, viewTable.findAncestor( 'figure' ) );
 	}
 
 	/**
-	 * Handles the `mousemove` event if previously the `mousedown` event was triggered from the column resizer element.
+	 * Handles the `mousemove` event.
+	 *  * If resizing process is not in progress, it does nothing.
+	 *  * If resizing is active but not allowed, it stops the resizing process instantly calling the `mousedown` event handler.
+	 *  * Otherwise it dynamically updates the widths of the resized columns.
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
@@ -507,16 +509,16 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Handles the `mouseup` event if previously the `mousedown` event was triggered from the column resizer element.
+	 * Handles the `mouseup` event.
+	 *  * If resizing process is not in progress, it does nothing.
+	 *  * If resizing is active but not allowed, it cancels the resizing process restoring the original widths.
+	 *  * Otherwise it propagates the changes from view to the model by executing the adequate commands.
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData // not true, its native dom event - same for mousemove
 	 */
 	_onMouseUpHandler() {
-		const editor = this.editor;
-		const editingView = editor.editing.view;
-
 		if ( !this._isResizingActive ) {
 			return;
 		}
@@ -528,64 +530,8 @@ export default class TableColumnResizeEditing extends Plugin {
 			viewColgroup
 		} = this._resizingData.elements;
 
-		const columnWidthsAttributeOld = modelTable.getAttribute( 'columnWidths' );
-		const columnWidthsAttributeNew = [ ...viewColgroup.getChildren() ]
-			.map( viewCol => viewCol.getStyle( 'width' ) )
-			.join( ',' );
-
-		const isColumnWidthsAttributeChanged = columnWidthsAttributeOld !== columnWidthsAttributeNew;
-
-		const tableWidthAttributeOld = modelTable.getAttribute( 'tableWidth' );
-		const tableWidthAttributeNew = viewFigure.getStyle( 'width' );
-
-		const isTableWidthAttributeChanged = tableWidthAttributeOld !== tableWidthAttributeNew;
-
-		if ( isColumnWidthsAttributeChanged || isTableWidthAttributeChanged ) {
-			if ( this._isResizingAllowed ) {
-				// Commit all changes to the model.
-				if ( isTableWidthAttributeChanged ) {
-					editor.execute(
-						'resizeTableWidth',
-						{
-							table: modelTable,
-							tableWidth: `${ toPrecision( tableWidthAttributeNew ) }%`,
-							columnWidths: columnWidthsAttributeNew
-						}
-					);
-				} else {
-					editor.execute( 'resizeColumnWidths', { columnWidths: columnWidthsAttributeNew, table: modelTable } );
-				}
-			} else {
-				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
-				editingView.change( writer => {
-					if ( columnWidthsAttributeOld ) {
-						const columnWidths = columnWidthsAttributeOld.split( ',' );
-
-						for ( const viewCol of viewColgroup.getChildren() ) {
-							writer.setStyle( 'width', columnWidths.shift(), viewCol );
-						}
-					} else {
-						writer.remove( viewColgroup );
-						writer.removeClass(
-							'ck-table-resized',
-							[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
-						);
-					}
-
-					if ( isTableWidthAttributeChanged ) {
-						if ( tableWidthAttributeOld ) {
-							writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
-						} else {
-							writer.removeStyle( 'width', viewFigure );
-							writer.removeClass(
-								'ck-table-resized',
-								[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
-							);
-						}
-					}
-				} );
-			}
-		}
+		const editor = this.editor;
+		const editingView = editor.editing.view;
 
 		editingView.change( writer => {
 			writer.removeClass( 'ck-table-column-resizer__active', viewResizer );
@@ -593,10 +539,69 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this._isResizingActive = false;
 		this._resizingData = null;
+
+		const columnWidthsAttributeOld = modelTable.getAttribute( 'columnWidths' );
+		const columnWidthsAttributeNew = [ ...viewColgroup.getChildren() ]
+			.map( viewCol => viewCol.getStyle( 'width' ) )
+			.join( ',' );
+		const isColumnWidthsAttributeChanged = columnWidthsAttributeOld !== columnWidthsAttributeNew;
+
+		const tableWidthAttributeOld = modelTable.getAttribute( 'tableWidth' );
+		const tableWidthAttributeNew = viewFigure.getStyle( 'width' );
+		const isTableWidthAttributeChanged = tableWidthAttributeOld !== tableWidthAttributeNew;
+
+		if ( !isColumnWidthsAttributeChanged && !isTableWidthAttributeChanged ) {
+			return;
+		}
+
+		if ( this._isResizingAllowed ) {
+			// Commit all changes to the model.
+			if ( isTableWidthAttributeChanged ) {
+				editor.execute(
+					'resizeTableWidth',
+					{
+						table: modelTable,
+						tableWidth: `${ toPrecision( tableWidthAttributeNew ) }%`,
+						columnWidths: columnWidthsAttributeNew
+					}
+				);
+			} else {
+				editor.execute( 'resizeColumnWidths', { columnWidths: columnWidthsAttributeNew, table: modelTable } );
+			}
+		} else {
+			// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
+			editingView.change( writer => {
+				if ( columnWidthsAttributeOld ) {
+					const columnWidths = columnWidthsAttributeOld.split( ',' );
+
+					for ( const viewCol of viewColgroup.getChildren() ) {
+						writer.setStyle( 'width', columnWidths.shift(), viewCol );
+					}
+				} else {
+					writer.remove( viewColgroup );
+					writer.removeClass(
+						'ck-table-resized',
+						[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
+					);
+				}
+
+				if ( isTableWidthAttributeChanged ) {
+					if ( tableWidthAttributeOld ) {
+						writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
+					} else {
+						writer.removeStyle( 'width', viewFigure );
+						writer.removeClass(
+							'ck-table-resized',
+							[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
+						);
+					}
+				}
+			} );
+		}
 	}
 
 	/**
-	 * Retrieves and returns required data needed to correctly calculate the widths of the resized columns.
+	 * Retrieves and returns required data needed for the resizing process.
 	 *
 	 * @private
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
@@ -658,7 +663,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Inserts colgroup if it is missing from table (e.g. after table insertion into table).
+	 * Inserts the `<colgroup>` element if it is missing in the view table (e.g. after table insertion into table).
 	 *
 	 * @private
 	 */
@@ -666,22 +671,22 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => {
-			const table = editor.model.document.selection.getFirstPosition().findAncestor( 'table' );
-			const tableView = editor.editing.view.document.selection.getFirstPosition().getAncestors().reverse().find(
-				element => element.name === 'table'
+			const viewTable = editor.editing.view.document.selection.getFirstPosition().getAncestors().reverse().find(
+				viewElement => viewElement.name === 'table'
 			);
-			const tableViewContainsColgroup = tableView && [ ...tableView.getChildren() ].find(
+			const viewTableContainsColgroup = viewTable && [ ...viewTable.getChildren() ].find(
 				viewElement => viewElement.is( 'element', 'colgroup' )
 			);
+			const modelTable = editor.model.document.selection.getFirstPosition().findAncestor( 'table' );
 
-			if ( table && table.hasAttribute( 'columnWidths' ) && tableView && !tableViewContainsColgroup ) {
-				editor.editing.reconvertItem( table );
+			if ( modelTable && modelTable.hasAttribute( 'columnWidths' ) && viewTable && !viewTableContainsColgroup ) {
+				editor.editing.reconvertItem( modelTable );
 			}
 		}, { priority: 'low' } );
 	}
 
 	/**
-	 * Registers a handler on 'render' event to properly insert missing resizers after all postfixers finished their job.
+	 * Registers a listener on `render` event inserting missing resizers after all postfixers finished their job.
 	 *
 	 * @private
 	 */
@@ -695,7 +700,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				}
 
 				view.change( viewWriter => {
-					insertColumnResizerElement( viewWriter, item.item );
+					ensureColumnResizerElement( viewWriter, item.item );
 				} );
 			}
 		}, { priority: 'lowest' } );
