@@ -161,6 +161,7 @@ describe( 'ImageUtils plugin', () => {
 			expect( imageUtils.getClosestSelectedImageWidget( selection ) ).to.be.null;
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5/issues/11972.
 		it( 'should return null if view selection is empty', () => {
 			const selection = writer.createSelection();
 
