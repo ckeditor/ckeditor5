@@ -1,16 +1,17 @@
 ---
 category: simple-plugin
 order: 25
+modified_at: 2022-07-15
 ---
 
 # Abbreviation plugin tutorial &ndash; part 2
 
 In this part of the tutorial we will focus on creating a dialog box, which will get the user's input.
 
-We will pick up where we left off in the first part, so make sure you {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our starter files for this part.
+We will pick up where we left off in the first part, so make sure you {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our [starter files for this part](https://github.com/ckeditor/ckeditor5-tutorials-examples/)<!-- Change link to final -->.
 
 <info-box>
-As we will mostly work on the UI, we recommend reading about our {@link framework/guides/architecture/ui-library UI library} before you start coding.
+	As we will mostly work on the UI, we recommend reading about our {@link framework/guides/architecture/ui-library UI library} before you start coding.
 </info-box>
 
 If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo).
@@ -144,7 +145,7 @@ export default class FormView extends View {
 When the user clicks one of these buttons, we want to either submit or cancel the form view. These events should be fired off from the form view, so we need to delegate them from the buttons to the form view.
 
 <info-box>
-Event delegation allows selected events of one {@link module:utils/emittermixin~Emitter emitter} to be fired off by another emitter. Read about it in our {@link framework/guides/architecture/core-editor-architecture#event-system-and-observables introduction to the event system} and more on {@link framework/guides/deep-dive/event-system#delegating-events delegating events}.
+	Event delegation allows selected events of one {@link module:utils/emittermixin~Emitter emitter} to be fired off by another emitter. Read about it in our {@link framework/guides/architecture/core-editor-architecture#event-system-and-observables introduction to the event system} and more on {@link framework/guides/deep-dive/event-system#delegating-events delegating events}.
 </info-box>
 
 For now, we {@link module:utils/emittermixin~Emitter#delegate delegate} `cancelButtonView#execute` to the FormView, so pressing the `cancel` button will fire off `FormView#cancel`. We will handle delegating the submit event in a couple of steps.

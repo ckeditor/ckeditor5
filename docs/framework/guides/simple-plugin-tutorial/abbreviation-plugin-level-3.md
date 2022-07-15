@@ -1,33 +1,34 @@
 ---
 category: simple-plugin
 order: 26
+modified_at: 2022-07-15
 ---
 
-# Abbreviation plugin tutorial - part 3
+# Abbreviation plugin tutorial &ndash; part 3
 
 You made it to the final part of the abbreviation plugin tutorial. In this part, we will improve accessibility of our plugin. We will also work on a command, which will additionally grab the text from user's selection, and insert it into our form. And more!
 
-We will pick up where we left off in {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-2 the second part}, so make sure you finished it, or grab our starter files for this part.
+We pick up where we left off in the {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-2 second part}, so make sure you finished it, or grab our [starter files for this part](https://github.com/ckeditor/ckeditor5-tutorials-examples/)<!-- Change link to final -->.
 
-If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
+If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo).
 
 ## Improving accessibility
 
-Let's make our plugin accessible for users who rely on keyboards for navigation. We want to ensure that pressing `tab` and `shift + tab` will move focus around in the form view, and pressing `esc` will close it.
+First, we make our plugin accessible for users who rely on keyboards for navigation. We want to ensure that pressing <kbd>Tab</kbd> and <kbd>Shift</kbd> + <kbd>Tab</kbd> will move focus around in the form view, and pressing `esc` will close it.
 
 <info-box>
-In order to improve accessibility of the plugin, it's important to understand how keystroke and focus management works in the CKEditor 5 framework. We recommend you read up on {@link framework/guides/architecture/ui-library#keystrokes-and-focus-management the basics}, or do {@link framework/guides/deep-dive/focus-tracking a deep dive into focus tracking}.
+	In order to improve the accessibility of the plugin, it is important to understand how keystroke and focus management works in the CKEditor 5 framework. We recommend you {@link framework/guides/architecture/ui-library#keystrokes-and-focus-management read up on the basics}, or do a {@link framework/guides/deep-dive/focus-tracking deep dive into focus tracking}.
 </info-box>
 
-We have some ready-to-use options to help us out - {@link framework/guides/deep-dive/focus-tracking#using-the-keystrokehandler-class the KeystrokeHandler}, {@link framework/guides/deep-dive/focus-tracking#using-the-focustracker-class FocusTracker}, and {@link framework/guides/deep-dive/focus-tracking#using-the-focuscycler-class FocusCycler} helper classes.
+We have some ready-to-use options to help us out &ndash; the {@link framework/guides/deep-dive/focus-tracking#using-the-keystrokehandler-class the KeystrokeHandler}, {@link framework/guides/deep-dive/focus-tracking#using-the-focustracker-class FocusTracker}, and {@link framework/guides/deep-dive/focus-tracking#using-the-focuscycler-class FocusCycler} helper classes.
 
 ### Adding a keystroke handler and a focus tracker
 
-Start by importing the {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} and {@link module:utils/focustracker~FocusTracker `FocusTracker`} classes into your form view, and creating their new instances in the `constructor()`.
+We start by importing the {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} and {@link module:utils/focustracker~FocusTracker `FocusTracker`} classes into our form view, and creating their new instances in the `constructor()`.
 
-Now, in the `render()` method, you can add each element of our `childViews` view collection to the `focusTracker`. There, you can also start listening for the keystrokes coming from the rendered view element.
+Now, in the `render()` method, we add each element of our `childViews` view collection to the `focusTracker`. There, we can also start listening for the keystrokes coming from the rendered view element.
 
-Lastly, let's add a `destroy()` method, and destroy both the focus tracker and the keystroke handler. It will ensure that when the user kills the editor, our helpers 'die' too, preventing any memory leakages.
+Finally let's add the `destroy()` method, and destroy both the focus tracker and the keystroke handler. It will ensure that when the user kills the editor, our helpers "die" too, preventing any memory leaks.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -77,9 +78,9 @@ export default class FormView extends View {
 
 ### Adding a focus cycler
 
-{@link module:ui/focuscycler~FocusCycler `FocusCycler`} will allow the user to navigate through all the children of our form view, cycling over them. Check how our navigation works now in our form view - we can use `tab` to move from the first input field to the second, but then the focus leaves the form, and the editor itself. Let's fix that.
+The {@link module:ui/focuscycler~FocusCycler `FocusCycler`} will allow the user to navigate through all the children of our form view, cycling over them. Check how our navigation works now in our form view &ndash; we can use <kbd>Tab</kbd> to move from the first input field to the second, but then the focus leaves the form, and the editor itself. Let's fix that.
 
-Import the `FocusCycler` class, and create its instance in the form view `constructor()`. You need to pass an object with focusables (so our `childViews` collection), the focus tracker, the keystroke handler, and the actions connected to different keystrokes.
+We import the `FocusCycler` class, and create its instance in the form view `constructor()`. We need to pass an object with focusables (so our `childViews` collection), the focus tracker, the keystroke handler, and the actions connected to different keystrokes.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -122,7 +123,7 @@ export default class FormView extends View {
 }
 ```
 
-Now, we can add `esc` button handler in our `_createFromView()` function, which will hide the UI and fire off `cancel` on the form.
+Now, we can add the <kbd>Esc</kbd> button handler in our `_createFromView()` function, which will hide the UI and fire off `cancel` on the form.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -147,19 +148,19 @@ export default class AbbreviationUI extends Plugin {
 }
 ```
 
-We are done with improving accessibility for keyboard-only users. Try it out yourself by pressing `tab`, `tab + shift`, and `esc` in the form.
+We are done with improving accessibility for keyboard-only users. Try it out yourself by pressing <kbd>Tab</kbd>, <kbd>Shift</kbd> + <kbd>Tab</kbd>, and <kbd>Esc</kbd> in the form.
 
 ## Improving the UI functionalities
 
-When user selects a range (meaning a letter, a word, or a whole document fragment) and presses the abbreviation button, he might expect that his selected text appears automatically in the abbreviation input field. Let's add this functionality to our form.
+When the user selects a range (a letter, a word, or a whole document fragment) and presses the abbreviation button, they might expect that their selected text appears automatically in the abbreviation input field. Let's add this functionality to our form.
 
 <info-box>
-As we will be working with user's selection in the document, it's important to understand what exactly it means in the editor's model. Read our introduction to {@link framework/guides/architecture/editing-engine#positions-ranges-and-selections positions, ranges and selections}.
+	As we will be working with user's selection in the document, it is important to understand what exactly does it mean in the editor's model. Read our introduction to {@link framework/guides/architecture/editing-engine#positions-ranges-and-selections positions, ranges and selections} to expand your knowledge in the field.
 </info-box>
 
 In order to display the text from the user's selection in the form field, we need to first grab and concatenate all text from the selected range. If the user selects a couple of paragraphs, a heading, and an image, we need to go through all the nodes, and use only the ones containing text.
 
-Let's create a helper `getRangeText()` function in a separate `/utils.js` file. It will grab all items from a range using its `getItems()` method. Then, it will concatenate all text from {@link module:engine/model/text~Text `text`} and {@link module:engine/model/textproxy~TextProxy `textProxy`} nodes, and skip all others.
+Let's create a helper `getRangeText()` function in a separate `/utils.js` file. It will grab all items from a range using its `getItems()` method. Then, it will concatenate all text from the {@link module:engine/model/text~Text `text`} and {@link module:engine/model/textproxy~TextProxy `textProxy`} nodes, and skip all the others.
 
 ```js
 // abbreviation/utils.js
@@ -177,9 +178,9 @@ export default function getRangeText( range ) {
 
 ```
 
-Now, in `AbbreviationUI` we can adjust the `_showUI()` method to display the selected text in the abbreviation input field. Import `getRangeText` and pass the first range in the selection (using {@link module:engine/model/documentselection~DocumentSelection#getFirstRange `getFirstRange()`} method) as an argument.
+Now, in `AbbreviationUI` we can adjust the `_showUI()` method to display the selected text in the abbreviation input field. We import `getRangeText` and pass the first range in the selection (using the {@link module:engine/model/documentselection~DocumentSelection#getFirstRange `getFirstRange()`} method) as an argument.
 
-We will also disable the input field when the selection is not collapsed, because it would be hard to change the text of the abbreviation if the selection spanned multiple paragraphs.
+We will also disable the input field when the selection is not collapsed, because it would be hard to change the text of the abbreviation if the selection spans multiple paragraphs.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -210,7 +211,6 @@ export default class AbbreviationUI extends Plugin {
 
 	// ...
 }
-
 ```
 
 Since we are disabling the first input field in some cases, let's update the `focus()` method in our form view accordingly.
@@ -237,23 +237,23 @@ export default class FormView extends View {
 }
 ```
 
-Our new functionality should work now, check it out yourself! It doesn't recognize if selected text is an abbreviation already, so if you select "WYSIWYG", the full title doesn't appear in the title input field. We will change it in a couple of steps.
+Our new functionality should work now, check it out yourself! It does not recognize whether the selected text is an abbreviation already, so if you select "WYSIWYG", the full title does not yet appear in the title input field. We will change it in the next steps.
 
 ## Adding a command
 
 Our plugin does what we want it to do, so why complicate things by adding a command? Well, a command not only executes an action, but also automatically reacts when any changes are applied to the model.
 
 <info-box>
-A command in CKEditor 5 is a combination of an action and a state. The state of the command refreshes its state whenever anything changes in the model. We highly recommend {@link framework/guides/architecture/core-editor-architecture#commands reading up on commands} before we move on.
+	A command in CKEditor 5 is a combination of an action and a state. The state of the command refreshes its state whenever anything changes in the model. We highly recommend {@link framework/guides/architecture/core-editor-architecture#commands reading about commands} before we move on.
 </info-box>
 
-When the user makes a selection in the editor, the command will automatically check if there is an abbreviation there. It will also ensure that the command is only enabled only where the "abbreviation" attribute can be set on the current model selection (not on images, for instance).
+When the user makes a selection in the editor, the command will automatically check if there is an abbreviation there. It will also ensure that the command is only enabled where the "abbreviation" attribute can be set on the current model selection (not on images, for instance).
 
 ### Creating a command
 
-Let's start by creating our command, and moving the existing action logic there.
+Let's start by creating the command, and moving the existing action logic there.
 
-In the `/abbreviationcommand.js` file import the {@link module:core/command~Command `Command`} class, and create its instance.
+In the `/abbreviationcommand.js` file import, the {@link module:core/command~Command `Command`} class, and create its instance.
 
 We will start by simply moving there the action we already created for `submit` in our `_createFormView()` method, passing the title and the abbreviation text into the command's `execute()` method.
 
@@ -276,7 +276,7 @@ export default class AbbreviationCommand extends Command {
 }
 ```
 
-Now, let's initialize our `AbbreviationCommand`, by adding it to the list of editor's commands in `AbbreviationEditing`. We will also pass there a name we will use to call our command.
+Now, let's initialize our `AbbreviationCommand`, by adding it to the list of editor's commands in `AbbreviationEditing`. We will also pass a name there, that we will use to call our command.
 
 ```js
 // abreviation/abbreviationediting.js
@@ -297,7 +297,7 @@ export default class AbbreviationEditing extends Plugin {
 	// ...
 }
 ```
-Now, we can replace the action called on `submit` with our new command, passing it into editor's `execute()` method, along with the abbreviation and title values.
+We can now replace the action called on `submit` with our new command, passing it into editor's `execute()` method, along with the abbreviation and title values.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -327,8 +327,8 @@ export default class AbbreviationUI extends Plugin {
 
 	// ...
 }
-
 ```
+
 The command should now work, and pressing the `submit` button should have the same effect as it did before. We can now explore some additional functionalities. You can check it out now in the CKEditor 5 Inspector.
 
 {@img assets/img/abbreviation-part3-1.png Screenshot of the CKEditor 5 inspector showing the 'addAbbreviation' command.}
@@ -337,7 +337,7 @@ The command should now work, and pressing the `submit` button should have the sa
 
 Thanks to the command's {@link module:core/command~Command#refresh `refresh()`} method, we can observe the state and the value of our command not just when the user presses the button, but whenever any changes are made in the editor. We will use this to check if the user's selection has an abbreviation model attribute already.
 
-Before we do that, let's check if the command can be used at all on a given selection. If the user selects an image, the command should be disabled. Let's check if our `abbreviation` attribute is allowed in the schema, using its {@link module:engine/model/schema~Schema#checkAttributeInSelection `checkAttributeInSelection()`} method.
+Before we do that, we may want to check if the command can be used at all on a given selection. If the user selects an image, the command should be disabled. Let's check if our `abbreviation` attribute is allowed in the schema, using its {@link module:engine/model/schema~Schema#checkAttributeInSelection `checkAttributeInSelection()`} method.
 
 ```js
 // abbreviation/abbreviationcommand.js
@@ -361,16 +361,17 @@ export default class AbbreviationCommand extends Command {
 	}
 }
 ```
+
 We can now check if the selected range is collapsed. If so, we will check if the caret is in an abbreviation, and grab the entire range containing it. We can easily do so using the {@link module:typing/utils/findattributerange~findAttributeRange `findAttributeRange`} helper function. We need to pass it the first position of the selection, our attribute name and value, and the model.
 
-Then, we will change the value of the command. We will get the abbreviation text using our `getRangeText` helper function. We will also add a range value, which we will use when executing the command.
+Then, we change the value of the command. We will get the abbreviation text using our `getRangeText` helper function. We also add a range value, which we will use when executing the command.
 
 ```js
 // abbreviation/abbreviationcommand.js
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange'; 	// ADDED
-import getRangeText from './utils.js';							// ADDED
+import getRangeText from './utils.js';														// ADDED
 
 export default class AbbreviationCommand extends Command {
 	refresh() {
@@ -408,9 +409,10 @@ export default class AbbreviationCommand extends Command {
 	}
 }
 ```
-If the selection is not collapsed, we will check if it has the `abbreviation` model attribute. If so, we will again grab the full range of the abbreviation and compare it with the user selection.
 
-When the user selects a bit of text with the abbreviation attribute, along with a bit without it, we don't want to change the command's value. So, we will use the {@link module:engine/model/range~Range#containsRange `containsRange()`} method to see if the selected range is within the abbreviation range. The second parameter makes it a `loose` check, meaning the selected range can start, end, or be equal to the abbreviation range.
+If the selection is not collapsed, we check if it has the `abbreviation` model attribute. If so, we will again grab the full range of the abbreviation and compare it with the user selection.
+
+When the user selects a bit of text with the abbreviation attribute, along with a bit without it, we do not want to change the command's value. So, we will use the {@link module:engine/model/range~Range#containsRange `containsRange()`} method to see if the selected range is within the abbreviation range. The second parameter makes it a `loose` check, meaning the selected range can start, end, or be equal to the abbreviation range.
 
 ```js
 // abbreviation/abbreviationcommand.js
@@ -512,9 +514,10 @@ export default class AbbreviationUI extends Plugin {
 }
 
 ```
+
 ### Improving the `execute()` method
 
-We should now introduce more cases into our `execute()` method. For starters, if the user's selection is not collapsed, we just need to add abbreviation attribute to his selection, instead of inserting the abbreviation text into the model.
+We should now introduce more cases into our `execute()` method. For starters, if the user's selection is not collapsed, we just need to add the abbreviation attribute to their selection instead of inserting the abbreviation text into the model.
 
 So if the selection is not collapsed, we will gather all the ranges, that are allowed to use the `abbreviation` model attribute, using the schema's {@link module:engine/model/schema~Schema#getValidRanges `getValidRanges()`} method. Then we will use the {@link module:engine/model/writer~Writer#setAttribute `setAttribute()`}, to add the title value to each of the ranges.
 
@@ -560,9 +563,10 @@ export default class AbbreviationCommand extends Command {
 }
 
 ```
-Now we can use the command's state to check if the selection is in an existing abbreviation. If the command's value is not `null`, we will grab the whole range, and update its text and title.
 
-We will create a position at the end of the inserted abbreviation, and set selection there. The {@link module:engine/model/model~Model#insertContent `insertContent()`} method returns a range, and we can grab its {@link module:engine/model/range~Range#end end} to define our `positionAfter`.
+Now we can use the command's state to check whether the selection is inside an existing abbreviation. If the command's value is not `null`, we will grab the whole range, and update its text and title.
+
+We will create a position at the end of the inserted abbreviation, and set a selection there. The {@link module:engine/model/model~Model#insertContent `insertContent()`} method returns a range, and we grab its {@link module:engine/model/range~Range#end end} to define our `positionAfter`.
 
 ```js
 // abbreviation/abbreviationcommand.js
@@ -600,12 +604,11 @@ export default class AbbreviationCommand extends Command {
 		} );
 	}
 }
-
 ```
 
-If the collapsed selection is not in an existing abbreviation, we will insert a text node with the "abbreviation" attribute in place of the caret.
+If the collapsed selection is not inside an existing abbreviation, we will insert a text node with the "abbreviation" attribute in place of the caret.
 
-The user might place the abbreviation inside a text, which already has other model attributes, like "bold" or "italic". We should first collect them along with our abbreviation attribute, and use the whole list when inserting the abbreviation into the document. We will use our {@link module:utils/tomap~toMap `toMap`} helper function to collect all attributes.
+The user might place the abbreviation inside a text, which already has some other model attributes, like "bold" or "italic". We should first collect them along with our abbreviation attribute, and use the whole list when inserting the abbreviation into the document. We will use our {@link module:utils/tomap~toMap `toMap`} helper function to collect all attributes.
 
 ```js
 // abbreviation/abbreviationcommand.js
@@ -656,11 +659,9 @@ export default class AbbreviationCommand extends Command {
 		} );
 	}
 }
-
 ```
-The command is now done, check how it works by trying all our different cases - selection collapsed, not collapsed, inside an existing abbreviation, etc.
 
-That's it, you've finished the tutorial! You are ready to create your own plugins. If you want to continue learning, continue to our more advanced tutorials, starting with {@link framework/guides/tutorials/implementing-a-block-widget "Implementing a block widget"}.
+The command is now done, check how it works by trying all our different cases - selection collapsed, not collapsed, inside an existing abbreviation, etc.
 
 ## Demo
 
@@ -669,3 +670,9 @@ That's it, you've finished the tutorial! You are ready to create your own plugin
 ## Final code
 
 If you got lost at any point, this is the final implementation of the plugin. You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.
+
+<info-box>
+	**What's next?**
+
+	That's it, you've finished the tutorial! You are now ready to create your own plugins. If you want to continue learning, move on to our more advanced tutorials, starting with the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} guide.
+</info-box>

@@ -1,6 +1,7 @@
 ---
 category: simple-plugin
 order: 24
+modified_at: 2022-07-15
 ---
 
 # Abbreviation plugin tutorial &ndash; part 1
