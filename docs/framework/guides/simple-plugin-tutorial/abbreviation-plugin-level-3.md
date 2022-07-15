@@ -253,7 +253,7 @@ When the user makes a selection in the editor, the command will automatically ch
 
 Let's start by creating the command, and moving the existing action logic there.
 
-In the `/abbreviationcommand.js` file import, the {@link module:core/command~Command `Command`} class, and create its instance.
+In the `/abbreviationcommand.js` file, we import the {@link module:core/command~Command `Command`} class and create its instance.
 
 We will start by simply moving there the action we already created for `submit` in our `_createFormView()` method, passing the title and the abbreviation text into the command's `execute()` method.
 
