@@ -15,7 +15,7 @@ This guide will show you how to create a simple abbreviation plugin for CKEditor
 
 This guide assumes that you are familiar with npm. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
 
-First, install packages needed to build and set up a basic CKEditor 5 instance. On top of that, we'll need:
+First, install packages needed to build and set up a basic CKEditor 5 instance. On top of that, we will need:
 
 * The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package which contains the {@link module:core/plugin~Plugin} and {@link module:core/command~Command} classes.
 * The [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package which contains the UI library and framework.
@@ -128,7 +128,7 @@ ClassicEditor
 	} );
 ```
 
-And an `index.html` page. We'll add here the `<abbr>` element - it won't work just yet, but we'll fix that in a couple of steps.
+And an `index.html` page. We will add here the `<abbr>` element - it won't work just yet, but we will fix that in a couple of steps.
 
 ```html
 <!DOCTYPE html>
@@ -257,11 +257,11 @@ SCREENSHOT
 
 ## The model and the view layers
 
-CKEditor 5 implements its custom data model, which does not map to the DOM 1:1. Inline elements, such as `<abbr>`, are represented as attributes in the model, not as seperate elements. In order for our plugin to work, we'll need to make sure that we can add abbreviation attribute to the text node.
+CKEditor 5 implements its custom data model, which does not map to the DOM 1:1. Inline elements, such as `<abbr>`, are represented as attributes in the model, not as seperate elements. In order for our plugin to work, we will need to make sure that we can add abbreviation attribute to the text node.
 
 ### Defining the schema
 
-We can do it by defining the model's schema. We'll just extend the text node's schema to accept our abbreviation attribute.
+We can do it by defining the model's schema. We will just extend the text node's schema to accept our abbreviation attribute.
 
 <info-box>
 	Read more about the {@link framework/guides/architecture/editing-engine#schema schema}.
@@ -299,9 +299,9 @@ Converters tell the editor how to convert the view to the model (e.g. when loadi
 	Read more about the {@link framework/guides/deep-dive/conversion/downcast conversion in the editor}.
 </info-box>
 
-We'll need to convert the model abbreviation attribute into an HTML element in the view (downcast) and vice versa (upcast) with the use of our conversion helpers(`attributeToElement()` and `elementToAttribute()`). We just need to define what the model and the view is supposed to look like in both conversions.
+We will need to convert the model abbreviation attribute into an HTML element in the view (downcast) and vice versa (upcast) with the use of our conversion helpers(`attributeToElement()` and `elementToAttribute()`). We just need to define what the model and the view is supposed to look like in both conversions.
 
-Getting the title is a little bit tricky. In upcast conversion, we'll need a simple callback function to get the title attribute of the `<abbr>` element. In downcast conversion, we'll need to use our `conversionApi` to get the title stored as a model attribute value.
+Getting the title is a little bit tricky. In upcast conversion, we will need a simple callback function to get the title attribute of the `<abbr>` element. In downcast conversion, we will need to use our `conversionApi` to get the title stored as a model attribute value.
 
 ```js
 // abbreviation/abbreviationediting.js
@@ -381,13 +381,13 @@ Thanks to the upcast conversion, our abbreviation added in the `index.html` shou
 
 ## Creating a command
 
-We'll create a simple command to insert a text with our abbreviation attribute into the model.
+We will create a simple command to insert a text with our abbreviation attribute into the model.
 
 <info-box>
 	Read more about {@link framework/guides/architecture/core-editor-architecture#commands commands}.
 </info-box>
 
-We'll pass an object with the title value and the abbreviation value into the command. We'll use the {link module:engine/model/writer~Writer#insertText `writer.insertText()`} method to add the abbreviation to the model, along with the title attribute. We'll also need to give it a position of the user's current selection to indicate where to insert our abbreviation. Finally, if the user's selection has a range (so it's a letter, word, or a whole text fragment), we'll remove that and replace it with our abbreviation.
+We will pass an object with the title value and the abbreviation value into the command. We will use the {link module:engine/model/writer~Writer#insertText `writer.insertText()`} method to add the abbreviation to the model, along with the title attribute. We will also need to give it a position of the user's current selection to indicate where to insert our abbreviation. Finally, if the user's selection has a range (so it's a letter, word, or a whole text fragment), we will remove that and replace it with our abbreviation.
 
 Create a new file `abbreviationcommand.js` in the `abbreviation/` directory.
 
@@ -461,14 +461,14 @@ The UI for this plugin will consist of a dialog box with a form, which will use 
 
 ### Creating a form view
 
-We now need to create a dialog box with a form, which will include two input fields (for the abbreviation and the title), and the 'submit' and 'cancel' buttons. We'll do it in a seperate view. Create a new file `abbreviationview.js` in the `abbreviation/` directory.
+We now need to create a dialog box with a form, which will include two input fields (for the abbreviation and the title), and the 'submit' and 'cancel' buttons. We will do it in a seperate view. Create a new file `abbreviationview.js` in the `abbreviation/` directory.
 
-We need to import a couple of things from our UI library, most importantly the {@link framework/guides/architecture/ui-library#view view} class. We'll also get the `ButtonView` and `LabeledInputView`, as well as useful helper functions - `createLabeledInputText()` and `submitHandler()`.
-We'll use 'check' and 'cancel' icons for our buttons.
+We need to import a couple of things from our UI library, most importantly the {@link framework/guides/architecture/ui-library#view view} class. We will also get the `ButtonView` and `LabeledInputView`, as well as useful helper functions - `createLabeledInputText()` and `submitHandler()`.
+We will use 'check' and 'cancel' icons for our buttons.
 
-Let's create our `FromView` class, where we'll set a template for our abbreviation form.
+Let's create our `FromView` class, where we will set a template for our abbreviation form.
 
-In the `constructor` we'll pass `locale` that will allow us to access `t()` function, which helps localize the editor. All strings enclosed in t() can be translated and change when the language of the editor changes.
+In the `constructor` we will pass `locale` that will allow us to access `t()` function, which helps localize the editor. All strings enclosed in t() can be translated and change when the language of the editor changes.
 
 In the `render` function, let's add our `submitHandler()`, which intercepts a native DOM submit event, prevents the default web browser behavior (navigation and page reload) and fires the submit event on a view instead.
 
@@ -514,7 +514,7 @@ export default class FormView extends View {
 
 Now let's write two functions to create our buttons and inputs.
 
-We'll pass the names of our inputs (so 'abbreviation' and 'title') into the `_createInput()` function, so we can set their labels accordingly.
+We will pass the names of our inputs (so 'abbreviation' and 'title') into the `_createInput()` function, so we can set their labels accordingly.
 
 ```js
 // abbreviation/abbreviationview.js

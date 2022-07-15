@@ -13,7 +13,7 @@ This guide will show you how to create a simple abbreviation plugin for CKEditor
 
 We’ll create a toolbar button that lets the users insert abbreviations into their document.  The abbreviations will use [the `<abbr>` <abbr title="HyperText Markup Language"> HTML </abbr> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr), with a ‘title’ attribute that will show up in a tooltip when the user hovers over the element.
 
-This first part will cover only the basics, and we'll just insert one possible abbreviation: "WYSIWYG". We'll get user input in the next part of this tutorial series.
+This first part will cover only the basics, and we will just insert one possible abbreviation: "WYSIWYG". We will get user input in the next part of this tutorial series.
 
 If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
 
@@ -55,7 +55,7 @@ ClassicEditor
 	} );
 ```
 
-Now look at `index.html`. We'll add here the `<abbr>` element - it won't work just yet, but we'll fix that in a couple of steps.
+Now look at `index.html`. We will add here the `<abbr>` element - it won't work just yet, but we will fix that in a couple of steps.
 
 ```html
 <!DOCTYPE html>
@@ -182,19 +182,19 @@ CKEditor 5 implements its own custom data model, which does not map to the DOM 1
 	Before moving forward, it is important to understand the editor architecture. Read more about the {@link framework/guides/architecture/editing-engine#model model} and the {@link framework/guides/architecture/editing-engine#view view} to get familiar with the basic concepts.
 </info-box>
 
-In the view layer, we'll have the `<abbr>` HTML element, with a title attribute.
+In the view layer, we will have the `<abbr>` HTML element, with a title attribute.
 
-In the model, inline elements, such as `<abbr>`, are represented as attributes, not as separate elements. In order for our plugin to work, we'll need to make sure that we can add abbreviation attribute to the text node.
+In the model, inline elements, such as `<abbr>`, are represented as attributes, not as separate elements. In order for our plugin to work, we will need to make sure that we can add abbreviation attribute to the text node.
 
 ### Defining the schema
 
-We can do it by defining the model's schema. Thanks to a couple lines of code, we'll allow all text nodes to receive the model abbreviation attribute.
+We can do it by defining the model's schema. Thanks to a couple lines of code, we will allow all text nodes to receive the model abbreviation attribute.
 
 <info-box>
 	Schema defines what is allowed in the model in terms of structures, attributes, and other characteristics. This information is then used by the features and the engine to make decisions on how to process the model, so it is crucial that your custom plugins have a well-defined schema. Read more about it in our{@link framework/guides/architecture/editing-engine#schema introduction to the editing engine architecture}.
 </info-box>
 
-So, we'll just extend the text node's schema to accept our abbreviation attribute, using the {@link module:engine/model/schema~Schema#extend `Schema#extend()`} method.
+So, we will just extend the text node's schema to accept our abbreviation attribute, using the {@link module:engine/model/schema~Schema#extend `Schema#extend()`} method.
 
 Update the `AbbreviationEditing` plugin with this definition:
 
@@ -227,15 +227,15 @@ Converters tell the editor how to transform the view to the model (e.g. when loa
 	Conversion is one of the more complex topics in our editing engine architecture. It's definitely worth to read up on it before you move on. more about the {@link framework/guides/deep-dive/conversion/downcast conversion in the editor}.
 </info-box>
 
-We'll need to convert the model abbreviation attribute into an HTML element in the view (downcast) and vice versa (upcast). We'll do that by using our {@link framework/guides/deep-dive/conversion/helpers/intro conversion helpers} and defining what the model and the view is supposed to look like for both conversions.
+We will need to convert the model abbreviation attribute into an HTML element in the view (downcast) and vice versa (upcast). We will do that by using our {@link framework/guides/deep-dive/conversion/helpers/intro conversion helpers} and defining what the model and the view is supposed to look like for both conversions.
 
 Converting the full title of the abbreviation is a little bit tricky, because we need to make sure that its value is synchronized between the model and the view.
 
 #### Downcast conversion
 
-In the downcast conversion, we'll use one of our conversion helpers - {@link framework/guides/deep-dive/conversion/helpers/downcast#attribute-to-element-conversion-helper `attributeToElement()`} - to transform the model abbreviation attribute into the view `<abbr>` element.
+In the downcast conversion, we will use one of our conversion helpers - {@link framework/guides/deep-dive/conversion/helpers/downcast#attribute-to-element-conversion-helper `attributeToElement()`} - to transform the model abbreviation attribute into the view `<abbr>` element.
 
-We'll need to use a callback function, in order to get the title stored as a model attribute value and transform it into the title value of the view element. Here, the second parameter of the view callback is the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `DowncastConversionApi`} object. We'll use its `writer` property, which will allow us to manipulate the data during downcast conversion, as it contains an instance of the {@link module:engine/view/downcastwriter~DowncastWriter `DowncastWriter`}.
+We will need to use a callback function, in order to get the title stored as a model attribute value and transform it into the title value of the view element. Here, the second parameter of the view callback is the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `DowncastConversionApi`} object. We will use its `writer` property, which will allow us to manipulate the data during downcast conversion, as it contains an instance of the {@link module:engine/view/downcastwriter~DowncastWriter `DowncastWriter`}.
 
 ```js
 // abbreviation/abbreviationediting.js
@@ -276,7 +276,7 @@ export default class AbbreviationEditing extends Plugin {
 
 #### Upcast conversion
 
-In the upcast conversion, we're telling the editor how the view `<abbr>` element is supposed to look like in the model. We'll transform it using another conversion helper - {@link framework/guides/deep-dive/conversion/helpers/upcast#element-to-attribute-conversion-helper `elementToAttribute()`}.
+In the upcast conversion, we're telling the editor how the view `<abbr>` element is supposed to look like in the model. We will transform it using another conversion helper - {@link framework/guides/deep-dive/conversion/helpers/upcast#element-to-attribute-conversion-helper `elementToAttribute()`}.
 
 We also need to grab the title value from content and use it in the model. We can do that thanks to a callback function, which gives us the access to the {@link module:engine/view/element~Element view element}.
 
@@ -389,7 +389,7 @@ ClassicEditor
 
 We have the button, so let's define what should happen after the user clicks it.
 
-We'll use the {@link module:engine/model/model~Model#insertContent `writer.insertContent()`} method to insert our abbreviation and its title attribute into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~Writer#createText `writer.createText()`}.
+We will use the {@link module:engine/model/model~Model#insertContent `writer.insertContent()`} method to insert our abbreviation and its title attribute into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~Writer#createText `writer.createText()`}.
 
 ```js
 // abbreviation/abbreviationui.js

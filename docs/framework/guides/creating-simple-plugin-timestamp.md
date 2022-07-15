@@ -17,7 +17,7 @@ The editor has already been created in the `app.js` file with some basic plugins
 
 The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly).
 
-If you want to set up the project yourself, you should follow the steps listed in the {@link framework/guides/quick-start the "Quick start" section}. <!-- After adding the CDN QS this link is probably invalid-->Additionally, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the {@link module:core/plugin~Plugin} class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
+If you want to set up the project yourself, you should follow the steps listed in the {@link framework/guides/quick-start the "Quick start" section}. Additionally, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the {@link module:core/plugin~Plugin} class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
 
 We are going to write the whole plugin in your base `app.js` file. It should look like the code listed below. There maybe a couple of different imports if you chose to set up the environment yourself.
 
