@@ -15,8 +15,8 @@ import {
 } from './constants';
 
 /**
- * Collects all table model elements affected by the differ. Only tables with 'columnsWidth' attribute
- * are taken into account. The returned set may be empty.
+ * Collects all table model elements with `columnsWidth` attribute affected by the differ.
+ * The returned set may be empty.
  *
  * @param {Array.<module:engine/model/differ~DiffItem>} changes
  * @param {module:engine/model/model~Model} model
@@ -82,12 +82,12 @@ export function getColumnMinWidthAsPercentage( table, editor ) {
 /**
  * Calculates the table width in pixels.
  *
- * @param {module:engine/model/element~Element} table
+ * @param {module:engine/model/element~Element} modelTable
  * @param {module:core/editor/editor~Editor} editor
  * @returns {Number}
  */
-export function getTableWidthInPixels( table, editor ) {
-	const viewTbody = getTbodyViewElement( table, editor );
+export function getTableWidthInPixels( modelTable, editor ) {
+	const viewTbody = getTbodyViewElement( modelTable, editor.editing.mapper );
 	const domTbody = editor.editing.view.domConverter.mapViewToDom( viewTbody );
 
 	return getElementWidthInPixels( domTbody );
@@ -96,11 +96,11 @@ export function getTableWidthInPixels( table, editor ) {
 // Returns the `<tbody>` view element, if it exists in a table. Returns `undefined` otherwise.
 //
 // @private
-// @param {module:engine/model/element~Element} table
-// @param {module:core/editor/editor~Editor} editor
+// @param {module:engine/model/element~Element} modelTable
+// @param {module:engine/conversion/mapper~Mapper} mapper
 // @returns {module:engine/view/element~Element|undefined}
-function getTbodyViewElement( table, editor ) {
-	const viewFigure = editor.editing.mapper.toViewElement( table );
+function getTbodyViewElement( modelTable, mapper ) {
+	const viewFigure = mapper.toViewElement( modelTable );
 	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
 
 	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'tbody' ) );
@@ -173,7 +173,7 @@ export function clamp( number, min, max ) {
  * @param {*} value
  * @returns {Array.<*>}
  */
-export function fillArray( length, value ) {
+export function createFilledArray( length, value ) {
 	return Array( length ).fill( value );
 }
 
@@ -192,8 +192,8 @@ export function sumArray( array ) {
 
 /**
  * Makes sure that the sum of the widths from all columns is 100%. If the sum of all the widths is not equal 100%, all the widths are
- * changed proportionally so that they all sum back to 100%. If there are columns without specified width, it will be distributed
- * equally between them based on the amount remaining after assigning the known widths.
+ * changed proportionally so that they all sum back to 100%. If there are columns without specified width, the amount remaining
+ * after assigning the known widths will be distributed equally between them.
  *
  * Currently, only widths provided as percentage values are supported.
  *
@@ -234,11 +234,9 @@ export function normalizeColumnWidths( columnWidths ) {
 //   but then it will be adjusted proportionally to 100% in {@link #normalizeColumnWidths `normalizeColumnWidths()`}.
 //
 // @private
-// @param {Array.<Number>}
+// @param {Array.<Number>} columnWidths
 // @returns {Array.<Number>}
-function calculateMissingColumnWidths( columnWidthsAttribute ) {
-	const columnWidths = columnWidthsAttribute.map( columnWidth => columnWidth.trim() );
-
+function calculateMissingColumnWidths( columnWidths ) {
 	const numberOfUninitializedColumns = columnWidths.filter( columnWidth => columnWidth === 'auto' ).length;
 
 	if ( numberOfUninitializedColumns === 0 ) {
@@ -257,7 +255,7 @@ function calculateMissingColumnWidths( columnWidthsAttribute ) {
 		.map( columnWidth => toPrecision( columnWidth ) );
 }
 
-// Inserts column resizer element into a view cell.
+// Inserts column resizer element into a view cell if it is missing.
 //
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
 // @param {module:engine/view/element~Element} viewCell View cell.

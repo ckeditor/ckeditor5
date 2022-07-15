@@ -25,7 +25,7 @@ import {
 
 import {
 	clamp,
-	fillArray,
+	createFilledArray,
 	sumArray,
 	getAffectedTables,
 	getColumnIndex,
@@ -190,7 +190,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					if ( isColumnInsertion ) {
 						if ( !isColumnInsertionHandled ) {
 							const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
-							const columnWidthsToInsert = fillArray( column - previousColumn, columnMinWidthAsPercentage );
+							const columnWidthsToInsert = createFilledArray( column - previousColumn, columnMinWidthAsPercentage );
 
 							columnWidths.splice( previousColumn, 0, ...columnWidthsToInsert );
 
@@ -226,7 +226,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				if ( isColumnInsertionAtEnd ) {
 					const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
 					const numberOfInsertedColumns = numberOfColumns - columnWidths.length;
-					const insertedColumnWidths = fillArray( numberOfInsertedColumns, columnMinWidthAsPercentage );
+					const insertedColumnWidths = createFilledArray( numberOfInsertedColumns, columnMinWidthAsPercentage );
 
 					columnWidths.splice( columnWidths.length, 0, ...insertedColumnWidths );
 				}

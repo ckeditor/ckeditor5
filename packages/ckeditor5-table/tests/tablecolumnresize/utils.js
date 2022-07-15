@@ -24,7 +24,7 @@ import {
 	getColumnIndex,
 	toPrecision,
 	clamp,
-	fillArray,
+	createFilledArray,
 	sumArray,
 	normalizeColumnWidths,
 	getTableWidthInPixels,
@@ -540,11 +540,11 @@ describe( 'TableColumnResize utils', () => {
 		} );
 	} );
 
-	describe( 'fillArray()', () => {
+	describe( 'createFilledArray()', () => {
 		it( 'should properly create filled array', () => {
-			expect( fillArray( 0, 'foo' ) ).to.deep.equal( [] );
-			expect( fillArray( 3, 'foo' ) ).to.deep.equal( [ 'foo', 'foo', 'foo' ] );
-			expect( fillArray( 3 ) ).to.deep.equal( [ undefined, undefined, undefined ] );
+			expect( createFilledArray( 0, 'foo' ) ).to.deep.equal( [] );
+			expect( createFilledArray( 3, 'foo' ) ).to.deep.equal( [ 'foo', 'foo', 'foo' ] );
+			expect( createFilledArray( 3 ) ).to.deep.equal( [ undefined, undefined, undefined ] );
 		} );
 	} );
 
