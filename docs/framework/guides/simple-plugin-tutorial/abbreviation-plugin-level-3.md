@@ -1,5 +1,6 @@
 ---
 category: simple-plugin
+menu-title: Abbreviation plugin (part 3)
 order: 26
 modified_at: 2022-07-15
 ---
@@ -123,7 +124,7 @@ export default class FormView extends View {
 }
 ```
 
-Now, we can add the <kbd>Esc</kbd> button handler in our `_createFromView()` function, which will hide the UI and fire off `cancel` on the form.
+Now we can add the <kbd>Esc</kbd> button handler in our `_createFromView()` function, which will hide the UI and fire off `cancel` on the form.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -160,7 +161,7 @@ When the user selects a range (a letter, a word, or a whole document fragment) a
 
 In order to display the text from the user's selection in the form field, we need to first grab and concatenate all text from the selected range. If the user selects a couple of paragraphs, a heading, and an image, we need to go through all the nodes, and use only the ones containing text.
 
-Let's create a helper `getRangeText()` function in a separate `/utils.js` file. It will grab all items from a range using its `getItems()` method. Then, it will concatenate all text from the {@link module:engine/model/text~Text `text`} and {@link module:engine/model/textproxy~TextProxy `textProxy`} nodes, and skip all the others.
+Let's create a helper `getRangeText()` function in a separate `/utils.js` file. It will grab all items from a range using its {@link module:engine/model/range~Range#getItems `getItems()`} method. Then, it will concatenate all text from the {@link module:engine/model/text~Text `text`} and {@link module:engine/model/textproxy~TextProxy `textProxy`} nodes, and skip all the others.
 
 ```js
 // abbreviation/utils.js
@@ -185,7 +186,7 @@ We will also disable the input field when the selection is not collapsed, becaus
 ```js
 // abbreviation/abbreviationui.js
 // ...
-import { getRangeText } from './utils.js';
+import getRangeText from './utils.js';
 
 export default class AbbreviationUI extends Plugin {
 
@@ -244,7 +245,7 @@ Our new functionality should work now, check it out yourself! It does not recogn
 Our plugin does what we want it to do, so why complicate things by adding a command? Well, a command not only executes an action, but also automatically reacts when any changes are applied to the model.
 
 <info-box>
-	A command in CKEditor 5 is a combination of an action and a state. The state of the command refreshes its state whenever anything changes in the model. We highly recommend {@link framework/guides/architecture/core-editor-architecture#commands reading about commands} before we move on.
+	A command in CKEditor 5 is a combination of an action and a state. The state of the command gets refreshed whenever anything changes in the model. We highly recommend {@link framework/guides/architecture/core-editor-architecture#commands reading about commands} before we move on.
 </info-box>
 
 When the user makes a selection in the editor, the command will automatically check if there is an abbreviation there. It will also ensure that the command is only enabled where the "abbreviation" attribute can be set on the current model selection (not on images, for instance).
@@ -473,7 +474,6 @@ In the `AbbreviationUI` add a simple `if` statement to fill the form using eithe
 ```js
 // abbreviation/abbreviationui.js
 // ...
-import getRangeText from './utils.js';
 
 export default class AbbreviationUI extends Plugin {
 

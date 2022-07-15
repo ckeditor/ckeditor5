@@ -1,5 +1,6 @@
 ---
 category: simple-plugin
+menu-title: Abbreviation plugin (part 1)
 order: 24
 modified_at: 2022-07-15
 ---
@@ -10,7 +11,7 @@ This guide will show you how to create a simple abbreviation plugin for CKEditor
 
 We will create a toolbar button that lets the users insert abbreviations into their document. These abbreviations will use the [`<abbr>` <abbr title="HyperText Markup Language">HTML</abbr> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr) with a ‘title’ attribute that will show up in a tooltip when the user hovers over the element. You can check the mechanism hovering over the underlined "HTML" text in the previous sentence.
 
-This first part of the tutorial will only cover the basics. We will just insert one possible abbreviation: "WYSIWYG". We will get user input in the {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 next part of this tutorial series}.
+This first part of the tutorial will only cover the basics. We will just insert one possible abbreviation: "WYSIWYG". We will get user input in the {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-2 next part of this tutorial series}.
 
 If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo).
 
@@ -101,7 +102,7 @@ We put them in the `/abbreviation` directory. We will be adding more files the i
 └── webpack.config.js
 ```
 
-Let's define the 3 components.
+Take a look at the 3 components, which have already been defined and imported into `app.js`.
 
 `AbbreviationUI`:
 

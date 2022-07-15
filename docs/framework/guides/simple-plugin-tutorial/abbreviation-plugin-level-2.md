@@ -1,5 +1,6 @@
 ---
 category: simple-plugin
+menu-title: Abbreviation plugin (part 2)
 order: 25
 modified_at: 2022-07-15
 ---
@@ -91,7 +92,7 @@ export default class FormView extends View {
 
 Now, we add the `submit` and `cancel` buttons to our form. You can start by importing `ButtonView` from our UI library together with the icons, which we will use for labels.
 
-We will use the `check` and `cancel` icons from the core package's [icons library](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/theme/icons). After import the icons, we will use them for creating the buttons.
+We will use the `check` and `cancel` icons from the core package's [icons library](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/theme/icons). After importing the icons, we will use them for creating the buttons.
 
 Let's write a `_createButton` function, which will take three arguments &ndash; `label`, `icon` and `className`. We then set the button attributes, using the properties we passed into the function before, and adding a tooltip option.
 

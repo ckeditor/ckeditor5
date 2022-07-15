@@ -4,7 +4,7 @@ order: 10
 modified_at: 2022-07-15
 ---
 
-# Creating a basic plugin &ndash; timestamp
+# Creating a basic plugin
 
 This guide will show you how to create a simple, basic plugin that will let the users insert timestamps into their document. This is a beginner friendly tutorial, perfect for your first interactions with the CKEditor 5 framework.
 
