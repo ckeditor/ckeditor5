@@ -15,13 +15,13 @@ CKEditor 5 is an active, rapidly developing software project. It is, therefore, 
 
 CKEditor 5 should be [updated frequently](#updating-ckeditor-5), as bug fixes and new features are not backported. While installing and using a CKEditor 5 instance, especially when adding new features, always make sure all the packages are of the same (preferably latest) version. If this requirement is not met, errors may occur.
 
-### Use online builder to add plugins
-
-Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, use {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
-
 ### Update your custom builds
 
-If you want to skip some editor features, customize your build with online builder and remove unneeded functionality. Alternatively, {@link installation/getting-started/quick-start-other#building-the-editor-from-source create your own customized build from scratch}. It is a bad practice to download a {@link installation/advanced/predefined-builds predefined editor build} and then remove plugins or buttons in your configuration. You will only be loading unnecessary stuff without any good reason.
+If you want to skip some editor features, customize your build with {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} and remove unneeded functionality. Alternatively, {@link installation/getting-started/quick-start-other#building-the-editor-from-source create your own customized build from scratch}. It is a bad practice to download a {@link installation/getting-started/predefined-builds predefined editor build} and then remove plugins or buttons in your configuration. You will only be loading unnecessary stuff without any good reason.
+
+### Use online builder to add plugins
+
+Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, use online builder instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
 
 ## CKEditor 5 release process
 
@@ -29,7 +29,7 @@ Regular code releases (there are usually 10-12 of these a year) bring different 
 
 ### Code release
 
-Each code release is noted in the [changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) and enumerates all changes, additions and bug fixes that took place, also highlighting if there are any breaking changes (i.e. changes that make the latest release incompatible with the previous ones code-wise). The code packages are released on the [CKEditor 5 npm site](https://www.npmjs.com/package/ckeditor5), as well as updated in the {@link installation/advanced/predefined-builds#download-options predefined builds} and {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} and are ready to download.
+Each code release is noted in the [changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) and enumerates all changes, additions and bug fixes that took place, also highlighting if there are any breaking changes (i.e. changes that make the latest release incompatible with the previous ones code-wise). The code packages are released on the [CKEditor 5 npm site](https://www.npmjs.com/package/ckeditor5), as well as updated in the {@link installation/getting-started/predefined-builds#download-options predefined builds} and {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} and are ready to download.
 
 It is good to follow npm release messages about new packages being published as well as periodically check the changelog.
 
