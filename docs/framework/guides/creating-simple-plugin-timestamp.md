@@ -12,7 +12,7 @@ We will create a toolbar button that will insert the current date and time at th
 
 ## Let's start!
 
-The easiest way to set up your project is to grab the starter files from our [Github repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/Timestamp%20plugin)<!-- Change link to final -->. We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to build the editor.
+The easiest way to set up your project is to grab the starter files from our [Github repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/Timestamp%20plugin). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to build the editor.
 
 The editor has already been created in the `app.js` file with some basic plugins. All you need to do, is clone the repository, run the `npm install` command, and you can start coding right away.
 

@@ -9,7 +9,7 @@ modified_at: 2022-07-15
 
 In this part of the tutorial we will focus on creating a dialog box, which will get the user's input.
 
-We will pick up where we left off in the first part, so make sure you {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our [starter files for this part](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/Abbreviation%20plugin/Part%201)<!-- Change link to final -->.
+We will pick up where we left off in the first part, so make sure you {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our [starter files for this part](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/Abbreviation%20plugin/Part%201).
 
 <info-box>
 	As we will mostly work on the UI, we recommend reading about our {@link framework/guides/architecture/ui-library UI library} before you start coding.
