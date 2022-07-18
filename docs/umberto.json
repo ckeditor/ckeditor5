@@ -132,10 +132,10 @@
 		"builds/guides/migration/migration-to-31.html": "updating/migration-to-31.html",
 		"builds/guides/migration/migration-to-32.html": "updating/migration-to-32.html",
 		"builds/guides/migration/migration-to-33.html": "updating/migration-to-33.html",
-		"builds/guides/predefined-builds/overview.html": "installation/advanced/alternative-setups/predefined-builds.html",
-		"builds/guides/overview.html": "installation/advanced/alternative-setups/predefined-builds.html",
+		"builds/guides/predefined-builds/overview.html": "/installation/getting-started/predefined-builds.html",
+		"builds/guides/overview.html": "/installation/getting-started/predefined-builds.html",
 		"builds/guides/quick-start.html":"installation/getting-started/quick-start.html",
-		"builds/guides/predefined-builds/quick-start.html":"installation/advanced/alternative-setups/predefined-builds.html",
+		"builds/guides/predefined-builds/quick-start.html":"/installation/getting-started/predefined-builds.html",
 		"builds/guides/integration/installation.html": "installation/getting-started/quick-start.html",
 		"builds/guides/integration/basic-api.html": "installation/getting-started/basic-api.html",
 		"builds/guides/integration/configuration.html": "installation/getting-started/configuration.html",
@@ -171,7 +171,9 @@
 		"framework/guides/deep-dive/conversion/custom-element-conversion.html": "framework/guides/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/guides/deep-dive/conversion/intro.html",
 		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
-		"installation/getting-started/quick-start-other.html#building-the-editor-from-source": "installation/getting-started/quick-start.html#building-the-editor-from-source"
+		"installation/getting-started/quick-start-other.html#building-the-editor-from-source": "installation/getting-started/quick-start.html#building-the-editor-from-source",
+		"installation/getting-started/maintenance.html": "updating/updating.html",
+		"/installation/getting-started/predefined-builds.html": "installation/getting-started/pedefined-builds.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -233,7 +235,7 @@
 							"name": "Frameworks",
 							"id": "frameworks",
 							"slug": "frameworks",
-							"order": 50
+							"order": 70
 						}
 					]
 				},

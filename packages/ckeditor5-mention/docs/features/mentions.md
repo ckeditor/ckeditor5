@@ -12,6 +12,10 @@ The {@link module:mention/mention~Mention} feature brings support for smart auto
 
 You can read more about possible implementations of the mention feature in a [dedicated blog post](https://ckeditor.com/blog/mentions-in-ckeditor-5-feature-of-the-month/).
 
+<info-box info>
+	The Mentions feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 You can type the "@" character to invoke the mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marry Ann", "Marshall", "Robin", and "Ted").

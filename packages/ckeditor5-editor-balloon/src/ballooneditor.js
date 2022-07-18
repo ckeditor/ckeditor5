@@ -17,7 +17,7 @@ import BalloonEditorUI from './ballooneditorui';
 import BalloonEditorUIView from './ballooneditoruiview';
 
 /**
- * The {@glink installation/advanced/alternative-setups/predefined-builds#balloon-editor balloon editor}
+ * The {@glink installation/getting-started/predefined-builds#balloon-editor balloon editor}
  * implementation (Medium-like editor).
  * It uses an inline editable and a toolbar based on the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}.
  * See the {@glink examples/builds/balloon-editor demo}.
@@ -29,9 +29,9 @@ import BalloonEditorUIView from './ballooneditoruiview';
  *
  * The balloon editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-balloon`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon) package)
- * but it is also available in the {@glink installation/advanced/alternative-setups/predefined-builds#balloon-editor balloon build}.
+ * but it is also available in the {@glink installation/getting-started/predefined-builds#balloon-editor balloon build}.
  *
- * {@glink installation/advanced/alternative-setups/predefined-builds Builds}
+ * {@glink installation/getting-started/predefined-builds Builds}
  * are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
@@ -182,7 +182,7 @@ export default class BalloonEditor extends Editor {
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink installation/advanced/alternative-setups/predefined-builds editor build} (for example – `@ckeditor/ckeditor5-build-balloon`).
+	 * {@glink installation/getting-started/predefined-builds editor build} (for example – `@ckeditor/ckeditor5-build-balloon`).
 	 *
 	 * If you want to use the balloon editor from source (`@ckeditor/ckeditor5-editor-balloon/src/ballooneditor`),
 	 * you need to define the list of
