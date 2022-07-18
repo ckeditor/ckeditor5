@@ -15,13 +15,13 @@ CKEditor 5 is an active, rapidly developing software project. It is, therefore, 
 
 CKEditor 5 should be [updated frequently](#updating-ckeditor-5), as bug fixes and new features are not backported. While installing and using a CKEditor 5 instance, especially when adding new features, always make sure all the packages are of the same (preferably latest) version. If this requirement is not met, errors may occur.
 
-### Update your custom builds
-
-If you want to skip some editor features, {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder customize your build with online builder} and remove unneeded functionality. Alternatively, {@link installation/getting-started/quick-start-other#building-the-editor-from-source create your own customized build from scratch}. It is a bad practice to download a {@link installation/advanced/predefined-builds predefined editor build} and then remove plugins or buttons in your configuration. You will only be loading unnecessary stuff without any good reason.
-
 ### Use online builder to add plugins
 
-Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, use online builder instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
+Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, use {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
+
+### Update your custom builds
+
+If you want to skip some editor features, customize your build with online builder and remove unneeded functionality. Alternatively, {@link installation/getting-started/quick-start-other#building-the-editor-from-source create your own customized build from scratch}. It is a bad practice to download a {@link installation/advanced/predefined-builds predefined editor build} and then remove plugins or buttons in your configuration. You will only be loading unnecessary stuff without any good reason.
 
 ## CKEditor 5 release process
 
