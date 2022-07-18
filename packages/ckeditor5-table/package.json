@@ -62,7 +62,8 @@
     "src",
     "theme",
     "build",
-    "ckeditor5-metadata.json"
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "dll:build": "webpack"
