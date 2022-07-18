@@ -35,6 +35,7 @@ export default class ShiftEnter extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 		const blockElements = editor.data.htmlProcessor.domConverter.blockElements;
+		const inlineObjectElements = editor.data.htmlProcessor.domConverter.inlineObjectElements;
 
 		// Configure the schema.
 		schema.register( 'softBreak', {
@@ -46,13 +47,14 @@ export default class ShiftEnter extends Plugin {
 		conversion.for( 'upcast' ).elementToElement( {
 			view: 'br',
 			model: ( viewElement, { writer, consumable } ) => {
-				// Find view sibling nodes (threat inline elements as transparent):
+				// Find view sibling nodes (threat inline elements as transparent, but not an inline objects):
 				// <p><strong>foo[<br>]</strong></p>[<p>bar</p>]
 				// <p><strong>foo[<br>]</strong></p>[]
 				// <p><strong>foo[<br>]</strong>[bar]</p>
 				// <p><strong>foo[<br>][bar]</strong></p>
-				const nextSibling = findSibling( viewElement, 'forward', view, blockElements );
-				const previousSibling = findSibling( viewElement, 'backward', view, blockElements );
+				// <p>foo[<br>][<img/>]</p>
+				const nextSibling = findSibling( viewElement, 'forward', view, { blockElements, inlineObjectElements } );
+				const previousSibling = findSibling( viewElement, 'backward', view, { blockElements, inlineObjectElements } );
 
 				const nextSiblingIsBlock = isBlockViewElement( nextSibling, blockElements );
 				const previousSiblingIsBlock = isBlockViewElement( previousSibling, blockElements );
@@ -121,12 +123,12 @@ export default class ShiftEnter extends Plugin {
 	}
 }
 
-// Returns sibling node, threats inline elements as transparent.
-function findSibling( viewElement, direction, view, blockElements ) {
+// Returns sibling node, threats inline elements as transparent (but should stop on an inline objects).
+function findSibling( viewElement, direction, view, { blockElements, inlineObjectElements } ) {
 	let position = view.createPositionAt( viewElement, direction == 'forward' ? 'after' : 'before' );
 
 	position = position.getLastMatchingPosition( ( { item } ) => {
-		return item.is( 'element' ) && !blockElements.includes( item.name );
+		return item.is( 'element' ) && !blockElements.includes( item.name ) && !inlineObjectElements.includes( item.name );
 	}, { direction } );
 
 	return direction == 'forward' ? position.nodeAfter : position.nodeBefore;

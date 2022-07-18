@@ -363,5 +363,19 @@ describe( 'ShiftEnter integration', () => {
 				'<p>foo<br>&nbsp;</p>'
 			);
 		} );
+
+		it( 'should convert a BR with an inline object (img) at the end of paragraph', () => {
+			model.schema.register( 'image', { inheritAllFrom: '$inlineObject' } );
+			editor.conversion.elementToElement( { view: 'img', model: 'image' } );
+
+			editor.setData( '<p>foo<br><img/></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph>foo<softBreak></softBreak><image></image></paragraph>'
+			);
+			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
+				'<p>foo<br><img></p>'
+			);
+		} );
 	} );
 } );
