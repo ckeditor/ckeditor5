@@ -1,0 +1,61 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Slovenian (https://www.transifex.com/ckeditor/teams/11143/sl/)\n"
+"Language: sl\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
+
+msgctxt "Dropdown option label for the paragraph format."
+msgid "Paragraph"
+msgstr "Odstavek"
+
+msgctxt "Tooltip for the heading dropdown."
+msgid "Heading"
+msgstr "Naslov"
+
+msgctxt "Default label for the heading dropdown."
+msgid "Choose heading"
+msgstr "Izberi naslov"
+
+msgctxt "Dropdown option label for the heading level 1 format."
+msgid "Heading 1"
+msgstr "Naslov 1"
+
+msgctxt "Dropdown option label for the heading level 2 format."
+msgid "Heading 2"
+msgstr "Naslov 2"
+
+msgctxt "Dropdown option label for the heading level 3 format."
+msgid "Heading 3"
+msgstr "Naslov 3"
+
+msgctxt "Dropdown option label for the heading level 4 format."
+msgid "Heading 4"
+msgstr "Naslov 4"
+
+msgctxt "Dropdown option label for the heading level 5 format."
+msgid "Heading 5"
+msgstr "Naslov 5"
+
+msgctxt "Dropdown option label for the heading level 6 format."
+msgid "Heading 6"
+msgstr "Naslov 6"
+
+msgctxt "A default value of the placeholder for the content title."
+msgid "Type your title"
+msgstr "Vnesi naslov"
+
+msgctxt "A default value of the placeholder for the content body."
+msgid "Type or paste your content here."
+msgstr "Vnesi ali prilepi vsebino"

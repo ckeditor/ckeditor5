@@ -5,6 +5,7 @@
 
 // The editor creator to use.
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { icons } from 'ckeditor5/src/core';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
@@ -20,7 +21,6 @@ import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
 import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
@@ -30,6 +30,7 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
@@ -58,6 +59,7 @@ import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 
 // Custom Plugins
+import Heading from './plugins/heading/src/heading';
 import Accordion from './plugins/accordion/accordion';
 import Tab from './plugins/tab/tab';
 import CalloutBlocks from './plugins/calloutblocks/calloutblocks';
@@ -70,6 +72,8 @@ import Mention from './plugins/mention/src/mention';
 import Comments from './plugins/comments/comments';
 import Glossary from './plugins/glossary/glossary';
 import CmdDelete from './plugins/cmddelete/cmddelete';
+
+const { objectInline, objectLeft, objectRight, objectCenter } = icons;
 
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
@@ -101,6 +105,7 @@ HelpjuiceEditor.builtinPlugins = [
 	ImageUpload,
 	ImageInsert,
 	Indent,
+	IndentBlock,
 	Link,
 	List,
 	ListProperties,
@@ -295,6 +300,45 @@ HelpjuiceEditor.defaultConfig = {
 				icon: 'large'
 			}
 		],
+		styles: {
+			options: [
+				{
+					name: 'inline',
+					title: 'In line',
+					icon: objectInline,
+					modelElements: [ 'imageInline' ],
+					isDefault: true
+				},
+				{
+					name: 'block',
+					title: 'Centered image',
+					icon: objectCenter,
+					modelElements: [ 'imageBlock' ],
+					isDefault: true
+				},
+				{
+					name: 'side',
+					title: 'Side image',
+					icon: objectRight,
+					modelElements: [ 'imageBlock' ],
+					className: 'image-style-side'
+				},
+				{
+					name: 'alignLeft',
+					title: 'Left aligned image',
+					icon: objectLeft,
+					modelElements: [ 'imageBlock', 'imageInline' ],
+					className: 'image-style-align-left'
+				},
+				{
+					name: 'alignRight',
+					title: 'Right aligned image',
+					icon: objectRight,
+					modelElements: [ 'imageBlock', 'imageInline' ],
+					className: 'image-style-align-right'
+				}
+			]
+		},
 		toolbar: [
 			'imageStyle:inline',
 			'imageStyle:block',
@@ -310,7 +354,7 @@ HelpjuiceEditor.defaultConfig = {
 			'|',
 			'linkImage',
 			'toggleImageCaption',
-			'imageTextAlternative'
+			'imageTextAlternative',
 		],
 		upload: {
 			types: [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff', 'svg+xml' ]
@@ -321,22 +365,6 @@ HelpjuiceEditor.defaultConfig = {
 	mediaEmbed: {
 		previewsInData: true,
 		extraProviders: [
-			{
-				name: 'loomVideos',
-				url: /^loom\.com\/(\w+)/,
-				html: match => {
-					const getUrl = match.input;
-
-					return (
-						`<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 62.5%;">
-							<iframe src="https://${getUrl}"
-								style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;"
-								frameborder="0" allowtransparency="true" allow="encrypted-media">
-							</iframe>
-						</div>`
-					);
-				}
-			},
 			{
 				name: 'helpjuiceProvider',
 				url: /^static.helpjuice\.com\/(\w+)/,
@@ -370,6 +398,10 @@ HelpjuiceEditor.defaultConfig = {
 				}
 			},
 		]
+	},
+	indentBlock: {
+		offset: 1,
+		unit: 'em'
 	},
 	link: {
 		addTargetToExternalLinks: true,

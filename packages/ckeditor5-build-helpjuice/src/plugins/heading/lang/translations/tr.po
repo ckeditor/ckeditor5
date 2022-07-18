@@ -1,0 +1,61 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Turkish (https://www.transifex.com/ckeditor/teams/11143/tr/)\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "Dropdown option label for the paragraph format."
+msgid "Paragraph"
+msgstr "Paragraf"
+
+msgctxt "Tooltip for the heading dropdown."
+msgid "Heading"
+msgstr "Başlık"
+
+msgctxt "Default label for the heading dropdown."
+msgid "Choose heading"
+msgstr "Başlık tipi seç"
+
+msgctxt "Dropdown option label for the heading level 1 format."
+msgid "Heading 1"
+msgstr "1. Seviye Başlık"
+
+msgctxt "Dropdown option label for the heading level 2 format."
+msgid "Heading 2"
+msgstr "2. Seviye Başlık"
+
+msgctxt "Dropdown option label for the heading level 3 format."
+msgid "Heading 3"
+msgstr "3. Seviye Başlık"
+
+msgctxt "Dropdown option label for the heading level 4 format."
+msgid "Heading 4"
+msgstr "4. Seviye Başlık"
+
+msgctxt "Dropdown option label for the heading level 5 format."
+msgid "Heading 5"
+msgstr "5. Seviye Başlık"
+
+msgctxt "Dropdown option label for the heading level 6 format."
+msgid "Heading 6"
+msgstr "6. Seviye Başlık"
+
+msgctxt "A default value of the placeholder for the content title."
+msgid "Type your title"
+msgstr "Başlığınızı yazınız"
+
+msgctxt "A default value of the placeholder for the content body."
+msgid "Type or paste your content here."
+msgstr "İçeriğinizi buraya yapıştırın yada yazın."
