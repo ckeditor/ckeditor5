@@ -107,9 +107,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	init() {
 		this._extendSchema();
-		this._setupPostFixer();
-		this._setupConversion();
-		this._setupResizingListeners();
+		this._registerPostFixer();
+		this._registerConversion();
+		this._registerResizingListeners();
 		this._registerColgroupFixer();
 		this._registerResizerInserter();
 
@@ -142,19 +142,19 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * It checks if the change from the differ concerns a table-related element or an attribute. If yes, then it is responsible for the
 	 * following:
-	 * (1) Adjusting the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
-	 * (2) Add all cells to column index map with its column index (to properly handle column insertion and deletion).
-	 * (3) Checking if columns have been added or removed...
-	 *    (3.1) ... in the middle of the table, or
-	 *    (3.2) ... at the table end,
+	 *  * (1) Adjusting the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
+	 *  * (2) Add all cells to column index map with its column index (to properly handle column insertion and deletion).
+	 *  * (3) Checking if columns have been added or removed...
+	 *    * (3.1) ... in the middle of the table, or
+	 *    * (3.2) ... at the table end,
+	 *
 	 * and adjusting the widths of the affected columns.
 	 *
 	 * @private
 	 */
-	_setupPostFixer() {
+	_registerPostFixer() {
 		const editor = this.editor;
 		const model = editor.model;
-		const columnIndexMap = this._columnIndexMap;
 
 		model.document.registerPostFixer( writer => {
 			let changed = false;
@@ -163,6 +163,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				// (1) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				// It's an array at this point.
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );
+				const columnIndexMap = this._columnIndexMap;
 
 				let removedColumnWidths = null;
 				let isColumnInsertionHandled = false;
@@ -256,7 +257,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 */
-	_setupConversion() {
+	_registerConversion() {
 		const editor = this.editor;
 		const conversion = editor.conversion;
 		const widthStyleToTableWidthDefinition = {
@@ -299,7 +300,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 */
-	_setupResizingListeners() {
+	_registerResizingListeners() {
 		const editingView = this.editor.editing.view;
 
 		editingView.addObserver( MouseEventsObserver );
