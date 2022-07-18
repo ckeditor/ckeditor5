@@ -720,6 +720,4 @@ If you are missing any particular features or settings, feel free to {@link supp
 **What's next?**
 
 You should now have the basic knowledge about differences between CKEditor 4 and CKEditor 5. Feel free to explore our {@link features/index features page} to compare the available plugins to your needs.
-
-It's time to move to the last article in the **Getting started** path. {@link installation/getting-started/maintenance See you there}!
 </info-box>
