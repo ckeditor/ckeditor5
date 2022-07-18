@@ -78,13 +78,13 @@ const ObservableMixin: Observable = {
 				return properties!.get( name );
 			},
 
-			set( value ) {
+			set( this: Observable, value ) {
 				const oldValue = properties!.get( name );
 
 				// Fire `set` event before the new value will be set to make it possible
 				// to override observable property without affecting `change` event.
 				// See https://github.com/ckeditor/ckeditor5-utils/issues/171.
-				let newValue = this.fire( 'set:' + name, name, value, oldValue );
+				let newValue = this.fire<SetEvent>( `set:${ name }`, name, value, oldValue );
 
 				if ( newValue === undefined ) {
 					newValue = value;
@@ -94,7 +94,7 @@ const ObservableMixin: Observable = {
 				// Note: When properties map has no such own property, then its value is undefined.
 				if ( oldValue !== newValue || !properties!.has( name ) ) {
 					properties!.set( name, newValue );
-					this.fire( 'change:' + name, name, newValue, oldValue );
+					this.fire<ChangeEvent>( `change:${ name }`, name, newValue, oldValue );
 				}
 			}
 		} );
@@ -707,7 +707,7 @@ function attachBindToListeners( observable: Observable, toBindings: BindChainInt
 		// If there's already a chain between the observables (`observable` listens to
 		// `to.observable`), there's no need to create another `change` event listener.
 		if ( !boundObservables.get( to.observable ) ) {
-			observable.listenTo( to.observable, 'change', ( evt, propertyName ) => {
+			observable.listenTo<ChangeEvent>( to.observable, 'change', ( evt, propertyName ) => {
 				bindings = boundObservables.get( to.observable )![ propertyName ];
 
 				// Note: to.observable will fire for any property change, react
@@ -960,6 +960,17 @@ export interface Observable extends Emitter {
 	/** @internal */
 	[ boundObservablesSymbol]?: Map<Observable, Record<string, Set<Binding>>>;
 }
+
+export type ChangeEvent<TValue = any> = {
+	name: 'change' | `change:${ string }`;
+	args: [ name: string, value: TValue, oldValue: TValue ];
+};
+
+export type SetEvent<TValue = any> = {
+	name: 'set' | `set:${ string }`;
+	args: [ name: string, value: TValue, oldValue: TValue ];
+	return: TValue;
+};
 
 interface SingleBindChain<TKey extends string, TVal> {
 	toMany<O extends Observable, K extends keyof O>(

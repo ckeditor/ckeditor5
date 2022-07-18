@@ -229,12 +229,12 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 			this._items.splice( currentItemIndex, 0, item );
 			this._itemMap.set( itemId, item );
 
-			this.fire( 'add', item, currentItemIndex );
+			this.fire<AddEvent<T>>( 'add', item, currentItemIndex );
 
 			offset++;
 		}
 
-		this.fire( 'change', {
+		this.fire<ChangeEvent<T>>( 'change', {
 			added: items,
 			removed: [],
 			index
@@ -315,7 +315,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	public remove( subject: T | number | string ): T {
 		const [ item, index ] = this._remove( subject );
 
-		this.fire( 'change', {
+		this.fire<ChangeEvent<T>>( 'change', {
 			added: [],
 			removed: [ item ],
 			index
@@ -391,7 +391,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 			this._remove( 0 );
 		}
 
-		this.fire( 'change', {
+		this.fire<ChangeEvent<T>>( 'change', {
 			added: [],
 			removed: removedItems,
 			index: 0
@@ -622,10 +622,10 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 		}
 
 		// Synchronize the with collection as new items are added.
-		this.listenTo( externalCollection, 'add', addItem );
+		this.listenTo<AddEvent<S>>( externalCollection, 'add', addItem );
 
 		// Synchronize the with collection as new items are removed.
-		this.listenTo( externalCollection, 'remove', ( evt, externalItem, index ) => {
+		this.listenTo<RemoveEvent<S>>( externalCollection, 'remove', ( evt, externalItem, index ) => {
 			const item = this._bindToExternalToInternalMap.get( externalItem );
 
 			if ( item ) {
@@ -742,7 +742,7 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 		this._bindToInternalToExternalMap.delete( item );
 		this._bindToExternalToInternalMap.delete( externalItem );
 
-		this.fire( 'remove', item, index! );
+		this.fire<RemoveEvent<T>>( 'remove', item, index! );
 
 		return [ item, index! ];
 	}
@@ -786,6 +786,25 @@ mix( Collection, EmitterMixin );
 interface Collection<T, I> extends Emitter {}
 
 export default Collection;
+
+export type AddEvent<T = any> = {
+	name: 'add';
+	args: [ item: T, index: number ];
+};
+
+export type ChangeEvent<T = any> = {
+	name: 'change';
+	args: [ {
+		added: Iterable<T>;
+		removed: Iterable<T>;
+		index: number;
+	} ];
+};
+
+export type RemoveEvent<T = any> = {
+	name: 'remove';
+	args: [ item: T, index: number ];
+};
 
 /**
  * An object returned by the {@link module:utils/collection~Collection#bindTo `bindTo()`} method

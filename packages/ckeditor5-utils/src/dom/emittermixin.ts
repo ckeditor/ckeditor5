@@ -12,7 +12,9 @@ import {
 	_getEmitterListenedTo,
 	_setEmitterId,
 	type Emitter as BaseEmitter,
-	type CallbackOptions
+	type CallbackOptions,
+	type BaseEvent,
+	type GetCallback
 } from '../emittermixin';
 import uid from '../uid';
 import isNode from './isnode';
@@ -291,13 +293,13 @@ class ProxyEmitter {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	public _addEventListener(
-		event: string,
-		callback: ( ev: EventInfo, ...args: any[] ) => void,
+	public _addEventListener<TEvent extends BaseEvent>(
+		event: TEvent[ 'name' ],
+		callback: GetCallback<TEvent>,
 		options: CallbackOptions
 	): void {
 		this.attach( event );
-		EmitterMixin._addEventListener.call( this, event, callback, options );
+		EmitterMixin._addEventListener<TEvent>.call( this, event, callback, options );
 	}
 
 	/**
@@ -385,10 +387,10 @@ export interface Emitter extends BaseEmitter {
 		callback: ( this: this, ev: EventInfo, event: HTMLElementEventMap[ K ] ) => void,
 		options?: CallbackOptions & { readonly useCapture?: boolean; readonly usePassive?: boolean }
 	): void;
-	listenTo(
+	listenTo<TEvent extends BaseEvent>(
 		emitter: BaseEmitter,
-		event: string,
-		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
+		event: TEvent[ 'name' ],
+		callback: GetCallback<TEvent>,
 		options?: CallbackOptions
 	): void;
 
