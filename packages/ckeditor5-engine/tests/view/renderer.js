@@ -5131,7 +5131,7 @@ describe( 'Renderer', () => {
 	} );
 
 	describe( 'Blocking rendering while composing (IME)', () => {
-		it( 'should call #render() as soon as the user end compostion in the document', () => {
+		it( 'should call #render() as soon as the user end composition in the document', () => {
 			const viewDocument = new ViewDocument( new StylesProcessor() );
 			const selection = new DocumentSelection();
 			const domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );

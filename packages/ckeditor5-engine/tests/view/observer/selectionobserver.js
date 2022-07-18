@@ -88,7 +88,7 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should not fire selectionChange while user is compositing', done => {
+	it( 'should not fire selectionChange while user is composing', done => {
 		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange fired while composing';
 		} );

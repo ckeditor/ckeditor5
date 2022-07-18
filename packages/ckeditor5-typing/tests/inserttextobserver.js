@@ -173,7 +173,7 @@ describe( 'InsertTextObserver', () => {
 		expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
 	} );
 
-	it( 'should handle the compositionend event and fire fire the insertText event', () => {
+	it( 'should handle the compositionend event and fire the insertText event', () => {
 		viewSetData( view, '<p>fo{}o</p>' );
 
 		fireCompositionEndDomEvent( domRoot, {
