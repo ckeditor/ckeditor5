@@ -360,6 +360,7 @@ describe( 'ClipboardPipeline feature', () => {
 			expect( stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( 'x<paragraph>y</paragraph>' );
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5/issues/10217
 		it( 'converts BR elements between paragraphs to an empty paragraph', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>foo</p><br><p>bar</p>' } );
 			const spy = sinon.stub( editor.model, 'insertContent' );
