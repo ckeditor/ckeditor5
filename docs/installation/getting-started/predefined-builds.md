@@ -1054,7 +1054,7 @@ The table below presents the list of all plugins included in various builds.
 	</table>
 </figure>
 
-Plugins denoted with an asterisk (*) and essential for the editor to work and should never be removed.
+Plugins denoted with an asterisk (*) are essential for the editor to work and should never be removed.
 
 
 ## Build customization
