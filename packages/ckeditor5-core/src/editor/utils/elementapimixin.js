@@ -17,12 +17,12 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
  *
  * @mixin ElementApiMixin
  * @implements module:core/editor/utils/elementapimixin~ElementApi
- * @param {String} data The data that should be used to update the source element.
- * By default, it is taken directly from the existing editor instance.
  */
 const ElementApiMixin = {
 	/**
 	 * @inheritDoc
+	 * @param {String} data The data that should be used to update the source element.
+	 * By default, it is taken directly from the existing editor instance.
 	 */
 	updateSourceElement( data = this.data.get() ) {
 		if ( !this.sourceElement ) {

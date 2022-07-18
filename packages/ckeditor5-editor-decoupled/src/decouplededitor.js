@@ -46,6 +46,7 @@ import DecoupledEditorUIView from './decouplededitoruiview';
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
  *
  * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
+ * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
@@ -125,6 +126,9 @@ export default class DecoupledEditor extends Editor {
 		return super.destroy()
 			.then( () => {
 				if ( this.sourceElement ) {
+					// Clear the content after destroy to not confuse
+					// integrators with visible UI elements.
+					this.sourceElement.innerHTML = '';
 					this.updateSourceElement( data );
 				}
 			} );

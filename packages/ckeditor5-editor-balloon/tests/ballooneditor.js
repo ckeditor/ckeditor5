@@ -364,8 +364,7 @@ describe( 'BalloonEditor', () => {
 
 			return editor.destroy()
 				.then( () => {
-					expect( editorElement.innerHTML )
-						.to.equal( '<p>a</p><heading-editing-representation>b</heading-editing-representation>' );
+					expect( editorElement.innerHTML ).to.equal( '' );
 				} );
 		} );
 

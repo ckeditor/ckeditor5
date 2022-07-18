@@ -342,7 +342,7 @@ describe( 'ClassicEditor', () => {
 
 			return editor.destroy()
 				.then( () => {
-					expect( editorElement.innerHTML ).to.equal( '<p><strong>foo</strong> bar</p>' );
+					expect( editorElement.innerHTML ).to.equal( '' );
 				} );
 		} );
 
