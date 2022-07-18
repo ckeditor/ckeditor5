@@ -157,11 +157,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		const columnIndexMap = this._columnIndexMap;
 
 		model.document.registerPostFixer( writer => {
-			const changes = model.document.differ.getChanges();
-
 			let changed = false;
 
-			for ( const table of getAffectedTables( changes, model ) ) {
+			for ( const table of getAffectedTables( model ) ) {
 				// (1) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				// It's an array at this point.
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );

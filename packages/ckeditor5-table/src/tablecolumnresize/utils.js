@@ -18,14 +18,13 @@ import {
  * Collects all table model elements with `columnsWidth` attribute affected by the differ.
  * The returned set may be empty.
  *
- * @param {Array.<module:engine/model/differ~DiffItem>} changes
- * @param {module:engine/model/model~Model} model
+ * @param {module:engine/model/model~Model} model The model to collect the affected elements from.
  * @returns {Set.<module:engine/model/element~Element>}
  */
-export function getAffectedTables( changes, model ) {
+export function getAffectedTables( model ) {
 	const affectedTables = new Set();
 
-	for ( const change of changes ) {
+	for ( const change of model.document.differ.getChanges() ) {
 		let referencePosition = null;
 
 		// Checks if the particular change from the differ is:
