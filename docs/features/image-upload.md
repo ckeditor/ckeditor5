@@ -31,7 +31,7 @@ Read our comprehensive blog post about [Managing images with CKEditor 5](https:/
 
 ## Demo
 
-The demo below uses the {@link installation/advanced/predefined-builds#classic-editor Classic editor} configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) and the `AutoImage` plugin, which allows to {@link features/images-inserting paste image URLs directly}:
+The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor} configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) and the `AutoImage` plugin, which allows to {@link features/images-inserting paste image URLs directly}:
 
 {@snippet build-classic-source}
 

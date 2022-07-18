@@ -5,7 +5,7 @@
 # * List and clarify the things that need attention when migrating.
 
 category: getting-started
-order: 60
+order: 80
 modified_at: 2022-04-15
 ---
 
@@ -21,7 +21,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 
 There is no "drop in" solution for migrating. In this guide we hope to summarize the most important aspects you need to consider before you proceed with installing CKEditor 5.
 
-Before starting, be sure that migrating is your best choice. Refer to the {@link installation/advanced/predefined-builds#when-not-to-use-predefined-builds When NOT to use predefined CKEditor 5 builds?} guide for more information.
+Before starting, be sure that migrating is your best choice. Refer to the {@link installation/getting-started/predefined-builds#when-not-to-use-predefined-builds When NOT to use predefined CKEditor 5 builds?} guide for more information.
 
 ## Installation and integration
 

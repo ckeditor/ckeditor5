@@ -15,7 +15,7 @@ See the {@link framework/guides/document-editor tutorial} to learn how to create
 
 ## Editor example configuration
 
-Check out the {@link installation/advanced/predefined-builds#installation-example-5 Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
+Check out the {@link installation/getting-started/predefined-builds#installation-example-5 Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
 
 <details>
 <summary>View editor configuration script</summary>
