@@ -291,7 +291,7 @@ export function focusChildOnDropdownOpen( dropdownView, childSelectorCallback ) 
 	}, { priority: 'low' } );
 }
 
-export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns ) {
+export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns, isTable ) {
 	console.log( 'grid' );
 	//dropdown.listenTo( document, 'arrowdown', ( evt, domEvt ) => {
 	//	console.log( 'arrowdown' );
@@ -299,26 +299,21 @@ export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns 
 
 	//const gridElements = [ ...gridElements2.children ];
 
-	
-
 	view.keystrokes.set( 'arrowright', ( evt ) => {
-		//console.log( gridElements[0].isOn );
-		//console.log( gridElements[1].isOn );
-		//console.log( getFocusedElement( gridElements ) );
-		//gridElements[1].focus();
-		//console.log( gridElements[0].isOn );
-		//console.log( gridElements[1].isOn );
-		//console.log( getFocusedElement( gridElements ) );
-
 		const focusedElementIndex = getFocusedElement( gridElements );
 		// TODO: for tables'd be ok, for others should not change row no
 		if ( focusedElementIndex === gridElements.length - 1 ) {
 			gridElements[ 0 ].focus();
 		} else {
 			gridElements[ focusedElementIndex + 1 ].focus();
+
+			if ( isTable ) {
+				gridElements[ focusedElementIndex + 1 ].selectTile( view );
+			}
 		}
 
 		evt.stopPropagation();
+		evt.preventDefault();
 	} );
 
 	view.keystrokes.set( 'arrowleft', ( evt ) => {
@@ -330,7 +325,12 @@ export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns 
 			gridElements[ focusedElementIndex - 1 ].focus();
 		}
 
+		if ( isTable ) {
+			gridElements[ focusedElementIndex - 1 ].selectTile( view );
+		}
+
 		evt.stopPropagation();
+		evt.preventDefault();
 	} );
 
 	view.keystrokes.set( 'arrowup', ( evt ) => {
@@ -343,7 +343,12 @@ export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns 
 
 		gridElements[ nextIndex ].focus();
 
+		if ( isTable ) {
+			gridElements[ nextIndex ].selectTile( view );
+		}
+
 		evt.stopPropagation();
+		evt.preventDefault();
 	} );
 
 	view.keystrokes.set( 'arrowdown', ( evt ) => {
@@ -356,7 +361,12 @@ export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns 
 
 		gridElements[ nextIndex ].focus();
 
+		if ( isTable ) {
+			gridElements[ nextIndex ].selectTile( view );
+		}
+
 		evt.stopPropagation();
+		evt.preventDefault();
 	} );
 
 	function getFocusedElement( gridElements ) {

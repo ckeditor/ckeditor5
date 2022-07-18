@@ -7,7 +7,9 @@
  * @module table/ui/inserttableview
  */
 
-import { View } from 'ckeditor5/src/ui';
+import { View, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
+
+import { KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import './../../theme/inserttable.css';
 
@@ -35,6 +37,8 @@ export default class InsertTableView extends View {
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this.items = this._createGridCollection();
+
+		this.keystrokes = new KeystrokeHandler();
 
 		/**
 		 * The currently selected number of rows of the new table.
@@ -98,6 +102,13 @@ export default class InsertTableView extends View {
 
 				click: bind.to( () => {
 					this.fire( 'execute' );
+				} ),
+
+				keydown: bind.to( ( evt ) => {
+					if ( evt.key === 'Enter') {
+						this.fire( 'execute' );
+						evt.preventDefault();
+					}
 				} )
 			}
 		} );
@@ -119,14 +130,21 @@ export default class InsertTableView extends View {
 		this.on( 'change:rows', () => {
 			this._highlightGridBoxes();
 		} );
+
+		addKeyboardHandlingForGrid( this, [ ...this.items ], 10, true );
+	}
+
+	render() {
+		super.render();
+
+		this.keystrokes.listenTo( this.element );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	focus() {
-		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
-		// The method should be implemented while working on keyboard support for this view. See #22.
+		this.items.get( 0 ).focus();
 	}
 
 	/**
@@ -135,6 +153,15 @@ export default class InsertTableView extends View {
 	focusLast() {
 		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
 		// The method should be implemented while working on keyboard support for this view. See #22.
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	 destroy() {
+		super.destroy();
+
+		this.keystrokes.destroy();
 	}
 
 	/**
@@ -215,8 +242,28 @@ class TableSizeGridBoxView extends View {
 					bind.if( 'isOn', 'ck-on' )
 				],
 				'data-row': row,
-				'data-column': column
+				'data-column': column,
+				'tabindex': -1
 			}
+		} );
+	}
+
+	focus() {
+		this.element.focus();
+		this.isOn = true;
+		const domEvt = new MouseEvent( 'boxover', { type: 'mouseover' } );
+		//this.fire( 'boxover' );
+		//this.fire( 'boxover', new DomEventData( this, domEvt ) );
+		//view.fire( 'boxover', new DomEventData( this, domEvt ) );
+		//this.element.dispatchEvent( new MouseEvent( 'boxover', { type: 'mouseover' } ) );
+	}
+
+	selectTile( parentView ) {
+		const { row, column } = this.element.dataset;
+
+		parentView.set( {
+			rows: parseInt( row ),
+			columns: parseInt( column )
 		} );
 	}
 }
