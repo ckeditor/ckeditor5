@@ -262,6 +262,12 @@ describe( 'ButtonView', () => {
 				expect( view.element.attributes[ 'aria-disabled' ].value ).to.equal( 'true' );
 			} );
 
+			it( '-pressed has correct default value for toggleable button', () => {
+				view.isToggleable = true;
+				view.isOn = undefined;
+				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'false' );
+			} );
+
 			it( '-pressed reacts to #isOn', () => {
 				view.isToggleable = true;
 				view.isOn = true;
@@ -281,10 +287,10 @@ describe( 'ButtonView', () => {
 		} );
 
 		describe( 'mousedown event', () => {
-			it( 'should be prevented', () => {
+			it( 'should not be prevented', () => {
 				const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-				expect( ret ).to.false;
+				expect( ret ).to.true;
 			} );
 		} );
 

@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global Event */
+/* global Event, console */
 
 import ViewCollection from '../../src/viewcollection';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import View from '../../src/view';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DropdownPanelView', () => {
 	let view, locale;
@@ -90,6 +91,34 @@ describe( 'DropdownPanelView', () => {
 			view.focus();
 
 			sinon.assert.calledOnce( firstChildView.focus );
+		} );
+
+		describe( 'should warn', () => {
+			beforeEach( () => {
+				testUtils.sinon.stub( console, 'warn' );
+			} );
+
+			afterEach( () => {
+				console.warn.restore();
+			} );
+
+			it( 'if the view does not implement the focus() method', () => {
+				const firstChildView = new View();
+
+				firstChildView.focus = undefined;
+
+				view.children.add( firstChildView );
+
+				view.focus();
+
+				sinon.assert.calledOnce( console.warn );
+				sinon.assert.calledWithExactly(
+					console.warn,
+					'ui-dropdown-panel-focus-child-missing-focus',
+					{ childView: firstChildView, dropdownPanel: view },
+					sinon.match.string
+				);
+			} );
 		} );
 	} );
 

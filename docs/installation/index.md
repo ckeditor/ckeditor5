@@ -27,7 +27,7 @@ Learn how to install a custom CKEditor 5 easily with the use of {@link installat
 
 ## Predefined CKEditor 5 builds
 
-Predefined CKEditor 5 builds are ready-to-use installations aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link installation/advanced/predefined-builds available predefined builds} and choosing the right one for you. This is the fastest way to kick-off you CKEditor 5 installation.
+Predefined CKEditor 5 builds are ready-to-use installations aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link installation/getting-started/predefined-builds available predefined builds} and choosing the right one for you. This is the fastest way to kick-off you CKEditor 5 installation.
 
 ## Integration with frameworks
 
@@ -141,7 +141,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 		},
 
 		'quiz-resolution-usingBuilds': {
-			content: 'Based on your answers, you should check out the {@link installation/advanced/predefined-builds predefined builds}. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out the {@link installation/getting-started/predefined-builds predefined builds}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 

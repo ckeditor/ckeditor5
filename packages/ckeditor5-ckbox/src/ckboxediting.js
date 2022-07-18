@@ -34,7 +34,7 @@ export default class CKBoxEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ 'CloudServicesCore', 'LinkEditing', 'PictureEditing', CKBoxUploadAdapter ];
+		return [ 'CloudServices', 'LinkEditing', 'PictureEditing', CKBoxUploadAdapter ];
 	}
 
 	/**
