@@ -21,8 +21,6 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 const ElementApiMixin = {
 	/**
 	 * @inheritDoc
-	 * @param {String} data The data that should be used to update the source element.
-	 * By default, it is taken directly from the existing editor instance.
 	 */
 	updateSourceElement( data = this.data.get() ) {
 		if ( !this.sourceElement ) {
@@ -48,6 +46,8 @@ const ElementApiMixin = {
 		// secure. This behaviour could be changed by setting the `updateSourceElementOnDestroy`
 		// configuration option to `true`.
 		if ( !shouldUpdateSourceElement && !isSourceElementTextArea ) {
+			setDataInElement( this.sourceElement, '' );
+
 			return;
 		}
 
@@ -77,4 +77,6 @@ export default ElementApiMixin;
  * Updates the {@link #sourceElement editor source element}'s content with the data.
  *
  * @method #updateSourceElement
+ * @param {String} data The data that should be used to update the source element.
+ * By default, it is taken directly from the existing editor instance.
  */

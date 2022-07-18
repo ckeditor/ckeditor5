@@ -97,8 +97,6 @@ export default class ClassicEditor extends Editor {
 	 */
 	destroy() {
 		if ( this.sourceElement ) {
-			// Clear the source element after the editor destroy.
-			this.sourceElement.innerHTML = '';
 			this.updateSourceElement();
 		}
 

@@ -126,9 +126,6 @@ export default class DecoupledEditor extends Editor {
 		return super.destroy()
 			.then( () => {
 				if ( this.sourceElement ) {
-					// Clear the content after destroy to not confuse
-					// integrators with visible UI elements.
-					this.sourceElement.innerHTML = '';
 					this.updateSourceElement( data );
 				}
 			} );
