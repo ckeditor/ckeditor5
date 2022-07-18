@@ -320,8 +320,8 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *  * applies the attributes to the `<table>` view element.
 	 *
 	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo An object containing information about the fired event.
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData The data related to the DOM event.
 	 */
 	_onMouseDownHandler( eventInfo, domEventData ) {
 		const target = domEventData.target;
@@ -420,12 +420,12 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter A writer instance.
 	 * @param {module:engine/view/element~Element} viewTable A table containing the clicked resizer.
 	 */
-	_applyResizingAttributesToTable( writer, viewTable ) {
+	_applyResizingAttributesToTable( viewWriter, viewTable ) {
 		const figureInitialPcWidth = this._resizingData.widths.viewFigureWidth / this._resizingData.widths.viewFigureParentWidth;
 
-		writer.addClass( 'ck-table-resized', viewTable );
-		writer.addClass( 'ck-table-column-resizer__active', this._resizingData.elements.viewResizer );
-		writer.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, viewTable.findAncestor( 'figure' ) );
+		viewWriter.addClass( 'ck-table-resized', viewTable );
+		viewWriter.addClass( 'ck-table-column-resizer__active', this._resizingData.elements.viewResizer );
+		viewWriter.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, viewTable.findAncestor( 'figure' ) );
 	}
 
 	/**
@@ -435,10 +435,10 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *  * Otherwise it dynamically updates the widths of the resized columns.
 	 *
 	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo An object containing information about the fired event.
+	 * @param {MouseEvent} mouseEventData The native DOM mouse event data.
 	 */
-	_onMouseMoveHandler( eventInfo, domEventData ) {
+	_onMouseMoveHandler( eventInfo, mouseEventData ) {
 		if ( !this._isResizingActive ) {
 			return;
 		}
@@ -481,7 +481,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const multiplier = ( isLtrContent ? 1 : -1 ) * ( isRightEdge && isTableCentered ? 2 : 1 );
 
 		const dx = clamp(
-			( domEventData.clientX - columnPosition ) * multiplier,
+			( mouseEventData.clientX - columnPosition ) * multiplier,
 			Math.min( dxLowerBound, 0 ),
 			Math.max( dxUpperBound, 0 )
 		);
@@ -514,8 +514,6 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *  * Otherwise it propagates the changes from view to the model by executing the adequate commands.
 	 *
 	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData // not true, its native dom event - same for mousemove
 	 */
 	_onMouseUpHandler() {
 		if ( !this._isResizingActive ) {
@@ -603,9 +601,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * Retrieves and returns required data needed for the resizing process.
 	 *
 	 * @private
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
-	 * @param {Array.<Number>} columnWidths
-	 * @returns {Object}
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData The data of the `mousedown` event.
+	 * @param {Array.<Number>} columnWidths The current widths of the columns.
+	 * @returns {Object} The data needed for the resizing process.
 	 */
 	_getResizingData( domEventData, columnWidths ) {
 		const editor = this.editor;
