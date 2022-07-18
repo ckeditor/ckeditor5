@@ -14,10 +14,13 @@ import { startsWithFiller } from '../filler';
 import { isEqualWith } from 'lodash-es';
 
 /**
- * Mutation observer class observes changes in the DOM, mark view elements as changed and call
+ * Mutation observer's role is to watch for any DOM changes inside the editor that weren't
+ * done by the editor's {@link module:engine/view/renderer~Renderer} itself and reverting these changes.
+ *
+ * It does this by observing all mutations in the DOM, marking related view elements as changed and calling
  * {@link module:engine/view/renderer~Renderer#render}. Because all mutated nodes are marked as
- * "to be rendered" and the {@link module:engine/view/renderer~Renderer#render} is called,
- * all changes will be reverted. It means user will not see any changes, the editor will block all changes.
+ * "to be rendered" and the {@link module:engine/view/renderer~Renderer#render `render()`} method is called,
+ * all changes are reverted in the DOM (the DOM is synced with the editor's view structure).
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
