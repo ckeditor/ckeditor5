@@ -26,6 +26,10 @@ It is recommended to use the {@link features/media-embed media embed} feature fo
 	Incorrect configuration may **lead to security issues**.
 </info-box>
 
+<info-box info>
+	The HTML embed feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the **"Preview editor data"** button below the editor to see a preview of the editor content, including the embedded HTML.
