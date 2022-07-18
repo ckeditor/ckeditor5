@@ -3,7 +3,7 @@
 # - Guidance on all possible installation options.
 
 category: getting-started
-order: 15
+order: 30
 modified_at: 2022-03-15
 ---
 
@@ -21,12 +21,12 @@ Available paths:
 
 ## Creating custom builds with online builder
 
-Although the CKEditor 5 WYSIWYG editor comes with handy {@link installation/advanced/predefined-builds predefined builds}, sometimes these predefined bundled versions are not enough and a need for more customized  builds arises. Some of the reasons for creating custom builds are:
+Although the CKEditor 5 WYSIWYG editor comes with handy {@link installation/getting-started/predefined-builds predefined builds}, sometimes these predefined bundled versions are not enough and a need for more customized  builds arises. Some of the reasons for creating custom builds are:
 
 * Adding {@link installation/advanced/plugins plugin-driven features} which are not included in the existing builds.
 * Removing unnecessary features present in a build.
 * Designing a {@link installation/getting-started/configuration#toolbar-setup customized toolbar experience}.
-* Changing the {@link installation/advanced/predefined-builds#available-builds editor type build}.
+* Changing the {@link installation/getting-started/predefined-builds#available-builds editor type build}.
 * Changing the {@link features/ui-language localization language} of the editor.
 
 This is where the online builder comes to help you.
@@ -37,11 +37,11 @@ The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an appl
 
 The following editor types are currently available to choose from:
 
- * {@link installation/advanced/predefined-builds#classic-editor Classic editor}
- * {@link installation/advanced/predefined-builds#inline-editor Inline editor}
- * {@link installation/advanced/predefined-builds#balloon-editor Balloon editor}
- * {@link installation/advanced/predefined-builds#balloon-block-editor Balloon block editor}
- * {@link installation/advanced/predefined-builds#document-editor Document editor}
+ * {@link installation/getting-started/predefined-builds#classic-editor Classic editor}
+ * {@link installation/getting-started/predefined-builds#inline-editor Inline editor}
+ * {@link installation/getting-started/predefined-builds#balloon-editor Balloon editor}
+ * {@link installation/getting-started/predefined-builds#balloon-block-editor Balloon block editor}
+ * {@link installation/getting-started/predefined-builds#document-editor Document editor}
 
  Refer to the predefined builds documentation and {@link examples/index examples} to check what kind of WYSIWYG editor suits your needs best. Once you choose the desired editor type, select it to move to the next step.
 
@@ -209,7 +209,7 @@ Based on these packages you can create a simple application.
 <info-box warning>
 	Note that in this guide, the editor class is used directly (i.e. you use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
-	No {@link installation/advanced/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link installation/getting-started/installing-plugins customizing a build} or by including the CKEditor 5 source into your application (like in this guide).
+	No {@link installation/getting-started/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link installation/getting-started/installing-plugins customizing a build} or by including the CKEditor 5 source into your application (like in this guide).
 </info-box>
 
 ```js
