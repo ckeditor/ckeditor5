@@ -15,10 +15,10 @@ import { normalizeColumnWidths } from './utils';
  * Only the inline width, provided as a percentage value, in the `<col>` element is taken into account. If there are not enough `<col>`
  * elements matching this condition, the special value `auto` is returned. It indicates that the width of a column will be automatically
  * calculated in the
- * {@link module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing#_setupPostFixer post-fixer}, depending
+ * {@link module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing#_registerPostFixer post-fixer}, depending
  * on the available table space.
  *
- * @param {module:core/plugin~Plugin} tableUtilsPlugin The TableUtils plugin instance.
+ * @param {module:core/plugin~Plugin} tableUtilsPlugin The {@link module:table/tableutils~TableUtils} plugin instance.
  * @returns {Function} Conversion helper.
  */
 export function upcastColgroupElement( tableUtilsPlugin ) {
