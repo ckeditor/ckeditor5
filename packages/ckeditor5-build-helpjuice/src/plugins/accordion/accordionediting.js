@@ -38,12 +38,6 @@ export default class AccordionEditing extends Plugin {
 			allowAttributes: ["data-editor--toggle-element-target"]
 		});
 
-		schema.addChildCheck((context, childDefinition) => {
-			if (context.endsWith("accordionBody") && childDefinition.name == "accordion") {
-				return false;
-			}
-		});
-
 		schema.register("accordionToggle", {
 			isObject: true,
 			isLimit: true,
