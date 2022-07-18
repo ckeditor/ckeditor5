@@ -8,7 +8,7 @@ category: features
 The {@link module:select-all/selectall~SelectAll} feature allows selecting the entire content of the WYSIWYG editor using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> keystroke or the toolbar button. It is mostly useful when you need to copy all the content to another document or want to clear the editor area easily.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds} as a keyboard shortcut. See the [installation](#installation) section for information on adding a toolbar button to your editor.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds} as a keyboard shortcut. See the [installation](#installation) section for information on adding a toolbar button to your editor.
 </info-box>
 
 ## Demo

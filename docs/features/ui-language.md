@@ -79,7 +79,7 @@ For example:
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/translations/de.js"></script>
 ```
 
-See the {@link installation/advanced/predefined-builds#cdn CDN installation guide} for more information.
+See the {@link installation/getting-started/predefined-builds#cdn CDN installation guide} for more information.
 
 ### npm
 
@@ -87,7 +87,7 @@ After installing the build from npm, languages will be available in `node_module
 
 A single language can be loaded directly to your code by importing e.g. `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
 
-See the {@link installation/advanced/predefined-builds#npm npm installation guide} for more information.
+See the {@link installation/getting-started/predefined-builds#npm npm installation guide} for more information.
 
 ### Zip
 
@@ -98,7 +98,7 @@ All additional languages are included in the `.zip` file. You need to include th
 <script src="[ckeditor-path]/translations/de.js"></script>
 ```
 
-See the {@link installation/advanced/predefined-builds#zip-download zip installation guide} for more information.
+See the {@link installation/getting-started/predefined-builds#zip-download zip installation guide} for more information.
 
 ## Building the editor using a specific language
 

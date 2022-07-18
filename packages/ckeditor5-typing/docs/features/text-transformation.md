@@ -47,7 +47,7 @@ While most often this feature is used to easily insert special characters that a
 You may find additional interesting details and usage examples in the [Automatic text transformation in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-automatic-text-transformation-in-ckeditor-5/) blog post after reading this guide.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo

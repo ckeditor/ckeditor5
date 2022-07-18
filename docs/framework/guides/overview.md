@@ -6,7 +6,7 @@ order: 10
 
 # CKEditor 5 Framework overview
 
-CKEditor 5 is a project that allows you to quickly and easily initialize one of the many types of editors it offers in your application. At the same time, it is a framework for creating custom-tailored rich-text editing solutions. The former requirement is met thanks to {@link installation/advanced/predefined-builds CKEditor 5 builds}. The latter &mdash; thanks to CKEditor 5 Framework.
+CKEditor 5 is a project that allows you to quickly and easily initialize one of the many types of editors it offers in your application. At the same time, it is a framework for creating custom-tailored rich-text editing solutions. The former requirement is met thanks to {@link installation/getting-started/predefined-builds CKEditor 5 builds}. The latter &mdash; thanks to CKEditor 5 Framework.
 
 This guide explains how the framework is built and how to start using it.
 
@@ -48,7 +48,7 @@ There are a few groups of packages:
 * [Editors](https://github.com/ckeditor/ckeditor5#editors) &ndash; Packages that implement various types of editors.
 * [Features](https://github.com/ckeditor/ckeditor5#features) &ndash; Packages that implement end user features.
 * [Themes](https://github.com/ckeditor/ckeditor5#themes) &ndash; Packages that implement editor themes.
-* [Builds](https://github.com/ckeditor/ckeditor5#builds) &ndash; Packages containing {@link installation/advanced/predefined-builds CKEditor 5 builds}.
+* [Builds](https://github.com/ckeditor/ckeditor5#builds) &ndash; Packages containing {@link installation/getting-started/predefined-builds CKEditor 5 builds}.
 
 ## What's next?
 
