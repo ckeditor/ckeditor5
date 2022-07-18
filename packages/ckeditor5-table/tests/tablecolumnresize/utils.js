@@ -21,7 +21,7 @@ import AttributeOperation from '@ckeditor/ckeditor5-engine/src/model/operation/a
 import TableColumnResize from '../../src/tablecolumnresize';
 import {
 	getAffectedTables,
-	getColumnIndex,
+	getColumnEdgesIndexes,
 	toPrecision,
 	clamp,
 	createFilledArray,
@@ -441,13 +441,13 @@ describe( 'TableColumnResize utils', () => {
 			const cell00 = [ ...row0.getChildren() ][ 0 ];
 
 			expect(
-				getColumnIndex( cell00, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell00, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 0, rightEdge: 0 } );
 
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 1 } );
 		} );
 
@@ -462,7 +462,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 2 } );
 		} );
 
@@ -477,7 +477,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 3 } );
 		} );
 
@@ -492,7 +492,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell02 = [ ...row0.getChildren() ][ 2 ];
 
 			expect(
-				getColumnIndex( cell02, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell02, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 2, rightEdge: 5 } );
 		} );
 	} );

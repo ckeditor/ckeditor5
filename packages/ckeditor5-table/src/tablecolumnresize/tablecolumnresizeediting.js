@@ -28,7 +28,7 @@ import {
 	createFilledArray,
 	sumArray,
 	getAffectedTables,
-	getColumnIndex,
+	getColumnEdgesIndexes,
 	getColumnMinWidthAsPercentage,
 	getElementWidthInPixels,
 	getTableWidthInPixels,
@@ -616,7 +616,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelLeftCell = editor.editing.mapper.toModelElement( viewLeftCell );
 		const modelTable = modelLeftCell.findAncestor( 'table' );
 
-		const leftColumnIndex = getColumnIndex( modelLeftCell, this._columnIndexMap ).rightEdge;
+		const leftColumnIndex = getColumnEdgesIndexes( modelLeftCell, this._columnIndexMap ).rightEdge;
 		const lastColumnIndex = editor.plugins.get( 'TableUtils' ).getColumns( modelTable ) - 1;
 
 		const isRightEdge = leftColumnIndex === lastColumnIndex;

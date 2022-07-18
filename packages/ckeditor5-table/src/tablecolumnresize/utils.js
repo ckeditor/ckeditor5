@@ -118,10 +118,10 @@ export function getElementWidthInPixels( domElement ) {
 /**
  * Returns the column indexes on the left and right edges of a cell.
  *
- * @param {module:engine/model/element~Element} cell
- * @returns {Object}
+ * @param {module:engine/model/element~Element} cell A cell model element.
+ * @returns {Object} An object containing the indexes of the left and right edges of the cell.
  */
-export function getColumnIndex( cell, columnIndexMap ) {
+export function getColumnEdgesIndexes( cell, columnIndexMap ) {
 	const cellColumnIndex = columnIndexMap.get( cell );
 	const cellWidth = cell.getAttribute( 'colspan' ) || 1;
 
