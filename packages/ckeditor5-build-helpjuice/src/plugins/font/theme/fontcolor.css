@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck .ck-button.ck-color-table__remove-color {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+label.ck.ck-color-grid__label {
+	font-weight: unset;
+}
+
+.ck-font-hex-color-wrapper {
+	display: flex;
+	align-items: center;
+	padding: 8px!important;
+}
+
+.ck-font-hex-color-wrapper input {
+	width: 120px!important;
+	height: 30px!important;
+	border: 1px solid #126CFF!important;
+	padding: 0 10px!important;
+	margin-right: 20px!important;
+	border-radius: 2px;
+}
+
+.ck-font-hex-color-wrapper button {
+	background: #126CFF!important;
+	color: #FFFFFF!important;
+	padding: 3px 10px!important;
+	border-radius: 2px;
+}
+.ck-font-hex-color-wrapper button:hover {
+	background: #0e59d2!important;
+}
+
+.ck-font-hex-color-wrapper button:disabled {
+	opacity: .3;
+}
+
+.ck-font-hex-color-wrapper input::-webkit-input-placeholder {
+	color: #d1d1d1;
+}
+
+.ck-font-hex-color-wrapper input::-moz-placeholder {
+	color: #d1d1d1;
+}
+
+.ck-font-hex-color-wrapper input:-ms-input-placeholder {
+	color: #d1d1d1;
+}
+
+.ck-font-hex-color-wrapper input:-moz-placeholder {
+	color: #d1d1d1;
+}
