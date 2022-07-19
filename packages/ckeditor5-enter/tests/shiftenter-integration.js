@@ -309,6 +309,28 @@ describe( 'ShiftEnter integration', () => {
 			);
 		} );
 
+		it( 'should ignore only the last BR in block', () => {
+			editor.setData( '<p>foo<br><br></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph>foo<softBreak></softBreak></paragraph>'
+			);
+			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
+				'<p>foo<br>&nbsp;</p>'
+			);
+		} );
+
+		it( 'should ignore only the last BR in block (multiple BRs)', () => {
+			editor.setData( '<p>foo<br><br><br></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph>foo<softBreak></softBreak><softBreak></softBreak></paragraph>'
+			);
+			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
+				'<p>foo<br><br>&nbsp;</p>'
+			);
+		} );
+
 		it( 'should ignore a BR before a block (paragraph)', () => {
 			editor.setData( 'foo<br><p>bar</p>' );
 

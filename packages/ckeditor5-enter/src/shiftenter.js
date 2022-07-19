@@ -127,8 +127,15 @@ export default class ShiftEnter extends Plugin {
 function findSibling( viewElement, direction, view, { blockElements, inlineObjectElements } ) {
 	let position = view.createPositionAt( viewElement, direction == 'forward' ? 'after' : 'before' );
 
+	// Find first position that is just before a first:
+	// * text node,
+	// * BR element,
+	// * block element,
+	// * inline object element.
+	// It's ignoring any inline (non-object) elements like span, strong, etc.
 	position = position.getLastMatchingPosition( ( { item } ) => {
-		return item.is( 'element' ) && !blockElements.includes( item.name ) && !inlineObjectElements.includes( item.name );
+		return item.is( 'element' ) && item.name != 'br' &&
+			!blockElements.includes( item.name ) && !inlineObjectElements.includes( item.name );
 	}, { direction } );
 
 	return direction == 'forward' ? position.nodeAfter : position.nodeBefore;
