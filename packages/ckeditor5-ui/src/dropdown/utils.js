@@ -291,7 +291,7 @@ export function focusChildOnDropdownOpen( dropdownView, childSelectorCallback ) 
 	}, { priority: 'low' } );
 }
 
-export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns, isTable ) {
+export function addKeyboardHandlingForGrid( view, gridElementsCollection, numberOfColumns, isTable ) {
 	console.log( 'grid' );
 	//dropdown.listenTo( document, 'arrowdown', ( evt, domEvt ) => {
 	//	console.log( 'arrowdown' );
@@ -300,7 +300,9 @@ export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns,
 	//const gridElements = [ ...gridElements2.children ];
 
 	view.keystrokes.set( 'arrowright', ( evt ) => {
+		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements );
+
 		// TODO: for tables'd be ok, for others should not change row no
 		if ( focusedElementIndex === gridElements.length - 1 ) {
 			gridElements[ 0 ].focus();
@@ -317,6 +319,7 @@ export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns,
 	} );
 
 	view.keystrokes.set( 'arrowleft', ( evt ) => {
+		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements );
 		// TODO: for tables'd be ok, for others should not change row no
 		if ( focusedElementIndex === 0 ) {
@@ -334,6 +337,7 @@ export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns,
 	} );
 
 	view.keystrokes.set( 'arrowup', ( evt ) => {
+		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements );
 		let nextIndex = focusedElementIndex - numberOfColumns;
 
@@ -352,6 +356,7 @@ export function addKeyboardHandlingForGrid( view, gridElements, numberOfColumns,
 	} );
 
 	view.keystrokes.set( 'arrowdown', ( evt ) => {
+		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements );
 		let nextIndex = focusedElementIndex + numberOfColumns;
 

@@ -7,7 +7,9 @@
  * @module special-characters/ui/charactergridview
  */
 
-import { View, ButtonView } from 'ckeditor5/src/ui';
+import { View, ButtonView, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
+
+import { KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import '../../theme/charactergrid.css';
 
@@ -55,6 +57,10 @@ export default class CharacterGridView extends View {
 				]
 			}
 		} );
+
+		this.keystrokes = new KeystrokeHandler();
+
+		addKeyboardHandlingForGrid( this, this.tiles, 10 );
 
 		/**
 		 * Fired when any of {@link #tiles grid tiles} is clicked.
@@ -112,5 +118,24 @@ export default class CharacterGridView extends View {
 		} );
 
 		return tile;
+	}
+
+	render() {
+		super.render();
+
+		this.keystrokes.listenTo( this.element );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	 destroy() {
+		super.destroy();
+
+		this.keystrokes.destroy();
+	}
+
+	focus () {
+		this.tiles.get( 0 ).focus();
 	}
 }
