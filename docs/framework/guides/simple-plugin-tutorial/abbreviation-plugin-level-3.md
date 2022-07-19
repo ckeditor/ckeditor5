@@ -189,7 +189,6 @@ We will also disable the input field when the selection is not collapsed, becaus
 import getRangeText from './utils.js';
 
 export default class AbbreviationUI extends Plugin {
-
 	// ...
 
 	_showUI() {
@@ -221,7 +220,6 @@ Since we are disabling the first input field in some cases, let's update the `fo
 // ...
 
 export default class FormView extends View {
-
 	// ...
 
 	focus() {
@@ -305,7 +303,6 @@ We can now replace the action called on `submit` with our new command, passing i
 // ...
 
 export default class AbbreviationUI extends Plugin {
-
 	// ...
 
 	_createFormView() {
@@ -476,7 +473,6 @@ In the `AbbreviationUI` add a simple `if` statement to fill the form using eithe
 // ...
 
 export default class AbbreviationUI extends Plugin {
-
 	// ...
 
 	_showUI() {

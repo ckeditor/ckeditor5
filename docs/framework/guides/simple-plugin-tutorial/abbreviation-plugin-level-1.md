@@ -63,8 +63,7 @@ Now take look at `index.html`. We added the `<abbr>` element - it will not work 
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – abbreviation plugin</title>
-		<script src="../node_modules/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
+		<title>CKEditor 5 Framework – Abbreviation plugin</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -160,6 +159,8 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 import Abbreviation from './abbreviation/abbreviation';							// ADDED
 
@@ -267,7 +268,6 @@ export default class AbbreviationEditing extends Plugin {
 		// Conversion from a model attribute to a view element
 		conversion.for( 'downcast' ).attributeToElement( {
 			model: 'abbreviation',
-
 			// Callback function provides access to the model attribute value
 			// and the DowncastWriter
 			view: ( modelAttributeValue, conversionApi ) => {
@@ -318,7 +318,6 @@ export default class AbbreviationEditing extends Plugin {
 			},
 			model: {
 				key: 'abbreviation',
-
 				// Callback function provides access to the view element
 				value: viewElement => {
 					const title = viewElement.getAttribute( 'title' );

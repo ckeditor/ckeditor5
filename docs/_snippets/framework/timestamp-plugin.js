@@ -58,7 +58,7 @@ ClassicEditor
 		window.editor = editor;
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Timestamp' ),
+				item => item.label && item.label === 'Timestamp' ),
 			text: 'Click to add timestamp.',
 			editor
 		} );

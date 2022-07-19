@@ -227,6 +227,7 @@ export default class AbbreviationUI extends Plugin {
 	// ...
 }
 ```
+
 ### Wrapping up the form view
 
 We are almost done with the form view, we just need to add a couple of finishing touches.
