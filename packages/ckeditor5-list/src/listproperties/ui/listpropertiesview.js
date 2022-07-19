@@ -220,7 +220,7 @@ export default class ListPropertiesView extends View {
 			//this.keystrokes.set( 'arrowdown', stopPropagation );
 			//this.keystrokes.set( 'arrowdown', stopPropagation2 );
 
-			addKeyboardHandlingForGrid( this, [ ...this.stylesView.children ], 4 );
+			addKeyboardHandlingForGrid( this, this.stylesView.children, 4 );
 		}
 
 		if ( this.reversedSwitchButtonView ) {

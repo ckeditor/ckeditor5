@@ -280,7 +280,7 @@ export default class ColorTableView extends View {
 			this.items.add( this.documentColorsGrid );
 		}
 
-		addKeyboardHandlingForGrid( this, [ ...this.staticColorsGrid.items ], 5 );
+		addKeyboardHandlingForGrid( this, this.staticColorsGrid.items, 5 );
 	}
 
 	/**

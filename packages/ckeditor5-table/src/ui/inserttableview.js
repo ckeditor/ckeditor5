@@ -131,7 +131,7 @@ export default class InsertTableView extends View {
 			this._highlightGridBoxes();
 		} );
 
-		addKeyboardHandlingForGrid( this, [ ...this.items ], 10, true );
+		addKeyboardHandlingForGrid( this, this.items, 10, true );
 	}
 
 	render() {
