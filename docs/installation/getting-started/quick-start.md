@@ -7,7 +7,7 @@ order: 10
 modified_at: 2022-06-27
 ---
 
-# Quick start
+# Run editor from CDN
 
 ## Introduction
 In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor 5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).

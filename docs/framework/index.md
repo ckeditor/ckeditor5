@@ -7,6 +7,10 @@ meta-title: CKEditor 5 Framework documentation
 meta-description: Learn how to install, integrate, configure and develop CKEditor 5 Framework. Browse through API documentation and online samples.
 ---
 
+<script>
+document.location.href = 'guides/overview.html';
+</script>
+
 # CKEditor 5 Framework
 
 CKEditor 5 Framework is a highly-flexible and universal platform providing a set of components allowing you to create any kind of rich text editing solution. It enables creating different, custom-tailored editors that suit specific needs. It also provides tools for creation and integration of user-made features and for customizing the existing ones.
