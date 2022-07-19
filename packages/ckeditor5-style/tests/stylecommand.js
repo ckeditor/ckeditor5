@@ -597,6 +597,38 @@ describe( 'StyleCommand', () => {
 					'<paragraph>foo[bar]</paragraph>'
 				);
 			} );
+
+			it( 'should force adding style if the command was called with `forceValue=true`', () => {
+				setData( model,
+					'<paragraph>' +
+						'fo' +
+						'[<$text htmlSpan=\'{"classes":["marker"]}\'>ob</$text>' +
+						'ar]' +
+					'</paragraph>'
+				);
+
+				command.execute( 'Marker', true );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>fo[<$text htmlSpan="{"classes":["marker"]}">obar</$text>]</paragraph>'
+				);
+			} );
+
+			it( 'should force removing style if the command was called with `forceValue=false`', () => {
+				setData( model,
+					'<paragraph>' +
+					'[fo' +
+					'<$text htmlSpan=\'{"classes":["marker"]}\'>ob</$text>]' +
+					'ar' +
+					'</paragraph>'
+				);
+
+				command.execute( 'Marker', false );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>[foob]ar</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'block styles', () => {
@@ -676,6 +708,36 @@ describe( 'StyleCommand', () => {
 				command.execute( 'Big heading' );
 
 				expect( getData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
+			} );
+
+			it( 'should force adding style if the command was called with `forceValue=true`', () => {
+				setData( model,
+					'<heading1>foo</heading1>' +
+					'<heading1 htmlAttributes=\'{"classes":["red"]}\'>b[ar</heading1>' +
+					'<heading1>ba]z</heading1>' );
+
+				command.execute( 'Red heading', true );
+
+				expect( getData( model ) ).to.equal(
+					'<heading1>foo</heading1>' +
+					'<heading1 htmlAttributes="{"classes":["red"]}">b[ar</heading1>' +
+					'<heading1 htmlAttributes="{"classes":["red"]}">ba]z</heading1>'
+				);
+			} );
+
+			it( 'should force removing style if the command was called with `forceValue=false`', () => {
+				setData( model,
+					'<heading1>f[oo</heading1>' +
+					'<heading1 htmlAttributes=\'{"classes":["red"]}\'>ba]r</heading1>' +
+					'<heading1>baz</heading1>' );
+
+				command.execute( 'Red heading', false );
+
+				expect( getData( model ) ).to.equal(
+					'<heading1>f[oo</heading1>' +
+					'<heading1>ba]r</heading1>' +
+					'<heading1>baz</heading1>'
+				);
 			} );
 		} );
 	} );

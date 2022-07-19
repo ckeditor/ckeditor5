@@ -149,8 +149,10 @@ export default class StyleCommand extends Command {
 	 * @fires execute
 	 * @param {String} styleName Style name matching the one defined in the
 	 * {@link module:style/style~StyleConfig#definitions configuration}.
+	 * @param {Boolean} [forceValue] Whether the command should add given style (`true`) or remove it (`false`) from the selection.
+	 * If not set (default), the command will toggle the style basing on the first selected node.
 	 */
-	execute( styleName ) {
+	execute( styleName, forceValue ) {
 		if ( !this.enabledStyles.includes( styleName ) ) {
 			/**
 			 * Style command can be executed only with a correct style name.
@@ -177,6 +179,8 @@ export default class StyleCommand extends Command {
 			...this._styleDefinitions.block
 		].find( ( { name } ) => name == styleName );
 
+		const shouldAddStyle = forceValue === undefined ? !this.value.includes( definition.name ) : forceValue;
+
 		model.change( () => {
 			let selectables;
 
@@ -187,10 +191,10 @@ export default class StyleCommand extends Command {
 			}
 
 			for ( const selectable of selectables ) {
-				if ( this.value.includes( definition.name ) ) {
-					htmlSupport.removeModelHtmlClass( definition.element, definition.classes, selectable );
-				} else {
+				if ( shouldAddStyle ) {
 					htmlSupport.addModelHtmlClass( definition.element, definition.classes, selectable );
+				} else {
+					htmlSupport.removeModelHtmlClass( definition.element, definition.classes, selectable );
 				}
 			}
 		} );
