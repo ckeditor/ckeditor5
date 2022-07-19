@@ -216,7 +216,7 @@ export default class TablePropertiesView extends View {
 		/**
 		 * A toolbar with buttons that allow changing the alignment of an entire table.
 		 * @readonly
-		 * @member {module:ui/toolbar/toolbar~ToolbarView}
+		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.alignmentToolbar = alignmentToolbar;
 

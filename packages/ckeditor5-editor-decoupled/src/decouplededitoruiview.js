@@ -36,6 +36,8 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	constructor( locale, editingView, options = {} ) {
 		super( locale );
 
+		const t = locale.t;
+
 		/**
 		 * The main toolbar of the decoupled editor UI.
 		 *
@@ -52,7 +54,11 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement );
+		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement, {
+			label: editableView => {
+				return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+			}
+		} );
 
 		// This toolbar may be placed anywhere in the page so things like font size need to be reset in it.
 		// Because of the above, make sure the toolbar supports rounded corners.
