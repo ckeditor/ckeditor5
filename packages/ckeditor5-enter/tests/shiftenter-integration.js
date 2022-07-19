@@ -287,6 +287,17 @@ describe( 'ShiftEnter integration', () => {
 			);
 		} );
 
+		it( 'should ignore only the last BR if there are multiple BRs in a block', () => {
+			editor.setData( '<p><br><br><br></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph><softBreak></softBreak><softBreak></softBreak></paragraph>'
+			);
+			expect( editor.getData( { trim: 'none' } ) ).to.equalMarkup(
+				'<p><br><br>&nbsp;</p>'
+			);
+		} );
+
 		it( 'should ignore a BR at the end of a block (paragraph)', () => {
 			editor.setData( '<p>foo<br></p>' );
 
