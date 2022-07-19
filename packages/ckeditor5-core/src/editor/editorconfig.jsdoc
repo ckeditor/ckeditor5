@@ -335,7 +335,7 @@
  * in the output.
  *
  * Be careful, especially while using 
- * {@glink features/markdown Markdown}, {@glink features/html-support General HTML Support} or 
+ * {@glink features/markdown Markdown}, {@glink features/general-html-support General HTML Support} or 
  * {@glink features/html-embed HTML embed} features.
  *
  * @member {Boolean} module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy
