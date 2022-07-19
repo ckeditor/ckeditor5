@@ -23,7 +23,8 @@
   "main": "./build/ckeditor.js",
   "files": [
     "build",
-    "ckeditor5-metadata.json"
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "^34.2.0",
