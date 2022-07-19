@@ -97,7 +97,6 @@ export default class InsertTextObserver extends Observer {
 			//   - Try to follow it from the `beforeinput` events. This would be really complex as each
 			//     `beforeinput` would come with just the range it's changing and we'd need to calculate that.
 			// We decided to go with the 2nd option for its simplicity and stability.
-			// TODO maybe we should not pass the DOM event and only translate what we could need in the view/model
 			viewDocument.fire( 'insertText', new DomEventData( viewDocument, domEvent, {
 				text: data,
 				selection: viewDocument.selection

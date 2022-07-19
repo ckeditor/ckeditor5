@@ -634,7 +634,6 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	_enableInsertingParagraphsOnTypingKeystroke() {
 		const editor = this.editor;
-		const model = editor.model;
 		const viewDocument = editor.editing.view.document;
 
 		// Note: The priority must precede the default Input plugin insertText handler.
@@ -650,10 +649,6 @@ export default class WidgetTypeAround extends Plugin {
 
 		// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
 		this._listenToIfEnabled( viewDocument, 'compositionstart', () => {
-			if ( model.document.selection.isCollapsed ) {
-				return;
-			}
-
 			this._insertParagraphAccordingToFakeCaretPosition();
 		}, { priority: 'high' } );
 	}
