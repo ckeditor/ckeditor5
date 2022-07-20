@@ -34,6 +34,6 @@ export default class RemoveFormatEditing extends Plugin {
 
 		editor.commands.add( 'removeFormat', new RemoveFormatCommand( editor ) );
 
-		editor.keystrokes.set( 'CTRL+SPACE', 'removeFormat' );
+		editor.keystrokes.set( [ 'CTRL', 220 /* Backslash */ ], 'removeFormat' );
 	}
 }

@@ -42,7 +42,7 @@ export default class RemoveFormatUI extends Plugin {
 			view.set( {
 				label: t( 'Remove Format' ),
 				icon: removeFormatIcon,
-				keystroke: 'CTRL+SPACE',
+				keystroke: 'CTRL+\\',
 				tooltip: true
 			} );
 
