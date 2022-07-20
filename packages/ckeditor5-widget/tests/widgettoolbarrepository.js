@@ -67,6 +67,18 @@ describe( 'WidgetToolbarRepository', () => {
 		expect( editor.plugins.has( WidgetToolbarRepository ) ).to.be.true;
 	} );
 
+	it( 'should register focusableToolbars in the editor.ui', () => {
+		widgetToolbarRepository.register( 'fake', {
+			items: editor.config.get( 'fake.toolbar' ),
+			getRelatedElement: () => null
+		} );
+
+		expect( editor.ui._focusableToolbars ).to.be.an('array');
+		expect( editor.ui._focusableToolbars.length ).to.not.equal( 0 );
+
+		console.log( editor.ui._focusableToolbars );
+	} );
+
 	describe( 'register()', () => {
 		it( 'should create a widget toolbar and add it to the collection', () => {
 			widgetToolbarRepository.register( 'fake', {

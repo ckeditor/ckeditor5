@@ -348,6 +348,7 @@ export default class EditorUI {
 	 */
 	_initFocusTracking() {
 		const editor = this.editor;
+		// let flag = 0;
 
 		const getToolbarDefinitionWeight = toolbarDef => {
 			const { toolbarView, options } = toolbarDef;
@@ -402,6 +403,7 @@ export default class EditorUI {
 			for ( const toolbarDef of toolbarDefs ) {
 				const { toolbarView } = toolbarDef;
 
+				console.log( 'this.focusTracker.focusedElement', this.focusTracker.focusedElement.role );
 				if ( toolbarView.element.contains( this.focusTracker.focusedElement ) ) {
 					return toolbarDef;
 				}
@@ -436,6 +438,7 @@ export default class EditorUI {
 		};
 
 		const focusNextFocusableToolbarDefinition = ( relativeDef, toolbarDefinitions ) => {
+			// console.log( '- - - - - - - - - - - - - - - - - - -  - - - - - - - -', toolbarDefinitions, toolbarDefinitions.length )
 			const candidateToolbarDefToFocus = getNextFocusableToolbarDef( relativeDef, toolbarDefinitions );
 
 			if ( !candidateToolbarDefToFocus ) {
@@ -461,7 +464,9 @@ export default class EditorUI {
 				);
 
 				// (!!!) TODO. This might cause infinite loop. A mechanism to prevent this is required.
-				focusNextFocusableToolbarDefinition( candidateToolbarDefToFocus, toolbarDefinitions );
+				// if ( ++flag < toolbarDefinitions.length ) {
+					focusNextFocusableToolbarDefinition( candidateToolbarDefToFocus, toolbarDefinitions );
+				// }
 
 				return;
 			}
