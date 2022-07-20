@@ -165,10 +165,14 @@ export default class ColorUI extends Plugin {
 				evt.target.value.match(validHexCode) ? button.disabled = false : button.disabled = true;
 			} );
 
+			hexColorInput.addEventListener("keydown", (evt) => {
+				if (evt.target.value.match(validHexCode) && evt.keyCode == 13) {
+					this.colorTableView.applyHexColor(evt, this.commandName, hexColorInput, dropdownView, button);
+				}
+			})
+
 			button.addEventListener("click", (evt) => {
-				this.colorTableView.applyHexColor(evt, this.commandName, hexColorInput);
-				dropdownView.panelView.isVisible = false;
-				button.disabled = true;
+				this.colorTableView.applyHexColor(evt, this.commandName, hexColorInput, dropdownView, button);
 			} );
 
 			return dropdownView;

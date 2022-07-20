@@ -415,10 +415,12 @@ export default class ColorTableView extends View {
 	/**
 	  *	Applies hex color
 	*/
-	applyHexColor(event, command, hexColorInput) {
+	applyHexColor(event, command, hexColorInput, dropdownView, button) {
 		event.preventDefault();
 		editor.execute( command, { value: hexColorInput.value } );
 		hexColorInput.value = "";
+		dropdownView.panelView.isVisible = false;
+		button.disabled = true;
 	}
 
 	/**
