@@ -327,3 +327,16 @@
  *
  * @member {Object} module:core/editor/editorconfig~EditorConfig#ui
  */
+
+ /**
+ * Enables updating the source element after the editor destroy.
+ *
+ * Enabling this option might have some security implications, as the editor doesn't have control over all data
+ * in the output.
+ *
+ * Be careful, especially while using 
+ * {@glink features/markdown Markdown}, {@glink features/general-html-support General HTML Support} or 
+ * {@glink features/html-embed HTML embed} features.
+ *
+ * @member {Boolean} module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy
+ */

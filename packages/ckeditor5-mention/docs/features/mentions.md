@@ -198,12 +198,11 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Mention, ... ],
 		mention: {
+			// Define the custom number of visible mentions.
+			dropdownLimit: 4
 			feeds: [
-				{
-					// Define the custom number of visible mentions.
-					dropdownLimit: 4
-					feed: [ ... ]
-				}
+				{ ... }
+				...
 			]
 		}
 	} )

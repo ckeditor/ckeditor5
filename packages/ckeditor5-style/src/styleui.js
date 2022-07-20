@@ -86,7 +86,7 @@ export default class StyleUI extends Plugin {
 
 			// Execute the command when a style is selected in the styles panel.
 			panelView.on( 'execute', evt => {
-				editor.execute( 'style', evt.source.styleDefinition.name );
+				editor.execute( 'style', { styleName: evt.source.styleDefinition.name } );
 			} );
 
 			// Bind the state of the styles panel to the command.
