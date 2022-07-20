@@ -46,12 +46,12 @@ msgstr "افتراضي"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
-msgstr ""
+msgstr "لون الخط"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr ""
+msgstr "لون خلفية الخط"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
+msgstr "ألوان المستند"

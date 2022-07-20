@@ -30,19 +30,19 @@ msgstr "Redaguoti bloką"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
-msgstr ""
+msgstr "Kitas"
 
 msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
 msgid "Previous"
-msgstr ""
+msgstr "Buvęs"
 
 msgctxt "Label used by assistive technologies describing a generic editor toolbar."
 msgid "Editor toolbar"
-msgstr ""
+msgstr "Redaktoriaus įrankių juosta"
 
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
-msgstr ""
+msgstr "Įrankių juosta pasirenkamajame sąraše"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"

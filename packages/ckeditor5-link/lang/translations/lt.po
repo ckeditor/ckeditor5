@@ -30,7 +30,7 @@ msgstr "Nuorodos URL"
 
 msgctxt "Label for the image link button."
 msgid "Link image"
-msgstr ""
+msgstr "Susieti paveikslėlį"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
@@ -46,8 +46,8 @@ msgstr "Ši nuorda neturi URL"
 
 msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
 msgid "Open in a new tab"
-msgstr ""
+msgstr "Atverti naujoje kortelėje"
 
 msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
 msgid "Downloadable"
-msgstr ""
+msgstr "Parsisiunčiamas"

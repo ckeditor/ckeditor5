@@ -22,15 +22,15 @@ msgstr "Obraz"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "Zawijaj tekst"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "Rozbijaj tekst"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "W linii"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"
@@ -94,7 +94,7 @@ msgstr "Oryginalny"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
-msgstr ""
+msgstr "Lista: zmiana wielkości obrazu"
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"

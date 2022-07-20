@@ -38,4 +38,4 @@ msgstr "Teksto lygiavimas"
 
 msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
 msgid "Text alignment toolbar"
-msgstr ""
+msgstr "Teksto lygiavimo įrankių juosta"
