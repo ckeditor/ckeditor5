@@ -162,13 +162,13 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
-import Abbreviation from './abbreviation/abbreviation';							// ADDED
+import Abbreviation from './abbreviation/abbreviation';					// ADDED
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic,
-			Abbreviation														// ADDED
+			Abbreviation												// ADDED
 		],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 	} )
@@ -255,21 +255,21 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 export default class AbbreviationEditing extends Plugin {
 	init() {
 		this._defineSchema();
-		this._defineConverters();									// ADDED
+		this._defineConverters();							// ADDED
 	}
 
 	_defineSchema() {
-		// ...
+	// ...
 	}
 
-	_defineConverters() {											// ADDED
+	_defineConverters() {									// ADDED
 		const conversion = this.editor.conversion;
 
-		// Conversion from a model attribute to a view element
+		// Conversion from a model attribute to a view element.
 		conversion.for( 'downcast' ).attributeToElement( {
 			model: 'abbreviation',
 			// Callback function provides access to the model attribute value
-			// and the DowncastWriter
+			// and the DowncastWriter.
 			view: ( modelAttributeValue, conversionApi ) => {
 				const { writer } = conversionApi;
 
@@ -296,21 +296,21 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
-		// ...
+	// ...
 	}
 
 	_defineSchema() {
-		// ...
+	// ...
 	}
 
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
 		conversion.for( 'downcast' ).attributeToElement(
-			// ...
-		 );
+		// ...
+		);
 
-		// Conversion from a view element to a model attribute
+		// Conversion from a view element to a model attribute.
 		conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
 				name: 'abbr',
@@ -318,7 +318,7 @@ export default class AbbreviationEditing extends Plugin {
 			},
 			model: {
 				key: 'abbreviation',
-				// Callback function provides access to the view element
+				// Callback function provides access to the view element.
 				value: viewElement => {
 					const title = viewElement.getAttribute( 'title' );
 
@@ -387,7 +387,7 @@ ClassicEditor
 		],
 		toolbar: [
 			'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|',
-			'abbreviation'														  // ADDED
+			'abbreviation'												  // ADDED
 		]
 	} )
 	.then( editor => {

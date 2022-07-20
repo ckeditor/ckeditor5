@@ -281,7 +281,7 @@ Now, let's initialize our `AbbreviationCommand`, by adding it to the list of edi
 // abreviation/abbreviationediting.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import AbbreviationCommand from './abbreviationcommand';					// ADDED
+import AbbreviationCommand from './abbreviationcommand';			// ADDED
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -544,7 +544,7 @@ export default class AbbreviationCommand extends Command {
 				writer.removeSelectionAttribute( 'abbreviation' );
 			} else {
 				// If the selection has non-collapsed ranges,
-				//change the attribute on nodes inside those ranges
+				// change the attribute on nodes inside those ranges
 				// omitting nodes where the "abbreviation" attribute is disallowed.
 				const ranges = model.schema.getValidRanges(
 					selection.getRanges(), 'abbreviation'
@@ -609,7 +609,7 @@ The user might place the abbreviation inside a text, which already has some othe
 ```js
 // abbreviation/abbreviationcommand.js
 // ...
-import { toMap } from '@ckeditor/ckeditor5-utils';							// ADDED
+import { toMap } from '@ckeditor/ckeditor5-utils';					// ADDED
 
 export default class AbbreviationCommand extends Command {
 	refresh() {
@@ -626,9 +626,9 @@ export default class AbbreviationCommand extends Command {
 					// ...
 				}
 				// If the collapsed selection is not in an existing abbreviation,
-				//insert a text node with the "abbreviation" attribute
+				// insert a text node with the "abbreviation" attribute
 				// in place of the caret.
-				// If the abbreviation is empty, do not do anything.
+				// If the abbreviation is empty, don't do anything.
 				else if ( abbr !== '' ) {
 					const firstPosition = selection.getFirstPosition();
 
