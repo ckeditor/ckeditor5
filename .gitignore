@@ -19,3 +19,12 @@ mrgit.json
 .DS_Store
 .idea
 .vscode
+
+# Ignore yalc
+.yalc
+yalc.lock
+
+
+# Ignore compiled TypeScript files.
+packages/ckeditor5-utils/src/**/*.js
+packages/*/src/**/*.d.ts

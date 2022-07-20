@@ -5,7 +5,7 @@
 
 /* global document, window */
 
-import { getOptimalPosition, Position } from '../../src/dom/position';
+import { getOptimalPosition } from '../../src/dom/position';
 import Rect from '../../src/dom/rect';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -140,18 +140,6 @@ describe( 'getOptimalPosition()', () => {
 		if ( limiter ) {
 			limiter.remove();
 		}
-	} );
-
-	it( 'output should be an instance of Position', () => {
-		setElementTargetPlayground();
-
-		const position = getOptimalPosition( {
-			element,
-			target: () => target,
-			positions: [ attachLeftBottom ]
-		} );
-
-		expect( position ).to.be.instanceOf( Position );
 	} );
 
 	it( 'should pass position config to the Position object', () => {

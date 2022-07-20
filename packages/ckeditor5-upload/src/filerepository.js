@@ -17,7 +17,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 import FileReader from './filereader.js';
 
-import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * File repository plugin. A central point for managing file upload.
