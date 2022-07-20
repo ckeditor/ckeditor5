@@ -8,6 +8,7 @@ build/
 !packages/ckeditor5-build-*/build
 docs/api/output.json
 yarn.lock
+package-lock.json
 coverage/
 
 # Files associated with external repositories.

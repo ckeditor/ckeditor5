@@ -229,13 +229,17 @@ export default class Renderer {
 				this.markedChildren.add( inlineFillerPosition.parent );
 			}
 		}
-		// Paranoid check: we make sure the inline filler has any parent so it can be mapped to view position
-		// by DomConverter.
+		// Make sure the inline filler has any parent, so it can be mapped to view position by DomConverter.
 		else if ( this._inlineFiller && this._inlineFiller.parentNode ) {
 			// While the user is making selection, preserve the inline filler at its original position.
 			inlineFillerPosition = this.domConverter.domPositionToView( this._inlineFiller );
 
-			if ( inlineFillerPosition.parent.is( '$text' ) ) {
+			// While down-casting the document selection attributes, all existing empty
+			// attribute elements (for selection position) are removed from the view and DOM,
+			// so make sure that we were able to map filler position.
+			// https://github.com/ckeditor/ckeditor5/issues/12026
+			if ( inlineFillerPosition && inlineFillerPosition.parent.is( '$text' ) ) {
+				// The inline filler position is expected to be before the text node.
 				inlineFillerPosition = ViewPosition._createBefore( inlineFillerPosition.parent );
 			}
 		}
