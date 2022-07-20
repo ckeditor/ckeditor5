@@ -4,6 +4,10 @@
  */
 
 /**
+ * This is just a temporary migration file, please ignore it. This will be removed after migration to TypeScript is complete.
+ */
+
+/**
  * Set of utils to handle unicode characters.
  *
  * @module utils/unicode

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * This is just a temporary migration file, please ignore it. This will be removed after migration to TypeScript is complete.
+ */
+
 /* global setTimeout, clearTimeout */
 
 /**
