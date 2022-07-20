@@ -403,7 +403,7 @@ export default class EditorUI {
 			for ( const toolbarDef of toolbarDefs ) {
 				const { toolbarView } = toolbarDef;
 
-				console.log( 'this.focusTracker.focusedElement', this.focusTracker.focusedElement.role );
+				// console.log( 'this.focusTracker.focusedElement', this.focusTracker.focusedElement.role );
 				if ( toolbarView.element.contains( this.focusTracker.focusedElement ) ) {
 					return toolbarDef;
 				}

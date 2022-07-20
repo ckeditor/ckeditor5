@@ -440,14 +440,14 @@ describe.only( 'toolbar focus cycling', () => {
 				'[<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>bar</caption></imageBlock>]' +
 				'<paragraph>baz</paragraph>'
 			);
-			debugger;
+			// debugger;
 			ui.focusTracker.isFocused = true;
 			view.toolbar.focusTracker.isFocused = false;
 
 			// console.log( 'ui.focusTracker.focusedElement', ui.focusTracker.focusedElement.role );
 
-			ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
-			console.log( 'ui.focusTracker.focusedElement', ui.focusTracker.focusedElement.role );
+			// ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
+			// console.log( 'ui.focusTracker.focusedElement', ui.focusTracker.focusedElement.role );
 			// editor.model.change( writer => {
 			// 	writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ) );
 			// } );
@@ -460,6 +460,7 @@ describe.only( 'toolbar focus cycling', () => {
 				stopPropagation: sinon.spy()
 			} );
 
+			ui.focusTracker.focusedElement = document.activeElement;
 			sinon.assert.calledOnce( imageToolbarSpy );
 			console.log( 'imageToolbar.element.contains( document.activeElement )', imageToolbar.element.contains( document.activeElement ) );
 
