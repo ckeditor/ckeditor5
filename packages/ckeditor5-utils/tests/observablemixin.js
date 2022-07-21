@@ -6,7 +6,7 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { assertBinding, expectToThrowCKEditorError } from '../tests/_utils/utils';
 import ObservableMixin from '../src/observablemixin';
-import EmitterMixin from '../src/emittermixin';
+import { Emitter } from '../src/emittermixin';
 import EventInfo from '../src/eventinfo';
 import mix from '../src/mix';
 
@@ -18,7 +18,7 @@ describe( 'ObservableMixin', () => {
 	} );
 
 	it( 'mixes in EmitterMixin', () => {
-		expect( ObservableMixin ).to.have.property( 'on', EmitterMixin.on );
+		expect( ObservableMixin ).to.have.property( 'on', Emitter.prototype.on );
 	} );
 
 	it( 'implements set, bind, and unbind methods', () => {

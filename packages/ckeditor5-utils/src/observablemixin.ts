@@ -9,7 +9,7 @@
  * @module utils/observablemixin
  */
 
-import EmitterMixin, { type Emitter } from './emittermixin';
+import EmitterMixin, { Emitter } from './emittermixin';
 import CKEditorError from './ckeditorerror';
 import { isObject } from 'lodash-es';
 
@@ -270,8 +270,18 @@ const ObservableMixin: Observable = {
 		this[ decoratedMethods ]!.push( methodName );
 	},
 
-	...EmitterMixin
+	on: Emitter.prototype.on,
+	once: Emitter.prototype.once,
+	fire: Emitter.prototype.fire,
+	listenTo: Emitter.prototype.listenTo,
+	off: Emitter.prototype.off,
+	stopListening: Emitter.prototype.stopListening,
+	delegate: Emitter.prototype.delegate,
+	stopDelegating: Emitter.prototype.stopDelegating
 };
+
+( ObservableMixin as any )._addEventListener = ( Emitter.prototype as any )._addEventListener;
+( ObservableMixin as any )._removeEventListener = ( Emitter.prototype as any )._removeEventListener;
 
 // Override the EmitterMixin stopListening method to be able to clean (and restore) decorated methods.
 // This is needed in case of:
@@ -293,7 +303,7 @@ ObservableMixin.stopListening = function(
 		delete this[ decoratedMethods ];
 	}
 
-	EmitterMixin.stopListening.call( this, emitter, event, callback );
+	Emitter.prototype.stopListening.call( this, emitter, event, callback );
 };
 
 export default ObservableMixin;

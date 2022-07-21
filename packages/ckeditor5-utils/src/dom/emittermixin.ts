@@ -11,7 +11,7 @@ import {
 	default as EmitterMixin,
 	_getEmitterListenedTo,
 	_setEmitterId,
-	type Emitter as BaseEmitter,
+	Emitter as BaseEmitter,
 	type CallbackOptions,
 	type BaseEvent,
 	type GetCallback
@@ -45,7 +45,7 @@ import mix from '../mix';
  * @mixes module:utils/emittermixin~EmitterMixin
  * @implements module:utils/dom/emittermixin~Emitter
  */
-const DomEmitterMixin: Emitter = extend( {}, EmitterMixin, {
+const DomEmitterMixin: Emitter = extend( {}, EmitterMixin.mixinMethods, {
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
 	 * It is backwards compatible with {@link module:utils/emittermixin~EmitterMixin#listenTo}.
@@ -80,7 +80,7 @@ const DomEmitterMixin: Emitter = extend( {}, EmitterMixin, {
 			this.listenTo( proxyEmitter, event, callback, options );
 		} else {
 			// Execute parent class method with Emitter (or ProxyEmitter) instance.
-			EmitterMixin.listenTo.call( this, emitter, event, callback, options );
+			BaseEmitter.prototype.listenTo.call( this, emitter, event, callback, options );
 		}
 	},
 
@@ -114,7 +114,7 @@ const DomEmitterMixin: Emitter = extend( {}, EmitterMixin, {
 			}
 		} else {
 			// Execute parent class method with Emitter (or ProxyEmitter) instance.
-			EmitterMixin.stopListening.call( this, emitter, event, callback );
+			BaseEmitter.prototype.stopListening.call( this, emitter, event, callback );
 		}
 	},
 
@@ -151,8 +151,18 @@ const DomEmitterMixin: Emitter = extend( {}, EmitterMixin, {
 			{ capture: true, passive: false },
 			{ capture: true, passive: true }
 		].map( options => this._getProxyEmitter( node, options ) ).filter( proxy => !!proxy ) as any;
-	}
+	},
+
+	on: BaseEmitter.prototype.on,
+	once: BaseEmitter.prototype.once,
+	fire: BaseEmitter.prototype.fire,
+	off: BaseEmitter.prototype.off,
+	delegate: BaseEmitter.prototype.delegate,
+	stopDelegating: BaseEmitter.prototype.stopDelegating
 } );
+
+( DomEmitterMixin as any )._addEventListener = ( BaseEmitter.prototype as any )._addEventListener;
+( DomEmitterMixin as any )._removeEventListener = ( BaseEmitter.prototype as any )._removeEventListener;
 
 export default DomEmitterMixin;
 
@@ -276,7 +286,7 @@ class ProxyEmitter {
 		// are awaiting given event, detach native DOM listener from DOM Node.
 		// See: {@link attach}.
 
-		if ( this._domListeners![ event ] && ( !( events = this._events![ event ] ) || !events.callbacks.length ) ) {
+		if ( this._domListeners![ event ] && ( !( events = ( this as any )._events![ event ] ) || !events.callbacks.length ) ) {
 			this._domListeners![ event ].removeListener();
 		}
 	}
@@ -299,7 +309,7 @@ class ProxyEmitter {
 		options: CallbackOptions
 	): void {
 		this.attach( event );
-		EmitterMixin._addEventListener<TEvent>.call( this, event, callback, options );
+		( BaseEmitter.prototype as any )._addEventListener.call( this, event, callback, options );
 	}
 
 	/**
@@ -311,7 +321,7 @@ class ProxyEmitter {
 	 * @param {Function} callback The function to stop being called.
 	 */
 	public _removeEventListener( event: string, callback: Function ) {
-		EmitterMixin._removeEventListener.call( this, event, callback );
+		( BaseEmitter.prototype as any )._removeEventListener.call( this, event, callback );
 		this.detach( event );
 	}
 

@@ -5,7 +5,7 @@
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ObservableMixin from '../../src/observablemixin';
-import EmitterMixin from '../../src/emittermixin';
+import { Emitter } from '../../src/emittermixin';
 import { createObserver } from '../_utils/utils';
 
 describe( 'utils - testUtils', () => {
@@ -29,9 +29,6 @@ describe( 'utils - testUtils', () => {
 		} );
 
 		it( 'should create an observer', () => {
-			function Emitter() {}
-			Emitter.prototype = EmitterMixin;
-
 			expect( observer ).to.be.instanceof( Emitter );
 			expect( observer.observe ).is.a( 'function' );
 			expect( observer.stopListening ).is.a( 'function' );

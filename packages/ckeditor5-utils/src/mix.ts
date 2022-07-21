@@ -30,8 +30,12 @@
  * @param {Function} [baseClass] Class which prototype will be extended.
  * @param {Object} [...mixins] Objects from which to get properties.
  */
-export default function mix( baseClass: Function, ...mixins: object[] ): void {
+export default function mix( baseClass: Function, ...mixins: any[] ): void {
 	mixins.forEach( mixin => {
+		if ( 'mixinMethods' in mixin ) {
+			mixin = mixin.mixinMethods;
+		}
+
 		const propertyNames: ( string | symbol )[] = Object.getOwnPropertyNames( mixin );
 		const propertySymbols = Object.getOwnPropertySymbols( mixin );
 

@@ -7,7 +7,7 @@
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import DomEmitterMixin from '../../src/dom/emittermixin';
-import EmitterMixin from '../../src/emittermixin';
+import { Emitter } from '../../src/emittermixin';
 
 describe( 'DomEmitterMixin', () => {
 	let emitter, domEmitter, node;
@@ -15,7 +15,7 @@ describe( 'DomEmitterMixin', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		emitter = Object.create( EmitterMixin );
+		emitter = new Emitter();
 		domEmitter = Object.create( DomEmitterMixin );
 		node = document.createElement( 'div' );
 	} );
