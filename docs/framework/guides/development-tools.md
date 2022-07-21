@@ -35,6 +35,17 @@ or as a plain `<script>` tag in the HTML of your application:
 <script src="../node_modules/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
 ```
 
+#### Inspector as a bookmarklet
+
+Alternatively, you might create a bookmarklet in your browser that will allow you to open inspector on every page without interference
+ with its source code. 
+<b>Important note: this method won't work if the page has Content Security Policy enabled.</b>
+To create a bookmarklet, paste this code as the URL of the newly created bookmark in the browser of your choice:
+```js
+javascript:(function(){let script=document.createElement('script');script.src='https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js';script.onload=()=>CKEditorInspector.attachToAll();document.head.appendChild(script);})()
+```
+After that, you can open CKEditor 5 inspector by pressing the previously created bookmark. 
+
 ### Enabling the inspector
 
 Attach the inspector to the editor instance when {@link installation/getting-started/basic-api#creating-an-editor-with-create created} using the `CKEditorInspector.attach()` method:
