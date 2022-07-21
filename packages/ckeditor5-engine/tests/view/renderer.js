@@ -4675,6 +4675,65 @@ describe( 'Renderer', () => {
 					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 3 );
 					expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 				} );
+
+				it( 'should not crash if document selection attribute was removed while making a selection', () => {
+					const domSelection = document.getSelection();
+
+					const {
+						view: viewParagraph,
+						selection: viewSelection
+					} = parse( '<container:p>foo<attribute:b>[]</attribute:b></container:p>' );
+
+					viewRoot._appendChild( viewParagraph );
+					selection._setTo( viewSelection );
+
+					// -----------------------------------------------------------------------------------------------
+					// STEP #1: The first render() is to set the initial state of the editor.
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					let domParagraph = domRoot.childNodes[ 0 ];
+
+					// The filler was inserted <p>foo<b>"FILLER{}"</b></p>.
+					expect( domParagraph.childNodes.length ).to.equal( 2 );
+					expect( domParagraph.childNodes[ 0 ].data ).to.equal( 'foo' );
+					expect( domParagraph.childNodes[ 1 ].outerHTML ).to.equal( `<b>${ INLINE_FILLER }</b>` );
+
+					expect( domSelection.rangeCount ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 1 ].firstChild );
+					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
+					expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+
+					// -----------------------------------------------------------------------------------------------
+					// STEP #2: Now we're moving the selection somewhere else while isSelecting = true.
+					// Then comes the second render().
+					// * The document selection down-cast is removing an empty attribute element
+					renderer.isSelecting = true;
+
+					// Remove the selection attribute (since we are going to move the selection).
+					selection.getFirstPosition().parent._remove();
+					renderer.markToSync( 'children', viewParagraph );
+
+					// <p>[foo<b></b>]</p>.
+					selection._setTo( ViewRange._createIn( viewParagraph ) );
+					renderer.render();
+
+					// Another render so the attribute element is gone, and it should not crash here.
+					renderer.render();
+
+					domParagraph = domRoot.childNodes[ 0 ];
+
+					// The filler and empty attribute element is removed <p>[foo]</p>.
+					expect( domParagraph.childNodes.length ).to.equal( 1 );
+					expect( domParagraph.childNodes[ 0 ].data ).to.equal( 'foo' );
+
+					expect( domSelection.rangeCount ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph );
+					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
+					expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domParagraph );
+					expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.false;
+				} );
 			} );
 
 			describe( 'in Blink (Android)', () => {

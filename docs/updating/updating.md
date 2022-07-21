@@ -1,15 +1,55 @@
 ---
 category: updating
-menu-title: Updating your editor
+menu-title: Maintaining and updating the editor
 order: 1
-modified_at: 2022-01-27
+modified_at: 2022-07-13
 ---
 
-# Updating your editor
+# Maintaining and updating your editor
 
-Updating is an important process that should become your routine. Our team constantly introduces new features, bug fixes and improvements, so keeping the editor up-to-date is a way to make sure that you get the best out of CKEditor 5.
+CKEditor 5 is an active, rapidly developing software project. It is, therefore, important to keep in touch with all the new features and APIs, changes and bug fixes that are periodically released. As in the case of every software project, it is always wise and highly advised to keep your copy of CKEditor 5 and all plugins up-to-date to maintain the highest level of security and stability. Updating is an important process that should become your routine. Our team constantly introduces new features, bug fixes and improvements, so keeping the editor up-to-date is a way to make sure that you get the best out of CKEditor 5.
 
-Before proceeding with an update, it is highly recommended to [read the changelog](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md) for the latest version to learn about all changes introduced in the release. You should especially pay attention to any possible {@link support/versioning-policy#major-and-minor-breaking-changes breaking changes}. This step is crucial if you develop your own custom features and modify the editor, as sometimes, changes in our code might affect these custom solutions.
+## Daily maintenance
+
+### Upgrade regularly
+
+CKEditor 5 should be [updated frequently](#updating-ckeditor-5), as bug fixes and new features are not backported. While installing and using a CKEditor 5 instance, especially when adding new features, always make sure all the packages are of the same (preferably latest) version. If this requirement is not met, errors may occur.
+
+### Update your custom builds
+
+If you want to skip some editor features, customize your build with {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} and remove unneeded functionality. Alternatively, {@link installation/getting-started/quick-start-other#building-the-editor-from-source create your own customized build from scratch}. It is a bad practice to download a {@link installation/getting-started/predefined-builds predefined editor build} and then remove plugins or buttons in your configuration. You will only be loading unnecessary stuff without any good reason.
+
+### Use online builder to add plugins
+
+Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, use online builder instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
+
+## CKEditor 5 release process
+
+Regular code releases (there are usually 10-12 of these a year) bring different changes and new features. They are often divided into major and minor changes, along the lines of [semantic versioning](https://semver.org/).
+
+### Code release
+
+Each code release is noted in the [changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) and enumerates all changes, additions and bug fixes that took place, also highlighting if there are any breaking changes (i.e. changes that make the latest release incompatible with the previous ones code-wise). The code packages are released on the [CKEditor 5 npm site](https://www.npmjs.com/package/ckeditor5), as well as updated in the {@link installation/getting-started/predefined-builds#download-options predefined builds} and {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} and are ready to download.
+
+It is good to follow npm release messages about new packages being published as well as periodically check the changelog.
+
+### Public release
+
+Soon after the code release, a more user-oriented information is published. In a [release blog post](https://ckeditor.com/blog/?category=releases&tags=CKEditor-5) the latest release version is presented in more details, with examples, screencasts, screenshots and links to the new or updated documentation if it brings important information about the release. The release blog post would also provide additional information and context for the changes if needed and direct the user toward migration guides if these were created for the release.
+
+It is good to follow [CKEditor Ecosystem Blog](https://ckeditor.com/blog/) as it also brings other important articles and news about features, changes and planned development. You can also [sign up to the monthly newsletter](https://ckeditor.com/newsletter/) in order to be notified about the latest releases.
+
+### Migration guides
+
+Should there be any breaking or important changes that affect your editor integration and require special attention, these will also be published in the CKEditor 5 documentation in the {@link updating/index Updating section}. These guides provide a more technical, code-oriented information directed at integrators, administrators and developers and offer solutions and necessary steps to take while updating.
+
+Administrators and developers should always refer to migration guides after each release and make sure to implement all the introduced changes properly to ensure stable and uninterrupted operation.
+
+## Updating CKEditor 5
+
+CKEditor 5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
+
+Before proceeding with an update, it is highly recommended to [read the changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) for the latest version to learn about all changes introduced in the release. You should especially pay attention to any possible {@link support/versioning-policy#major-and-minor-breaking-changes breaking changes}. This step is crucial if you develop your own custom features and modify the editor, as sometimes, changes in our code might affect these custom solutions.
 
 To help you with a smooth update, we have prepared migration guides that describe adjustments that need to be done before moving to the production environment. You can find them in the sidebar located on the left side of the page.
 
@@ -17,13 +57,8 @@ To help you with a smooth update, we have prepared migration guides that describ
   Always remember to test your editor before deploying the changes into the production environment. This will help ensure that the update will not have a negative impact on your application and user experience.
 </info-box>
 
-## Updating CKEditor 5
+If you use a {@link installation/getting-started/predefined-builds predefined build}, you can simply visit our [CKEditor 5 download page](https://ckeditor.com/ckeditor-5/download/) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
 
-### Process
-
-CKEditor 5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
-
-If you use a {@link installation/advanced/predefined-builds predefined build}, you can simply visit our [CKEditor 5 download page](https://ckeditor.com/ckeditor-5/download/) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
 1. Read the changelog.
 2. Update your packages.
 3. Read the migration guide.
@@ -117,3 +152,11 @@ A collaboration session will be removed 24 hours after the last user disconnects
 <info-box>
 	If you are using Collaboration Server On-premises, it is recommended to keep it updated at all times, just like CKEditor 5. Our collaboration features are strongly linked with Cloud Services, so it is important to keep compatibility between On-premises and CKEditor 5.
 </info-box>
+
+## Safety
+
+Observe any security alerts that are published by the CKEditor 5 team, especially the [Security Advisories](https://github.com/ckeditor/ckeditor5/security/advisories). Always act promptly to apply patches and upgrades as soon as these are released. Keeping your editor up-to-date is crucial to the security and integrity of you content and data. If you are using framework integrations, always follow any information provided by framework developers, too.
+
+### Data backup
+
+Whatever your approach toward updates might be, always remember to keep a fresh backup of your data. Whether a local solutions is used, an on-premises server or the autosave feature, create regular backups of you database and files.

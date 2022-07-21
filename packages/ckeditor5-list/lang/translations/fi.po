@@ -26,100 +26,100 @@ msgstr "Lista"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"
-msgstr ""
+msgstr "Tehtävälista"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the bulleted list style."
 msgid "Bulleted list styles toolbar"
-msgstr ""
+msgstr "Luetelmalistan työkalupalkki"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the numbered list style."
 msgid "Numbered list styles toolbar"
-msgstr ""
+msgstr "Numerolistan työkalupalkki"
 
 msgctxt "The ARIA label of the button that toggles the \"disc\" list style."
 msgid "Toggle the disc list style"
-msgstr ""
+msgstr "Levylistatyylin vaihdin"
 
 msgctxt "The ARIA label of the button that toggles the \"circle\" list style."
 msgid "Toggle the circle list style"
-msgstr ""
+msgstr "Ympyrälistatyylin vaihdin"
 
 msgctxt "The ARIA label of the button that toggles the \"square\" list style."
 msgid "Toggle the square list style"
-msgstr ""
+msgstr "Neliölistatyylin vaihdin"
 
 msgctxt "The ARIA label of the button that toggles the \"decimal\" list style."
 msgid "Toggle the decimal list style"
-msgstr ""
+msgstr "Desimaalilistatyylin vaihdin"
 
 msgctxt "The ARIA label of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Toggle the decimal with leading zero list style"
-msgstr ""
+msgstr "Nolla alussa -desimaalilistatyylin vaihdin"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–roman\" list style."
 msgid "Toggle the lower–roman list style"
-msgstr ""
+msgstr "Pienet roomalaiset numerot -listatyylin vaihdin"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–roman\" list style."
 msgid "Toggle the upper–roman list style"
-msgstr ""
+msgstr "Isot roomalaiset numerot -listatyylin vaihdin"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–latin\" list style."
 msgid "Toggle the lower–latin list style"
-msgstr ""
+msgstr "Pienet latinalaiset aakkoset -listatyylin vaihdin"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–latin\" list style."
 msgid "Toggle the upper–latin list style"
-msgstr ""
+msgstr "Isot latinalaiset aakkoset -listatyylin vaihdin"
 
 msgctxt "The tooltip text of the button that toggles the \"disc\" list style."
 msgid "Disc"
-msgstr ""
+msgstr "Levy"
 
 msgctxt "The tooltip text of the button that toggles the \"circle\" list style."
 msgid "Circle"
-msgstr ""
+msgstr "Ympyrä"
 
 msgctxt "The tooltip text of the button that toggles the \"square\" list style."
 msgid "Square"
-msgstr ""
+msgstr "Neliö"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal\" list style."
 msgid "Decimal"
-msgstr ""
+msgstr "Desimaali"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Decimal with leading zero"
-msgstr ""
+msgstr "Nolla alussa -desimaali"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–roman\" list style."
 msgid "Lower–roman"
-msgstr ""
+msgstr "Pienet roomalaiset numerot"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–roman\" list style."
 msgid "Upper-roman"
-msgstr ""
+msgstr "Isot roomalaiset numerot"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–latin\" list style."
 msgid "Lower-latin"
-msgstr ""
+msgstr "Pienet latinalaiset aakkoset"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–latin\" list style."
 msgid "Upper-latin"
-msgstr ""
+msgstr "Isot latinalaiset aakkoset"
 
 msgctxt "The label of the button that toggles the visibility of additional numbered list property UI fields."
 msgid "List properties"
-msgstr ""
+msgstr "Listaominaisuudet"
 
 msgctxt "The label of the input allowing to change the start index of a numbered list."
 msgid "Start at"
-msgstr ""
+msgstr "Alkaa"
 
 msgctxt "The error message displayed when the numbered list start index input value is invalid."
 msgid "Start index must be greater than 0."
-msgstr ""
+msgstr "Aloitusindeksi ei saa olla suurempi kuin 0."
 
 msgctxt "The label of the switch button that reverses the order of the numbered list."
 msgid "Reversed order"
-msgstr ""
+msgstr "Päinvastainen järjestys"

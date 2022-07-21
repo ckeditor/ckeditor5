@@ -11,7 +11,7 @@ The {@link module:heading/heading~Heading} feature enables support for headings.
 Headings can easily be added with toolbar dropdown, buttons or with {@link features/autoformat Markdown code} as you type. They can also be cleared with the {@link features/remove-format remove format} feature.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Heading levels

@@ -121,13 +121,6 @@ describe( 'MediaEmbedUI', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 
-				it( 'should focus the form', () => {
-					const spy = sinon.spy( form, 'focus' );
-
-					button.fire( 'open' );
-					sinon.assert.calledOnce( spy );
-				} );
-
 				it( 'should disable CSS transitions to avoid unnecessary animations (and then enable them again)', () => {
 					const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
 					const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );

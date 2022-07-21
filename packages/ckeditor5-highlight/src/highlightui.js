@@ -219,7 +219,7 @@ export default class HighlightUI extends Plugin {
 			buttons.push( new ToolbarSeparatorView() );
 			buttons.push( componentFactory.create( 'removeHighlight' ) );
 
-			addToolbarToDropdown( dropdownView, buttons );
+			addToolbarToDropdown( dropdownView, buttons, { enableActiveItemFocusOnDropdownOpen: true } );
 			bindToolbarIconStyleToActiveColor( dropdownView );
 
 			dropdownView.toolbarView.ariaLabel = t( 'Text highlight toolbar' );

@@ -12,7 +12,7 @@ Coupled with the {@link features/markdown Markdown output} feature, the autoform
 If needed, the automattic change can be reverted simply by pressing <kbd>Backspace</kbd>.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Block formatting
