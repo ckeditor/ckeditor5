@@ -1,6 +1,6 @@
 {
-  "name": "@ckeditor/ckeditor5-paste-from-office",
-  "version": "34.2.0",
+  "name": "@mdfe/ckeditor5-paste-from-office",
+  "version": "1.0.1",
   "description": "Paste from Office feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,34 +12,33 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^34.2.0"
+    "ckeditor5": "^31.1.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^34.2.0",
-    "@ckeditor/ckeditor5-clipboard": "^34.2.0",
-    "@ckeditor/ckeditor5-cloud-services": "^34.2.0",
-    "@ckeditor/ckeditor5-code-block": "^34.2.0",
-    "@ckeditor/ckeditor5-core": "^34.2.0",
-    "@ckeditor/ckeditor5-dev-utils": "^30.0.0",
-    "@ckeditor/ckeditor5-easy-image": "^34.2.0",
-    "@ckeditor/ckeditor5-engine": "^34.2.0",
-    "@ckeditor/ckeditor5-editor-classic": "^34.2.0",
-    "@ckeditor/ckeditor5-enter": "^34.2.0",
-    "@ckeditor/ckeditor5-font": "^34.2.0",
-    "@ckeditor/ckeditor5-heading": "^34.2.0",
-    "@ckeditor/ckeditor5-image": "^34.2.0",
-    "@ckeditor/ckeditor5-link": "^34.2.0",
-    "@ckeditor/ckeditor5-list": "^34.2.0",
-    "@ckeditor/ckeditor5-page-break": "^34.2.0",
-    "@ckeditor/ckeditor5-paragraph": "^34.2.0",
-    "@ckeditor/ckeditor5-table": "^34.2.0",
-    "@ckeditor/ckeditor5-theme-lark": "^34.2.0",
-    "@ckeditor/ckeditor5-utils": "^34.2.0",
-    "webpack": "^5.58.1",
-    "webpack-cli": "^4.9.0"
+    "@ckeditor/ckeditor5-basic-styles": "^31.1.0",
+    "@ckeditor/ckeditor5-clipboard": "^31.1.0",
+    "@ckeditor/ckeditor5-cloud-services": "^31.1.0",
+    "@ckeditor/ckeditor5-core": "^31.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^26.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^31.1.0",
+    "@ckeditor/ckeditor5-engine": "^31.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^31.1.0",
+    "@ckeditor/ckeditor5-enter": "^31.1.0",
+    "@ckeditor/ckeditor5-font": "^31.1.0",
+    "@ckeditor/ckeditor5-heading": "^31.1.0",
+    "@ckeditor/ckeditor5-image": "^31.1.0",
+    "@ckeditor/ckeditor5-link": "^31.1.0",
+    "@ckeditor/ckeditor5-list": "^31.1.0",
+    "@ckeditor/ckeditor5-page-break": "^31.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^31.1.0",
+    "@ckeditor/ckeditor5-table": "^31.1.0",
+    "@ckeditor/ckeditor5-theme-lark": "^31.1.0",
+    "@ckeditor/ckeditor5-utils": "^31.1.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "engines": {
-    "node": ">=14.0.0",
+    "node": ">=12.0.0",
     "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
@@ -56,8 +55,7 @@
     "src",
     "theme",
     "build",
-    "ckeditor5-metadata.json",
-    "CHANGELOG.md"
+    "ckeditor5-metadata.json"
   ],
   "scripts": {
     "dll:build": "webpack"
