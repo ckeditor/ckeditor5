@@ -32,7 +32,7 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 	**Note**: To use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/), include the `http://*.cke-cs.com` domain in the `connect-src` directive, for instance: `connect-src 'self' http://*.cke-cs.com`.
 * `script-src 'self'`: Allows the execution of JavaScript from the current host only and can be applied only if the CKEditor 5 script file (`<script src="[ckeditor-build-path]/ckeditor.js"></script>`) is also served from that host.
 
-	**Note**: If CKEditor 5 is served from another host, for example the {@link installation/advanced/predefined-builds#cdn official CDN}, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
+	**Note**: If CKEditor 5 is served from another host, for example the {@link installation/getting-started/predefined-builds#cdn official CDN}, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
 * `img-src * data:`
 	* The `*` directive value allows images in the editor content to come from any hosts.
 	* The `data:` value allows:

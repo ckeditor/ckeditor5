@@ -19,6 +19,8 @@ import SwitchButtonView from '../button/switchbuttonview';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
 
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
 
@@ -123,12 +125,22 @@ export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
  *		dropdown.render()
  *		document.body.appendChild( dropdown.element );
  *
+ * **Note:** To improve the accessibility, you can tell the dropdown to focus the first active button of the toolbar when the dropdown
+ * {@link module:ui/dropdown/dropdownview~DropdownView#isOpen gets open}. See the documentation of `options` to learn more.
+ *
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ToolbarView` will be added.
  * @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttons
+ * @param {Object} [options]
+ * @param {Boolean} [options.enableActiveItemFocusOnDropdownOpen=false] When set `true`, the focus will automatically move to the first
+ * active {@link module:ui/toolbar/toolbarview~ToolbarView#items item} of the toolbar upon
+ * {@link module:ui/dropdown/dropdownview~DropdownView#isOpen opening} the dropdown. Active items are those with the `isOn` property set
+ * `true` (for instance {@link module:ui/button/buttonview~ButtonView buttons}). If no active items is found, the toolbar will be focused
+ * as a whole resulting in the focus moving to its first focusable item (default behavior of
+ * {@link module:ui/dropdown/dropdownview~DropdownView}).
  */
-export function addToolbarToDropdown( dropdownView, buttons ) {
+export function addToolbarToDropdown( dropdownView, buttons, options = {} ) {
 	const locale = dropdownView.locale;
 	const t = locale.t;
 	const toolbarView = dropdownView.toolbarView = new ToolbarView( locale );
@@ -142,6 +154,11 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
 	} );
 
 	buttons.map( view => toolbarView.items.add( view ) );
+
+	if ( options.enableActiveItemFocusOnDropdownOpen ) {
+		// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.
+		focusChildOnDropdownOpen( dropdownView, () => toolbarView.items.find( item => item.isOn ) );
+	}
 
 	dropdownView.panelView.children.add( toolbarView );
 	toolbarView.items.delegate( 'execute' ).to( dropdownView );
@@ -182,6 +199,9 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
  * The `items` collection passed to this methods controls the presence and attributes of respective
  * {@link module:ui/list/listitemview~ListItemView list items}.
  *
+ * **Note:** To improve the accessibility, when a list is added to the dropdown using this helper the dropdown will automatically attempt
+ * to focus the first active item (a host to a {@link module:ui/button/buttonview~ButtonView} with
+ * {@link module:ui/button/buttonview~ButtonView#isOn} set `true`) or the very first item when none are active.
  *
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:list/list~List}.
  *
@@ -219,6 +239,56 @@ export function addListToDropdown( dropdownView, items ) {
 	dropdownView.panelView.children.add( listView );
 
 	listView.items.delegate( 'execute' ).to( dropdownView );
+
+	// Accessibility: Focus the first active button in the list when the dropdown gets open.
+	focusChildOnDropdownOpen( dropdownView, () => listView.items.find( item => {
+		if ( item instanceof ListItemView ) {
+			return item.children.first.isOn;
+		}
+
+		return false;
+	} ) );
+}
+
+/**
+ * A helper to be used on an existing {@link module:ui/dropdown/dropdownview~DropdownView} that focuses
+ * a specific child in DOM when the dropdown {@link module:ui/dropdown/dropdownview~DropdownView#isOpen gets open}.
+ *
+ * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which the focus behavior will be added.
+ * @param {Function} childSelectorCallback A callback executed when the dropdown gets open. It should return a {@link module:ui/view~View}
+ * instance (child of {@link module:ui/dropdown/dropdownview~DropdownView#panelView}) that will get focused or a falsy value.
+ * If falsy value is returned, a default behavior of the dropdown will engage focusing the first focusable child in
+ * the {@link module:ui/dropdown/dropdownview~DropdownView#panelView}.
+ */
+export function focusChildOnDropdownOpen( dropdownView, childSelectorCallback ) {
+	dropdownView.on( 'change:isOpen', () => {
+		if ( !dropdownView.isOpen ) {
+			return;
+		}
+
+		const childToFocus = childSelectorCallback();
+
+		if ( !childToFocus ) {
+			return;
+		}
+
+		if ( typeof childToFocus.focus === 'function' ) {
+			childToFocus.focus();
+		} else {
+			/**
+			 * The child view of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown} is missing the `focus()` method
+			 * and could not be focused when the dropdown got {@link module:ui/dropdown/dropdownview~DropdownView#isOpen open}.
+			 *
+			 * Making the content of a dropdown focusable in this case greatly improves the accessibility. Please make the view instance
+			 * implements the {@link module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable focusable interface} for the best user
+			 * experience.
+			 *
+			 * @error ui-dropdown-focus-child-on-open-child-missing-focus
+			 * @param {module:ui/view~View} view
+			 */
+			logWarning( 'ui-dropdown-focus-child-on-open-child-missing-focus', { view: childToFocus } );
+		}
+	}, { priority: 'low' } );
 }
 
 // Add a set of default behaviors to dropdown view.

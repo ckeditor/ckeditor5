@@ -90,6 +90,15 @@ describe( 'ImageInsertUI', () => {
 			expect( dropdownCreator.callback ).to.equal( dropdownAliasCreator.callback );
 		} );
 
+		it( 'should register the "insertImage" dropdown with basic properties', () => {
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+			const dropdownButtonView = dropdown.buttonView;
+
+			expect( dropdownButtonView ).to.have.property( 'label', 'Insert image' );
+			expect( dropdownButtonView ).to.have.property( 'icon' );
+			expect( dropdownButtonView ).to.have.property( 'tooltip', true );
+		} );
+
 		it( 'should bind the enabled state of the dropdown to the UploadImageCommand command', () => {
 			const command = editor.commands.get( 'uploadImage' );
 

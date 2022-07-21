@@ -127,13 +127,19 @@ export default class ImageUtils extends Plugin {
 	 * @returns {module:engine/view/element~Element|null}
 	 */
 	getClosestSelectedImageWidget( selection ) {
+		const selectionPosition = selection.getFirstPosition();
+
+		if ( !selectionPosition ) {
+			return null;
+		}
+
 		const viewElement = selection.getSelectedElement();
 
 		if ( viewElement && this.isImageWidget( viewElement ) ) {
 			return viewElement;
 		}
 
-		let parent = selection.getFirstPosition().parent;
+		let parent = selectionPosition.parent;
 
 		while ( parent ) {
 			if ( parent.is( 'element' ) && this.isImageWidget( parent ) ) {

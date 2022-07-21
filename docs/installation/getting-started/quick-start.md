@@ -13,7 +13,7 @@ modified_at: 2022-06-27
 In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor 5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).
 
 <info-box>
-	Please bear in mind that the CDN solution only offers {@link installation/advanced/predefined-builds ready-to-use predefined editor builds}, hence it is not possible to add new plugins and all the features available in the editor are preset.
+	Please bear in mind that the CDN solution only offers {@link installation/getting-started/predefined-builds ready-to-use predefined editor builds}, hence it is not possible to add new plugins and all the features available in the editor are preset.
 
 	Should you need a more flexible solution, consider using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or try {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
 </info-box>
@@ -80,7 +80,7 @@ A full webpage with embedded CKEditor 5 from the above example would look like t
 <info-box>
 	This kind of installation will only provide features available in the build used.
 
-	You can learn more about other available predefined editor builds in the {@link installation/advanced/predefined-builds dedicated builds guide}.
+	You can learn more about other available predefined editor builds in the {@link installation/getting-started/predefined-builds dedicated builds guide}.
 </info-box>
 
 ## Running a full-featured editor from CDN
@@ -90,12 +90,12 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 <info-box>
 	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in your implementation, so using the superbuild should be considered for evaluation purposes and tests rather, than for the production environment.
 
-	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link installation/advanced/predefined-builds predefined builds} tailored for specific needs.
+	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link installation/getting-started/predefined-builds predefined builds} tailored for specific needs.
 </info-box>
 
 ### Using the CKEditor 5 superbuild
 
-In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link installation/advanced/predefined-builds#available-builds available builds documentation}.
+In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link installation/getting-started/predefined-builds#available-builds available builds documentation}.
 
 Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the <code>removePlugins</code> configuration option and adjust the toolbar configuration.
 
@@ -134,10 +134,10 @@ In this example, we remove the premium collaboration features as well as several
 			The "super-build" of CKEditor 5 served via CDN contains a large set of plugins and multiple editor types.
 			See https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html#running-a-full-featured-editor-from-cdn
 		-->
-		<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/super-build/ckeditor.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
 		<!--
 			Uncomment to load the Spanish translation
-			<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/super-build/translations/es.js"></script>
+			<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/translations/es.js"></script>
 		-->
 		<script>
 			// This sample still does not showcase all CKEditor 5 features (!)
@@ -303,250 +303,9 @@ If you would like to quickly evaluate CKEditor 5 with premium features such as r
 
 After you sign up, you will find in the customer dashboard the full code snippet to run the editor with premium features with all the necessary configurations.
 
-## List of all plugins included in the CKEditor 5 superbuild
+## Adjusting plugins included in the CKEditor 5 superbuild
 
-The table below presents the list of all plugins included in the superbuild. You may disable any of them using the `removePlugins` configuration option.
-
-<table border="1" cellpadding="1" cellspacing="1" style="width:500px">
-	<tbody>
-		<tr>
-			<td><b>Plugin</b></td>
-			<td><b>Documentation</b></td>
-		</tr>
-		<tr>
-			<td>Alignment</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html</a></td>
-		</tr>
-		<tr>
-			<td>Autoformat</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html">https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html</a></td>
-		</tr>
-		<tr>
-			<td>AutoImage</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor</a></td>
-		</tr>
-		<tr>
-			<td>Base64UploadAdapter</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html</a></td>
-		</tr>
-		<tr>
-			<td>BlockQuote</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html">https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html</a></td>
-		</tr>
-		<tr>
-			<td>Bold</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
-		</tr>
-		<tr>
-			<td>CKBox</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckbox.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckbox.html</a></td>
-		</tr>
-		<tr>
-			<td>CKFinder</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html</a></td>
-		</tr>
-		<tr>
-			<td>CloudServices</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_cloud-services_cloudservices-CloudServices.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_cloud-services_cloudservices-CloudServices.html</a></td>
-		</tr>
-		<tr>
-			<td>Code</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
-		</tr>
-		<tr>
-			<td>CodeBlock</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html">https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html</a></td>
-		</tr>
-		<tr>
-			<td>Comments</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html</a></td>
-		</tr>
-		<tr>
-			<td>EasyImage</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html</a></td>
-		</tr>
-		<tr>
-			<td>ExportPdf</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html">https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html</a></td>
-		</tr>
-		<tr>
-			<td>ExportWord</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html</a></td>
-		</tr>
-		<tr>
-			<td>FindAndReplace</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html">https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html</a></td>
-		</tr>
-		<tr>
-			<td>FontBackgroundColor, FontColor, FontFamily, FontSize</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/font.html">https://ckeditor.com/docs/ckeditor5/latest/features/font.html</a></td>
-		</tr>
-		<tr>
-			<td>GeneralHtmlSupport</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html">https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html</a></td>
-		</tr>
-		<tr>
-			<td>Heading</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/headings.html">https://ckeditor.com/docs/ckeditor5/latest/features/headings.html</a></td>
-		</tr>
-		<tr>
-			<td>Highlight</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html">https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html</a></td>
-		</tr>
-		<tr>
-			<td>HorizontalLine</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html">https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html</a></td>
-		</tr>
-		<tr>
-			<td>HtmlComment</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#html-comments">https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#html-comments</a></td>
-		</tr>
-		<tr>
-			<td>HtmlEmbed</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html</a></td>
-		</tr>
-		<tr>
-			<td>Image</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html</a></td>
-		</tr>
-		<tr>
-			<td>ImageCaption</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-captions.html</a></td>
-		</tr>
-		<tr>
-			<td>ImageResize</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-resizing.html</a></td>
-		</tr>
-		<tr>
-			<td>ImageStyle</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html</a></td>
-		</tr>
-		<tr>
-			<td>ImageToolbar</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar">https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#image-contextual-toolbar</a></td>
-		</tr>
-		<tr>
-			<td>ImageUpload</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html</a></td>
-		</tr>
-		<tr>
-			<td>ImageInsert</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html">https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/images-inserting.html</a></td>
-		</tr>
-		<tr>
-			<td>Indent, IndentBlock</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/indent.html">https://ckeditor.com/docs/ckeditor5/latest/features/indent.html</a></td>
-		</tr>
-		<tr>
-			<td>Italic</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
-		</tr>
-		<tr>
-			<td>Link, Autolink, LinkImage</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/link.html">https://ckeditor.com/docs/ckeditor5/latest/features/link.html</a></td>
-		</tr>
-		<tr>
-			<td>List, ListProperties, TodoList</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html</a></td>
-		</tr>
-		<tr>
-			<td>MathType</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html">https://ckeditor.com/docs/ckeditor5/latest/features/math-equations.html</a></td>
-		</tr>
-		<tr>
-			<td>MediaEmbed</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html">https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html</a></td>
-		</tr>
-		<tr>
-			<td>Mention</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html</a></td>
-		</tr>
-		<tr>
-			<td>PageBreak</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html">https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html</a></td>
-		</tr>
-		<tr>
-			<td>Pagination</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html">https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html</a></td>
-		</tr>
-		<tr>
-			<td>PasteFromOffice</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html</a></td>
-		</tr>
-		<tr>
-			<td>PictureEditing</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html">https://ckeditor.com/docs/ckeditor5/latest/api/module_image_pictureediting-PictureEditing.html</a></td>
-		</tr>
-		<tr>
-			<td>PresenceList</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html</a></td>
-		</tr>
-		<tr>
-			<td>RealTimeCollaborativeEditing, RealTimeCollaborativeComments, RealTimeCollaborativeRevisionHistory, RealTimeCollaborativeTrackChanges</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html</a></td>
-		</tr>
-		<tr>
-			<td>RemoveFormat</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html">https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html</a></td>
-		</tr>
-		<tr>
-			<td>RevisionHistory</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/revision-history/revision-history.html">https://ckeditor.com/docs/ckeditor5/latest/features/revision-history/revision-history.html</a></td>
-		</tr>
-		<tr>
-			<td>StandardEditingMode</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html">https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html</a></td>
-		</tr>
-		<tr>
-			<td>SpecialCharacters</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html">https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html</a></td>
-		</tr>
-		<tr>
-			<td>Strikethrough</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
-		</tr>
-		<tr>
-			<td>Subscript</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
-		</tr>
-		<tr>
-			<td>Superscript</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
-		</tr>
-		<tr>
-			<td>Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">https://ckeditor.com/docs/ckeditor5/latest/features/table.html</a></td>
-		</tr>
-		<tr>
-			<td>TextPartLanguage</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html">https://ckeditor.com/docs/ckeditor5/latest/features/language.html</a></td>
-		</tr>
-		<tr>
-			<td>TextTransformation</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html">https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html</a></td>
-		</tr>
-		<tr>
-			<td>TrackChanges</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html</a></td>
-		</tr>
-		<tr>
-			<td>TrackChangesData</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes-data.html">https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes-data.html</a></td>
-		</tr>
-		<tr>
-			<td>Underline</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html">https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html</a></td>
-		</tr>
-		<tr>
-			<td>WordCount</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html">https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html</a></td>
-		</tr>
-		<tr>
-			<td>WProofReader</td>
-			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html">https://ckeditor.com/docs/ckeditor5/latest/features/spelling-and-grammar-checking.html</a></td>
-		</tr>
-	</tbody>
-</table>
+You may disable any features available in the superbuild using the `removePlugins` configuration option. For a full list of feature currently available in the superbuild, please consult the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please not, that removing certain feature may rended the editor unusable.
 
 <info-box hint>
 **What's next?**

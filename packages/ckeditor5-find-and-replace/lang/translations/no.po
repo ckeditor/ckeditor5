@@ -46,24 +46,24 @@ msgstr "Erstatt alt"
 
 msgctxt "The label for the match case checkbox in the find and replace dropdown."
 msgid "Match case"
-msgstr ""
+msgstr "Skill mellom store og små bokstaver"
 
 msgctxt "The label for the whole words only checkbox in the find and replace dropdown."
 msgid "Whole words only"
-msgstr ""
+msgstr "Kun hele ord"
 
 msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"
-msgstr ""
+msgstr "Erstatt med …"
 
 msgctxt "An error text displayed when user attempted to find an empty text."
 msgid "Text to find must not be empty."
-msgstr ""
+msgstr "Teksten som skal finnes må ikke være tom"
 
 msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
 msgid "Tip: Find some text first in order to replace it."
-msgstr ""
+msgstr "Tips: Finn noe tekst først for å kunne erstatte den."
 
 msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
 msgid "Show options"
-msgstr ""
+msgstr "Vis alternativer"

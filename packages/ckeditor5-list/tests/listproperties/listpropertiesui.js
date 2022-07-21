@@ -268,6 +268,15 @@ describe( 'ListPropertiesUI', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 
+				it( 'on dropdown open should focus the first active button', () => {
+					const button = stylesView.children.get( 1 );
+					const spy = sinon.spy( button, 'focus' );
+
+					button.isOn = true;
+					bulletedListDropdown.isOpen = true;
+					sinon.assert.calledOnce( spy );
+				} );
+
 				describe( 'style button', () => {
 					let styleButtonView;
 
@@ -555,6 +564,15 @@ describe( 'ListPropertiesUI', () => {
 					numberedListDropdown.on( 'execute', spy );
 					listPropertiesView.fire( 'execute' );
 
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'on dropdown open should focus the first active button', () => {
+					const button = stylesView.children.get( 1 );
+					const spy = sinon.spy( button, 'focus' );
+
+					button.isOn = true;
+					numberedListDropdown.isOpen = true;
 					sinon.assert.calledOnce( spy );
 				} );
 

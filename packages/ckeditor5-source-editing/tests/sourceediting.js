@@ -284,6 +284,7 @@ describe( 'SourceEditing', () => {
 
 			expect( textarea.nodeName ).to.equal( 'TEXTAREA' );
 			expect( textarea.rows ).to.equal( 1 );
+			expect( textarea.getAttribute( 'aria-label' ) ).to.equal( 'Source code editing area' );
 			expect( textarea.value ).to.equal(
 				'<p>\n' +
 				'    Foo\n' +

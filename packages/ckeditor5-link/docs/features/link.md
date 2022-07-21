@@ -10,7 +10,7 @@ The {@link module:link/link~Link} feature brings support for link editing to the
 Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and e-mail addresses will be automatically turned into working links as you type.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo

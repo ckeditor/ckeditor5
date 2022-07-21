@@ -7,7 +7,7 @@ classes: main__content--no-toc
 
 # Inline editor
 
-{@link installation/advanced/predefined-builds#inline-editor Inline editor} lets you create your content directly in its target location with the help of a floating toolbar that apprears when the editable text is focused.
+{@link installation/getting-started/predefined-builds#inline-editor Inline editor} lets you create your content directly in its target location with the help of a floating toolbar that apprears when the editable text is focused.
 
 In this example the {@link features/images-styles image styles} configuration was changed to enable left- and right-aligned images.
 
@@ -15,7 +15,7 @@ In this example the {@link features/images-styles image styles} configuration wa
 
 ## Editor example configuration
 
-Check out the {@link installation/advanced/predefined-builds#installation-example-2 Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
+Check out the {@link installation/getting-started/predefined-builds#installation-example-2 Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
 
 <details>
 <summary>View editor configuration script</summary>
