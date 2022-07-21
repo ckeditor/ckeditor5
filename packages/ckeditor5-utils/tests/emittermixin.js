@@ -18,21 +18,19 @@ describe( 'EmitterMixin', () => {
 		listener = getEmitterInstance();
 	} );
 
-	describe( 'create', () => {
-		it( 'should inherit from the given class', () => {
-			class TestClass {
-				constructor( value ) {
-					this.value = value;
-				}
+	it( 'should inherit from the given class', () => {
+		class TestClass {
+			constructor( value ) {
+				this.value = value;
 			}
+		}
 
-			const EmitterClass = EmitterMixin( TestClass );
+		const EmitterClass = EmitterMixin( TestClass );
 
-			const emitter = new EmitterClass( 5 );
+		const emitter = new EmitterClass( 5 );
 
-			expect( emitter ).to.be.instanceOf( TestClass );
-			expect( emitter.value ).to.equal( 5 );
-		} );
+		expect( emitter ).to.be.instanceOf( TestClass );
+		expect( emitter.value ).to.equal( 5 );
 	} );
 
 	describe( 'fire', () => {
