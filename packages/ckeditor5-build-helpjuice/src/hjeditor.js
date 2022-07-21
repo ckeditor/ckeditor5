@@ -529,13 +529,18 @@ HelpjuiceEditor.defaultConfig = {
 		languages: [
 			{ language: 'plaintext', label: 'Plain text', class: 'language-plain' }, // The default language.
 			{ language: 'c', label: 'C', class: 'language-c' },
+			{ language: 'coffeescript', label: 'Coffeescript', class: 'language-coffeescript' },
 			{ language: 'cs', label: 'C#', class: 'language-cs' },
 			{ language: 'cpp', label: 'C++', class: 'language-cpp' },
 			{ language: 'css', label: 'CSS', class: 'language-css' },
 			{ language: 'diff', label: 'Diff', class: 'language-diff' },
+			{ language: 'go', label: 'Go', class: 'language-go' },
 			{ language: 'html', label: 'HTML', class: 'language-html' },
 			{ language: 'java', label: 'Java', class: 'language-java' },
 			{ language: 'javascript', label: 'JavaScript', class: 'language-javascript' },
+			{ language: 'json', label: 'JSON', class: 'language-json' },
+			{ language: 'lua', label: 'LUA', class: 'language-lua' },
+			{ language: 'markdown', label: 'Markdown', class: 'language-markdown' },
 			{ language: 'php', label: 'PHP', class: 'language-php' },
 			{ language: 'python', label: 'Python', class: 'language-python' },
 			{ language: 'ruby', label: 'Ruby', class: 'language-ruby' },
