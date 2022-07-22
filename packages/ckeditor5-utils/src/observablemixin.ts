@@ -301,7 +301,15 @@ export default function ObservableMixin<Base extends new( ...args: any[] ) => Em
 
 export const Observable = ObservableMixin( Emitter );
 
-ObservableMixin.mixinMethods = Observable.prototype;
+// Backward compatibility with `mix`
+( [
+	'set', 'bind', 'unbind', 'decorate',
+	'on', 'once', 'off', 'listenTo',
+	'stopListening', 'fire', 'delegate', 'stopDelegating',
+	'_addEventListener', '_removeEventListener'
+] ).forEach( key => {
+	( ObservableMixin as any )[ key ] = ( Observable.prototype as any )[ key ];
+} );
 
 interface Binding {
 	property: string;

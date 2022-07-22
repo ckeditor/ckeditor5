@@ -340,7 +340,14 @@ export default function EmitterMixin<Base extends new( ...args: any ) => object>
 
 export const Emitter = EmitterMixin( Object );
 
-EmitterMixin.mixinMethods = Emitter.prototype;
+// Backward compatibility with `mix`
+( [
+	'on', 'once', 'off', 'listenTo',
+	'stopListening', 'fire', 'delegate', 'stopDelegating',
+	'_addEventListener', '_removeEventListener'
+] ).forEach( key => {
+	( EmitterMixin as any )[ key ] = ( Emitter.prototype as any )[ key ];
+} );
 
 /**
  * Emitter/listener interface.
