@@ -7,11 +7,10 @@
  * @module utils/collection
  */
 
-import EmitterMixin, { type Emitter } from './emittermixin';
+import { Emitter } from './emittermixin';
 import CKEditorError from './ckeditorerror';
 import uid from './uid';
 import isIterable from './isiterable';
-import mix from './mix';
 
 /**
  * Collections are ordered sets of objects. Items in the collection can be retrieved by their indexes
@@ -25,7 +24,7 @@ import mix from './mix';
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> implements Iterable<T> {
+export default class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> extends Emitter implements Iterable<T> {
 	/**
 	 * The internal list of items in the collection.
 	 *
@@ -131,6 +130,8 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * Items that do not have such a property will be assigned one when added to the collection.
 	 */
 	constructor( initialItemsOrOptions: Iterable<T> | { readonly idProperty?: I } = {}, options: { readonly idProperty?: I } = {} ) {
+		super();
+
 		const hasInitialItems = isIterable( initialItemsOrOptions );
 
 		if ( !hasInitialItems ) {
@@ -780,12 +781,6 @@ class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> im
 	 * @param {Number} index Index from which item was removed.
 	 */
 }
-
-mix( Collection, EmitterMixin );
-
-interface Collection<T, I> extends Emitter {}
-
-export default Collection;
 
 export type AddEvent<T = any> = {
 	name: 'add';

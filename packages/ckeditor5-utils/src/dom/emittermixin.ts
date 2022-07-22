@@ -31,9 +31,9 @@ import type EventInfo from '../eventinfo';
  *
  *		import mix from '../utils/mix.js';
  *		import DomEmitterMixin from '../utils/dom/emittermixin.js';
+ *		import { Emitter } from '../utils/emittermixin.js';
  *
- *		class SomeView {}
- *		mix( SomeView, DomEmitterMixin );
+ *		class SomeView extends DomEmitterMixin( Emitter ) {}
  *
  *		const view = new SomeView();
  *		view.listenTo( domElement, ( evt, domEvt ) => {
