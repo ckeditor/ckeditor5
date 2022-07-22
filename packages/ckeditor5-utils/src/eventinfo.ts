@@ -68,7 +68,7 @@ export default class EventInfo<TName extends string = string, TReturn = unknown>
 	 *
 	 * @member #return
 	 */
-	public return: TReturn | undefined;;
+	public return: TReturn | undefined;
 
 	/**
 	 * @param {Object} source The emitter.
