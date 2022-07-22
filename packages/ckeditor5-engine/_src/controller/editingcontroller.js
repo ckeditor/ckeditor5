@@ -24,6 +24,7 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
+import Range from '../model/range';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -97,11 +98,67 @@ export default class EditingController {
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
 		// Do it on 'low' priority, so changes are converted after other listeners did their job.
 		// Also convert model selection.
-		this.listenTo( doc, 'change', () => {
-			this.view.change( writer => {
-				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
-				this.downcastDispatcher.convertSelection( selection, markers, writer );
-			} );
+		this.listenTo( doc, 'change', ( evt, batch ) => {
+			if ( batch.isInitial ) {
+				const differ = doc.differ;
+
+				const partialConvert = ( changes, convertSelection ) => {
+					this.view._disableRendering( true );
+
+					this.view.change( writer => {
+						const conversionApi = this.downcastDispatcher._createConversionApi( writer, undefined );
+
+						// Convert changes that happened on model tree.
+						for ( const entry of changes ) {
+							if ( entry.type === 'insert' ) {
+								this.downcastDispatcher._convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), conversionApi );
+							} else if ( entry.type === 'reinsert' ) {
+								this.downcastDispatcher._convertReinsert( Range._createFromPositionAndShift( entry.position, entry.length ), conversionApi );
+							} else if ( entry.type === 'remove' ) {
+								this.downcastDispatcher._convertRemove( entry.position, entry.length, entry.name, conversionApi );
+							} else {
+								// Defaults to 'attribute' change.
+								this.downcastDispatcher._convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, conversionApi );
+							}
+						}
+
+						// Verify if all insert consumables were consumed.
+						conversionApi.consumable.verifyAllConsumed( 'insert' );
+
+						if ( convertSelection ) {
+							this.downcastDispatcher.convertSelection( selection, markers, writer );
+						}
+					} );
+
+					this.view._disableRendering( false );
+				}
+
+				// Let features modify the change list (for example to allow reconversion).
+				const allChanges = this.downcastDispatcher._reduceChanges( differ.getChanges() );
+
+				partialConvert( allChanges.splice( 0, 50 ), true );
+
+				if ( allChanges.length > 0 ) {
+					const convertInterval = setInterval( () => {
+						if ( allChanges.length ) {
+							partialConvert( allChanges.splice( 0, 25 ), false );
+						} else {
+							clearInterval( convertInterval );
+
+							this.view.change( writer => {
+								this.downcastDispatcher.convertSelection( selection, markers, writer );
+							} );
+
+							console.log( 'done', performance.now() - window.startTime );
+						}
+					}, 250 );
+				}
+			} else {
+				this.view.change( writer => {
+					this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
+					this.downcastDispatcher.convertSelection( selection, markers, writer );
+				} );
+			}
 		}, { priority: 'low' } );
 
 		// Convert selection from the view to the model when it changes in the view.

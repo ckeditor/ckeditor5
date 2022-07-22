@@ -49,7 +49,7 @@ export default class Batch {
 			logWarning( 'batch-constructor-deprecated-string-type' );
 		}
 
-		const { isUndoable = true, isLocal = true, isUndo = false, isTyping = false } = type;
+		const { isUndoable = true, isLocal = true, isUndo = false, isTyping = false, isInitial = false } = type;
 
 		/**
 		 * An array of operations that compose this batch.
@@ -90,6 +90,8 @@ export default class Batch {
 		 * @type {Boolean}
 		 */
 		this.isTyping = isTyping;
+
+		this.isInitial = isInitial;
 	}
 
 	/**

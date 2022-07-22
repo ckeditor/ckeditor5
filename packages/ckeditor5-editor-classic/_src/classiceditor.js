@@ -206,6 +206,8 @@ export default class ClassicEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
+					.then( () => new Promise( resolve => { setTimeout( resolve, 0 ); } ) )
+					.then( () => { console.log( performance.now() - window.startTime ) } )
 					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
