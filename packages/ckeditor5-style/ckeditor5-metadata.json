@@ -3,8 +3,8 @@
 		{
 			"name": "Style",
 			"className": "Style",
-			"description": "Allows applying pre-configured styles to editor content.",
-			"docs": "",
+			"description": "Allows for applying pre-configured styles to editor content.",
+			"docs": "features/style.html",
 			"path": "src/style.js",
 			"uiComponents": [
 				{
