@@ -45,7 +45,7 @@ const EmitterMixin: Emitter = {
 	once( event, callback, options ) {
 		let wasFired = false;
 
-		const onceCallback = ( event: EventInfo, ...args: any[] ) => {
+		const onceCallback: typeof callback = ( event, ...args ) => {
 			// Ensure the callback is called only once even if the callback itself leads to re-firing the event
 			// (which would call the callback again).
 			if ( !wasFired ) {
@@ -354,9 +354,9 @@ export interface Emitter {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	on(
-		event: string,
-		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
+	on<TEvent extends BaseEvent>(
+		event: TEvent[ 'name' ],
+		callback: GetCallback<TEvent>,
 		options?: CallbackOptions
 	): void;
 
@@ -372,9 +372,9 @@ export interface Emitter {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	once(
-		event: string,
-		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
+	once<TEvent extends BaseEvent>(
+		event: TEvent[ 'name' ],
+		callback: GetCallback<TEvent>,
 		options?: CallbackOptions
 	): void;
 
@@ -417,10 +417,10 @@ export interface Emitter {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	listenTo(
+	listenTo<TEvent extends BaseEvent>(
 		emitter: Emitter,
-		event: string,
-		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
+		event: TEvent[ 'name' ],
+		callback: GetCallback<TEvent>,
 		options?: CallbackOptions
 	): void;
 
@@ -454,7 +454,10 @@ export interface Emitter {
 	 * through modification of the {@link module:utils/eventinfo~EventInfo#return `evt.return`}'s property (the event info
 	 * is the first param of every callback).
 	 */
-	fire( eventOrInfo: string | EventInfo, ...args: unknown[] ): unknown;
+	fire<TEvent extends BaseEvent>(
+		eventOrInfo: GetNameOrEventInfo<TEvent>,
+		...args: TEvent[ 'args' ]
+	): GetEventInfo<TEvent>[ 'return' ];
 
 	/**
 	 * Delegates selected events to another {@link module:utils/emittermixin~Emitter}. For instance:
@@ -503,9 +506,9 @@ export interface Emitter {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	_addEventListener(
-		event: string,
-		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
+	_addEventListener<TEvent extends BaseEvent>(
+		event: TEvent[ 'name' ],
+		callback: GetCallback<TEvent>,
 		options: CallbackOptions
 	): void;
 
@@ -537,6 +540,21 @@ export interface Emitter {
 	/** @internal */
 	[ _delegations ]?: Map<string, Map<Emitter, string | ( ( name: string ) => string ) | undefined>>;
 }
+
+export type BaseEvent = {
+	name: string;
+	args: any[];
+};
+
+export type GetEventInfo<TEvent extends BaseEvent> = TEvent extends { eventInfo: EventInfo } ?
+	TEvent[ 'eventInfo' ] :
+	EventInfo<TEvent[ 'name' ], ( TEvent extends { return: infer TReturn } ? TReturn : unknown )>;
+
+export type GetNameOrEventInfo<TEvent extends BaseEvent> = TEvent extends { eventInfo: EventInfo } ?
+	TEvent[ 'eventInfo' ] :
+	TEvent[ 'name' ] | EventInfo<TEvent[ 'name' ], ( TEvent extends { return: infer TReturn } ? TReturn : unknown )>;
+
+export type GetCallback<TEvent extends BaseEvent> = ( this: Emitter, ev: GetEventInfo<TEvent>, ...args: TEvent[ 'args' ] ) => void;
 
 /**
  * Additional options for registering a callback.
@@ -760,11 +778,11 @@ function fireDelegatedEvents(
 }
 
 // Helper for registering event callback on the emitter.
-function addEventListener(
+function addEventListener<TEvent extends BaseEvent>(
 	listener: Emitter,
 	emitter: Emitter,
-	event: string,
-	callback: ( this: Emitter, ev: EventInfo, ...args: any[] ) => void,
+	event: TEvent[ 'name' ],
+	callback: GetCallback<TEvent>,
 	options: CallbackOptions
 ) {
 	if ( emitter._addEventListener ) {
@@ -772,7 +790,7 @@ function addEventListener(
 	} else {
 		// Allow listening on objects that do not implement Emitter interface.
 		// This is needed in some tests that are using mocks instead of the real objects with EmitterMixin mixed.
-		listener._addEventListener.call( emitter, event, callback, options );
+		listener._addEventListener<TEvent>.call( emitter, event, callback, options );
 	}
 }
 
