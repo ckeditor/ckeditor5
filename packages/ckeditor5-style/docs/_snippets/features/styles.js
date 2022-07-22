@@ -43,6 +43,7 @@ ClassicEditor
 			],
 			shouldNotGroupWhenFull: true
 		},
+		// NOTE: Keep in sync with the code snippet in the feature guide.
 		style: {
 			definitions: [
 				{
