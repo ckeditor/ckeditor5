@@ -8,7 +8,7 @@ modified_at: 2022-05-12
 
 The {@link module:style/style~Style Style} feature lets the user apply pre-configured styles to existing elements in the editor content.
 
-Under the hood, every style apply one or more HTML classes to such an element which, depending on your integration requirements, can be used to either control the visual styles of that element or apply additional semantics. <!-- The {@link features/remove-format remove formatting} feature can be used to clear those styles. -->
+Under the hood, every style applies one or more HTML classes to such an element which, depending on your integration requirements, can be used to either control the visual styles of that element or apply additional semantics. <!-- The {@link features/remove-format remove formatting} feature can be used to clear those styles. -->
 
 ## Demo
 
