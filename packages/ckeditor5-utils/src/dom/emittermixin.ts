@@ -299,7 +299,7 @@ class ProxyEmitter {
 		options: CallbackOptions
 	): void {
 		this.attach( event );
-		EmitterMixin._addEventListener<TEvent>.call( this, event, callback, options );
+		( EmitterMixin._addEventListener<TEvent> ).call( this, event, callback, options );
 	}
 
 	/**
