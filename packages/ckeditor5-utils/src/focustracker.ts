@@ -13,6 +13,7 @@ import DomEmitterMixin, { type Emitter as DomEmitter } from './dom/emittermixin'
 import ObservableMixin, { type Observable } from './observablemixin';
 import CKEditorError from './ckeditorerror';
 import mix from './mix';
+import env from './env';
 
 /**
  * Allows observing a group of `Element`s whether at least one of them is focused.
@@ -144,10 +145,12 @@ class FocusTracker {
 	private _blur(): void {
 		clearTimeout( this._nextEventLoopTimeout! );
 
+		const timeoutValue = ( env.isSafari ) ? 150 : 0;
+
 		this._nextEventLoopTimeout = setTimeout( () => {
 			this.focusedElement = null;
 			this.isFocused = false;
-		}, 0 );
+		}, timeoutValue );
 	}
 }
 
