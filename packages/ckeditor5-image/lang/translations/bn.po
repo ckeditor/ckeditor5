@@ -114,8 +114,8 @@ msgstr "ছবির URL আপডেট করুন"
 
 msgctxt "Text used by screen readers do describe an image when the image has no text alternative."
 msgid "Caption for the image"
-msgstr "ছবির জন্য ক্যাপশন"
+msgstr ""
 
 msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 msgid "Caption for image: %0"
-msgstr "ছবির জন্য ক্যাপশন: %0"
+msgstr ""

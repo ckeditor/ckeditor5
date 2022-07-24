@@ -46,4 +46,4 @@ msgstr "Não foi possível carregar o ficheiro:"
 
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
-msgstr "Editor de Texto Formatado. Área de edição: %0"
+msgstr ""
