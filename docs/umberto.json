@@ -226,7 +226,7 @@
 			"slug": "installation",
 			"categories": [
 				{
-					"name": "Quick installations",
+					"name": "Getting started",
 					"id": "getting-started",
 					"slug": "getting-started",
 					"order": 20,
