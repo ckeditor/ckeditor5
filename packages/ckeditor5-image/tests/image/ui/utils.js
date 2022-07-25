@@ -68,7 +68,7 @@ describe( 'Utils', () => {
 			repositionContextualBalloon( editor );
 
 			sinon.assert.calledWithExactly( spy, {
-				target: converter.viewToDom( selection.getSelectedElement() ),
+				target: converter.mapViewToDom( selection.getSelectedElement() ),
 				positions
 			} );
 		} );
@@ -90,7 +90,7 @@ describe( 'Utils', () => {
 			repositionContextualBalloon( editor );
 
 			sinon.assert.calledWithExactly( spy, {
-				target: converter.viewToDom( selection.getFirstPosition().parent.parent.parent ),
+				target: converter.mapViewToDom( selection.getFirstPosition().parent.parent.parent ),
 				positions
 			} );
 		} );
@@ -111,7 +111,7 @@ describe( 'Utils', () => {
 			const data = getBalloonPositionData( editor );
 
 			expect( data ).to.deep.equal( {
-				target: converter.viewToDom( selection.getSelectedElement() ),
+				target: converter.mapViewToDom( selection.getSelectedElement() ),
 				positions
 			} );
 		} );
@@ -121,7 +121,7 @@ describe( 'Utils', () => {
 			const data = getBalloonPositionData( editor );
 
 			expect( data ).to.deep.equal( {
-				target: converter.viewToDom( selection.getFirstPosition().parent.parent.parent ),
+				target: converter.mapViewToDom( selection.getFirstPosition().parent.parent.parent ),
 				positions
 			} );
 		} );
