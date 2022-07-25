@@ -33,13 +33,13 @@ const _delegations = Symbol( 'delegations' );
  * @mixin EmitterMixin
  * @implements module:utils/emittermixin~Emitter
  */
-export default function EmitterMixin<Base extends new( ...args: any ) => object>(
+export default function EmitterMixin<Base extends abstract new( ...args: any ) => object>(
 	base: Base
 ): {
 	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Emitter;
 	prototype: InstanceType<Base> & Emitter;
 } {
-	class Mixin extends base implements EmitterInternal {
+	abstract class Mixin extends base implements EmitterInternal {
 		public on<TEvent extends BaseEvent>(
 			event: TEvent[ 'name' ],
 			callback: GetCallback<TEvent>,

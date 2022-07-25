@@ -44,13 +44,13 @@ import type EventInfo from '../eventinfo';
  * @mixes module:utils/emittermixin~EmitterMixin
  * @implements module:utils/dom/emittermixin~Emitter
  */
-export default function DomEmitterMixin<Base extends new( ...args: any[] ) => BaseEmitter>(
+export default function DomEmitterMixin<Base extends abstract new( ...args: any[] ) => BaseEmitter>(
 	base: Base
 ): {
 	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Emitter;
 	prototype: InstanceType<Base> & Emitter;
 } {
-	class Mixin extends base implements Emitter {
+	abstract class Mixin extends base implements Emitter {
 		public override listenTo<K extends keyof HTMLElementEventMap>(
 			emitter: Node | Window,
 			event: K,

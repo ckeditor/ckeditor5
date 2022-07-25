@@ -33,13 +33,13 @@ const decoratedOriginal = Symbol( 'decoratedOriginal' );
  * @mixes module:utils/emittermixin~EmitterMixin
  * @implements module:utils/observablemixin~Observable
  */
-export default function ObservableMixin<Base extends new( ...args: any[] ) => Emitter>(
+export default function ObservableMixin<Base extends abstract new( ...args: any[] ) => Emitter>(
 	base: Base
 ): {
 	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Observable;
 	prototype: InstanceType<Base> & Observable;
 } {
-	class Mixin extends base implements ObservableInternal {
+	abstract class Mixin extends base implements ObservableInternal {
 		public set( name: string | { [ name: string ]: unknown }, value?: unknown ): void {
 			// If the first parameter is an Object, iterate over its properties.
 			if ( isObject( name ) ) {
@@ -760,6 +760,13 @@ export interface Observable extends Emitter {
 	 * has a property with the given property name. This prevents from mistakenly overriding existing
 	 * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
 	 *
+	 * In TypeScript, those properties should be declared in class using `declare` keyword. In example:
+	 *
+	 *		public declare myProp: number;
+	 *		constructor() {
+	 *			this.set( 'myProp', 2 );
+	 *		}
+	 *
 	 * @method #set
 	 * @param {String|Object} name The property's name or object with `name=>value` pairs.
 	 * @param {*} [value] The property's value (if `name` was passed in the first parameter).
@@ -981,6 +988,15 @@ export type SetEvent<TValue = any> = {
 	name: 'set' | `set:${ string }`;
 	args: [ name: string, value: TValue, oldValue: TValue ];
 	return: TValue;
+};
+
+export type DecoratedMethodEvent<
+	TObservable extends Observable & { [ N in TName ]: ( ...args: any[] ) => any },
+	TName extends keyof TObservable & string
+> = {
+	name: TName;
+	args: [ Parameters<TObservable[ TName ]> ];
+	return: ReturnType<TObservable[ TName ]>;
 };
 
 interface SingleBindChain<TKey extends string, TVal> {
