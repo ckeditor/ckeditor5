@@ -418,7 +418,7 @@ HelpjuiceEditor.defaultConfig = {
 	htmlSupport: {
     allow: [
 		{
-			name: /^(video|iframe|section|article)$/,
+			name: /^(video|iframe)$/,
 			attributes: {
                 src: true,
 				width: true,
@@ -426,7 +426,22 @@ HelpjuiceEditor.defaultConfig = {
 				title: true,
 				frameborder: true,
 				allow: true,
-				allowfullscreen: true
+				allowfullscreen: true,
+				autoplay: true,
+				autopictureinpicture: true,
+				controls: true,
+				controlslist: true,
+				crossorigin: true,
+				disablepictureinpicture: true,
+				disableremoteplayback: true,
+				loop: true,
+				muted: true,
+				playsinline: true,
+				poster: true,
+				preload: true,
+				name: true,
+				type: true,
+				align: true
             }
 		},
 	],
