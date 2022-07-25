@@ -20,6 +20,10 @@ Select the text you want to highlight, then use the highlight toolbar button {@i
 
 {@snippet features/highlight}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 There are more CKEditor 5 features that can help you style your content:

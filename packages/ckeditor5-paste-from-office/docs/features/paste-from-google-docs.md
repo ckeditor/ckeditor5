@@ -30,6 +30,10 @@ To test how Paste from Office works, open the [sample Google Docs document](http
 
 {@snippet features/paste-from-office}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 CKEditor 5 supports a wider range of paste features, including:

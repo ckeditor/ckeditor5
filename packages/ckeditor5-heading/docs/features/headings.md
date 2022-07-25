@@ -34,6 +34,10 @@ Use the toolbar dropdown to style a heading, or type one or more `#` characters 
 
 {@snippet features/default-headings}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Heading buttons
 
 The heading feature lets you also use a set of heading buttons instead of the dropdown list. The toolbar buttons are configurable and it is possible to include a paragraph button, too. Compare the heading toolbar dropdown from the demo above with the heading buttons below to check the functionality and usability of this variation.

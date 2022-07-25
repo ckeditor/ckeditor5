@@ -19,6 +19,10 @@ To insert a horizontal line in the demo below, use the toolbar button {@icon @ck
 
 {@snippet features/horizontal-line}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 There are more CKEditor 5 features that can help you organize your document content better:

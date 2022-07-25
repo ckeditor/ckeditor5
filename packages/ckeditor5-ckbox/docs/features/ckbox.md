@@ -30,6 +30,10 @@ The CKBox feature also supports uploading images. Drag any image into the editor
 
 {@snippet features/ckbox}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Installation
 
 <info-box info>

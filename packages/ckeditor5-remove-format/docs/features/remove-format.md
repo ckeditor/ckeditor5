@@ -20,6 +20,10 @@ Select the content you want to clean up and press the remove format button {@ico
 
 {@snippet features/remove-format}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 There are more CKEditor 5 features that can help you format your content:
