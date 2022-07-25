@@ -415,6 +415,23 @@ HelpjuiceEditor.defaultConfig = {
 		offset: 1,
 		unit: 'em'
 	},
+	htmlSupport: {
+    allow: [
+		{
+			name: /^(video|iframe|section|article)$/,
+			attributes: {
+                src: true,
+				width: true,
+				height: true,
+				title: true,
+				frameborder: true,
+				allow: true,
+				allowfullscreen: true
+            }
+		},
+	],
+    disallow: [ /* HTML features to disallow */ ]
+  },
 	link: {
 		addTargetToExternalLinks: true,
 		decorators: {
