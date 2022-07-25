@@ -4,6 +4,9 @@
     "sourceMap": false,
     "declaration": false
   },
+  "include": [
+    "./src"
+  ],
   "exclude": [
     "./tests/"
   ]
