@@ -85,7 +85,7 @@ A full webpage with embedded CKEditor 5 from the above example would look like t
 
 ## Running a full-featured editor from CDN
 
-The fastest way to run an advanced editor using the {@link features/index rich editing features offered by CKEditor 5} is using a superbuild. The superbuild, available instantly from CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
+The fastest way to run an advanced editor using the {@link features/overview rich editing features offered by CKEditor 5} is using a superbuild. The superbuild, available instantly from CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
 
 <info-box>
 	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in your implementation, so using the superbuild should be considered for evaluation purposes and tests rather, than for the production environment.

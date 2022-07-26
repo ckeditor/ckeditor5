@@ -23,7 +23,7 @@ CKEditor 5 features cover several functional areas of application and use. Liste
 
 ### Collaboration
 
-The {@link framework/index CKEditor 5 Framework} was created with {@link features/collaboration collaboration} in mind.
+The {@link framework/guides/overview CKEditor 5 Framework} was created with {@link features/collaboration collaboration} in mind.
 
 The {@link features/users users API} is used by functions such as {@link features/track-changes track changes}, that allow the users to follow any changes made to the edited document in real time. Accepting or rejecting those changes is done with a single click from a convenient side panel.
 
@@ -69,7 +69,7 @@ Enrich you content further by {@link features/html-embed embedding HTML code} - 
 
 ### Productivity features
 
-Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link installation/index editor build} to suit your needs.
+Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link installation/overview editor build} to suit your needs.
 
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
 
@@ -85,7 +85,7 @@ Work as you like it - choose user interface approach from {@link installation/ge
 
 ### Cross-platform interoperability
 
-Do not get stopped by technology differences - CKEditor 5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-word from MS Word}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} to inherit formatting for convenience.
+Do not get stopped by technology differences - CKEditor 5 offers cross-platform interoperability. Being a {@link framework/guides/overview web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-word from MS Word}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} to inherit formatting for convenience.
 
 {@img assets/img/features-paste.png 800 CKEditor 5 paste features.}
 
@@ -120,6 +120,6 @@ CKEditor 5 is in active development now and new features are added all the time,
 ## How about creating your own features?
 
 Probably the most exciting features are the ones you can develop on top of CKEditor 5 Framework!
-We are gradually enhancing the {@link framework/index CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/guides/creating-simple-plugin creating custom features}.
+We are gradually enhancing the {@link framework/guides/overview CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/guides/creating-simple-plugin creating custom features}.
 
 The official add-ons repository for CKEditor 4 reached an impressive number of over 300 add-ons created and published by the community. Now it is time for you to add your contributions to the brand new CKEditor 5!

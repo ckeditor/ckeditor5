@@ -39,7 +39,7 @@ You can get the full list of editor content styles in a {@link installation/adva
 
 See the {@link installation/getting-started/installing-plugins Installing plugins} guide to learn how to extend the editor with some additional features.
 
-You can learn which editor features are available in the {@link features/index feature index}.
+You can learn which editor features are available in the {@link features/overview feature index}.
 
 ## Where are the `editor.insertHtml()` and `editor.insertText()` methods? How to insert some content?
 
@@ -95,7 +95,7 @@ We plan to provide more official integrations with time. [Your feedback on what 
 
 We believe each editor build should serve its purpose. Including features that are not used makes little sense because they increase the size of the editor and make the website heavier for no good reason. This is why we do not provide a full editor package similar to what we offer in CKEditor 4.
 
-At the same time, we recommend you to {@link installation/getting-started/installing-plugins install plugins} to enable {@link features/index additional features} or even create a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} to make sure you make the most out of CKEditor 5.
+At the same time, we recommend you to {@link installation/getting-started/installing-plugins install plugins} to enable {@link features/overview additional features} or even create a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} to make sure you make the most out of CKEditor 5.
 
 ## How to customize the CKEditor 5 icons?
 
