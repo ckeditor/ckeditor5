@@ -17,6 +17,8 @@ import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import SourceEditing from '../src/sourceediting';
 
@@ -595,5 +597,75 @@ describe( 'SourceEditing - integration with Markdown', () => {
 
 		expect( editor.getData() ).to.equal( '\\<paragraph>Foo\\</paragraph>' );
 		expect( textarea.value ).to.equal( '\\<paragraph>Foo\\</paragraph>' );
+	} );
+} );
+
+describe( 'toolbar focus cycling', () => {
+	let editorElement, editor, ui, view, toolbar, button;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( async () => {
+		editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+		editor = await ClassicEditor.create( editorElement, {
+			plugins: [ Paragraph, Heading, SourceEditing ],
+			toolbar: [ 'heading' ]
+		} );
+
+		button = editor.ui.componentFactory.create( 'sourceEditing' );
+		ui = editor.ui;
+		view = ui.view;
+		toolbar = view.toolbar;
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+
+		return editor.destroy();
+	} );
+
+	describe( 'should make sure that the `alt+f10` key combination will', () => {
+		let keyEventData;
+
+		beforeEach( () => {
+			keyEventData = {
+				keyCode: keyCodes.f10,
+				altKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			button.fire( 'execute' );
+		} );
+
+		it( 'focus toolbar', () => {
+			const spy = testUtils.sinon.spy( toolbar, 'focus' );
+
+			ui.focusTracker.isFocused = true;
+			ui.view.toolbar.focusTracker.isFocused = false;
+
+			editor.keystrokes.press( keyEventData );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'focus toolbar, focus editor back when `esc` was pressed', () => {
+			const textareaSpy = testUtils.sinon.spy( editor.editing.view.getDomRoot().nextSibling.children[ 0 ], 'focus' );
+
+			ui.focusTracker.isFocused = true;
+			view.toolbar.focusTracker.isFocused = false;
+
+			editor.keystrokes.press( keyEventData );
+			ui.focusTracker.focusedElement = document.activeElement;
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.calledOnce( textareaSpy );
+		} );
 	} );
 } );
