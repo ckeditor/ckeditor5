@@ -146,14 +146,12 @@ describe( 'ImageStyleUI', () => {
 
 		it( 'should execute the command when the button is being clicked', () => {
 			const commandSpy = sinon.spy( editor, 'execute' );
-			const focusSpy = sinon.stub( editor.editing.view, 'focus' );
 
 			for ( const { config, buttonView } of buttons ) {
 				buttonView.fire( 'execute' );
 
 				sinon.assert.calledOnce( commandSpy );
 				sinon.assert.calledWithExactly( commandSpy, 'imageStyle', { value: config.name } );
-				sinon.assert.called( focusSpy );
 
 				commandSpy.resetHistory();
 			}
@@ -470,6 +468,7 @@ describe( 'ImageStyleUI', () => {
 				const focusSpy = sinon.stub( editor.editing.view, 'focus' );
 
 				for ( const { buttonView, config, view } of dropdowns ) {
+					buttonView.render();
 					buttonView.fire( 'execute' );
 
 					expect( view.isOpen ).to.be.false;

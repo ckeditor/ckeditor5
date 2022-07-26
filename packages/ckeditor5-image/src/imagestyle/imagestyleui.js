@@ -172,6 +172,12 @@ export default class ImageStyleUI extends Plugin {
 			dropdownView.bind( 'isEnabled' )
 				.toMany( buttonViews, 'isEnabled', ( ...areEnabled ) => areEnabled.some( identity ) );
 
+			// Focus the editable after executing the command.
+			// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+			this.listenTo( dropdownView, 'execute', () => {
+				this.editor.editing.view.focus();
+			} );
+
 			return dropdownView;
 		} );
 	}
@@ -206,7 +212,6 @@ export default class ImageStyleUI extends Plugin {
 
 	_executeCommand( name ) {
 		this.editor.execute( 'imageStyle', { value: name } );
-		this.editor.editing.view.focus();
 	}
 }
 

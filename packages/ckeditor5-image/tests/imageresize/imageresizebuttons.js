@@ -142,6 +142,7 @@ describe( 'ImageResizeButtons', () => {
 			const commandSpy = sinon.spy( command, 'execute' );
 			const resizeBy50Percent = dropdownView.listView.items._items[ 1 ].children._items[ 0 ];
 
+			dropdownView.render();
 			command.isEnabled = true;
 
 			resizeBy50Percent.fire( 'execute' );
