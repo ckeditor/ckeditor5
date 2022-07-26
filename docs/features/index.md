@@ -5,8 +5,6 @@ toc: false
 feedback-widget: false
 ---
 
-# Features
+# CKEditor 5 features
 
-<script>
-document.location.href = 'overview.html';
-</script>
+<!-- Placeholder file only -->
