@@ -24,6 +24,10 @@ Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<
 
 {@snippet features/paste-plain-text}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 CKEditor 5 supports a wider range of paste features, including:

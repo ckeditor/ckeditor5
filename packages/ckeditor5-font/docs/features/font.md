@@ -29,6 +29,10 @@ Use the toolbar dropdowns in the demo below to control font size {@icon @ckedito
 
 {@snippet features/font}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 Here are some more CKEditor 5 features that can help you format your content:

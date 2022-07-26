@@ -22,8 +22,10 @@ You can type the "@" character to invoke the mention autocomplete UI. The demo b
 
 {@snippet features/mention}
 
-<info-box>
-	Check out the {@link examples/chat-with-mentions more advanced example} of the mention feature used in a chat application.
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+
+	You can also check out the {@link examples/chat-with-mentions more advanced example} of the mention feature used in a chat application.
 </info-box>
 
 ## Related productivity features
