@@ -18,27 +18,27 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
 msgid "Yellow marker"
-msgstr ""
+msgstr "Keltainen tussi"
 
 msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
 msgid "Green marker"
-msgstr ""
+msgstr "Vihreä tussi"
 
 msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
 msgid "Pink marker"
-msgstr ""
+msgstr "Pinkki tussi"
 
 msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
 msgid "Blue marker"
-msgstr ""
+msgstr "Sininen tussi"
 
 msgctxt "Toolbar button tooltip for applying red pen (text color)."
 msgid "Red pen"
-msgstr ""
+msgstr "Punainen tussi"
 
 msgctxt "Toolbar button tooltip for applying green pen (text color)."
 msgid "Green pen"
-msgstr ""
+msgstr "Vihreä kynä"
 
 msgctxt "Toolbar button tooltip for removing text highlight."
 msgid "Remove highlight"
@@ -50,4 +50,4 @@ msgstr "Korosta"
 
 msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
 msgid "Text highlight toolbar"
-msgstr ""
+msgstr "Tekstinkorostuksen työkalupalkki"

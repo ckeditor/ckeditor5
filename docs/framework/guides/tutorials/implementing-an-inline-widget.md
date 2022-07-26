@@ -408,7 +408,7 @@ export default class PlaceholderCommand extends Command {
 		const selection = editor.model.document.selection;
 
 		editor.model.change( writer => {
-			// Create a <placeholder> elment with the "name" attribute (and all the selection attributes)...
+			// Create a <placeholder> element with the "name" attribute (and all the selection attributes)...
 			const placeholder = writer.createElement( 'placeholder', {
 				...Object.fromEntries( selection.getAttributes() ),
                 name: value
@@ -781,7 +781,7 @@ class PlaceholderCommand extends Command {
 		const selection = editor.model.document.selection;
 
 		editor.model.change( writer => {
-			// Create a <placeholder> elment with the "name" attribute (and all the selection attributes)...
+			// Create a <placeholder> element with the "name" attribute (and all the selection attributes)...
 			const placeholder = writer.createElement( 'placeholder', {
 				...Object.fromEntries( selection.getAttributes() ),
 				name: value
