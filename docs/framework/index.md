@@ -9,6 +9,4 @@ meta-description: Learn how to install, integrate, configure and develop CKEdito
 
 # CKEditor 5 Framework
 
-<script>
-document.location.href = 'guides/overview.html';
-</script>
+<!-- Placeholder file only -->

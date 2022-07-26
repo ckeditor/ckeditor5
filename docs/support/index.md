@@ -9,6 +9,4 @@ meta-description: Learn about getting support while integrating CKEditor 5.
 
 # Getting support with CKEditor 5
 
-<script>
-document.location.href = 'getting-support.html';
-</script>
+<!-- Placeholder file only -->

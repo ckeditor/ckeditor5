@@ -173,7 +173,11 @@
 		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
 		"installation/getting-started/quick-start-other.html#building-the-editor-from-source": "installation/getting-started/quick-start.html#building-the-editor-from-source",
 		"installation/getting-started/maintenance.html": "updating/updating.html",
-		"/installation/advanced/alternative-setups/predefined-builds.html": "installation/getting-started/pedefined-builds.html"
+		"/installation/advanced/alternative-setups/predefined-builds.html": "installation/getting-started/pedefined-builds.html",
+		"installation/index.html": "installation/overview.html",
+		"features/index.html": "features/overview.html",
+		"support/index.html": "support/getting-support.html",
+		"framework/index.html": "framework/guides/overview.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
