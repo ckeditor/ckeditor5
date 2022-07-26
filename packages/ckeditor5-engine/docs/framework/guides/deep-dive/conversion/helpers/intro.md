@@ -8,7 +8,7 @@ modified_at: 2022-03-02
 
 # Introduction to conversion helpers
 
-The editor supports a vast amount of the most commonly used HTML elements via {@link features/index existing editor features} out-of-the-box.
+The editor supports a vast amount of the most commonly used HTML elements via {@link features/overview existing editor features} out-of-the-box.
 
 If your aim is to easily enable common HTML features that are not explicitly supported by the dedicated CKEditor 5 features, use the {@link features/general-html-support General HTML Support feature}.
 
