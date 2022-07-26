@@ -179,6 +179,7 @@ describe( 'HighlightUI', () => {
 			it( 'should change button on execute option', () => {
 				command.value = 'yellowMarker';
 				validateButton( 0 );
+				button.render();
 
 				buttons[ 5 ].fire( 'execute' );
 				command.value = 'greenPen';
@@ -192,8 +193,9 @@ describe( 'HighlightUI', () => {
 			it( 'should focus view after command execution', () => {
 				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-				dropdown.buttonView.commandName = 'highlight';
-				dropdown.buttonView.fire( 'execute' );
+				button.render();
+				button.commandName = 'highlight';
+				button.fire( 'execute' );
 
 				sinon.assert.calledOnce( focusSpy );
 			} );
