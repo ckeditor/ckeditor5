@@ -402,7 +402,7 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( balloon.visibleView ).to.equal( fakeChildWidgetToolbarView );
 
 			expect( updatePositionSpy.firstCall.args[ 0 ].position.target ).to.equal(
-				view.domConverter.viewToDom( fakeChildViewElement ) );
+				view.domConverter.mapViewToDom( fakeChildViewElement ) );
 		} );
 
 		it( 'should not update balloon position when toolbar is in not visible stack', () => {
