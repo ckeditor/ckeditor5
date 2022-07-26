@@ -29,8 +29,6 @@ Our new `FormView` class will extend the {@link framework/guides/architecture/ui
 
 In the `FormView` constructor we define a template for our abbreviation form. We need to set the tag of the HTML element, and a couple of its attributes. To make sure our view is focusable, let's add {@link framework/guides/deep-dive/focus-tracking#implementing-focusable-ui-components `tabindex="-1"`}.
 
-We will also pass the editor's {@link module:utils/locale~Locale} instance to the constructor, so we can localize all our UI components with the help of the {@link module:utils/locale~Locale#t `t()` function}.
-
 ```js
 // abbreviation/abbreviationview.js
 
@@ -39,7 +37,6 @@ import View from '@ckeditor/ckeditor5-ui';
 export default class FormView extends View {
 	constructor( locale ) {
 		super( locale );
-		const t = locale.t;
 
 		this.setTemplate( {
 			tag: 'form',
@@ -129,7 +126,7 @@ export default class FormView extends View {
 	}
 
 	_createButton( label, icon, className ) {
-		const button = new ButtonView( this.locale );
+		const button = new ButtonView();
 
 		button.set( {
 			label,
@@ -311,12 +308,11 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 export default class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
-		const { t } = editor.locale;
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
-			const button = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'abbreviation', () => {
+			const button = new ButtonView();
 
-			button.label = t( 'Abbreviation' );
+			button.label = 'Abbreviation';
 			button.tooltip = true;
 			button.withText = true;
 
@@ -362,13 +358,12 @@ export default class AbbreviationUI extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const { t } = editor.locale;
 
 		// Create the balloon and the form view.
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 		this.formView = this._createFormView();
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
+		editor.ui.componentFactory.add( 'abbreviation', () => {
 			// ...
 		} );
 	}
@@ -411,7 +406,7 @@ export default class AbbreviationUI extends Plugin {
 	init() {
 		// ...
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
+		editor.ui.componentFactory.add( 'abbreviation', () => {
 			this._showUI();
 		} );
 	}
