@@ -78,6 +78,29 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ) ).to.be.an( 'object' );
 		} );
 
+		it( 'should register focusableToolbar in the editor.ui', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null
+			} );
+
+			expect( editor.ui._focusableToolbars.length ).to.not.equal( 0 );
+		} );
+
+		it( 'should register multiple focusableToolbas in the editor.ui', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null
+			} );
+
+			widgetToolbarRepository.register( 'fake2', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null
+			} );
+
+			expect( editor.ui._focusableToolbars.length ).to.equal( 2 );
+		} );
+
 		it( 'should throw when adding two times widget with the same id', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
