@@ -64,7 +64,7 @@ export default class FontSizeUI extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( command );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdownView, 'execute', evt => {
+			dropdownView.on( 'execute', evt => {
 				editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
 				editor.editing.view.focus();
 			} );

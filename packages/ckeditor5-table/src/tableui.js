@@ -254,7 +254,7 @@ export default class TableUI extends Plugin {
 			return areEnabled.some( isEnabled => isEnabled );
 		} );
 
-		this.listenTo( dropdownView, 'execute', evt => {
+		dropdownView.on( 'execute', evt => {
 			editor.execute( evt.source.commandName );
 
 			// Toggling a switch button view should not move the focus to the editable.
@@ -307,7 +307,7 @@ export default class TableUI extends Plugin {
 		} );
 
 		// Execute commands for events coming from the list in the dropdown panel.
-		this.listenTo( dropdownView, 'execute', evt => {
+		dropdownView.on( 'execute', evt => {
 			editor.execute( evt.source.commandName );
 			editor.editing.view.focus();
 		} );

@@ -85,7 +85,7 @@ class PlaceholderUI extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( command );
 
 			// Execute the command when the dropdown item is clicked (executed).
-			this.listenTo( dropdownView, 'execute', evt => {
+			dropdownView.on( 'execute', evt => {
 				editor.execute( 'placeholder', { value: evt.source.commandParam } );
 				editor.editing.view.focus();
 			} );
