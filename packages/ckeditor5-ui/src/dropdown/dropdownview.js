@@ -9,6 +9,7 @@
 
 import View from '../view';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../../theme/components/dropdown/dropdown.css';
 
@@ -271,6 +272,15 @@ export default class DropdownView extends View {
 			// Focus the first item in the dropdown when the dropdown opened
 			this.panelView.focus();
 		} );
+
+		// Force the focus on buttonView after the dropdown is closed in Safari to prevent toolbar being hidden shortly afterwards.
+		if ( env.isSafari ) {
+			this.buttonView.on( 'open', () => {
+				if ( !this.isOpen ) {
+					this.buttonView.focus();
+				}
+			}, { priority: 'low' } );
+		}
 
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element );
