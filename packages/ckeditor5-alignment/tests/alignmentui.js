@@ -270,6 +270,15 @@ describe( 'Alignment UI', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should return focus to editable after executing a command', () => {
+			const buttonAlignLeft = dropdown.toolbarView.items.get( 0 );
+			const spy = sinon.spy( editor.editing.view, 'focus' );
+			dropdown.render();
+
+			buttonAlignLeft.fire( 'execute' );
+			sinon.assert.calledOnce( spy );
+		} );
+
 		describe( 'config', () => {
 			beforeEach( async () => {
 				// Clean up the editor created in main test suite hook.
