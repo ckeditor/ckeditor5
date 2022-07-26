@@ -120,6 +120,6 @@ CKEditor 5 is in active development now and new features are added all the time,
 ## How about creating your own features?
 
 Probably the most exciting features are the ones you can develop on top of CKEditor 5 Framework!
-We are gradually enhancing the {@link framework/index CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/guides/creating-simple-plugin creating custom features}.
+We are gradually enhancing the {@link framework/index CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/guides/creating-simple-plugin-timestamp creating custom features}.
 
 The official add-ons repository for CKEditor 4 reached an impressive number of over 300 add-ons created and published by the community. Now it is time for you to add your contributions to the brand new CKEditor 5!
