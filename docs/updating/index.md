@@ -9,6 +9,4 @@ meta-description: Learn how to install, integrate, configure and develop CKEdito
 
 # Updating CKEditor 5
 
-<script>
-document.location.href = 'updating.html';
-</script>
+<!-- Placeholder file only -->
