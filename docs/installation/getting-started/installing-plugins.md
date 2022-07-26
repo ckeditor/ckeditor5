@@ -10,7 +10,7 @@ order: 50
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/configuration previous tutorial} you have learned how to configure your editor with various options. Now, you will be extending it with some {@link features/index additional features}.
+In the {@link installation/getting-started/configuration previous tutorial} you have learned how to configure your editor with various options. Now, you will be extending it with some {@link features/overview additional features}.
 </info-box>
 
 CKEditor 5 plugins are distributed through [npm](https://www.npmjs.com) packages and are implemented in a modular way, which means that a single plugin may consist of multiple JavaScript files.
@@ -293,5 +293,5 @@ So, in short, both methods use very similar mechanisms. However, adding a plugin
 <info-box hint>
 **What's next?**
 
-That was fun, right? Don't hesitate and {@link features/index explore available CKEditor 5 features}, they are waiting to be installed! {@link installation/getting-started/basic-api In the next article}, you will learn more about the editor API and how to use it.
+That was fun, right? Don't hesitate and {@link features/overview explore available CKEditor 5 features}, they are waiting to be installed! {@link installation/getting-started/basic-api In the next article}, you will learn more about the editor API and how to use it.
 </info-box>
