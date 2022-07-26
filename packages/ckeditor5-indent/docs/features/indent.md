@@ -23,6 +23,10 @@ Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} 
 
 {@snippet features/indent}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 Here are some CKEditor 5 features that may aid structuring your content better:

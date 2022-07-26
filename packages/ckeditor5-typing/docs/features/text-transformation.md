@@ -56,6 +56,10 @@ Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the rich-text edit
 
 {@snippet features/text-transformation}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related productivity features
 
 In addition to enabling automatic text transformations, you may want to check the following productivity features:

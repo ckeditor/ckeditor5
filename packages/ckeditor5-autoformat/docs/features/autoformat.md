@@ -46,6 +46,10 @@ Use the editor provided below to test the autoformatting feature. Try using Mark
 
 {@snippet features/autoformat}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 In addition to enabling automatic text formatting, you may want to check the following productivity features:
