@@ -179,7 +179,7 @@ class Timestamp extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( 'timestamp', locale => {
+		editor.ui.componentFactory.add( 'timestamp', () => {
 			//...
 
 			// Execute a callback function when the button is clicked.

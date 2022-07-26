@@ -338,7 +338,7 @@ Thanks to the upcast conversion, our abbreviation added in the `index.html` shou
 
 Now we can create our `Abbreviation` toolbar button using the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class.
 
-We need to register it in the editor's UI {@link module:ui/componentfactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar. The button can be localized using the editor's {@link module:utils/locale~Locale} instance, and the {@link module:utils/locale~Locale#t `t()` translation function}.
+We need to register it in the editor's UI {@link module:ui/componentfactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -349,14 +349,10 @@ class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		// The translation function.
-		const { t } = editor.locale;
+		editor.ui.componentFactory.add( 'abbreviation', () => {
+			const button = new ButtonView();
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
-			const button = new ButtonView( locale );
-
-			// The localized label.
-			button.label = t( 'Abbreviation' );
+			button.label = 'Abbreviation';
 			button.tooltip = true;
 			button.withText = true;
 
@@ -411,9 +407,8 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
-		const { t } = editor.locale;
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
+		editor.ui.componentFactory.add( 'abbreviation', () => {
 			//...
 
 			this.listenTo( button, 'execute', () => {
