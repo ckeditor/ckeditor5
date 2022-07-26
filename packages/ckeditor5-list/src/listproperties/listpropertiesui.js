@@ -187,6 +187,12 @@ function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, butto
 		// Accessibility: focus the first active style when opening the dropdown.
 		focusChildOnDropdownOpen( dropdownView, () => listPropertiesView.stylesView.children.find( child => child.isOn ) );
 
+		// Focus the editable after executing the command.
+		// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+		editor.plugins.get( 'ListPropertiesUI' ).listenTo( dropdownView, 'execute', () => {
+			editor.editing.view.focus();
+		} );
+
 		return dropdownView;
 	};
 }
@@ -237,8 +243,6 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 					editor.execute( 'listStyle', { type } );
 				} );
 			}
-
-			editor.editing.view.focus();
 		} );
 
 		return button;

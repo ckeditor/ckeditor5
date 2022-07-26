@@ -262,6 +262,7 @@ describe( 'ListPropertiesUI', () => {
 				it( 'should close the drop-down when any button gets executed', () => {
 					const spy = sinon.spy();
 
+					bulletedListDropdown.render();
 					bulletedListDropdown.on( 'execute', spy );
 					listPropertiesView.fire( 'execute' );
 
@@ -283,6 +284,7 @@ describe( 'ListPropertiesUI', () => {
 					beforeEach( () => {
 						// "circle"
 						styleButtonView = stylesView.children.get( 1 );
+						bulletedListDropdown.render();
 
 						sinon.spy( editor, 'execute' );
 						sinon.spy( editor.editing.view, 'focus' );
@@ -561,6 +563,7 @@ describe( 'ListPropertiesUI', () => {
 				it( 'should close the drop-down when any button gets executed', () => {
 					const spy = sinon.spy();
 
+					numberedListDropdown.render();
 					numberedListDropdown.on( 'execute', spy );
 					listPropertiesView.fire( 'execute' );
 
@@ -582,6 +585,7 @@ describe( 'ListPropertiesUI', () => {
 					beforeEach( () => {
 						// "decimal-leading-zero""
 						styleButtonView = stylesView.children.get( 1 );
+						numberedListDropdown.render();
 
 						sinon.spy( editor, 'execute' );
 						sinon.spy( editor.editing.view, 'focus' );
