@@ -17,6 +17,10 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { isElement } from 'lodash-es';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { Image, ImageCaption, ImageToolbar, ImageStyle } from '@ckeditor/ckeditor5-image';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
 describe( 'InlineEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -362,6 +366,135 @@ describe( 'InlineEditorUI', () => {
 
 		it( 'returns undefined if editable with the given name is absent', () => {
 			expect( ui.getEditableElement( 'absent' ) ).to.be.undefined;
+		} );
+	} );
+} );
+
+describe( 'toolbar focus cycling', () => {
+	let editorElement, editor, ui, view, toolbar;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( async () => {
+		editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+		editor = await ClassicEditor.create( editorElement, {
+			plugins: [ Paragraph, Heading, Image, ImageToolbar, ImageCaption, ImageStyle ],
+			toolbar: [ 'heading' ],
+			image: {
+				toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+			}
+		} );
+
+		ui = editor.ui;
+		view = ui.view;
+		toolbar = view.toolbar;
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+
+		return editor.destroy();
+	} );
+
+	describe( 'should make sure that the `alt+f10` key combination will', () => {
+		let keyEventData;
+
+		beforeEach( () => {
+			keyEventData = {
+				keyCode: keyCodes.f10,
+				altKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+		} );
+
+		it( 'focus toolbar', () => {
+			const spy = testUtils.sinon.spy( toolbar, 'focus' );
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			ui.focusTracker.isFocused = true;
+			ui.view.toolbar.focusTracker.isFocused = false;
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.f10,
+				altKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'focus toolbar, focus editor back when `esc` was pressed', () => {
+			const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			ui.focusTracker.isFocused = true;
+			view.toolbar.focusTracker.isFocused = false;
+
+			editor.keystrokes.press( keyEventData );
+			ui.focusTracker.focusedElement = document.activeElement;
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.calledOnce( editorSpy );
+		} );
+
+		it( 'switch focus between image/toolbar/image and go back to editor after `esc` was pressed', () => {
+			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
+
+			const toolbarSpy = testUtils.sinon.spy( toolbar, 'focus' );
+			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
+			const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
+
+			setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'[<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>bar</caption></imageBlock>]' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			ui.focusTracker.isFocused = true;
+			view.toolbar.focusTracker.isFocused = false;
+
+			// select image baloon toolbar
+			editor.keystrokes.press( {
+				keyCode: keyCodes.f10,
+				altKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			ui.focusTracker.focusedElement = document.activeElement;
+			sinon.assert.calledOnce( imageToolbarSpy );
+
+			// switch to regular toolbar
+			editor.keystrokes.press( {
+				keyCode: keyCodes.f10,
+				altKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+			sinon.assert.calledOnce( toolbarSpy );
+
+			// switch back to the image baloon toolbar
+			ui.focusTracker.focusedElement = document.activeElement;
+			editor.keystrokes.press( keyEventData );
+			sinon.assert.calledTwice( imageToolbarSpy );
+
+			// move selection back inside the editor
+			editor.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+			sinon.assert.calledOnce( editorSpy );
 		} );
 	} );
 } );
