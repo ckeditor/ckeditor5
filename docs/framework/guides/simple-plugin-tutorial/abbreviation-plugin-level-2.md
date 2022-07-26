@@ -71,8 +71,8 @@ export default class FormView extends View {
 	constructor( locale ) {
 		// ...
 
-		this.abbrInputView = this._createInput( t( 'Add abbreviation' ) );
-		this.titleInputView = this._createInput( t( 'Add title' ) );
+		this.abbrInputView = this._createInput( 'Add abbreviation' );
+		this.titleInputView = this._createInput( 'Add title' );
 	}
 
 	_createInput( label ) {
@@ -110,14 +110,14 @@ export default class FormView extends View {
 
 		// Create the save and cancel buttons.
 		this.saveButtonView = this._createButton(
-			t( 'Save' ), icons.check, 'ck-button-save'
+			'Save', icons.check, 'ck-button-save'
 		);
 		// Set the type to 'submit', which will trigger
 		// the submit event on entire form when clicked.
 		this.saveButtonView.type = 'submit';
 
 		this.cancelButtonView = this._createButton(
-			t( 'Cancel' ), icons.cancel, 'ck-button-cancel'
+			'Cancel', icons.cancel, 'ck-button-cancel'
 		);
 	}
 
@@ -157,11 +157,11 @@ export default class FormView extends View {
 		// ...
 
 		this.saveButtonView = this._createButton(
-			t( 'Save' ), icons.check, 'ck-button-save'
+			'Save', icons.check, 'ck-button-save'
 		);
 		this.saveButtonView.type = 'submit';
 		this.cancelButtonView = this._createButton(
-			t( 'Cancel' ), icons.cancel, 'ck-button-cancel'
+			'Cancel', icons.cancel, 'ck-button-cancel'
 		);
 		// Delegate ButtonView#execute to FormView#cancel.
 		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
