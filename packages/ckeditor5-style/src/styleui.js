@@ -89,6 +89,12 @@ export default class StyleUI extends Plugin {
 				editor.execute( 'style', { styleName: evt.source.styleDefinition.name } );
 			} );
 
+			// Focus the editable after executing the command.
+			// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+			dropdown.on( 'execute', () => {
+				editor.editing.view.focus();
+			} );
+
 			// Bind the state of the styles panel to the command.
 			panelView.bind( 'activeStyles' ).to( styleCommand, 'value' );
 			panelView.bind( 'enabledStyles' ).to( styleCommand, 'enabledStyles' );
