@@ -354,128 +354,6 @@ export default class EditorUI {
 	_initFocusTracking() {
 		const editor = this.editor;
 
-		const getToolbarDefinitionWeight = toolbarDef => {
-			const { toolbarView, options } = toolbarDef;
-			let weight = 10;
-
-			// Prioritize already visible toolbars. They should get focused first.
-			if ( isVisible( toolbarView.element ) ) {
-				weight--;
-			}
-
-			// Prioritize contextual toolbars. They are displayed at the selection.
-			if ( options.isContextual ) {
-				weight--;
-			}
-
-			return weight;
-		};
-
-		// Focusable toolbars are either already visible or have beforeFocus() that promises that they might show up.
-		// Other toolbars are certainly not accessible for the current selection.
-		const getFocusableToolbarDefinitions = () => {
-			console.group( 'getFocusableToolbarDefinitions()' );
-
-			const definitions = [];
-
-			for ( const toolbarDef of this._focusableToolbars ) {
-				const { toolbarView, options } = toolbarDef;
-
-				// TODO: Duplication because of logging.
-				if ( isVisible( toolbarView.element ) ) {
-					console.log( `${ logToolbar( toolbarView ) }: because already visible.` );
-
-					definitions.push( toolbarDef );
-				} else if ( options.beforeFocus ) {
-					console.log( `${ logToolbar( toolbarView ) }: because has beforeFocus() (looks promising, might show up).` );
-
-					definitions.push( toolbarDef );
-				}
-			}
-
-			// Contextual and already visible toolbars have higher priority. If both are true, the toolbar will always focus first.
-			// For instance, a selected widget toolbar vs inline editor toolbar: both are visible but the widget toolbar is contextual.
-			definitions.sort( ( toolbarDefA, toolbarDefB ) =>
-				getToolbarDefinitionWeight( toolbarDefA ) - getToolbarDefinitionWeight( toolbarDefB ) );
-
-			console.groupEnd( 'getFocusableToolbarDefinitions()' );
-
-			return definitions;
-		};
-
-		const getCurrentFocusedToolbarDefinition = toolbarDefs => {
-			for ( const toolbarDef of toolbarDefs ) {
-				const { toolbarView } = toolbarDef;
-
-				if ( toolbarView.element.contains( this.focusTracker.focusedElement ) ) {
-					return toolbarDef;
-				}
-			}
-
-			return null;
-		};
-
-		const getNextFocusableToolbarDef = ( relativeDef, toolbarDefinitions ) => {
-			console.group( 'getNextFocusableToolbarDef()' );
-
-			if ( !relativeDef ) {
-				console.log( `No toolbar focused. Selecting the first one: ${ logToolbar( toolbarDefinitions[ 0 ].toolbarView ) }` );
-
-				console.groupEnd( 'getNextFocusableToolbarDef()' );
-				return toolbarDefinitions[ 0 ];
-			}
-
-			const focusedToolbarIndex = toolbarDefinitions.findIndex( ( { toolbarView } ) => toolbarView === relativeDef.toolbarView );
-			let nextFocusableToolbar;
-
-			if ( focusedToolbarIndex === toolbarDefinitions.length - 1 ) {
-				nextFocusableToolbar = toolbarDefinitions[ 0 ];
-			} else {
-				nextFocusableToolbar = toolbarDefinitions[ focusedToolbarIndex + 1 ];
-			}
-
-			console.log( `The next focusable toolbar is: ${ logToolbar( nextFocusableToolbar.toolbarView ) }` );
-			console.groupEnd( 'getNextFocusableToolbarDef()' );
-
-			return nextFocusableToolbar;
-		};
-
-		const focusNextFocusableToolbarDefinition = ( relativeDef, toolbarDefinitions ) => {
-			const candidateToolbarDefToFocus = getNextFocusableToolbarDef( relativeDef, toolbarDefinitions );
-
-			if ( !candidateToolbarDefToFocus ) {
-				console.log( '😔 No focusable toolbar found.' );
-
-				return;
-			}
-
-			console.log( `The toolbar candidate to focus is ${ logToolbar( candidateToolbarDefToFocus.toolbarView ) }.` );
-
-			const { toolbarView, options: { beforeFocus } } = candidateToolbarDefToFocus;
-
-			if ( beforeFocus ) {
-				console.log( 'The candidate has beforeFocus(). Calling beforeFocus()' );
-
-				beforeFocus();
-			}
-
-			if ( !isVisible( toolbarView.element ) ) {
-				console.log(
-					`😔 The candidate ${ logToolbar( candidateToolbarDefToFocus.toolbarView ) } turned out invisible. ` +
-					'Looking for another one.'
-				);
-
-				// (!!!) TODO. This might cause infinite loop. A mechanism to prevent this is required.
-				focusNextFocusableToolbarDefinition( candidateToolbarDefToFocus, toolbarDefinitions );
-
-				return;
-			}
-
-			toolbarView.focus();
-
-			console.log( `✅ Finally focused ${ logToolbar( candidateToolbarDefToFocus.toolbarView ) }.` );
-		};
-
 		let lastFocusedEditingArea;
 
 		// Focus the toolbar on the keystroke, if not already focused.
@@ -492,9 +370,9 @@ export default class EditorUI {
 				lastFocusedEditingArea = this.focusTracker.focusedElement;
 			}
 
-			const toolbarDefinitions = getFocusableToolbarDefinitions();
+			const toolbarDefinitions = this._getFocusableToolbarDefinitions();
 
-			focusNextFocusableToolbarDefinition( getCurrentFocusedToolbarDefinition( toolbarDefinitions ), toolbarDefinitions );
+			this._focusNextFocusableToolbarDefinition( this._getCurrentFocusedToolbarDefinition( toolbarDefinitions ), toolbarDefinitions );
 
 			cancel();
 
@@ -504,8 +382,8 @@ export default class EditorUI {
 		// Blur the toolbar and bring the focus back to origin.
 		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			console.group( 'Esc was pressed' );
-			const toolbarDefinitions = getFocusableToolbarDefinitions();
-			const focusedToolbarDef = getCurrentFocusedToolbarDefinition( toolbarDefinitions );
+			const toolbarDefinitions = this._getFocusableToolbarDefinitions();
+			const focusedToolbarDef = this._getCurrentFocusedToolbarDefinition( toolbarDefinitions );
 
 			if ( !focusedToolbarDef ) {
 				console.log( 'No toolbar was focused. No action needed.' );
@@ -544,6 +422,153 @@ export default class EditorUI {
 
 			console.groupEnd( 'Esc was pressed' );
 		} );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_getToolbarDefinitionWeight( toolbarDef ) {
+		const { toolbarView, options } = toolbarDef;
+		let weight = 10;
+
+		// Prioritize already visible toolbars. They should get focused first.
+		if ( isVisible( toolbarView.element ) ) {
+			weight--;
+		}
+
+		// Prioritize contextual toolbars. They are displayed at the selection.
+		if ( options.isContextual ) {
+			weight--;
+		}
+
+		return weight;
+	}
+
+	/**
+	 * TODO
+	 * Focusable toolbars are either already visible or have beforeFocus() that promises that they might show up.
+	 * Other toolbars are certainly not accessible for the current selection.
+	 *
+	 * @private
+	 */
+	_getFocusableToolbarDefinitions() {
+		console.group( 'getFocusableToolbarDefinitions()' );
+
+		const definitions = [];
+
+		for ( const toolbarDef of this._focusableToolbars ) {
+			const { toolbarView, options } = toolbarDef;
+
+			// TODO: Duplication because of logging.
+			if ( isVisible( toolbarView.element ) ) {
+				console.log( `${ logToolbar( toolbarView ) }: because already visible.` );
+
+				definitions.push( toolbarDef );
+			} else if ( options.beforeFocus ) {
+				console.log( `${ logToolbar( toolbarView ) }: because has beforeFocus() (looks promising, might show up).` );
+
+				definitions.push( toolbarDef );
+			}
+		}
+
+		// Contextual and already visible toolbars have higher priority. If both are true, the toolbar will always focus first.
+		// For instance, a selected widget toolbar vs inline editor toolbar: both are visible but the widget toolbar is contextual.
+		definitions.sort( ( toolbarDefA, toolbarDefB ) =>
+			this._getToolbarDefinitionWeight( toolbarDefA ) - this._getToolbarDefinitionWeight( toolbarDefB ) );
+
+		console.groupEnd( 'getFocusableToolbarDefinitions()' );
+
+		return definitions;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_getCurrentFocusedToolbarDefinition( toolbarDefs ) {
+		for ( const toolbarDef of toolbarDefs ) {
+			const { toolbarView } = toolbarDef;
+
+			if ( toolbarView.element.contains( this.focusTracker.focusedElement ) ) {
+				return toolbarDef;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_getNextFocusableToolbarDef( relativeDef, toolbarDefinitions ) {
+		console.group( 'getNextFocusableToolbarDef()' );
+
+		if ( !relativeDef ) {
+			console.log( `No toolbar focused. Selecting the first one: ${ logToolbar( toolbarDefinitions[ 0 ].toolbarView ) }` );
+
+			console.groupEnd( 'getNextFocusableToolbarDef()' );
+			return toolbarDefinitions[ 0 ];
+		}
+
+		const focusedToolbarIndex = toolbarDefinitions.findIndex( ( { toolbarView } ) => toolbarView === relativeDef.toolbarView );
+		let nextFocusableToolbar;
+
+		if ( focusedToolbarIndex === toolbarDefinitions.length - 1 ) {
+			nextFocusableToolbar = toolbarDefinitions[ 0 ];
+		} else {
+			nextFocusableToolbar = toolbarDefinitions[ focusedToolbarIndex + 1 ];
+		}
+
+		console.log( `The next focusable toolbar is: ${ logToolbar( nextFocusableToolbar.toolbarView ) }` );
+		console.groupEnd( 'getNextFocusableToolbarDef()' );
+
+		return nextFocusableToolbar;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_focusNextFocusableToolbarDefinition( relativeDef, toolbarDefinitions ) {
+		const candidateToolbarDefToFocus = this._getNextFocusableToolbarDef( relativeDef, toolbarDefinitions );
+
+		if ( !candidateToolbarDefToFocus ) {
+			console.log( '😔 No focusable toolbar found.' );
+
+			return;
+		}
+
+		console.log( `The toolbar candidate to focus is ${ logToolbar( candidateToolbarDefToFocus.toolbarView ) }.` );
+
+		const { toolbarView, options: { beforeFocus } } = candidateToolbarDefToFocus;
+
+		if ( beforeFocus ) {
+			console.log( 'The candidate has beforeFocus(). Calling beforeFocus()' );
+
+			beforeFocus();
+		}
+
+		if ( !isVisible( toolbarView.element ) ) {
+			console.log(
+				`😔 The candidate ${ logToolbar( candidateToolbarDefToFocus.toolbarView ) } turned out invisible. ` +
+				'Looking for another one.'
+			);
+
+			// (!!!) TODO. This might cause infinite loop. A mechanism to prevent this is required.
+			this.focusNextFocusableToolbarDefinition( candidateToolbarDefToFocus, toolbarDefinitions );
+
+			return;
+		}
+
+		toolbarView.focus();
+
+		console.log( `✅ Finally focused ${ logToolbar( candidateToolbarDefToFocus.toolbarView ) }.` );
 	}
 
 	/**
