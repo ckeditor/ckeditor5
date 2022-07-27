@@ -207,7 +207,9 @@ export default class HighlightUI extends Plugin {
 				const buttonView = componentFactory.create( 'highlight:' + option.model );
 
 				// Update lastExecutedHighlight on execute.
-				this.listenTo( buttonView, 'execute', () => dropdownView.buttonView.set( { lastExecuted: option.model } ) );
+				this.listenTo( buttonView, 'execute', () => {
+					dropdownView.buttonView.set( { lastExecuted: option.model } );
+				} );
 
 				return buttonView;
 			} );
