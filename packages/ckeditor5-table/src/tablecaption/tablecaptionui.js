@@ -63,8 +63,6 @@ export default class TableCaptionUI extends Plugin {
 						writer.addClass( 'table__caption_highlighted', figcaptionElement );
 					} );
 				}
-
-				editor.editing.view.focus();
 			} );
 
 			return view;

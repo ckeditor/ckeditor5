@@ -68,8 +68,6 @@ export default class ImageCaptionUI extends Plugin {
 						writer.addClass( 'image__caption_highlighted', figcaptionElement );
 					} );
 				}
-
-				editor.editing.view.focus();
 			} );
 
 			return view;
