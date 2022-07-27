@@ -229,6 +229,7 @@
 			"name": "Installation",
 			"id": "installation",
 			"slug": "installation",
+			"navigationIncludeIndex": true,
 			"categories": [
 				{
 					"name": "Getting started",
@@ -264,6 +265,7 @@
 			"name": "Features",
 			"id": "features",
 			"slug": "features",
+			"navigationIncludeIndex": true,
 			"categories": [
 				{
 					"name": "Collaboration",
@@ -381,6 +383,7 @@
 			"name": "Framework",
 			"id": "framework",
 			"slug": "framework",
+			"navigationIncludeIndex": true,
 			"categories": [
 				{
 					"name": "Guides",
