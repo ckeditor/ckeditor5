@@ -13,6 +13,7 @@ import TooltipView from '../tooltip/tooltipview';
 
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../../theme/components/button/button.css';
 
@@ -127,7 +128,7 @@ export default class ButtonView extends View {
 			this._getTooltipString.bind( this )
 		);
 
-		this.setTemplate( {
+		const template = {
 			tag: 'button',
 
 			attributes: {
@@ -163,7 +164,17 @@ export default class ButtonView extends View {
 					}
 				} )
 			}
-		} );
+		};
+
+		// For safari we have to force the focus as it is implemented differently than in other browsers.
+		if ( env.isSafari ) {
+			template.on.mousedown = bind.to( evt => {
+				this.focus();
+				evt.preventDefault();
+			} );
+		}
+
+		this.setTemplate( template );
 	}
 
 	/**
