@@ -177,11 +177,6 @@ export default class ColorInputView extends View {
 		const colorPreview = new View();
 		const removeColorButton = this._createRemoveColorButton();
 
-		// The color picker is not focusable, so let's focus the input instead.
-		this.listenTo( colorGrid, 'execute', () => {
-			this._inputView.focus();
-		} );
-
 		colorPreview.setTemplate( {
 			tag: 'span',
 			attributes: {
