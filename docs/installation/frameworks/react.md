@@ -135,7 +135,7 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 
 ## Customized installation
 
-The {@link installation/advanced/predefined-builds CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/getting-started/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
+The {@link installation/advanced/predefined-builds CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. You can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/getting-started/configuration#removing-features remove some plugins}. However, if you want to add more plugins, you need to rebuild the editor.
 
 ### Using the CKEditor 5 online builder
 
@@ -457,9 +457,9 @@ You can read more about using CKEditor 5 from source in the {@link installation/
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
+The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to use {@link installation/frameworks/react#using-the-ckeditor-5-online-builder the CKEditor 5 online builder}.
 
-For such a scenario we provide a few ready-to-use integrations featuring collaborative editing in React applications:
+Another way is to {@link installation/frameworks/react#integrating-the-editor-from-source build the editor from source} including the collaboration plugins together with the React application. For such a scenario we provide a few ready-to-use integrations featuring collaborative editing in React applications:
 
 * [CKEditor 5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
 * [CKEditor 5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
