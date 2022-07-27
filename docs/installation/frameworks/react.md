@@ -540,6 +540,12 @@ The `CKEditorContext` component supports the following properties:
 	An example build that exposes both context and classic editor can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
 </info-box>
 
+## Watchdog and context watchdog
+
+{@link features/watchdog Watchdog features} are built into CKEditor 5 React components, and shouldn't be imported and integrated manually.
+
+The main CKEditor components have the {@link module:watchdog/editorwatchdog~EditorWatchdog EditorWatchdog} integration, while the CKeditorContext component has built-in {@link module:watchdog/contextwatchdog~ContextWatchdog ContextWatchdog} integration.
+
 ## Localization
 
 CKEditor 5 supports {@link features/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor 5 in your React application.
