@@ -276,7 +276,10 @@ describe( 'Alignment UI', () => {
 			dropdown.render();
 
 			buttonAlignLeft.fire( 'execute' );
-			sinon.assert.calledOnce( spy );
+
+			// The focus is called twice - once by the button itself
+			// and once by the dropdown it is in.
+			sinon.assert.calledTwice( spy );
 		} );
 
 		describe( 'config', () => {

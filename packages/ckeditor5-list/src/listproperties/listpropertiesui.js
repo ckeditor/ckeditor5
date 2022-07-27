@@ -189,7 +189,7 @@ function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, butto
 
 		// Focus the editable after executing the command.
 		// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
-		editor.plugins.get( 'ListPropertiesUI' ).listenTo( dropdownView, 'execute', () => {
+		dropdownView.on( 'execute', () => {
 			editor.editing.view.focus();
 		} );
 

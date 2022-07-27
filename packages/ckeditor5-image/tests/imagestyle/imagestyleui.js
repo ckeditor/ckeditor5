@@ -427,6 +427,7 @@ describe( 'ImageStyleUI', () => {
 				const commandSpy = sinon.spy( editor, 'execute' );
 
 				for ( const { view, buttonView } of dropdowns ) {
+					buttonView.render();
 					buttonView.fire( 'execute' );
 
 					sinon.assert.notCalled( commandSpy );

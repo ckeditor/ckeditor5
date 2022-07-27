@@ -316,11 +316,7 @@ function closeDropdownOnBlur( dropdownView ) {
 	} );
 }
 
-// Adds a behavior to a dropdownView that closes the dropdown view
-// and passes the focus back to the buttonView on "execute" event.
-// It is done with a high priority to allow particular features to
-// override the default behavior (e.g. move the focus to the editor editable)
-// using a low-priority listener.
+// Adds a behavior to a dropdownView that closes the dropdown view on "execute" event.
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function closeDropdownOnExecute( dropdownView ) {
@@ -331,9 +327,8 @@ function closeDropdownOnExecute( dropdownView ) {
 			return;
 		}
 
-		dropdownView.buttonView.focus();
 		dropdownView.isOpen = false;
-	}, { priority: 'high' } );
+	} );
 }
 
 // Adds a behavior to a dropdownView that focuses the dropdown's panel view contents on keystrokes.
