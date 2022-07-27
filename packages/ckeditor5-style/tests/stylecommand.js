@@ -754,6 +754,27 @@ describe( 'StyleCommand', () => {
 					'<heading1>baz</heading1>'
 				);
 			} );
+
+			it( 'should apply a style to a selected element nested in a non-limit element`', () => {
+				model.schema.register( 'div', { inheritAllFrom: '$block' } );
+				model.schema.extend( 'paragraph', { allowIn: 'div' } );
+
+				editor.conversion.for( 'downcast' ).elementToElement( { view: 'div', model: 'div' } );
+
+				setData( model,
+					'<div>' +
+						'[<paragraph>Well hello there!</paragraph>]' +
+					'</div>'
+				);
+
+				command.execute( { styleName: 'Red paragraph' } );
+
+				expect( getData( model ) ).to.equal(
+					'<div>' +
+						'[<paragraph htmlAttributes="{"classes":["red"]}">Well hello there!</paragraph>]' +
+					'</div>'
+				);
+			} );
 		} );
 	} );
 

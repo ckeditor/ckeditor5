@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { logWarning, first } from 'ckeditor5/src/utils';
+import { logWarning } from 'ckeditor5/src/utils';
 
 /**
  * Style command.
@@ -91,10 +91,20 @@ export default class StyleCommand extends Command {
 		}
 
 		// Block styles.
-		const firstBlock = first( selection.getSelectedBlocks() );
+		const selectedElement = selection.getSelectedElement();
+		const selectedBlocks = Array.from( selection.getSelectedBlocks() );
 
-		if ( firstBlock ) {
-			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } );
+		// If there is a selected element it means that there is just a single tree of elements selected
+		// so we should start from the deepest block which is the last element from `getSelectedBlocks()`.
+		// Otherwise there could be neighbouring blocks selected for a non-collapsed selection - as we want
+		// to display enabled styles for a position where selection started, we should use first element from
+		// `getSelectedBlocks()`.
+		const index = selectedElement ? selectedBlocks.length - 1 : 0;
+
+		const startingBlock = selectedBlocks[ index ];
+
+		if ( startingBlock ) {
+			const ancestorBlocks = startingBlock.getAncestors( { includeSelf: true, parentFirst: true } );
 
 			for ( const block of ancestorBlocks ) {
 				// E.g. reached a model table when the selection is in a cell. The command should not modify
