@@ -474,7 +474,7 @@ The mention feature is using the power of [CSS variables](https://developer.mozi
 
 ### Comments with mentions
 
-It is possible to configure the Mentions feature to work with {@link features/comments Comments feature}. Detailed guidance on that matter you can find {@link features/annotations-custom-configuration#comment-editor-configuration here}.
+It is possible to configure the Mentions feature to work with the {@link features/comments Comments feature}. Here you can find {@link features/annotations-custom-configuration#comment-editor-configuration detailed guidance on that matter}.
 
 ## Installation
 
