@@ -104,7 +104,7 @@ export default class TextPartLanguageUI extends Plugin {
 			} );
 
 			// Execute command when an item from the dropdown is selected.
-			dropdownView.on( 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', evt => {
 				languageCommand.execute( {
 					languageCode: evt.source.languageCode,
 					textDirection: evt.source.textDirection

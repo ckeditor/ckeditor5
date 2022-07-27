@@ -172,7 +172,7 @@ export default class ImageResizeButtons extends Plugin {
 			dropdownView.listView.ariaLabel = t( 'Image resize list' );
 
 			// Execute command when an item from the dropdown is selected.
-			dropdownView.on( 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source.commandName, { width: evt.source.commandValue } );
 				editor.editing.view.focus();
 			} );

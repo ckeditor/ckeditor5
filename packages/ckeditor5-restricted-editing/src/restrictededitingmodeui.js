@@ -61,7 +61,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 				isOn: false
 			} );
 
-			dropdownView.on( 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source._commandName );
 				editor.editing.view.focus();
 			} );

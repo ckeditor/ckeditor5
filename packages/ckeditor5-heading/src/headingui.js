@@ -104,7 +104,7 @@ export default class HeadingUI extends Plugin {
 			} );
 
 			// Execute command when an item from the dropdown is selected.
-			dropdownView.on( 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source.commandName, evt.source.commandValue ? { value: evt.source.commandValue } : undefined );
 				editor.editing.view.focus();
 			} );

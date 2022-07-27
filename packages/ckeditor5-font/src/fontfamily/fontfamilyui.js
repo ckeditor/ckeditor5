@@ -60,7 +60,7 @@ export default class FontFamilyUI extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( command );
 
 			// Execute command when an item from the dropdown is selected.
-			dropdownView.on( 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
 				editor.editing.view.focus();
 			} );
