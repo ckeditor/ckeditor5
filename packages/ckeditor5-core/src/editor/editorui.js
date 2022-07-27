@@ -104,8 +104,9 @@ export default class EditorUI {
 		this._focusableToolbars = [];
 
 		/**
-		 * TODO
+		 * A set of all the available focusable editing areas (editor domRoots, sourceEditing area).
 		 *
+		 * @type {Set}
 		 * @private
 		 */
 		this._focusableEditingAreas = new Set();
@@ -163,7 +164,7 @@ export default class EditorUI {
 
 	/**
 	 * Store the native DOM editable element used by the editor under
-	 * a unique name.
+	 * a unique name. Register that DOM element as a focusable editing area.
 	 *
 	 * @param {String} rootName The unique name of the editable element.
 	 * @param {HTMLElement} domElement The native DOM editable element.
@@ -202,13 +203,16 @@ export default class EditorUI {
 	}
 
 	/**
-	 * TODO
+	 * Registers all focusable toolbars in the editor.
 	 *
-	 * @param {*} toolbarView
-	 * @param {*} options
-	 * @param {*} options.isContextual
-	 * @param {*} options.beforeFocus
-	 * @param {*} options.afterBlur
+	 * @param {module:ui/toolbar/toolbarview~ToolbarView} toolbarView
+	 * @param {Object} options
+	 * @param {Boolean} options.isContextual Marks the higher priority toolbar. For example when there are 2 visible toolbars,
+	 * it allows to distinguish which toolbar should be focused first after the `alt+f10` keystroke
+	 * @param {Function} [options.beforeFocus] A callback executed before the `toolbarView` gains focus
+	 * upon the `Alt+F10` keystroke.
+	 * @param {Function} [options.afterBlur] A callback executed after `toolbarView` loses focus upon
+	 * `Esc` keystroke but before the focus goes back to the `origin`.
 	 */
 	registerFocusableToolbar( toolbarView, options = {} ) {
 		console.log( this.editor.constructor.name, `Registering toolbar ${ logToolbar( toolbarView ) }` );
@@ -227,9 +231,10 @@ export default class EditorUI {
 	}
 
 	/**
-	 * TODO
+	 * Registers focusable element in the focus tracker, adds it to the keystroke handler as well as updates the
+	 * `_focusableEditingAreas` set.
 	 *
-	 * @param {*} viewOrElement
+	 * @param {module:engine/view/element~Element|HTMLElement} viewOrElement
 	 */
 	registerFocusableEditingArea( viewOrElement ) {
 		// TODO: Move it somewhere else.
