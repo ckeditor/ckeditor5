@@ -252,6 +252,8 @@ export default class DropdownView extends View {
 		// be updated every time the dropdown is open.
 		this.on( 'change:isOpen', () => {
 			if ( !this.isOpen ) {
+				this.buttonView.focus();
+
 				return;
 			}
 
