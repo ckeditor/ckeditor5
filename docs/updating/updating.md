@@ -45,7 +45,7 @@ It is good to follow [CKEditor Ecosystem Blog](https://ckeditor.com/blog/) as it
 
 ### Migration guides
 
-Should there be any breaking or important changes that affect your editor integration and require special attention, these will also be published in the CKEditor 5 documentation in the {@link updating/updating Updating section}. These guides provide a more technical, code-oriented information directed at integrators, administrators and developers and offer solutions and necessary steps to take while updating.
+Should there be any breaking or important changes that affect your editor integration and require special attention, these will also be published in the CKEditor 5 documentation in the {@link updating/index Updating section}. These guides provide a more technical, code-oriented information directed at integrators, administrators and developers and offer solutions and necessary steps to take while updating.
 
 Administrators and developers should always refer to migration guides after each release and make sure to implement all the introduced changes properly to ensure stable and uninterrupted operation.
 

@@ -33,7 +33,7 @@ There are more CKEditor 5 features that can help you format your content:
 
 ## Configuring the remove format feature
 
-This feature has no integration–level configuration. Once enabled, it works out–of–the–box with all {@link features/overview core editor features}.
+This feature has no integration–level configuration. Once enabled, it works out–of–the–box with all {@link features/index core editor features}.
 
 ## A short note about content types in the editor
 
