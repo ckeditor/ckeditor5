@@ -23,6 +23,7 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
@@ -55,7 +56,7 @@ ClassicEditor
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
 			CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption,
-			EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
+			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
 			AutoLink, Mention, TextTransformation,
 			Alignment, IndentBlock,
 			PasteFromOffice, PageBreak, HorizontalLine,
@@ -71,7 +72,7 @@ ClassicEditor
 			'|',
 			'bulletedList', 'numberedList', 'todoList',
 			'|',
-			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
+			'blockQuote', 'insertImage', 'insertTable', 'mediaEmbed', 'codeBlock',
 			'|',
 			'htmlEmbed',
 			'|',
