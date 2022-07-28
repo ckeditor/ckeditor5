@@ -33,7 +33,7 @@ Things to keep in mind:
 
 * Search for existing issues before starting a new one. This helps our team to have the backlog in order.
 * Be concise and informative, making it easy for our team to understand the problem.
-* Do not use the issues pages for asking for help. The project has other {@link support/getting-support communication channels} for that purpose.
+* Do not use the issues pages for asking for help. The project has other {@link support/index communication channels} for that purpose.
 * Feel free to jump into discussions around issues, exposing your opinion!
 
 Issues with third-party plugins should be reported directly to their developers.

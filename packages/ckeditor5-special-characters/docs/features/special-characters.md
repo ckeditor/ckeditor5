@@ -7,6 +7,10 @@ menu-title: Special characters
 
 The {@link module:special-characters/specialcharacters~SpecialCharacters} plugin provides a possibility to insert special characters into the rich-text editor. These would typically include characters and signs that serve a specific purpose, like mathematical operators, currency symbols, punctuation, graphic symbols (e.g. arrows or bullets). The feature may be used to provide fast access to a broader selection of Unicode letters typically not accessible from the keyboard, like umlauts or other diacritics. It also provides support for emojis.
 
+<info-box info>
+	The Special characters feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters} in the editor below to gain access to a [configurable](#configuration) panel with a table of selectable special characters.
@@ -14,6 +18,10 @@ Use the toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons
 {@snippet features/special-characters-source}
 
 {@snippet features/special-characters}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Configuration
 

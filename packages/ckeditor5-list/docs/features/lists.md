@@ -14,7 +14,7 @@ Lists are useful when you want to emphasize selected information, highlight a se
 You may find additional interesting details and examples in the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post after reading this guide.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 {@snippet features/lists-source}
@@ -36,12 +36,16 @@ A Markdown code provided by the {@link features/autoformat autoformatting featur
 
 {@snippet features/lists-basic}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## List properties
 
 Beside the basic functionality of creating the ordered and unordered lists, CKEditor 5 offers additional formatting tools that allow controlling the lists. Features such as more styles for list markers, setting the start index or reversing the list order can be enabled separately or all together. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only. See the [installation](#list-properties-2) section to learn how to enable it in your editor.
+	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#list-properties-2) section to learn how to enable it in your editor.
 </info-box>
 
 ### List styles
@@ -96,7 +100,7 @@ These features also provide similar functionality:
 ## Installation
 
 <info-box info>
-	The base list feature is enabled by default in all {@link installation/advanced/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
+	The base list feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
@@ -122,7 +126,7 @@ ClassicEditor
 ### List properties
 
 <info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only.
+	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
 </info-box>
 
 To enable the list properties feature, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals HTMLTextAreaElement */
+
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
@@ -20,7 +22,7 @@ const ElementApiMixin = {
 	/**
 	 * @inheritDoc
 	 */
-	updateSourceElement() {
+	updateSourceElement( data = this.data.get() ) {
 		if ( !this.sourceElement ) {
 			/**
 			 * Cannot update the source element of a detached editor.
@@ -36,7 +38,20 @@ const ElementApiMixin = {
 			);
 		}
 
-		setDataInElement( this.sourceElement, this.data.get() );
+		const shouldUpdateSourceElement = this.config.get( 'updateSourceElementOnDestroy' );
+		const isSourceElementTextArea = this.sourceElement instanceof HTMLTextAreaElement;
+
+		// The data returned by the editor might be unsafe, so we want to prevent rendering
+		// unsafe content inside the source element different than <textarea>, which is considered
+		// secure. This behaviour could be changed by setting the `updateSourceElementOnDestroy`
+		// configuration option to `true`.
+		if ( !shouldUpdateSourceElement && !isSourceElementTextArea ) {
+			setDataInElement( this.sourceElement, '' );
+
+			return;
+		}
+
+		setDataInElement( this.sourceElement, data );
 	}
 };
 
@@ -62,4 +77,6 @@ export default ElementApiMixin;
  * Updates the {@link #sourceElement editor source element}'s content with the data.
  *
  * @method #updateSourceElement
+ * @param {String} data The data that should be used to update the source element.
+ * By default, it is taken directly from the existing editor instance.
  */

@@ -20,7 +20,7 @@ The plugin enables the following features in the rich-text editor:
 </info-box>
 
 <info-box info>
-	The font styles feature is enabled by default in the {@link installation/advanced/predefined-builds #document-editor document editor build} only. See the [installation](#installation) section to learn how to enable it in your editor.
+	The font styles feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
@@ -28,6 +28,10 @@ The plugin enables the following features in the rich-text editor:
 Use the toolbar dropdowns in the demo below to control font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font color} and font background color {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Font background color}.
 
 {@snippet features/font}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 

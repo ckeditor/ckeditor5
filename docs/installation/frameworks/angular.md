@@ -14,7 +14,7 @@ order: 20
 	</a>
 </p>
 
-CKEditor 5 consists of {@link installation/advanced/predefined-builds ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
+CKEditor 5 consists of {@link installation/getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor 5 Framework} upon which the builds are based.
 
 Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
@@ -45,7 +45,7 @@ In your existing Angular project, install the [CKEditor 5 WYSIWYG editor compone
 npm install --save @ckeditor/ckeditor5-angular
 ```
 
-Install one of the {@link installation/advanced/predefined-builds#available-builds official editor builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
+Install one of the {@link installation/getting-started/predefined-builds#available-builds official editor builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 

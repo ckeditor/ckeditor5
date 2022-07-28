@@ -11,11 +11,19 @@ This feature is especially useful when your content includes text sections writt
 
 The text part language feature implements the [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification.
 
+<info-box info>
+	The Text part language feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the language toolbar dropdown in the editor below to see the feature in action. Select a text fragment and use the toolbar dropdown to choose from predefined available languages that can be applied to the content.
 
 {@snippet features/textpartlanguage}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 

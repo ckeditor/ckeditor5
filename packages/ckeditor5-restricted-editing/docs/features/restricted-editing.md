@@ -19,6 +19,10 @@ By using this feature, the users of your application will be able to create temp
 	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
 </info-box>
 
+<info-box info>
+	The Restricted editing feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 The demo below allows you to emulate both modes. You can start from creating a template of the document in the standard editing mode. Select a section of text and use the toolbar button {@icon @ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg Enable editing} to turn selected area into an editable region or to remove an existing one.
@@ -30,6 +34,10 @@ Then you can switch to the restricted editing mode to see how the editable and n
 </info-box>
 
 {@snippet features/restricted-editing}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 

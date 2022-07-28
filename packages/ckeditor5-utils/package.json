@@ -42,7 +42,8 @@
     "src/**/*.js",
     "src/**/*.d.ts",
     "theme",
-    "ckeditor5-metadata.json"
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.release.json",

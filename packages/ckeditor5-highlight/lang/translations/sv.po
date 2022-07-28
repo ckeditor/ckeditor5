@@ -50,4 +50,4 @@ msgstr "Markera"
 
 msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
 msgid "Text highlight toolbar"
-msgstr ""
+msgstr "Verktygsfält för textmarkering"

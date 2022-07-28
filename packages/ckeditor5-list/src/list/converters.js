@@ -838,6 +838,11 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 			// If this is not a list, try inserting content at the end of the currently handled `listItem`.
 			const result = conversionApi.convertItem( child, writer.createPositionAt( listItemModel, 'end' ) );
 
+			// Ignore view elements that were not converted to any model element.
+			if ( !result.modelRange ) {
+				continue;
+			}
+
 			// It may end up that the current `listItem` becomes split (if that content cannot be inside `listItem`). For example:
 			//
 			// <li><p>Foo</p></li>
