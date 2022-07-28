@@ -92,23 +92,26 @@ export function getElementWidthInPixels( domElement ) {
  * @returns {Number}
  */
 export function getTableWidthInPixels( table, editor ) {
-	const viewTbody = getTbodyViewElement( table, editor );
-	const domTbody = editor.editing.view.domConverter.mapViewToDom( viewTbody );
+	// It is possible for a table to not have a <tbody> element - see #11878.
+	const referenceElement = getChildrenViewElement( table, 'tbody', editor ) || getChildrenViewElement( table, 'thead', editor );
+	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement );
 
-	return getElementWidthInPixels( domTbody );
+	return getElementWidthInPixels( domReferenceElement );
 }
 
-// Returns the `<tbody>` view element, if it exists in a table. Returns `undefined` otherwise.
+// Returns the a view element with a given name that is nested directly in a `<table>` element
+// related to a given `modelTable`.
 //
 // @private
 // @param {module:engine/model/element~Element} table
 // @param {module:core/editor/editor~Editor} editor
-// @returns {module:engine/view/element~Element|undefined}
-function getTbodyViewElement( table, editor ) {
-	const viewFigure = editor.editing.mapper.toViewElement( table );
+// @param {String} elementName Name of a view to be looked for, e.g. `'colgroup`', `'thead`'.
+// @returns {module:engine/view/element~Element|undefined} Matched view or `undefined` otherwise.
+function getChildrenViewElement( modelTable, elementName, editor ) {
+	const viewFigure = editor.editing.mapper.toViewElement( modelTable );
 	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
 
-	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'tbody' ) );
+	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', elementName ) );
 }
 
 /**
@@ -159,20 +162,7 @@ export function getNumberOfColumn( table, editor ) {
  * @returns {Number}
  */
 export function isTableRendered( table, editor ) {
-	return !!getColgroupViewElement( table, editor );
-}
-
-// Returns the `<colgroup>` view element, if it exists in a table. Returns `undefined` otherwise.
-//
-// @private
-// @param {module:engine/model/element~Element} table
-// @param {module:core/editor/editor~Editor} editor
-// @returns {module:engine/view/element~Element|undefined}
-function getColgroupViewElement( modelTable, editor ) {
-	const viewFigure = editor.editing.mapper.toViewElement( modelTable );
-	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
-
-	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'colgroup' ) );
+	return !!getChildrenViewElement( table, 'colgroup', editor );
 }
 
 /**
