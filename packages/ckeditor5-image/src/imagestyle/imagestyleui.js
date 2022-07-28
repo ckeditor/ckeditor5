@@ -212,6 +212,7 @@ export default class ImageStyleUI extends Plugin {
 
 	_executeCommand( name ) {
 		this.editor.execute( 'imageStyle', { value: name } );
+		this.editor.editing.view.focus();
 	}
 }
 

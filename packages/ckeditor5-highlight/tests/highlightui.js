@@ -192,8 +192,8 @@ describe( 'HighlightUI', () => {
 			it( 'should focus view after command execution', () => {
 				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-				button.commandName = 'highlight';
-				button.fire( 'execute' );
+				dropdown.buttonView.commandName = 'highlight';
+				dropdown.buttonView.fire( 'execute' );
 
 				sinon.assert.calledOnce( focusSpy );
 			} );
