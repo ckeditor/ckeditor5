@@ -295,16 +295,19 @@ export function addKeyboardHandlingForGrid( view, gridElementsCollection, number
 	view.keystrokes.set( 'arrowright', ( evt ) => {
 		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements );
+		let nextIndex;
 
 		// TODO: for tables'd be ok, for others should not change row no
 		if ( focusedElementIndex === gridElements.length - 1 ) {
-			gridElements[ 0 ].focus();
+			nextIndex = 0;
 		} else {
-			gridElements[ focusedElementIndex + 1 ].focus();
+			nextIndex = focusedElementIndex + 1;
+		}
 
-			if ( isTable ) {
-				gridElements[ focusedElementIndex + 1 ].selectTile( view );
-			}
+		gridElements[ nextIndex ].focus();
+
+		if ( isTable ) {
+			gridElements[ nextIndex ].selectTile( view );
 		}
 
 		evt.stopPropagation();
@@ -314,15 +317,19 @@ export function addKeyboardHandlingForGrid( view, gridElementsCollection, number
 	view.keystrokes.set( 'arrowleft', ( evt ) => {
 		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements );
+		let nextIndex;
+
 		// TODO: for tables'd be ok, for others should not change row no
 		if ( focusedElementIndex === 0 ) {
-			gridElements[ gridElements.length - 1 ].focus();
+			nextIndex = gridElements.length - 1;
 		} else {
-			gridElements[ focusedElementIndex - 1 ].focus();
+			nextIndex = focusedElementIndex - 1;
 		}
 
+		gridElements[ nextIndex ].focus();
+
 		if ( isTable ) {
-			gridElements[ focusedElementIndex - 1 ].selectTile( view );
+			gridElements[ nextIndex ].selectTile( view );
 		}
 
 		evt.stopPropagation();

@@ -158,7 +158,7 @@ export default class InsertTableView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	 destroy() {
+	destroy() {
 		super.destroy();
 
 		this.keystrokes.destroy();
@@ -251,7 +251,6 @@ class TableSizeGridBoxView extends View {
 	focus() {
 		this.element.focus();
 		this.isOn = true;
-		const domEvt = new MouseEvent( 'boxover', { type: 'mouseover' } );
 		//this.fire( 'boxover' );
 		//this.fire( 'boxover', new DomEventData( this, domEvt ) );
 		//view.fire( 'boxover', new DomEventData( this, domEvt ) );
@@ -260,7 +259,6 @@ class TableSizeGridBoxView extends View {
 
 	selectTile( parentView ) {
 		const { row, column } = this.element.dataset;
-
 		parentView.set( {
 			rows: parseInt( row ),
 			columns: parseInt( column )
