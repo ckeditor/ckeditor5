@@ -17,15 +17,21 @@ import WidgetToolbarRepository from '../src/widgettoolbarrepository';
 import { isWidget, toWidget } from '../src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'WidgetToolbarRepository', () => {
-	let editor, model, balloon, widgetToolbarRepository, editorElement;
+	let editor, model, balloon, widgetToolbarRepository, editorElement, spyEditorUI;
 
 	testUtils.createSinonSandbox();
+
+	before( () => {
+		sinon.spy( EditorUI.prototype, 'registerFocusableToolbar' );
+		spyEditorUI = EditorUI.prototype.registerFocusableToolbar;
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -44,6 +50,10 @@ describe( 'WidgetToolbarRepository', () => {
 				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 			} );
+	} );
+
+	after( () => {
+		spyEditorUI.restore;
 	} );
 
 	afterEach( () => {
@@ -84,21 +94,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: () => null
 			} );
 
-			expect( editor.ui._focusableToolbars.length ).to.not.equal( 0 );
-		} );
-
-		it( 'should register multiple focusableToolbas in the editor.ui', () => {
-			widgetToolbarRepository.register( 'fake', {
-				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: () => null
-			} );
-
-			widgetToolbarRepository.register( 'fake2', {
-				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: () => null
-			} );
-
-			expect( editor.ui._focusableToolbars.length ).to.equal( 2 );
+			expect( spyEditorUI.callCount ).to.equal( 1 );
 		} );
 
 		it( 'should throw when adding two times widget with the same id', () => {
