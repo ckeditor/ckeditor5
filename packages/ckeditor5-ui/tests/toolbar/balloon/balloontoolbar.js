@@ -19,6 +19,7 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -34,14 +35,18 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
-	let resizeCallback;
+	let resizeCallback, spyEditorUI;
 
 	testUtils.createSinonSandbox();
+
+	before( () => {
+		sinon.spy( EditorUI.prototype, 'registerFocusableToolbar' );
+		spyEditorUI = EditorUI.prototype.registerFocusableToolbar;
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
-
 		// Make sure other tests of the editor do not affect tests that follow.
 		// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
 		// in DOM, the following DOM mock will have no effect.
@@ -82,6 +87,10 @@ describe( 'BalloonToolbar', () => {
 				// Remove all selection ranges from DOM before testing.
 				window.getSelection().removeAllRanges();
 			} );
+	} );
+
+	after( () => {
+		spyEditorUI.restore;
 	} );
 
 	afterEach( () => {
@@ -182,6 +191,10 @@ describe( 'BalloonToolbar', () => {
 
 	it( 'should have the isFloating option set to true', () => {
 		expect( balloonToolbar.toolbarView.options.isFloating ).to.be.true;
+	} );
+
+	it( 'should register focusableToolbar in the editor.ui', () => {
+		expect( spyEditorUI.callCount ).to.equal( 1 );
 	} );
 
 	describe( 'pluginName', () => {
