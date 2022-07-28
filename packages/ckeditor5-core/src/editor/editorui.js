@@ -97,14 +97,15 @@ export default class EditorUI {
 		this._editableElementsMap = new Map();
 
 		/**
-		 * TODO
+		 * All available & focusable toolbars.
 		 *
+		 * @type {Array.<Object>}
 		 * @private
 		 */
 		this._focusableToolbars = [];
 
 		/**
-		 * A set of all the available focusable editing areas (editor domRoots, sourceEditing area).
+		 * A set of all the available & focusable editing areas (editor domRoots or sourceEditing area).
 		 *
 		 * @type {Set}
 		 * @private
