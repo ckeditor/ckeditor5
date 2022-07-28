@@ -253,7 +253,7 @@ export default class DropdownView extends View {
 		this.on( 'change:isOpen', () => {
 			if ( !this.isOpen ) {
 				// If the dropdown was closed, move the focus back to the button (#12125).
-				this.buttonView.focus();
+				this.focus();
 
 				return;
 			}
@@ -280,7 +280,6 @@ export default class DropdownView extends View {
 
 		const closeDropdown = ( data, cancel ) => {
 			if ( this.isOpen ) {
-				this.buttonView.focus();
 				this.isOpen = false;
 				cancel();
 			}
