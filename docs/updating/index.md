@@ -1,8 +1,6 @@
 ---
 category: updating
 order: 10
-toc: false
-feedback-widget: false
 meta-title: CKEditor 5 updating documentation
 meta-description: Learn how to maintain and keep you CKEditor 5 up-to-date at all times.
 ---

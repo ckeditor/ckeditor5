@@ -1,3 +1,4 @@
+---
 category: installation
 order: 10
 menu-title: CKEditor 5 installation overview
@@ -20,13 +21,14 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 ## Start using CKEditor 5 instantly with CDN
 
 Start using CKEditor 5 instantly thanks to the power of our CDN. Check out the {@link installation/getting-started/quick-start Quick start guide}.
-## Installing CKEditor 5
-
-Learn how to install a custom CKEditor 5 easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, and learn to {@link installation/getting-started/configuration configure it}.
 
 ## Predefined CKEditor 5 builds
 
 Predefined CKEditor 5 builds are ready-to-use installations aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link installation/getting-started/predefined-builds available predefined builds} and choosing the right one for you. This is the fastest way to kick-off you CKEditor 5 installation.
+
+## Customizing the CKEditor 5 installation
+
+Learn how to install a custom CKEditor 5 easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, and learn to {@link installation/getting-started/configuration configure it}.
 
 ## Integration with frameworks
 

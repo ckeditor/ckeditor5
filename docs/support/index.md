@@ -1,6 +1,7 @@
 ---
 category: support
 order: 10
+toc: false
 meta-title: CKEditor 5 support documentation
 meta-description: Learn how to get help and support of how to provide feedback.
 ---
