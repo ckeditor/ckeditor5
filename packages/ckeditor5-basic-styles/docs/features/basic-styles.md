@@ -25,6 +25,10 @@ Basic formatting options may be applied with the toolbar buttons (pictured below
 
 {@snippet features/basic-styles}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 Check out also these CKEditor 5 features to gain better control over your content style and format:

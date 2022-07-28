@@ -19,6 +19,10 @@ Use the Insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/t
 
 {@snippet features/page-break}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 Here are some useful CKEditor 5 features that you can use together with the page break plugin for an all-around paged editing experience:
