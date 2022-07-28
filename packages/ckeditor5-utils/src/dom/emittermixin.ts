@@ -407,5 +407,21 @@ export interface Emitter extends BaseEmitter {
 		options?: CallbackOptions
 	): void;
 
+	/**
+	 * Stops listening for events. It can be used at different levels:
+	 * It is backwards compatible with {@link module:utils/emittermixin~EmitterMixin#listenTo}.
+	 *
+	 * * To stop listening to a specific callback.
+	 * * To stop listening to a specific event.
+	 * * To stop listening to all events fired by a specific object.
+	 * * To stop listening to all events fired by all object.
+	 *
+	 * @param {module:utils/emittermixin~Emitter|Node|Window} [emitter] The object to stop listening to.
+	 * If omitted, stops it for all objects.
+	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
+	 * for all events from `emitter`.
+	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
+	 * `event`.
+	 */
 	stopListening( emitter?: BaseEmitter | Node | Window, event?: string, callback?: Function ): void;
 }
