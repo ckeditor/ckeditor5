@@ -389,7 +389,7 @@ describe( 'toolbar focus cycling', () => {
 			};
 		} );
 
-		it( 'focus toolbar', () => {
+		it( 'focus the main toolbar', () => {
 			const spy = testUtils.sinon.spy( toolbar, 'focus' );
 
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
@@ -400,6 +400,31 @@ describe( 'toolbar focus cycling', () => {
 			editor.keystrokes.press( keyEventData );
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'prioritizes widget toolbar over global toolbar', () => {
+			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
+
+			const toolbarSpy = testUtils.sinon.spy( toolbar, 'focus' );
+			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
+
+			setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'[<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>bar</caption></imageBlock>]' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			ui.focusTracker.isFocused = true;
+			view.toolbar.focusTracker.isFocused = false;
+
+			// select image baloon toolbar
+			editor.keystrokes.press( keyEventData );
+
+			ui.focusTracker.focusedElement = document.activeElement;
+
+			sinon.assert.calledOnce( imageToolbarSpy );
+			sinon.assert.notCalled( toolbarSpy );
 		} );
 
 		it( 'focus toolbar, focus editor back when `esc` was pressed', () => {

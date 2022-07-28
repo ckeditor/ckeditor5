@@ -18,7 +18,6 @@
     "@ckeditor/ckeditor5-basic-styles": "^34.2.0",
     "@ckeditor/ckeditor5-core": "^34.2.0",
     "@ckeditor/ckeditor5-dev-utils": "^30.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^34.2.0",
     "@ckeditor/ckeditor5-engine": "^34.2.0",
     "@ckeditor/ckeditor5-enter": "^34.2.0",
     "@ckeditor/ckeditor5-heading": "^34.2.0",

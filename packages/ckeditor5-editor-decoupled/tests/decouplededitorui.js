@@ -12,12 +12,12 @@ import DecoupledEditorUI from '../src/decouplededitorui';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import DecoupledEditorUIView from '../src/decouplededitoruiview';
+import DecoupledEditor from '../src/decouplededitor';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { isElement } from 'lodash-es';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { Image, ImageCaption, ImageToolbar, ImageStyle } from '@ckeditor/ckeditor5-image';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
@@ -292,7 +292,7 @@ describe( 'toolbar focus cycling', () => {
 	beforeEach( async () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
 
-		editor = await ClassicEditor.create( editorElement, {
+		editor = await DecoupledEditor.create( editorElement, {
 			plugins: [ Paragraph, Heading, Image, ImageToolbar, ImageCaption, ImageStyle ],
 			toolbar: [ 'heading' ],
 			image: {
@@ -312,9 +312,14 @@ describe( 'toolbar focus cycling', () => {
 	} );
 
 	describe( 'should make sure that the `alt+f10` key combination will', () => {
-		let keyEventData;
+		let keyEventData, toolbarContainer;
 
 		beforeEach( () => {
+			toolbarContainer = document.createElement( 'div' );
+			toolbarContainer.classList.add( 'toolbar-container' );
+			document.body.appendChild( toolbarContainer );
+			document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+
 			keyEventData = {
 				keyCode: keyCodes.f10,
 				altKey: true,
@@ -330,14 +335,34 @@ describe( 'toolbar focus cycling', () => {
 			ui.focusTracker.isFocused = true;
 			ui.view.toolbar.focusTracker.isFocused = false;
 
-			editor.keystrokes.press( {
-				keyCode: keyCodes.f10,
-				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
+			editor.keystrokes.press( keyEventData );
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'prioritizes widget toolbar over global toolbar', () => {
+			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
+
+			const toolbarSpy = testUtils.sinon.spy( toolbar, 'focus' );
+			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
+
+			setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'[<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>bar</caption></imageBlock>]' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			ui.focusTracker.isFocused = true;
+			view.toolbar.focusTracker.isFocused = false;
+
+			// select image baloon toolbar
+			editor.keystrokes.press( keyEventData );
+
+			ui.focusTracker.focusedElement = document.activeElement;
+
+			sinon.assert.calledOnce( imageToolbarSpy );
+			sinon.assert.notCalled( toolbarSpy );
 		} );
 
 		it( 'focus toolbar, focus editor back when `esc` was pressed', () => {
@@ -378,28 +403,20 @@ describe( 'toolbar focus cycling', () => {
 			view.toolbar.focusTracker.isFocused = false;
 
 			// select image baloon toolbar
-			editor.keystrokes.press( {
-				keyCode: keyCodes.f10,
-				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
+			editor.keystrokes.press( keyEventData );
 
 			ui.focusTracker.focusedElement = document.activeElement;
 			sinon.assert.calledOnce( imageToolbarSpy );
 
 			// switch to regular toolbar
-			editor.keystrokes.press( {
-				keyCode: keyCodes.f10,
-				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
+			editor.keystrokes.press( keyEventData );
+
 			sinon.assert.calledOnce( toolbarSpy );
 
 			// switch back to the image baloon toolbar
 			ui.focusTracker.focusedElement = document.activeElement;
 			editor.keystrokes.press( keyEventData );
+
 			sinon.assert.calledTwice( imageToolbarSpy );
 
 			// move selection back inside the editor
