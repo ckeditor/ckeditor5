@@ -166,7 +166,8 @@ export default class ButtonView extends View {
 			}
 		};
 
-		// For safari we have to force the focus as it is implemented differently than in other browsers. See #12115.
+		// On Safari we have to force the focus on a button on click as it's the only browser
+		// that doesn't do that automatically. See #12115.
 		if ( env.isSafari ) {
 			template.on.mousedown = bind.to( evt => {
 				this.focus();
