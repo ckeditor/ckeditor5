@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import InsertTextCommand from './inserttextcommand';
 import InsertTextObserver from './inserttextobserver';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -42,6 +43,8 @@ export default class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
+		let lastCompositionPosition = null;
+
 		this.listenTo( view.document, 'insertText', ( evt, data ) => {
 			data.preventDefault();
 
@@ -60,6 +63,13 @@ export default class Input extends Plugin {
 			if ( viewResultRange ) {
 				insertTextCommandData.resultRange = editor.editing.mapper.toModelRange( viewResultRange );
 			}
+
+			lastCompositionPosition = viewSelection.getFirstPosition().getShiftedBy( text.length );
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[Input]%c save last composition position:',
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', lastCompositionPosition
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 
 			editor.execute( 'insertText', insertTextCommandData );
 		} );
@@ -80,5 +90,50 @@ export default class Input extends Plugin {
 
 			model.deleteContent( modelSelection );
 		} );
+
+		if ( env.isAndroid ) {
+			view.document.selection.on( 'change', () => {
+				if ( !view.document.isComposing ) {
+					return;
+				}
+
+				const selectionPosition = view.document.selection.getLastPosition();
+
+				if ( !selectionPosition ) {
+					return;
+				}
+
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( '%c[Input]%c check last composition position:',
+				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold',
+				// @if CK_DEBUG_TYPING // 		lastCompositionPosition, selectionPosition
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
+
+				if ( !lastCompositionPosition || !lastCompositionPosition.isEqual( selectionPosition ) ) {
+					// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.info( '%c[Input]%c resetting composition',
+					// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold',
+					// @if CK_DEBUG_TYPING // 	);
+					// @if CK_DEBUG_TYPING // }
+					view.document.isComposing = false;
+
+					if ( !view.document.selection.isFake ) {
+						view.document.isComposing = true;
+					}
+				}
+			} );
+
+			view.document.on( 'change:isComposing', () => {
+				if ( !view.document.isComposing ) {
+					lastCompositionPosition = null;
+					// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.info( '%c[Input]%c clear last composition position',
+					// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold'
+					// @if CK_DEBUG_TYPING // 	);
+					// @if CK_DEBUG_TYPING // }
+				}
+			} );
+		}
 	}
 }

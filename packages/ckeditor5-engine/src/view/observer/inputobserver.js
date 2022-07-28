@@ -9,6 +9,7 @@
 
 import DomEventObserver from './domeventobserver';
 import DataTransfer from '../datatransfer';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Observer for events connected with data input.
@@ -38,7 +39,7 @@ export default class InputObserver extends DomEventObserver {
 
 		let dataTransfer = null;
 		let data = null;
-		let targetRanges;
+		let targetRanges = [];
 
 		if ( domEvent.dataTransfer ) {
 			dataTransfer = new DataTransfer( domEvent.dataTransfer );
@@ -66,7 +67,7 @@ export default class InputObserver extends DomEventObserver {
 		// in the fake selection container.
 		if ( viewDocument.selection.isFake ) {
 			// Future-proof: in case of multi-range fake selections being possible.
-			targetRanges = [ ...viewDocument.selection.getRanges() ];
+			targetRanges = Array.from( viewDocument.selection.getRanges() );
 
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using fake selection:',
@@ -74,9 +75,15 @@ export default class InputObserver extends DomEventObserver {
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 		} else {
-			targetRanges = domTargetRanges.map( domRange => {
-				return view.domConverter.domRangeToView( domRange );
-			} );
+			if ( domTargetRanges.length ) {
+				targetRanges = domTargetRanges.map( domRange => {
+					return view.domConverter.domRangeToView( domRange );
+				} );
+			} else if ( env.isAndroid ) {
+				const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
+
+				targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
+			}
 
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using target ranges:',

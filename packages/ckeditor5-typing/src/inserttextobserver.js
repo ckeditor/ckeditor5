@@ -10,6 +10,7 @@
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 const TYPING_INPUT_TYPES = [
 	// For collapsed range:
@@ -24,6 +25,10 @@ const TYPING_INPUT_TYPES = [
 	// This one is used by Safari when accepting spell check suggestions from the autocorrection pop-up (Mac).
 	'insertReplacementText'
 ];
+
+if ( env.isAndroid ) {
+	TYPING_INPUT_TYPES.push( 'insertCompositionText' );
+}
 
 /**
  * Text insertion observer introduces the {@link module:engine/view/document~Document#event:insertText} event.
@@ -66,7 +71,7 @@ export default class InsertTextObserver extends Observer {
 
 		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
 		viewDocument.on( 'compositionend', ( evt, { data, domEvent } ) => {
-			if ( !this.isEnabled ) {
+			if ( !this.isEnabled || env.isAndroid ) {
 				return;
 			}
 

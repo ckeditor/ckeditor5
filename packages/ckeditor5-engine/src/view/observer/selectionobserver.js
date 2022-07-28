@@ -12,6 +12,7 @@
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
 import { debounce } from 'lodash-es';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Selection observer class observes selection changes in the document. If a selection changes on the document this
@@ -151,7 +152,7 @@ export default class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
-			if ( this.document.isComposing ) {
+			if ( this.document.isComposing && !env.isAndroid ) {
 				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Selection change ignored (isComposing)',
 				// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
