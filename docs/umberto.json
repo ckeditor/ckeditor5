@@ -372,11 +372,13 @@
 		{
 			"name": "Updating",
 			"id": "updating",
+			"navigationIncludeIndex": true,
 			"slug": "updating"
 		},
 		{
 			"name": "Support",
 			"id": "support",
+			"navigationIncludeIndex": true,
 			"slug": "support"
 		},
 		{
