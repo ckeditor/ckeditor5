@@ -31,7 +31,7 @@ The API for integrating CKEditor with your pages also changed. It is worth check
 
 ## Features
 
-When it comes to {@link features/overview features}, there are two aspects that need to be taken into consideration:
+When it comes to {@link features/index features}, there are two aspects that need to be taken into consideration:
 
 * CKEditor 5 may still not have the same features available as CKEditor 4.
 * Existing features may behave differently.
@@ -719,5 +719,5 @@ If you are missing any particular features or settings, feel free to {@link supp
 <info-box hint>
 **What's next?**
 
-You should now have the basic knowledge about differences between CKEditor 4 and CKEditor 5. Feel free to explore our {@link features/overview features page} to compare the available plugins to your needs.
+You should now have the basic knowledge about differences between CKEditor 4 and CKEditor 5. Feel free to explore our {@link features/index features page} to compare the available plugins to your needs.
 </info-box>
