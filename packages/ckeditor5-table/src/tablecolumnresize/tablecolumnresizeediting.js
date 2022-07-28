@@ -88,9 +88,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		this.set( '_isResizingAllowed', true );
 
 		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
-			// Toggling the `ck-column-resize-disabled` class shows and hides the resizers through CSS.
+			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
 			editor.editing.view.change( writer => {
-				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize-disabled', editor.editing.view.document.getRoot() );
+				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot() );
 			} );
 		} );
 
@@ -144,7 +144,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		// Currently the states of column resize and table resize (which is actually the last column resize) features
 		// are bound together. They can be separated in the future by adding distinct listeners and applying
-		// different CSS classes (e.g. `ck-column-resize-disabled` and `ck-table-resize-disabled`) to the editor root.
+		// different CSS classes (e.g. `ck-column-resize_disabled` and `ck-table-resize-disabled`) to the editor root.
 		this.bind( '_isResizingAllowed' ).to(
 			editor, 'isReadOnly',
 			columnResizePlugin, 'isEnabled',

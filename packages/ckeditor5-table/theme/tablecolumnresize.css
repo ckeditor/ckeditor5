@@ -61,6 +61,6 @@
 	display: none;
 }
 
-.ck-content.ck-column-resize-disabled .table .ck-table-column-resizer {
+.ck-content.ck-column-resize_disabled .table .ck-table-column-resizer {
 	display: none;
 }

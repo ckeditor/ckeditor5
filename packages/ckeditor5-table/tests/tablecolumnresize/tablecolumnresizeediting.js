@@ -729,16 +729,16 @@ describe( 'TableColumnResizeEditing', () => {
 			} );
 		} );
 
-		it( 'editable should not have the "ck-column-resize-disabled" class if "_isResizingAllowed" is set to "true"', () => {
+		it( 'editable should not have the "ck-column-resize_disabled" class if "_isResizingAllowed" is set to "true"', () => {
 			editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = true;
 
-			expect( editor.editing.view.document.getRoot().hasClass( 'ck-column-resize-disabled' ) ).to.equal( false );
+			expect( editor.editing.view.document.getRoot().hasClass( 'ck-column-resize_disabled' ) ).to.equal( false );
 		} );
 
-		it( 'editable should have the "ck-column-resize-disabled" class if "_isResizingAllowed" is set to "false"', () => {
+		it( 'editable should have the "ck-column-resize_disabled" class if "_isResizingAllowed" is set to "false"', () => {
 			editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
 
-			expect( editor.editing.view.document.getRoot().hasClass( 'ck-column-resize-disabled' ) ).to.equal( true );
+			expect( editor.editing.view.document.getRoot().hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
 		} );
 	} );
 
