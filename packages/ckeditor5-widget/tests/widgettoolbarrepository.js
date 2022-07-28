@@ -53,7 +53,7 @@ describe( 'WidgetToolbarRepository', () => {
 	} );
 
 	after( () => {
-		spyEditorUI.restore;
+		spyEditorUI.restore();
 	} );
 
 	afterEach( () => {

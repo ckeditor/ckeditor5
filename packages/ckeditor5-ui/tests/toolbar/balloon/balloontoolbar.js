@@ -90,7 +90,7 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	after( () => {
-		spyEditorUI.restore;
+		spyEditorUI.restore();
 	} );
 
 	afterEach( () => {
