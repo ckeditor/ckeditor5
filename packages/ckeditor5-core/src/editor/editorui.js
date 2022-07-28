@@ -238,16 +238,11 @@ export default class EditorUI {
 	 * @param {module:engine/view/element~Element|HTMLElement} viewOrElement
 	 */
 	registerFocusableEditingArea( viewOrElement ) {
-		// TODO: Move it somewhere else.
-		const isDomRootElement = element => {
-			return Array.from( this._editableElementsMap.values() ).includes( element );
-		};
-
 		if ( isElement( viewOrElement ) ) {
 			this.focusTracker.add( viewOrElement );
 
 			// The Editor class is already listening to the editing view (KeyObserver). Do not duplicate listeners.
-			if ( !isDomRootElement( viewOrElement ) ) {
+			if ( !this._isDomRootElement( viewOrElement ) ) {
 				console.log( 'adding', viewOrElement, 'to KH' );
 				this.editor.keystrokes.listenTo( viewOrElement );
 			}
@@ -258,7 +253,7 @@ export default class EditorUI {
 				this.focusTracker.add( viewOrElement.element );
 
 				// The Editor class is already listening to the editing view (KeyObserver). Do not duplicate listeners.
-				if ( !isDomRootElement( viewOrElement.element ) ) {
+				if ( !this._isDomRootElement( viewOrElement.element ) ) {
 					this.editor.keystrokes.listenTo( viewOrElement.element );
 				}
 			} else {
@@ -266,7 +261,7 @@ export default class EditorUI {
 					this.focusTracker.add( viewOrElement.element );
 
 					// The Editor class is already listening to the editing view (KeyObserver). Do not duplicate listeners.
-					if ( !isDomRootElement( viewOrElement.element ) ) {
+					if ( !this._isDomRootElement( viewOrElement.element ) ) {
 						this.editor.keystrokes.listenTo( viewOrElement.element );
 					}
 				} );
@@ -570,6 +565,10 @@ export default class EditorUI {
 		toolbarView.focus();
 
 		console.log( `✅ Finally focused ${ logToolbar( candidateToolbarDefToFocus.toolbarView ) }.` );
+	}
+
+	_isDomRootElement( element ) {
+		return Array.from( this._editableElementsMap.values() ).includes( element );
 	}
 
 	/**
