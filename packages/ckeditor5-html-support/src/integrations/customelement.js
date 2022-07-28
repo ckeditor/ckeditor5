@@ -13,6 +13,7 @@ import { UpcastWriter } from 'ckeditor5/src/engine';
 import DataSchema from '../dataschema';
 import DataFilter from '../datafilter';
 import { setViewAttributes } from '../conversionutils';
+import { isValidTagName } from './utils';
 
 /**
  * Provides the General HTML Support for custom elements (not registered in the {@link module:html-support/dataschema~DataSchema}).
@@ -62,6 +63,10 @@ export default class CustomElementSupport extends Plugin {
 				model: ( viewElement, conversionApi ) => {
 					// Do not try to convert $comment fake element.
 					if ( viewElement.name == '$comment' ) {
+						return;
+					}
+
+					if ( !isValidTagName( viewElement.name ) ) {
 						return;
 					}
 
