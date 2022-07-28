@@ -387,7 +387,7 @@ HelpjuiceEditor.defaultConfig = {
 						`<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 62.5%;">
 							<iframe src="https://${getUrl}"
 								style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;"
-								frameborder="0" allowtransparency="true" allow="encrypted-media">
+								frameborder="0" allowtransparency="true" allow="encrypted-media" allowfullscreen>
 							</iframe>
 						</div>`
 					);
@@ -403,7 +403,7 @@ HelpjuiceEditor.defaultConfig = {
 						`<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 62.5%;">
 							<iframe src="${getUrl}"
 								style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;"
-								frameborder="0" allowtransparency="true" allow="encrypted-media">
+								frameborder="0" allowtransparency="true" allow="encrypted-media" allowfullscreen>
 							</iframe>
 						</div>`
 					);
