@@ -7,13 +7,14 @@
  * @module html-support/integrations/customelement
  */
 
+/* globals document */
+
 import { Plugin } from 'ckeditor5/src/core';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import DataSchema from '../dataschema';
 import DataFilter from '../datafilter';
 import { setViewAttributes } from '../conversionutils';
-import { isValidTagName } from './utils';
 
 /**
  * Provides the General HTML Support for custom elements (not registered in the {@link module:html-support/dataschema~DataSchema}).
@@ -66,7 +67,7 @@ export default class CustomElementSupport extends Plugin {
 						return;
 					}
 
-					if ( !isValidTagName( viewElement.name ) ) {
+					if ( !isValidElementName( viewElement.name ) ) {
 						return;
 					}
 
@@ -164,4 +165,15 @@ export default class CustomElementSupport extends Plugin {
 			} );
 		} );
 	}
+}
+
+// Returns true if name is valid for a DOM element name.
+function isValidElementName( name ) {
+	try {
+		document.createElement( name );
+	} catch ( error ) {
+		return false;
+	}
+
+	return true;
 }
