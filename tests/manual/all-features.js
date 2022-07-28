@@ -23,6 +23,7 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
@@ -45,7 +46,8 @@ import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import Style from '@ckeditor/ckeditor5-style/src/style';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -55,15 +57,15 @@ ClassicEditor
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
 			CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption,
-			EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
+			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
 			AutoLink, Mention, TextTransformation,
 			Alignment, IndentBlock,
 			PasteFromOffice, PageBreak, HorizontalLine,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
-			ImageUpload, CloudServices, TextPartLanguage, SourceEditing
+			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport
 		],
 		toolbar: [
-			'heading',
+			'heading', 'style',
 			'|',
 			'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',
 			'|',
@@ -71,7 +73,7 @@ ClassicEditor
 			'|',
 			'bulletedList', 'numberedList', 'todoList',
 			'|',
-			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
+			'blockQuote', 'insertImage', 'insertTable', 'mediaEmbed', 'codeBlock',
 			'|',
 			'htmlEmbed',
 			'|',
@@ -174,6 +176,55 @@ ClassicEditor
 				startIndex: true,
 				reversed: true
 			}
+		},
+		style: {
+			definitions: [
+				{
+					name: 'Article category',
+					element: 'h3',
+					classes: [ 'category' ]
+				},
+				{
+					name: 'Title',
+					element: 'h2',
+					classes: [ 'document-title' ]
+				},
+				{
+					name: 'Subtitle',
+					element: 'h3',
+					classes: [ 'document-subtitle' ]
+				},
+				{
+					name: 'Info box',
+					element: 'p',
+					classes: [ 'info-box' ]
+				},
+				{
+					name: 'Side quote',
+					element: 'blockquote',
+					classes: [ 'side-quote' ]
+				},
+				{
+					name: 'Marker',
+					element: 'span',
+					classes: [ 'marker' ]
+				},
+				{
+					name: 'Spoiler',
+					element: 'span',
+					classes: [ 'spoiler' ]
+				},
+				{
+					name: 'Code (dark)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-dark' ]
+				},
+				{
+					name: 'Code (bright)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-bright' ]
+				}
+			]
 		}
 	} )
 	.then( editor => {

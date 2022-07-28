@@ -322,7 +322,7 @@ export default class Renderer {
 			this.domConverter.mapViewToDom( viewElement ).childNodes
 		);
 		const expectedDomChildren = Array.from(
-			this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, { withChildren: false } )
+			this.domConverter.viewChildrenToDom( viewElement, { withChildren: false } )
 		);
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
 		const actions = this._findReplaceActions( diff, actualDomChildren, expectedDomChildren );
@@ -518,7 +518,7 @@ export default class Renderer {
 	 */
 	_updateText( viewText, options ) {
 		const domText = this.domConverter.findCorrespondingDomText( viewText );
-		const newDomText = this.domConverter.viewToDom( viewText, domText.ownerDocument );
+		const newDomText = this.domConverter.viewToDom( viewText );
 
 		const actualText = domText.data;
 		let expectedText = newDomText.data;
@@ -597,7 +597,7 @@ export default class Renderer {
 		const inlineFillerPosition = options.inlineFillerPosition;
 		const actualDomChildren = this.domConverter.mapViewToDom( viewElement ).childNodes;
 		const expectedDomChildren = Array.from(
-			this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, { bind: true } )
+			this.domConverter.viewChildrenToDom( viewElement, { bind: true } )
 		);
 
 		// Inline filler element has to be created as it is present in the DOM, but not in the view. It is required

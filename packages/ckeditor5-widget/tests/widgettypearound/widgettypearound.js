@@ -267,7 +267,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( viewWidget.getChild( 1 ).hasClass( 'ck-reset_all' ) ).to.be.true;
 			expect( viewWidget.getChild( 1 ).hasClass( 'ck-widget__type-around' ) ).to.be.true;
 
-			const domWrapper = editingView.domConverter.viewToDom( viewWidget.getChild( 1 ) );
+			const domWrapper = editingView.domConverter.mapViewToDom( viewWidget.getChild( 1 ) );
 
 			expect( domWrapper.querySelectorAll( '.ck-widget__type-around__button' ) ).to.have.length( 2 );
 		} );
@@ -282,7 +282,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( viewWidget.getChild( 1 ).hasClass( 'ck-reset_all' ) ).to.be.true;
 			expect( viewWidget.getChild( 1 ).hasClass( 'ck-widget__type-around' ) ).to.be.true;
 
-			const domWrapper = editingView.domConverter.viewToDom( viewWidget.getChild( 1 ) );
+			const domWrapper = editingView.domConverter.mapViewToDom( viewWidget.getChild( 1 ) );
 
 			expect( domWrapper.querySelectorAll( '.ck-widget__type-around__fake-caret' ) ).to.have.length( 1 );
 		} );
@@ -294,7 +294,7 @@ describe( 'WidgetTypeAround', () => {
 				setModelData( editor.model, '<blockWidget></blockWidget>' );
 
 				const viewWidget = viewRoot.getChild( 0 );
-				const domWrapper = editingView.domConverter.viewToDom( viewWidget.getChild( 1 ) );
+				const domWrapper = editingView.domConverter.mapViewToDom( viewWidget.getChild( 1 ) );
 
 				buttonBefore = domWrapper.children[ 0 ];
 				buttonAfter = domWrapper.children[ 1 ];
@@ -342,7 +342,7 @@ describe( 'WidgetTypeAround', () => {
 					const eventInfo = new EventInfo( viewDocument, 'mousedown' );
 					const domEventDataMock = new DomEventData( editingView, {
 						// Clicking a widget.
-						target: editingView.domConverter.viewToDom( viewRoot.getChild( 0 ) ),
+						target: editingView.domConverter.mapViewToDom( viewRoot.getChild( 0 ) ),
 						preventDefault: sinon.spy()
 					} );
 
