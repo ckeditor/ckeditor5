@@ -176,7 +176,9 @@
 		"installation/advanced/alternative-setups/predefined-builds.html": "installation/getting-started/pedefined-builds.html",
 		"support/getting-support.html": "support/index.html",
 		"framework/guides/overview.html": "framework/index.html",
-		"updating/updating.html": "updating/index.html"
+		"updating/updating.html": "updating/index.html",
+		"features/overview.html": "features/index.html",
+		"installation/overview.html": "installation/index.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
