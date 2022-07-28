@@ -27,7 +27,7 @@ Each build was designed to satisfy as many use cases as possible. They differ in
 
 ### When NOT to use predefined builds?
 
-{@link framework/guides/overview CKEditor 5 Framework} or a {@link installation/getting-started/quick-start-other custom build} should be used, instead of predefined builds, in the following cases:
+{@link framework/index CKEditor 5 Framework} or a {@link installation/getting-started/quick-start-other custom build} should be used, instead of predefined builds, in the following cases:
 
 * When you want to create your own text editor and have full control over its every aspect, from UI to features.
 * When the solution proposed by the builds does not fit your specific use case.
