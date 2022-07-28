@@ -78,13 +78,12 @@ class AbbreviationUI extends Plugin {
 
 	_createToolbarAbbreviationButton() {
 		const editor = this.editor;
-		const { t } = editor.locale;
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
-			const button = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'abbreviation', () => {
+			const button = new ButtonView();
 
 			button.isEnabled = true;
-			button.label = t( 'Abbreviation' );
+			button.label = 'Abbreviation';
 			button.tooltip = true;
 			button.withText = true;
 

@@ -24,7 +24,7 @@ describe( 'ClipboardObserver', () => {
 		// Create view and DOM structures.
 		el = writer.createContainerElement( 'p' );
 		writer.insert( writer.createPositionAt( root, 0 ), el );
-		view.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
+		view.domConverter.viewToDom( root, { withChildren: true, bind: true } );
 
 		doc.selection._setTo( el, 0 );
 		range = writer.createRange( writer.createPositionAt( root, 1 ) );

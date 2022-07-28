@@ -7,7 +7,7 @@
  * @module engine/dataprocessor/htmldataprocessor
  */
 
-/* globals document, DOMParser */
+/* globals DOMParser */
 
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
@@ -56,7 +56,7 @@ export default class HtmlDataProcessor {
 	 */
 	toData( viewFragment ) {
 		// Convert view DocumentFragment to DOM DocumentFragment.
-		const domFragment = this.domConverter.viewToDom( viewFragment, document );
+		const domFragment = this.domConverter.viewToDom( viewFragment );
 
 		// Convert DOM DocumentFragment to HTML output.
 		return this.htmlWriter.getHtml( domFragment );

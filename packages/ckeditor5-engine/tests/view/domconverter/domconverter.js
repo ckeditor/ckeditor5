@@ -828,7 +828,7 @@ describe( 'DomConverter', () => {
 			const viewElement = writer.createContainerElement( 'p', {}, { renderUnsafeAttributes: [ 'onclick' ] } );
 			viewElement.getFillerOffset = () => null;
 
-			const domElement = converter.viewToDom( viewElement, document );
+			const domElement = converter.viewToDom( viewElement );
 
 			converter.setDomElementAttribute( domElement, 'onclick', 'bar', viewElement );
 
