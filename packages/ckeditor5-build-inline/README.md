@@ -6,7 +6,7 @@ CKEditor 5 inline editor build
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 ![Dependency Status](https://img.shields.io/librariesio/release/npm/@ckeditor/ckeditor5-build-inline)
 
-The inline editor build for CKEditor 5. Read more about the [inline editor build](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html#inline-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/inline-editor.html).
+The inline editor build for CKEditor 5. Read more about the [inline editor build](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#inline-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/inline-editor.html).
 
 ![CKEditor 5 inline editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor5-build-inline.png)
 

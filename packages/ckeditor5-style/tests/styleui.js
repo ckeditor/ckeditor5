@@ -168,7 +168,7 @@ describe( 'StyleUI', () => {
 
 					panel.fire( new EventInfo( buttonMock, 'execute' ) );
 
-					sinon.assert.calledOnceWithExactly( commandExecuteStub, 'style', 'foo' );
+					sinon.assert.calledOnceWithExactly( commandExecuteStub, 'style', { styleName: 'foo' } );
 				} );
 
 				it( 'should bind #activeStyles to the command', () => {

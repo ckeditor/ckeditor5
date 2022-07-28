@@ -14,11 +14,19 @@ Code blocks is a perfect feature to present programming- or software-related iss
 	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
 </info-box>
 
+<info-box info>
+	The code block feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}. To add a paragraph underneath a code block, just press <kbd>Enter</kbd> three times.
 
 {@snippet features/code-block}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 

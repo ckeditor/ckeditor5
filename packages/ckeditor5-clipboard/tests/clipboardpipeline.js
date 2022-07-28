@@ -9,6 +9,7 @@ import DataTransfer from '../src/datatransfer';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
@@ -31,7 +32,7 @@ describe( 'ClipboardPipeline feature', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ClipboardPipeline, Paragraph ]
+				plugins: [ ClipboardPipeline, Paragraph, ShiftEnter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -357,6 +358,25 @@ describe( 'ClipboardPipeline feature', () => {
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( 'x<paragraph>y</paragraph>' );
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/10217
+		it( 'converts BR elements between paragraphs to an empty paragraph', () => {
+			const dataTransferMock = createDataTransfer( { 'text/html': '<p>foo</p><br><p>bar</p>' } );
+			const spy = sinon.stub( editor.model, 'insertContent' );
+
+			viewDocument.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				stopPropagation() {},
+				preventDefault() {}
+			} );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph></paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
 		} );
 
 		it( 'does nothing when pasted content is empty', () => {

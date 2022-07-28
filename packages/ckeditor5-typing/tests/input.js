@@ -514,12 +514,88 @@ describe( 'Input feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p><strong>Foo</strong> {}</p>' );
 		} );
 
+		it( 'should handle bogus br correctly (with custom br to softBreak converter)', () => {
+			editor.setData( '<p><strong>Foo</strong></p>' );
+
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'end' );
+				writer.removeSelectionAttribute( 'bold' );
+			} );
+
+			editor.conversion.for( 'upcast' ).elementToElement( {
+				view: 'br',
+				model: 'softBreak',
+				converterPriority: 'high'
+			} );
+
+			// We need to change the DOM content manually because typing algorithm actually does not check
+			// `newChildren` and `oldChildren` list but takes them from DOM and model.
+			const p = viewRoot.getChild( 0 );
+			const domP = editor.editing.view.domConverter.mapViewToDom( p );
+			domP.appendChild( document.createTextNode( ' ' ) );
+			domP.appendChild( document.createElement( 'br' ) );
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [ viewRoot.getChild( 0 ).getChild( 0 ) ],
+					newChildren: [
+						new ViewElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'Foo' ) ),
+						new ViewText( viewDocument, ' ' ),
+						new ViewElement( viewDocument, 'br' )
+					],
+					node: viewRoot.getChild( 0 )
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>Foo</strong> {}</p>' );
+		} );
+
 		it( 'should handle children mutation correctly if there are soft breaks in the mutated container', () => {
 			editor.setData( '<p><strong>Foo</strong><br /><strong>Bar</strong></p>' );
 
 			editor.model.change( writer => {
 				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'end' );
 				writer.removeSelectionAttribute( 'bold' );
+			} );
+
+			// We need to change the DOM content manually because typing algorithm actually does not check
+			// `newChildren` and `oldChildren` list but takes them from DOM and model.
+			const p = viewRoot.getChild( 0 );
+			const domP = editor.editing.view.domConverter.mapViewToDom( p );
+			domP.appendChild( document.createTextNode( ' ' ) );
+			domP.appendChild( document.createElement( 'br' ) );
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [ ...viewRoot.getChild( 0 ).getChildren() ],
+					newChildren: [
+						new ViewElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'Foo' ) ),
+						new ViewElement( viewDocument, 'br' ),
+						new ViewElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'Bar' ) ),
+						new ViewText( viewDocument, ' ' ),
+						new ViewElement( viewDocument, 'br' )
+					],
+					node: viewRoot.getChild( 0 )
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>Foo</strong><br></br><strong>Bar</strong> {}</p>' );
+		} );
+
+		it( 'should handle children mutation correctly if there are soft breaks in the mutated container (custom softBreak)', () => {
+			editor.setData( '<p><strong>Foo</strong><br /><strong>Bar</strong></p>' );
+
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'end' );
+				writer.removeSelectionAttribute( 'bold' );
+			} );
+
+			editor.conversion.for( 'upcast' ).elementToElement( {
+				view: 'br',
+				model: 'softBreak',
+				converterPriority: 'high'
 			} );
 
 			// We need to change the DOM content manually because typing algorithm actually does not check

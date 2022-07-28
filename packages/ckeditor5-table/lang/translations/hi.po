@@ -250,12 +250,12 @@ msgstr "Color picker"
 
 msgctxt "The button label for the table toolbar hiding caption attached to the table."
 msgid "Toggle caption off"
-msgstr ""
+msgstr "कैप्शन को टॉगल बंद करें"
 
 msgctxt "The button label for the table toolbar showing caption attached to the table."
 msgid "Toggle caption on"
-msgstr ""
+msgstr "कैप्शन का टॉगल ऑन करें"
 
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
-msgstr ""
+msgstr "टेबल कैप्शन एंटर करें"

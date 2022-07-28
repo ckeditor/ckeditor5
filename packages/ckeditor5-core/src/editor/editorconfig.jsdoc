@@ -24,7 +24,7 @@
  *			.then( ... )
  *			.catch( ... );
  *
- * Check the {@glink installation/advanced/alternative-setups/predefined-builds Configuration guide} for more information
+ * Check the {@glink installation/getting-started/predefined-builds Configuration guide} for more information
  * about setting configuration options.
  *
  * @interface EditorConfig
@@ -66,7 +66,7 @@
 /**
  * The list of plugins to load.
  *
- * If you use an {@glink installation/advanced/alternative-setups/predefined-builds editor build} you can define the list of plugins to load
+ * If you use an {@glink installation/getting-started/predefined-builds editor build} you can define the list of plugins to load
  * using the names of plugins that are available:
  *
  *		const config = {
@@ -98,7 +98,7 @@
 
 /**
  * The list of additional plugins to load along those already available in the
- * {@glink installation/advanced/alternative-setups/predefined-builds editor build}. It extends the {@link #plugins `plugins`} configuration.
+ * {@glink installation/getting-started/predefined-builds editor build}. It extends the {@link #plugins `plugins`} configuration.
  *
  *		function MyPlugin( editor ) {
  *			// ...
@@ -119,7 +119,7 @@
  */
 
 /**
- * The list of plugins which should not be loaded despite being available in an {@glink installation/advanced/alternative-setups/predefined-builds editor build}.
+ * The list of plugins which should not be loaded despite being available in an {@glink installation/getting-started/predefined-builds editor build}.
  *
  *		const config = {
  *			removePlugins: [ 'Bold', 'Italic' ]
@@ -326,4 +326,17 @@
  * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding {@link module:core/editor/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
  *
  * @member {Object} module:core/editor/editorconfig~EditorConfig#ui
+ */
+
+ /**
+ * Enables updating the source element after the editor destroy.
+ *
+ * Enabling this option might have some security implications, as the editor doesn't have control over all data
+ * in the output.
+ *
+ * Be careful, especially while using 
+ * {@glink features/markdown Markdown}, {@glink features/general-html-support General HTML Support} or 
+ * {@glink features/html-embed HTML embed} features.
+ *
+ * @member {Boolean} module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy
  */

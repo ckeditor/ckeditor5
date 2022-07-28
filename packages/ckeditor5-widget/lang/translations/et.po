@@ -22,8 +22,8 @@ msgstr "Vidinate tööriistariba"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
 msgid "Insert paragraph before block"
-msgstr ""
+msgstr "Sisesta lõik enne plokki"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
-msgstr ""
+msgstr "Sisesta lõik pärast plokki"

@@ -110,7 +110,7 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 ```
 
 <info-box warning>
-	See {@link framework/guides/creating-simple-plugin how to create a complete plugin} to have a better understanding of creating CKEditor 5 plugins.
+	See {@link framework/guides/creating-simple-plugin-timestamp how to create a complete plugin} to have a better understanding of creating CKEditor 5 plugins.
 </info-box>
 
 ### Example: Localizing pending actions

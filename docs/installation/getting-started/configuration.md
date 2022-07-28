@@ -5,7 +5,7 @@
 # * Point where to find the list of configuration options.
 
 category: getting-started
-order: 20
+order: 40
 ---
 
 # Configuration
@@ -39,7 +39,7 @@ As you can see, the configuration is set by a simple JavaScript object passed to
 
 ## Removing features
 
-The {@link installation/advanced/predefined-builds predefined CKEditor 5 builds} come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor 5.
+The {@link installation/getting-started/predefined-builds predefined CKEditor 5 builds} come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor 5.
 
 In some cases, you may want to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
 
