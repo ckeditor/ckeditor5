@@ -98,7 +98,6 @@ describe( 'StyleUI', () => {
 
 				testUtils.sinon.stub( editor, 'execute' );
 
-				dropdown.render();
 				dropdown.isOpen = true;
 
 				dropdown.panelView.children.first.fire( new EventInfo( buttonMock, 'execute' ) );
@@ -153,7 +152,6 @@ describe( 'StyleUI', () => {
 						}
 					};
 
-					dropdown.render();
 					dropdown.on( 'execute', spy );
 
 					panel.fire( new EventInfo( buttonMock, 'execute' ) );
@@ -168,7 +166,6 @@ describe( 'StyleUI', () => {
 						}
 					};
 
-					dropdown.render();
 					panel.fire( new EventInfo( buttonMock, 'execute' ) );
 
 					sinon.assert.calledOnceWithExactly( commandExecuteStub, 'style', { styleName: 'foo' } );

@@ -82,7 +82,7 @@ describe( 'TableUI', () => {
 
 			tableSizeView.rows = 2;
 			tableSizeView.columns = 7;
-			insertTable.render();
+
 			insertTable.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
@@ -193,7 +193,6 @@ describe( 'TableUI', () => {
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			dropdown.render();
 			dropdown.listView.items.get( 2 ).children.last.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
@@ -202,7 +201,6 @@ describe( 'TableUI', () => {
 		it( 'should not focus view after using a switchbutton', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			dropdown.render();
 			dropdown.listView.items.first.children.last.fire( 'execute' );
 
 			sinon.assert.notCalled( focusSpy );
@@ -340,7 +338,6 @@ describe( 'TableUI', () => {
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			dropdown.render();
 			dropdown.listView.items.get( 2 ).children.first.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
@@ -349,7 +346,6 @@ describe( 'TableUI', () => {
 		it( 'should not focus view after using a switchbutton', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			dropdown.render();
 			dropdown.listView.items.first.children.last.fire( 'execute' );
 
 			sinon.assert.notCalled( focusSpy );
@@ -539,7 +535,6 @@ describe( 'TableUI', () => {
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			dropdown.render();
 			dropdown.listView.items.first.children.first.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
@@ -548,7 +543,6 @@ describe( 'TableUI', () => {
 		it( 'executes command when it\'s executed', () => {
 			const spy = sinon.stub( editor, 'execute' );
 
-			dropdown.render();
 			dropdown.listView.items.first.children.first.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;

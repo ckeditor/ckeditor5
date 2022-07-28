@@ -427,7 +427,6 @@ describe( 'ImageStyleUI', () => {
 				const commandSpy = sinon.spy( editor, 'execute' );
 
 				for ( const { view, buttonView } of dropdowns ) {
-					buttonView.render();
 					buttonView.fire( 'execute' );
 
 					sinon.assert.notCalled( commandSpy );
@@ -469,7 +468,6 @@ describe( 'ImageStyleUI', () => {
 				const focusSpy = sinon.stub( editor.editing.view, 'focus' );
 
 				for ( const { buttonView, config, view } of dropdowns ) {
-					buttonView.render();
 					buttonView.fire( 'execute' );
 
 					expect( view.isOpen ).to.be.false;
