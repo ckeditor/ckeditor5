@@ -292,13 +292,6 @@ export function focusChildOnDropdownOpen( dropdownView, childSelectorCallback ) 
 }
 
 export function addKeyboardHandlingForGrid( view, gridElementsCollection, numberOfColumns, isTable ) {
-	console.log( 'grid' );
-	//dropdown.listenTo( document, 'arrowdown', ( evt, domEvt ) => {
-	//	console.log( 'arrowdown' );
-	//}, { priority: 'highest' } );
-
-	//const gridElements = [ ...gridElements2.children ];
-
 	view.keystrokes.set( 'arrowright', ( evt ) => {
 		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements );
@@ -342,7 +335,10 @@ export function addKeyboardHandlingForGrid( view, gridElementsCollection, number
 		let nextIndex = focusedElementIndex - numberOfColumns;
 
 		if ( nextIndex < 0 ) {
-			//todo
+			nextIndex = focusedElementIndex + numberOfColumns * Math.floor( gridElements.length / numberOfColumns );
+			if ( nextIndex > gridElements.length -1 ) {
+				nextIndex -= numberOfColumns;
+			}
 		}
 
 		gridElements[ nextIndex ].focus();
