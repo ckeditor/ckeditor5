@@ -92,7 +92,7 @@ export function getElementWidthInPixels( domElement ) {
  * @returns {Number}
  */
 export function getTableWidthInPixels( table, editor ) {
-	// It is possible for table to not have a <tbody> element - see #11878.
+	// It is possible for a table to not have a <tbody> element - see #11878.
 	const referenceElement = getChildrenViewElement( table, 'tbody', editor ) || getChildrenViewElement( table, 'thead', editor );
 	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement );
 
