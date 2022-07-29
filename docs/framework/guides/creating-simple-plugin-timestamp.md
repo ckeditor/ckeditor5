@@ -213,5 +213,5 @@ If you got lost at any point, see [the final implementation of the plugin](https
 <info-box>
 	**What's next?**
 
-	You can read more about the {@link framework/guides/overview CKEditor 5 framework}, or continue with our next tutorial, where we will create {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin}.
+	You can read more about the {@link framework/index CKEditor 5 framework}, or continue with our next tutorial, where we will create {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin}.
 </info-box>
