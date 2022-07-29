@@ -91,17 +91,7 @@ export default class StyleCommand extends Command {
 		}
 
 		// Block styles.
-		const selectedElement = selection.getSelectedElement();
-		const selectedBlocks = Array.from( selection.getSelectedBlocks() );
-
-		// If there is a selected element it means that there is just a single tree of elements selected
-		// so we should start from the deepest block which is the last element from `getSelectedBlocks()`.
-		// Otherwise there could be neighbouring blocks selected for a non-collapsed selection - as we want
-		// to display enabled styles for a position where selection started, we should use first element from
-		// `getSelectedBlocks()`.
-		const index = selectedElement ? selectedBlocks.length - 1 : 0;
-
-		const startingBlock = selectedBlocks[ index ];
+		const startingBlock = getStartingBlockElement( selection );
 
 		if ( startingBlock ) {
 			const ancestorBlocks = startingBlock.getAncestors( { includeSelf: true, parentFirst: true } );
@@ -271,4 +261,57 @@ function getAffectedBlocks( selectedBlocks, elementNames, schema ) {
 	}
 
 	return blocks;
+}
+
+// Below we are looking for correct block element and it's ancestors
+// to find enabled block styles.
+
+// If there is a single selected element, just use it.
+//
+// If there are multiple selected blocks we have two cases:
+// --- CASE 1 ---
+//	Multiple elements were selected with non-collapsed selection, then their
+//	common parent won't be in selection. Current logic of a command is to get
+//  enabled styles for the first element in a model for given selection, so let's
+// get the first element of selected blocks.
+
+//	--- CASE 2 ---
+// A non-collapsed selection was spanning a single element
+// a) If an element is a limit element - only this element will be returned.
+// b) If an element is not a limit element and does not have a parent - it will return itself
+// and its' children elements.
+// c) If an element is not a limit element and does have a parent - it will return itself
+// and all ancestors till the ancestor which is a limit element.
+//
+// For the case a) we can take the first element.
+// For the case b) we should keep the logic of command and use the first child of selected element.
+// For the case c) we should use the most nested element to not skip any element
+//
+// Below implementation is just a little improvement from previous version
+// to handle a case if selection is on whole element and not change a way
+// command selects enabled styles.
+function getStartingBlockElement( selection ) {
+	const selectedBlocks = Array.from( selection.getSelectedBlocks() );
+
+	const isSingleLineOfAncestors = selectedBlocks.every( ( block, index ) => {
+		if ( !selectedBlocks[ index + 1 ] ) {
+			return true;
+		}
+
+		return block === selectedBlocks[ index + 1 ].parent;
+	} );
+
+	let index = 0;
+
+	if ( isSingleLineOfAncestors ) {
+		// If there is a single line of ancestors, take the deepest element
+		index = selectedBlocks.length - 1;
+	} else {
+		// If not, check if the first element of selection is parent of the next element.
+		// If so - parent element with its' children was selected, take the first child.
+		// Otherwise parent isn't in selection and take the first element.
+		index = selectedBlocks[ 0 ] === selectedBlocks[ 1 ].parent ? 1 : 0;
+	}
+
+	return selectedBlocks[ index ];
 }
