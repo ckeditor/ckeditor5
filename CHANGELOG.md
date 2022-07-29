@@ -12,7 +12,7 @@ This release introduces the following new features:
 * Various accessibility improvements.
 * The styles dropdown feature is now integrated with track changes.
 * The [`@ckeditor/ckeditor5-utils`](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils) package is now written in TypeScript.
-* We have updated and corrected CKE5 translation. 39 languages are now fully covered by professional translators.
+* We have updated and corrected translations. 39 languages are now fully covered by professional translators.
 
 <!-- TODO: Add a link to the blog post. -->
 
