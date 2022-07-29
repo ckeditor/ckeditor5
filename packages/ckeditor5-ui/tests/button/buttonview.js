@@ -291,6 +291,34 @@ describe( 'ButtonView', () => {
 
 				expect( ret ).to.true;
 			} );
+
+			describe( 'in Safari', () => {
+				let view, stub;
+
+				beforeEach( () => {
+					stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
+					view = new ButtonView( locale );
+					view.render();
+				} );
+
+				afterEach( () => {
+					stub.resetBehavior();
+					view.destroy();
+				} );
+
+				it( 'the button is focused', () => {
+					const spy = sinon.spy( view.element, 'focus' );
+					view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+					expect( spy.callCount ).to.equal( 1 );
+				} );
+
+				it( 'the event is prevented', () => {
+					const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+					expect( ret ).to.false;
+				} );
+			} );
 		} );
 
 		describe( 'execute event', () => {

@@ -9,7 +9,7 @@ modified_at: 2022-07-15
 
 In this part of the tutorial we will focus on creating a dialog box, which will get the user's input.
 
-We will pick up where we left off in the first part, so make sure you {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our [starter files for this part](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/Abbreviation%20plugin/Part%201).
+We will pick up where we left off in the first part, so make sure you {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our [starter files for this part](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-1).
 
 <info-box>
 	As we will mostly work on the UI, we recommend reading about our {@link framework/guides/architecture/ui-library UI library} before you start coding.
@@ -29,8 +29,6 @@ Our new `FormView` class will extend the {@link framework/guides/architecture/ui
 
 In the `FormView` constructor we define a template for our abbreviation form. We need to set the tag of the HTML element, and a couple of its attributes. To make sure our view is focusable, let's add {@link framework/guides/deep-dive/focus-tracking#implementing-focusable-ui-components `tabindex="-1"`}.
 
-We will also pass the editor's {@link module:utils/locale~Locale} instance to the constructor, so we can localize all our UI components with the help of the {@link module:utils/locale~Locale#t `t()` function}.
-
 ```js
 // abbreviation/abbreviationview.js
 
@@ -39,7 +37,6 @@ import View from '@ckeditor/ckeditor5-ui';
 export default class FormView extends View {
 	constructor( locale ) {
 		super( locale );
-		const t = locale.t;
 
 		this.setTemplate( {
 			tag: 'form',
@@ -74,8 +71,8 @@ export default class FormView extends View {
 	constructor( locale ) {
 		// ...
 
-		this.abbrInputView = this._createInput( t( 'Add abbreviation' ) );
-		this.titleInputView = this._createInput( t( 'Add title' ) );
+		this.abbrInputView = this._createInput( 'Add abbreviation' );
+		this.titleInputView = this._createInput( 'Add title' );
 	}
 
 	_createInput( label ) {
@@ -113,14 +110,14 @@ export default class FormView extends View {
 
 		// Create the save and cancel buttons.
 		this.saveButtonView = this._createButton(
-			t( 'Save' ), icons.check, 'ck-button-save'
+			'Save', icons.check, 'ck-button-save'
 		);
 		// Set the type to 'submit', which will trigger
 		// the submit event on entire form when clicked.
 		this.saveButtonView.type = 'submit';
 
 		this.cancelButtonView = this._createButton(
-			t( 'Cancel' ), icons.cancel, 'ck-button-cancel'
+			'Cancel', icons.cancel, 'ck-button-cancel'
 		);
 	}
 
@@ -129,7 +126,7 @@ export default class FormView extends View {
 	}
 
 	_createButton( label, icon, className ) {
-		const button = new ButtonView( this.locale );
+		const button = new ButtonView();
 
 		button.set( {
 			label,
@@ -160,11 +157,11 @@ export default class FormView extends View {
 		// ...
 
 		this.saveButtonView = this._createButton(
-			t( 'Save' ), icons.check, 'ck-button-save'
+			'Save', icons.check, 'ck-button-save'
 		);
 		this.saveButtonView.type = 'submit';
 		this.cancelButtonView = this._createButton(
-			t( 'Cancel' ), icons.cancel, 'ck-button-cancel'
+			'Cancel', icons.cancel, 'ck-button-cancel'
 		);
 		// Delegate ButtonView#execute to FormView#cancel.
 		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
@@ -311,12 +308,11 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 export default class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
-		const { t } = editor.locale;
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
-			const button = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'abbreviation', () => {
+			const button = new ButtonView();
 
-			button.label = t( 'Abbreviation' );
+			button.label = 'Abbreviation';
 			button.tooltip = true;
 			button.withText = true;
 
@@ -362,13 +358,12 @@ export default class AbbreviationUI extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const { t } = editor.locale;
 
 		// Create the balloon and the form view.
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 		this.formView = this._createFormView();
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
+		editor.ui.componentFactory.add( 'abbreviation', () => {
 			// ...
 		} );
 	}
@@ -411,7 +406,7 @@ export default class AbbreviationUI extends Plugin {
 	init() {
 		// ...
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
+		editor.ui.componentFactory.add( 'abbreviation', () => {
 			this._showUI();
 		} );
 	}
@@ -570,7 +565,7 @@ export default class AbbreviationUI extends Plugin {
 
 ## Final code
 
-If you got lost at any point, this is [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/Abbreviation%20plugin/Part%202). You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.
+If you got lost at any point, this is [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-2). You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.
 
 <info-box>
 	**What's next?**

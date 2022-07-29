@@ -435,12 +435,12 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes.length ).to.equal( 1 );
 
 			const domDivOuter = domRoot.childNodes[ 0 ];
-			expect( renderer.domConverter.viewToDom( viewDivOuter, domRoot.document ) ).to.equal( domDivOuter );
+			expect( renderer.domConverter.viewToDom( viewDivOuter ) ).to.equal( domDivOuter );
 			expect( domDivOuter.tagName ).to.equal( 'DIV' );
 			expect( domDivOuter.childNodes.length ).to.equal( 1 );
 
 			const domDivInner = domDivOuter.childNodes[ 0 ];
-			expect( renderer.domConverter.viewToDom( viewDivInner, domRoot.document ) ).to.equal( domDivInner );
+			expect( renderer.domConverter.viewToDom( viewDivInner ) ).to.equal( domDivInner );
 			expect( domDivInner.tagName ).to.equal( 'DIV' );
 			expect( domDivInner.childNodes.length ).to.equal( 0 );
 		} );

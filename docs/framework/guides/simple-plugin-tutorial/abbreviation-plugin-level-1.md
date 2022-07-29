@@ -17,7 +17,7 @@ If you want to see the final product of this tutorial before you plunge in, chec
 
 ## Let's start!
 
-The easiest way to set up your project is to grab the starter files from our [Github repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/Abbreviation%20plugin/Starter%20files). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to build the editor.
+The easiest way to set up your project is to grab the starter files from our [Github repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/starter-files). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to build the editor.
 
 The editor has already been created in the `app.js` file with some basic plugins. All you need to do, is clone the repository, run the `npm install` command, and you can start coding right away.
 
@@ -338,7 +338,7 @@ Thanks to the upcast conversion, our abbreviation added in the `index.html` shou
 
 Now we can create our `Abbreviation` toolbar button using the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class.
 
-We need to register it in the editor's UI {@link module:ui/componentfactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar. The button can be localized using the editor's {@link module:utils/locale~Locale} instance, and the {@link module:utils/locale~Locale#t `t()` translation function}.
+We need to register it in the editor's UI {@link module:ui/componentfactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -349,14 +349,10 @@ class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		// The translation function.
-		const { t } = editor.locale;
+		editor.ui.componentFactory.add( 'abbreviation', () => {
+			const button = new ButtonView();
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
-			const button = new ButtonView( locale );
-
-			// The localized label.
-			button.label = t( 'Abbreviation' );
+			button.label = 'Abbreviation';
 			button.tooltip = true;
 			button.withText = true;
 
@@ -411,9 +407,8 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
-		const { t } = editor.locale;
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
+		editor.ui.componentFactory.add( 'abbreviation', () => {
 			//...
 
 			this.listenTo( button, 'execute', () => {
@@ -442,7 +437,7 @@ class AbbreviationUI extends Plugin {
 
 ## Final code
 
-If you got lost at any point, this is [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/Abbreviation%20plugin/Part%201). You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.
+If you got lost at any point, this is [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-1). You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.
 
 <info-box>
 	**What's next?**

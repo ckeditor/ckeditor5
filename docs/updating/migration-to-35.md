@@ -21,7 +21,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### The source element is not updated automatically after the editor destroy
 
-The last version of CKEditor 5 changes the default behaviour of a source element after the editor destroy. So far, the source element was updated with the output coming from the data pipeline. Now, the source element becomes empty after destroying the editor and it is not updated anymore. 
+The last version of CKEditor 5 changes the default behaviour of a source element after the editor destroy. So far, the source element was updated with the output coming from the data pipeline. Now, the source element becomes empty after destroying the editor and it is not updated anymore.
 
 However, this behaviour is configurable and could be enabled with the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option:
 
@@ -33,5 +33,27 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 <info-box warning>
-Enabling the `updateSourceElementOnDestroy` option in your configuration, depending on plugins you use, might have some security implications. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Especially, be careful when using Markdown, General HTML Support and HTML embed features 
+Enabling the `updateSourceElementOnDestroy` option in your configuration, depending on plugins you use, might have some security implications. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Especially, be careful when using Markdown, General HTML Support and HTML embed features.
 </info-box>
+
+### Dropdown focus is moved back to the dropdown button after choosing an option
+
+Due to the ongoing accessibility improvements the default behaviour of {@link module:ui/dropdown/dropdownview~DropdownView dropdown UI component} was changed. From now on, after choosing an option from (any) dropdown (either by mouse or keyboard), the focus will be moved to the dropdown button. This means that custom UI components using dropdowns which need to move focus back to the editable after execution have to do it explicitly, using the listener on the dropdown's {@link module:ui/dropdown/dropdownview~DropdownView#event:execute `execute` event}, e.g.:
+
+```js
+// If `execute` event is delegated to the dropdown, one listener can handle both executing
+// the command and focusing the editor editable.
+dropdownView.on( 'execute', () => {
+	// editor.execute()...;
+	editor.editing.view.focus();
+} );
+
+// Otherwise, a dedicated listener may needed to be added.
+differentUiComponent.on( 'execute', () => {
+	// editor.execute();
+} );
+
+dropdownView.on( 'execute', () => {
+	editor.editing.view.focus();
+} );
+```

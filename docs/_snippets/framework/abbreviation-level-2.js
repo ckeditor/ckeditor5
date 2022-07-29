@@ -31,15 +31,14 @@ class AbbreviationUI extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const { t } = editor.locale;
 
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 		this.formView = this._createFormView();
 
-		editor.ui.componentFactory.add( 'abbreviation', locale => {
-			const button = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'abbreviation', () => {
+			const button = new ButtonView();
 
-			button.label = t( 'Abbreviation' );
+			button.label = 'Abbreviation';
 			button.tooltip = true;
 			button.withText = true;
 

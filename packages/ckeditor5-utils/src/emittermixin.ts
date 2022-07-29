@@ -810,7 +810,7 @@ function addEventListener<TEvent extends BaseEvent>(
 	} else {
 		// Allow listening on objects that do not implement Emitter interface.
 		// This is needed in some tests that are using mocks instead of the real objects with EmitterMixin mixed.
-		listener._addEventListener!<TEvent>.call( emitter, event, callback, options );
+		( listener._addEventListener!<TEvent> ).call( emitter, event, callback, options );
 	}
 }
 
