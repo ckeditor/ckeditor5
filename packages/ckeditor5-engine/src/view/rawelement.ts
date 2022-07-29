@@ -8,9 +8,11 @@
  */
 
 import Element from './element';
+import Node from './node';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import type DomConverter from './domconverter';
+import type Item from './item';
 
 type DomElement = globalThis.HTMLElement;
 
@@ -68,16 +70,20 @@ export default class RawElement extends Element {
 	 *
 	 * @protected
 	 */
-	public override _insertChild( index: number, items: any ): never {
-		/**
-		 * Cannot add children to a {@link module:engine/view/rawelement~RawElement} instance.
-		 *
-		 * @error view-rawelement-cannot-add
-		 */
-		throw new CKEditorError(
-			'view-rawelement-cannot-add',
-			[ this, items ]
-		);
+	public override _insertChild( index: number, items: Item | Iterable<Item> ): number {
+		if ( items && ( items instanceof Node || Array.from( items as Iterable<Item> ).length > 0 ) ) {
+			/**
+			 * Cannot add children to a {@link module:engine/view/rawelement~RawElement} instance.
+			 *
+			 * @error view-rawelement-cannot-add
+			 */
+			throw new CKEditorError(
+				'view-rawelement-cannot-add',
+				[ this, items ]
+			);
+		}
+
+		return 0;
 	}
 
 	/**

@@ -8,10 +8,11 @@
  */
 
 import Element from './element';
+import Node from './node';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import type Document from './document';
-import type Node from './node';
+import type Item from './item';
 
 /**
  * Empty element class. It is used to represent elements that cannot contain any child nodes (for example `<img>` elements).
@@ -62,16 +63,20 @@ export default class EmptyElement extends Element {
 	 *
 	 * @protected
 	 */
-	public override _insertChild( index: number, items: any ): never {
-		/**
-		 * Cannot add children to {@link module:engine/view/emptyelement~EmptyElement}.
-		 *
-		 * @error view-emptyelement-cannot-add
-		 */
-		throw new CKEditorError(
-			'view-emptyelement-cannot-add',
-			[ this, items ]
-		);
+	public override _insertChild( index: number, items: Item | Iterable<Item> ): number {
+		if ( items && ( items instanceof Node || Array.from( items as Iterable<Item> ).length > 0 ) ) {
+			/**
+			 * Cannot add children to {@link module:engine/view/emptyelement~EmptyElement}.
+			 *
+			 * @error view-emptyelement-cannot-add
+			 */
+			throw new CKEditorError(
+				'view-emptyelement-cannot-add',
+				[ this, items ]
+			);
+		}
+
+		return 0;
 	}
 }
 

@@ -8,11 +8,13 @@
  */
 
 import Element from './element';
+import Node from './node';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import type View from './view';
 import type DomConverter from './domconverter';
+import type Item from './item';
 
 type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
@@ -73,13 +75,17 @@ export default class UIElement extends Element {
 	 *
 	 * @protected
 	 */
-	public override _insertChild( index: number, items: any ): never {
-		/**
-		 * Cannot add children to {@link module:engine/view/uielement~UIElement}.
-		 *
-		 * @error view-uielement-cannot-add
-		 */
-		throw new CKEditorError( 'view-uielement-cannot-add', [ this, items ] );
+	public override _insertChild( index: number, items: Item | Iterable<Item> ): number {
+		if ( items && ( items instanceof Node || Array.from( items as Iterable<Item> ).length > 0 ) ) {
+			/**
+			 * Cannot add children to {@link module:engine/view/uielement~UIElement}.
+			 *
+			 * @error view-uielement-cannot-add
+			 */
+			throw new CKEditorError( 'view-uielement-cannot-add', [ this, items ] );
+		}
+
+		return 0;
 	}
 
 	/**
