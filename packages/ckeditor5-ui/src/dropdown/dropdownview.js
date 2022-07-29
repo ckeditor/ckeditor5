@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals document */
+
 /**
  * @module ui/dropdown/dropdownview
  */
@@ -253,7 +255,10 @@ export default class DropdownView extends View {
 		this.on( 'change:isOpen', () => {
 			if ( !this.isOpen ) {
 				// If the dropdown was closed, move the focus back to the button (#12125).
-				this.focus();
+				// Unless the executed button already move the focus to the editable (#12178).
+				if ( this.element.contains( document.activeElement ) ) {
+					this.focus();
+				}
 
 				return;
 			}
