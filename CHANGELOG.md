@@ -5,28 +5,42 @@ Changelog
 
 ### Release highlights
 
+We are happy to announce the release of CKEditor 5 v35.0.0.
+
+This release introduces the following new features:
+
+* Accessibility improvements.
+* The styles dropdown feature is integrated with track changes.
+* The [`@ckeditor/ckeditor5-utils`](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils) package is now written in TypeScript.
+* Improved translations for the project.
+
 <!-- TODO: Add a link to the blog post. -->
+
+Please refer to the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/migration-to-XX.html) to learn more about these changes.
+
+### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+
+* The source element is not updated automatically after the editor destroy.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `DomConverter#viewToDom()` and `DomConverter#viewChildrenToDom()` parameter list changed (the 2nd parameter – the DOM document instance is no longer accepted).
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: `ImageInsertPanelView#dropdownView` property is no longer accessible. Use `editor.plugins.get( 'ImageInsertUI' ).dropdownView` instead to access the image insert dropdown instance. See [#11654](https://github.com/ckeditor/ckeditor5/issues/11654).
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `ImageInsertPanelView#dropdownView` property is no longer accessible. Use `editor.plugins.get( 'ImageInsertUI' ).dropdownView` instead to access the image insert dropdown instance. See [#11654](https://github.com/ckeditor/ckeditor5/issues/11654).
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Until now, `preventDefault()` was called on the `mousedown` event to prevent the [`ButtonView`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_button_buttonview-ButtonView.html) from "stealing" the focus from the editing root. Starting from this editor version, to improve the accessibility of the editor, all instances of the [`ButtonView`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_button_buttonview-ButtonView.html) class (and child classes) will automatically focus in DOM when clicked. It is recommended that features that use buttons to manage the content call `editor.editing.view.focus()` after the button was [executed](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_button_buttonview-ButtonView.html#event-execute) in order to bring the DOM focus back to the editing root to allow users type right away.
 
 ### Features
 
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Introduced the `updateSourceElementOnDestroy` configuration option. ([commit](https://github.com/ckeditor/ckeditor5/commit/fc4643291f2a195bf4928c2bd4550ed7b73d352c))
 * **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Support timestamp in embedded youtube video. Closes [#12006](https://github.com/ckeditor/ckeditor5/issues/12006). ([commit](https://github.com/ckeditor/ckeditor5/commit/376227b86b2c1c7057b2e4053b6687c1a447f2c7))
+  Thanks to @Recursing!
 * **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Enabled resuming unsaved revision for integrations using Cloud Services editor bundle.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added track changes integration for styles dropdown feature.
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `@ckeditor/ckeditor5-utils` package is now written in TypeScript. ([commit](https://github.com/ckeditor/ckeditor5/commit/ff9c7f1e7d8e6963755f1cb68c3ce6b98b6359fb))
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added track changes integration for the styles dropdown feature.
 
 ### Bug fixes
 
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Replaced the `CloudServicesCore` requirement in favor of the `CloudServices` plugin for CKBox. Closes [#12040](https://github.com/ckeditor/ckeditor5/issues/12040). ([commit](https://github.com/ckeditor/ckeditor5/commit/b3b2d792ea242d9d69d920a8f6c2d3d5dd802f73))
 * **[editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon)**: The editing area of the editor should have a clear accessible label. Closes [#11836](https://github.com/ckeditor/ckeditor5/issues/11836). ([commit](https://github.com/ckeditor/ckeditor5/commit/8ee4ce986a7dc0c30a0f2376df250884c4255424))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Editor should not crash while making a selection after having a collapsed selection with styles applied. Closes [#12026](https://github.com/ckeditor/ckeditor5/issues/12026). ([commit](https://github.com/ckeditor/ckeditor5/commit/fe81aaa3a813086e5020764e34eeccb417f6a47b))
-* **[enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)**: A `<br>` element between blocks should be converted to an empty paragraph. Along with the fix we revised the entire implementation and improved it a number of cases. Closes [#10217](https://github.com/ckeditor/ckeditor5/issues/10217). ([commit](https://github.com/ckeditor/ckeditor5/commit/394a19bfae5bf2dbfb63abe30017f9f93e6ad740))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Allowed setting an accessible label in the `toWidgetEditable()` helper. Added missing labels for assistive technologies to image captions. Closes [#11837](https://github.com/ckeditor/ckeditor5/issues/11837). ([commit](https://github.com/ckeditor/ckeditor5/commit/be970526527e071d58d18447c95d262c05a2aa6e))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Link manual decorators should be properly down-casted on the document selection. Closes [#12046](https://github.com/ckeditor/ckeditor5/issues/12046). ([commit](https://github.com/ckeditor/ckeditor5/commit/0e7794bb16bf21357db8cc42b6a0791d186efb5e))
 * **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Fixed a bug where custom plugins were filtered out from revision history preview if they required track changes plugin.
@@ -37,12 +51,10 @@ Changelog
 
 ### Other changes
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: A mechanism responsible for removing bogus `<br>`s was moved from `DomConverter` to a plugin space (namely: `ShiftEnter`) and is now run on a conversion layer. See [#10217](https://github.com/ckeditor/ckeditor5/issues/10217). ([commit](https://github.com/ckeditor/ckeditor5/commit/394a19bfae5bf2dbfb63abe30017f9f93e6ad740))
-
-  Test (clipboard): Added test for pasting content with `<br>` element between blocks. See [#10217](https://github.com/ckeditor/ckeditor5/issues/10217).
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `DomConverter` should use a separate DOM document instance in the data pipeline. ([commit](https://github.com/ckeditor/ckeditor5/commit/541708e8ff5c7dbb5904b61bd158cf528be05d36))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Introducing the `ImageInsertViaUrl` plugin enabling insertion of images via URL without the requirement of the `UploadPlugin`. Closes [#11654](https://github.com/ckeditor/ckeditor5/issues/11654). ([commit](https://github.com/ckeditor/ckeditor5/commit/da475dbd3445978be5bd1c458de9bf2725dd459f))
 * **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: `StyleCommand#execute()` now expects to be passed an object with properties `styleName` and optional `forceValue` instead of a single string. ([commit](https://github.com/ckeditor/ckeditor5/commit/cf708bde5badfcac269d5d5da002b8324684516f))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: The package is now written in TypeScript. ([commit](https://github.com/ckeditor/ckeditor5/commit/ff9c7f1e7d8e6963755f1cb68c3ce6b98b6359fb))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/a798cbe874c36ed5f5e0d1ee666aaa863c72ea53), [commit](https://github.com/ckeditor/ckeditor5/commit/929c14be4c8db1dd9b32fa8e44ed144c778b3ebc), [commit](https://github.com/ckeditor/ckeditor5/commit/f0a43801d55a348d71bf980e2c8dd1014af43cd6))
 
 ### Released packages
