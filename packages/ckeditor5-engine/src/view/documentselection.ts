@@ -364,7 +364,7 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public _setFocus( itemOrPosition: Item | Position, offset: number | 'before' | 'end' | 'after' ): void {
+	public _setFocus( itemOrPosition: Item | Position, offset?: number | 'before' | 'end' | 'after' ): void {
 		this._selection.setFocus( itemOrPosition, offset );
 	}
 

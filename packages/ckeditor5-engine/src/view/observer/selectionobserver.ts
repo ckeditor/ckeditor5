@@ -16,6 +16,9 @@ import { debounce, type DebouncedFunc } from 'lodash-es';
 import type View from '../view';
 import type DocumentSelection from '../documentselection';
 import type DomConverter from '../domconverter';
+import type Selection from '../selection';
+
+type DomSelection = globalThis.Selection;
 
 /**
  * Selection observer class observes selection changes in the document. If a selection changes on the document this
@@ -37,6 +40,7 @@ export default class SelectionObserver extends Observer {
 	public readonly domConverter: DomConverter;
 
 	private readonly _documents: WeakSet<Document>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: SelectionChangeEventData ) => void>;
 	private readonly _clearInfiniteLoopInterval: ReturnType<typeof setInterval>;
 	private readonly _documentIsSelectingInactivityTimeoutDebounced: DebouncedFunc<() => void>;
 	private _loopbackCounter: number;
@@ -91,7 +95,9 @@ export default class SelectionObserver extends Observer {
 		 * @param {Object} data Selection change data.
 		 * @method #_fireSelectionChangeDoneDebounced
 		 */
-		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
+		this._fireSelectionChangeDoneDebounced = debounce( data => {
+			this.document.fire<SelectionChangeDoneEvent>( 'selectionChangeDone', data );
+		}, 200 );
 
 		/**
 		 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
@@ -239,14 +245,14 @@ export default class SelectionObserver extends Observer {
 			// Just re-render it, no need to fire any events, etc.
 			this.view.forceRender();
 		} else {
-			const data = {
+			const data: SelectionChangeEventData = {
 				oldSelection: this.selection,
 				newSelection: newViewSelection,
-				domSelection
+				domSelection: domSelection!
 			};
 
 			// Prepare data for new selection and fire appropriate events.
-			this.document.fire( 'selectionChange', data );
+			this.document.fire<SelectionChangeEvent>( 'selectionChange', data );
 
 			// Call `#_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 			// This function is debounced what means that `selectionChangeDone` event will be fired only when
@@ -266,6 +272,12 @@ export default class SelectionObserver extends Observer {
 	}
 }
 
+export type SelectionChangeEventData = {
+	oldSelection: DocumentSelection;
+	newSelection: Selection;
+	domSelection: DomSelection;
+};
+
 /**
  * Fired when a selection has changed. This event is fired only when the selection change was the only change that happened
  * in the document, and the old selection is different then the new selection.
@@ -283,6 +295,10 @@ export default class SelectionObserver extends Observer {
  * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.
  */
+export type SelectionChangeEvent = {
+	name: 'selectionChange';
+	args: [ SelectionChangeEventData ];
+};
 
 /**
  * Fired when selection stops changing.
@@ -300,3 +316,8 @@ export default class SelectionObserver extends Observer {
  * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.
  */
+export type SelectionChangeDoneEvent = {
+	name: 'selectionChangeDone';
+	args: [ SelectionChangeEventData ];
+};
+

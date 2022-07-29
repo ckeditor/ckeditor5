@@ -8,6 +8,7 @@
  */
 
 import DomEventObserver from './domeventobserver';
+import type View from '../view';
 
 /**
  * Observer for events connected with data input.
@@ -16,14 +17,14 @@ import DomEventObserver from './domeventobserver';
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
-export default class InputObserver extends DomEventObserver {
-	constructor( view ) {
+export default class InputObserver extends DomEventObserver<'beforeinput'> {
+	constructor( view: View ) {
 		super( view );
 
 		this.domEventType = [ 'beforeinput' ];
 	}
 
-	onDomEvent( domEvent ) {
+	public onDomEvent( domEvent: InputEvent ): void {
 		this.fire( domEvent.type, domEvent );
 	}
 }
