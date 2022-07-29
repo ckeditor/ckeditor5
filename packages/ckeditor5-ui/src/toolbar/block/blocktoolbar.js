@@ -281,7 +281,7 @@ export default class BlockToolbar extends Plugin {
 
 		buttonView.extendTemplate( {
 			on: {
-				click: buttonBind.to( evt => {
+				mousedown: buttonBind.to( evt => {
 					// Workaround to #12184, see https://github.com/ckeditor/ckeditor5/issues/12184#issuecomment-1199147964.
 					evt.preventDefault();
 				} )
