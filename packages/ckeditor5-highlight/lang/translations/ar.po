@@ -50,4 +50,4 @@ msgstr "تحديد"
 
 msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
 msgid "Text highlight toolbar"
-msgstr ""
+msgstr "شريط أدوات تمييز النص"

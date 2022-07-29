@@ -50,7 +50,7 @@ msgstr "大小寫需相符"
 
 msgctxt "The label for the whole words only checkbox in the find and replace dropdown."
 msgid "Whole words only"
-msgstr ""
+msgstr "僅全字拼寫"
 
 msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"

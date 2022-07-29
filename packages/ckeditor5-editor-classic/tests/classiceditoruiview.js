@@ -94,6 +94,12 @@ describe( 'ClassicEditorUIView', () => {
 			it( 'is put into the "main" collection', () => {
 				expect( view.main.get( 0 ) ).to.equal( view.editable );
 			} );
+
+			it( 'is given an accessible aria label', () => {
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Editor editing area: main' );
+
+				view.destroy();
+			} );
 		} );
 	} );
 } );

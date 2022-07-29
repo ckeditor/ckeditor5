@@ -7,6 +7,8 @@
  * @module html-support/datafilter
  */
 
+/* globals document */
+
 import DataSchema from './dataschema';
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -587,6 +589,15 @@ function consumeAttributes( viewElement, conversionApi, matcher ) {
 	const { attributes, styles, classes } = mergeMatchResults( matches );
 	const viewAttributes = {};
 
+	// Remove invalid DOM element attributes.
+	if ( attributes.size ) {
+		for ( const key of attributes ) {
+			if ( !isValidAttributeName( key ) ) {
+				attributes.delete( key );
+			}
+		}
+	}
+
 	if ( attributes.size ) {
 		viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
 	}
@@ -751,4 +762,15 @@ function splitRules( rules ) {
 	}
 
 	return splittedRules;
+}
+
+// Returns true if name is valid for a DOM attribute name.
+function isValidAttributeName( name ) {
+	try {
+		document.createAttribute( name );
+	} catch ( error ) {
+		return false;
+	}
+
+	return true;
 }

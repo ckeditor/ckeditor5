@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EmitterMixin from '../src/emittermixin';
+import { Emitter } from '../src/emittermixin';
 import KeystrokeHandler from '../src/keystrokehandler';
 import { keyCodes } from '../src/keyboard';
 import env from '../src/env';
@@ -15,7 +15,7 @@ describe( 'KeystrokeHandler', () => {
 	beforeEach( () => {
 		env.isMac = false;
 
-		emitter = Object.create( EmitterMixin );
+		emitter = new Emitter();
 		keystrokes = new KeystrokeHandler();
 
 		keystrokes.listenTo( emitter );

@@ -9,13 +9,13 @@ classes: main__content--no-toc
 
 {@snippet build-classic-source}
 
-{@link installation/advanced/predefined-builds#classic-editor Classic editor} shows a boxed editing area with a toolbar, placed in a specific position on the page.
+{@link installation/getting-started/predefined-builds#classic-editor Classic editor} shows a boxed editing area with a toolbar, placed in a specific position on the page.
 
 {@snippet examples/classic-editor}
 
 ## Editor example configuration
 
-Check out the {@link installation/advanced/predefined-builds#installation-example Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
+Check out the {@link installation/getting-started/predefined-builds#installation-example Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
 
 <details>
 <summary>View editor configuration script</summary>

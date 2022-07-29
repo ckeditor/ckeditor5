@@ -13,7 +13,7 @@ This release introduces the following new features:
 * Integrated the track changes feature with the code block and HTML embed features.
 * Integrated CKEditor 5 with the CKBox service.
 
-<!-- TODO: Add a link to the blog post. -->
+Read about release highlights in a dedicated blog post: https://ckeditor.com/blog/ckeditor-5-v34.2.0-with-ckbox-resuming-unsaved-revisions-and-a-new-installation-walkthrough/
 
 ### Features
 

@@ -7,7 +7,7 @@
  * @module engine/dataprocessor/xmldataprocessor
  */
 
-/* globals DOMParser, document */
+/* globals DOMParser */
 
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
@@ -71,7 +71,7 @@ export default class XmlDataProcessor {
 	 */
 	toData( viewFragment ) {
 		// Convert view DocumentFragment to DOM DocumentFragment.
-		const domFragment = this.domConverter.viewToDom( viewFragment, document );
+		const domFragment = this.domConverter.viewToDom( viewFragment );
 
 		// Convert DOM DocumentFragment to XML output.
 		// There is no need to use dedicated for XML serializing method because BasicHtmlWriter works well in this case.
