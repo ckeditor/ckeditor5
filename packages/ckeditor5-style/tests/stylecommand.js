@@ -822,6 +822,8 @@ describe( 'StyleCommand', () => {
 			} );
 
 			it( 'should not apply style on the not first element in selected element`', () => {
+				sinon.stub( console, 'warn' );
+
 				model.schema.register( 'div', { inheritAllFrom: '$block' } );
 				model.schema.extend( 'paragraph', { allowIn: [ 'div', 'paragraph' ] } );
 				model.schema.extend( 'heading1', { allowIn: 'div' } );
