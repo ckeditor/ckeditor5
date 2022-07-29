@@ -7,27 +7,19 @@
  * @module engine/model/range
  */
 
+import TypeCheckable from './typecheckable';
 import Position from './position';
 import TreeWalker, { type TreeWalkerValue } from './treewalker';
 
-import type { Marker } from './markercollection';
 import type Document from './document';
 import type DocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
 import type Element from './element';
 import type InsertOperation from './operation/insertoperation';
 import type Item from './item';
-import type LivePosition from './liveposition';
-import type LiveRange from './liverange';
 import type MergeOperation from './operation/mergeoperation';
 import type MoveOperation from './operation/moveoperation';
-import type Node from './node';
 import type Operation from './operation/operation';
-import type RootElement from './rootelement';
-import type Selection from './selection';
 import type SplitOperation from './operation/splitoperation';
-import type Text from './text';
-import type TextProxy from './textproxy';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
@@ -41,7 +33,7 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
  * You can create range instances via its constructor or the `createRange*()` factory methods of
  * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
  */
-export default class Range implements Iterable<TreeWalkerValue> {
+export default class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	public readonly start: Position;
 	public readonly end: Position;
 
@@ -53,6 +45,8 @@ export default class Range implements Iterable<TreeWalkerValue> {
 	 * the range will be collapsed at the `start` position.
 	 */
 	constructor( start: Position, end?: Position | null ) {
+		super();
+
 		/**
 		 * Start position.
 		 *
@@ -165,40 +159,6 @@ export default class Range implements Iterable<TreeWalkerValue> {
 		const pos = Position._createBefore( item );
 
 		return this.containsPosition( pos ) || this.start.isEqual( pos );
-	}
-
-	public is( type: 'node' | 'model:node' ): this is Node | Element | Text | RootElement;
-	public is( type: 'element' | 'model:element' ): this is Element | RootElement;
-	public is( type: 'rootElement' | 'model:rootElement' ): this is RootElement;
-	public is( type: '$text' | 'model:$text' ): this is Text;
-	public is( type: 'position' | 'model:position' ): this is Position | LivePosition;
-	public is( type: 'livePosition' | 'model:livePosition' ): this is LivePosition;
-	public is( type: 'range' | 'model:range' ): this is Range | LiveRange;
-	public is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
-	public is( type: 'documentFragment' | 'model:documentFragment' ): this is DocumentFragment;
-	public is( type: 'selection' | 'model:selection' ): this is Selection | DocumentSelection;
-	public is( type: 'documentSelection' | 'model:documentSelection' ): this is DocumentSelection;
-	public is( type: 'marker' | 'model:marker' ): this is Marker;
-	public is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
-	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( Element | RootElement ) & { name: N };
-	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
-
-	/**
-	 * Checks whether this object is of the given.
-	 *
-	 *		range.is( 'range' ); // -> true
-	 *		range.is( 'model:range' ); // -> true
-	 *
-	 *		range.is( 'view:range' ); // -> false
-	 *		range.is( 'documentSelection' ); // -> false
-	 *
-	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	public is( type: string ): boolean {
-		return type === 'range' || type === 'model:range';
 	}
 
 	/**
@@ -1104,3 +1064,21 @@ export default class Range implements Iterable<TreeWalkerValue> {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelPosition: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 }
+
+/**
+ * Checks whether this object is of the given.
+ *
+ *		range.is( 'range' ); // -> true
+ *		range.is( 'model:range' ); // -> true
+ *
+ *		range.is( 'view:range' ); // -> false
+ *		range.is( 'documentSelection' ); // -> false
+ *
+ * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+ *
+ * @param {String} type
+ * @returns {Boolean}
+ */
+Range.prototype.is = function( type: string ): boolean {
+	return type === 'range' || type === 'model:range';
+};

@@ -791,7 +791,7 @@ class Insertion {
 			if ( this.position.isAtStart ) {
 				// If insertion position is at the beginning of the parent, move it out instead of splitting.
 				// <p>^Foo</p> -> ^<p>Foo</p>
-				const parent: Element | DocumentFragment = this.position.parent;
+				const parent: Element = this.position.parent as Element;
 
 				this.position = this.writer.createPositionBefore( parent );
 
@@ -810,9 +810,9 @@ class Insertion {
 			} else if ( this.position.isAtEnd ) {
 				// If insertion position is at the end of the parent, move it out instead of splitting.
 				// <p>Foo^</p> -> <p>Foo</p>^
-				this.position = this.writer.createPositionAfter( this.position.parent );
+				this.position = this.writer.createPositionAfter( this.position.parent as Element );
 			} else {
-				const tempPos = this.writer.createPositionAfter( this.position.parent );
+				const tempPos = this.writer.createPositionAfter( this.position.parent as Element );
 
 				this._setAffectedBoundaries( this.position );
 				this.writer.split( this.position );

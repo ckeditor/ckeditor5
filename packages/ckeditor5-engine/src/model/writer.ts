@@ -709,7 +709,7 @@ export default class Writer {
 	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
 	 */
-	public createPositionAfter( item: Item | DocumentFragment ): Position {
+	public createPositionAfter( item: Item ): Position {
 		return this.model.createPositionAfter( item );
 	}
 
@@ -719,7 +719,7 @@ export default class Writer {
 	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
 	 */
-	public createPositionBefore( item: Item | DocumentFragment ): Position {
+	public createPositionBefore( item: Item ): Position {
 		return this.model.createPositionBefore( item );
 	}
 
@@ -900,7 +900,7 @@ export default class Writer {
 				firstCopyElement = position.parent.nextSibling;
 			}
 
-			position = this.createPositionAfter( position.parent );
+			position = this.createPositionAfter( position.parent as any );
 			splitElement = position.parent;
 		} while ( splitElement !== limitElement );
 

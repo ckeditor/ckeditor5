@@ -3,32 +3,33 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable new-cap */
+
 /**
  * @module engine/model/documentselection
  */
 
+import TypeCheckable from './typecheckable';
 import LiveRange from './liverange';
-import Selection from './selection';
+import Selection, {
+	type ChangeAttributeEvent as SelectionChangeAttributeEvent,
+	type ChangeRangeEvent as SelectionChangeRangeEvent
+} from './selection';
 import Text from './text';
 import TextProxy from './textproxy';
 
-import type { Marker } from './markercollection';
+import type { default as Document, ChangeEvent as DocumentChangeEvent } from './document';
+import type { default as Model, ApplyOperationEvent } from './model';
+import type { Marker, UpdateEvent as MarkerUpdateEvent } from './markercollection';
 import type Batch from './batch';
-import type Document from './document';
-import type DocumentFragment from './documentfragment';
 import type Element from './element';
 import type Item from './item';
-import type LivePosition from './liveposition';
-import type Model from './model';
-import type Node from './node';
 import type Position from './position';
 import type Range from './range';
-import type RootElement from './rootelement';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import EmitterMixin, { type Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
@@ -60,7 +61,7 @@ const storePrefix = 'selection:';
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-class DocumentSelection {
+export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	protected _selection: LiveSelection;
 
 	/**
@@ -69,6 +70,8 @@ class DocumentSelection {
 	 * @param {module:engine/model/document~Document} doc Document which owns this selection.
 	 */
 	constructor( doc: Document ) {
+		super();
+
 		/**
 		 * Selection used internally by that class (`DocumentSelection` is a proxy to that selection).
 		 *
@@ -394,46 +397,6 @@ class DocumentSelection {
 		this._selection.observeMarkers( prefixOrName );
 	}
 
-	public is( type: 'node' | 'model:node' ): this is Node | Element | Text | RootElement;
-	public is( type: 'element' | 'model:element' ): this is Element | RootElement;
-	public is( type: 'rootElement' | 'model:rootElement' ): this is RootElement;
-	public is( type: '$text' | 'model:$text' ): this is Text;
-	public is( type: 'position' | 'model:position' ): this is Position | LivePosition;
-	public is( type: 'livePosition' | 'model:livePosition' ): this is LivePosition;
-	public is( type: 'range' | 'model:range' ): this is Range | LiveRange;
-	public is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
-	public is( type: 'documentFragment' | 'model:documentFragment' ): this is DocumentFragment;
-	public is( type: 'selection' | 'model:selection' ): this is Selection | DocumentSelection;
-	public is( type: 'documentSelection' | 'model:documentSelection' ): this is DocumentSelection;
-	public is( type: 'marker' | 'model:marker' ): this is Marker;
-	public is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
-	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( Element | RootElement ) & { name: N };
-	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
-
-	/**
-	 * Checks whether this object is of the given type.
-	 *
-	 *		selection.is( 'selection' ); // -> true
-	 *		selection.is( 'documentSelection' ); // -> true
-	 *		selection.is( 'model:selection' ); // -> true
-	 *		selection.is( 'model:documentSelection' ); // -> true
-	 *
-	 *		selection.is( 'view:selection' ); // -> false
-	 *		selection.is( 'element' ); // -> false
-	 *		selection.is( 'node' ); // -> false
-	 *
-	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	public is( type: string ): boolean {
-		return type === 'selection' ||
-			type == 'model:selection' ||
-			type == 'documentSelection' ||
-			type == 'model:documentSelection';
-	}
-
 	/**
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
@@ -567,11 +530,29 @@ class DocumentSelection {
 	}
 }
 
-mix( DocumentSelection, EmitterMixin );
-
-interface DocumentSelection extends Emitter {}
-
-export default DocumentSelection;
+/**
+ * Checks whether this object is of the given type.
+ *
+ *		selection.is( 'selection' ); // -> true
+ *		selection.is( 'documentSelection' ); // -> true
+ *		selection.is( 'model:selection' ); // -> true
+ *		selection.is( 'model:documentSelection' ); // -> true
+ *
+ *		selection.is( 'view:selection' ); // -> false
+ *		selection.is( 'element' ); // -> false
+ *		selection.is( 'node' ); // -> false
+ *
+ * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+ *
+ * @param {String} type
+ * @returns {Boolean}
+ */
+DocumentSelection.prototype.is = function( type: string ): boolean {
+	return type === 'selection' ||
+		type == 'model:selection' ||
+		type == 'documentSelection' ||
+		type == 'model:documentSelection';
+};
 
 /**
  * Fired when selection range(s) changed.
@@ -586,6 +567,8 @@ export default DocumentSelection;
  * which mean that they are not updated once the document changes.
  */
 
+export type ChangeRangeEvent = SelectionChangeRangeEvent;
+
 /**
  * Fired when selection attribute changed.
  *
@@ -598,7 +581,9 @@ export default DocumentSelection;
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
  * @param {Array.<String>} attributeKeys Array containing keys of attributes that changed.
- */
+*/
+
+export type ChangeAttributeEvent = SelectionChangeAttributeEvent;
 
 /**
  * Fired when selection marker(s) changed.
@@ -610,6 +595,23 @@ export default DocumentSelection;
  * {@link module:engine/model/documentselection~DocumentSelection#event:change:attribute}.
  * @param {Array.<module:engine/model/markercollection~Marker>} oldMarkers Markers in which the selection was before the change.
  */
+
+export type ChangeMarkerEvent = {
+	name: 'change:marker';
+	args: [ {
+		directChange: boolean;
+		oldMarkers: Marker[];
+	} ];
+};
+
+export type ChangeEvent = {
+	name: 'change' | 'change:attribute' | 'change:marker' | 'change:range';
+	args: [ {
+		directChange: boolean;
+		attributeKeys?: string[];
+		oldMarkers?: Marker[];
+	} ];
+};
 
 // `LiveSelection` is used internally by {@link module:engine/model/documentselection~DocumentSelection} and shouldn't be used directly.
 //
@@ -696,7 +698,7 @@ class LiveSelection extends Selection {
 		this._observedMarkers = new Set();
 
 		// Ensure selection is correct after each operation.
-		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
+		this.listenTo<ApplyOperationEvent>( this._model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 
 			if ( !operation.isDocumentOperation || operation.type == 'marker' || operation.type == 'rename' || operation.type == 'noop' ) {
@@ -713,12 +715,12 @@ class LiveSelection extends Selection {
 
 			if ( this._hasChangedRange ) {
 				this._hasChangedRange = false;
-				this.fire( 'change:range', { directChange: false } );
+				this.fire<ChangeRangeEvent>( 'change:range', { directChange: false } );
 			}
 		}, { priority: 'lowest' } );
 
 		// Ensure selection is correct and up to date after each range change.
-		this.on( 'change:range', () => {
+		this.on<ChangeRangeEvent>( 'change:range', () => {
 			for ( const range of this.getRanges() ) {
 				if ( !this._document._validateSelectionRange( range ) ) {
 					/**
@@ -739,12 +741,12 @@ class LiveSelection extends Selection {
 
 		// Update markers data stored by the selection after each marker change.
 		// This handles only marker changes done through marker operations (not model tree changes).
-		this.listenTo( this._model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
+		this.listenTo<MarkerUpdateEvent>( this._model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
 			this._updateMarker( marker, newRange );
 		} );
 
 		// Ensure selection is up to date after each change block.
-		this.listenTo( this._document, 'change', ( evt, batch ) => {
+		this.listenTo<DocumentChangeEvent>( this._document, 'change', ( evt, batch ) => {
 			clearAttributesStoredInElement( this._model, batch );
 		} );
 	}
@@ -826,7 +828,7 @@ class LiveSelection extends Selection {
 		if ( this._setAttribute( key, value ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
-			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+			this.fire<ChangeAttributeEvent>( 'change:attribute', { attributeKeys, directChange: true } );
 		}
 	}
 
@@ -834,7 +836,7 @@ class LiveSelection extends Selection {
 		if ( this._removeAttribute( key ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
-			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+			this.fire<ChangeAttributeEvent>( 'change:attribute', { attributeKeys, directChange: true } );
 		}
 	}
 
@@ -972,11 +974,11 @@ class LiveSelection extends Selection {
 		}
 
 		if ( changed ) {
-			this.fire( 'change:marker', { oldMarkers, directChange: false } );
+			this.fire<ChangeMarkerEvent>( 'change:marker', { oldMarkers, directChange: false } );
 		}
 	}
 
-	private _updateMarker( marker: Marker, markerRange: Range ): void {
+	private _updateMarker( marker: Marker, markerRange: Range | null ): void {
 		const markerGroup = marker.name.split( ':', 1 )[ 0 ];
 
 		if ( !this._observedMarkers.has( markerGroup ) ) {
@@ -1016,7 +1018,7 @@ class LiveSelection extends Selection {
 		}
 
 		if ( changed ) {
-			this.fire( 'change:marker', { oldMarkers, directChange: false } );
+			this.fire<ChangeMarkerEvent>( 'change:marker', { oldMarkers, directChange: false } );
 		}
 	}
 
@@ -1065,7 +1067,7 @@ class LiveSelection extends Selection {
 
 		// Fire event with exact data (fire only if anything changed).
 		if ( changed.length > 0 ) {
-			this.fire( 'change:attribute', { attributeKeys: changed, directChange: false } );
+			this.fire<ChangeAttributeEvent>( 'change:attribute', { attributeKeys: changed, directChange: false } );
 		}
 	}
 

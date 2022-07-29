@@ -25,15 +25,14 @@ import insertContent from './utils/insertcontent';
 import insertObject from './utils/insertobject';
 import modifySelection from './utils/modifyselection';
 
-import type DocumentFragment from './documentfragment';
+import type ModelDocumentFragment from './documentfragment';
 import type DocumentSelection from './documentselection';
 import type Item from './item';
 import type ModelElement from './element';
 import type Operation from './operation/operation';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import ObservableMixin, { type Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { type DecoratedMethodEvent, Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
 // @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
@@ -44,7 +43,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-class Model {
+export default class Model extends Observable {
 	public readonly markers: MarkerCollection;
 	public readonly document: Document;
 	public readonly schema: Schema;
@@ -53,6 +52,8 @@ class Model {
 	private _currentWriter: Writer | null;
 
 	constructor() {
+		super();
+
 		/**
 		 * Model's marker collection.
 		 *
@@ -99,7 +100,7 @@ class Model {
 
 		// Adding operation validation with `highest` priority, so it is called before any other feature would like
 		// to do anything with the operation. If the operation has incorrect parameters it should throw on the earliest occasion.
-		this.on( 'applyOperation', ( evt, args ) => {
+		this.on<ApplyOperationEvent>( 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 
 			operation._validate();
@@ -477,7 +478,7 @@ class Model {
 	 * at the insertion position.
 	 */
 	public insertContent(
-		content: Item | DocumentFragment,
+		content: Item | ModelDocumentFragment,
 		selectable?: Selectable,
 		placeOrOffset?: number | 'before' | 'end' | 'after' | 'on' | 'in'
 	): ModelRange {
@@ -706,7 +707,7 @@ class Model {
 	 * The selection of which content will be returned.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment}
 	 */
-	public getSelectedContent( selection: ModelSelection | DocumentSelection ): DocumentFragment {
+	public getSelectedContent( selection: ModelSelection | DocumentSelection ): ModelDocumentFragment {
 		return getSelectedContent( this, selection );
 	}
 
@@ -733,7 +734,7 @@ class Model {
 	 * @returns {Boolean}
 	 */
 	public hasContent(
-		rangeOrElement: ModelRange | ModelElement | DocumentFragment,
+		rangeOrElement: ModelRange | ModelElement | ModelDocumentFragment,
 		options: { ignoreWhitespaces?: boolean; ignoreMarkers?: boolean } = {}
 	): boolean {
 		const range = rangeOrElement instanceof ModelRange ? rangeOrElement : ModelRange._createIn( rangeOrElement );
@@ -783,7 +784,7 @@ class Model {
 	 * @returns {module:engine/model/position~Position}
 	 */
 	public createPositionFromPath(
-		root: ModelElement | DocumentFragment,
+		root: ModelElement | ModelDocumentFragment,
 		path: number[],
 		stickiness?: PositionStickiness
 	): ModelPosition {
@@ -812,7 +813,7 @@ class Model {
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	public createPositionAt(
-		itemOrPosition: Item | ModelPosition | DocumentFragment,
+		itemOrPosition: Item | ModelPosition | ModelDocumentFragment,
 		offset?: number | 'end' | 'before' | 'after'
 	): ModelPosition {
 		return ModelPosition._createAt( itemOrPosition, offset );
@@ -827,7 +828,7 @@ class Model {
 	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
 	 */
-	public createPositionAfter( item: Item | DocumentFragment ): ModelPosition {
+	public createPositionAfter( item: Item ): ModelPosition {
 		return ModelPosition._createAfter( item );
 	}
 
@@ -840,7 +841,7 @@ class Model {
 	 * @param {module:engine/model/item~Item} item Item before which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
 	 */
-	public createPositionBefore( item: Item | DocumentFragment ): ModelPosition {
+	public createPositionBefore( item: Item ): ModelPosition {
 		return ModelPosition._createBefore( item );
 	}
 
@@ -877,7 +878,7 @@ class Model {
 	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/model/range~Range}
 	 */
-	public createRangeIn( element: ModelElement ): ModelRange {
+	public createRangeIn( element: ModelElement | ModelDocumentFragment ): ModelRange {
 		return ModelRange._createIn( element );
 	}
 
@@ -894,7 +895,7 @@ class Model {
 	 * @param {module:engine/model/item~Item} item
 	 * @returns {module:engine/model/range~Range}
 	 */
-	public createRangeOn( item: Item | DocumentFragment ): ModelRange {
+	public createRangeOn( item: Item | ModelDocumentFragment ): ModelRange {
 		return ModelRange._createOn( item );
 	}
 
@@ -1118,8 +1119,9 @@ class Model {
 	 */
 }
 
-mix( Model, ObservableMixin );
-
-interface Model extends Observable {}
-
-export default Model;
+export type ApplyOperationEvent = DecoratedMethodEvent<Model, 'applyOperation'>;
+export type InsertContentEvent = DecoratedMethodEvent<Model, 'insertContent'>;
+export type InsertObjectEvent = DecoratedMethodEvent<Model, 'insertObject'>;
+export type DeleteContentEvent = DecoratedMethodEvent<Model, 'deleteContent'>;
+export type ModifySelectionEvent = DecoratedMethodEvent<Model, 'modifySelection'>;
+export type GetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelectedContent'>;

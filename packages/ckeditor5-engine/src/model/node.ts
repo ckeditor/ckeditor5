@@ -9,19 +9,11 @@
  * @module engine/model/node
  */
 
-import type { Marker } from './markercollection';
+import TypeCheckable from './typecheckable';
+
 import type Document from './document';
 import type DocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
 import type Element from './element';
-import type LivePosition from './liveposition';
-import type LiveRange from './liverange';
-import type Position from './position';
-import type Range from './range';
-import type RootElement from './rootelement';
-import type Selection from './selection';
-import type Text from './text';
-import type TextProxy from './textproxy';
 
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -57,7 +49,7 @@ import '@ckeditor/ckeditor5-utils/src/version';
  * In case of {@link module:engine/model/element~Element element node}, adding and removing children also counts as changing a node and
  * follows same rules.
  */
-export default class Node {
+export default class Node extends TypeCheckable {
 	public parent: Element | DocumentFragment | null;
 
 	public readonly rootName: string | undefined;
@@ -73,6 +65,8 @@ export default class Node {
 	 * @param {Object} [attrs] Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
 	constructor( attrs?: Record<string, unknown> | Iterable<[ string, unknown ]> ) {
+		super();
+
 		/**
 		 * Parent of this node. It could be {@link module:engine/model/element~Element}
 		 * or {@link module:engine/model/documentfragment~DocumentFragment}.
@@ -421,69 +415,6 @@ export default class Node {
 		return json;
 	}
 
-	public is( type: 'node' | 'model:node' ): this is Node | Element | Text | RootElement;
-	public is( type: 'element' | 'model:element' ): this is Element | RootElement;
-	public is( type: 'rootElement' | 'model:rootElement' ): this is RootElement;
-	public is( type: '$text' | 'model:$text' ): this is Text;
-	public is( type: 'position' | 'model:position' ): this is Position | LivePosition;
-	public is( type: 'livePosition' | 'model:livePosition' ): this is LivePosition;
-	public is( type: 'range' | 'model:range' ): this is Range | LiveRange;
-	public is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
-	public is( type: 'documentFragment' | 'model:documentFragment' ): this is DocumentFragment;
-	public is( type: 'selection' | 'model:selection' ): this is Selection | DocumentSelection;
-	public is( type: 'documentSelection' | 'model:documentSelection' ): this is DocumentSelection;
-	public is( type: 'marker' | 'model:marker' ): this is Marker;
-	public is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
-	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( Element | RootElement ) & { name: N };
-	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
-
-	/**
-	 * Checks whether this object is of the given type.
-	 *
-	 * This method is useful when processing model objects that are of unknown type. For example, a function
-	 * may return a {@link module:engine/model/documentfragment~DocumentFragment} or a {@link module:engine/model/node~Node}
-	 * that can be either a text node or an element. This method can be used to check what kind of object is returned.
-	 *
-	 *		someObject.is( 'element' ); // -> true if this is an element
-	 *		someObject.is( 'node' ); // -> true if this is a node (a text node or an element)
-	 *		someObject.is( 'documentFragment' ); // -> true if this is a document fragment
-	 *
-	 * Since this method is also available on a range of view objects, you can prefix the type of the object with
-	 * `model:` or `view:` to check, for example, if this is the model's or view's element:
-	 *
-	 *		modelElement.is( 'model:element' ); // -> true
-	 *		modelElement.is( 'view:element' ); // -> false
-	 *
-	 * By using this method it is also possible to check a name of an element:
-	 *
-	 *		imageElement.is( 'element', 'imageBlock' ); // -> true
-	 *		imageElement.is( 'element', 'imageBlock' ); // -> same as above
-	 *		imageElement.is( 'model:element', 'imageBlock' ); // -> same as above, but more precise
-	 *
-	 * The list of model objects which implement the `is()` method:
-	 *
-	 * * {@link module:engine/model/node~Node#is `Node#is()`}
-	 * * {@link module:engine/model/text~Text#is `Text#is()`}
-	 * * {@link module:engine/model/element~Element#is `Element#is()`}
-	 * * {@link module:engine/model/rootelement~RootElement#is `RootElement#is()`}
-	 * * {@link module:engine/model/position~Position#is `Position#is()`}
-	 * * {@link module:engine/model/liveposition~LivePosition#is `LivePosition#is()`}
-	 * * {@link module:engine/model/range~Range#is `Range#is()`}
-	 * * {@link module:engine/model/liverange~LiveRange#is `LiveRange#is()`}
-	 * * {@link module:engine/model/documentfragment~DocumentFragment#is `DocumentFragment#is()`}
-	 * * {@link module:engine/model/selection~Selection#is `Selection#is()`}
-	 * * {@link module:engine/model/documentselection~DocumentSelection#is `DocumentSelection#is()`}
-	 * * {@link module:engine/model/markercollection~Marker#is `Marker#is()`}
-	 * * {@link module:engine/model/textproxy~TextProxy#is `TextProxy#is()`}
-	 *
-	 * @method #is
-	 * @param {String} type Type to check.
-	 * @returns {Boolean}
-	 */
-	public is( type: string ): boolean {
-		return type === 'node' || type === 'model:node';
-	}
-
 	/**
 	 * Creates a copy of this node, that is a node with exactly same attributes, and returns it.
 	 *
@@ -555,6 +486,53 @@ export default class Node {
 		this._attrs.clear();
 	}
 }
+
+/**
+ * Checks whether this object is of the given type.
+ *
+ * This method is useful when processing model objects that are of unknown type. For example, a function
+ * may return a {@link module:engine/model/documentfragment~DocumentFragment} or a {@link module:engine/model/node~Node}
+ * that can be either a text node or an element. This method can be used to check what kind of object is returned.
+ *
+ *		someObject.is( 'element' ); // -> true if this is an element
+ *		someObject.is( 'node' ); // -> true if this is a node (a text node or an element)
+ *		someObject.is( 'documentFragment' ); // -> true if this is a document fragment
+ *
+ * Since this method is also available on a range of view objects, you can prefix the type of the object with
+ * `model:` or `view:` to check, for example, if this is the model's or view's element:
+ *
+ *		modelElement.is( 'model:element' ); // -> true
+ *		modelElement.is( 'view:element' ); // -> false
+ *
+ * By using this method it is also possible to check a name of an element:
+ *
+ *		imageElement.is( 'element', 'imageBlock' ); // -> true
+ *		imageElement.is( 'element', 'imageBlock' ); // -> same as above
+ *		imageElement.is( 'model:element', 'imageBlock' ); // -> same as above, but more precise
+ *
+ * The list of model objects which implement the `is()` method:
+ *
+ * * {@link module:engine/model/node~Node#is `Node#is()`}
+ * * {@link module:engine/model/text~Text#is `Text#is()`}
+ * * {@link module:engine/model/element~Element#is `Element#is()`}
+ * * {@link module:engine/model/rootelement~RootElement#is `RootElement#is()`}
+ * * {@link module:engine/model/position~Position#is `Position#is()`}
+ * * {@link module:engine/model/liveposition~LivePosition#is `LivePosition#is()`}
+ * * {@link module:engine/model/range~Range#is `Range#is()`}
+ * * {@link module:engine/model/liverange~LiveRange#is `LiveRange#is()`}
+ * * {@link module:engine/model/documentfragment~DocumentFragment#is `DocumentFragment#is()`}
+ * * {@link module:engine/model/selection~Selection#is `Selection#is()`}
+ * * {@link module:engine/model/documentselection~DocumentSelection#is `DocumentSelection#is()`}
+ * * {@link module:engine/model/markercollection~Marker#is `Marker#is()`}
+ * * {@link module:engine/model/textproxy~TextProxy#is `TextProxy#is()`}
+ *
+ * @method #is
+ * @param {String} type Type to check.
+ * @returns {Boolean}
+ */
+Node.prototype.is = function( type: string ): boolean {
+	return type === 'node' || type === 'model:node';
+};
 
 /**
  * The node's parent does not contain this node.

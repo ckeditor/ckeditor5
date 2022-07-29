@@ -296,8 +296,8 @@ function mergeBranchesLeft(
 	}
 
 	// Remember next positions to merge in next recursive step (also used as modification points pointers).
-	startPosition = writer.createPositionAfter( startElement );
-	endPosition = writer.createPositionBefore( endElement );
+	startPosition = writer.createPositionAfter( startElement as any );
+	endPosition = writer.createPositionBefore( endElement as any );
 
 	// Move endElement just after startElement if they aren't siblings.
 	if ( !endPosition.isEqual( startPosition ) ) {
@@ -338,7 +338,7 @@ function mergeBranchesLeft(
 	while ( endPosition.parent.isEmpty ) {
 		const parentToRemove = endPosition.parent;
 
-		endPosition = writer.createPositionBefore( parentToRemove );
+		endPosition = writer.createPositionBefore( parentToRemove as any );
 
 		writer.remove( parentToRemove );
 	}
@@ -380,8 +380,8 @@ function mergeBranchesRight(
 	}
 
 	// Remember next positions to merge in next recursive step (also used as modification points pointers).
-	startPosition = writer.createPositionAfter( startElement );
-	endPosition = writer.createPositionBefore( endElement );
+	startPosition = writer.createPositionAfter( startElement as any );
+	endPosition = writer.createPositionBefore( endElement as any );
 
 	// Move startElement just before endElement if they aren't siblings.
 	if ( !endPosition.isEqual( startPosition ) ) {
@@ -408,13 +408,13 @@ function mergeBranchesRight(
 	while ( startPosition.parent.isEmpty ) {
 		const parentToRemove = startPosition.parent;
 
-		startPosition = writer.createPositionBefore( parentToRemove );
+		startPosition = writer.createPositionBefore( parentToRemove as any );
 
 		writer.remove( parentToRemove );
 	}
 
 	// Update endPosition after inserting and removing elements.
-	endPosition = writer.createPositionBefore( endElement );
+	endPosition = writer.createPositionBefore( endElement as any );
 
 	// Merge right two siblings (nodes on sides of endPosition):
 	//                                                              ->

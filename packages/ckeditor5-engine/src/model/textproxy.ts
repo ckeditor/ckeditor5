@@ -7,17 +7,10 @@
  * @module engine/model/textproxy
  */
 
-import type { Marker } from './markercollection';
+import TypeCheckable from './typecheckable';
 import type DocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
 import type Element from './element';
-import type LivePosition from './liveposition';
-import type LiveRange from './liverange';
 import type Node from './node';
-import type Position from './position';
-import type Range from './range';
-import type RootElement from './rootelement';
-import type Selection from './selection';
 import type Text from './text';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -53,7 +46,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * `TextProxy` instances are created by {@link module:engine/model/treewalker~TreeWalker model tree walker}. You should not need to create
  * an instance of this class by your own.
  */
-export default class TextProxy {
+export default class TextProxy extends TypeCheckable {
 	public readonly textNode: Text;
 	public readonly data: string;
 	public readonly offsetInText: number;
@@ -69,6 +62,8 @@ export default class TextProxy {
 	 * @constructor
 	 */
 	constructor( textNode: Text, offsetInText: number, length: number ) {
+		super();
+
 		/**
 		 * Text node which part is represented by this text proxy.
 		 *
@@ -180,45 +175,6 @@ export default class TextProxy {
 		return this.textNode.root;
 	}
 
-	public is( type: 'node' | 'model:node' ): this is Node | Element | Text | RootElement;
-	public is( type: 'element' | 'model:element' ): this is Element | RootElement;
-	public is( type: 'rootElement' | 'model:rootElement' ): this is RootElement;
-	public is( type: '$text' | 'model:$text' ): this is Text;
-	public is( type: 'position' | 'model:position' ): this is Position | LivePosition;
-	public is( type: 'livePosition' | 'model:livePosition' ): this is LivePosition;
-	public is( type: 'range' | 'model:range' ): this is Range | LiveRange;
-	public is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
-	public is( type: 'documentFragment' | 'model:documentFragment' ): this is DocumentFragment;
-	public is( type: 'selection' | 'model:selection' ): this is Selection | DocumentSelection;
-	public is( type: 'documentSelection' | 'model:documentSelection' ): this is DocumentSelection;
-	public is( type: 'marker' | 'model:marker' ): this is Marker;
-	public is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
-	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( Element | RootElement ) & { name: N };
-	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
-
-	/**
-	 * Checks whether this object is of the given.
-	 *
-	 *		textProxy.is( '$textProxy' ); // -> true
-	 *		textProxy.is( 'model:$textProxy' ); // -> true
-	 *
-	 *		textProxy.is( 'view:$textProxy' ); // -> false
-	 *		textProxy.is( 'range' ); // -> false
-	 *
-	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
-	 *
-	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$textProxy'` type. The legacy `'textProxt'` type is still
-	 * accepted for backward compatibility.
-	 *
-	 * @param {String} type Type to check.
-	 * @returns {Boolean}
-	 */
-	public is( type: string ): boolean {
-		return type === '$textProxy' || type === 'model:$textProxy' ||
-			// This are legacy values kept for backward compatibility.
-			type === 'textProxy' || type === 'model:textProxy';
-	}
-
 	/**
 	 * Gets path to this text proxy.
 	 *
@@ -310,3 +266,26 @@ export default class TextProxy {
 	// @if CK_DEBUG_ENGINE // 		`attrs: ${ convertMapToStringifiedObject( this.getAttributes() ) }` );
 	// @if CK_DEBUG_ENGINE // }
 }
+
+/**
+ * Checks whether this object is of the given.
+ *
+ *		textProxy.is( '$textProxy' ); // -> true
+ *		textProxy.is( 'model:$textProxy' ); // -> true
+ *
+ *		textProxy.is( 'view:$textProxy' ); // -> false
+ *		textProxy.is( 'range' ); // -> false
+ *
+ * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+ *
+ * **Note:** Until version 20.0.0 this method wasn't accepting `'$textProxy'` type. The legacy `'textProxt'` type is still
+ * accepted for backward compatibility.
+ *
+ * @param {String} type Type to check.
+ * @returns {Boolean}
+ */
+TextProxy.prototype.is = function( type: string ): boolean {
+	return type === '$textProxy' || type === 'model:$textProxy' ||
+		// This are legacy values kept for backward compatibility.
+		type === 'textProxy' || type === 'model:textProxy';
+};

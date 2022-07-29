@@ -7,21 +7,15 @@
  * @module module:engine/model/documentfragment
  */
 
+import TypeCheckable from './typecheckable';
 import Element from './element';
 import NodeList from './nodelist';
 import Text from './text';
 import TextProxy from './textproxy';
 
-import type { Marker } from './markercollection';
-import type DocumentSelection from './documentselection';
 import type Item from './item';
-import type LivePosition from './liveposition';
-import type LiveRange from './liverange';
 import type Node from './node';
-import type Position from './position';
 import type Range from './range';
-import type RootElement from './rootelement';
-import type Selection from './selection';
 
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
@@ -35,7 +29,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  * will be set to the {@link module:engine/model/model~Model#markers model markers} by a
  * {@link module:engine/model/writer~Writer#insert} function.
  */
-export default class DocumentFragment implements Iterable<Node> {
+export default class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 	public readonly markers: Map<string, Range>;
 	declare public name?: undefined;
 	declare public rootName?: undefined;
@@ -53,6 +47,8 @@ export default class DocumentFragment implements Iterable<Node> {
 	 * Nodes to be contained inside the `DocumentFragment`.
 	 */
 	constructor( children?: Node | Iterable<Node> ) {
+		super();
+
 		/**
 		 * DocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
 		 * which will be set as Markers to {@link module:engine/model/model~Model#markers model markers collection}
@@ -172,41 +168,6 @@ export default class DocumentFragment implements Iterable<Node> {
 	 */
 	public getAncestors(): never[] {
 		return [];
-	}
-
-	public is( type: 'node' | 'model:node' ): this is Node | Element | Text | RootElement;
-	public is( type: 'element' | 'model:element' ): this is Element | RootElement;
-	public is( type: 'rootElement' | 'model:rootElement' ): this is RootElement;
-	public is( type: '$text' | 'model:$text' ): this is Text;
-	public is( type: 'position' | 'model:position' ): this is Position | LivePosition;
-	public is( type: 'livePosition' | 'model:livePosition' ): this is LivePosition;
-	public is( type: 'range' | 'model:range' ): this is Range | LiveRange;
-	public is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
-	public is( type: 'documentFragment' | 'model:documentFragment' ): this is DocumentFragment;
-	public is( type: 'selection' | 'model:selection' ): this is Selection | DocumentSelection;
-	public is( type: 'documentSelection' | 'model:documentSelection' ): this is DocumentSelection;
-	public is( type: 'marker' | 'model:marker' ): this is Marker;
-	public is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
-	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( Element | RootElement ) & { name: N };
-	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
-
-	/**
-	 * Checks whether this object is of the given type.
-	 *
-	 *		docFrag.is( 'documentFragment' ); // -> true
-	 *		docFrag.is( 'model:documentFragment' ); // -> true
-	 *
-	 *		docFrag.is( 'view:documentFragment' ); // -> false
-	 *		docFrag.is( 'element' ); // -> false
-	 *		docFrag.is( 'node' ); // -> false
-	 *
-	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	public is( type: string ): boolean {
-		return type === 'documentFragment' || type === 'model:documentFragment';
 	}
 
 	/**
@@ -436,6 +397,25 @@ export default class DocumentFragment implements Iterable<Node> {
 	// @if CK_DEBUG_ENGINE // 	console.log( this.printTree() );
 	// @if CK_DEBUG_ENGINE // }
 }
+
+/**
+ * Checks whether this object is of the given type.
+ *
+ *		docFrag.is( 'documentFragment' ); // -> true
+ *		docFrag.is( 'model:documentFragment' ); // -> true
+ *
+ *		docFrag.is( 'view:documentFragment' ); // -> false
+ *		docFrag.is( 'element' ); // -> false
+ *		docFrag.is( 'node' ); // -> false
+ *
+ * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+ *
+ * @param {String} type
+ * @returns {Boolean}
+ */
+DocumentFragment.prototype.is = function( type: string ): boolean {
+	return type === 'documentFragment' || type === 'model:documentFragment';
+};
 
 // Converts strings to Text and non-iterables to arrays.
 //

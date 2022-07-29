@@ -7,27 +7,20 @@
  * @module engine/model/position
  */
 
+import TypeCheckable from './typecheckable';
 import TreeWalker, { type TreeWalkerValue } from './treewalker';
 
-import type { Marker } from './markercollection';
 import type Document from './document';
 import type DocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
 import type Element from './element';
 import type InsertOperation from './operation/insertoperation';
 import type Item from './item';
-import type LivePosition from './liveposition';
-import type LiveRange from './liverange';
 import type MergeOperation from './operation/mergeoperation';
 import type MoveOperation from './operation/moveoperation';
 import type Node from './node';
 import type Operation from './operation/operation';
-import type Range from './range';
-import type RootElement from './rootelement';
-import type Selection from './selection';
 import type SplitOperation from './operation/splitoperation';
 import type Text from './text';
-import type TextProxy from './textproxy';
 
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -62,7 +55,7 @@ import '@ckeditor/ckeditor5-utils/src/version';
  *
  * In most cases, position with wrong path is caused by an error in code, but it is sometimes needed, as described above.
  */
-export default class Position {
+export default class Position extends TypeCheckable {
 	public readonly root: Element | DocumentFragment;
 	public path: number[];
 	public stickiness: PositionStickiness;
@@ -80,6 +73,8 @@ export default class Position {
 		path: number[],
 		stickiness: PositionStickiness = 'toNone'
 	) {
+		super();
+
 		if ( !root.is( 'element' ) && !root.is( 'documentFragment' ) ) {
 			/**
 			 * Position root is invalid.
@@ -581,40 +576,6 @@ export default class Position {
 		throw new Error( 'unreachable code' );
 	}
 
-	public is( type: 'node' | 'model:node' ): this is Node | Element | Text | RootElement;
-	public is( type: 'element' | 'model:element' ): this is Element | RootElement;
-	public is( type: 'rootElement' | 'model:rootElement' ): this is RootElement;
-	public is( type: '$text' | 'model:$text' ): this is Text;
-	public is( type: 'position' | 'model:position' ): this is Position | LivePosition;
-	public is( type: 'livePosition' | 'model:livePosition' ): this is LivePosition;
-	public is( type: 'range' | 'model:range' ): this is Range | LiveRange;
-	public is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
-	public is( type: 'documentFragment' | 'model:documentFragment' ): this is DocumentFragment;
-	public is( type: 'selection' | 'model:selection' ): this is Selection | DocumentSelection;
-	public is( type: 'documentSelection' | 'model:documentSelection' ): this is DocumentSelection;
-	public is( type: 'marker' | 'model:marker' ): this is Marker;
-	public is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
-	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( Element | RootElement ) & { name: N };
-	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
-
-	/**
-	 * Checks whether this object is of the given.
-	 *
-	 *		position.is( 'position' ); // -> true
-	 *		position.is( 'model:position' ); // -> true
-	 *
-	 *		position.is( 'view:position' ); // -> false
-	 *		position.is( 'documentSelection' ); // -> false
-	 *
-	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	public is( type: string ): boolean {
-		return type === 'position' || type === 'model:position';
-	}
-
 	/**
 	 * Checks if two positions are in the same parent.
 	 *
@@ -1106,6 +1067,24 @@ export default class Position {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelPosition: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 }
+
+/**
+ * Checks whether this object is of the given.
+ *
+ *		position.is( 'position' ); // -> true
+ *		position.is( 'model:position' ); // -> true
+ *
+ *		position.is( 'view:position' ); // -> false
+ *		position.is( 'documentSelection' ); // -> false
+ *
+ * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+ *
+ * @param {String} type
+ * @returns {Boolean}
+ */
+Position.prototype.is = function( type: string ): boolean {
+	return type === 'position' || type === 'model:position';
+};
 
 /**
  * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.

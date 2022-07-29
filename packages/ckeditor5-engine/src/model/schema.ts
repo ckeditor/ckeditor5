@@ -15,15 +15,13 @@ import TreeWalker from './treewalker';
 
 import type DocumentFragment from './documentfragment';
 import type DocumentSelection from './documentselection';
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import type Item from './item';
 import type Node from './node';
 import type Selection from './selection';
 import type Writer from './writer';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin, { type Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * The model's schema. It defines the allowed and disallowed structures of nodes as well as nodes' attributes.
@@ -40,7 +38,7 @@ import ObservableMixin, { type Observable } from '@ckeditor/ckeditor5-utils/src/
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-class Schema {
+export default class Schema extends Observable {
 	private readonly _sourceDefinitions: Record<string, SchemaItemDefinition[]>;
 	private readonly _attributeProperties: Record<string, AttributeProperties>;
 	private _compiledDefinitions?: Record<string, SchemaCompiledItemDefinition> | null;
@@ -49,6 +47,8 @@ class Schema {
 	 * Creates a schema instance.
 	 */
 	constructor() {
+		super();
+
 		this._sourceDefinitions = {};
 
 		/**
@@ -537,7 +537,7 @@ class Schema {
 	 * a boolean value, the default algorithm (or other callbacks) will define `checkChild()`'s return value.
 	 */
 	public addChildCheck( callback: ( ctx: SchemaContextDefinition, def: SchemaCompiledItemDefinition ) => unknown ): void {
-		this.on( 'checkChild', ( evt: EventInfo, [ ctx, childDef ]: [ SchemaContextDefinition, SchemaCompiledItemDefinition ] ) => {
+		this.on<CheckChildEvent>( 'checkChild', ( evt, [ ctx, childDef ] ) => {
 			// checkChild() was called with a non-registered child.
 			// In 99% cases such check should return false, so not to overcomplicate all callbacks
 			// don't even execute them.
@@ -594,7 +594,7 @@ class Schema {
 	 * a boolean value, the default algorithm (or other callbacks) will define `checkAttribute()`'s return value.
 	 */
 	public addAttributeCheck( callback: ( context: SchemaContextDefinition, attributeName: string ) => unknown ): void {
-		this.on( 'checkAttribute', ( evt, [ ctx, attributeName ]: [ SchemaContextDefinition, string ] ) => {
+		this.on<CheckAttributeEvent>( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
 			const retValue = callback( ctx, attributeName );
 
 			if ( typeof retValue == 'boolean' ) {
@@ -1043,12 +1043,6 @@ class Schema {
 	}
 }
 
-mix( Schema, ObservableMixin );
-
-interface Schema extends Observable {}
-
-export default Schema;
-
 /**
  * Event fired when the {@link #checkChild} method is called. It allows plugging in
  * additional behavior, for example implementing rules which cannot be defined using the declarative
@@ -1109,6 +1103,10 @@ export default Schema;
  * @event checkChild
  * @param {Array} args The `checkChild()`'s arguments.
  */
+export type CheckChildEvent = {
+	name: 'checkChild';
+	args: [ [ context: SchemaContext, def: SchemaCompiledItemDefinition ] ];
+};
 
 /**
  * Event fired when the {@link #checkAttribute} method is called. It allows plugging in
@@ -1167,6 +1165,10 @@ export default Schema;
  * @event checkAttribute
  * @param {Array} args The `checkAttribute()`'s arguments.
  */
+export type CheckAttributeEvent = {
+	name: 'checkAttribute';
+	args: [ [ context: SchemaContext, attributeName: string ] ];
+};
 
 /**
  * A definition of a {@link module:engine/model/schema~Schema schema} item.

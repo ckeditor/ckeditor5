@@ -605,9 +605,10 @@ export default class Differ {
 	 * in the differ changes set, so it will be effectively re-converted when the differ changes are handled by a dispatcher.
 	 *
 	 * @protected
+	 * @internal
 	 * @param {module:engine/model/item~Item} item Item to refresh.
 	 */
-	protected _refreshItem( item: Item ): void {
+	public _refreshItem( item: Item ): void {
 		if ( this._isInInsertedElement( item.parent! ) ) {
 			return;
 		}

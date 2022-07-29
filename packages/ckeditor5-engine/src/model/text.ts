@@ -9,18 +9,6 @@
 
 import Node from './node';
 
-import type { Marker } from './markercollection';
-import type DocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
-import type Element from './element';
-import type LivePosition from './liveposition';
-import type LiveRange from './liverange';
-import type Position from './position';
-import type Range from './range';
-import type RootElement from './rootelement';
-import type Selection from './selection';
-import type TextProxy from './textproxy';
-
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
 /**
@@ -79,49 +67,6 @@ export default class Text extends Node {
 		return this._data;
 	}
 
-	public override is( type: 'node' | 'model:node' ): this is Node | Element | Text | RootElement;
-	public override is( type: 'element' | 'model:element' ): this is Element | RootElement;
-	public override is( type: 'rootElement' | 'model:rootElement' ): this is RootElement;
-	public override is( type: '$text' | 'model:$text' ): this is Text;
-	public override is( type: 'position' | 'model:position' ): this is Position | LivePosition;
-	public override is( type: 'livePosition' | 'model:livePosition' ): this is LivePosition;
-	public override is( type: 'range' | 'model:range' ): this is Range | LiveRange;
-	public override is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
-	public override is( type: 'documentFragment' | 'model:documentFragment' ): this is DocumentFragment;
-	public override is( type: 'selection' | 'model:selection' ): this is Selection | DocumentSelection;
-	public override is( type: 'documentSelection' | 'model:documentSelection' ): this is DocumentSelection;
-	public override is( type: 'marker' | 'model:marker' ): this is Marker;
-	public override is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
-	public override is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( Element | RootElement ) & { name: N };
-	public override is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
-
-	/**
-	 * Checks whether this object is of the given.
-	 *
-	 *		text.is( '$text' ); // -> true
-	 *		text.is( 'node' ); // -> true
-	 *		text.is( 'model:$text' ); // -> true
-	 *		text.is( 'model:node' ); // -> true
-	 *
-	 *		text.is( 'view:$text' ); // -> false
-	 *		text.is( 'documentSelection' ); // -> false
-	 *
-	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
-	 *
-	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$text'` type. The legacy `'text'` type is still
-	 * accepted for backward compatibility.
-	 *
-	 * @param {String} type Type to check.
-	 * @returns {Boolean}
-	 */
-	public override is( type: string ): boolean {
-		return type === '$text' || type === 'model:$text' ||
-			// This are legacy values kept for backward compatibility.
-			type === 'text' || type === 'model:text' ||
-			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
-			type === 'node' || type === 'model:node';
-	}
-
 	/**
 	 * Converts `Text` instance to plain object and returns it.
 	 *
@@ -168,3 +113,30 @@ export default class Text extends Node {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelText: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 }
+
+/**
+ * Checks whether this object is of the given.
+ *
+ *		text.is( '$text' ); // -> true
+ *		text.is( 'node' ); // -> true
+ *		text.is( 'model:$text' ); // -> true
+ *		text.is( 'model:node' ); // -> true
+ *
+ *		text.is( 'view:$text' ); // -> false
+ *		text.is( 'documentSelection' ); // -> false
+ *
+ * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+ *
+ * **Note:** Until version 20.0.0 this method wasn't accepting `'$text'` type. The legacy `'text'` type is still
+ * accepted for backward compatibility.
+ *
+ * @param {String} type Type to check.
+ * @returns {Boolean}
+ */
+Text.prototype.is = function( type: string ): boolean {
+	return type === '$text' || type === 'model:$text' ||
+		// This are legacy values kept for backward compatibility.
+		type === 'text' || type === 'model:text' ||
+		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+		type === 'node' || type === 'model:node';
+};
