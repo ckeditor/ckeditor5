@@ -22,23 +22,23 @@ msgstr "גודל טקסט"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
-msgstr ""
+msgstr "זעיר"
 
 msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
-msgstr ""
+msgstr "קטן"
 
 msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
-msgstr ""
+msgstr "גדול"
 
 msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
-msgstr ""
+msgstr "ענק"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr ""
+msgstr "משפחת גופנים"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
@@ -46,12 +46,12 @@ msgstr "ברירת מחדל"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
-msgstr ""
+msgstr "צבע גופן"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr ""
+msgstr "צבע הרקע של הגופן"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
+msgstr "צבעי המסמך"

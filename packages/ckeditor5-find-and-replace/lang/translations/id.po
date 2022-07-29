@@ -50,7 +50,7 @@ msgstr "Sesuaikan huruf"
 
 msgctxt "The label for the whole words only checkbox in the find and replace dropdown."
 msgid "Whole words only"
-msgstr ""
+msgstr "Kata utuh saja"
 
 msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"
@@ -62,7 +62,7 @@ msgstr "Teks yang dicari tidak boleh kosong."
 
 msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
 msgid "Tip: Find some text first in order to replace it."
-msgstr ""
+msgstr "Tip: Cari suatu teks terlebih dahulu untuk menggantinya."
 
 msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
 msgid "Show options"

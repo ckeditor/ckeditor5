@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView, SplitButtonView, createDropdown } from 'ckeditor5/src/ui';
+import { ButtonView, SplitButtonView, createDropdown, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
 
 import ListPropertiesView from './ui/listpropertiesview';
 
@@ -184,6 +184,15 @@ function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, butto
 
 		dropdownView.panelView.children.add( listPropertiesView );
 
+		// Accessibility: focus the first active style when opening the dropdown.
+		focusChildOnDropdownOpen( dropdownView, () => listPropertiesView.stylesView.children.find( child => child.isOn ) );
+
+		// Focus the editable after executing the command.
+		// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+		dropdownView.on( 'execute', () => {
+			editor.editing.view.focus();
+		} );
+
 		return dropdownView;
 	};
 }
@@ -234,8 +243,6 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 					editor.execute( 'listStyle', { type } );
 				} );
 			}
-
-			editor.editing.view.focus();
 		} );
 
 		return button;

@@ -7,8 +7,8 @@
  * @module editor-decoupled/decouplededitor
  */
 
-import { Editor, DataApiMixin, secureSourceElement } from 'ckeditor5/src/core';
-import { CKEditorError, getDataFromElement, setDataInElement, mix } from 'ckeditor5/src/utils';
+import { Editor, ElementApiMixin, DataApiMixin, secureSourceElement } from 'ckeditor5/src/core';
+import { CKEditorError, getDataFromElement, mix } from 'ckeditor5/src/utils';
 
 import { isElement } from 'lodash-es';
 
@@ -46,6 +46,7 @@ import DecoupledEditorUIView from './decouplededitoruiview';
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
  *
  * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
+ * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
@@ -95,6 +96,10 @@ export default class DecoupledEditor extends Editor {
 	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
+	 * Updates the original editor element with the data if the
+	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
+	 * configuration option is set to `true`.
+	 *
 	 * **Note**: The decoupled editor does not remove the toolbar and editable when destroyed. You can
 	 * do that yourself in the destruction chain:
 	 *
@@ -121,7 +126,7 @@ export default class DecoupledEditor extends Editor {
 		return super.destroy()
 			.then( () => {
 				if ( this.sourceElement ) {
-					setDataInElement( this.sourceElement, data );
+					this.updateSourceElement( data );
 				}
 			} );
 	}
@@ -219,7 +224,9 @@ export default class DecoupledEditor extends Editor {
 	 * or the editor's initial data.
 	 *
 	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization.
-	 * Moreover, the editor data will be set back to the original element once the editor is destroyed.
+	 * The editor data will be set back to the original element once the editor is destroyed only if the
+	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy updateSourceElementOnDestroy}
+	 * option is set to `true`.
 	 *
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
 	 * It is available via
@@ -249,6 +256,7 @@ export default class DecoupledEditor extends Editor {
 	}
 }
 
+mix( DecoupledEditor, ElementApiMixin );
 mix( DecoupledEditor, DataApiMixin );
 
 function getInitialData( sourceElementOrData ) {

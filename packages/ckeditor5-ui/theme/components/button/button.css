@@ -31,9 +31,12 @@ a.ck.ck-button {
 		justify-content: center;
 	}
 
-	&:hover,
-	/* Enable toolbar button tooltips for keyboard users too. See https://github.com/ckeditor/ckeditor5/issues/5581. */
-	&:focus {
+	&:hover {
 		@mixin ck-tooltip_visible;
+	}
+
+	/* Get rid of the native focus outline around the tooltip when focused (but not :hover). */
+	&:focus:not(:hover) {
+		@mixin ck-tooltip_disabled;
 	}
 }

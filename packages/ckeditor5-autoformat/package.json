@@ -51,7 +51,8 @@
     "src",
     "theme",
     "build",
-    "ckeditor5-metadata.json"
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
   ],
   "depcheckIgnore": [
     "eslint-plugin-ckeditor5-rules"
