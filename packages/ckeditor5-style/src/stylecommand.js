@@ -270,9 +270,9 @@ function getAffectedBlocks( selectedBlocks, elementNames, schema ) {
 //
 // If there are multiple selected blocks we have two cases:
 // --- CASE 1 ---
-//	Multiple elements were selected with non-collapsed selection, then their
-//	common parent won't be in selection. Current logic of a command is to get
-//  enabled styles for the first element in a model for given selection, so let's
+// Multiple elements were selected with non-collapsed selection, then their
+// common parent won't be in selection. Current logic of a command is to get
+// enabled styles for the first element in a model for given selection, so let's
 // get the first element of selected blocks.
 
 //	--- CASE 2 ---
