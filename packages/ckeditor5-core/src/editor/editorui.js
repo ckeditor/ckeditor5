@@ -557,7 +557,7 @@ export default class EditorUI {
 			);
 
 			// (!!!) TODO. This might cause infinite loop. A mechanism to prevent this is required.
-			this.focusNextFocusableToolbarDefinition( candidateToolbarDefToFocus, toolbarDefinitions );
+			this._focusNextFocusableToolbarDefinition( candidateToolbarDefToFocus, toolbarDefinitions );
 
 			return;
 		}
