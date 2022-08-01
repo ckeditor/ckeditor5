@@ -35,7 +35,7 @@ or as a plain `<script>` tag in the HTML of your application:
 <script src="../node_modules/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
 ```
 
-#### Inspector as a bookmarklet
+### Inspector as a bookmarklet
 
 Alternatively, you can create a bookmarklet in your browser that will allow you to open inspector on any page without interference with its source code.
 
