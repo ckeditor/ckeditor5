@@ -10,6 +10,7 @@
 /* global setInterval, clearInterval */
 
 import Observer from './observer';
+import MutationObserver from './mutationobserver';
 import { debounce } from 'lodash-es';
 
 /**
@@ -27,6 +28,17 @@ import { debounce } from 'lodash-es';
 export default class SelectionObserver extends Observer {
 	constructor( view ) {
 		super( view );
+
+		/**
+		 * Instance of the mutation observer. Selection observer calls
+		 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled
+		 * before the {@link module:engine/view/document~Document#event:selectionChange} event is fired.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/observer/mutationobserver~MutationObserver}
+		 * module:engine/view/observer/selectionobserver~SelectionObserver#mutationObserver
+		 */
+		this.mutationObserver = view.getObserver( MutationObserver );
 
 		/**
 		 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare
@@ -129,7 +141,32 @@ export default class SelectionObserver extends Observer {
 
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView.getSelection();
+			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c selectionchange', 'color:green', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 		{ node: domSelection.anchorNode, offset: domSelection.anchorOffset },
+			// @if CK_DEBUG_TYPING // 		{ node: domSelection.focusNode, offset: domSelection.focusOffset }
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			if ( this.document.isComposing ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Selection change ignored (isComposing)',
+				// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 	console.groupEnd();
+				// @if CK_DEBUG_TYPING // }
+
+				return;
+			}
+
 			this._handleSelectionChange( domEvent, domDocument );
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
 
 			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
 			// using their mouse).
@@ -151,8 +188,9 @@ export default class SelectionObserver extends Observer {
 	}
 
 	/**
-	 * Selection change listener. Check if a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange}
-	 * event on every change and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
+	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
+	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
+	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
 	 * @private
 	 * @param {Event} domEvent DOM event.
@@ -168,6 +206,9 @@ export default class SelectionObserver extends Observer {
 		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode ) ) {
 			return;
 		}
+
+		// Ensure the mutation event will be before selection event on all browsers.
+		this.mutationObserver.flush();
 
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
@@ -211,6 +252,13 @@ export default class SelectionObserver extends Observer {
 				newSelection: newViewSelection,
 				domSelection
 			};
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Fire selection change:',
+			// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 		newViewSelection.getFirstRange()
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 
 			// Prepare data for new selection and fire appropriate events.
 			this.document.fire( 'selectionChange', data );

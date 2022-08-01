@@ -131,6 +131,22 @@ export default class Renderer {
 		}
 
 		/**
+		 * True if composition is in progress inside the document.
+		 *
+		 * This property is bound to the {@link module:engine/view/document~Document#isComposing `Document#isComposing`} property.
+		 *
+		 * @member {Boolean}
+		 * @observable
+		 */
+		this.set( 'isComposing', false );
+
+		this.on( 'change:isComposing', () => {
+			if ( !this.isComposing ) {
+				this.render();
+			}
+		} );
+
+		/**
 		 * The text node in which the inline filler was rendered.
 		 *
 		 * @private
@@ -198,6 +214,22 @@ export default class Renderer {
 	 * removed as long as the selection is in the text node which needed it at first.
 	 */
 	render() {
+		if ( this.isComposing ) {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			return;
+		}
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
 		let inlineFillerPosition;
 		const isInlineFillerRenderingPossible = env.isBlink && !env.isAndroid ? !this.isSelecting : true;
 
@@ -827,6 +859,12 @@ export default class Renderer {
 		// selected. If there is any editable selected, it is okay (editable is taken from selection anchor).
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor );
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus );
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update DOM selection:',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', anchor, focus
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
 
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );

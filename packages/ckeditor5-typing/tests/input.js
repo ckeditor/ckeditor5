@@ -139,6 +139,29 @@ describe( 'Input', () => {
 				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
 				expect( firstCallArgs.resultRange.isEqual( expectedRange ) ).to.be.true;
 			} );
+
+			it( 'should delete selected content on composition start', () => {
+				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const root = editor.model.document.getRoot();
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
+
+				viewDocument.fire( 'compositionstart' );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWithExactly( spy, editor.model.document.selection );
+			} );
+
+			it( 'should not call model.deleteContent() on composition start for collapsed model selection', () => {
+				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const root = editor.model.document.getRoot();
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				viewDocument.fire( 'compositionstart' );
+
+				sinon.assert.notCalled( spy );
+			} );
 		} );
 	} );
 } );

@@ -26,6 +26,12 @@ export default class InputObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvent ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( `%c[InputObserver]%c ${ domEvent.type }: ${ domEvent.inputType }`,
+		// @if CK_DEBUG_TYPING // 		'color: green', 'color: default'
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
 		const domTargetRanges = domEvent.getTargetRanges();
 		const view = this.view;
 		const viewDocument = view.document;
@@ -38,21 +44,45 @@ export default class InputObserver extends DomEventObserver {
 			dataTransfer = new DataTransfer( domEvent.dataTransfer );
 		}
 
-		if ( domEvent.data ) {
+		if ( domEvent.data !== null ) {
 			data = domEvent.data;
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( `%c[InputObserver]%c event data: %c${ JSON.stringify( data ) }`,
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', 'color: blue;'
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 		} else if ( dataTransfer ) {
 			data = dataTransfer.getData( 'text/plain' );
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( `%c[InputObserver]%c event data transfer: %c${ JSON.stringify( data ) }`,
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', 'color: blue;'
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 		}
 
 		// If the editor selection is fake (an object is selected), the DOM range does not make sense because it is anchored
 		// in the fake selection container.
 		if ( viewDocument.selection.isFake ) {
-			// Future proof: in case of multi-range fake selections being possible.
+			// Future-proof: in case of multi-range fake selections being possible.
 			targetRanges = [ ...viewDocument.selection.getRanges() ];
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using fake selection:',
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 		} else {
 			targetRanges = domTargetRanges.map( domRange => {
 				return view.domConverter.domRangeToView( domRange );
 			} );
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using target ranges:',
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 		}
 
 		this.fire( domEvent.type, domEvent, {
@@ -62,6 +92,10 @@ export default class InputObserver extends DomEventObserver {
 			targetRanges,
 			inputType: domEvent.inputType
 		} );
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 }
 

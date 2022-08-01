@@ -29,8 +29,9 @@ export default class Input extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const model = editor.model;
 		const view = editor.editing.view;
-		const viewDocument = view.document;
+		const modelSelection = model.document.selection;
 
 		view.addObserver( InsertTextObserver );
 
@@ -41,7 +42,7 @@ export default class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
-		this.listenTo( viewDocument, 'insertText', ( evt, data ) => {
+		this.listenTo( view.document, 'insertText', ( evt, data ) => {
 			data.preventDefault();
 
 			const { text, selection: viewSelection, resultRange: viewResultRange } = data;
@@ -53,7 +54,7 @@ export default class Input extends Plugin {
 
 			const insertTextCommandData = {
 				text,
-				selection: editor.model.createSelection( modelRanges )
+				selection: model.createSelection( modelRanges )
 			};
 
 			if ( viewResultRange ) {
@@ -61,6 +62,23 @@ export default class Input extends Plugin {
 			}
 
 			editor.execute( 'insertText', insertTextCommandData );
+		} );
+
+		// Note: The priority must precede the CompositionObserver handler to call it before
+		// the renderer is blocked, because we want to render this change.
+		this.listenTo( view.document, 'compositionstart', () => {
+			if ( modelSelection.isCollapsed ) {
+				return;
+			}
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Composition start -> model.deleteContent()',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
+			// @if CK_DEBUG_TYPING // 		`[${ modelSelection.getFirstPosition().path }]-[${ modelSelection.getLastPosition().path }]`
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			model.deleteContent( modelSelection );
 		} );
 	}
 }

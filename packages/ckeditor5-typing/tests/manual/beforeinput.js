@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, console, document */
+/* globals window, console, document, sessionStorage */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -14,6 +14,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
@@ -25,6 +26,22 @@ import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+
+for ( const input of document.querySelectorAll( 'input[name=logEvents]' ) ) {
+	if ( sessionStorage.getItem( input.value ) === null ) {
+		sessionStorage.setItem( input.value, JSON.stringify( input.checked ) );
+	}
+
+	window[ input.value ] = input.checked = JSON.parse( sessionStorage.getItem( input.value ) );
+
+	input.addEventListener( 'change', ( { target } ) => {
+		window[ target.value ] = target.checked;
+		sessionStorage.setItem( input.value, JSON.stringify( input.checked ) );
+	} );
+}
+
+// Importing native event listeners after the above window properties are initialized.
+import './beforeinput-contenteditable';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -38,6 +55,7 @@ ClassicEditor
 			ImageCaption,
 			ImageStyle,
 			ImageToolbar,
+			ImageResize,
 			Indent,
 			Italic,
 			Link,
@@ -107,106 +125,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		let beforeInputEventCount = 0;
-		let compositionEventCount = 0;
-
-		editor.editing.view.document.on( 'beforeinput', ( evt, evtData ) => {
-			const { targetRanges, data, inputType, isComposing } = evtData;
-
-			console.group(
-				`#${ ++beforeInputEventCount } ` +
-				'beforeInput ' +
-				`(%c"${ inputType }"%c${ isComposing ? ',%c isComposing' : '%c' }%c)`,
-				'color: blue', 'color: default', 'color: green', 'color: default'
-			);
-
-			if ( data ) {
-				console.log( `%cdata:%c "${ data }"`, 'font-weight: bold', 'font-weight: default' );
-			} else {
-				console.log( '%cdata:', 'font-weight: bold', data );
-			}
-			console.log( '%ctargetRanges:', 'font-weight: bold', targetRanges );
-
-			if ( targetRanges.length ) {
-				console.group( 'first range' );
-				console.log( '%cstart:', 'font-weight: bold', targetRanges[ 0 ].start );
-				console.log( '%cend:', 'font-weight: bold', targetRanges[ 0 ].end );
-				console.log( '%cisCollapsed:', 'font-weight: bold', targetRanges[ 0 ].isCollapsed );
-				console.groupEnd( 'first range' );
-			}
-
-			// console.log( '%cdataTransfer:', 'font-weight: bold', evtData.dataTransfer );
-			// console.log( '%cfull event data:', 'font-weight: bold', evtData );
-
-			console.groupEnd();
-		}, { priority: 'highest' } );
-
-		editor.editing.view.document.on( 'compositionstart', () => {
-			console.log(
-				`%c┌───────────────────────────── ＃${ ++compositionEventCount } compositionstart ─────────────────────────────┐`,
-				'font-weight: bold; color: green'
-			);
-		}, { priority: 'highest' } );
-
-		editor.editing.view.document.on( 'compositionend', () => {
-			console.log(
-				`%c└───────────────────────────── ＃${ compositionEventCount } compositionend ─────────────────────────────┘`,
-				'font-weight: bold; color: green'
-			);
-		}, { priority: 'highest' } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-let beforeInputEventCount = 0;
-let compositionEventCount = 0;
-
-document.addEventListener( 'beforeinput', evt => {
-	// Don't log for the editor.
-	if ( evt.target.closest( '.ck-content' ) ) {
-		return;
-	}
-
-	const { inputType, data, isComposing } = evt;
-
-	console.group(
-		`#${ ++beforeInputEventCount } ` +
-		'native beforeInput ' +
-		`(%c"${ inputType }"%c${ isComposing ? ',%c isComposing' : '%c' }%c)`,
-		'color: blue', 'color: default', 'color: green', 'color: default'
-	);
-
-	if ( data ) {
-		console.log( `%cdata:%c "${ data }"`, 'font-weight: bold', 'font-weight: default' );
-	} else {
-		console.log( '%cdata:', 'font-weight: bold', data );
-	}
-
-	console.groupEnd();
-} );
-
-document.addEventListener( 'compositionstart', evt => {
-	// Don't log for the editor.
-	if ( evt.target.closest( '.ck-content' ) ) {
-		return;
-	}
-
-	console.log(
-		`%c┌───────────────────────────── ＃${ ++compositionEventCount } native compositionstart ─────────────────────────────┐`,
-		'font-weight: bold; color: green'
-	);
-} );
-
-document.addEventListener( 'compositionend', evt => {
-	// Don't log for the editor.
-	if ( evt.target.closest( '.ck-content' ) ) {
-		return;
-	}
-
-	console.log(
-		`%c└───────────────────────────── ＃${ compositionEventCount } native compositionend ─────────────────────────────┘`,
-		'font-weight: bold; color: green'
-	);
-} );

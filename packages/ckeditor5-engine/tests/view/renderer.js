@@ -5189,6 +5189,156 @@ describe( 'Renderer', () => {
 		} );
 	} );
 
+	describe( 'Blocking rendering while composing (IME)', () => {
+		it( 'should call #render() as soon as the user end composition in the document', () => {
+			const viewDocument = new ViewDocument( new StylesProcessor() );
+			const selection = new DocumentSelection();
+			const domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
+			const renderer = new Renderer( domConverter, selection );
+
+			renderer.domDocuments.add( document );
+
+			const renderSpy = sinon.spy( renderer, 'render' );
+
+			expect( renderer.isComposing ).to.be.false;
+
+			renderer.isComposing = true;
+
+			sinon.assert.notCalled( renderSpy );
+
+			renderer.isComposing = false;
+
+			sinon.assert.calledOnce( renderSpy );
+
+			viewDocument.destroy();
+		} );
+
+		describe( 'render()', () => {
+			let viewRoot, domRoot;
+
+			beforeEach( () => {
+				viewRoot = new ViewEditableElement( viewDocument, 'div' );
+				domRoot = document.createElement( 'div' );
+				document.body.appendChild( domRoot );
+				domConverter.bindElements( domRoot, viewRoot );
+
+				renderer.markedTexts.clear();
+				renderer.markedAttributes.clear();
+				renderer.markedChildren.clear();
+
+				selection._setTo( null );
+				renderer.isFocused = true;
+			} );
+
+			afterEach( () => {
+				domRoot.remove();
+			} );
+
+			it( 'should not update text (marked text)', () => {
+				const viewText = new ViewText( viewDocument, 'foo' );
+				viewRoot._appendChild( viewText );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 1 );
+				expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
+
+				renderer.isComposing = true;
+
+				domRoot.childNodes[ 0 ].insertData( 3, 'bar' );
+
+				renderer.markToSync( 'text', viewText );
+				renderAndExpectNoChanges( renderer, domRoot );
+
+				expect( domRoot.childNodes.length ).to.equal( 1 );
+				expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foobar' );
+
+				expect( renderer.markedTexts.size ).to.equal( 1 );
+			} );
+
+			it( 'should not update text (parent child list changed)', () => {
+				const viewImg = new ViewElement( viewDocument, 'img' );
+				const viewText = new ViewText( viewDocument, 'foo' );
+				viewRoot._appendChild( [ viewImg, viewText ] );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
+				expect( domRoot.childNodes[ 1 ].data ).to.equal( 'foo' );
+
+				renderer.isComposing = true;
+
+				domRoot.childNodes[ 1 ].insertData( 3, 'bar' );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'text', viewText );
+				renderAndExpectNoChanges( renderer, domRoot );
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
+				expect( domRoot.childNodes[ 1 ].data ).to.equal( 'foobar' );
+			} );
+
+			it( 'should not change text if it is the same during children rendering', () => {
+				const viewText = new ViewText( viewDocument, 'foo' );
+				viewRoot._appendChild( viewText );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// This should not be changed during the render.
+				const domText = domRoot.childNodes[ 0 ];
+
+				renderer.isComposing = true;
+				domText.insertData( 3, 'bar' );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderAndExpectNoChanges( renderer, domRoot );
+
+				expect( domRoot.childNodes.length ).to.equal( 1 );
+				expect( domRoot.childNodes[ 0 ] ).to.equal( domText );
+			} );
+
+			it( 'should not modify selection', () => {
+				const domSelection = document.getSelection();
+
+				const { view: viewP, selection: newSelection } = parse( '<container:p>fo{}o</container:p>' );
+
+				viewRoot._appendChild( viewP );
+				selection._setTo( newSelection );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const domP = domRoot.childNodes[ 0 ];
+
+				expect( domSelection.isCollapsed ).to.true;
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
+				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domP.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
+
+				const selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
+				const selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+
+				selection._setTo( [
+					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
+				] );
+
+				renderer.isComposing = true;
+				renderer.markToSync( 'children', viewP );
+				renderAndExpectNoChanges( renderer, domRoot );
+
+				expect( selectionCollapseSpy.notCalled ).to.true;
+				expect( selectionExtendSpy.notCalled ).to.true;
+			} );
+		} );
+	} );
+
 	describe( '_markDescendantTextToSync', () => {
 		let viewRoot;
 

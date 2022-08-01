@@ -13,6 +13,7 @@ import ViewSelection from '../../../src/view/selection';
 import View from '../../../src/view/view';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
+import MutationObserver from '../../../src/view/observer/mutationobserver';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
@@ -87,6 +88,17 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
+	it( 'should not fire selectionChange while user is composing', done => {
+		viewDocument.on( 'selectionChange', () => {
+			throw 'selectionChange fired while composing';
+		} );
+
+		viewDocument.isComposing = true;
+		changeDomSelection();
+
+		setTimeout( done, 100 );
+	} );
+
 	it( 'should add only one #selectionChange listener to one document', done => {
 		// Add second roots to ensure that listener is added once.
 		createViewRoot( viewDocument, 'div', 'additional' );
@@ -104,6 +116,7 @@ describe( 'SelectionObserver', () => {
 			throw 'selectionChange fired in ignored elements';
 		} );
 
+		view.getObserver( MutationObserver ).disable();
 		domMain.childNodes[ 1 ].setAttribute( 'data-cke-ignore-events', 'true' );
 
 		changeDomSelection();

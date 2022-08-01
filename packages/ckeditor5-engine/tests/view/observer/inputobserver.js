@@ -166,6 +166,21 @@ describe( 'InputObserver', () => {
 				expect( evtData.data ).to.equal( 'bar' );
 			} );
 
+			it( 'should not use text/plain from #dataTransfer if InputEvent#data is an empty string', () => {
+				const dataTransferMock = sinon.stub();
+
+				dataTransferMock.withArgs( 'text/plain' ).returns( 'bar' );
+
+				fireMockNativeBeforeInput( {
+					data: '',
+					dataTransfer: {
+						getData: dataTransferMock
+					}
+				} );
+
+				expect( evtData.data ).to.equal( '' );
+			} );
+
 			it( 'should be "null" if both InputEvent#data and InputEvent#dataTransfer are unavailable', () => {
 				fireMockNativeBeforeInput( {
 					data: null,

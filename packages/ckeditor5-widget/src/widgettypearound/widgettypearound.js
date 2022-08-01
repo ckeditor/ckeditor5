@@ -194,6 +194,12 @@ export default class WidgetTypeAround extends Plugin {
 			return false;
 		}
 
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[WidgetTypeAround]%c Fake caret -> insert paragraph',
+		// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
 		const selectedModelElement = modelSelection.getSelectedElement();
 
 		this._insertParagraph( selectedModelElement, typeAroundFakeCaretPosition );
@@ -614,19 +620,15 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * Similar to the {@link #_enableInsertingParagraphsOnEnterKeypress}, it allows the user
 	 * to insert a paragraph next to a widget when the fake caret was activated using arrow
-	 * keys but it responds to typing keystrokes instead of <kbd>Enter</kbd>.
+	 * keys but it responds to typing instead of <kbd>Enter</kbd>.
 	 *
-	 * "Typing keystrokes" are keystrokes that insert new content into the document,
-	 * for instance, letters ("a") or numbers ("4"). The "keydown" listener enabled by this method
-	 * will insert a new paragraph according to the `widget-type-around` model selection attribute
-	 * as the user simply starts typing, which creates the impression that the fake caret
+	 * Listener enabled by this method will insert a new paragraph according to the `widget-type-around`
+	 * model selection attribute as the user simply starts typing, which creates the impression that the fake caret
 	 * behaves like a real one rendered by the browser (AKA your text appears where the caret was).
 	 *
 	 * **Note**: At the moment this listener creates 2 undo steps: one for the `insertParagraph` command
 	 * and another one for actual typing. It is not a disaster but this may need to be fixed
 	 * sooner or later.
-	 *
-	 * Learn more in {@link module:typing/utils/injectunsafekeystrokeshandling}.
 	 *
 	 * @private
 	 */
@@ -643,6 +645,11 @@ export default class WidgetTypeAround extends Plugin {
 				// Otherwise, the typing would be over the widget.
 				data.selection = viewDocument.selection;
 			}
+		}, { priority: 'high' } );
+
+		// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
+		this._listenToIfEnabled( viewDocument, 'compositionstart', () => {
+			this._insertParagraphAccordingToFakeCaretPosition();
 		}, { priority: 'high' } );
 	}
 

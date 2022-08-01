@@ -63,6 +63,45 @@ export default class InsertTextObserver extends Observer {
 				evt.stop();
 			}
 		} );
+
+		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
+		viewDocument.on( 'compositionend', ( evt, { data, domEvent } ) => {
+			if ( !this.isEnabled ) {
+				return;
+			}
+
+			// In case of aborted composition.
+			if ( !data ) {
+				return;
+			}
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( `%c[InsertTextObserver]%c Fire insertText event, text: ${ JSON.stringify( data ) }`,
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			// How do we know where to insert the composed text?
+			// The selection observer is blocked and the view is not updated with the composition changes.
+			// There were three options:
+			//   - Store the selection on `compositionstart` and use it now. This wouldn't work in RTC
+			//     where the view would change and the stored selection might get incorrect.
+			//     We'd need to fallback to the current view selection anyway.
+			//   - Use the current view selection. This is a bit weird and non-intuitive because
+			//     this isn't necessarily the selection on which the user started composing.
+			//     We cannot even know whether it's still collapsed (there might be some weird
+			//     editor feature that changed it in unpredictable ways for us). But it's by far
+			//     the simplest solution and should be stable (the selection is definitely correct)
+			//     and probably mostly predictable (features usually don't modify the selection
+			//     unless called explicitly by the user).
+			//   - Try to follow it from the `beforeinput` events. This would be really complex as each
+			//     `beforeinput` would come with just the range it's changing and we'd need to calculate that.
+			// We decided to go with the 2nd option for its simplicity and stability.
+			viewDocument.fire( 'insertText', new DomEventData( viewDocument, domEvent, {
+				text: data,
+				selection: viewDocument.selection
+			} ) );
+		}, { priority: 'lowest' } );
 	}
 
 	/**

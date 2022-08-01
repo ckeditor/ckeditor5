@@ -23,19 +23,44 @@ export default class CompositionObserver extends DomEventObserver {
 		super( view );
 
 		this.domEventType = [ 'compositionstart', 'compositionupdate', 'compositionend' ];
+
 		const document = this.document;
 
 		document.on( 'compositionstart', () => {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
+			// @if CK_DEBUG_TYPING // 		'┌───────────────────────────── isComposing = true ─────────────────────────────┐',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green'
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
 			document.isComposing = true;
-		} );
+		}, { priority: 'low' } );
 
 		document.on( 'compositionend', () => {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
+			// @if CK_DEBUG_TYPING // 		'└───────────────────────────── isComposing = false ─────────────────────────────┘',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green'
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
 			document.isComposing = false;
-		} );
+		}, { priority: 'low' } );
 	}
 
 	onDomEvent( domEvent ) {
-		this.fire( domEvent.type, domEvent );
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( `%c[CompositionObserver]%c ${ domEvent.type }`, 'color: green', '' );
+		// @if CK_DEBUG_TYPING // }
+
+		this.fire( domEvent.type, domEvent, {
+			data: domEvent.data
+		} );
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 }
 
