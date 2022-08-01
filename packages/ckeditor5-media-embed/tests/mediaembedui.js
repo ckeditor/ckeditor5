@@ -4,6 +4,7 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import MediaEmbed from '../src/mediaembed';
 import MediaEmbedUI from '../src/mediaembedui';
 import MediaFormView from '../src/ui/mediaformview';
@@ -164,6 +165,51 @@ describe( 'MediaEmbedUI', () => {
 				sinon.assert.calledWithExactly( commandSpy, 'https://valid/url' );
 				sinon.assert.calledOnce( viewFocusSpy );
 				expect( dropdown.isOpen ).to.be.false;
+			} );
+
+			describe( 'focus', () => {
+				let editorElement, editor, dropdown, form;
+
+				beforeEach( () => {
+					editorElement = global.document.createElement( 'div' );
+					global.document.body.appendChild( editorElement );
+
+					return ClassicEditor
+						.create( editorElement, {
+							plugins: [ MediaEmbed ],
+							mediaEmbed: {
+								providers: [
+									{
+										name: 'valid-media',
+										url: /^https:\/\/valid\/(.*)/,
+										html: id => `<iframe src="${ id }"></iframe>`
+									}
+								]
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							dropdown = editor.ui.componentFactory.create( 'mediaEmbed' );
+							dropdown.render();
+							global.document.body.appendChild( dropdown.element );
+							form = dropdown.panelView.children.get( 0 );
+						} );
+				} );
+
+				afterEach( () => {
+					dropdown.element.remove();
+					editorElement.remove();
+
+					return editor.destroy();
+				} );
+
+				it( 'is moved to editable after executing the command', () => {
+					dropdown.isOpen = true;
+					form.url = 'https://valid/url';
+					dropdown.fire( 'submit' );
+
+					expect( global.document.activeElement ).to.equal( editor.editing.view.domRoots.get( 'main' ) );
+				} );
 			} );
 		} );
 
