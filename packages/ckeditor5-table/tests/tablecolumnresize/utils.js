@@ -27,10 +27,11 @@ import {
 	fillArray,
 	sumArray,
 	normalizeColumnWidths,
-	getTableWidthInPixels
+	getTableWidthInPixels,
+	getColumnMinWidthAsPercentage
 } from '../../src/tablecolumnresize/utils';
 
-/* globals window */
+/* globals window, document */
 
 describe( 'TableColumnResize utils', () => {
 	describe( 'getAffectedTables()', () => {
@@ -46,6 +47,42 @@ describe( 'TableColumnResize utils', () => {
 				createTable( 2, 3 ),
 				createTable( 2, 3 )
 			] );
+		} );
+
+		it( 'should do nothing if there is no table affected while inserting', () => {
+			model.change( () => {
+				insert(
+					model,
+					new Element( 'paragraph' ),
+					new Position( root, [ 2, 0, 0 ] )
+				);
+
+				const changes = differ.getChanges();
+				const affectedTables = getAffectedTables( changes, model );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
+		} );
+
+		it( 'should do nothing if there is no table affected while changing attribute', () => {
+			model.change( () => {
+				insert(
+					model,
+					new Element( 'paragraph' ),
+					new Position( root, [ 2, 0, 0 ] )
+				);
+			} );
+
+			model.change( () => {
+				const range = new Range( new Position( root, [ 2, 0, 0 ] ), new Position( root, [ 2, 0, 1 ] ) );
+
+				attribute( model, range, 'attrName', null, 'attrVal' );
+
+				const changes = differ.getChanges();
+				const affectedTables = getAffectedTables( changes, model );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
 		} );
 
 		it( 'should find affected table - cells insertion in first column', () => {
@@ -359,6 +396,36 @@ describe( 'TableColumnResize utils', () => {
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
+		} );
+	} );
+
+	describe( 'getColumnMinWidthAsPercentage()', () => {
+		let model, editor, editorElement;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+			editor = await ClassicEditor.create( editorElement, {
+				plugins: [ Table, TableColumnResize, Paragraph ]
+			} );
+
+			model = editor.model;
+		} );
+
+		afterEach( async () => {
+			if ( editorElement ) {
+				editorElement.remove();
+			}
+
+			if ( editor ) {
+				await editor.destroy();
+			}
+		} );
+
+		it( 'should return the correct value', () => {
+			setModelData( model, modelTable( [ [ '00' ] ], { 'tableWidth': '401px' } ) );
+
+			expect( getColumnMinWidthAsPercentage( model.document.getRoot().getChild( 0 ), editor ) ).to.equal( 10 );
 		} );
 	} );
 
