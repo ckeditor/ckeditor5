@@ -601,6 +601,8 @@ export default class TableColumnResizeEditing extends Plugin {
 				// This case can occur if the read-only mode kicks in during the resizing process.
 				editingView.change( writer => {
 					if ( isColumnWidthsAttributeChanged ) {
+						// If table was already resized before, restore the previous column widths.
+						// Otherwise clean up the view from the temporary resizing markup.
 						if ( columnWidthsAttributeOld ) {
 							const columnWidths = columnWidthsAttributeOld.split( ',' );
 
@@ -614,6 +616,8 @@ export default class TableColumnResizeEditing extends Plugin {
 					}
 
 					if ( isTableWidthAttributeChanged ) {
+						// If table was already resized before, restore the previous table width.
+						// Otherwise clean up the view from the temporary resizing markup.
 						if ( tableWidthAttributeOld ) {
 							writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
 						} else {
