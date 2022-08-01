@@ -350,7 +350,6 @@ describe( 'EditorUI', () => {
 		describe( '_initFocusTracking', () => {
 			describe( 'sets keystroke for alt+f10', () => {
 				it( '', () => {
-					console.log( editor.keystrokes );
 					const spy = sinon.spy( editor, 'execute' );
 					const keyEventData = {
 						keyCode: keyCodes.f10,
@@ -373,12 +372,7 @@ describe( 'EditorUI', () => {
 		} );
 
 		describe( '_getToolbarDefinitionWeight', () => {
-			it( 'takes correct parameter', () => { } );
-			it( 'returns correct ', () => { } );
-		} );
-
-		describe( '_getFocusableToolbarDefinitions', () => {
-			let element, ui;
+			let element, ui, editorToolbar;
 
 			beforeEach( async () => {
 				element = document.body.appendChild( document.createElement( 'div' ) );
@@ -389,6 +383,49 @@ describe( 'EditorUI', () => {
 					image: {
 						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 					}
+				} );
+
+				ui = editor.ui;
+				editorToolbar = editor.ui.view.toolbar;
+			} );
+
+			afterEach( () => {
+				element.remove();
+
+				return editor.destroy();
+			} );
+
+			it( 'updates the weight of the toolbars correctly', () => {
+				const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+				const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
+
+				let weight = ui._getToolbarDefinitionWeight( { toolbarView: imageToolbar, options: {} } );
+
+				expect( weight ).to.be.equal( 10 );
+
+				weight = ui._getToolbarDefinitionWeight( { toolbarView: imageToolbar, options: { isContextual: true } } );
+
+				expect( weight ).to.be.equal( 9 );
+
+				weight = ui._getToolbarDefinitionWeight( { toolbarView: editorToolbar, options: { isContextual: true } } );
+
+				expect( weight ).to.be.equal( 8 );
+			} );
+
+			it( 'returns a number', () => {
+				expect( ui._getToolbarDefinitionWeight( { toolbarView: editorToolbar, options: {} } ) ).to.be.a( 'number' );
+			} );
+		} );
+
+		describe( '_getFocusableToolbarDefinitions', () => {
+			let element, ui;
+
+			beforeEach( async () => {
+				element = document.body.appendChild( document.createElement( 'div' ) );
+
+				editor = await ClassicEditor.create( element, {
+					plugins: [ ArticlePluginSet, Paragraph ],
+					toolbar: [ 'bold', 'italic' ]
 				} );
 
 				ui = editor.ui;
@@ -409,8 +446,6 @@ describe( 'EditorUI', () => {
 					preventDefault: sinon.spy(),
 					stopPropagation: sinon.spy()
 				} );
-
-				console.log( 'test', ui._getFocusableToolbarDefinitions() );
 			} );
 
 			it( 'calls _getToolbarDefinitionWeight to sort the definitions', () => {
@@ -425,6 +460,55 @@ describe( 'EditorUI', () => {
 				} );
 
 				sinon.assert.calledOnce( spy );
+			} );
+		} );
+
+		describe( '_getCurrentFocusedToolbarDefinition', () => {
+			let element, ui, toolbarDefinitions;
+
+			beforeEach( async () => {
+				element = document.body.appendChild( document.createElement( 'div' ) );
+
+				editor = await ClassicEditor.create( element, {
+					plugins: [ ArticlePluginSet, Paragraph, Image, ImageToolbar, ImageCaption, ImageStyle ],
+					toolbar: [ 'bold', 'italic' ],
+					image: {
+						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+					}
+				} );
+
+				ui = editor.ui;
+				toolbarDefinitions = ui._getFocusableToolbarDefinitions();
+			} );
+
+			afterEach( () => {
+				element.remove();
+
+				return editor.destroy();
+			} );
+
+			it( 'returns toolbarDef if there was a previously focused element', () => {
+				setData( editor.model,
+					'<paragraph>fo[]o</paragraph>'
+				);
+
+				ui.focusTracker.isFocused = true;
+				ui.view.toolbar.focusTracker.isFocused = true;
+
+				editor.keystrokes.press( {
+					keyCode: keyCodes.f10,
+					altKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				ui.focusTracker.focusedElement = document.activeElement;
+
+				sinon.assert.match( ui._getCurrentFocusedToolbarDefinition( toolbarDefinitions ), { toolbarView: {}, options: {} } );
+			} );
+
+			it( 'returns null if there was no focused element available', () => {
+				expect( ui._getCurrentFocusedToolbarDefinition( toolbarDefinitions ) ).to.be.equal( null );
 			} );
 		} );
 	} );
