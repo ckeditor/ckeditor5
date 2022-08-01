@@ -281,19 +281,19 @@ export default class UpcastDispatcher extends Emitter {
 		const data: UpcastConversionData = { viewItem, modelCursor, modelRange: null };
 
 		if ( viewItem.is( 'element' ) ) {
-			this.fire<ElementEvent>(
+			this.fire<UpcastElementEvent>(
 				`element:${ viewItem.name }`,
 				data as UpcastConversionData<ViewElement>,
 				this.conversionApi
 			);
 		} else if ( viewItem.is( '$text' ) ) {
-			this.fire<TextEvent>(
+			this.fire<UpcastTextEvent>(
 				'text',
 				data as UpcastConversionData<ViewText>,
 				this.conversionApi
 			);
 		} else {
-			this.fire<DocumentFragmentEvent>(
+			this.fire<UpcastDocumentFragmentEvent>(
 				'documentFragment',
 				data as UpcastConversionData<ViewDocumentFragment>,
 				this.conversionApi
@@ -594,11 +594,11 @@ type UpcastEvent<TName extends string, TItem extends ViewItem | ViewDocumentFrag
 	name: TName | `${ TName }:${ string }`;
 	args: [ data: UpcastConversionData<TItem>, conversionApi: UpcastConversionApi ];
 };
-export type ElementEvent = UpcastEvent<'element', ViewElement>;
+export type UpcastElementEvent = UpcastEvent<'element', ViewElement>;
 
-export type TextEvent = UpcastEvent<'text', ViewText>;
+export type UpcastTextEvent = UpcastEvent<'text', ViewText>;
 
-export type DocumentFragmentEvent = UpcastEvent<'documentFragment', ViewDocumentFragment>;
+export type UpcastDocumentFragmentEvent = UpcastEvent<'documentFragment', ViewDocumentFragment>;
 
 // Traverses given model item and searches elements which marks marker range. Found element is removed from
 // DocumentFragment but path of this element is stored in a Map which is then returned.

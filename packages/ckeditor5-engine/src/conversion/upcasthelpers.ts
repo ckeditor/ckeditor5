@@ -6,7 +6,7 @@
 import Matcher, { type ClassPatterns, type MatcherPattern, type PropertyPatterns } from '../view/matcher';
 import ConversionHelpers from './conversionhelpers';
 
-import type { default as UpcastDispatcher, ElementEvent, UpcastConversionApi, UpcastConversionData } from './upcastdispatcher';
+import type { default as UpcastDispatcher, UpcastElementEvent, UpcastConversionApi, UpcastConversionData } from './upcastdispatcher';
 import type ModelElement from '../model/element';
 import type ModelRange from '../model/range';
 import type ModelPosition from '../model/position';
@@ -602,7 +602,7 @@ function upcastElementToElement( config: {
 	const eventName = elementName ? `element:${ elementName }` as const : 'element';
 
 	return ( dispatcher: UpcastDispatcher ) => {
-		dispatcher.on<ElementEvent>( eventName, converter, { priority: config.converterPriority || 'normal' } );
+		dispatcher.on<UpcastElementEvent>( eventName, converter, { priority: config.converterPriority || 'normal' } );
 	};
 }
 
@@ -635,7 +635,7 @@ function upcastElementToAttribute( config: {
 	const eventName = elementName ? `element:${ elementName }` as const : 'element';
 
 	return ( dispatcher: UpcastDispatcher ) => {
-		dispatcher.on<ElementEvent>( eventName, converter, { priority: config.converterPriority || 'low' } );
+		dispatcher.on<UpcastElementEvent>( eventName, converter, { priority: config.converterPriority || 'low' } );
 	};
 }
 
@@ -682,7 +682,7 @@ function upcastAttributeToAttribute( config: {
 	const converter = prepareToAttributeConverter( config as any, true );
 
 	return ( dispatcher: UpcastDispatcher ) => {
-		dispatcher.on<ElementEvent>( 'element', converter, { priority: config.converterPriority || 'low' } );
+		dispatcher.on<UpcastElementEvent>( 'element', converter, { priority: config.converterPriority || 'low' } );
 	};
 }
 
@@ -738,8 +738,16 @@ function upcastDataToMarker( config: {
 	const converterEnd = prepareToElementConverter( normalizeDataToMarkerConfig( normalizedConfig, 'end' ) );
 
 	return ( dispatcher: UpcastDispatcher ): void => {
-		dispatcher.on<ElementEvent>( `element:${ config.view }-start`, converterStart, { priority: config.converterPriority || 'normal' } );
-		dispatcher.on<ElementEvent>( `element:${ config.view }-end`, converterEnd, { priority: config.converterPriority || 'normal' } );
+		dispatcher.on<UpcastElementEvent>(
+			`element:${ config.view }-start`,
+			converterStart,
+			{ priority: config.converterPriority || 'normal' }
+		);
+		dispatcher.on<UpcastElementEvent>(
+			`element:${ config.view }-end`,
+			converterEnd,
+			{ priority: config.converterPriority || 'normal' }
+		);
 
 		// Below is a hack that is needed to properly handle `converterPriority` for both elements and attributes.
 		// Attribute conversion needs to be performed *after* element conversion.
@@ -757,7 +765,11 @@ function upcastDataToMarker( config: {
 		const maxPriority = priorities.get( 'highest' );
 		const priorityFactor = priorities.get( config.converterPriority ) / maxPriority; // Number in range [ -1, 1 ].
 
-		dispatcher.on<ElementEvent>( 'element', upcastAttributeToMarker( normalizedConfig ), { priority: basePriority + priorityFactor } );
+		dispatcher.on<UpcastElementEvent>(
+			'element',
+			upcastAttributeToMarker( normalizedConfig ),
+			{ priority: basePriority + priorityFactor }
+		);
 	};
 }
 

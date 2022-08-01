@@ -26,11 +26,11 @@ import type {
 	default as DowncastDispatcher,
 	DiffItemReinsert,
 	DowncastConversionApi,
-	InsertEvent,
-	AddMarkerEvent,
-	AttributeEvent,
+	DowncastInsertEvent,
+	DowncastAddMarkerEvent,
+	DowncastAttributeEvent,
 	ReduceChangesEvent,
-	RemoveMarkerEvent
+	DowncastRemoveMarkerEvent
 } from './downcastdispatcher';
 import type ModelConsumable from './modelconsumable';
 import type { DiffItem } from '../model/differ';
@@ -1893,7 +1893,7 @@ function downcastElementToElement( config: {
 	}
 
 	return ( dispatcher: DowncastDispatcher ) => {
-		dispatcher.on<InsertEvent<ModelElement>>(
+		dispatcher.on<DowncastInsertEvent<ModelElement>>(
 			`insert:${ model.name }`,
 			insertElement( view, createConsumer( model ) ),
 			{ priority: config.converterPriority || 'normal' }
@@ -1975,7 +1975,7 @@ function downcastElementToStructure(
 			throw new CKEditorError( 'conversion-element-to-structure-disallowed-text', dispatcher, { elementName: model.name } );
 		}
 
-		dispatcher.on<InsertEvent<ModelElement>>(
+		dispatcher.on<DowncastInsertEvent<ModelElement>>(
 			`insert:${ model.name }`,
 			insertStructure( view, createConsumer( model ) ),
 			{ priority: config.converterPriority || 'normal' }
@@ -2033,7 +2033,7 @@ function downcastAttributeToElement( config: {
 	const elementCreator = getFromAttributeCreator<AttributeElementCreatorFunction>( config );
 
 	return ( dispatcher: DowncastDispatcher ) => {
-		dispatcher.on<AttributeEvent>(
+		dispatcher.on<DowncastAttributeEvent>(
 			eventName,
 			wrap( elementCreator ),
 			{ priority: config.converterPriority || 'normal' }
@@ -2090,7 +2090,7 @@ function downcastAttributeToAttribute( config: {
 	const elementCreator = getFromAttributeCreator<AttributeCreatorFunction>( config );
 
 	return ( dispatcher: DowncastDispatcher ) => {
-		dispatcher.on<AttributeEvent<ModelElement>>(
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>(
 			eventName,
 			changeAttribute( elementCreator ),
 			{ priority: config.converterPriority || 'normal' }
@@ -2116,12 +2116,12 @@ function downcastMarkerToElement( config: {
 	const view = normalizeToElementConfig( config.view, 'ui' );
 
 	return ( dispatcher: DowncastDispatcher ) => {
-		dispatcher.on<AddMarkerEvent>(
+		dispatcher.on<DowncastAddMarkerEvent>(
 			`addMarker:${ config.model }`,
 			insertUIElement( view ),
 			{ priority: config.converterPriority || 'normal' }
 		);
-		dispatcher.on<RemoveMarkerEvent>(
+		dispatcher.on<DowncastRemoveMarkerEvent>(
 			`removeMarker:${ config.model }`,
 			removeUIElement(),
 			{ priority: config.converterPriority || 'normal' }
@@ -2157,12 +2157,12 @@ function downcastMarkerToData( config: {
 	}
 
 	return ( dispatcher: DowncastDispatcher ) => {
-		dispatcher.on<AddMarkerEvent>(
+		dispatcher.on<DowncastAddMarkerEvent>(
 			`addMarker:${ group }`,
 			insertMarkerData( view! ),
 			{ priority: config.converterPriority || 'normal' }
 		);
-		dispatcher.on<RemoveMarkerEvent>(
+		dispatcher.on<DowncastRemoveMarkerEvent>(
 			`removeMarker:${ group }`,
 			removeMarkerData( view! ),
 			{ priority: config.converterPriority || 'normal' }
@@ -2186,17 +2186,17 @@ function downcastMarkerToHighlight( config: {
 	converterPriority?: PriorityString | number;
 } ) {
 	return ( dispatcher: DowncastDispatcher ) => {
-		dispatcher.on<AddMarkerEvent>(
+		dispatcher.on<DowncastAddMarkerEvent>(
 			`addMarker:${ config.model }`,
 			highlightText( config.view ),
 			{ priority: config.converterPriority || 'normal' }
 		);
-		dispatcher.on<AddMarkerEvent>(
+		dispatcher.on<DowncastAddMarkerEvent>(
 			`addMarker:${ config.model }`,
 			highlightElement( config.view ),
 			{ priority: config.converterPriority || 'normal' }
 		);
-		dispatcher.on<RemoveMarkerEvent>(
+		dispatcher.on<DowncastRemoveMarkerEvent>(
 			`removeMarker:${ config.model }`,
 			removeHighlight( config.view ),
 			{ priority: config.converterPriority || 'normal' }

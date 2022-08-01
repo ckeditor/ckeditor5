@@ -41,15 +41,15 @@ import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import { StylesProcessor } from '../view/stylesmap';
 
 import DowncastDispatcher, {
-	type AddMarkerEvent,
-	type AttributeEvent,
-	type InsertEvent,
-	type SelectionEvent
+	type DowncastAddMarkerEvent,
+	type DowncastAttributeEvent,
+	type DowncastInsertEvent,
+	type DowncastSelectionEvent
 } from '../conversion/downcastdispatcher';
 import UpcastDispatcher, {
-	type DocumentFragmentEvent,
-	type ElementEvent,
-	type TextEvent,
+	type UpcastDocumentFragmentEvent,
+	type UpcastElementEvent,
+	type UpcastTextEvent,
 	type UpcastConversionApi,
 	type UpcastConversionData
 } from '../conversion/upcastdispatcher';
@@ -281,9 +281,9 @@ export function stringify(
 	// Bind root elements.
 	mapper.bindElements( node.root as ModelElement | ModelDocumentFragment, viewRoot );
 
-	downcastDispatcher.on<InsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText() );
-	downcastDispatcher.on<InsertEvent<ModelElement>>( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
-	downcastDispatcher.on<AttributeEvent>( 'attribute', ( evt, data, conversionApi ) => {
+	downcastDispatcher.on<DowncastInsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText() );
+	downcastDispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
+	downcastDispatcher.on<DowncastAttributeEvent>( 'attribute', ( evt, data, conversionApi ) => {
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( '$textProxy' ) ) {
 			const converter = wrap( ( modelAttributeValue, { writer } ) => {
 				return writer.createAttributeElement(
@@ -295,16 +295,16 @@ export function stringify(
 			converter( evt, data, conversionApi );
 		}
 	} );
-	downcastDispatcher.on<InsertEvent<ModelElement>>( 'insert', insertElement( modelItem => {
+	downcastDispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert', insertElement( modelItem => {
 		// Stringify object types values for properly display as an output string.
 		const attributes = convertAttributes( modelItem.getAttributes(), stringifyAttributeValue );
 
 		return new ViewContainerElement( viewDocument, modelItem.name, attributes );
 	} ) );
 
-	downcastDispatcher.on<SelectionEvent>( 'selection', convertRangeSelection() );
-	downcastDispatcher.on<SelectionEvent>( 'selection', convertCollapsedSelection() );
-	downcastDispatcher.on<AddMarkerEvent>( 'addMarker', insertUIElement( ( data, { writer } ) => {
+	downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertRangeSelection() );
+	downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertCollapsedSelection() );
+	downcastDispatcher.on<DowncastAddMarkerEvent>( 'addMarker', insertUIElement( ( data, { writer } ) => {
 		const name = data.markerName + ':' + ( data.isOpening ? 'start' : 'end' );
 
 		return writer.createUIElement( name );
@@ -397,10 +397,10 @@ export function parse(
 	const modelController = new Model();
 	const upcastDispatcher = new UpcastDispatcher( { schema } );
 
-	upcastDispatcher.on<DocumentFragmentEvent>( 'documentFragment', convertToModelFragment( mapper ) );
-	upcastDispatcher.on<ElementEvent>( 'element:model-text-with-attributes', convertToModelText() );
-	upcastDispatcher.on<ElementEvent>( 'element', convertToModelElement( mapper ) );
-	upcastDispatcher.on<TextEvent>( 'text', convertToModelText() );
+	upcastDispatcher.on<UpcastDocumentFragmentEvent>( 'documentFragment', convertToModelFragment( mapper ) );
+	upcastDispatcher.on<UpcastElementEvent>( 'element:model-text-with-attributes', convertToModelText() );
+	upcastDispatcher.on<UpcastElementEvent>( 'element', convertToModelElement( mapper ) );
+	upcastDispatcher.on<UpcastTextEvent>( 'text', convertToModelText() );
 
 	// Convert view to model.
 	let model: ModelDocumentFragment | ModelNode = modelController.change(

@@ -261,7 +261,7 @@ export default class DowncastDispatcher extends Emitter {
 
 		this._addConsumablesForSelection( conversionApi.consumable, selection, markersAtSelection );
 
-		this.fire<SelectionEvent>( 'selection', { selection }, conversionApi );
+		this.fire<DowncastSelectionEvent>( 'selection', { selection }, conversionApi );
 
 		if ( !selection.isCollapsed ) {
 			return;
@@ -281,7 +281,7 @@ export default class DowncastDispatcher extends Emitter {
 			};
 
 			if ( conversionApi.consumable.test( selection, 'addMarker:' + marker.name ) ) {
-				this.fire<AddMarkerEvent>( `addMarker:${ marker.name }`, data, conversionApi );
+				this.fire<DowncastAddMarkerEvent>( `addMarker:${ marker.name }`, data, conversionApi );
 			}
 		}
 
@@ -296,7 +296,7 @@ export default class DowncastDispatcher extends Emitter {
 
 			// Do not fire event if the attribute has been consumed.
 			if ( conversionApi.consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
-				this.fire<AttributeEvent>( `attribute:${ data.attributeKey }:$text`, data, conversionApi );
+				this.fire<DowncastAttributeEvent>( `attribute:${ data.attributeKey }:$text`, data, conversionApi );
 			}
 		}
 	}
@@ -347,7 +347,7 @@ export default class DowncastDispatcher extends Emitter {
 		name: string,
 		conversionApi: DowncastConversionApi
 	): void {
-		this.fire<RemoveEvent>( `remove:${ name }`, { position, length }, conversionApi );
+		this.fire<DowncastRemoveEvent>( `remove:${ name }`, { position, length }, conversionApi );
 	}
 
 	/**
@@ -441,7 +441,7 @@ export default class DowncastDispatcher extends Emitter {
 		//
 		conversionApi.consumable.add( markerRange, eventName );
 
-		this.fire<AddMarkerEvent>( eventName, { markerName, markerRange }, conversionApi );
+		this.fire<DowncastAddMarkerEvent>( eventName, { markerName, markerRange }, conversionApi );
 
 		//
 		// Do not fire events for each item inside the range if the range got consumed.
@@ -464,7 +464,7 @@ export default class DowncastDispatcher extends Emitter {
 
 			const data = { item, range: Range._createOn( item ), markerName, markerRange };
 
-			this.fire<AddMarkerEvent>( eventName, data, conversionApi );
+			this.fire<DowncastAddMarkerEvent>( eventName, data, conversionApi );
 		}
 	}
 
@@ -483,7 +483,7 @@ export default class DowncastDispatcher extends Emitter {
 			return;
 		}
 
-		this.fire<RemoveMarkerEvent>( `removeMarker:${ markerName }`, { markerName, markerRange }, conversionApi );
+		this.fire<DowncastRemoveMarkerEvent>( `removeMarker:${ markerName }`, { markerName, markerRange }, conversionApi );
 	}
 
 	/**
@@ -852,17 +852,17 @@ export type DowncastEvent<TName extends keyof EventMap<TItem>, TItem = Item> = {
 	args: [ data: EventMap<TItem>[ TName ], conversionApi: DowncastConversionApi ];
 };
 
-export type InsertEvent<TItem extends Item = Item> = DowncastEvent<'insert', TItem>;
+export type DowncastInsertEvent<TItem extends Item = Item> = DowncastEvent<'insert', TItem>;
 
-export type RemoveEvent = DowncastEvent<'remove'>;
+export type DowncastRemoveEvent = DowncastEvent<'remove'>;
 
-export type AttributeEvent<TItem = Item | Selection | DocumentSelection> = DowncastEvent<'attribute', TItem>;
+export type DowncastAttributeEvent<TItem = Item | Selection | DocumentSelection> = DowncastEvent<'attribute', TItem>;
 
-export type SelectionEvent = DowncastEvent<'selection'>;
+export type DowncastSelectionEvent = DowncastEvent<'selection'>;
 
-export type AddMarkerEvent = DowncastEvent<'addMarker'>;
+export type DowncastAddMarkerEvent = DowncastEvent<'addMarker'>;
 
-export type RemoveMarkerEvent = DowncastEvent<'removeMarker'>;
+export type DowncastRemoveMarkerEvent = DowncastEvent<'removeMarker'>;
 
 export interface DiffItemReinsert {
 	type: 'reinsert';

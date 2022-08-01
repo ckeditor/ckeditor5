@@ -13,10 +13,14 @@ import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import Mapper from '../conversion/mapper';
 
-import DowncastDispatcher, { type InsertEvent } from '../conversion/downcastdispatcher';
+import DowncastDispatcher, { type DowncastInsertEvent } from '../conversion/downcastdispatcher';
 import { insertAttributesAndChildren, insertText } from '../conversion/downcasthelpers';
 
-import UpcastDispatcher, { type DocumentFragmentEvent, type ElementEvent, type TextEvent } from '../conversion/upcastdispatcher';
+import UpcastDispatcher, {
+	type UpcastDocumentFragmentEvent,
+	type UpcastElementEvent,
+	type UpcastTextEvent
+} from '../conversion/upcastdispatcher';
 import { convertText, convertToModelFragment } from '../conversion/upcasthelpers';
 
 import ViewDocumentFragment from '../view/documentfragment';
@@ -105,8 +109,8 @@ export default class DataController extends Emitter {
 			mapper: this.mapper,
 			schema: model.schema
 		} );
-		this.downcastDispatcher.on<InsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText(), { priority: 'lowest' } );
-		this.downcastDispatcher.on<InsertEvent>( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
+		this.downcastDispatcher.on<DowncastInsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText(), { priority: 'lowest' } );
+		this.downcastDispatcher.on<DowncastInsertEvent>( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 
 		/**
 		 * Upcast dispatcher used by the {@link #set set method}. Upcast converters should be attached to it.
@@ -165,9 +169,9 @@ export default class DataController extends Emitter {
 		// Note that if there is no default converter for the element it will be skipped, for instance `<b>foo</b>` will be
 		// converted to nothing. We therefore add `convertToModelFragment` as a last converter so it converts children of that
 		// element to the document fragment so `<b>foo</b>` will still be converted to `foo` even if there is no converter for `<b>`.
-		this.upcastDispatcher.on<TextEvent>( 'text', convertText(), { priority: 'lowest' } );
-		this.upcastDispatcher.on<ElementEvent>( 'element', convertToModelFragment(), { priority: 'lowest' } );
-		this.upcastDispatcher.on<DocumentFragmentEvent>( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
+		this.upcastDispatcher.on<UpcastTextEvent>( 'text', convertText(), { priority: 'lowest' } );
+		this.upcastDispatcher.on<UpcastElementEvent>( 'element', convertToModelFragment(), { priority: 'lowest' } );
+		this.upcastDispatcher.on<UpcastDocumentFragmentEvent>( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		Observable.prototype.decorate.call( this, 'init' as any );
 		Observable.prototype.decorate.call( this, 'set' as any );

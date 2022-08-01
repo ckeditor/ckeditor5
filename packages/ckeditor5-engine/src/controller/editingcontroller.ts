@@ -10,7 +10,11 @@
 import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
 import Mapper from '../conversion/mapper';
-import DowncastDispatcher, { type InsertEvent, type RemoveEvent, type SelectionEvent } from '../conversion/downcastdispatcher';
+import DowncastDispatcher, {
+	type DowncastInsertEvent,
+	type DowncastRemoveEvent,
+	type DowncastSelectionEvent
+} from '../conversion/downcastdispatcher';
 import {
 	clearAttributes,
 	convertCollapsedSelection,
@@ -123,14 +127,14 @@ export default class EditingController extends Observable {
 		this.listenTo<SelectionChangeEvent>( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		// Attach default model converters.
-		this.downcastDispatcher.on<InsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText(), { priority: 'lowest' } );
-		this.downcastDispatcher.on<InsertEvent>( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
-		this.downcastDispatcher.on<RemoveEvent>( 'remove', remove(), { priority: 'low' } );
+		this.downcastDispatcher.on<DowncastInsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText(), { priority: 'lowest' } );
+		this.downcastDispatcher.on<DowncastInsertEvent>( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
+		this.downcastDispatcher.on<DowncastRemoveEvent>( 'remove', remove(), { priority: 'low' } );
 
 		// Attach default model selection converters.
-		this.downcastDispatcher.on<SelectionEvent>( 'selection', clearAttributes(), { priority: 'high' } );
-		this.downcastDispatcher.on<SelectionEvent>( 'selection', convertRangeSelection(), { priority: 'low' } );
-		this.downcastDispatcher.on<SelectionEvent>( 'selection', convertCollapsedSelection(), { priority: 'low' } );
+		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', clearAttributes(), { priority: 'high' } );
+		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertRangeSelection(), { priority: 'low' } );
+		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 
 		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
 		// {@link module:engine/model/document~Document#roots model roots collection} so creating
