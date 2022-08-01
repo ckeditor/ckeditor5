@@ -11,6 +11,14 @@ import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 
 import testUtils from '../_utils/utils';
 
+import ArticlePluginSet from '../_utils/articlepluginset';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { Image, ImageCaption, ImageToolbar, ImageStyle } from '@ckeditor/ckeditor5-image';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+
 /* global document, console */
 
 describe( 'EditorUI', () => {
@@ -141,6 +149,16 @@ describe( 'EditorUI', () => {
 
 			expect( element.ckeditorInstance ).to.equal( 'foo' );
 		} );
+
+		it( 'fires `registerFOcusableEditingArea`', () => {
+			const ui = new EditorUI( editor );
+			const spy = sinon.spy( ui, 'registerFocusableEditingArea' );
+			const element = document.createElement( 'div' );
+
+			ui.setEditableElement( 'main', element );
+
+			expect( spy.callCount ).to.equal( 1 );
+		} );
 	} );
 
 	describe( 'getEditableElement()', () => {
@@ -228,6 +246,186 @@ describe( 'EditorUI', () => {
 
 			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
 			sinon.assert.calledWithMatch( consoleStub, 'editor-ui-deprecated-viewport-offset-config' );
+		} );
+	} );
+
+	describe( 'focus related method', () => {
+		describe( 'registerFocusableToolbar', () => {
+			let locale, toolbar;
+
+			beforeEach( () => {
+				ui = new EditorUI( editor );
+				locale = { t: val => val };
+				toolbar = new ToolbarView( locale );
+			} );
+
+			it( 'adds toolbarView.element to focusTracker', () => {
+				const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
+				toolbar.render();
+				ui.registerFocusableToolbar( toolbar );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'adds a new editor keystrokes listener', () => {
+				const spy = sinon.spy( editor.keystrokes, 'listenTo' );
+				toolbar.render();
+				ui.registerFocusableToolbar( toolbar );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'adds a keystroke listener, updates focusTracker once the toolbar has been rendered', async () => {
+				const spy = sinon.spy( editor.keystrokes, 'listenTo' );
+				const spy2 = testUtils.sinon.spy( ui.focusTracker, 'add' );
+				ui.registerFocusableToolbar( toolbar );
+
+				await new Promise( resolve => {
+					toolbar.once( 'render', () => {
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledOnce( spy2 );
+
+						resolve();
+					} );
+
+					toolbar.render();
+				} );
+			} );
+
+			it( 'adds toolbar to the `_focusableToolbars` array', () => {
+				ui.registerFocusableToolbar( toolbar );
+
+				expect( ui._focusableToolbars.length ).to.equal( 1 );
+			} );
+
+			it( 'adds toolbar to the `_focusableToolbars` array with passed options', () => {
+				ui.registerFocusableToolbar( toolbar, { isContextual: true } );
+
+				expect( ui._focusableToolbars.length ).to.equal( 1 );
+				expect( ui._focusableToolbars[ 0 ].options ).to.not.be.undefined;
+			} );
+		} );
+
+		describe( 'registerFocusableEditingArea', () => {
+			let element;
+
+			beforeEach( () => {
+				editor = new Editor();
+				ui = new EditorUI( editor );
+				element = document.createElement( 'div' );
+			} );
+
+			describe( 'if isElement', () => {
+				it( 'adds passed element to focusTracker ', () => {
+					ui._editableElementsMap.set( 'main', element );
+					ui.registerFocusableEditingArea( element );
+
+					expect( ui.focusTracker._elements.size ).to.equal( 1 );
+				} );
+
+				it( 'does not add keystroke listener on passed element if editor is already listening to the editing view', () => {
+					const spy = sinon.spy( editor.keystrokes, 'listenTo' );
+					ui._editableElementsMap.set( 'main', element );
+					ui.registerFocusableEditingArea( element );
+
+					sinon.assert.notCalled( spy );
+				} );
+
+				it( 'adds keystroke listener on passed element if editor is not yet listening to the editing view ', () => {
+					const spy = sinon.spy( editor.keystrokes, 'listenTo' );
+					ui.registerFocusableEditingArea( element );
+
+					sinon.assert.calledOnce( spy );
+				} );
+			} );
+
+			it( 'updates the _focusableEditingAreas set', () => {
+				ui._editableElementsMap.set( 'main', element );
+				ui.registerFocusableEditingArea( element );
+
+				expect( ui._focusableEditingAreas.size ).to.equal( 1 );
+			} );
+		} );
+
+		describe( '_initFocusTracking', () => {
+			describe( 'sets keystroke for alt+f10', () => {
+				it( '', () => {
+					console.log( editor.keystrokes );
+					const spy = sinon.spy( editor, 'execute' );
+					const keyEventData = {
+						keyCode: keyCodes.f10,
+						altKey: true,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					const wasHandled = editor.keystrokes.press( keyEventData );
+
+					expect( wasHandled ).to.be.true;
+					expect( spy.calledOnce ).to.be.true;
+					expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+				} );
+			} );
+
+			describe( 'sets keytsroke for esc', () => {
+				it( '', () => { } );
+			} );
+		} );
+
+		describe( '_getToolbarDefinitionWeight', () => {
+			it( 'takes correct parameter', () => { } );
+			it( 'returns correct ', () => { } );
+		} );
+
+		describe( '_getFocusableToolbarDefinitions', () => {
+			let element, ui;
+
+			beforeEach( async () => {
+				element = document.body.appendChild( document.createElement( 'div' ) );
+
+				editor = await ClassicEditor.create( element, {
+					plugins: [ ArticlePluginSet, Paragraph, Image, ImageToolbar, ImageCaption, ImageStyle ],
+					toolbar: [ 'bold', 'italic' ],
+					image: {
+						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+					}
+				} );
+
+				ui = editor.ui;
+			} );
+
+			afterEach( () => {
+				element.remove();
+
+				return editor.destroy();
+			} );
+
+			it( 'creates and updates an definitions array', () => {
+				setData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+				editor.keystrokes.press( {
+					keyCode: keyCodes.f10,
+					altKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				console.log( 'test', ui._getFocusableToolbarDefinitions() );
+			} );
+
+			it( 'calls _getToolbarDefinitionWeight to sort the definitions', () => {
+				const spy = sinon.spy( ui, '_getToolbarDefinitionWeight' );
+				setData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+				editor.keystrokes.press( {
+					keyCode: keyCodes.f10,
+					altKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 } );
