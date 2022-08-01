@@ -7,17 +7,17 @@
  * @module special-characters/ui/specialcharactersview
  */
 
-import { View, FocusCycler  } from 'ckeditor5/src/ui';
+import { View, FocusCycler } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
- 
- /**
-  * 
-  *
-  * @extends module:ui/view~View
-  */
+
+/**
+ * A view containing navigationView, gridView, infoView of the SpecialCharacters feature.
+ *
+ * @extends module:ui/view~View
+ */
 export default class SpecialCharactersView extends View {
 	/**
-	 * 
+	 * Creates an instance of the SpecialCharacters view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 */
@@ -79,7 +79,7 @@ export default class SpecialCharactersView extends View {
 		} );
 
 		this.items.add( this.navigationView.groupDropdownView.buttonView );
-		//this.items.add( this.navigationView);
+		// this.items.add( this.navigationView);
 		this.items.add( this.gridView );
 	}
 
@@ -90,7 +90,7 @@ export default class SpecialCharactersView extends View {
 		super.render();
 
 		this.focusTracker.add( this.navigationView.groupDropdownView.buttonView.element );
-		//this.focusTracker.add( this.navigationView.element );
+		// this.focusTracker.add( this.navigationView.element );
 		this.focusTracker.add( this.gridView.element );
 
 		// Start listening for the keystrokes coming from #element.
@@ -100,7 +100,7 @@ export default class SpecialCharactersView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	 destroy() {
+	destroy() {
 		super.destroy();
 
 		this.focusTracker.destroy();
@@ -110,8 +110,8 @@ export default class SpecialCharactersView extends View {
 	/**
 	 * Focuses the first focusable in {@link #items}.
 	 */
-	focus () {
-		//this.navigationView.focus();
+	focus() {
+		// this.navigationView.focus();
 		this.items.first.focus();
 	}
 }
