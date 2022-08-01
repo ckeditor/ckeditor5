@@ -87,13 +87,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		 */
 		this.set( '_isResizingAllowed', true );
 
-		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
-			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
-			editor.editing.view.change( writer => {
-				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot() );
-			} );
-		} );
-
 		/**
 		 * A temporary storage for the required data needed to correctly calculate the widths of the resized columns. This storage is
 		 * initialized when column resizing begins, and is purged upon completion.
@@ -120,6 +113,13 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * @member {Map}
 		 */
 		this._cellsModified = new Map();
+
+		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
+			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
+			editor.editing.view.change( writer => {
+				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot() );
+			} );
+		} );
 	}
 
 	/**
