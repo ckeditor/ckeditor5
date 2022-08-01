@@ -25,7 +25,7 @@
 	position: relative;
 }
 
-.ck-content .table .ck-table-column-resizer {
+.ck.ck-editor__editable .table .ck-table-column-resizer {
 	position: absolute;
 	/* The resizer element resides in each cell so to occupy the entire height of the table, which is unknown from a CSS point of view,
 	   it is extended to an extremely high height. Even for screens with a very high pixel density, the resizer will fulfill its role as
@@ -40,23 +40,23 @@
 	z-index: var(--ck-z-default);
 }
 
-/* The resizer elements, which are extended to an extremely high height, break the drag & drop feature in Chrome. To make it work again,
-   all resizers must be hidden while the table is dragged. */
-.ck-content .table[draggable] .ck-table-column-resizer {
+.ck-content.ck-column-resize_disabled .table .ck-table-column-resizer {
 	display: none;
 }
 
-.ck-content .table .ck-table-column-resizer:hover,
-.ck-content .table .ck-table-column-resizer__active {
+/* The resizer elements, which are extended to an extremely high height, break the drag & drop feature in Chrome. To make it work again,
+   all resizers must be hidden while the table is dragged. */
+.ck.ck-editor__editable .table[draggable] .ck-table-column-resizer {
+	display: none;
+}
+
+.ck.ck-editor__editable .table .ck-table-column-resizer:hover,
+.ck.ck-editor__editable .table .ck-table-column-resizer__active {
 	background-color: var(--ck-color-table-column-resizer-hover);
 	opacity: 0.25;
 }
 
-.ck-content[dir=rtl] .table .ck-table-column-resizer {
+.ck.ck-editor__editable[dir=rtl] .table .ck-table-column-resizer {
 	left: var(--ck-table-column-resizer-position-offset);
 	right: unset;
-}
-
-.ck-content.ck-column-resize_disabled .table .ck-table-column-resizer {
-	display: none;
 }

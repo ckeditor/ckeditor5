@@ -7,8 +7,6 @@
  * @module table/tablecolumnresize/converters
  */
 
-/* istanbul ignore file */
-
 import { getNumberOfColumn, normalizeColumnWidths } from './utils';
 
 /**
@@ -25,18 +23,13 @@ import { getNumberOfColumn, normalizeColumnWidths } from './utils';
  */
 export function upcastColgroupElement( editor ) {
 	return dispatcher => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
-		const modelTable = data.modelCursor.findAncestor( 'table' );
-
-		if ( !modelTable ) {
-			return;
-		}
-
 		if ( !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
 			return;
 		}
 
 		conversionApi.consumable.consume( data.viewItem, { name: true } );
 
+		const modelTable = data.modelCursor.findAncestor( 'table' );
 		const viewColgroupElement = data.viewItem;
 		const numberOfColumns = getNumberOfColumn( modelTable, editor );
 
@@ -79,9 +72,10 @@ export function downcastTableColumnWidthsAttribute() {
 			.find( viewChild => viewChild.is( 'element', 'table' ) );
 
 		if ( data.attributeNewValue ) {
-			if ( data.attributeNewValue !== data.attributeOldValue ) {
-				insertColgroupElement( viewWriter, viewTable, data.attributeNewValue );
-			}
+			// If new value is the same as the old, the operation is not applied (see the `writer.setAttributeOnItem()`).
+			// OTOH the model element has the attribute already applied, so we can't compare the values.
+			// Hence we need to just recreate the <colgroup> element every time.
+			insertColgroupElement( viewWriter, viewTable, data.attributeNewValue );
 		} else {
 			removeColgroupElement( viewWriter, viewTable );
 			viewWriter.removeClass( 'ck-table-resized', viewTable );
@@ -103,10 +97,10 @@ function insertColgroupElement( viewWriter, viewTable, columnWidthsAttribute ) {
 
 	if ( !viewColgroupElement ) {
 		viewColgroupElement = viewWriter.createContainerElement( 'colgroup' );
-	}
-
-	for ( const viewChild of [ ...viewColgroupElement.getChildren() ] ) {
-		viewWriter.remove( viewChild );
+	} else {
+		for ( const viewChild of [ ...viewColgroupElement.getChildren() ] ) {
+			viewWriter.remove( viewChild );
+		}
 	}
 
 	for ( const columnIndex of Array( columnWidths.length ).keys() ) {
@@ -126,10 +120,6 @@ function insertColgroupElement( viewWriter, viewTable, columnWidthsAttribute ) {
 // @param {module:engine/view/element~Element} viewTable View table.
 function removeColgroupElement( viewWriter, viewTable ) {
 	const viewColgroupElement = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) );
-
-	if ( !viewColgroupElement ) {
-		return;
-	}
 
 	viewWriter.remove( viewColgroupElement );
 }

@@ -7,8 +7,6 @@
  * @module table/tablecolumnresize/tablecolumnresizeediting
  */
 
-/* istanbul ignore file */
-
 import { throttle } from 'lodash-es';
 import { global, DomEmitterMixin } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
@@ -265,10 +263,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					if ( isColumnInsertion ) {
 						if ( !isColumnInsertionHandled ) {
 							const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
-							const isColumnSwapped = columnIndexMap.get( cell.previousSibling ) === column;
-							const columnWidthsToInsert = isColumnSwapped ?
-								removedColumnWidths :
-								fillArray( column - previousColumn, columnMinWidthAsPercentage );
+							const columnWidthsToInsert = fillArray( column - previousColumn, columnMinWidthAsPercentage );
 
 							columnWidths.splice( previousColumn, 0, ...columnWidthsToInsert );
 
@@ -284,16 +279,10 @@ export default class TableColumnResizeEditing extends Plugin {
 					// (3.1) Handle column deletion and update the `columnIndex` references in column index map for affected cells.
 					if ( isColumnDeletion ) {
 						if ( !isColumnDeletionHandled ) {
+							const columnToExpand = column > 0 ? column - 1 : column;
+
 							removedColumnWidths = columnWidths.splice( column, previousColumn - column );
-
-							const isColumnSwapped = cell.nextSibling && columnIndexMap.get( cell.nextSibling ) === column;
-
-							if ( !isColumnSwapped ) {
-								const columnToExpand = column > 0 ? column - 1 : column;
-
-								columnWidths[ columnToExpand ] += sumArray( removedColumnWidths );
-							}
-
+							columnWidths[ columnToExpand ] += sumArray( removedColumnWidths );
 							isColumnDeletionHandled = true;
 						}
 
@@ -594,26 +583,24 @@ export default class TableColumnResizeEditing extends Plugin {
 							columnWidths: columnWidthsAttributeNew
 						}
 					);
-				} else if ( isColumnWidthsAttributeChanged ) {
+				} else {
 					editor.execute( 'resizeColumnWidths', { columnWidths: columnWidthsAttributeNew, table: modelTable } );
 				}
 			} else {
 				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
 				// This case can occur if the read-only mode kicks in during the resizing process.
 				editingView.change( writer => {
-					if ( isColumnWidthsAttributeChanged ) {
-						// If table was already resized before, restore the previous column widths.
-						// Otherwise clean up the view from the temporary resizing markup.
-						if ( columnWidthsAttributeOld ) {
-							const columnWidths = columnWidthsAttributeOld.split( ',' );
+					// If table was already resized before, restore the previous column widths.
+					// Otherwise clean up the view from the temporary resizing markup.
+					if ( columnWidthsAttributeOld ) {
+						const columnWidths = columnWidthsAttributeOld.split( ',' );
 
-							for ( const viewCol of viewColgroup.getChildren() ) {
-								writer.setStyle( 'width', columnWidths.shift(), viewCol );
-							}
-						} else {
-							writer.removeClass( 'ck-table-resized', viewColgroup.findAncestor( 'table' ) );
-							writer.remove( viewColgroup );
+						for ( const viewCol of viewColgroup.getChildren() ) {
+							writer.setStyle( 'width', columnWidths.shift(), viewCol );
 						}
+					} else {
+						writer.removeClass( 'ck-table-resized', viewColgroup.findAncestor( 'table' ) );
+						writer.remove( viewColgroup );
 					}
 
 					if ( isTableWidthAttributeChanged ) {
@@ -623,6 +610,10 @@ export default class TableColumnResizeEditing extends Plugin {
 							writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
 						} else {
 							writer.removeStyle( 'width', viewFigure );
+							writer.removeClass(
+								'ck-table-resized',
+								[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
+							);
 						}
 					}
 				} );
