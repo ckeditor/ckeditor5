@@ -3,10 +3,8 @@
     "lib": [
       "DOM"
     ],
-    "noEmitOnError": true,
     "noImplicitAny": true,
     "noImplicitOverride": true,
-    "outDir": "./dist/",
     "strict": true,
     "module": "es6",
     "target": "es2020",
