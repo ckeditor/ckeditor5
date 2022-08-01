@@ -57,10 +57,6 @@
 	right: unset;
 }
 
-.ck-content.ck-read-only .table .ck-table-column-resizer {
-	display: none;
-}
-
 .ck-content.ck-column-resize_disabled .table .ck-table-column-resizer {
 	display: none;
 }
