@@ -144,7 +144,8 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		// Currently the states of column resize and table resize (which is actually the last column resize) features
 		// are bound together. They can be separated in the future by adding distinct listeners and applying
-		// different CSS classes (e.g. `ck-column-resize_disabled` and `ck-table-resize-disabled`) to the editor root.
+		// different CSS classes (e.g. `ck-column-resize_disabled` and `ck-table-resize_disabled`) to the editor root.
+		// See #12148 for the details.
 		this.bind( '_isResizingAllowed' ).to(
 			editor, 'isReadOnly',
 			columnResizePlugin, 'isEnabled',
