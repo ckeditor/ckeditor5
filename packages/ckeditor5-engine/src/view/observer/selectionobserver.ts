@@ -275,7 +275,7 @@ export default class SelectionObserver extends Observer {
 export type SelectionChangeEventData = {
 	oldSelection: DocumentSelection;
 	newSelection: Selection;
-	domSelection: DomSelection;
+	domSelection: DomSelection | null;
 };
 
 /**

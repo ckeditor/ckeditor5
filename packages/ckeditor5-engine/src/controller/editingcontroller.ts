@@ -31,6 +31,7 @@ import type ModelTextProxy from '../model/textproxy';
 import type { ChangeEvent } from '../model/document';
 import type { Marker } from '../model/markercollection';
 import type { StylesProcessor } from '../view/stylesmap';
+import type { SelectionChangeEvent } from '../view/observer/selectionobserver';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -119,7 +120,7 @@ export default class EditingController extends Observable {
 		}, { priority: 'low' } );
 
 		// Convert selection from the view to the model when it changes in the view.
-		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
+		this.listenTo<SelectionChangeEvent>( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		// Attach default model converters.
 		this.downcastDispatcher.on<InsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText(), { priority: 'lowest' } );

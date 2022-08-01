@@ -10,8 +10,13 @@
 import Observer from './observer';
 import ViewSelection from '../selection';
 import type View from '../view';
+import type {
+	SelectionChangeEvent,
+	SelectionChangeDoneEvent,
+	SelectionChangeEventData
+} from './selectionobserver';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { debounce } from 'lodash-es';
+import { debounce, type DebouncedFunc } from 'lodash-es';
 
 /**
  * Fake selection observer class. If view selection is fake it is placed in dummy DOM container. This observer listens
@@ -23,7 +28,7 @@ import { debounce } from 'lodash-es';
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class FakeSelectionObserver extends Observer {
-	private readonly _fireSelectionChangeDoneDebounced: ReturnType<typeof debounce>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: SelectionChangeEventData ) => void>;
 
 	/**
 	 * Creates new FakeSelectionObserver instance.
@@ -40,7 +45,9 @@ export default class FakeSelectionObserver extends Observer {
 		 * @param {Object} data Selection change data.
 		 * @method #_fireSelectionChangeDoneDebounced
 		 */
-		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
+		this._fireSelectionChangeDoneDebounced = debounce( data => {
+			this.document.fire<SelectionChangeDoneEvent>( 'selectionChangeDone', data );
+		}, 200 );
 	}
 
 	/**
@@ -110,7 +117,7 @@ export default class FakeSelectionObserver extends Observer {
 		};
 
 		// Fire dummy selection change event.
-		this.document.fire( 'selectionChange', data );
+		this.document.fire<SelectionChangeEvent>( 'selectionChange', data );
 
 		// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 		// This function is debounced what means that `selectionChangeDone` event will be fired only when
