@@ -40,7 +40,7 @@
 	z-index: var(--ck-z-default);
 }
 
-.ck-content.ck-column-resize_disabled .table .ck-table-column-resizer {
+.ck.ck-editor__editable.ck-column-resize_disabled .table .ck-table-column-resizer {
 	display: none;
 }
 
