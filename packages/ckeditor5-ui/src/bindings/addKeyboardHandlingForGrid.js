@@ -3,19 +3,33 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 /**
  * @module ui/bindings/addKeyboardHandlingForGrid
  */
 
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+
 export default function addKeyboardHandlingForGrid( view, gridElementsCollection, numberOfColumns, isTable ) {
+	const focusTracker = new FocusTracker();
+
+	for ( const item of gridElementsCollection ) {
+		focusTracker.add( item.element );
+	}
+
+	gridElementsCollection.on( 'add', ( evt, item ) => {
+		focusTracker.add( item.element );
+	} );
+
+	gridElementsCollection.on( 'remove', ( evt, item ) => {
+		focusTracker.remove( item.element );
+	} );
+
 	view.keystrokes.set( 'arrowright', evt => {
 		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElement( gridElements );
+		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
+
 		let nextIndex;
 
-		// TODO: for tables'd be ok, for others should not change row no
 		if ( focusedElementIndex === gridElements.length - 1 ) {
 			nextIndex = 0;
 		} else {
@@ -34,10 +48,9 @@ export default function addKeyboardHandlingForGrid( view, gridElementsCollection
 
 	view.keystrokes.set( 'arrowleft', evt => {
 		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElement( gridElements );
+		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
 		let nextIndex;
 
-		// TODO: for tables'd be ok, for others should not change row no
 		if ( focusedElementIndex === 0 ) {
 			nextIndex = gridElements.length - 1;
 		} else {
@@ -56,7 +69,7 @@ export default function addKeyboardHandlingForGrid( view, gridElementsCollection
 
 	view.keystrokes.set( 'arrowup', evt => {
 		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElement( gridElements );
+		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
 		let nextIndex = focusedElementIndex - numberOfColumns;
 
 		if ( nextIndex < 0 ) {
@@ -78,7 +91,7 @@ export default function addKeyboardHandlingForGrid( view, gridElementsCollection
 
 	view.keystrokes.set( 'arrowdown', evt => {
 		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElement( gridElements );
+		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
 		let nextIndex = focusedElementIndex + numberOfColumns;
 
 		if ( nextIndex > gridElements.length - 1 ) {
@@ -96,6 +109,6 @@ export default function addKeyboardHandlingForGrid( view, gridElementsCollection
 	} );
 
 	function getFocusedElement( gridElements ) {
-		return gridElements.findIndex( elem => elem.element === document.activeElement );
+		return gridElements.findIndex( elem => elem.element === focusTracker.focusedElement );
 	}
 }
