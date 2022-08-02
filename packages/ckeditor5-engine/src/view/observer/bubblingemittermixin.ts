@@ -10,12 +10,12 @@
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import EmitterMixin, {
+import {
+	Emitter,
 	type GetEventInfo,
 	type GetNameOrEventInfo,
 	type BaseEvent,
 	type CallbackOptions,
-	type Emitter,
 	type GetCallback
 } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
@@ -132,7 +132,7 @@ export default function BubblingEmitterMixin<Base extends abstract new( ...args:
 				let emitter = eventContexts.get( context );
 
 				if ( !emitter ) {
-					emitter = Object.create( EmitterMixin );
+					emitter = new Emitter();
 					eventContexts.set( context, emitter! );
 				}
 

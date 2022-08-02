@@ -56,7 +56,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 			 *
 			 * @error view-tree-walker-unknown-direction
 			 */
-			throw new CKEditorError( 'view-tree-walker-unknown-direction', options, { direction: options.direction } );
+			throw new CKEditorError( 'view-tree-walker-unknown-direction', options.startPosition, { direction: options.direction } );
 		}
 
 		/**

@@ -22,6 +22,7 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import type Element from './element';
 import type Item from './item';
+import type EditableElement from './editableelement';
 
 /**
  * Class representing an arbirtary selection in the view.
@@ -253,7 +254,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	 *
 	 * @type {module:engine/view/editableelement~EditableElement|null}
 	 */
-	public get editableElement(): Position[ 'editableElement' ] {
+	public get editableElement(): EditableElement | null {
 		if ( this.anchor ) {
 			return this.anchor.editableElement;
 		}
