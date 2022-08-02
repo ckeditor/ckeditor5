@@ -8,7 +8,7 @@
  */
 
 import { icons } from 'ckeditor5/src/core';
-import { ButtonView, ColorGridView, ColorTileView, FocusCycler, LabelView, Template, View, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
+import { ButtonView, ColorGridView, ColorTileView, FocusCycler, LabelView, Template, View } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import DocumentColorCollection from '../documentcolorcollection';
@@ -230,10 +230,6 @@ export default class ColorTableView extends View {
 		for ( const item of this.items ) {
 			this.focusTracker.add( item.element );
 		}
-		
-		//if ( this.staticColorsGrid ) {
-		//	addKeyboardHandlingForGrid( this, this.staticColorsGrid );
-		//}
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
@@ -279,8 +275,6 @@ export default class ColorTableView extends View {
 			this.documentColorsGrid = this._createDocumentColorsGrid();
 			this.items.add( this.documentColorsGrid );
 		}
-
-		addKeyboardHandlingForGrid( this, this.staticColorsGrid.items, 5 );
 	}
 
 	/**

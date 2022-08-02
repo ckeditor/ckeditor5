@@ -12,6 +12,7 @@ import ColorTileView from './colortileview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import addKeyboardHandlingForGrid from '../bindings/addKeyboardHandlingForGrid';
 import '../../theme/components/colorgrid/colorgrid.css';
 
 /**
@@ -174,6 +175,8 @@ export default class ColorGridView extends View {
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
+
+		addKeyboardHandlingForGrid( this, this.items, 5 );
 	}
 
 	/**
