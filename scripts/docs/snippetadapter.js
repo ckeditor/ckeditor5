@@ -10,11 +10,10 @@ const upath = require( 'upath' );
 const fs = require( 'fs' );
 const minimatch = require( 'minimatch' );
 const webpack = require( 'webpack' );
-const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const { bundler, styles, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const ProgressBarPlugin = require( 'progress-bar-webpack-plugin' );
 const glob = require( 'glob' );
 
 const DEFAULT_LANGUAGE = 'en';
@@ -30,7 +29,7 @@ const SNIPPETS_BUILD_CHUNK_SIZE = 50;
  * @param {Object.<String, Function>} umbertoHelpers
  * @returns {Promise}
  */
-module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
+module.exports = async function snippetAdapter( snippets, options, umbertoHelpers ) {
 	const { getSnippetPlaceholder, getSnippetSourcePaths } = umbertoHelpers;
 	const snippetsDependencies = new Map();
 
@@ -130,27 +129,37 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 			} );
 		} );
 
-	let promise = Promise.resolve();
-
 	// Nothing to build.
 	if ( !webpackConfigs.length ) {
-		return promise;
+		return;
 	}
 
 	for ( const config of webpackConfigs ) {
-		promise = promise.then( () => runWebpack( config ) );
+		const { language, additionalLanguages } = config.plugins.find( plugin => plugin instanceof CKEditorWebpackPlugin ).options;
+		const textLang = additionalLanguages ? additionalLanguages.join( ', ' ) : language;
+
+		const spinner = tools.createSpinner(
+			`Building next group of snippets (${ Object.keys( config.entry ).length }) for language "${ textLang }"...`
+		);
+		spinner.start();
+
+		await runWebpack( config );
+
+		spinner.finish( { emoji: '✔️ ' } );
 	}
 
-	return promise
-		.then( () => {
-			const webpackConfig = getWebpackConfigForAssets( {
-				production: options.production,
-				snippetWebpackConfig: webpackConfigs[ 0 ]
-			} );
+	const webpackConfig = getWebpackConfigForAssets( {
+		production: options.production,
+		snippetWebpackConfig: webpackConfigs[ 0 ]
+	} );
 
-			return runWebpack( webpackConfig );
-		} )
+	const spinnerAssets = tools.createSpinner( 'Building documentation assets...' );
+	spinnerAssets.start();
+
+	return runWebpack( webpackConfig )
 		.then( () => {
+			spinnerAssets.finish( { emoji: '✔️ ' } );
+
 			// Group snippets by destination path in order to attach required HTML code and assets (CSS and JS).
 			const groupedSnippetsByDestinationPath = {};
 
@@ -409,10 +418,7 @@ function getWebpackConfig( snippets, config ) {
 				banner: bundler.getLicenseBanner(),
 				raw: true
 			} ),
-			new webpack.DefinePlugin( definitions ),
-			new ProgressBarPlugin( {
-				format: `Building next group of snippets for language "${ config.language }": :percent (:msg)`
-			} )
+			new webpack.DefinePlugin( definitions )
 		],
 
 		// Configure the paths so building CKEditor 5 snippets work even if the script
@@ -644,9 +650,6 @@ function getWebpackConfigForAssets( config ) {
 			new webpack.BannerPlugin( {
 				banner: bundler.getLicenseBanner(),
 				raw: true
-			} ),
-			new ProgressBarPlugin( {
-				format: 'Building assets for snippets: :percent (:msg)'
 			} )
 		],
 
