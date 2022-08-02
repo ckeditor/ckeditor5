@@ -179,13 +179,8 @@ export default class ListPropertiesView extends View {
 		super.render();
 
 		if ( this.stylesView ) {
-			for ( const styleButtonView of this.stylesView.children ) {
-				// Register the view as focusable.
-				this.focusables.add( styleButtonView );
-
-				// Register the view in the focus tracker.
-				this.focusTracker.add( styleButtonView.element );
-			}
+			this.focusables.add( this.stylesView );
+			this.focusTracker.add( this.stylesView.element );
 
 			// Register the collapsible toggle button to the focus system.
 			if ( this.startIndexFieldView || this.reversedSwitchButtonView ) {
@@ -279,6 +274,10 @@ export default class ListPropertiesView extends View {
 		} );
 
 		stylesView.children.delegate( 'execute' ).to( this );
+
+		stylesView.focus = function() {
+			this.children.first.focus();
+		};
 
 		return stylesView;
 	}
