@@ -192,7 +192,7 @@ export default class Renderer extends Observable {
 		} else {
 			// If the node has no DOM element it is not rendered yet,
 			// its children/attributes do not need to be marked to be sync.
-			if ( !this.domConverter.mapViewToDom( node ) ) {
+			if ( !this.domConverter.mapViewToDom( node as ViewElement ) ) {
 				return;
 			}
 
@@ -931,7 +931,7 @@ export default class Renderer extends Observable {
 
 			if ( domSelection.rangeCount ) {
 				const activeDomElement = doc.activeElement!;
-				const viewElement = this.domConverter.mapDomToView( activeDomElement );
+				const viewElement = this.domConverter.mapDomToView( activeDomElement as DomElement );
 
 				if ( activeDomElement && viewElement ) {
 					domSelection.removeAllRanges();

@@ -15,7 +15,7 @@ import Position from './position';
 import Range from './range';
 import Selection from './selection';
 
-import { type default as Observer, type ObserverConstructor } from './observer/observer';
+import type { default as Observer, ObserverConstructor } from './observer/observer';
 import type { ChangeEvent as SelectionChangeEvent } from './documentselection';
 import type { StylesProcessor } from './stylesmap';
 import type Element from './element';

@@ -75,9 +75,9 @@ export default class DomConverter {
 	public readonly unsafeElements: string[];
 
 	private readonly _domDocument: DomDocument;
-	private readonly _domToViewMapping: WeakMap<DomNode, ViewNode | ViewDocumentFragment>;
-	private readonly _viewToDomMapping: WeakMap<ViewNode | ViewDocumentFragment, DomNode>;
-	private readonly _fakeSelectionMapping: WeakMap<DomNode, ViewSelection>;
+	private readonly _domToViewMapping: WeakMap<DomElement | DomDocumentFragment, ViewElement | ViewDocumentFragment>;
+	private readonly _viewToDomMapping: WeakMap<ViewElement | ViewDocumentFragment, DomElement | DomDocumentFragment>;
+	private readonly _fakeSelectionMapping: WeakMap<DomElement, ViewSelection>;
 	private readonly _rawContentElementMatcher: Matcher;
 	private readonly _encounteredRawContentDomNodes: WeakSet<DomNode>;
 
@@ -717,8 +717,8 @@ export default class DomConverter {
 				return textData === '' ? null : new ViewText( this.document, textData );
 			}
 		} else {
-			if ( this.mapDomToView( domNode ) ) {
-				return this.mapDomToView( domNode )!;
+			if ( this.mapDomToView( domNode as ( DomElement | DomDocumentFragment ) ) ) {
+				return this.mapDomToView( domNode as ( DomElement | DomDocumentFragment ) )!;
 			}
 
 			let viewElement;
@@ -873,7 +873,7 @@ export default class DomConverter {
 		}
 
 		// If position is somewhere inside UIElement or a RawElement - return position before that element.
-		const viewElement = this.mapDomToView( domParent );
+		const viewElement = this.mapDomToView( domParent as DomElement );
 
 		if ( viewElement && ( viewElement.is( 'uiElement' ) || viewElement.is( 'rawElement' ) ) ) {
 			return ViewPosition._createBefore( viewElement );
@@ -901,7 +901,7 @@ export default class DomConverter {
 		// domParent instanceof HTMLElement.
 		else {
 			if ( domOffset === 0 ) {
-				const viewParent = this.mapDomToView( domParent );
+				const viewParent = this.mapDomToView( domParent as DomElement );
 
 				if ( viewParent ) {
 					return new ViewPosition( viewParent, 0 );
@@ -910,7 +910,7 @@ export default class DomConverter {
 				const domBefore = domParent.childNodes[ domOffset - 1 ];
 				const viewBefore = isText( domBefore ) ?
 					this.findCorrespondingViewText( domBefore ) :
-					this.mapDomToView( domBefore );
+					this.mapDomToView( domBefore as DomElement );
 
 				// TODO #663
 				if ( viewBefore && viewBefore.parent ) {
@@ -935,7 +935,7 @@ export default class DomConverter {
 	 * @returns {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|undefined}
 	 * Corresponding view element, document fragment or `undefined` if no element was bound.
 	 */
-	public mapDomToView( domElementOrDocumentFragment: DomNode | DomDocumentFragment ): ViewNode | ViewDocumentFragment | undefined {
+	public mapDomToView( domElementOrDocumentFragment: DomElement | DomDocumentFragment ): ViewElement | ViewDocumentFragment | undefined {
 		const hostElement = this.getHostViewElement( domElementOrDocumentFragment );
 
 		return hostElement || this._domToViewMapping.get( domElementOrDocumentFragment );
@@ -998,7 +998,7 @@ export default class DomConverter {
 		}
 		// Try to use parent to find the corresponding text node.
 		else {
-			const viewElement = this.mapDomToView( domText.parentNode! );
+			const viewElement = this.mapDomToView( domText.parentNode as ( DomElement | DomDocumentFragment ) );
 
 			if ( viewElement ) {
 				const firstChild = ( viewElement as ViewElement ).getChild( 0 );
@@ -1025,7 +1025,7 @@ export default class DomConverter {
 	 * View element or document fragment.
 	 * @returns {Node|DocumentFragment|undefined} Corresponding DOM node or document fragment.
 	 */
-	public mapViewToDom( documentFragmentOrElement: ViewNode | ViewDocumentFragment ): DomNode | DomDocumentFragment | undefined {
+	public mapViewToDom( documentFragmentOrElement: ViewElement | ViewDocumentFragment ): DomNode | DomDocumentFragment | undefined {
 		return this._viewToDomMapping.get( documentFragmentOrElement );
 	}
 
@@ -1048,8 +1048,8 @@ export default class DomConverter {
 		const previousSibling = viewText.previousSibling;
 
 		// Try to use previous sibling to find the corresponding text node.
-		if ( previousSibling && this.mapViewToDom( previousSibling ) ) {
-			return this.mapViewToDom( previousSibling )!.nextSibling as DomText;
+		if ( previousSibling && this.mapViewToDom( previousSibling as ViewElement ) ) {
+			return this.mapViewToDom( previousSibling as ViewElement )!.nextSibling as DomText;
 		}
 
 		// If this is a first node, try to use parent to find the corresponding text node.
@@ -1193,7 +1193,7 @@ export default class DomConverter {
 
 		while ( ancestors.length ) {
 			const domNode = ancestors.pop();
-			const viewNode = this._domToViewMapping.get( domNode as DomNode );
+			const viewNode = this._domToViewMapping.get( domNode as DomElement );
 
 			if ( viewNode && ( viewNode.is( 'uiElement' ) || viewNode.is( 'rawElement' ) ) ) {
 				return viewNode;
@@ -1274,7 +1274,7 @@ export default class DomConverter {
 			return false;
 		}
 
-		const viewParent = this.mapDomToView( domParent );
+		const viewParent = this.mapDomToView( domParent as DomElement );
 
 		// The position is incorrect when anchored inside a UIElement or a RawElement.
 		// Note: In case of UIElement and RawElement, mapDomToView() returns a parent element for any DOM child

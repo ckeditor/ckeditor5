@@ -163,7 +163,7 @@ export default class MutationObserver extends Observer {
 		// element with changed structure anyway.
 		for ( const mutation of domMutations ) {
 			if ( mutation.type === 'childList' ) {
-				const element = domConverter.mapDomToView( mutation.target ) as ViewElement;
+				const element = domConverter.mapDomToView( mutation.target as HTMLElement ) as ViewElement;
 
 				// Do not collect mutations from UIElements and RawElements.
 				if ( element && ( element.is( 'uiElement' ) || element.is( 'rawElement' ) ) ) {
@@ -178,7 +178,7 @@ export default class MutationObserver extends Observer {
 
 		// Handle `characterData` mutations later, when we have the full list of nodes which changed structure.
 		for ( const mutation of domMutations ) {
-			const element = domConverter.mapDomToView( mutation.target );
+			const element = domConverter.mapDomToView( mutation.target as HTMLElement );
 
 			// Do not collect mutations from UIElements and RawElements.
 			if ( element && ( element.is( 'uiElement' ) || element.is( 'rawElement' ) ) ) {
@@ -202,7 +202,7 @@ export default class MutationObserver extends Observer {
 				// on text, but for the view, where filler text node did not existed, new text node was created, so we
 				// need to fire 'children' mutation instead of 'text'.
 				else if ( !text && startsWithFiller( mutation.target ) ) {
-					mutatedElements.add( domConverter.mapDomToView( mutation.target.parentNode! ) as ViewElement );
+					mutatedElements.add( domConverter.mapDomToView( mutation.target.parentNode as HTMLElement ) as ViewElement );
 				}
 			}
 		}
