@@ -424,8 +424,11 @@ describe( 'EditorUI', () => {
 				element = document.body.appendChild( document.createElement( 'div' ) );
 
 				editor = await ClassicEditor.create( element, {
-					plugins: [ ArticlePluginSet, Paragraph ],
-					toolbar: [ 'bold', 'italic' ]
+					plugins: [ ArticlePluginSet, Paragraph, Image, ImageToolbar, ImageCaption, ImageStyle ],
+					toolbar: [ 'bold', 'italic' ],
+					image: {
+						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+					}
 				} );
 
 				ui = editor.ui;
@@ -437,20 +440,30 @@ describe( 'EditorUI', () => {
 				return editor.destroy();
 			} );
 
-			it( 'creates and updates an definitions array', () => {
-				setData( editor.model, '<paragraph>foo[]</paragraph>' );
+			it( 'creates and updates the definitions array', () => {
+				expect( ui._getFocusableToolbarDefinitions().length ).to.equal( 1 );
 
-				editor.keystrokes.press( {
-					keyCode: keyCodes.f10,
-					altKey: true,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				} );
+				setData( editor.model,
+					'<paragraph>foo</paragraph>' +
+					'[<imageBlock src="" alt="foo"><caption>bar</caption></imageBlock>]' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				ui.focusTracker.isFocused = true;
+
+				expect( ui._getFocusableToolbarDefinitions().length ).to.equal( 2 );
 			} );
 
-			it( 'calls _getToolbarDefinitionWeight to sort the definitions', () => {
+			it( 'calls _getToolbarDefinitionWeight to sort the definitions when `alt+f10` has been pressed', () => {
 				const spy = sinon.spy( ui, '_getToolbarDefinitionWeight' );
-				setData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+				setData( editor.model,
+					'<paragraph>foo</paragraph>' +
+					'[<imageBlock src=""><caption>bar</caption></imageBlock>]' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				ui.focusTracker.isFocused = true;
 
 				editor.keystrokes.press( {
 					keyCode: keyCodes.f10,
@@ -459,7 +472,7 @@ describe( 'EditorUI', () => {
 					stopPropagation: sinon.spy()
 				} );
 
-				sinon.assert.calledOnce( spy );
+				sinon.assert.calledTwice( spy );
 			} );
 		} );
 
