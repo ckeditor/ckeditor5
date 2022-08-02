@@ -344,6 +344,35 @@ describe( 'TableColumnResize utils', () => {
 			} );
 		} );
 
+		it( 'should not find affected table - table removal', () => {
+			model.change( () => {
+				remove( model, new Position( root, [ 0 ] ), 1 );
+
+				const changes = differ.getChanges();
+				const affectedTables = getAffectedTables( changes, model );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
+		} );
+
+		it( 'should not find affected table - table replacement', () => {
+			model.change( () => {
+				remove( model, new Position( root, [ 0 ] ), 1 );
+
+				// Table plugin inserts a paragraph when a table is removed - #12201.
+				insert(
+					model,
+					new Element( 'paragraph' ),
+					new Position( root, [ 0 ] )
+				);
+
+				const changes = differ.getChanges();
+				const affectedTables = getAffectedTables( changes, model );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
+		} );
+
 		it( 'should not find any affected table if operation is not related to a table, row or cell element', () => {
 			model.change( () => {
 				insert(

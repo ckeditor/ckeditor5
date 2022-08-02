@@ -33,8 +33,15 @@ export function getAffectedTables( changes, model ) {
 		// - an attribute change on a table, a row or a cell.
 		switch ( change.type ) {
 			case 'insert':
-			case 'remove':
 				referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes( change.name ) ?
+					change.position :
+					null;
+
+				break;
+
+			case 'remove':
+				// If the whole table is removed, we won't update its column widths.
+				referencePosition = [ 'tableRow', 'tableCell' ].includes( change.name ) ?
 					change.position :
 					null;
 
