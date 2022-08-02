@@ -210,7 +210,7 @@ export default class DowncastWriter {
 	 */
 	public createAttributeElement(
 		name: string,
-		attributes?: Record<string, string> | Iterable<[ string, string ]>,
+		attributes?: ConstructorParameters<typeof Element>[ 2 ],
 		options: {
 			priority?: number;
 			id?: number | string;

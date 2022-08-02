@@ -236,7 +236,7 @@ export default class Document extends BubblingEmitterMixin( Observable ) {
 	// @if CK_DEBUG_ENGINE // }
 }
 
-type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
+export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
 
 /**
  * Enum representing type of the change.

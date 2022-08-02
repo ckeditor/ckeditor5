@@ -373,7 +373,7 @@ export default class UpcastWriter {
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 * @returns {module:engine/view/position~Position}
 	 */
-	public createPositionAt( itemOrPosition: Item | Position, offset: number | 'before' | 'after' | 'end' ): Position {
+	public createPositionAt( itemOrPosition: Item | Position, offset?: number | 'before' | 'after' | 'end' ): Position {
 		return Position._createAt( itemOrPosition, offset );
 	}
 
