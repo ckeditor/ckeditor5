@@ -7,7 +7,7 @@
  * @module engine/view/domconverter
  */
 
-/* globals document, Node, NodeFilter, DOMParser, Text */
+/* globals Node, NodeFilter, DOMParser, Text */
 
 import ViewText from './text';
 import ViewElement from './element';
@@ -30,9 +30,9 @@ import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
 
-const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
-const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
-const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
+const BR_FILLER_REF = BR_FILLER( global.document ); // eslint-disable-line new-cap
+const NBSP_FILLER_REF = NBSP_FILLER( global.document ); // eslint-disable-line new-cap
+const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( global.document ); // eslint-disable-line new-cap
 const UNSAFE_ATTRIBUTE_NAME_PREFIX = 'data-ck-unsafe-attribute-';
 const UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE = 'data-ck-unsafe-element';
 
@@ -134,6 +134,14 @@ export default class DomConverter {
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#unsafeElements
 		 */
 		this.unsafeElements = [ 'script', 'style' ];
+
+		/**
+		 * The DOM Document used to create DOM nodes.
+		 *
+		 * @type {Document}
+		 * @private
+		 */
+		this._domDocument = this.renderingMode === 'editing' ? global.document : global.document.implementation.createHTMLDocument( '' );
 
 		/**
 		 * The DOM-to-view mapping.
@@ -352,17 +360,16 @@ export default class DomConverter {
 	 *
 	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode
 	 * View node or document fragment to transform.
-	 * @param {Document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
 	 * @param {Boolean} [options.withChildren=true] If `true`, node's and document fragment's children will be converted too.
 	 * @returns {Node|DocumentFragment} Converted node or DocumentFragment.
 	 */
-	viewToDom( viewNode, domDocument, options = {} ) {
+	viewToDom( viewNode, options = {} ) {
 		if ( viewNode.is( '$text' ) ) {
 			const textData = this._processDataFromViewText( viewNode );
 
-			return domDocument.createTextNode( textData );
+			return this._domDocument.createTextNode( textData );
 		} else {
 			if ( this.mapViewToDom( viewNode ) ) {
 				return this.mapViewToDom( viewNode );
@@ -372,17 +379,17 @@ export default class DomConverter {
 
 			if ( viewNode.is( 'documentFragment' ) ) {
 				// Create DOM document fragment.
-				domElement = domDocument.createDocumentFragment();
+				domElement = this._domDocument.createDocumentFragment();
 
 				if ( options.bind ) {
 					this.bindDocumentFragments( domElement, viewNode );
 				}
 			} else if ( viewNode.is( 'uiElement' ) ) {
 				if ( viewNode.name === '$comment' ) {
-					domElement = domDocument.createComment( viewNode.getCustomProperty( '$rawContent' ) );
+					domElement = this._domDocument.createComment( viewNode.getCustomProperty( '$rawContent' ) );
 				} else {
 					// UIElement has its own render() method (see #799).
-					domElement = viewNode.render( domDocument, this );
+					domElement = viewNode.render( this._domDocument, this );
 				}
 
 				if ( options.bind ) {
@@ -397,9 +404,9 @@ export default class DomConverter {
 
 					domElement = this._createReplacementDomElement( viewNode.name );
 				} else if ( viewNode.hasAttribute( 'xmlns' ) ) {
-					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
+					domElement = this._domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
 				} else {
-					domElement = domDocument.createElement( viewNode.name );
+					domElement = this._domDocument.createElement( viewNode.name );
 				}
 
 				// RawElement take care of their children in RawElement#render() method which can be customized
@@ -419,7 +426,7 @@ export default class DomConverter {
 			}
 
 			if ( options.withChildren !== false ) {
-				for ( const child of this.viewChildrenToDom( viewNode, domDocument, options ) ) {
+				for ( const child of this.viewChildrenToDom( viewNode, options ) ) {
 					domElement.appendChild( child );
 				}
 			}
@@ -488,23 +495,22 @@ export default class DomConverter {
 	 * Additionally, this method adds block {@link module:engine/view/filler filler} to the list of children, if needed.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElement Parent view element.
-	 * @param {Document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#viewToDom} options parameter.
 	 * @returns {Iterable.<Node>} DOM nodes.
 	 */
-	* viewChildrenToDom( viewElement, domDocument, options = {} ) {
+	* viewChildrenToDom( viewElement, options = {} ) {
 		const fillerPositionOffset = viewElement.getFillerOffset && viewElement.getFillerOffset();
 		let offset = 0;
 
 		for ( const childView of viewElement.getChildren() ) {
 			if ( fillerPositionOffset === offset ) {
-				yield this._getBlockFiller( domDocument );
+				yield this._getBlockFiller();
 			}
 
 			const transparentRendering = childView.is( 'element' ) && childView.getCustomProperty( 'dataPipeline:transparentRendering' );
 
 			if ( transparentRendering && this.renderingMode == 'data' ) {
-				yield* this.viewChildrenToDom( childView, domDocument, options );
+				yield* this.viewChildrenToDom( childView, options );
 			} else {
 				if ( transparentRendering ) {
 					/**
@@ -515,14 +521,14 @@ export default class DomConverter {
 					logWarning( 'domconverter-transparent-rendering-unsupported-in-editing-pipeline', { viewElement: childView } );
 				}
 
-				yield this.viewToDom( childView, domDocument, options );
+				yield this.viewToDom( childView, options );
 			}
 
 			offset++;
 		}
 
 		if ( fillerPositionOffset === offset ) {
-			yield this._getBlockFiller( domDocument );
+			yield this._getBlockFiller();
 		}
 	}
 
@@ -537,7 +543,7 @@ export default class DomConverter {
 		const domStart = this.viewPositionToDom( viewRange.start );
 		const domEnd = this.viewPositionToDom( viewRange.end );
 
-		const domRange = document.createRange();
+		const domRange = this._domDocument.createRange();
 		domRange.setStart( domStart.parent, domStart.offset );
 		domRange.setEnd( domEnd.parent, domEnd.offset );
 
@@ -1099,7 +1105,7 @@ export default class DomConverter {
 
 		// Since it takes multiple lines of code to check whether a "DOM Position" is before/after another "DOM Position",
 		// we will use the fact that range will collapse if it's end is before it's start.
-		const range = document.createRange();
+		const range = this._domDocument.createRange();
 
 		range.setStart( selection.anchorNode, selection.anchorOffset );
 		range.setEnd( selection.focusNode, selection.focusOffset );
@@ -1174,17 +1180,16 @@ export default class DomConverter {
 	 * Returns the block {@link module:engine/view/filler filler} node based on the current {@link #blockFillerMode} setting.
 	 *
 	 * @private
-	 * @params {Document} domDocument
 	 * @returns {Node} filler
 	 */
-	_getBlockFiller( domDocument ) {
+	_getBlockFiller() {
 		switch ( this.blockFillerMode ) {
 			case 'nbsp':
-				return NBSP_FILLER( domDocument ); // eslint-disable-line new-cap
+				return NBSP_FILLER( this._domDocument ); // eslint-disable-line new-cap
 			case 'markedNbsp':
-				return MARKED_NBSP_FILLER( domDocument ); // eslint-disable-line new-cap
+				return MARKED_NBSP_FILLER( this._domDocument ); // eslint-disable-line new-cap
 			case 'br':
-				return BR_FILLER( domDocument ); // eslint-disable-line new-cap
+				return BR_FILLER( this._domDocument ); // eslint-disable-line new-cap
 		}
 	}
 
@@ -1585,7 +1590,7 @@ export default class DomConverter {
 	 * @returns {Element}
 	 */
 	_createReplacementDomElement( elementName, originalDomElement = null ) {
-		const newDomElement = document.createElement( 'span' );
+		const newDomElement = this._domDocument.createElement( 'span' );
 
 		// Mark the span replacing a script as hidden.
 		newDomElement.setAttribute( UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE, elementName );

@@ -28,6 +28,10 @@ This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/th
 
 {@snippet features/image-insert-via-url}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ### Inserting images via pasting URL into editor
 
 The {@link module:image/autoimage~AutoImage} plugin recognizes image links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Accepted image extensions are: `jpg`, `jpeg`, `png`, `gif`, `ico`. Use the following code to enable the plugin in your editor. There is no toolbar configuration for this feature.

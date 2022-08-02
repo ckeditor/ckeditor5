@@ -15,7 +15,7 @@ See the screencast below for what you can expect from drag and drop support of t
 {@img assets/img/drag-drop.gif A screencast of drag and drop of text and blocks in CKEditor 5.}
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo
@@ -25,6 +25,10 @@ The sample below allows you to drag contacts from the list to the editor below. 
 {@snippet features/drag-drop}
 
 Photos: [Wikipedia.org](http://en.wikipedia.org).
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 The source code of the above snippet is available here: [`drag-drop.js`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.js), [`drag-drop.html`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.html).
 

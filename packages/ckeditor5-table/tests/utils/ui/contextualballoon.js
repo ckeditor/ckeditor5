@@ -72,7 +72,7 @@ describe( 'table utils', () => {
 					const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
 					sinon.assert.calledWithExactly( spy, {
-						target: editingView.domConverter.viewToDom( viewCell ),
+						target: editingView.domConverter.mapViewToDom( viewCell ),
 						positions: [
 							defaultPositions.northArrowSouth,
 							defaultPositions.northArrowSouthWest,
@@ -121,7 +121,7 @@ describe( 'table utils', () => {
 					const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
 					sinon.assert.calledWithExactly( spy, {
-						target: editingView.domConverter.viewToDom( viewTable ),
+						target: editingView.domConverter.mapViewToDom( viewTable ),
 						positions: [
 							defaultPositions.northArrowSouth,
 							defaultPositions.northArrowSouthWest,
@@ -161,7 +161,7 @@ describe( 'table utils', () => {
 					for ( let col = 0; col < 3; col++ ) {
 						const modelCell = modelRoot.getNodeByPath( [ 0, row, col ] );
 						const viewCell = editor.editing.mapper.toViewElement( modelCell );
-						const cellDomElement = editingView.domConverter.viewToDom( viewCell );
+						const cellDomElement = editingView.domConverter.mapViewToDom( viewCell );
 
 						mockBoundingBox( cellDomElement, {
 							top: 100 + row * 10,
@@ -181,7 +181,7 @@ describe( 'table utils', () => {
 				const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
 				expect( data ).to.deep.equal( {
-					target: editingView.domConverter.viewToDom( viewCell ),
+					target: editingView.domConverter.mapViewToDom( viewCell ),
 					positions: [
 						defaultPositions.northArrowSouth,
 						defaultPositions.northArrowSouthWest,

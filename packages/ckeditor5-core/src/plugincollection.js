@@ -344,7 +344,7 @@ export default class PluginCollection {
 			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
 			 * property.
 			 *
-			 * **If you see this warning when using one of the {@glink installation/advanced/alternative-setups/predefined-builds
+			 * **If you see this warning when using one of the {@glink installation/getting-started/predefined-builds
 			 * CKEditor 5 Builds}**,
 			 * it means that you try to enable a plugin which was not included in that build. This may be due to a typo
 			 * in the plugin name or simply because that plugin is not a part of this build. In the latter scenario,

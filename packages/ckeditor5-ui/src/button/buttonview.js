@@ -13,6 +13,7 @@ import TooltipView from '../tooltip/tooltipview';
 
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../../theme/components/button/button.css';
 
@@ -127,7 +128,7 @@ export default class ButtonView extends View {
 			this._getTooltipString.bind( this )
 		);
 
-		this.setTemplate( {
+		const template = {
 			tag: 'button',
 
 			attributes: {
@@ -145,7 +146,7 @@ export default class ButtonView extends View {
 				tabindex: bind.to( 'tabindex' ),
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
-				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( value ) : false )
+				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( !!value ) : false )
 			},
 
 			children: this.children,
@@ -163,7 +164,18 @@ export default class ButtonView extends View {
 					}
 				} )
 			}
-		} );
+		};
+
+		// On Safari we have to force the focus on a button on click as it's the only browser
+		// that doesn't do that automatically. See #12115.
+		if ( env.isSafari ) {
+			template.on.mousedown = bind.to( evt => {
+				this.focus();
+				evt.preventDefault();
+			} );
+		}
+
+		this.setTemplate( template );
 	}
 
 	/**

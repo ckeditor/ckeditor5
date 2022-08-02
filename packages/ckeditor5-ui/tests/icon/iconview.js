@@ -71,6 +71,20 @@ describe( 'IconView', () => {
 				view.content = '<svg version="1.1" viewBox="10 20 30 40" xmlns="http://www.w3.org/2000/svg"><g id="test"></g></svg>';
 				expect( view.viewBox ).to.equal( '10 20 30 40' );
 			} );
+
+			it( 'should use removeChild instead of innerHTML', () => {
+				view.content = '<svg><g id="test"></g><g id="test"></g></svg>';
+				assertIconInnerHTML( view, '<g id="test"></g><g id="test"></g>' );
+
+				const innerHTMLSpy = sinon.spy( view.element, 'innerHTML', [ 'set' ] );
+				const removeChildSpy = sinon.spy( view.element, 'removeChild' );
+
+				view.content = '<svg><g id="test"></g></svg>';
+				assertIconInnerHTML( view, '<g id="test"></g>' );
+
+				sinon.assert.notCalled( innerHTMLSpy.set );
+				sinon.assert.calledTwice( removeChildSpy );
+			} );
 		} );
 
 		describe( 'fill color', () => {

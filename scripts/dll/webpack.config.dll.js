@@ -105,6 +105,9 @@ const webpackConfig = {
 			footer: `( ( fn, root ) => fn( root ) )( ${ loadCKEditor5modules.toString() }, window );`
 		} )
 	],
+	resolve: {
+		extensions: [ '.ts', '.js', '.json' ]
+	},
 	module: {
 		rules: [
 			{
@@ -136,6 +139,10 @@ const webpackConfig = {
 						}
 					}
 				]
+			},
+			{
+				test: /\.ts$/,
+				use: [ 'ts-loader' ]
 			}
 		]
 	}
