@@ -22,5 +22,5 @@
  */
 
 export default interface HtmlWriter {
-    getHtml( fragment: DocumentFragment ): string;
+	getHtml( fragment: DocumentFragment ): string;
 }
