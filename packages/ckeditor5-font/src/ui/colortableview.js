@@ -141,10 +141,10 @@ export default class ColorTableView extends View {
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate list items backwards using the Arrow Up key.
+				// Navigate list items backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
 				focusPrevious: 'shift + tab',
 
-				// Navigate list items forwards using the Arrow Down key.
+				// Navigate list items forwards using the <kbd>Tab</kbd> key.
 				focusNext: 'tab'
 			}
 		} );
@@ -275,6 +275,9 @@ export default class ColorTableView extends View {
 			this.documentColorsGrid = this._createDocumentColorsGrid();
 			this.items.add( this.documentColorsGrid );
 		}
+
+		this.focusTracker.add( this.staticColorsGrid.element );
+		this.focusTracker.add( this.documentColorsGrid.element );
 	}
 
 	/**
