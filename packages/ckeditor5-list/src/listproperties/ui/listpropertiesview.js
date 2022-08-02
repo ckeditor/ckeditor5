@@ -187,6 +187,9 @@ export default class ListPropertiesView extends View {
 				this.focusables.add( this.children.last.buttonView );
 				this.focusTracker.add( this.children.last.buttonView.element );
 			}
+
+			this.stylesView.keystrokes = new KeystrokeHandler();
+			this.stylesView.keystrokes.listenTo( this.stylesView.element );
 		}
 
 		if ( this.startIndexFieldView ) {
@@ -200,16 +203,15 @@ export default class ListPropertiesView extends View {
 				domEvt.stopPropagation();
 			}, { priority: 'high' } );
 
-			// const stopPropagation = data => data.stopPropagation();
+			const stopPropagation = data => data.stopPropagation();
 
 			// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
 			// keystroke handler would take over the key management in the input. We need to prevent
 			// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
-			// this.keystrokes.set( 'arrowright', stopPropagation );
-			// this.keystrokes.set( 'arrowleft', stopPropagation );
-			// this.keystrokes.set( 'arrowup', stopPropagation );
-			// this.keystrokes.set( 'arrowdown', stopPropagation );
-			// this.keystrokes.set( 'arrowdown', stopPropagation2 );
+			this.keystrokes.set( 'arrowright', stopPropagation );
+			this.keystrokes.set( 'arrowleft', stopPropagation );
+			this.keystrokes.set( 'arrowup', stopPropagation );
+			this.keystrokes.set( 'arrowdown', stopPropagation );
 		}
 
 		if ( this.reversedSwitchButtonView ) {
@@ -217,7 +219,7 @@ export default class ListPropertiesView extends View {
 			this.focusTracker.add( this.reversedSwitchButtonView.element );
 		}
 
-		addKeyboardHandlingForGrid( this, this.stylesView.children, 4 );
+		addKeyboardHandlingForGrid( this.stylesView, this.stylesView.children, 4 );
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
