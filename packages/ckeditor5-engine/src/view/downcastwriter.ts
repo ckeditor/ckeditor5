@@ -24,7 +24,7 @@ import { isPlainObject } from 'lodash-es';
 
 import type Document from './document';
 import type Node from './node';
-import type Element from './element';
+import type { default as Element, ElementAttributes } from './element';
 import type DomConverter from './domconverter';
 import type Item from './item';
 import type { SlotFilter } from '../conversion/downcasthelpers';
@@ -210,7 +210,7 @@ export default class DowncastWriter {
 	 */
 	public createAttributeElement(
 		name: string,
-		attributes?: ConstructorParameters<typeof Element>[ 2 ],
+		attributes?: ElementAttributes,
 		options: {
 			priority?: number;
 			id?: number | string;
@@ -269,18 +269,18 @@ export default class DowncastWriter {
 	 */
 	public createContainerElement(
 		name: string,
-		attributes?: ConstructorParameters<typeof Element>[ 2 ],
+		attributes?: ElementAttributes,
 		options?: { renderUnsafeAttributes?: string[] }
 	): ContainerElement;
 	public createContainerElement(
 		name: string,
-		attributes: ConstructorParameters<typeof Element>[ 2 ],
+		attributes: ElementAttributes,
 		children: Node | Iterable<Node>,
 		options?: { renderUnsafeAttributes?: string[] }
 	): ContainerElement;
 	public createContainerElement(
 		name: string,
-		attributes?: ConstructorParameters<typeof Element>[ 2 ],
+		attributes?: ElementAttributes,
 		childrenOrOptions: Node | Iterable<Node> | { renderUnsafeAttributes?: string[] } = {},
 		options: { renderUnsafeAttributes?: string[] } = {}
 	): ContainerElement {
@@ -319,7 +319,7 @@ export default class DowncastWriter {
 	 */
 	public createEditableElement(
 		name: string,
-		attributes: ConstructorParameters<typeof Element>[ 2 ],
+		attributes: ElementAttributes,
 		options: {
 			renderUnsafeAttributes?: string[];
 		} = {}
@@ -348,7 +348,7 @@ export default class DowncastWriter {
 	 */
 	public createEmptyElement(
 		name: string,
-		attributes: ConstructorParameters<typeof Element>[ 2 ],
+		attributes: ElementAttributes,
 		options: {
 			renderUnsafeAttributes?: string[];
 		} = {}
@@ -389,7 +389,7 @@ export default class DowncastWriter {
 	 */
 	public createUIElement(
 		name: string,
-		attributes?: ConstructorParameters<typeof Element>[ 2 ],
+		attributes?: ElementAttributes,
 		renderFunction?: ( domDocument: DomDocument, domConverter?: DomConverter ) => DomElement
 	): UIElement {
 		const uiElement = new UIElement( this.document, name, attributes );
@@ -430,7 +430,7 @@ export default class DowncastWriter {
 	 */
 	public createRawElement(
 		name: string,
-		attributes: ConstructorParameters<typeof Element>[ 2 ],
+		attributes: ElementAttributes,
 		renderFunction: ( domElement: DomElement, domConverter?: DomConverter ) => void,
 		options: {
 			renderUnsafeAttributes?: string[];

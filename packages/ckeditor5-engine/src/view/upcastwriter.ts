@@ -8,7 +8,7 @@
  */
 
 import DocumentFragment from './documentfragment';
-import Element from './element';
+import Element, { type ElementAttributes } from './element';
 import Text from './text';
 import { isPlainObject } from 'lodash-es';
 import Position from './position';
@@ -82,7 +82,7 @@ export default class UpcastWriter {
 	 */
 	public createElement(
 		name: string,
-		attrs: Record<string, string> | Iterable<[ string, string ]>,
+		attrs: ElementAttributes,
 		children: Node | Iterable<Node>
 	): Element {
 		return new Element( this.document, name, attrs, children );

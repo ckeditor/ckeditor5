@@ -7,7 +7,7 @@
  * @module engine/view/emptyelement
  */
 
-import Element from './element';
+import Element, { type ElementAttributes } from './element';
 import Node from './node';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -42,7 +42,7 @@ export default class EmptyElement extends Element {
 	constructor(
 		document: Document,
 		name: string,
-		attributes?: Record<string, string> | Iterable<[ string, string ]> | null,
+		attributes?: ElementAttributes,
 		children?: Node | Iterable<Node>
 	) {
 		super( document, name, attributes, children );

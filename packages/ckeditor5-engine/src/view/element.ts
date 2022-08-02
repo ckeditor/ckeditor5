@@ -78,7 +78,7 @@ export default class Element extends Node {
 	constructor(
 		document: Document,
 		name: string,
-		attrs?: Record<string, string> | Iterable<[ string, string ]> | null,
+		attrs?: ElementAttributes,
 		children?: Node | Iterable<Node>
 	) {
 		super( document );
@@ -915,13 +915,15 @@ Element.prototype.is = function( type: string, name?: string ): boolean {
 	}
 };
 
+export type ElementAttributes = Record<string, string> | Iterable<[ string, string ]> | null;
+
 // Parses attributes provided to the element constructor before they are applied to an element. If attributes are passed
 // as an object (instead of `Iterable`), the object is transformed to the map. Attributes with `null` value are removed.
 // Attributes with non-`String` value are converted to `String`.
 //
 // @param {Object|Iterable} attrs Attributes to parse.
 // @returns {Map} Parsed attributes.
-function parseAttributes( attrs: Record<string, string> | Iterable<[ string, string ]> | null | undefined ) {
+function parseAttributes( attrs?: ElementAttributes ) {
 	const attrsMap = toMap( attrs );
 
 	for ( const [ key, value ] of attrsMap ) {
