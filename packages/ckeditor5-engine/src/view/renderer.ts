@@ -518,7 +518,7 @@ export default class Renderer extends Observable {
 		}
 
 		// We have block filler, we do not need inline one.
-		if ( selectionOffset === ( selectionParent as EditableElement ).getFillerOffset() ) {
+		if ( selectionOffset === selectionParent.getFillerOffset!() ) {
 			return false;
 		}
 
@@ -707,7 +707,8 @@ export default class Renderer extends Observable {
 	 */
 	private _findReplaceActions(
 		actions: DiffResult[],
-		actualDom: DomNode[] | NodeList, expectedDom: DomNode[]
+		actualDom: DomNode[] | NodeList,
+		expectedDom: DomNode[]
 	): ( DiffResult | 'replace' )[] {
 		// If there is no both 'insert' and 'delete' actions, no need to check for replaced elements.
 		if ( actions.indexOf( 'insert' ) === -1 || actions.indexOf( 'delete' ) === -1 ) {
@@ -978,9 +979,7 @@ function isEditable( element: ViewElement ): boolean {
 		return false;
 	}
 
-	const parent = element.findAncestor( element =>
-		element.hasAttribute( 'contenteditable' ) ? { attributes: [ 'contenteditable' ] } : null
-	);
+	const parent = element.findAncestor( element => element.hasAttribute( 'contenteditable' ) );
 
 	return !parent || parent.getAttribute( 'contenteditable' ) == 'true';
 }
