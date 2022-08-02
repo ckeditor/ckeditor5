@@ -19,6 +19,7 @@ const glob = require( 'glob' );
 
 const DEFAULT_LANGUAGE = 'en';
 const MULTI_LANGUAGE = 'multi-language';
+const SNIPPETS_BUILD_CHUNK_SIZE = 50;
 
 /**
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
@@ -111,16 +112,21 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		groupedSnippetsByLanguage[ snippetData.snippetConfig.language ].add( snippetData );
 	}
 
-	// For each language prepare own Webpack configuration.
+	// For each language prepare own Webpack configuration. Additionally, split all snippets into smaller sets (chunks), so that the
+	// building process will not end unexpectedly due to lack of memory.
 	const webpackConfigs = Object.keys( groupedSnippetsByLanguage )
-		.map( language => {
-			return getWebpackConfig( groupedSnippetsByLanguage[ language ], {
-				language,
-				production: options.production,
-				definitions: {
-					...( options.definitions || {} ),
-					...constantDefinitions
-				}
+		.flatMap( language => {
+			const snippetsChunks = splitSnippetsIntoChunks( groupedSnippetsByLanguage[ language ], SNIPPETS_BUILD_CHUNK_SIZE );
+
+			return snippetsChunks.map( snippetsChunk => {
+				return getWebpackConfig( snippetsChunk, {
+					language,
+					production: options.production,
+					definitions: {
+						...( options.definitions || {} ),
+						...constantDefinitions
+					}
+				} );
 			} );
 		} );
 
@@ -405,7 +411,7 @@ function getWebpackConfig( snippets, config ) {
 			} ),
 			new webpack.DefinePlugin( definitions ),
 			new ProgressBarPlugin( {
-				format: `Building snippets for language "${ config.language }": :percent (:msg)`
+				format: `Building next group of snippets for language "${ config.language }": :percent (:msg)`
 			} )
 		],
 
@@ -556,6 +562,43 @@ function getHTMLImports( files, mapFunction ) {
  */
 function countUniqueSnippets( snippets ) {
 	return new Set( Array.from( snippets, snippet => snippet.snippetName ) ).size;
+}
+
+/**
+ * Splits all snippets into smaller sets (chunks).
+ *
+ * Snippets belonging to the same page will not be separated from others on that page to make sure they all are built correctly. Such
+ * snippets cannot be divided. For this reason, the size of each created chunk may not be exactly equal to the requested chunk size
+ * and the final size depends on whether a page contained many indivisible snippets to build.
+ *
+ * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
+ * @param {Number} chunkSize The size of the group of snippets to be built simultaneously by one webpack process.
+ * @returns {Array.<Set.<Snippet>>}
+ */
+function splitSnippetsIntoChunks( snippets, chunkSize ) {
+	const groupedSnippetsByPage = [ ...snippets ].reduce( ( result, snippet ) => {
+		if ( !result.has( snippet.pageSourcePath ) ) {
+			result.set( snippet.pageSourcePath, new Set() );
+		}
+
+		result.get( snippet.pageSourcePath ).add( snippet );
+
+		return result;
+	}, new Map() );
+
+	const chunks = [ new Set() ];
+
+	for ( const snippets of groupedSnippetsByPage.values() ) {
+		const lastChunk = chunks.pop();
+
+		if ( lastChunk.size < chunkSize ) {
+			chunks.push( new Set( [ ...lastChunk, ...snippets ] ) );
+		} else {
+			chunks.push( lastChunk, new Set( [ ...snippets ] ) );
+		}
+	}
+
+	return chunks;
 }
 
 /**
