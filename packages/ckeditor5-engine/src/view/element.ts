@@ -480,8 +480,8 @@ export default class Element extends Node {
 	 * See {@link module:engine/view/matcher~Matcher}.
 	 * @returns {module:engine/view/element~Element|null} Found element or `null` if no matching ancestor was found.
 	 */
-	public findAncestor( ...patterns: MatcherPattern[] ): Element | null {
-		const matcher = new Matcher( ...patterns );
+	public findAncestor( ...patterns: ( MatcherPattern | ( ( element: Element ) => boolean ) )[] ): Element | null {
+		const matcher = new Matcher( ...patterns as any );
 		let parent = this.parent;
 
 		while ( parent && !parent.is( 'documentFragment' ) ) {
