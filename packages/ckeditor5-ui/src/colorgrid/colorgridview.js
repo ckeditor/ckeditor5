@@ -10,7 +10,6 @@
 import View from '../view';
 import ColorTileView from './colortileview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import addKeyboardHandlingForGrid from '../bindings/addKeyboardHandlingForGrid';
 import '../../theme/components/colorgrid/colorgrid.css';
@@ -71,26 +70,6 @@ export default class ColorGridView extends View {
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
 		 */
 		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * Helps cycling over focusable {@link #items} in the grid.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/focuscycler~FocusCycler}
-		 */
-		this._focusCycler = new FocusCycler( {
-			focusables: this.items,
-			focusTracker: this.focusTracker,
-			keystrokeHandler: this.keystrokes,
-			actions: {
-				// Navigate grid items backwards using the arrowup key.
-				focusPrevious: 'arrowleft',
-
-				// Navigate grid items forwards using the arrowdown key.
-				focusNext: 'arrowright'
-			}
-		} );
 
 		this.items.on( 'add', ( evt, colorTile ) => {
 			colorTile.isOn = colorTile.color === this.selectedColor;
