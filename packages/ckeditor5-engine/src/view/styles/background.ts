@@ -7,7 +7,7 @@
  * @module engine/view/styles/background
  */
 
-import type { StylesProcessor, PropertyDescriptor, StyleValue, Styles, Normalizer, Reducer } from '../stylesmap';
+import type { StylesProcessor, PropertyDescriptor, Styles, Normalizer, Reducer } from '../stylesmap';
 import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
 
 /**
@@ -42,21 +42,23 @@ export function addBackgroundRules( stylesProcessor: StylesProcessor ): void {
 
 function getBackgroundNormalizer(): Normalizer {
 	return value => {
-		const background: StyleValue = {};
+		const background: {
+			repeat?: string[];
+			position?: string[];
+			attachment?: string;
+			color?: string;
+			image?: string;
+		} = {};
 
 		const parts = getShorthandValues( value );
 
 		for ( const part of parts ) {
 			if ( isRepeat( part ) ) {
-				if ( !Array.isArray( background.repeat ) ) {
-					background.repeat = [];
-				}
+				background.repeat = background.repeat || [];
 
 				background.repeat.push( part );
 			} else if ( isPosition( part ) ) {
-				if ( !Array.isArray( background.position ) ) {
-					background.position = [];
-				}
+				background.position = background.position || [];
 
 				background.position.push( part );
 			} else if ( isAttachment( part ) ) {
