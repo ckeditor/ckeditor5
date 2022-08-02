@@ -64,7 +64,7 @@ export default class Node extends TypeCheckable {
 	 * @abstract
 	 * @param {Object} [attrs] Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
-	constructor( attrs?: Record<string, unknown> | Iterable<[ string, unknown ]> ) {
+	constructor( attrs?: NodeAttributes ) {
 		super();
 
 		/**
@@ -458,7 +458,7 @@ export default class Node extends TypeCheckable {
 	 * @protected
 	 * @param {Object} [attrs] Attributes to set. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
-	public _setAttributesTo( attrs: Record<string, unknown> | Iterable<[ string, unknown ]> ): void {
+	public _setAttributesTo( attrs: NodeAttributes ): void {
 		this._attrs = toMap( attrs );
 	}
 
@@ -539,3 +539,5 @@ Node.prototype.is = function( type: string ): boolean {
  *
  * @error model-node-not-found-in-parent
  */
+
+export type NodeAttributes = Record<string, unknown> | Iterable<[ string, unknown ]>;

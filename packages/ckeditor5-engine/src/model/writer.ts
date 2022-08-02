@@ -30,7 +30,7 @@ import type Selection from './selection';
 import type Batch from './batch';
 import type Item from './item';
 import type Model from './model';
-import type Node from './node';
+import type { default as Node, NodeAttributes } from './node';
 
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
@@ -101,7 +101,7 @@ export default class Writer {
 	 */
 	public createText(
 		data: string,
-		attributes?: Record<string, unknown> | Iterable<[ string, unknown ]>
+		attributes?: NodeAttributes
 	): Text {
 		return new Text( data, attributes );
 	}
@@ -118,7 +118,7 @@ export default class Writer {
 	 */
 	public createElement(
 		name: string,
-		attributes?: Record<string, unknown> | Iterable<[ string, unknown ]>
+		attributes?: NodeAttributes
 	): Element {
 		return new Element( name, attributes );
 	}
@@ -266,7 +266,7 @@ export default class Writer {
 	): void;
 	public insertText(
 		text: string,
-		attributes?: Record<string, unknown> | Iterable<[ string, unknown ]>,
+		attributes?: NodeAttributes,
 		itemOrPosition?: Item | Position,
 		offset?: number | 'end' | 'before' | 'after'
 	): void;
@@ -315,7 +315,7 @@ export default class Writer {
 	): void;
 	public insertElement(
 		name: string,
-		attributes: Record<string, unknown> | Iterable<[ string, unknown ]>,
+		attributes: NodeAttributes,
 		itemOrPosition: Item | DocumentFragment | Position,
 		offset?: number | 'end' | 'before' | 'after'
 	): void;
@@ -382,7 +382,7 @@ export default class Writer {
 	): void;
 	public appendText(
 		text: string,
-		attributes: Record<string, unknown> | Iterable<[ string, unknown ]>,
+		attributes: NodeAttributes,
 		parent: Element | DocumentFragment
 	): void;
 
@@ -398,7 +398,7 @@ export default class Writer {
 	 */
 	public appendText(
 		text: string,
-		attributes: Record<string, unknown> | Iterable<[ string, unknown ]> | Element | DocumentFragment,
+		attributes: NodeAttributes | Element | DocumentFragment,
 		parent?: Element | DocumentFragment
 	): void {
 		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
@@ -414,7 +414,7 @@ export default class Writer {
 	): void;
 	public appendElement(
 		name: string,
-		attributes: Record<string, unknown> | Iterable<[ string, unknown ]>,
+		attributes: NodeAttributes,
 		parent: Element | DocumentFragment
 	): void;
 
@@ -430,7 +430,7 @@ export default class Writer {
 	 */
 	public appendElement(
 		name: string,
-		attributes: Record<string, unknown> | Iterable<[ string, unknown ]> | Element | DocumentFragment,
+		attributes: NodeAttributes | Element | DocumentFragment,
 		parent?: Element | DocumentFragment
 	): void {
 		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
@@ -477,7 +477,7 @@ export default class Writer {
 	 * Model item or range on which the attributes will be set.
 	 */
 	public setAttributes(
-		attributes: Record<string, unknown> | Iterable<[ string, unknown ]>,
+		attributes: NodeAttributes,
 		itemOrRange: Item | Range
 	): void {
 		for ( const [ key, val ] of toMap( attributes ) ) {
@@ -1312,7 +1312,7 @@ export default class Writer {
 	}
 
 	public setSelectionAttribute( key: string, value: unknown ): void;
-	public setSelectionAttribute( objectOrIterable: Record<string, unknown> | Iterable<[ string, unknown ]> ): void;
+	public setSelectionAttribute( objectOrIterable: NodeAttributes ): void;
 
 	/**
 	 * Sets attribute(s) on the selection. If attribute with the same key already is set, it's value is overwritten.
@@ -1334,7 +1334,7 @@ export default class Writer {
 	 * @param {*} [value] Attribute value.
 	 */
 	public setSelectionAttribute(
-		keyOrObjectOrIterable: string | Record<string, unknown> | Iterable<[ string, unknown ]>,
+		keyOrObjectOrIterable: string | NodeAttributes,
 		value?: unknown
 	): void {
 		this._assertWriterUsedCorrectly();

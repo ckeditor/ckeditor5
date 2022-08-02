@@ -7,7 +7,7 @@
  * @module engine/model/text
  */
 
-import Node from './node';
+import Node, { type NodeAttributes } from './node';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
@@ -38,7 +38,7 @@ export default class Text extends Node {
 	 * @param {String} [data] Node's text.
 	 * @param {Object} [attrs] Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
-	constructor( data?: string, attrs?: Record<string, unknown> | Iterable<[ string, unknown ]> ) {
+	constructor( data?: string, attrs?: NodeAttributes ) {
 		super( attrs );
 
 		/**

@@ -7,7 +7,7 @@
  * @module engine/model/element
  */
 
-import Node from './node';
+import Node, { type NodeAttributes } from './node';
 import NodeList from './nodelist';
 import Text from './text';
 import TextProxy from './textproxy';
@@ -45,7 +45,7 @@ export default class Element extends Node {
 	 */
 	constructor(
 		name: string,
-		attrs?: Record<string, unknown> | Iterable<[ string, unknown ]>,
+		attrs?: NodeAttributes,
 		children?: string | Item | Iterable<string | Item>
 	) {
 		super( attrs );
