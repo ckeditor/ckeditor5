@@ -8,6 +8,7 @@
  */
 
 import DomEventObserver from './domeventobserver';
+import type DomEventData from './domeventdata';
 import type View from '../view';
 
 /**
@@ -28,6 +29,11 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		this.fire( domEvent.type, domEvent );
 	}
 }
+
+export type InputObserverEvent = {
+	name: 'beforeinput';
+	args: [ data: DomEventData<InputEvent> ];
+};
 
 /**
  * Fired before browser inputs (or deletes) some data.

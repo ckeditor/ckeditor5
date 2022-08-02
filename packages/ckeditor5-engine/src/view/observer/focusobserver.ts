@@ -10,6 +10,7 @@
 /* globals setTimeout, clearTimeout */
 
 import DomEventObserver from './domeventobserver';
+import type DomEventData from './domeventdata';
 import type View from '../view';
 
 /**
@@ -32,7 +33,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		this.useCapture = true;
 		const document = this.document;
 
-		document.on( 'focus', () => {
+		document.on<FocusObserverEvent>( 'focus', () => {
 			document.isFocused = true;
 
 			// Unfortunately native `selectionchange` event is fired asynchronously.
@@ -46,7 +47,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			this._renderTimeoutId = setTimeout( () => view.change( () => {} ), 50 );
 		} );
 
-		document.on( 'blur', ( evt, data ) => {
+		document.on<FocusObserverEvent>( 'blur', ( evt, data ) => {
 			const selectedEditable = document.selection.editableElement;
 
 			if ( selectedEditable === null || selectedEditable === data.target ) {
@@ -81,6 +82,11 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		super.destroy();
 	}
 }
+
+export type FocusObserverEvent = {
+	name: 'focus' | 'blur';
+	args: [ data: DomEventData<FocusEvent> ];
+};
 
 /**
  * Fired when one of the editables gets focus.

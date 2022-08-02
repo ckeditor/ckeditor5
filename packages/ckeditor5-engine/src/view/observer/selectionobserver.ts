@@ -40,7 +40,7 @@ export default class SelectionObserver extends Observer {
 	public readonly domConverter: DomConverter;
 
 	private readonly _documents: WeakSet<Document>;
-	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: SelectionChangeEventData ) => void>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: SelectionObserverEventData ) => void>;
 	private readonly _clearInfiniteLoopInterval: ReturnType<typeof setInterval>;
 	private readonly _documentIsSelectingInactivityTimeoutDebounced: DebouncedFunc<() => void>;
 	private _loopbackCounter: number;
@@ -96,7 +96,7 @@ export default class SelectionObserver extends Observer {
 		 * @method #_fireSelectionChangeDoneDebounced
 		 */
 		this._fireSelectionChangeDoneDebounced = debounce( data => {
-			this.document.fire<SelectionChangeDoneEvent>( 'selectionChangeDone', data );
+			this.document.fire<SelectionObserverEvent>( 'selectionChangeDone', data );
 		}, 200 );
 
 		/**
@@ -245,14 +245,14 @@ export default class SelectionObserver extends Observer {
 			// Just re-render it, no need to fire any events, etc.
 			this.view.forceRender();
 		} else {
-			const data: SelectionChangeEventData = {
+			const data: SelectionObserverEventData = {
 				oldSelection: this.selection,
 				newSelection: newViewSelection,
 				domSelection: domSelection!
 			};
 
 			// Prepare data for new selection and fire appropriate events.
-			this.document.fire<SelectionChangeEvent>( 'selectionChange', data );
+			this.document.fire<SelectionObserverEvent>( 'selectionChange', data );
 
 			// Call `#_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 			// This function is debounced what means that `selectionChangeDone` event will be fired only when
@@ -272,7 +272,7 @@ export default class SelectionObserver extends Observer {
 	}
 }
 
-export type SelectionChangeEventData = {
+export type SelectionObserverEventData = {
 	oldSelection: DocumentSelection;
 	newSelection: Selection;
 	domSelection: DomSelection | null;
@@ -295,9 +295,9 @@ export type SelectionChangeEventData = {
  * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.
  */
-export type SelectionChangeEvent = {
-	name: 'selectionChange';
-	args: [ SelectionChangeEventData ];
+export type SelectionObserverEvent = {
+	name: 'selectionChange' | 'selectionChangeDone';
+	args: [ SelectionObserverEventData ];
 };
 
 /**
@@ -316,8 +316,3 @@ export type SelectionChangeEvent = {
  * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.
  */
-export type SelectionChangeDoneEvent = {
-	name: 'selectionChangeDone';
-	args: [ SelectionChangeEventData ];
-};
-

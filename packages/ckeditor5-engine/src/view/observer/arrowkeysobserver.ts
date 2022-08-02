@@ -10,6 +10,7 @@
 import Observer from './observer';
 import BubblingEventInfo from './bubblingeventinfo';
 import type View from '../view';
+import type { KeyObserverEvent } from './keyobserver';
 
 import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
 
@@ -27,11 +28,11 @@ export default class ArrowKeysObserver extends Observer {
 	constructor( view: View ) {
 		super( view );
 
-		this.document.on( 'keydown', ( event, data ) => {
+		this.document.on<KeyObserverEvent>( 'keydown', ( event, data ) => {
 			if ( this.isEnabled && isArrowKeyCode( data.keyCode ) ) {
 				const eventInfo = new BubblingEventInfo( this.document, 'arrowKey', this.document.selection.getFirstRange()! );
 
-				this.document.fire( eventInfo, data );
+				this.document.fire<ArrowObserverEvent>( eventInfo, data );
 
 				if ( eventInfo.stop.called ) {
 					event.stop();
@@ -45,6 +46,12 @@ export default class ArrowKeysObserver extends Observer {
 	 */
 	public override observe(): void {}
 }
+
+export type ArrowObserverEvent = {
+	name: 'arrowKey';
+	args: KeyObserverEvent[ 'args' ];
+	eventInfo: BubblingEventInfo<'arrowKey'>;
+};
 
 /**
  * Event fired when the user presses an arrow keys.

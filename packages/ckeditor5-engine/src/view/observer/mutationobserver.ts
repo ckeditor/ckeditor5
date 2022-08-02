@@ -156,7 +156,7 @@ export default class MutationObserver extends Observer {
 		const domConverter = this.domConverter;
 
 		// Use map and set for deduplication.
-		const mutatedTexts = new Map();
+		const mutatedTexts = new Map<ViewText, MutatedText>();
 		const mutatedElements = new Set<ViewElement>();
 
 		// Handle `childList` mutations first, so we will be able to check if the `characterData` mutation is in the
@@ -211,7 +211,7 @@ export default class MutationObserver extends Observer {
 		// same node multiple times in case of duplication.
 
 		// List of mutations we will fire.
-		const viewMutations = [];
+		const viewMutations: ( MutatedText | MutatedChildren )[] = [];
 
 		for ( const mutatedText of mutatedTexts.values() ) {
 			this.renderer.markToSync( 'text', mutatedText.node );
@@ -261,7 +261,7 @@ export default class MutationObserver extends Observer {
 
 		// In case only non-relevant mutations were recorded it skips the event and force render (#5600).
 		if ( viewMutations.length ) {
-			this.document.fire( 'mutations', viewMutations, viewSelection );
+			this.document.fire<MutationObserverEvent>( 'mutations', viewMutations, viewSelection );
 
 			// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
 			// view (which has not been changed). In order to "reset DOM" we render the view again.
@@ -311,6 +311,11 @@ export default class MutationObserver extends Observer {
 	}
 }
 
+export type MutationObserverEvent = {
+	name: 'mutations';
+	args: [ viewMutations: ( MutatedChildren | MutatedText )[], viewSelection: ViewSelection | null ];
+};
+
 /**
  * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverted to the state before
  * mutation, so all changes which should be applied, should be handled on this event.
@@ -344,6 +349,12 @@ export default class MutationObserver extends Observer {
  * @property {String} oldText Old text.
  * @property {String} newText New text.
  */
+export interface MutatedText {
+	type: 'text';
+	node: ViewText;
+	oldText: string;
+	newText: string;
+}
 
 /**
  * Mutation item for child nodes.
@@ -358,3 +369,9 @@ export default class MutationObserver extends Observer {
  * @property {Array.<module:engine/view/node~Node>} oldChildren Old child nodes.
  * @property {Array.<module:engine/view/node~Node>} newChildren New child nodes.
  */
+export interface MutatedChildren {
+	type: 'children';
+	node: ViewElement;
+	oldChildren: ViewNode[];
+	newChildren: ViewNode[];
+}

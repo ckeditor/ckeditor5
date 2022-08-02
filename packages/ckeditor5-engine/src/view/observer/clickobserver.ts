@@ -8,6 +8,7 @@
  */
 
 import DomEventObserver from './domeventobserver';
+import type DomEventData from './domeventdata';
 import type View from '../view';
 
 /**
@@ -30,6 +31,11 @@ export default class ClickObserver extends DomEventObserver<'click'> {
 		this.fire( domEvent.type, domEvent );
 	}
 }
+
+export type ClickObserverEvent = {
+	name: 'click';
+	args: [ data: DomEventData<MouseEvent> ];
+};
 
 /**
  * Fired when one of the editables has been clicked.

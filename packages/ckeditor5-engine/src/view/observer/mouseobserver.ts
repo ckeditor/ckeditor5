@@ -8,6 +8,7 @@
  */
 
 import DomEventObserver from './domeventobserver';
+import type DomEventData from './domeventdata';
 import type View from '../view';
 
 /**
@@ -29,6 +30,11 @@ export default class MouseObserver extends DomEventObserver<'mousedown' | 'mouse
 		this.fire( domEvent.type, domEvent );
 	}
 }
+
+export type MouseObserverEvent = {
+	name: 'mousedown' | 'mouseup' | 'mouseover' | 'mouseout';
+	args: [ data: DomEventData<MouseEvent> ];
+};
 
 /**
  * Fired when the mouse button is pressed down on one of the editing roots of the editor.

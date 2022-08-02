@@ -8,8 +8,9 @@
  */
 
 import DomEventObserver from './domeventobserver';
-import { getCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import type View from '../view';
+import type DomEventData from './domeventdata';
+import { getCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * Observer for events connected with pressing keyboard keys.
@@ -18,7 +19,7 @@ import type View from '../view';
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
-export default class KeyObserver extends DomEventObserver<'keydown' | 'keyup', KeystrokeInfo> {
+export default class KeyObserver extends DomEventObserver<'keydown' | 'keyup', KeystrokeInfo & { keystroke: number }> {
 	constructor( view: View ) {
 		super( view );
 
@@ -42,6 +43,11 @@ export default class KeyObserver extends DomEventObserver<'keydown' | 'keyup', K
 		this.fire( domEvt.type, domEvt, data );
 	}
 }
+
+export type KeyObserverEvent = {
+	name: 'keydown' | 'keyup';
+	args: [ data: DomEventData<KeyboardEvent> & KeystrokeInfo & { keystroke: number } ];
+};
 
 /**
  * Fired when a key has been pressed.

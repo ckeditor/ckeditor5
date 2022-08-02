@@ -9,6 +9,7 @@
 
 import DomEventObserver from './domeventobserver';
 import type View from '../view';
+import type DomEventData from './domeventdata';
 
 /**
  * {@link module:engine/view/document~Document#event:compositionstart Compositionstart},
@@ -26,11 +27,11 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 		this.domEventType = [ 'compositionstart', 'compositionupdate', 'compositionend' ];
 		const document = this.document;
 
-		document.on( 'compositionstart', () => {
+		document.on<CompositionObserverEvent>( 'compositionstart', () => {
 			document.isComposing = true;
 		} );
 
-		document.on( 'compositionend', () => {
+		document.on<CompositionObserverEvent>( 'compositionend', () => {
 			document.isComposing = false;
 		} );
 	}
@@ -39,6 +40,11 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 		this.fire( domEvent.type, domEvent );
 	}
 }
+
+export type CompositionObserverEvent = {
+	name: 'compositionstart' | 'compositionupdate' | 'compositionend';
+	args: [ data: DomEventData<CompositionEvent> ];
+};
 
 /**
  * Fired when composition starts inside one of the editables.

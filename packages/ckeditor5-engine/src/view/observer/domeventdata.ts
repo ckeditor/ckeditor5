@@ -18,10 +18,10 @@ import type View from '../view';
  * It wraps the native event, which usually should not be used as the wrapper contains
  * additional data (like key code for keyboard events).
  */
-export default class DomEventData {
+export default class DomEventData<TEvent extends Event = Event> {
 	public readonly view: View;
 	public readonly document: Document;
-	public readonly domEvent: Event;
+	public readonly domEvent: TEvent;
 	public readonly domTarget: HTMLElement;
 
 	/**
@@ -29,7 +29,7 @@ export default class DomEventData {
 	 * @param {Event} domEvent The DOM event.
 	 * @param {Object} [additionalData] Additional properties that the instance should contain.
 	 */
-	constructor( view: View, domEvent: Event, additionalData?: object ) {
+	constructor( view: View, domEvent: TEvent, additionalData?: object ) {
 		/**
 		 * Instance of the view controller.
 		 *
