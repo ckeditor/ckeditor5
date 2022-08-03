@@ -217,7 +217,7 @@ export default class Schema extends Observable {
 	 *		schema.isRegistered( 'foo' ); // -> false
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
- 	 * @returns {Boolean}
+	 * @returns {Boolean}
 	 */
 	public isRegistered( item: string | Item | DocumentFragment | SchemaContextItem ): boolean {
 		return !!this.getDefinition( item );
@@ -237,7 +237,7 @@ export default class Schema extends Observable {
 	 * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
-  	 * @returns {Boolean}
+	 * @returns {Boolean}
 	 */
 	public isBlock( item: string | Item | DocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
@@ -263,7 +263,7 @@ export default class Schema extends Observable {
 	 * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
-  	 * @returns {Boolean}
+	 * @returns {Boolean}
 	 */
 	public isLimit( item: string | Item | DocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
@@ -293,7 +293,7 @@ export default class Schema extends Observable {
 	 * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
-  	 * @returns {Boolean}
+	 * @returns {Boolean}
 	 */
 	public isObject( item: string | Item | DocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
@@ -1430,12 +1430,12 @@ export interface SchemaItemDefinition {
 
 export interface SchemaCompiledItemDefinition {
 	name: string;
-    isBlock: boolean;
-    isContent: boolean;
-    isInline: boolean;
-    isLimit: boolean;
-    isObject: boolean;
-    isSelectable: boolean;
+	isBlock: boolean;
+	isContent: boolean;
+	isInline: boolean;
+	isLimit: boolean;
+	isObject: boolean;
+	isSelectable: boolean;
 	allowIn: string[];
 	allowChildren: string[];
 	allowAttributes: string[];
