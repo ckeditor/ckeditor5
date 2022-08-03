@@ -8,7 +8,7 @@
  */
 
 import { Editor, DataApiMixin, ElementApiMixin, attachToForm, secureSourceElement } from 'ckeditor5/src/core';
-import { mix, getDataFromElement, setDataInElement, CKEditorError } from 'ckeditor5/src/utils';
+import { mix, getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
 
 import { isElement } from 'lodash-es';
 
@@ -90,7 +90,9 @@ export default class InlineEditor extends Editor {
 	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
-	 * Updates the original editor element with the data.
+	 * Updates the original editor element with the data if the
+	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
+	 * configuration option is set to `true`.
 	 *
 	 * @returns {Promise}
 	 */
@@ -104,7 +106,7 @@ export default class InlineEditor extends Editor {
 		return super.destroy()
 			.then( () => {
 				if ( this.sourceElement ) {
-					setDataInElement( this.sourceElement, data );
+					this.updateSourceElement( data );
 				}
 			} );
 	}
@@ -189,7 +191,9 @@ export default class InlineEditor extends Editor {
 	 * or the editor's initial data.
 	 *
 	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization.
-	 * Moreover, the editor data will be set back to the original element once the editor is destroyed.
+	 * The editor data will be set back to the original element once the editor is destroyed only if the
+	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy updateSourceElementOnDestroy}
+	 * option is set to `true`.
 	 *
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
 	 * It is available under the {@link module:editor-inline/inlineeditorui~InlineEditorUI#element `editor.ui.element`} property.

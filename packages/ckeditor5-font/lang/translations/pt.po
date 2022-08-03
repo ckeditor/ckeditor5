@@ -18,27 +18,27 @@ msgstr ""
 
 msgctxt "Tooltip for the font size dropdown."
 msgid "Font Size"
-msgstr ""
+msgstr "Tamanho da Fonte"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
-msgstr ""
+msgstr "Mínima"
 
 msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
-msgstr ""
+msgstr "Pequena"
 
 msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
-msgstr ""
+msgstr "Grande"
 
 msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
-msgstr ""
+msgstr "Enorme"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr ""
+msgstr "Família de Fontes"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
@@ -46,12 +46,12 @@ msgstr "Padrão"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
-msgstr ""
+msgstr "Cor da Fonte"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr ""
+msgstr "Cor de Fundo da Fonte"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
+msgstr "Cores do documento"

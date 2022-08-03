@@ -43,3 +43,7 @@ msgstr "%0 van %1"
 msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
 msgstr "Kan bestand niet uploaden:"
+
+msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
+msgid "Rich Text Editor. Editing area: %0"
+msgstr "Rich Text Editor. Bewerkingsgebied: %0"

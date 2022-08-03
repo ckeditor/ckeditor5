@@ -22,15 +22,15 @@ msgstr "画像ウィジェット"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "テキストを折り返す"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "テキストを分割する"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "インライン"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"
@@ -111,3 +111,11 @@ msgstr "画像URLを挿入"
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
 msgstr "画像URLを更新"
+
+msgctxt "Text used by screen readers do describe an image when the image has no text alternative."
+msgid "Caption for the image"
+msgstr "画像キャプション"
+
+msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
+msgid "Caption for image: %0"
+msgstr "画像キャプション：%0"

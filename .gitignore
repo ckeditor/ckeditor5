@@ -8,6 +8,7 @@ build/
 !packages/ckeditor5-build-*/build
 docs/api/output.json
 yarn.lock
+package-lock.json
 coverage/
 
 # Files associated with external repositories.
@@ -18,3 +19,12 @@ mrgit.json
 .DS_Store
 .idea
 .vscode
+
+# Ignore yalc
+.yalc
+yalc.lock
+
+
+# Ignore compiled TypeScript files.
+packages/ckeditor5-utils/src/**/*.js
+packages/*/src/**/*.d.ts

@@ -250,12 +250,12 @@ msgstr "Värvi valija"
 
 msgctxt "The button label for the table toolbar hiding caption attached to the table."
 msgid "Toggle caption off"
-msgstr ""
+msgstr "Lülita pealdis välja"
 
 msgctxt "The button label for the table toolbar showing caption attached to the table."
 msgid "Toggle caption on"
-msgstr ""
+msgstr "Lülita pealdis sisse"
 
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
-msgstr ""
+msgstr "Sisesta tabeli pealdis"

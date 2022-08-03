@@ -427,7 +427,8 @@ function getWebpackConfig( snippets, config ) {
 			modules: [
 				...getPackageDependenciesPaths(),
 				...getModuleResolvePaths()
-			]
+			],
+			extensions: [ '.ts', '.js', '.json' ]
 		},
 
 		resolveLoader: {
@@ -457,6 +458,10 @@ function getWebpackConfig( snippets, config ) {
 							}
 						}
 					]
+				},
+				{
+					test: /\.ts$/,
+					use: [ 'ts-loader' ]
 				}
 			]
 		}
@@ -651,7 +656,8 @@ function getWebpackConfigForAssets( config ) {
 			modules: [
 				...getPackageDependenciesPaths(),
 				...getModuleResolvePaths()
-			]
+			],
+			extensions: [ '.ts', '.js', '.json' ]
 		},
 
 		resolveLoader: {
@@ -666,6 +672,10 @@ function getWebpackConfigForAssets( config ) {
 						MiniCssExtractPlugin.loader,
 						'css-loader'
 					]
+				},
+				{
+					test: /\.ts$/,
+					use: [ 'ts-loader' ]
 				}
 			]
 		}

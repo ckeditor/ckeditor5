@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-editor-balloon",
-  "version": "34.2.0",
+  "version": "35.0.1",
   "description": "Balloon editor implementation for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -11,22 +11,22 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^34.2.0",
+    "ckeditor5": "^35.0.1",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^34.2.0",
-    "@ckeditor/ckeditor5-core": "^34.2.0",
+    "@ckeditor/ckeditor5-basic-styles": "^35.0.1",
+    "@ckeditor/ckeditor5-core": "^35.0.1",
     "@ckeditor/ckeditor5-dev-utils": "^30.0.0",
-    "@ckeditor/ckeditor5-engine": "^34.2.0",
-    "@ckeditor/ckeditor5-enter": "^34.2.0",
-    "@ckeditor/ckeditor5-heading": "^34.2.0",
-    "@ckeditor/ckeditor5-paragraph": "^34.2.0",
-    "@ckeditor/ckeditor5-theme-lark": "^34.2.0",
-    "@ckeditor/ckeditor5-typing": "^34.2.0",
-    "@ckeditor/ckeditor5-ui": "^34.2.0",
-    "@ckeditor/ckeditor5-undo": "^34.2.0",
-    "@ckeditor/ckeditor5-utils": "^34.2.0",
+    "@ckeditor/ckeditor5-engine": "^35.0.1",
+    "@ckeditor/ckeditor5-enter": "^35.0.1",
+    "@ckeditor/ckeditor5-heading": "^35.0.1",
+    "@ckeditor/ckeditor5-paragraph": "^35.0.1",
+    "@ckeditor/ckeditor5-theme-lark": "^35.0.1",
+    "@ckeditor/ckeditor5-typing": "^35.0.1",
+    "@ckeditor/ckeditor5-ui": "^35.0.1",
+    "@ckeditor/ckeditor5-undo": "^35.0.1",
+    "@ckeditor/ckeditor5-utils": "^35.0.1",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },
@@ -48,7 +48,8 @@
     "src",
     "theme",
     "build",
-    "ckeditor5-metadata.json"
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "dll:build": "webpack"

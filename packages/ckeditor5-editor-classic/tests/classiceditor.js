@@ -337,7 +337,19 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
+		it( 'don\'t set the data back to the editor element', () => {
+			editor.setData( '<p>foo</p>' );
+
+			return editor.destroy()
+				.then( () => {
+					expect( editorElement.innerHTML ).to.equal( '' );
+				} );
+		} );
+
+		// Adding `updateSourceElementOnDestroy` config to the editor allows setting the data
+		// back to the source element after destroy.
 		it( 'sets the data back to the editor element', () => {
+			editor.config.set( 'updateSourceElementOnDestroy', true );
 			editor.setData( '<p>foo</p>' );
 
 			return editor.destroy()

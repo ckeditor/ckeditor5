@@ -132,6 +132,15 @@ describe( 'HighlightUI', () => {
 				.to.deep.equal( [ false, true, false, false, false, false, undefined, false ] );
 		} );
 
+		it( 'should focus the first active button when dropdown is opened', () => {
+			const greenMarker = dropdown.toolbarView.items.get( 1 );
+			const spy = sinon.spy( greenMarker, 'focus' );
+
+			greenMarker.isOn = true;
+			dropdown.isOpen = true;
+			sinon.assert.calledOnce( spy );
+		} );
+
 		it( 'should mark as toggleable all markers and pens', () => {
 			const toolbar = dropdown.toolbarView;
 
