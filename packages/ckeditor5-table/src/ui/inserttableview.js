@@ -9,7 +9,7 @@
 
 import { View, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
 
-import { KeystrokeHandler } from 'ckeditor5/src/utils';
+import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
 
 import './../../theme/inserttable.css';
 
@@ -39,6 +39,14 @@ export default class InsertTableView extends View {
 		this.items = this._createGridCollection();
 
 		this.keystrokes = new KeystrokeHandler();
+
+		/**
+		 * Tracks information about the DOM focus in the grid.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
 
 		/**
 		 * The currently selected number of rows of the new table.
@@ -114,13 +122,7 @@ export default class InsertTableView extends View {
 		} );
 
 		this.on( 'boxover', ( evt, domEvt ) => {
-			const { row, column } = domEvt.target.dataset;
-
-			// As row & column indexes are zero-based transform it to number of selected rows & columns.
-			this.set( {
-				rows: parseInt( row ),
-				columns: parseInt( column )
-			} );
+			domEvt.target.focus();
 		} );
 
 		this.on( 'change:columns', () => {
@@ -131,11 +133,25 @@ export default class InsertTableView extends View {
 			this._highlightGridBoxes();
 		} );
 
-		addKeyboardHandlingForGrid( this.keystrokes, this.items, 10, true );
+		this.focusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
+			const { row, column } = focusedElement.dataset;
+
+			// As row & column indexes are zero-based transform it to number of selected rows & columns.
+			this.set( {
+				rows: parseInt( row ),
+				columns: parseInt( column )
+			} );
+		} );
 	}
 
 	render() {
 		super.render();
+
+		addKeyboardHandlingForGrid( this.keystrokes, this.items, 10 );
+
+		for ( const item of this.items ) {
+			this.focusTracker.add( item.element );
+		}
 
 		this.keystrokes.listenTo( this.element );
 	}
@@ -251,13 +267,5 @@ class TableSizeGridBoxView extends View {
 	focus() {
 		this.element.focus();
 		this.isOn = true;
-	}
-
-	selectTile( parentView ) {
-		const { row, column } = this.element.dataset;
-		parentView.set( {
-			rows: parseInt( row ),
-			columns: parseInt( column )
-		} );
 	}
 }

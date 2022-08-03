@@ -9,7 +9,7 @@
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
-export default function addKeyboardHandlingForGrid( keystrokes, gridElementsCollection, numberOfColumns, isTable ) {
+export default function addKeyboardHandlingForGrid( keystrokes, gridElementsCollection, numberOfColumns ) {
 	const focusTracker = new FocusTracker();
 
 	for ( const item of gridElementsCollection ) {
@@ -43,10 +43,6 @@ export default function addKeyboardHandlingForGrid( keystrokes, gridElementsColl
 
 		gridElements[ nextIndex ].focus();
 
-		if ( isTable ) {
-			// gridElements[ nextIndex ].selectTile( view );
-		}
-
 		evt.stopPropagation();
 		evt.preventDefault();
 	} );
@@ -63,10 +59,6 @@ export default function addKeyboardHandlingForGrid( keystrokes, gridElementsColl
 		}
 
 		gridElements[ nextIndex ].focus();
-
-		if ( isTable ) {
-			// gridElements[ nextIndex ].selectTile( view );
-		}
 
 		evt.stopPropagation();
 		evt.preventDefault();
@@ -86,10 +78,6 @@ export default function addKeyboardHandlingForGrid( keystrokes, gridElementsColl
 
 		gridElements[ nextIndex ].focus();
 
-		if ( isTable ) {
-			// gridElements[ nextIndex ].selectTile( view );
-		}
-
 		evt.stopPropagation();
 		evt.preventDefault();
 	} );
@@ -104,10 +92,6 @@ export default function addKeyboardHandlingForGrid( keystrokes, gridElementsColl
 		}
 
 		gridElements[ nextIndex ].focus();
-
-		if ( isTable ) {
-			// gridElements[ nextIndex ].selectTile( view );
-		}
 
 		evt.stopPropagation();
 		evt.preventDefault();
