@@ -14,7 +14,6 @@ import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -37,7 +36,7 @@ describe( 'ListEditing', () => {
 		return VirtualTestEditor
 			.create( {
 				plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing,
-					TableEditing, TableKeyboard, ShiftEnter ]
+					TableEditing, TableKeyboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -728,23 +727,6 @@ describe( 'ListEditing', () => {
 						'<ul><li>Foo</li></ul><p>Bar</p>'
 					);
 				} );
-			} );
-
-			describe( 'br elements inside list items', () => {
-				testList(
-					'list item with BR in the middle of the text',
-					'<ul><li>foo<br>bar</li></ul>'
-				);
-				testList(
-					'list item with a BR at the end of list item',
-					'<ul><li>foo<br></li></ul>',
-					'<ul><li>foo</li></ul>'
-				);
-				testList(
-					'list item with a BR as the only content',
-					'<ul><li>foo</li><li><br></li></ul>',
-					'<ul><li>foo</li><li>&nbsp;</li></ul>'
-				);
 			} );
 		} );
 
