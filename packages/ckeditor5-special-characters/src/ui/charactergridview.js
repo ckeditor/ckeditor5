@@ -60,7 +60,7 @@ export default class CharacterGridView extends View {
 
 		this.keystrokes = new KeystrokeHandler();
 
-		addKeyboardHandlingForGrid( this, this.tiles, 10 );
+		addKeyboardHandlingForGrid( this.keystrokes, this.tiles, 10 );
 
 		/**
 		 * Fired when any of {@link #tiles grid tiles} is clicked.
@@ -129,13 +129,13 @@ export default class CharacterGridView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	 destroy() {
+	destroy() {
 		super.destroy();
 
 		this.keystrokes.destroy();
 	}
 
-	focus () {
+	focus() {
 		this.tiles.get( 0 ).focus();
 	}
 }

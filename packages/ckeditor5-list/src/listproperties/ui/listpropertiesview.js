@@ -219,7 +219,7 @@ export default class ListPropertiesView extends View {
 			this.focusTracker.add( this.reversedSwitchButtonView.element );
 		}
 
-		addKeyboardHandlingForGrid( this.stylesView, this.stylesView.children, 4 );
+		addKeyboardHandlingForGrid( this.stylesView.keystrokes, this.stylesView.children, 4 );
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );

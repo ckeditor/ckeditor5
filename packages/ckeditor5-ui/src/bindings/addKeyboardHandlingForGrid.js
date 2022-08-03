@@ -9,7 +9,7 @@
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
-export default function addKeyboardHandlingForGrid( view, gridElementsCollection, numberOfColumns, isTable ) {
+export default function addKeyboardHandlingForGrid( keystrokes, gridElementsCollection, numberOfColumns, isTable ) {
 	const focusTracker = new FocusTracker();
 
 	for ( const item of gridElementsCollection ) {
@@ -24,7 +24,7 @@ export default function addKeyboardHandlingForGrid( view, gridElementsCollection
 		focusTracker.remove( item.element );
 	} );
 
-	view.keystrokes.set( 'arrowright', evt => {
+	keystrokes.set( 'arrowright', evt => {
 		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
 
@@ -39,14 +39,14 @@ export default function addKeyboardHandlingForGrid( view, gridElementsCollection
 		gridElements[ nextIndex ].focus();
 
 		if ( isTable ) {
-			gridElements[ nextIndex ].selectTile( view );
+			// gridElements[ nextIndex ].selectTile( view );
 		}
 
 		evt.stopPropagation();
 		evt.preventDefault();
 	} );
 
-	view.keystrokes.set( 'arrowleft', evt => {
+	keystrokes.set( 'arrowleft', evt => {
 		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
 		let nextIndex;
@@ -60,14 +60,14 @@ export default function addKeyboardHandlingForGrid( view, gridElementsCollection
 		gridElements[ nextIndex ].focus();
 
 		if ( isTable ) {
-			gridElements[ nextIndex ].selectTile( view );
+			// gridElements[ nextIndex ].selectTile( view );
 		}
 
 		evt.stopPropagation();
 		evt.preventDefault();
 	} );
 
-	view.keystrokes.set( 'arrowup', evt => {
+	keystrokes.set( 'arrowup', evt => {
 		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
 		let nextIndex = focusedElementIndex - numberOfColumns;
@@ -82,14 +82,14 @@ export default function addKeyboardHandlingForGrid( view, gridElementsCollection
 		gridElements[ nextIndex ].focus();
 
 		if ( isTable ) {
-			gridElements[ nextIndex ].selectTile( view );
+			// gridElements[ nextIndex ].selectTile( view );
 		}
 
 		evt.stopPropagation();
 		evt.preventDefault();
 	} );
 
-	view.keystrokes.set( 'arrowdown', evt => {
+	keystrokes.set( 'arrowdown', evt => {
 		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
 		let nextIndex = focusedElementIndex + numberOfColumns;
@@ -101,7 +101,7 @@ export default function addKeyboardHandlingForGrid( view, gridElementsCollection
 		gridElements[ nextIndex ].focus();
 
 		if ( isTable ) {
-			gridElements[ nextIndex ].selectTile( view );
+			// gridElements[ nextIndex ].selectTile( view );
 		}
 
 		evt.stopPropagation();

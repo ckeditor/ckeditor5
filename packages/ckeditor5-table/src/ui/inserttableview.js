@@ -104,8 +104,8 @@ export default class InsertTableView extends View {
 					this.fire( 'execute' );
 				} ),
 
-				keydown: bind.to( ( evt ) => {
-					if ( evt.key === 'Enter') {
+				keydown: bind.to( evt => {
+					if ( evt.key === 'Enter' ) {
 						this.fire( 'execute' );
 						evt.preventDefault();
 					}
@@ -131,7 +131,7 @@ export default class InsertTableView extends View {
 			this._highlightGridBoxes();
 		} );
 
-		addKeyboardHandlingForGrid( this, this.items, 10, true );
+		addKeyboardHandlingForGrid( this.keystrokes, this.items, 10, true );
 	}
 
 	render() {
@@ -251,10 +251,6 @@ class TableSizeGridBoxView extends View {
 	focus() {
 		this.element.focus();
 		this.isOn = true;
-		//this.fire( 'boxover' );
-		//this.fire( 'boxover', new DomEventData( this, domEvt ) );
-		//view.fire( 'boxover', new DomEventData( this, domEvt ) );
-		//this.element.dispatchEvent( new MouseEvent( 'boxover', { type: 'mouseover' } ) );
 	}
 
 	selectTile( parentView ) {
