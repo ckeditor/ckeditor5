@@ -76,6 +76,7 @@ export function downcastTableColumnWidthsAttribute() {
 			// OTOH the model element has the attribute already applied, so we can't compare the values.
 			// Hence we need to just recreate the <colgroup> element every time.
 			insertColgroupElement( viewWriter, viewTable, data.attributeNewValue );
+			viewWriter.addClass( 'ck-table-resized', viewTable );
 		} else {
 			removeColgroupElement( viewWriter, viewTable );
 			viewWriter.removeClass( 'ck-table-resized', viewTable );
