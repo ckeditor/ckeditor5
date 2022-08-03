@@ -2326,6 +2326,24 @@ describe( 'TableColumnResizeEditing', () => {
 						'</table>'
 					);
 				} );
+
+				it( 'when table is being removed', () => {
+					setModelData( model,
+						'[<table columnWidths="100%" tableWidth="100%">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>' +
+										'foo' +
+									'</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
+
+					model.deleteContent( model.document.selection );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				} );
 			} );
 		} );
 	} );
