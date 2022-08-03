@@ -27,7 +27,7 @@ import {
 	clamp,
 	fillArray,
 	sumArray,
-	getAffectedTables,
+	getChangedTables,
 	getColumnIndex,
 	getColumnMinWidthAsPercentage,
 	getElementWidthInPixels,
@@ -76,13 +76,14 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._isResizingActive = false;
 
 		/**
-		 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only mode or the
-		 * `TableColumnResize` plugin is disabled.
+		 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only
+		 * or comments-only mode or the `TableColumnResize` plugin is disabled.
 		 *
 		 * @private
+		 * @observable
 		 * @member {Boolean}
 		 */
-		this._isResizingAllowed = true;
+		this.set( '_isResizingAllowed', true );
 
 		/**
 		 * A temporary storage for the required data needed to correctly calculate the widths of the resized columns. This storage is
@@ -110,6 +111,13 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * @member {Map}
 		 */
 		this._cellsModified = new Map();
+
+		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
+			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
+			editor.editing.view.change( writer => {
+				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot() );
+			} );
+		} );
 	}
 
 	/**
@@ -126,14 +134,24 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 		const columnResizePlugin = editor.plugins.get( 'TableColumnResize' );
 
+		editor.commands.add( 'resizeTableWidth', new TableWidthResizeCommand( editor ) );
+		editor.commands.add( 'resizeColumnWidths', new TableColumnWidthsCommand( editor ) );
+
+		const resizeTableWidthCommand = editor.commands.get( 'resizeTableWidth' );
+		const resizeColumnWidthsCommand = editor.commands.get( 'resizeColumnWidths' );
+
+		// Currently the states of column resize and table resize (which is actually the last column resize) features
+		// are bound together. They can be separated in the future by adding distinct listeners and applying
+		// different CSS classes (e.g. `ck-column-resize_disabled` and `ck-table-resize_disabled`) to the editor root.
+		// See #12148 for the details.
 		this.bind( '_isResizingAllowed' ).to(
 			editor, 'isReadOnly',
 			columnResizePlugin, 'isEnabled',
-			( isEditorReadOnly, isPluginEnabled ) => !isEditorReadOnly && isPluginEnabled
+			resizeTableWidthCommand, 'isEnabled',
+			resizeColumnWidthsCommand, 'isEnabled',
+			( isEditorReadOnly, isPluginEnabled, isResizeTableWidthCommandEnabled, isResizeColumnWidthsCommandEnabled ) =>
+				!isEditorReadOnly && isPluginEnabled && isResizeTableWidthCommandEnabled && isResizeColumnWidthsCommandEnabled
 		);
-
-		editor.commands.add( 'resizeTableWidth', new TableWidthResizeCommand( editor ) );
-		editor.commands.add( 'resizeColumnWidths', new TableColumnWidthsCommand( editor ) );
 	}
 
 	/**
@@ -215,7 +233,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 			let changed = false;
 
-			for ( const table of getAffectedTables( changes, editor.model ) ) {
+			for ( const table of getChangedTables( changes, editor.model ) ) {
 				// (1) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				// It's an array at this point.
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );
@@ -570,7 +588,10 @@ export default class TableColumnResizeEditing extends Plugin {
 				}
 			} else {
 				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
+				// This case can occur if the read-only mode kicks in during the resizing process.
 				editingView.change( writer => {
+					// If table was already resized before, restore the previous column widths.
+					// Otherwise clean up the view from the temporary resizing markup.
 					if ( columnWidthsAttributeOld ) {
 						const columnWidths = columnWidthsAttributeOld.split( ',' );
 
@@ -578,14 +599,13 @@ export default class TableColumnResizeEditing extends Plugin {
 							writer.setStyle( 'width', columnWidths.shift(), viewCol );
 						}
 					} else {
+						writer.removeClass( 'ck-table-resized', viewColgroup.findAncestor( 'table' ) );
 						writer.remove( viewColgroup );
-						writer.removeClass(
-							'ck-table-resized',
-							[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
-						);
 					}
 
 					if ( isTableWidthAttributeChanged ) {
+						// If table was already resized before, restore the previous table width.
+						// Otherwise clean up the view from the temporary resizing markup.
 						if ( tableWidthAttributeOld ) {
 							writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
 						} else {

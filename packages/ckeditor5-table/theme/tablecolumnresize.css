@@ -40,6 +40,10 @@
 	z-index: var(--ck-z-default);
 }
 
+.ck.ck-editor__editable.ck-column-resize_disabled .table .ck-table-column-resizer {
+	display: none;
+}
+
 /* The resizer elements, which are extended to an extremely high height, break the drag & drop feature in Chrome. To make it work again,
    all resizers must be hidden while the table is dragged. */
 .ck.ck-editor__editable .table[draggable] .ck-table-column-resizer {
@@ -55,8 +59,4 @@
 .ck.ck-editor__editable[dir=rtl] .table .ck-table-column-resizer {
 	left: var(--ck-table-column-resizer-position-offset);
 	right: unset;
-}
-
-.ck.ck-editor__editable.ck-read-only .table .ck-table-column-resizer {
-	display: none;
 }
