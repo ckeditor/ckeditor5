@@ -134,6 +134,9 @@ export default class InsertTableView extends View {
 		} );
 
 		this.focusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
+			if ( !focusedElement ) {
+				return;
+			}
 			const { row, column } = focusedElement.dataset;
 
 			// As row & column indexes are zero-based transform it to number of selected rows & columns.
