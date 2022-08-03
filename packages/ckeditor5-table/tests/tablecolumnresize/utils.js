@@ -404,7 +404,7 @@ describe( 'TableColumnResize utils', () => {
 			let range;
 
 			// To test the getChangedTables(), when the attribute is being removed we need
-			// to frist insert the text inside one of the table cells.
+			// to first insert the text inside one of the table cells.
 			model.change( () => {
 				insert(
 					model,
@@ -417,7 +417,7 @@ describe( 'TableColumnResize utils', () => {
 				attribute( model, range, 'linkHref', null, 'www' );
 			} );
 
-			// And in a different model.change() remove the attribute, beacuse otherwise the changes would be empty.
+			// And in a different model.change() remove the attribute, because otherwise the changes would be empty.
 			model.change( () => {
 				attribute( model, range, 'linkHref', 'www', null );
 				const changes = differ.getChanges();
