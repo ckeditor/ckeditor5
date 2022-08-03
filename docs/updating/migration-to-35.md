@@ -63,3 +63,17 @@ dropdownView.on( 'execute', () => {
 	editor.editing.view.focus();
 } );
 ```
+
+### There's now TypeScript code on GitHub (and how it affects your build)
+
+Starting from this version, the first of CKEditor 5 packages (namely: `@ckeditor/ckeditor5-utils`) is developed in TypeScript. This is the first step of [our migration to TypeScript](https://github.com/ckeditor/ckeditor5/issues/11704).
+
+Who does it affect?
+
+It affects you **only if** you use the [source code directly from git repository (GitHub)](https://github.com/ckeditor/ckeditor5). If you use it via any other channel (npm, CDN, ZIP, etc.) this change is completely transparent for you as we publish only JavaScript code there.
+
+How does it affect you?
+
+For instance, if you happen to have a custom CKEditor 5 build that for some reasons install its dependencies from the git repository, you will need to update your webpack config to support the TypeScript code.
+
+You can find the inspiration on how to change your configuration in [this commit](https://github.com/ckeditor/ckeditor5/commit/1dd4075983d97c61b1f668add764525c7fcf2a2d) (that makes this change in our builds).
