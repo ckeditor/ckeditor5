@@ -89,7 +89,7 @@ module.exports = async function snippetAdapter( snippets, options, umbertoHelper
 		console.log( `Found ${ snippets.size } matching {@snippet} tags.` );
 	}
 
-	console.log( `Building ${ countUniqueSnippets( snippets ) } snippets...` );
+	console.log( 'Preparing to build snippets...' );
 
 	const groupedSnippetsByLanguage = {};
 
@@ -561,16 +561,6 @@ function getHTMLImports( files, mapFunction ) {
 }
 
 /**
- * Returns a number of unique snippet names that will be built.
- *
- * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
- * @returns {Number}
- */
-function countUniqueSnippets( snippets ) {
-	return new Set( Array.from( snippets, snippet => snippet.snippetName ) ).size;
-}
-
-/**
  * Splits all snippets into smaller sets (chunks).
  *
  * Snippets belonging to the same page will not be separated from others on that page to make sure they all are built correctly. Such
@@ -583,28 +573,30 @@ function countUniqueSnippets( snippets ) {
  */
 function splitSnippetsIntoChunks( snippets, chunkSize ) {
 	const groupedSnippetsByPage = [ ...snippets ].reduce( ( result, snippet ) => {
-		if ( !result.has( snippet.pageSourcePath ) ) {
-			result.set( snippet.pageSourcePath, new Set() );
+		if ( !result[ snippet.pageSourcePath ] ) {
+			result[ snippet.pageSourcePath ] = [];
 		}
 
-		result.get( snippet.pageSourcePath ).add( snippet );
+		result[ snippet.pageSourcePath ].push( snippet );
 
 		return result;
-	}, new Map() );
+	}, {} );
 
-	const chunks = [ new Set() ];
+	const chunks = [ {} ];
 
-	for ( const snippets of groupedSnippetsByPage.values() ) {
+	for ( const snippets of Object.values( groupedSnippetsByPage ) ) {
 		const lastChunk = chunks.pop();
+		const numberOfSnippetsInLastChunk = Object.keys( lastChunk ).length;
+		const snippetsEntries = Object.fromEntries( snippets.map( snippet => [ snippet.snippetName, snippet ] ) );
 
-		if ( lastChunk.size < chunkSize ) {
-			chunks.push( new Set( [ ...lastChunk, ...snippets ] ) );
+		if ( numberOfSnippetsInLastChunk < chunkSize ) {
+			chunks.push( { ...lastChunk, ...snippetsEntries } );
 		} else {
-			chunks.push( lastChunk, new Set( [ ...snippets ] ) );
+			chunks.push( lastChunk, snippetsEntries );
 		}
 	}
 
-	return chunks;
+	return chunks.map( chunk => new Set( Object.values( chunk ) ) );
 }
 
 /**
