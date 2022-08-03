@@ -27,7 +27,7 @@ import {
 	clamp,
 	fillArray,
 	sumArray,
-	getAffectedTables,
+	getChangedTables,
 	getColumnIndex,
 	getColumnMinWidthAsPercentage,
 	getElementWidthInPixels,
@@ -215,7 +215,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 			let changed = false;
 
-			for ( const table of getAffectedTables( changes, editor.model ) ) {
+			for ( const table of getChangedTables( changes, editor.model ) ) {
 				// (1) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				// It's an array at this point.
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );

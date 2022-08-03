@@ -24,7 +24,7 @@ import {
  * @param {module:engine/model/model~Model} model
  * @returns {Set.<module:engine/model/element~Element>}
  */
-export function getAffectedTables( changes, model ) {
+export function getChangedTables( changes, model ) {
 	const affectedTables = new Set();
 
 	for ( const change of changes ) {
