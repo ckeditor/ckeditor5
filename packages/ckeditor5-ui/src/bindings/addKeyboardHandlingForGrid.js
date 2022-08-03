@@ -16,12 +16,17 @@ export default function addKeyboardHandlingForGrid( keystrokes, gridElementsColl
 		focusTracker.add( item.element );
 	}
 
-	gridElementsCollection.on( 'add', ( evt, item ) => {
-		focusTracker.add( item.element );
-	} );
-
-	gridElementsCollection.on( 'remove', ( evt, item ) => {
-		focusTracker.remove( item.element );
+	gridElementsCollection.on( 'change', ( eventInfo, { added, removed } ) => {
+		if ( added.length > 0 ) {
+			for ( const item of added ) {
+				focusTracker.add( item.element );
+			}
+		}
+		if ( removed.length > 0 ) {
+			for ( const item of removed ) {
+				focusTracker.remove( item.element );
+			}
+		}
 	} );
 
 	keystrokes.set( 'arrowright', evt => {
