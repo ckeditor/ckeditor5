@@ -116,6 +116,12 @@ export default class AlignmentUI extends Plugin {
 			// Enable button if any of the buttons is enabled.
 			dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled', ( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled ) );
 
+			// Focus the editable after executing the command.
+			// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+			this.listenTo( dropdownView, 'execute', () => {
+				editor.editing.view.focus();
+			} );
+
 			return dropdownView;
 		} );
 	}

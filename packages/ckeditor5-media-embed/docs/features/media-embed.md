@@ -24,6 +24,10 @@ You can use the Insert media button in the toolbar {@icon @ckeditor/ckeditor5-me
 
 {@snippet features/media-embed}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Installation
 
 <info-box info>

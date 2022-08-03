@@ -13,7 +13,7 @@ import spy from './spy';
  * The event object passed to event callbacks. It is used to provide information about the event as well as a tool to
  * manipulate it.
  */
-export default class EventInfo {
+export default class EventInfo<TName extends string = string, TReturn = unknown> {
 	/**
 	 * The object that fired the event.
 	 *
@@ -28,7 +28,7 @@ export default class EventInfo {
 	 * @readonly
 	 * @member {String}
 	 */
-	public readonly name: string;
+	public readonly name: TName;
 
 	/**
 	 * Path this event has followed. See {@link module:utils/emittermixin~EmitterMixin#delegate}.
@@ -68,13 +68,13 @@ export default class EventInfo {
 	 *
 	 * @member #return
 	 */
-	public return: unknown;
+	public return: TReturn | undefined;
 
 	/**
 	 * @param {Object} source The emitter.
 	 * @param {String} name The event name.
 	 */
-	constructor( source: object, name: string ) {
+	constructor( source: object, name: TName ) {
 		this.source = source;
 		this.name = name;
 		this.path = [];

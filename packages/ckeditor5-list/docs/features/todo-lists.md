@@ -22,6 +22,10 @@ Use the Insert to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/i
 
 {@snippet features/todo-list}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Keyboard support
 
 You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.

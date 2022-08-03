@@ -17,6 +17,10 @@ Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckedit
 
 {@snippet features/text-alignment}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 There are more CKEditor 5 features that can help you organize your content:

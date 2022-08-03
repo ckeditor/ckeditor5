@@ -26,6 +26,10 @@ Click anywhere inside the table to invoke the table toolbar. The features availa
 
 {@snippet features/table}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ### Table and cell styling tools
 
 In addition to the default table features described in the [previous section](#basic-table-features), the editor below comes with some additional tools that will help you modify **the look of tables and table cells**, for instance, their border color and style, background color, padding, or text alignment. The table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} and cell properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} are available from the table toolbar on click, just like basic table features.

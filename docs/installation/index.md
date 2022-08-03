@@ -1,12 +1,12 @@
+---
 category: installation
 order: 10
-toc: false
-feedback-widget: false
+menu-title: CKEditor 5 installation overview
 meta-title: CKEditor 5 installation documentation
 meta-description: Learn how to install, integrate, configure and develop CKEditor 5. Browse through API documentation and online samples.
 ---
 
-# Installing CKEditor 5
+# CKEditor 5 installation overview
 
 CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM, written from scratch in ES6 with excellent webpack support. Find out the most convenient way to start using it!
 
@@ -21,13 +21,14 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 ## Start using CKEditor 5 instantly with CDN
 
 Start using CKEditor 5 instantly thanks to the power of our CDN. Check out the {@link installation/getting-started/quick-start Quick start guide}.
-## Installing CKEditor 5
-
-Learn how to install a custom CKEditor 5 easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, and learn to {@link installation/getting-started/configuration configure it}.
 
 ## Predefined CKEditor 5 builds
 
 Predefined CKEditor 5 builds are ready-to-use installations aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link installation/getting-started/predefined-builds available predefined builds} and choosing the right one for you. This is the fastest way to kick-off you CKEditor 5 installation.
+
+## Customizing the CKEditor 5 installation
+
+Learn how to install a custom CKEditor 5 easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, and learn to {@link installation/getting-started/configuration configure it}.
 
 ## Integration with frameworks
 
@@ -46,7 +47,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
  * {@link updating/index Updating CKEditor 5} &ndash; Find out how to keep you installation up-to-date at all times.
  * {@link features/index Features} &ndash; Learn more about the CKEditor 5 features.
  * {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
- * {@link framework/guides/overview CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins or custom editors, how to change the UI or even bring your own UI to the editor.
+ * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins or custom editors, how to change the UI or even bring your own UI to the editor.
 
 <script type="text/javascript">
 	const QUIZ_DEFAULT_HEADER = 'Installation method quiz';

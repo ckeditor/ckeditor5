@@ -35,6 +35,10 @@ Then you can switch to the restricted editing mode to see how the editable and n
 
 {@snippet features/restricted-editing}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 There are more features that help control user permissions in the WYSIWYG editor:
