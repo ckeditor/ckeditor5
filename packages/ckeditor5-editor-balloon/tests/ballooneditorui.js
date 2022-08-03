@@ -366,6 +366,7 @@ describe( 'Balloon toolbar focus cycling', () => {
 
 			ui.focusTracker.isFocused = true;
 			balloonToolbar.focusTracker.isFocused = false;
+			ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
 
 			editor.keystrokes.press( keyEventData );
 
@@ -576,6 +577,7 @@ describe( 'Block toolbar focus cycling', () => {
 
 			ui.focusTracker.isFocused = true;
 			blockToolbarView.focusTracker.isFocused = false;
+			ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
 
 			editor.keystrokes.press( keyEventData );
 

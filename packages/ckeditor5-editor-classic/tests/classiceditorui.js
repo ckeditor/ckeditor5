@@ -467,31 +467,6 @@ describe( 'toolbars focusing, cycling', () => {
 
 			sinon.assert.notCalled( spy );
 		} );
-
-		// TODO
-		it.skip( 'bring focus back to where it came from before focusing the toolbar', () => {
-			const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
-			const spy = testUtils.sinon.spy( toolbar, 'focus' );
-
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
-
-			ui.focusTracker.isFocused = true;
-			ui.view.toolbar.focusTracker.isFocused = false;
-
-			editor.keystrokes.press( keyEventData );
-			ui.focusTracker.focusedElement = document.activeElement;
-
-			editor.keystrokes.press( keyEventData );
-
-			editor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.calledTwice( spy );
-			sinon.assert.calledOnce( editorSpy );
-		} );
 	} );
 
 	describe( 'advanced scenarios', () => {
@@ -502,6 +477,7 @@ describe( 'toolbars focusing, cycling', () => {
 
 			ui.focusTracker.isFocused = true;
 			view.toolbar.focusTracker.isFocused = false;
+			ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
 
 			editor.keystrokes.press( keyEventData );
 			ui.focusTracker.focusedElement = document.activeElement;

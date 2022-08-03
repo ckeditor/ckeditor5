@@ -416,6 +416,7 @@ describe( 'toolbar focus cycling', () => {
 
 			ui.focusTracker.isFocused = true;
 			view.toolbar.focusTracker.isFocused = false;
+			ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
 
 			editor.keystrokes.press( keyEventData );
 			ui.focusTracker.focusedElement = document.activeElement;
