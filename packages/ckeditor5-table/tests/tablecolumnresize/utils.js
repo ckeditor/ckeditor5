@@ -20,7 +20,7 @@ import AttributeOperation from '@ckeditor/ckeditor5-engine/src/model/operation/a
 
 import TableColumnResize from '../../src/tablecolumnresize';
 import {
-	getAffectedTables,
+	getChangedTables,
 	getColumnIndex,
 	toPrecision,
 	clamp,
@@ -34,7 +34,7 @@ import {
 /* globals window, document */
 
 describe( 'TableColumnResize utils', () => {
-	describe( 'getAffectedTables()', () => {
+	describe( 'getChangedTables()', () => {
 		let differ, root, model;
 
 		beforeEach( () => {
@@ -58,7 +58,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -79,7 +79,7 @@ describe( 'TableColumnResize utils', () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -102,7 +102,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -126,7 +126,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -144,7 +144,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -162,7 +162,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -186,7 +186,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -210,7 +210,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -228,7 +228,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -246,7 +246,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -262,7 +262,7 @@ describe( 'TableColumnResize utils', () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -278,7 +278,7 @@ describe( 'TableColumnResize utils', () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -294,7 +294,7 @@ describe( 'TableColumnResize utils', () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -335,12 +335,41 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 3 );
 				expect( affectedTables.has( firstTable ), 'first table is affected' ).to.be.true;
 				expect( affectedTables.has( secondTable ), 'second table is affected' ).to.be.true;
 				expect( affectedTables.has( thirdTable ), 'third table is affected' ).to.be.true;
+			} );
+		} );
+
+		it( 'should not find affected table - table removal', () => {
+			model.change( () => {
+				remove( model, new Position( root, [ 0 ] ), 1 );
+
+				const changes = differ.getChanges();
+				const affectedTables = getChangedTables( changes, model );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
+		} );
+
+		it( 'should not find affected table - table replacement', () => {
+			model.change( () => {
+				remove( model, new Position( root, [ 0 ] ), 1 );
+
+				// Table plugin inserts a paragraph when a table is removed - #12201.
+				insert(
+					model,
+					new Element( 'paragraph' ),
+					new Position( root, [ 0 ] )
+				);
+
+				const changes = differ.getChanges();
+				const affectedTables = getChangedTables( changes, model );
+
+				expect( affectedTables.size ).to.equal( 0 );
 			} );
 		} );
 
@@ -365,7 +394,7 @@ describe( 'TableColumnResize utils', () => {
 				);
 
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -374,8 +403,8 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should not find any affected table if it was a text formatting removal operation', () => {
 			let range;
 
-			// To test the getAffectedTables(), when the attribute is being removed we need
-			// to frist insert the text inside one of the table cells.
+			// To test the getChangedTables(), when the attribute is being removed we need
+			// to first insert the text inside one of the table cells.
 			model.change( () => {
 				insert(
 					model,
@@ -388,11 +417,11 @@ describe( 'TableColumnResize utils', () => {
 				attribute( model, range, 'linkHref', null, 'www' );
 			} );
 
-			// And in a different model.change() remove the attribute, beacuse otherwise the changes would be empty.
+			// And in a different model.change() remove the attribute, because otherwise the changes would be empty.
 			model.change( () => {
 				attribute( model, range, 'linkHref', 'www', null );
 				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedTables( changes, model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );

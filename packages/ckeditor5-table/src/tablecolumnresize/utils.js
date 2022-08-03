@@ -15,14 +15,16 @@ import {
 } from './constants';
 
 /**
- * Collects all table model elements affected by the differ. Only tables with 'columnsWidth' attribute
- * are taken into account. The returned set may be empty.
+ * Returns all the inserted or changed table model elements in a given change set. Only the tables
+ * with 'columnsWidth' attribute are taken into account. The returned set may be empty.
+ *
+ * Most notably if an entire table is removed it will not be included in returned set.
  *
  * @param {Array.<module:engine/model/differ~DiffItem>} changes
  * @param {module:engine/model/model~Model} model
  * @returns {Set.<module:engine/model/element~Element>}
  */
-export function getAffectedTables( changes, model ) {
+export function getChangedTables( changes, model ) {
 	const affectedTables = new Set();
 
 	for ( const change of changes ) {
@@ -33,8 +35,15 @@ export function getAffectedTables( changes, model ) {
 		// - an attribute change on a table, a row or a cell.
 		switch ( change.type ) {
 			case 'insert':
-			case 'remove':
 				referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes( change.name ) ?
+					change.position :
+					null;
+
+				break;
+
+			case 'remove':
+				// If the whole table is removed, there's no need to update its column widths (#12201).
+				referencePosition = [ 'tableRow', 'tableCell' ].includes( change.name ) ?
 					change.position :
 					null;
 
