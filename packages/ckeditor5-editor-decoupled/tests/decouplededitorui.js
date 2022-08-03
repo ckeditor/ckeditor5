@@ -19,7 +19,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { isElement } from 'lodash-es';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { Image, ImageCaption, ImageToolbar, ImageStyle } from '@ckeditor/ckeditor5-image';
+import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
 describe( 'DecoupledEditorUI', () => {
@@ -284,8 +284,9 @@ describe( 'DecoupledEditorUI', () => {
 		} );
 	} );
 } );
+
 describe( 'toolbar focus cycling', () => {
-	let editorElement, editor, ui, view, toolbar;
+	let editorElement, editor, ui, view, toolbar, keyEventData, toolbarContainer;
 
 	testUtils.createSinonSandbox();
 
@@ -293,16 +294,28 @@ describe( 'toolbar focus cycling', () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
 
 		editor = await DecoupledEditor.create( editorElement, {
-			plugins: [ Paragraph, Heading, Image, ImageToolbar, ImageCaption, ImageStyle ],
+			plugins: [ Paragraph, Heading, Image, ImageToolbar, ImageCaption ],
 			toolbar: [ 'heading' ],
 			image: {
-				toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+				toolbar: [ 'toggleImageCaption' ]
 			}
 		} );
 
 		ui = editor.ui;
 		view = ui.view;
 		toolbar = view.toolbar;
+
+		toolbarContainer = document.createElement( 'div' );
+		toolbarContainer.classList.add( 'toolbar-container' );
+		document.body.appendChild( toolbarContainer );
+		document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+
+		keyEventData = {
+			keyCode: keyCodes.f10,
+			altKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		};
 	} );
 
 	afterEach( () => {
@@ -311,24 +324,8 @@ describe( 'toolbar focus cycling', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'should make sure that the `alt+f10` key combination will', () => {
-		let keyEventData, toolbarContainer;
-
-		beforeEach( () => {
-			toolbarContainer = document.createElement( 'div' );
-			toolbarContainer.classList.add( 'toolbar-container' );
-			document.body.appendChild( toolbarContainer );
-			document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
-
-			keyEventData = {
-				keyCode: keyCodes.f10,
-				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-		} );
-
-		it( 'focus toolbar', () => {
+	describe( '`alt+f10` keystroke should', () => {
+		it( 'focus the main toolbar', () => {
 			const spy = testUtils.sinon.spy( toolbar, 'focus' );
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
@@ -340,7 +337,36 @@ describe( 'toolbar focus cycling', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'prioritizes widget toolbar over global toolbar', () => {
+		describe( 'do nothing', () => {
+			it( 'if nothing has been focused yet', () => {
+				const spy = testUtils.sinon.spy( toolbar, 'focus' );
+
+				setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+				editor.keystrokes.press( keyEventData );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'if toolbar was already focused', () => {
+				const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
+				const spy = testUtils.sinon.spy( toolbar, 'focus' );
+
+				setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+				ui.focusTracker.isFocused = true;
+				ui.view.toolbar.focusTracker.isFocused = false;
+
+				editor.keystrokes.press( keyEventData );
+
+				editor.keystrokes.press( keyEventData );
+
+				sinon.assert.calledTwice( spy );
+				sinon.assert.notCalled( editorSpy );
+			} );
+		} );
+
+		it( 'prioritize widget toolbar over global toolbar', () => {
 			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
 			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
 
@@ -364,7 +390,25 @@ describe( 'toolbar focus cycling', () => {
 			sinon.assert.calledOnce( imageToolbarSpy );
 			sinon.assert.notCalled( toolbarSpy );
 		} );
+	} );
 
+	describe( '`esc` keystroke should', () => {
+		it( 'do nothing if it was pressed when no toolbar was focused', () => {
+			const spy = testUtils.sinon.spy( toolbar, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+	} );
+
+	describe( 'advanced scenarios', () => {
 		it( 'focus toolbar, focus editor back when `esc` was pressed', () => {
 			const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
 
