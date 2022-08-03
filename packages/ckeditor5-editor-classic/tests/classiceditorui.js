@@ -402,6 +402,71 @@ describe( 'toolbar focus cycling', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'if nothing has been focused yet `alt+f10` should do nothing', () => {
+			const spy = testUtils.sinon.spy( toolbar, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			editor.keystrokes.press( keyEventData );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'if toolbar is already focused, `alt+f10` should do nothing', () => {
+			const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
+			const spy = testUtils.sinon.spy( toolbar, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			ui.focusTracker.isFocused = true;
+			ui.view.toolbar.focusTracker.isFocused = false;
+
+			editor.keystrokes.press( keyEventData );
+
+			editor.keystrokes.press( keyEventData );
+
+			sinon.assert.calledTwice( spy );
+			sinon.assert.notCalled( editorSpy );
+		} );
+
+		it( 'if `esc` was pressed when no toolbar was focused, it should do nothing', () => {
+			const spy = testUtils.sinon.spy( toolbar, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it.skip( 'Bring focus back to where it came from before focusing the toolbar', () => {
+			const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
+			const spy = testUtils.sinon.spy( toolbar, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			ui.focusTracker.isFocused = true;
+			ui.view.toolbar.focusTracker.isFocused = false;
+
+			editor.keystrokes.press( keyEventData );
+			ui.focusTracker.focusedElement = document.activeElement;
+
+			editor.keystrokes.press( keyEventData );
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.calledTwice( spy );
+			sinon.assert.calledOnce( editorSpy );
+		} );
+
 		it( 'prioritizes widget toolbar over global toolbar', () => {
 			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
 			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
