@@ -27,8 +27,8 @@ import {
 	clamp,
 	createFilledArray,
 	sumArray,
-	getAffectedTables,
 	getColumnEdgesIndexes,
+	getChangedTables,
 	getColumnMinWidthAsPercentage,
 	getElementWidthInPixels,
 	getTableWidthInPixels,
@@ -75,13 +75,14 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._isResizingActive = false;
 
 		/**
-		 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only mode or the
-		 * `TableColumnResize` plugin is disabled.
+		 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only
+		 * or comments-only mode or the `TableColumnResize` plugin is disabled.
 		 *
 		 * @private
+		 * @observable
 		 * @member {Boolean}
 		 */
-		this._isResizingAllowed = true;
+		this.set( '_isResizingAllowed', true );
 
 		/**
 		 * A temporary storage for the required data needed to correctly calculate the widths of the resized columns. This storage is
@@ -100,6 +101,13 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * @member {Map}
 		 */
 		this._columnIndexMap = new Map();
+
+		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
+			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
+			editor.editing.view.change( writer => {
+				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot() );
+			} );
+		} );
 	}
 
 	/**
@@ -116,14 +124,24 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 		const columnResizePlugin = editor.plugins.get( 'TableColumnResize' );
 
+		editor.commands.add( 'resizeTableWidth', new TableWidthResizeCommand( editor ) );
+		editor.commands.add( 'resizeColumnWidths', new TableColumnWidthsCommand( editor ) );
+
+		const resizeTableWidthCommand = editor.commands.get( 'resizeTableWidth' );
+		const resizeColumnWidthsCommand = editor.commands.get( 'resizeColumnWidths' );
+
+		// Currently the states of column resize and table resize (which is actually the last column resize) features
+		// are bound together. They can be separated in the future by adding distinct listeners and applying
+		// different CSS classes (e.g. `ck-column-resize_disabled` and `ck-table-resize_disabled`) to the editor root.
+		// See #12148 for the details.
 		this.bind( '_isResizingAllowed' ).to(
 			editor, 'isReadOnly',
 			columnResizePlugin, 'isEnabled',
-			( isEditorReadOnly, isPluginEnabled ) => !isEditorReadOnly && isPluginEnabled
+			resizeTableWidthCommand, 'isEnabled',
+			resizeColumnWidthsCommand, 'isEnabled',
+			( isEditorReadOnly, isPluginEnabled, isResizeTableWidthCommandEnabled, isResizeColumnWidthsCommandEnabled ) =>
+				!isEditorReadOnly && isPluginEnabled && isResizeTableWidthCommandEnabled && isResizeColumnWidthsCommandEnabled
 		);
-
-		editor.commands.add( 'resizeTableWidth', new TableWidthResizeCommand( editor ) );
-		editor.commands.add( 'resizeColumnWidths', new TableColumnWidthsCommand( editor ) );
 	}
 
 	/**
@@ -159,7 +177,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		model.document.registerPostFixer( writer => {
 			let changed = false;
 
-			for ( const table of getAffectedTables( model ) ) {
+			for ( const table of getChangedTables( model ) ) {
 				// (1) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				// It's an array at this point.
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );
@@ -530,71 +548,73 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
+		const columnWidthsAttributeOld = modelTable.getAttribute( 'columnWidths' );
+		const columnWidthsAttributeNew = [ ...viewColgroup.getChildren() ]
+			.map( viewCol => viewCol.getStyle( 'width' ) )
+			.join( ',' );
+
+		const isColumnWidthsAttributeChanged = columnWidthsAttributeOld !== columnWidthsAttributeNew;
+
+		const tableWidthAttributeOld = modelTable.getAttribute( 'tableWidth' );
+		const tableWidthAttributeNew = viewFigure.getStyle( 'width' );
+
+		const isTableWidthAttributeChanged = tableWidthAttributeOld !== tableWidthAttributeNew;
+
+		if ( isColumnWidthsAttributeChanged || isTableWidthAttributeChanged ) {
+			if ( this._isResizingAllowed ) {
+				// Commit all changes to the model.
+				if ( isTableWidthAttributeChanged ) {
+					editor.execute(
+						'resizeTableWidth',
+						{
+							table: modelTable,
+							tableWidth: `${ toPrecision( tableWidthAttributeNew ) }%`,
+							columnWidths: columnWidthsAttributeNew
+						}
+					);
+				} else {
+					editor.execute( 'resizeColumnWidths', { columnWidths: columnWidthsAttributeNew, table: modelTable } );
+				}
+			} else {
+				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
+				// This case can occur if the read-only mode kicks in during the resizing process.
+				editingView.change( writer => {
+					// If table was already resized before, restore the previous column widths.
+					// Otherwise clean up the view from the temporary resizing markup.
+					if ( columnWidthsAttributeOld ) {
+						const columnWidths = columnWidthsAttributeOld.split( ',' );
+
+						for ( const viewCol of viewColgroup.getChildren() ) {
+							writer.setStyle( 'width', columnWidths.shift(), viewCol );
+						}
+					} else {
+						writer.removeClass( 'ck-table-resized', viewColgroup.findAncestor( 'table' ) );
+						writer.remove( viewColgroup );
+					}
+
+					if ( isTableWidthAttributeChanged ) {
+						// If table was already resized before, restore the previous table width.
+						// Otherwise clean up the view from the temporary resizing markup.
+						if ( tableWidthAttributeOld ) {
+							writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
+						} else {
+							writer.removeStyle( 'width', viewFigure );
+							writer.removeClass(
+								'ck-table-resized',
+								[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
+							);
+						}
+					}
+				} );
+			}
+		}
+
 		editingView.change( writer => {
 			writer.removeClass( 'ck-table-column-resizer__active', viewResizer );
 		} );
 
 		this._isResizingActive = false;
 		this._resizingData = null;
-
-		const columnWidthsAttributeOld = modelTable.getAttribute( 'columnWidths' );
-		const columnWidthsAttributeNew = [ ...viewColgroup.getChildren() ]
-			.map( viewCol => viewCol.getStyle( 'width' ) )
-			.join( ',' );
-		const isColumnWidthsAttributeChanged = columnWidthsAttributeOld !== columnWidthsAttributeNew;
-
-		const tableWidthAttributeOld = modelTable.getAttribute( 'tableWidth' );
-		const tableWidthAttributeNew = viewFigure.getStyle( 'width' );
-		const isTableWidthAttributeChanged = tableWidthAttributeOld !== tableWidthAttributeNew;
-
-		if ( !isColumnWidthsAttributeChanged && !isTableWidthAttributeChanged ) {
-			return;
-		}
-
-		if ( this._isResizingAllowed ) {
-			// Commit all changes to the model.
-			if ( isTableWidthAttributeChanged ) {
-				editor.execute(
-					'resizeTableWidth',
-					{
-						table: modelTable,
-						tableWidth: `${ toPrecision( tableWidthAttributeNew ) }%`,
-						columnWidths: columnWidthsAttributeNew
-					}
-				);
-			} else {
-				editor.execute( 'resizeColumnWidths', { columnWidths: columnWidthsAttributeNew, table: modelTable } );
-			}
-		} else {
-			// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
-			editingView.change( writer => {
-				if ( columnWidthsAttributeOld ) {
-					const columnWidths = columnWidthsAttributeOld.split( ',' );
-
-					for ( const viewCol of viewColgroup.getChildren() ) {
-						writer.setStyle( 'width', columnWidths.shift(), viewCol );
-					}
-				} else {
-					writer.remove( viewColgroup );
-					writer.removeClass(
-						'ck-table-resized',
-						[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
-					);
-				}
-
-				if ( isTableWidthAttributeChanged ) {
-					if ( tableWidthAttributeOld ) {
-						writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
-					} else {
-						writer.removeStyle( 'width', viewFigure );
-						writer.removeClass(
-							'ck-table-resized',
-							[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
-						);
-					}
-				}
-			} );
-		}
 	}
 
 	/**

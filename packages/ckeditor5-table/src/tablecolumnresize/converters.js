@@ -31,7 +31,6 @@ export function upcastColgroupElement( tableUtilsPlugin ) {
 
 		conversionApi.consumable.consume( viewColgroupElement, { name: true } );
 
-		// DOMParser won't allow `colgroup` element outside a `table` one, so we don't need a check.
 		const modelTable = data.modelCursor.findAncestor( 'table' );
 		const numberOfColumns = tableUtilsPlugin.getColumns( modelTable );
 

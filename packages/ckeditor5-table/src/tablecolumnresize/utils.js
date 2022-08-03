@@ -15,13 +15,15 @@ import {
 } from './constants';
 
 /**
- * Collects all table model elements with `columnsWidth` attribute affected by the differ.
- * The returned set may be empty.
+ * Returns all the inserted or changed table model elements in a given change set. Only the tables
+ * with 'columnsWidth' attribute are taken into account. The returned set may be empty.
+ *
+ * Most notably if an entire table is removed it will not be included in returned set.
  *
  * @param {module:engine/model/model~Model} model The model to collect the affected elements from.
  * @returns {Set.<module:engine/model/element~Element>} A set of table model elements.
  */
-export function getAffectedTables( model ) {
+export function getChangedTables( model ) {
 	const affectedTables = new Set();
 
 	for ( const change of model.document.differ.getChanges() ) {
@@ -32,8 +34,15 @@ export function getAffectedTables( model ) {
 		// - an attribute change on a table, a row or a cell.
 		switch ( change.type ) {
 			case 'insert':
-			case 'remove':
 				referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes( change.name ) ?
+					change.position :
+					null;
+
+				break;
+
+			case 'remove':
+				// If the whole table is removed, there's no need to update its column widths (#12201).
+				referencePosition = [ 'tableRow', 'tableCell' ].includes( change.name ) ?
 					change.position :
 					null;
 
@@ -86,23 +95,26 @@ export function getColumnMinWidthAsPercentage( modelTable, editor ) {
  * @returns {Number} The width of the table in pixels.
  */
 export function getTableWidthInPixels( modelTable, editor ) {
-	const viewTbody = getTbodyViewElement( modelTable, editor.editing.mapper );
-	const domTbody = editor.editing.view.domConverter.mapViewToDom( viewTbody );
+	// It is possible for a table to not have a <tbody> element - see #11878.
+	const referenceElement = getChildrenViewElement( modelTable, 'tbody', editor ) || getChildrenViewElement( modelTable, 'thead', editor );
+	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement );
 
-	return getElementWidthInPixels( domTbody );
+	return getElementWidthInPixels( domReferenceElement );
 }
 
-// Returns the `<tbody>` view element, if it exists in a table. Returns `undefined` otherwise.
+// Returns the a view element with a given name that is nested directly in a `<table>` element
+// related to a given `modelTable`.
 //
 // @private
-// @param {module:engine/model/element~Element} modelTable A table model element.
-// @param {module:engine/conversion/mapper~Mapper} mapper The mapper instance.
-// @returns {module:engine/view/element~Element|undefined} The `<tbody>` view element.
-function getTbodyViewElement( modelTable, mapper ) {
-	const viewFigure = mapper.toViewElement( modelTable );
+// @param {module:engine/model/element~Element} table
+// @param {module:core/editor/editor~Editor} editor
+// @param {String} elementName Name of a view to be looked for, e.g. `'colgroup`', `'thead`'.
+// @returns {module:engine/view/element~Element|undefined} Matched view or `undefined` otherwise.
+function getChildrenViewElement( modelTable, elementName, editor ) {
+	const viewFigure = editor.editing.mapper.toViewElement( modelTable );
 	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
 
-	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', 'tbody' ) );
+	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', elementName ) );
 }
 
 /**

@@ -78,6 +78,7 @@ export function getViewColumnWidthsPx( domTable ) {
 	Array.from( domTable.querySelectorAll( 'col' ) ).forEach( col => {
 		widths.push( getWidth( col ) );
 	} );
+
 	return widths;
 }
 
