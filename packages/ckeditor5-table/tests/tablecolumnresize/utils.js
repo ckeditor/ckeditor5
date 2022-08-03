@@ -33,7 +33,7 @@ import {
 
 /* globals window, document */
 
-describe( 'TableColumnResize utils', () => {
+describe.only( 'TableColumnResize utils', () => {
 	describe( 'getChangedTables()', () => {
 		let differ, root, model;
 

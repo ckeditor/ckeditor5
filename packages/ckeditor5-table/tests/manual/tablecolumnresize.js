@@ -52,6 +52,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), editorConfig )
 	.then( editor => {
 		window.editor = editor;
+		window.setTimeout( () => {
+			editor.enableReadOnlyMode( 'test' );
+		}, 2000 );
 	} )
 	.catch( err => {
 		console.error( err.stack );

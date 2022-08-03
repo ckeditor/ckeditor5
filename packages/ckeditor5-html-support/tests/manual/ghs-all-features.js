@@ -36,13 +36,14 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import TableColumnResize from '../../../ckeditor5-table/src/tablecolumnresize';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code,
 			FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
-			CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption,
+			CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
 			EasyImage, ImageResize, LinkImage, HtmlEmbed,
 			Alignment, IndentBlock,
 			PageBreak, HorizontalLine,

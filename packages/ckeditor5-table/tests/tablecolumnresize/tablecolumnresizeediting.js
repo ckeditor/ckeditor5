@@ -43,7 +43,7 @@ import {
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-describe( 'TableColumnResizeEditing', () => {
+describe.only( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection;
 	const PERCENTAGE_PRECISION = 0.001;
 	const PIXEL_PRECISION = 1;

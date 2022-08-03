@@ -15,7 +15,7 @@ import TableColumnResize from '../../src/tablecolumnresize';
 import Table from '../../src/table';
 import { modelTable } from '../_utils/utils';
 
-describe( 'TableWidthResizeCommand', () => {
+describe.only( 'TableWidthResizeCommand', () => {
 	let model, editor, editorElement, command;
 
 	beforeEach( async () => {
