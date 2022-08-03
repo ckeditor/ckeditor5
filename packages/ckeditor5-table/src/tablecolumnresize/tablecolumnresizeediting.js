@@ -599,7 +599,6 @@ export default class TableColumnResizeEditing extends Plugin {
 							writer.setStyle( 'width', columnWidths.shift(), viewCol );
 						}
 					} else {
-						writer.removeClass( 'ck-table-resized', viewColgroup.findAncestor( 'table' ) );
 						writer.remove( viewColgroup );
 					}
 
@@ -610,11 +609,14 @@ export default class TableColumnResizeEditing extends Plugin {
 							writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
 						} else {
 							writer.removeStyle( 'width', viewFigure );
-							writer.removeClass(
-								'ck-table-resized',
-								[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
-							);
 						}
+					}
+
+					if ( !columnWidthsAttributeOld && !tableWidthAttributeOld ) {
+						writer.removeClass(
+							'ck-table-resized',
+							[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
+						);
 					}
 				} );
 			}

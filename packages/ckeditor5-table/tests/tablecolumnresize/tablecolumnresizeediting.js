@@ -402,7 +402,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table" style="width:100%;">' +
-						'<table>' +
+						'<table class="ck-table-resized">' +
 							'<colgroup>' +
 								'<col style="width:50%;">' +
 								'<col style="width:50%;">' +
@@ -452,7 +452,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table" style="width:100%;">' +
-						'<table>' +
+						'<table class="ck-table-resized">' +
 							'<colgroup>' +
 								'<col style="width:50%;">' +
 								'<col style="width:50%;">' +
