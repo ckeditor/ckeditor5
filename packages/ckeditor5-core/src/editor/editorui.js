@@ -243,28 +243,7 @@ export default class EditorUI {
 
 			// The Editor class is already listening to the editing view (KeyObserver). Do not duplicate listeners.
 			if ( !this._isDomRootElement( viewOrElement ) ) {
-				console.log( 'adding', viewOrElement, 'to KH' );
 				this.editor.keystrokes.listenTo( viewOrElement );
-			}
-		}
-		// TODO: When the source editing plugin is rewritten to use UI View, this will prove handy. For now, probably could be removed.
-		else {
-			if ( viewOrElement.isRendered ) {
-				this.focusTracker.add( viewOrElement.element );
-
-				// The Editor class is already listening to the editing view (KeyObserver). Do not duplicate listeners.
-				if ( !this._isDomRootElement( viewOrElement.element ) ) {
-					this.editor.keystrokes.listenTo( viewOrElement.element );
-				}
-			} else {
-				viewOrElement.once( 'render', () => {
-					this.focusTracker.add( viewOrElement.element );
-
-					// The Editor class is already listening to the editing view (KeyObserver). Do not duplicate listeners.
-					if ( !this._isDomRootElement( viewOrElement.element ) ) {
-						this.editor.keystrokes.listenTo( viewOrElement.element );
-					}
-				} );
 			}
 		}
 
@@ -361,7 +340,6 @@ export default class EditorUI {
 				return;
 			}
 
-			console.log( this._focusableEditingAreas, this.focusTracker.focusedElement );
 			if ( this._focusableEditingAreas.has( this.focusTracker.focusedElement ) ) {
 				lastFocusedEditingArea = this.focusTracker.focusedElement;
 			}
@@ -458,12 +436,8 @@ export default class EditorUI {
 			const { toolbarView, options } = toolbarDef;
 
 			// TODO: Duplication because of logging.
-			if ( isVisible( toolbarView.element ) ) {
+			if ( isVisible( toolbarView.element ) || options.beforeFocus ) {
 				console.log( `${ logToolbar( toolbarView ) }: because already visible.` );
-
-				definitions.push( toolbarDef );
-			} else if ( options.beforeFocus ) {
-				console.log( `${ logToolbar( toolbarView ) }: because has beforeFocus() (looks promising, might show up).` );
 
 				definitions.push( toolbarDef );
 			}
