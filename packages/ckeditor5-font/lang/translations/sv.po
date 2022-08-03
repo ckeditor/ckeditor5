@@ -46,12 +46,12 @@ msgstr "Standard"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
-msgstr ""
+msgstr "Teckenfärg"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr ""
+msgstr "Tecknens bakgrundsfärg"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
+msgstr "Dokumentfärger"

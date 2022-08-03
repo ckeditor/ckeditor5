@@ -1,0 +1,121 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Bengali (https://www.transifex.com/ckeditor/teams/11143/bn/)\n"
+"Language: bn\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "The label for the image widget."
+msgid "image widget"
+msgstr "ছবির উইজেট"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr "টেক্সট মোড়ানো"
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr "টেক্সট ভেঙ্গে ফেলুন"
+
+msgctxt "The label for the image style button that places the image inside the line of text."
+msgid "In line"
+msgstr "সঙ্গতিপূর্ণভাবে"
+
+msgctxt "The label for the Side image option."
+msgid "Side image"
+msgstr "পার্শ্ব ছবি"
+
+msgctxt "The label for the Full size image option."
+msgid "Full size image"
+msgstr "সম্পূর্ণ আকারের ছবি"
+
+msgctxt "The label for the Left aligned image option."
+msgid "Left aligned image"
+msgstr "বাম সারিবদ্ধ ছবি"
+
+msgctxt "The label for the Centered image option."
+msgid "Centered image"
+msgstr "কেন্দ্রীভূত ছবি"
+
+msgctxt "The label for the Right aligned image option."
+msgid "Right aligned image"
+msgstr "ডানে সারিবদ্ধ ছবি"
+
+msgctxt "The label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "ছবির টেক্সট বিকল্প পরিবর্তন"
+
+msgctxt "The label for the image text alternative input."
+msgid "Text alternative"
+msgstr "টেক্সট বিকল্প"
+
+msgctxt "The placeholder text for the image caption displayed when the caption is empty."
+msgid "Enter image caption"
+msgstr "ছবির ক্যাপশন লিখুন"
+
+msgctxt "The label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "ছবি ঢোকান"
+
+msgctxt "The title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "আপলোড ব্যর্থ হয়েছে"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr "ছবির টুলবার"
+
+msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
+msgid "Resize image"
+msgstr "ছবির আকার পরিবর্তন করুন"
+
+msgctxt "The label used for the standalone resize options buttons in the image toolbar."
+msgid "Resize image to %0"
+msgstr "ছবি %0 আকার পরিবর্তন করুন"
+
+msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
+msgid "Resize image to the original size"
+msgstr "মূল আকারে ছবির আকার পরিবর্তন করুন"
+
+msgctxt "The default label for the resize option that resets the size of the image."
+msgid "Original"
+msgstr "মূল"
+
+msgctxt "The accessibility label of the image resize dropdown for screen readers."
+msgid "Image resize list"
+msgstr "ছবির আকার পরিবর্তনের তালিকা"
+
+msgctxt "The label of the form submit button if the image source URL input has no value."
+msgid "Insert"
+msgstr "ঢোকান"
+
+msgctxt "The label of the form submit button if the image source URL input has a value."
+msgid "Update"
+msgstr "আপডেট করুন"
+
+msgctxt "The input label for the Insert image via URL form."
+msgid "Insert image via URL"
+msgstr "URL এর মাধ্যমে ছবি ঢোকান"
+
+msgctxt "The input label for the Insert image via URL form for a pre-existing image."
+msgid "Update image URL"
+msgstr "ছবির URL আপডেট করুন"
+
+msgctxt "Text used by screen readers do describe an image when the image has no text alternative."
+msgid "Caption for the image"
+msgstr "ছবির জন্য ক্যাপশন"
+
+msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
+msgid "Caption for image: %0"
+msgstr "ছবির জন্য ক্যাপশন: %0"

@@ -23,6 +23,9 @@ describe( 'BasicHtmlWriter', () => {
 
 		const data = basicHtmlWriter.getHtml( fragment );
 		expect( data ).to.equal( text );
+
+		// Verify if node was not adopted to main document.
+		expect( textNode.ownerDocument ).not.equal( document );
 	} );
 
 	it( 'should return correct HTML from fragment with paragraph', () => {
@@ -33,6 +36,10 @@ describe( 'BasicHtmlWriter', () => {
 
 		const data = basicHtmlWriter.getHtml( fragment );
 		expect( data ).to.equal( '<p>foo bar</p>' );
+
+		// Verify if node was not adopted to main document.
+		expect( paragraph.ownerDocument ).not.equal( document );
+		expect( paragraph.firstChild.ownerDocument ).not.equal( document );
 	} );
 
 	it( 'should return correct HTML from fragment with multiple child nodes', () => {
@@ -51,5 +58,12 @@ describe( 'BasicHtmlWriter', () => {
 		const data = basicHtmlWriter.getHtml( fragment );
 
 		expect( data ).to.equal( 'foo bar<p>foo</p><div>bar</div>' );
+
+		// Verify if node was not adopted to main document.
+		expect( text.ownerDocument ).not.equal( document );
+		expect( paragraph.ownerDocument ).not.equal( document );
+		expect( paragraph.firstChild.ownerDocument ).not.equal( document );
+		expect( div.ownerDocument ).not.equal( document );
+		expect( div.firstChild.ownerDocument ).not.equal( document );
 	} );
 } );

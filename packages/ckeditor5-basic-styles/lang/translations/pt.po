@@ -38,8 +38,8 @@ msgstr "Riscado"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "Subscrito"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "Sobrescrito"

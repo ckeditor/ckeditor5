@@ -22,15 +22,15 @@ msgstr "billed widget"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "Ombryd tekst"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "Opdel tekst"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "På linje"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"
@@ -78,36 +78,44 @@ msgstr "Billedværktøjslinje"
 
 msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
 msgid "Resize image"
-msgstr ""
+msgstr "Juster billedstørrelse"
 
 msgctxt "The label used for the standalone resize options buttons in the image toolbar."
 msgid "Resize image to %0"
-msgstr ""
+msgstr "Juster billedstørrelse til %0"
 
 msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
 msgid "Resize image to the original size"
-msgstr ""
+msgstr "Juster billedstørrelse til original størrelse"
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
-msgstr ""
+msgstr "Original"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
-msgstr ""
+msgstr "Liste over justering af billedstørrelse"
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
-msgstr ""
+msgstr "Indsæt"
 
 msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"
-msgstr ""
+msgstr "Opdater"
 
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
-msgstr ""
+msgstr "Indsæt billede via URL"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr ""
+msgstr "Opdater billed-URL"
+
+msgctxt "Text used by screen readers do describe an image when the image has no text alternative."
+msgid "Caption for the image"
+msgstr "Billedtekst for billedet"
+
+msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
+msgid "Caption for image: %0"
+msgstr "Billedtekst for billede: %0"

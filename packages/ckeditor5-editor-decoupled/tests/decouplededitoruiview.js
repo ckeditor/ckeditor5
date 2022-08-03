@@ -95,6 +95,14 @@ describe( 'DecoupledEditorUIView', () => {
 
 				testView.destroy();
 			} );
+
+			it( 'is given an accessible aria label', () => {
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+
+				view.destroy();
+			} );
 		} );
 	} );
 

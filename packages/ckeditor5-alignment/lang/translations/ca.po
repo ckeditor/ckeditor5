@@ -38,4 +38,4 @@ msgstr "Alineació text"
 
 msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
 msgid "Text alignment toolbar"
-msgstr ""
+msgstr "Barra d'eines d'alineació de text"

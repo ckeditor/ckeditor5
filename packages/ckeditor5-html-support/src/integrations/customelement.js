@@ -7,6 +7,8 @@
  * @module html-support/integrations/customelement
  */
 
+/* globals document */
+
 import { Plugin } from 'ckeditor5/src/core';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
@@ -62,6 +64,10 @@ export default class CustomElementSupport extends Plugin {
 				model: ( viewElement, conversionApi ) => {
 					// Do not try to convert $comment fake element.
 					if ( viewElement.name == '$comment' ) {
+						return;
+					}
+
+					if ( !isValidElementName( viewElement.name ) ) {
 						return;
 					}
 
@@ -159,4 +165,15 @@ export default class CustomElementSupport extends Plugin {
 			} );
 		} );
 	}
+}
+
+// Returns true if name is valid for a DOM element name.
+function isValidElementName( name ) {
+	try {
+		document.createElement( name );
+	} catch ( error ) {
+		return false;
+	}
+
+	return true;
 }

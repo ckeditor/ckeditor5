@@ -104,6 +104,26 @@ describe( 'DropdownView', () => {
 				} );
 			} );
 
+			describe( 'view#isOpen to view.panelView#focus', () => {
+				it( 'gets called upon opening', () => {
+					const spy = sinon.spy( view.panelView, 'focus' );
+
+					view.isOpen = true;
+
+					expect( spy.callCount ).to.equal( 1 );
+				} );
+
+				it( 'does not get called upon closing', () => {
+					view.isOpen = true;
+
+					const spy = sinon.spy( view.panelView, 'focus' );
+
+					view.isOpen = false;
+
+					expect( spy.callCount ).to.equal( 0 );
+				} );
+			} );
+
 			describe( 'view.panelView#isVisible to view#isOpen', () => {
 				it( 'is activated', () => {
 					const values = [];

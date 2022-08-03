@@ -22,11 +22,11 @@ msgstr "ביטול"
 
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
 msgid "Remove color"
-msgstr ""
+msgstr "מחיקת צבע"
 
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"
-msgstr ""
+msgstr "שחזור ברירת מחדל"
 
 msgctxt "Label for the Save button."
 msgid "Save"
@@ -34,7 +34,7 @@ msgstr "שמירה"
 
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
-msgstr "הצד פריטים נוספים"
+msgstr "הצג פריטים נוספים"
 
 msgctxt "Label for an ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or 'Search result 5 of 20'."
 msgid "%0 of %1"
@@ -43,3 +43,7 @@ msgstr "%0 מתוך %1"
 msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
 msgstr "לא ניתן להעלות את הקובץ הבא:"
+
+msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
+msgid "Rich Text Editor. Editing area: %0"
+msgstr "עורך פורמט טקסט עשיר. אזור עריכה: %0"

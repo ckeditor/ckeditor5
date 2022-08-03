@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event, document, getComputedStyle */
+/* globals Event */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ButtonView from '../../src/button/buttonview';
@@ -12,7 +12,6 @@ import TooltipView from '../../src/tooltip/tooltipview';
 import View from '../../src/view';
 import ViewCollection from '../../src/viewcollection';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import ToolbarView from '../../src/toolbar/toolbarview';
 
 describe( 'ButtonView', () => {
 	let locale, view;
@@ -262,6 +261,12 @@ describe( 'ButtonView', () => {
 				expect( view.element.attributes[ 'aria-disabled' ].value ).to.equal( 'true' );
 			} );
 
+			it( '-pressed has correct default value for toggleable button', () => {
+				view.isToggleable = true;
+				view.isOn = undefined;
+				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'false' );
+			} );
+
 			it( '-pressed reacts to #isOn', () => {
 				view.isToggleable = true;
 				view.isOn = true;
@@ -281,10 +286,38 @@ describe( 'ButtonView', () => {
 		} );
 
 		describe( 'mousedown event', () => {
-			it( 'should be prevented', () => {
+			it( 'should not be prevented', () => {
 				const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-				expect( ret ).to.false;
+				expect( ret ).to.true;
+			} );
+
+			describe( 'in Safari', () => {
+				let view, stub;
+
+				beforeEach( () => {
+					stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
+					view = new ButtonView( locale );
+					view.render();
+				} );
+
+				afterEach( () => {
+					stub.resetBehavior();
+					view.destroy();
+				} );
+
+				it( 'the button is focused', () => {
+					const spy = sinon.spy( view.element, 'focus' );
+					view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+					expect( spy.callCount ).to.equal( 1 );
+				} );
+
+				it( 'the event is prevented', () => {
+					const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+					expect( ret ).to.false;
+				} );
 			} );
 		} );
 
@@ -411,33 +444,6 @@ describe( 'ButtonView', () => {
 			view.focus();
 
 			sinon.assert.calledOnce( spy );
-		} );
-	} );
-
-	describe( 'Tooltip in toolbar button', () => {
-		let toolbar;
-
-		beforeEach( () => {
-			toolbar = new ToolbarView( locale );
-			toolbar.render();
-			document.body.append( toolbar.element );
-		} );
-
-		afterEach( () => {
-			toolbar.element.remove();
-			toolbar.destroy();
-		} );
-
-		it( 'is displayed when the button is focused', () => {
-			toolbar.items.add( view );
-
-			const tooltip = view.element.children[ 0 ];
-
-			expect( getComputedStyle( tooltip ).visibility ).to.equal( 'hidden' );
-
-			view.focus();
-
-			expect( getComputedStyle( tooltip ).visibility ).to.equal( 'visible' );
 		} );
 	} );
 } );

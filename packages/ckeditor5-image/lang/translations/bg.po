@@ -22,47 +22,47 @@ msgstr "Компонент за изображение"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "Събери текст"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "Раздели текст"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "В линия"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"
-msgstr ""
+msgstr "Странично изображение"
 
 msgctxt "The label for the Full size image option."
 msgid "Full size image"
-msgstr ""
+msgstr "Изображение в пълен размер"
 
 msgctxt "The label for the Left aligned image option."
 msgid "Left aligned image"
-msgstr ""
+msgstr "Изображение подравнено вляво"
 
 msgctxt "The label for the Centered image option."
 msgid "Centered image"
-msgstr ""
+msgstr "Центрирано изображение"
 
 msgctxt "The label for the Right aligned image option."
 msgid "Right aligned image"
-msgstr ""
+msgstr "Изображение подравнено вдясно"
 
 msgctxt "The label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr ""
+msgstr "Промени изображението на текстовата алтернатива"
 
 msgctxt "The label for the image text alternative input."
 msgid "Text alternative"
-msgstr ""
+msgstr "Текстова алтернатива"
 
 msgctxt "The placeholder text for the image caption displayed when the caption is empty."
 msgid "Enter image caption"
-msgstr ""
+msgstr "Въведи описание на изображението"
 
 msgctxt "The label for the insert image toolbar button."
 msgid "Insert image"
@@ -70,44 +70,52 @@ msgstr "Вмъкни изображение"
 
 msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr ""
+msgstr "Качването е неуспешно"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
-msgstr ""
+msgstr "Лента с изображения"
 
 msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
 msgid "Resize image"
-msgstr ""
+msgstr "Промени размера на изображението"
 
 msgctxt "The label used for the standalone resize options buttons in the image toolbar."
 msgid "Resize image to %0"
-msgstr ""
+msgstr "Промени размера на изображението на %0"
 
 msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
 msgid "Resize image to the original size"
-msgstr ""
+msgstr "Възстанови оригиналния размер на изображението"
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
-msgstr ""
+msgstr "Оригинал"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
-msgstr ""
+msgstr "Списък с промените на размера на изображението"
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
-msgstr ""
+msgstr "Вмъкни"
 
 msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"
-msgstr ""
+msgstr "Обнови"
 
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
-msgstr ""
+msgstr "Въведи изображение чрез URL"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr ""
+msgstr "Обнови URL на изображението"
+
+msgctxt "Text used by screen readers do describe an image when the image has no text alternative."
+msgid "Caption for the image"
+msgstr "Заглавие на изображението"
+
+msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
+msgid "Caption for image: %0"
+msgstr "Заглавие на изображението: %0"

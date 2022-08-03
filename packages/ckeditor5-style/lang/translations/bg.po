@@ -1,0 +1,33 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Bulgarian (https://www.transifex.com/ckeditor/teams/11143/bg/)\n"
+"Language: bg\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "The label of the styles dropdown button in the toolbar displayed when no style is currently active."
+msgid "Styles"
+msgstr "Стилове"
+
+msgctxt "The label of the styles dropdown button in the toolbar displayed when multiple styles are currently active."
+msgid "Multiple styles"
+msgstr "Множество стилове"
+
+msgctxt "The label of the group in the styles dropdown containing styles applicable to blocks only (paragraphs, headings, etc.)."
+msgid "Block styles"
+msgstr "Блокови стилове"
+
+msgctxt "The label of the group in the styles dropdown containing inline applicable to text only."
+msgid "Text styles"
+msgstr "Текстови стилове"

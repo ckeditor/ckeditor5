@@ -40,7 +40,7 @@ export function getBalloonPositionData( editor ) {
 	const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return {
-		target: editingView.domConverter.viewToDom( imageUtils.getClosestSelectedImageWidget( editingView.document.selection ) ),
+		target: editingView.domConverter.mapViewToDom( imageUtils.getClosestSelectedImageWidget( editingView.document.selection ) ),
 		positions: [
 			defaultPositions.northArrowSouth,
 			defaultPositions.northArrowSouthWest,
