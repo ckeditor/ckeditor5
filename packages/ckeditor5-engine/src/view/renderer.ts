@@ -63,6 +63,7 @@ export default class Renderer extends Observable {
 
 	private _inlineFiller: DomText | null;
 	private _fakeSelectionContainer: DomElement | null;
+	private _pendingSelectionUpdate: boolean;
 
 	/**
 	 * Creates a renderer instance.
@@ -149,7 +150,7 @@ export default class Renderer extends Observable {
 		// When the user stops selecting, all pending changes should be rendered ASAP, though.
 		if ( env.isBlink && !env.isAndroid ) {
 			this.on<ObservableChangeEvent>( 'change:isSelecting', () => {
-				if ( !this.isSelecting ) {
+				if ( !this.isSelecting && this._pendingSelectionUpdate ) {
 					this.render();
 				}
 			} );
@@ -170,6 +171,14 @@ export default class Renderer extends Observable {
 		 * @type {null|HTMLElement}
 		 */
 		this._fakeSelectionContainer = null;
+
+		/**
+		 * Whether there is some selection change pending to get rendered after isSelecting is done.
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
+		this._pendingSelectionUpdate = false;
 	}
 
 	/**
@@ -772,8 +781,12 @@ export default class Renderer extends Observable {
 		// to, may disappear in DOM which would break the selection (e.g. in real-time collaboration scenarios).
 		// https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723
 		if ( env.isBlink && !env.isAndroid && this.isSelecting && !this.markedChildren.size ) {
+			this._pendingSelectionUpdate = true;
+
 			return;
 		}
+
+		this._pendingSelectionUpdate = false;
 
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
