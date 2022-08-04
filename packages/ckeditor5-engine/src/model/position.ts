@@ -572,6 +572,8 @@ export default class Position extends TypeCheckable {
 			}
 		}
 
+		// TypeScript compiler thinks that the flow can reach the end of this function without `return` and requires `undefined` or `void`
+		// as the return type. This `throw` convinces the compiler that the flow won't pass till the end.
 		/* istanbul ignore next */
 		throw new Error( 'unreachable code' );
 	}
