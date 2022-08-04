@@ -10,7 +10,6 @@ import ColorTileView from '../../src/colorgrid/colortileview';
 import ViewCollection from '../../src/viewcollection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusCycler from '../../src/focuscycler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ColorGridView', () => {
@@ -87,10 +86,6 @@ describe( 'ColorGridView', () => {
 
 		it( 'creates keystroke handler', () => {
 			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
-		} );
-
-		it( 'creates focus cycler', () => {
-			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
 		it( 'reacts to changes in #selectedColor by setting the item#isOn', () => {
