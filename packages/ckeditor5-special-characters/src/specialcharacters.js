@@ -98,10 +98,6 @@ export default class SpecialCharacters extends Plugin {
 				if ( !dropdownPanelContent ) {
 					dropdownPanelContent = this._createDropdownPanelContent( locale, dropdownView );
 
-					//dropdownView.panelView.children.add( dropdownPanelContent.navigationView );
-					//dropdownView.panelView.children.add( dropdownPanelContent.gridView );
-					//dropdownView.panelView.children.add( dropdownPanelContent.infoView );
-
 					const specialCharactersView = new SpecialCharactersView(
 						locale,
 						dropdownPanelContent.navigationView,

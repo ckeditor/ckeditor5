@@ -155,7 +155,7 @@ export default class ColorGridView extends View {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 
-		addKeyboardHandlingForGrid( this.keystrokes, this.items, 5 );
+		addKeyboardHandlingForGrid( this.keystrokes, this.focusTracker, this.items, 5 );
 	}
 
 	/**

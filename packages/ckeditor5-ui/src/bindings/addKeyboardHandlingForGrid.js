@@ -7,28 +7,7 @@
  * @module ui/bindings/addKeyboardHandlingForGrid
  */
 
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-
-export default function addKeyboardHandlingForGrid( keystrokes, gridElementsCollection, numberOfColumns ) {
-	const focusTracker = new FocusTracker();
-
-	for ( const item of gridElementsCollection ) {
-		focusTracker.add( item.element );
-	}
-
-	gridElementsCollection.on( 'change', ( eventInfo, { added, removed } ) => {
-		if ( added.length > 0 ) {
-			for ( const item of added ) {
-				focusTracker.add( item.element );
-			}
-		}
-		if ( removed.length > 0 ) {
-			for ( const item of removed ) {
-				focusTracker.remove( item.element );
-			}
-		}
-	} );
-
+export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gridElementsCollection, numberOfColumns ) {
 	keystrokes.set( 'arrowright', evt => {
 		const gridElements = [ ...gridElementsCollection ];
 		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );

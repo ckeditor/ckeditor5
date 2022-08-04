@@ -188,10 +188,14 @@ export default class ListPropertiesView extends View {
 				this.focusTracker.add( this.children.last.buttonView.element );
 			}
 
+			for ( const item of this.stylesView.children ) {
+				this.stylesView.focusTracker.add( item.element );
+			}
+
 			this.stylesView.keystrokes = new KeystrokeHandler();
 			this.stylesView.keystrokes.listenTo( this.stylesView.element );
 
-			addKeyboardHandlingForGrid( this.stylesView.keystrokes, this.stylesView.children, 4 );
+			addKeyboardHandlingForGrid( this.stylesView.keystrokes, this.stylesView.focusTracker, this.stylesView.children, 4 );
 		}
 
 		if ( this.startIndexFieldView ) {
@@ -280,6 +284,8 @@ export default class ListPropertiesView extends View {
 		stylesView.focus = function() {
 			this.children.first.focus();
 		};
+
+		stylesView.focusTracker = new FocusTracker();
 
 		return stylesView;
 	}

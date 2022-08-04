@@ -9,7 +9,7 @@
 
 import { View, ButtonView, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
 
-import { KeystrokeHandler } from 'ckeditor5/src/utils';
+import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
 
 import '../../theme/charactergrid.css';
 
@@ -58,9 +58,17 @@ export default class CharacterGridView extends View {
 			}
 		} );
 
+		/**
+		 * Tracks information about the DOM focus in the grid.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
 		this.keystrokes = new KeystrokeHandler();
 
-		addKeyboardHandlingForGrid( this.keystrokes, this.tiles, 10 );
+		addKeyboardHandlingForGrid( this.keystrokes, this.focusTracker, this.tiles, 10 );
 
 		/**
 		 * Fired when any of {@link #tiles grid tiles} is clicked.
@@ -122,6 +130,23 @@ export default class CharacterGridView extends View {
 
 	render() {
 		super.render();
+
+		for ( const item of this.tiles ) {
+			this.focusTracker.add( item.element );
+		}
+
+		this.tiles.on( 'change', ( eventInfo, { added, removed } ) => {
+			if ( added.length > 0 ) {
+				for ( const item of added ) {
+					this.focusTracker.add( item.element );
+				}
+			}
+			if ( removed.length > 0 ) {
+				for ( const item of removed ) {
+					this.focusTracker.remove( item.element );
+				}
+			}
+		} );
 
 		this.keystrokes.listenTo( this.element );
 	}
