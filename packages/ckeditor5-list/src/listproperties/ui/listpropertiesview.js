@@ -190,6 +190,8 @@ export default class ListPropertiesView extends View {
 
 			this.stylesView.keystrokes = new KeystrokeHandler();
 			this.stylesView.keystrokes.listenTo( this.stylesView.element );
+
+			addKeyboardHandlingForGrid( this.stylesView.keystrokes, this.stylesView.children, 4 );
 		}
 
 		if ( this.startIndexFieldView ) {
@@ -218,8 +220,6 @@ export default class ListPropertiesView extends View {
 			this.focusables.add( this.reversedSwitchButtonView );
 			this.focusTracker.add( this.reversedSwitchButtonView.element );
 		}
-
-		addKeyboardHandlingForGrid( this.stylesView.keystrokes, this.stylesView.children, 4 );
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
