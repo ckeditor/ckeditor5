@@ -102,6 +102,14 @@ export default class TableColumnResizeEditing extends Plugin {
 		 */
 		this._columnIndexMap = new Map();
 
+		/**
+		 * DOM emitter.
+		 *
+		 * @private
+		 * @member {DomEmitterMixin}
+		 */
+		this._domEmitter = Object.create( DomEmitterMixin );
+
 		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
 			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
 			editor.editing.view.change( writer => {
@@ -146,6 +154,15 @@ export default class TableColumnResizeEditing extends Plugin {
 
 	/**
 	 * Registers new attributes for a table model element.
+	 * @inheritDoc
+	 */
+	destroy() {
+		this._domEmitter.stopListening();
+		super.destroy();
+	}
+
+	/**
+	 * Registers new attributes for a table and a table cell model elements.
 	 *
 	 * @private
 	 */
@@ -324,10 +341,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		editingView.addObserver( MouseEventsObserver );
 		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
 
-		const domEmitter = Object.create( DomEmitterMixin );
-
-		domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
-		domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
+		this._domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
+		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 	}
 
 	/**
