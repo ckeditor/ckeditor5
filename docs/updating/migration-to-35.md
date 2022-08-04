@@ -21,39 +21,59 @@ Listed below are the most important changes that require your attention when upg
 
 ### The source element is not updated automatically after the editor destroy
 
-The last version of CKEditor 5 changes the default behaviour of a source element after the editor destroy. So far, the source element was updated with the output coming from the data pipeline. Now, the source element becomes empty after destroying the editor and it is not updated anymore.
+The last version of CKEditor 5 changes the default behavior of a source element after the editor destroy (when `editor.destroy()` is called). So far, the source element was updated with the output coming from `editor.getData()`. Now, the source element becomes empty after the editor is destroyed and it is not updated anymore.
 
-However, this behaviour is configurable and could be enabled with the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option:
+However, this behavior is configurable and could be enabled with the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
+ClassicEditor.create( sourceElement, {
     // ...
     updateSourceElementOnDestroy: true
 } );
 ```
 
 <info-box warning>
-Enabling the `updateSourceElementOnDestroy` option in your configuration, depending on plugins you use, might have some security implications. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Especially, be careful when using Markdown, General HTML Support and HTML embed features.
+	Enabling the `updateSourceElementOnDestroy` option in your configuration, depending on plugins you use, might have some security implications. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Especially, be careful when using Markdown, General HTML Support and HTML embed features.
 </info-box>
 
 ### Dropdown focus is moved back to the dropdown button after choosing an option
 
-Due to the ongoing accessibility improvements the default behaviour of {@link module:ui/dropdown/dropdownview~DropdownView dropdown UI component} was changed. From now on, after choosing an option from (any) dropdown (either by mouse or keyboard), the focus will be moved to the dropdown button. This means that custom UI components using dropdowns which need to move focus back to the editable after execution have to do it explicitly, using the listener on the dropdown's {@link module:ui/dropdown/dropdownview~DropdownView#event:execute `execute` event}, e.g.:
+Due to the ongoing accessibility improvements the default behavior of the {@link module:ui/dropdown/dropdownview~DropdownView dropdown UI component} was changed. From now on, by default, after choosing an option from a dropdown (either by mouse or keyboard), the focus will be automatically moved to the dropdown button.
+
+This default behavior of the dropdown component needs to be overridden in scenarios where the focus should be moved back to the editing area. An example of such a feature would be the "Heading" dropdown &mdash; choosing one of the options should result in the focus returning to the editing area instead of the button itself.
+
+This behavior can be customized by using the listener on the dropdown's {@link module:ui/dropdown/dropdownview~DropdownView#event:execute `execute` event}, e.g.:
 
 ```js
-// If `execute` event is delegated to the dropdown, one listener can handle both executing
-// the command and focusing the editor editable.
+// Option 1.
+// If the `execute` event is delegated to the dropdown, one listener can handle both:
+// executing the command (assuming the dropdown executes it) and focusing the editor editing view.
 dropdownView.on( 'execute', () => {
-	// editor.execute()...;
+	editor.execute( 'myCommand' );
 	editor.editing.view.focus();
 } );
 
+// Option 2.
 // Otherwise, a dedicated listener may needed to be added.
-differentUiComponent.on( 'execute', () => {
-	// editor.execute();
+buttonInsideADropdown.on( 'execute', () => {
+	editor.execute( 'myCommand' );
 } );
 
 dropdownView.on( 'execute', () => {
 	editor.editing.view.focus();
 } );
 ```
+
+### There's now TypeScript code on GitHub (and how it affects your build)
+
+Starting from this version, the first of CKEditor 5 packages (namely: `@ckeditor/ckeditor5-utils`) is developed in TypeScript. This is the first step of [our migration to TypeScript](https://github.com/ckeditor/ckeditor5/issues/11704).
+
+Who does it affect?
+
+It affects you **only if** you use the [source code directly from git repository (GitHub)](https://github.com/ckeditor/ckeditor5). If you use it via any other channel (npm, CDN, ZIP, etc.) this change is completely transparent for you as we publish only JavaScript code there.
+
+How does it affect you?
+
+For instance, if you happen to have a custom CKEditor 5 build that for some reasons install its dependencies from the git repository, you will need to update your webpack config to support the TypeScript code.
+
+You can find the inspiration on how to change your configuration in [this commit](https://github.com/ckeditor/ckeditor5/commit/1dd4075983d97c61b1f668add764525c7fcf2a2d) (that makes this change in our builds).
