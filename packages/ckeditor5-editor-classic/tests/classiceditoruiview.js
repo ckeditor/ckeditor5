@@ -102,6 +102,12 @@ describe( 'ClassicEditorUIView', () => {
 
 				newView.destroy();
 			} );
+
+			it( 'is given an accessible aria label', () => {
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Editor editing area: main' );
+
+				view.destroy();
+			} );
 		} );
 	} );
 } );

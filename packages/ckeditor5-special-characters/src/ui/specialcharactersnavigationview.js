@@ -60,6 +60,13 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	}
 
 	/**
+	 * Focuses the character categories dropdown.
+	 */
+	focus() {
+		this.groupDropdownView.focus();
+	}
+
+	/**
 	 * Returns a dropdown that allows selecting character groups.
 	 *
 	 * @private

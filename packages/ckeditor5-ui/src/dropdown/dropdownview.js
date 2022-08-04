@@ -106,6 +106,10 @@ export default class DropdownView extends View {
 		/**
 		 * Controls whether the dropdown view is open, i.e. shows or hides the {@link #panelView panel}.
 		 *
+		 * **Note**: When the dropdown gets open, it will attempt to call `focus()` on the first child of its {@link #panelView}.
+		 * See {@link module:ui/dropdown/utils~addToolbarToDropdown}, {@link module:ui/dropdown/utils~addListToDropdown}, and
+		 * {@link module:ui/dropdown/utils~focusChildOnDropdownOpen} to learn more about focus management in dropdowns.
+		 *
 		 * @observable
 		 * @member {Boolean} #isOpen
 		 */
@@ -248,6 +252,9 @@ export default class DropdownView extends View {
 		// be updated every time the dropdown is open.
 		this.on( 'change:isOpen', () => {
 			if ( !this.isOpen ) {
+				// If the dropdown was closed, move the focus back to the button (#12125).
+				this.focus();
+
 				return;
 			}
 
@@ -263,6 +270,9 @@ export default class DropdownView extends View {
 			} else {
 				this.panelView.position = this.panelPosition;
 			}
+
+			// Focus the first item in the dropdown when the dropdown opened
+			this.panelView.focus();
 		} );
 
 		// Listen for keystrokes coming from within #element.
@@ -270,7 +280,6 @@ export default class DropdownView extends View {
 
 		const closeDropdown = ( data, cancel ) => {
 			if ( this.isOpen ) {
-				this.buttonView.focus();
 				this.isOpen = false;
 				cancel();
 			}

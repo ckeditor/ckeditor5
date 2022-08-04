@@ -7,7 +7,7 @@ menu-title: UI language
 
 # Setting the UI language
 
-The UI of the editor can be localized. CKEditor 5 currently supports around 90 languages and the number is growing.
+The UI of the editor can be localized. Currently, 41 of available languages are fully translated. 38 languages were translated professionally. There are also numerous other languages covered by community translators. Full list of professional translations is available in the [latter part of this document](#list-of-available-professional-translations).
 
 <info-box>
 	If you want to help translate CKEditor 5 into your native language, join the [CKEditor 5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
@@ -79,7 +79,7 @@ For example:
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/translations/de.js"></script>
 ```
 
-See the {@link installation/advanced/predefined-builds#cdn CDN installation guide} for more information.
+See the {@link installation/getting-started/predefined-builds#cdn CDN installation guide} for more information.
 
 ### npm
 
@@ -87,7 +87,7 @@ After installing the build from npm, languages will be available in `node_module
 
 A single language can be loaded directly to your code by importing e.g. `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
 
-See the {@link installation/advanced/predefined-builds#npm npm installation guide} for more information.
+See the {@link installation/getting-started/predefined-builds#npm npm installation guide} for more information.
 
 ### Zip
 
@@ -98,7 +98,7 @@ All additional languages are included in the `.zip` file. You need to include th
 <script src="[ckeditor-path]/translations/de.js"></script>
 ```
 
-See the {@link installation/advanced/predefined-builds#zip-download zip installation guide} for more information.
+See the {@link installation/getting-started/predefined-builds#zip-download zip installation guide} for more information.
 
 ## Building the editor using a specific language
 
@@ -195,6 +195,149 @@ ClassicEditor
 <info-box>
 	If you are unsure about the language that the content will be typed in, do not set it. The language of the content will then be inherited from the {@link module:core/editor/editorconfig~EditorConfig#language language of the UI}.
 </info-box>
+
+## List of available professional translations
+
+<table style="width:800px">
+	<tbody>
+		<tr>
+			<td style="width:200px">
+			<p style="text-align:center">Arabic</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Bengali</p>
+			</td>
+			<td style="width:200px">
+			<p style="text-align:center">Bulgarian</p>
+			</td>
+			<td style="width:200px">
+			<p style="text-align:center">Catalan</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="width:200px">
+			<p style="text-align:center">Chinese (China)</p>
+			</td>
+			<td style="width:200px">
+			<p style="text-align:center">Chinese (Taiwan)</p>
+			</td>
+			<td style="width:200px">
+			<p style="text-align:center">Czech</p>
+			</td>
+			<td style="width:200px">
+			<p style="text-align:center">Danish</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="width:200px">
+			<p style="text-align:center">Dutch</p>
+			</td>
+			<td style="width:200px">
+			<p style="text-align:center">Estonian</p>
+			</td>
+			<td style="width:200px">
+			<p style="text-align:center">Finnish</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>French</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center; width:200px">
+			<p>German</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Greek</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Hebrew</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Hindi</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center; width:200px">
+			<p>Hebrew</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Indonesian</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Italian</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Japanese</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center; width:200px">
+			<p>Korean</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Latvian</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Lithuanian</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Malay</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center; width:200px">
+			<p>Norwegian</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Polish</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Portuguese (Brazilian)</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Portuguese</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center; width:200px">
+			<p>Romanian</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Russian</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Serbian</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Slovak</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center; width:200px">
+			<p>Spanish</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Swedish</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Thai</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Turkish</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center; width:200px">
+			<p>Ukrainian</p>
+			</td>
+			<td style="text-align:center; width:200px">
+			<p>Vietnamese</p>
+			</td>
+			<td style="text-align:center; width:200px">&nbsp;</td>
+			<td style="text-align:center; width:200px">&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
 
 ## Related features
 

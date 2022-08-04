@@ -14,7 +14,7 @@ Its main purpose is to visually distinguish parts of the content. Block indentat
 </info-box>
 
 <info-box info>
-	The block indent feature is enabled by default in the {@link installation/advanced/predefined-builds #document-editor document editor build} only. See the [installation](#installation) section to learn how to enable it in your editor.
+	The block indent feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
@@ -22,6 +22,10 @@ Its main purpose is to visually distinguish parts of the content. Block indentat
 Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} or outdent {@icon @ckeditor/ckeditor5-indent/theme/icons/outdent.svg Outdent} toolbar buttons in the editor below to control the level of indentation of the content, both for paragraph text, headers and list items.
 
 {@snippet features/indent}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 

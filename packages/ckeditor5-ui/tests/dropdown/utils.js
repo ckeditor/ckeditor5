@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document Event */
+/* globals document, Event, console */
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import Model from '../../src/model';
 
@@ -212,11 +213,21 @@ describe( 'utils', () => {
 
 					dropdownView.isOpen = false;
 					dropdownView.keystrokes.press( keyEvtData );
-					sinon.assert.notCalled( spy );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( '"arrowdown" focuses the #innerPanelView if dropdown was already open', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
 
 					dropdownView.isOpen = true;
-					dropdownView.keystrokes.press( keyEvtData );
 
+					const spy = sinon.spy( panelChildView, 'focus' );
+
+					dropdownView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( spy );
 				} );
 
@@ -294,6 +305,58 @@ describe( 'utils', () => {
 				} );
 
 				dropdownView.toolbarView.items.first.fire( 'execute' );
+			} );
+		} );
+
+		describe( 'focus management on dropdown open', () => {
+			let buttons, dropdownView;
+
+			beforeEach( () => {
+				buttons = [ '<svg>foo</svg>', '<svg>bar</svg>' ].map( icon => {
+					const button = new ButtonView();
+
+					button.icon = icon;
+
+					return button;
+				} );
+
+				dropdownView = createDropdown( locale );
+
+				addToolbarToDropdown( dropdownView, buttons, { enableActiveItemFocusOnDropdownOpen: true } );
+
+				dropdownView.render();
+				document.body.appendChild( dropdownView.element );
+			} );
+
+			afterEach( () => {
+				dropdownView.element.remove();
+			} );
+
+			it( 'focuses active item upon dropdown opening', () => {
+				dropdownView.toolbarView.items.get( 0 ).isOn = true;
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( dropdownView.toolbarView.items.get( 0 ).element );
+			} );
+
+			it( 'focuses nth active item upon dropdown opening', () => {
+				dropdownView.toolbarView.items.get( 1 ).isOn = true;
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( dropdownView.toolbarView.items.get( 1 ).element );
+			} );
+
+			it( 'focuses the first item if multiple items are active', () => {
+				dropdownView.toolbarView.items.get( 0 ).isOn = true;
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( dropdownView.toolbarView.items.get( 0 ).element );
 			} );
 		} );
 	} );
@@ -459,6 +522,129 @@ describe( 'utils', () => {
 					expect( listItems.first ).to.be.instanceOf( ListSeparatorView );
 				} );
 			} );
+		} );
+
+		describe( 'focus management on dropdown open', () => {
+			it( 'focuses active item upon dropdown opening', () => {
+				definitions.addMany( [
+					{
+						type: 'button',
+						model: new Model( { label: 'a', isOn: true } )
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'b' } )
+					}
+				] );
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( getListViewDomButton( listItems.get( 0 ) ) );
+			} );
+
+			it( 'focuses nth active item upon dropdown opening', () => {
+				definitions.addMany( [
+					{
+						type: 'button',
+						model: new Model( { label: 'a' } )
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'b', isOn: true } )
+					}
+				] );
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( getListViewDomButton( listItems.get( 1 ) ) );
+			} );
+
+			it( 'does not break for separator - still focuses nth active item upon dropdown opening', () => {
+				definitions.addMany( [
+					{
+						type: 'button',
+						model: new Model( { label: 'a' } )
+					},
+					{
+						type: 'separator'
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'b', isOn: true } )
+					}
+				] );
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( getListViewDomButton( listItems.get( 2 ) ) );
+			} );
+
+			it( 'focuses the first item if multiple items are active', () => {
+				definitions.addMany( [
+					{
+						type: 'button',
+						model: new Model( { label: 'a' } )
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'b', isOn: true } )
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'c', isOn: true } )
+					}
+				] );
+
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
+
+				expect( document.activeElement ).to.equal( getListViewDomButton( listItems.get( 1 ) ) );
+			} );
+
+			describe( 'should warn', () => {
+				beforeEach( () => {
+					testUtils.sinon.stub( console, 'warn' );
+				} );
+
+				afterEach( () => {
+					console.warn.restore();
+				} );
+
+				it( 'if the active view does not implement the focus() method and therefore cannot be focused', () => {
+					definitions.addMany( [
+						{
+							type: 'button',
+							model: new Model( { label: 'a' } )
+						},
+						{
+							type: 'button',
+							model: new Model( { label: 'b', isOn: true } )
+						}
+					] );
+
+					const secondChildView = dropdownView.listView.items.get( 1 );
+
+					secondChildView.focus = undefined;
+
+					// The focus logic happens when the dropdown is opened.
+					dropdownView.isOpen = true;
+
+					sinon.assert.calledOnce( console.warn );
+					sinon.assert.calledWithExactly(
+						console.warn,
+						'ui-dropdown-focus-child-on-open-child-missing-focus',
+						{ view: secondChildView },
+						sinon.match.string
+					);
+				} );
+			} );
+
+			function getListViewDomButton( listView ) {
+				return listView.children.first.element;
+			}
 		} );
 	} );
 } );

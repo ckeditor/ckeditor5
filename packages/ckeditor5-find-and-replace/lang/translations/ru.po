@@ -58,12 +58,12 @@ msgstr "Заменить на..."
 
 msgctxt "An error text displayed when user attempted to find an empty text."
 msgid "Text to find must not be empty."
-msgstr ""
+msgstr "Искомый текст не должен быть пустым."
 
 msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
 msgid "Tip: Find some text first in order to replace it."
-msgstr ""
+msgstr "Совет: сначала найдите текст, чтобы заменить его."
 
 msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
 msgid "Show options"
-msgstr ""
+msgstr "Показать опции"

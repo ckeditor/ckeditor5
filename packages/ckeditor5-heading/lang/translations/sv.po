@@ -54,8 +54,8 @@ msgstr "Rubrik 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr ""
+msgstr "Skriv in rubriken"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr ""
+msgstr "Skriv eller klistra in ditt innehåll här."

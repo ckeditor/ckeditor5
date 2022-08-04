@@ -37,6 +37,14 @@ describe( 'BalloonEditorUIView', () => {
 			it( 'is not rendered', () => {
 				expect( view.editable.isRendered ).to.be.false;
 			} );
+
+			it( 'is given an accessible aria label', () => {
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+
+				view.destroy();
+			} );
 		} );
 	} );
 

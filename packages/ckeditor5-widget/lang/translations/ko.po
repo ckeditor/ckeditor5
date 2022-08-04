@@ -22,8 +22,8 @@ msgstr "위젯 툴바"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
 msgid "Insert paragraph before block"
-msgstr ""
+msgstr "블록 앞에 단락 삽입"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
-msgstr ""
+msgstr "블록 뒤에 단락 삽입"

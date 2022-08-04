@@ -32,7 +32,13 @@ export function getSelectedTableWidget( selection ) {
  * @returns {module:engine/view/element~Element|null}
  */
 export function getTableWidgetAncestor( selection ) {
-	let parent = selection.getFirstPosition().parent;
+	const selectionPosition = selection.getFirstPosition();
+
+	if ( !selectionPosition ) {
+		return null;
+	}
+
+	let parent = selectionPosition.parent;
 
 	while ( parent ) {
 		if ( parent.is( 'element' ) && isTableWidget( parent ) ) {

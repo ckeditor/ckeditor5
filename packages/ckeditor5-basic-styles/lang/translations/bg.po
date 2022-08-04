@@ -26,20 +26,20 @@ msgstr "Курсив"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr ""
+msgstr "Подчертаване"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr ""
+msgstr "Код"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr ""
+msgstr "Зачертаване"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "Долен индекс"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "Горен индекс"

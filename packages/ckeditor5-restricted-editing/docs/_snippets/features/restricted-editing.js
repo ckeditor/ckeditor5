@@ -54,7 +54,8 @@ async function startStandardEditingMode() {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
-		}
+		},
+		updateSourceElementOnDestroy: true
 	} );
 }
 
@@ -66,7 +67,8 @@ async function startRestrictedEditingMode() {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
-		}
+		},
+		updateSourceElementOnDestroy: true
 	} );
 }
 

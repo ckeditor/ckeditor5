@@ -22,8 +22,8 @@ msgstr "Idioma"
 
 msgctxt "Default label for the text part language dropdown."
 msgid "Choose language"
-msgstr ""
+msgstr "Escolher idioma"
 
 msgctxt "The label of the remove language option for the text part language dropdown."
 msgid "Remove language"
-msgstr ""
+msgstr "Remover idioma"

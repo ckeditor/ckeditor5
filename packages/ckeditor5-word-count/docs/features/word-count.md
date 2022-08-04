@@ -11,11 +11,19 @@ The {@link module:word-count/wordcount~WordCount} feature provides a possibility
 
 It is a feature crucial for writing professionals but also for students and marketers. Keeping track of the document's word or character count helps planning the overall content volume, meeting assignment requirements or keeping within the preset text length goal. The word or character count aids quick assessment of work that was done and needs yet to be done as well as supports the writing process planning and management.
 
+<info-box info>
+	The Word count feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Type some more or edit the content and observe the counter below the main editor window react in real-time.
 
 {@snippet features/word-count}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 The example above was created by using the following HTML page structure:
 
