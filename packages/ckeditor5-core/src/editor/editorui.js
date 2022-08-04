@@ -111,14 +111,6 @@ export default class EditorUI {
 		 */
 		this._focusableEditingAreas = new Set();
 
-		/**
-		 * Flag keeping track on the number of the attempts to focus the toolbars.
-		 *
-		 * @private
-		 * @type {Number}
-		 */
-		this._toolbarsChecked = 0;
-
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
 
@@ -354,7 +346,6 @@ export default class EditorUI {
 		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
 			console.clear();
 			console.group( 'Pressed Alt+F10' );
-			this._toolbarsChecked = 0;
 
 			if ( this._focusableEditingAreas.has( this.focusTracker.focusedElement ) ) {
 				lastFocusedEditingArea = this.focusTracker.focusedElement;
@@ -369,7 +360,25 @@ export default class EditorUI {
 				currentFocusedToolbarDefinition.options.afterBlur();
 			}
 
-			this._focusNextFocusableCandidateToolbar( currentFocusedToolbarDefinition, candidateDefinitions );
+			let candidateDefinition = currentFocusedToolbarDefinition;
+			let currentCandidateIndex = 0;
+
+			do {
+				candidateDefinition = this._getNextFocusableCandidateToolbarDef( candidateDefinition, candidateDefinitions );
+
+				if ( !candidateDefinition ) {
+					console.log( '😔 No focusable toolbar found.' );
+					break;
+				}
+
+				console.log( `The toolbar candidate to focus is ${ logToolbar( candidateDefinition.toolbarView ) }.` );
+
+				if ( this._focusFocusableCandidateToolbar( candidateDefinition ) ) {
+					break;
+				}
+			}
+			// Prevent infinite loop when no toolbar focus was successful.
+			while ( ++currentCandidateIndex < candidateDefinitions.length );
 
 			cancel();
 
@@ -547,24 +556,14 @@ export default class EditorUI {
 	}
 
 	/**
-	 * Focuses a next focusable toolbar definition candidate relative to an arbitrary toolbar definition specified as an argument
+	 * Focuses a focusable toolbar candidate using its definition.
 	 *
 	 * @private
-	 * @param {module:core/editor/editorui~FocusableToolbarDefinition} relativeDefinition A relative focusable toolbar definition.
-	 * @param {Array.<module:core/editor/editorui~FocusableToolbarDefinition>} candidateDefinitions Available focusable toolbar definitions.
+	 * @param {module:core/editor/editorui~FocusableToolbarDefinition} candidateToolbarDefinition A definition of the toolbar to focus.
+	 * @returns {Boolean} `true` when the toolbar candidate was focused. `false` otherwise.
 	 */
-	_focusNextFocusableCandidateToolbar( relativeDefinition, candidateDefinitions ) {
-		const nextCandidateDefinition = this._getNextFocusableCandidateToolbarDef( relativeDefinition, candidateDefinitions );
-
-		if ( !nextCandidateDefinition ) {
-			console.log( '😔 No focusable toolbar found.' );
-
-			return;
-		}
-
-		console.log( `The toolbar candidate to focus is ${ logToolbar( nextCandidateDefinition.toolbarView ) }.` );
-
-		const { toolbarView, options: { beforeFocus } } = nextCandidateDefinition;
+	_focusFocusableCandidateToolbar( candidateToolbarDefinition ) {
+		const { toolbarView, options: { beforeFocus } } = candidateToolbarDefinition;
 
 		if ( beforeFocus ) {
 			console.log( 'The candidate has beforeFocus(). Calling beforeFocus()' );
@@ -572,24 +571,21 @@ export default class EditorUI {
 			beforeFocus();
 		}
 
+		// If it didn't show up after beforeFocus(), it's not focusable at all.
 		if ( !isVisible( toolbarView.element ) ) {
 			console.log(
-				`😔 The candidate ${ logToolbar( nextCandidateDefinition.toolbarView ) } turned out invisible. ` +
+				`😔 The candidate ${ logToolbar( candidateToolbarDefinition.toolbarView ) } turned out invisible. ` +
 				'Looking for another one.'
 			);
 
-			// (!!!) TODO. This might cause infinite loop. A mechanism to prevent this is required.
-			if ( this._toolbarsChecked < this._focusableToolbarDefinitions.length ) {
-				this._toolbarsChecked++;
-				this._focusNextFocusableCandidateToolbar( nextCandidateDefinition, candidateDefinitions );
-			}
-
-			return;
+			return false;
 		}
 
 		toolbarView.focus();
 
-		console.log( `✅ Finally focused ${ logToolbar( nextCandidateDefinition.toolbarView ) }.` );
+		console.log( `✅ Finally focused ${ logToolbar( candidateToolbarDefinition.toolbarView ) }.` );
+
+		return true;
 	}
 
 	/**
