@@ -17,6 +17,6 @@ Check out these examples of different editor integrations. See the predefined bu
 
 **Related links**
 
- * {@link installation/getting-started/quick-start CKEditor 5 installation} &ndash; Learn how to install, integrate and configure CKEditor 5. More complex aspects, like creating custom builds, are explained here, too.
+ * {@link installation/index CKEditor 5 installation} &ndash; Learn how to install, integrate and configure CKEditor 5. More complex aspects, like creating custom builds, are explained here, too.
  * {@link features/index CKEditor 5 features} &ndash; Learn more about the available CKEditor 5 features.
  * {@link framework/guides/overview CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins, custom editors, how to change the UI or even bring your own UI to the editor.

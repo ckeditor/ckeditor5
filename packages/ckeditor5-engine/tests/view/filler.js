@@ -10,7 +10,8 @@ import {
 	INLINE_FILLER,
 	startsWithFiller,
 	isInlineFiller,
-	getDataWithoutFiller
+	getDataWithoutFiller,
+	MARKED_NBSP_FILLER
 } from '../../src/view/filler';
 
 describe( 'filler', () => {
@@ -117,6 +118,32 @@ describe( 'filler', () => {
 			expect( isInlineFiller( node ) ).to.be.true;
 
 			document.body.removeChild( iframe );
+		} );
+	} );
+
+	describe( 'MARKED_NBSP_FILLER', () => {
+		afterEach( () => {
+			sinon.restore();
+		} );
+
+		it( 'should return node with correct HTML', () => {
+			const node = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
+
+			expect( node.outerHTML ).to.equal( '<span data-cke-filler="true">&nbsp;</span>' );
+		} );
+
+		it( 'should use innerText setter instead of innerHTML', () => {
+			const el = document.createElement( 'span' );
+			const innerHTMLSpy = sinon.spy( el, 'innerHTML', [ 'set' ] );
+			const innerTextSpy = sinon.spy( el, 'innerText', [ 'set' ] );
+			const createElementStub = sinon.stub( document, 'createElement' );
+			createElementStub.withArgs( 'span' ).returns( el );
+
+			MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
+
+			sinon.assert.calledOnce( createElementStub );
+			sinon.assert.notCalled( innerHTMLSpy.set );
+			sinon.assert.calledOnce( innerTextSpy.set );
 		} );
 	} );
 } );

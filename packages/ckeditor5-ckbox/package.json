@@ -1,0 +1,58 @@
+{
+  "name": "@ckeditor/ckeditor5-ckbox",
+  "version": "34.2.0",
+  "description": "CKBox integration for CKEditor 5.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
+  ],
+  "main": "src/index.js",
+  "dependencies": {
+    "ckeditor5": "^34.2.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^34.2.0",
+    "@ckeditor/ckeditor5-core": "^34.2.0",
+    "@ckeditor/ckeditor5-clipboard": "^34.2.0",
+    "@ckeditor/ckeditor5-cloud-services": "^34.2.0",
+    "@ckeditor/ckeditor5-dev-utils": "^30.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^34.2.0",
+    "@ckeditor/ckeditor5-engine": "^34.2.0",
+    "@ckeditor/ckeditor5-image": "^34.2.0",
+    "@ckeditor/ckeditor5-link": "^34.2.0",
+    "@ckeditor/ckeditor5-paragraph": "^34.2.0",
+    "@ckeditor/ckeditor5-theme-lark": "^34.2.0",
+    "@ckeditor/ckeditor5-ui": "^34.2.0",
+    "@ckeditor/ckeditor5-upload": "^34.2.0",
+    "@ckeditor/ckeditor5-utils": "^34.2.0",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-ckbox"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme",
+    "build",
+    "ckeditor5-metadata.json"
+  ],
+  "scripts": {
+    "dll:build": "webpack"
+  }
+}
