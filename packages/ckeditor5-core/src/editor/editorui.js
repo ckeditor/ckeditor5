@@ -112,6 +112,14 @@ export default class EditorUI {
 		 */
 		this._focusableEditingAreas = new Set();
 
+		/**
+		 * Flag keeping track on the number of the attempts to focus the toolbars.
+		 *
+		 * @type {Number}
+		 * @private
+		 */
+		this._toolbarsChecked = 0;
+
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
 
@@ -335,6 +343,7 @@ export default class EditorUI {
 		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
 			// console.clear();
 			console.group( 'Pressed Alt+F10' );
+			this._toolbarsChecked = 0;
 
 			if ( !this.focusTracker.isFocused ) {
 				return;
@@ -531,7 +540,10 @@ export default class EditorUI {
 			);
 
 			// (!!!) TODO. This might cause infinite loop. A mechanism to prevent this is required.
-			this._focusNextFocusableToolbarDefinition( candidateToolbarDefToFocus, toolbarDefinitions );
+			if ( this._toolbarsChecked < this._focusableToolbars.length ) {
+				this._toolbarsChecked++;
+				this._focusNextFocusableToolbarDefinition( candidateToolbarDefToFocus, toolbarDefinitions );
+			}
 
 			return;
 		}
