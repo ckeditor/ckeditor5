@@ -308,11 +308,17 @@ describe( 'ListPropertiesView', () => {
 			describe( 'when styles and all numbered list properties are enabled', () => {
 				it( 'should register child views in #focusables', () => {
 					expect( view.focusables.map( f => f ) ).to.have.members( [
-						view.stylesView.children.first,
-						view.stylesView.children.last,
+						view.children.first,
 						view.children.last.buttonView,
 						view.startIndexFieldView,
 						view.reversedSwitchButtonView
+					] );
+				} );
+
+				it( 'should register child views of stylesView in its focusTracker', () => {
+					expect( [ ...view.stylesView.focusTracker._elements ] ).to.have.members( [
+						view.stylesView.children.first.element,
+						view.stylesView.children.last.element
 					] );
 				} );
 
@@ -330,15 +336,18 @@ describe( 'ListPropertiesView', () => {
 						styleGridAriaLabel: 'Foo'
 					} );
 
-					const spy = sinon.spy( view.focusTracker, 'add' );
+					const spyView = sinon.spy( view.focusTracker, 'add' );
+					const spyStylesView = sinon.spy( view.stylesView.focusTracker, 'add' );
 
 					view.render();
 
-					sinon.assert.calledWithExactly( spy.getCall( 0 ), view.stylesView.children.first.element );
-					sinon.assert.calledWithExactly( spy.getCall( 1 ), view.stylesView.children.last.element );
-					sinon.assert.calledWithExactly( spy.getCall( 2 ), view.children.last.buttonView.element );
-					sinon.assert.calledWithExactly( spy.getCall( 3 ), view.startIndexFieldView.element );
-					sinon.assert.calledWithExactly( spy.getCall( 4 ), view.reversedSwitchButtonView.element );
+					sinon.assert.calledWithExactly( spyStylesView.getCall( 0 ), view.stylesView.children.first.element );
+					sinon.assert.calledWithExactly( spyStylesView.getCall( 1 ), view.stylesView.children.last.element );
+
+					sinon.assert.calledWithExactly( spyView.getCall( 0 ), view.children.first.element );
+					sinon.assert.calledWithExactly( spyView.getCall( 1 ), view.children.last.buttonView.element );
+					sinon.assert.calledWithExactly( spyView.getCall( 2 ), view.startIndexFieldView.element );
+					sinon.assert.calledWithExactly( spyView.getCall( 3 ), view.reversedSwitchButtonView.element );
 
 					view.destroy();
 				} );
