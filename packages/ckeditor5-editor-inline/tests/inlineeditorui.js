@@ -347,7 +347,7 @@ describe( 'InlineEditorUI', () => {
 } );
 
 describe( 'Focus handling and navigation between editing root and editor toolbar', () => {
-	let editorElement, editor, ui, view, toolbarView, domRoot;
+	let editorElement, editor, ui, toolbarView, domRoot;
 
 	testUtils.createSinonSandbox();
 
@@ -365,8 +365,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 		domRoot = editor.editing.view.domRoots.get( 'main' );
 
 		ui = editor.ui;
-		view = ui.view;
-		toolbarView = view.toolbar;
+		toolbarView = ui.view.toolbar;
 	} );
 
 	afterEach( () => {
