@@ -81,19 +81,44 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ) ).to.be.an( 'object' );
 		} );
 
-		it( 'should register focusableToolbar in the editor.ui', () => {
-			widgetToolbarRepository.register( 'fake', {
-				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: () => null
+		describe( 'Focus handling and navigation across toolbars using keyboard', () => {
+			it( 'should register the toolbar as focusable toolbar in EditorUI with proper configuration', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => null
+				} );
+
+				sinon.assert.calledWithExactly(
+					registerFocusableToolbarSpy.lastCall,
+					widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view,
+					sinon.match( {
+						isContextual: true,
+						beforeFocus: sinon.match.func
+					} )
+				);
 			} );
 
-			sinon.assert.calledWithExactly(
-				registerFocusableToolbarSpy.lastCall,
-				widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view,
-				sinon.match( {
-					isContextual: true
-				} )
-			);
+			it( 'should show the toolbar when Alt+F10 is pressed if there is an element to attach to', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => editor.editing.view.document.getRoot()
+				} );
+
+				registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+				expect( balloon.visibleView ).to.equal( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view );
+			} );
+
+			it( 'should not show the toolbar when Alt+F10 is pressed if not possible because there is no element to attach to', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => null
+				} );
+
+				registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+				expect( balloon.visibleView ).to.be.null;
+			} );
 		} );
 
 		it( 'should throw when adding two times widget with the same id', () => {
