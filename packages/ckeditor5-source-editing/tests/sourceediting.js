@@ -5,22 +5,24 @@
 
 /* globals document, Event, console */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import SourceEditing from '../src/sourceediting';
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
+import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-
-import SourceEditing from '../src/sourceediting';
 
 describe( 'SourceEditing', () => {
 	let editor, editorElement, plugin, button;
@@ -600,8 +602,8 @@ describe( 'SourceEditing - integration with Markdown', () => {
 	} );
 } );
 
-describe( 'toolbar focus cycling', () => {
-	let editorElement, editor, ui, view, toolbar, button;
+describe( 'Focus handling and navigation between source editing and editor toolbar', () => {
+	let editorElement, editor, ui, toolbarView, domRoot, sourceEditingButton;
 
 	testUtils.createSinonSandbox();
 
@@ -613,10 +615,11 @@ describe( 'toolbar focus cycling', () => {
 			toolbar: [ 'heading' ]
 		} );
 
-		button = editor.ui.componentFactory.create( 'sourceEditing' );
+		domRoot = editor.editing.view.domRoots.get( 'main' );
+
 		ui = editor.ui;
-		view = ui.view;
-		toolbar = view.toolbar;
+		toolbarView = ui.view.toolbar;
+		sourceEditingButton = ui.componentFactory.create( 'sourceEditing' );
 	} );
 
 	afterEach( () => {
@@ -625,47 +628,67 @@ describe( 'toolbar focus cycling', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'should make sure that the `alt+f10` key combination will', () => {
-		let keyEventData;
+	it( 'should focus the source editing textarea when entering the source mode', () => {
+		sourceEditingButton.fire( 'execute' );
 
-		beforeEach( () => {
-			keyEventData = {
-				keyCode: keyCodes.f10,
-				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
-			button.fire( 'execute' );
-		} );
-
-		it( 'focus toolbar', () => {
-			const spy = testUtils.sinon.spy( toolbar, 'focus' );
-
-			ui.focusTracker.isFocused = true;
-			ui.view.toolbar.focusTracker.isFocused = false;
-
-			editor.keystrokes.press( keyEventData );
-
-			sinon.assert.calledOnce( spy );
-		} );
-
-		it( 'focus toolbar, focus editor back when `esc` was pressed', () => {
-			const textareaSpy = testUtils.sinon.spy( editor.editing.view.getDomRoot().nextSibling.children[ 0 ], 'focus' );
-
-			ui.focusTracker.isFocused = true;
-			view.toolbar.focusTracker.isFocused = false;
-
-			editor.keystrokes.press( keyEventData );
-			ui.focusTracker.focusedElement = document.activeElement;
-
-			editor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.calledOnce( textareaSpy );
-		} );
+		expect( editor.ui.focusTracker.isFocused ).to.be.true;
+		expect( editor.ui.focusTracker.focusedElement ).to.equal( domRoot.nextSibling.children[ 0 ] );
+		expect( editor.editing.view.document.isFocused ).to.be.false;
 	} );
+
+	it( 'should focus the editing root when leaving the source mode', () => {
+		sourceEditingButton.fire( 'execute' );
+		sourceEditingButton.fire( 'execute' );
+
+		expect( editor.ui.focusTracker.isFocused ).to.be.true;
+		expect( editor.ui.focusTracker.focusedElement ).to.equal( domRoot );
+		expect( editor.editing.view.document.isFocused ).to.be.true;
+	} );
+
+	it( 'Alt+F10 should focus the main toolbar when the focus is in the editing root', () => {
+		const spy = testUtils.sinon.spy( toolbarView, 'focus' );
+
+		sourceEditingButton.fire( 'execute' );
+
+		ui.focusTracker.isFocused = true;
+		ui.focusTracker.activeElement = domRoot.nextSibling.children[ 0 ];
+
+		pressAltF10();
+
+		sinon.assert.calledOnce( spy );
+	} );
+
+	it( 'Esc should move the focus back from the main toolbar to the source editing', () => {
+		sourceEditingButton.fire( 'execute' );
+
+		const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
+		const sourceEditingTextareaFocusSpy = testUtils.sinon.spy( domRoot.nextSibling.children[ 0 ], 'focus' );
+
+		console.log( domRoot.nextSibling.children[ 0 ] );
+
+		// Focus the toolbar.
+		pressAltF10();
+		ui.focusTracker.activeElement = toolbarView.element;
+
+		pressEsc();
+
+		sinon.assert.callOrder( toolbarFocusSpy, sourceEditingTextareaFocusSpy );
+	} );
+
+	function pressAltF10() {
+		editor.keystrokes.press( {
+			keyCode: keyCodes.f10,
+			altKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
+	}
+
+	function pressEsc() {
+		editor.keystrokes.press( {
+			keyCode: keyCodes.esc,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
+	}
 } );
