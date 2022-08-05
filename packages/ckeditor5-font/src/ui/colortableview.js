@@ -256,6 +256,7 @@ export default class ColorTableView extends View {
 		this.staticColorsGrid = this._createStaticColorsGrid();
 
 		this.items.add( this.staticColorsGrid );
+		this.focusTracker.add( this.staticColorsGrid.element );
 
 		if ( this.documentColorsCount ) {
 			// Create a label for document colors.
@@ -274,10 +275,9 @@ export default class ColorTableView extends View {
 			this.items.add( label );
 			this.documentColorsGrid = this._createDocumentColorsGrid();
 			this.items.add( this.documentColorsGrid );
-		}
 
-		this.focusTracker.add( this.staticColorsGrid.element );
-		this.focusTracker.add( this.documentColorsGrid.element );
+			this.focusTracker.add( this.documentColorsGrid.element );
+		}
 	}
 
 	/**
