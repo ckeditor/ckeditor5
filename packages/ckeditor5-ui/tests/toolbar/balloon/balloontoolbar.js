@@ -191,7 +191,7 @@ describe( 'BalloonToolbar', () => {
 		const showPanelSpy = sinon.spy( balloonToolbar, 'show' );
 		const hidePanelSpy = sinon.spy( balloonToolbar, 'hide' );
 
-		sinon.assert.calledWith( registerFocusableToolbarSpy.lastCall, balloonToolbar.toolbarView, sinon.match( {
+		sinon.assert.calledWithExactly( registerFocusableToolbarSpy.lastCall, balloonToolbar.toolbarView, sinon.match( {
 			beforeFocus: sinon.match.func,
 			afterBlur: sinon.match.func,
 			isContextual: true

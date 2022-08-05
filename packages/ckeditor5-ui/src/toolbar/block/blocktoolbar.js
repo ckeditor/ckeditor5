@@ -233,7 +233,6 @@ export default class BlockToolbar extends Plugin {
 			isFloating: true
 		} );
 
-		// TODO: Entry in contexts.json.
 		toolbarView.ariaLabel = t( 'Editor block content toolbar' );
 
 		// When toolbar lost focus then panel should hide.

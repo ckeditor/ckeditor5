@@ -21,6 +21,7 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -30,7 +31,7 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
-	let resizeCallback;
+	let resizeCallback, registerFocusableToolbarSpy;
 
 	testUtils.createSinonSandbox();
 
@@ -51,6 +52,8 @@ describe( 'BlockToolbar', () => {
 				unobserve: sinon.spy()
 			};
 		} );
+
+		registerFocusableToolbarSpy = sinon.spy( EditorUI.prototype, 'registerFocusableToolbar' );
 
 		return ClassicTestEditor.create( element, {
 			plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, Image, ImageCaption ],
@@ -122,6 +125,28 @@ describe( 'BlockToolbar', () => {
 
 	it( 'should have the isFloating option set to true', () => {
 		expect( blockToolbar.toolbarView.options.isFloating ).to.be.true;
+	} );
+
+	it( 'should have an accessible ARIA label set on the toolbar', () => {
+		expect( blockToolbar.toolbarView.ariaLabel ).to.equal( 'Editor block content toolbar' );
+	} );
+
+	it( 'should register its toolbar as focusable toolbar in EditorUI with proper configuration responsible for presentation', () => {
+		const showPanelSpy = sinon.spy( blockToolbar, '_showPanel' );
+		const hidePanelSpy = sinon.spy( blockToolbar, '_hidePanel' );
+
+		sinon.assert.calledWithExactly( registerFocusableToolbarSpy.lastCall, blockToolbar.toolbarView, sinon.match( {
+			beforeFocus: sinon.match.func,
+			afterBlur: sinon.match.func
+		} ) );
+
+		registerFocusableToolbarSpy.firstCall.args[ 1 ].beforeFocus();
+
+		sinon.assert.calledOnce( showPanelSpy );
+
+		registerFocusableToolbarSpy.firstCall.args[ 1 ].afterBlur();
+
+		sinon.assert.calledOnce( hidePanelSpy );
 	} );
 
 	describe( 'child views', () => {
