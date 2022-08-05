@@ -79,6 +79,7 @@ export default class BalloonToolbar extends Plugin {
 			this.focusTracker.add( this.toolbarView.element );
 		} );
 
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		editor.ui.registerFocusableToolbar( this.toolbarView, {
 			beforeFocus: () => this.show( true ),
 			afterBlur: () => this.hide(),

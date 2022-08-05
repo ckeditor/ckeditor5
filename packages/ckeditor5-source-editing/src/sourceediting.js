@@ -252,6 +252,7 @@ export default class SourceEditing extends Plugin {
 				writer.addClass( 'ck-hidden', viewRoot );
 			} );
 
+			// Register the element so it becomes available for Alt+F10 and Esc navigation.
 			editor.ui.registerFocusableEditingArea( domSourceEditingElementTextarea );
 
 			this._replacedRoots.set( rootName, domSourceEditingElementWrapper );

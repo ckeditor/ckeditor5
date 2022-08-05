@@ -182,6 +182,7 @@ export default class EditorUI {
 			domElement.ckeditorInstance = this.editor;
 		}
 
+		// Register the element so it becomes available for Alt+F10 and Esc navigation.
 		this.registerFocusableEditingArea( domElement );
 	}
 

@@ -139,6 +139,7 @@ export default class ClassicEditorUI extends EditorUI {
 
 		view.toolbar.fillFromConfig( this._toolbarConfig, this.componentFactory );
 
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		this.registerFocusableToolbar( view.toolbar );
 	}
 

@@ -135,6 +135,7 @@ export default class InlineEditorUI extends EditorUI {
 
 		toolbar.fillFromConfig( this._toolbarConfig, this.componentFactory );
 
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		this.registerFocusableToolbar( toolbar );
 	}
 
