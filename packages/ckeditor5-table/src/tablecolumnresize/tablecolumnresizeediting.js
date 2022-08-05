@@ -124,7 +124,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	init() {
 		this._extendSchema();
 		this._registerPostFixer();
-		this._registerConversion();
+		this._registerConverters();
 		this._registerResizingListeners();
 		this._registerColgroupFixer();
 		this._registerResizerInserter();
@@ -153,7 +153,6 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Registers new attributes for a table model element.
 	 * @inheritDoc
 	 */
 	destroy() {
@@ -162,7 +161,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Registers new attributes for a table and a table cell model elements.
+	 * Registers new attributes for a table model element.
 	 *
 	 * @private
 	 */
@@ -292,7 +291,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 */
-	_registerConversion() {
+	_registerConverters() {
 		const editor = this.editor;
 		const conversion = editor.conversion;
 		const widthStyleToTableWidthDefinition = {
