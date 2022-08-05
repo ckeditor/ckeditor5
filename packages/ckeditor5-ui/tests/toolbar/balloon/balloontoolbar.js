@@ -197,11 +197,11 @@ describe( 'BalloonToolbar', () => {
 			isContextual: true
 		} ) );
 
-		registerFocusableToolbarSpy.firstCall.args[ 1 ].beforeFocus();
+		registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
 
 		sinon.assert.calledOnceWithExactly( showPanelSpy, true );
 
-		registerFocusableToolbarSpy.firstCall.args[ 1 ].afterBlur();
+		registerFocusableToolbarSpy.lastCall.args[ 1 ].afterBlur();
 
 		sinon.assert.calledOnce( hidePanelSpy );
 	} );

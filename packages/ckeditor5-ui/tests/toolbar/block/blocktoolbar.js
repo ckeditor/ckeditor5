@@ -132,21 +132,30 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	it( 'should register its toolbar as focusable toolbar in EditorUI with proper configuration responsible for presentation', () => {
-		const showPanelSpy = sinon.spy( blockToolbar, '_showPanel' );
-		const hidePanelSpy = sinon.spy( blockToolbar, '_hidePanel' );
-
 		sinon.assert.calledWithExactly( registerFocusableToolbarSpy.lastCall, blockToolbar.toolbarView, sinon.match( {
 			beforeFocus: sinon.match.func,
 			afterBlur: sinon.match.func
 		} ) );
 
-		registerFocusableToolbarSpy.firstCall.args[ 1 ].beforeFocus();
+		registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
 
-		sinon.assert.calledOnce( showPanelSpy );
+		expect( blockToolbar.panelView.isVisible ).to.be.true;
 
-		registerFocusableToolbarSpy.firstCall.args[ 1 ].afterBlur();
+		registerFocusableToolbarSpy.lastCall.args[ 1 ].afterBlur();
 
-		sinon.assert.calledOnce( hidePanelSpy );
+		expect( blockToolbar.panelView.isVisible ).to.be.false;
+	} );
+
+	it( 'should not show the panel on Alt+F10 when the button is invisible', () => {
+		// E.g. due to the toolbar not making sense for a selection.
+		blockToolbar.buttonView.isVisible = false;
+		registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+		expect( blockToolbar.panelView.isVisible ).to.be.false;
+
+		blockToolbar.buttonView.isVisible = true;
+		registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+		expect( blockToolbar.panelView.isVisible ).to.be.true;
 	} );
 
 	describe( 'child views', () => {

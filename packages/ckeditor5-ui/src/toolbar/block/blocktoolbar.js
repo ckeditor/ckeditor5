@@ -372,6 +372,14 @@ export default class BlockToolbar extends Plugin {
 	 * @private
 	 */
 	_showPanel() {
+		// Usually, the only way to show the toolbar is by pressing the block button. It makes it impossible for
+		// the toolbar to show up when the button is invisible (feature does not make sense for the selection then).
+		// The toolbar navigation using Alt+F10 does not access the button but shows the panel directly using this method.
+		// So we need to check whether this is possible first.
+		if ( !this.buttonView.isVisible ) {
+			return;
+		}
+
 		const wasVisible = this.panelView.isVisible;
 
 		// So here's the thing: If there was no initial panelView#show() or these two were in different order, the toolbar
