@@ -224,7 +224,7 @@ export default class Editor {
 		/**
 		 * A unique editor's name.
 		 *
-		 * @readony
+		 * @readonly
 		 * @member {String} #name
 		 */
 		this._name = this._generateEditorLabel();
