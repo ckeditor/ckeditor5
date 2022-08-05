@@ -170,7 +170,7 @@ describe( 'ClassicEditor', () => {
 				const editor = new ClassicEditor( editorElement );
 
 				expect( editor.config.get( 'label' ) ).to.be.undefined;
-				expect( editor._name ).to.equal( 'editor21' );
+				expect( editor._name ).to.match( /^[A-Za-z]+\d{1}/ );
 			} );
 
 			it( 'if set, editor._name is updated appropriately', () => {

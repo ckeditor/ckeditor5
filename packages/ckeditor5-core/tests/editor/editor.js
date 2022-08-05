@@ -192,13 +192,13 @@ describe( 'Editor', () => {
 					label: 'foo'
 				} );
 
-				expect( editor.name ).to.equal( 'foo' );
+				expect( editor._name ).to.equal( 'foo' );
 			} );
 
 			it( 'should be set to editor{n} if there is no editor.config.label property', () => {
 				const editor = new TestEditor();
 
-				expect( editor.name ).to.equal( 'editor1' );
+				expect( editor._name ).to.equal( 'editor1' );
 			} );
 
 			it( 'should increment the editor number if there are multiple editors present, and no editor.config.label property', () => {
@@ -208,9 +208,9 @@ describe( 'Editor', () => {
 				} );
 				const editor3 = new TestEditor();
 
-				expect( editor1.name ).to.equal( 'editor1' );
-				expect( editor2.name ).to.equal( 'foo' );
-				expect( editor3.name ).to.equal( 'editor2' );
+				expect( editor1._name ).to.equal( 'editor1' );
+				expect( editor2._name ).to.equal( 'foo' );
+				expect( editor3._name ).to.equal( 'editor2' );
 			} );
 		} );
 	} );
