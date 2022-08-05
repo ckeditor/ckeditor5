@@ -435,7 +435,7 @@ function selectionContainsOnlyMultipleSelectables( selection, schema ) {
  * You can also use `'|'` to create a separator between groups of items:
  *
  *		const config = {
- *			balloonToolbar: [ 'bold', 'italic', | 'undo', 'redo' ]
+ *			balloonToolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *		};
  *
  * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.

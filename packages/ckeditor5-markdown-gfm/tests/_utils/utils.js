@@ -4,7 +4,7 @@
  */
 
 import MarkdownDataProcessor from '../../src/gfmdataprocessor';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
