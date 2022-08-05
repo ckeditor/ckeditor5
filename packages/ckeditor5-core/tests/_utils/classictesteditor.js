@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable new-cap */
+
 import Editor from '../../src/editor/editor';
 import ElementApiMixin from '../../src/editor/utils/elementapimixin';
 import DataApiMixin from '../../src/editor/utils/dataapimixin';
@@ -11,7 +13,6 @@ import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxeded
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -21,7 +22,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * @memberOf tests.core._utils
  * @extends core.editor.Editor
  */
-export default class ClassicTestEditor extends Editor {
+export default class ClassicTestEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
 	/**
 	 * @inheritDoc
 	 */
@@ -152,9 +153,6 @@ class ClassicTestEditorUI extends EditorUI {
 		super.destroy();
 	}
 }
-
-mix( ClassicTestEditor, DataApiMixin );
-mix( ClassicTestEditor, ElementApiMixin );
 
 function getInitialData( sourceElementOrData ) {
 	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;

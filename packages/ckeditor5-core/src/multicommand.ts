@@ -4,8 +4,11 @@
  */
 
 import Command from './command';
+import type Editor from './editor/editor';
 
 import insertToPriorityArray from '@ckeditor/ckeditor5-utils/src/inserttopriorityarray';
+import { type PriorityString } from '@ckeditor/ckeditor5-utils/src/priorities';
+import { type ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * @module core/multicommand
@@ -36,10 +39,12 @@ import insertToPriorityArray from '@ckeditor/ckeditor5-utils/src/inserttopriorit
  * @extends module:core/command~Command
  */
 export default class MultiCommand extends Command {
+	private _childCommandsDefinitions: { command: Command; priority: PriorityString | number }[];
+
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		/**
@@ -54,7 +59,7 @@ export default class MultiCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		// Override base command refresh(): the command's state is changed when one of child commands changes states.
 	}
 
@@ -63,7 +68,7 @@ export default class MultiCommand extends Command {
 	 *
 	 * @returns {*} The value returned by the {@link module:core/command~Command#execute `command.execute()`}.
 	 */
-	execute( ...args ) {
+	public override execute( ...args: unknown[] ): unknown {
 		const command = this._getFirstEnabledCommand();
 
 		return !!command && command.execute( args );
@@ -76,11 +81,14 @@ export default class MultiCommand extends Command {
 	 * @param {Object} options An object with configuration options.
 	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] Priority of a command to register.
 	 */
-	registerChildCommand( command, options = { priority: 'normal' } ) {
-		insertToPriorityArray( this._childCommandsDefinitions, { command, priority: options.priority } );
+	public registerChildCommand(
+		command: Command,
+		options: { priority?: PriorityString | number } = {}
+	): void {
+		insertToPriorityArray( this._childCommandsDefinitions, { command, priority: options.priority || 'normal' } );
 
 		// Change multi command enabled state when one of registered commands changes state.
-		command.on( 'change:isEnabled', () => this._checkEnabled() );
+		command.on<ChangeEvent<boolean>>( 'change:isEnabled', () => this._checkEnabled() );
 
 		this._checkEnabled();
 	}
@@ -90,7 +98,7 @@ export default class MultiCommand extends Command {
 	 *
 	 * @private
 	 */
-	_checkEnabled() {
+	private _checkEnabled(): void {
 		this.isEnabled = !!this._getFirstEnabledCommand();
 	}
 
@@ -100,7 +108,7 @@ export default class MultiCommand extends Command {
 	 * @returns {module:core/command~Command|undefined}
 	 * @private
 	 */
-	_getFirstEnabledCommand() {
+	private _getFirstEnabledCommand(): Command | undefined {
 		const commandDefinition = this._childCommandsDefinitions.find( ( { command } ) => command.isEnabled );
 
 		return commandDefinition && commandDefinition.command;

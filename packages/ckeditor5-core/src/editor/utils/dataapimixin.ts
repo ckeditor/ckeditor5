@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
+import type { DataController } from '@ckeditor/ckeditor5-engine';
+
 /**
  * @module core/editor/utils/dataapimixin
  */
@@ -13,23 +17,27 @@
  * @mixin DataApiMixin
  * @implements module:core/editor/utils/dataapimixin~DataApi
  */
-const DataApiMixin = {
-	/**
-	 * @inheritDoc
-	 */
-	setData( data ) {
-		this.data.set( data );
-	},
+export default function DataApiMixin<Base extends abstract new( ...args: any[] ) => { data: DataController }>( base: Base ) {
+	abstract class Mixin extends base implements DataApi {
+		public setData( data: string ): void {
+			this.data.set( data );
+		}
 
-	/**
-	 * @inheritDoc
-	 */
-	getData( options ) {
-		return this.data.get( options );
+		public getData( options?: Record<string, unknown> ): string {
+			return this.data.get( options );
+		}
 	}
-};
 
-export default DataApiMixin;
+	return Mixin;
+}
+
+// Backward compatibility with `mix`.
+{
+	const mixin = ( DataApiMixin as any )( Object );
+
+	( DataApiMixin as any ).setData = mixin.prototype.setData;
+	( DataApiMixin as any ).getData = mixin.prototype.getData;
+}
 
 /**
  * Interface defining editor methods for setting and getting data to and from the editor's main root element
@@ -79,3 +87,8 @@ export default DataApiMixin;
  * use `'none'`. In such cases exact content will be returned (for example `'<p>&nbsp;</p>'` for an empty editor).
  * @returns {String} Output data.
  */
+
+export interface DataApi {
+	setData( data: string ): void;
+	getData( options?: Record<string, unknown> ): string;
+}

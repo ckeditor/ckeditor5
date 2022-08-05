@@ -8,15 +8,22 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import type Context from './context';
+import type Editor from './editor/editor';
+import type { LoadedPlugins, PluginConstructor, PluginInterface } from './plugin';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class PluginCollection {
+export default class PluginCollection extends Emitter {
+	private _context: Editor | Context;
+	private _plugins: Map<PluginConstructor | string, PluginInterface>;
+	private _availablePlugins: Map<string, PluginConstructor>;
+	private _contextPlugins: Map<PluginConstructor | PluginInterface, PluginConstructor | PluginInterface>;
+
 	/**
 	 * Creates an instance of the plugin collection class.
 	 * Allows loading and initializing plugins and their dependencies.
@@ -30,7 +37,13 @@ export default class PluginCollection {
 	 * @param {Iterable.<Array>} contextPlugins A list of already initialized plugins represented by a
 	 * `[ PluginConstructor, pluginInstance ]` pair.
 	 */
-	constructor( context, availablePlugins = [], contextPlugins = [] ) {
+	constructor(
+		context: Editor | Context,
+		availablePlugins: Iterable<PluginConstructor> = [],
+		contextPlugins: Iterable<[ PluginConstructor, PluginInterface ]> = []
+	) {
+		super();
+
 		/**
 		 * @protected
 		 * @type {module:core/editor/editor~Editor|module:core/context~Context}
@@ -83,10 +96,10 @@ export default class PluginCollection {
 	 *
 	 * @returns {Iterable.<Array>}
 	 */
-	* [ Symbol.iterator ]() {
+	public* [ Symbol.iterator ](): IterableIterator<[ PluginConstructor, PluginInterface ]> {
 		for ( const entry of this._plugins ) {
 			if ( typeof entry[ 0 ] == 'function' ) {
-				yield entry;
+				yield entry as any;
 			}
 		}
 	}
@@ -110,7 +123,7 @@ export default class PluginCollection {
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 * @returns {module:core/plugin~PluginInterface}
 	 */
-	get( key ) {
+	public get( key: PluginConstructor | string ): PluginInterface {
 		const plugin = this._plugins.get( key );
 
 		if ( !plugin ) {
@@ -154,7 +167,7 @@ export default class PluginCollection {
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 * @returns {Boolean}
 	 */
-	has( key ) {
+	public has( key: PluginConstructor | string ): boolean {
 		return this._plugins.has( key );
 	}
 
@@ -175,7 +188,11 @@ export default class PluginCollection {
 	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which gets resolved once all plugins are loaded
 	 * and available in the collection.
 	 */
-	init( plugins, pluginsToRemove = [], pluginsSubstitutions = [] ) {
+	public init(
+		plugins: ( PluginConstructor | string )[],
+		pluginsToRemove: ( PluginConstructor | string )[] = [],
+		pluginsSubstitutions: PluginConstructor[] = []
+	): Promise<LoadedPlugins> {
 		// Plugin initialization procedure consists of 2 main steps:
 		// 1) collecting all available plugin constructors,
 		// 2) verification whether all required plugins can be instantiated.
@@ -190,6 +207,7 @@ export default class PluginCollection {
 		// In the second step, the list of plugins that have not been explicitly removed is traversed to get all the
 		// plugin constructors to be instantiated in the correct order and to validate against some rules. Finally, if
 		// no plugin is missing and no other error has been found, they all will be instantiated.
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		const that = this;
 		const context = this._context;
 
@@ -209,15 +227,15 @@ export default class PluginCollection {
 			.then( () => initPlugins( pluginInstances, 'afterInit' ) )
 			.then( () => pluginInstances );
 
-		function isPluginConstructor( plugin ) {
+		function isPluginConstructor( plugin: PluginConstructor | string | null ): plugin is PluginConstructor {
 			return typeof plugin === 'function';
 		}
 
-		function isContextPlugin( plugin ) {
+		function isContextPlugin( plugin: PluginConstructor | string | null ): plugin is PluginConstructor & { isContextPlugin: true } {
 			return isPluginConstructor( plugin ) && plugin.isContextPlugin;
 		}
 
-		function isPluginRemoved( plugin, pluginsToRemove ) {
+		function isPluginRemoved( plugin: PluginConstructor | string, pluginsToRemove: ( PluginConstructor | string )[] ) {
 			return pluginsToRemove.some( removedPlugin => {
 				if ( removedPlugin === plugin ) {
 					return true;
@@ -235,13 +253,13 @@ export default class PluginCollection {
 			} );
 		}
 
-		function getPluginName( plugin ) {
+		function getPluginName( plugin: PluginConstructor | string ) {
 			return isPluginConstructor( plugin ) ?
 				plugin.pluginName || plugin.name :
 				plugin;
 		}
 
-		function findAvailablePluginConstructors( plugins, processed = new Set() ) {
+		function findAvailablePluginConstructors( plugins: ( PluginConstructor | string )[], processed = new Set<PluginConstructor>() ) {
 			plugins.forEach( plugin => {
 				if ( !isPluginConstructor( plugin ) ) {
 					return;
@@ -263,12 +281,12 @@ export default class PluginCollection {
 			} );
 		}
 
-		function getPluginConstructors( plugins, processed = new Set() ) {
+		function getPluginConstructors( plugins: ( PluginConstructor | string )[], processed = new Set<PluginConstructor>() ) {
 			return plugins
 				.map( plugin => {
 					return isPluginConstructor( plugin ) ?
 						plugin :
-						that._availablePlugins.get( plugin );
+						that._availablePlugins.get( plugin )!;
 				} )
 				.reduce( ( result, plugin ) => {
 					if ( processed.has( plugin ) ) {
@@ -284,10 +302,10 @@ export default class PluginCollection {
 					}
 
 					return result.add( plugin );
-				}, new Set() );
+				}, new Set<PluginConstructor>() );
 		}
 
-		function validatePlugins( plugins, parentPluginConstructor = null ) {
+		function validatePlugins( plugins: ( PluginConstructor | string )[], parentPluginConstructor: PluginConstructor | null = null ) {
 			plugins
 				.map( plugin => {
 					return isPluginConstructor( plugin ) ?
@@ -301,7 +319,7 @@ export default class PluginCollection {
 				} );
 		}
 
-		function checkMissingPlugin( plugin, parentPluginConstructor ) {
+		function checkMissingPlugin( plugin: PluginConstructor | string, parentPluginConstructor: PluginConstructor | null ) {
 			if ( isPluginConstructor( plugin ) ) {
 				return;
 			}
@@ -366,7 +384,7 @@ export default class PluginCollection {
 			);
 		}
 
-		function checkContextPlugin( plugin, parentPluginConstructor ) {
+		function checkContextPlugin( plugin: PluginConstructor | string, parentPluginConstructor: PluginConstructor | null ) {
 			if ( !isContextPlugin( parentPluginConstructor ) ) {
 				return;
 			}
@@ -394,7 +412,7 @@ export default class PluginCollection {
 			);
 		}
 
-		function checkRemovedPlugin( plugin, parentPluginConstructor ) {
+		function checkRemovedPlugin( plugin: PluginConstructor | string, parentPluginConstructor: PluginConstructor | null ) {
 			if ( !parentPluginConstructor ) {
 				return;
 			}
@@ -417,9 +435,11 @@ export default class PluginCollection {
 			);
 		}
 
-		function loadPlugins( pluginConstructors ) {
+		function loadPlugins( pluginConstructors: PluginConstructor[] ) {
 			return pluginConstructors.map( PluginConstructor => {
-				const pluginInstance = that._contextPlugins.get( PluginConstructor ) || new PluginConstructor( context );
+				let pluginInstance = that._contextPlugins.get( PluginConstructor ) as ( PluginInterface | undefined );
+
+				pluginInstance = pluginInstance || new PluginConstructor( context );
 
 				that._add( PluginConstructor, pluginInstance );
 
@@ -427,8 +447,8 @@ export default class PluginCollection {
 			} );
 		}
 
-		function initPlugins( pluginInstances, method ) {
-			return pluginInstances.reduce( ( promise, plugin ) => {
+		function initPlugins( pluginInstances: PluginInterface[], method: 'init' | 'afterInit' ) {
+			return pluginInstances.reduce<Promise<unknown>>( ( promise, plugin ) => {
 				if ( !plugin[ method ] ) {
 					return promise;
 				}
@@ -437,7 +457,7 @@ export default class PluginCollection {
 					return promise;
 				}
 
-				return promise.then( plugin[ method ].bind( plugin ) );
+				return promise.then( plugin[ method ]!.bind( plugin ) );
 			}, Promise.resolve() );
 		}
 
@@ -445,7 +465,7 @@ export default class PluginCollection {
 		//
 		// @param {Array.<Function>} pluginConstructors
 		// @param {Array.<Function>} pluginsSubstitutions
-		function substitutePlugins( pluginConstructors, pluginsSubstitutions ) {
+		function substitutePlugins( pluginConstructors: PluginConstructor[], pluginsSubstitutions: PluginConstructor[] ) {
 			for ( const pluginItem of pluginsSubstitutions ) {
 				if ( typeof pluginItem != 'function' ) {
 					/**
@@ -525,8 +545,8 @@ export default class PluginCollection {
 	 *
 	 * @returns {Promise}
 	 */
-	destroy() {
-		const promises = [];
+	public destroy(): Promise<unknown> {
+		const promises: unknown[] = [];
 
 		for ( const [ , pluginInstance ] of this ) {
 			if ( typeof pluginInstance.destroy == 'function' && !this._contextPlugins.has( pluginInstance ) ) {
@@ -544,7 +564,7 @@ export default class PluginCollection {
 	 * @param {Function} PluginConstructor The plugin constructor.
 	 * @param {module:core/plugin~PluginInterface} plugin The instance of the plugin.
 	 */
-	_add( PluginConstructor, plugin ) {
+	private _add( PluginConstructor: PluginConstructor, plugin: PluginInterface ) {
 		this._plugins.set( PluginConstructor, plugin );
 
 		const pluginName = PluginConstructor.pluginName;
@@ -587,12 +607,10 @@ export default class PluginCollection {
 			throw new CKEditorError(
 				'plugincollection-plugin-name-conflict',
 				null,
-				{ pluginName, plugin1: this._plugins.get( pluginName ).constructor, plugin2: PluginConstructor }
+				{ pluginName, plugin1: this._plugins.get( pluginName )!.constructor, plugin2: PluginConstructor }
 			);
 		}
 
 		this._plugins.set( pluginName, plugin );
 	}
 }
-
-mix( PluginCollection, EmitterMixin );

@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type Context from '../context';
+import type { PluginConstructor } from '../plugin';
+
 /**
  * @module core/editor/editorconfig
  */
@@ -110,7 +113,8 @@
  *
  * **Note:** This configuration works only for simple plugins which utilize the
  * {@link module:core/plugin~PluginInterface plugin interface} and have no dependencies. To extend a
- * build with complex features, create a {@glink installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder custom build}.
+ * build with complex features,
+ * create a {@glink installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder custom build}.
  *
  * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
  * about the {@glink features/toolbar/toolbar toolbar setup}.
@@ -119,7 +123,8 @@
  */
 
 /**
- * The list of plugins which should not be loaded despite being available in an {@glink installation/getting-started/predefined-builds editor build}.
+ * The list of plugins which should not be loaded despite being available in
+ * an {@glink installation/getting-started/predefined-builds editor build}.
  *
  *		const config = {
  *			removePlugins: [ 'Bold', 'Italic' ]
@@ -169,11 +174,13 @@
  *
  *	Line break will work only in the extended format when `shouldNotGroupWhenFull` option is set to `true`.
  *
- * * **`toolbar.viewportTopOffset` (deprecated)** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
+ * * **`toolbar.viewportTopOffset` (deprecated)** &ndash;
+ * The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
  * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar will not be positioned underneath or above the page's UI.
  *
- * 	**This property has been deprecated and will be removed in the future versions of CKEditor. Please use `{@link module:core/editor/editorconfig~EditorConfig#ui EditorConfig#ui.viewportOffset}` instead.**
+ * 	**This property has been deprecated and will be removed in the future versions of CKEditor.
+ * Please use `{@link module:core/editor/editorconfig~EditorConfig#ui EditorConfig#ui.viewportOffset}` instead.**
  *
  * * **`toolbar.shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items
  * and let them wrap to the next line if there is not enough space to display them in a single row.
@@ -315,28 +322,49 @@
  *
  * Options which can be set using the UI config:
  *
- * * **`ui.viewportOffset`** &ndash; The offset (in pixels) of the viewport from every direction used when positioning a sticky toolbar or other absolutely positioned UI elements.
+ * * **`ui.viewportOffset`** &ndash;
+ * The offset (in pixels) of the viewport from every direction used when positioning
+ * a sticky toolbar or other absolutely positioned UI elements.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
- * (e.g. the top menu). Thanks to setting the UI viewport offset the toolbar and other contextual balloons will not be positioned underneath or above the page's UI.
+ * (e.g. the top menu).
+ * Thanks to setting the UI viewport offset the toolbar and other contextual balloons
+ * will not be positioned underneath or above the page's UI.
  *
  *		ui: {
  *			viewportOffset: { top: 10, right: 10, bottom: 10, left: 10 }
  *		}
  *
- * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding {@link module:core/editor/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
+ * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created),
+ * you can do that by overriding {@link module:core/editor/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
  *
  * @member {Object} module:core/editor/editorconfig~EditorConfig#ui
  */
 
- /**
- * Enables updating the source element after the editor destroy.
- *
- * Enabling this option might have some security implications, as the editor doesn't have control over all data
- * in the output.
- *
- * Be careful, especially while using 
- * {@glink features/markdown Markdown}, {@glink features/general-html-support General HTML Support} or 
- * {@glink features/html-embed HTML embed} features.
- *
- * @member {Boolean} module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy
- */
+export interface EditorConfig {
+	context?: Context;
+	extraPlugins?: PluginConstructor[];
+	initialData?: string;
+	language?: string | LanguageConfig;
+	placeholder?: string;
+	plugins?: ( PluginConstructor | string )[];
+	removePlugins?: ( PluginConstructor | string )[];
+	substitutePlugins?: PluginConstructor[];
+	toolbar?: string[] | {
+		items: string[];
+		shouldNotGroupWhenFull?: boolean;
+	};
+	ui?: {
+		viewportOffset?: {
+			bottom?: number;
+			left?: number;
+			right?: number;
+			top?: number;
+		};
+	};
+	updateSourceElementOnDestroy?: boolean;
+}
+
+export interface LanguageConfig {
+	ui?: string;
+	content?: string;
+}

@@ -3,12 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable @typescript-eslint/no-invalid-void-type */
+
 /**
  * @module core/plugin
  */
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import { Observable, type SetEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type Context from './context';
+import type Editor from './editor/editor';
 
 /**
  * The base class for CKEditor plugin classes.
@@ -16,11 +20,19 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * @implements module:core/plugin~PluginInterface
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Plugin {
+export default class Plugin extends Observable implements PluginInterface {
+	public readonly editor: Editor;
+
+	public declare isEnabled: boolean;
+
+	private _disableStack: Set<string>;
+
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
+		super();
+
 		/**
 		 * The editor instance.
 		 *
@@ -101,11 +113,11 @@ export default class Plugin {
 	 *
 	 * @param {String} id Unique identifier for disabling. Use the same id when {@link #clearForceDisabled enabling back} the plugin.
 	 */
-	forceDisabled( id ) {
+	public forceDisabled( id: string ): void {
 		this._disableStack.add( id );
 
 		if ( this._disableStack.size == 1 ) {
-			this.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
+			this.on<SetEvent<boolean>>( 'set:isEnabled', forceDisable, { priority: 'highest' } );
 			this.isEnabled = false;
 		}
 	}
@@ -115,7 +127,7 @@ export default class Plugin {
 	 *
 	 * @param {String} id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
 	 */
-	clearForceDisabled( id ) {
+	public clearForceDisabled( id: string ): void {
 		this._disableStack.delete( id );
 
 		if ( this._disableStack.size == 0 ) {
@@ -127,19 +139,17 @@ export default class Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public destroy(): void {
 		this.stopListening();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get isContextPlugin() {
+	public static get isContextPlugin(): false {
 		return false;
 	}
 }
-
-mix( Plugin, ObservableMixin );
 
 /**
  * The base interface for CKEditor plugins.
@@ -179,6 +189,20 @@ mix( Plugin, ObservableMixin );
  *
  * @interface PluginInterface
  */
+
+export interface PluginInterface {
+	init?(): Promise<void> | null | undefined | void;
+	afterInit?(): Promise<void> | null | undefined | void;
+	destroy(): Promise<void> | null | undefined | void;
+}
+
+export interface PluginConstructor {
+	new( editor: Editor | Context ): PluginInterface;
+
+	readonly requires?: ( PluginConstructor | string )[];
+	readonly pluginName?: string;
+	readonly isContextPlugin: boolean;
+}
 
 /**
  * Creates a new plugin instance. This is the first step of the plugin initialization.
@@ -285,8 +309,10 @@ mix( Plugin, ObservableMixin );
  * @typedef {Array.<module:core/plugin~PluginInterface>} module:core/plugin~LoadedPlugins
  */
 
+export type LoadedPlugins = PluginInterface[];
+
 // Helper function that forces plugin to be disabled.
-function forceDisable( evt ) {
+function forceDisable( evt: EventInfo<string, boolean> ) {
 	evt.return = false;
 	evt.stop();
 }

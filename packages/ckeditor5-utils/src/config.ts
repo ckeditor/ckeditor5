@@ -21,7 +21,7 @@ export default class Config {
 	 * @param {Object} [configurations] The initial configurations to be set. Usually, provided by the user.
 	 * @param {Object} [defaultConfigurations] The default configurations. Usually, provided by the system.
 	 */
-	constructor( configurations: Record<string, any>, defaultConfigurations: Record<string, any> ) {
+	constructor( configurations?: Record<string, any>, defaultConfigurations?: Record<string, any> ) {
 		/**
 		 * Store for the whole configuration.
 		 *

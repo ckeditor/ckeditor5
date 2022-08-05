@@ -12,6 +12,9 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import PluginCollection from './plugincollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import type Editor from './editor/editor';
+import type { LoadedPlugins, PluginConstructor } from './plugin';
+import type { LanguageConfig } from './editor/editorconfig';
 
 /**
  * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}
@@ -41,6 +44,17 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * See {@link module:core/context~Context.create `Context.create()`} for usage examples.
  */
 export default class Context {
+	public readonly config: Config;
+	public readonly plugins: PluginCollection;
+	public readonly locale: Locale;
+	public readonly t: Locale[ 't' ];
+	public readonly editors: Collection<Editor>;
+
+	public static defaultConfig: { language?: string | LanguageConfig; [ key: string ]: unknown };
+	public static builtinPlugins: PluginConstructor[];
+
+	private _contextOwner: Editor | null;
+
 	/**
 	 * Creates a context instance with a given configuration.
 	 *
@@ -48,16 +62,16 @@ export default class Context {
 	 *
 	 * @param {Object} [config={}] The context configuration.
 	 */
-	constructor( config ) {
+	constructor( config: { language?: string | LanguageConfig; [ key: string ]: unknown } ) {
 		/**
 		 * Stores all the configurations specific to this context instance.
 		 *
 		 * @readonly
 		 * @type {module:utils/config~Config}
 		 */
-		this.config = new Config( config, this.constructor.defaultConfig );
+		this.config = new Config( config, ( this.constructor as typeof Context ).defaultConfig );
 
-		const availablePlugins = this.constructor.builtinPlugins;
+		const availablePlugins = ( this.constructor as typeof Context ).builtinPlugins;
 
 		this.config.define( 'plugins', availablePlugins );
 
@@ -69,7 +83,7 @@ export default class Context {
 		 */
 		this.plugins = new PluginCollection( this, availablePlugins );
 
-		const languageConfig = this.config.get( 'language' ) || {};
+		const languageConfig = ( this.config.get( 'language' ) || {} ) as string | LanguageConfig;
 
 		/**
 		 * @readonly
@@ -77,7 +91,7 @@ export default class Context {
 		 */
 		this.locale = new Locale( {
 			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
-			contentLanguage: this.config.get( 'language.content' )
+			contentLanguage: this.config.get( 'language.content' ) as string | undefined
 		} );
 
 		/**
@@ -94,7 +108,7 @@ export default class Context {
 		 * @readonly
 		 * @type {module:utils/collection~Collection}
 		 */
-		this.editors = new Collection();
+		this.editors = new Collection<Editor>();
 
 		/**
 		 * Reference to the editor which created the context.
@@ -114,9 +128,9 @@ export default class Context {
 	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
 	 * once the initialization is completed, providing an array of loaded plugins.
 	 */
-	initPlugins() {
-		const plugins = this.config.get( 'plugins' ) || [];
-		const substitutePlugins = this.config.get( 'substitutePlugins' ) || [];
+	public initPlugins(): Promise<LoadedPlugins> {
+		const plugins = this.config.get( 'plugins' ) as ( PluginConstructor | string )[] || [];
+		const substitutePlugins = this.config.get( 'substitutePlugins' ) as PluginConstructor[] || [];
 
 		// Plugins for substitution should be checked as well.
 		for ( const Plugin of plugins.concat( substitutePlugins ) ) {
@@ -157,7 +171,7 @@ export default class Context {
 	 *
 	 * @returns {Promise} A promise that resolves once the context instance is fully destroyed.
 	 */
-	destroy() {
+	public destroy(): Promise<unknown> {
 		return Promise.all( Array.from( this.editors, editor => editor.destroy() ) )
 			.then( () => this.plugins.destroy() );
 	}
@@ -174,7 +188,7 @@ export default class Context {
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {Boolean} isContextOwner Stores the given editor as a context owner.
 	 */
-	_addEditor( editor, isContextOwner ) {
+	public _addEditor( editor: Editor, isContextOwner: boolean ): void {
 		if ( this._contextOwner ) {
 			/**
 			 * Cannot add multiple editors to the context which is created by the editor.
@@ -201,7 +215,7 @@ export default class Context {
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @return {Promise} A promise that resolves once the editor is removed from the context or when the context was destroyed.
 	 */
-	_removeEditor( editor ) {
+	public _removeEditor( editor: Editor ): Promise<unknown> {
 		if ( this.editors.has( editor ) ) {
 			this.editors.remove( editor );
 		}
@@ -224,8 +238,8 @@ export default class Context {
 	 * @protected
 	 * @returns {Object} Configuration as a plain object.
 	 */
-	_getEditorConfig() {
-		const result = {};
+	public _getEditorConfig(): Record<string, unknown> {
+		const result: Record<string, unknown> = {};
 
 		for ( const name of this.config.names() ) {
 			if ( ![ 'plugins', 'removePlugins', 'extraPlugins' ].includes( name ) ) {
@@ -285,7 +299,7 @@ export default class Context {
 	 * @param {Object} [config] The context configuration.
 	 * @returns {Promise} A promise resolved once the context is ready. The promise resolves with the created context instance.
 	 */
-	static create( config ) {
+	public static create( config: Record<string, unknown> ): Promise<Context> {
 		return new Promise( resolve => {
 			const context = new this( config );
 

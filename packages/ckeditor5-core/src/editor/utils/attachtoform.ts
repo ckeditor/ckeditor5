@@ -5,6 +5,8 @@
 
 import { isFunction } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import type { default as Editor, DestroyEvent } from '../editor';
+import type { ElementApi } from './elementapimixin';
 
 /**
  * @module core/editor/utils/attachtoform
@@ -18,7 +20,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * @param {module:core/editor/editor~Editor} editor Editor instance.
  */
-export default function attachToForm( editor ) {
+export default function attachToForm( editor: Editor & ElementApi ): void {
 	if ( !isFunction( editor.updateSourceElement ) ) {
 		/**
 		 * The editor passed to `attachToForm()` must implement the
@@ -35,8 +37,8 @@ export default function attachToForm( editor ) {
 	const sourceElement = editor.sourceElement;
 
 	// Only when replacing a textarea which is inside of a form element.
-	if ( sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.form ) {
-		let originalSubmit;
+	if ( isTextArea( sourceElement ) && sourceElement.form ) {
+		let originalSubmit: () => void;
 		const form = sourceElement.form;
 		const onSubmit = () => editor.updateSourceElement();
 
@@ -56,7 +58,7 @@ export default function attachToForm( editor ) {
 
 		// Remove the submit listener and revert the original submit method on
 		// editor#destroy.
-		editor.on( 'destroy', () => {
+		editor.on<DestroyEvent>( 'destroy', () => {
 			form.removeEventListener( 'submit', onSubmit );
 
 			if ( originalSubmit ) {
@@ -64,4 +66,8 @@ export default function attachToForm( editor ) {
 			}
 		} );
 	}
+}
+
+function isTextArea( sourceElement: HTMLElement | undefined ): sourceElement is HTMLTextAreaElement {
+	return !!sourceElement && sourceElement.tagName.toLowerCase() === 'textarea';
 }

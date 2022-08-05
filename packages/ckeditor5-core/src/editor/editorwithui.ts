@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type EditorUI from './editorui';
+
 /**
  * @module core/editor/editorwithui
  */
@@ -27,3 +29,7 @@
  * @readonly
  * @member {module:core/editor/editorui~EditorUI} #ui
  */
+
+export interface EditorWithUI {
+    readonly ui: EditorUI;
+}

@@ -8,6 +8,7 @@
  */
 
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import type Editor from './editor/editor';
 
 /**
  * A keystroke handler for editor editing. Its instance is available
@@ -23,12 +24,14 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
  * @extends module:utils/keystrokehandler~KeystrokeHandler
  */
 export default class EditingKeystrokeHandler extends KeystrokeHandler {
+	public readonly editor: Editor;
+
 	/**
 	 * Creates an instance of the keystroke handler.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super();
 
 		/**
@@ -57,7 +60,11 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	 * callback. The higher the priority value the sooner the callback will be executed. Keystrokes having the same priority
 	 * are called in the order they were added.
 	 */
-	set( keystroke, callback, options = {} ) {
+	public override set(
+		keystroke: string | ( string | number )[],
+		callback: string | ( ( ev: KeyboardEvent, cancel: () => void ) => void ),
+		options = {}
+	): void {
 		if ( typeof callback == 'string' ) {
 			const commandName = callback;
 

@@ -9,12 +9,13 @@
 
 /* globals console */
 
+import type { LayoutChangedEvent } from '@ckeditor/ckeditor5-engine/src/view/document';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import TooltipManager from '@ckeditor/ckeditor5-ui/src/tooltipmanager';
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type Editor from './editor';
 import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 /**
@@ -22,13 +23,28 @@ import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class EditorUI {
+export default class EditorUI extends Observable {
+	public readonly editor: Editor;
+	public readonly componentFactory: ComponentFactory;
+	public readonly focusTracker: FocusTracker;
+
+	public declare viewportOffset: {
+		left?: number;
+		right?: number;
+		top?: number;
+		bottom?: number;
+	};
+
+	private _editableElementsMap: Map<string, HTMLElement>;
+
 	/**
 	 * Creates an instance of the editor UI class.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
+		super();
+
 		/**
 		 * The editor that the UI belongs to.
 		 *
@@ -125,7 +141,7 @@ export default class EditorUI {
 		this._focusableToolbarDefinitions = [];
 
 		// Informs UI components that should be refreshed after layout change.
-		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
+		this.listenTo<LayoutChangedEvent>( editor.editing.view.document, 'layoutChanged', () => this.update() );
 
 		this._initFocusTracking();
 	}
@@ -145,7 +161,7 @@ export default class EditorUI {
 	 * @readonly
 	 * @member {HTMLElement|null} #element
 	 */
-	get element() {
+	public get element(): HTMLElement | null {
 		return null;
 	}
 
@@ -155,14 +171,14 @@ export default class EditorUI {
 	 * This method should be called when the editor UI (e.g. positions of its balloons) needs to be updated due to
 	 * some environmental change which CKEditor 5 is not aware of (e.g. resize of a container in which it is used).
 	 */
-	update() {
-		this.fire( 'update' );
+	public update(): void {
+		this.fire<UpdateEvent>( 'update' );
 	}
 
 	/**
 	 * Destroys the UI.
 	 */
-	destroy() {
+	public destroy(): void {
 		this.stopListening();
 
 		this.focusTracker.destroy();
@@ -170,7 +186,7 @@ export default class EditorUI {
 
 		// Clean–up the references to the CKEditor instance stored in the native editable DOM elements.
 		for ( const domElement of this._editableElementsMap.values() ) {
-			domElement.ckeditorInstance = null;
+			( domElement as any ).ckeditorInstance = null;
 		}
 
 		this._editableElementsMap = new Map();
@@ -186,15 +202,15 @@ export default class EditorUI {
 	 * @param {String} rootName The unique name of the editable element.
 	 * @param {HTMLElement} domElement The native DOM editable element.
 	 */
-	setEditableElement( rootName, domElement ) {
+	public setEditableElement( rootName: string, domElement: HTMLElement ): void {
 		this._editableElementsMap.set( rootName, domElement );
 
 		// Put a reference to the CKEditor instance in the editable native DOM element.
 		// It helps 3rd–party software (browser extensions, other libraries) access and recognize
 		// CKEditor 5 instances (editing roots) and use their API (there is no global editor
 		// instance registry).
-		if ( !domElement.ckeditorInstance ) {
-			domElement.ckeditorInstance = this.editor;
+		if ( !( domElement as any ).ckeditorInstance ) {
+			( domElement as any ).ckeditorInstance = this.editor;
 		}
 
 		// Register the element so it becomes available for Alt+F10 and Esc navigation.
@@ -226,7 +242,7 @@ export default class EditorUI {
 	 * @param {String} [rootName=main] The editable name.
 	 * @returns {HTMLElement|undefined}
 	 */
-	getEditableElement( rootName = 'main' ) {
+	public getEditableElement( rootName: string = 'main' ): HTMLElement | undefined {
 		return this._editableElementsMap.get( rootName );
 	}
 
@@ -235,7 +251,7 @@ export default class EditorUI {
 	 *
 	 * @returns {Iterable.<String>}
 	 */
-	getEditableElementsNames() {
+	public getEditableElementsNames(): IterableIterator<string> {
 		return this._editableElementsMap.keys();
 	}
 
@@ -275,7 +291,7 @@ export default class EditorUI {
 	 * @deprecated
 	 * @member {Map.<String,HTMLElement>}
 	 */
-	get _editableElements() {
+	protected get _editableElements(): unknown {
 		/**
 		 * The {@link module:core/editor/editorui~EditorUI#_editableElements `EditorUI#_editableElements`} property has been
 		 * deprecated and will be removed in the near future. Please use {@link #setEditableElement `setEditableElement()`} and
@@ -309,15 +325,15 @@ export default class EditorUI {
 	 * @private
 	 * @return {Object}
 	 */
-	_readViewportOffsetFromConfig() {
+	private _readViewportOffsetFromConfig() {
 		const editor = this.editor;
-		const viewportOffsetConfig = editor.config.get( 'ui.viewportOffset' );
+		const viewportOffsetConfig = editor.config.get( 'ui.viewportOffset' ) as EditorUI[ 'viewportOffset' ] | undefined;
 
 		if ( viewportOffsetConfig ) {
 			return viewportOffsetConfig;
 		}
 
-		const legacyOffsetConfig = editor.config.get( 'toolbar.viewportTopOffset' );
+		const legacyOffsetConfig = editor.config.get( 'toolbar.viewportTopOffset' ) as number | undefined;
 
 		// Fall back to deprecated toolbar config.
 		if ( legacyOffsetConfig ) {
@@ -530,7 +546,15 @@ export default class EditorUI {
 	 */
 }
 
-mix( EditorUI, ObservableMixin );
+export type ReadyEvent = {
+	name: 'ready';
+	args: [];
+};
+
+export type UpdateEvent = {
+	name: 'update';
+	args: [];
+};
 
 /**
  * A definition of a focusable toolbar. Used by {@link module:core/editor/editorui~EditorUI#addToolbar}.

@@ -17,10 +17,12 @@ import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { type ChangeEvent, Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
+import type { EditorConfig } from './editorconfig';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { LoadedPlugins, PluginConstructor } from '../plugin';
 
 /**
  * The class representing a basic, generic editor.
@@ -43,7 +45,28 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
  * @abstract
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Editor {
+export default class Editor extends Observable {
+	public readonly commands: CommandCollection;
+	public readonly config: Config;
+	public readonly conversion: Conversion;
+	public readonly data: DataController;
+	public readonly editing: EditingController;
+	public readonly locale: Locale;
+	public readonly model: Model;
+	public readonly plugins: PluginCollection;
+	public readonly keystrokes: EditingKeystrokeHandler;
+	public readonly t: Locale[ 't' ];
+
+	public readonly id?: string;
+
+	public declare state: 'initializing' | 'ready' | 'destroyed';
+
+	public static defaultConfig?: EditorConfig;
+	public static builtinPlugins?: PluginConstructor[];
+
+	protected readonly _context: Context;
+	protected readonly _readOnlyLocks: Set<symbol | string>;
+
 	/**
 	 * Creates a new instance of the editor class.
 	 *
@@ -51,9 +74,13 @@ export default class Editor {
 	 *
 	 * @param {Object} [config={}] The editor configuration.
 	 */
-	constructor( config = {} ) {
+	constructor( config: EditorConfig = {} ) {
+		super();
+
+		const constructor = this.constructor as typeof Editor;
+
 		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
-		const language = config.language || ( this.constructor.defaultConfig && this.constructor.defaultConfig.language );
+		const language = config.language || ( constructor.defaultConfig && constructor.defaultConfig.language );
 
 		/**
 		 * The editor context.
@@ -67,7 +94,7 @@ export default class Editor {
 
 		// Clone the plugins to make sure that the plugin array will not be shared
 		// between editors and make the watchdog feature work correctly.
-		const availablePlugins = Array.from( this.constructor.builtinPlugins || [] );
+		const availablePlugins = Array.from( constructor.builtinPlugins || [] );
 
 		/**
 		 * Stores all configurations specific to this editor instance.
@@ -78,7 +105,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:utils/config~Config}
 		 */
-		this.config = new Config( config, this.constructor.defaultConfig );
+		this.config = new Config( config, constructor.defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
 
@@ -147,8 +174,8 @@ export default class Editor {
 		 * @member {'initializing'|'ready'|'destroyed'} #state
 		 */
 		this.set( 'state', 'initializing' );
-		this.once( 'ready', () => ( this.state = 'ready' ), { priority: 'high' } );
-		this.once( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
+		this.once<ReadyEvent>( 'ready', () => ( this.state = 'ready' ), { priority: 'high' } );
+		this.once<DestroyEvent>( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
 
 		/**
 		 * The editor's model.
@@ -240,11 +267,11 @@ export default class Editor {
 	 * @observable
 	 * @member {Boolean} #isReadOnly
 	 */
-	get isReadOnly() {
+	public get isReadOnly(): boolean {
 		return this._readOnlyLocks.size > 0;
 	}
 
-	set isReadOnly( value ) {
+	public set isReadOnly( value: boolean ) {
 		/**
 		 * The {@link #isReadOnly Editor#isReadOnly} property is read-only since version `34.0.0` and can be set only using
 		 * {@link #enableReadOnlyMode `Editor#enableReadOnlyMode( lockId )`} and
@@ -303,7 +330,7 @@ export default class Editor {
 	 *
 	 * @param {String|Symbol} lockId A unique ID for setting the editor to the read-only state.
 	 */
-	enableReadOnlyMode( lockId ) {
+	public enableReadOnlyMode( lockId: string | symbol ): void {
 		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
 			/**
 			 * The lock ID is missing or it is not a string or symbol.
@@ -321,7 +348,7 @@ export default class Editor {
 
 		if ( this._readOnlyLocks.size === 1 ) {
 			// Manually fire the `change:isReadOnly` event as only getter is provided.
-			this.fire( 'change:isReadOnly', 'isReadOnly', true, false );
+			this.fire<ChangeEvent<boolean>>( 'change:isReadOnly', 'isReadOnly', true, false );
 		}
 	}
 
@@ -332,7 +359,7 @@ export default class Editor {
 	 *
 	 * @param {String|Symbol} lockId The lock ID for setting the editor to the read-only state.
 	 */
-	disableReadOnlyMode( lockId ) {
+	public disableReadOnlyMode( lockId: string | symbol ): void {
 		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
 			throw new CKEditorError( 'editor-read-only-lock-id-invalid', null, { lockId } );
 		}
@@ -345,7 +372,7 @@ export default class Editor {
 
 		if ( this._readOnlyLocks.size === 0 ) {
 			// Manually fire the `change:isReadOnly` event as only getter is provided.
-			this.fire( 'change:isReadOnly', 'isReadOnly', false, true );
+			this.fire<ChangeEvent<boolean>>( 'change:isReadOnly', 'isReadOnly', false, true );
 		}
 	}
 
@@ -355,14 +382,14 @@ export default class Editor {
 	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
 	 * once the initialization is completed, providing an array of loaded plugins.
 	 */
-	initPlugins() {
+	public initPlugins(): Promise<LoadedPlugins> {
 		const config = this.config;
-		const plugins = config.get( 'plugins' );
-		const removePlugins = config.get( 'removePlugins' ) || [];
-		const extraPlugins = config.get( 'extraPlugins' ) || [];
-		const substitutePlugins = config.get( 'substitutePlugins' ) || [];
+		const plugins = config.get( 'plugins' ) as EditorConfig[ 'plugins' ];
+		const removePlugins = config.get( 'removePlugins' ) as EditorConfig[ 'removePlugins' ] || [];
+		const extraPlugins = config.get( 'extraPlugins' ) as EditorConfig[ 'extraPlugins' ] || [];
+		const substitutePlugins = config.get( 'substitutePlugins' ) as EditorConfig[ 'substitutePlugins' ] || [];
 
-		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins, substitutePlugins );
+		return this.plugins.init( plugins!.concat( extraPlugins ), removePlugins, substitutePlugins );
 	}
 
 	/**
@@ -374,16 +401,16 @@ export default class Editor {
 	 * @fires destroy
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
-	destroy() {
-		let readyPromise = Promise.resolve();
+	public destroy(): Promise<unknown> {
+		let readyPromise: Promise<unknown> = Promise.resolve();
 
 		if ( this.state == 'initializing' ) {
-			readyPromise = new Promise( resolve => this.once( 'ready', resolve ) );
+			readyPromise = new Promise( resolve => this.once<ReadyEvent>( 'ready', resolve ) );
 		}
 
 		return readyPromise
 			.then( () => {
-				this.fire( 'destroy' );
+				this.fire<DestroyEvent>( 'destroy' );
 				this.stopListening();
 				this.commands.destroy();
 			} )
@@ -410,10 +437,10 @@ export default class Editor {
 	 * @param {*} [...commandParams] Command parameters.
 	 * @returns {*} The value returned by the {@link module:core/commandcollection~CommandCollection#execute `commands.execute()`}.
 	 */
-	execute( ...args ) {
+	public execute( ...args: [ commandName: string, ... args: unknown[] ] ): unknown {
 		try {
 			return this.commands.execute( ...args );
-		} catch ( err ) {
+		} catch ( err: any ) {
 			// @if CK_DEBUG // throw err;
 			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
@@ -429,7 +456,7 @@ export default class Editor {
 	 * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking#focus-in-the-editor-ui Focus in the editor UI} section
 	 * of the {@glink framework/guides/deep-dive/ui/focus-tracking Deep dive into focus tracking} guide to learn more.
 	 */
-	focus() {
+	public focus(): void {
 		this.editing.view.focus();
 	}
 
@@ -450,8 +477,6 @@ export default class Editor {
 	 */
 }
 
-mix( Editor, ObservableMixin );
-
 /**
  * Fired when the {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional
  * editor components are ready.
@@ -467,6 +492,11 @@ mix( Editor, ObservableMixin );
  * @event ready
  */
 
+export type ReadyEvent = {
+	name: 'ready';
+	args: [];
+};
+
 /**
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
@@ -476,6 +506,11 @@ mix( Editor, ObservableMixin );
  *
  * @event destroy
  */
+
+export type DestroyEvent = {
+	name: 'destroy';
+	args: [];
+};
 
 /**
  * This error is thrown when trying to pass a `<textarea>` element to a `create()` function of an editor class.

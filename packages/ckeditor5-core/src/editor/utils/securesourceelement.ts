@@ -4,6 +4,8 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import type { default as Editor, DestroyEvent } from '../editor';
+import type { ElementApi } from './elementapimixin';
 
 /**
  * @module core/editor/utils/securesourceelement
@@ -17,8 +19,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * @param {module:core/editor/editor~Editor} editor Editor instance.
  */
-export default function secureSourceElement( editor ) {
-	const sourceElement = editor.sourceElement;
+export default function secureSourceElement( editor: Editor & ElementApi ): void {
+	const sourceElement: any = editor.sourceElement;
 
 	// If the editor was initialized without specifying an element, we don't need to secure anything.
 	if ( !sourceElement ) {
@@ -43,7 +45,7 @@ export default function secureSourceElement( editor ) {
 
 	sourceElement.ckeditorInstance = editor;
 
-	editor.once( 'destroy', () => {
+	editor.once<DestroyEvent>( 'destroy', () => {
 		delete sourceElement.ckeditorInstance;
 	} );
 }

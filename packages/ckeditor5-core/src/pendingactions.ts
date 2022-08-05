@@ -8,8 +8,8 @@
  */
 
 import ContextPlugin from './contextplugin';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import Collection, { type AddEvent, type RemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -52,18 +52,22 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * @extends module:core/contextplugin~ContextPlugin
  */
-export default class PendingActions extends ContextPlugin {
+export default class PendingActions extends ContextPlugin implements Iterable<Action> {
+	declare public hasAny: boolean;
+
+	private _actions!: Collection<Action & { _id?: string }, '_id'>;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'PendingActions';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		/**
 		 * Defines whether there is any registered pending action.
 		 *
@@ -92,7 +96,7 @@ export default class PendingActions extends ContextPlugin {
 	 * @param {String} message The action message.
 	 * @returns {Object} An observable object that represents a pending action.
 	 */
-	add( message ) {
+	public add( message: string ): unknown {
 		if ( typeof message !== 'string' ) {
 			/**
 			 * The message must be a string.
@@ -102,7 +106,7 @@ export default class PendingActions extends ContextPlugin {
 			throw new CKEditorError( 'pendingactions-add-invalid-message', this );
 		}
 
-		const action = Object.create( ObservableMixin );
+		const action = new Observable() as Action;
 
 		action.set( 'message', message );
 		this._actions.add( action );
@@ -116,7 +120,7 @@ export default class PendingActions extends ContextPlugin {
 	 *
 	 * @param {Object} action An action object.
 	 */
-	remove( action ) {
+	public remove( action: Action ): void {
 		this._actions.remove( action );
 		this.hasAny = !!this._actions.length;
 	}
@@ -126,7 +130,7 @@ export default class PendingActions extends ContextPlugin {
 	 *
 	 * returns {Object|null} The pending action object.
 	 */
-	get first() {
+	public get first(): Action | null {
 		return this._actions.get( 0 );
 	}
 
@@ -135,7 +139,7 @@ export default class PendingActions extends ContextPlugin {
 	 *
 	 * @returns {Iterable.<*>}
 	 */
-	[ Symbol.iterator ]() {
+	public [ Symbol.iterator ](): Iterator<Action> {
 		return this._actions[ Symbol.iterator ]();
 	}
 
@@ -153,3 +157,10 @@ export default class PendingActions extends ContextPlugin {
 	 * @param {Object} action The removed action.
 	 */
 }
+
+export interface Action extends Observable {
+	message: string;
+}
+
+export type AddActionEvent = AddEvent<Action>;
+export type RemoveActionEvent = RemoveEvent<Action>;

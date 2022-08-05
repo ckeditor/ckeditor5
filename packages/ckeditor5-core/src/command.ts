@@ -7,8 +7,9 @@
  * @module core/command
  */
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import { Observable, type ChangeEvent, type DecoratedMethodEvent, type SetEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type Editor from './editor/editor';
 
 /**
  * The base class for CKEditor commands.
@@ -25,13 +26,23 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Command {
+export default class Command extends Observable {
+	public readonly editor: Editor;
+	public readonly affectsData: boolean;
+
+	declare public value: unknown;
+	declare public isEnabled: boolean;
+
+	private readonly _disableStack: Set<string>;
+
 	/**
 	 * Creates a new `Command` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
+		super();
+
 		/**
 		 * The editor on which this command will be used.
 		 *
@@ -127,14 +138,14 @@ export default class Command {
 			this.refresh();
 		} );
 
-		this.on( 'execute', evt => {
+		this.on<ExecuteEvent>( 'execute', evt => {
 			if ( !this.isEnabled ) {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
 
 		// By default commands are disabled when the editor is in read-only mode.
-		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
+		this.listenTo<ChangeEvent<boolean>>( editor, 'change:isReadOnly', ( evt, name, value ) => {
 			if ( value && this.affectsData ) {
 				this.forceDisabled( 'readOnlyMode' );
 			} else {
@@ -150,7 +161,7 @@ export default class Command {
 	 * This method is automatically called when
 	 * {@link module:engine/model/document~Document#event:change any changes are applied to the document}.
 	 */
-	refresh() {
+	public refresh(): void {
 		this.isEnabled = true;
 	}
 
@@ -190,11 +201,11 @@ export default class Command {
 	 *
 	 * @param {String} id Unique identifier for disabling. Use the same id when {@link #clearForceDisabled enabling back} the command.
 	 */
-	forceDisabled( id ) {
+	public forceDisabled( id: string ): void {
 		this._disableStack.add( id );
 
 		if ( this._disableStack.size == 1 ) {
-			this.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
+			this.on<SetEvent<boolean>>( 'set:isEnabled', forceDisable, { priority: 'highest' } );
 			this.isEnabled = false;
 		}
 	}
@@ -204,7 +215,7 @@ export default class Command {
 	 *
 	 * @param {String} id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
 	 */
-	clearForceDisabled( id ) {
+	public clearForceDisabled( id: string ): void {
 		this._disableStack.delete( id );
 
 		if ( this._disableStack.size == 0 ) {
@@ -229,12 +240,12 @@ export default class Command {
 	 *
 	 * @fires execute
 	 */
-	execute() {}
+	public execute( ...args: unknown[] ): unknown { return undefined; }
 
 	/**
 	 * Destroys the command.
 	 */
-	destroy() {
+	public destroy(): void {
 		this.stopListening();
 	}
 
@@ -251,10 +262,10 @@ export default class Command {
 	 */
 }
 
-mix( Command, ObservableMixin );
-
 // Helper function that forces command to be disabled.
-function forceDisable( evt ) {
+function forceDisable( evt: EventInfo<string, boolean> ) {
 	evt.return = false;
 	evt.stop();
 }
+
+export type ExecuteEvent = DecoratedMethodEvent<Command, 'execute'>;

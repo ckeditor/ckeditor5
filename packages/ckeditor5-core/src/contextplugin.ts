@@ -7,8 +7,10 @@
  * @module core/contextplugin
  */
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type Editor from './editor/editor';
+import type Context from './context';
+import type { PluginInterface } from './plugin';
 
 /**
  * The base class for {@link module:core/context~Context} plugin classes.
@@ -27,13 +29,17 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * @implements module:core/plugin~PluginInterface
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class ContextPlugin {
+export default class ContextPlugin extends Observable implements PluginInterface {
+	public readonly context: Context | Editor;
+
 	/**
 	 * Creates a new plugin instance.
 	 *
 	 * @param {module:core/context~Context|module:core/editor/editor~Editor} context
 	 */
-	constructor( context ) {
+	constructor( context: Context | Editor ) {
+		super();
+
 		/**
 		 * The context instance.
 		 *
@@ -46,16 +52,14 @@ export default class ContextPlugin {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public destroy(): void {
 		this.stopListening();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get isContextPlugin() {
+	public static get isContextPlugin(): true {
 		return true;
 	}
 }
-
-mix( ContextPlugin, ObservableMixin );

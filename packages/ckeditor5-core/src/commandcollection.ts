@@ -8,11 +8,14 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import type Command from './command';
 
 /**
  * Collection of commands. Its instance is available in {@link module:core/editor/editor~Editor#commands `editor.commands`}.
  */
-export default class CommandCollection {
+export default class CommandCollection implements Iterable<[ string, Command ]> {
+	private _commands: Map<string, Command>;
+
 	/**
 	 * Creates collection instance.
 	 */
@@ -32,7 +35,7 @@ export default class CommandCollection {
 	 * @param {String} commandName The name of the command.
 	 * @param {module:core/command~Command} command
 	 */
-	add( commandName, command ) {
+	public add( commandName: string, command: Command ): void {
 		this._commands.set( commandName, command );
 	}
 
@@ -42,7 +45,7 @@ export default class CommandCollection {
 	 * @param {String} commandName The name of the command.
 	 * @returns {module:core/command~Command}
 	 */
-	get( commandName ) {
+	public get( commandName: string ): Command | undefined {
 		return this._commands.get( commandName );
 	}
 
@@ -53,7 +56,7 @@ export default class CommandCollection {
 	 * @param {*} [...commandParams] Command parameters.
 	 * @returns {*} The value returned by the {@link module:core/command~Command#execute `command.execute()`}.
 	 */
-	execute( commandName, ...args ) {
+	public execute( commandName: string, ...args: unknown[] ): unknown {
 		const command = this.get( commandName );
 
 		if ( !command ) {
@@ -74,7 +77,7 @@ export default class CommandCollection {
 	 *
 	 * @returns {Iterable.<String>}
 	 */
-	* names() {
+	public* names(): IterableIterator<string> {
 		yield* this._commands.keys();
 	}
 
@@ -83,7 +86,7 @@ export default class CommandCollection {
 	 *
 	 * @returns {Iterable.<module:core/command~Command>}
 	 */
-	* commands() {
+	public* commands(): IterableIterator<Command> {
 		yield* this._commands.values();
 	}
 
@@ -92,16 +95,16 @@ export default class CommandCollection {
 	 *
 	 * Returns `[ commandName, commandInstance ]` pairs.
 	 *
-	 * @returns {Iterable.<Array>}
+	 * @returns {Iterator.<Array>}
 	 */
-	[ Symbol.iterator ]() {
+	public [ Symbol.iterator ](): Iterator<[ string, Command ]> {
 		return this._commands[ Symbol.iterator ]();
 	}
 
 	/**
 	 * Destroys all collection commands.
 	 */
-	destroy() {
+	public destroy(): void {
 		for ( const command of this.commands() ) {
 			command.destroy();
 		}
