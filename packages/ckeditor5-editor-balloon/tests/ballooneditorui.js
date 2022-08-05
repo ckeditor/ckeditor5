@@ -5,20 +5,19 @@
 
 /* globals document, Event */
 
+import BalloonEditor from '../src/ballooneditor';
 import BalloonEditorUI from '../src/ballooneditorui';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
-import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { isElement } from 'lodash-es';
-import BalloonEditor from '../src/ballooneditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { isElement } from 'lodash-es';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -53,41 +52,6 @@ describe( 'BalloonEditorUI', () => {
 	describe( 'init()', () => {
 		it( 'initializes the #view', () => {
 			expect( view.isRendered ).to.be.true;
-		} );
-
-		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			const toolbar = editor.plugins.get( 'BalloonToolbar' );
-			const toolbarFocusSpy = testUtils.sinon.stub( toolbar.toolbarView, 'focus' ).returns( {} );
-			const toolbarShowSpy = testUtils.sinon.stub( toolbar, 'show' ).returns( {} );
-			const toolbarHideSpy = testUtils.sinon.stub( toolbar, 'hide' ).returns( {} );
-			const editingFocusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' ).returns( {} );
-
-			ui.focusTracker.isFocused = true;
-
-			// #show and #hide are mocked so mocking the focus as well.
-			toolbar.toolbarView.focusTracker.isFocused = false;
-
-			editor.keystrokes.press( {
-				keyCode: keyCodes.f10,
-				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.callOrder( toolbarShowSpy, toolbarFocusSpy );
-			sinon.assert.notCalled( toolbarHideSpy );
-			sinon.assert.notCalled( editingFocusSpy );
-
-			// #show and #hide are mocked so mocking the focus as well.
-			toolbar.toolbarView.focusTracker.isFocused = true;
-
-			toolbar.toolbarView.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.callOrder( editingFocusSpy, toolbarHideSpy );
 		} );
 
 		describe( 'editable', () => {
@@ -245,8 +209,8 @@ describe( 'BalloonEditorUI', () => {
 	} );
 } );
 
-describe( 'Balloon toolbar focus cycling', () => {
-	let editorElement, editor, ui, balloonToolbar, keyEventData;
+describe( 'Focus handling and navigation between editing root and editor toolbar', () => {
+	let editorElement, editor, ui, toolbarView, domRoot;
 
 	testUtils.createSinonSandbox();
 
@@ -254,22 +218,17 @@ describe( 'Balloon toolbar focus cycling', () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
 
 		editor = await BalloonEditor.create( editorElement, {
-			plugins: [ BalloonToolbar, Paragraph, Heading, Image, ImageToolbar, ImageCaption ],
-			toolbar: [ 'heading' ],
+			plugins: [ BalloonToolbar, Heading, Paragraph, Image, ImageToolbar, ImageCaption ],
+			toolbar: [ 'heading', 'imageTextAlternative' ],
 			image: {
 				toolbar: [ 'toggleImageCaption' ]
 			}
 		} );
 
-		ui = editor.ui;
-		balloonToolbar = editor.plugins.get( BalloonToolbar );
+		domRoot = editor.editing.view.domRoots.get( 'main' );
 
-		keyEventData = {
-			keyCode: keyCodes.f10,
-			altKey: true,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		};
+		ui = editor.ui;
+		toolbarView = editor.plugins.get( 'BalloonToolbar' ).toolbarView;
 	} );
 
 	afterEach( () => {
@@ -278,51 +237,47 @@ describe( 'Balloon toolbar focus cycling', () => {
 		return editor.destroy();
 	} );
 
-	describe( '`alt+f10` keystroke should', () => {
-		it( 'focus the main  toolbar', () => {
-			const spy = testUtils.sinon.spy( balloonToolbar.toolbarView, 'focus' );
-			setModelData( editor.model, '<paragraph>fo[o]</paragraph>' );
+	describe( 'Focusing toolbars on Alt+F10 key press', () => {
+		beforeEach( () => {
+			ui.focusTracker.isFocused = true;
+			ui.focusTracker.activeElement = domRoot;
+		} );
+
+		it( 'should focus the main toolbar when the focus is in the editing root', () => {
+			const spy = testUtils.sinon.spy( toolbarView, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			ui.focusTracker.isFocused = true;
-			balloonToolbar.focusTracker.isFocused = false;
+			ui.focusTracker.activeElement = domRoot;
 
-			editor.keystrokes.press( keyEventData );
+			pressAltF10();
 
 			sinon.assert.calledOnce( spy );
 		} );
 
-		describe( 'do nothing', () => {
-			it( 'if nothing has been focused yet', () => {
-				const spy = testUtils.sinon.spy( balloonToolbar.toolbarView, 'focus' );
+		it( 'should do nothing if the toolbar is already focused', () => {
+			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 
-				setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
-				editor.keystrokes.press( keyEventData );
+			// Focus the toolbar.
+			pressAltF10();
+			ui.focusTracker.activeElement = toolbarView.element;
 
-				sinon.assert.notCalled( spy );
-			} );
+			// Try Alt+F10 again.
+			pressAltF10();
 
-			it( 'if toolbar was already focused', () => {
-				const spy = testUtils.sinon.spy( balloonToolbar.toolbarView, 'focus' );
-
-				setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
-
-				ui.focusTracker.isFocused = true;
-				balloonToolbar.focusTracker.isFocused = false;
-
-				editor.keystrokes.press( keyEventData );
-
-				editor.keystrokes.press( keyEventData );
-
-				sinon.assert.calledTwice( spy );
-			} );
+			sinon.assert.calledTwice( toolbarFocusSpy );
+			sinon.assert.notCalled( domRootFocusSpy );
 		} );
 
-		it( 'prioritize widget toolbar over global toolbar', () => {
+		it( 'should prioritize widget toolbar over the global toolbar', () => {
 			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
 			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
 
-			const toolbarSpy = testUtils.sinon.spy( balloonToolbar.toolbarView, 'focus' );
+			const toolbarSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
 
 			setModelData( editor.model,
@@ -331,346 +286,65 @@ describe( 'Balloon toolbar focus cycling', () => {
 				'<paragraph>baz</paragraph>'
 			);
 
-			ui.focusTracker.isFocused = true;
-			balloonToolbar.focusTracker.isFocused = false;
-
-			// select image baloon toolbar
-			editor.keystrokes.press( keyEventData );
+			// Focus the image balloon toolbar.
+			pressAltF10();
+			ui.focusTracker.activeElement = imageToolbar.element;
 
 			sinon.assert.calledOnce( imageToolbarSpy );
 			sinon.assert.notCalled( toolbarSpy );
 		} );
 	} );
 
-	describe( '`esc` keystroke should', () => {
-		it( 'do nothing if it was pressed when no toolbar was focused', () => {
-			const spy = testUtils.sinon.spy( balloonToolbar.toolbarView, 'focus' );
+	describe( 'Restoring forcus on Esc key press', () => {
+		beforeEach( () => {
+			ui.focusTracker.isFocused = true;
+			ui.focusTracker.activeElement = domRoot;
+		} );
+
+		it( 'should move the focus back from the main toolbar to the editing root', () => {
+			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
-			editor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
+			// Focus the toolbar.
+			pressAltF10();
+			ui.focusTracker.activeElement = toolbarView.element;
 
-			sinon.assert.notCalled( spy );
+			pressEsc();
+
+			sinon.assert.callOrder( toolbarFocusSpy, domRootFocusSpy );
 		} );
-	} );
 
-	describe( 'advanced scenarios', () => {
-		it( 'focus toolbar, focus editor back when `esc` was pressed', () => {
-			const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
+		it( 'should do nothing if it was pressed when no toolbar was focused', () => {
+			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
-			ui.focusTracker.isFocused = true;
-			balloonToolbar.focusTracker.isFocused = false;
-			ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
+			pressEsc();
 
-			editor.keystrokes.press( keyEventData );
-
-			ui.focusTracker.focusedElement = document.activeElement;
-
-			editor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.calledOnce( editorSpy );
-		} );
-
-		it( 'cycling between the toolbars should not be possible when widget is selected', () => {
-			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
-			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
-
-			const toolbarSpy = testUtils.sinon.spy( balloonToolbar.toolbarView, 'focus' );
-			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
-
-			setModelData( editor.model,
-				'<paragraph>foo</paragraph>' +
-				'[<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>bar</caption></imageBlock>]' +
-				'<paragraph>baz</paragraph>'
-			);
-
-			ui.focusTracker.isFocused = true;
-			balloonToolbar.focusTracker.isFocused = false;
-
-			// select image baloon toolbar
-			editor.keystrokes.press( keyEventData );
-
-			sinon.assert.calledOnce( imageToolbarSpy );
-
-			// try to switch to global baloon toolbar
-			editor.keystrokes.press( keyEventData );
-			sinon.assert.calledTwice( imageToolbarSpy );
-			sinon.assert.notCalled( toolbarSpy );
-		} );
-
-		// TODO
-		it.skip( 'switch focus between image/toolbar/image and go back to editor after `esc` was pressed', () => {
-			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
-			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
-
-			const toolbarSpy = testUtils.sinon.spy( balloonToolbar.toolbarView, 'focus' );
-			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
-			const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
-
-			setModelData( editor.model,
-				'<paragraph>foo</paragraph>' +
-				'<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>ba[]r</caption></imageBlock>' +
-				'<paragraph>baz</paragraph>'
-			);
-
-			ui.focusTracker.isFocused = true;
-			balloonToolbar.focusTracker.isFocused = false;
-
-			// select image baloon toolbar
-			editor.keystrokes.press( keyEventData );
-			ui.focusTracker.focusedElement = document.activeElement;
-
-			sinon.assert.calledOnce( imageToolbarSpy );
-
-			// try to switch to global baloon toolbar
-			editor.keystrokes.press( keyEventData );
-			balloonToolbar.focusTracker.focusedElement = document.activeElement;
-
-			sinon.assert.calledOnce( toolbarSpy );
-
-			// try to switch back to image baloon toolbar
-			editor.keystrokes.press( keyEventData );
-
-			sinon.assert.calledOnce( imageToolbarSpy );
-			sinon.assert.calledTwice( toolbarSpy );
-
-			// move selection back inside the editor
-			editor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-			sinon.assert.calledOnce( editorSpy );
+			sinon.assert.notCalled( domRootFocusSpy );
+			sinon.assert.notCalled( toolbarFocusSpy );
 		} );
 	} );
-} );
 
-describe( 'Block toolbar focus cycling', () => {
-	let editorElement, editor, ui, balloonToolbar, blockToolbar, keyEventData, blockToolbarView;
-
-	testUtils.createSinonSandbox();
-
-	beforeEach( async () => {
-		editorElement = document.body.appendChild( document.createElement( 'div' ) );
-
-		editor = await BalloonEditor.create( editorElement, {
-			plugins: [ BlockToolbar, Paragraph, Heading, Image, ImageToolbar, ImageCaption ],
-			blockToolbar: [ 'heading' ],
-			image: {
-				toolbar: [ 'toggleImageCaption' ]
-			}
-		} );
-
-		ui = editor.ui;
-		balloonToolbar = editor.plugins.get( BalloonToolbar );
-		blockToolbar = editor.plugins.get( BlockToolbar );
-		blockToolbarView = blockToolbar.toolbarView;
-		keyEventData = {
+	function pressAltF10() {
+		editor.keystrokes.press( {
 			keyCode: keyCodes.f10,
 			altKey: true,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
-		};
-	} );
-
-	afterEach( () => {
-		editorElement.remove();
-
-		return editor.destroy();
-	} );
-
-	describe( '`alt+f10` keystroke should', () => {
-		it( 'focus the main toolbar', () => {
-			const spy = testUtils.sinon.spy( blockToolbarView, 'focus' );
-			setModelData( editor.model, '<paragraph>fo[o]</paragraph>' );
-
-			ui.focusTracker.isFocused = true;
-			blockToolbarView.focusTracker.isFocused = false;
-
-			editor.keystrokes.press( keyEventData );
-
-			sinon.assert.calledOnce( spy );
 		} );
+	}
 
-		describe( 'do nothing', () => {
-			it( 'if nothing has been focused yet', () => {
-				const spy = testUtils.sinon.spy( blockToolbarView, 'focus' );
-
-				setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
-
-				editor.keystrokes.press( keyEventData );
-
-				sinon.assert.notCalled( spy );
-			} );
-
-			it( 'if toolbar was already focused', () => {
-				const spy = testUtils.sinon.spy( blockToolbarView, 'focus' );
-
-				setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
-
-				ui.focusTracker.isFocused = true;
-				blockToolbarView.focusTracker.isFocused = false;
-
-				editor.keystrokes.press( keyEventData );
-
-				editor.keystrokes.press( keyEventData );
-
-				sinon.assert.calledTwice( spy );
-			} );
+	function pressEsc() {
+		editor.keystrokes.press( {
+			keyCode: keyCodes.esc,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
 		} );
-
-		it( 'prioritize widget toolbar over global toolbar', () => {
-			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
-			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
-
-			const toolbarSpy = testUtils.sinon.spy( blockToolbarView, 'focus' );
-			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
-
-			setModelData( editor.model,
-				'<paragraph>foo</paragraph>' +
-				'[<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>bar</caption></imageBlock>]' +
-				'<paragraph>baz</paragraph>'
-			);
-
-			ui.focusTracker.isFocused = true;
-			blockToolbarView.focusTracker.isFocused = false;
-
-			// select image baloon toolbar
-			editor.keystrokes.press( keyEventData );
-
-			sinon.assert.calledOnce( imageToolbarSpy );
-			sinon.assert.notCalled( toolbarSpy );
-		} );
-	} );
-
-	describe( '`esc` keystroke should', () => {
-		it( 'do nothing if it was pressed when no toolbar was focused', () => {
-			const spy = testUtils.sinon.spy( blockToolbarView, 'focus' );
-
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
-
-			editor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.notCalled( spy );
-		} );
-	} );
-
-	describe( 'advanced scenarios', () => {
-		it( 'focus toolbar, focus editor back when `esc` was pressed', () => {
-			const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
-
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
-
-			ui.focusTracker.isFocused = true;
-			blockToolbarView.focusTracker.isFocused = false;
-			ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
-
-			editor.keystrokes.press( keyEventData );
-
-			ui.focusTracker.focusedElement = document.activeElement;
-
-			editor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.calledOnce( editorSpy );
-		} );
-
-		it( 'on widget selection, cycling between its toolbar and block toolbar should be possible', () => {
-			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
-			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
-
-			const toolbarSpy = testUtils.sinon.spy( blockToolbarView, 'focus' );
-			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
-
-			setModelData( editor.model,
-				'<paragraph>foo</paragraph>' +
-				'[<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>bar</caption></imageBlock>]' +
-				'<paragraph>baz</paragraph>'
-			);
-
-			ui.focusTracker.isFocused = true;
-			blockToolbarView.focusTracker.isFocused = false;
-
-			// select image baloon toolbar
-			editor.keystrokes.press( keyEventData );
-			ui.focusTracker.focusedElement = document.activeElement;
-
-			sinon.assert.calledOnce( imageToolbarSpy );
-
-			// try to switch to global baloon toolbar
-			editor.keystrokes.press( keyEventData );
-			ui.focusTracker.focusedElement = document.activeElement;
-
-			sinon.assert.calledOnce( toolbarSpy );
-
-			// switch to image baloon toolbar again
-			editor.keystrokes.press( keyEventData );
-
-			sinon.assert.calledTwice( imageToolbarSpy );
-		} );
-
-		it( 'switch focus between image/toolbar/image and go back to editor after `esc` was pressed', () => {
-			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
-			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
-
-			const toolbarSpy = testUtils.sinon.spy( blockToolbarView, 'focus' );
-			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
-			const editorSpy = testUtils.sinon.spy( editor.editing.view.domRoots.get( 'main' ), 'focus' );
-
-			setModelData( editor.model,
-				'<paragraph>foo</paragraph>' +
-				'<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>ba[]r</caption></imageBlock>' +
-				'<paragraph>baz</paragraph>'
-			);
-
-			ui.focusTracker.isFocused = true;
-			balloonToolbar.focusTracker.isFocused = false;
-
-			// select image baloon toolbar
-			editor.keystrokes.press( keyEventData );
-			ui.focusTracker.focusedElement = document.activeElement;
-
-			sinon.assert.calledOnce( imageToolbarSpy );
-
-			// try to switch to global baloon toolbar
-			editor.keystrokes.press( keyEventData );
-			ui.focusTracker.focusedElement = document.activeElement;
-
-			sinon.assert.calledOnce( toolbarSpy );
-
-			// try to switch back to image baloon toolbar
-			editor.keystrokes.press( keyEventData );
-
-			sinon.assert.calledTwice( imageToolbarSpy );
-			sinon.assert.calledOnce( toolbarSpy );
-
-			// move selection back inside the editor
-			editor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.calledOnce( editorSpy );
-		} );
-	} );
+	}
 } );
 
 class VirtualBalloonTestEditor extends VirtualTestEditor {
