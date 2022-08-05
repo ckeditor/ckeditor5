@@ -24,18 +24,15 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'WidgetToolbarRepository', () => {
-	let editor, model, balloon, widgetToolbarRepository, editorElement, spyEditorUI;
+	let editor, model, balloon, widgetToolbarRepository, editorElement, registerFocusableToolbarSpy;
 
 	testUtils.createSinonSandbox();
-
-	before( () => {
-		sinon.spy( EditorUI.prototype, 'registerFocusableToolbar' );
-		spyEditorUI = EditorUI.prototype.registerFocusableToolbar;
-	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
+
+		registerFocusableToolbarSpy = sinon.spy( EditorUI.prototype, 'registerFocusableToolbar' );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -50,10 +47,6 @@ describe( 'WidgetToolbarRepository', () => {
 				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 			} );
-	} );
-
-	after( () => {
-		spyEditorUI.restore();
 	} );
 
 	afterEach( () => {
@@ -94,7 +87,13 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: () => null
 			} );
 
-			expect( spyEditorUI.callCount ).to.equal( 1 );
+			sinon.assert.calledWithExactly(
+				registerFocusableToolbarSpy.lastCall,
+				widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view,
+				sinon.match( {
+					isContextual: true
+				} )
+			);
 		} );
 
 		it( 'should throw when adding two times widget with the same id', () => {
