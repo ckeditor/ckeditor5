@@ -552,7 +552,23 @@ describe( 'EditorUI', () => {
 				} ).to.not.throw();
 			} );
 
-			it( 'should return focus back to the last focused editing area', () => {
+			it( 'should return focus back to the editing view if it came from there', () => {
+				const editingFocusSpy = sinon.spy( editor.editing.view, 'focus' );
+
+				ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
+
+				pressAltF10();
+				ui.focusTracker.focusedElement = visibleToolbarA.element;
+
+				pressEsc();
+
+				sinon.assert.calledOnce( editingFocusSpy );
+				sinon.assert.notCalled( editingAreaASpy );
+				sinon.assert.notCalled( editingAreaBSpy );
+				sinon.assert.notCalled( invisibleEditingAreaSpy );
+			} );
+
+			it( 'should return focus back to the last focused editing area that does not belong to the editing view', () => {
 				pressAltF10();
 				ui.focusTracker.focusedElement = visibleToolbarA.element;
 
@@ -580,11 +596,14 @@ describe( 'EditorUI', () => {
 			} );
 
 			it( 'should focus the first editing area if the focus went straight to the toolbar without focusing any editing areas', () => {
+				const editingFocusSpy = sinon.spy( editor.editing.view, 'focus' );
+
 				ui.focusTracker.focusedElement = visibleToolbarA.element;
 
 				pressEsc();
 
-				sinon.assert.calledOnce( editingAreaASpy );
+				sinon.assert.calledOnce( editingFocusSpy );
+				sinon.assert.notCalled( editingAreaASpy );
 				sinon.assert.notCalled( editingAreaBSpy );
 				sinon.assert.notCalled( invisibleEditingAreaSpy );
 			} );

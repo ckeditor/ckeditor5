@@ -340,16 +340,20 @@ export default class EditorUI {
 	 */
 	_initFocusTracking() {
 		const editor = this.editor;
+		const editingView = editor.editing.view;
 
-		let lastFocusedEditingArea;
+		let lastFocusedForeignElement;
 
 		// Focus the next focusable toolbar on <kbd>Alt</kbd> + <kbd>F10</kbd>.
 		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
+			const focusedElement = this.focusTracker.focusedElement;
+
 			console.clear();
 			console.group( 'Pressed Alt+F10' );
 
-			if ( this._focusableEditingAreas.has( this.focusTracker.focusedElement ) ) {
-				lastFocusedEditingArea = this.focusTracker.focusedElement;
+			// Focus moved out of a DOM element that does not belong to the editing view (e.g. source editing).
+			if ( this._focusableEditingAreas.has( focusedElement ) && !editingView.domConverter.mapDomToView( focusedElement ) ) {
+				lastFocusedForeignElement = focusedElement;
 			}
 
 			const candidateDefinitions = this._getFocusableCandidateToolbarDefinitions();
@@ -399,25 +403,20 @@ export default class EditorUI {
 				return;
 			}
 
-			// Bring focus back to where it came from before focusing the toolbar.
-			if ( lastFocusedEditingArea ) {
-				console.log( 'Moving focus back where it came from', lastFocusedEditingArea );
-				lastFocusedEditingArea.focus();
-				lastFocusedEditingArea = null;
+			// Bring focus back to where it came from before focusing the toolbar:
+			// 1. If it came from outside the engine view (e.g. source editing), move it there.
+			if ( lastFocusedForeignElement ) {
+				console.log( 'Moving focus back where it came from', lastFocusedForeignElement );
+				lastFocusedForeignElement.focus();
+				lastFocusedForeignElement = null;
 			}
-			// It could be the focus went straight to the toolbar before even focusing the editing area.
-			// Focus the first visible editing area then.
+			// 2. There are two possibilities left:
+			//   2.1. It could be that the focus went from an editable element in the view (root or nested).
+			//   2.2. It could be the focus went straight to the toolbar before even focusing the editing area.
+			// In either case, just focus the view editing. The focus will land where it belongs.
 			else {
-				console.log( 'Looks like the focus went straight to the toolbar.' );
-
-				for ( const focusableEditingArea of this._focusableEditingAreas ) {
-					if ( isVisible( focusableEditingArea ) ) {
-						console.log( 'Focusing the first visible focusable editing area', focusableEditingArea );
-						focusableEditingArea.focus();
-
-						break;
-					}
-				}
+				console.log( 'Looks like the focus went straight to the toolbar. Just focusing the editing then.' );
+				editor.editing.view.focus();
 			}
 
 			// Clean up after the toolbar if there is anything to do there.
@@ -509,7 +508,7 @@ export default class EditorUI {
 	 */
 	_getCurrentFocusedToolbarDefinition( candidateDefinitions ) {
 		for ( const definition of candidateDefinitions ) {
-			if ( definition.toolbarView.element.contains( this.focusTracker.focusedElement ) ) {
+			if ( definition.toolbarView.element && definition.toolbarView.element.contains( this.focusTracker.focusedElement ) ) {
 				return definition;
 			}
 		}
