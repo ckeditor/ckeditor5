@@ -35,18 +35,14 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
-	let resizeCallback, spyEditorUI;
+	let resizeCallback, registerFocusableToolbarSpy;
 
 	testUtils.createSinonSandbox();
-
-	before( () => {
-		sinon.spy( EditorUI.prototype, 'registerFocusableToolbar' );
-		spyEditorUI = EditorUI.prototype.registerFocusableToolbar;
-	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
+
 		// Make sure other tests of the editor do not affect tests that follow.
 		// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
 		// in DOM, the following DOM mock will have no effect.
@@ -60,6 +56,8 @@ describe( 'BalloonToolbar', () => {
 				unobserve: sinon.spy()
 			};
 		} );
+
+		registerFocusableToolbarSpy = sinon.spy( EditorUI.prototype, 'registerFocusableToolbar' );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -87,10 +85,6 @@ describe( 'BalloonToolbar', () => {
 				// Remove all selection ranges from DOM before testing.
 				window.getSelection().removeAllRanges();
 			} );
-	} );
-
-	after( () => {
-		spyEditorUI.restore();
 	} );
 
 	afterEach( () => {
@@ -193,8 +187,23 @@ describe( 'BalloonToolbar', () => {
 		expect( balloonToolbar.toolbarView.options.isFloating ).to.be.true;
 	} );
 
-	it( 'should register focusableToolbar in the editor.ui', () => {
-		expect( spyEditorUI.callCount ).to.equal( 1 );
+	it( 'should register its toolbar as focusable toolbar in EditorUI with proper configuration responsible for presentation', () => {
+		const showPanelSpy = sinon.spy( balloonToolbar, 'show' );
+		const hidePanelSpy = sinon.spy( balloonToolbar, 'hide' );
+
+		sinon.assert.calledWith( registerFocusableToolbarSpy.lastCall, balloonToolbar.toolbarView, sinon.match( {
+			beforeFocus: sinon.match.func,
+			afterBlur: sinon.match.func,
+			isContextual: true
+		} ) );
+
+		registerFocusableToolbarSpy.firstCall.args[ 1 ].beforeFocus();
+
+		sinon.assert.calledOnceWithExactly( showPanelSpy, true );
+
+		registerFocusableToolbarSpy.firstCall.args[ 1 ].afterBlur();
+
+		sinon.assert.calledOnce( hidePanelSpy );
 	} );
 
 	describe( 'pluginName', () => {
@@ -404,6 +413,13 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
+		} );
+
+		it( 'should display the toolbar for a focused selection when called with an argument', () => {
+			setData( model, '<paragraph>b[]ar</paragraph>' );
+
+			balloonToolbar.show( true );
+			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/6443
