@@ -356,7 +356,7 @@ describe( 'EditorUI', () => {
 			} );
 		} );
 
-		describe( 'focusing toolbars on Alt+F10 key press', () => {
+		describe( 'Focusing toolbars on Alt+F10 key press', () => {
 			let locale, visibleToolbar, invisibleToolbar, visibleContextualToolbar, toolbarWithBeforeFocus;
 			let editingArea;
 			let visibleSpy, visibleContextualSpy, invisibleSpy, toolbarWithBeforeFocusSpy;
@@ -491,7 +491,7 @@ describe( 'EditorUI', () => {
 			} );
 		} );
 
-		describe( 'restoring forcus on Esc key press', () => {
+		describe( 'Restoring forcus on Esc key press', () => {
 			let locale, visibleToolbarA, visibleToolbarB, editingAreaA, editingAreaB, invisibleEditingArea;
 			let editingAreaASpy, editingAreaBSpy, invisibleEditingAreaSpy;
 
@@ -532,9 +532,6 @@ describe( 'EditorUI', () => {
 				editingAreaASpy = sinon.spy( editingAreaA, 'focus' );
 				editingAreaBSpy = sinon.spy( editingAreaB, 'focus' );
 				invisibleEditingAreaSpy = sinon.spy( invisibleEditingArea, 'focus' );
-				// visibleContextualSpy = sinon.spy( visibleContextualToolbar, 'focus' );
-				// invisibleSpy = sinon.spy( invisibleToolbar, 'focus' );
-				// toolbarWithBeforeFocusSpy = sinon.spy( toolbarWithBeforeFocus, 'focus' );
 			} );
 
 			afterEach( () => {

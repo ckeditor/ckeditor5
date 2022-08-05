@@ -326,7 +326,7 @@ describe( 'ClassicEditorUI', () => {
 	} );
 } );
 
-describe( 'focus handling and navigation between editing root and editor toolbar', () => {
+describe( 'Focus handling and navigation between editing root and editor toolbar', () => {
 	let editorElement, editor, ui, view, toolbarView, domRoot;
 
 	testUtils.createSinonSandbox();
@@ -355,7 +355,7 @@ describe( 'focus handling and navigation between editing root and editor toolbar
 		return editor.destroy();
 	} );
 
-	describe( 'focusing toolbars on Alt+F10 key press', () => {
+	describe( 'Focusing toolbars on Alt+F10 key press', () => {
 		beforeEach( () => {
 			ui.focusTracker.isFocused = true;
 			ui.focusTracker.activeElement = domRoot;
@@ -413,7 +413,7 @@ describe( 'focus handling and navigation between editing root and editor toolbar
 		} );
 	} );
 
-	describe( 'restoring forcus on Esc key press', () => {
+	describe( 'Restoring forcus on Esc key press', () => {
 		beforeEach( () => {
 			ui.focusTracker.isFocused = true;
 			ui.focusTracker.activeElement = domRoot;
