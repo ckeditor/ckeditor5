@@ -468,7 +468,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo An object containing information about the fired event.
-	 * @param {MouseEvent} mouseEventData The native DOM mouse event data.
+	 * @param {Event} mouseEventData The native DOM event.
 	 */
 	_onMouseMoveHandler( eventInfo, mouseEventData ) {
 		if ( !this._isResizingActive ) {
