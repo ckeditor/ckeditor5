@@ -43,7 +43,7 @@ export const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/sup
  * @extends Error
  */
 export default class CKEditorError extends Error {
-	public readonly context: object | null;
+	public readonly context: object | null | undefined;
 	public readonly data?: object;
 
 	/**
@@ -60,7 +60,7 @@ export default class CKEditorError extends Error {
 	 * will be appended to the error message, so the data are quickly visible in the console. The original
 	 * data object will also be later available under the {@link #data} property.
 	 */
-	constructor( errorName: string, context: object | null, data?: object ) {
+	constructor( errorName: string, context: object | null | undefined, data?: object ) {
 		super( getErrorMessage( errorName, data ) );
 
 		/**

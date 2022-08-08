@@ -21,6 +21,10 @@ Type some more or edit the content and observe the counter below the main editor
 
 {@snippet features/word-count}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 The example above was created by using the following HTML page structure:
 
 ```html

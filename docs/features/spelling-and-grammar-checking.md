@@ -27,6 +27,10 @@ Use the toolbar button {@icon @webspellchecker/wproofreader-ckeditor5/theme/icon
 
 {@snippet features/wproofreader}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 The proofreader badge in the bottom-right corner shows you the total number of mistakes detected. Hover an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found. The hovercard allows the user to employ the feature on the go. If you want to see an overview of all mistakes, click the "Proofread in dialog" option in the toolbar dropdown. It will invoke a detached floating panel, easy to navigate and perfect for dedicated proofreading sessions.
 
 You can access the proofreader settings from the toolbar, too. These can be used to set the language dictionary and some additional proofreading settings.

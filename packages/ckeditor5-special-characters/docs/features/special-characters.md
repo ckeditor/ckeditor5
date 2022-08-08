@@ -19,6 +19,10 @@ Use the toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons
 
 {@snippet features/special-characters}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Configuration
 
 By default, a few categories of special characters have been defined. You can easily customize the special characters available in your WYSIWYG editor installation by adding new categories, extending the existing ones or removing them altogether.

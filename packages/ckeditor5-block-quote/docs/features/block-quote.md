@@ -20,6 +20,10 @@ Use the block quote toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/q
 
 {@snippet features/block-quote}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Nested block quotes
 
 Starting from version 27.1.0, CKEditor 5 will properly display a block quote nested in another block quote. This sort of structure is indispensable in email editors or discussion forums. The ability to cite previous messages and preserve a correct quotation structure is often crucial to maintain the flow of communication. Nested block quotes may also prove useful for scientific or academic papers, but articles citing sources and referring to previous writing would often use it, too.

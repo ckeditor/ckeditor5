@@ -74,6 +74,26 @@ describe( 'ImageCaptionUI', () => {
 			sinon.assert.calledOnce( executeSpy );
 		} );
 
+		it( 'should focus the editing view on the #execute event if the caption showed up', () => {
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+			buttonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( focusSpy );
+		} );
+
+		it( 'should focus the editing view on the #execute event if the caption was hidden', () => {
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /><figcaption>caption</figcaption></figure>' );
+
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+			buttonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( focusSpy );
+		} );
+
 		it( 'should not scroll the editing view on the #execute event if the caption was hidden', () => {
 			editor.setData( '<figure class="image"><img src="/assets/sample.png" /><figcaption>foo</figcaption></figure>' );
 

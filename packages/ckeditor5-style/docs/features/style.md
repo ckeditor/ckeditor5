@@ -228,7 +228,7 @@ Check out also these CKEditor 5 features to gain better control over your conten
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 * {@link features/general-html-support General HTML support} &ndash; Allows enabling additional HTML, such as `<style>` and `<classes>` attributes.
 
-### Installation
+## Installation
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-style`](https://www.npmjs.com/package/@ckeditor/ckeditor5-style) package:
 

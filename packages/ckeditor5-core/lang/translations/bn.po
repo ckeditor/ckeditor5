@@ -46,4 +46,4 @@ msgstr "ফাইল আপলোড করা যাবে নাঃ"
 
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
-msgstr "রিচ টেক্সট এডিটর। সম্পাদনার ক্ষেত্র: %0"
+msgstr ""
