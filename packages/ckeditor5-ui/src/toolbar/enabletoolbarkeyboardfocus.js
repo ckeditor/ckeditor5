@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global console */
+
 /**
  * @module ui/toolbar/enabletoolbarkeyboardfocus
  */
@@ -10,6 +12,7 @@
 /**
  * Enables focus/blur toolbar navigation using `Alt+F10` and `Esc` keystrokes.
  *
+ * @deprecated
  * @param {Object} options Options of the utility.
  * @param {*} options.origin A view to which the focus will return when `Esc` is pressed and
  * `options.toolbar` is focused.
@@ -32,6 +35,20 @@ export default function enableToolbarKeyboardFocus( {
 	beforeFocus,
 	afterBlur
 } ) {
+	/**
+	 * The {@link module:ui/toolbar/enabletoolbarkeyboardfocus~enableToolbarKeyboardFocus} helper has been deprecated and will be
+	 * removed in the near future. Please use {@link module:core/editor/editorui~EditorUI#registerFocusableToolbar} instead
+	 * to enable focus navigation to and from the toolbar using `Alt+F10` and `Esc` keystrokes.
+	 *
+	 * @param {module:ui/toolbar/toolbarview~ToolbarView} toolbar The toolbar the helper was enabled for.
+	 * @param {*} origin A view to which the focus would return on `Esc` from the `toolbar`.
+	 * @error ui-toolbar-enabletoolbarkeyboardfocus-deprecated
+	 */
+	console.warn(
+		'ui-toolbar-enabletoolbarkeyboardfocus-deprecated: ' +
+		'The enableToolbarKeyboardFocus() helper has been deprecated and will be removed in the near future. ' +
+		'Please use EditorUI#registerFocusableToolbar() to enable focus navigation to and from the toolbar.', { origin, toolbar } );
+
 	// Because toolbar items can get focus, the overall state of the toolbar must
 	// also be tracked.
 	originFocusTracker.add( toolbar.element );

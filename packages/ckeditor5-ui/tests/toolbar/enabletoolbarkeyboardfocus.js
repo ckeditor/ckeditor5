@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global console, document */
 
 import View from '../../src/view';
 import ToolbarView from '../../src/toolbar/toolbarview';
@@ -12,14 +12,19 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import enableToolbarKeyboardFocus from '../../src/toolbar/enabletoolbarkeyboardfocus';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 describe( 'enableToolbarKeyboardFocus()', () => {
-	let origin, originFocusTracker, originKeystrokeHandler, toolbar;
+	let origin, originFocusTracker, originKeystrokeHandler, toolbar, consoleWarnStub;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		origin = viewCreator();
 		originFocusTracker = new FocusTracker();
 		originKeystrokeHandler = new KeystrokeHandler();
 		toolbar = new ToolbarView( { t: langString => langString } );
+		consoleWarnStub = testUtils.sinon.stub( console, 'warn' ).callsFake( () => {} );
 
 		toolbar.render();
 
@@ -29,6 +34,13 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 			originKeystrokeHandler,
 			toolbar
 		} );
+	} );
+
+	it( 'should warn', () => {
+		sinon.assert.calledWithExactly( consoleWarnStub.firstCall,
+			sinon.match( /^ui-toolbar-enabletoolbarkeyboardfocus-deprecated/ ),
+			{ origin, toolbar }
+		);
 	} );
 
 	it( 'focuses the toolbar on Alt+F10', () => {
