@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, KeyboardEvent */
 
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import InsertTableView from '../../src/ui/inserttableview';
+
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'InsertTableView', () => {
 	let view, locale;
@@ -106,6 +108,43 @@ describe( 'InsertTableView', () => {
 
 					dispatchEvent( view.element, 'click' );
 
+					sinon.assert.calledOnce( spy );
+				} );
+			} );
+
+			describe( 'keydown', () => {
+				it( 'on Enter, executes the command', () => {
+					const spy = sinon.spy();
+
+					view.on( 'execute', spy );
+					view.items.first.element.dispatchEvent( new KeyboardEvent( 'keydown', { key: 'Enter', bubbles: true } ) );
+
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'on other key, does not execute command', () => {
+					const spy = sinon.spy();
+
+					view.on( 'execute', spy );
+					view.items.first.element.dispatchEvent( new KeyboardEvent( 'keydown', { key: 'Space', bubbles: true } ) );
+
+					sinon.assert.notCalled( spy );
+				} );
+
+				it( 'on arrowright, moves focus to the next tile', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					view.focusTracker.focusedElement = view.items.first.element;
+
+					const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
 					sinon.assert.calledOnce( spy );
 				} );
 			} );
