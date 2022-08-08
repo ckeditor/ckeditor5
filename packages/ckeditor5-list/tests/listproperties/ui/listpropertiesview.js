@@ -432,11 +432,12 @@ describe( 'ListPropertiesView', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					// Mock the first style button is focused.
+					// Mock the styles view is focused.
 					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.stylesView.children.first.element;
+					view.focusTracker.focusedElement = view.children.first.element;
 
-					const spy = sinon.spy( view.stylesView.children.last, 'focus' );
+					// Spy the next view which in this case is the ListProperties button
+					const spy = sinon.spy( view.children.last.buttonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -452,14 +453,34 @@ describe( 'ListPropertiesView', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					// Mock the first style button is focused.
+					// Mock the styles view is focused.
 					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.stylesView.children.first.element;
+					view.focusTracker.focusedElement = view.children.first.element;
 					view.children.last.isCollapsed = false;
 
+					// Spy the previous view which in this case is the Reversed order switch button
 					const spy = sinon.spy( view.reversedSwitchButtonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'so "arrow right" focuses the next focusable item', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the first style button is focused.
+					view.stylesView.focusTracker.isFocused = true;
+					view.stylesView.focusTracker.focusedElement = view.stylesView.children.first.element;
+
+					const spy = sinon.spy( view.stylesView.children.last, 'focus' );
+
+					view.stylesView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
 					sinon.assert.calledOnce( keyEvtData.stopPropagation );
 					sinon.assert.calledOnce( spy );
