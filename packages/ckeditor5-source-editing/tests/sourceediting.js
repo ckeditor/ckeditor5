@@ -620,6 +620,9 @@ describe( 'Focus handling and navigation between source editing and editor toolb
 		ui = editor.ui;
 		toolbarView = ui.view.toolbar;
 		sourceEditingButton = ui.componentFactory.create( 'sourceEditing' );
+
+		ui.focusTracker.isFocused = true;
+		ui.focusTracker.focusedElement = domRoot;
 	} );
 
 	afterEach( () => {
@@ -632,17 +635,21 @@ describe( 'Focus handling and navigation between source editing and editor toolb
 		sourceEditingButton.fire( 'execute' );
 
 		expect( editor.ui.focusTracker.isFocused ).to.be.true;
-		expect( editor.ui.focusTracker.focusedElement ).to.equal( domRoot.nextSibling.children[ 0 ] );
+		expect( document.activeElement ).to.equal( domRoot.nextSibling.children[ 0 ] );
 		expect( editor.editing.view.document.isFocused ).to.be.false;
 	} );
 
 	it( 'should focus the editing root when leaving the source mode', () => {
+		const viewFocusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
 		sourceEditingButton.fire( 'execute' );
+
+		ui.focusTracker.focusedElement = domRoot.nextSibling.children[ 0 ];
+
 		sourceEditingButton.fire( 'execute' );
 
 		expect( editor.ui.focusTracker.isFocused ).to.be.true;
-		expect( editor.ui.focusTracker.focusedElement ).to.equal( domRoot );
-		expect( editor.editing.view.document.isFocused ).to.be.true;
+		sinon.assert.calledOnce( viewFocusSpy );
 	} );
 
 	it( 'Alt+F10 should focus the main toolbar when the focus is in the editing root', () => {
@@ -651,7 +658,7 @@ describe( 'Focus handling and navigation between source editing and editor toolb
 		sourceEditingButton.fire( 'execute' );
 
 		ui.focusTracker.isFocused = true;
-		ui.focusTracker.activeElement = domRoot.nextSibling.children[ 0 ];
+		ui.focusTracker.focusedElement = domRoot.nextSibling.children[ 0 ];
 
 		pressAltF10();
 
@@ -661,12 +668,14 @@ describe( 'Focus handling and navigation between source editing and editor toolb
 	it( 'Esc should move the focus back from the main toolbar to the source editing', () => {
 		sourceEditingButton.fire( 'execute' );
 
+		ui.focusTracker.focusedElement = domRoot.nextSibling.children[ 0 ];
+
 		const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 		const sourceEditingTextareaFocusSpy = testUtils.sinon.spy( domRoot.nextSibling.children[ 0 ], 'focus' );
 
 		// Focus the toolbar.
 		pressAltF10();
-		ui.focusTracker.activeElement = toolbarView.element;
+		ui.focusTracker.focusedElement = toolbarView.element;
 
 		pressEsc();
 

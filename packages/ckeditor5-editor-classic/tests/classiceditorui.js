@@ -357,7 +357,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 	describe( 'Focusing toolbars on Alt+F10 key press', () => {
 		beforeEach( () => {
 			ui.focusTracker.isFocused = true;
-			ui.focusTracker.activeElement = domRoot;
+			ui.focusTracker.focusedElement = domRoot;
 		} );
 
 		it( 'should focus the main toolbar when the focus is in the editing root', () => {
@@ -366,7 +366,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			ui.focusTracker.isFocused = true;
-			ui.focusTracker.activeElement = domRoot;
+			ui.focusTracker.focusedElement = domRoot;
 
 			pressAltF10();
 
@@ -381,7 +381,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 
 			// Focus the toolbar.
 			pressAltF10();
-			ui.focusTracker.activeElement = toolbarView.element;
+			ui.focusTracker.focusedElement = toolbarView.element;
 
 			// Try Alt+F10 again.
 			pressAltF10();
@@ -405,7 +405,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 
 			// Focus the image balloon toolbar.
 			pressAltF10();
-			ui.focusTracker.activeElement = imageToolbar.element;
+			ui.focusTracker.focusedElement = imageToolbar.element;
 
 			sinon.assert.calledOnce( imageToolbarSpy );
 			sinon.assert.notCalled( toolbarSpy );
@@ -415,7 +415,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 	describe( 'Restoring forcus on Esc key press', () => {
 		beforeEach( () => {
 			ui.focusTracker.isFocused = true;
-			ui.focusTracker.activeElement = domRoot;
+			ui.focusTracker.focusedElement = domRoot;
 		} );
 
 		it( 'should move the focus back from the main toolbar to the editing root', () => {
@@ -426,7 +426,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 
 			// Focus the toolbar.
 			pressAltF10();
-			ui.focusTracker.activeElement = toolbarView.element;
+			ui.focusTracker.focusedElement = toolbarView.element;
 
 			pressEsc();
 
