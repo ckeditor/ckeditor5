@@ -219,7 +219,8 @@ export default class BalloonToolbar extends Plugin {
 	 *
 	 * Fires {@link #event:show} event which can be stopped to prevent the toolbar from showing up.
 	 *
-	 * @param {Boolean} showForCollapsedSelection TODO
+	 * @param {Boolean} [showForCollapsedSelection=false] When set `true`, the toolbar will show despite collapsed selection in the
+	 * editing view.
 	 */
 	show( showForCollapsedSelection = false ) {
 		const editor = this.editor;
