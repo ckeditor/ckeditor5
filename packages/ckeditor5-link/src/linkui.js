@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ClickObserver } from 'ckeditor5/src/engine';
-import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
+import { ButtonView, ContextualBalloon, clickOutsideHandler } from '../../ckeditor5-ui/src';
 import { isWidget } from 'ckeditor5/src/widget';
 import LinkFormView from './ui/linkformview';
 import LinkActionsView from './ui/linkactionsview';

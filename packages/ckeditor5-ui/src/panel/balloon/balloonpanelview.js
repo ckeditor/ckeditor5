@@ -12,7 +12,7 @@ import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { isElement } from 'lodash-es';
+import { isElement, isNumber } from 'lodash-es';
 
 import '../../../theme/components/panel/balloonpanel.css';
 
@@ -248,6 +248,15 @@ export default class BalloonPanelView extends View {
 
 		const { name: position, config = {} } = optimalPosition;
 		const { withArrow = true } = config;
+
+		// Hide the balloon when the editor is not in the viewport
+		// See https://enterprise.taskworld.com/taskworld.com/#/home?show=/task/197628/comments
+		if ( positionOptions.viewportOffsetConfig ) {
+			if ( isNumber( positionOptions.viewportOffsetConfig.top ) && top < positionOptions.viewportOffsetConfig.top ) {
+				this.hide();
+				return;
+			}
+		}
 
 		Object.assign( this, { top, left, position, withArrow } );
 	}
