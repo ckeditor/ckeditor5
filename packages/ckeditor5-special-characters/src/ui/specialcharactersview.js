@@ -79,7 +79,6 @@ export default class SpecialCharactersView extends View {
 		} );
 
 		this.items.add( this.navigationView.groupDropdownView.buttonView );
-		// this.items.add( this.navigationView);
 		this.items.add( this.gridView );
 	}
 
@@ -90,7 +89,6 @@ export default class SpecialCharactersView extends View {
 		super.render();
 
 		this.focusTracker.add( this.navigationView.groupDropdownView.buttonView.element );
-		// this.focusTracker.add( this.navigationView.element );
 		this.focusTracker.add( this.gridView.element );
 
 		// Start listening for the keystrokes coming from #element.
@@ -111,7 +109,6 @@ export default class SpecialCharactersView extends View {
 	 * Focuses the first focusable in {@link #items}.
 	 */
 	focus() {
-		// this.navigationView.focus();
-		this.items.first.focus();
+		this.navigationView.focus();
 	}
 }
