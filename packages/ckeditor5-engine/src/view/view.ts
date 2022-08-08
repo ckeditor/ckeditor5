@@ -143,7 +143,7 @@ export default class View extends Observable {
 		 * @type {module:engine/view/renderer~Renderer}
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' ).to( this.document, 'isFocused', 'isSelecting' );
+		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' ).to( this.document, 'isFocused', 'isSelecting', 'isComposing' );
 
 		/**
 		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element

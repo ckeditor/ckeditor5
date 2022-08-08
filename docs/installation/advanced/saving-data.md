@@ -118,7 +118,7 @@ document.querySelector( '#submit' ).addEventListener( 'click', () => {
 
 ## Updating the source element
 
-If the source element is not `<textarea>`, CKEditor 5 clears its content after the editor destroy. However, if you would like to enable updating the source element with the output coming from the data pipeline, you can use the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option.
+If the source element is not `<textarea>`, CKEditor 5 clears its content after the editor is destroyed. However, if you would like to enable updating the source element with the output coming from the data pipeline, you can use the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option.
 
 ```js
 ClassicEditor.create( document.querySelector( '#editor' ), {
@@ -128,7 +128,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 <info-box warning>
-Enabling the `updateSourceElementOnDestroy` option in your configuration, depending on plugins you use, might have some security implications. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Especially, be careful when using Markdown, General HTML Support and HTML embed features 
+Enabling the `updateSourceElementOnDestroy` option in your configuration might have some security implications, depending on plugins you use. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Be especially careful when using Markdown, General HTML Support and HTML embed features
 </info-box>
 
 ## Autosave feature
