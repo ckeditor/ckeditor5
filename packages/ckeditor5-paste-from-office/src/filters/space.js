@@ -41,7 +41,7 @@ export function normalizeSpacerunSpans( htmlDocument ) {
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
 		const innerTextLength = el.innerText.length || 0;
 
-		el.innerHTML = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
+		el.innerText = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
 	} );
 }
 

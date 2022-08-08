@@ -43,7 +43,7 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
@@ -65,12 +65,12 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</td>' +
 								'</tr>' +
@@ -96,14 +96,14 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<thead>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</th>' +
 								'</tr>' +
 							'</thead>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</td>' +
 								'</tr>' +
@@ -634,12 +634,12 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
@@ -667,10 +667,10 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">01</span>' +
 									'</td>' +
 								'</tr>' +
@@ -698,10 +698,10 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">11</span>' +
 									'</td>' +
 								'</tr>' +
@@ -731,10 +731,10 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<thead>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</th>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">11</span>' +
 									'</th>' +
 								'</tr>' +
@@ -764,10 +764,10 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<thead>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</th>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">01</span>' +
 									'</th>' +
 								'</tr>' +
@@ -799,21 +799,21 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" ' +
-											'colspan="2" contenteditable="true" rowspan="2">' +
+											'colspan="2" contenteditable="true" role="textbox" rowspan="2">' +
 										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">12</span>' +
 									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">13</span>' +
 									'</td>' +
 								'</tr>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">22</span>' +
 									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">23</span>' +
 									'</td>' +
 								'</tr>' +
@@ -843,10 +843,10 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">11</span>' +
 									'</td>' +
 								'</tr>' +
@@ -874,10 +874,10 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<thead>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</th>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">01</span>' +
 									'</th>' +
 								'</tr>' +
@@ -1006,10 +1006,10 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
@@ -1115,7 +1115,7 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
@@ -1194,7 +1194,7 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<thead>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</th>' +
 								'</tr>' +
@@ -1481,7 +1481,7 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</th>' +
 								'</tr>' +
@@ -1553,8 +1553,9 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true" ' +
+										'role="textbox">' +
+											'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1572,7 +1573,7 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
@@ -1609,13 +1610,14 @@ describe( 'downcast converters', () => {
 					'<table>' +
 						'<tbody>' +
 							'<tr>' +
-								'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+								'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 									'<span class="ck-table-bogus-paragraph">00</span>' +
 								'</td>' +
 							'</tr>' +
 							'<tr>' +
-								'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
-									'<span class="ck-table-bogus-paragraph"></span>' +
+								'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true" ' +
+									'role="textbox">' +
+										'<span class="ck-table-bogus-paragraph"></span>' +
 								'</td>' +
 							'</tr>' +
 						'</tbody>' +
@@ -1633,12 +1635,12 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
@@ -1673,11 +1675,12 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph"></span>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true" ' +
+										'role="textbox">' +
+											'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1695,10 +1698,10 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
@@ -1810,7 +1813,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow marker user-marker"' +
-										' contenteditable="true">' +
+										' contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
@@ -1829,7 +1832,7 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
@@ -1872,7 +1875,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow"' +
-										' contenteditable="true" data-abc="xyz" data-foo="bar">' +
+										' contenteditable="true" data-abc="xyz" data-foo="bar" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
@@ -1891,7 +1894,7 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +

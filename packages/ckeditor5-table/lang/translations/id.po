@@ -134,7 +134,7 @@ msgstr "Latar belakang"
 
 msgctxt "The label for the input that allows configuring the padding of a table cell."
 msgid "Padding"
-msgstr ""
+msgstr "Padding"
 
 msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
 msgid "Dimensions"
@@ -142,23 +142,23 @@ msgstr "Dimensi"
 
 msgctxt "The label for the group of toolbars that allows configuring the text alignment in a table cell."
 msgid "Table cell text alignment"
-msgstr ""
+msgstr "Penjajaran teks sel tabel"
 
 msgctxt "The label for the toolbar that allows configuring the alignment of a table."
 msgid "Alignment"
-msgstr ""
+msgstr "Penjajaran"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
-msgstr ""
+msgstr "Bilah alat penjajaran teks horizontal"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell."
 msgid "Vertical text alignment toolbar"
-msgstr ""
+msgstr "Bilah alat penjajaran teks vertikal"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table."
 msgid "Table alignment toolbar"
-msgstr ""
+msgstr "Bilah alat penjajaran tabel"
 
 msgctxt "The label for the border style dropdown when no style is applied to a table or a table cell."
 msgid "None"
@@ -182,59 +182,59 @@ msgstr "Ganda"
 
 msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
 msgid "Groove"
-msgstr ""
+msgstr "Groove"
 
 msgctxt "The label for the border style dropdown when the ridge border is applied to a table or a table cell."
 msgid "Ridge"
-msgstr ""
+msgstr "Ridge"
 
 msgctxt "The label for the border style dropdown when the inset border is applied to a table or a table cell."
 msgid "Inset"
-msgstr ""
+msgstr "Inset"
 
 msgctxt "The label for the border style dropdown when the outset border is applied to a table or a table cell."
 msgid "Outset"
-msgstr ""
+msgstr "Outset"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
 msgid "Align cell text to the left"
-msgstr ""
+msgstr "Sejajarkan teks sel ke kiri"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the center."
 msgid "Align cell text to the center"
-msgstr ""
+msgstr "Sejajarkan teks sel ke tengah"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the right."
 msgid "Align cell text to the right"
-msgstr ""
+msgstr "Sejajarkan teks sel ke kanan"
 
 msgctxt "The label used by assistive technologies describing a button that justifies the table cell text."
 msgid "Justify cell text"
-msgstr ""
+msgstr "Ratakan teks sel"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the top."
 msgid "Align cell text to the top"
-msgstr ""
+msgstr "Sejajarkan teks sel ke atas"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the middle."
 msgid "Align cell text to the middle"
-msgstr ""
+msgstr "Sejajarkan teks sel ke tengah"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
-msgstr ""
+msgstr "Sejajarkan teks sel ke bawah"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
 msgid "Align table to the left"
-msgstr ""
+msgstr "Sejajarkan teks sel ke kiri"
 
 msgctxt "The label used by assistive technologies describing a button that centers the table."
 msgid "Center table"
-msgstr ""
+msgstr "Tengahkan tabel"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
 msgid "Align table to the right"
-msgstr ""
+msgstr "Sejajarkan teks sel ke kanan"
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
@@ -246,7 +246,7 @@ msgstr "Nilai tidak valid. Coba \"10px\" atau \"2em\" atau hanya \"2\"."
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "Pengambil warna"
 
 msgctxt "The button label for the table toolbar hiding caption attached to the table."
 msgid "Toggle caption off"

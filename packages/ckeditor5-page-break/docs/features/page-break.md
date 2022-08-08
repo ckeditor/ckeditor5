@@ -9,11 +9,19 @@ The {@link module:page-break/pagebreak~PageBreak} plugin provides a possibility 
 
 The page break feature is further complemented by the {@link features/pagination pagination feature} that allows you to see where page breaks would be after the document is exported to PDF or to Word.
 
+<info-box info>
+	The Page break feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the Insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/theme/icons/pagebreak.svg Insert page break} to see the feature in action. Use the **Open print preview** the button below the editor in order to preview the content.
 
 {@snippet features/page-break}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 

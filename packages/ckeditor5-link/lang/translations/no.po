@@ -30,7 +30,7 @@ msgstr "Lenke-URL"
 
 msgctxt "Label for the image link button."
 msgid "Link image"
-msgstr ""
+msgstr "Bildelenke"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"

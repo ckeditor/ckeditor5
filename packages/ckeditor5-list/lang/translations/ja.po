@@ -26,100 +26,100 @@ msgstr "箇条書きリスト"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"
-msgstr ""
+msgstr "やることリスト"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the bulleted list style."
 msgid "Bulleted list styles toolbar"
-msgstr ""
+msgstr "箇条書きリストスタイルのツールバー"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the numbered list style."
 msgid "Numbered list styles toolbar"
-msgstr ""
+msgstr "番号付きリストスタイルのツールバー"
 
 msgctxt "The ARIA label of the button that toggles the \"disc\" list style."
 msgid "Toggle the disc list style"
-msgstr ""
+msgstr "黒い丸リストスタイルを切り替える"
 
 msgctxt "The ARIA label of the button that toggles the \"circle\" list style."
 msgid "Toggle the circle list style"
-msgstr ""
+msgstr "白い丸リストスタイルを切り替える"
 
 msgctxt "The ARIA label of the button that toggles the \"square\" list style."
 msgid "Toggle the square list style"
-msgstr ""
+msgstr "黒い四角リストスタイルを切り替える"
 
 msgctxt "The ARIA label of the button that toggles the \"decimal\" list style."
 msgid "Toggle the decimal list style"
-msgstr ""
+msgstr "10進数リストスタイルを切り替える"
 
 msgctxt "The ARIA label of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Toggle the decimal with leading zero list style"
-msgstr ""
+msgstr "10進数の数値の前に0がつくリストスタイルを切り替える"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–roman\" list style."
 msgid "Toggle the lower–roman list style"
-msgstr ""
+msgstr "小文字ローマ数字リストスタイルを切り替える"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–roman\" list style."
 msgid "Toggle the upper–roman list style"
-msgstr ""
+msgstr "大文字ローマ数字リストスタイルを切り替える"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–latin\" list style."
 msgid "Toggle the lower–latin list style"
-msgstr ""
+msgstr "小文字アルファベットリストスタイルを切り替える"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–latin\" list style."
 msgid "Toggle the upper–latin list style"
-msgstr ""
+msgstr "大文字アルファベットリストスタイルを切り替える"
 
 msgctxt "The tooltip text of the button that toggles the \"disc\" list style."
 msgid "Disc"
-msgstr ""
+msgstr "黒い丸"
 
 msgctxt "The tooltip text of the button that toggles the \"circle\" list style."
 msgid "Circle"
-msgstr ""
+msgstr "白い丸"
 
 msgctxt "The tooltip text of the button that toggles the \"square\" list style."
 msgid "Square"
-msgstr ""
+msgstr "黒い四角"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal\" list style."
 msgid "Decimal"
-msgstr ""
+msgstr "10進数の数値"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Decimal with leading zero"
-msgstr ""
+msgstr "10進数の数値の前に0がつく"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–roman\" list style."
 msgid "Lower–roman"
-msgstr ""
+msgstr "小文字ローマ数字"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–roman\" list style."
 msgid "Upper-roman"
-msgstr ""
+msgstr "大文字ローマ数字"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–latin\" list style."
 msgid "Lower-latin"
-msgstr ""
+msgstr "小文字アルファベット"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–latin\" list style."
 msgid "Upper-latin"
-msgstr ""
+msgstr "大文字アルファベット"
 
 msgctxt "The label of the button that toggles the visibility of additional numbered list property UI fields."
 msgid "List properties"
-msgstr ""
+msgstr "リストのプロパティ"
 
 msgctxt "The label of the input allowing to change the start index of a numbered list."
 msgid "Start at"
-msgstr ""
+msgstr "開始数字"
 
 msgctxt "The error message displayed when the numbered list start index input value is invalid."
 msgid "Start index must be greater than 0."
-msgstr ""
+msgstr "開始インデックスは0より大きくなければいけません。"
 
 msgctxt "The label of the switch button that reverses the order of the numbered list."
 msgid "Reversed order"
-msgstr ""
+msgstr "逆順"

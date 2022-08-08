@@ -15,7 +15,7 @@ It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> 
 Pasting plain text with a double line break will turn the break into a paragraph. A single line break will instead be turned into a soft break upon pasting.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo
@@ -23,6 +23,10 @@ Pasting plain text with a double line break will turn the break into a paragraph
 Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> to test the style inheritance. Paste without the <kbd>Shift</kbd> modifier to retain unstyled text. You can copy this very paragraph or one from the demo for convenience.
 
 {@snippet features/paste-plain-text}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 

@@ -195,7 +195,7 @@ export default class LinkEditing extends Plugin {
 				model: decorator.id,
 				view: ( manualDecoratorValue, { writer, schema }, { item } ) => {
 					// Manual decorators for block links are handled e.g. in LinkImageEditing.
-					if ( !schema.isInline( item ) ) {
+					if ( !( item.is( 'selection' ) || schema.isInline( item ) ) ) {
 						return;
 					}
 

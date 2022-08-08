@@ -12,14 +12,20 @@ The {@link module:mention/mention~Mention} feature brings support for smart auto
 
 You can read more about possible implementations of the mention feature in a [dedicated blog post](https://ckeditor.com/blog/mentions-in-ckeditor-5-feature-of-the-month/).
 
+<info-box info>
+	The Mentions feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 You can type the "@" character to invoke the mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marry Ann", "Marshall", "Robin", and "Ted").
 
 {@snippet features/mention}
 
-<info-box>
-	Check out the {@link examples/chat-with-mentions more advanced example} of the mention feature used in a chat application.
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+
+	You can also check out the {@link examples/chat-with-mentions more advanced example} of the mention feature used in a chat application.
 </info-box>
 
 ## Related productivity features
@@ -194,12 +200,11 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Mention, ... ],
 		mention: {
+			// Define the custom number of visible mentions.
+			dropdownLimit: 4
 			feeds: [
-				{
-					// Define the custom number of visible mentions.
-					dropdownLimit: 4
-					feed: [ ... ]
-				}
+				{ ... }
+				...
 			]
 		}
 	} )
@@ -467,6 +472,10 @@ The mention feature is using the power of [CSS variables](https://developer.mozi
 ```
 
 {@snippet features/custom-mention-colors-variables}
+
+### Comments with mentions
+
+It is possible to configure the Mentions feature to work with the {@link features/comments Comments feature}. Here you can find {@link features/annotations-custom-configuration#comment-editor-configuration detailed guidance on that matter}.
 
 ## Installation
 

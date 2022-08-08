@@ -938,6 +938,14 @@ describe( 'LinkEditing', () => {
 				await editor.destroy();
 			} );
 		} );
+
+		it( 'should downcast manual decorator on document selection', () => {
+			setModelData( model, '<paragraph><$text linkHref="url" linkIsExternal="true">foo[]bar</$text></paragraph>' );
+
+			expect( getViewData( editor.editing.view ) ).to.equal(
+				'<p><a class="ck-link_selected" href="url" rel="noopener noreferrer" target="_blank">foo{}bar</a></p>'
+			);
+		} );
 	} );
 
 	describe( 'link following', () => {

@@ -124,7 +124,7 @@ editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', ( evt, data ) 
 
 You can use the knowledge from the previous sections to create a complete plugin that will allow users to paste the content as plain text while the feature is toggled on.
 
-If you are not familiar with creating plugins in CKEditor 5, it is recommended to start from reading the {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to get a better understanding of what happens in the code below.
+If you are not familiar with creating plugins in CKEditor 5, it is recommended to start from reading the {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide to get a better understanding of what happens in the code below.
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
