@@ -10,6 +10,7 @@
 import DomEventObserver from './domeventobserver';
 import type DomEventData from './domeventdata';
 import type View from '../view';
+import type ViewRange from '../range';
 import DataTransfer from '../datatransfer';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -28,7 +29,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		this.domEventType = [ 'beforeinput' ];
 	}
 
-	public onDomEvent( domEvent: InputEvent ): void {
+	public onDomEvent( domEvent: InputEvent & DomEventData ): void {
 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( `%c[InputObserver]%c ${ domEvent.type }: ${ domEvent.inputType }`,
 		// @if CK_DEBUG_TYPING // 		'color: green', 'color: default'
@@ -39,9 +40,9 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		const view = this.view;
 		const viewDocument = view.document;
 
-		let dataTransfer = null;
-		let data = null;
-		let targetRanges = [];
+		let dataTransfer: DataTransfer | null = null;
+		let data: string | null = null;
+		let targetRanges: ViewRange[] = [];
 
 		if ( domEvent.dataTransfer ) {
 			dataTransfer = new DataTransfer( domEvent.dataTransfer );
@@ -79,10 +80,10 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		} else {
 			if ( domTargetRanges.length ) {
 				targetRanges = domTargetRanges.map( domRange => {
-					return view.domConverter.domRangeToView( domRange );
+					return view.domConverter.domRangeToView( domRange )!;
 				} );
 			} else if ( env.isAndroid ) {
-				const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
+				const domSelection = domEvent.domTarget.ownerDocument.defaultView!.getSelection()!;
 
 				targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
 			}
