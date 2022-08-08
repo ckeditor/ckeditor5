@@ -664,8 +664,6 @@ describe( 'Focus handling and navigation between source editing and editor toolb
 		const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 		const sourceEditingTextareaFocusSpy = testUtils.sinon.spy( domRoot.nextSibling.children[ 0 ], 'focus' );
 
-		console.log( domRoot.nextSibling.children[ 0 ] );
-
 		// Focus the toolbar.
 		pressAltF10();
 		ui.focusTracker.activeElement = toolbarView.element;
