@@ -244,7 +244,7 @@ describe( 'EditorUI', () => {
 		} );
 	} );
 
-	describe( 'focus handling and navigation between editable areas and editor toolbars', () => {
+	describe( 'Focus handling and navigation between editable areas and editor toolbars', () => {
 		describe( 'registerFocusableToolbar()', () => {
 			let locale, toolbar;
 
@@ -553,6 +553,9 @@ describe( 'EditorUI', () => {
 			} );
 
 			it( 'should return focus back to the editing view if it came from there', () => {
+				// Catches the `There is no selection in any editable to focus.` warning.
+				sinon.stub( console, 'warn' );
+
 				const editingFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 
 				ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
@@ -596,6 +599,9 @@ describe( 'EditorUI', () => {
 			} );
 
 			it( 'should focus the first editing area if the focus went straight to the toolbar without focusing any editing areas', () => {
+				// Catches the `There is no selection in any editable to focus.` warning.
+				sinon.stub( console, 'warn' );
+
 				const editingFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 
 				ui.focusTracker.focusedElement = visibleToolbarA.element;
