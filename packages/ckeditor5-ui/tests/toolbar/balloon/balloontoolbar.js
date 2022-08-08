@@ -187,6 +187,10 @@ describe( 'BalloonToolbar', () => {
 		expect( balloonToolbar.toolbarView.options.isFloating ).to.be.true;
 	} );
 
+	it( 'should have the accessible label', () => {
+		expect( balloonToolbar.toolbarView.ariaLabel ).to.equal( 'Editor contextual toolbar' );
+	} );
+
 	it( 'should register its toolbar as focusable toolbar in EditorUI with proper configuration responsible for presentation', () => {
 		const showPanelSpy = sinon.spy( balloonToolbar, 'show' );
 		const hidePanelSpy = sinon.spy( balloonToolbar, 'hide' );

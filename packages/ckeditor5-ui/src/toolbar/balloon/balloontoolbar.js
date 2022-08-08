@@ -203,12 +203,14 @@ export default class BalloonToolbar extends Plugin {
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	_createToolbarView() {
+		const t = this.editor.locale.t;
 		const shouldGroupWhenFull = !this._balloonConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
 			shouldGroupWhenFull,
 			isFloating: true
 		} );
 
+		toolbarView.ariaLabel = t( 'Editor contextual toolbar' );
 		toolbarView.render();
 
 		return toolbarView;
