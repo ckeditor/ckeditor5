@@ -10,8 +10,8 @@
 	--ck-color-base-action: 									hsl(104, 44%, 48%);
 	--ck-color-base-focus: 										hsl(209, 92%, 70%);
 	--ck-color-base-text: 										hsl(0, 0%, 20%);
-	--ck-color-base-active: 									hsl(208, 88%, 52%);
-	--ck-color-base-active-focus:								hsl(208, 88%, 47%);
+	--ck-color-base-active: 									hsl(208, 80%, 63%);
+	--ck-color-base-active-focus:								hsl(208, 80%, 58%);
 	--ck-color-base-error:										hsl(15, 100%, 43%);
 
 	/* -- Generic colors ------------------------------------------------------------------------ */
@@ -34,11 +34,13 @@
 	--ck-color-button-default-active-shadow: 					hsl(0, 0%, 75%);
 	--ck-color-button-default-disabled-background: 				transparent;
 
-	--ck-color-button-on-background: 							hsl(0, 0%, 87%);
-	--ck-color-button-on-hover-background: 						hsl(0, 0%, 77%);
-	--ck-color-button-on-active-background: 					hsl(0, 0%, 73%);
-	--ck-color-button-on-active-shadow: 						hsl(0, 0%, 63%);
-	--ck-color-button-on-disabled-background: 					hsl(0, 0%, 87%);
+	--ck-color-button-on-background: 							hsl(206, 92%, 95%);
+	--ck-color-button-on-hover-background: 						hsl(206, 97%, 88%);
+	--ck-color-button-on-active-background: 					hsl(206, 92%, 95%);
+	--ck-color-button-on-active-shadow: 						hsl(207, 75%, 80%);
+	--ck-color-button-on-disabled-background: 					hsl(210, 15%, 95%);
+	--ck-color-button-on-color:									hsl(212, 81%, 46%);
+
 
 	--ck-color-button-action-background: 						var(--ck-color-base-action);
 	--ck-color-button-action-hover-background: 					hsl(104, 44%, 43%);
@@ -87,7 +89,7 @@
 
 	/* -- Toolbar ------------------------------------------------------------------------------- */
 
-	--ck-color-toolbar-background: 								var(--ck-color-base-foreground);
+	--ck-color-toolbar-background: 								var(--ck-color-base-background);
 	--ck-color-toolbar-border: 									var(--ck-color-base-border);
 
 	/* -- Tooltip ------------------------------------------------------------------------------- */
