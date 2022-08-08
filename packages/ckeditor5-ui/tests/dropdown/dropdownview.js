@@ -3,12 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import DropdownView from '../../src/dropdown/dropdownview';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '../../src/button/buttonview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DropdownView', () => {
@@ -31,7 +32,7 @@ describe( 'DropdownView', () => {
 		// The #panelView positioning depends on the utility that uses DOM Rects.
 		// To avoid an avalanche of warnings (DOM Rects do not work until
 		// the element is in DOM), let's allow the dropdown to render in DOM.
-		global.document.body.appendChild( view.element );
+		document.body.appendChild( view.element );
 	} );
 
 	afterEach( () => {
@@ -321,7 +322,7 @@ describe( 'DropdownView', () => {
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				sinon.assert.notCalled( spy );
 				expect( view.isOpen ).to.be.false;
 			} );
 
@@ -344,7 +345,7 @@ describe( 'DropdownView', () => {
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				sinon.assert.notCalled( spy );
 				expect( view.isOpen ).to.be.false;
 			} );
 		} );
@@ -467,6 +468,44 @@ describe( 'DropdownView', () => {
 				left: 275,
 				name: 'nmw'
 			} );
+		} );
+	} );
+
+	describe( 'on dropdown close', () => {
+		it( 'should focus a dropdown button if focus is inside the dropdown', () => {
+			// Create a button inside the dropdown panel to enable focus.
+			view.panelView.children.add( new ButtonView( locale ) );
+
+			view.isOpen = true;
+
+			expect( view.panelView.element.contains( document.activeElement ) ).to.be.true;
+
+			view.isOpen = false;
+
+			expect( view.element.contains( document.activeElement ) ).to.be.true;
+		} );
+
+		it( 'should not focus dropdown button if focus is outside the dropdown', () => {
+			// Setup an element that is not a child of the dropdown to be focused.
+			const button = document.body.appendChild( document.createElement( 'button' ) );
+
+			button.classList.add( 'test' );
+
+			// Create a button inside the dropdown panel.
+			view.panelView.children.add( new ButtonView( locale ) );
+
+			view.isOpen = true;
+
+			expect( view.panelView.element.contains( document.activeElement ) ).to.be.true;
+
+			document.querySelector( '.test' ).focus();
+
+			view.isOpen = false;
+
+			expect( view.element.contains( document.activeElement ) ).to.be.false;
+
+			// Cleanup.
+			button.remove();
 		} );
 	} );
 } );
