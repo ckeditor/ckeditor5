@@ -10,8 +10,8 @@
 	--ck-color-base-action: 									hsl(104, 44%, 48%);
 	--ck-color-base-focus: 										hsl(209, 92%, 70%);
 	--ck-color-base-text: 										hsl(0, 0%, 20%);
-	--ck-color-base-active: 									hsl(208, 80%, 63%);
-	--ck-color-base-active-focus:								hsl(208, 80%, 58%);
+	--ck-color-base-active: 									hsl(208, 79%, 51%);
+	--ck-color-base-active-focus:								hsl(208, 79%, 46%);
 	--ck-color-base-error:										hsl(15, 100%, 43%);
 
 	/* -- Generic colors ------------------------------------------------------------------------ */
