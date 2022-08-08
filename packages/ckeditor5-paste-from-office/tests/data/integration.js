@@ -107,15 +107,6 @@ describe( 'PasteFromOffice - integration', () => {
 	} );
 
 	generateTests( {
-		input: 'google-docs-paragraph',
-		type: 'integration',
-		browsers,
-		editorConfig: {
-			plugins: [ Clipboard, Paragraph, ShiftEnter, PasteFromOffice ]
-		}
-	} );
-
-	generateTests( {
 		input: 'generic-list-in-table',
 		type: 'integration',
 		browsers,

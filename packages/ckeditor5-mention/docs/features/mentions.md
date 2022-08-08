@@ -473,6 +473,10 @@ The mention feature is using the power of [CSS variables](https://developer.mozi
 
 {@snippet features/custom-mention-colors-variables}
 
+### Comments with mentions
+
+It is possible to configure the Mentions feature to work with the {@link features/comments Comments feature}. Here you can find {@link features/annotations-custom-configuration#comment-editor-configuration detailed guidance on that matter}.
+
 ## Installation
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-mention`](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention) package:
