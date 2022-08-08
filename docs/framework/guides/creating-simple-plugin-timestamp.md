@@ -6,7 +6,7 @@ modified_at: 2022-07-15
 
 # Creating a basic plugin
 
-This guide will show you how to create a simple, basic plugin that will let the users insert timestamps into their document. This is a beginner friendly tutorial, perfect for your first interactions with the CKEditor 5 framework.
+This guide will show you how to create a simple, basic plugin that will let the users insert timestamps into their content. This is a beginner friendly tutorial, perfect for your first interaction with the CKEditor 5 framework.
 
 We will create a toolbar button that will insert the current date and time at the caret position into the document. If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo) below.
 
