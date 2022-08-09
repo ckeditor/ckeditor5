@@ -400,7 +400,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		// so we can't apply them in the model.
 		editingView.change( writer => _applyResizingAttributesToTable( writer, viewTable, this._resizingData ) );
 
-		// Calculates the dom column widths. It is done by taking the width of the widest cell
+		// Calculates the DOM columns’ widths. It is done by taking the width of the widest cell
 		// from each table column (we rely on the  {@link module:table/tablewalker~TableWalker}
 		// to determine which column the cell belongs to).
 		//
