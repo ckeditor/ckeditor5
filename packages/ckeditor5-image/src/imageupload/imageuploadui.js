@@ -59,6 +59,8 @@ export default class ImageUploadUI extends Plugin {
 
 				if ( imagesToUpload.length ) {
 					editor.execute( 'uploadImage', { file: imagesToUpload } );
+
+					editor.editing.view.focus();
 				}
 			} );
 
