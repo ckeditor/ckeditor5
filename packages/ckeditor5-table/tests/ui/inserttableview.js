@@ -25,6 +25,7 @@ describe( 'InsertTableView', () => {
 
 	afterEach( () => {
 		view.element.remove();
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
