@@ -13,6 +13,7 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
 import TableEditing from '../tableediting';
+import TableUtils from '../tableutils';
 import TableWalker from '../tablewalker';
 
 import TableWidthResizeCommand from './tablewidthresizecommand';
@@ -50,7 +51,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableEditing ];
+		return [ TableEditing, TableUtils ];
 	}
 
 	/**
