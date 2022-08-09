@@ -149,6 +149,23 @@ describe( 'InsertTableView', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 			} );
+
+			it( 'focusTracker does nothing if nothing is focused', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowright,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				view.focusTracker.focusedElement = view.items.first.element;
+
+				const spy = sinon.spy( view, 'set' );
+
+				view.focusTracker.focusedElement = null;
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.notCalled( spy );
+			} );
 		} );
 	} );
 } );
