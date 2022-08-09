@@ -400,7 +400,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		// so we can't apply them in the model.
 		editingView.change( writer => _applyResizingAttributesToTable( writer, viewTable, this._resizingData ) );
 
-		// Calculates the DOM columns’ widths. It is done by taking the width of the widest cell
+		// Calculates the DOM columns' widths. It is done by taking the width of the widest cell
 		// from each table column (we rely on the  {@link module:table/tablewalker~TableWalker}
 		// to determine which column the cell belongs to).
 		//
@@ -409,7 +409,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		// @param {Map.<Number, Number>} columnIndexMap A map that connects the cells with their column indices.
 		// @param {module:table/tableutils~/tableUtils} tableUtils The Table Utils plugin instance.
 		// @param {module:core/editor/editor~Editor} editor The editor instance.
-		// @returns {Array.<Number>} Column widths expressed in pixels (without unit).
+		// @returns {Array.<Number>} Columns' widths expressed in pixels (without unit).
 		function _calculateDomColumnWidths( modelTable, columnIndexMap, tableUtilsPlugin, editor ) {
 			const columnWidthsInPx = Array( tableUtilsPlugin.getColumns( modelTable ) );
 			const tableWalker = new TableWalker( modelTable );
