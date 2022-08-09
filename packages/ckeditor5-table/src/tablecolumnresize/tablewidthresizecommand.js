@@ -4,7 +4,7 @@
  */
 
 /**
- * @module
+ * @module table/tablecolumnresize/tablewidthresizecommand
  */
 
 import TablePropertyCommand from '../tableproperties/commands/tablepropertycommand';

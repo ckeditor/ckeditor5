@@ -20,11 +20,11 @@ import AttributeOperation from '@ckeditor/ckeditor5-engine/src/model/operation/a
 
 import TableColumnResize from '../../src/tablecolumnresize';
 import {
+	getColumnEdgesIndexes,
 	getChangedTables,
-	getColumnIndex,
 	toPrecision,
 	clamp,
-	fillArray,
+	createFilledArray,
 	sumArray,
 	normalizeColumnWidths,
 	getTableWidthInPixels,
@@ -35,11 +35,10 @@ import {
 
 describe( 'TableColumnResize utils', () => {
 	describe( 'getChangedTables()', () => {
-		let differ, root, model;
+		let root, model;
 
 		beforeEach( () => {
 			model = new Model();
-			differ = model.document.differ;
 			root = model.document.createRoot();
 
 			root._appendChild( [
@@ -57,8 +56,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 2, 0, 0 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -78,8 +76,7 @@ describe( 'TableColumnResize utils', () => {
 
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -101,8 +98,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 1, 0 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -125,8 +121,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 1, 3 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -143,8 +138,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 0 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -161,8 +155,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 2 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -185,8 +178,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -209,8 +201,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -227,8 +218,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -245,8 +235,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -261,8 +250,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -277,8 +265,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -293,8 +280,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -334,8 +320,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 2, 1, 0 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 3 );
 				expect( affectedTables.has( firstTable ), 'first table is affected' ).to.be.true;
@@ -348,8 +333,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				remove( model, new Position( root, [ 0 ] ), 1 );
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -366,8 +350,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -393,8 +376,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 2, 1, 2, 0 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -420,8 +402,8 @@ describe( 'TableColumnResize utils', () => {
 			// And in a different model.change() remove the attribute, because otherwise the changes would be empty.
 			model.change( () => {
 				attribute( model, range, 'linkHref', 'www', null );
-				const changes = differ.getChanges();
-				const affectedTables = getChangedTables( changes, model );
+
+				const affectedTables = getChangedTables( model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -486,13 +468,13 @@ describe( 'TableColumnResize utils', () => {
 			const cell00 = [ ...row0.getChildren() ][ 0 ];
 
 			expect(
-				getColumnIndex( cell00, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell00, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 0, rightEdge: 0 } );
 
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 1 } );
 		} );
 
@@ -507,7 +489,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 2 } );
 		} );
 
@@ -522,7 +504,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 3 } );
 		} );
 
@@ -537,7 +519,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell02 = [ ...row0.getChildren() ][ 2 ];
 
 			expect(
-				getColumnIndex( cell02, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell02, getColumnIndexMap( editor ) )
 			).to.deep.equal( { leftEdge: 2, rightEdge: 5 } );
 		} );
 	} );
@@ -569,11 +551,11 @@ describe( 'TableColumnResize utils', () => {
 		} );
 	} );
 
-	describe( 'fillArray()', () => {
+	describe( 'createFilledArray()', () => {
 		it( 'should properly create filled array', () => {
-			expect( fillArray( 0, 'foo' ) ).to.deep.equal( [] );
-			expect( fillArray( 3, 'foo' ) ).to.deep.equal( [ 'foo', 'foo', 'foo' ] );
-			expect( fillArray( 3 ) ).to.deep.equal( [ undefined, undefined, undefined ] );
+			expect( createFilledArray( 0, 'foo' ) ).to.deep.equal( [] );
+			expect( createFilledArray( 3, 'foo' ) ).to.deep.equal( [ 'foo', 'foo', 'foo' ] );
+			expect( createFilledArray( 3 ) ).to.deep.equal( [ undefined, undefined, undefined ] );
 		} );
 	} );
 
