@@ -5,7 +5,76 @@ order: 89
 modified_at: 2022-07-18
 ---
 
-# Migration to CKEditor 5 v35.0.0
+# Migration to CKEditor 5 v35.x
+
+## Migration to CKEditor 5 v35.1.0
+
+### Changes to API providing the accessible navigation between editing roots and toolbars on <kbd>Alt</kbd>+<kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes
+
+<info-box>
+	This information applies only to integrators who develop their own {@link framework/guides/custom-editor-creator editor creators} from scratch by using {@link module:core/editor/editor~Editor} and {@link module:core/editor/editorui~EditorUI} classes as building blocks.
+</info-box>
+
+* The `enableToolbarKeyboardFocus()` helper that allowed the navigation has been removed. To bring the functionality back, use the {@link module:core/editor/editorui~EditorUI#addToolbar} method instead.
+* Also, please note that editable elements are now automatically added to the {@link module:core/editor/editorui~EditorUI#focusTracker main focus tracker} and should not be added individually.
+
+**Before**:
+```js
+import { EditorUI } from 'ckeditor5/src/core';
+
+export default class MyEditorUI extends EditorUI {
+	// ...
+
+	init() {
+		const view = this.view;
+		const editableElement = view.editable.element;
+		const toolbarViewInstance = this.view.toolbar;
+
+		// ...
+
+		this.setEditableElement( 'editableName', editableElement );
+
+		this.focusTracker.add( editableElement );
+
+		enableToolbarKeyboardFocus( {
+			// ...
+
+			toolbar: toolbarViewInstance
+		} );
+
+		// ...
+	}
+}
+```
+
+**After**:
+```js
+import { EditorUI } from 'ckeditor5/src/core';
+
+export default class MyEditorUI extends EditorUI {
+	// ...
+
+	init() {
+		const view = this.view;
+		const editableElement = view.editable.element;
+		const toolbarViewInstance = this.view.toolbar;
+
+		// ...
+
+		// Note: You should not add the editable element to the focus tracker here.
+		// This is handled internally by EditorUI#setEditableElement() method.
+		this.setEditableElement( 'editableName', editableElement );
+
+		// Note: Add the toolbar to enable Alt+F10 navigation.
+		// The rest (e.g. Esc key handling) is handled by EditorUI#setEditableElement() method.
+		this.addToolbar( toolbarViewInstance );
+
+		// ...
+	}
+}
+```
+
+## Migration to CKEditor 5 v35.0.0
 
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
