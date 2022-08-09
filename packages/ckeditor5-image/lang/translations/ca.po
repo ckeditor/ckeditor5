@@ -114,8 +114,8 @@ msgstr "Actualitzar l'URL de la imatge"
 
 msgctxt "Text used by screen readers do describe an image when the image has no text alternative."
 msgid "Caption for the image"
-msgstr "Peu de foto"
+msgstr ""
 
 msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 msgid "Caption for image: %0"
-msgstr "Peu de foto: %0"
+msgstr ""

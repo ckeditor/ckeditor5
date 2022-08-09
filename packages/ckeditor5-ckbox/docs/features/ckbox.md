@@ -22,13 +22,17 @@ This CKBox integration feature allows you to effortlessly and intuitively insert
 
 ## Demo
 
-Use the Open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager} to invoke the CKBox dialog window. After the dialog is opened, find an interesting image and click on the Choose button. The selected image should be inserted into the editor content. You can choose more than one file at once.
+Try CKBox in action. Use the Open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager} to invoke the CKBox dialog window. After the dialog is opened, find an interesting image and click on the Choose button. The selected image should be inserted into the editor content. You can choose more than one file at once. Play around with these, changing the alignment and size.
 
 Non-embeddable files (e.g. PDF files) will be inserted into editor content as links. To test it, open the CKBox dialog again and choose any PDF file. It should be inserted as a link in the editor content. After clicking this link, it is automatically downloaded.
 
 The CKBox feature also supports uploading images. Drag any image into the editor content and it will be uploaded into the CKBox cloud storage. The uploaded file is then automatically inserted in the editor content. If you want to upload a non-image file type (such as a PDF or a text file) to the cloud storage, just open the CKBox dialog and use the Upload button.
 
 {@snippet features/ckbox}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Installation
 

@@ -18,7 +18,7 @@ order: 50
 	**Important**: This guide is about the CKEditor 5 integration with Vue.js 3+. To learn more about the integration with Vue.js 2.x, check out the {@link installation/frameworks/vuejs-v2 "Rich text editor component for Vue.js 2.x"} guide.
 </info-box>
 
-CKEditor 5 consists of the {@link installation/getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
+CKEditor 5 consists of the {@link installation/getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor 5 Framework} upon which the builds are based.
 
 The easiest way to use CKEditor 5 in your Vue.js application is by choosing one of the {@link installation/getting-started/predefined-builds#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section of this guide.
 
@@ -235,7 +235,7 @@ Finally, import the build in your application:
 
 ## Using CKEditor from source
 
-Integrating the rich text editor from source allows you to use the full power of the {@link framework/guides/overview CKEditor 5 Framework}.
+Integrating the rich text editor from source allows you to use the full power of the {@link framework/index CKEditor 5 Framework}.
 
 This guide assumes that you are using [Vue CLI 4.5.0+](https://cli.vuejs.org) as your boilerplate and your application has been created using the [`vue create`](https://cli.vuejs.org/guide/creating-a-project.html#vue-create) command.
 

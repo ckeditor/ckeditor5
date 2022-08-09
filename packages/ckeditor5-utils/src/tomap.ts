@@ -20,7 +20,9 @@ import isIterable from './isiterable';
  * @param {Object|Iterable|null} data Object or iterable to transform.
  * @returns {Map} Map created from data.
  */
-export default function toMap<T>( data: { readonly [ key: string ]: T } | Iterable<readonly [ string, T ]> | null ): Map<string, T> {
+export default function toMap<T>( data: { readonly [ key: string ]: T } | Iterable<readonly [ string, T ]> | null | undefined ):
+	Map<string, T>
+{
 	if ( isIterable( data ) ) {
 		return new Map( data );
 	} else {

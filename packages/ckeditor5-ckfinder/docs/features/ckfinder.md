@@ -41,6 +41,10 @@ This demo shows the integration where the file manager's server connector handle
 
 {@snippet features/ckfinder-upload-only}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ### Full integration
 
 This demo shows the [full integration](#configuring-the-full-integration) with the CKFinder file uploader:

@@ -21,6 +21,10 @@ Use the language toolbar dropdown in the editor below to see the feature in acti
 
 {@snippet features/textpartlanguage}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 There are other language-related CKEditor 5 features you may want to check:

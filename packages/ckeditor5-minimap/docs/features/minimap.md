@@ -22,6 +22,10 @@ Scroll the content and the minimap in the sidebar will show your current locatio
 
 {@snippet features/minimap}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ### Demo configuration
 
 To configure the editor as [presented above](#demo), you can use the following DOM structure:

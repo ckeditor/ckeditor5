@@ -3,7 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { default as EmitterMixin, _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin';
+/* eslint-disable new-cap */
+
+import EmitterMixin, { _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin';
 import EventInfo from '../src/eventinfo';
 import { expectToThrowCKEditorError } from './_utils/utils';
 import CKEditorError from '../src/ckeditorerror';
@@ -14,6 +16,21 @@ describe( 'EmitterMixin', () => {
 	beforeEach( () => {
 		emitter = getEmitterInstance();
 		listener = getEmitterInstance();
+	} );
+
+	it( 'should inherit from the given class', () => {
+		class TestClass {
+			constructor( value ) {
+				this.value = value;
+			}
+		}
+
+		const EmitterClass = EmitterMixin( TestClass );
+
+		const emitter = new EmitterClass( 5 );
+
+		expect( emitter ).to.be.instanceOf( TestClass );
+		expect( emitter.value ).to.equal( 5 );
 	} );
 
 	describe( 'fire', () => {
@@ -1413,5 +1430,7 @@ describe( '_getEmitterListenedTo', () => {
 } );
 
 function getEmitterInstance() {
-	return Object.create( EmitterMixin );
+	class BrandNewClass {}
+
+	return new ( EmitterMixin( BrandNewClass ) )();
 }

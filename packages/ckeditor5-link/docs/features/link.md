@@ -19,6 +19,10 @@ Use the Link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg
 
 {@snippet features/link}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Typing around links
 
 CKEditor 5 allows for typing both at inner and outer boundaries of links to make the editing easier for the users.

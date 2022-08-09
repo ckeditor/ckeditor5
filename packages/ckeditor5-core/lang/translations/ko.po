@@ -46,4 +46,4 @@ msgstr "파일 업로드할 수 없음: "
 
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
-msgstr "리치 텍스트 편집기. 편집 영역: %0"
+msgstr ""
