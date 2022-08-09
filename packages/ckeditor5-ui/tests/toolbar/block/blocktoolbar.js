@@ -294,6 +294,12 @@ describe( 'BlockToolbar', () => {
 				const blockToolbar = editor.plugins.get( BlockToolbar );
 				expect( blockToolbar.buttonView.isVisible ).to.be.false;
 			} );
+
+			it( 'should prevent the mousedown event', () => {
+				const ret = blockToolbar.buttonView.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+				expect( ret ).to.false;
+			} );
 		} );
 	} );
 
