@@ -86,9 +86,9 @@ For the entire list of changes introduced in version 35.0.0, see the [changelog 
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v35.0.0.
 
-## Important changes
+### Important changes
 
-### The source element is not updated automatically after the editor destroy
+#### The source element is not updated automatically after the editor destroy
 
 The last version of CKEditor 5 changes the default behavior of the source element after the editor is destroyed (when `editor.destroy()` is called). So far, the source element was updated with the output coming from `editor.getData()`. Now, the source element becomes empty after the editor is destroyed and it is not updated anymore.
 
@@ -105,7 +105,7 @@ ClassicEditor.create( sourceElement, {
 	Enabling the `updateSourceElementOnDestroy` option in your configuration, depending on the plugins you use, might have some security implications. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Be especially careful when using Markdown, General HTML Support and HTML embed features.
 </info-box>
 
-### Dropdown focus is moved back to the dropdown button after choosing an option
+#### Dropdown focus is moved back to the dropdown button after choosing an option
 
 Due to the ongoing accessibility improvements the default behavior of the {@link module:ui/dropdown/dropdownview~DropdownView dropdown UI component} has been changed. From now on, by default, after choosing an option from a dropdown (either by mouse or keyboard), the focus will be automatically moved to the dropdown button.
 
@@ -133,15 +133,15 @@ dropdownView.on( 'execute', () => {
 } );
 ```
 
-### There is now a TypeScript code on GitHub (and how it affects your build)
+#### There is now a TypeScript code on GitHub (and how it affects your build)
 
 Starting from v35.0.0, the first of CKEditor 5 packages (namely: `@ckeditor/ckeditor5-utils`) is developed in TypeScript. This is the first step of [our migration to TypeScript](https://github.com/ckeditor/ckeditor5/issues/11704).
 
-#### Whom does it affect?
+##### Whom does it affect?
 
 It affects you **only if** you use the [source code directly from git repository (GitHub)](https://github.com/ckeditor/ckeditor5). If you use it via any other channel (npm, CDN, ZIP, etc.) this change is completely transparent for you as we publish only JavaScript code there.
 
-#### How does it affect you?
+##### How does it affect you?
 
 For instance, if you happen to have a custom CKEditor 5 build that, for some reason, installs its dependencies from the git repository, you will need to update your webpack config to support the TypeScript code.
 
