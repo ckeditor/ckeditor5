@@ -339,7 +339,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Registers the listeners for the `mousedown`, `mousemove` and `mouseup` events.
+	 * Registers listeners to handle resizing process.
 	 *
 	 * @private
 	 */
@@ -355,9 +355,9 @@ export default class TableColumnResizeEditing extends Plugin {
 
 	/**
 	 * Handles the `mousedown` event on column resizer element:
-	 *  * calculates the initial column pixel widths;
-	 *  * inserts the `<colgroup>` element if it is not present in the `<table>`;
-	 *  * puts the necessary data in the temporary storage;
+	 *  * calculates the initial column pixel widths,
+	 *  * inserts the `<colgroup>` element if it is not present in the `<table>`,
+	 *  * puts the necessary data in the temporary storage,
 	 *  * applies the attributes to the `<table>` view element.
 	 *
 	 * @private
@@ -723,7 +723,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Registers a listener on `render` event inserting missing resizers after all postfixers finished their job.
+	 * Registers a listener ensuring that each resizable cell have a resizer handle.
 	 *
 	 * @private
 	 */

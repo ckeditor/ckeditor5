@@ -292,8 +292,8 @@ export function ensureColumnResizerElement( viewWriter, viewCell ) {
 
 /**
  * Calculates the total horizontal space taken by the cell. That includes:
- *  * width;
- *  * left and red padding;
+ *  * width,
+ *  * left and red padding,
  *  * border width.
  *
  * @param {HTMLElement}  domCell A DOM cell element.
