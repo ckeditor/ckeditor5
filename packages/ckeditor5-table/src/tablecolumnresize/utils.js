@@ -20,14 +20,13 @@ import {
  *
  * Most notably if an entire table is removed it will not be included in returned set.
  *
- * @param {Array.<module:engine/model/differ~DiffItem>} changes
- * @param {module:engine/model/model~Model} model
- * @returns {Set.<module:engine/model/element~Element>}
+ * @param {module:engine/model/model~Model} model The model to collect the affected elements from.
+ * @returns {Set.<module:engine/model/element~Element>} A set of table model elements.
  */
-export function getChangedTables( changes, model ) {
+export function getChangedTables( model ) {
 	const affectedTables = new Set();
 
-	for ( const change of changes ) {
+	for ( const change of model.document.differ.getChanges() ) {
 		let referencePosition = null;
 
 		// Checks if the particular change from the differ is:
@@ -80,24 +79,24 @@ export function getChangedTables( changes, model ) {
 /**
  * Calculates the percentage of the minimum column width given in pixels for a given table.
  *
- * @param {module:engine/model/element~Element} table
- * @param {module:core/editor/editor~Editor} editor
- * @returns {Number}
+ * @param {module:engine/model/element~Element} modelTable A table model element.
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * @returns {Number} The minimal column width in percentage.
  */
-export function getColumnMinWidthAsPercentage( table, editor ) {
-	return COLUMN_MIN_WIDTH_IN_PIXELS * 100 / getTableWidthInPixels( table, editor );
+export function getColumnMinWidthAsPercentage( modelTable, editor ) {
+	return COLUMN_MIN_WIDTH_IN_PIXELS * 100 / getTableWidthInPixels( modelTable, editor );
 }
 
 /**
  * Calculates the table width in pixels.
  *
- * @param {module:engine/model/element~Element} table
- * @param {module:core/editor/editor~Editor} editor
- * @returns {Number}
+ * @param {module:engine/model/element~Element} modelTable A table model element.
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * @returns {Number} The width of the table in pixels.
  */
-export function getTableWidthInPixels( table, editor ) {
+export function getTableWidthInPixels( modelTable, editor ) {
 	// It is possible for a table to not have a <tbody> element - see #11878.
-	const referenceElement = getChildrenViewElement( table, 'tbody', editor ) || getChildrenViewElement( table, 'thead', editor );
+	const referenceElement = getChildrenViewElement( modelTable, 'tbody', editor ) || getChildrenViewElement( modelTable, 'thead', editor );
 	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement );
 
 	return getElementWidthInPixels( domReferenceElement );
@@ -121,20 +120,24 @@ function getChildrenViewElement( modelTable, elementName, editor ) {
 /**
  * Returns the computed width (in pixels) of the DOM element.
  *
- * @param {HTMLElement} domElement
- * @returns {Number}
+ * @param {HTMLElement} domElement A DOM element.
+ * @returns {Number} The width of the DOM element in pixels.
  */
 export function getElementWidthInPixels( domElement ) {
 	return parseFloat( global.window.getComputedStyle( domElement ).width );
 }
 
 /**
- * Returns the column indexes on the left and right edges of a cell.
+ * Returns the column indexes on the left and right edges of a cell. They differ if the cell spans
+ * across multiple columns.
  *
- * @param {module:engine/model/element~Element} cell
- * @returns {Object}
+ * @param {module:engine/model/element~Element} cell A cell model element.
+ * @param {Map.<Number, Number>} columnIndexMap A map that connects the cells with their column indices.
+ * @returns {Object} An object containing the indexes of the left and right edges of the cell.
+ * @returns {Number} return.leftEdge The index of the left edge of the cell.
+ * @returns {Number} return.rightEdge The index of the right edge of the cell.
  */
-export function getColumnIndex( cell, columnIndexMap ) {
+export function getColumnEdgesIndexes( cell, columnIndexMap ) {
 	const cellColumnIndex = columnIndexMap.get( cell );
 	const cellWidth = cell.getAttribute( 'colspan' ) || 1;
 
@@ -145,21 +148,10 @@ export function getColumnIndex( cell, columnIndexMap ) {
 }
 
 /**
- * Returns the total number of columns in a table.
- *
- * @param {module:engine/model/element~Element} table
- * @param {module:core/editor/editor~Editor} editor
- * @returns {Number}
- */
-export function getNumberOfColumn( table, editor ) {
-	return editor.plugins.get( 'TableUtils' ).getColumns( table );
-}
-
-/**
  * Rounds the provided value to a fixed-point number with defined number of digits after the decimal point.
  *
- * @param {Number|String} value
- * @returns {Number}
+ * @param {Number|String} value A number to be rounded.
+ * @returns {Number} The rounded number.
  */
 export function toPrecision( value ) {
 	const multiplier = Math.pow( 10, COLUMN_WIDTH_PRECISION );
@@ -172,10 +164,10 @@ export function toPrecision( value ) {
  * Clamps the number within the inclusive lower (min) and upper (max) bounds. Returned number is rounded using the
  * {@link ~toPrecision `toPrecision()`} function.
  *
- * @param {Number} number
- * @param {Number} min
- * @param {Number} max
- * @returns {Number}
+ * @param {Number} number A number to be clamped.
+ * @param {Number} min A lower bound.
+ * @param {Number} max An upper bound.
+ * @returns {Number} The clamped number.
  */
 export function clamp( number, min, max ) {
 	if ( number <= min ) {
@@ -192,19 +184,19 @@ export function clamp( number, min, max ) {
 /**
  * Creates an array with defined length and fills all elements with defined value.
  *
- * @param {Number} length
- * @param {*} value
- * @returns {Array.<*>}
+ * @param {Number} length The length of the array.
+ * @param {*} value The value to fill the array with.
+ * @returns {Array.<*>} An array with defined length and filled with defined value.
  */
-export function fillArray( length, value ) {
+export function createFilledArray( length, value ) {
 	return Array( length ).fill( value );
 }
 
 /**
  * Sums all array values that can be parsed to a float.
  *
- * @param {Array.<Number>} array
- * @returns {Number}
+ * @param {Array.<Number>} array An array of numbers.
+ * @returns {Number} The sum of all array values.
  */
 export function sumArray( array ) {
 	return array
@@ -215,13 +207,13 @@ export function sumArray( array ) {
 
 /**
  * Makes sure that the sum of the widths from all columns is 100%. If the sum of all the widths is not equal 100%, all the widths are
- * changed proportionally so that they all sum back to 100%. If there are columns without specified width, it will be distributed
- * equally between them based on the amount remaining after assigning the known widths.
+ * changed proportionally so that they all sum back to 100%. If there are columns without specified width, the amount remaining
+ * after assigning the known widths will be distributed equally between them.
  *
  * Currently, only widths provided as percentage values are supported.
  *
- * @param {Array.<Number>} columnWidths
- * @returns {Array.<Number>}
+ * @param {Array.<Number>} columnWidths An array of column widths.
+ * @returns {Array.<Number>} An array of column widths guaranteed to sum up to 100%.
  */
 export function normalizeColumnWidths( columnWidths ) {
 	columnWidths = calculateMissingColumnWidths( columnWidths );
@@ -257,11 +249,9 @@ export function normalizeColumnWidths( columnWidths ) {
 //   but then it will be adjusted proportionally to 100% in {@link #normalizeColumnWidths `normalizeColumnWidths()`}.
 //
 // @private
-// @param {Array.<Number>}
-// @returns {Array.<Number>}
-function calculateMissingColumnWidths( columnWidthsAttribute ) {
-	const columnWidths = columnWidthsAttribute.map( columnWidth => columnWidth.trim() );
-
+// @param {Array.<Number>} columnWidths An array of column widths.
+// @returns {Array.<Number>} An array with 'auto' values replaced with calculated widths.
+function calculateMissingColumnWidths( columnWidths ) {
 	const numberOfUninitializedColumns = columnWidths.filter( columnWidth => columnWidth === 'auto' ).length;
 
 	if ( numberOfUninitializedColumns === 0 ) {
@@ -280,11 +270,13 @@ function calculateMissingColumnWidths( columnWidthsAttribute ) {
 		.map( columnWidth => toPrecision( columnWidth ) );
 }
 
-// Inserts column resizer element into a view cell.
-//
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
-// @param {module:engine/view/element~Element} viewCell View cell.
-export function insertColumnResizerElement( viewWriter, viewCell ) {
+/**
+ * Inserts column resizer element into a view cell if it is missing.
+ *
+ * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
+ * @param {module:engine/view/element~Element} viewCell View cell where resizer should be put.
+ */
+export function ensureColumnResizerElement( viewWriter, viewCell ) {
 	let viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
 		.find( viewElement => viewElement.hasClass( 'ck-table-column-resizer' ) );
 
@@ -302,13 +294,15 @@ export function insertColumnResizerElement( viewWriter, viewCell ) {
 	);
 }
 
-// Calculates the total horizontal space taken by the cell. That includes:
-// * width;
-// * left and red padding;
-// * border width.
-//
-// @param {HTMLElement} domCell
-// @returns {Number} Width in pixels without `px` at the end
+/**
+ * Calculates the total horizontal space taken by the cell. That includes:
+ *  * width,
+ *  * left and red padding,
+ *  * border width.
+ *
+ * @param {HTMLElement}  domCell A DOM cell element.
+ * @returns {Number} Width in pixels without `px` at the end.
+ */
 export function getDomCellOuterWidth( domCell ) {
 	const styles = global.window.getComputedStyle( domCell );
 
