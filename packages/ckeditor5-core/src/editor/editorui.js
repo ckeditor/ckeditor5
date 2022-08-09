@@ -206,7 +206,7 @@ export default class EditorUI {
 	}
 
 	/**
-	 * Registers a focusable toolbar in the editor to maintain the accessibility of the UI.
+	 * Adds a toolbar to the editor UI. Used primarily to maintain the accessibility of the UI.
 	 *
 	 * Focusable toolbars can be accessed (focused) by users by pressing the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke.
 	 * Successive keystroke presses navigate over available toolbars.
@@ -220,7 +220,7 @@ export default class EditorUI {
 	 * @param {Function} [options.afterBlur] Specify a callback executed after the toolbar instance DOM element loses focus upon
 	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link #registerFocusableEditingArea editing area}.
 	 */
-	registerFocusableToolbar( toolbarView, options = {} ) {
+	addToolbar( toolbarView, options = {} ) {
 		// console.log( this.editor.constructor.name, `Registering toolbar ${ logToolbar( toolbarView ) }` );
 
 		if ( toolbarView.isRendered ) {
@@ -333,7 +333,7 @@ export default class EditorUI {
 
 	/**
 	 * Starts listening for <kbd>Alt</kbd> + <kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes in the context of focusable
-	 * {@link #registerFocusableEditingArea editing areas} and {@link #registerFocusableToolbar toolbars}
+	 * {@link #registerFocusableEditingArea editing areas} and {@link #addToolbar toolbars}
 	 * to allow users navigate across the UI.
 	 *
 	 * @private
@@ -625,7 +625,7 @@ mix( EditorUI, ObservableMixin );
 // }
 
 /**
- * A definition of a focusable toolbar. Used by {@link module:core/editor/editorui~EditorUI#registerFocusableToolbar}.
+ * A definition of a focusable toolbar. Used by {@link module:core/editor/editorui~EditorUI#addToolbar}.
  *
  * @private
  * @interface module:core/editor/editorui~FocusableToolbarDefinition

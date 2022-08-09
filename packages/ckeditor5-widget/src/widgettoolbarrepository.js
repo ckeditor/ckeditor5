@@ -167,7 +167,7 @@ export default class WidgetToolbarRepository extends Plugin {
 		};
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
-		editor.ui.registerFocusableToolbar( toolbarView, {
+		editor.ui.addToolbar( toolbarView, {
 			isContextual: true,
 			beforeFocus: () => {
 				const relatedElement = getRelatedElement( editor.editing.view.document.selection );

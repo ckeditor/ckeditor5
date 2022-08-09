@@ -168,7 +168,7 @@ export default class BlockToolbar extends Plugin {
 		} );
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
-		editor.ui.registerFocusableToolbar( this.toolbarView, {
+		editor.ui.addToolbar( this.toolbarView, {
 			beforeFocus: () => this._showPanel(),
 			afterBlur: () => this._hidePanel()
 		} );

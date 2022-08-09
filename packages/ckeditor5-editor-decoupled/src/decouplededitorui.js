@@ -102,7 +102,7 @@ export default class DecoupledEditorUI extends EditorUI {
 		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
-		this.registerFocusableToolbar( view.toolbar );
+		this.addToolbar( view.toolbar );
 	}
 
 	/**

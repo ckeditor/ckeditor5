@@ -31,7 +31,7 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
-	let resizeCallback, registerFocusableToolbarSpy;
+	let resizeCallback, addToolbarSpy;
 
 	testUtils.createSinonSandbox();
 
@@ -53,7 +53,7 @@ describe( 'BlockToolbar', () => {
 			};
 		} );
 
-		registerFocusableToolbarSpy = sinon.spy( EditorUI.prototype, 'registerFocusableToolbar' );
+		addToolbarSpy = sinon.spy( EditorUI.prototype, 'addToolbar' );
 
 		return ClassicTestEditor.create( element, {
 			plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, Image, ImageCaption ],
@@ -132,16 +132,16 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	it( 'should register its toolbar as focusable toolbar in EditorUI with proper configuration responsible for presentation', () => {
-		sinon.assert.calledWithExactly( registerFocusableToolbarSpy.lastCall, blockToolbar.toolbarView, sinon.match( {
+		sinon.assert.calledWithExactly( addToolbarSpy.lastCall, blockToolbar.toolbarView, sinon.match( {
 			beforeFocus: sinon.match.func,
 			afterBlur: sinon.match.func
 		} ) );
 
-		registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
 
 		expect( blockToolbar.panelView.isVisible ).to.be.true;
 
-		registerFocusableToolbarSpy.lastCall.args[ 1 ].afterBlur();
+		addToolbarSpy.lastCall.args[ 1 ].afterBlur();
 
 		expect( blockToolbar.panelView.isVisible ).to.be.false;
 	} );
@@ -149,12 +149,12 @@ describe( 'BlockToolbar', () => {
 	it( 'should not show the panel on Alt+F10 when the button is invisible', () => {
 		// E.g. due to the toolbar not making sense for a selection.
 		blockToolbar.buttonView.isVisible = false;
-		registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
 
 		expect( blockToolbar.panelView.isVisible ).to.be.false;
 
 		blockToolbar.buttonView.isVisible = true;
-		registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
 		expect( blockToolbar.panelView.isVisible ).to.be.true;
 	} );
 

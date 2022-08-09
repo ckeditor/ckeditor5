@@ -35,7 +35,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
-	let resizeCallback, registerFocusableToolbarSpy;
+	let resizeCallback, addToolbarSpy;
 
 	testUtils.createSinonSandbox();
 
@@ -57,7 +57,7 @@ describe( 'BalloonToolbar', () => {
 			};
 		} );
 
-		registerFocusableToolbarSpy = sinon.spy( EditorUI.prototype, 'registerFocusableToolbar' );
+		addToolbarSpy = sinon.spy( EditorUI.prototype, 'addToolbar' );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -195,17 +195,17 @@ describe( 'BalloonToolbar', () => {
 		const showPanelSpy = sinon.spy( balloonToolbar, 'show' );
 		const hidePanelSpy = sinon.spy( balloonToolbar, 'hide' );
 
-		sinon.assert.calledWithExactly( registerFocusableToolbarSpy.lastCall, balloonToolbar.toolbarView, sinon.match( {
+		sinon.assert.calledWithExactly( addToolbarSpy.lastCall, balloonToolbar.toolbarView, sinon.match( {
 			beforeFocus: sinon.match.func,
 			afterBlur: sinon.match.func,
 			isContextual: true
 		} ) );
 
-		registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
 
 		sinon.assert.calledOnceWithExactly( showPanelSpy, true );
 
-		registerFocusableToolbarSpy.lastCall.args[ 1 ].afterBlur();
+		addToolbarSpy.lastCall.args[ 1 ].afterBlur();
 
 		sinon.assert.calledOnce( hidePanelSpy );
 	} );

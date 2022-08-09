@@ -24,7 +24,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'WidgetToolbarRepository', () => {
-	let editor, model, balloon, widgetToolbarRepository, editorElement, registerFocusableToolbarSpy;
+	let editor, model, balloon, widgetToolbarRepository, editorElement, addToolbarSpy;
 
 	testUtils.createSinonSandbox();
 
@@ -32,7 +32,7 @@ describe( 'WidgetToolbarRepository', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		registerFocusableToolbarSpy = sinon.spy( EditorUI.prototype, 'registerFocusableToolbar' );
+		addToolbarSpy = sinon.spy( EditorUI.prototype, 'addToolbar' );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -89,7 +89,7 @@ describe( 'WidgetToolbarRepository', () => {
 				} );
 
 				sinon.assert.calledWithExactly(
-					registerFocusableToolbarSpy.lastCall,
+					addToolbarSpy.lastCall,
 					widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view,
 					sinon.match( {
 						isContextual: true,
@@ -104,7 +104,7 @@ describe( 'WidgetToolbarRepository', () => {
 					getRelatedElement: () => editor.editing.view.document.getRoot()
 				} );
 
-				registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+				addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
 
 				expect( balloon.visibleView ).to.equal( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view );
 			} );
@@ -115,7 +115,7 @@ describe( 'WidgetToolbarRepository', () => {
 					getRelatedElement: () => null
 				} );
 
-				registerFocusableToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+				addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
 
 				expect( balloon.visibleView ).to.be.null;
 			} );

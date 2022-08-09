@@ -245,7 +245,7 @@ describe( 'EditorUI', () => {
 	} );
 
 	describe( 'Focus handling and navigation between editable areas and editor toolbars', () => {
-		describe( 'registerFocusableToolbar()', () => {
+		describe( 'addToolbar()', () => {
 			let locale, toolbar;
 
 			beforeEach( () => {
@@ -259,7 +259,7 @@ describe( 'EditorUI', () => {
 					const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
 					toolbar.render();
 
-					ui.registerFocusableToolbar( toolbar );
+					ui.addToolbar( toolbar );
 
 					sinon.assert.calledOnce( spy );
 				} );
@@ -268,7 +268,7 @@ describe( 'EditorUI', () => {
 					const spy = sinon.spy( editor.keystrokes, 'listenTo' );
 					toolbar.render();
 
-					ui.registerFocusableToolbar( toolbar );
+					ui.addToolbar( toolbar );
 
 					sinon.assert.calledOnce( spy );
 				} );
@@ -279,7 +279,7 @@ describe( 'EditorUI', () => {
 					const spy = sinon.spy( editor.keystrokes, 'listenTo' );
 					const spy2 = testUtils.sinon.spy( ui.focusTracker, 'add' );
 
-					ui.registerFocusableToolbar( toolbar );
+					ui.addToolbar( toolbar );
 
 					await new Promise( resolve => {
 						toolbar.once( 'render', () => {
@@ -295,13 +295,13 @@ describe( 'EditorUI', () => {
 			} );
 
 			it( 'adds toolbar to the `_focusableToolbarDefinitions` array', () => {
-				ui.registerFocusableToolbar( toolbar );
+				ui.addToolbar( toolbar );
 
 				expect( ui._focusableToolbarDefinitions.length ).to.equal( 1 );
 			} );
 
 			it( 'adds toolbar to the `_focusableToolbarDefinitions` array with passed options', () => {
-				ui.registerFocusableToolbar( toolbar, { isContextual: true } );
+				ui.addToolbar( toolbar, { isContextual: true } );
 
 				expect( ui._focusableToolbarDefinitions.length ).to.equal( 1 );
 				expect( ui._focusableToolbarDefinitions[ 0 ].options ).to.not.be.undefined;
@@ -382,12 +382,12 @@ describe( 'EditorUI', () => {
 				toolbarWithBeforeFocus.ariaLabel = 'with before focus';
 				toolbarWithBeforeFocus.render();
 
-				ui.registerFocusableToolbar( visibleToolbar );
-				ui.registerFocusableToolbar( visibleContextualToolbar, { isContextual: true } );
-				ui.registerFocusableToolbar( invisibleToolbar );
+				ui.addToolbar( visibleToolbar );
+				ui.addToolbar( visibleContextualToolbar, { isContextual: true } );
+				ui.addToolbar( invisibleToolbar );
 
 				// E.g. a contextual balloon toolbar.
-				ui.registerFocusableToolbar( toolbarWithBeforeFocus, {
+				ui.addToolbar( toolbarWithBeforeFocus, {
 					beforeFocus: () => {
 						document.body.appendChild( toolbarWithBeforeFocus.element );
 					},
@@ -508,8 +508,8 @@ describe( 'EditorUI', () => {
 				visibleToolbarB.render();
 				document.body.appendChild( visibleToolbarB.element );
 
-				ui.registerFocusableToolbar( visibleToolbarA );
-				ui.registerFocusableToolbar( visibleToolbarB );
+				ui.addToolbar( visibleToolbarA );
+				ui.addToolbar( visibleToolbarB );
 
 				editingAreaA = document.createElement( 'div' );
 				editingAreaB = document.createElement( 'div' );
@@ -620,7 +620,7 @@ describe( 'EditorUI', () => {
 				toolbarWithCallbacks.render();
 
 				// E.g. a contextual balloon toolbar.
-				ui.registerFocusableToolbar( toolbarWithCallbacks, {
+				ui.addToolbar( toolbarWithCallbacks, {
 					beforeFocus: () => {
 						document.body.appendChild( toolbarWithCallbacks.element );
 					},

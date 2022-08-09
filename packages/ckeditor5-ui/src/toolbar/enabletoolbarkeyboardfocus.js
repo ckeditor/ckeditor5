@@ -37,7 +37,7 @@ export default function enableToolbarKeyboardFocus( {
 } ) {
 	/**
 	 * The {@link module:ui/toolbar/enabletoolbarkeyboardfocus~enableToolbarKeyboardFocus} helper has been deprecated and will be
-	 * removed in the near future. Please use {@link module:core/editor/editorui~EditorUI#registerFocusableToolbar} instead
+	 * removed in the near future. Please use {@link module:core/editor/editorui~EditorUI#addToolbar} instead
 	 * to enable focus navigation to and from the toolbar using `Alt+F10` and `Esc` keystrokes.
 	 *
 	 * @param {module:ui/toolbar/toolbarview~ToolbarView} toolbar The toolbar the helper was enabled for.
@@ -47,7 +47,7 @@ export default function enableToolbarKeyboardFocus( {
 	console.warn(
 		'ui-toolbar-enabletoolbarkeyboardfocus-deprecated: ' +
 		'The enableToolbarKeyboardFocus() helper has been deprecated and will be removed in the near future. ' +
-		'Please use EditorUI#registerFocusableToolbar() to enable focus navigation to and from the toolbar.', { origin, toolbar } );
+		'Please use EditorUI#addToolbar() to enable focus navigation to and from the toolbar.', { origin, toolbar } );
 
 	// Because toolbar items can get focus, the overall state of the toolbar must
 	// also be tracked.
