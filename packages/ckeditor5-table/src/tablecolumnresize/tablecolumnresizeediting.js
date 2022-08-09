@@ -110,6 +110,14 @@ export default class TableColumnResizeEditing extends Plugin {
 		 */
 		this._domEmitter = Object.create( DomEmitterMixin );
 
+		/**
+		 * A local reference to the {@link module:table/tableutils~TableUtils} plugin.
+		 *
+		 * @private
+		 * @member {module:table/tableutils~TableUtils}
+		 */
+		this._tableUtilsPlugin = editor.plugins.get( 'TableUtils' );
+
 		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
 			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
 			editor.editing.view.change( writer => {
@@ -251,7 +259,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					}
 				}
 
-				const numberOfColumns = editor.plugins.get( 'TableUtils' ).getColumns( table );
+				const numberOfColumns = this._tableUtilsPlugin.getColumns( table );
 				const isColumnInsertionAtEnd = numberOfColumns > columnWidths.length;
 				const isColumnDeletionAtEnd = numberOfColumns < columnWidths.length;
 
@@ -323,7 +331,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		};
 
 		conversion.for( 'upcast' ).attributeToAttribute( widthStyleToTableWidthDefinition );
-		conversion.for( 'upcast' ).add( upcastColgroupElement( editor.plugins.get( 'TableUtils' ) ) );
+		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
 
 		conversion.for( 'downcast' ).attributeToAttribute( tableWidthToWidthStyleDefinition );
 		conversion.for( 'downcast' ).add( downcastTableColumnWidthsAttribute() );
@@ -373,7 +381,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' ) );
 
 		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
-		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._columnIndexMap, editor );
+		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._columnIndexMap, this._tableUtilsPlugin, editor );
 		const viewTable = target.findAncestor( 'table' );
 		const editingView = editor.editing.view;
 
@@ -398,10 +406,11 @@ export default class TableColumnResizeEditing extends Plugin {
 		// @private
 		// @param {module:engine/model/element~Element} modelTable A table which columns should be measured.
 		// @param {Map.<Number, Number>} columnIndexMap A map that connects the cells with their column indices.
+		// @param {module:table/tableutils~/tableUtils} tableUtils The Table Utils plugin instance.
 		// @param {module:core/editor/editor~Editor} editor The editor instance.
 		// @returns {Array.<Number>} Column widths expressed in pixels (without unit).
-		function _calculateDomColumnWidths( modelTable, columnIndexMap, editor ) {
-			const columnWidthsInPx = Array( editor.plugins.get( 'TableUtils' ).getColumns( modelTable ) );
+		function _calculateDomColumnWidths( modelTable, columnIndexMap, tableUtilsPlugin, editor ) {
+			const columnWidthsInPx = Array( tableUtilsPlugin.getColumns( modelTable ) );
 			const tableWalker = new TableWalker( modelTable );
 
 			for ( const cellSlot of tableWalker ) {
@@ -646,7 +655,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelTable = modelLeftCell.findAncestor( 'table' );
 
 		const leftColumnIndex = getColumnEdgesIndexes( modelLeftCell, this._columnIndexMap ).rightEdge;
-		const lastColumnIndex = editor.plugins.get( 'TableUtils' ).getColumns( modelTable ) - 1;
+		const lastColumnIndex = this._tableUtilsPlugin.getColumns( modelTable ) - 1;
 
 		const isRightEdge = leftColumnIndex === lastColumnIndex;
 		const isTableCentered = !modelTable.hasAttribute( 'tableAlignment' );
