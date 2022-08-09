@@ -29,7 +29,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		this.domEventType = [ 'beforeinput' ];
 	}
 
-	public onDomEvent( domEvent: InputEvent & DomEventData ): void {
+	public onDomEvent( domEvent: InputEvent ): void {
 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( `%c[InputObserver]%c ${ domEvent.type }: ${ domEvent.inputType }`,
 		// @if CK_DEBUG_TYPING // 		'color: green', 'color: default'
@@ -83,9 +83,19 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 					return view.domConverter.domRangeToView( domRange )!;
 				} );
 			} else if ( env.isAndroid ) {
-				const domSelection = domEvent.domTarget.ownerDocument.defaultView!.getSelection()!;
+				const domSelection = ( domEvent.target as HTMLElement ).ownerDocument.defaultView!.getSelection()!;
 
 				targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
+
+				// if ( !targetRanges.length ) {
+				// 	console.log( '----- reset isComposing' );
+				// 	view.document.isComposing = false;
+				// 	view.document.isComposing = true;
+				//
+				// 	// TODO After render this selection is not the same as was expected for target ranges!!!
+				// 	targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
+				// 	data = data.substring( data.length - 1 );
+				// }
 			}
 
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
