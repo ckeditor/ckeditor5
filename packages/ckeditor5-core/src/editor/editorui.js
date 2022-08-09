@@ -88,6 +88,18 @@ export default class EditorUI {
 		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
 
 		/**
+		 * Indicates the the UI is ready. Set `true` after {@link #event:ready} event is fired.
+		 *
+		 * @readonly
+		 * @default false
+		 * @member {Boolean} #isReady
+		 */
+		this.isReady = false;
+		this.once( 'ready', () => {
+			this.isReady = true;
+		} );
+
+		/**
 		 * Stores all editable elements used by the editor instance.
 		 *
 		 * @private
@@ -102,14 +114,6 @@ export default class EditorUI {
 		 * @type {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
 		 */
 		this._focusableToolbarDefinitions = [];
-
-		/**
-		 * A set of all the available & focusable editing areas (editor domRoots or sourceEditing area).
-		 *
-		 * @private
-		 * @type {Set.<HTMLElement>}
-		 */
-		this._focusableEditingAreas = new Set();
 
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
@@ -160,13 +164,14 @@ export default class EditorUI {
 		}
 
 		this._editableElementsMap = new Map();
-		this._focusableEditingAreas = new Set();
 		this._focusableToolbarDefinitions = [];
 	}
 
 	/**
-	 * Store the native DOM editable element used by the editor under
-	 * a unique name. Register that DOM element as a focusable editing area.
+	 * Stores the native DOM editable element used by the editor under a unique name.
+	 *
+	 * Also, registers the element in the editor to maintain the accessibility of the UI. When the user is editing text in a focusable
+	 * editable area, they can use the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke to navigate over editor toolbars. See {@link #addToolbar}.
 	 *
 	 * @param {String} rootName The unique name of the editable element.
 	 * @param {HTMLElement} domElement The native DOM editable element.
@@ -183,7 +188,26 @@ export default class EditorUI {
 		}
 
 		// Register the element so it becomes available for Alt+F10 and Esc navigation.
-		this.registerFocusableEditingArea( domElement );
+		this.focusTracker.add( domElement );
+
+		const setUpKeystrokeHandler = () => {
+			// The editing view of the editor is already listening to keystrokes from DOM roots (see: KeyObserver).
+			// Do not duplicate listeners.
+			if ( this.editor.editing.view.getDomRoot( rootName ) ) {
+				return;
+			}
+
+			this.editor.keystrokes.listenTo( domElement );
+		};
+
+		// For editable elements set by features after EditorUI is ready (e.g. source editing).
+		if ( this.isReady ) {
+			setUpKeystrokeHandler();
+		}
+		// For editable elements set while the editor is being created (e.g. DOM roots).
+		else {
+			this.once( 'ready', setUpKeystrokeHandler );
+		}
 	}
 
 	/**
@@ -218,7 +242,7 @@ export default class EditorUI {
 	 * @param {Function} [options.beforeFocus] Specify a callback executed before the toolbar instance DOM element gains focus
 	 * upon the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke.
 	 * @param {Function} [options.afterBlur] Specify a callback executed after the toolbar instance DOM element loses focus upon
-	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link #registerFocusableEditingArea editing area}.
+	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link #setEditableElement editable element}.
 	 */
 	addToolbar( toolbarView, options = {} ) {
 		// console.log( this.editor.constructor.name, `Registering toolbar ${ logToolbar( toolbarView ) }` );
@@ -234,28 +258,6 @@ export default class EditorUI {
 		}
 
 		this._focusableToolbarDefinitions.push( { toolbarView, options } );
-	}
-
-	/**
-	 * Registers focusable editable element (area) in the editor to maintain the accessibility of the UI.
-	 *
-	 * When the user is editing text in a focusable editable area, they can use the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke
-	 * to navigate over editor toolbars.
-	 *
-	 * **Note:** Editor {@link module:engine/view/view~View#domRoots DOM root elements} are registered automatically by
-	 * {@link #setEditableElement} and do not need to be registered again.
-	 *
-	 * @param {HTMLElement} editingAreaDomElement An element to be registered as focusable editing area.
-	 */
-	registerFocusableEditingArea( editingAreaDomElement ) {
-		this.focusTracker.add( editingAreaDomElement );
-
-		// The editing view of the editor is already listening to keystrokes from DOM roots (see: KeyObserver). Do not duplicate listeners.
-		if ( !this._isDomRootElement( editingAreaDomElement ) ) {
-			this.editor.keystrokes.listenTo( editingAreaDomElement );
-		}
-
-		this._focusableEditingAreas.add( editingAreaDomElement );
 	}
 
 	/**
@@ -333,7 +335,7 @@ export default class EditorUI {
 
 	/**
 	 * Starts listening for <kbd>Alt</kbd> + <kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes in the context of focusable
-	 * {@link #registerFocusableEditingArea editing areas} and {@link #addToolbar toolbars}
+	 * {@link #setEditableElement editable elements} and {@link #addToolbar toolbars}
 	 * to allow users navigate across the UI.
 	 *
 	 * @private
@@ -351,8 +353,13 @@ export default class EditorUI {
 			// console.clear();
 			// console.group( 'Pressed Alt+F10' );
 
-			// Focus moved out of a DOM element that does not belong to the editing view (e.g. source editing).
-			if ( this._focusableEditingAreas.has( focusedElement ) && !editingView.domConverter.mapDomToView( focusedElement ) ) {
+			// Focus moved out of a DOM element that
+			// * is not a toolbar,
+			// * does not belong to the editing view (e.g. source editing).
+			if (
+				Array.from( this._editableElementsMap.values() ).includes( focusedElement ) &&
+				!Array.from( editingView.domRoots.values() ).includes( focusedElement )
+			) {
 				lastFocusedForeignElement = focusedElement;
 			}
 
@@ -586,17 +593,6 @@ export default class EditorUI {
 		// console.log( `✅ Finally focused ${ logToolbar( candidateToolbarDefinition.toolbarView ) }.` );
 
 		return true;
-	}
-
-	/**
-	 * Checks whether a specific DOM element is a DOM root of the editor.
-	 *
-	 * @private
-	 * @param {HTMLElement} domElement
-	 * @returns {Boolean} `true` when the `domElement` is one of the DOM roots of the editor.
-	 */
-	_isDomRootElement( domElement ) {
-		return Array.from( this._editableElementsMap.values() ).includes( domElement );
 	}
 
 	/**

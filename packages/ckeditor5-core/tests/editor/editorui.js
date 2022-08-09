@@ -46,6 +46,15 @@ describe( 'EditorUI', () => {
 			expect( ui.element ).to.null;
 		} );
 
+		it( 'should set isReady to false', () => {
+			expect( ui.isReady ).to.be.false;
+		} );
+
+		it( 'should set isReady to true after #ready is fired', () => {
+			ui.fire( 'ready' );
+			expect( ui.isReady ).to.be.true;
+		} );
+
 		it( 'should fire update event after viewDocument#layoutChanged', () => {
 			const spy = sinon.spy();
 
@@ -115,9 +124,14 @@ describe( 'EditorUI', () => {
 	} );
 
 	describe( 'setEditableElement()', () => {
+		let element;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+		} );
+
 		it( 'should register the editable element under a name', () => {
 			const ui = new EditorUI( editor );
-			const element = document.createElement( 'div' );
 
 			ui.setEditableElement( 'main', element );
 
@@ -126,7 +140,6 @@ describe( 'EditorUI', () => {
 
 		it( 'puts a reference to the editor instance in domElement#ckeditorInstance', () => {
 			const ui = new EditorUI( editor );
-			const element = document.createElement( 'div' );
 
 			ui.setEditableElement( 'main', element );
 
@@ -135,7 +148,6 @@ describe( 'EditorUI', () => {
 
 		it( 'does not override a reference to the editor instance in domElement#ckeditorInstance', () => {
 			const ui = new EditorUI( editor );
-			const element = document.createElement( 'div' );
 
 			element.ckeditorInstance = 'foo';
 
@@ -144,15 +156,50 @@ describe( 'EditorUI', () => {
 			expect( element.ckeditorInstance ).to.equal( 'foo' );
 		} );
 
-		it( 'executes registerFocusableEditingArea()', () => {
-			const ui = new EditorUI( editor );
-			const spy = sinon.spy( ui, 'registerFocusableEditingArea' );
-			const element = document.createElement( 'div' );
+		describe( 'Focus tracking and accessibility', () => {
+			it( 'should add the passed DOM element to EditorUI#focusTracker ', () => {
+				const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
 
-			ui.setEditableElement( 'main', element );
+				ui.setEditableElement( 'main', element );
 
-			expect( spy.callCount ).to.equal( 1 );
-			sinon.assert.calledWithExactly( spy.firstCall, element );
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWithExactly( spy, element );
+			} );
+
+			it( 'should add a DOM element to Editor#keystokeHandler', () => {
+				const spy = sinon.spy( editor.keystrokes, 'listenTo' );
+
+				ui.setEditableElement( 'main', element );
+				ui.fire( 'ready' );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWithExactly( spy, element );
+			} );
+
+			it( 'should not add a DOM element to Editor#keystokeHandler if an editing DOM root (to avoid duplication)', () => {
+				const keystorkesSpy = sinon.spy( editor.keystrokes, 'listenTo' );
+
+				ui.setEditableElement( 'main', element );
+				editor.model.document.createRoot();
+				editor.editing.view.attachDomRoot( element );
+				ui.fire( 'ready' );
+
+				sinon.assert.notCalled( keystorkesSpy );
+			} );
+
+			it( 'should enable accessibility features after the editor UI was ready', () => {
+				const focusTrackerSpy = testUtils.sinon.spy( ui.focusTracker, 'add' );
+				const keystrokesSpy = sinon.spy( editor.keystrokes, 'listenTo' );
+
+				ui.fire( 'ready' );
+				ui.setEditableElement( 'main', element );
+
+				sinon.assert.calledOnce( focusTrackerSpy );
+				sinon.assert.calledWithExactly( focusTrackerSpy, element );
+
+				sinon.assert.calledOnce( keystrokesSpy );
+				sinon.assert.calledWithExactly( keystrokesSpy, element );
+			} );
 		} );
 	} );
 
@@ -308,54 +355,6 @@ describe( 'EditorUI', () => {
 			} );
 		} );
 
-		describe( 'registerFocusableEditingArea()', () => {
-			let element;
-
-			beforeEach( () => {
-				editor = new Editor();
-				ui = new EditorUI( editor );
-				element = document.createElement( 'div' );
-			} );
-
-			it( 'adds the passed DOM element to EditorUI#focusTracker ', () => {
-				const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
-
-				ui.registerFocusableEditingArea( element );
-
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, element );
-			} );
-
-			it( 'adds a DOM element to Editor#keystokeHandler', () => {
-				const spy = sinon.spy( editor.keystrokes, 'listenTo' );
-
-				ui.registerFocusableEditingArea( element );
-
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, element );
-			} );
-
-			it( 'does not add a DOM element to Editor#keystokeHandler if an editing DOM root (to avoid duplication)', () => {
-				const keystorkesSpy = sinon.spy( editor.keystrokes, 'listenTo' );
-				const registerSpy = sinon.spy( ui, 'registerFocusableEditingArea' );
-
-				// setEditableElement() calls registerFocusableEditingArea().
-				ui.setEditableElement( 'main', element );
-
-				sinon.assert.calledOnce( registerSpy );
-				sinon.assert.calledWithExactly( registerSpy, element );
-				sinon.assert.notCalled( keystorkesSpy );
-			} );
-
-			it( 'updates the _focusableEditingAreas set', () => {
-				ui._editableElementsMap.set( 'main', element );
-
-				ui.registerFocusableEditingArea( element );
-
-				expect( ui._focusableEditingAreas.size ).to.equal( 1 );
-			} );
-		} );
-
 		describe( 'Focusing toolbars on Alt+F10 key press', () => {
 			let locale, visibleToolbar, invisibleToolbar, visibleContextualToolbar, toolbarWithBeforeFocus;
 			let editingArea;
@@ -399,7 +398,8 @@ describe( 'EditorUI', () => {
 				editingArea = document.createElement( 'div' );
 				document.body.appendChild( editingArea );
 
-				ui.registerFocusableEditingArea( editingArea );
+				ui.setEditableElement( 'main', editingArea );
+				ui.fire( 'ready' );
 
 				// Let's start with the editing root already focused.
 				ui.focusTracker.isFocused = true;
@@ -443,7 +443,8 @@ describe( 'EditorUI', () => {
 				const editingArea = document.createElement( 'div' );
 				document.body.appendChild( editingArea );
 
-				ui.registerFocusableEditingArea( editingArea );
+				ui.setEditableElement( 'main', editingArea );
+				ui.fire( 'ready' );
 
 				expect( () => {
 					pressAltF10( editor );
@@ -492,8 +493,8 @@ describe( 'EditorUI', () => {
 		} );
 
 		describe( 'Restoring forcus on Esc key press', () => {
-			let locale, visibleToolbarA, visibleToolbarB, editingAreaA, editingAreaB, invisibleEditingArea;
-			let editingAreaASpy, editingAreaBSpy, invisibleEditingAreaSpy;
+			let locale, visibleToolbarA, visibleToolbarB, editingAreaA, editingAreaB, nonEngineEditingArea, invisibleEditingArea;
+			let editingFocusSpy, editingAreaASpy, editingAreaBSpy, nonEngineEditingAreaSpy, invisibleEditingAreaSpy;
 
 			beforeEach( () => {
 				locale = { t: val => val };
@@ -513,24 +514,43 @@ describe( 'EditorUI', () => {
 
 				editingAreaA = document.createElement( 'div' );
 				editingAreaB = document.createElement( 'div' );
+				nonEngineEditingArea = document.createElement( 'div' );
 				invisibleEditingArea = document.createElement( 'div' );
+
+				editingAreaA.setAttribute( 'id', 'A' );
+				editingAreaB.setAttribute( 'id', 'B' );
+				nonEngineEditingArea.setAttribute( 'id', 'non-engine' );
+				invisibleEditingArea.setAttribute( 'id', 'invisible' );
+
 				document.body.appendChild( editingAreaA );
 				document.body.appendChild( editingAreaB );
+				document.body.appendChild( nonEngineEditingArea );
 				document.body.appendChild( invisibleEditingArea );
 
 				// Simulate e.g. a hidden source area.
 				invisibleEditingArea.style.display = 'none';
 
-				ui.registerFocusableEditingArea( invisibleEditingArea );
-				ui.registerFocusableEditingArea( editingAreaA );
-				ui.registerFocusableEditingArea( editingAreaB );
+				editor.model.document.createRoot( '$root', 'invisible' );
+				editor.model.document.createRoot( '$root', 'areaA' );
+				editor.model.document.createRoot( '$root', 'areaB' );
+				editor.editing.view.attachDomRoot( invisibleEditingArea, 'invisible' );
+				editor.editing.view.attachDomRoot( editingAreaA, 'areaA' );
+				editor.editing.view.attachDomRoot( editingAreaB, 'areaB' );
+
+				ui.setEditableElement( 'invisible', invisibleEditingArea );
+				ui.setEditableElement( 'areaA', editingAreaA );
+				ui.setEditableElement( 'areaB', editingAreaB );
+				ui.setEditableElement( 'nonEngine', nonEngineEditingArea );
+				ui.fire( 'ready' );
 
 				// Let's start with the editing root "A" already focused.
 				ui.focusTracker.isFocused = true;
 				ui.focusTracker.focusedElement = editingAreaA;
 
+				editingFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 				editingAreaASpy = sinon.spy( editingAreaA, 'focus' );
 				editingAreaBSpy = sinon.spy( editingAreaB, 'focus' );
+				nonEngineEditingAreaSpy = sinon.spy( nonEngineEditingArea, 'focus' );
 				invisibleEditingAreaSpy = sinon.spy( invisibleEditingArea, 'focus' );
 			} );
 
@@ -540,6 +560,7 @@ describe( 'EditorUI', () => {
 
 				editingAreaA.remove();
 				editingAreaB.remove();
+				nonEngineEditingArea.remove();
 				invisibleEditingArea.remove();
 
 				visibleToolbarA.destroy();
@@ -556,8 +577,6 @@ describe( 'EditorUI', () => {
 				// Catches the `There is no selection in any editable to focus.` warning.
 				sinon.stub( console, 'warn' );
 
-				const editingFocusSpy = sinon.spy( editor.editing.view, 'focus' );
-
 				ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
 
 				pressAltF10();
@@ -568,21 +587,28 @@ describe( 'EditorUI', () => {
 				sinon.assert.calledOnce( editingFocusSpy );
 				sinon.assert.notCalled( editingAreaASpy );
 				sinon.assert.notCalled( editingAreaBSpy );
+				sinon.assert.notCalled( nonEngineEditingAreaSpy );
 				sinon.assert.notCalled( invisibleEditingAreaSpy );
 			} );
 
 			it( 'should return focus back to the last focused editing area that does not belong to the editing view', () => {
+				ui.focusTracker.focusedElement = nonEngineEditingArea;
+
 				pressAltF10();
 				ui.focusTracker.focusedElement = visibleToolbarA.element;
 
 				pressEsc();
 
-				sinon.assert.calledOnce( editingAreaASpy );
+				sinon.assert.calledOnce( nonEngineEditingAreaSpy );
+				sinon.assert.notCalled( editingAreaASpy );
 				sinon.assert.notCalled( editingAreaBSpy );
 				sinon.assert.notCalled( invisibleEditingAreaSpy );
 			} );
 
 			it( 'should return focus back to the last focused editing area after navigating across multiple toolbars', () => {
+				// Catches the `There is no selection in any editable to focus.` warning.
+				sinon.stub( console, 'warn' );
+
 				ui.focusTracker.focusedElement = editingAreaB;
 
 				pressAltF10();
@@ -593,16 +619,16 @@ describe( 'EditorUI', () => {
 
 				pressEsc();
 
-				sinon.assert.calledOnce( editingAreaBSpy );
+				sinon.assert.calledOnce( editingFocusSpy );
+				sinon.assert.notCalled( editingAreaBSpy );
 				sinon.assert.notCalled( editingAreaASpy );
+				sinon.assert.notCalled( nonEngineEditingAreaSpy );
 				sinon.assert.notCalled( invisibleEditingAreaSpy );
 			} );
 
 			it( 'should focus the first editing area if the focus went straight to the toolbar without focusing any editing areas', () => {
 				// Catches the `There is no selection in any editable to focus.` warning.
 				sinon.stub( console, 'warn' );
-
-				const editingFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 
 				ui.focusTracker.focusedElement = visibleToolbarA.element;
 
@@ -611,10 +637,14 @@ describe( 'EditorUI', () => {
 				sinon.assert.calledOnce( editingFocusSpy );
 				sinon.assert.notCalled( editingAreaASpy );
 				sinon.assert.notCalled( editingAreaBSpy );
+				sinon.assert.notCalled( nonEngineEditingAreaSpy );
 				sinon.assert.notCalled( invisibleEditingAreaSpy );
 			} );
 
 			it( 'should clean up after a focused toolbar that had afterBlur() defined in options', () => {
+				// Catches the `There is no selection in any editable to focus.` warning.
+				sinon.stub( console, 'warn' );
+
 				const toolbarWithCallbacks = new ToolbarView( locale );
 				toolbarWithCallbacks.ariaLabel = 'with callbacks';
 				toolbarWithCallbacks.render();
@@ -639,8 +669,10 @@ describe( 'EditorUI', () => {
 				ui.focusTracker.focusedElement = toolbarWithCallbacks.element;
 
 				pressEsc();
-				sinon.assert.calledOnce( editingAreaASpy );
+				sinon.assert.calledOnce( editingFocusSpy );
+				sinon.assert.notCalled( editingAreaASpy );
 				sinon.assert.notCalled( editingAreaBSpy );
+				sinon.assert.notCalled( nonEngineEditingAreaSpy );
 				sinon.assert.notCalled( invisibleEditingAreaSpy );
 			} );
 		} );
