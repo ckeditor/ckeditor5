@@ -189,6 +189,16 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
+
+	class TestView extends View {
+		constructor( ...args ) {
+			super( ...args );
+
+			this.setTemplate( {
+				tag: 'div'
+			} );
+		}
+	}
 } );
 
 function pressRightArrow( keystrokes ) {
@@ -229,14 +239,4 @@ function pressDownArrow( keystrokes ) {
 	};
 
 	keystrokes.press( keyEvtData );
-}
-
-class TestView extends View {
-	constructor( ...args ) {
-		super( ...args );
-
-		this.setTemplate( {
-			tag: 'div'
-		} );
-	}
 }
