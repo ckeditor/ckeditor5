@@ -1,0 +1,113 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Korean (https://www.transifex.com/ckeditor/teams/11143/ko/)\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "The label for the image widget."
+msgid "image widget"
+msgstr "사진 위젯"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr ""
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr ""
+
+msgctxt "The label for the image style button that places the image inside the line of text."
+msgid "In line"
+msgstr ""
+
+msgctxt "The label for the Side image option."
+msgid "Side image"
+msgstr "본문 옆에 배치"
+
+msgctxt "The label for the Full size image option."
+msgid "Full size image"
+msgstr "꽉 찬 크기"
+
+msgctxt "The label for the Left aligned image option."
+msgid "Left aligned image"
+msgstr "왼쪽 정렬"
+
+msgctxt "The label for the Centered image option."
+msgid "Centered image"
+msgstr "가운데 정렬"
+
+msgctxt "The label for the Right aligned image option."
+msgid "Right aligned image"
+msgstr "오른쪽 정렬"
+
+msgctxt "The label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "대체 문구 변경"
+
+msgctxt "The label for the image text alternative input."
+msgid "Text alternative"
+msgstr "대체 문구"
+
+msgctxt "The placeholder text for the image caption displayed when the caption is empty."
+msgid "Enter image caption"
+msgstr "사진 설명을 입력하세요"
+
+msgctxt "The label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "사진 삽입"
+
+msgctxt "The title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "업로드 실패"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr "사진 툴바"
+
+msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
+msgid "Resize image"
+msgstr "사진 크기 조절"
+
+msgctxt "The label used for the standalone resize options buttons in the image toolbar."
+msgid "Resize image to %0"
+msgstr "사진의 크기를 %0으로 조절"
+
+msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
+msgid "Resize image to the original size"
+msgstr "사진을 원래 크기로 돌려놓기"
+
+msgctxt "The default label for the resize option that resets the size of the image."
+msgid "Original"
+msgstr "원본"
+
+msgctxt "The accessibility label of the image resize dropdown for screen readers."
+msgid "Image resize list"
+msgstr "사진 크기 목록"
+
+msgctxt "The label of the form submit button if the image source URL input has no value."
+msgid "Insert"
+msgstr ""
+
+msgctxt "The label of the form submit button if the image source URL input has a value."
+msgid "Update"
+msgstr ""
+
+msgctxt "The input label for the Insert image via URL form."
+msgid "Insert image via URL"
+msgstr ""
+
+msgctxt "The input label for the Insert image via URL form for a pre-existing image."
+msgid "Update image URL"
+msgstr ""

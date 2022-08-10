@@ -17,12 +17,13 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import Image from './plugins/image/src/image';
+import ImageCaption from './plugins/image/src/imagecaption';
+import ImageStyle from './plugins/image/src/imagestyle';
+import ImageResize from './plugins/image/src/imageresize';
+import ImageToolbar from './plugins/image/src/imagetoolbar';
+import ImageUpload from './plugins/image/src/imageupload';
+import ImageInsert from './plugins/image/src/imageinsert';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
@@ -47,7 +48,6 @@ import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 import Style from '@ckeditor/ckeditor5-style/src/style';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
@@ -275,43 +275,6 @@ HelpjuiceEditor.defaultConfig = {
 	},
 	image: {
 		resizeUnit: 'px',
-		resizeOptions: [
-			{
-				name: 'resizeImage:original',
-				value: null,
-				icon: 'original'
-			},
-			{
-				name: 'resizeImage:100',
-				value: '100',
-				icon: 'medium'
-			},
-			{
-				name: 'resizeImage:200',
-				value: '200',
-				icon: 'large'
-			},
-			{
-				name: 'resizeImage:300',
-				value: '300',
-				icon: 'large'
-			},
-			{
-				name: 'resizeImage:400',
-				value: '400',
-				icon: 'large'
-			},
-			{
-				name: 'resizeImage:500',
-				value: '500',
-				icon: 'large'
-			},
-			{
-				name: 'resizeImage:600',
-				value: '600',
-				icon: 'large'
-			}
-		],
 		styles: {
 			options: [
 				{
@@ -358,11 +321,6 @@ HelpjuiceEditor.defaultConfig = {
 			'|',
 			'imageStyle:alignLeft',
 			'imageStyle:alignRight',
-			'|',
-			{
-				name: 'resizeImage',
-				defaultItem: 'resizeImage:original'
-			},
 			'|',
 			'linkImage',
 			'toggleImageCaption',
@@ -416,37 +374,37 @@ HelpjuiceEditor.defaultConfig = {
 		unit: 'em'
 	},
 	htmlSupport: {
-    allow: [
-		{
-			name: /^(video|iframe)$/,
-			attributes: {
-                src: true,
-				width: true,
-				height: true,
-				title: true,
-				frameborder: true,
-				allow: true,
-				allowfullscreen: true,
-				autoplay: true,
-				autopictureinpicture: true,
-				controls: true,
-				controlslist: true,
-				crossorigin: true,
-				disablepictureinpicture: true,
-				disableremoteplayback: true,
-				loop: true,
-				muted: true,
-				playsinline: true,
-				poster: true,
-				preload: true,
-				name: true,
-				type: true,
-				align: true
-            }
-		},
-	],
-    disallow: [ /* HTML features to disallow */ ]
-  },
+		allow: [
+			{
+				name: /^(video|iframe)$/,
+				attributes: {
+					src: true,
+					width: true,
+					height: true,
+					title: true,
+					frameborder: true,
+					allow: true,
+					allowfullscreen: true,
+					autoplay: true,
+					autopictureinpicture: true,
+					controls: true,
+					controlslist: true,
+					crossorigin: true,
+					disablepictureinpicture: true,
+					disableremoteplayback: true,
+					loop: true,
+					muted: true,
+					playsinline: true,
+					poster: true,
+					preload: true,
+					name: true,
+					type: true,
+					align: true
+				}
+			},
+		],
+		disallow: [ /* HTML features to disallow */ ]
+	},
 	link: {
 		addTargetToExternalLinks: true,
 		decorators: {

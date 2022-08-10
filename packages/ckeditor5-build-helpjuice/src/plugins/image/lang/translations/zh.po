@@ -1,0 +1,113 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "The label for the image widget."
+msgid "image widget"
+msgstr "圖片小工具"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr ""
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr ""
+
+msgctxt "The label for the image style button that places the image inside the line of text."
+msgid "In line"
+msgstr ""
+
+msgctxt "The label for the Side image option."
+msgid "Side image"
+msgstr "側邊圖片"
+
+msgctxt "The label for the Full size image option."
+msgid "Full size image"
+msgstr "完整尺寸圖片"
+
+msgctxt "The label for the Left aligned image option."
+msgid "Left aligned image"
+msgstr "向左對齊圖片"
+
+msgctxt "The label for the Centered image option."
+msgid "Centered image"
+msgstr "置中圖片"
+
+msgctxt "The label for the Right aligned image option."
+msgid "Right aligned image"
+msgstr "向右對齊圖片"
+
+msgctxt "The label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "修改圖片的替代文字"
+
+msgctxt "The label for the image text alternative input."
+msgid "Text alternative"
+msgstr "替代文字"
+
+msgctxt "The placeholder text for the image caption displayed when the caption is empty."
+msgid "Enter image caption"
+msgstr "輸入圖片說明"
+
+msgctxt "The label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "插入圖片"
+
+msgctxt "The title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "上傳失敗"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr "圖片工具"
+
+msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
+msgid "Resize image"
+msgstr "縮放圖片"
+
+msgctxt "The label used for the standalone resize options buttons in the image toolbar."
+msgid "Resize image to %0"
+msgstr "縮放圖片到 %0"
+
+msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
+msgid "Resize image to the original size"
+msgstr "縮放圖片到原始尺寸"
+
+msgctxt "The default label for the resize option that resets the size of the image."
+msgid "Original"
+msgstr "原始圖片"
+
+msgctxt "The accessibility label of the image resize dropdown for screen readers."
+msgid "Image resize list"
+msgstr "圖片縮放清單"
+
+msgctxt "The label of the form submit button if the image source URL input has no value."
+msgid "Insert"
+msgstr "插入"
+
+msgctxt "The label of the form submit button if the image source URL input has a value."
+msgid "Update"
+msgstr "更新"
+
+msgctxt "The input label for the Insert image via URL form."
+msgid "Insert image via URL"
+msgstr "使用連結插入圖片"
+
+msgctxt "The input label for the Insert image via URL form for a pre-existing image."
+msgid "Update image URL"
+msgstr "更新圖片連結"

@@ -1,0 +1,113 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Greek (https://www.transifex.com/ckeditor/teams/11143/el/)\n"
+"Language: el\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "The label for the image widget."
+msgid "image widget"
+msgstr "Γραφικό στοιχείο εικόνας"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr "Αναδίπλωση κειμένου"
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr "Κατάτμηση κειμένου"
+
+msgctxt "The label for the image style button that places the image inside the line of text."
+msgid "In line"
+msgstr "Εντός γραμμής"
+
+msgctxt "The label for the Side image option."
+msgid "Side image"
+msgstr "Πλευρική εικόνα"
+
+msgctxt "The label for the Full size image option."
+msgid "Full size image"
+msgstr "Εικόνα σε πλήρες μέγεθος"
+
+msgctxt "The label for the Left aligned image option."
+msgid "Left aligned image"
+msgstr "Εικόνα με αριστερή στοίχιση"
+
+msgctxt "The label for the Centered image option."
+msgid "Centered image"
+msgstr "Εικόνα με στοίχιση στο κέντρο"
+
+msgctxt "The label for the Right aligned image option."
+msgid "Right aligned image"
+msgstr "Εικόνα με δεξιά στοίχιση"
+
+msgctxt "The label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "Αλλαγή εναλλακτικού κείμενου εικόνας"
+
+msgctxt "The label for the image text alternative input."
+msgid "Text alternative"
+msgstr "Εναλλακτικό κείμενο"
+
+msgctxt "The placeholder text for the image caption displayed when the caption is empty."
+msgid "Enter image caption"
+msgstr "Εισαγωγή λεζάντας εικόνας"
+
+msgctxt "The label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "Εισαγωγή εικόνας"
+
+msgctxt "The title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "Η αποστολή απέτυχε"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr "Γραμμή εργαλείων εικόνας"
+
+msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
+msgid "Resize image"
+msgstr "Αλλαγή μεγέθους εικόνας"
+
+msgctxt "The label used for the standalone resize options buttons in the image toolbar."
+msgid "Resize image to %0"
+msgstr "Αλλαγή μεγέθους σε %0"
+
+msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
+msgid "Resize image to the original size"
+msgstr "Αλλαγή μεγέθους εικόνας στο αρχικό μέγεθος"
+
+msgctxt "The default label for the resize option that resets the size of the image."
+msgid "Original"
+msgstr "Αρχικό"
+
+msgctxt "The accessibility label of the image resize dropdown for screen readers."
+msgid "Image resize list"
+msgstr "Λίστα μεγεθών εικόνων"
+
+msgctxt "The label of the form submit button if the image source URL input has no value."
+msgid "Insert"
+msgstr "Εισαγωγή"
+
+msgctxt "The label of the form submit button if the image source URL input has a value."
+msgid "Update"
+msgstr "Ενημέρωση"
+
+msgctxt "The input label for the Insert image via URL form."
+msgid "Insert image via URL"
+msgstr "Εισαγωγή εικόνας μέσω διεύθυνσης"
+
+msgctxt "The input label for the Insert image via URL form for a pre-existing image."
+msgid "Update image URL"
+msgstr "Ενημέρωση διεύθυνσης εικόνας"
