@@ -40,6 +40,14 @@ export default class ColorGridView extends View {
 		}
 
 		/**
+		 * A number of columns for the tiles grid.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
+		this.columns = options.columns;
+
+		/**
 		 * The color of the currently selected color tile in {@link #items}.
 		 *
 		 * @observable
@@ -155,7 +163,7 @@ export default class ColorGridView extends View {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 
-		addKeyboardHandlingForGrid( this.keystrokes, this.focusTracker, this.items, 5 );
+		addKeyboardHandlingForGrid( this.keystrokes, this.focusTracker, this.items, this.columns );
 	}
 
 	/**
