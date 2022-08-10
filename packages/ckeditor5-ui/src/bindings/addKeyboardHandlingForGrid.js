@@ -4,13 +4,21 @@
  */
 
 /**
- * @module ui/bindings/addKeyboardHandlingForGrid
+ * @module ui/bindings/addkeyboardhandlingforgrid
  */
 
+/**
+ * A helper that adds keyboard navigation (arrow up/down/left/right) for grids.
+ *
+ * @param {module:utils/keystrokehandler~KeystrokeHandler} keystrokes Keystroke handler to register navigation with arrow keys.
+ * @param {module:utils/focustracker~FocusTracker} focusTracker A focus tracker for grid elements.
+ * @param {module:ui/viewcollection~ViewCollection} gridElementsCollection A collection of grid items.
+ * @param {Number} numberOfColumns Number of columns in the grid.
+ */
 export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gridElementsCollection, numberOfColumns ) {
 	keystrokes.set( 'arrowright', evt => {
 		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
+		const focusedElementIndex = getFocusedElementIndex( gridElements, focusTracker );
 
 		let nextIndex;
 
@@ -28,7 +36,7 @@ export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gr
 
 	keystrokes.set( 'arrowleft', evt => {
 		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
+		const focusedElementIndex = getFocusedElementIndex( gridElements, focusTracker );
 		let nextIndex;
 
 		if ( focusedElementIndex === 0 ) {
@@ -45,7 +53,7 @@ export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gr
 
 	keystrokes.set( 'arrowup', evt => {
 		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
+		const focusedElementIndex = getFocusedElementIndex( gridElements, focusTracker );
 		let nextIndex = focusedElementIndex - numberOfColumns;
 
 		if ( nextIndex < 0 ) {
@@ -63,7 +71,7 @@ export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gr
 
 	keystrokes.set( 'arrowdown', evt => {
 		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElement( gridElements, focusTracker );
+		const focusedElementIndex = getFocusedElementIndex( gridElements, focusTracker );
 		let nextIndex = focusedElementIndex + numberOfColumns;
 
 		if ( nextIndex > gridElements.length - 1 ) {
@@ -76,7 +84,7 @@ export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gr
 		evt.preventDefault();
 	} );
 
-	function getFocusedElement( gridElements ) {
+	function getFocusedElementIndex( gridElements ) {
 		return gridElements.findIndex( elem => elem.element === focusTracker.focusedElement );
 	}
 }
