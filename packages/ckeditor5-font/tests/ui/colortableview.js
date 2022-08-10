@@ -79,7 +79,7 @@ describe( 'ColorTableView', () => {
 			documentColorsLabel: 'Document colors',
 			documentColorsCount: 4
 		} );
-		// Grids rendering is deferred (#6192) therefeore render happens before appending grids.
+		// Grids rendering is deferred (#6192) therefore render happens before appending grids.
 		colorTableView.render();
 		colorTableView.appendGrids();
 	} );
@@ -383,7 +383,7 @@ describe( 'ColorTableView', () => {
 					removeButtonLabel: 'Remove color',
 					documentColorsCount: 0
 				} );
-				// Grids rendering is deferred (#6192) therefeore render happens before appending grids.
+				// Grids rendering is deferred (#6192) therefore render happens before appending grids.
 				colorTableView.render();
 				colorTableView.appendGrids();
 			} );
