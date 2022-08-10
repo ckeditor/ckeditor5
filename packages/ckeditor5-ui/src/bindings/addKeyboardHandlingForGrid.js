@@ -57,7 +57,8 @@ export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gr
 
 	function getGridItemFocuser( getIndexToFocus ) {
 		return evt => {
-			const focusedElementIndex = gridElements._items.findIndex( elem => elem.element === focusTracker.focusedElement );
+			const focusedElement = gridElements.find( item => item.element === focusTracker.focusedElement );
+			const focusedElementIndex = gridElements.getIndex( focusedElement );
 			const nextIndexToFocus = getIndexToFocus( focusedElementIndex, gridElements );
 
 			gridElements.get( nextIndexToFocus ).focus();
