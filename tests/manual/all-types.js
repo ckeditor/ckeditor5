@@ -51,7 +51,7 @@ function createEditor( EditorConstructor, containerId, extraPlugins = [], afterC
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [
