@@ -349,6 +349,8 @@ class MultirootEditorUIView extends EditorUIView {
 	constructor( locale, editingView, editableElements ) {
 		super( locale );
 
+		const t = locale.t;
+
 		/**
 		 * The main toolbar of the decoupled editor UI.
 		 *
@@ -367,7 +369,11 @@ class MultirootEditorUIView extends EditorUIView {
 
 		// Create InlineEditableUIView instance for each editable.
 		for ( const editableName of Object.keys( editableElements ) ) {
-			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ] );
+			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ], {
+				label: editableView => {
+					return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+				}
+			} );
 
 			editable.name = editableName;
 			this.editables.push( editable );

@@ -93,6 +93,7 @@
   "packages/ckeditor5-image/src/imageinline.js": "Imageinline",
   "packages/ckeditor5-image/src/imageinsert.js": "Imageinsert",
   "packages/ckeditor5-image/src/imageinsert/imageinsertui.js": "Imageinsertui",
+  "packages/ckeditor5-image/src/imageinsertviaurl.js": "Imageinsertviaurl",
   "packages/ckeditor5-image/src/imageresize.js": "Imageresize",
   "packages/ckeditor5-image/src/imageresize/imageresizebuttons.js": "Imageresizebuttons",
   "packages/ckeditor5-image/src/imageresize/imageresizeediting.js": "Imageresizeediting",

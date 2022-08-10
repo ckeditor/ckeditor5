@@ -17,12 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Title of the CKEditor5 editor."
-msgid "Rich Text Editor, %0"
-msgstr "Trình soạn thảo văn bản, %0"
-
-msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
 msgstr "Trình soạn thảo văn bản"
+
+msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
+msgid "Editor editing area: %0"
+msgstr "Vùng chỉnh sửa của trình chỉnh sửa: %0"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"

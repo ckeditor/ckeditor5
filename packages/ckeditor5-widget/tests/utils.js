@@ -216,6 +216,20 @@ describe( 'widget utils', () => {
 			expect( element.hasClass( 'ck-editor__editable', 'ck-editor__nested-editable' ) ).to.be.true;
 		} );
 
+		it( 'should add proper role', () => {
+			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
+		} );
+
+		it( 'should add label if it was passed through options', () => {
+			toWidgetEditable( element, writer, { label: 'foo' } );
+			expect( element.getAttribute( 'aria-label' ) ).to.equal( 'foo' );
+		} );
+
+		it( 'should not add label if it was not passed through options', () => {
+			toWidgetEditable( element, writer );
+			expect( element.hasAttribute( 'aria-label' ) ).to.be.false;
+		} );
+
 		it( 'should add proper contenteditable value when element is read-only - initialization', () => {
 			const element = new ViewEditableElement( viewDocument, 'div' );
 			element.isReadOnly = true;

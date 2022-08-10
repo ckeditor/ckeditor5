@@ -57,7 +57,7 @@ describe( 'Widget - Events', () => {
 			.from( editor.editing.view.document.getRoot().getChildren() )
 			.find( element => element.hasClass( 'simple-widget-container' ) );
 
-		const domFragment = editor.editing.view.domConverter.viewToDom( container );
+		const domFragment = editor.editing.view.domConverter.mapViewToDom( container );
 
 		buttonIgnored = domFragment.querySelector( '#ignored-button' );
 		buttonRegular = domFragment.querySelector( '#regular-button' );

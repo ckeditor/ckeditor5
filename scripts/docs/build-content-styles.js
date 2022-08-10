@@ -172,7 +172,8 @@ function getWebpackConfig() {
 			filename: '[name].js'
 		},
 		resolve: {
-			modules: getModuleResolvePaths()
+			modules: getModuleResolvePaths(),
+			extensions: [ '.ts', '.js', '.json' ]
 		},
 		resolveLoader: {
 			modules: getModuleResolvePaths()
@@ -195,6 +196,10 @@ function getWebpackConfig() {
 							}
 						}
 					]
+				},
+				{
+					test: /\.ts$/,
+					use: [ 'ts-loader' ]
 				}
 			]
 		}

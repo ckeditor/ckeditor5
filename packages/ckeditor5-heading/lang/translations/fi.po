@@ -54,8 +54,8 @@ msgstr "Otsikko 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr ""
+msgstr "Kirjoita otsikkosi"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr ""
+msgstr "Kirjoita tai liitä sisältösi tänne."

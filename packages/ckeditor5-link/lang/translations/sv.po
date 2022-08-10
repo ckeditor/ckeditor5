@@ -30,7 +30,7 @@ msgstr "Länkens URL"
 
 msgctxt "Label for the image link button."
 msgid "Link image"
-msgstr ""
+msgstr "Länka bild"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
@@ -46,8 +46,8 @@ msgstr "Denna länk saknar URL"
 
 msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
 msgid "Open in a new tab"
-msgstr ""
+msgstr "Öppna i en ny flik"
 
 msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
 msgid "Downloadable"
-msgstr ""
+msgstr "Nedladdningsbar"
