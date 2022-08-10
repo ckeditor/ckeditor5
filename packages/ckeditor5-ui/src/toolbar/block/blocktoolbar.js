@@ -25,6 +25,7 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 const toPx = toUnit( 'px' );
 
@@ -291,6 +292,10 @@ export default class BlockToolbar extends Plugin {
 		buttonView.extendTemplate( {
 			on: {
 				mousedown: buttonBind.to( evt => {
+					// Workaround to #12115.
+					if ( env.isSafari ) {
+						this.toolbarView.focus();
+					}
 					// Workaround to #12184, see https://github.com/ckeditor/ckeditor5/issues/12184#issuecomment-1199147964.
 					evt.preventDefault();
 				} )
