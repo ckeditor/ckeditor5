@@ -27,6 +27,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
@@ -299,6 +300,32 @@ describe( 'BlockToolbar', () => {
 				const ret = blockToolbar.buttonView.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
 				expect( ret ).to.false;
+			} );
+
+			describe( 'in Safari', () => {
+				let view, stub;
+
+				beforeEach( () => {
+					stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
+					view = blockToolbar.buttonView;
+				} );
+
+				afterEach( () => {
+					stub.resetBehavior();
+				} );
+
+				it( 'the toolbar is focused', () => {
+					const spy = sinon.spy( blockToolbar.toolbarView, 'focus' );
+					view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+					expect( spy.callCount ).to.equal( 1 );
+				} );
+
+				it( 'the event is prevented', () => {
+					const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+					expect( ret ).to.false;
+				} );
 			} );
 		} );
 	} );
