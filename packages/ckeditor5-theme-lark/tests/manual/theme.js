@@ -22,7 +22,7 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
+import { createLabeledInputText, createLabeledInputNumber } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 
 import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
@@ -84,7 +84,8 @@ const ui = testUtils.createTestUIView( {
 	'toolbarCompact': '#toolbar-compact',
 
 	'inputLabeled': '#input-labeled',
-	'inputReadOnly': '#input-read-only'
+	'inputReadOnly': '#input-read-only',
+	'inputNumber': '#input-number'
 } );
 
 renderIcon();
@@ -541,6 +542,8 @@ function renderToolbar() {
 
 function renderInput() {
 	ui.inputLabeled.add( input() );
+	ui.inputNumber.add( inputNumber() );
+
 	ui.inputReadOnly.add( input( {
 		label: 'A read–only input',
 		isEnabled: false,
@@ -666,12 +669,20 @@ function input( {
 	value = 'The value of the input'
 } = {} ) {
 	const labeledField = new LabeledFieldView( {}, createLabeledInputText );
-
 	labeledField.set( { isEnabled, label, value } );
 
 	return labeledField;
 }
 
+function inputNumber( {
+	label = 'Input Number',
+	value = 'The value of the input'
+} = {} ) {
+	const labeledInputNumber = new LabeledFieldView( {}, createLabeledInputNumber );
+	labeledInputNumber.set( { label, value } );
+
+	return labeledInputNumber;
+}
 function setManualTestDirection( direction ) {
 	document.querySelector( '.manual-test-container' ).classList.add( 'ck' );
 	document.querySelector( '.manual-test-container' ).setAttribute( 'dir', direction );
