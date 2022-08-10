@@ -18,6 +18,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 import { modelTable } from '../_utils/utils';
@@ -402,7 +403,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table" style="width:100%;">' +
-						'<table>' +
+						'<table class="ck-table-resized">' +
 							'<colgroup>' +
 								'<col style="width:50%;">' +
 								'<col style="width:50%;">' +
@@ -452,7 +453,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table" style="width:100%;">' +
-						'<table>' +
+						'<table class="ck-table-resized">' +
 							'<colgroup>' +
 								'<col style="width:50%;">' +
 								'<col style="width:50%;">' +
@@ -2502,6 +2503,66 @@ describe( 'TableColumnResizeEditing', () => {
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 				} );
+			} );
+		} );
+
+		describe( 'GHS integration', () => {
+			let ghsEditor;
+
+			beforeEach( async () => {
+				ghsEditor = await createEditor( {
+					plugins: [ Table, TableColumnResize, Paragraph, WidgetResize, GeneralHtmlSupport ],
+					htmlSupport: {
+						allow: [
+							{
+								name: /^.*$/,
+								styles: true,
+								attributes: true,
+								classes: true
+							}
+						]
+					}
+				} );
+			} );
+
+			afterEach( async () => {
+				await ghsEditor.destroy();
+			} );
+
+			it( 'doesn\'t consider <colgroup> / <col> to be unsafe elements', () => {
+				ghsEditor.setData( `<figure class="table">
+					<table>
+						<colgroup>
+							<col style="width:33.33%;">
+							<col style="width:33.33%;">
+							<col style="width:33.34%;">
+						</colgroup>
+						<tbody>
+							<tr>
+								<td>test</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+						</tbody>
+					</table>
+				</figure>` );
+
+				expect( ghsEditor.editing.view.getDomRoot().innerHTML.includes( 'data-ck-unsafe-element' ) ).to.be.false;
+			} );
+
+			it( 'should save and load data correctly', () => {
+				// (#12191)
+				setModelData( ghsEditor.model, modelTable( [
+					[ '[00', '01', '02]' ]
+				], { tableWidth: '80%', columnWidths: '25%,25%,50%' } ) );
+
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( ghsEditor.editing.view ) );
+
+				ghsEditor.setData( ghsEditor.getData() );
+
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( ghsEditor.editing.view ) );
+
+				expect( initialViewColumnWidthsPx ).to.deep.equal( finalViewColumnWidthsPx );
 			} );
 		} );
 	} );

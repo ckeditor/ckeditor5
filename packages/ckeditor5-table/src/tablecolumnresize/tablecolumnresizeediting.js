@@ -599,8 +599,8 @@ export default class TableColumnResizeEditing extends Plugin {
 				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
 				// This case can occur if the read-only mode kicks in during the resizing process.
 				editingView.change( writer => {
-					// If table was already resized before, restore the previous column widths.
-					// Otherwise clean up the view from the temporary resizing markup.
+					// If table had resized columns before, restore the previous column widths.
+					// Otherwise clean up the view from the temporary column resizing markup.
 					if ( columnWidthsAttributeOld ) {
 						const columnWidths = columnWidthsAttributeOld.split( ',' );
 
@@ -608,22 +608,26 @@ export default class TableColumnResizeEditing extends Plugin {
 							writer.setStyle( 'width', columnWidths.shift(), viewCol );
 						}
 					} else {
-						writer.removeClass( 'ck-table-resized', viewColgroup.findAncestor( 'table' ) );
 						writer.remove( viewColgroup );
 					}
 
 					if ( isTableWidthAttributeChanged ) {
-						// If table was already resized before, restore the previous table width.
-						// Otherwise clean up the view from the temporary resizing markup.
+						// If the whole table was already resized before, restore the previous table width.
+						// Otherwise clean up the view from the temporary table resizing markup.
 						if ( tableWidthAttributeOld ) {
 							writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
 						} else {
 							writer.removeStyle( 'width', viewFigure );
-							writer.removeClass(
-								'ck-table-resized',
-								[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
-							);
 						}
+					}
+
+					// If a table and its columns weren't resized before,
+					// prune the remaining common resizing markup.
+					if ( !columnWidthsAttributeOld && !tableWidthAttributeOld ) {
+						writer.removeClass(
+							'ck-table-resized',
+							[ ...viewFigure.getChildren() ].find( element => element.name === 'table' )
+						);
 					}
 				} );
 			}
