@@ -363,25 +363,17 @@ export default class EditorUI {
 				lastFocusedForeignElement = focusedElement;
 			}
 
-			const candidateDefinitions = this._getFocusableCandidateToolbarDefinitions();
-			const currentFocusedToolbarDefinition = this._getCurrentFocusedToolbarDefinition( candidateDefinitions );
+			const currentFocusedToolbarDefinition = this._getCurrentFocusedToolbarDefinition();
+			const candidateDefinitions = this._getFocusableCandidateToolbarDefinitions( currentFocusedToolbarDefinition );
 
-			// Clean up after a visible toolbar when switching to the next one toolbars.
+			// Clean up after a visible toolbar when switching to the next one.
 			if ( currentFocusedToolbarDefinition && currentFocusedToolbarDefinition.options.afterBlur ) {
 				// console.log( 'The current toolbar had afterBlur(). Cleaning...' );
 				currentFocusedToolbarDefinition.options.afterBlur();
 			}
 
-			let candidateDefinition = currentFocusedToolbarDefinition;
-			let currentCandidateIndex = 0;
-
-			do {
-				candidateDefinition = this._getNextFocusableCandidateToolbarDef( candidateDefinition, candidateDefinitions );
-
-				if ( !candidateDefinition ) {
-					// console.log( '😔 No focusable toolbar found.' );
-					break;
-				}
+			while ( candidateDefinitions.length ) {
+				const candidateDefinition = candidateDefinitions.shift();
 
 				// console.log( `The toolbar candidate to focus is ${ logToolbar( candidateDefinition.toolbarView ) }.` );
 
@@ -389,8 +381,6 @@ export default class EditorUI {
 					break;
 				}
 			}
-			// Prevent infinite loop when no toolbar focus was successful.
-			while ( ++currentCandidateIndex < candidateDefinitions.length );
 
 			cancel();
 
@@ -400,8 +390,7 @@ export default class EditorUI {
 		// Blur the focused toolbar on <kbd>Esc</kbd> and bring the focus back to its origin.
 		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			// console.group( 'Esc was pressed' );
-			const candidateDefinitions = this._getFocusableCandidateToolbarDefinitions();
-			const focusedToolbarDef = this._getCurrentFocusedToolbarDefinition( candidateDefinitions );
+			const focusedToolbarDef = this._getCurrentFocusedToolbarDefinition();
 
 			if ( !focusedToolbarDef ) {
 				// console.log( 'No toolbar was focused. No action needed.' );
@@ -438,33 +427,6 @@ export default class EditorUI {
 	}
 
 	/**
-	 * Returns a number (weight) for a toolbar definition. Visible toolbars have a higher priority and so do
-	 * contextual toolbars (displayed in the context of a content, for instance, an image toolbar).
-	 *
-	 * A standard invisible toolbar is the heaviest. A visible contextual toolbar is the lightest.
-	 *
-	 * @param {Object} toolbarDef A toolbar definition to be weighted.
-	 * @returns {Number}
-	 * @private
-	 */
-	_getToolbarDefinitionWeight( toolbarDef ) {
-		const { toolbarView, options } = toolbarDef;
-		let weight = 10;
-
-		// Prioritize already visible toolbars. They should get focused first.
-		if ( isVisible( toolbarView.element ) ) {
-			weight--;
-		}
-
-		// Prioritize contextual toolbars. They are displayed at the selection.
-		if ( options.isContextual ) {
-			weight--;
-		}
-
-		return weight;
-	}
-
-	/**
 	 * Returns definitions of toolbars that could potentially be focused, sorted by their importance for the user.
 	 *
 	 * Focusable toolbars candidates are either:
@@ -476,9 +438,10 @@ export default class EditorUI {
 	 * **Note**: Contextual toolbars take precedence over regular toolbars.
 	 *
 	 * @private
+	 * @param {module:core/editor/editorui~FocusableToolbarDefinition} currentFocusedToolbarDefinition The current toolbar definition.
 	 * @returns {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
 	 */
-	_getFocusableCandidateToolbarDefinitions() {
+	_getFocusableCandidateToolbarDefinitions( currentFocusedToolbarDefinition ) {
 		// console.group( 'getFocusableToolbarDefinitions()' );
 
 		const definitions = [];
@@ -496,12 +459,21 @@ export default class EditorUI {
 
 		// Contextual and already visible toolbars have higher priority. If both are true, the toolbar will always focus first.
 		// For instance, a selected widget toolbar vs inline editor toolbar: both are visible but the widget toolbar is contextual.
-		definitions.sort( ( toolbarDefA, toolbarDefB ) =>
-			this._getToolbarDefinitionWeight( toolbarDefA ) - this._getToolbarDefinitionWeight( toolbarDefB ) );
+		definitions.sort( ( defA, defB ) => getToolbarDefinitionWeight( defA ) - getToolbarDefinitionWeight( defB ) );
+
+		if ( !currentFocusedToolbarDefinition ) {
+			// console.log(
+			// 	'No toolbar focused. Selecting the first one: ' +
+			// 	`${ candidateDefinitions[ 0 ] ? logToolbar( candidateDefinitions[ 0 ].toolbarView ) : 'no definition' }`
+			// );
+
+			// console.groupEnd( 'getNextFocusableToolbarDef()' );
+			return definitions;
+		}
 
 		// console.groupEnd( 'getFocusableToolbarDefinitions()' );
 
-		return definitions;
+		return getNextFocusableCandidateToolbarDefs( definitions, currentFocusedToolbarDefinition );
 	}
 
 	/**
@@ -510,56 +482,16 @@ export default class EditorUI {
 	 * `null` is returned when no toolbar is currently focused.
 	 *
 	 * @private
-	 * @param {Array.<module:core/editor/editorui~FocusableToolbarDefinition>} candidateDefinitions Available focusable toolbar definitions.
 	 * @returns {module:core/editor/editorui~FocusableToolbarDefinition|null}
 	 */
-	_getCurrentFocusedToolbarDefinition( candidateDefinitions ) {
-		for ( const definition of candidateDefinitions ) {
+	_getCurrentFocusedToolbarDefinition() {
+		for ( const definition of this._focusableToolbarDefinitions ) {
 			if ( definition.toolbarView.element && definition.toolbarView.element.contains( this.focusTracker.focusedElement ) ) {
 				return definition;
 			}
 		}
 
 		return null;
-	}
-
-	/**
-	 * Returns a next focusable toolbar definition candidate relative to an arbitrary toolbar definition specified as an argument.
-	 *
-	 * **Note**: Toolbar definitions are sorted according to their weights (importance for the user). The next toolbar definition
-	 * is picked as the
-	 *
-	 * @private
-	 * @param {module:core/editor/editorui~FocusableToolbarDefinition} relativeDefinition A relative focusable toolbar definition.
-	 * @param {Array.<module:core/editor/editorui~FocusableToolbarDefinition>} candidateDefinitions Available focusable toolbar definitions.
-	 * @returns {module:core/editor/editorui~FocusableToolbarDefinition} A next toolbar definition relative to `relativeDefinition`.
-	 */
-	_getNextFocusableCandidateToolbarDef( relativeDefinition, candidateDefinitions ) {
-		// console.group( 'getNextFocusableToolbarDef()' );
-
-		if ( !relativeDefinition ) {
-			// console.log(
-			// 	'No toolbar focused. Selecting the first one: ' +
-			// 	`${ candidateDefinitions[ 0 ] ? logToolbar( candidateDefinitions[ 0 ].toolbarView ) : 'no definition' }`
-			// );
-
-			// console.groupEnd( 'getNextFocusableToolbarDef()' );
-			return candidateDefinitions[ 0 ];
-		}
-
-		const focusedToolbarIndex = candidateDefinitions.findIndex( ( { toolbarView } ) => toolbarView === relativeDefinition.toolbarView );
-		let nextFocusableToolbar;
-
-		if ( focusedToolbarIndex === candidateDefinitions.length - 1 ) {
-			nextFocusableToolbar = candidateDefinitions[ 0 ];
-		} else {
-			nextFocusableToolbar = candidateDefinitions[ focusedToolbarIndex + 1 ];
-		}
-
-		// console.log( `The next focusable toolbar is: ${ logToolbar( nextFocusableToolbar.toolbarView ) }` );
-		// console.groupEnd( 'getNextFocusableToolbarDef()' );
-
-		return nextFocusableToolbar;
 	}
 
 	/**
@@ -643,3 +575,37 @@ mix( EditorUI, ObservableMixin );
  *
  * @member {Object} #options
  */
+
+// Shifts the definitions list to start after the current (and wraps the list).
+function getNextFocusableCandidateToolbarDefs( definitions, currentFocusedToolbarDefinition ) {
+	const focusedToolbarIndex = definitions.findIndex(
+		( { toolbarView } ) => toolbarView === currentFocusedToolbarDefinition.toolbarView
+	);
+
+	return definitions.slice( focusedToolbarIndex + 1 ).concat( definitions.slice( 0, focusedToolbarIndex ) );
+}
+
+// Returns a number (weight) for a toolbar definition. Visible toolbars have a higher priority and so do
+// contextual toolbars (displayed in the context of a content, for instance, an image toolbar).
+//
+// A standard invisible toolbar is the heaviest. A visible contextual toolbar is the lightest.
+//
+// @param {Object} toolbarDef A toolbar definition to be weighted.
+// @returns {Number}
+// @private
+function getToolbarDefinitionWeight( toolbarDef ) {
+	const { toolbarView, options } = toolbarDef;
+	let weight = 10;
+
+	// Prioritize already visible toolbars. They should get focused first.
+	if ( isVisible( toolbarView.element ) ) {
+		weight--;
+	}
+
+	// Prioritize contextual toolbars. They are displayed at the selection.
+	if ( options.isContextual ) {
+		weight--;
+	}
+
+	return weight;
+}
