@@ -192,7 +192,6 @@ export default class ListPropertiesView extends View {
 				this.stylesView.focusTracker.add( item.element );
 			}
 
-			this.stylesView.keystrokes = new KeystrokeHandler();
 			this.stylesView.keystrokes.listenTo( this.stylesView.element );
 
 			addKeyboardHandlingForGrid( this.stylesView.keystrokes, this.stylesView.focusTracker, this.stylesView.children, 4 );
@@ -286,6 +285,7 @@ export default class ListPropertiesView extends View {
 		};
 
 		stylesView.focusTracker = new FocusTracker();
+		stylesView.keystrokes = new KeystrokeHandler();
 
 		return stylesView;
 	}
