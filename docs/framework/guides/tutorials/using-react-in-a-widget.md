@@ -8,7 +8,7 @@ order: 10
 
 In this tutorial, you will learn how to implement an editor plugin that uses the power of the [React](https://reactjs.org/) library inside the CKEditor 5 widget ecosystem. You will build a "Product preview" feature which renders an actual React component inside the editor to display some useful information about the product.
 
-Later on, you will use the "Product preview" feature to build a simple React application that displays an editor next to the list of available products, allowing the user to insert the product into the editor content by clicking it on the list.
+Later on, you will use the "Product preview" feature to build a simple React application that displays an editor next to a list of available products, allowing the user to insert the product into the editor content by clicking it on the list.
 
 <info-box>
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
@@ -26,7 +26,7 @@ There are a couple of things you should know before you start:
 * Various parts of the {@link framework/guides/architecture/intro CKEditor 5 architecture} section will be referenced as you go. While reading them is not necessary to finish this tutorial, it is recommended to read those guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
 <info-box>
-	If you want to use your own event handler for events triggered by your React component, you must wrap it with a container that has a `data-cke-ignore-events` attribute to exclude it from the editor's default handlers. Refer to {@link framework/guides/deep-dive/widget-internals#exclude-dom-events-from-default-handlers Exclude DOM events from default handlers} for more details.
+	If you want to use your own event handler for events triggered by your React component, you must wrap it with a container that has a `data-cke-ignore-events` attribute to exclude it from the editor's default handlers. Refer to the {@link framework/guides/deep-dive/widget-internals#exclude-dom-events-from-default-handlers Exclude DOM events from default handlers} guide for more details.
 </info-box>
 
 ## Let's start
@@ -196,9 +196,9 @@ You should see a "Hello world" application in your web browser, which might not 
 
 ## Application structure
 
-Nothing warms the heart of a developer like a good "Hello world!". But you probably agree that what you created is not the most useful application and it is time to change that. In the next sections, you will create some React components and CKEditor 5 classes to bring some real logic to the application.
+Nothing warms the heart of a developer like a good "Hello world!". But you probably agree that what you created is not the most useful application and it is time to change that. In the following sections, you will create several React components and CKEditor 5 classes to bring some real logic to the application.
 
-To keep some order in the project, you will put [CKEditor classes](#ckeditor-classes) in the `/ckeditor` directory and [React components](#react-components) in the `/react` directory. [Images and CSS styles](#styles-and-assets) will land in the `/assets` directory. By the time you are finished with this tutorial, the structure of the project should look as follows:
+To keep some order in the project, put [CKEditor classes](#ckeditor-classes) in the `/ckeditor` directory and [React components](#react-components) in the `/react` directory. [Images and CSS styles](#styles-and-assets) should land in the `/assets` directory. By the time you are finished with this tutorial, the structure of the project should look as follows:
 
 ```bash
 ├── app.js
@@ -424,13 +424,13 @@ export default class InsertProductPreviewCommand extends Command {
 
 It is time to define the React side of the application that renders the actual layout:
 
-* The [`<ProductList>`](#product-list) component displays a bunch of `<ProductPreview>` children and allows the user to click them to insert them into the editor.
+* The [`<ProductList>`](#product-list) component displays a set of `<ProductPreview>` children and lets the user insert them into the editor by clicking.
 * The [`<ProductPreview>`](#product-preview) component represents a single product with its name, price tag and a background image.
 * The [`<App>`](#main-application-component) component glues all the things together.
 
 ### Product list
 
-The `<ProductList>` React component renders instances of `<ProductPreview>`. When clicked, the preview executes a callback passed in ["props"](https://reactjs.org/docs/components-and-props.html) that inserts its own copy into the editor content by executing the [`'insertProduct'`](#command) editor command. The list is displayed in the sidebar of the [application](#main-application-component).
+The `<ProductList>` React component renders instances of `<ProductPreview>`. When clicked, the preview executes a callback passed in ["props"](https://reactjs.org/docs/components-and-props.html) that inserts its own copy into the editor content by executing the [`'insertProduct'`](#command) editor command. The list is displayed in the [application](#main-application-component) sidebar.
 
 ```jsx
 // react/productlist.js
@@ -461,7 +461,7 @@ export default class ProductList extends React.Component {
 
 ### Product preview
 
-The actual preview of the product, with its name, price and an image. Instances of the `<ProductPreview>` component populate both the [`<ProductList>`](#product-list) and the [editor widgets](#editing-plugin) in the content.
+Time for the actual preview of the product, with its name, price and an image. Instances of the `<ProductPreview>` component populate both the [`<ProductList>`](#product-list) and the [editor widgets](#editing-plugin) in the content.
 
 Clicking a preview in the sidebar executes the [`'insertProduct'`](#command) editor command and inserts the same preview into the editor content.
 
@@ -495,7 +495,7 @@ export default class ProductPreview extends React.Component {
 
 ### Main application component
 
-So far, you have CKEditor classes that bring the product preview into the content, a list of products, and a product component ready. It is time to glue things together in the `App` class.
+By now you should have CKEditor classes that bring the product preview into the content, a list of products, and a product component ready. It is time to glue things together with the `App` class.
 
 You are going to extend the [main application file](#lets-start) skeleton that you created earlier in this tutorial so it renders the {@link installation/frameworks/react official `<CKEditor>` React component} on the left side, and the list of available products on the right.
 
@@ -526,7 +526,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-// CKEditor plugin implementing a product widget to be used in the editor content.
+// The CKEditor plugin implementing a product widget to be used in the editor content.
 import ProductPreviewEditing from './ckeditor/productpreviewediting';
 
 // React components to render the list of products and the product preview.
@@ -545,7 +545,7 @@ class App extends React.Component {
 		this.state = {
 			// The initial editor data. It is bound to the editor instance and will change as
 			// the user types and modifies the content of the editor.
-			editorData: '<h2>Check our last minute deals!</h2><p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta">Malta</a> is the top destination this summer. It’s home to a cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine and at least 8 months of sun.</p><section class="product" data-id="2"></section><p>You’ll definitely love exploring <a href="https://en.wikipedia.org/wiki/Warsaw">Warsaw</a>! Best time to visit the city is July and August, when it’s cool enough to not break a sweat and hot enough to enjoy summer. The city which has quite a combination of both old and modern textures is located by the river Vistula.</p><section class="product" data-id="1"></section><h3>Other destinations</h3><figure class="table"><table><thead><tr><th>Destination</th><th>Trip details</th></tr></thead><tbody><tr><td><section class="product" data-id="3"></section><p>&nbsp;</p></td><td>Getting used to an entirely different culture can be challenging. While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person. You learn to appreciate each and every single one of the differences while you become more culturally fluid. <a href="http://ckeditor.com">Find out more...</a></td></tr><tr><td><section class="product" data-id="4"></section><p>&nbsp;</p></td><td>Tourists frequently admit that Taj Mahal "simply cannot be described with words". And that’s probably true. The more you try the more speechless you become. Words give only a semblance of truth. <a href="http://ckeditor.com">Find out more...</a></td></tr></tbody></table></figure>'
+			editorData: '<h2>Check our last-minute deals!</h2><p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta">Malta</a> is the top destination this summer. It’s home to a cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine and at least 8 months of sun.</p><section class="product" data-id="2"></section><p>You’ll definitely love exploring <a href="https://en.wikipedia.org/wiki/Warsaw">Warsaw</a>! The best time to visit the city is July and August when it’s cool enough to not break a sweat and hot enough to enjoy the summer. The city which has quite a combination of both old and modern textures is located by the river Vistula.</p><section class="product" data-id="1"></section><h3>Other destinations</h3><figure class="table"><table><thead><tr><th>Destination</th><th>Trip details</th></tr></thead><tbody><tr><td><section class="product" data-id="3"></section><p>&nbsp;</p></td><td>Getting used to an entirely different culture can be challenging. While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person. You learn to appreciate each and every single one of the differences while you become more culturally fluid. <a href="http://ckeditor.com">Find out more...</a></td></tr><tr><td><section class="product" data-id="4"></section><p>&nbsp;</p></td><td>Tourists frequently admit that Taj Mahal "simply cannot be described with words". And that’s probably true. The more you try the more speechless you become. Words give only a semblance of truth. <a href="http://ckeditor.com">Find out more...</a></td></tr></tbody></table></figure>'
 		};
 
 		// The configuration of the <CKEditor> instance.
@@ -662,7 +662,7 @@ ReactDOM.render(
 		// Feeding the application with predefined products.
 		// In a real-life application, this sort of data would be loaded
 		// from a database. To keep this tutorial simple, a few
-		//  hard–coded product definitions will be used.
+		//  hard–coded product definitions will be used instead.
 		products={[
 			{
 				id: 1,
@@ -694,7 +694,7 @@ ReactDOM.render(
 );
 ```
 
-Please note that each product comes with its own image (e.g. `product1.jpg`), which should be stored in the `assets/` directory to load correctly with the CSS `background-image`. Learn more about styles in the [next section](#styles-and-assets).
+Please note that each product comes with its own image (e.g. `product1.jpg`), which should be stored in the `/assets` directory to load correctly with the CSS `background-image` definition. Learn more about styles in the next section.
 
 ## Styles and assets
 
@@ -863,7 +863,7 @@ The application needs some styling to look good. You are going to put them in th
 }
 ```
 
-The product preview (`.product-preview` class) uses `background-image: var(--product-image)` to set its background. It means that all images must be stored in the `assets/` directory next to the `styles.css` file in order to load properly.
+The product preview (`.product-preview` class) uses `background-image: var(--product-image)` to set its background. It means that all images must be stored in the `/assets` directory next to the `styles.css` file in order to load properly.
 
 ## Demo
 

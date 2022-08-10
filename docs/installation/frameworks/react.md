@@ -14,11 +14,11 @@ order: 30
 	</a>
 </p>
 
-The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link installation/advanced/predefined-builds#available-builds rich text editor builds}. You can also use a customized editor built by using [the online builder](#using-the-ckeditor-5-online-builder) in any React application. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-the-editor-from-source) into your application, which will allow you to use the full power of the {@link framework/guides/overview CKEditor 5 Framework}.
+The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link installation/getting-started/predefined-builds#available-builds rich text editor builds}. You can also use a customized editor built by using [the online builder](#using-the-ckeditor-5-online-builder) in any React application. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-the-editor-from-source) into your application, which will allow you to use the full power of the {@link framework/index CKEditor 5 Framework}.
 
 ## Quick start
 
-If you want an out-of-the-box editor, install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/advanced/predefined-builds#available-builds editor build of your choice}.
+If you want an out-of-the-box editor, install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/getting-started/predefined-builds#available-builds editor build of your choice}.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -135,7 +135,7 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 
 ## Customized installation
 
-The {@link installation/advanced/predefined-builds CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. You can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/getting-started/configuration#removing-features remove some plugins}. However, if you want to add more plugins, you need to rebuild the editor.
+The {@link installation/getting-started/predefined-builds CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. You can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/getting-started/configuration#removing-features remove some plugins}. However, if you want to add more plugins, you need to rebuild the editor.
 
 ### Using the CKEditor 5 online builder
 
