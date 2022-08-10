@@ -7,9 +7,7 @@
  * @module table/ui/inserttableview
  */
 
-import { View, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
-
-import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
+import { View } from 'ckeditor5/src/ui';
 
 import './../../theme/inserttable.css';
 
@@ -37,16 +35,6 @@ export default class InsertTableView extends View {
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this.items = this._createGridCollection();
-
-		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * Tracks information about the DOM focus in the grid.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
-		this.focusTracker = new FocusTracker();
 
 		/**
 		 * The currently selected number of rows of the new table.
@@ -110,19 +98,18 @@ export default class InsertTableView extends View {
 
 				click: bind.to( () => {
 					this.fire( 'execute' );
-				} ),
-
-				keydown: bind.to( evt => {
-					if ( evt.key === 'Enter' ) {
-						this.fire( 'execute' );
-						evt.preventDefault();
-					}
 				} )
 			}
 		} );
 
 		this.on( 'boxover', ( evt, domEvt ) => {
-			domEvt.target.focus();
+			const { row, column } = domEvt.target.dataset;
+
+			// As row & column indexes are zero-based transform it to number of selected rows & columns.
+			this.set( {
+				rows: parseInt( row ),
+				columns: parseInt( column )
+			} );
 		} );
 
 		this.on( 'change:columns', () => {
@@ -132,38 +119,14 @@ export default class InsertTableView extends View {
 		this.on( 'change:rows', () => {
 			this._highlightGridBoxes();
 		} );
-
-		this.focusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
-			if ( !focusedElement ) {
-				return;
-			}
-			const { row, column } = focusedElement.dataset;
-
-			// As row & column indexes are zero-based transform it to number of selected rows & columns.
-			this.set( {
-				rows: parseInt( row ),
-				columns: parseInt( column )
-			} );
-		} );
-	}
-
-	render() {
-		super.render();
-
-		addKeyboardHandlingForGrid( this.keystrokes, this.focusTracker, this.items, 10 );
-
-		for ( const item of this.items ) {
-			this.focusTracker.add( item.element );
-		}
-
-		this.keystrokes.listenTo( this.element );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	focus() {
-		this.items.get( 0 ).focus();
+		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
+		// The method should be implemented while working on keyboard support for this view. See #22.
 	}
 
 	/**
@@ -172,15 +135,6 @@ export default class InsertTableView extends View {
 	focusLast() {
 		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
 		// The method should be implemented while working on keyboard support for this view. See #22.
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		super.destroy();
-
-		this.keystrokes.destroy();
 	}
 
 	/**
@@ -261,14 +215,8 @@ class TableSizeGridBoxView extends View {
 					bind.if( 'isOn', 'ck-on' )
 				],
 				'data-row': row,
-				'data-column': column,
-				'tabindex': -1
+				'data-column': column
 			}
 		} );
-	}
-
-	focus() {
-		this.element.focus();
-		this.isOn = true;
 	}
 }
