@@ -45,17 +45,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [x][ ][ ]	after: [ ][x][ ]	key: →
 			//         [ ][ ][ ]	       [ ][ ][ ]
 			//         [ ]      	       [ ]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowright,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.first.element;
 
 			const spy = sinon.spy( gridElementsCollection.get( 1 ), 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressRightArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -63,17 +57,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [ ][x][ ]	after: [x][ ][ ]	key: ←
 			//         [ ][ ][ ]	       [ ][ ][ ]
 			//         [ ]      	       [ ]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowleft,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.get( 1 ).element;
 
 			const spy = sinon.spy( gridElementsCollection.get( 0 ), 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressLeftArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -81,17 +69,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [x][ ][ ]	after: [ ][ ][ ]	key: ↓
 			//         [ ][ ][ ]	       [x][ ][ ]
 			//         [ ]      	       [ ]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowdown,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.first.element;
 
 			const spy = sinon.spy( gridElementsCollection.get( 3 ), 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressDownArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -99,17 +81,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [ ][ ][ ]	after: [x][ ][ ]	key: ↑
 			//         [x][ ][ ]	       [ ][ ][ ]
 			//         [ ]      	       [ ]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowup,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.get( 3 ).element;
 
 			const spy = sinon.spy( gridElementsCollection.first, 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressUpArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
@@ -119,17 +95,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [ ][ ][x]	after: [ ][ ][ ]	key: →
 			//         [ ][ ][ ]	       [x][ ][ ]
 			//         [ ]      	       [ ]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowright,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.get( 2 ).element;
 
 			const spy = sinon.spy( gridElementsCollection.get( 3 ), 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressRightArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -137,17 +107,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [ ][ ][ ]	after: [ ][ ][x]	key: ←
 			//         [x][ ][ ]	       [ ][ ][ ]
 			//         [ ]      	       [ ]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowleft,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.get( 3 ).element;
 
 			const spy = sinon.spy( gridElementsCollection.get( 2 ), 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressLeftArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -155,17 +119,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [x][ ][ ]	after: [ ][ ][ ]	key: ↑
 			//         [ ][ ][ ]	       [ ][ ][ ]
 			//         [ ]      	       [x]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowup,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.first.element;
 
 			const spy = sinon.spy( gridElementsCollection.get( 6 ), 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressUpArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -173,17 +131,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [ ][ ][ ]	after: [x][ ][ ]	key: ↓
 			//         [ ][ ][ ]	       [ ][ ][ ]
 			//         [x]      	       [ ]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowdown,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.get( 6 ).element;
 
 			const spy = sinon.spy( gridElementsCollection.first, 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressDownArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -191,17 +143,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [ ][x][ ]	after: [ ][ ][ ]	key: ↑
 			//         [ ][ ][ ]	       [ ][x][ ]
 			//         [ ]      	       [ ]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowup,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.get( 1 ).element;
 
 			const spy = sinon.spy( gridElementsCollection.get( 4 ), 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressUpArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -209,17 +155,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [ ][ ][ ]	after: [ ][x][ ]	key: ↓
 			//         [ ][x][ ]	       [ ][ ][ ]
 			//         [ ]      	       [ ]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowdown,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.get( 4 ).element;
 
 			const spy = sinon.spy( gridElementsCollection.get( 1 ), 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressDownArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
@@ -229,17 +169,11 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [x][ ][ ]	after: [ ][ ][ ]	key: ←
 			//         [ ][ ][ ]	       [ ][ ][ ]
 			//         [ ]      	       [x]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowleft,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.first.element;
 
 			const spy = sinon.spy( gridElementsCollection.last, 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressLeftArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -247,21 +181,55 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			// before: [ ][ ][ ]	after: [x][ ][ ]	key: →
 			//         [ ][ ][ ]	       [ ][ ][ ]
 			//         [x]      	       [ ]
-			const keyEvtData = {
-				keyCode: keyCodes.arrowright,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
 			focusTracker.focusedElement = gridElementsCollection.last.element;
 
 			const spy = sinon.spy( gridElementsCollection.first, 'focus' );
 
-			keystrokes.press( keyEvtData );
+			pressRightArrow( keystrokes );
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );
+
+function pressRightArrow( keystrokes ) {
+	const keyEvtData = {
+		keyCode: keyCodes.arrowright,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	};
+
+	keystrokes.press( keyEvtData );
+}
+
+function pressLeftArrow( keystrokes ) {
+	const keyEvtData = {
+		keyCode: keyCodes.arrowleft,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	};
+
+	keystrokes.press( keyEvtData );
+}
+
+function pressUpArrow( keystrokes ) {
+	const keyEvtData = {
+		keyCode: keyCodes.arrowup,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	};
+
+	keystrokes.press( keyEvtData );
+}
+
+function pressDownArrow( keystrokes ) {
+	const keyEvtData = {
+		keyCode: keyCodes.arrowdown,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	};
+
+	keystrokes.press( keyEvtData );
+}
 
 class TestView extends View {
 	constructor( ...args ) {
