@@ -16,44 +16,23 @@
  * @param {Number} numberOfColumns Number of columns in the grid.
  */
 export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gridElementsCollection, numberOfColumns ) {
-	keystrokes.set( 'arrowright', evt => {
-		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElementIndex( gridElements, focusTracker );
-
-		let nextIndex;
-
+	keystrokes.set( 'arrowright', getGridItemFocuser( ( focusedElementIndex, gridElements ) => {
 		if ( focusedElementIndex === gridElements.length - 1 ) {
-			nextIndex = 0;
+			return 0;
 		} else {
-			nextIndex = focusedElementIndex + 1;
+			return focusedElementIndex + 1;
 		}
+	} ) );
 
-		gridElements[ nextIndex ].focus();
-
-		evt.stopPropagation();
-		evt.preventDefault();
-	} );
-
-	keystrokes.set( 'arrowleft', evt => {
-		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElementIndex( gridElements, focusTracker );
-		let nextIndex;
-
+	keystrokes.set( 'arrowleft', getGridItemFocuser( ( focusedElementIndex, gridElements ) => {
 		if ( focusedElementIndex === 0 ) {
-			nextIndex = gridElements.length - 1;
+			return gridElements.length - 1;
 		} else {
-			nextIndex = focusedElementIndex - 1;
+			return focusedElementIndex - 1;
 		}
+	} ) );
 
-		gridElements[ nextIndex ].focus();
-
-		evt.stopPropagation();
-		evt.preventDefault();
-	} );
-
-	keystrokes.set( 'arrowup', evt => {
-		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElementIndex( gridElements, focusTracker );
+	keystrokes.set( 'arrowup', getGridItemFocuser( ( focusedElementIndex, gridElements ) => {
 		let nextIndex = focusedElementIndex - numberOfColumns;
 
 		if ( nextIndex < 0 ) {
@@ -63,28 +42,29 @@ export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gr
 			}
 		}
 
-		gridElements[ nextIndex ].focus();
+		return nextIndex;
+	} ) );
 
-		evt.stopPropagation();
-		evt.preventDefault();
-	} );
-
-	keystrokes.set( 'arrowdown', evt => {
-		const gridElements = [ ...gridElementsCollection ];
-		const focusedElementIndex = getFocusedElementIndex( gridElements, focusTracker );
+	keystrokes.set( 'arrowdown', getGridItemFocuser( ( focusedElementIndex, gridElements ) => {
 		let nextIndex = focusedElementIndex + numberOfColumns;
 
 		if ( nextIndex > gridElements.length - 1 ) {
 			nextIndex = focusedElementIndex % numberOfColumns;
 		}
 
-		gridElements[ nextIndex ].focus();
+		return nextIndex;
+	} ) );
 
-		evt.stopPropagation();
-		evt.preventDefault();
-	} );
+	function getGridItemFocuser( getIndexToFocus ) {
+		return evt => {
+			const gridElements = [ ...gridElementsCollection ];
+			const focusedElementIndex = gridElements.findIndex( elem => elem.element === focusTracker.focusedElement );
+			const nextIndexToFocus = getIndexToFocus( focusedElementIndex, gridElements );
 
-	function getFocusedElementIndex( gridElements ) {
-		return gridElements.findIndex( elem => elem.element === focusTracker.focusedElement );
+			gridElements[ nextIndexToFocus ].focus();
+
+			evt.stopPropagation();
+			evt.preventDefault();
+		};
 	}
 }
