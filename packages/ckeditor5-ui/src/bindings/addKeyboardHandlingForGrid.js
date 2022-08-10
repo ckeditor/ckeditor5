@@ -12,10 +12,10 @@
  *
  * @param {module:utils/keystrokehandler~KeystrokeHandler} keystrokes Keystroke handler to register navigation with arrow keys.
  * @param {module:utils/focustracker~FocusTracker} focusTracker A focus tracker for grid elements.
- * @param {module:ui/viewcollection~ViewCollection} gridElementsCollection A collection of grid items.
+ * @param {module:ui/viewcollection~ViewCollection} gridElements A collection of grid items.
  * @param {Number} numberOfColumns Number of columns in the grid.
  */
-export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gridElementsCollection, numberOfColumns ) {
+export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gridElements, numberOfColumns ) {
 	keystrokes.set( 'arrowright', getGridItemFocuser( ( focusedElementIndex, gridElements ) => {
 		if ( focusedElementIndex === gridElements.length - 1 ) {
 			return 0;
@@ -57,11 +57,10 @@ export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gr
 
 	function getGridItemFocuser( getIndexToFocus ) {
 		return evt => {
-			const gridElements = [ ...gridElementsCollection ];
-			const focusedElementIndex = gridElements.findIndex( elem => elem.element === focusTracker.focusedElement );
+			const focusedElementIndex = gridElements._items.findIndex( elem => elem.element === focusTracker.focusedElement );
 			const nextIndexToFocus = getIndexToFocus( focusedElementIndex, gridElements );
 
-			gridElements[ nextIndexToFocus ].focus();
+			gridElements.get( nextIndexToFocus ).focus();
 
 			evt.stopPropagation();
 			evt.preventDefault();
