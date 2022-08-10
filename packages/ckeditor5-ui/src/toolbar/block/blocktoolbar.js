@@ -271,11 +271,21 @@ export default class BlockToolbar extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const buttonView = new BlockButtonView( editor.locale );
+		const buttonBind = buttonView.bindTemplate;
 
 		buttonView.set( {
 			label: t( 'Edit block' ),
 			icon: pilcrow,
 			withText: false
+		} );
+
+		buttonView.extendTemplate( {
+			on: {
+				mousedown: buttonBind.to( evt => {
+					// Workaround to #12184, see https://github.com/ckeditor/ckeditor5/issues/12184#issuecomment-1199147964.
+					evt.preventDefault();
+				} )
+			}
 		} );
 
 		// Bind the panelView observable properties to the buttonView.
