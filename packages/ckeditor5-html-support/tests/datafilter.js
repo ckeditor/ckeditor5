@@ -865,6 +865,37 @@ describe( 'DataFilter', () => {
 				dataFilter.allowElement( 'bar' );
 			} ).to.not.throw();
 		} );
+
+		it( 'should not allow invalid attributes', () => {
+			dataFilter.allowElement( 'p' );
+			dataFilter.allowAttributes( {
+				name: 'p',
+				attributes: true
+			} );
+
+			editor.setData( '<p zzz="a" ab?cd="2">x</p><p foo="a" bar' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlAttributes="(1)">x</paragraph><paragraph htmlAttributes="(2)"></paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							zzz: 'a'
+						}
+					},
+					2: {
+						attributes: {
+							body: '',
+							foo: 'a'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p zzz="a">x</p><p foo="a" body="">&nbsp;</p>'
+			);
+		} );
 	} );
 
 	describe( 'inline', () => {

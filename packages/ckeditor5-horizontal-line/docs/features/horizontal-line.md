@@ -9,11 +9,19 @@ The {@link module:horizontal-line/horizontalline~HorizontalLine} plugin allows i
 
 Often known as the horizontal rule, it provides a visual way to separate the content. It may indicate a thematic shift (like a change of topic) between paragraphs or parts of the story or just be a simple graphic separator to help organize the content.
 
+<info-box info>
+	The horizontal line feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 To insert a horizontal line in the demo below, use the toolbar button {@icon @ckeditor/ckeditor5-horizontal-line/theme/icons/horizontalline.svg Horizontal line}. Alternatively, start new line with `---` to insert a horizontal line thanks to the {@link features/autoformat autoformatting feature}.
 
 {@snippet features/horizontal-line}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 

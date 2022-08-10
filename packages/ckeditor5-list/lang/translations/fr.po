@@ -110,16 +110,16 @@ msgstr "Lettres majuscules"
 
 msgctxt "The label of the button that toggles the visibility of additional numbered list property UI fields."
 msgid "List properties"
-msgstr ""
+msgstr "Liste des propriétés"
 
 msgctxt "The label of the input allowing to change the start index of a numbered list."
 msgid "Start at"
-msgstr ""
+msgstr "Commencer à"
 
 msgctxt "The error message displayed when the numbered list start index input value is invalid."
 msgid "Start index must be greater than 0."
-msgstr ""
+msgstr "L'indice de départ doit être supérieur à 0."
 
 msgctxt "The label of the switch button that reverses the order of the numbered list."
 msgid "Reversed order"
-msgstr ""
+msgstr "Ordre inversé"

@@ -1,11 +1,10 @@
 ---
 category: features
-order: 10
-toc: false
+order: -999
 feedback-widget: false
 ---
 
-# Features
+# CKEditor 5 features overview
 
 The number of features available for CKEditor 5 is constantly growing. You can find the most recent list of the available ones on the left. CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. Newly added or meaningfully updated feature guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting. Premium features, which require an additional license to work, are marked with a <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> icon.
 
@@ -80,7 +79,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 ### Customizable user experience
 
-Work as you like it - choose user interface approach from {@link installation/advanced/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link installation/advanced/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
+Work as you like it - choose user interface approach from {@link installation/getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link installation/advanced/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
 
 {@img assets/img/toolbar.png 800 CKEditor 5 customizable UI.}
 
@@ -96,9 +95,11 @@ If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link in
 
 ## Feature availability
 
-Plenty of these features are included by default in the predefined {@link installation/advanced/predefined-builds CKEditor 5 builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
+Plenty of these features are included by default in the predefined {@link installation/getting-started/predefined-builds CKEditor 5 builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
 
 However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. These plugins can also be easily and conveniently added to a custom build with the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+
+You can refer to the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds full list of features available in each build} for details.
 
 We also offer the flexibility of the {@link installation/advanced/dll-builds DLL builds}, enabling the addition of new plugins into an existing build without the need to rebuild the installation.
 
@@ -119,6 +120,6 @@ CKEditor 5 is in active development now and new features are added all the time,
 ## How about creating your own features?
 
 Probably the most exciting features are the ones you can develop on top of CKEditor 5 Framework!
-We are gradually enhancing the {@link framework/index CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/guides/creating-simple-plugin creating custom features}.
+We are gradually enhancing the {@link framework/index CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/guides/creating-simple-plugin-timestamp creating custom features}.
 
 The official add-ons repository for CKEditor 4 reached an impressive number of over 300 add-ons created and published by the community. Now it is time for you to add your contributions to the brand new CKEditor 5!

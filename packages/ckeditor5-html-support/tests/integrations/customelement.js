@@ -383,4 +383,50 @@ describe( 'CustomElementSupport', () => {
 
 		expect( editor.getData() ).to.equal( '<custom>bar</custom>' );
 	} );
+
+	const INVALID_ELEMENTS_TEST_DATA = [
+		[ '<p', '' ],
+		[ '<p ', '' ],
+		[ '<xyz?abc>foo</xyz?abc>', 'foo' ],
+		[ '<a!>bar</a!>', 'bar' ]
+	];
+
+	for ( const [ data, text ] of INVALID_ELEMENTS_TEST_DATA ) {
+		it( `should not convert elements with invalid names (${ data })`, () => {
+			dataFilter.allowElement( /.*/ );
+
+			editor.setData( data );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>${ text }</paragraph>` );
+
+			expect( editor.getData() ).to.equal( text == '' ? '' : `<p>${ text }</p>` );
+		} );
+	}
+
+	const VALID_ELEMENTS_TEST_DATA = [
+		[
+			'<xmlfoo>bar</xmlfoo>',
+			'<htmlCustomElement htmlContent="<xmlfoo>bar</xmlfoo>" htmlElementName="xmlfoo"></htmlCustomElement>'
+		],
+		[
+			'<foo:bar>baz</foo:bar>',
+			'<htmlCustomElement htmlContent="<foo:bar>baz</foo:bar>" htmlElementName="foo:bar"></htmlCustomElement>'
+		],
+		[
+			'<foo-bar>baz</foo-bar>',
+			'<htmlCustomElement htmlContent="<foo-bar>baz</foo-bar>" htmlElementName="foo-bar"></htmlCustomElement>'
+		]
+	];
+
+	for ( const [ data, modelData ] of VALID_ELEMENTS_TEST_DATA ) {
+		it( `should convert element (${ data })`, () => {
+			dataFilter.allowElement( /.*/ );
+
+			editor.setData( data );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelData );
+
+			expect( editor.getData() ).to.equal( data );
+		} );
+	}
 } );

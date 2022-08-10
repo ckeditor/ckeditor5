@@ -5,7 +5,7 @@
 # * List and clarify the things that need attention when migrating.
 
 category: getting-started
-order: 60
+order: 80
 modified_at: 2022-04-15
 ---
 
@@ -21,7 +21,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 
 There is no "drop in" solution for migrating. In this guide we hope to summarize the most important aspects you need to consider before you proceed with installing CKEditor 5.
 
-Before starting, be sure that migrating is your best choice. Refer to the {@link installation/advanced/predefined-builds#when-not-to-use-predefined-builds When NOT to use predefined CKEditor 5 builds?} guide for more information.
+Before starting, be sure that migrating is your best choice. Refer to the {@link installation/getting-started/predefined-builds#when-not-to-use-predefined-builds When NOT to use predefined CKEditor 5 builds?} guide for more information.
 
 ## Installation and integration
 
@@ -108,7 +108,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td><span id="allowedContent"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent">allowedContent</a></span></td>
 			<td>
 				<p>Extending the list of HTML tags or attributes that CKEditor should support can be achieved via the {@link features/general-html-support General HTML Support feature}. The GHS allows adding HTML markup not covered by official CKEditor 5 features into the editor's content. Such elements can be loaded, pasted, or output. It does not, however, provide a dedicated UI for the extended HTML markup.</p>
-				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link framework/guides/creating-simple-plugin Creating a simple plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p>
+				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p>
 				<p>Note that only content that is explicitly converted between the model and the view by the editor plugins will be preserved in CKEditor 5. Check the {@link framework/guides/deep-dive/conversion/intro conversion tutorials} to learn how to extend the conversion rules.</p>
 			</td>
 		</tr>
@@ -720,6 +720,4 @@ If you are missing any particular features or settings, feel free to {@link supp
 **What's next?**
 
 You should now have the basic knowledge about differences between CKEditor 4 and CKEditor 5. Feel free to explore our {@link features/index features page} to compare the available plugins to your needs.
-
-It's time to move to the last article in the **Getting started** path. {@link installation/getting-started/maintenance See you there}!
 </info-box>

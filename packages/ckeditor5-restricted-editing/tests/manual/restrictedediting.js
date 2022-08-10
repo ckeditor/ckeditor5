@@ -50,7 +50,8 @@ async function startStandardEditingMode() {
 				'tableRow',
 				'mergeTableCells'
 			]
-		}
+		},
+		updateSourceElementOnDestroy: true
 	} );
 }
 
@@ -78,7 +79,8 @@ async function startRestrictedEditingMode() {
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			tableToolbar: [ 'bold', 'italic' ]
-		}
+		},
+		updateSourceElementOnDestroy: true
 	} );
 }
 

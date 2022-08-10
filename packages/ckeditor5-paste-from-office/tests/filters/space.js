@@ -136,6 +136,22 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
 			} );
+
+			it( 'should use innerText setter instead of innerHTML', () => {
+				const input = '<span style=\'mso-spacerun:yes\'>   </span>';
+
+				const domParser = new DOMParser();
+				const htmlDocument = domParser.parseFromString( input, 'text/html' );
+
+				const spanElement = htmlDocument.getElementsByTagName( 'span' )[ 0 ];
+				const innerHTMLSpy = sinon.spy( spanElement, 'innerHTML', [ 'set' ] );
+				const innerTextSpy = sinon.spy( spanElement, 'innerText', [ 'set' ] );
+
+				normalizeSpacerunSpans( htmlDocument );
+
+				sinon.assert.notCalled( innerHTMLSpy.set );
+				sinon.assert.calledOnce( innerTextSpy.set );
+			} );
 		} );
 	} );
 } );

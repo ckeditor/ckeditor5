@@ -5,7 +5,7 @@
 
 /* global console:false */
 
-import EmitterMixin from '../../src/emittermixin';
+import { Emitter } from '../../src/emittermixin';
 import CKEditorError from '../../src/ckeditorerror';
 import areConnectedThroughProperties from '../../src/areconnectedthroughproperties';
 
@@ -31,7 +31,7 @@ import areConnectedThroughProperties from '../../src/areconnectedthroughproperti
  * @returns {Emitter} The observer.
  */
 export function createObserver() {
-	const observer = Object.create( EmitterMixin, {
+	const observer = Object.create( Emitter.prototype, {
 		observe: {
 			value: function observe( observableName, observable, filterNames ) {
 				observer.listenTo( observable, 'change', ( evt, propertyName, value, oldValue ) => {

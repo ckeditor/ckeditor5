@@ -71,7 +71,7 @@
 		"builds/guides/integration/advanced-setup.html": "installation/advanced/alternative-setups/integrating-from-source.html",
 		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
 		"builds/guides/reporting-issues.html": "support/reporting-issues.html",
-		"builds/guides/whats-new.html": "features/index.html",
+		"builds/guides/whats-new.html": "features/overview.html",
 		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
 		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html",
 		"features/ckfinder.html": "features/images/image-upload/ckfinder.html",
@@ -115,7 +115,7 @@
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
-		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html",
+		"framework/guides/plugins/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin-timestamp.html",
 		"builds/index.html": "installation/index.html",
 		"builds/guides/migrate.html": "installation/getting-started/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-to-25.0.0.html": "updating/migration-to-25.html",
@@ -132,10 +132,10 @@
 		"builds/guides/migration/migration-to-31.html": "updating/migration-to-31.html",
 		"builds/guides/migration/migration-to-32.html": "updating/migration-to-32.html",
 		"builds/guides/migration/migration-to-33.html": "updating/migration-to-33.html",
-		"builds/guides/predefined-builds/overview.html": "installation/advanced/alternative-setups/predefined-builds.html",
-		"builds/guides/overview.html": "installation/advanced/alternative-setups/predefined-builds.html",
+		"builds/guides/predefined-builds/overview.html": "installation/getting-started/predefined-builds.html",
+		"builds/guides/overview.html": "installation/getting-started/predefined-builds.html",
 		"builds/guides/quick-start.html":"installation/getting-started/quick-start.html",
-		"builds/guides/predefined-builds/quick-start.html":"installation/advanced/alternative-setups/predefined-builds.html",
+		"builds/guides/predefined-builds/quick-start.html":"installation/getting-started/predefined-builds.html",
 		"builds/guides/integration/installation.html": "installation/getting-started/quick-start.html",
 		"builds/guides/integration/basic-api.html": "installation/getting-started/basic-api.html",
 		"builds/guides/integration/configuration.html": "installation/getting-started/configuration.html",
@@ -171,7 +171,14 @@
 		"framework/guides/deep-dive/conversion/custom-element-conversion.html": "framework/guides/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/guides/deep-dive/conversion/intro.html",
 		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
-		"installation/getting-started/quick-start-other.html#building-the-editor-from-source": "installation/getting-started/quick-start.html#building-the-editor-from-source"
+		"installation/getting-started/quick-start-other.html#building-the-editor-from-source": "installation/getting-started/quick-start.html#building-the-editor-from-source",
+		"installation/getting-started/maintenance.html": "updating/updating.html",
+		"installation/advanced/alternative-setups/predefined-builds.html": "installation/getting-started/predefined-builds.html",
+		"support/getting-support.html": "support/index.html",
+		"framework/guides/overview.html": "framework/index.html",
+		"updating/updating.html": "updating/index.html",
+		"features/overview.html": "features/index.html",
+		"installation/overview.html": "installation/index.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -222,18 +229,19 @@
 			"name": "Installation",
 			"id": "installation",
 			"slug": "installation",
+			"navigationIncludeIndex": true,
 			"categories": [
 				{
 					"name": "Getting started",
 					"id": "getting-started",
 					"slug": "getting-started",
-					"order": 10,
+					"order": 20,
 					"categories": [
 						{
 							"name": "Frameworks",
 							"id": "frameworks",
 							"slug": "frameworks",
-							"order": 50
+							"order": 70
 						}
 					]
 				},
@@ -241,7 +249,7 @@
 					"name": "Advanced",
 					"id": "advanced",
 					"slug": "advanced",
-					"order": 20,
+					"order": 30,
 					"categories": [
 						{
 							"name": "Alternative setups",
@@ -257,6 +265,7 @@
 			"name": "Features",
 			"id": "features",
 			"slug": "features",
+			"navigationIncludeIndex": true,
 			"categories": [
 				{
 					"name": "Collaboration",
@@ -363,17 +372,20 @@
 		{
 			"name": "Updating",
 			"id": "updating",
+			"navigationIncludeIndex": true,
 			"slug": "updating"
 		},
 		{
 			"name": "Support",
 			"id": "support",
+			"navigationIncludeIndex": true,
 			"slug": "support"
 		},
 		{
 			"name": "Framework",
 			"id": "framework",
 			"slug": "framework",
+			"navigationIncludeIndex": true,
 			"categories": [
 				{
 					"name": "Guides",
@@ -390,7 +402,15 @@
 							"name": "Developing custom plugins",
 							"id": "framework-plugins",
 							"slug": "plugins",
-							"order": 200
+							"order": 200,
+							"categories": [
+								{
+									"name": "Creating a simple plugin",
+									"id": "simple-plugin",
+									"slug": "simple-plugin",
+									"order": 20
+								}
+							]
 						},
 						{
 							"name": "Advanced tutorials",

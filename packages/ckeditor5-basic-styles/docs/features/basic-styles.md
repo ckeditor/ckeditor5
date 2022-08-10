@@ -18,12 +18,16 @@ Basic formatting options may be applied with the toolbar buttons (pictured below
 * Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
 
 <info-box info>
-	Bold and italic styles are enabled by default in all {@link installation/advanced/predefined-builds predefined builds}. Strikethrough and underline are available in the {@link installation/advanced/predefined-builds #document-editor document editor build} only. The code style is not present in any of the predefined builds.
+	Bold and italic styles are enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. Strikethrough and underline are available in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. The code style is present in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only
 </info-box>
 
 ## Demo
 
 {@snippet features/basic-styles}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 
@@ -48,7 +52,7 @@ Check out also these CKEditor 5 features to gain better control over your conten
 | {@link module:basic-styles/superscript~Superscript} | `'superscript'` | `'superscript'` | `<sup>superscript</sup>` |
 
 <info-box info>
-	{@link module:basic-styles/bold~Bold} and {@link module:basic-styles/italic~Italic} are available out–of–the–box in most of the {@link installation/advanced/predefined-builds editor builds}.
+	{@link module:basic-styles/bold~Bold} and {@link module:basic-styles/italic~Italic} are available out–of–the–box in most of the {@link installation/getting-started/predefined-builds editor builds}.
 
 	The {@link module:basic-styles/code~Code} feature provides support for inline code formatting. To create blocks of pre-formatted code with a specific programming language assigned, use the {@link features/code-blocks code block feature}.
 </info-box>

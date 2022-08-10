@@ -9,7 +9,7 @@ classes: main__content--no-toc
 
 The main difference between a multi-root editor and using multiple separate editors (like in the {@link examples/builds/inline-editor inline editor demo}) is the fact that in a multi-root editor all editable areas belong to the same editor instance, share the same toolbar and create one undo stack.
 
-Out of the box, CKEditor 5 does not offer a ready-to-use multi-root editor yet. However, such an editor can be implemented by using the {@link framework/guides/overview CKEditor 5 Framework}.
+Out of the box, CKEditor 5 does not offer a ready-to-use multi-root editor yet. However, such an editor can be implemented by using the {@link framework/index CKEditor 5 Framework}.
 
 Check out the {@link framework/guides/custom-editor-creator "Implementing a custom editor creator" guide} which contains the source code of the demo below.
 
@@ -349,6 +349,8 @@ class MultirootEditorUIView extends EditorUIView {
 	constructor( locale, editingView, editableElements ) {
 		super( locale );
 
+		const t = locale.t;
+
 		/**
 		 * The main toolbar of the decoupled editor UI.
 		 *
@@ -367,7 +369,11 @@ class MultirootEditorUIView extends EditorUIView {
 
 		// Create InlineEditableUIView instance for each editable.
 		for ( const editableName of Object.keys( editableElements ) ) {
-			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ] );
+			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ], {
+				label: editableView => {
+					return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+				}
+			} );
 
 			editable.name = editableName;
 			this.editables.push( editable );

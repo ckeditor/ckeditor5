@@ -8,6 +8,7 @@
  */
 
 import View from '../view';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The dropdown panel view class.
@@ -81,13 +82,32 @@ export default class DropdownPanelView extends View {
 	}
 
 	/**
-	 * Focuses the view element or first item in view collection on opening dropdown's panel.
+	 * Focuses the first view in the {@link #children} collection.
 	 *
 	 * See also {@link module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable}.
 	 */
 	focus() {
 		if ( this.children.length ) {
-			this.children.first.focus();
+			if ( typeof this.children.first.focus === 'function' ) {
+				this.children.first.focus();
+			} else {
+				/**
+				 * The child view of a dropdown could not be focused because it is missing the `focus()` method.
+				 *
+				 * This warning appears when a dropdown {@link module:ui/dropdown/dropdownview~DropdownView#isOpen gets open} and it
+				 * attempts to focus the {@link module:ui/dropdown/dropdownpanelview~DropdownPanelView#children first child} of its panel
+				 * but the child does not implement the
+				 * {@link module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable focusable interface}.
+				 *
+				 * Focusing the content of a dropdown on open greatly improves the accessibility. Please make sure the view instance
+				 * provides the `focus()` method for the best user experience.
+				 *
+				 * @error ui-dropdown-panel-focus-child-missing-focus
+				 * @param {module:ui/view~View} childView
+				 * @param {module:ui/dropdown/dropdownpanelview~DropdownPanelView} dropdownPanel
+				 */
+				logWarning( 'ui-dropdown-panel-focus-child-missing-focus', { childView: this.children.first, dropdownPanel: this } );
+			}
 		}
 	}
 
