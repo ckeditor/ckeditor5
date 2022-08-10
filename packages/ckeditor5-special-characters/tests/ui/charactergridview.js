@@ -75,16 +75,4 @@ describe( 'CharacterGridView', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );
 		} );
 	} );
-
-	describe( 'focus()', () => {
-		it( 'focuses the first tile', () => {
-			const tile = view.createTile( 'ε', 'foo bar baz' );
-			const spy = sinon.spy( tile, 'focus' );
-
-			view.tiles.add( tile );
-			view.focus();
-
-			sinon.assert.calledOnce( spy );
-		} );
-	} );
 } );
