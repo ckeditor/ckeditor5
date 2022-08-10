@@ -2506,9 +2506,11 @@ describe( 'TableColumnResizeEditing', () => {
 			} );
 		} );
 
-		describe( 'GHS', () => {
-			it( 'should not filter out the <colgroup> element', async () => {
-				const ghsEditor = await createEditor( {
+		describe( 'GHS integration', () => {
+			let ghsEditor;
+
+			beforeEach( async () => {
+				ghsEditor = await createEditor( {
 					plugins: [ Table, TableColumnResize, Paragraph, WidgetResize, GeneralHtmlSupport ],
 					htmlSupport: {
 						allow: [
@@ -2521,7 +2523,13 @@ describe( 'TableColumnResizeEditing', () => {
 						]
 					}
 				} );
+			} );
 
+			afterEach( async () => {
+				await ghsEditor.destroy();
+			} );
+
+			it( 'doesn\'t consider <colgroup> / <col> to be unsafe elements', () => {
 				ghsEditor.setData( `<figure class="table">
 					<table>
 						<colgroup>
@@ -2542,21 +2550,8 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( ghsEditor.editing.view.getDomRoot().innerHTML.includes( 'data-ck-unsafe-element' ) ).to.be.false;
 			} );
 
-			it( 'should save and load data correctly', async () => {
-				const ghsEditor = await createEditor( {
-					plugins: [ Table, TableColumnResize, Paragraph, WidgetResize, GeneralHtmlSupport ],
-					htmlSupport: {
-						allow: [
-							{
-								name: /^.*$/,
-								styles: true,
-								attributes: true,
-								classes: true
-							}
-						]
-					}
-				} );
-
+			it( 'should save and load data correctly', () => {
+				// (#12191)
 				setModelData( ghsEditor.model, modelTable( [
 					[ '[00', '01', '02]' ]
 				], { tableWidth: '80%', columnWidths: '25%,25%,50%' } ) );
