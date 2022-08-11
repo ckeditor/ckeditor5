@@ -35,17 +35,15 @@ export default class ColorGridView extends View {
 		const colorDefinitions = options && options.colorDefinitions || [];
 		const viewStyleAttribute = {};
 
-		if ( options && options.columns ) {
-			viewStyleAttribute.gridTemplateColumns = `repeat( ${ options.columns }, 1fr)`;
-		}
-
 		/**
 		 * A number of columns for the tiles grid.
 		 *
 		 * @readonly
 		 * @member {Number}
 		 */
-		this.columns = options.columns;
+		this.columns = options && options.columns ? options.columns : 5;
+
+		viewStyleAttribute.gridTemplateColumns = `repeat( ${ this.columns }, 1fr)`;
 
 		/**
 		 * The color of the currently selected color tile in {@link #items}.
