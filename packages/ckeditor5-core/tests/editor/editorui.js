@@ -507,7 +507,7 @@ describe( 'EditorUI', () => {
 			} );
 		} );
 
-		describe( 'Restoring forcus on Esc key press', () => {
+		describe( 'Restoring focus on Esc key press', () => {
 			let locale, visibleToolbarA, visibleToolbarB, editingAreaA, editingAreaB, nonEngineEditingArea, invisibleEditingArea;
 			let editingFocusSpy, editingAreaASpy, editingAreaBSpy, nonEngineEditingAreaSpy, invisibleEditingAreaSpy;
 

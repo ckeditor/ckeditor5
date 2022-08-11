@@ -432,7 +432,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 		} );
 	} );
 
-	describe( 'Restoring forcus on Esc key press', () => {
+	describe( 'Restoring focus on Esc key press', () => {
 		beforeEach( () => {
 			ui.focusTracker.isFocused = true;
 			ui.focusTracker.focusedElement = domRoot;
