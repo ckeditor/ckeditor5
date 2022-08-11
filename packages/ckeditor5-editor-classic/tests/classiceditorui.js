@@ -386,7 +386,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			// Try Alt+F10 again.
 			pressAltF10();
 
-			sinon.assert.calledTwice( toolbarFocusSpy );
+			sinon.assert.calledOnce( toolbarFocusSpy );
 			sinon.assert.notCalled( domRootFocusSpy );
 		} );
 

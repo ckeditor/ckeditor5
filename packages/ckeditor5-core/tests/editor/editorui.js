@@ -455,6 +455,21 @@ describe( 'EditorUI', () => {
 				ui.destroy();
 			} );
 
+			it( 'should do nothing if the toolbar is already focused and there is nowhere else for the focus to go', () => {
+				visibleToolbar.element.remove();
+				toolbarWithBeforeFocus.element.style.display = 'none';
+
+				pressAltF10();
+				ui.focusTracker.focusedElement = visibleContextualToolbar.element;
+
+				sinon.assert.calledOnce( visibleContextualSpy );
+
+				pressAltF10();
+				sinon.assert.notCalled( visibleSpy );
+				sinon.assert.notCalled( toolbarWithBeforeFocusSpy );
+				sinon.assert.notCalled( invisibleSpy );
+			} );
+
 			it( 'should focus the first focusable toolbar (and pick the contextual one first)', () => {
 				pressAltF10();
 
