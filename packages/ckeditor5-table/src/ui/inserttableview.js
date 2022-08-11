@@ -269,6 +269,5 @@ class TableSizeGridBoxView extends View {
 
 	focus() {
 		this.element.focus();
-		this.isOn = true;
 	}
 }
