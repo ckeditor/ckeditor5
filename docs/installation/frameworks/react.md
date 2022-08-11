@@ -20,6 +20,14 @@ The easiest way to use CKEditor 5 in your React application is by choosing one o
 
 If you want an out-of-the-box editor, install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/getting-started/predefined-builds#available-builds editor build of your choice}.
 
+Have you React application ready. Example command to create one would look like this:
+
+```bash
+npx create-react-app my-app
+cd my-app
+npm start
+```
+
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
 ```bash
