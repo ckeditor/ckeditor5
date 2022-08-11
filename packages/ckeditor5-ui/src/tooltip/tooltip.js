@@ -14,6 +14,8 @@ import { isElement } from 'lodash-es';
 import BalloonPanelView, { generatePositions } from '../panel/balloon/balloonpanelview';
 import View from '../view';
 
+import '../../theme/components/tooltip/tooltip.css';
+
 /**
  * TODO
  *
@@ -189,6 +191,6 @@ function getDescendantWithTooltip( element ) {
 function getTooltipData( element ) {
 	return {
 		text: element.dataset.ckeTooltipText,
-		position: element.dataset.ckeTooltipPosition
+		position: element.dataset.ckeTooltipPosition || 's'
 	};
 }
