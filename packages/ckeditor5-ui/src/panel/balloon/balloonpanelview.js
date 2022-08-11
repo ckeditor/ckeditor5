@@ -423,6 +423,17 @@ BalloonPanelView.arrowHorizontalOffset = 25;
  *		-------------------------------
  *		                       ^
  *
+ * **Note**: When an arrow is positioned horizontally, this value corresponds to the "horizontal height" (rotated height) of an arrow:
+ *
+ *		     +-------------...
+ *		-+   |
+ *		 |   +                  ------- ^
+ *		 | <                            |   vertical offset
+ *		 |   +                  ------- v
+ *		-+   |
+ *		     +-------------...
+ *
+ *
  * @default 10
  * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowVerticalOffset
  */
@@ -697,7 +708,7 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *		        +-----------------+
  *		        |     Balloon     |
  *		        +-----------------+
-* * `southEastArrowNorthMiddleWest`
+ * * `southEastArrowNorthMiddleWest`
  *
  *		   [ Target ]
  *		            ^
@@ -728,6 +739,28 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *		+-----------------+
  *		|     Balloon     |
  *		+-----------------+
+ *
+ *
+ *
+ * **West**
+ *
+ * * `westArrowEast`
+ *
+ *		+-----------------+
+ *		|     Balloon     |>[ Target ]
+ *		+-----------------+
+ *
+ * **East**
+ *
+ * * `eastArrowWest`
+ *
+ *		           +-----------------+
+ *		[ Target ]<|     Balloon     |
+ *		           +-----------------+
+ *
+ *
+ *
+ * **Sticky**
  *
  * * `viewportStickyNorth`
  *
@@ -1008,6 +1041,24 @@ export function generatePositions( {
 			top: getSouthTop( targetRect, balloonRect ),
 			left: targetRect.right - balloonRect.width + horizontalOffset,
 			name: 'arrow_ne',
+			...( config && { config } )
+		} ),
+
+		// ------- West
+
+		westArrowEast: ( targetRect, balloonRect ) => ( {
+			top: targetRect.top + targetRect.height / 2 - balloonRect.height / 2,
+			left: targetRect.left - balloonRect.width - verticalOffset,
+			name: 'arrow_e',
+			...( config && { config } )
+		} ),
+
+		// ------- East
+
+		eastArrowWest: ( targetRect, balloonRect ) => ( {
+			top: targetRect.top + targetRect.height / 2 - balloonRect.height / 2,
+			left: targetRect.right + verticalOffset,
+			name: 'arrow_w',
 			...( config && { config } )
 		} ),
 
