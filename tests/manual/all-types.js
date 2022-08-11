@@ -5,14 +5,15 @@
 
 /* globals console, window, document, CKEditorInspector */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
+import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
+
+import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 
 window.editors = {};
 
