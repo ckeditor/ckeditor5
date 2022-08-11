@@ -60,14 +60,17 @@ class ButtonsPlugin extends Plugin {
 
 			return splitButton;
 		} );
+		const switchButton = new SwitchButtonView();
 		this.editor.ui.componentFactory.add( 'switchButton', () => {
-			const switchButton = new SwitchButtonView();
 			switchButton.set( {
 				label: 'A switch button',
 				withText: true
 			} );
 
 			return switchButton;
+		} );
+		this.listenTo( switchButton, 'execute', () => {
+			switchButton.isOn ? switchButton.isOn = false : switchButton.isOn = true;
 		} );
 	}
 }
@@ -322,6 +325,9 @@ toolbarBasic.items.add( toolbarIconButtonExample );
 toolbarBasic.items.add( toolbarSwitchButtonExample );
 
 toolbarBasic.render();
+toolbarSwitchButtonExample.on( 'execute', () => {
+	toolbarSwitchButtonExample.isOn ? toolbarSwitchButtonExample.isOn = false : toolbarSwitchButtonExample.isOn = true;
+} );
 document.body.querySelector( '#snippet-toolbar' ).appendChild( toolbarBasic.element );
 
 // --- Toolbar with rounded corners ------------------------------------------------------------
@@ -350,7 +356,9 @@ toolbarRounded.items.add( roundedToolbarIconButton );
 
 toolbarRounded.render();
 toolbarRounded.element.classList.add( 'ck-rounded-corners' );
-
+roundedToolbarSwitchButton.on( 'execute', () => {
+	roundedToolbarSwitchButton.isOn ? roundedToolbarSwitchButton.isOn = false : roundedToolbarSwitchButton.isOn = true;
+} );
 document.body.querySelector( '#snippet-toolbar-rounded' ).appendChild( toolbarRounded.element );
 
 // --- Wrapped toolbar ------------------------------------------------------------
@@ -378,7 +386,9 @@ toolbarWrapped.items.add( wrappedToolbarIconButtonExample );
 
 toolbarWrapped.render();
 toolbarWrapped.element.style.width = '200px';
-
+wrappedToolbarSwitchButtonExample.on( 'execute', () => {
+	wrappedToolbarSwitchButtonExample.isOn ? wrappedToolbarSwitchButtonExample.isOn = false : wrappedToolbarSwitchButtonExample.isOn = true;
+} );
 document.body.querySelector( '#snippet-toolbar-wrapped' ).appendChild( toolbarWrapped.element );
 
 // --- Compact toolbar ------------------------------------------------------------
@@ -406,7 +416,9 @@ compactToolbar.items.add( compactToolbarIconButtonExample );
 
 compactToolbar.render();
 compactToolbar.isCompact = true;
-
+compactToolbarSwitchButtonExample.on( 'execute', () => {
+	compactToolbarSwitchButtonExample.isOn ? compactToolbarSwitchButtonExample.isOn = false : compactToolbarSwitchButtonExample.isOn = true;
+} );
 document.body.querySelector( '#snippet-toolbar-compact' ).appendChild( compactToolbar.element );
 
 // --- Toolbar ------------------------------------------------------------
@@ -425,6 +437,7 @@ optionsToolbarSwitchButton.set( {
 	label: 'A switch button ',
 	withText: true
 } );
+
 const optionsToolbarIconButton = new ButtonView();
 optionsToolbarIconButton.set( {
 	label: 'An icon button',
@@ -438,6 +451,10 @@ optionsToolbar.items.add( toolbarLineBreak );
 optionsToolbar.items.add( optionsToolbarIconButton );
 
 optionsToolbar.render();
+optionsToolbarSwitchButton.on( 'execute', () => {
+	optionsToolbarSwitchButton.isOn ? optionsToolbarSwitchButton.isOn = false : optionsToolbarSwitchButton.isOn = true;
+} );
+
 document.body.querySelector( '#snippet-toolbar-options' ).appendChild( optionsToolbar.element );
 
 // --- Dropdown list ------------------------------------------------------------
@@ -545,6 +562,13 @@ class DropdownToolbarExample extends Plugin {
 			addToolbarToDropdown( verticalDropdown, buttonsVertical );
 			verticalDropdown.toolbarView.isVertical = true;
 			return verticalDropdown;
+		} );
+
+		this.listenTo( verticalToolbarSwitchButton, 'execute', () => {
+			verticalToolbarSwitchButton.isOn ? verticalToolbarSwitchButton.isOn = false : verticalToolbarSwitchButton.isOn = true;
+		} );
+		this.listenTo( toolbarSwitchButton, 'execute', () => {
+			toolbarSwitchButton.isOn ? toolbarSwitchButton.isOn = false : toolbarSwitchButton.isOn = true;
 		} );
 	}
 }
