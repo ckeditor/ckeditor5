@@ -14,7 +14,7 @@ order: 30
 	</a>
 </p>
 
-The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link installation/getting-started/predefined-builds#available-builds rich text editor builds}. You can also use a customized editor built by using [the online builder](#using-the-ckeditor-5-online-builder) in any React application. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-the-editor-from-source) into your application, which will allow you to use the full power of the {@link framework/index CKEditor 5 Framework}.
+The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link installation/getting-started/predefined-builds#available-builds rich text editor builds}. You can also use a customized editor built from [the online builder](#using-the-ckeditor-5-online-builder) in any React application. Additionally, it is also possible to integrate a [CKEditor 5 built from source](#integrating-the-editor-from-source) into your application, which will allow you to use the full power of the {@link framework/index CKEditor 5 Framework}.
 
 ## Quick start
 
@@ -139,7 +139,7 @@ The {@link installation/getting-started/predefined-builds CKEditor 5 builds} com
 
 ### Using the CKEditor 5 online builder
 
-Create your own CKEditor 5 build with customized plugins, toolbar and language in five simple steps using our dedicated [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a fast, intuitive tool that allows for customizing your editing experience with a set of plugins of your own choice.
+Create your own CKEditor 5 build with customized plugins, toolbar and {@link features/ui-language UI language} in five simple steps using our dedicated [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a fast, intuitive tool that allows for customizing your editing experience with a set of plugins of your own choice.
 
 <info-box>
 	If you want to use the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/), make sure that the [watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) is not selected. The React integration comes with the watchdog feature already integrated into the core.
@@ -257,7 +257,7 @@ NODE_OPTIONS="--max-old-space-size=4096" yarn build
 
 ### Integrating the editor from source
 
-In this approach, you will include a CKEditor 5 {@link installation/advanced/integrating-from-source built from source}, so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
+In this approach, you will include CKEditor 5 {@link installation/advanced/integrating-from-source built from source}, so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
 
 This guide assumes that you are using the [Create React App CLI](https://github.com/facebook/create-react-app) as your boilerplate and it goes through adjusting it to fit CKEditor 5 needs. If you use your custom webpack setup, please read more about {@link installation/advanced/integrating-from-source including CKEditor 5 built from source}.
 
