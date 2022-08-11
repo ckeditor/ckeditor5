@@ -88,7 +88,7 @@ export default class EditorUI {
 		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
 
 		/**
-		 * Indicates the the UI is ready. Set `true` after {@link #event:ready} event is fired.
+		 * Indicates the UI is ready. Set `true` after {@link #event:ready} event is fired.
 		 *
 		 * @readonly
 		 * @default false
