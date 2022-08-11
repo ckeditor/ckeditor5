@@ -449,7 +449,6 @@ export default class EditorUI {
 		for ( const toolbarDef of this._focusableToolbarDefinitions ) {
 			const { toolbarView, options } = toolbarDef;
 
-			// TODO: Duplication because of logging.
 			if ( isVisible( toolbarView.element ) || options.beforeFocus ) {
 				// console.log( `${ logToolbar( toolbarView ) }: because already visible.` );
 
@@ -577,6 +576,11 @@ mix( EditorUI, ObservableMixin );
  */
 
 // Shifts the definitions list to start after the current (and wraps the list).
+//
+// @private
+// @param {Array.<module:core/editor/editorui~FocusableToolbarDefinition>} definitions
+// @param {module:core/editor/editorui~FocusableToolbarDefinition} currentFocusedToolbarDefinition The current focused toolbar definition.
+// @returns {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
 function getNextFocusableCandidateToolbarDefs( definitions, currentFocusedToolbarDefinition ) {
 	const focusedToolbarIndex = definitions.findIndex(
 		( { toolbarView } ) => toolbarView === currentFocusedToolbarDefinition.toolbarView
@@ -590,9 +594,9 @@ function getNextFocusableCandidateToolbarDefs( definitions, currentFocusedToolba
 //
 // A standard invisible toolbar is the heaviest. A visible contextual toolbar is the lightest.
 //
-// @param {Object} toolbarDef A toolbar definition to be weighted.
-// @returns {Number}
 // @private
+// @param {module:core/editor/editorui~FocusableToolbarDefinition} toolbarDef A toolbar definition to be weighted.
+// @returns {Number}
 function getToolbarDefinitionWeight( toolbarDef ) {
 	const { toolbarView, options } = toolbarDef;
 	let weight = 10;
