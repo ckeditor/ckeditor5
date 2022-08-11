@@ -240,7 +240,7 @@ export default class Renderer extends Observable {
 	 * removed as long as the selection is in the text node which needed it at first.
 	 */
 	public render(): void {
-		if ( this.isComposing /*&& !env.isAndroid*/ ) {
+		if ( this.isComposing && !env.isAndroid ) {
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
@@ -267,7 +267,7 @@ export default class Renderer extends Observable {
 		// Don't manipulate inline fillers while the selection is being made in (non-Android) Blink to prevent accidental
 		// DOM selection collapsing
 		// (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
-		if ( isInlineFillerRenderingPossible ) {
+		if ( isInlineFillerRenderingPossible && !this.isComposing ) {
 			// There was inline filler rendered in the DOM but it's not
 			// at the selection position any more, so we can remove it
 			// (cause even if it's needed, it must be placed in another location).
@@ -302,8 +302,28 @@ export default class Renderer extends Observable {
 			}
 		}
 
+		if ( this.isComposing && env.isAndroid ) {
+			let rerender = false;
+
+			for ( const element of this.markedChildren ) {
+				if ( this._updateChildren( element, { inlineFillerPosition, dryRun: true } ) ) {
+					rerender = true;
+				}
+			}
+
+			if ( !rerender ) {
+				return;
+			}
+		}
+
 		for ( const element of this.markedAttributes ) {
 			this._updateAttrs( element );
+		}
+
+		for ( const node of this.markedTexts ) {
+			if ( this.domConverter.mapViewToDom( node.parent as ViewElement ) ) {
+				this._updateText( node as ViewText, { inlineFillerPosition } );
+			}
 		}
 
 		for ( const element of this.markedChildren ) {
@@ -643,7 +663,10 @@ export default class Renderer extends Observable {
 	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position where the inline
 	 * filler should be rendered.
 	 */
-	private _updateChildren( viewElement: ViewElement, options: { inlineFillerPosition: ViewPosition | null } ) {
+	private _updateChildren( viewElement: ViewElement, options: {
+		inlineFillerPosition: ViewPosition | null;
+		dryRun?: boolean;
+	} ) {
 		const domElement = this.domConverter.mapViewToDom( viewElement );
 
 		if ( !domElement ) {
@@ -666,6 +689,21 @@ export default class Renderer extends Observable {
 		}
 
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
+
+		if ( options.dryRun ) {
+			if ( diff.includes( 'delete' ) || diff.includes( 'insert' ) ) {
+				if (
+					diff.length == 2 && diff.includes( 'delete' ) && diff.includes( 'insert' ) &&
+					isText( actualDomChildren[ 0 ] ) && isText( expectedDomChildren[ 0 ] )
+				) {
+					return false;
+				} else {
+					return true;
+				}
+			} else {
+				return false;
+			}
+		}
 
 		let i = 0;
 		const nodesToUnbind: Set<DomNode> = new Set();
