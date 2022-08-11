@@ -296,6 +296,12 @@ describe( 'SourceEditing', () => {
 			);
 		} );
 
+		it( 'should register a textarea in EditorUI when first shown', () => {
+			button.fire( 'execute' );
+
+			expect( [ ...editor.ui.getEditableElementsNames() ] ).to.include.members( [ 'sourceEditing:main' ] );
+		} );
+
 		it( 'should add an event listener in textarea on input which updates data property in the wrapper', () => {
 			button.fire( 'execute' );
 

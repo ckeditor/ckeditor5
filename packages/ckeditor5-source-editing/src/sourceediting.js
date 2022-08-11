@@ -253,7 +253,7 @@ export default class SourceEditing extends Plugin {
 			} );
 
 			// Register the element so it becomes available for Alt+F10 and Esc navigation.
-			editor.ui.setEditableElement( 'sourceEditing', domSourceEditingElementTextarea );
+			editor.ui.setEditableElement( 'sourceEditing:' + rootName, domSourceEditingElementTextarea );
 
 			this._replacedRoots.set( rootName, domSourceEditingElementWrapper );
 
