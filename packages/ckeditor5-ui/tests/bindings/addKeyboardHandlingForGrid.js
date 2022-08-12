@@ -28,7 +28,12 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			focusTracker.add( button.element );
 		}
 
-		addKeyboardHandlingForGrid( keystrokes, focusTracker, gridElementsCollection, 3 );
+		addKeyboardHandlingForGrid( {
+			keystrokeHandler: keystrokes,
+			focusTracker,
+			gridItems: gridElementsCollection,
+			numberOfColumns: 3
+		} );
 
 		keystrokes.listenTo( view.element );
 	} );

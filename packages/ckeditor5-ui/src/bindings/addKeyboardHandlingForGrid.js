@@ -8,36 +8,39 @@
  */
 
 /**
- * A helper that adds keyboard navigation (arrow up/down/left/right) for grids.
+ * A helper that adds a keyboard navigation support (arrow up/down/left/right) for grids.
  *
- * @param {module:utils/keystrokehandler~KeystrokeHandler} keystrokes Keystroke handler to register navigation with arrow keys.
- * @param {module:utils/focustracker~FocusTracker} focusTracker A focus tracker for grid elements.
- * @param {module:ui/viewcollection~ViewCollection} gridElements A collection of grid items.
- * @param {Number} numberOfColumns Number of columns in the grid.
+ * @param {Object} options Configuration options.
+ * @param {module:utils/keystrokehandler~KeystrokeHandler} options.keystrokeHandler Keystroke handler to register navigation with arrow
+ * keys.
+ * @param {module:utils/focustracker~FocusTracker} options.focusTracker A focus tracker for grid elements.
+ * @param {module:ui/viewcollection~ViewCollection} options.gridItems A collection of grid items.
+ * @param {Number} options.numberOfColumns Number of columns in the grid.
  */
-export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gridElements, numberOfColumns ) {
-	keystrokes.set( 'arrowright', getGridItemFocuser( ( focusedElementIndex, gridElements ) => {
-		if ( focusedElementIndex === gridElements.length - 1 ) {
+export default function addKeyboardHandlingForGrid( { keystrokeHandler, focusTracker, gridItems, numberOfColumns } ) {
+	keystrokeHandler.set( 'arrowright', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
+		if ( focusedElementIndex === gridItems.length - 1 ) {
 			return 0;
 		} else {
 			return focusedElementIndex + 1;
 		}
 	} ) );
 
-	keystrokes.set( 'arrowleft', getGridItemFocuser( ( focusedElementIndex, gridElements ) => {
+	keystrokeHandler.set( 'arrowleft', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
 		if ( focusedElementIndex === 0 ) {
-			return gridElements.length - 1;
+			return gridItems.length - 1;
 		} else {
 			return focusedElementIndex - 1;
 		}
 	} ) );
 
-	keystrokes.set( 'arrowup', getGridItemFocuser( ( focusedElementIndex, gridElements ) => {
+	keystrokeHandler.set( 'arrowup', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
 		let nextIndex = focusedElementIndex - numberOfColumns;
 
 		if ( nextIndex < 0 ) {
-			nextIndex = focusedElementIndex + numberOfColumns * Math.floor( gridElements.length / numberOfColumns );
-			if ( nextIndex > gridElements.length - 1 ) {
+			nextIndex = focusedElementIndex + numberOfColumns * Math.floor( gridItems.length / numberOfColumns );
+
+			if ( nextIndex > gridItems.length - 1 ) {
 				nextIndex -= numberOfColumns;
 			}
 		}
@@ -45,10 +48,10 @@ export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gr
 		return nextIndex;
 	} ) );
 
-	keystrokes.set( 'arrowdown', getGridItemFocuser( ( focusedElementIndex, gridElements ) => {
+	keystrokeHandler.set( 'arrowdown', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
 		let nextIndex = focusedElementIndex + numberOfColumns;
 
-		if ( nextIndex > gridElements.length - 1 ) {
+		if ( nextIndex > gridItems.length - 1 ) {
 			nextIndex = focusedElementIndex % numberOfColumns;
 		}
 
@@ -57,11 +60,11 @@ export default function addKeyboardHandlingForGrid( keystrokes, focusTracker, gr
 
 	function getGridItemFocuser( getIndexToFocus ) {
 		return evt => {
-			const focusedElement = gridElements.find( item => item.element === focusTracker.focusedElement );
-			const focusedElementIndex = gridElements.getIndex( focusedElement );
-			const nextIndexToFocus = getIndexToFocus( focusedElementIndex, gridElements );
+			const focusedElement = gridItems.find( item => item.element === focusTracker.focusedElement );
+			const focusedElementIndex = gridItems.getIndex( focusedElement );
+			const nextIndexToFocus = getIndexToFocus( focusedElementIndex, gridItems );
 
-			gridElements.get( nextIndexToFocus ).focus();
+			gridItems.get( nextIndexToFocus ).focus();
 
 			evt.stopPropagation();
 			evt.preventDefault();
