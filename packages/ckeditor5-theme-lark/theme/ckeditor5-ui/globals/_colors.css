@@ -10,13 +10,13 @@
 	--ck-color-base-action: 									hsl(104, 44%, 48%);
 	--ck-color-base-focus: 										hsl(209, 92%, 70%);
 	--ck-color-base-text: 										hsl(0, 0%, 20%);
-	--ck-color-base-active: 									hsl(208, 79%, 51%);
-	--ck-color-base-active-focus:								hsl(208, 79%, 46%);
+	--ck-color-base-active: 									hsl(211, 79%, 51%);
+	--ck-color-base-active-focus:								hsl(211, 79%, 46%);
 	--ck-color-base-error:										hsl(15, 100%, 43%);
 
 	/* -- Generic colors ------------------------------------------------------------------------ */
 
-	--ck-color-focus-border-coordinates: 						208, 79%, 51%;
+	--ck-color-focus-border-coordinates: 						211, 79%, 51%;
 	--ck-color-focus-border: 									hsl(var(--ck-color-focus-border-coordinates));
 	--ck-color-focus-outer-shadow:								hsl(207, 89%, 86%);
 	--ck-color-focus-disabled-shadow:							hsla(209, 90%, 72%,.3);
@@ -34,12 +34,12 @@
 	--ck-color-button-default-active-shadow: 					hsl(0, 0%, 75%);
 	--ck-color-button-default-disabled-background: 				transparent;
 
-	--ck-color-button-on-background: 							hsl(206, 92%, 95%);
-	--ck-color-button-on-hover-background: 						hsl(206, 97%, 88%);
-	--ck-color-button-on-active-background: 					hsl(206, 92%, 95%);
-	--ck-color-button-on-active-shadow: 						hsl(207, 75%, 80%);
-	--ck-color-button-on-disabled-background: 					hsl(210, 15%, 95%);
-	--ck-color-button-on-color:									hsl(212, 81%, 46%);
+	--ck-color-button-on-background: 							hsl(211, 92%, 95%);
+	--ck-color-button-on-hover-background: 						hsl(211, 97%, 88%);
+	--ck-color-button-on-active-background: 					hsl(211, 92%, 95%);
+	--ck-color-button-on-active-shadow: 						hsl(206, 75%, 80%);
+	--ck-color-button-on-disabled-background: 					hsl(211, 15%, 95%);
+	--ck-color-button-on-color:									hsl(211, 81%, 50%);
 
 
 	--ck-color-button-action-background: 						var(--ck-color-base-action);
