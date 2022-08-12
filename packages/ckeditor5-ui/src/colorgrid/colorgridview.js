@@ -11,7 +11,7 @@ import View from '../view';
 import ColorTileView from './colortileview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import addKeyboardHandlingForGrid from '../bindings/addKeyboardHandlingForGrid';
+import addKeyboardHandlingForGrid from '../bindings/addkeyboardhandlingforgrid';
 
 import '../../theme/components/colorgrid/colorgrid.css';
 
