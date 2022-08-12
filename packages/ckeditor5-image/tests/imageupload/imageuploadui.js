@@ -191,4 +191,16 @@ describe( 'ImageUploadUI', () => {
 		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );
 		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( [ files[ 0 ] ] );
 	} );
+
+	it( 'should move focus to editable after executing the command', () => {
+		const spy = sinon.spy( editor.editing.view, 'focus' );
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
+		const file = [ createNativeFileMock() ];
+
+		setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+		button.fire( 'done', file );
+
+		expect( spy ).to.be.calledOnce;
+	} );
 } );

@@ -18,7 +18,7 @@ The editor has already been created in the `app.js` file with some basic plugins
 
 The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly).
 
-If you want to set up the project yourself, you should follow the steps listed in the {@link framework/guides/quick-start the "Quick start" section}. Additionally, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the {@link module:core/plugin~Plugin} class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
+If you want to set up the project yourself, you should follow the steps listed in the {@link framework/guides/quick-start the "Quick start" section}. Additionally, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the `Plugin` class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
 
 We are going to write the whole plugin in your base `app.js` file. It should look like the code listed below. There maybe a couple of different imports if you chose to set up the environment yourself.
 
@@ -68,9 +68,9 @@ Your `index.html` should look as listed below. The editor will load with HTML co
 
 ## Creating a plugin
 
-All features in the CKEditor 5 are powered by plugins. In order to create our custom timestamp plugin, we need to import the {@link module:core/plugin~Plugin base `Plugin` class}.
+All features in the CKEditor 5 are powered by plugins. In order to create our custom timestamp plugin, we need to import the base `Plugin` class.
 
-We can now create a `Timestamp` class that extends the basic `Plugin` class. After we define it, we can add it into the editor's {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} array.
+We can now create a `Timestamp` class that extends the basic `Plugin` class. After we define it, we can add it into the editor's plugins array.
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -111,11 +111,11 @@ Rebuild the editor and check in your console whether the timestamp was initializ
 
 ## Registering a toolbar button
 
-CKEditor 5 has a rich UI library. Form it, we will grab the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class for our toolbar button.
+CKEditor 5 has a rich UI library. From it, we will grab the `ButtonView` class for our toolbar button.
 
-Once we create a new instance of the `ButtonView`, we will be able to customize it by setting its properties. We will create a label, which will be visible on the button thanks to the {@link module:ui/button/buttonview~ButtonView#withText `withText`} property.
+Once we create a new instance of the `ButtonView`, we will be able to customize it by setting its properties. We will create a label, which will be visible on the button thanks to the `withText` property.
 
-We also need to register our button in the editor's UI {@link module:ui/componentfactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the {@link module:ui/componentfactory~ComponentFactory#add `componentFactory.add`} method, in order to be able to add it into the {@link features/toolbar `config.toolbar`} array.
+We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, in order to be able to add it into the {@link features/toolbar toolbar} array.
 
 ```js
 // ...
@@ -166,13 +166,13 @@ You should be able to see the timestamp button now. It doesn't do anything just 
 
 We can now define the core functionality of our plugin &ndash; the action that should be executed once our button is clicked.
 
-In order to insert anything into the document structure, we need to {@link framework/guides/architecture/editing-engine#changing-the-model change the model} using the model's `change()` method. This way we get access to the {@link module:engine/model/writer~Writer model writer}.
+In order to insert anything into the document structure, we need to {@link framework/guides/architecture/editing-engine#changing-the-model change the model} using the model's `change()` method. This way we get access to the model writer.
 
 <info-box>
 	What is the model? It is a DOM-like structure, that is converted into the view, which is the layer that the user interacts with. You can read more about {@link framework/guides/architecture/editing-engine#model the model} and {@link framework/guides/architecture/editing-engine#view the view} in dedicated guides.
 </info-box>
 
-We will use the {@link module:engine/model/model~Model#insertContent `insertContent()`} method to insert our timestamp into the document. Inside, we just need to create a new text node with the {@link module:engine/model/writer~Writer#createText `writer.createText()`} method.
+We will use the `insertContent()` method to insert our timestamp into the document. Inside, we just need to create a new text node with the  `writer.createText()` method.
 
 ```js
 class Timestamp extends Plugin {
