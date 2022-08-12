@@ -62,7 +62,7 @@ export default class ImageInlineEditing extends Plugin {
 		// Converters 'alt' and 'srcset' are added in 'ImageEditing' plugin.
 		schema.register( 'imageInline', {
 			inheritAllFrom: '$inlineObject',
-			allowAttributes: [ 'alt', 'src', 'srcset','width', 'height' ]
+			allowAttributes: [ 'alt', 'src', 'srcset','width', 'height', 'style' ]
 		} );
 
 		// Disallow inline images in captions (for now). This is the best spot to do that because

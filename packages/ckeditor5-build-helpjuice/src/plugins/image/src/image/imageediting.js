@@ -68,6 +68,20 @@ export default class ImageEditing extends Plugin {
 				},
 				model: 'height'
 			} )
+			.attributeToAttribute({
+				model: {
+					key: 'style',
+					name: 'imageBlock'
+				},
+				view: 'style'
+			})
+			.attributeToAttribute({
+				model: {
+					key: 'style',
+					name: 'imageInline'
+				},
+				view: 'style'
+			})
 			.attributeToAttribute( {
 				view: {
 					name: 'img',
@@ -87,7 +101,21 @@ export default class ImageEditing extends Plugin {
 						return value;
 					}
 				}
-			} );
+			} )
+
+			conversion.for('downcast').add(dispatcher => {
+				dispatcher.on('attribute:style:imageBlock', (evt, data, conversionApi) => {
+					const viewElement = conversionApi.mapper.toViewElement(data.item);
+
+					conversionApi.writer.setAttribute('style', data.attributeNewValue, viewElement);
+				});
+
+				dispatcher.on('attribute:style:imageInline', (evt, data, conversionApi) => {
+					const viewElement = conversionApi.mapper.toViewElement(data.item);
+
+					conversionApi.writer.setAttribute('style', data.attributeNewValue, viewElement);
+				});
+			});
 
 		const insertImageCommand = new InsertImageCommand( editor );
 
