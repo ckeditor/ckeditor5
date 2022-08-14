@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, MouseEvent */
 
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
 import TableColumnResize from '../../src/tablecolumnresize';
@@ -21,7 +21,7 @@ import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import { modelTable } from '../_utils/utils';
+import { modelTable, assertSelectedCells } from '../_utils/utils';
 import {
 	getDomTable,
 	getModelTable,
@@ -2563,6 +2563,82 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( ghsEditor.editing.view ) );
 
 				expect( initialViewColumnWidthsPx ).to.deep.equal( finalViewColumnWidthsPx );
+			} );
+		} );
+	} );
+
+	describe( 'Hide/show resizers', () => {
+		let model, editor, view, editorElement;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+			editor = await createEditor();
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			if ( editorElement ) {
+				editorElement.remove();
+			}
+
+			if ( editor ) {
+				await editor.destroy();
+			}
+		} );
+
+		describe( 'on mousedown/mouseup', () => {
+			it( 'should not hide resizers when resizer is clicked', () => {
+				setModelData( model, modelTable( [
+					[ '[foo]' ]
+				], { columnWidths: '100%' } ) );
+
+				const resizer = view.getDomRoot().querySelector( '.ck-table-column-resizer' );
+
+				const viewRoot = view.document.getRoot();
+
+				resizer.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+
+				expect( viewRoot.hasClass( 'ck-column-resize_disabled' ) ).to.be.false;
+			} );
+
+			it( 'should hide resizers when table cell is clicked and show resizers on mouseup', () => {
+				setModelData( model, modelTable( [
+					[ '[foo]', 'bar' ]
+				], { columnWidths: '50%,50%' } ) );
+
+				const td = view.getDomRoot().querySelector( 'td' );
+
+				td.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+
+				const viewRoot = view.domConverter.mapDomToView( view.getDomRoot() );
+
+				expect( viewRoot.hasClass( 'ck-column-resize_disabled' ) ).to.be.true;
+				td.dispatchEvent( new MouseEvent( 'mouseup', { bubbles: true } ) );
+
+				expect( viewRoot.hasClass( 'ck-column-resize_disabled' ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'on resizer mouse drag', () => {
+			it( 'does not change table selection', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', { contents: '01', colspan: 2 } ],
+					[ '10', '11', '12' ]
+				], { columnWidths: '50%,25%,25%' } ) );
+
+				const paragraph = view.getDomRoot().querySelector( '.ck-table-bogus-paragraph' );
+				const resizer = view.getDomRoot().querySelector( '.ck-table-column-resizer' );
+
+				resizer.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+				paragraph.dispatchEvent( new MouseEvent( 'mousemove', { bubbles: true, clientX: 20, buttons: 1 } ) );
+
+				assertSelectedCells( model, [
+					[ 0, 0 ],
+					[ 0, 0, 0 ]
+				] );
 			} );
 		} );
 	} );
