@@ -368,6 +368,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const target = domEventData.target;
 
 		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
+			this._isResizingAllowed = false;
 			return;
 		}
 
@@ -555,6 +556,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	_onMouseUpHandler() {
 		if ( !this._isResizingActive ) {
+			this._isResizingAllowed = true;
 			return;
 		}
 
