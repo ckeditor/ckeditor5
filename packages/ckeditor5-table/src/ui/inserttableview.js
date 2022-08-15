@@ -150,7 +150,12 @@ export default class InsertTableView extends View {
 	render() {
 		super.render();
 
-		addKeyboardHandlingForGrid( this.keystrokes, this.focusTracker, this.items, 10 );
+		addKeyboardHandlingForGrid( {
+			keystrokeHandler: this.keystrokes,
+			focusTracker: this.focusTracker,
+			gridItems: this.items,
+			numberOfColumns: 10
+		} );
 
 		for ( const item of this.items ) {
 			this.focusTracker.add( item.element );
