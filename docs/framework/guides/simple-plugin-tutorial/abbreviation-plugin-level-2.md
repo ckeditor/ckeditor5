@@ -143,10 +143,10 @@ export default class FormView extends View {
 When the user clicks one of these buttons, we want to either submit or cancel the form view. These events should be fired off from the form view, so we need to delegate them from the buttons to the form view.
 
 <info-box>
-	Event delegation allows selected events of one {@link module:utils/emittermixin~Emitter emitter} to be fired off by another emitter. Read about it in our {@link framework/guides/architecture/core-editor-architecture#event-system-and-observables introduction to the event system} and more on {@link framework/guides/deep-dive/event-system#delegating-events delegating events}.
+	Event delegation allows selected events of one emitter to be fired off by another emitter. Read about it in our {@link framework/guides/architecture/core-editor-architecture#event-system-and-observables introduction to the event system} and more on {@link framework/guides/deep-dive/event-system#delegating-events delegating events}.
 </info-box>
 
-For now, we {@link module:utils/emittermixin~Emitter#delegate delegate} `cancelButtonView#execute` to the FormView, so pressing the `cancel` button will fire off `FormView#cancel`. We will handle delegating the submit event in a couple of steps.
+For now, we delegate `cancelButtonView#execute` to the FormView, so pressing the `cancel` button will fire off `FormView#cancel`. We will handle delegating the submit event in a couple of steps.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -229,9 +229,9 @@ export default class AbbreviationUI extends Plugin {
 
 We are almost done with the form view, we just need to add a couple of finishing touches.
 
-In the `constructor`, we create a {@link module:ui/viewcollection~ViewCollection} with the {@link module:ui/view~View#createCollection `createCollection()`} method. We put all our input and button views in the collection, and use it to update the `FormView` template with its newly created children.
+In the `constructor`, we create a {@link module:ui/viewcollection~ViewCollection} with the `createCollection()` method. We put all our input and button views in the collection, and use it to update the `FormView` template with its newly created children.
 
-Let's also add `render()` method to our `FormView`.  We will use a helper {@link module:ui/bindings/submithandler~submitHandler `submitHandler()`} function there, which intercepts a native DOM submit event, prevents the default web browser behavior (navigation and page reload) and fires the `submit` event on a view instead.
+Let's also add `render()` method to our `FormView`.  We will use a helper `submitHandler()` function there, which intercepts a native DOM submit event, prevents the default web browser behavior (navigation and page reload) and fires the `submit` event on a view instead.
 
 We also need a `focus()` method, which will focus on the first child of our `abbreviation` input view each time the form is added to the editor. This is just a taste of what {@link framework/guides/deep-dive/focus-tracking focus tracking} can do in CKEditor 5. We will get into it more in next part of this tutorial.
 
@@ -295,7 +295,7 @@ Our `FormView` is done! However, we cannot see it just yet, so let's add it to o
 
 ## Adding the Contextual Balloon
 
-Our form needs to appear in a balloon, and we will use the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon `ContextualBalloon` class} from the CKEditor 5 UI library to make one.
+Our form needs to appear in a balloon, and we will use the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon `ContextualBalloon`} class from the CKEditor 5 UI library to make one.
 
 This is where we ended up with our UI in the first part of the tutorial.
 
@@ -339,7 +339,7 @@ We will need to change it quite a bit and add `ContextualBalloon` and `FormView`
 
 Let's write a basic `_createFormView()` function, just to create an instance of our `FormView` class (we will expand it later).
 
-We also need to create a function, which will give us the target position for our balloon from user's selection. We need to convert the selected view range into DOM range. We can use the {@link module:engine/view/domconverter~DomConverter#viewRangeToDom `viewRangeToDom()`} method to do so.
+We also need to create a function, which will give us the target position for our balloon from user's selection. We need to convert the selected view range into DOM range. We can use the `viewRangeToDom()` method to do so.
 
 Finally, we add our balloon and the form view to the `init()` method.
 
@@ -436,7 +436,7 @@ You should be able to see your balloon and form now! Check and see your balloon 
 
 ## Getting user input
 
-Now is the time to replace the hard-coded "WYSIWYG" abbreviation with the user input. We will be getting values from the form and listening to the `submit` event on the form view, which we delegated from the save button (with the help of {@link module:ui/bindings/submithandler~submitHandler `submitHandler`}).
+Now is the time to replace the hard-coded "WYSIWYG" abbreviation with the user input. We will be getting values from the form and listening to the `submit` event on the form view, which we delegated from the save button (with the help of `submitHandler`).
 
 We use the same callback function we had in the toolbar button in the first part of the tutorial. We just need to replace the "WYSIWYG" abbreviation with values from our input views.
 
@@ -493,7 +493,7 @@ We will need to hide the form view in these three situations:
 
 We will write a simple `_hideUI()` function, which will clear the input field values and remove the view from our balloon.
 
-Additionally, we will import the {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler `clickOutsideHandler()`} method, which will take our `_hideUI()` function as a callback. It will be emitted from our form view, and activated when the form view is visible. We also need to set `contextElements` for the handler to determine its scope. Clicking on HTML elements listed there will not fire the callback.
+Additionally, we will import the `clickOutsideHandler()` method, which will take our `_hideUI()` function as a callback. It will be emitted from our form view, and activated when the form view is visible. We also need to set `contextElements` for the handler to determine its scope. Clicking on HTML elements listed there will not fire the callback.
 
 ```js
 // abbreviation/abbreviationui.js
