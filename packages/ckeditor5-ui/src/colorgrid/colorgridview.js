@@ -11,7 +11,8 @@ import View from '../view';
 import ColorTileView from './colortileview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import addKeyboardHandlingForGrid from '../bindings/addKeyboardHandlingForGrid';
+import addKeyboardHandlingForGrid from '../bindings/addkeyboardhandlingforgrid';
+
 import '../../theme/components/colorgrid/colorgrid.css';
 
 /**
@@ -27,7 +28,7 @@ export default class ColorGridView extends View {
 	 * @param {Object} options Component configuration
 	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} [options.colorDefinitions] Array with definitions
 	 * required to create the {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
-	 * @param {Number} options.columns A number of columns to display the tiles.
+	 * @param {Number} [options.columns=5] A number of columns to display the tiles.
 	 */
 	constructor( locale, options ) {
 		super( locale );
@@ -35,17 +36,15 @@ export default class ColorGridView extends View {
 		const colorDefinitions = options && options.colorDefinitions || [];
 		const viewStyleAttribute = {};
 
-		if ( options && options.columns ) {
-			viewStyleAttribute.gridTemplateColumns = `repeat( ${ options.columns }, 1fr)`;
-		}
-
 		/**
 		 * A number of columns for the tiles grid.
 		 *
 		 * @readonly
 		 * @member {Number}
 		 */
-		this.columns = options.columns;
+		this.columns = options && options.columns ? options.columns : 5;
+
+		viewStyleAttribute.gridTemplateColumns = `repeat( ${ this.columns }, 1fr)`;
 
 		/**
 		 * The color of the currently selected color tile in {@link #items}.
@@ -163,7 +162,12 @@ export default class ColorGridView extends View {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 
-		addKeyboardHandlingForGrid( this.keystrokes, this.focusTracker, this.items, this.columns );
+		addKeyboardHandlingForGrid( {
+			keystrokeHandler: this.keystrokes,
+			focusTracker: this.focusTracker,
+			gridItems: this.items,
+			numberOfColumns: this.columns
+		} );
 	}
 
 	/**

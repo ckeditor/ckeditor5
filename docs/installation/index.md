@@ -55,7 +55,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 		{
 			classes: [ 'quiz-button', 'quiz-button_restart' ],
 			text: 'Restart the quiz',
-			navigateToPaneId: 'quiz-question-usingBuilds'
+			navigateToPaneId: 'quiz-question-usingCDN'
 		}
 	];
 	const QUIZ_PANE_DEFINITIONS = {
@@ -77,7 +77,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 			hint: 'CKEditor 5 can be instantly run from <a href="#start-using-ckeditor-5-instantly-with-cdn">CDN</a> providing working editor in seconds. This is the fastest way to start.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingCDN' ),
-				getDecisionButtonDefinition( false, 'quiz-question-onlineBuilds' ),
+				getDecisionButtonDefinition( false, 'quiz-question-usingBuilds' ),
 			]
 		},
 

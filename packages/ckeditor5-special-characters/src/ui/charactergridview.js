@@ -68,7 +68,12 @@ export default class CharacterGridView extends View {
 
 		this.keystrokes = new KeystrokeHandler();
 
-		addKeyboardHandlingForGrid( this.keystrokes, this.focusTracker, this.tiles, 10 );
+		addKeyboardHandlingForGrid( {
+			keystrokeHandler: this.keystrokes,
+			focusTracker: this.focusTracker,
+			gridItems: this.tiles,
+			numberOfColumns: 10
+		} );
 
 		/**
 		 * Fired when any of {@link #tiles grid tiles} is clicked.

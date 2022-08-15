@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import addKeyboardHandlingForGrid from '../../src/bindings/addKeyboardHandlingForGrid';
+import addKeyboardHandlingForGrid from '../../src/bindings/addkeyboardhandlingforgrid';
 import View from '../../src/view';
 import ButtonView from '../../src/button/buttonview';
 import { KeystrokeHandler, FocusTracker, Locale, keyCodes } from '@ckeditor/ckeditor5-utils';
@@ -28,7 +28,12 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 			focusTracker.add( button.element );
 		}
 
-		addKeyboardHandlingForGrid( keystrokes, focusTracker, gridElementsCollection, 3 );
+		addKeyboardHandlingForGrid( {
+			keystrokeHandler: keystrokes,
+			focusTracker,
+			gridItems: gridElementsCollection,
+			numberOfColumns: 3
+		} );
 
 		keystrokes.listenTo( view.element );
 	} );

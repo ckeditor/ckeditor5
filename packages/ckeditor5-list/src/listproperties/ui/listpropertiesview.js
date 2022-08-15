@@ -192,9 +192,12 @@ export default class ListPropertiesView extends View {
 				this.stylesView.focusTracker.add( item.element );
 			}
 
-			this.stylesView.keystrokes.listenTo( this.stylesView.element );
-
-			addKeyboardHandlingForGrid( this.stylesView.keystrokes, this.stylesView.focusTracker, this.stylesView.children, 4 );
+			addKeyboardHandlingForGrid( {
+				keystrokeHandler: this.stylesView.keystrokes,
+				focusTracker: this.stylesView.focusTracker,
+				gridItems: this.stylesView.children,
+				numberOfColumns: 4
+			} );
 		}
 
 		if ( this.startIndexFieldView ) {
@@ -286,6 +289,10 @@ export default class ListPropertiesView extends View {
 
 		stylesView.focusTracker = new FocusTracker();
 		stylesView.keystrokes = new KeystrokeHandler();
+
+		stylesView.render();
+
+		stylesView.keystrokes.listenTo( stylesView.element );
 
 		return stylesView;
 	}

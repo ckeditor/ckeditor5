@@ -27,7 +27,7 @@ The webpack is also already configured, so you can just use the `npm run build` 
 	Our starter files come with the {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 Inspector} attached to the editor, so you can easily debug and observe what is happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
-If you want to set up the project yourself, you should follow the steps listed in the {@link framework/guides/quick-start the "Quick start" section}. Additionally, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the {@link module:core/plugin~Plugin} class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
+If you want to set up the project yourself, you should follow the steps listed in the {@link framework/guides/quick-start the "Quick start" section}. Additionally, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the `Plugin` class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
 
 Your entry point to the plugin is `app.js`:
 
@@ -204,7 +204,7 @@ We can do it by defining the model's schema. Thanks to a couple lines of code, w
 	Schema defines what is allowed in the model in terms of structures, attributes, and other characteristics. This information is then used by the features and the engine to make decisions on how to process the model, so it is crucial that your custom plugins have a well-defined schema. Read more about it in our {@link framework/guides/architecture/editing-engine#schema introduction to the editing engine architecture}.
 </info-box>
 
-We will just extend the text node's schema to accept our abbreviation attribute, using the {@link module:engine/model/schema~Schema#extend `Schema#extend()`} method.
+We will just extend the text node's schema to accept our abbreviation attribute, using the `schema.extend()` method.
 
 Update the `AbbreviationEditing` plugin with this definition:
 
@@ -245,7 +245,7 @@ Converting the full title of the abbreviation is a little bit tricky, because we
 
 In the downcast conversion, we will use one of our conversion helpers &ndash; {@link framework/guides/deep-dive/conversion/helpers/downcast#attribute-to-element-conversion-helper `attributeToElement()`} &ndash; to transform the model abbreviation attribute into the view `<abbr>` element.
 
-We will need to use a callback function, in order to get the title stored as a model attribute value and transform it into the title value of the view element. Here, the second parameter of the view callback is the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `DowncastConversionApi`} object. We will use its `writer` property, which will allow us to manipulate the data during downcast conversion, as it contains an instance of the {@link module:engine/view/downcastwriter~DowncastWriter `DowncastWriter`}.
+We will need to use a callback function, in order to get the title stored as a model attribute value and transform it into the title value of the view element. Here, the second parameter of the view callback is the `DowncastConversionApi` object. We will use its `writer` property, which will allow us to manipulate the data during downcast conversion, as it contains an instance of the `DowncastWriter`.
 
 ```js
 // abbreviation/abbreviationediting.js
@@ -287,7 +287,7 @@ export default class AbbreviationEditing extends Plugin {
 
 The upcast conversion tells the editor how the view `<abbr>` element is supposed to look like in the model. We will transform it using another conversion helper &ndash; {@link framework/guides/deep-dive/conversion/helpers/upcast#element-to-attribute-conversion-helper `elementToAttribute()`}.
 
-We also need to grab the title value from the content and use it in the model. We can do that thanks to a callback function, which gives us the access to the {@link module:engine/view/element~Element view element}.
+We also need to grab the title value from the content and use it in the model. We can do that thanks to a callback function, which gives us the access to the view element.
 
 ```js
 // abbreviation/abbreviationediting.js
@@ -338,7 +338,7 @@ Thanks to the upcast conversion, our abbreviation added in the `index.html` shou
 
 Now we can create our `Abbreviation` toolbar button using the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class.
 
-We need to register it in the editor's UI {@link module:ui/componentfactory~ComponentFactory `componentFactory`}, so it can be displayed in the toolbar.
+We need to register it in the editor's UI `componentFactory`, so it can be displayed in the toolbar.
 
 ```js
 // abbreviation/abbreviationui.js
@@ -396,7 +396,7 @@ ClassicEditor
 
 We have the button, so let's define what should happen after the user clicks it.
 
-We will use the {@link module:engine/model/model~Model#insertContent `insertContent()`} method to insert our abbreviation and its title attribute into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~Writer#createText `writer.createText()`}.
+We will use the `insertContent()` method to insert our abbreviation and its title attribute into the document. Inside, we just need to create a new text node with `writer.createText()`.
 
 ```js
 // abbreviation/abbreviationui.js
