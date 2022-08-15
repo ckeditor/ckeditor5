@@ -159,6 +159,16 @@ describe( 'InsertTableView', () => {
 
 				sinon.assert.notCalled( spy );
 			} );
+
+			it( 'should update columns and rows (focus the first tile) when the focus is moved to the view', () => {
+				view.focusTracker.focusedElement = null;
+
+				const spy = sinon.spy( view, 'set' );
+
+				view.focusTracker.focusedElement = view.items.first.element;
+
+				sinon.assert.calledWithExactly( spy, { rows: 1, columns: 1 } );
+			} );
 		} );
 	} );
 } );
