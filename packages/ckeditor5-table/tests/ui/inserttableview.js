@@ -132,21 +132,40 @@ describe( 'InsertTableView', () => {
 					sinon.assert.notCalled( spy );
 				} );
 
-				it( 'on arrowright, moves focus to the next tile', () => {
-					const keyEvtData = {
-						keyCode: keyCodes.arrowright,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
-					};
+				describe( 'keyboard navigation in the insert table grid', () => {
+					it( '"arrow right" should focus the next focusable tile', () => {
+						const keyEvtData = {
+							keyCode: keyCodes.arrowright,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
 
-					view.focusTracker.focusedElement = view.items.first.element;
+						view.focusTracker.focusedElement = view.items.first.element;
 
-					const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+						const spy = sinon.spy( view.items.get( 1 ), 'focus' );
 
-					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+						view.keystrokes.press( keyEvtData );
+						sinon.assert.calledOnce( keyEvtData.preventDefault );
+						sinon.assert.calledOnce( keyEvtData.stopPropagation );
+						sinon.assert.calledOnce( spy );
+					} );
+
+					it( '"arrow down" should focus the focusable tile in the second row', () => {
+						const keyEvtData = {
+							keyCode: keyCodes.arrowdown,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						view.focusTracker.focusedElement = view.items.first.element;
+
+						const spy = sinon.spy( view.items.get( 10 ), 'focus' );
+
+						view.keystrokes.press( keyEvtData );
+						sinon.assert.calledOnce( keyEvtData.preventDefault );
+						sinon.assert.calledOnce( keyEvtData.stopPropagation );
+						sinon.assert.calledOnce( spy );
+					} );
 				} );
 			} );
 
