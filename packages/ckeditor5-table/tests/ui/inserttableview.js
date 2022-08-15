@@ -150,20 +150,13 @@ describe( 'InsertTableView', () => {
 				} );
 			} );
 
-			it( 'focusTracker does nothing if nothing is focused', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.arrowright,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
-
+			it( 'does not update columns and rows when the focus is moved out of view', () => {
 				view.focusTracker.focusedElement = view.items.first.element;
 
 				const spy = sinon.spy( view, 'set' );
 
 				view.focusTracker.focusedElement = null;
 
-				view.keystrokes.press( keyEvtData );
 				sinon.assert.notCalled( spy );
 			} );
 		} );
