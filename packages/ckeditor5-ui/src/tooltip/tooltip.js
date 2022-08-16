@@ -83,6 +83,8 @@ export default class Tooltip extends Plugin {
 
 		this._domEmitter.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
 		this._domEmitter.listenTo( global.document, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );
+
+		this._domEmitter.listenTo( global.document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
 	}
 
 	destroy() {
@@ -155,7 +157,7 @@ export default class Tooltip extends Plugin {
 
 			// Unpin when the mouse was leaving element with a tooltip to a place which does not have or has a different tooltip.
 			// Note that this should happen whether the tooltip is already visible or not, for instance, it could be invisible but queued
-			// (debounced).
+			// (debounced): it should get canceled.
 			if ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) {
 				this._unpinTooltip();
 			}
@@ -169,8 +171,33 @@ export default class Tooltip extends Plugin {
 				return;
 			}
 
+			// Note that unpinning should happen whether the tooltip is already visible or not, for instance, it could be invisible but
+			// queued (debounced): it should get canceled (e.g. quick focus then quick blur using the keyboard).
 			this._unpinTooltip();
 		}
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {*} evt
+	 * @param {*} domEvt
+	 * @returns
+	 */
+	_onScroll( evt, { target } ) {
+		// No tooltip, no reason to react on scroll.
+		if ( !this._currentElementWithTooltip ) {
+			return;
+		}
+
+		// When scrolling a container that has both the balloon and the current element (common ancestor), the balloon can remain
+		// visible (e.g. scrolling ≤body>). Otherwise, to avoid glitches (clipping, lagging) better just hide the tooltip.
+		// Also, don't do anything when scrolling an unrelated DOM element that has nothing to do with the current element and the balloon.
+		if ( target.contains( this._balloon.element ) && target.contains( this._currentElementWithTooltip ) ) {
+			return;
+		}
+
+		this._unpinTooltip();
 	}
 
 	/**
