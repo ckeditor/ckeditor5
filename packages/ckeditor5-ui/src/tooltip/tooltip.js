@@ -68,6 +68,11 @@ export default class Tooltip extends Plugin {
 		 */
 		this._currentElementWithTooltip = null;
 
+		/**
+		 * TODO
+		 */
+		this._currentTooltipPosition = null;
+
 		this._domEmitter.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 		this._domEmitter.listenTo( global.document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
@@ -139,7 +144,13 @@ export default class Tooltip extends Plugin {
 			positions: Tooltip._getPositioningFunctions( position )
 		} );
 
+		// Start responding to changes in editor UI or content layout. For instance, when collaborators change content
+		// and a contextual toolbar attached to a content starts to move (and so should move the tooltip).
+		// Note: Using low priority to let other listeners that position contextual toolbars etc. to react first.
+		this.listenTo( this.editor.ui, 'update', this._updateTooltipPosition.bind( this ), { priority: 'low' } );
+
 		this._currentElementWithTooltip = targetDomElement;
+		this._currentTooltipPosition = position;
 	}
 
 	/**
@@ -147,7 +158,29 @@ export default class Tooltip extends Plugin {
 	 */
 	_unpinTooltip() {
 		this._balloon.unpin();
+
+		this.stopListening( this.editor.ui, 'update' );
+
 		this._currentElementWithTooltip = null;
+		this._currentTooltipPosition = null;
+	}
+
+	/**
+	 * TODO
+	 */
+	_updateTooltipPosition() {
+		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
+		// disappeared (e.g. removed an image).
+		if ( !this._currentElementWithTooltip ) {
+			this._unpinTooltip();
+
+			return;
+		}
+
+		this._balloon.pin( {
+			target: this._currentElementWithTooltip,
+			positions: Tooltip._getPositioningFunctions( this._currentTooltipPosition )
+		} );
 	}
 
 	/**
