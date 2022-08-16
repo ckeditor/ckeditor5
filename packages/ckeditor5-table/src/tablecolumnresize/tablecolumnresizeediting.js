@@ -351,6 +351,9 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this._domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
 		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
+		this._domEmitter.listenTo( global.window.document, 'drop', () => {
+			this._onMouseDrop( editingView );
+		}, { useCapture: true } );
 	}
 
 	/**
@@ -641,6 +644,19 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this._isResizingActive = false;
 		this._resizingData = null;
+	}
+
+	/**
+	 * Handles the `drop` event.
+	 *
+	 * @private
+	 * @param {module:ui/view~View} view
+	 */
+	_onMouseDrop( view ) {
+		// eslint-disable-next-line no-unused-vars
+		for ( const root of view.domRoots.values() ) {
+			this._isResizingAllowed = true;
+		}
 	}
 
 	/**
