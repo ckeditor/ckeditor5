@@ -260,7 +260,7 @@ export default class Tooltip extends Plugin {
 
 Tooltip.defaultPositions = generatePositions( {
 	verticalOffset: 5,
-	horizontalOffset: 18
+	horizontalOffset: 12
 } );
 
 function getDescendantWithTooltip( element ) {
