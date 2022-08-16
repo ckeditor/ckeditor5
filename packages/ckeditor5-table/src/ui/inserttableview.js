@@ -9,7 +9,7 @@
 
 import { View, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
 
-import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
+import { KeystrokeHandler, FocusTracker, uid } from 'ckeditor5/src/utils';
 
 import './../../theme/inserttable.css';
 
@@ -29,6 +29,16 @@ export default class InsertTableView extends View {
 		super( locale );
 
 		const bind = this.bindTemplate;
+
+		/**
+		 * A unique id of a label element displaying the current geometry of the table.
+		 * Used by every {@link #items item} of the view as a pointer to an accessible label.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {String}
+		 */
+		this._geometryLabelId = `ck-editor__label_${ uid() }`;
 
 		/**
 		 * A collection of table size box items.
@@ -93,7 +103,11 @@ export default class InsertTableView extends View {
 				{
 					tag: 'div',
 					attributes: {
-						class: [ 'ck-insert-table-dropdown__label' ]
+						id: this._geometryLabelId,
+						class: [
+							'ck',
+							'ck-insert-table-dropdown__label'
+						]
 					},
 					children: [
 						{
@@ -221,7 +235,7 @@ export default class InsertTableView extends View {
 			const row = Math.floor( index / 10 );
 			const column = index % 10;
 
-			boxes.push( new TableSizeGridBoxView( this.locale, row + 1, column + 1 ) );
+			boxes.push( new TableSizeGridBoxView( this.locale, row + 1, column + 1, this._geometryLabelId ) );
 		}
 
 		return this.createCollection( boxes );
@@ -245,7 +259,7 @@ class TableSizeGridBoxView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale, row, column ) {
+	constructor( locale, row, column, ariaLabelledById ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -262,12 +276,14 @@ class TableSizeGridBoxView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
+					'ck',
 					'ck-insert-table-dropdown-grid-box',
 					bind.if( 'isOn', 'ck-on' )
 				],
 				'data-row': row,
 				'data-column': column,
-				'tabindex': -1
+				'tabindex': -1,
+				'aria-labelledby': ariaLabelledById
 			}
 		} );
 	}

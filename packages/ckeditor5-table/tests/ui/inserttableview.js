@@ -52,9 +52,33 @@ describe( 'InsertTableView', () => {
 			expect( view.element.children[ 1 ].classList.contains( 'ck-insert-table-dropdown__label' ) ).to.be.true;
 		} );
 
-		it( 'creates view#items collection', () => {
-			expect( view.items ).to.be.instanceOf( ViewCollection );
-			expect( view.items ).to.have.length( 100 );
+		describe( 'view#items collection', () => {
+			it( 'should be created', () => {
+				expect( view.items ).to.be.instanceOf( ViewCollection );
+				expect( view.items ).to.have.length( 100 );
+			} );
+
+			it( 'should create items from template', () => {
+				expect( Array.from( view.items ).every(
+					item => item.element.classList.contains( 'ck' )
+				), 'ck class' ).to.be.true;
+
+				expect( Array.from( view.items ).every(
+					item => item.element.classList.contains( 'ck-insert-table-dropdown-grid-box' )
+				), 'grid box class' ).to.be.true;
+
+				expect( Array.from( view.items ).every(
+					item => item.element.getAttribute( 'tabindex' ) === '-1'
+				), 'tabindex' ).to.be.true;
+			} );
+
+			it( 'should give every item an accessible label', () => {
+				const labelId = view.element.children[ 1 ].id;
+
+				expect( Array.from( view.items ).every(
+					item => item.element.getAttribute( 'aria-labelledby' ) === labelId
+				), 'aria attribute' ).to.be.true;
+			} );
 		} );
 
 		it( 'should not throw error for DropdownPanelFocusable interface methods', () => {
