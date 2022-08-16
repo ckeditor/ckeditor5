@@ -125,6 +125,14 @@ export default class TableColumnResizeEditing extends Plugin {
 				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot() );
 			} );
 		} );
+
+		/**
+		 * Indicating the current state of drag.
+		 *
+		 * @private
+		 * @member {String}
+		 */
+		this._draggingState = 'notdragging';
 	}
 
 	/**
@@ -349,10 +357,27 @@ export default class TableColumnResizeEditing extends Plugin {
 		editingView.addObserver( MouseEventsObserver );
 		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
 
-		this._domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
+		this._domEmitter.listenTo(
+			global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ), { useCapture: true }
+		);
+		this._domEmitter.listenTo(
+			global.window.document, 'mousemove', ( evt, domEventData ) => {
+				if ( this._isResizingActive ) {
+					domEventData.stopPropagation();
+				}
+			}, { priority: 'low', useCapture: true }
+		);
+
 		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
+
+		this._domEmitter.listenTo( global.window.document, 'dragleave', this._onDragLeaveHandler.bind( this ) );
 		this._domEmitter.listenTo( global.window.document, 'drop', () => {
-			this._onMouseDrop( editingView );
+			this._draggingState = 'afterdragging';
+			// this._onMouseDrop( editingView );
+		}, { useCapture: true } );
+
+		this._domEmitter.listenTo( global.window.document, 'dragstart', () => {
+			this._draggingState = 'dragginactive';
 		}, { useCapture: true } );
 	}
 
@@ -660,6 +685,19 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
+	 * Fires the `_onMouseUpHandler` when 'dragleave' event was fired.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo An object containing information about the fired event.
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData The data related to the DOM event.
+	 */
+	_onDragLeaveHandler( eventInfo, domEvent ) {
+		if ( domEvent.buttons === 0 ) {
+			this._onMouseUpHandler( eventInfo, domEvent );
+		}
+	}
+
+	/**
 	 * Retrieves and returns required data needed for the resizing process.
 	 *
 	 * @private
@@ -761,6 +799,11 @@ export default class TableColumnResizeEditing extends Plugin {
 				view.change( viewWriter => {
 					ensureColumnResizerElement( viewWriter, item.item );
 				} );
+			}
+
+			if ( this._draggingState === 'afterdragging' ) {
+				this._isResizingAllowed = true;
+				this._draggingState = 'notdragging';
 			}
 		}, { priority: 'lowest' } );
 	}
