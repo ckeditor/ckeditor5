@@ -176,7 +176,7 @@ export default class Tooltip extends Plugin {
 }
 
 Tooltip.defaultPositions = generatePositions( {
-	verticalOffset: 6,
+	verticalOffset: 5,
 	horizontalOffset: 18
 } );
 

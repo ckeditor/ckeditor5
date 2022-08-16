@@ -7,8 +7,8 @@
 
 .ck.ck-balloon-panel.ck-tooltip {
 	--ck-balloon-arrow-offset: 0px;
-	--ck-balloon-arrow-half-width: 6px;
-	--ck-balloon-arrow-height: 6px;
+	--ck-balloon-arrow-half-width: 4px;
+	--ck-balloon-arrow-height: 4px;
 	--ck-color-panel-background: var(--ck-color-tooltip-background);
 
 	padding: 0 var(--ck-spacing-medium);
