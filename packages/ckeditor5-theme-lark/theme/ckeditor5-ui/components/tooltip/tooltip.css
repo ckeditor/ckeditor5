@@ -31,7 +31,7 @@
 	opacity: 0;
 
 	&.ck-tooltip_animating {
-		animation: show 0s .4s ease-in-out forwards;
+		animation: show 0s .6s ease-in-out forwards;
 	}
 }
 
