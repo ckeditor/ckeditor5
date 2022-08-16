@@ -222,7 +222,10 @@ export default class SplitButtonView extends View {
 
 		arrowView.extendTemplate( {
 			attributes: {
-				class: 'ck-splitbutton__arrow',
+				class: [
+					'ck-splitbutton__arrow',
+					bind.to( 'isOn', isOn => isOn ? 'ck-tooltip_hidden' : '' )
+				],
 				'aria-haspopup': true,
 				'aria-expanded': bind.to( 'isOn', value => String( value ) )
 			}
