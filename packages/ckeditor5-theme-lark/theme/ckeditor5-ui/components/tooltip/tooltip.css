@@ -23,20 +23,8 @@
 	border: 0;
 	box-shadow: none;
 
+	/* Hide the default shadow of the .ck-balloon-panel tip */
 	&::before {
 		display: none;
-	}
-
-	/* Animation and show delay */
-	opacity: 0;
-
-	&.ck-tooltip_animating {
-		animation: show 0s .6s ease-in-out forwards;
-	}
-}
-
-@keyframes show {
-	100% {
-		opacity: 1;
 	}
 }

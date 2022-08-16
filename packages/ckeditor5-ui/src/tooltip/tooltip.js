@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { isElement } from 'lodash-es';
+import { isElement, debounce } from 'lodash-es';
 import BalloonPanelView, { generatePositions } from '../panel/balloon/balloonpanelview';
 import View from '../view';
 
@@ -73,6 +73,11 @@ export default class Tooltip extends Plugin {
 		 */
 		this._currentTooltipPosition = null;
 
+		/**
+		 * TODO
+		 */
+		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
+
 		this._domEmitter.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 		this._domEmitter.listenTo( global.document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
@@ -93,18 +98,31 @@ export default class Tooltip extends Plugin {
 	 * @returns
 	 */
 	_onEnterOrFocus( evt, { target } ) {
+		// console.log( `[Tooltip] %c${ evt.name } %c${ logElement( target ) }`, 'color:green', 'color:black' );
+
 		const elementWithTooltipAttribute = getDescendantWithTooltip( target );
 
 		// Abort when there's no descendant needing tooltip.
+		if ( !elementWithTooltipAttribute ) {
+			// console.log( '[Tooltip] No element to display the tooltip, aborting' );
+
+			return;
+		}
+
 		// Abort when for instance a tooltip is displayed for a focused element, then the same element is mouseentered
 		// (avoids flashing).
-		if ( !elementWithTooltipAttribute || elementWithTooltipAttribute === this._currentElementWithTooltip ) {
+		if ( elementWithTooltipAttribute === this._currentElementWithTooltip ) {
+			// console.log( '[Tooltip] Don\'t display the tooltip for the same element. Aborting.', elementWithTooltipAttribute );
+
 			return;
 		}
 
 		const tooltipData = getTooltipData( elementWithTooltipAttribute );
 
-		this._pinTooltip( elementWithTooltipAttribute, tooltipData );
+		this._unpinTooltip();
+
+		// console.log( '%c[Tooltip] Queueing tooltip pinning...', 'font-weight: bold', tooltipData );
+		this._pinTooltipDebounced( elementWithTooltipAttribute, tooltipData );
 	}
 
 	/**
@@ -114,12 +132,45 @@ export default class Tooltip extends Plugin {
 	 * @param {*} domEvt
 	 * @returns
 	 */
-	_onLeaveOrBlur( evt, { target } ) {
-		if ( !isElement( target ) || !this._currentElementWithTooltip || target !== this._currentElementWithTooltip ) {
-			return;
-		}
+	_onLeaveOrBlur( evt, { target, relatedTarget } ) {
+		// console.log( `[Tooltip] %c${ evt.name } %c${ logElement( target ) }`, 'color:blue', 'color:black' );
 
-		this._unpinTooltip();
+		if ( evt.name === 'mouseleave' ) {
+			// Don't act when the event does not concern a DOM element (e.g. a mouseleave out of an entire document),
+			if ( !isElement( target ) ) {
+				return;
+			}
+
+			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
+			// For instance, a random mouseleave far away in the page should not unpin the tooltip that was pinned because
+			// of a previous focus.
+			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
+				// console.log( '[Tooltip] Dont unpin. Event target is not the same as the current element.', { target } );
+
+				return;
+			}
+
+			const descendantWithTooltip = getDescendantWithTooltip( target );
+			const relatedDescendantWithTooltip = getDescendantWithTooltip( relatedTarget );
+
+			// Unpin when the mouse was leaving element with a tooltip to a place which does not have or has a different tooltip.
+			// Note that this should happen whether the tooltip is already visible or not, for instance, it could be invisible but queued
+			// (debounced).
+			if ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) {
+				this._unpinTooltip();
+			}
+		}
+		else {
+			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
+			// For instance, a random blur in the web page should not unpin the tooltip that was pinned because of a previous mouseenter.
+			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
+				// console.log( '[Tooltip] Dont unpin. Event target is not the same as the current element.', { target } );
+
+				return;
+			}
+
+			this._unpinTooltip();
+		}
 	}
 
 	/**
@@ -129,15 +180,9 @@ export default class Tooltip extends Plugin {
 	 * @param {*} TODO
 	 */
 	_pinTooltip( targetDomElement, { text, position } ) {
+		// console.log( `%c[Tooltip] Pinning the tooltip after a delay, 'font-weight: bold', "${ text }"`, targetDomElement );
+
 		this._tooltipTextView.text = text;
-
-		// This followed by RAF is meant to restart animation. Without it, moving fast between elements with tooltip
-		// would display them immediately without an animation.
-		this._balloon.class = 'ck-tooltip';
-
-		global.window.requestAnimationFrame( () => {
-			this._balloon.class = 'ck-tooltip ck-tooltip_animating';
-		} );
 
 		this._balloon.pin( {
 			target: targetDomElement,
@@ -157,6 +202,11 @@ export default class Tooltip extends Plugin {
 	 * TODO
 	 */
 	_unpinTooltip() {
+		// console.log( '%c[Tooltip] Canceling queued tooltip pinning...', 'font-weight: bold' );
+		this._pinTooltipDebounced.cancel();
+
+		// console.log( '[Tooltip] Unpinning the tooltip' );
+
 		this._balloon.unpin();
 
 		this.stopListening( this.editor.ui, 'update' );
@@ -227,3 +277,11 @@ function getTooltipData( element ) {
 		position: element.dataset.ckeTooltipPosition || 's'
 	};
 }
+
+// function logElement( element ) {
+// 	if ( isElement( element ) ) {
+// 		return `${ element.tagName }.${ Array.from( element.classList ).join( '.' ) }`;
+// 	} else {
+// 		return 'Not a DOM element';
+// 	}
+// }
