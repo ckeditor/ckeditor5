@@ -441,7 +441,7 @@ describe( 'TableColumnResize utils', () => {
 	} );
 
 	describe( 'getColumnIndex()', () => {
-		let editor;
+		let editor, tableUtils;
 
 		beforeEach( () => {
 			return ClassicEditor
@@ -450,6 +450,7 @@ describe( 'TableColumnResize utils', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
+					tableUtils = editor.plugins.get( 'TableUtils' );
 				} );
 		} );
 
@@ -468,13 +469,13 @@ describe( 'TableColumnResize utils', () => {
 			const cell00 = [ ...row0.getChildren() ][ 0 ];
 
 			expect(
-				getColumnEdgesIndexes( cell00, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell00, tableUtils )
 			).to.deep.equal( { leftEdge: 0, rightEdge: 0 } );
 
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnEdgesIndexes( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, tableUtils )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 1 } );
 		} );
 
@@ -489,7 +490,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnEdgesIndexes( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, tableUtils )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 2 } );
 		} );
 
@@ -504,7 +505,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnEdgesIndexes( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, tableUtils )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 3 } );
 		} );
 
@@ -519,7 +520,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell02 = [ ...row0.getChildren() ][ 2 ];
 
 			expect(
-				getColumnEdgesIndexes( cell02, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell02, tableUtils )
 			).to.deep.equal( { leftEdge: 2, rightEdge: 5 } );
 		} );
 	} );
@@ -690,8 +691,4 @@ function attribute( model, range, key, oldValue, newValue ) {
 	const operation = new AttributeOperation( range, key, oldValue, newValue, doc.version );
 
 	model.applyOperation( operation );
-}
-
-function getColumnIndexMap( editor ) {
-	return editor.plugins.get( 'TableColumnResizeEditing' )._columnIndexMap;
 }
