@@ -89,29 +89,39 @@ describe( 'TableUI', () => {
 			sinon.assert.calledWithExactly( executeSpy, 'insertTable', { rows: 2, columns: 7 } );
 		} );
 
-		it( 'should reset rows & columns on dropdown open', () => {
-			insertTable.isOpen = true;
-
-			const tableSizeView = insertTable.panelView.children.first;
-
-			expect( tableSizeView.rows ).to.equal( 0 );
-			expect( tableSizeView.columns ).to.equal( 0 );
-
-			tableSizeView.rows = 2;
-			tableSizeView.columns = 2;
-
-			insertTable.buttonView.fire( 'open' );
-
-			expect( tableSizeView.rows ).to.equal( 0 );
-			expect( tableSizeView.columns ).to.equal( 0 );
-		} );
-
-		it( 'is not fully initialized when not open', () => {
+		it( 'is not fully initialized until open', () => {
 			const dropdown = editor.ui.componentFactory.create( 'insertTable' );
 
 			for ( const childView of dropdown.panelView.children ) {
 				expect( childView ).not.to.be.instanceOf( InsertTableView );
 			}
+		} );
+
+		describe( 'on open', () => {
+			let insertTable;
+
+			beforeEach( () => {
+				insertTable = editor.ui.componentFactory.create( 'insertTable' );
+
+				insertTable.isOpen = true; // Dropdown is lazy loaded (#6193).
+				insertTable.isOpen = false;
+
+				insertTable.render();
+				document.body.appendChild( insertTable.element );
+			} );
+
+			afterEach( () => {
+				insertTable.element.remove();
+				insertTable.destroy();
+			} );
+
+			it( 'should focus the first tile in the grid', () => {
+				const spy = sinon.spy( insertTable.panelView.children.first.items.first, 'focus' );
+
+				insertTable.buttonView.fire( 'open' );
+
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 

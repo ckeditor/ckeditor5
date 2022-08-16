@@ -10,6 +10,7 @@
 export { default as clickOutsideHandler } from './bindings/clickoutsidehandler';
 export { default as injectCssTransitionDisabler } from './bindings/injectcsstransitiondisabler';
 export { default as submitHandler } from './bindings/submithandler';
+export { default as addKeyboardHandlingForGrid } from './bindings/addkeyboardhandlingforgrid';
 
 export { default as BodyCollection } from './editorui/bodycollection';
 
