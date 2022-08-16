@@ -138,7 +138,7 @@ describe( 'InsertTableView', () => {
 			} );
 
 			describe( 'keydown', () => {
-				it( 'on Enter, executes the command', () => {
+				it( 'should execute the command on Enter', () => {
 					const spy = sinon.spy();
 
 					view.on( 'execute', spy );
@@ -147,7 +147,7 @@ describe( 'InsertTableView', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 
-				it( 'on other key, does not execute command', () => {
+				it( 'should not execute the command on other keys', () => {
 					const spy = sinon.spy();
 
 					view.on( 'execute', spy );
@@ -155,62 +155,72 @@ describe( 'InsertTableView', () => {
 
 					sinon.assert.notCalled( spy );
 				} );
+			} );
 
-				describe( 'keyboard navigation in the insert table grid', () => {
-					it( '"arrow right" should focus the next focusable tile', () => {
-						const keyEvtData = {
-							keyCode: keyCodes.arrowright,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						};
+			describe( 'focus', () => {
+				it( 'should not update #columns and #rows when the focus is moved out of view', () => {
+					view.focusTracker.focusedElement = view.items.first.element;
 
-						view.focusTracker.focusedElement = view.items.first.element;
+					expect( view.columns ).to.equal( 1 );
+					expect( view.rows ).to.equal( 1 );
 
-						const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+					view.focusTracker.focusedElement = null;
 
-						view.keystrokes.press( keyEvtData );
-						sinon.assert.calledOnce( keyEvtData.preventDefault );
-						sinon.assert.calledOnce( keyEvtData.stopPropagation );
-						sinon.assert.calledOnce( spy );
-					} );
+					expect( view.columns ).to.equal( 1 );
+					expect( view.rows ).to.equal( 1 );
+				} );
 
-					it( '"arrow down" should focus the focusable tile in the second row', () => {
-						const keyEvtData = {
-							keyCode: keyCodes.arrowdown,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						};
+				it( 'should update #columns and #rows (focus the first tile) when the focus is moved to the view', () => {
+					view.focusTracker.focusedElement = null;
 
-						view.focusTracker.focusedElement = view.items.first.element;
+					view.focusTracker.focusedElement = view.items.first.element;
 
-						const spy = sinon.spy( view.items.get( 10 ), 'focus' );
+					expect( view.columns ).to.equal( 1 );
+					expect( view.rows ).to.equal( 1 );
 
-						view.keystrokes.press( keyEvtData );
-						sinon.assert.calledOnce( keyEvtData.preventDefault );
-						sinon.assert.calledOnce( keyEvtData.stopPropagation );
-						sinon.assert.calledOnce( spy );
-					} );
+					view.focusTracker.focusedElement = view.items.get( 24 ).element;
+
+					expect( view.columns ).to.equal( 5 );
+					expect( view.rows ).to.equal( 3 );
 				} );
 			} );
+		} );
+	} );
 
-			it( 'does not update columns and rows when the focus is moved out of view', () => {
+	describe( 'render()', () => {
+		describe( 'keyboard navigation in the insert table grid', () => {
+			it( '"arrow right" should focus the next focusable tile', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowright,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
 				view.focusTracker.focusedElement = view.items.first.element;
 
-				const spy = sinon.spy( view, 'set' );
+				const spy = sinon.spy( view.items.get( 1 ), 'focus' );
 
-				view.focusTracker.focusedElement = null;
-
-				sinon.assert.notCalled( spy );
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'should update columns and rows (focus the first tile) when the focus is moved to the view', () => {
-				view.focusTracker.focusedElement = null;
-
-				const spy = sinon.spy( view, 'set' );
+			it( '"arrow down" should focus the focusable tile in the second row', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowdown,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
 
 				view.focusTracker.focusedElement = view.items.first.element;
 
-				sinon.assert.calledWithExactly( spy, { rows: 1, columns: 1 } );
+				const spy = sinon.spy( view.items.get( 10 ), 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
 			} );
 		} );
 	} );

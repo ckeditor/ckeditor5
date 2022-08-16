@@ -135,22 +135,21 @@ export default class InsertTableView extends View {
 			}
 		} );
 
+		// #rows and #columns are set via changes to #focusTracker on mouse over.
 		this.on( 'boxover', ( evt, domEvt ) => {
-			domEvt.target.focus();
+			const { row, column } = domEvt.target.dataset;
+
+			this.items.get( ( row - 1 ) * 10 + ( column - 1 ) ).focus();
 		} );
 
-		this.on( 'change:columns', () => {
-			this._highlightGridBoxes();
-		} );
-
-		this.on( 'change:rows', () => {
-			this._highlightGridBoxes();
-		} );
-
+		// This allows the #rows and #columns to be updated when:
+		// * the user navigates the grid using the keyboard,
+		// * the user moves the mouse over grid items.
 		this.focusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
 			if ( !focusedElement ) {
 				return;
 			}
+
 			const { row, column } = focusedElement.dataset;
 
 			// As row & column indexes are zero-based transform it to number of selected rows & columns.
@@ -159,6 +158,9 @@ export default class InsertTableView extends View {
 				columns: parseInt( column )
 			} );
 		} );
+
+		this.on( 'change:columns', () => this._highlightGridBoxes() );
+		this.on( 'change:rows', () => this._highlightGridBoxes() );
 	}
 
 	render() {
@@ -189,17 +191,7 @@ export default class InsertTableView extends View {
 	 * @inheritDoc
 	 */
 	focusLast() {
-		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
-		// The method should be implemented while working on keyboard support for this view. See #22.
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		super.destroy();
-
-		this.keystrokes.destroy();
+		this.items.get( 0 ).focus();
 	}
 
 	/**
@@ -288,6 +280,9 @@ class TableSizeGridBoxView extends View {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	focus() {
 		this.element.focus();
 	}

@@ -89,7 +89,7 @@ describe( 'TableUI', () => {
 			sinon.assert.calledWithExactly( executeSpy, 'insertTable', { rows: 2, columns: 7 } );
 		} );
 
-		it( 'is not fully initialized when not open', () => {
+		it( 'is not fully initialized until open', () => {
 			const dropdown = editor.ui.componentFactory.create( 'insertTable' );
 
 			for ( const childView of dropdown.panelView.children ) {
