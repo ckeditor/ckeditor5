@@ -797,6 +797,18 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
 				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( false );
 			} );
+
+			it( 'if "mousedown" event was fired', () => {
+				setModelData( model, modelTable( [
+					[ '[foo]' ]
+				], { columnWidths: '100%' } ) );
+
+				const td = view.getDomRoot().querySelector( 'td' );
+
+				td.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+
+				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( false );
+			} );
 		} );
 
 		describe( 'should change value to "true"', () => {
@@ -854,6 +866,19 @@ describe( 'TableColumnResizeEditing', () => {
 
 				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
 				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( true );
+			} );
+
+			it( 'if "mouseup" event was fired', () => {
+				setModelData( model, modelTable( [
+					[ '[foo]' ]
+				], { columnWidths: '100%' } ) );
+
+				const td = view.getDomRoot().querySelector( 'td' );
+
+				td.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+				td.dispatchEvent( new MouseEvent( 'mouseup', { bubbles: true } ) );
+
+				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( true );
 			} );
 		} );
 
