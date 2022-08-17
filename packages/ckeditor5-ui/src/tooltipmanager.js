@@ -4,52 +4,49 @@
  */
 
 /**
- * @module ui/tooltip/tooltip
+ * @module ui/tooltipmanager
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { isElement, debounce } from 'lodash-es';
-import BalloonPanelView, { generatePositions } from '../panel/balloon/balloonpanelview';
-import View from '../view';
+import View from './view';
+import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview';
 
-import '../../theme/components/tooltip/tooltip.css';
+import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import { global, isVisible, mix } from '@ckeditor/ckeditor5-utils';
+import { isElement, debounce } from 'lodash-es';
+
+import '../theme/components/tooltip/tooltip.css';
 
 /**
  * TODO
  *
  * @extends module:core/plugin~Plugin
  */
-export default class Tooltip extends Plugin {
+export default class TooltipManager {
 	/**
-	 * @inheritDoc
-	 */
-	static get pluginName() {
-		return 'Tooltip';
-	}
-
-	/**
-	 * @inheritDoc
+	 * TODO
 	 */
 	constructor( editor ) {
-		super( editor );
+		/**
+		 * TODO
+		 */
+		this.editor = editor;
 
 		/**
 		 * TODO
 		 */
-		this._domEmitter = Object.create( DomEmitterMixin );
-
-		/**
-		 * TODO
-		 */
-		this._tooltipTextView = new View( this.editor.locale );
-		this._tooltipTextView.set( 'text', '' );
-		this._tooltipTextView.setTemplate( {
+		this.tooltipTextView = new View( this.editor.locale );
+		this.tooltipTextView.set( 'text', '' );
+		this.tooltipTextView.setTemplate( {
 			tag: 'span',
+			attributes: {
+				class: [
+					'ck',
+					'ck-tooltip__text'
+				]
+			},
 			children: [
 				{
-					text: this._tooltipTextView.bindTemplate.to( 'text' )
+					text: this.tooltipTextView.bindTemplate.to( 'text' )
 				}
 			]
 		} );
@@ -57,11 +54,9 @@ export default class Tooltip extends Plugin {
 		/**
 		 * TODO
 		 */
-		this._balloon = new BalloonPanelView( this.editor.locale );
-		this._balloon.class = 'ck-tooltip';
-		this._balloon.content.add( this._tooltipTextView );
-
-		editor.ui.view.body.add( this._balloon );
+		this.balloonPanelView = new BalloonPanelView( this.editor.locale );
+		this.balloonPanelView.class = 'ck-tooltip';
+		this.balloonPanelView.content.add( this.tooltipTextView );
 
 		/**
 		 * TODO
@@ -78,18 +73,18 @@ export default class Tooltip extends Plugin {
 		 */
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
 
-		this._domEmitter.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
-		this._domEmitter.listenTo( global.document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
+		this.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
+		this.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
-		this._domEmitter.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
-		this._domEmitter.listenTo( global.document, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );
+		this.listenTo( global.document, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );
+		this.listenTo( global.document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
-		this._domEmitter.listenTo( global.document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
+		this.listenTo( global.document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
 	}
 
 	destroy() {
-		this._balloon.destroy();
-		this._domEmitter.stopListening();
+		this.balloonPanelView.destroy();
+		this.stopListening();
 	}
 
 	/**
@@ -111,20 +106,19 @@ export default class Tooltip extends Plugin {
 			return;
 		}
 
-		// Abort when for instance a tooltip is displayed for a focused element, then the same element is mouseentered
-		// (avoids flashing).
+		// Abort to avoid flashing when, for instance:
+		// * a tooltip is displayed for a focused element, then the same element gets mouseentered,
+		// * a tooltip is displayed for an element via mouseenter, then the focus moves to the same element.
 		if ( elementWithTooltipAttribute === this._currentElementWithTooltip ) {
 			// console.log( '[Tooltip] Don\'t display the tooltip for the same element. Aborting.', elementWithTooltipAttribute );
 
 			return;
 		}
 
-		const tooltipData = getTooltipData( elementWithTooltipAttribute );
-
 		this._unpinTooltip();
 
 		// console.log( '%c[Tooltip] Queueing tooltip pinning...', 'font-weight: bold', tooltipData );
-		this._pinTooltipDebounced( elementWithTooltipAttribute, tooltipData );
+		this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
 	}
 
 	/**
@@ -145,7 +139,7 @@ export default class Tooltip extends Plugin {
 
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
 			// For instance, a random mouseleave far away in the page should not unpin the tooltip that was pinned because
-			// of a previous focus.
+			// of a previous focus. Only leaving the same element should hide the tooltip.
 			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
 				// console.log( '[Tooltip] Dont unpin. Event target is not the same as the current element.', { target } );
 
@@ -154,6 +148,8 @@ export default class Tooltip extends Plugin {
 
 			const descendantWithTooltip = getDescendantWithTooltip( target );
 			const relatedDescendantWithTooltip = getDescendantWithTooltip( relatedTarget );
+
+			// console.log( descendantWithTooltip, relatedDescendantWithTooltip );
 
 			// Unpin when the mouse was leaving element with a tooltip to a place which does not have or has a different tooltip.
 			// Note that this should happen whether the tooltip is already visible or not, for instance, it could be invisible but queued
@@ -193,7 +189,7 @@ export default class Tooltip extends Plugin {
 		// When scrolling a container that has both the balloon and the current element (common ancestor), the balloon can remain
 		// visible (e.g. scrolling ≤body>). Otherwise, to avoid glitches (clipping, lagging) better just hide the tooltip.
 		// Also, don't do anything when scrolling an unrelated DOM element that has nothing to do with the current element and the balloon.
-		if ( target.contains( this._balloon.element ) && target.contains( this._currentElementWithTooltip ) ) {
+		if ( target.contains( this.balloonPanelView.element ) && target.contains( this._currentElementWithTooltip ) ) {
 			return;
 		}
 
@@ -207,13 +203,18 @@ export default class Tooltip extends Plugin {
 	 * @param {*} TODO
 	 */
 	_pinTooltip( targetDomElement, { text, position } ) {
+		const bodyViewCollection = this.editor.ui.view.body;
+
+		if ( !bodyViewCollection.has( this.balloonPanelView ) ) {
+			bodyViewCollection.add( this.balloonPanelView );
+		}
 		// console.log( `%c[Tooltip] Pinning the tooltip after a delay, 'font-weight: bold', "${ text }"`, targetDomElement );
 
-		this._tooltipTextView.text = text;
+		this.tooltipTextView.text = text;
 
-		this._balloon.pin( {
+		this.balloonPanelView.pin( {
 			target: targetDomElement,
-			positions: Tooltip._getPositioningFunctions( position )
+			positions: TooltipManager._getPositioningFunctions( position )
 		} );
 
 		// Start responding to changes in editor UI or content layout. For instance, when collaborators change content
@@ -234,7 +235,7 @@ export default class Tooltip extends Plugin {
 
 		// console.log( '[Tooltip] Unpinning the tooltip' );
 
-		this._balloon.unpin();
+		this.balloonPanelView.unpin();
 
 		this.stopListening( this.editor.ui, 'update' );
 
@@ -248,15 +249,15 @@ export default class Tooltip extends Plugin {
 	_updateTooltipPosition() {
 		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
 		// disappeared (e.g. removed an image).
-		if ( !this._currentElementWithTooltip ) {
+		if ( !isVisible( this._currentElementWithTooltip ) ) {
 			this._unpinTooltip();
 
 			return;
 		}
 
-		this._balloon.pin( {
+		this.balloonPanelView.pin( {
 			target: this._currentElementWithTooltip,
-			positions: Tooltip._getPositioningFunctions( this._currentTooltipPosition )
+			positions: TooltipManager._getPositioningFunctions( this._currentTooltipPosition )
 		} );
 	}
 
@@ -267,7 +268,7 @@ export default class Tooltip extends Plugin {
 	 * @returns
 	 */
 	static _getPositioningFunctions( position ) {
-		const defaultPositions = Tooltip.defaultPositions;
+		const defaultPositions = TooltipManager.defaultPositions;
 
 		return {
 			// South is most popular. We can use positioning heuristics to avoid clipping by the viewport with the sane fallback.
@@ -285,7 +286,12 @@ export default class Tooltip extends Plugin {
 	}
 }
 
-Tooltip.defaultPositions = generatePositions( {
+mix( TooltipManager, DomEmitterMixin );
+
+/**
+ * TODO
+ */
+TooltipManager.defaultPositions = generatePositions( {
 	verticalOffset: 5,
 	horizontalOffset: 12
 } );
@@ -295,6 +301,7 @@ function getDescendantWithTooltip( element ) {
 		return null;
 	}
 
+	// TODO: data- for hidden?
 	return element.closest( '[data-cke-tooltip-text]:not(.ck-tooltip_hidden)' );
 }
 
