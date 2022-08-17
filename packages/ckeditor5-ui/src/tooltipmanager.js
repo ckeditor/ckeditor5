@@ -19,22 +19,67 @@ import '../theme/components/tooltip/tooltip.css';
 const BALLOON_CLASS = 'ck-tooltip';
 
 /**
- * TODO
+ * A tooltip manager class for the UI of the editor. It is loaded automatically by {@link module:core/editor/editorui~EditorUI}.
  *
- * @extends module:core/plugin~Plugin
+ * **Note**: Most likely you do not have to use the `TooltipManager` API listed below in order to display tooltips. Popular
+ * {@glink framework/guides/architecture/ui-library UI components} support tooltips out-of-the-box via observable properties
+ * (see {@link module:ui/button/buttonview~ButtonView#tooltip} and {@link module:ui/button/buttonview~ButtonView#tooltipPosition}).
+ *
+ * ## Displaying tooltips
+ *
+ * To display a tooltip, set `data-cke-tooltip-text` attribute on any DOM element:
+ *
+ *		domElement.dataset.ckeTooltipText = 'My tooltip';
+ *
+ * ## Positioning tooltips
+ *
+ * To change the position of the tooltip, use the `data-cke-tooltip-position` attribute (`s`, `se`, `sw`, `n`, `e`, or `w`):
+ *
+ *		domElement.dataset.ckeTooltipText = 'Tooltip to the north';
+ *		domElement.dataset.ckeTooltipPosition = 'n';
+ *
+ * ## Disabling tooltips
+ *
+ * In order to disable the tooltip  temporarily, use the `data-cke-tooltip-disabled` attribute:
+ *
+ *		domElement.dataset.ckeTooltipText = 'Disabled. For now.';
+ *		domElement.dataset.ckeTooltipDisabled = 'true';
+ *
+ *
+ * ## Styling tooltips
+ *
+ * By default, the tooltip has `.ck-tooltip` class and its text inner `.ck-tooltip__text`.
+ *
+ * If your tooltip requires custom styling, using `data-cke-tooltip-class` attribute will add additional class to the balloon
+ * displaying the tooltip:
+ *
+ *		domElement.dataset.ckeTooltipText = 'Tooltip with a red text';
+ *		domElement.dataset.ckeTooltipClass = 'my-class';
+ *
+ *		.ck.ck-tooltip.my-class { color: red }
+ *
+ * @mixes module:utils/domemittermixin~DomEmitterMixin
  */
 export default class TooltipManager {
 	/**
-	 * TODO
+	 * Creates an instance of the tooltip manager.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	constructor( editor ) {
 		/**
-		 * TODO
+		 * The editor instance.
+		 *
+		 * @readonly
+		 * @member {module:core/editor/editor~Editor} #editor
 		 */
 		this.editor = editor;
 
 		/**
-		 * TODO
+		 * The view rendering text of the tooltip.
+		 *
+		 * @readonly
+		 * @member {module:ui/view~View} #tooltipTextView
 		 */
 		this.tooltipTextView = new View( this.editor.locale );
 		this.tooltipTextView.set( 'text', '' );
@@ -54,24 +99,41 @@ export default class TooltipManager {
 		} );
 
 		/**
-		 * TODO
+		 * The instance of the balloon panel that renders and positions the tooltip.
+		 *
+		 * @readonly
+		 * @member {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} #balloonPanelView
 		 */
 		this.balloonPanelView = new BalloonPanelView( this.editor.locale );
 		this.balloonPanelView.class = BALLOON_CLASS;
 		this.balloonPanelView.content.add( this.tooltipTextView );
 
 		/**
-		 * TODO
+		 * Stores the reference to the DOM element the tooltip is attached to. `null` when there's no tooltip
+		 * in the UI.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {HTMLElement|null} #_currentElementWithTooltip
 		 */
 		this._currentElementWithTooltip = null;
 
 		/**
-		 * TODO
+		 * Stores the current tooltip position. `null` when there's no tooltip in the UI.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {String|null} #_currentTooltipPosition
 		 */
 		this._currentTooltipPosition = null;
 
 		/**
-		 * TODO
+		 * A debounced version of {@link #_pinTooltip}. Tooltips show with a delay to avoid flashing and
+		 * to improve the UX.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {Function} #_pinTooltipDebounced
 		 */
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
 
@@ -84,6 +146,9 @@ export default class TooltipManager {
 		this.listenTo( global.document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
 	}
 
+	/**
+	 * Destroys the tooltip manager.
+	 */
 	destroy() {
 		this._pinTooltipDebounced.cancel();
 		this.balloonPanelView.destroy();
@@ -91,21 +156,17 @@ export default class TooltipManager {
 	}
 
 	/**
-	 * TODO
+	 * Handles displaying tooltips on `mouseenter` and `focus` in DOM.
 	 *
-	 * @param {*} evt
-	 * @param {*} domEvt
-	 * @returns
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
+	 * @param {Event} domEvent The DOM event.
 	 */
 	_onEnterOrFocus( evt, { target } ) {
-		// console.log( `[Tooltip] %c${ evt.name } %c${ logElement( target ) }`, 'color:green', 'color:black' );
-
 		const elementWithTooltipAttribute = getDescendantWithTooltip( target );
 
 		// Abort when there's no descendant needing tooltip.
 		if ( !elementWithTooltipAttribute ) {
-			// console.log( '[Tooltip] No element to display the tooltip, aborting' );
-
 			return;
 		}
 
@@ -113,27 +174,22 @@ export default class TooltipManager {
 		// * a tooltip is displayed for a focused element, then the same element gets mouseentered,
 		// * a tooltip is displayed for an element via mouseenter, then the focus moves to the same element.
 		if ( elementWithTooltipAttribute === this._currentElementWithTooltip ) {
-			// console.log( '[Tooltip] Don\'t display the tooltip for the same element. Aborting.', elementWithTooltipAttribute );
-
 			return;
 		}
 
 		this._unpinTooltip();
 
-		// console.log( '%c[Tooltip] Queueing tooltip pinning...', 'font-weight: bold', tooltipData );
 		this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
 	}
 
 	/**
-	 * TODO
+	 * Handles hiding tooltips on `mouseleave` and `blur` in DOM.
 	 *
-	 * @param {*} evt
-	 * @param {*} domEvt
-	 * @returns
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
+	 * @param {Event} domEvent The DOM event.
 	 */
 	_onLeaveOrBlur( evt, { target, relatedTarget } ) {
-		// console.log( `[Tooltip] %c${ evt.name } %c${ logElement( target ) }`, 'color:blue', 'color:black' );
-
 		if ( evt.name === 'mouseleave' ) {
 			// Don't act when the event does not concern a DOM element (e.g. a mouseleave out of an entire document),
 			if ( !isElement( target ) ) {
@@ -144,15 +200,11 @@ export default class TooltipManager {
 			// For instance, a random mouseleave far away in the page should not unpin the tooltip that was pinned because
 			// of a previous focus. Only leaving the same element should hide the tooltip.
 			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
-				// console.log( '[Tooltip] Dont unpin. Event target is not the same as the current element.', { target } );
-
 				return;
 			}
 
 			const descendantWithTooltip = getDescendantWithTooltip( target );
 			const relatedDescendantWithTooltip = getDescendantWithTooltip( relatedTarget );
-
-			// console.log( descendantWithTooltip, relatedDescendantWithTooltip );
 
 			// Unpin when the mouse was leaving element with a tooltip to a place which does not have or has a different tooltip.
 			// Note that this should happen whether the tooltip is already visible or not, for instance, it could be invisible but queued
@@ -165,8 +217,6 @@ export default class TooltipManager {
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
 			// For instance, a random blur in the web page should not unpin the tooltip that was pinned because of a previous mouseenter.
 			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
-				// console.log( '[Tooltip] Dont unpin. Event target is not the same as the current element.', { target } );
-
 				return;
 			}
 
@@ -177,11 +227,11 @@ export default class TooltipManager {
 	}
 
 	/**
-	 * TODO
+	 * Handles hiding tooltips on `scroll` in DOM.
 	 *
-	 * @param {*} evt
-	 * @param {*} domEvt
-	 * @returns
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
+	 * @param {Event} domEvent The DOM event.
 	 */
 	_onScroll( evt, { target } ) {
 		// No tooltip, no reason to react on scroll.
@@ -200,10 +250,14 @@ export default class TooltipManager {
 	}
 
 	/**
-	 * TODO
+	 * Pins the tooltip to a specific DOM element.
 	 *
-	 * @param {*} targetDomElement
-	 * @param {*} TODO
+	 * @private
+	 * @param {Element} targetDomElement
+	 * @param {Object} options
+	 * @param {String} options.text Text of the tooltip to display.
+	 * @param {String} options.position The position of the tooltip.
+	 * @param {String} options.cssClass Additional CSS class of the balloon with the tooltip.
 	 */
 	_pinTooltip( targetDomElement, { text, position, cssClass } ) {
 		const bodyViewCollection = this.editor.ui.view.body;
@@ -211,13 +265,12 @@ export default class TooltipManager {
 		if ( !bodyViewCollection.has( this.balloonPanelView ) ) {
 			bodyViewCollection.add( this.balloonPanelView );
 		}
-		// console.log( `%c[Tooltip] Pinning the tooltip after a delay, 'font-weight: bold', "${ text }"`, targetDomElement );
 
 		this.tooltipTextView.text = text;
 
 		this.balloonPanelView.pin( {
 			target: targetDomElement,
-			positions: TooltipManager._getPositioningFunctions( position )
+			positions: TooltipManager.getPositioningFunctions( position )
 		} );
 
 		this.balloonPanelView.class = [ BALLOON_CLASS, cssClass ]
@@ -234,13 +287,12 @@ export default class TooltipManager {
 	}
 
 	/**
-	 * TODO
+	 * Unpins the tooltip and cancels all queued pinning.
+	 *
+	 * @private
 	 */
 	_unpinTooltip() {
-		// console.log( '%c[Tooltip] Canceling queued tooltip pinning...', 'font-weight: bold' );
 		this._pinTooltipDebounced.cancel();
-
-		// console.log( '[Tooltip] Unpinning the tooltip' );
 
 		this.balloonPanelView.unpin();
 
@@ -251,7 +303,11 @@ export default class TooltipManager {
 	}
 
 	/**
-	 * TODO
+	 * Updates the position of the tooltip so it stays in sync with the element it is pinned to.
+	 *
+	 * Hides the tooltip when the element is no longer visible in DOM.
+	 *
+	 * @private
 	 */
 	_updateTooltipPosition() {
 		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
@@ -264,18 +320,20 @@ export default class TooltipManager {
 
 		this.balloonPanelView.pin( {
 			target: this._currentElementWithTooltip,
-			positions: TooltipManager._getPositioningFunctions( this._currentTooltipPosition )
+			positions: TooltipManager.getPositioningFunctions( this._currentTooltipPosition )
 		} );
 	}
 
 	/**
-	 * TODO
+	 * Returns {@link #balloonPanelView} {@link module:utils/dom/position~PositioningFunction positioning functions} for a given position
+	 * name.
 	 *
-	 * @param {*} position
-	 * @returns
+	 * @static
+	 * @param {String} position Name of the position (`s`, `se`, `sw`, `n`, `e`, or `w`).
+	 * @returns {Array.<module:utils/dom/position~PositioningFunction>} Positioning functions to be used by the {@link #balloonPanelView}.
 	 */
-	static _getPositioningFunctions( position ) {
-		const defaultPositions = TooltipManager.defaultPositions;
+	static getPositioningFunctions( position ) {
+		const defaultPositions = TooltipManager.defaultBalloonPositions;
 
 		return {
 			// South is most popular. We can use positioning heuristics to avoid clipping by the viewport with the sane fallback.
@@ -296,9 +354,13 @@ export default class TooltipManager {
 mix( TooltipManager, DomEmitterMixin );
 
 /**
- * TODO
+ * A set of default {@link module:utils/dom/position~PositioningFunction positioning functions} used by the `TooltipManager`
+ * to pin tooltips in different positions.
+ *
+ * @member {Object.<String,module:utils/dom/position~PositioningFunction>}
+ * module:ui/tooltipmanager~TooltipManager.defaultBalloonPositions
  */
-TooltipManager.defaultPositions = generatePositions( {
+TooltipManager.defaultBalloonPositions = generatePositions( {
 	verticalOffset: 5,
 	horizontalOffset: 12
 } );
@@ -308,7 +370,6 @@ function getDescendantWithTooltip( element ) {
 		return null;
 	}
 
-	// TODO: data- for hidden?
 	return element.closest( '[data-cke-tooltip-text]:not([data-cke-tooltip-disabled])' );
 }
 
@@ -319,11 +380,3 @@ function getTooltipData( element ) {
 		cssClass: element.dataset.ckeTooltipClass || ''
 	};
 }
-
-// function logElement( element ) {
-// 	if ( isElement( element ) ) {
-// 		return `${ element.tagName }.${ Array.from( element.classList ).join( '.' ) }`;
-// 	} else {
-// 		return 'Not a DOM element';
-// 	}
-// }

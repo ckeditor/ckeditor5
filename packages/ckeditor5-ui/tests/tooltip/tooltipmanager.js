@@ -89,7 +89,7 @@ describe( 'TooltipManager', () => {
 
 		beforeEach( () => {
 			clock = sinon.useFakeTimers();
-			defaultPositions = TooltipManager.defaultPositions;
+			defaultPositions = TooltipManager.defaultBalloonPositions;
 
 			elements = getElementsWithTooltips( {
 				a: {

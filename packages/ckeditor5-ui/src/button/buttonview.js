@@ -260,7 +260,7 @@ export default class ButtonView extends View {
 	}
 
 	/**
-	 * Gets the text for the {@link #tooltipView} from the combination of
+	 * Gets the text for the tooltip from the combination of
 	 * {@link #tooltip}, {@link #label} and {@link #keystroke} attributes.
 	 *
 	 * @private
