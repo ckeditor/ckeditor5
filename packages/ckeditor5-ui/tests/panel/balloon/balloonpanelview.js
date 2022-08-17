@@ -758,7 +758,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should have a proper length', () => {
-			expect( Object.keys( positions ) ).to.have.length( 31 );
+			expect( Object.keys( positions ) ).to.have.length( 33 );
 		} );
 
 		// ------- North
@@ -1013,6 +1013,26 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
+		// ------- West
+
+		it( 'should define the "westArrowEast" position', () => {
+			expect( positions.westArrowEast( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 125,
+				left: 50 - arrowVOffset,
+				name: 'arrow_e'
+			} );
+		} );
+
+		// ------- East
+
+		it( 'should define the "eastArrowWest" position', () => {
+			expect( positions.eastArrowWest( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 125,
+				left: 200 + arrowVOffset,
+				name: 'arrow_w'
+			} );
+		} );
+
 		// ------- Sticky
 
 		it( 'should define the "viewportStickyNorth" position and return null if not sticky', () => {
@@ -1163,10 +1183,20 @@ describe( 'BalloonPanelView', () => {
 			for ( const name in generatedPositions ) {
 				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
 
-				if ( name.match( /^south/ ) ) {
+				if ( name.startsWith( 'south' ) ) {
 					generatedResult.top -= 100;
-				} else if ( name.match( /^north/ ) ) {
+				}
+
+				if ( name.startsWith( 'north' ) ) {
 					generatedResult.top += 100;
+				}
+
+				if ( name.startsWith( 'west' ) ) {
+					generatedResult.left += 100;
+				}
+
+				if ( name.startsWith( 'east' ) ) {
+					generatedResult.left -= 100;
 				}
 
 				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
