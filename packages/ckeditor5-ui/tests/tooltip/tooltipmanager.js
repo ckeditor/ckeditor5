@@ -105,6 +105,11 @@ describe( 'TooltipManager', () => {
 					isDisabled: true
 				},
 
+				customClass: {
+					text: 'CUSTOM_CLASS',
+					class: 'foo-bar'
+				},
+
 				unrelated: {},
 
 				positionS: {
@@ -267,6 +272,22 @@ describe( 'TooltipManager', () => {
 						target: elements.a,
 						positions: sinon.match.array
 					} );
+				} );
+
+				it( 'should add a custom class to the #balloonPanelView if specified in the data attribute', () => {
+					expect( tooltipManager.balloonPanelView.class ).to.equal( 'ck-tooltip' );
+
+					utils.dispatchFocus( elements.customClass );
+					utils.waitForTheTooltipToShow( clock );
+
+					sinon.assert.calledOnce( pinSpy );
+					expect( tooltipManager.balloonPanelView.class ).to.equal( 'ck-tooltip foo-bar' );
+
+					utils.dispatchFocus( elements.a );
+					utils.waitForTheTooltipToShow( clock );
+
+					sinon.assert.calledTwice( pinSpy );
+					expect( tooltipManager.balloonPanelView.class ).to.equal( 'ck-tooltip' );
 				} );
 
 				it( 'should show up for the last element the mouse entered (last element has tooltip)', () => {
@@ -670,6 +691,10 @@ function getElementsWithTooltips( definitions ) {
 
 		if ( def.position ) {
 			element.dataset.ckeTooltipPosition = def.position;
+		}
+
+		if ( def.class ) {
+			element.dataset.ckeTooltipClass = def.class;
 		}
 
 		if ( def.isDisabled ) {

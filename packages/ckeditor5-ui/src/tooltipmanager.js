@@ -16,6 +16,8 @@ import { isElement, debounce } from 'lodash-es';
 
 import '../theme/components/tooltip/tooltip.css';
 
+const BALLOON_CLASS = 'ck-tooltip';
+
 /**
  * TODO
  *
@@ -55,7 +57,7 @@ export default class TooltipManager {
 		 * TODO
 		 */
 		this.balloonPanelView = new BalloonPanelView( this.editor.locale );
-		this.balloonPanelView.class = 'ck-tooltip';
+		this.balloonPanelView.class = BALLOON_CLASS;
 		this.balloonPanelView.content.add( this.tooltipTextView );
 
 		/**
@@ -203,7 +205,7 @@ export default class TooltipManager {
 	 * @param {*} targetDomElement
 	 * @param {*} TODO
 	 */
-	_pinTooltip( targetDomElement, { text, position } ) {
+	_pinTooltip( targetDomElement, { text, position, cssClass } ) {
 		const bodyViewCollection = this.editor.ui.view.body;
 
 		if ( !bodyViewCollection.has( this.balloonPanelView ) ) {
@@ -217,6 +219,10 @@ export default class TooltipManager {
 			target: targetDomElement,
 			positions: TooltipManager._getPositioningFunctions( position )
 		} );
+
+		this.balloonPanelView.class = [ BALLOON_CLASS, cssClass ]
+			.filter( className => className )
+			.join( ' ' );
 
 		// Start responding to changes in editor UI or content layout. For instance, when collaborators change content
 		// and a contextual toolbar attached to a content starts to move (and so should move the tooltip).
@@ -309,7 +315,8 @@ function getDescendantWithTooltip( element ) {
 function getTooltipData( element ) {
 	return {
 		text: element.dataset.ckeTooltipText,
-		position: element.dataset.ckeTooltipPosition || 's'
+		position: element.dataset.ckeTooltipPosition || 's',
+		cssClass: element.dataset.ckeTooltipClass || ''
 	};
 }
 
