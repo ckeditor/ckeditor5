@@ -11,5 +11,5 @@
 	It's weird but it works. */
 	-webkit-backface-visibility: hidden;
 
-	z-index: calc( var(--ck-z-modal) + 1 );
+	z-index: calc( var(--ck-z-modal) + 100 );
 }
