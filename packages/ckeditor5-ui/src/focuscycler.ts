@@ -9,6 +9,12 @@
 
 import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
+import type { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
+
+import type View from './view';
+import type ViewCollection from './viewcollection';
+
 /**
  * A utility class that helps cycling over focusable {@link module:ui/view~View views} in a
  * {@link module:ui/viewcollection~ViewCollection} when the focus is tracked by the
@@ -56,6 +62,11 @@ import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
  * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking "Deep dive into focus tracking" guide} to learn more.
  */
 export default class FocusCycler {
+	public readonly focusables: ViewCollection;
+	public readonly focusTracker: FocusTracker;
+	public readonly keystrokeHandler?: KeystrokeHandler;
+	public readonly actions?: FocusCyclerActions;
+
 	/**
 	 * Creates an instance of the focus cycler utility.
 	 *
@@ -65,8 +76,16 @@ export default class FocusCycler {
 	 * @param {module:utils/keystrokehandler~KeystrokeHandler} [options.keystrokeHandler]
 	 * @param {Object} [options.actions]
 	 */
-	constructor( options ) {
-		Object.assign( this, options );
+	constructor( options: {
+		focusables: ViewCollection;
+		focusTracker: FocusTracker;
+		keystrokeHandler?: KeystrokeHandler;
+		actions?: FocusCyclerActions;
+	} ) {
+		this.focusables = options.focusables;
+		this.focusTracker = options.focusTracker;
+		this.keystrokeHandler = options.keystrokeHandler;
+		this.actions = options.actions;
 
 		/**
 		 * A {@link module:ui/view~View view} collection that the cycler operates on.
@@ -111,7 +130,7 @@ export default class FocusCycler {
 
 		if ( options.actions && options.keystrokeHandler ) {
 			for ( const methodName in options.actions ) {
-				let actions = options.actions[ methodName ];
+				let actions = options.actions[ methodName as keyof FocusCyclerActions ];
 
 				if ( typeof actions == 'string' ) {
 					actions = [ actions ];
@@ -119,7 +138,7 @@ export default class FocusCycler {
 
 				for ( const keystroke of actions ) {
 					options.keystrokeHandler.set( keystroke, ( data, cancel ) => {
-						this[ methodName ]();
+						this[ methodName as keyof FocusCyclerActions ]();
 						cancel();
 					} );
 				}
@@ -136,8 +155,8 @@ export default class FocusCycler {
 	 * @readonly
 	 * @member {module:ui/view~View|null} #first
 	 */
-	get first() {
-		return this.focusables.find( isFocusable ) || null;
+	public get first(): FocusableView | null {
+		return ( this.focusables.find( isFocusable ) || null ) as FocusableView | null;
 	}
 
 	/**
@@ -149,8 +168,8 @@ export default class FocusCycler {
 	 * @readonly
 	 * @member {module:ui/view~View|null} #last
 	 */
-	get last() {
-		return this.focusables.filter( isFocusable ).slice( -1 )[ 0 ] || null;
+	public get last(): FocusableView | null {
+		return ( this.focusables.filter( isFocusable ).slice( -1 )[ 0 ] || null ) as FocusableView | null;
 	}
 
 	/**
@@ -162,7 +181,7 @@ export default class FocusCycler {
 	 * @readonly
 	 * @member {module:ui/view~View|null} #next
 	 */
-	get next() {
+	public get next(): FocusableView | null {
 		return this._getFocusableItem( 1 );
 	}
 
@@ -175,7 +194,7 @@ export default class FocusCycler {
 	 * @readonly
 	 * @member {module:ui/view~View|null} #previous
 	 */
-	get previous() {
+	public get previous(): FocusableView | null {
 		return this._getFocusableItem( -1 );
 	}
 
@@ -186,8 +205,8 @@ export default class FocusCycler {
 	 * @readonly
 	 * @member {Number|null} #current
 	 */
-	get current() {
-		let index = null;
+	public get current(): number | null {
+		let index: number | null = null;
 
 		// There's no focused view in the focusables.
 		if ( this.focusTracker.focusedElement === null ) {
@@ -212,7 +231,7 @@ export default class FocusCycler {
 	 *
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
-	focusFirst() {
+	public focusFirst(): void {
 		this._focus( this.first );
 	}
 
@@ -221,7 +240,7 @@ export default class FocusCycler {
 	 *
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
-	focusLast() {
+	public focusLast(): void {
 		this._focus( this.last );
 	}
 
@@ -230,7 +249,7 @@ export default class FocusCycler {
 	 *
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
-	focusNext() {
+	public focusNext(): void {
 		this._focus( this.next );
 	}
 
@@ -239,7 +258,7 @@ export default class FocusCycler {
 	 *
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
-	focusPrevious() {
+	public focusPrevious(): void {
 		this._focus( this.previous );
 	}
 
@@ -249,7 +268,7 @@ export default class FocusCycler {
 	 * @protected
 	 * @param {module:ui/view~View} view
 	 */
-	_focus( view ) {
+	private _focus( view: FocusableView | null ) {
 		if ( view ) {
 			view.focus();
 		}
@@ -264,7 +283,7 @@ export default class FocusCycler {
 	 * `-1` for checking backwards.
 	 * @returns {module:ui/view~View|null}
 	 */
-	_getFocusableItem( step ) {
+	private _getFocusableItem( step: number ): FocusableView | null {
 		// Cache for speed.
 		const current = this.current;
 		const collectionLength = this.focusables.length;
@@ -283,10 +302,10 @@ export default class FocusCycler {
 		let index = ( current + collectionLength + step ) % collectionLength;
 
 		do {
-			const view = this.focusables.get( index );
+			const view = this.focusables.get( index )!;
 
 			if ( isFocusable( view ) ) {
-				return view;
+				return view as FocusableView;
 			}
 
 			// Cycle in both directions.
@@ -297,11 +316,20 @@ export default class FocusCycler {
 	}
 }
 
+export type FocusableView = View & { focus(): void };
+
+export interface FocusCyclerActions {
+	focusFirst: ArrayOrItem<string>;
+	focusLast: ArrayOrItem<string>;
+	focusNext: ArrayOrItem<string>;
+	focusPrevious: ArrayOrItem<string>;
+}
+
 // Checks whether a view is focusable.
 //
 // @private
 // @param {module:ui/view~View} view A view to be checked.
 // @returns {Boolean}
-function isFocusable( view ) {
+function isFocusable( view: View & { focus?: unknown } ) {
 	return !!( view.focus && isVisible( view.element ) );
 }

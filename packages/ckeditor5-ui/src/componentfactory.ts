@@ -8,6 +8,10 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+
+import type Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import type View from './view';
 
 /**
  * A helper class implementing the UI component ({@link module:ui/view~View view}) factory.
@@ -32,13 +36,17 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * function when {@link module:ui/componentfactory~ComponentFactory#create} is called.
  */
 export default class ComponentFactory {
+	public readonly editor: Editor;
+
+	private readonly _components: Map<string, { originalName: string; callback: ( locale: Locale ) => View }>;
+
 	/**
 	 * Creates an instance of the factory.
 	 *
 	 * @constructor
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		/**
 		 * The editor instance that the factory belongs to.
 		 *
@@ -61,7 +69,7 @@ export default class ComponentFactory {
 	 *
 	 * @returns {Iterable.<String>}
 	 */
-	* names() {
+	public* names(): IterableIterator<string> {
 		for ( const value of this._components.values() ) {
 			yield value.originalName;
 		}
@@ -76,7 +84,7 @@ export default class ComponentFactory {
 	 * @param {String} name The name of the component.
 	 * @param {Function} callback The callback that returns the component.
 	 */
-	add( name, callback ) {
+	public add( name: string, callback: ( locale: Locale ) => View ): void {
 		this._components.set( getNormalized( name ), { callback, originalName: name } );
 	}
 
@@ -90,7 +98,7 @@ export default class ComponentFactory {
 	 * @param {String} name The name of the component.
 	 * @returns {module:ui/view~View} The instantiated component view.
 	 */
-	create( name ) {
+	public create( name: string ): View {
 		if ( !this.has( name ) ) {
 			/**
 			 * The required component is not registered in the component factory. Please make sure
@@ -107,7 +115,7 @@ export default class ComponentFactory {
 			);
 		}
 
-		return this._components.get( getNormalized( name ) ).callback( this.editor.locale );
+		return this._components.get( getNormalized( name ) )!.callback( this.editor.locale );
 	}
 
 	/**
@@ -116,7 +124,7 @@ export default class ComponentFactory {
 	 * @param {String} name The name of the component.
 	 * @returns {Boolean}
 	 */
-	has( name ) {
+	public has( name: string ): boolean {
 		return this._components.has( getNormalized( name ) );
 	}
 }
@@ -127,6 +135,6 @@ export default class ComponentFactory {
 // @private
 // @param {String} name
 // @returns {String}
-function getNormalized( name ) {
+function getNormalized( name: unknown ) {
 	return String( name ).toLowerCase();
 }

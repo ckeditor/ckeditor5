@@ -8,7 +8,9 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import Collection, { type AddEvent, type RemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+import type { EmitterMixinDelegateChain } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import type View from './view';
 
 /**
  * Collects {@link module:ui/view~View} instances.
@@ -47,13 +49,17 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
  * @extends module:utils/collection~Collection
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class ViewCollection extends Collection {
+export default class ViewCollection extends Collection<View, 'viewUid'> {
+	public id?: string;
+
+	private _parentElement: HTMLElement | null;
+
 	/**
 	 * Creates a new instance of the {@link module:ui/viewcollection~ViewCollection}.
 	 *
 	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
 	 */
-	constructor( initialItems = [] ) {
+	constructor( initialItems: Iterable<View> = [] ) {
 		super( initialItems, {
 			// An #id Number attribute should be legal and not break the `ViewCollection` instance.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/93
@@ -61,12 +67,12 @@ export default class ViewCollection extends Collection {
 		} );
 
 		// Handle {@link module:ui/view~View#element} in DOM when a new view is added to the collection.
-		this.on( 'add', ( evt, view, index ) => {
+		this.on<AddEvent<View>>( 'add', ( evt, view, index ) => {
 			this._renderViewIntoCollectionParent( view, index );
 		} );
 
 		// Handle {@link module:ui/view~View#element} in DOM when a view is removed from the collection.
-		this.on( 'remove', ( evt, view ) => {
+		this.on<RemoveEvent<View>>( 'remove', ( evt, view ) => {
 			if ( view.element && this._parentElement ) {
 				view.element.remove();
 			}
@@ -85,7 +91,7 @@ export default class ViewCollection extends Collection {
 	 * Destroys the view collection along with child views.
 	 * See the view {@link module:ui/view~View#destroy} method.
 	 */
-	destroy() {
+	public destroy(): void {
 		this.map( view => view.destroy() );
 	}
 
@@ -96,7 +102,7 @@ export default class ViewCollection extends Collection {
 	 *
 	 * @param {HTMLElement} element A new parent element.
 	 */
-	setParent( elementOrDocFragment ) {
+	public setParent( elementOrDocFragment: HTMLElement ): void {
 		this._parentElement = elementOrDocFragment;
 
 		// Take care of the initial collection items passed to the constructor.
@@ -138,7 +144,7 @@ export default class ViewCollection extends Collection {
 	 * @returns {Function} return.to A function which accepts the destination of
 	 * {@link module:utils/emittermixin~Emitter#delegate delegated} events.
 	 */
-	delegate( ...events ) {
+	public override delegate( ...events: string[] ): EmitterMixinDelegateChain {
 		if ( !events.length || !isStringArray( events ) ) {
 			/**
 			 * All event names must be strings.
@@ -169,14 +175,14 @@ export default class ViewCollection extends Collection {
 				}
 
 				// Activate delegating on future views in this collection.
-				this.on( 'add', ( evt, view ) => {
+				this.on<AddEvent<View>>( 'add', ( evt, view ) => {
 					for ( const evtName of events ) {
 						view.delegate( evtName ).to( dest );
 					}
 				} );
 
 				// Deactivate delegating when view is removed from this collection.
-				this.on( 'remove', ( evt, view ) => {
+				this.on<RemoveEvent<View>>( 'remove', ( evt, view ) => {
 					for ( const evtName of events ) {
 						view.stopDelegating( evtName, dest );
 					}
@@ -199,13 +205,13 @@ export default class ViewCollection extends Collection {
 	 * @param {Number} [index] An index the view holds in the collection. When not specified,
 	 * the view is added at the end.
 	 */
-	_renderViewIntoCollectionParent( view, index ) {
+	public _renderViewIntoCollectionParent( view: View, index?: number ): void {
 		if ( !view.isRendered ) {
 			view.render();
 		}
 
 		if ( view.element && this._parentElement ) {
-			this._parentElement.insertBefore( view.element, this._parentElement.children[ index ] );
+			this._parentElement.insertBefore( view.element, this._parentElement.children[ index! ] );
 		}
 	}
 
@@ -227,6 +233,6 @@ export default class ViewCollection extends Collection {
 // @private
 // @param {Array} arr An array to be checked.
 // @returns {Boolean}
-function isStringArray( arr ) {
+function isStringArray( arr: unknown[] ): arr is string[] {
 	return arr.every( a => typeof a == 'string' );
 }

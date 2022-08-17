@@ -3,18 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable new-cap */
+
 /**
  * @module ui/view
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ViewCollection from './viewcollection';
-import Template from './template';
+import Template, { type BindChain, type TemplateDefinition } from './template';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import Collection, { type AddEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../theme/globals/globals.css';
 
@@ -83,7 +85,19 @@ import '../theme/globals/globals.css';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class View {
+export default class View extends DomEmitterMixin( Observable ) {
+	public element: HTMLElement | null;
+	public isRendered: boolean;
+	public locale: Locale | undefined;
+	public readonly t: Locale[ 't' ] | undefined;
+	public template?: Template;
+	public viewUid?: string;
+
+	protected _viewCollections: Collection<ViewCollection>;
+	protected _unboundChildren: ViewCollection;
+
+	private _bindTemplate?: BindChain<this>;
+
 	/**
 	 * Creates an instance of the {@link module:ui/view~View} class.
 	 *
@@ -91,7 +105,9 @@ export default class View {
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 */
-	constructor( locale ) {
+	constructor( locale?: Locale ) {
+		super();
+
 		/**
 		 * An HTML element of the view. `null` until {@link #render rendered}
 		 * from the {@link #template}.
@@ -172,7 +188,7 @@ export default class View {
 		this._unboundChildren = this.createCollection();
 
 		// Pass parent locale to its children.
-		this._viewCollections.on( 'add', ( evt, collection ) => {
+		this._viewCollections.on<AddEvent<View>>( 'add', ( evt, collection ) => {
 			collection.locale = locale;
 		} );
 
@@ -237,7 +253,7 @@ export default class View {
 	 *
 	 * @method #bindTemplate
 	 */
-	get bindTemplate() {
+	public get bindTemplate(): BindChain<this> {
 		if ( this._bindTemplate ) {
 			return this._bindTemplate;
 		}
@@ -274,7 +290,7 @@ export default class View {
 	 * @param {Iterable.<module:ui/view~View>} [views] Initial views of the collection.
 	 * @returns {module:ui/viewcollection~ViewCollection} A new collection of view instances.
 	 */
-	createCollection( views ) {
+	public createCollection( views?: Iterable<View> ): ViewCollection {
 		const collection = new ViewCollection( views );
 
 		this._viewCollections.add( collection );
@@ -341,7 +357,7 @@ export default class View {
 	 *
 	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Children views to be registered.
 	 */
-	registerChild( children ) {
+	public registerChild( children: View | Iterable<View> ): void {
 		if ( !isIterable( children ) ) {
 			children = [ children ];
 		}
@@ -359,7 +375,7 @@ export default class View {
 	 * @see #registerChild
 	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Child views to be removed.
 	 */
-	deregisterChild( children ) {
+	public deregisterChild( children: View | Iterable<View> ): void {
 		if ( !isIterable( children ) ) {
 			children = [ children ];
 		}
@@ -378,7 +394,7 @@ export default class View {
 	 *
 	 * @param {module:ui/template~TemplateDefinition} definition Definition of view's template.
 	 */
-	setTemplate( definition ) {
+	public setTemplate( definition: TemplateDefinition ): void {
 		this.template = new Template( definition );
 	}
 
@@ -395,8 +411,8 @@ export default class View {
 	 * @param {module:ui/template~TemplateDefinition} definition Definition which
 	 * extends the {@link #template}.
 	 */
-	extendTemplate( definition ) {
-		Template.extend( this.template, definition );
+	public extendTemplate( definition: TemplateDefinition ): void {
+		Template.extend( this.template!, definition );
 	}
 
 	/**
@@ -456,7 +472,7 @@ export default class View {
 	 *		// Late rendering allows customization of the view.
 	 *		view.render();
 	 */
-	render() {
+	public render(): void {
 		if ( this.isRendered ) {
 			/**
 			 * This View has already been rendered.
@@ -468,7 +484,7 @@ export default class View {
 
 		// Render #element of the view.
 		if ( this.template ) {
-			this.element = this.template.render();
+			this.element = this.template.render() as HTMLElement;
 
 			// Auto–register view children from #template.
 			this.registerChild( this.template.getViews() );
@@ -485,14 +501,14 @@ export default class View {
 	 * * created on the view, e.g. `view.on( 'event', () => {} )`,
 	 * * defined in the {@link #template} for DOM events.
 	 */
-	destroy() {
+	public destroy(): void {
 		this.stopListening();
 
 		this._viewCollections.map( c => c.destroy() );
 
 		// Template isn't obligatory for views.
-		if ( this.template && this.template._revertData ) {
-			this.template.revert( this.element );
+		if ( this.template && ( this.template as any )._revertData ) {
+			this.template.revert( this.element! );
 		}
 	}
 
@@ -505,6 +521,3 @@ export default class View {
 	 * @event render
 	 */
 }
-
-mix( View, DomEmitterMixin );
-mix( View, ObservableMixin );

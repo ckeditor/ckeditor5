@@ -10,13 +10,14 @@
 /* global document */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import View from './view';
 import ViewCollection from './viewcollection';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import { isObject, cloneDeepWith } from 'lodash-es';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import toArray, { type ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
+
+import type { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
@@ -56,13 +57,25 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
  *
 * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class Template {
+export default class Template extends Emitter {
+	public ns?: string;
+	public tag?: string;
+	public text?: ( string | FalsyValue | TemplateBinding )[];
+	public attributes?: Record<string, AttributeValues>;
+	public children?: ( ViewCollection | View | Node | Template )[];
+	public eventListeners?: Record<string, TemplateToBinding[]>;
+
+	private _isRendered: boolean;
+	private _revertData: RevertData | null;
+
 	/**
 	 * Creates an instance of the {@link ~Template} class.
 	 *
 	 * @param {module:ui/template~TemplateDefinition} def The definition of the template.
 	 */
-	constructor( def ) {
+	constructor( def: TemplateDefinition ) {
+		super();
+
 		Object.assign( this, normalize( clone( def ) ) );
 
 		/**
@@ -134,10 +147,10 @@ export default class Template {
 	 *
 	 * @returns {HTMLElement|Text}
 	 */
-	render() {
+	public render(): HTMLElement | Text {
 		const node = this._renderNode( {
 			intoFragment: true
-		} );
+		} as any );
 
 		this._isRendered = true;
 
@@ -183,11 +196,12 @@ export default class Template {
 	 * @see module:ui/template~Template#revert
 	 * @param {Node} node Root node for the template to apply.
 	 */
-	apply( node ) {
+	public apply( node: HTMLElement | Text ): HTMLElement | Text {
 		this._revertData = getEmptyRevertData();
 
 		this._renderNode( {
 			node,
+			intoFragment: false,
 			isApplying: true,
 			revertData: this._revertData
 		} );
@@ -201,7 +215,7 @@ export default class Template {
 	 * @param {Node} node The root node for the template to revert. In most of the cases, it is the
 	 * same node used by {@link module:ui/template~Template#apply}.
 	 */
-	revert( node ) {
+	public revert( node: HTMLElement | Text ): void {
 		if ( !this._revertData ) {
 			/**
 			 * Attempting to revert a template which has not been applied yet.
@@ -245,8 +259,8 @@ export default class Template {
 	 *
 	 * @returns {Iterable.<module:ui/view~View>}
 	 */
-	* getViews() {
-		function* search( def ) {
+	public* getViews(): IterableIterator<View> {
+		function* search( def: Template ): Iterable<View> {
 			if ( def.children ) {
 				for ( const child of def.children ) {
 					if ( isView( child ) ) {
@@ -254,6 +268,7 @@ export default class Template {
 					} else if ( isTemplate( child ) ) {
 						yield* search( child );
 					}
+					// TODO: what about ViewCollection?
 				}
 			}
 		}
@@ -298,9 +313,12 @@ export default class Template {
 	 * changes or DOM Events (depending on the kind of the binding). Usually, a {@link module:ui/view~View} instance.
 	 * @returns {module:ui/template~BindChain}
 	 */
-	static bind( observable, emitter ) {
+	public static override bind<TObservable extends Observable>(
+		observable: TObservable,
+		emitter: Emitter
+	): BindChain<TObservable> {
 		return {
-			to( eventNameOrFunctionOrAttribute, callback ) {
+			to( eventNameOrFunctionOrAttribute: any, callback?: any ) {
 				return new TemplateToBinding( {
 					eventNameOrFunction: eventNameOrFunctionOrAttribute,
 					attribute: eventNameOrFunctionOrAttribute,
@@ -308,12 +326,12 @@ export default class Template {
 				} );
 			},
 
-			if( attribute, valueIfTrue, callback ) {
+			if( attribute: string, valueIfTrue?: string, callback?: any ) {
 				return new TemplateIfBinding( {
 					observable, emitter, attribute, valueIfTrue, callback
 				} );
 			}
-		};
+		} as any;
 	}
 
 	/**
@@ -372,7 +390,7 @@ export default class Template {
 	 * @param {module:ui/template~Template} template An existing template instance to be extended.
 	 * @param {module:ui/template~TemplateDefinition} def Additional definition to be applied to a template.
 	 */
-	static extend( template, def ) {
+	public static extend( template: Template, def: Partial<TemplateDefinition> ): void {
 		if ( template._isRendered ) {
 			/**
 			 * Extending a template after rendering may not work as expected. To make sure
@@ -396,7 +414,7 @@ export default class Template {
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderNode( data ) {
+	private _renderNode( data: RenderData ) {
 		let isInvalid;
 
 		if ( data.node ) {
@@ -433,11 +451,11 @@ export default class Template {
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderElement( data ) {
+	private _renderElement( data: RenderData ) {
 		let node = data.node;
 
 		if ( !node ) {
-			node = data.node = document.createElementNS( this.ns || xhtmlNs, this.tag );
+			node = data.node = document.createElementNS( this.ns || xhtmlNs, this.tag! ) as any;
 		}
 
 		this._renderAttributes( data );
@@ -453,12 +471,12 @@ export default class Template {
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderText( data ) {
+	private _renderText( data: RenderData ) {
 		let node = data.node;
 
 		// Save the original textContent to revert it in #revert().
 		if ( node ) {
-			data.revertData.text = node.textContent;
+			data.revertData!.text = node.textContent;
 		} else {
 			node = data.node = document.createTextNode( '' );
 		}
@@ -475,7 +493,7 @@ export default class Template {
 		//
 		if ( hasTemplateBinding( this.text ) ) {
 			this._bindToObservable( {
-				schema: this.text,
+				schema: this.text!,
 				updater: getTextUpdater( node ),
 				data
 			} );
@@ -487,7 +505,7 @@ export default class Template {
 		//		text: [ 'foo' ]
 		//
 		else {
-			node.textContent = this.text.join( '' );
+			node.textContent = this.text!.join( '' );
 		}
 
 		return node;
@@ -499,22 +517,20 @@ export default class Template {
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderAttributes( data ) {
-		let attrName, attrValue, domAttrValue, attrNs;
-
+	private _renderAttributes( data: RenderData ) {
 		if ( !this.attributes ) {
 			return;
 		}
 
-		const node = data.node;
+		const node = data.node as HTMLElement;
 		const revertData = data.revertData;
 
-		for ( attrName in this.attributes ) {
+		for ( const attrName in this.attributes ) {
 			// Current attribute value in DOM.
-			domAttrValue = node.getAttribute( attrName );
+			const domAttrValue = node.getAttribute( attrName );
 
 			// The value to be set.
-			attrValue = this.attributes[ attrName ];
+			const attrValue = this.attributes[ attrName ];
 
 			// Save revert data.
 			if ( revertData ) {
@@ -528,7 +544,7 @@ export default class Template {
 			//			value: Template.bind( ... ).to( ... )
 			//		}
 			//
-			attrNs = ( isObject( attrValue[ 0 ] ) && attrValue[ 0 ].ns ) ? attrValue[ 0 ].ns : null;
+			const attrNs = isNamespaced( attrValue ) ? attrValue[ 0 ].ns : null;
 
 			// Activate binding if one is found. Cases:
 			//
@@ -555,7 +571,7 @@ export default class Template {
 				//			value: [ ... ]
 				//		}
 				//
-				const valueToBind = attrNs ? attrValue[ 0 ].value : attrValue;
+				const valueToBind = isNamespaced( attrValue ) ? attrValue[ 0 ].value : attrValue;
 
 				// Extend the original value of attributes like "style" and "class",
 				// don't override them.
@@ -578,7 +594,7 @@ export default class Template {
 			//		}
 			//
 			else if ( attrName == 'style' && typeof attrValue[ 0 ] !== 'string' ) {
-				this._renderStyleAttribute( attrValue[ 0 ], data );
+				this._renderStyleAttribute( attrValue[ 0 ] as any, data );
 			}
 
 			// Otherwise simply set the static attribute:
@@ -598,10 +614,10 @@ export default class Template {
 				// Extend the original value of attributes like "style" and "class",
 				// don't override them.
 				if ( revertData && domAttrValue && shouldExtend( attrName ) ) {
-					attrValue.unshift( domAttrValue );
+					attrValue.unshift( domAttrValue as any );
 				}
 
-				attrValue = attrValue
+				const value: string | FalsyValue = attrValue
 					// Retrieve "values" from:
 					//
 					//		class: [
@@ -611,14 +627,14 @@ export default class Template {
 					//			}
 					//		]
 					//
-					.map( val => val ? ( val.value || val ) : val )
+					.map( ( val: any ) => val ? ( val.value || val ) : val )
 					// Flatten the array.
 					.reduce( ( prev, next ) => prev.concat( next ), [] )
 					// Convert into string.
 					.reduce( arrayValueReducer, '' );
 
-				if ( !isFalsy( attrValue ) ) {
-					node.setAttributeNS( attrNs, attrName, attrValue );
+				if ( !isFalsy( value ) ) {
+					node.setAttributeNS( attrNs, attrName, value );
 				}
 			}
 		}
@@ -651,7 +667,7 @@ export default class Template {
 	 * @param {Object} styles Styles located in `attributes.style` of {@link module:ui/template~TemplateDefinition}.
 	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderStyleAttribute( styles, data ) {
+	private _renderStyleAttribute( styles: Record<string, string | FalsyValue | TemplateBinding>, data: RenderData ) {
 		const node = data.node;
 
 		for ( const styleName in styles ) {
@@ -678,7 +694,7 @@ export default class Template {
 			//		}
 			//
 			else {
-				node.style[ styleName ] = styleValue;
+				( node as any ).style[ styleName ] = styleValue;
 			}
 		}
 	}
@@ -689,20 +705,20 @@ export default class Template {
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderElementChildren( data ) {
-		const node = data.node;
+	private _renderElementChildren( data: RenderData ) {
+		const node = data.node as HTMLElement;
 		const container = data.intoFragment ? document.createDocumentFragment() : node;
 		const isApplying = data.isApplying;
 		let childIndex = 0;
 
-		for ( const child of this.children ) {
+		for ( const child of this.children! ) {
 			if ( isViewCollection( child ) ) {
 				if ( !isApplying ) {
 					child.setParent( node );
 
 					// Note: ViewCollection renders its children.
 					for ( const view of child ) {
-						container.appendChild( view.element );
+						container.appendChild( view.element! );
 					}
 				}
 			} else if ( isView( child ) ) {
@@ -711,19 +727,20 @@ export default class Template {
 						child.render();
 					}
 
-					container.appendChild( child.element );
+					container.appendChild( child.element! );
 				}
 			} else if ( isNode( child ) ) {
 				container.appendChild( child );
 			} else {
 				if ( isApplying ) {
-					const revertData = data.revertData;
+					const revertData = data.revertData!;
 					const childRevertData = getEmptyRevertData();
 
 					revertData.children.push( childRevertData );
 
 					child._renderNode( {
-						node: container.childNodes[ childIndex++ ],
+						intoFragment: false,
+						node: container.childNodes[ childIndex++ ] as any,
 						isApplying: true,
 						revertData: childRevertData
 					} );
@@ -745,7 +762,7 @@ export default class Template {
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_setUpListeners( data ) {
+	private _setUpListeners( data: RenderData ) {
 		if ( !this.eventListeners ) {
 			return;
 		}
@@ -776,7 +793,11 @@ export default class Template {
 	 * @param {Function} options.updater A function which updates the DOM (like attribute or text).
 	 * @param {module:ui/template~RenderData} options.data Rendering data.
 	 */
-	_bindToObservable( { schema, updater, data } ) {
+	private _bindToObservable( { schema, updater, data }: {
+		schema: ( string | FalsyValue | TemplateBinding )[];
+		updater: Updater;
+		data: RenderData;
+	} ) {
 		const revertData = data.revertData;
 
 		// Set initial values.
@@ -786,7 +807,7 @@ export default class Template {
 			// Filter "falsy" (false, undefined, null, '') value schema components out.
 			.filter( item => !isFalsy( item ) )
 			// Filter inactive bindings from schema, like static strings ('foo'), numbers (42), etc.
-			.filter( item => item.observable )
+			.filter( ( item: any ): item is TemplateBinding => item.observable )
 			// Once only the actual binding are left, let the emitter listen to observable change:attribute event.
 			// TODO: Reduce the number of listeners attached as many bindings may listen
 			// to the same observable attribute.
@@ -806,7 +827,7 @@ export default class Template {
 	 * @param {Object} revertData An object that stores information about what changes have been made by
 	 * {@link #apply} to the node. See {@link module:ui/template~RenderData#revertData} for more information.
 	 */
-	_revertTemplateFromNode( node, revertData ) {
+	private _revertTemplateFromNode( node: HTMLElement | Text, revertData: RevertData ) {
 		for ( const binding of revertData.bindings ) {
 			// Each binding may consist of several observable+observable#attribute.
 			// like the following has 2:
@@ -829,38 +850,55 @@ export default class Template {
 			return;
 		}
 
+		const element = node as HTMLElement;
+
 		for ( const attrName in revertData.attributes ) {
 			const attrValue = revertData.attributes[ attrName ];
 
 			// When the attribute has **not** been set before #apply().
 			if ( attrValue === null ) {
-				node.removeAttribute( attrName );
+				element.removeAttribute( attrName );
 			} else {
-				node.setAttribute( attrName, attrValue );
+				element.setAttribute( attrName, attrValue );
 			}
 		}
 
 		for ( let i = 0; i < revertData.children.length; ++i ) {
-			this._revertTemplateFromNode( node.childNodes[ i ], revertData.children[ i ] );
+			this._revertTemplateFromNode( element.childNodes[ i ] as any, revertData.children[ i ] );
 		}
 	}
 }
 
-mix( Template, EmitterMixin );
+type AttributeValues = ( string | FalsyValue | TemplateBinding )[] |
+	[ NamespacedValue<( string | FalsyValue | TemplateBinding )[]> ];
 
 /**
  * Describes a binding created by the {@link module:ui/template~Template.bind} interface.
  *
  * @protected
+ * @internal
  */
 export class TemplateBinding {
+	public readonly attribute: string;
+	public readonly observable: Observable;
+	public readonly emitter: Emitter;
+	public readonly callback?: ( value: any, node: Node ) => string | FalsyValue;
+
 	/**
 	 * Creates an instance of the {@link module:ui/template~TemplateBinding} class.
 	 *
 	 * @param {module:ui/template~TemplateDefinition} def The definition of the binding.
 	 */
-	constructor( def ) {
-		Object.assign( this, def );
+	constructor( def: {
+		attribute: string;
+		observable: Observable;
+		emitter: Emitter;
+		callback?: ( value: any, node: Node ) => string | FalsyValue;
+	} ) {
+		this.attribute = def.attribute;
+		this.observable = def.observable;
+		this.emitter = def.emitter;
+		this.callback = def.callback;
 
 		/**
 		 * An observable instance of the binding. It either:
@@ -902,8 +940,8 @@ export class TemplateBinding {
 	 * @returns {*} The value of {@link module:ui/template~TemplateBinding#attribute} in
 	 * {@link module:ui/template~TemplateBinding#observable}.
 	 */
-	getValue( node ) {
-		const value = this.observable[ this.attribute ];
+	public getValue( node: Node ): string | FalsyValue {
+		const value = ( this.observable as any )[ this.attribute ];
 
 		return this.callback ? this.callback( value, node ) : value;
 	}
@@ -918,7 +956,11 @@ export class TemplateBinding {
 	 * @param {module:ui/template~RenderData} data Rendering data.
 	 * @returns {Function} A function to sever the listener binding.
 	 */
-	activateAttributeListener( schema, updater, data ) {
+	public activateAttributeListener(
+		schema: ( string | FalsyValue | TemplateBinding )[],
+		updater: Updater,
+		data: RenderData
+	): () => void {
 		const callback = () => syncValueSchemaValue( schema, updater, data );
 
 		this.emitter.listenTo( this.observable, 'change:' + this.attribute, callback );
@@ -939,8 +981,19 @@ export class TemplateBinding {
  * It is created by the {@link module:ui/template~BindChain#to} method.
  *
  * @protected
+ * @internal
  */
 export class TemplateToBinding extends TemplateBinding {
+	public readonly eventNameOrFunction: string | ( ( domEvent: Event ) => void );
+
+	constructor( def: ConstructorParameters<typeof TemplateBinding>[ 0 ] & {
+		eventNameOrFunction: string | ( ( domEvent: Event ) => void );
+	} ) {
+		super( def );
+
+		this.eventNameOrFunction = def.eventNameOrFunction;
+	}
+
 	/**
 	 * Activates the listener for the native DOM event, which when fired, is propagated by
 	 * the {@link module:ui/template~TemplateBinding#emitter}.
@@ -950,9 +1003,13 @@ export class TemplateToBinding extends TemplateBinding {
 	 * @param {module:ui/template~RenderData} data Rendering data.
 	 * @returns {Function} A function to sever the listener binding.
 	 */
-	activateDomEventListener( domEvtName, domSelector, data ) {
-		const callback = ( evt, domEvt ) => {
-			if ( !domSelector || domEvt.target.matches( domSelector ) ) {
+	public activateDomEventListener(
+		domEvtName: string,
+		domSelector: string,
+		data: { node: any }
+	): () => void {
+		const callback = ( evt: unknown, domEvt: Event ) => {
+			if ( !domSelector || ( domEvt.target as Element ).matches( domSelector ) ) {
 				if ( typeof this.eventNameOrFunction == 'function' ) {
 					this.eventNameOrFunction( domEvt );
 				} else {
@@ -975,15 +1032,27 @@ export class TemplateToBinding extends TemplateBinding {
  * method.
  *
  * @protected
+ * @internal
  */
 export class TemplateIfBinding extends TemplateBinding {
+	public readonly valueIfTrue?: string;
+
+	constructor( def: ConstructorParameters<typeof TemplateBinding>[ 0 ] & {
+		valueIfTrue?: string;
+	} ) {
+		super( def );
+
+		this.valueIfTrue = def.valueIfTrue;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
-	getValue( node ) {
+	public override getValue( node: Node ): string | FalsyValue {
 		const value = super.getValue( node );
 
-		return isFalsy( value ) ? false : ( this.valueIfTrue || true );
+		// TODO: true?
+		return isFalsy( value ) ? false : ( this.valueIfTrue || true ) as any;
 	}
 
 	/**
@@ -999,7 +1068,7 @@ export class TemplateIfBinding extends TemplateBinding {
 //
 // @param {module:ui/template~TemplateValueSchema} schema
 // @returns {Boolean}
-function hasTemplateBinding( schema ) {
+function hasTemplateBinding( schema: any ) {
 	if ( !schema ) {
 		return false;
 	}
@@ -1031,7 +1100,7 @@ function hasTemplateBinding( schema ) {
 // @param {module:ui/template~TemplateValueSchema} schema
 // @param {Node} node DOM Node updated when {@link module:utils/observablemixin~ObservableMixin} changes.
 // @returns {Array}
-function getValueSchemaValue( schema, node ) {
+function getValueSchemaValue( schema: ( string | FalsyValue | TemplateBinding )[], node: Node ) {
 	return schema.map( schemaItem => {
 		// Process {@link module:ui/template~TemplateBinding} bindings.
 		if ( schemaItem instanceof TemplateBinding ) {
@@ -1049,17 +1118,22 @@ function getValueSchemaValue( schema, node ) {
 // @param {module:ui/template~TemplateValueSchema} schema
 // @param {Function} updater A function which updates the DOM (like attribute or text).
 // @param {Node} node DOM Node updated when {@link module:utils/observablemixin~ObservableMixin} changes.
-function syncValueSchemaValue( schema, updater, { node } ) {
-	let value = getValueSchemaValue( schema, node );
+function syncValueSchemaValue(
+	schema: ( string | FalsyValue | TemplateBinding )[],
+	updater: Updater,
+	{ node }: { node: Node }
+) {
+	const values = getValueSchemaValue( schema, node );
+	let value: string | FalsyValue;
 
 	// Check if schema is a single Template.bind.if, like:
 	//
 	//		class: Template.bind.if( 'foo' )
 	//
 	if ( schema.length == 1 && schema[ 0 ] instanceof TemplateIfBinding ) {
-		value = value[ 0 ];
+		value = values[ 0 ] as string;
 	} else {
-		value = value.reduce( arrayValueReducer, '' );
+		value = values.reduce( arrayValueReducer, '' );
 	}
 
 	if ( isFalsy( value ) ) {
@@ -1069,13 +1143,18 @@ function syncValueSchemaValue( schema, updater, { node } ) {
 	}
 }
 
+interface Updater {
+	set( value: string ): void;
+	remove(): void;
+}
+
 // Returns an object consisting of `set` and `remove` functions, which
 // can be used in the context of DOM Node to set or reset `textContent`.
 // @see module:ui/view~View#_bindToObservable
 //
 // @param {Node} node DOM Node to be modified.
 // @returns {Object}
-function getTextUpdater( node ) {
+function getTextUpdater( node: Node ): Updater {
 	return {
 		set( value ) {
 			node.textContent = value;
@@ -1095,7 +1174,7 @@ function getTextUpdater( node ) {
 // @param {String} attrName Name of the attribute to be modified.
 // @param {String} [ns=null] Namespace to use.
 // @returns {Object}
-function getAttributeUpdater( el, attrName, ns ) {
+function getAttributeUpdater( el: Element, attrName: string, ns: string | null ): Updater {
 	return {
 		set( value ) {
 			el.setAttributeNS( ns, attrName, value );
@@ -1114,7 +1193,7 @@ function getAttributeUpdater( el, attrName, ns ) {
 // @param {Node} node DOM Node to be modified.
 // @param {String} styleName Name of the style to be modified.
 // @returns {Object}
-function getStyleUpdater( el, styleName ) {
+function getStyleUpdater( el: any, styleName: string ): Updater {
 	return {
 		set( value ) {
 			el.style[ styleName ] = value;
@@ -1130,7 +1209,7 @@ function getStyleUpdater( el, styleName ) {
 //
 // @param {module:ui/template~TemplateDefinition} def
 // @returns {module:ui/template~TemplateDefinition}
-function clone( def ) {
+function clone<T>( def: T ): T {
 	const clone = cloneDeepWith( def, value => {
 		// Don't clone the `Template.bind`* bindings because of the references to Observable
 		// and DomEmitterMixin instances inside, which would also be traversed and cloned by greedy
@@ -1161,7 +1240,7 @@ function clone( def ) {
 //
 // @param {module:ui/template~TemplateDefinition} def
 // @returns {module:ui/template~TemplateDefinition} Normalized definition.
-function normalize( def ) {
+function normalize( def: any ) {
 	if ( typeof def == 'string' ) {
 		def = normalizePlainTextDefinition( def );
 	} else if ( def.text ) {
@@ -1223,7 +1302,7 @@ function normalize( def ) {
 //		}
 //
 // @param {Object} attributes
-function normalizeAttributes( attributes ) {
+function normalizeAttributes( attributes: any ) {
 	for ( const a in attributes ) {
 		if ( attributes[ a ].value ) {
 			attributes[ a ].value = toArray( attributes[ a ].value );
@@ -1251,7 +1330,7 @@ function normalizeAttributes( attributes ) {
 //
 // @param {Object} listeners
 // @returns {Object} Object containing normalized listeners.
-function normalizeListeners( listeners ) {
+function normalizeListeners( listeners: any ) {
 	for ( const l in listeners ) {
 		arrayify( listeners, l );
 	}
@@ -1269,7 +1348,7 @@ function normalizeListeners( listeners ) {
 //
 // @param {String} def
 // @returns {module:ui/template~TemplateDefinition} Normalized template definition.
-function normalizePlainTextDefinition( def ) {
+function normalizePlainTextDefinition( def: string ) {
 	return {
 		text: [ def ]
 	};
@@ -1290,7 +1369,7 @@ function normalizePlainTextDefinition( def ) {
 //		]
 //
 // @param {module:ui/template~TemplateDefinition} def
-function normalizeTextDefinition( def ) {
+function normalizeTextDefinition( def: any ) {
 	def.text = toArray( def.text );
 }
 
@@ -1310,7 +1389,7 @@ function normalizeTextDefinition( def ) {
 //
 // @param {Object} obj
 // @param {String} key
-function arrayify( obj, key ) {
+function arrayify( obj: any, key: string ) {
 	obj[ key ] = toArray( obj[ key ] );
 }
 
@@ -1320,7 +1399,7 @@ function arrayify( obj, key ) {
 // @param {String} prev
 // @param {String} cur
 // @returns {String}
-function arrayValueReducer( prev, cur ) {
+function arrayValueReducer( prev: string, cur: string | FalsyValue ) {
 	if ( isFalsy( cur ) ) {
 		return prev;
 	} else if ( isFalsy( prev ) ) {
@@ -1344,7 +1423,7 @@ function arrayValueReducer( prev, cur ) {
 // @param {Object} obj Base object.
 // @param {Object} ext Object extending base.
 // @returns {String}
-function extendObjectValueArray( obj, ext ) {
+function extendObjectValueArray( obj: any, ext: any ) {
 	for ( const a in ext ) {
 		if ( obj[ a ] ) {
 			obj[ a ].push( ...ext[ a ] );
@@ -1360,7 +1439,7 @@ function extendObjectValueArray( obj, ext ) {
 // @param {module:ui/template~Template} def A template instance to be extended.
 // @param {module:ui/template~TemplateDefinition} def A definition which is to extend the template instance.
 // @param {Object} Error context.
-function extendTemplate( template, def ) {
+function extendTemplate( template: Template, def: any ) {
 	if ( def.attributes ) {
 		if ( !template.attributes ) {
 			template.attributes = {};
@@ -1378,11 +1457,11 @@ function extendTemplate( template, def ) {
 	}
 
 	if ( def.text ) {
-		template.text.push( ...def.text );
+		template.text!.push( ...def.text );
 	}
 
 	if ( def.children && def.children.length ) {
-		if ( template.children.length != def.children.length ) {
+		if ( template.children!.length != def.children.length ) {
 			/**
 			 * The number of children in extended definition does not match.
 			 *
@@ -1397,7 +1476,7 @@ function extendTemplate( template, def ) {
 		let childIndex = 0;
 
 		for ( const childDef of def.children ) {
-			extendTemplate( template.children[ childIndex++ ], childDef );
+			extendTemplate( template.children![ childIndex++ ] as any, childDef );
 		}
 	}
 }
@@ -1407,7 +1486,7 @@ function extendTemplate( template, def ) {
 //
 // @private
 // @param {*} value Value to be checked.
-function isFalsy( value ) {
+function isFalsy( value: unknown ): value is FalsyValue {
 	return !value && value !== 0;
 }
 
@@ -1415,7 +1494,7 @@ function isFalsy( value ) {
 //
 // @private
 // @param {*} value Value to be checked.
-function isView( item ) {
+function isView( item: unknown ): item is View {
 	return item instanceof View;
 }
 
@@ -1423,7 +1502,7 @@ function isView( item ) {
 //
 // @private
 // @param {*} value Value to be checked.
-function isTemplate( item ) {
+function isTemplate( item: unknown ): item is Template {
 	return item instanceof Template;
 }
 
@@ -1431,15 +1510,22 @@ function isTemplate( item ) {
 //
 // @private
 // @param {*} value Value to be checked.
-function isViewCollection( item ) {
+function isViewCollection( item: unknown ): item is ViewCollection {
 	return item instanceof ViewCollection;
+}
+
+// Checks if value array contains the one with namespace.
+function isNamespaced(
+	attrValue: AttributeValues
+): attrValue is [ { ns: string; value: ( string | FalsyValue | TemplateBinding )[] } ] {
+	return isObject( attrValue[ 0 ] ) && ( attrValue[ 0 ] as any ).ns;
 }
 
 // Creates an empty skeleton for {@link module:ui/template~Template#revert}
 // data.
 //
 // @private
-function getEmptyRevertData() {
+function getEmptyRevertData(): RevertData {
 	return {
 		children: [],
 		bindings: [],
@@ -1452,7 +1538,7 @@ function getEmptyRevertData() {
 //
 // @private
 // @param {String} attrName Attribute name to check.
-function shouldExtend( attrName ) {
+function shouldExtend( attrName: string ) {
 	return attrName == 'class' || attrName == 'style';
 }
 
@@ -1547,6 +1633,31 @@ function shouldExtend( attrName ) {
  * @property {Object.<String, module:ui/template~TemplateListenerSchema>} [on]
  * See the template {@link module:ui/template~Template#eventListeners} property.
  */
+export type TemplateDefinition = string |
+	Template |
+	{
+		tag: string;
+		attributes?: Record<string, TemplateValueSchema>;
+		children?: Iterable<View | Node | Template | TemplateDefinition>;
+		on?: Record<string, TemplateListenerSchema>;
+	} |
+	{
+		text: ArrayOrItem<TemplateSimpleValueSchema>;
+	};
+
+export type FalsyValue = false | null | undefined | '';
+
+export type NamespacedValue<T> = { ns: string; value: T };
+
+export type TemplateSimpleValueSchema = string | FalsyValue | AttributeBinding;
+
+export type TemplateValueSchema = ArrayOrItem<
+		TemplateSimpleValueSchema |
+		NamespacedValue<TemplateSimpleValueSchema>
+	> |
+	Record<string, string | FalsyValue | AttributeBinding>;
+
+export type TemplateListenerSchema = ArrayOrItem<ListenerBinding>;
 
 /**
  * Describes a value of an HTML element attribute or `textContent`. It allows combining multiple
@@ -1666,12 +1777,31 @@ function shouldExtend( attrName ) {
  * @type {Object|String|Array}
  */
 
+declare const AttributeBindingSymbol: unique symbol;
+declare const ListenerBindingSymbol: unique symbol;
+
+export interface AttributeBinding { _opaque: typeof AttributeBindingSymbol }
+export interface ListenerBinding { _opaque: typeof ListenerBindingSymbol }
+
 /**
  * The return value of {@link ~Template.bind `Template.bind()`}. It provides `to()` and `if()`
  * methods to create the {@link module:utils/observablemixin~Observable observable} attribute and event bindings.
  *
  * @interface module:ui/template~BindChain
  */
+export interface BindChain<TObservable> {
+	to<TAttribute extends keyof TObservable & string>(
+		attribute: TAttribute,
+		callback?: ( value: TObservable[ TAttribute ], node: Node ) => ( string | FalsyValue )
+	): AttributeBinding;
+	to( eventNameOrCallback: string | ( ( domEvent: Event ) => void ) ): ListenerBinding;
+
+	if<TAttribute extends keyof TObservable & string>(
+		attribute: TAttribute,
+		valueIfTrue?: unknown,
+		callback?: ( value: TObservable[ TAttribute ], node: Node ) => ( string | FalsyValue )
+	): AttributeBinding;
+}
 
 /**
  * Binds an {@link module:utils/observablemixin~Observable observable} to either:
@@ -1760,6 +1890,19 @@ function shouldExtend( attrName ) {
  * @private
  * @interface module:ui/template~RenderData
  */
+interface RenderData {
+	node: HTMLElement | Text;
+	intoFragment: boolean;
+	isApplying: boolean;
+	revertData?: RevertData;
+}
+
+interface RevertData {
+	text?: string | null;
+	children: RevertData[];
+	bindings: ( () => void )[][];
+	attributes: Record<string, string | null>;
+}
 
 /**
  * Tells {@link module:ui/template~Template#_renderNode} to render
