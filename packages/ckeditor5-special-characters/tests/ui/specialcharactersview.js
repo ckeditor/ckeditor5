@@ -27,6 +27,14 @@ describe( 'SpecialCahractersView', () => {
 		view.destroy();
 	} );
 
+	describe( 'constructor()', () => {
+		it( '#items contains character category button and grid view', () => {
+			expect( view.items.get( 0 ) ).to.equal( navigationView.groupDropdownView.buttonView );
+			expect( view.items.get( 1 ) ).to.equal( gridView );
+			expect( view.items.length ).to.equal( 2 );
+		} );
+	} );
+
 	describe( 'focus()', () => {
 		it( 'focuses the navigation view', () => {
 			const spy = sinon.spy( navigationView, 'focus' );
