@@ -83,6 +83,7 @@ export default class TooltipManager {
 	}
 
 	destroy() {
+		this._pinTooltipDebounced.cancel();
 		this.balloonPanelView.destroy();
 		this.stopListening();
 	}

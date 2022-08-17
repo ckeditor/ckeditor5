@@ -74,6 +74,14 @@ describe( 'TooltipManager', () => {
 
 			sinon.assert.called( stopListeningSpy );
 		} );
+
+		it( 'should cancel any queued pinning', () => {
+			const cancelSpy = sinon.spy( tooltipManager._pinTooltipDebounced, 'cancel' );
+
+			tooltipManager.destroy();
+
+			sinon.assert.called( cancelSpy );
+		} );
 	} );
 
 	describe( 'displaying tooltips', () => {
