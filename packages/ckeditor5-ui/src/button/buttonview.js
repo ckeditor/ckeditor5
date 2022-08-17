@@ -110,7 +110,7 @@ export default class ButtonView extends View {
 		 * @see #_getTooltipString
 		 * @private
 		 * @observable
-		 * @member {Boolean} #_tooltipString
+		 * @member {String|undefined} #_tooltipString
 		 */
 		this.bind( '_tooltipString' ).to(
 			this, 'tooltip',
