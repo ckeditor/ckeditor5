@@ -25,20 +25,22 @@ const BALLOON_CLASS = 'ck-tooltip';
  * {@glink framework/guides/architecture/ui-library UI components} support tooltips out-of-the-box via observable properties
  * (see {@link module:ui/button/buttonview~ButtonView#tooltip} and {@link module:ui/button/buttonview~ButtonView#tooltipPosition}).
  *
- * ## Displaying tooltips
+ * # Displaying tooltips
  *
  * To display a tooltip, set `data-cke-tooltip-text` attribute on any DOM element:
  *
  *		domElement.dataset.ckeTooltipText = 'My tooltip';
  *
- * ## Positioning tooltips
+ * The tooltip will show up whenever the user moves the mouse over the element or the element gets focus in DOM.
+ *
+ * # Positioning tooltips
  *
  * To change the position of the tooltip, use the `data-cke-tooltip-position` attribute (`s`, `se`, `sw`, `n`, `e`, or `w`):
  *
  *		domElement.dataset.ckeTooltipText = 'Tooltip to the north';
  *		domElement.dataset.ckeTooltipPosition = 'n';
  *
- * ## Disabling tooltips
+ * # Disabling tooltips
  *
  * In order to disable the tooltip  temporarily, use the `data-cke-tooltip-disabled` attribute:
  *
@@ -46,7 +48,7 @@ const BALLOON_CLASS = 'ck-tooltip';
  *		domElement.dataset.ckeTooltipDisabled = 'true';
  *
  *
- * ## Styling tooltips
+ * # Styling tooltips
  *
  * By default, the tooltip has `.ck-tooltip` class and its text inner `.ck-tooltip__text`.
  *
