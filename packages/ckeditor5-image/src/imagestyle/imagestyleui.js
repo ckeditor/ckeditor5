@@ -131,7 +131,7 @@ export default class ImageStyleUI extends Plugin {
 			const splitButtonView = dropdownView.buttonView;
 			const splitButtonViewArrow = splitButtonView.arrowView;
 
-			addToolbarToDropdown( dropdownView, buttonViews );
+			addToolbarToDropdown( dropdownView, buttonViews, { enableActiveItemFocusOnDropdownOpen: true } );
 
 			splitButtonView.set( {
 				label: getDropdownButtonTitle( title, defaultButton.label ),

@@ -9,7 +9,7 @@ menu-title: Overview
 <info-box hint>
 **Quick recap**
 
-In the previous guides you have learned several different methods of getting you CKEditor 5 installation up and running. Now you will learn how to utilize the power of popular JavaScript frameworks with our dedicated, ready-to-use CKEditor 5 components.
+In the previous guides you have learned several different methods of getting your CKEditor 5 installation up and running. Now you will learn how to utilize the power of popular JavaScript frameworks with our dedicated, ready-to-use CKEditor 5 components.
 </info-box>
 
 ## Is CKEditor 5 compatible with framework XYZ?
@@ -28,7 +28,7 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
 3. **If none exists, integrate CKEditor 5 with your framework by yourself.**
 
-	CKEditor 5 offers {@link installation/advanced/predefined-builds predefined builds} that expose a {@link installation/getting-started/basic-api rich JavaScript API} which you can use to {@link installation/getting-started/basic-api#creating-an-editor-with-create create editors} and {@link installation/getting-started/basic-api#interacting-with-the-editor control them}.
+	CKEditor 5 offers {@link installation/getting-started/predefined-builds predefined builds} that expose a {@link installation/getting-started/basic-api rich JavaScript API} which you can use to {@link installation/getting-started/basic-api#creating-an-editor-with-create create editors} and {@link installation/getting-started/basic-api#interacting-with-the-editor control them}.
 
 ## Official WYSIWYG editor integrations
 
@@ -62,12 +62,10 @@ ckeditor {
 
 ## Compatibility with CSS frameworks
 
-CKEditor 5 is compatible with popular CSS frameworks, such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments {@link installation/frameworks/css gathered in this guide}.
+CKEditor 5 is compatible with popular CSS frameworks, such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments that we have gathered {@link installation/frameworks/css in this guide}.
 
 <info-box hint>
 **What's next?**
 
 After reading this guide, you know how to integrate the editor with your own system. This step almost concludes the beginner's path with getting to know CKEditor 5.
-
-If you haven't done so yet, now is a great time to take a look at the {@link installation/getting-started/maintenance last article from this section} to learn more on how you can maintain your editor.
 </info-box>

@@ -259,6 +259,17 @@ describe( 'Alignment UI', () => {
 			expect( items.includes( 'Justify' ) ).to.be.true;
 		} );
 
+		it( 'should focus the first active button when dropdown is opened', () => {
+			const buttonAlignLeft = dropdown.toolbarView.items.get( 0 );
+			const buttonAlignRight = dropdown.toolbarView.items.get( 1 );
+			const spy = sinon.spy( buttonAlignRight, 'focus' );
+
+			buttonAlignLeft.isOn = false;
+			buttonAlignRight.isOn = true;
+			dropdown.isOpen = true;
+			sinon.assert.calledOnce( spy );
+		} );
+
 		describe( 'config', () => {
 			beforeEach( async () => {
 				// Clean up the editor created in main test suite hook.

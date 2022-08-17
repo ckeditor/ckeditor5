@@ -2,7 +2,7 @@
 ---
 menu-title: Installing plugins
 category: getting-started
-order: 30
+order: 50
 ---
 
 # Installing plugins
@@ -17,7 +17,7 @@ CKEditor 5 plugins are distributed through [npm](https://www.npmjs.com) packages
 
 In this guide you can learn how to add plugins to your editor in the two most common scenarios:
 
-* When you use a {@link installation/advanced/predefined-builds predefined editor build}.
+* When you use a {@link installation/getting-started/predefined-builds predefined editor build}.
 * When you {@link framework/guides/quick-start build your editor from source}.
 
 <info-box hint>
@@ -41,7 +41,7 @@ In order to start developing CKEditor 5 you will require:
 
 ## Adding a plugin to a build
 
-Adding plugins to existing, predefined builds is done through their customization. {@link installation/advanced/predefined-builds Predefined editor builds} are maintained in their respective GitHub repositories. Therefore, assuming that you want to customize the [classic editor build](https://npmjs.com/package/@ckeditor/ckeditor5-build-classic), you need to:
+Adding plugins to existing, predefined builds is done through their customization. {@link installation/getting-started/predefined-builds Predefined editor builds} are maintained in their respective GitHub repositories. Therefore, assuming that you want to customize the [classic editor build](https://npmjs.com/package/@ckeditor/ckeditor5-build-classic), you need to:
 
 1. Clone the build repository.
 2. Install the plugin package.

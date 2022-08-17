@@ -147,10 +147,14 @@ export default class StyleCommand extends Command {
 	 *   * If the selection is on a range, the command applies the style classes to the nearest block parent element.
 	 *
 	 * @fires execute
-	 * @param {String} styleName Style name matching the one defined in the
+	 * @param {Object} [options] Command options.
+	 * @param {String} options.styleName Style name matching the one defined in the
 	 * {@link module:style/style~StyleConfig#definitions configuration}.
+	 * @param {Boolean} [options.forceValue] Whether the command should add given style (`true`) or remove it (`false`) from the selection.
+	 * If not set (default), the command will toggle the style basing on the first selected node. Note, that this will not force
+	 * setting a style on an element that cannot receive given style.
 	 */
-	execute( styleName ) {
+	execute( { styleName, forceValue } ) {
 		if ( !this.enabledStyles.includes( styleName ) ) {
 			/**
 			 * Style command can be executed only with a correct style name.
@@ -177,6 +181,8 @@ export default class StyleCommand extends Command {
 			...this._styleDefinitions.block
 		].find( ( { name } ) => name == styleName );
 
+		const shouldAddStyle = forceValue === undefined ? !this.value.includes( definition.name ) : forceValue;
+
 		model.change( () => {
 			let selectables;
 
@@ -187,10 +193,10 @@ export default class StyleCommand extends Command {
 			}
 
 			for ( const selectable of selectables ) {
-				if ( this.value.includes( definition.name ) ) {
-					htmlSupport.removeModelHtmlClass( definition.element, definition.classes, selectable );
-				} else {
+				if ( shouldAddStyle ) {
 					htmlSupport.addModelHtmlClass( definition.element, definition.classes, selectable );
+				} else {
+					htmlSupport.removeModelHtmlClass( definition.element, definition.classes, selectable );
 				}
 			}
 		} );

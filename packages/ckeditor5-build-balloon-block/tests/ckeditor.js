@@ -67,8 +67,18 @@ describe( 'BalloonEditor (block) build', () => {
 				} );
 		} );
 
-		it( 'sets the data back to the editor element', () => {
+		it( 'clears editor element if config.updateSourceElementOnDestroy flag is not set', () => {
 			editor.setData( '<p>foo</p>' );
+
+			return editor.destroy()
+				.then( () => {
+					expect( editorElement.innerHTML ).to.equal( '' );
+				} );
+		} );
+
+		it( 'sets the data back to the editor element if config.updateSourceElementOnDestroy flag is set', () => {
+			editor.setData( '<p>foo</p>' );
+			editor.config.set( 'updateSourceElementOnDestroy', true );
 
 			return editor.destroy()
 				.then( () => {

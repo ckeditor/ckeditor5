@@ -22,15 +22,15 @@ msgstr "Lägg in tabell"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr ""
+msgstr "Rubrikkolumn"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Infoga kolumn till vänster"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Infoga kolumn till höger"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
@@ -38,7 +38,7 @@ msgstr "Ta bort kolumn"
 
 msgctxt "Label for the select the entire table column button."
 msgid "Select column"
-msgstr ""
+msgstr "Välj kolumn"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -46,15 +46,15 @@ msgstr "Kolumn"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr ""
+msgstr "Rubrikrad"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr ""
+msgstr "Infoga rad nedanför"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr ""
+msgstr "Infoga rad ovanför"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
@@ -62,7 +62,7 @@ msgstr "Ta bort rad"
 
 msgctxt "Label for the select the entire table row button."
 msgid "Select row"
-msgstr ""
+msgstr "Välj rad"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -70,192 +70,192 @@ msgstr "Rad"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr ""
+msgstr "Sammanfoga celler uppåt"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr ""
+msgstr "Sammanfoga celler åt höger"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr ""
+msgstr "Sammanfoga celler neråt"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr ""
+msgstr "Sammanfoga celler åt vänster"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr ""
+msgstr "Dela cell vertikalt"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr ""
+msgstr "Dela cell horisontellt"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr ""
+msgstr "Sammanfoga celler"
 
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
-msgstr ""
+msgstr "Tabellverktygsfält"
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table."
 msgid "Table properties"
-msgstr ""
+msgstr "Tabellegenskaper"
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table cell."
 msgid "Cell properties"
-msgstr ""
+msgstr "Cellegenskaper"
 
 msgctxt "The label describing a group of border–related form fields (border style, color, etc.)."
 msgid "Border"
-msgstr ""
+msgstr "Kant"
 
 msgctxt "The label for the dropdown that allows configuring the border style of a table or a table cell."
 msgid "Style"
-msgstr ""
+msgstr "Stil"
 
 msgctxt "The label for the input that allows configuring the width of a table or a table cell or the width of a border."
 msgid "Width"
-msgstr ""
+msgstr "Bredd"
 
 msgctxt "The label for the input that allows configuring the height of a table or a table cell."
 msgid "Height"
-msgstr ""
+msgstr "Höjd"
 
 msgctxt "The label for the input that allows configuring the border color of a table or a table cell."
 msgid "Color"
-msgstr ""
+msgstr "Färg"
 
 msgctxt "The label for the input that allows configuring the background color of a table or a table cell."
 msgid "Background"
-msgstr ""
+msgstr "Bakgrund"
 
 msgctxt "The label for the input that allows configuring the padding of a table cell."
 msgid "Padding"
-msgstr ""
+msgstr "Marginal"
 
 msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
 msgid "Dimensions"
-msgstr ""
+msgstr "Mått"
 
 msgctxt "The label for the group of toolbars that allows configuring the text alignment in a table cell."
 msgid "Table cell text alignment"
-msgstr ""
+msgstr "Textjustering i tabellcell"
 
 msgctxt "The label for the toolbar that allows configuring the alignment of a table."
 msgid "Alignment"
-msgstr ""
+msgstr "Justering"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
-msgstr ""
+msgstr "Verktygsfält för horisontell textjustering"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell."
 msgid "Vertical text alignment toolbar"
-msgstr ""
+msgstr "Verktygsfält för vertikal textjustering"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table."
 msgid "Table alignment toolbar"
-msgstr ""
+msgstr "Verktygsfält för tabelljustering"
 
 msgctxt "The label for the border style dropdown when no style is applied to a table or a table cell."
 msgid "None"
-msgstr ""
+msgstr "Inget"
 
 msgctxt "The label for the border style dropdown when the solid border is applied to a table or a table cell."
 msgid "Solid"
-msgstr ""
+msgstr "Enfärgad"
 
 msgctxt "The label for the border style dropdown when the dotted border is applied to a table or a table cell."
 msgid "Dotted"
-msgstr ""
+msgstr "Prickig"
 
 msgctxt "The label for the border style dropdown when the dashed border is applied to a table or a table cell."
 msgid "Dashed"
-msgstr ""
+msgstr "Streckad"
 
 msgctxt "The label for the border style dropdown when the double border is applied to a table or a table cell."
 msgid "Double"
-msgstr ""
+msgstr "Dubbel"
 
 msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
 msgid "Groove"
-msgstr ""
+msgstr "Skåra"
 
 msgctxt "The label for the border style dropdown when the ridge border is applied to a table or a table cell."
 msgid "Ridge"
-msgstr ""
+msgstr "Kant"
 
 msgctxt "The label for the border style dropdown when the inset border is applied to a table or a table cell."
 msgid "Inset"
-msgstr ""
+msgstr "Infälld"
 
 msgctxt "The label for the border style dropdown when the outset border is applied to a table or a table cell."
 msgid "Outset"
-msgstr ""
+msgstr "Utfälld"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
 msgid "Align cell text to the left"
-msgstr ""
+msgstr "Vänsterjustera celltext"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the center."
 msgid "Align cell text to the center"
-msgstr ""
+msgstr "Centrera celltext"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the right."
 msgid "Align cell text to the right"
-msgstr ""
+msgstr "Högerjustera celltext"
 
 msgctxt "The label used by assistive technologies describing a button that justifies the table cell text."
 msgid "Justify cell text"
-msgstr ""
+msgstr "Anpassa celltext"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the top."
 msgid "Align cell text to the top"
-msgstr ""
+msgstr "Toppjustera celltext"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the middle."
 msgid "Align cell text to the middle"
-msgstr ""
+msgstr "Centrera celltext"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
-msgstr ""
+msgstr "Bottenjustera celltext"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
 msgid "Align table to the left"
-msgstr ""
+msgstr "Vänsterjustera tabell"
 
 msgctxt "The label used by assistive technologies describing a button that centers the table."
 msgid "Center table"
-msgstr ""
+msgstr "Centrera tabell"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
 msgid "Align table to the right"
-msgstr ""
+msgstr "Högerjustera tabell"
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
-msgstr ""
+msgstr "Färgen är ogiltig. Testa \"#FF0000\" eller \"rgb(255,0,0)\" eller \"röd\"."
 
 msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
-msgstr ""
+msgstr "Värdet är ogiltigt. Testa \"10px\" eller \"2em\" eller helt enkelt \"2\"."
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "Färgväljare"
 
 msgctxt "The button label for the table toolbar hiding caption attached to the table."
 msgid "Toggle caption off"
-msgstr ""
+msgstr "Slå av rubrik"
 
 msgctxt "The button label for the table toolbar showing caption attached to the table."
 msgid "Toggle caption on"
-msgstr ""
+msgstr "Slå på rubrik"
 
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
-msgstr ""
+msgstr "Ange tabellrubrik"

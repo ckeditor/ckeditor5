@@ -341,14 +341,6 @@ describe( 'DomConverter', () => {
 
 							expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.false;
 						} );
-
-						// SPECIAL CASE (see ckeditor5#5564).
-						it( 'should return true for a <br> element which is the only child of its block parent', () => {
-							const context = document.createElement( elementName );
-							context.innerHTML = '<br>';
-
-							expect( converter.isBlockFiller( context.firstChild ) ).to.be.true;
-						} );
 					} );
 				}
 

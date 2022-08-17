@@ -3,6 +3,7 @@ category: features-image-upload
 menu-title: CKBox file manager
 modified_at: 2022-06-20
 order: 20
+badges: [ premium ]
 ---
 
 {@snippet features/build-ckbox-source}
@@ -14,7 +15,9 @@ This CKBox integration feature allows you to effortlessly and intuitively insert
 <info-box info>
 	CKBox is a commercial solution. Please [contact us](https://ckeditor.com/contact/) if you would like to purchase a license. Let us know if you have any feedback or questions!
 
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds} for convenience, but the editor will still work properly without activating it.
+	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features).
+
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds} for convenience, but the editor will still work properly without activating it.
 </info-box>
 
 ## Demo
@@ -38,7 +41,7 @@ To use this feature in your application, you must first load the CKBox library a
 The easiest way to load the CKBox library is to include the `<script>` tag loading the `ckbox.js` file first:
 
 ```html
-<script src="https://cdn.ckbox.io/CKBox/1.0.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/1.1.0/ckbox.js"></script>
 ```
 
 Then, install the [`@ckeditor/ckeditor5-ckbox`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox) package:
@@ -150,8 +153,8 @@ ClassicEditor
 Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
-<script src="https://cdn.ckbox.io/CKBox/1.0.0/ckbox.js"></script>
-<script src="https://cdn.ckbox.io/CKBox/1.0.0/translations/es.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/1.1.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/1.1.0/translations/es.js"></script>
 ```
 
 ### Providing the token URL

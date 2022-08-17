@@ -149,4 +149,14 @@ describe( 'SpecialCharactersNavigationView', () => {
 			} );
 		} );
 	} );
+
+	describe( 'focus()', () => {
+		it( 'focuses the character categories dropdown', () => {
+			const spy = sinon.spy( view.groupDropdownView, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
 } );

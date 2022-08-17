@@ -395,7 +395,20 @@ describe( 'DecoupledEditor', () => {
 					} );
 			} );
 
+			// We don't update the source element by default, so after destroy, it should become empty.
+			it( 'don\'t set data back to the element', () => {
+				editor.setData( '<p>foo</p><p>bar</p>' );
+
+				return editor.destroy()
+					.then( () => {
+						expect( editableElement.innerHTML ).to.equal( '' );
+					} );
+			} );
+
+			// Adding `updateSourceElementOnDestroy` config to the editor allows setting the data
+			// back to the source element after destroy.
 			it( 'sets data back to the element', () => {
+				editor.config.set( 'updateSourceElementOnDestroy', true );
 				editor.setData( '<p>foo</p>' );
 
 				return editor.destroy()

@@ -54,4 +54,4 @@ msgstr "Fontin taustaväri"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
+msgstr "Asiakirjan värit"

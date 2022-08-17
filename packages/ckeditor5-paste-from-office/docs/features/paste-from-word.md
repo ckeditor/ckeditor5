@@ -21,7 +21,7 @@ The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also
 </info-box>
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo

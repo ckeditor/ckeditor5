@@ -134,15 +134,15 @@ msgstr "Achtergrond"
 
 msgctxt "The label for the input that allows configuring the padding of a table cell."
 msgid "Padding"
-msgstr ""
+msgstr "Opvulling"
 
 msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
 msgid "Dimensions"
-msgstr ""
+msgstr "Afmetingen"
 
 msgctxt "The label for the group of toolbars that allows configuring the text alignment in a table cell."
 msgid "Table cell text alignment"
-msgstr ""
+msgstr "Tekstuitlijning tabelcel"
 
 msgctxt "The label for the toolbar that allows configuring the alignment of a table."
 msgid "Alignment"
@@ -150,15 +150,15 @@ msgstr "Uitlijning"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
-msgstr ""
+msgstr "Werkbalk voor horizontale tekstuitlijning"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell."
 msgid "Vertical text alignment toolbar"
-msgstr ""
+msgstr "Werkbalk voor verticale tekstuitlijning"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table."
 msgid "Table alignment toolbar"
-msgstr ""
+msgstr "Werkbalk tabeluitlijning"
 
 msgctxt "The label for the border style dropdown when no style is applied to a table or a table cell."
 msgid "None"
@@ -166,7 +166,7 @@ msgstr "Geen"
 
 msgctxt "The label for the border style dropdown when the solid border is applied to a table or a table cell."
 msgid "Solid"
-msgstr ""
+msgstr "Ononderbroken"
 
 msgctxt "The label for the border style dropdown when the dotted border is applied to a table or a table cell."
 msgid "Dotted"
@@ -174,7 +174,7 @@ msgstr "Stippellijn"
 
 msgctxt "The label for the border style dropdown when the dashed border is applied to a table or a table cell."
 msgid "Dashed"
-msgstr ""
+msgstr "Onderbroken"
 
 msgctxt "The label for the border style dropdown when the double border is applied to a table or a table cell."
 msgid "Double"
@@ -182,23 +182,23 @@ msgstr "Dubbel"
 
 msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
 msgid "Groove"
-msgstr ""
+msgstr "Sleuf"
 
 msgctxt "The label for the border style dropdown when the ridge border is applied to a table or a table cell."
 msgid "Ridge"
-msgstr ""
+msgstr "Rand"
 
 msgctxt "The label for the border style dropdown when the inset border is applied to a table or a table cell."
 msgid "Inset"
-msgstr ""
+msgstr "Ingezet"
 
 msgctxt "The label for the border style dropdown when the outset border is applied to a table or a table cell."
 msgid "Outset"
-msgstr ""
+msgstr "Opliggend"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
 msgid "Align cell text to the left"
-msgstr ""
+msgstr "Celtekst links uitlijnen"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the center."
 msgid "Align cell text to the center"
@@ -206,27 +206,27 @@ msgstr "Tekst in de cel centreren"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the right."
 msgid "Align cell text to the right"
-msgstr ""
+msgstr "Celtekst rechts uitlijnen"
 
 msgctxt "The label used by assistive technologies describing a button that justifies the table cell text."
 msgid "Justify cell text"
-msgstr ""
+msgstr "Celtekst uitvullen"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the top."
 msgid "Align cell text to the top"
-msgstr ""
+msgstr "Celtekst boven uitlijnen"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the middle."
 msgid "Align cell text to the middle"
-msgstr ""
+msgstr "Celtekst in het midden uitlijnen"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
-msgstr ""
+msgstr "Celtekst onder uitlijnen"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
 msgid "Align table to the left"
-msgstr ""
+msgstr "Tabel links uitlijnen"
 
 msgctxt "The label used by assistive technologies describing a button that centers the table."
 msgid "Center table"
@@ -234,7 +234,7 @@ msgstr "Tabel centreren"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
 msgid "Align table to the right"
-msgstr ""
+msgstr "Tabel rechts uitlijnen"
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
@@ -242,20 +242,20 @@ msgstr "De kleur in niet correct, probeer \"#FF0000\" of \"rgb(255,0,0)\" of \"r
 
 msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
-msgstr ""
+msgstr "De waarde is ongeldig. Probeer '10px' of '2em' of gewoon '2'."
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "Kleurkiezer"
 
 msgctxt "The button label for the table toolbar hiding caption attached to the table."
 msgid "Toggle caption off"
-msgstr ""
+msgstr "Bijschrift uitzetten"
 
 msgctxt "The button label for the table toolbar showing caption attached to the table."
 msgid "Toggle caption on"
-msgstr ""
+msgstr "Bijschrift aanzetten"
 
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
-msgstr ""
+msgstr "Voer tabelbijschrift in"
