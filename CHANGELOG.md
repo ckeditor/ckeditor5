@@ -92,9 +92,11 @@ Other releases:
 
 ## [35.0.0](https://github.com/ckeditor/ckeditor5/compare/v34.2.0...v35.0.0) (2022-07-29)
 
-### Release highlights
+### Security fix
 
 We are happy to announce the release of CKEditor 5 v35.0.0 that contains a security fix for the [Markdown GFM](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm), [HTML support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support) and [HTML embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed) packages. Even though this issue affects only a narrow group of integrators, an upgrade is highly recommended! You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-42wq-rch8-6f6j) and [contact us](https://ckeditor.com/contact/) if you have more questions.
+
+### Release highlights
 
 This release introduces the following new features:
 
@@ -103,7 +105,7 @@ This release introduces the following new features:
 * The [`@ckeditor/ckeditor5-utils`](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils) package is now written in TypeScript.
 * We have updated and corrected translations. 39 languages are now fully covered by professional translators.
 
-<!-- TODO: Add a link to the blog post. -->
+Read about release highlights in a dedicated blog post: https://ckeditor.com/blog/ckeditor-5-v35.0.0-with-collaboration-and-typescript-migration/
 
 Please refer to the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/migration-to-35.html) to learn more about these changes.
 
