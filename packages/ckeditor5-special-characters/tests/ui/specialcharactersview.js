@@ -3,10 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals document */
+
 import SpecialCahractersView from '../../src/ui/specialcharactersview';
 import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview';
 import CharacterGridView from '../../src/ui/charactergridview';
 import CharacterInfoView from '../../src/ui/characterinfoview';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'SpecialCahractersView', () => {
 	let view, navigationView, gridView, infoView, locale;
@@ -21,9 +24,11 @@ describe( 'SpecialCahractersView', () => {
 		infoView = new CharacterInfoView( locale );
 		view = new SpecialCahractersView( locale, navigationView, gridView, infoView );
 		view.render();
+		document.body.appendChild( view.element );
 	} );
 
 	afterEach( () => {
+		view.element.remove();
 		view.destroy();
 	} );
 
@@ -32,6 +37,51 @@ describe( 'SpecialCahractersView', () => {
 			expect( view.items.get( 0 ) ).to.equal( navigationView.groupDropdownView.buttonView );
 			expect( view.items.get( 1 ) ).to.equal( gridView );
 			expect( view.items.length ).to.equal( 2 );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		describe( 'activates keyboard navigation in the special characters view', () => {
+			it( 'so "tab" focuses the next focusable item', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.tab,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				// Mock the character category button is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.first.element;
+
+				// Spy the next view which in this case is the grid view
+				const stub = sinon.stub( view.items.last, 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( stub );
+			} );
+
+			it( 'so "shift + tab" focuses the previous focusable item', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.tab,
+					shiftKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				// Mock the grid view is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.last.element;
+
+				// Spy the previous view which in this case is the character category button
+				const spy = sinon.spy( view.items.first, 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 
