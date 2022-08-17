@@ -117,6 +117,12 @@ export default class Input extends Plugin {
 			model.deleteContent( modelSelection );
 		} );
 
+		if ( env.isAndroid ) {
+			this.listenTo( view.document, 'compositionupdate', () => {
+				view._renderer.render();
+			} );
+		}
+
 		// if ( env.isAndroid ) {
 		// 	view.document.selection.on( 'change', () => {
 		// 		if ( !view.document.isComposing ) {

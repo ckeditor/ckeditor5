@@ -700,10 +700,14 @@ export default class Renderer extends Observable {
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'replace' ) {
-				// TODO update idx according to inline filler position.
-				const viewText = viewElement.getChild( i ) as ViewText;
-				console.log( 'replace text node', domElement, i, expectedDomChildren[ i ], viewText );
-				this._updateText( viewText, { inlineFillerPosition } );
+				if ( !this.isComposing ) {
+					// TODO update idx according to inline filler position.
+					const viewText = viewElement.getChild( i ) as ViewText;
+					console.log( 'replace text node', domElement, i, expectedDomChildren[ i ], viewText );
+					this._updateText( viewText, { inlineFillerPosition } );
+				} else {
+					console.log( 'ignoring composition of text' );
+				}
 				i++;
 			} else if ( action === 'equal' ) {
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
