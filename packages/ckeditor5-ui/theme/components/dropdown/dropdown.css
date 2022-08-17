@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-@import "../tooltip/mixins/_tooltip.css";
-
 :root {
 	--ck-dropdown-max-width: 75vw;
 }
@@ -21,12 +19,6 @@
 	/* Dropdown button should span horizontally, e.g. in vertical toolbars */
 	& .ck-button.ck-dropdown__button {
 		width: 100%;
-
-		/* Disable main button's tooltip when the dropdown is open. Otherwise the panel may
-		partially cover the tooltip */
-		&.ck-on {
-			@mixin ck-tooltip_disabled;
-		}
 	}
 
 	& .ck-dropdown__panel {

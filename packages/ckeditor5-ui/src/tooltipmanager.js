@@ -303,7 +303,7 @@ function getDescendantWithTooltip( element ) {
 	}
 
 	// TODO: data- for hidden?
-	return element.closest( '[data-cke-tooltip-text]:not(.ck-tooltip_hidden)' );
+	return element.closest( '[data-cke-tooltip-text]:not([data-cke-tooltip-disabled])' );
 }
 
 function getTooltipData( element ) {

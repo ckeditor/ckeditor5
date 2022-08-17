@@ -165,8 +165,7 @@ describe( 'TooltipManager', () => {
 				sinon.assert.calledOnce( pinSpy );
 			} );
 
-			// TODO: data- instead maybe?
-			it( 'should not work for elements with a .ck-tooltip_hidden CSS class', () => {
+			it( 'should not work for elements with a data-cke-tooltip-disabled attribute', () => {
 				utils.dispatchMouseEnter( elements.disabled );
 				utils.waitForTheTooltipToShow( clock );
 
@@ -241,8 +240,7 @@ describe( 'TooltipManager', () => {
 				sinon.assert.calledOnce( pinSpy );
 			} );
 
-			// TODO: data- instead maybe?
-			it( 'should not work for elements with a .ck-tooltip_hidden CSS class', () => {
+			it( 'should not work for elements with a data-cke-tooltip-disabled', () => {
 				utils.dispatchFocus( elements.disabled );
 				utils.waitForTheTooltipToShow( clock );
 
@@ -675,7 +673,7 @@ function getElementsWithTooltips( definitions ) {
 		}
 
 		if ( def.isDisabled ) {
-			element.classList.add( 'ck-tooltip_hidden' );
+			element.setAttribute( 'data-cke-tooltip-disabled', 'true' );
 		}
 
 		element.id = name;

@@ -193,8 +193,9 @@ export default class DropdownView extends View {
 		buttonView.extendTemplate( {
 			attributes: {
 				class: [
-					bind.to( 'isOpen', isOpen => isOpen ? 'ck-dropdown__button ck-tooltip_hidden' : 'ck-dropdown__button' )
-				]
+					'ck-dropdown__button'
+				],
+				'data-cke-tooltip-disabled': bind.to( 'isOpen' )
 			}
 		} );
 
