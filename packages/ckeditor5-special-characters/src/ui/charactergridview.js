@@ -66,6 +66,12 @@ export default class CharacterGridView extends View {
 		 */
 		this.focusTracker = new FocusTracker();
 
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
 		this.keystrokes = new KeystrokeHandler();
 
 		addKeyboardHandlingForGrid( {
@@ -133,6 +139,9 @@ export default class CharacterGridView extends View {
 		return tile;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	render() {
 		super.render();
 
@@ -165,6 +174,9 @@ export default class CharacterGridView extends View {
 		this.keystrokes.destroy();
 	}
 
+	/**
+	 * Focuses the first focusable in {@link #tiles}.
+	 */
 	focus() {
 		this.tiles.get( 0 ).focus();
 	}
