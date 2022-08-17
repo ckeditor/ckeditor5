@@ -302,28 +302,8 @@ export default class Renderer extends Observable {
 			}
 		}
 
-		if ( this.isComposing && env.isAndroid ) {
-			let rerender = false;
-
-			for ( const element of this.markedChildren ) {
-				if ( this._updateChildren( element, { inlineFillerPosition, dryRun: true } ) ) {
-					rerender = true;
-				}
-			}
-
-			if ( !rerender ) {
-				return;
-			}
-		}
-
 		for ( const element of this.markedAttributes ) {
 			this._updateAttrs( element );
-		}
-
-		for ( const node of this.markedTexts ) {
-			if ( this.domConverter.mapViewToDom( node.parent as ViewElement ) ) {
-				this._updateText( node as ViewText, { inlineFillerPosition } );
-			}
 		}
 
 		for ( const element of this.markedChildren ) {
@@ -364,8 +344,10 @@ export default class Renderer extends Observable {
 
 		// First focus the new editing host, then update the selection.
 		// Otherwise, FF may throw an error (https://github.com/ckeditor/ckeditor5/issues/721).
-		this._updateFocus();
-		this._updateSelection();
+		if ( !this.isComposing ) {
+			this._updateFocus();
+			this._updateSelection();
+		}
 
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
@@ -608,6 +590,7 @@ export default class Renderer extends Observable {
 		}
 
 		if ( actualText != expectedText ) {
+			console.log( '-- update text', viewText );
 			const actions = fastDiff( actualText, expectedText );
 
 			for ( const action of actions ) {
@@ -663,10 +646,7 @@ export default class Renderer extends Observable {
 	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position where the inline
 	 * filler should be rendered.
 	 */
-	private _updateChildren( viewElement: ViewElement, options: {
-		inlineFillerPosition: ViewPosition | null;
-		dryRun?: boolean;
-	} ) {
+	private _updateChildren( viewElement: ViewElement, options: { inlineFillerPosition: ViewPosition | null } ) {
 		const domElement = this.domConverter.mapViewToDom( viewElement );
 
 		if ( !domElement ) {
@@ -689,21 +669,9 @@ export default class Renderer extends Observable {
 		}
 
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
+		const actions = this._findReplaceActions( diff, actualDomChildren, expectedDomChildren, { replaceText: true } );
 
-		if ( options.dryRun ) {
-			if ( diff.includes( 'delete' ) || diff.includes( 'insert' ) ) {
-				if (
-					diff.length == 2 && diff.includes( 'delete' ) && diff.includes( 'insert' ) &&
-					isText( actualDomChildren[ 0 ] ) && isText( expectedDomChildren[ 0 ] )
-				) {
-					return false;
-				} else {
-					return true;
-				}
-			} else {
-				return false;
-			}
-		}
+		console.log( '-- actions', actions );
 
 		let i = 0;
 		const nodesToUnbind: Set<DomNode> = new Set();
@@ -714,20 +682,28 @@ export default class Renderer extends Observable {
 		// and it disrupts the whole algorithm. See https://github.com/ckeditor/ckeditor5/issues/6367.
 		//
 		// It doesn't matter in what order we remove or add nodes, as long as we remove and add correct nodes at correct indexes.
-		for ( const action of diff ) {
+		for ( const action of actions ) {
 			if ( action === 'delete' ) {
 				nodesToUnbind.add( actualDomChildren[ i ] as DomElement );
+				console.log( '-- remove', actualDomChildren[ i ] );
 				remove( actualDomChildren[ i ] );
-			} else if ( action === 'equal' ) {
+			} else if ( action === 'equal' || action === 'replace' ) {
 				i++;
 			}
 		}
 
 		i = 0;
 
-		for ( const action of diff ) {
+		for ( const action of actions ) {
 			if ( action === 'insert' ) {
+				console.log( '--insert', expectedDomChildren[ i ] );
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
+				i++;
+			} else if ( action === 'replace' ) {
+				// TODO update idx according to inline filler position.
+				const viewText = viewElement.getChild( i ) as ViewText;
+				console.log( 'replace text node', domElement, i, expectedDomChildren[ i ], viewText );
+				this._updateText( viewText, { inlineFillerPosition } );
 				i++;
 			} else if ( action === 'equal' ) {
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
@@ -779,7 +755,8 @@ export default class Renderer extends Observable {
 	private _findReplaceActions(
 		actions: DiffResult[],
 		actualDom: DomNode[] | NodeList,
-		expectedDom: DomNode[]
+		expectedDom: DomNode[],
+		options: { replaceText?: boolean } = {}
 	): ( DiffResult | 'replace' )[] {
 		// If there is no both 'insert' and 'delete' actions, no need to check for replaced elements.
 		if ( actions.indexOf( 'insert' ) === -1 || actions.indexOf( 'delete' ) === -1 ) {
@@ -798,7 +775,10 @@ export default class Renderer extends Observable {
 			} else if ( action === 'delete' ) {
 				actualSlice.push( actualDom[ counter.equal + counter.delete ] );
 			} else { // equal
-				newActions = newActions.concat( diff( actualSlice, expectedSlice, areSimilar ).map( x => x === 'equal' ? 'replace' : x ) );
+				newActions = newActions.concat(
+					diff( actualSlice, expectedSlice, options.replaceText ? areTextNodes : areSimilar )
+						.map( x => x === 'equal' ? 'replace' : x )
+				);
 				newActions.push( 'equal' );
 				// Reset stored elements on 'equal'.
 				actualSlice = [];
@@ -807,7 +787,10 @@ export default class Renderer extends Observable {
 			counter[ action ]++;
 		}
 
-		return newActions.concat( diff( actualSlice, expectedSlice, areSimilar ).map( x => x === 'equal' ? 'replace' : x ) );
+		return newActions.concat(
+			diff( actualSlice, expectedSlice, options.replaceText ? areTextNodes : areSimilar )
+				.map( x => x === 'equal' ? 'replace' : x )
+		);
 	}
 
 	/**
@@ -1104,6 +1087,11 @@ function areSimilar( node1: DomNode, node2: DomNode ): boolean {
 		!isText( node1 ) && !isText( node2 ) &&
 		!isComment( node1 ) && !isComment( node2 ) &&
 		( node1 as DomElement ).tagName.toLowerCase() === ( node2 as DomElement ).tagName.toLowerCase();
+}
+
+function areTextNodes( node1: DomNode, node2: DomNode ): boolean {
+	return isNode( node1 ) && isNode( node2 ) &&
+		isText( node1 ) && isText( node2 );
 }
 
 // Whether two dom nodes should be considered as the same.
