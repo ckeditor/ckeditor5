@@ -13,7 +13,7 @@
 
 	padding: 0 var(--ck-spacing-medium);
 
-	& > * {
+	& .ck-tooltip__text {
 		font-size: .9em;
 		line-height: 1.5;
 		color: var(--ck-color-tooltip-text);
