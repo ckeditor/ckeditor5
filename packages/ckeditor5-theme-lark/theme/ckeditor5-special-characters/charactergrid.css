@@ -11,7 +11,7 @@
 
 .ck.ck-character-grid {
 	overflow-y: auto;
-	overflow-x: auto;
+	overflow-x: hidden;
 	width: 350px;
 	max-height: 200px;
 
