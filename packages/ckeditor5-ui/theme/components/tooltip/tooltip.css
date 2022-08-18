@@ -4,12 +4,8 @@
  */
 
 .ck.ck-balloon-panel.ck-tooltip {
-	/* Without this, hovering the tooltip could keep it visible. */
+	/* Keep tooltips transparent for any interactions. */
 	pointer-events: none;
-
-	/* This is to get rid of flickering when transitioning opacity in Chrome.
-	It's weird but it works. */
-	-webkit-backface-visibility: hidden;
 
 	z-index: calc( var(--ck-z-modal) + 100 );
 }

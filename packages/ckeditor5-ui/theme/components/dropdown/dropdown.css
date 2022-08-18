@@ -22,10 +22,6 @@
 	}
 
 	& .ck-dropdown__panel {
-		/* This is to get rid of flickering when the tooltip is shown under the panel,
-		which looks like the panel moves vertically a pixel down and up. */
-		-webkit-backface-visibility: hidden;
-
 		display: none;
 		z-index: var(--ck-z-modal);
 		max-width: var(--ck-dropdown-max-width);
