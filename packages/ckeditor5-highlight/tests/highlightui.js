@@ -280,6 +280,15 @@ describe( 'HighlightUI', () => {
 			expect( removeHighlightButton ).to.have.property( 'icon', eraserIcon );
 		} );
 
+		it( 'should execute the command only once', () => {
+			const executeSpy = sinon.spy( command, 'execute' );
+
+			removeHighlightButton.fire( 'execute' );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWith( executeSpy, { value: null } );
+		} );
+
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
