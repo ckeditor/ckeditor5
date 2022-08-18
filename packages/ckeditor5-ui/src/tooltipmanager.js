@@ -11,7 +11,7 @@ import View from './view';
 import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview';
 
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import { global, isVisible, mix } from '@ckeditor/ckeditor5-utils';
+import { global, isVisible, mix, first } from '@ckeditor/ckeditor5-utils';
 import { isElement, debounce } from 'lodash-es';
 
 import '../theme/components/tooltip/tooltip.css';
@@ -19,7 +19,7 @@ import '../theme/components/tooltip/tooltip.css';
 const BALLOON_CLASS = 'ck-tooltip';
 
 /**
- * A tooltip manager class for the UI of the editor. It is loaded automatically by {@link module:core/editor/editorui~EditorUI}.
+ * A tooltip manager class for the UI of the editor.
  *
  * **Note**: Most likely you do not have to use the `TooltipManager` API listed below in order to display tooltips. Popular
  * {@glink framework/guides/architecture/ui-library UI components} support tooltips out-of-the-box via observable properties
@@ -60,6 +60,9 @@ const BALLOON_CLASS = 'ck-tooltip';
  *
  *		.ck.ck-tooltip.my-class { color: red }
  *
+ * **Note**: This class is a singleton. All editor instances re-use the same instance loaded by
+ * {@link module:core/editor/editorui~EditorUI} of the first editor.
+ *
  * @mixes module:utils/domemittermixin~DomEmitterMixin
  */
 export default class TooltipManager {
@@ -69,13 +72,15 @@ export default class TooltipManager {
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	constructor( editor ) {
-		/**
-		 * The editor instance.
-		 *
-		 * @readonly
-		 * @member {module:core/editor/editor~Editor} #editor
-		 */
-		this.editor = editor;
+		TooltipManager._editors.add( editor );
+
+		// TooltipManager must be a singleton. Multiple instances would mean multiple tooltips attached
+		// to the same DOM element with data-cke-tooltip-* attributes.
+		if ( TooltipManager._instance ) {
+			return TooltipManager._instance;
+		}
+
+		TooltipManager._instance = this;
 
 		/**
 		 * The view rendering text of the tooltip.
@@ -83,7 +88,7 @@ export default class TooltipManager {
 		 * @readonly
 		 * @member {module:ui/view~View} #tooltipTextView
 		 */
-		this.tooltipTextView = new View( this.editor.locale );
+		this.tooltipTextView = new View( editor.locale );
 		this.tooltipTextView.set( 'text', '' );
 		this.tooltipTextView.setTemplate( {
 			tag: 'span',
@@ -106,7 +111,7 @@ export default class TooltipManager {
 		 * @readonly
 		 * @member {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} #balloonPanelView
 		 */
-		this.balloonPanelView = new BalloonPanelView( this.editor.locale );
+		this.balloonPanelView = new BalloonPanelView( editor.locale );
 		this.balloonPanelView.class = BALLOON_CLASS;
 		this.balloonPanelView.content.add( this.tooltipTextView );
 
@@ -150,11 +155,22 @@ export default class TooltipManager {
 
 	/**
 	 * Destroys the tooltip manager.
+	 *
+	 * **Note**: The manager singleton cannot be destroyed until all editors that use it are destroyed.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor The editor the manager was created for.
 	 */
-	destroy() {
-		this._pinTooltipDebounced.cancel();
-		this.balloonPanelView.destroy();
-		this.stopListening();
+	destroy( editor ) {
+		TooltipManager._editors.delete( editor );
+		this.stopListening( editor.ui );
+
+		if ( !TooltipManager._editors.size ) {
+			this._unpinTooltip();
+			this.balloonPanelView.destroy();
+			this.stopListening();
+
+			TooltipManager._instance = null;
+		}
 	}
 
 	/**
@@ -262,7 +278,8 @@ export default class TooltipManager {
 	 * @param {String} options.cssClass Additional CSS class of the balloon with the tooltip.
 	 */
 	_pinTooltip( targetDomElement, { text, position, cssClass } ) {
-		const bodyViewCollection = this.editor.ui.view.body;
+		// Use the body collection of the first editor.
+		const bodyViewCollection = first( TooltipManager._editors.values() ).ui.view.body;
 
 		if ( !bodyViewCollection.has( this.balloonPanelView ) ) {
 			bodyViewCollection.add( this.balloonPanelView );
@@ -282,7 +299,9 @@ export default class TooltipManager {
 		// Start responding to changes in editor UI or content layout. For instance, when collaborators change content
 		// and a contextual toolbar attached to a content starts to move (and so should move the tooltip).
 		// Note: Using low priority to let other listeners that position contextual toolbars etc. to react first.
-		this.listenTo( this.editor.ui, 'update', this._updateTooltipPosition.bind( this ), { priority: 'low' } );
+		for ( const editor of TooltipManager._editors ) {
+			this.listenTo( editor.ui, 'update', this._updateTooltipPosition.bind( this ), { priority: 'low' } );
+		}
 
 		this._currentElementWithTooltip = targetDomElement;
 		this._currentTooltipPosition = position;
@@ -298,7 +317,9 @@ export default class TooltipManager {
 
 		this.balloonPanelView.unpin();
 
-		this.stopListening( this.editor.ui, 'update' );
+		for ( const editor of TooltipManager._editors ) {
+			this.stopListening( editor.ui, 'update' );
+		}
 
 		this._currentElementWithTooltip = null;
 		this._currentTooltipPosition = null;
@@ -366,6 +387,24 @@ TooltipManager.defaultBalloonPositions = generatePositions( {
 	verticalOffset: 5,
 	horizontalOffset: 13
 } );
+
+/**
+ * A reference to the `TooltipManager` instance. The class is a singleton and as such,
+ * successive attempts at creating instances should return this instance.
+ *
+ * @private
+ * @member {module:ui/tooltipmanager~TooltipManager} module:ui/tooltipmanager~TooltipManager._instance
+ */
+TooltipManager._instance = null;
+
+/**
+ * An array of editors the single tooltip manager instance must listen to.
+ * This is mostly to handle `EditorUI#update` listeners from individual editors.
+ *
+ * @private
+ * @member {Set.<module:core/editor/editor~Editor>} module:ui/tooltipmanager~TooltipManager._editors
+ */
+TooltipManager._editors = new Set();
 
 function getDescendantWithTooltip( element ) {
 	if ( !isElement( element ) ) {

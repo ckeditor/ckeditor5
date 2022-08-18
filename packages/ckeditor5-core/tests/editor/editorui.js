@@ -130,6 +130,7 @@ describe( 'EditorUI', () => {
 			ui.destroy();
 
 			sinon.assert.calledOnce( destroySpy );
+			sinon.assert.calledWithExactly( destroySpy, editor );
 		} );
 	} );
 

@@ -5,14 +5,14 @@
 
 /* global document, MouseEvent, Event */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import View from '../../src/view';
+import BalloonPanelView from '../../src/panel/balloon/balloonpanelview';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import View from '../../src/view';
-import BalloonPanelView from '../../src/panel/balloon/balloonpanelview';
 import TooltipManager from '../../src/tooltipmanager';
 
 describe( 'TooltipManager', () => {
@@ -41,8 +41,17 @@ describe( 'TooltipManager', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should have #editor', () => {
-			expect( tooltipManager.editor ).to.equal( editor );
+		describe( 'singleton', () => {
+			it( 'should be created once for all editor instances', async () => {
+				const secondEditor = await ClassicTestEditor.create( element, {
+					plugins: [ Paragraph, Bold, Italic ],
+					balloonToolbar: [ 'bold', 'italic' ]
+				} );
+
+				expect( editor.ui.tooltipManager ).to.equal( secondEditor.ui.tooltipManager );
+
+				await secondEditor.destroy();
+			} );
 		} );
 
 		it( 'should have #tooltipTextView', () => {
@@ -59,10 +68,39 @@ describe( 'TooltipManager', () => {
 	} );
 
 	describe( 'destroy()', () => {
+		describe( 'singleton', () => {
+			it( 'should no be destroyed until the last editor instance gets destroyed', async () => {
+				const secondEditor = await ClassicTestEditor.create( element, {
+					plugins: [ Paragraph, Bold, Italic ],
+					balloonToolbar: [ 'bold', 'italic' ]
+				} );
+
+				const stopListeningSpy = sinon.spy( editor.ui.tooltipManager, 'stopListening' );
+
+				await editor.destroy();
+
+				sinon.assert.calledOnce( stopListeningSpy );
+				sinon.assert.calledWithExactly( stopListeningSpy.firstCall, editor.ui );
+
+				await secondEditor.destroy();
+
+				sinon.assert.calledWithExactly( stopListeningSpy.secondCall, secondEditor.ui );
+				sinon.assert.calledWithExactly( stopListeningSpy.thirdCall );
+			} );
+		} );
+
+		it( 'should unpin the #balloonPanelView', () => {
+			const unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+
+			tooltipManager.destroy( editor );
+
+			sinon.assert.calledOnce( unpinSpy );
+		} );
+
 		it( 'should destroy #balloonPanelView', () => {
 			const destroySpy = sinon.spy( tooltipManager.balloonPanelView, 'destroy' );
 
-			tooltipManager.destroy();
+			tooltipManager.destroy( editor );
 
 			sinon.assert.calledOnce( destroySpy );
 		} );
@@ -70,7 +108,7 @@ describe( 'TooltipManager', () => {
 		it( 'should stop listening to events', () => {
 			const stopListeningSpy = sinon.spy( tooltipManager, 'stopListening' );
 
-			tooltipManager.destroy();
+			tooltipManager.destroy( editor );
 
 			sinon.assert.called( stopListeningSpy );
 		} );
@@ -78,7 +116,7 @@ describe( 'TooltipManager', () => {
 		it( 'should cancel any queued pinning', () => {
 			const cancelSpy = sinon.spy( tooltipManager._pinTooltipDebounced, 'cancel' );
 
-			tooltipManager.destroy();
+			tooltipManager.destroy( editor );
 
 			sinon.assert.called( cancelSpy );
 		} );
@@ -197,6 +235,37 @@ describe( 'TooltipManager', () => {
 						target: elements.a,
 						positions: sinon.match.array
 					} );
+				} );
+
+				it( 'should pin just a single tooltip (singleton)', async () => {
+					const secondEditor = await ClassicTestEditor.create( element, {
+						plugins: [ Paragraph, Bold, Italic ],
+						balloonToolbar: [ 'bold', 'italic' ]
+					} );
+
+					utils.dispatchMouseEnter( elements.a );
+					utils.waitForTheTooltipToShow( clock );
+
+					sinon.assert.calledOnce( pinSpy );
+					expect( Array.from( document.querySelectorAll( '.ck-tooltip' ) ) ).to.have.length( 1 );
+
+					await secondEditor.destroy();
+				} );
+
+				it( 'should add a custom class to the #balloonPanelView if specified in the data attribute', () => {
+					expect( tooltipManager.balloonPanelView.class ).to.equal( 'ck-tooltip' );
+
+					utils.dispatchMouseEnter( elements.customClass );
+					utils.waitForTheTooltipToShow( clock );
+
+					sinon.assert.calledOnce( pinSpy );
+					expect( tooltipManager.balloonPanelView.class ).to.equal( 'ck-tooltip foo-bar' );
+
+					utils.dispatchMouseEnter( elements.a );
+					utils.waitForTheTooltipToShow( clock );
+
+					sinon.assert.calledTwice( pinSpy );
+					expect( tooltipManager.balloonPanelView.class ).to.equal( 'ck-tooltip' );
 				} );
 
 				it( 'should show up for the last element the mouse entered (last element has tooltip)', () => {
@@ -625,6 +694,29 @@ describe( 'TooltipManager', () => {
 				target: elements.a,
 				positions: sinon.match.array
 			} );
+		} );
+
+		it( 'should work for all editors (singleton)', async () => {
+			const secondEditor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, Bold, Italic ],
+				balloonToolbar: [ 'bold', 'italic' ]
+			} );
+
+			expect( editor.ui.tooltipManager ).to.equal( secondEditor.ui.tooltipManager );
+
+			utils.dispatchMouseEnter( elements.a );
+
+			editor.ui.update();
+			sinon.assert.notCalled( pinSpy );
+
+			utils.waitForTheTooltipToShow( clock );
+
+			sinon.assert.calledOnce( pinSpy );
+
+			editor.ui.update();
+			sinon.assert.calledTwice( pinSpy );
+
+			await secondEditor.destroy();
 		} );
 
 		it( 'should stop when the tooltip gets unpinned', () => {

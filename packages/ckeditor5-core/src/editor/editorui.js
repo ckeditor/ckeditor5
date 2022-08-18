@@ -143,7 +143,7 @@ export default class EditorUI {
 		this.stopListening();
 
 		this.focusTracker.destroy();
-		this.tooltipManager.destroy();
+		this.tooltipManager.destroy( this.editor );
 
 		// Clean–up the references to the CKEditor instance stored in the native editable DOM elements.
 		for ( const domElement of this._editableElementsMap.values() ) {

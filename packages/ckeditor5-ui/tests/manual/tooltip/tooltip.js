@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, window, document, CKEditorInspector */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -55,7 +55,13 @@ function initEditor( elementId ) {
 			}
 		} )
 		.then( editor => {
-			window.editor = editor;
+			if ( !window.editors ) {
+				window.editors = {};
+			}
+
+			window.editors[ elementId ] = editor;
+
+			CKEditorInspector.attach( { [ elementId ]: editor } );
 		} )
 		.catch( err => {
 			console.error( err.stack );
