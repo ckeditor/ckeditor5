@@ -43,9 +43,6 @@ export default class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
-		let lastCompositionPosition = null;
-		let lastCompositionLength = 0;
-
 		this.listenTo( view.document, 'insertText', ( evt, data ) => {
 			data.preventDefault();
 
@@ -82,20 +79,17 @@ export default class Input extends Plugin {
 				selection: model.createSelection( modelRanges )
 			};
 
-			console.log( '--- insertText', insertText, modelRanges[ 0 ] );
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Execute insertText:',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
+			// @if CK_DEBUG_TYPING // 		insertText,
+			// @if CK_DEBUG_TYPING // 		`[${ modelRanges[ 0 ].start.path }]-[${ modelRanges[ 0 ].end.path }]`
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 
 			if ( viewResultRange ) {
 				insertTextCommandData.resultRange = editor.editing.mapper.toModelRange( viewResultRange );
 			}
-
-			lastCompositionPosition = viewSelection.getFirstPosition();
-			lastCompositionLength = text.length;
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[Input]%c save last composition position:',
-			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold',
-			// @if CK_DEBUG_TYPING // 		lastCompositionPosition, lastCompositionLength
-			// @if CK_DEBUG_TYPING // 	);
-			// @if CK_DEBUG_TYPING // }
 
 			editor.execute( 'insertText', insertTextCommandData );
 		} );
@@ -119,56 +113,9 @@ export default class Input extends Plugin {
 
 		if ( env.isAndroid ) {
 			this.listenTo( view.document, 'compositionupdate', () => {
-				view._renderer.render();
+				// Trigger rendering to fix wrapping with attribute elements if needed.
+				view.forceRender();
 			} );
 		}
-
-		// if ( env.isAndroid ) {
-		// 	view.document.selection.on( 'change', () => {
-		// 		if ( !view.document.isComposing ) {
-		// 			return;
-		// 		}
-		//
-		// 		const selectionPosition = view.document.selection.getLastPosition();
-		//
-		// 		if ( !selectionPosition ) {
-		// 			return;
-		// 		}
-		//
-		// 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-		// 		// @if CK_DEBUG_TYPING // 	console.info( '%c[Input]%c check last composition position:',
-		// 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold',
-		// 		// @if CK_DEBUG_TYPING // 		'last', lastCompositionPosition, 'length', lastCompositionLength, 'new', selectionPosition
-		// 		// @if CK_DEBUG_TYPING // 	);
-		// 		// @if CK_DEBUG_TYPING // }
-		//
-		// 		if (
-		// 			!lastCompositionPosition ||
-		// 			!lastCompositionPosition.getShiftedBy( lastCompositionLength ).isEqual( selectionPosition )
-		// 		) {
-		// 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-		// 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Input]%c resetting composition',
-		// 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold',
-		// 			// @if CK_DEBUG_TYPING // 	);
-		// 			// @if CK_DEBUG_TYPING // }
-		// 			view.document.isComposing = false;
-		//
-		// 			if ( !view.document.selection.isFake ) {
-		// 				view.document.isComposing = true;
-		// 			}
-		// 		}
-		// 	} );
-		//
-		// 	view.document.on( 'change:isComposing', () => {
-		// 		if ( !view.document.isComposing ) {
-		// 			lastCompositionPosition = null;
-		// 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-		// 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Input]%c clear last composition position',
-		// 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold'
-		// 			// @if CK_DEBUG_TYPING // 	);
-		// 			// @if CK_DEBUG_TYPING // }
-		// 		}
-		// 	} );
-		// }
 	}
 }

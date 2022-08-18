@@ -344,10 +344,8 @@ export default class Renderer extends Observable {
 
 		// First focus the new editing host, then update the selection.
 		// Otherwise, FF may throw an error (https://github.com/ckeditor/ckeditor5/issues/721).
-		if ( !this.isComposing ) {
-			this._updateFocus();
-			this._updateSelection();
-		}
+		this._updateFocus();
+		this._updateSelection();
 
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
@@ -580,27 +578,14 @@ export default class Renderer extends Observable {
 		const domText = this.domConverter.findCorrespondingDomText( viewText )!;
 		const newDomText = this.domConverter.viewToDom( viewText ) as DomText;
 
-		const actualText = domText.data;
 		let expectedText = newDomText.data;
-
 		const filler = options.inlineFillerPosition;
 
 		if ( filler && filler.parent == viewText.parent && filler.offset == viewText.index ) {
 			expectedText = INLINE_FILLER + expectedText;
 		}
 
-		if ( actualText != expectedText ) {
-			console.log( '-- update text', viewText );
-			const actions = fastDiff( actualText, expectedText );
-
-			for ( const action of actions ) {
-				if ( action.type === 'insert' ) {
-					domText.insertData( action.index, action.values.join( '' ) );
-				} else { // 'delete'
-					domText.deleteData( action.index, action.howMany );
-				}
-			}
-		}
+		updateTextNode( domText, expectedText );
 	}
 
 	/**
@@ -671,8 +656,6 @@ export default class Renderer extends Observable {
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
 		const actions = this._findReplaceActions( diff, actualDomChildren, expectedDomChildren, { replaceText: true } );
 
-		console.log( '-- actions', actions );
-
 		let i = 0;
 		const nodesToUnbind: Set<DomNode> = new Set();
 
@@ -685,7 +668,6 @@ export default class Renderer extends Observable {
 		for ( const action of actions ) {
 			if ( action === 'delete' ) {
 				nodesToUnbind.add( actualDomChildren[ i ] as DomElement );
-				console.log( '-- remove', actualDomChildren[ i ] );
 				remove( actualDomChildren[ i ] );
 			} else if ( action === 'equal' || action === 'replace' ) {
 				i++;
@@ -696,17 +678,11 @@ export default class Renderer extends Observable {
 
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
-				console.log( '--insert', expectedDomChildren[ i ] );
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'replace' ) {
 				if ( !this.isComposing ) {
-					// TODO update idx according to inline filler position.
-					const viewText = viewElement.getChild( i ) as ViewText;
-					console.log( 'replace text node', domElement, i, expectedDomChildren[ i ], viewText );
-					this._updateText( viewText, { inlineFillerPosition } );
-				} else {
-					console.log( 'ignoring composition of text' );
+					updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
 				}
 				i++;
 			} else if ( action === 'equal' ) {
@@ -851,7 +827,7 @@ export default class Renderer extends Observable {
 		// Render selection.
 		if ( this.selection.isFake ) {
 			this._updateFakeSelection( domRoot );
-		} else {
+		} else if ( !this.isComposing ) {
 			this._removeFakeSelection();
 			this._updateDomSelection( domRoot );
 		}
@@ -1192,4 +1168,24 @@ function createFakeSelectionContainer( domDocument: DomDocument ): DomElement {
 	container.textContent = '\u00A0';
 
 	return container;
+}
+
+function updateTextNode( domText: DomText, expectedText: string ) {
+	const actualText = domText.data;
+
+	if ( actualText == expectedText ) {
+		return;
+	}
+
+	console.log( 'update text node:', domText.data, domText.data.length, expectedText, expectedText.length );
+
+	const actions = fastDiff( actualText, expectedText );
+
+	for ( const action of actions ) {
+		if ( action.type === 'insert' ) {
+			domText.insertData( action.index, action.values.join( '' ) );
+		} else { // 'delete'
+			domText.deleteData( action.index, action.howMany );
+		}
+	}
 }

@@ -86,16 +86,6 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				const domSelection = ( domEvent.target as HTMLElement ).ownerDocument.defaultView!.getSelection()!;
 
 				targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
-
-				// if ( !targetRanges.length ) {
-				// 	console.log( '----- reset isComposing' );
-				// 	view.document.isComposing = false;
-				// 	view.document.isComposing = true;
-				//
-				// 	// TODO After render this selection is not the same as was expected for target ranges!!!
-				// 	targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
-				// 	data = data.substring( data.length - 1 );
-				// }
 			}
 
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
