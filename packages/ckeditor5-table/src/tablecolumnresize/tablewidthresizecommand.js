@@ -48,18 +48,13 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 		const table = options.table || model.document.selection.getSelectedElement();
 		const { tableWidth, columnWidths } = options;
 
-		// console.log( columnWidths );
-		// console.log( tableWidth );
 		model.change( writer => {
 			if ( tableWidth ) {
-				// console.log('before setting widths:', table.getAttribute( 'columnWidths' ));
 				writer.setAttribute( this.attributeName, tableWidth, table );
 				writer.setAttribute( 'columnWidths', columnWidths, table );
-				// console.log('after setting widths:', table.getAttribute( 'columnWidths' ));
 			} else {
 				writer.removeAttribute( this.attributeName, table );
 			}
 		} );
-		// console.log('after change block:', table.getAttribute( 'columnWidths' ));
 	}
 }
