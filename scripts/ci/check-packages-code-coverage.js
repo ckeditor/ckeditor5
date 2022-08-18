@@ -15,14 +15,11 @@
  * file that will be sent to Coveralls.
  */
 
-const { Worker, isMainThread, parentPort, workerData } = require( 'worker_threads' );
 const childProcess = require( 'child_process' );
 const crypto = require( 'crypto' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const glob = require( 'glob' );
-
-const PARALLEL_THREADS_NUMBER = 4;
 
 const failedChecks = {
 	dependency: new Set(),
@@ -68,104 +65,22 @@ const travis = {
 	}
 };
 
-if ( isMainThread ) {
-	// Code executed inside the main thread.
-	childProcess.execSync( 'rm -r -f .nyc_output' );
-	childProcess.execSync( 'mkdir .nyc_output' );
-	childProcess.execSync( 'rm -r -f .out' );
-	childProcess.execSync( 'mkdir .out' );
+childProcess.execSync( 'rm -r -f .nyc_output' );
+childProcess.execSync( 'mkdir .nyc_output' );
+childProcess.execSync( 'rm -r -f .out' );
+childProcess.execSync( 'mkdir .out' );
 
-	// TODO: remember to update.
-	// Temporary: Do not check the `ckeditor5-minimap` package(s).
-	const excludedPackages = [ 'ckeditor5-minimap' ];
+// Temporary: Do not check the `ckeditor5-minimap` package(s).
+const excludedPackages = [ 'ckeditor5-minimap' ];
+const packages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
+	.toString()
+	.trim()
+	.split( '\n' )
+	.filter( fullPackageName => !excludedPackages.includes( fullPackageName ) );
 
-	const corePackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
-		.map( filename => 'ckeditor5-' + filename.replace( /\.js$/, '' ) );
+packages.unshift( 'ckeditor5' );
 
-	corePackages.unshift( 'ckeditor5' );
-
-	const regularPackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
-		.toString()
-		.trim()
-		.split( '\n' )
-		.filter( fullPackageName => ![ ...excludedPackages, ...corePackages ].includes( fullPackageName ) );
-
-	const parallelGroups = regularPackages.reduce( ( parallelGroups, packageName, index ) => {
-		const groupIndex = index % PARALLEL_THREADS_NUMBER;
-
-		if ( !parallelGroups[ groupIndex ] ) {
-			parallelGroups[ groupIndex ] = [];
-		}
-
-		parallelGroups[ groupIndex ].push( packageName );
-
-		return parallelGroups;
-	}, [] );
-
-	for ( const fullPackageName of corePackages ) {
-		processPackage( fullPackageName );
-	}
-
-	const threads = new Set();
-
-	for ( const group of parallelGroups ) {
-		const worker = new Worker( __filename, { workerData: { group } } );
-
-		worker.on( 'error', err => {
-			throw err;
-		} );
-		worker.on( 'exit', () => {
-			threads.delete( worker );
-
-			if ( threads.size === 0 ) {
-				end();
-			}
-		} );
-		worker.on( 'message', msg => {
-			console.log( msg );
-		} );
-
-		threads.add( worker );
-	}
-} else {
-	// Code executed inside worker.
-	for ( const fullPackageName of workerData.group ) {
-		parentPort.postMessage( `Processing: ${ fullPackageName }` );
-		const startTime = new Date().getTime();
-		processPackage( fullPackageName );
-		const endTime = new Date().getTime();
-		parentPort.postMessage( `${ fullPackageName } - done in ${ Math.ceil( ( endTime - startTime ) / 1000 ) }s` );
-	}
-}
-
-function end() {
-	console.log( 'Uploading combined code coverage report…' );
-
-	if ( shouldUploadCoverageReport() ) {
-		childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
-	} else {
-		console.log( 'Since the PR comes from the community, we do not upload code coverage report.' );
-		console.log( 'Read more why: https://github.com/ckeditor/ckeditor5/issues/7745.' );
-	}
-
-	console.log( 'Done' );
-
-	if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
-		console.log( '\n---\n' );
-
-		console.log( `🔥 ${ RED }Errors were detected by the CI.${ NO_COLOR }\n\n` );
-
-		showFailedCheck( 'dependency', 'The following packages have dependencies that are not included in its package.json' );
-		showFailedCheck( 'unitTests', 'The following packages did not pass unit tests' );
-		showFailedCheck( 'codeCoverage', 'The following packages did not provide required code coverage' );
-
-		console.log( '\n---\n' );
-
-		process.exit( 1 ); // Exit code 1 will break the CI build.
-	}
-}
-
-function processPackage( fullPackageName ) {
+for ( const fullPackageName of packages ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 	const foldLabelName = 'pkg-' + simplePackageName;
 
@@ -185,6 +100,31 @@ function processPackage( fullPackageName ) {
 	runSubprocess( 'npx', nyc, simplePackageName, 'codeCoverage', 'doesn\'t have required code coverage' );
 
 	travis.foldEnd( foldLabelName );
+}
+
+console.log( 'Uploading combined code coverage report…' );
+
+if ( shouldUploadCoverageReport() ) {
+	childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
+} else {
+	console.log( 'Since the PR comes from the community, we do not upload code coverage report.' );
+	console.log( 'Read more why: https://github.com/ckeditor/ckeditor5/issues/7745.' );
+}
+
+console.log( 'Done' );
+
+if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
+	console.log( '\n---\n' );
+
+	console.log( `🔥 ${ RED }Errors were detected by the CI.${ NO_COLOR }\n\n` );
+
+	showFailedCheck( 'dependency', 'The following packages have dependencies that are not included in its package.json' );
+	showFailedCheck( 'unitTests', 'The following packages did not pass unit tests' );
+	showFailedCheck( 'codeCoverage', 'The following packages did not provide required code coverage' );
+
+	console.log( '\n---\n' );
+
+	process.exit( 1 ); // Exit code 1 will break the CI build.
 }
 
 /**
