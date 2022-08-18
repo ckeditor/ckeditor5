@@ -350,7 +350,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( BalloonPanelView.arrowVerticalOffset );
+				expect( view.top ).to.equal( BalloonPanelView.arrowHeightOffset );
 				expect( view.left ).to.equal( -100 );
 
 				positionedAncestor.remove();
@@ -375,7 +375,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( BalloonPanelView.arrowVerticalOffset + 100 );
+				expect( view.top ).to.equal( BalloonPanelView.arrowHeightOffset + 100 );
 				expect( view.left ).to.equal( 0 );
 
 				positionedAncestor.remove();
@@ -726,8 +726,8 @@ describe( 'BalloonPanelView', () => {
 
 		beforeEach( () => {
 			positions = BalloonPanelView.defaultPositions;
-			arrowHOffset = BalloonPanelView.arrowHorizontalOffset;
-			arrowVOffset = BalloonPanelView.arrowVerticalOffset;
+			arrowHOffset = BalloonPanelView.arrowSideOffset;
+			arrowVOffset = BalloonPanelView.arrowHeightOffset;
 
 			viewportRect = new Rect( {
 				top: 0,
@@ -1155,9 +1155,9 @@ describe( 'BalloonPanelView', () => {
 			}
 		} );
 
-		it( 'should respect the "horizontalOffset" option', () => {
+		it( 'should respect the "sideOffset" option', () => {
 			const generatedPositions = generatePositions( {
-				horizontalOffset: BalloonPanelView.arrowHorizontalOffset + 100
+				sideOffset: BalloonPanelView.arrowSideOffset + 100
 			} );
 
 			for ( const name in generatedPositions ) {
@@ -1175,9 +1175,9 @@ describe( 'BalloonPanelView', () => {
 			}
 		} );
 
-		it( 'should respect the "verticalOffset" option', () => {
+		it( 'should respect the "heightOffset" option', () => {
 			const generatedPositions = generatePositions( {
-				verticalOffset: BalloonPanelView.arrowVerticalOffset + 100
+				heightOffset: BalloonPanelView.arrowHeightOffset + 100
 			} );
 
 			for ( const name in generatedPositions ) {

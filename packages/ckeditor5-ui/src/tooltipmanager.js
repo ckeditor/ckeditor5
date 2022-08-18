@@ -384,8 +384,8 @@ mix( TooltipManager, DomEmitterMixin );
  * module:ui/tooltipmanager~TooltipManager.defaultBalloonPositions
  */
 TooltipManager.defaultBalloonPositions = generatePositions( {
-	verticalOffset: 5,
-	horizontalOffset: 13
+	heightOffset: 5,
+	sideOffset: 13
 } );
 
 /**

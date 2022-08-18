@@ -361,8 +361,8 @@ export default class BalloonToolbar extends Plugin {
 		const positions = isSafariIniOS ? generatePositions( {
 			// 20px when zoomed out. Less then 20px when zoomed in; the "radius" of the native selection handle gets
 			// smaller as the user zooms in. No less than the default v-offset, though.
-			verticalOffset: Math.max(
-				BalloonPanelView.arrowVerticalOffset,
+			heightOffset: Math.max(
+				BalloonPanelView.arrowHeightOffset,
 				Math.round( 20 / global.window.visualViewport.scale )
 			)
 		} ) : BalloonPanelView.defaultPositions;
