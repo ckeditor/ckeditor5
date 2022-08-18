@@ -15,6 +15,7 @@
  * file that will be sent to Coveralls.
  */
 
+const { Worker, isMainThread, parentPort, workerData } = require( 'worker_threads' );
 const childProcess = require( 'child_process' );
 const crypto = require( 'crypto' );
 const fs = require( 'fs' );
@@ -67,53 +68,74 @@ const travis = {
 	}
 };
 
-childProcess.execSync( 'rm -r -f .nyc_output' );
-childProcess.execSync( 'mkdir .nyc_output' );
-childProcess.execSync( 'rm -r -f .out' );
-childProcess.execSync( 'mkdir .out' );
+if ( isMainThread ) {
+	// Code executed inside the main thread.
+	childProcess.execSync( 'rm -r -f .nyc_output' );
+	childProcess.execSync( 'mkdir .nyc_output' );
+	childProcess.execSync( 'rm -r -f .out' );
+	childProcess.execSync( 'mkdir .out' );
 
-// TODO: remember to update.
-// Temporary: Do not check the `ckeditor5-minimap` package(s).
-const excludedPackages = [ 'ckeditor5-minimap' ];
+	// TODO: remember to update.
+	// Temporary: Do not check the `ckeditor5-minimap` package(s).
+	const excludedPackages = [ 'ckeditor5-minimap' ];
 
-const corePackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
-	.map( filename => 'ckeditor5-' + filename.replace( /\.js$/, '' ) );
+	const corePackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
+		.map( filename => 'ckeditor5-' + filename.replace( /\.js$/, '' ) );
 
-corePackages.unshift( 'ckeditor5' );
+	corePackages.unshift( 'ckeditor5' );
 
-const regularPackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
-	.toString()
-	.trim()
-	.split( '\n' )
-	.filter( fullPackageName => ![ ...excludedPackages, ...corePackages ].includes( fullPackageName ) );
+	const regularPackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
+		.toString()
+		.trim()
+		.split( '\n' )
+		.filter( fullPackageName => ![ ...excludedPackages, ...corePackages ].includes( fullPackageName ) );
 
-const parallelGroups = regularPackages.reduce( ( parallelGroups, packageName, index ) => {
-	const groupIndex = index % PARALLEL_THREADS_NUMBER;
+	const parallelGroups = regularPackages.reduce( ( parallelGroups, packageName, index ) => {
+		const groupIndex = index % PARALLEL_THREADS_NUMBER;
 
-	if ( !parallelGroups[ groupIndex ] ) {
-		parallelGroups[ groupIndex ] = [];
-	}
-
-	parallelGroups[ groupIndex ].push( packageName );
-
-	return parallelGroups;
-}, [] );
-
-for ( const fullPackageName of corePackages ) {
-	processPackage( fullPackageName );
-}
-
-parallelGroups.map( group => {
-	return new Promise( resolve => {
-		for ( const fullPackageName of group ) {
-			processPackage( fullPackageName );
+		if ( !parallelGroups[ groupIndex ] ) {
+			parallelGroups[ groupIndex ] = [];
 		}
 
-		resolve();
-	} );
-} );
+		parallelGroups[ groupIndex ].push( packageName );
 
-Promise.all( parallelGroups ).then( () => {
+		return parallelGroups;
+	}, [] );
+
+	for ( const fullPackageName of corePackages ) {
+		processPackage( fullPackageName );
+	}
+
+	const threads = new Set();
+
+	for ( const group of parallelGroups ) {
+		const worker = new Worker( __filename, { workerData: { group } } );
+
+		worker.on( 'error', err => {
+			throw err;
+		} );
+		worker.on( 'exit', () => {
+			threads.delete( worker );
+
+			if ( threads.size === 0 ) {
+				end();
+			}
+		} );
+		worker.on( 'message', msg => {
+			console.log( msg );
+		} );
+
+		threads.add( worker );
+	}
+} else {
+	// Code executed inside worker.
+	for ( const fullPackageName of workerData.group ) {
+		parentPort.postMessage( `Processing: ${ fullPackageName }` );
+		processPackage( fullPackageName );
+	}
+}
+
+function end() {
 	console.log( 'Uploading combined code coverage report…' );
 
 	if ( shouldUploadCoverageReport() ) {
@@ -138,7 +160,7 @@ Promise.all( parallelGroups ).then( () => {
 
 		process.exit( 1 ); // Exit code 1 will break the CI build.
 	}
-} );
+}
 
 function processPackage( fullPackageName ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
