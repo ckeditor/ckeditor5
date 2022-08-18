@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import InsertTextCommand from './inserttextcommand';
 import InsertTextObserver from './inserttextobserver';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -110,12 +109,5 @@ export default class Input extends Plugin {
 
 			model.deleteContent( modelSelection );
 		} );
-
-		if ( env.isAndroid ) {
-			this.listenTo( view.document, 'compositionupdate', () => {
-				// Trigger rendering to fix wrapping with attribute elements if needed.
-				view.forceRender();
-			} );
-		}
 	}
 }
