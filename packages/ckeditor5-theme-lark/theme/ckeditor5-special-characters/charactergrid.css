@@ -17,7 +17,7 @@
 	max-height: 200px;
 
 	@mixin ck-media-phone {
-		width: 250px;
+		width: 190px;
 	}
 
 	& .ck-character-grid__tiles {
@@ -26,7 +26,7 @@
 		grid-gap: var(--ck-spacing-standard);
 
 		@mixin ck-media-phone {
-			grid-template-columns: repeat(7, 1fr);
+			grid-template-columns: repeat(5, 1fr);
 		}
 	}
 

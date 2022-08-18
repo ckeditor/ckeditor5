@@ -18,13 +18,13 @@
 		max-width: 280px;
 		text-overflow: ellipsis;
 		overflow: hidden;
-
-		@mixin ck-media-phone {
-			max-width: 185px;
-		}
 	}
 
 	& .ck-character-info__code {
 		opacity: .6;
+	}
+
+	@mixin ck-media-phone {
+		max-width: 190px;
 	}
 }
