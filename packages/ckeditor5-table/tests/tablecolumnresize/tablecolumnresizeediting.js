@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, MouseEvent */
+/* global document, MouseEvent, DragEvent */
 
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
 import TableColumnResize from '../../src/tablecolumnresize';
@@ -2589,6 +2589,23 @@ describe( 'TableColumnResizeEditing', () => {
 
 				expect( initialViewColumnWidthsPx ).to.deep.equal( finalViewColumnWidthsPx );
 			} );
+		} );
+	} );
+
+	describe( 'drag events related listeners', () => {
+		it( '`dragstart`', () => {
+			document.dispatchEvent( new DragEvent( 'dragstart' ) );
+			expect( editor.plugins.get( 'TableColumnResizeEditing' )._draggingState ).to.equal( 'dragginactive' );
+		} );
+
+		it( '`drop`', () => {
+			document.dispatchEvent( new DragEvent( 'drop' ) );
+			expect( editor.plugins.get( 'TableColumnResizeEditing' )._draggingState ).to.equal( 'afterdragging' );
+		} );
+
+		it( '`dragleave`', () => {
+			document.dispatchEvent( new DragEvent( 'dragleave' ) );
+			expect( editor.plugins.get( 'TableColumnResizeEditing' )._draggingState ).to.equal( 'notdragging' );
 		} );
 	} );
 
