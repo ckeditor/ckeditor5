@@ -72,6 +72,9 @@ export default class TooltipManager {
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	constructor( editor ) {
+		// See: ContextWatchdog.
+		this._watchdogExcluded = true;
+
 		TooltipManager._editors.add( editor );
 
 		// TooltipManager must be a singleton. Multiple instances would mean multiple tooltips attached

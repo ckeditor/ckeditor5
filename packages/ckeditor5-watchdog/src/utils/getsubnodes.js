@@ -83,6 +83,7 @@ function shouldNodeBeSkipped( node ) {
 
 		node === undefined ||
 		node === null ||
+		node._watchdogExcluded === true ||
 
 		// Skip native DOM objects, e.g. Window, nodes, events, etc.
 		node instanceof EventTarget ||
