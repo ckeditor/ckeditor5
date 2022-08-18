@@ -2989,7 +2989,7 @@ describe.only( 'dragging', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ DragDrop, PastePlainText, Paragraph, Table, Bold ]
+			plugins: [ DragDrop, PastePlainText, Paragraph, Table, Bold, TableColumnResize ]
 		} );
 
 		model = editor.model;
@@ -3042,29 +3042,31 @@ describe.only( 'dragging', () => {
 		clock.tick( 100 );
 
 		expectDraggingMarker( targetPosition );
-		expect( getViewData( view, { renderUIElements: true } ) ).to.equal(
-			'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"><svg class="ck ck-icon" viewBox="0 0 16 16"><path d="M4 0v1H1v3H0V.5A.5.5 0 0 1 .5 0H4zm8 0h3.5a.5.5 0 0 1 .5.5V4h-1V1h-3V0zM4 16H.5a.5.5 0 0 1-.5-.5V12h1v3h3v1zm8 0v-1h3v-3h1v3.5a.5.5 0 0 1-.5.5H12z"></path><path fill-opacity=".256" d="M1 1h14v14H1z"></path><g class="ck-icon__selected-indicator"><path d="M7 0h2v1H7V0zM0 7h1v2H0V7zm15 0h1v2h-1V7zm-8 8h2v1H7v-1z"></path><path fill-opacity=".254" d="M1 1h14v14H1z"></path></g></svg></div><table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" draggable="true" role="textbox"><span class="ck-table-bogus-paragraph">{foo}<span class="ck ck-clipboard-drop-target-position">⁠<span></span>⁠</span></span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph">bar</span></td></tr></tbody></table><div class="ck ck-reset_all ck-widget__type-around"><div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__fake-caret"></div></div></figure>'
-		);
+		// expect( getViewData( view, { renderUIElements: true } ) ).to.equal(
+		// 	'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"><svg class="ck ck-icon" viewBox="0 0 16 16"><path d="M4 0v1H1v3H0V.5A.5.5 0 0 1 .5 0H4zm8 0h3.5a.5.5 0 0 1 .5.5V4h-1V1h-3V0zM4 16H.5a.5.5 0 0 1-.5-.5V12h1v3h3v1zm8 0v-1h3v-3h1v3.5a.5.5 0 0 1-.5.5H12z"></path><path fill-opacity=".256" d="M1 1h14v14H1z"></path><g class="ck-icon__selected-indicator"><path d="M7 0h2v1H7V0zM0 7h1v2H0V7zm15 0h1v2h-1V7zm-8 8h2v1H7v-1z"></path><path fill-opacity=".254" d="M1 1h14v14H1z"></path></g></svg></div><table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" draggable="true" role="textbox"><span class="ck-table-bogus-paragraph">{foo}<span class="ck ck-clipboard-drop-target-position">⁠<span></span>⁠</span></span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph">bar</span></td></tr></tbody></table><div class="ck ck-reset_all ck-widget__type-around"><div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__fake-caret"></div></div></figure>'
+		// );
 
 		getDomResizer( getDomTable( view ), 2, 0 )
 		// Dragging.
 		targetPosition = model.createPositionAt( root.getChild( 0 ).getChild( 0 ).getChild( 1 ).getChild( 0 ), 2 );
 		dataTransferMock.effectAllowed = 'copy';
 
-		fireDragging( dataTransferMock, targetPosition );
+		fireDragging2( dataTransferMock );
 
 		clock.tick( 100 );
 
-		expectDraggingMarker( targetPosition );
-		expect( getViewData( view, { renderUIElements: true } ) ).to.equal(
-			'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"><svg class="ck ck-icon" viewBox="0 0 16 16"><path d="M4 0v1H1v3H0V.5A.5.5 0 0 1 .5 0H4zm8 0h3.5a.5.5 0 0 1 .5.5V4h-1V1h-3V0zM4 16H.5a.5.5 0 0 1-.5-.5V12h1v3h3v1zm8 0v-1h3v-3h1v3.5a.5.5 0 0 1-.5.5H12z"></path><path fill-opacity=".256" d="M1 1h14v14H1z"></path><g class="ck-icon__selected-indicator"><path d="M7 0h2v1H7V0zM0 7h1v2H0V7zm15 0h1v2h-1V7zm-8 8h2v1H7v-1z"></path><path fill-opacity=".254" d="M1 1h14v14H1z"></path></g></svg></div><table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" draggable="true" role="textbox"><span class="ck-table-bogus-paragraph">{foo}</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph">ba<span class="ck ck-clipboard-drop-target-position">⁠<span></span>⁠</span>r</span></td></tr></tbody></table><div class="ck ck-reset_all ck-widget__type-around"><div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__fake-caret"></div></div></figure>'
-		);
+		// expectDraggingMarker( targetPosition );
+		// expect( getViewData( view, { renderUIElements: true } ) ).to.equal(
+		// 	'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"><svg class="ck ck-icon" viewBox="0 0 16 16"><path d="M4 0v1H1v3H0V.5A.5.5 0 0 1 .5 0H4zm8 0h3.5a.5.5 0 0 1 .5.5V4h-1V1h-3V0zM4 16H.5a.5.5 0 0 1-.5-.5V12h1v3h3v1zm8 0v-1h3v-3h1v3.5a.5.5 0 0 1-.5.5H12z"></path><path fill-opacity=".256" d="M1 1h14v14H1z"></path><g class="ck-icon__selected-indicator"><path d="M7 0h2v1H7V0zM0 7h1v2H0V7zm15 0h1v2h-1V7zm-8 8h2v1H7v-1z"></path><path fill-opacity=".254" d="M1 1h14v14H1z"></path></g></svg></div><table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" draggable="true" role="textbox"><span class="ck-table-bogus-paragraph">{foo}</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph">ba<span class="ck ck-clipboard-drop-target-position">⁠<span></span>⁠</span>r</span></td></tr></tbody></table><div class="ck ck-reset_all ck-widget__type-around"><div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__fake-caret"></div></div></figure>'
+		// );
 
 		// Dropping.
 		dataTransferMock.effectAllowed = 'copyMove';
 		dataTransferMock.dropEffect = 'move';
 		targetPosition = model.createPositionAt( root.getChild( 0 ).getChild( 0 ).getChild( 1 ).getChild( 0 ), 2 );
-		fireDrop( dataTransferMock, targetPosition );
+
+		// fireDrop( dataTransferMock, targetPosition );
+		fireDrop2( dataTransferMock );
 		clock.tick( 100 );
 
 		expect( spyClipboardInput.called ).to.be.true;
@@ -3075,10 +3077,53 @@ describe.only( 'dragging', () => {
 		expectFinalized();
 
 		expect( getModelData( model ) ).to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell><tableCell><paragraph>bafoo[]r</paragraph></tableCell></tableRow></table>' );
-		expect( getViewData( view ) ).to.equal( '<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"></div><table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph"></span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph">bafoo{}r</span></td></tr></tbody></table><div class="ck ck-reset_all ck-widget__type-around"></div></figure>' );
+		// expect( getViewData( view ) ).to.equal( '<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"></div><table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph"></span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph">bafoo{}r</span></td></tr></tbody></table><div class="ck ck-reset_all ck-widget__type-around"></div></figure>' );
 
 		env.isGecko = originalEnvGecko;
 	} );
+
+	function fireDrop2( dataTransferMock ) {
+		viewDocument.fire( 'clipboardInput', {
+			...prepareEventData2(),
+			method: 'drop',
+			dataTransfer: dataTransferMock,
+			stopPropagation: () => {},
+			preventDefault: () => {}
+		} );
+	}
+
+	function prepareEventData2() {
+
+		// console.log( view.domConverter.mapViewToDom( view.document.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ) ) );
+		// const domNode = getDomResizer( getDomTable( view ), 0, 0 );
+
+		// const viewElement = domConverter.mapDomToView( domNode );
+
+		// const viewRange = view.createRangeOn( viewElement );
+
+		const target = view.domConverter.mapViewToDom( view.document.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 1 ).getChild( 0 ) );
+		console.log( target );
+		const span = view.document.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+		// for ( const node of span.getChildren() ) {
+		// 	console.log(node);
+		// }
+		const position = view.createPositionAt( view.document.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ), 1 );
+		const temprange = view.createRange( position );
+
+		console.log( temprange);
+		const domNode = target;
+		const viewElement = domConverter.mapDomToView( domNode );
+		const viewRange = view.createRangeIn( viewElement );
+		console.log(viewElement);
+		console.log(viewRange);
+		return {
+			domTarget: domNode,
+			target: viewElement,
+			targetRanges: [ viewRange ],
+			domEvent: {}
+		};
+	}
 
 	function fireDragStart( dataTransferMock, preventDefault = () => {} ) {
 		const eventData = prepareEventData( model.document.selection.getLastPosition() );
@@ -3105,7 +3150,18 @@ describe.only( 'dragging', () => {
 		} );
 	}
 
+	function fireDragging2( dataTransferMock, modelPositionOrRange ) {
+		viewDocument.fire( 'dragging', {
+			...prepareEventData2(),
+			method: 'dragging',
+			dataTransfer: dataTransferMock,
+			stopPropagation: () => {},
+			preventDefault: () => {}
+		} );
+	}
+
 	function fireDrop( dataTransferMock, modelPosition ) {
+		console.log('firedrop');
 		viewDocument.fire( 'clipboardInput', {
 			...prepareEventData( modelPosition ),
 			method: 'drop',
@@ -3126,6 +3182,8 @@ describe.only( 'dragging', () => {
 	function prepareEventData( modelPositionOrRange ) {
 		let domNode, viewElement, viewRange;
 
+		// console.log('prepareevent');
+
 		if ( modelPositionOrRange.is( 'position' ) ) {
 			const viewPosition = mapper.toViewPosition( modelPositionOrRange );
 			viewRange = view.createRange( viewPosition );
@@ -3139,6 +3197,10 @@ describe.only( 'dragging', () => {
 			viewElement = viewRange.getContainedElement();
 			domNode = domConverter.mapViewToDom( viewElement );
 		}
+
+		// console.log('domNode', domNode);
+		// console.log('viewElement', viewElement);
+		// console.log('targetRanges', viewRange );
 
 		return {
 			domTarget: domNode,
