@@ -197,6 +197,14 @@ See the common API of image-related features such as {@link module:image/imagest
 
 Support for responsive images in CKEditor 5 is brought by the {@link features/ckbox CKBox} management platform. The {@link features/easy-image Easy Image} feature can also be used without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.
 
+## Typing around images
+
+To type before or after an image easily, select the image, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after. The image is no longer selected and whatever text you type will appear in the desired position.
+
+You can also use the **Insert paragraph** handles on the bottom or top edge of the selected image to add a paragraph below or above the image, respectively.
+
+{@img assets/img/image-insert-paragraph.png 640 Paragraph insertion handles.}
+
 ## Contribute
 
 The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image.
