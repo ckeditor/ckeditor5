@@ -19,6 +19,8 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
+import ClipboardObserver from '@ckeditor/ckeditor5-clipboard/src/clipboardobserver';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 import { modelTable, assertSelectedCells } from '../_utils/utils';
@@ -46,6 +48,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection;
+	let mapper, viewDocument, domConverter;
 	const PERCENTAGE_PRECISION = 0.001;
 	const PIXEL_PRECISION = 1;
 
@@ -56,6 +59,10 @@ describe( 'TableColumnResizeEditing', () => {
 
 		model = editor.model;
 		view = editor.editing.view;
+		viewDocument = view.document;
+		mapper = editor.editing.mapper;
+		viewDocument = view.document;
+		domConverter = view.domConverter;
 		contentDirection = editor.locale.contentLanguageDirection;
 	} );
 
@@ -2592,23 +2599,6 @@ describe( 'TableColumnResizeEditing', () => {
 		} );
 	} );
 
-	describe( 'drag events related listeners', () => {
-		it( '`dragstart`', () => {
-			document.dispatchEvent( new DragEvent( 'dragstart' ) );
-			expect( editor.plugins.get( 'TableColumnResizeEditing' )._draggingState ).to.equal( 'dragginactive' );
-		} );
-
-		it( '`drop`', () => {
-			document.dispatchEvent( new DragEvent( 'drop' ) );
-			expect( editor.plugins.get( 'TableColumnResizeEditing' )._draggingState ).to.equal( 'afterdragging' );
-		} );
-
-		it( '`dragleave`', () => {
-			document.dispatchEvent( new DragEvent( 'dragleave' ) );
-			expect( editor.plugins.get( 'TableColumnResizeEditing' )._draggingState ).to.equal( 'notdragging' );
-		} );
-	} );
-
 	describe( 'Hide/show resizers', () => {
 		let model, editor, view, editorElement;
 
@@ -2633,9 +2623,12 @@ describe( 'TableColumnResizeEditing', () => {
 
 		describe( 'on mousedown/mouseup', () => {
 			it( 'should not hide resizers when resizer is clicked', () => {
-				setModelData( model, modelTable( [
-					[ '[foo]' ]
-				], { columnWidths: '100%' } ) );
+				setModelData( model,
+					'<table><tableRow><tableCell><paragraph>[foo]</paragraph></tableCell><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>'
+				);
+				// setModelData( model, modelTable( [
+				// 	[ '[foo]' ]
+				// ], { columnWidths: '100%' } ) );
 
 				const resizer = view.getDomRoot().querySelector( '.ck-table-column-resizer' );
 
@@ -2662,6 +2655,190 @@ describe( 'TableColumnResizeEditing', () => {
 
 				expect( viewRoot.hasClass( 'ck-column-resize_disabled' ) ).to.be.false;
 			} );
+
+			it( 'drag start', () => {
+				setModelData( model, modelTable( [
+					[ '[foo]', 'bar' ]
+				], { columnWidths: '50%,50%' } ) );
+				// debugger;
+				const clock = sinon.useFakeTimers();
+				const dataTransferMock = createDataTransfer();
+				fireDragStart( dataTransferMock );
+
+				// const targetPosition = model.createPositionAt( model.document.getRoot().getChild( 0 ), 3 );
+				// dataTransferMock.effectAllowed = 'copyMove';
+				// fireDragging( dataTransferMock, targetPosition );
+				// clock.tick( 100 );
+
+				// const paragraph = view.getDomRoot().querySelector( '.ck-table-bogus-paragraph' );
+				// paragraph.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true } ) );
+				// paragraph.dispatchEvent( new MouseEvent( 'mousemove', { bubbles: true, clientX: 20, buttons: 1 } ) );
+
+				// expect( TableColumnResizeEditing._draggingState ).equals( 'dragginactive' );
+			} );
+
+			describe( 'drag events', () => {
+				it( 'dragstart', () => {
+					document.dispatchEvent( new DragEvent( 'dragstart' ) );
+					expect( editor.plugins.get( 'TableColumnResizeEditing' )._draggingState ).to.equal( 'dragginactive' );
+				} );
+				it( 'drop', () => {
+					document.dispatchEvent( new DragEvent( 'drop' ) );
+					expect( editor.plugins.get( 'TableColumnResizeEditing' )._draggingState ).to.equal( 'afterdragging' );
+				} );
+				it( 'dragleave', () => {
+					document.dispatchEvent( new DragEvent( 'dragleave' ) );
+					expect( editor.plugins.get( 'TableColumnResizeEditing' )._draggingState ).to.equal( 'notdragging' );
+				} );
+			} );
+
+			function fireDragStart( dataTransferMock, preventDefault = () => {} ) {
+				console.log( model.document.selection.getLastPosition() );
+				const eventData = prepareEventData( model.document.selection.getLastPosition() );
+
+				console.log( 'mouse' ),
+				viewDocument.fire( 'mousedown', {
+					...eventData
+				} );
+
+				console.log( 'dragstart' ),
+				viewDocument.fire( 'dragstart', {
+					...eventData,
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {},
+					preventDefault
+				} );
+			}
+
+			function fireDragging( dataTransferMock, modelPositionOrRange ) {
+				viewDocument.fire( 'dragging', {
+					...prepareEventData( modelPositionOrRange ),
+					method: 'dragging',
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {},
+					preventDefault: () => {}
+				} );
+			}
+
+			function fireDrop( dataTransferMock, modelPosition ) {
+				viewDocument.fire( 'clipboardInput', {
+					...prepareEventData( modelPosition ),
+					method: 'drop',
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {},
+					preventDefault: () => {}
+				} );
+			}
+
+			function fireDragEnd( dataTransferMock ) {
+				viewDocument.fire( 'dragend', {
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {},
+					preventDefault: () => {}
+				} );
+			}
+
+			function prepareEventData( modelPositionOrRange ) {
+				console.log( 'prepareEventData' );
+				let domNode, viewElement, viewRange;
+
+				if ( modelPositionOrRange.is( 'position' ) ) {
+					console.log( 'in if' );
+					debugger;
+					const viewPosition = mapper.toViewPosition( modelPositionOrRange );
+					console.log( 'after viewPosition' );
+					viewRange = view.createRange( viewPosition );
+					viewElement = mapper.findMappedViewAncestor( viewPosition );
+					domNode = viewPosition.parent.is( '$text' ) ?
+						domConverter.findCorrespondingDomText( viewPosition.parent ).parentNode :
+						domConverter.mapViewToDom( viewElement );
+				} else {
+					viewRange = mapper.toViewRange( modelPositionOrRange );
+					viewElement = viewRange.getContainedElement();
+					domNode = domConverter.mapViewToDom( viewElement );
+				}
+
+				return {
+					domTarget: domNode,
+					target: viewElement,
+					targetRanges: [ viewRange ],
+					domEvent: {}
+				};
+			}
+
+			function createDataTransfer( data = {} ) {
+				return {
+					setData( type, value ) {
+						data[ type ] = value;
+					},
+
+					getData( type ) {
+						return data[ type ];
+					}
+				};
+			}
+
+			// function expectDragStarted( dataTransferMock, data, spyClipboardOutput, effectAllowed = 'copyMove' ) {
+			// 	expect( dataTransferMock.getData( 'text/html' ) ).to.equal( data );
+			// 	expect( dataTransferMock.effectAllowed ).to.equal( effectAllowed );
+
+			// 	expect( viewDocument.getRoot().getAttribute( 'draggable' ) ).to.equal( 'true' );
+
+			// 	if ( spyClipboardOutput ) {
+			// 		expect( spyClipboardOutput.called ).to.be.true;
+			// 		expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
+			// 		expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			// 		expect( stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal( data );
+			// 	}
+			// }
+
+			// it( 'should be fired with the right event data - basics', () => {
+			// 	const eventSpy = sinon.spy();
+			// 	const preventDefaultSpy = sinon.spy();
+			// 	const stopPropagationSpy = sinon.spy();
+			// 	const doc = view.document;
+			// 	const dataTransfer = mockDomDataTransfer();
+			// 	const targetElement = mockDomTargetElement( {} );
+			// 	const observer = view.addObserver( ClipboardObserver );
+
+			// 	doc.on( 'drop', eventSpy );
+
+			// 	observer.onDomEvent( {
+			// 		type: 'drop',
+			// 		target: targetElement,
+			// 		dataTransfer,
+			// 		preventDefault: preventDefaultSpy
+			// 	} );
+
+			// 	expect( eventSpy.calledOnce ).to.be.true;
+
+			// 	const data = eventSpy.args[ 0 ][ 1 ];
+
+			// 	expect( data.domTarget ).to.equal( targetElement );
+
+			// 	expect( data.dataTransfer ).to.be.instanceOf( DataTransfer );
+			// 	expect( data.dataTransfer.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
+
+			// 	expect( data.dropRange ).to.be.null;
+
+			// 	expect( preventDefaultSpy.calledOnce ).to.be.true;
+			// } );
+
+			// // Returns a super simple mock of HTMLElement (we use only ownerDocument from it).
+			// function mockDomTargetElement( documentMock ) {
+			// 	return {
+			// 		ownerDocument: documentMock
+			// 	};
+			// }
+
+			// function mockDomDataTransfer() {
+			// 	return {
+			// 		files: [],
+			// 		getData( type ) {
+			// 			return 'foo:' + type;
+			// 		}
+			// 	};
+			// }
 		} );
 
 		describe( 'on resizer mouse drag', () => {
@@ -2797,5 +2974,220 @@ describe( 'TableColumnResizeEditing', () => {
 				writer.setAttribute( 'style', `width: ${ tableWidth }px;`, figure );
 			}
 		} );
+	}
+} );
+
+import env from '@ckeditor/ckeditor5-utils/src/env';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import DragDrop from '@ckeditor/ckeditor5-clipboard/src/dragdrop';
+import PastePlainText from '@ckeditor/ckeditor5-clipboard/src/pasteplaintext';
+import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+describe.only( 'dragging', () => {
+	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter;
+	beforeEach( async () => {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ DragDrop, PastePlainText, Paragraph, Table, Bold ]
+		} );
+
+		model = editor.model;
+		root = model.document.getRoot();
+		mapper = editor.editing.mapper;
+		view = editor.editing.view;
+		viewDocument = view.document;
+		domConverter = view.domConverter;
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
+		await editorElement.remove();
+	} );
+
+	it( 'should move text to other place in the same editor (not Firefox)', () => {
+		const originalEnvGecko = env.isGecko;
+
+		env.isGecko = false;
+
+		setModelData( model,
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>[foo]</paragraph>' +
+					'</tableCell>' +
+					'<tableCell>' +
+						'<paragraph>bar</paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		const clock = sinon.useFakeTimers();
+		const dataTransferMock = createDataTransfer();
+		const spyClipboardOutput = sinon.spy();
+		const spyClipboardInput = sinon.spy();
+		let targetPosition;
+
+		viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+		viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
+
+		fireDragStart( dataTransferMock );
+		// expectDragStarted( dataTransferMock, 'foo', spyClipboardOutput );
+
+		// Dragging.
+		targetPosition = model.createPositionAt( root.getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ), 3 );
+		dataTransferMock.effectAllowed = 'copyMove';
+		fireDragging( dataTransferMock, targetPosition );
+		clock.tick( 100 );
+
+		expectDraggingMarker( targetPosition );
+		expect( getViewData( view, { renderUIElements: true } ) ).to.equal(
+			'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"><svg class="ck ck-icon" viewBox="0 0 16 16"><path d="M4 0v1H1v3H0V.5A.5.5 0 0 1 .5 0H4zm8 0h3.5a.5.5 0 0 1 .5.5V4h-1V1h-3V0zM4 16H.5a.5.5 0 0 1-.5-.5V12h1v3h3v1zm8 0v-1h3v-3h1v3.5a.5.5 0 0 1-.5.5H12z"></path><path fill-opacity=".256" d="M1 1h14v14H1z"></path><g class="ck-icon__selected-indicator"><path d="M7 0h2v1H7V0zM0 7h1v2H0V7zm15 0h1v2h-1V7zm-8 8h2v1H7v-1z"></path><path fill-opacity=".254" d="M1 1h14v14H1z"></path></g></svg></div><table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" draggable="true" role="textbox"><span class="ck-table-bogus-paragraph">{foo}<span class="ck ck-clipboard-drop-target-position">⁠<span></span>⁠</span></span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph">bar</span></td></tr></tbody></table><div class="ck ck-reset_all ck-widget__type-around"><div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__fake-caret"></div></div></figure>'
+		);
+
+		getDomResizer( getDomTable( view ), 2, 0 )
+		// Dragging.
+		targetPosition = model.createPositionAt( root.getChild( 0 ).getChild( 0 ).getChild( 1 ).getChild( 0 ), 2 );
+		dataTransferMock.effectAllowed = 'copy';
+
+		fireDragging( dataTransferMock, targetPosition );
+
+		clock.tick( 100 );
+
+		expectDraggingMarker( targetPosition );
+		expect( getViewData( view, { renderUIElements: true } ) ).to.equal(
+			'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"><svg class="ck ck-icon" viewBox="0 0 16 16"><path d="M4 0v1H1v3H0V.5A.5.5 0 0 1 .5 0H4zm8 0h3.5a.5.5 0 0 1 .5.5V4h-1V1h-3V0zM4 16H.5a.5.5 0 0 1-.5-.5V12h1v3h3v1zm8 0v-1h3v-3h1v3.5a.5.5 0 0 1-.5.5H12z"></path><path fill-opacity=".256" d="M1 1h14v14H1z"></path><g class="ck-icon__selected-indicator"><path d="M7 0h2v1H7V0zM0 7h1v2H0V7zm15 0h1v2h-1V7zm-8 8h2v1H7v-1z"></path><path fill-opacity=".254" d="M1 1h14v14H1z"></path></g></svg></div><table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" draggable="true" role="textbox"><span class="ck-table-bogus-paragraph">{foo}</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph">ba<span class="ck ck-clipboard-drop-target-position">⁠<span></span>⁠</span>r</span></td></tr></tbody></table><div class="ck ck-reset_all ck-widget__type-around"><div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8"><path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path></svg></div><div class="ck ck-widget__type-around__fake-caret"></div></div></figure>'
+		);
+
+		// Dropping.
+		dataTransferMock.effectAllowed = 'copyMove';
+		dataTransferMock.dropEffect = 'move';
+		targetPosition = model.createPositionAt( root.getChild( 0 ).getChild( 0 ).getChild( 1 ).getChild( 0 ), 2 );
+		fireDrop( dataTransferMock, targetPosition );
+		clock.tick( 100 );
+
+		expect( spyClipboardInput.called ).to.be.true;
+		expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
+		expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+
+		fireDragEnd( dataTransferMock );
+		expectFinalized();
+
+		expect( getModelData( model ) ).to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell><tableCell><paragraph>bafoo[]r</paragraph></tableCell></tableRow></table>' );
+		expect( getViewData( view ) ).to.equal( '<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"></div><table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph"></span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"><span class="ck-table-bogus-paragraph">bafoo{}r</span></td></tr></tbody></table><div class="ck ck-reset_all ck-widget__type-around"></div></figure>' );
+
+		env.isGecko = originalEnvGecko;
+	} );
+
+	function fireDragStart( dataTransferMock, preventDefault = () => {} ) {
+		const eventData = prepareEventData( model.document.selection.getLastPosition() );
+
+		viewDocument.fire( 'mousedown', {
+			...eventData
+		} );
+
+		viewDocument.fire( 'dragstart', {
+			...eventData,
+			dataTransfer: dataTransferMock,
+			stopPropagation: () => {},
+			preventDefault
+		} );
+	}
+
+	function fireDragging( dataTransferMock, modelPositionOrRange ) {
+		viewDocument.fire( 'dragging', {
+			...prepareEventData( modelPositionOrRange ),
+			method: 'dragging',
+			dataTransfer: dataTransferMock,
+			stopPropagation: () => {},
+			preventDefault: () => {}
+		} );
+	}
+
+	function fireDrop( dataTransferMock, modelPosition ) {
+		viewDocument.fire( 'clipboardInput', {
+			...prepareEventData( modelPosition ),
+			method: 'drop',
+			dataTransfer: dataTransferMock,
+			stopPropagation: () => {},
+			preventDefault: () => {}
+		} );
+	}
+
+	function fireDragEnd( dataTransferMock ) {
+		viewDocument.fire( 'dragend', {
+			dataTransfer: dataTransferMock,
+			stopPropagation: () => {},
+			preventDefault: () => {}
+		} );
+	}
+
+	function prepareEventData( modelPositionOrRange ) {
+		let domNode, viewElement, viewRange;
+
+		if ( modelPositionOrRange.is( 'position' ) ) {
+			const viewPosition = mapper.toViewPosition( modelPositionOrRange );
+			viewRange = view.createRange( viewPosition );
+			viewElement = mapper.findMappedViewAncestor( viewPosition );
+
+			domNode = viewPosition.parent.is( '$text' ) ?
+				domConverter.findCorrespondingDomText( viewPosition.parent ).parentNode :
+				domConverter.mapViewToDom( viewElement );
+		} else {
+			viewRange = mapper.toViewRange( modelPositionOrRange );
+			viewElement = viewRange.getContainedElement();
+			domNode = domConverter.mapViewToDom( viewElement );
+		}
+
+		return {
+			domTarget: domNode,
+			target: viewElement,
+			targetRanges: [ viewRange ],
+			domEvent: {}
+		};
+	}
+
+	function expectDragStarted( dataTransferMock, data, spyClipboardOutput, effectAllowed = 'copyMove' ) {
+		expect( dataTransferMock.getData( 'text/html' ) ).to.equal( data );
+		expect( dataTransferMock.effectAllowed ).to.equal( effectAllowed );
+
+		expect( viewDocument.getRoot().getAttribute( 'draggable' ) ).to.equal( 'true' );
+
+		if ( spyClipboardOutput ) {
+			expect( spyClipboardOutput.called ).to.be.true;
+			expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
+			expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal( data );
+		}
+	}
+
+	function expectDraggingMarker( targetPositionOrRange ) {
+		expect( model.markers.has( 'drop-target' ) ).to.be.true;
+
+		if ( targetPositionOrRange.is( 'position' ) ) {
+			expect( model.markers.get( 'drop-target' ).getRange().isCollapsed ).to.be.true;
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual( targetPositionOrRange ) ).to.be.true;
+		} else {
+			expect( model.markers.get( 'drop-target' ).getRange().isEqual( targetPositionOrRange ) ).to.be.true;
+		}
+	}
+
+	function expectFinalized() {
+		expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
+
+		expect( model.markers.has( 'drop-target' ) ).to.be.false;
+	}
+
+	function createDataTransfer( data = {} ) {
+		return {
+			setData( type, value ) {
+				data[ type ] = value;
+			},
+
+			getData( type ) {
+				return data[ type ];
+			}
+		};
 	}
 } );
