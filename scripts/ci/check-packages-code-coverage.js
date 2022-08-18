@@ -131,7 +131,10 @@ if ( isMainThread ) {
 	// Code executed inside worker.
 	for ( const fullPackageName of workerData.group ) {
 		parentPort.postMessage( `Processing: ${ fullPackageName }` );
+		const startTime = new Date().getTime();
 		processPackage( fullPackageName );
+		const endTime = new Date().getTime();
+		parentPort.postMessage( `${ fullPackageName } - done in ${ Math.ceil( ( endTime - startTime ) / 1000 ) }s` );
 	}
 }
 
