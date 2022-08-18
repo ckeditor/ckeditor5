@@ -48,7 +48,7 @@ export default class Model extends Observable {
 	public readonly document: Document;
 	public readonly schema: Schema;
 
-	private _pendingChanges: { batch: Batch; callback: ( writer: Writer ) => any }[];
+	private readonly _pendingChanges: { batch: Batch; callback: ( writer: Writer ) => any }[];
 	private _currentWriter: Writer | null;
 
 	constructor() {
@@ -1021,7 +1021,7 @@ export default class Model extends Observable {
 				this._currentWriter = null;
 			}
 		} finally {
-			this._pendingChanges = [];
+			this._pendingChanges.length = 0;
 			this._currentWriter = null;
 
 			this.fire( '_afterChanges' );
