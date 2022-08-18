@@ -21,6 +21,8 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const glob = require( 'glob' );
 
+// const PARALLEL_THREADS_NUMBER = 4;
+
 const failedChecks = {
 	dependency: new Set(),
 	unitTests: new Set(),
@@ -70,17 +72,38 @@ childProcess.execSync( 'mkdir .nyc_output' );
 childProcess.execSync( 'rm -r -f .out' );
 childProcess.execSync( 'mkdir .out' );
 
+// TODO: remember to update.
 // Temporary: Do not check the `ckeditor5-minimap` package(s).
 const excludedPackages = [ 'ckeditor5-minimap' ];
-const packages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
+
+const corePackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
+	.map( filename => 'ckeditor5-' + filename.replace( /\.js$/, '' ) );
+
+corePackages.unshift( 'ckeditor5' );
+
+const regularPackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
 	.toString()
 	.trim()
 	.split( '\n' )
-	.filter( fullPackageName => !excludedPackages.includes( fullPackageName ) );
+	.filter( fullPackageName => ![ ...excludedPackages, ...corePackages ].includes( fullPackageName ) );
 
-packages.unshift( 'ckeditor5' );
+// const parallelGroups = regularPackages.reduce( ( parallelGroups, packageName, index ) => {
+// 	const groupIndex = index % PARALLEL_THREADS_NUMBER;
 
-for ( const fullPackageName of packages ) {
+// 	if ( !parallelGroups[ groupIndex ] ) {
+// 		parallelGroups[ groupIndex ] = [];
+// 	}
+
+// 	parallelGroups[ groupIndex ].push( packageName );
+
+// 	return parallelGroups;
+// }, [] );
+
+for ( const fullPackageName of regularPackages ) {
+	processPackage( fullPackageName );
+}
+
+function processPackage( fullPackageName ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 	const foldLabelName = 'pkg-' + simplePackageName;
 
