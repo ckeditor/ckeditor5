@@ -364,7 +364,7 @@ mix( TooltipManager, DomEmitterMixin );
  */
 TooltipManager.defaultBalloonPositions = generatePositions( {
 	verticalOffset: 5,
-	horizontalOffset: 12
+	horizontalOffset: 13
 } );
 
 function getDescendantWithTooltip( element ) {

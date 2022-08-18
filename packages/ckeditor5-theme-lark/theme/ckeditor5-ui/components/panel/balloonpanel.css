@@ -7,6 +7,7 @@
 @import "../../../mixins/_shadow.css";
 
 :root {
+	--ck-balloon-border-width: 1px;
 	--ck-balloon-arrow-offset: 2px;
 	--ck-balloon-arrow-height: 10px;
 	--ck-balloon-arrow-half-width: 8px;
@@ -20,7 +21,7 @@
 	min-height: 15px;
 
 	background: var(--ck-color-panel-background);
-	border: 1px solid var(--ck-color-panel-border);
+	border: var(--ck-balloon-border-width) solid var(--ck-color-panel-border);
 
 	&.ck-balloon-panel_with-arrow {
 		&::before,
@@ -39,11 +40,12 @@
 
 		&::before {
 			border-color: transparent transparent var(--ck-color-panel-border) transparent;
+			margin-top: calc( -1 * var(--ck-balloon-border-width) );
 		}
 
 		&::after {
 			border-color: transparent transparent var(--ck-color-panel-background) transparent;
-			margin-top: var(--ck-balloon-arrow-offset);
+			margin-top: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );
 		}
 	}
 
@@ -56,11 +58,12 @@
 		&::before {
 			border-color: var(--ck-color-panel-border) transparent transparent;
 			filter: drop-shadow(var(--ck-balloon-arrow-drop-shadow));
+			margin-bottom: calc( -1 * var(--ck-balloon-border-width) );
 		}
 
 		&::after {
 			border-color: var(--ck-color-panel-background) transparent transparent transparent;
-			margin-bottom: var(--ck-balloon-arrow-offset);
+			margin-bottom: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );
 		}
 	}
 
@@ -72,11 +75,12 @@
 
 		&::before {
 			border-color: transparent transparent transparent var(--ck-color-panel-border);
+			margin-right: calc( -1 * var(--ck-balloon-border-width) );
 		}
 
 		&::after {
 			border-color: transparent transparent transparent var(--ck-color-panel-background);
-			margin-right: var(--ck-balloon-arrow-offset);
+			margin-right: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );
 		}
 	}
 
@@ -88,11 +92,12 @@
 
 		&::before {
 			border-color: transparent var(--ck-color-panel-border) transparent transparent;
+			margin-left: calc( -1 * var(--ck-balloon-border-width) );
 		}
 
 		&::after {
 			border-color: transparent var(--ck-color-panel-background) transparent transparent;
-			margin-left: var(--ck-balloon-arrow-offset);
+			margin-left: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );
 		}
 	}
 
