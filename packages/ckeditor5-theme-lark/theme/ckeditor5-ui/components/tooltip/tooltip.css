@@ -6,7 +6,8 @@
 @import "../../../mixins/_rounded.css";
 
 .ck.ck-balloon-panel.ck-tooltip {
-	--ck-balloon-arrow-offset: 1px;
+	--ck-balloon-border-width: 0px;
+	--ck-balloon-arrow-offset: 0px;
 	--ck-balloon-arrow-half-width: 4px;
 	--ck-balloon-arrow-height: 4px;
 	--ck-color-panel-background: var(--ck-color-tooltip-background);
@@ -20,7 +21,6 @@
 	}
 
 	/* Reset balloon panel styles */
-	border: 0;
 	box-shadow: none;
 
 	/* Hide the default shadow of the .ck-balloon-panel tip */
