@@ -1562,6 +1562,21 @@ describe( 'Template', () => {
 
 			expect( Array.from( template.getViews() ) ).to.have.members( [ viewA, viewC ] );
 		} );
+
+		it( 'should traverse ViewCollection', () => {
+			const viewA = new View();
+			const viewB = new View();
+			const viewC = new View();
+
+			const collection = new ViewCollection( [ viewA, viewB, viewC ] );
+
+			const template = new Template( {
+				tag: 'div',
+				children: collection
+			} );
+
+			expect( Array.from( template.getViews() ) ).to.have.members( [ viewA, viewB, viewC ] );
+		} );
 	} );
 
 	describe( 'bind()', () => {

@@ -267,8 +267,9 @@ export default class Template extends Emitter {
 						yield child;
 					} else if ( isTemplate( child ) ) {
 						yield* search( child );
+					} else if ( isViewCollection( child ) ) {
+						yield* child;
 					}
-					// TODO: what about ViewCollection?
 				}
 			}
 		}
