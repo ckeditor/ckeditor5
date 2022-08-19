@@ -6,7 +6,7 @@
 :root {
 	--ck-color-base-foreground: 								hsl(0, 0%, 98%);
 	--ck-color-base-background: 								hsl(0, 0%, 100%);
-	--ck-color-base-border: 									hsl(220, 8.8%, 86.7%);
+	--ck-color-base-border: 									hsl(220, 6%, 81%);
 	--ck-color-base-action: 									hsl(104, 50.2%, 42.5%);
 	--ck-color-base-focus: 										hsl(209, 92%, 70%);
 	--ck-color-base-text: 										hsl(0, 0%, 20%);
@@ -64,11 +64,11 @@
 	/* -- Input --------------------------------------------------------------------------------- */
 
 	--ck-color-input-background: 								var(--ck-color-base-background);
-	--ck-color-input-border: 									hsl(0, 0%, 78%);
+	--ck-color-input-border: 									var(--ck-color-base-border);
 	--ck-color-input-error-border:								var(--ck-color-base-error);
 	--ck-color-input-text: 										var(--ck-color-base-text);
 	--ck-color-input-disabled-background: 						hsl(0, 0%, 95%);
-	--ck-color-input-disabled-border: 							hsl(0, 0%, 78%);
+	--ck-color-input-disabled-border: 							var(--ck-color-base-border);
 	--ck-color-input-disabled-text: 							hsl(0, 0%, 46%);
 
 	/* -- List ---------------------------------------------------------------------------------- */
