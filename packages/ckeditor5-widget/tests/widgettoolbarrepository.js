@@ -119,6 +119,21 @@ describe( 'WidgetToolbarRepository', () => {
 
 				expect( balloon.visibleView ).to.be.null;
 			} );
+
+			it( 'should provide the logic to hide the toolbar', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => editor.editing.view.document.getRoot()
+				} );
+
+				addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+				expect( balloon.visibleView ).to.equal( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view );
+
+				addToolbarSpy.lastCall.args[ 1 ].afterBlur();
+
+				expect( balloon.visibleView ).to.be.null;
+			} );
 		} );
 
 		it( 'should throw when adding two times widget with the same id', () => {

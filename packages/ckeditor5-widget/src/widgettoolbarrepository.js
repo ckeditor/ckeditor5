@@ -175,6 +175,9 @@ export default class WidgetToolbarRepository extends Plugin {
 				if ( relatedElement ) {
 					this._showToolbar( toolbarDefinition, relatedElement );
 				}
+			},
+			afterBlur: () => {
+				this._hideToolbar( toolbarDefinition );
 			}
 		} );
 
