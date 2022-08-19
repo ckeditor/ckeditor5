@@ -6,7 +6,7 @@ menu-title: Block quote
 
 # Block quote
 
-The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easily include block quotations or pull quotes in the rich-text content. A block quote may be used to refer to what other authors said, support your idea or present different points of view that may not necessarily be in line with the document you write, but should be included.
+The block quote feature allows you to easily include block quotations or pull quotes in the rich-text content. A block quote may be used to refer to what other authors said, support your idea or present different points of view that may not necessarily be in line with the document you write, but should be included.
 
 The block quote feature provides an attractive way to draw the readers' attention to selected parts of text and enriches the reading experience with additional data. It also helps organize the content in a structured, elegant way to manage the flow better.
 

@@ -3,7 +3,7 @@ title: Autoformatting
 category: features
 ---
 
-The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickly apply formatting to the content you are writing with the use of shortcodes.
+The autoformat feature allows you to quickly apply formatting to the content you are writing with the use of shortcodes.
 
 Employ Markdown-like inline codes as you type for a faster and more efficient editing workflow. Speed up and simplify the process by skipping the need to use toolbar buttons and dropdowns for the most common formatting features with these easy to memorize options listed below.
 
