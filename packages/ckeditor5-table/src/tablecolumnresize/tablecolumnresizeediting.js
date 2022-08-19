@@ -339,7 +339,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editingView = this.editor.editing.view;
 
 		editingView.addObserver( MouseEventsObserver );
-		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
+		this._domEmitter.listenTo(
+			global.window.document, 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' }
+		);
 
 		this._domEmitter.listenTo(
 			global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ), { useCapture: true }
@@ -355,6 +357,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 
 		this._domEmitter.listenTo( global.window.document, 'dragleave', () => {
+			if ( this._draggingState !== 'dragginactive' ) {
+				this._isResizingAllowed = false;
+			}
 			this._onDragLeaveHandler.bind( this );
 		} );
 		this._domEmitter.listenTo( global.window.document, 'drop', () => {
@@ -377,10 +382,18 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData The data related to the DOM event.
 	 */
 	_onMouseDownHandler( eventInfo, domEventData ) {
-		const target = domEventData.target;
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+		const target = editingView.domConverter.domToView( domEventData.target );
 
 		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
 			this._isResizingAllowed = false;
+			return;
+		}
+
+		const resizer = editingView.domConverter.mapDomToView( domEventData.target );
+
+		if ( !resizer ) {
 			return;
 		}
 
@@ -391,13 +404,11 @@ export default class TableColumnResizeEditing extends Plugin {
 		domEventData.preventDefault();
 		eventInfo.stop();
 
-		const editor = this.editor;
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' ) );
 
 		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
 		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._tableUtilsPlugin, editor );
 		const viewTable = target.findAncestor( 'table' );
-		const editingView = editor.editing.view;
 
 		// Insert colgroup for the table that is resized for the first time.
 		if ( ![ ...viewTable.getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) ) ) {
@@ -407,7 +418,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		this._isResizingActive = true;
-		this._resizingData = this._getResizingData( domEventData, columnWidthsInPx );
+		this._resizingData = this._getResizingData( domEventData, columnWidthsInPx, resizer );
 
 		// At this point we change only the editor view - we don't want other users to see our changes yet,
 		// so we can't apply them in the model.
@@ -671,12 +682,12 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @param {Array.<Number>} columnWidths The current widths of the columns.
 	 * @returns {Object} The data needed for the resizing process.
 	 */
-	_getResizingData( domEventData, columnWidths ) {
+	_getResizingData( domEventData, columnWidths, resizer ) {
 		const editor = this.editor;
 
-		const columnPosition = domEventData.domEvent.clientX;
+		const columnPosition = domEventData.clientX;
 
-		const viewResizer = domEventData.target;
+		const viewResizer = resizer;
 		const viewLeftCell = viewResizer.findAncestor( 'td' ) || viewResizer.findAncestor( 'th' );
 		const modelLeftCell = editor.editing.mapper.toModelElement( viewLeftCell );
 		const modelTable = modelLeftCell.findAncestor( 'table' );
