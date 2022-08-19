@@ -156,6 +156,7 @@ export default class TooltipManager {
 		// This causes issues with the ContextWatchdog. When an error is thrown in one editor, the watchdog traverses the references
 		// and (because of shared tooltip manager) figures that the error affects all editors and restarts them all.
 		// This flag, excludes tooltip manager instance from the traversal and brings ContextWatchdog back to normal.
+		// More in https://github.com/ckeditor/ckeditor5/issues/12292.
 		this._watchdogExcluded = true;
 	}
 
