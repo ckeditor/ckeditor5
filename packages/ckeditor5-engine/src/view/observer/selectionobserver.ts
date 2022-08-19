@@ -171,7 +171,7 @@ export default class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
-			if ( this.document.isComposing && !env.isAndroid && !env.isBlink ) {
+			if ( this.document.isComposing && !env.isAndroid ) {
 				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Selection change ignored (isComposing)',
 				// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''

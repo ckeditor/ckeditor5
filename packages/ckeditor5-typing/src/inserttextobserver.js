@@ -71,7 +71,7 @@ export default class InsertTextObserver extends Observer {
 
 		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
 		viewDocument.on( 'compositionend', ( evt, { data, domEvent } ) => {
-			if ( !this.isEnabled || env.isAndroid || env.isBlink ) {
+			if ( !this.isEnabled || env.isAndroid ) {
 				return;
 			}
 

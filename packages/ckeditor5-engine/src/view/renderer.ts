@@ -240,7 +240,7 @@ export default class Renderer extends Observable {
 	 * removed as long as the selection is in the text node which needed it at first.
 	 */
 	public render(): void {
-		if ( this.isComposing && !env.isAndroid && !env.isBlink ) {
+		if ( this.isComposing && !env.isAndroid ) {
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
