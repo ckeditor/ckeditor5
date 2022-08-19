@@ -6,8 +6,8 @@
 :root {
 	--ck-style-panel-button-width: 120px;
 	--ck-style-panel-button-height: 80px;
-	--ck-style-panel-button-label-background: hsl(0, 0%, 90%);
-	--ck-style-panel-button-hover-label-background: hsl(0, 0%, 80%);
+	--ck-style-panel-button-label-background: hsl(0, 0%, 94.1%);
+	--ck-style-panel-button-hover-label-background: hsl(0, 0%, 92.1%);
 	--ck-style-panel-button-hover-border-color: hsl(0, 0%, 70%);
 }
 
