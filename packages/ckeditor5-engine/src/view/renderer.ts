@@ -251,7 +251,7 @@ export default class Renderer extends Observable {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering',
+		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Rendering',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 		// @if CK_DEBUG_TYPING // 	);
 		// @if CK_DEBUG_TYPING // }
@@ -350,6 +350,10 @@ export default class Renderer extends Observable {
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 
 	/**
@@ -591,8 +595,17 @@ export default class Renderer extends Observable {
 			expectedText = INLINE_FILLER + expectedText;
 		}
 
-		console.log( 'Renderer._updateText()' );
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
 		updateTextNode( domText, expectedText );
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 
 	/**
@@ -647,6 +660,12 @@ export default class Renderer extends Observable {
 			return;
 		}
 
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update children',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
 		const inlineFillerPosition = options.inlineFillerPosition;
 		const actualDomChildren = this.domConverter.mapViewToDom( viewElement )!.childNodes;
 		const expectedDomChildren = Array.from(
@@ -689,10 +708,23 @@ export default class Renderer extends Observable {
 				i++;
 			} else if ( action === 'replace' ) {
 				if ( !this.isComposing ) {
-					console.log( 'Renderer._updateChildren()' );
+					// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text node',
+					// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+					// @if CK_DEBUG_TYPING // 	);
+					// @if CK_DEBUG_TYPING // }
+
 					updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
+
+					// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.groupEnd();
+					// @if CK_DEBUG_TYPING // }
 				} else {
-					console.log( 'Renderer._updateChildren() - ignored while composing' );
+					// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Ignore text node update while composing',
+					// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+					// @if CK_DEBUG_TYPING // 	);
+					// @if CK_DEBUG_TYPING // }
 				}
 				i++;
 			} else if ( action === 'equal' ) {
@@ -711,6 +743,10 @@ export default class Renderer extends Observable {
 				this.domConverter.unbindDomElement( node as DomElement );
 			}
 		}
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 
 	/**
@@ -1184,10 +1220,22 @@ function updateTextNode( domText: DomText, expectedText: string ) {
 	const actualText = domText.data;
 
 	if ( actualText == expectedText ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node does not need update:',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
+		// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length })`
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
 		return;
 	}
 
-	console.log( `update text node: "${ domText.data }" (${ domText.data.length }) -> "${ expectedText }" (${ expectedText.length })` );
+	// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+	// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update text node:',
+	// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
+	// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length }) -> "${ expectedText }" (${ expectedText.length })`
+	// @if CK_DEBUG_TYPING // 	);
+	// @if CK_DEBUG_TYPING // }
 
 	const actions = fastDiff( actualText, expectedText );
 

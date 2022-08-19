@@ -77,19 +77,23 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
-		} else {
-			if ( domTargetRanges.length ) {
-				targetRanges = domTargetRanges.map( domRange => {
-					return view.domConverter.domRangeToView( domRange )!;
-				} );
-			} else if ( env.isAndroid ) {
-				const domSelection = ( domEvent.target as HTMLElement ).ownerDocument.defaultView!.getSelection()!;
-
-				targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
-			}
+		} else if ( domTargetRanges.length ) {
+			targetRanges = domTargetRanges.map( domRange => {
+				return view.domConverter.domRangeToView( domRange )!;
+			} );
 
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using target ranges:',
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+		} else if ( env.isAndroid ) {
+			const domSelection = ( domEvent.target as HTMLElement ).ownerDocument.defaultView!.getSelection()!;
+
+			targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using selection ranges:',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
