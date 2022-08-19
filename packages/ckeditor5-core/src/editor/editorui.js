@@ -245,8 +245,6 @@ export default class EditorUI {
 	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link #setEditableElement editable element}.
 	 */
 	addToolbar( toolbarView, options = {} ) {
-		// console.log( this.editor.constructor.name, `Registering toolbar ${ logToolbar( toolbarView ) }` );
-
 		if ( toolbarView.isRendered ) {
 			this.focusTracker.add( toolbarView.element );
 			this.editor.keystrokes.listenTo( toolbarView.element );
@@ -351,9 +349,6 @@ export default class EditorUI {
 		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
 			const focusedElement = this.focusTracker.focusedElement;
 
-			// console.clear();
-			// console.log( '------ Pressed Alt+F10 ------------------------------------' );
-
 			// Focus moved out of a DOM element that
 			// * is not a toolbar,
 			// * does not belong to the editing view (e.g. source editing).
@@ -370,27 +365,17 @@ export default class EditorUI {
 			// This ensures, the navigation works always the same and no pair of toolbars takes over
 			// (e.g. image and table toolbars when a selected image is inside a cell).
 			if ( !currentFocusedToolbarDefinition ) {
-				// console.log( '♻️ Getting new candidates' );
 				candidateDefinitions = this._getFocusableCandidateToolbarDefinitions( currentFocusedToolbarDefinition );
 			}
-
-			// console.log( 'Candidates:' );
-			// candidateDefinitions.forEach( def => {
-			// 	console.log( '	' + logToolbar( def.toolbarView ) );
-			// } );
 
 			// In a single Alt+F10 press, check all candidates but if none were focused, don't go any further.
 			// This prevents an infinite loop.
 			for ( let i = 0; i < candidateDefinitions.length; i++ ) {
 				const candidateDefinition = candidateDefinitions.shift();
 
-				// console.log( 'Trying a candidate:', logToolbar( candidateDefinition.toolbarView ) );
-
 				// Put the first definition to the back of the array. This allows circular navigation over all toolbars
 				// on successive presses of Alt+F10.
 				candidateDefinitions.push( candidateDefinition );
-
-				// console.log( `The toolbar candidate to focus is ${ logToolbar( candidateDefinition.toolbarView ) }.` );
 
 				// Don't focus the same toolbar again. If you did, this would move focus from the nth focused toolbar item back to the
 				// first item as per ToolbarView#focus() if the user navigated inside the toolbar.
@@ -398,41 +383,29 @@ export default class EditorUI {
 					candidateDefinition !== currentFocusedToolbarDefinition &&
 					this._focusFocusableCandidateToolbar( candidateDefinition )
 				) {
-					// console.log( '	✅ Toolbar got focus:', logToolbar( candidateDefinition.toolbarView ) );
-
 					// Clean up after a current visible toolbar when switching to the next one.
 					if ( currentFocusedToolbarDefinition && currentFocusedToolbarDefinition.options.afterBlur ) {
-						// console.log( 'The current toolbar had afterBlur(). Cleaning...' );
 						currentFocusedToolbarDefinition.options.afterBlur();
 					}
 
 					break;
 				}
-
-				// console.log( '	❌ It didn\'t work.' );
 			}
 
 			cancel();
-
-			// console.groupEnd( 'Pressed Alt+F10' );
 		} );
 
 		// Blur the focused toolbar on <kbd>Esc</kbd> and bring the focus back to its origin.
 		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			// console.group( 'Esc was pressed' );
 			const focusedToolbarDef = this._getCurrentFocusedToolbarDefinition();
 
 			if ( !focusedToolbarDef ) {
-				// console.log( 'No toolbar was focused. No action needed.' );
-				// console.groupEnd( 'Esc was pressed' );
-
 				return;
 			}
 
 			// Bring focus back to where it came from before focusing the toolbar:
 			// 1. If it came from outside the engine view (e.g. source editing), move it there.
 			if ( lastFocusedForeignElement ) {
-				// console.log( 'Moving focus back where it came from', lastFocusedForeignElement );
 				lastFocusedForeignElement.focus();
 				lastFocusedForeignElement = null;
 			}
@@ -441,7 +414,6 @@ export default class EditorUI {
 			//   2.2. It could be the focus went straight to the toolbar before even focusing the editing area.
 			// In either case, just focus the view editing. The focus will land where it belongs.
 			else {
-				// console.log( 'Looks like the focus went straight to the toolbar. Just focusing the editing then.' );
 				editor.editing.view.focus();
 			}
 
@@ -451,8 +423,6 @@ export default class EditorUI {
 			}
 
 			cancel();
-
-			// console.groupEnd( 'Esc was pressed' );
 		} );
 	}
 
@@ -471,16 +441,12 @@ export default class EditorUI {
 	 * @returns {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
 	 */
 	_getFocusableCandidateToolbarDefinitions() {
-		// console.group( 'getFocusableToolbarDefinitions()' );
-
 		const definitions = [];
 
 		for ( const toolbarDef of this._focusableToolbarDefinitions ) {
 			const { toolbarView, options } = toolbarDef;
 
 			if ( isVisible( toolbarView.element ) || options.beforeFocus ) {
-				// console.log( `${ logToolbar( toolbarView ) }: because already visible.` );
-
 				definitions.push( toolbarDef );
 			}
 		}
@@ -521,24 +487,15 @@ export default class EditorUI {
 		const { toolbarView, options: { beforeFocus } } = candidateToolbarDefinition;
 
 		if ( beforeFocus ) {
-			// console.log( 'The candidate has beforeFocus(). Calling beforeFocus()' );
-
 			beforeFocus();
 		}
 
 		// If it didn't show up after beforeFocus(), it's not focusable at all.
 		if ( !isVisible( toolbarView.element ) ) {
-			// console.log(
-			// 	`😔 The candidate ${ logToolbar( candidateToolbarDefinition.toolbarView ) } turned out invisible. ` +
-			// 	'Looking for another one.'
-			// );
-
 			return false;
 		}
 
 		toolbarView.focus();
-
-		// console.log( `✅ Finally focused ${ logToolbar( candidateToolbarDefinition.toolbarView ) }.` );
 
 		return true;
 	}
@@ -562,11 +519,6 @@ export default class EditorUI {
 }
 
 mix( EditorUI, ObservableMixin );
-
-// TODO: To be removed in prod.
-// function logToolbar( toolbarView ) {
-// 	return `"${ toolbarView.ariaLabel }"`;
-// }
 
 /**
  * A definition of a focusable toolbar. Used by {@link module:core/editor/editorui~EditorUI#addToolbar}.
