@@ -345,13 +345,14 @@ export default class EditorUI {
 		const editingView = editor.editing.view;
 
 		let lastFocusedForeignElement;
+		let candidateDefinitions;
 
 		// Focus the next focusable toolbar on <kbd>Alt</kbd> + <kbd>F10</kbd>.
 		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
 			const focusedElement = this.focusTracker.focusedElement;
 
 			// console.clear();
-			// console.group( 'Pressed Alt+F10' );
+			// console.log( '------ Pressed Alt+F10 ------------------------------------' );
 
 			// Focus moved out of a DOM element that
 			// * is not a toolbar,
@@ -364,22 +365,51 @@ export default class EditorUI {
 			}
 
 			const currentFocusedToolbarDefinition = this._getCurrentFocusedToolbarDefinition();
-			const candidateDefinitions = this._getFocusableCandidateToolbarDefinitions( currentFocusedToolbarDefinition );
 
-			// Clean up after a visible toolbar when switching to the next one.
-			if ( currentFocusedToolbarDefinition && currentFocusedToolbarDefinition.options.afterBlur ) {
-				// console.log( 'The current toolbar had afterBlur(). Cleaning...' );
-				currentFocusedToolbarDefinition.options.afterBlur();
+			// When focusing a toolbar for the first time, set the array of definitions for successive presses of Alt+F10.
+			// This ensures, the navigation works always the same and no pair of toolbars takes over
+			// (e.g. image and table toolbars when a selected image is inside a cell).
+			if ( !currentFocusedToolbarDefinition ) {
+				// console.log( '♻️ Getting new candidates' );
+				candidateDefinitions = this._getFocusableCandidateToolbarDefinitions( currentFocusedToolbarDefinition );
 			}
 
-			while ( candidateDefinitions.length ) {
+			// console.log( 'Candidates:' );
+			// candidateDefinitions.forEach( def => {
+			// 	console.log( '	' + logToolbar( def.toolbarView ) );
+			// } );
+
+			// In a single Alt+F10 press, check all candidates but if none were focused, don't go any further.
+			// This prevents an infinite loop.
+			for ( let i = 0; i < candidateDefinitions.length; i++ ) {
 				const candidateDefinition = candidateDefinitions.shift();
+
+				// console.log( 'Trying a candidate:', logToolbar( candidateDefinition.toolbarView ) );
+
+				// Put the first definition to the back of the array. This allows circular navigation over all toolbars
+				// on successive presses of Alt+F10.
+				candidateDefinitions.push( candidateDefinition );
 
 				// console.log( `The toolbar candidate to focus is ${ logToolbar( candidateDefinition.toolbarView ) }.` );
 
-				if ( this._focusFocusableCandidateToolbar( candidateDefinition ) ) {
+				// Don't focus the same toolbar again. If you did, this would move focus from the nth focused toolbar item back to the
+				// first item as per ToolbarView#focus() if the user navigated inside the toolbar.
+				if (
+					candidateDefinition !== currentFocusedToolbarDefinition &&
+					this._focusFocusableCandidateToolbar( candidateDefinition )
+				) {
+					// console.log( '	✅ Toolbar got focus:', logToolbar( candidateDefinition.toolbarView ) );
+
+					// Clean up after a current visible toolbar when switching to the next one.
+					if ( currentFocusedToolbarDefinition && currentFocusedToolbarDefinition.options.afterBlur ) {
+						// console.log( 'The current toolbar had afterBlur(). Cleaning...' );
+						currentFocusedToolbarDefinition.options.afterBlur();
+					}
+
 					break;
 				}
+
+				// console.log( '	❌ It didn\'t work.' );
 			}
 
 			cancel();
@@ -438,10 +468,9 @@ export default class EditorUI {
 	 * **Note**: Contextual toolbars take precedence over regular toolbars.
 	 *
 	 * @private
-	 * @param {module:core/editor/editorui~FocusableToolbarDefinition} currentFocusedToolbarDefinition The current toolbar definition.
 	 * @returns {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
 	 */
-	_getFocusableCandidateToolbarDefinitions( currentFocusedToolbarDefinition ) {
+	_getFocusableCandidateToolbarDefinitions() {
 		// console.group( 'getFocusableToolbarDefinitions()' );
 
 		const definitions = [];
@@ -460,19 +489,7 @@ export default class EditorUI {
 		// For instance, a selected widget toolbar vs inline editor toolbar: both are visible but the widget toolbar is contextual.
 		definitions.sort( ( defA, defB ) => getToolbarDefinitionWeight( defA ) - getToolbarDefinitionWeight( defB ) );
 
-		if ( !currentFocusedToolbarDefinition ) {
-			// console.log(
-			// 	'No toolbar focused. Selecting the first one: ' +
-			// 	`${ candidateDefinitions[ 0 ] ? logToolbar( candidateDefinitions[ 0 ].toolbarView ) : 'no definition' }`
-			// );
-
-			// console.groupEnd( 'getNextFocusableToolbarDef()' );
-			return definitions;
-		}
-
-		// console.groupEnd( 'getFocusableToolbarDefinitions()' );
-
-		return getNextFocusableCandidateToolbarDefs( definitions, currentFocusedToolbarDefinition );
+		return definitions;
 	}
 
 	/**
@@ -574,20 +591,6 @@ mix( EditorUI, ObservableMixin );
  *
  * @member {Object} #options
  */
-
-// Shifts the definitions list to start after the current (and wraps the list).
-//
-// @private
-// @param {Array.<module:core/editor/editorui~FocusableToolbarDefinition>} definitions
-// @param {module:core/editor/editorui~FocusableToolbarDefinition} currentFocusedToolbarDefinition The current focused toolbar definition.
-// @returns {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
-function getNextFocusableCandidateToolbarDefs( definitions, currentFocusedToolbarDefinition ) {
-	const focusedToolbarIndex = definitions.findIndex(
-		( { toolbarView } ) => toolbarView === currentFocusedToolbarDefinition.toolbarView
-	);
-
-	return definitions.slice( focusedToolbarIndex + 1 ).concat( definitions.slice( 0, focusedToolbarIndex ) );
-}
 
 // Returns a number (weight) for a toolbar definition. Visible toolbars have a higher priority and so do
 // contextual toolbars (displayed in the context of a content, for instance, an image toolbar).
