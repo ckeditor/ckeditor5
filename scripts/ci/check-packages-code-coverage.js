@@ -15,7 +15,7 @@
  * file that will be sent to Coveralls.
  */
 
-console.log( 'change to trigger build' );
+console.log( 'change to trigger build #2' );
 
 const childProcess = require( 'child_process' );
 const crypto = require( 'crypto' );
