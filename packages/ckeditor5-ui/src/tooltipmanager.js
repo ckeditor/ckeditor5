@@ -72,9 +72,6 @@ export default class TooltipManager {
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	constructor( editor ) {
-		// See: ContextWatchdog.
-		this._watchdogExcluded = true;
-
 		TooltipManager._editors.add( editor );
 
 		// TooltipManager must be a singleton. Multiple instances would mean multiple tooltips attached
@@ -154,6 +151,12 @@ export default class TooltipManager {
 		this.listenTo( global.document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
 		this.listenTo( global.document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
+
+		// Because this class is a singleton, its only instance is shared across all editors and connects them through the reference.
+		// This causes issues with the ContextWatchdog. When an error is thrown in one editor, the watchdog traverses the references
+		// and (because of shared tooltip manager) figures that the error affects all editors and restarts them all.
+		// This flag, excludes tooltip manager instance from the traversal and brings ContextWatchdog back to normal.
+		this._watchdogExcluded = true;
 	}
 
 	/**
