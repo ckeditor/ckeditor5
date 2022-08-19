@@ -682,8 +682,12 @@ export default class Renderer extends Observable {
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'replace' ) {
-				console.log( 'Renderer._updateChildren()' );
-				updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
+				if ( !this.isComposing ) {
+					console.log( 'Renderer._updateChildren()' );
+					updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
+				} else {
+					console.log( 'Renderer._updateChildren() - ignored while composing' );
+				}
 				i++;
 			} else if ( action === 'equal' ) {
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).

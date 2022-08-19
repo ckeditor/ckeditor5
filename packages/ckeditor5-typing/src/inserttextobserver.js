@@ -26,7 +26,7 @@ const TYPING_INPUT_TYPES = [
 	'insertReplacementText'
 ];
 
-if ( env.isAndroid || env.isBlink ) {
+if ( env.isAndroid ) {
 	TYPING_INPUT_TYPES.push( 'insertCompositionText' );
 }
 
