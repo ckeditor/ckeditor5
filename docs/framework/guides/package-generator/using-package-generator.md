@@ -14,7 +14,7 @@ The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-pack
 To create a new package without installing the tool, execute the following command:
 
 ```bash
-npx ckeditor5-package-generator <packageName>
+npx ckeditor5-package-generator <packageName> [--verbose] [--use-npm] [--lang]
 ```
 
 The `<packageName>` argument is required and must follow these rules:

@@ -211,7 +211,7 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 
 - `prepare`: Triggers during package creation and before publishing.
 - `prepublishOnly`: Triggers only before publishing.
-- `prepare`: Triggers after publishing.
+- `postpublish`: Triggers after publishing.
 
 Scripts in this package ensure that DLL-compatible package build is available after creation of the package, and that correct files are published:
 
