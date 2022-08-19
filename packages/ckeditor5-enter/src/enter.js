@@ -38,7 +38,9 @@ export default class Enter extends Plugin {
 		editor.commands.add( 'enter', new EnterCommand( editor ) );
 
 		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
-			data.preventDefault();
+			if ( !viewDocument.isComposing ) {
+				data.preventDefault();
+			}
 
 			// The soft enter key is handled by the ShiftEnter plugin.
 			if ( data.isSoft ) {

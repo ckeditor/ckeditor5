@@ -562,6 +562,12 @@ export default class Renderer extends Observable {
 			return false;
 		}
 
+		// Do not use inline filler while typing outside inline elements on Android.
+		// The deleteContentBackward would remove part of the inline filler instead of removing last letter in a link.
+		if ( env.isAndroid && ( nodeBefore || nodeAfter ) ) {
+			return false;
+		}
+
 		return true;
 	}
 

@@ -43,7 +43,9 @@ export default class Input extends Plugin {
 		editor.commands.add( 'input', insertTextCommand );
 
 		this.listenTo( view.document, 'insertText', ( evt, data ) => {
-			data.preventDefault();
+			if ( !view.document.isComposing ) {
+				data.preventDefault();
+			}
 
 			const { text, selection: viewSelection, resultRange: viewResultRange } = data;
 
