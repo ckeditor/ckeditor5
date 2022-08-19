@@ -118,6 +118,15 @@ export default class TableColumnResizeEditing extends Plugin {
 		} );
 
 		/**
+		 * A flag indicating if d&d effect is happening.
+		 *
+		 * @private
+		 * @observable
+		 * @member {Boolean}
+		 */
+		this.set( '_isDragging', false );
+
+		/**
 		 * Indicating the current state of drag.
 		 *
 		 * @private
@@ -155,8 +164,10 @@ export default class TableColumnResizeEditing extends Plugin {
 			columnResizePlugin, 'isEnabled',
 			resizeTableWidthCommand, 'isEnabled',
 			resizeColumnWidthsCommand, 'isEnabled',
-			( isEditorReadOnly, isPluginEnabled, isResizeTableWidthCommandEnabled, isResizeColumnWidthsCommandEnabled ) =>
-				!isEditorReadOnly && isPluginEnabled && isResizeTableWidthCommandEnabled && isResizeColumnWidthsCommandEnabled
+			this, '_isDragging',
+			( isEditorReadOnly, isPluginEnabled, isResizeTableWidthCommandEnabled, isResizeColumnWidthsCommandEnabled, isDragging ) =>
+				!isEditorReadOnly && isPluginEnabled && isResizeTableWidthCommandEnabled &&
+				isResizeColumnWidthsCommandEnabled && !isDragging
 		);
 	}
 
@@ -358,7 +369,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this._domEmitter.listenTo( global.window.document, 'dragleave', () => {
 			if ( this._draggingState !== 'dragginactive' ) {
-				this._isResizingAllowed = false;
+				this._isDragging = true;
 			}
 			this._onDragLeaveHandler.bind( this );
 		} );
@@ -387,7 +398,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const target = editingView.domConverter.domToView( domEventData.target );
 
 		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
-			this._isResizingAllowed = false;
+			this._isDragging = true;
 			return;
 		}
 
@@ -574,7 +585,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	_onMouseUpHandler() {
 		if ( !this._isResizingActive ) {
-			this._isResizingAllowed = true;
+			this._isDragging = false;
 			return;
 		}
 
@@ -779,7 +790,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 
 			if ( this._draggingState === 'afterdragging' ) {
-				this._isResizingAllowed = true;
+				this._isDragging = false;
 				this._draggingState = 'notdragging';
 			}
 		}, { priority: 'lowest' } );
