@@ -240,7 +240,7 @@ export default class Renderer extends Observable {
 	 * removed as long as the selection is in the text node which needed it at first.
 	 */
 	public render(): void {
-		if ( this.isComposing && !env.isAndroid ) {
+		if ( this.isComposing && !env.isAndroid && !env.isBlink ) {
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
@@ -267,7 +267,7 @@ export default class Renderer extends Observable {
 		// Don't manipulate inline fillers while the selection is being made in (non-Android) Blink to prevent accidental
 		// DOM selection collapsing
 		// (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
-		if ( isInlineFillerRenderingPossible && !this.isComposing ) {
+		if ( isInlineFillerRenderingPossible ) {
 			// There was inline filler rendered in the DOM but it's not
 			// at the selection position any more, so we can remove it
 			// (cause even if it's needed, it must be placed in another location).
@@ -585,6 +585,7 @@ export default class Renderer extends Observable {
 			expectedText = INLINE_FILLER + expectedText;
 		}
 
+		console.log( 'Renderer._updateText()' );
 		updateTextNode( domText, expectedText );
 	}
 
@@ -681,9 +682,8 @@ export default class Renderer extends Observable {
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'replace' ) {
-				if ( !this.isComposing ) {
-					updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
-				}
+				console.log( 'Renderer._updateChildren()' );
+				updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
 				i++;
 			} else if ( action === 'equal' ) {
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
@@ -1177,7 +1177,7 @@ function updateTextNode( domText: DomText, expectedText: string ) {
 		return;
 	}
 
-	console.log( 'update text node:', domText.data, domText.data.length, expectedText, expectedText.length );
+	console.log( `update text node: "${ domText.data }" (${ domText.data.length }) -> "${ expectedText }" (${ expectedText.length })` );
 
 	const actions = fastDiff( actualText, expectedText );
 
