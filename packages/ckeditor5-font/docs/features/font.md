@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-font-source}
 
-The {@link module:font/font~Font} plugin provides extended text formatting options for the document content.
+The font feature provides extended text formatting options for the document content.
 
 The font styles, just like the {@link features/basic-styles basic text styles} can serve numerous purposes. Font size setting can be applied globally or to a selected part of the text only making it catch the eye of the reader. Using different font families can help differentiate between sections of the content that serve various purposes (e.g. main text and a side quotation or a recap). Different font colors can work as markers and guides just like font background colors, that stand out even more and draw attention.
 
