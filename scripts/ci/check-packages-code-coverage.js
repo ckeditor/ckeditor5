@@ -15,8 +15,6 @@
  * file that will be sent to Coveralls.
  */
 
-console.log( 'change to trigger build #2' );
-
 const childProcess = require( 'child_process' );
 const crypto = require( 'crypto' );
 const fs = require( 'fs' );
@@ -32,6 +30,10 @@ const failedChecks = {
 const RED = '\x1B[0;31m';
 const YELLOW = '\x1B[33;1m';
 const NO_COLOR = '\x1B[0m';
+
+runSubprocess( 'tsc', [ '-p', './tsconfig.release.json' ] );
+
+process.exit();
 
 const travis = {
 	_lastTimerId: null,
