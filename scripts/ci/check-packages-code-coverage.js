@@ -31,7 +31,7 @@ const RED = '\x1B[0;31m';
 const YELLOW = '\x1B[33;1m';
 const NO_COLOR = '\x1B[0m';
 
-runSubprocess( 'tsc', [ '-p', './tsconfig.release.json' ] );
+runSubprocess( 'yarn', [ 'run', 'cli:build' ] );
 
 process.exit();
 
