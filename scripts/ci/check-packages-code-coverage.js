@@ -33,8 +33,6 @@ const NO_COLOR = '\x1B[0m';
 
 runSubprocess( 'yarn', [ 'run', 'cli:build' ] );
 
-process.exit();
-
 const travis = {
 	_lastTimerId: null,
 	_lastStartTime: null,
