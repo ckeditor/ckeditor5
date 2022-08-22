@@ -401,7 +401,6 @@ The HTML structure of every non-previewable media in the editor is as follows:
 			</div>
 			<a class="ck-media__placeholder__url" target="new" href="[ URL of the media]">
 				<span class="ck-media__placeholder__url__text">[ URL of the media]</span>
-				<span class="ck ck-tooltip ck-tooltip_s">...</span>
 			</a>
 		</div>
 	</div>
