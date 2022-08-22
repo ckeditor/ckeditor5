@@ -24,6 +24,9 @@ export default class SpecialCharactersView extends View {
 	 * Creates an instance of the SpecialCharacters view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
+	 * @param {module:special-characters/ui/specialcharactersnavigationview~SpecialCharactersNavigationView} navigationView
+	 * @param {module:special-characters/ui/charactergridview~CharacterGridView} gridView
+	 * @param {module:special-characters/ui/characterinfoview~CharacterInfoView} infoView
 	 */
 	constructor( locale, navigationView, gridView, infoView ) {
 		super( locale );
