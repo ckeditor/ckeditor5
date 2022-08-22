@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
+/* eslint-disable @typescript-eslint/no-invalid-void-type, new-cap */
 
 /**
  * @module ui/view
@@ -13,9 +13,10 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ViewCollection from './viewcollection';
 import Template, { type BindChain, type TemplateDefinition } from './template';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { Observable, type DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection, { type AddEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../theme/globals/globals.css';
@@ -85,8 +86,8 @@ import '../theme/globals/globals.css';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class View extends DomEmitterMixin( Observable ) {
-	public element: HTMLElement | null;
+export default class View<TElement extends HTMLElement = HTMLElement> extends DomEmitterMixin( Observable ) {
+	public element: TElement | null;
 	public isRendered: boolean;
 	public locale: Locale | undefined;
 	public readonly t: Locale[ 't' ] | undefined;
@@ -411,7 +412,7 @@ export default class View extends DomEmitterMixin( Observable ) {
 	 * @param {module:ui/template~TemplateDefinition} definition Definition which
 	 * extends the {@link #template}.
 	 */
-	public extendTemplate( definition: TemplateDefinition ): void {
+	public extendTemplate( definition: Partial<TemplateDefinition> ): void {
 		Template.extend( this.template!, definition );
 	}
 
@@ -472,7 +473,7 @@ export default class View extends DomEmitterMixin( Observable ) {
 	 *		// Late rendering allows customization of the view.
 	 *		view.render();
 	 */
-	public render(): void {
+	public render(): void | Promise<unknown> {
 		if ( this.isRendered ) {
 			/**
 			 * This View has already been rendered.
@@ -484,7 +485,7 @@ export default class View extends DomEmitterMixin( Observable ) {
 
 		// Render #element of the view.
 		if ( this.template ) {
-			this.element = this.template.render() as HTMLElement;
+			this.element = this.template.render() as TElement;
 
 			// Auto–register view children from #template.
 			this.registerChild( this.template.getViews() );
@@ -521,3 +522,5 @@ export default class View extends DomEmitterMixin( Observable ) {
 	 * @event render
 	 */
 }
+
+export type RenderEvent = DecoratedMethodEvent<View, 'render'>;

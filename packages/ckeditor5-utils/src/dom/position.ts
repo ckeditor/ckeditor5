@@ -494,7 +494,7 @@ export interface Options {
 	 *
 	 * @member {module:utils/dom/rect~RectSource|Function}
 	 */
-	readonly limiter: RectSource | ( () => RectSource );
+	readonly limiter?: RectSource | ( () => ( RectSource | null ) ) | null;
 
 	/**
 	 * When set, the algorithm will chose such a position which fits `element`

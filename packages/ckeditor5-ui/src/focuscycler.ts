@@ -130,7 +130,7 @@ export default class FocusCycler {
 
 		if ( options.actions && options.keystrokeHandler ) {
 			for ( const methodName in options.actions ) {
-				let actions = options.actions[ methodName as keyof FocusCyclerActions ];
+				let actions = options.actions[ methodName as keyof FocusCyclerActions ]!;
 
 				if ( typeof actions == 'string' ) {
 					actions = [ actions ];
@@ -319,10 +319,10 @@ export default class FocusCycler {
 export type FocusableView = View & { focus(): void };
 
 export interface FocusCyclerActions {
-	focusFirst: ArrayOrItem<string>;
-	focusLast: ArrayOrItem<string>;
-	focusNext: ArrayOrItem<string>;
-	focusPrevious: ArrayOrItem<string>;
+	focusFirst?: ArrayOrItem<string>;
+	focusLast?: ArrayOrItem<string>;
+	focusNext?: ArrayOrItem<string>;
+	focusPrevious?: ArrayOrItem<string>;
 }
 
 // Checks whether a view is focusable.

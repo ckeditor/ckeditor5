@@ -60,7 +60,7 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 export default class Template extends Emitter {
 	public ns?: string;
 	public tag?: string;
-	public text?: ( string | FalsyValue | TemplateBinding )[];
+	public text?: ( TemplateSimpleValue | TemplateBinding )[];
 	public attributes?: Record<string, AttributeValues>;
 	public children?: ( ViewCollection | View | Node | Template )[];
 	public eventListeners?: Record<string, TemplateToBinding[]>;
@@ -618,7 +618,7 @@ export default class Template extends Emitter {
 					attrValue.unshift( domAttrValue as any );
 				}
 
-				const value: string | FalsyValue = attrValue
+				const value: any = attrValue
 					// Retrieve "values" from:
 					//
 					//		class: [
@@ -668,7 +668,7 @@ export default class Template extends Emitter {
 	 * @param {Object} styles Styles located in `attributes.style` of {@link module:ui/template~TemplateDefinition}.
 	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	private _renderStyleAttribute( styles: Record<string, string | FalsyValue | TemplateBinding>, data: RenderData ) {
+	private _renderStyleAttribute( styles: Record<string, TemplateSimpleValue | TemplateBinding>, data: RenderData ) {
 		const node = data.node;
 
 		for ( const styleName in styles ) {
@@ -795,7 +795,7 @@ export default class Template extends Emitter {
 	 * @param {module:ui/template~RenderData} options.data Rendering data.
 	 */
 	private _bindToObservable( { schema, updater, data }: {
-		schema: ( string | FalsyValue | TemplateBinding )[];
+		schema: ( TemplateSimpleValue | TemplateBinding )[];
 		updater: Updater;
 		data: RenderData;
 	} ) {
@@ -870,8 +870,8 @@ export default class Template extends Emitter {
 	}
 }
 
-type AttributeValues = ( string | FalsyValue | TemplateBinding )[] |
-	[ NamespacedValue<( string | FalsyValue | TemplateBinding )[]> ];
+type AttributeValues = ( TemplateSimpleValue | TemplateBinding )[] |
+	[ NamespacedValue<( TemplateSimpleValue | TemplateBinding )[]> ];
 
 /**
  * Describes a binding created by the {@link module:ui/template~Template.bind} interface.
@@ -883,7 +883,7 @@ export class TemplateBinding {
 	public readonly attribute: string;
 	public readonly observable: Observable;
 	public readonly emitter: Emitter;
-	public readonly callback?: ( value: any, node: Node ) => string | FalsyValue;
+	public readonly callback?: ( value: any, node: Node ) => TemplateSimpleValue;
 
 	/**
 	 * Creates an instance of the {@link module:ui/template~TemplateBinding} class.
@@ -894,7 +894,7 @@ export class TemplateBinding {
 		attribute: string;
 		observable: Observable;
 		emitter: Emitter;
-		callback?: ( value: any, node: Node ) => string | FalsyValue;
+		callback?: ( value: any, node: Node ) => TemplateSimpleValue;
 	} ) {
 		this.attribute = def.attribute;
 		this.observable = def.observable;
@@ -941,7 +941,7 @@ export class TemplateBinding {
 	 * @returns {*} The value of {@link module:ui/template~TemplateBinding#attribute} in
 	 * {@link module:ui/template~TemplateBinding#observable}.
 	 */
-	public getValue( node: Node ): string | FalsyValue {
+	public getValue( node: Node ): TemplateSimpleValue {
 		const value = ( this.observable as any )[ this.attribute ];
 
 		return this.callback ? this.callback( value, node ) : value;
@@ -958,7 +958,7 @@ export class TemplateBinding {
 	 * @returns {Function} A function to sever the listener binding.
 	 */
 	public activateAttributeListener(
-		schema: ( string | FalsyValue | TemplateBinding )[],
+		schema: ( TemplateSimpleValue | TemplateBinding )[],
 		updater: Updater,
 		data: RenderData
 	): () => void {
@@ -1049,10 +1049,9 @@ export class TemplateIfBinding extends TemplateBinding {
 	/**
 	 * @inheritDoc
 	 */
-	public override getValue( node: Node ): string | FalsyValue {
+	public override getValue( node: Node ): TemplateSimpleValue {
 		const value = super.getValue( node );
 
-		// TODO: true?
 		return isFalsy( value ) ? false : ( this.valueIfTrue || true ) as any;
 	}
 
@@ -1101,7 +1100,7 @@ function hasTemplateBinding( schema: any ) {
 // @param {module:ui/template~TemplateValueSchema} schema
 // @param {Node} node DOM Node updated when {@link module:utils/observablemixin~ObservableMixin} changes.
 // @returns {Array}
-function getValueSchemaValue( schema: ( string | FalsyValue | TemplateBinding )[], node: Node ) {
+function getValueSchemaValue( schema: ( TemplateSimpleValue | TemplateBinding )[], node: Node ) {
 	return schema.map( schemaItem => {
 		// Process {@link module:ui/template~TemplateBinding} bindings.
 		if ( schemaItem instanceof TemplateBinding ) {
@@ -1120,19 +1119,19 @@ function getValueSchemaValue( schema: ( string | FalsyValue | TemplateBinding )[
 // @param {Function} updater A function which updates the DOM (like attribute or text).
 // @param {Node} node DOM Node updated when {@link module:utils/observablemixin~ObservableMixin} changes.
 function syncValueSchemaValue(
-	schema: ( string | FalsyValue | TemplateBinding )[],
+	schema: ( TemplateSimpleValue | TemplateBinding )[],
 	updater: Updater,
 	{ node }: { node: Node }
 ) {
 	const values = getValueSchemaValue( schema, node );
-	let value: string | FalsyValue;
+	let value: TemplateSimpleValue;
 
 	// Check if schema is a single Template.bind.if, like:
 	//
 	//		class: Template.bind.if( 'foo' )
 	//
 	if ( schema.length == 1 && schema[ 0 ] instanceof TemplateIfBinding ) {
-		value = values[ 0 ] as string;
+		value = values[ 0 ];
 	} else {
 		value = values.reduce( arrayValueReducer, '' );
 	}
@@ -1145,7 +1144,7 @@ function syncValueSchemaValue(
 }
 
 interface Updater {
-	set( value: string ): void;
+	set( value: any ): void;
 	remove(): void;
 }
 
@@ -1400,7 +1399,7 @@ function arrayify( obj: any, key: string ) {
 // @param {String} prev
 // @param {String} cur
 // @returns {String}
-function arrayValueReducer( prev: string, cur: string | FalsyValue ) {
+function arrayValueReducer( prev: TemplateSimpleValue, cur: TemplateSimpleValue ) {
 	if ( isFalsy( cur ) ) {
 		return prev;
 	} else if ( isFalsy( prev ) ) {
@@ -1518,7 +1517,7 @@ function isViewCollection( item: unknown ): item is ViewCollection {
 // Checks if value array contains the one with namespace.
 function isNamespaced(
 	attrValue: AttributeValues
-): attrValue is [ { ns: string; value: ( string | FalsyValue | TemplateBinding )[] } ] {
+): attrValue is [ NamespacedValue<( TemplateSimpleValue | TemplateBinding )[]> ] {
 	return isObject( attrValue[ 0 ] ) && ( attrValue[ 0 ] as any ).ns;
 }
 
@@ -1650,13 +1649,15 @@ export type FalsyValue = false | null | undefined | '';
 
 export type NamespacedValue<T> = { ns: string; value: T };
 
-export type TemplateSimpleValueSchema = string | FalsyValue | AttributeBinding;
+export type TemplateSimpleValue = string | boolean | number | null | undefined;
+
+export type TemplateSimpleValueSchema = TemplateSimpleValue | AttributeBinding;
 
 export type TemplateValueSchema = ArrayOrItem<
 		TemplateSimpleValueSchema |
 		NamespacedValue<TemplateSimpleValueSchema>
 	> |
-	Record<string, string | FalsyValue | AttributeBinding>;
+	Record<string, TemplateSimpleValueSchema>;
 
 export type TemplateListenerSchema = ArrayOrItem<ListenerBinding>;
 
@@ -1793,14 +1794,14 @@ export interface ListenerBinding { _opaque: typeof ListenerBindingSymbol }
 export interface BindChain<TObservable> {
 	to<TAttribute extends keyof TObservable & string>(
 		attribute: TAttribute,
-		callback?: ( value: TObservable[ TAttribute ], node: Node ) => ( string | FalsyValue )
+		callback?: ( value: TObservable[ TAttribute ], node: Node ) => ( TemplateSimpleValue )
 	): AttributeBinding;
 	to( eventNameOrCallback: string | ( ( domEvent: Event ) => void ) ): ListenerBinding;
 
 	if<TAttribute extends keyof TObservable & string>(
 		attribute: TAttribute,
 		valueIfTrue?: unknown,
-		callback?: ( value: TObservable[ TAttribute ], node: Node ) => ( string | FalsyValue )
+		callback?: ( value: TObservable[ TAttribute ], node: Node ) => ( boolean | FalsyValue )
 	): AttributeBinding;
 }
 

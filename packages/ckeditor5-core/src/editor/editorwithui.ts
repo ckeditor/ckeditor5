@@ -30,6 +30,6 @@ import type EditorUI from './editorui';
  * @member {module:core/editor/editorui~EditorUI} #ui
  */
 
-export interface EditorWithUI {
+export default interface EditorWithUI {
     readonly ui: EditorUI;
 }
