@@ -192,7 +192,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );
 
 				// (2) If the number of columns has changed, then we need to adjust the widths of the affected columns.
-				adjustColumnsWidth( columnWidths, table, this );
+				adjustColumnWidths( columnWidths, table, this );
 
 				const columnWidthsAttribute = columnWidths.map( width => `${ width }%` ).join( ',' );
 
@@ -208,7 +208,13 @@ export default class TableColumnResizeEditing extends Plugin {
 			return changed;
 		} );
 
-		function adjustColumnsWidth( columnWidths, table, plugin ) {
+		// Adjusts if necessary the `columnWidths` in case if the number of column has changed.
+		//
+		// @private
+		// @param {Array.<Number>} columnWidths Note: this array **may be modified** by the function.
+		// @param {module:engine/model/element~Element} table Table to be checked.
+		// @param {module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing} plugin
+		function adjustColumnWidths( columnWidths, table, plugin ) {
 			const newTableColumnsCount = plugin._tableUtilsPlugin.getColumns( table );
 			const columnsCountDelta = newTableColumnsCount - columnWidths.length;
 
@@ -217,7 +223,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 
 			// Collect all cells that are affected by the change.
-			const cellSet = _getAffectedCells( plugin.editor.model.document.differ, table );
+			const cellSet = getAffectedCells( plugin.editor.model.document.differ, table );
 
 			for ( const cell of cellSet ) {
 				const currentColumnsDelta = newTableColumnsCount - columnWidths.length;
@@ -246,13 +252,13 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 		}
 
-		// Returns a of set of cells that have been changed in the given table.
+		// Returns a set of cells that have been changed in a given table.
 		//
 		// @private
 		// @param {module:engine/model/differ~Differ} differ
 		// @param {module:engine/model/element~Element} table
 		// @returns {Set.<module:engine/model/element~Element>}
-		function _getAffectedCells( differ, table ) {
+		function getAffectedCells( differ, table ) {
 			const cellSet = new Set();
 
 			for ( const change of differ.getChanges() ) {
