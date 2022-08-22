@@ -62,42 +62,88 @@ describe( 'CharacterGridView', () => {
 				view.destroy();
 			} );
 
-			it( '"arrow right" should focus the next focusable grid item', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.arrowright,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
+			describe( 'Default grid - 10 tiles in a row', () => {
+				it( '"arrow right" should focus the next focusable grid item', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
 
-				// Mock the first grid item is focused.
-				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.tiles.first.element;
+					// Mock the first grid item is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.tiles.first.element;
 
-				const spy = sinon.spy( view.tiles.get( 1 ), 'focus' );
+					const spy = sinon.spy( view.tiles.get( 1 ), 'focus' );
 
-				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( '"arrow down" should focus the focusable grid item in the second row', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the first grid item is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.tiles.first.element;
+
+					const spy = sinon.spy( view.tiles.get( 10 ), 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
 			} );
 
-			it( '"arrow down" should focus the focusable grid item in the second row', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.arrowdown,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
+			describe( 'Responsive grid - changed to 5 tiles in a row instead of 10', () => {
+				beforeEach( () => {
+					view.element.firstChild.style.gridTemplateColumns = 'repeat(5, 1fr)';
+				} );
 
-				// Mock the first grid item is focused.
-				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.tiles.first.element;
+				it( '"arrow right" should focus the next focusable grid item', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
 
-				const spy = sinon.spy( view.tiles.get( 10 ), 'focus' );
+					// Mock the first grid item is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.tiles.first.element;
 
-				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+					const spy = sinon.spy( view.tiles.get( 1 ), 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( '"arrow down" should focus the focusable grid item in the second row', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the first grid item is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.tiles.first.element;
+
+					const spy = sinon.spy( view.tiles.get( 5 ), 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
 			} );
 		} );
 	} );
