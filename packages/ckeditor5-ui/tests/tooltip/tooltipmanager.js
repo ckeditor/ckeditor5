@@ -23,6 +23,10 @@ describe( 'TooltipManager', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
+		// TooltipManager is a singleton shared across editor instances. If any other test didn't
+		// kill its editor, this will affect assertions in tests here.
+		TooltipManager._editors = new Set();
+
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
