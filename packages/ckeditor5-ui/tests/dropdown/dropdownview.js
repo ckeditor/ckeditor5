@@ -3,13 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import DropdownView from '../../src/dropdown/dropdownview';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '../../src/button/buttonview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DropdownView', () => {
@@ -32,7 +31,7 @@ describe( 'DropdownView', () => {
 		// The #panelView positioning depends on the utility that uses DOM Rects.
 		// To avoid an avalanche of warnings (DOM Rects do not work until
 		// the element is in DOM), let's allow the dropdown to render in DOM.
-		document.body.appendChild( view.element );
+		global.document.body.appendChild( view.element );
 	} );
 
 	afterEach( () => {
@@ -480,20 +479,20 @@ describe( 'DropdownView', () => {
 			view.panelView.children.add( button );
 			view.isOpen = true;
 
-			expect( document.activeElement ).to.equal( button.element );
+			expect( global.document.activeElement ).to.equal( button.element );
 
 			view.isOpen = false;
 
-			expect( document.activeElement ).to.equal( view.buttonView.element );
+			expect( global.document.activeElement ).to.equal( view.buttonView.element );
 			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should not focus dropdown button if focus is outside the dropdown', () => {
 			const spy = sinon.spy( view.buttonView, 'focus' );
 			// Setup an element that is not a child of the dropdown to be focused.
-			const externalButton = document.createElement( 'button' );
+			const externalButton = global.document.createElement( 'button' );
 
-			document.body.appendChild( externalButton );
+			global.document.body.appendChild( externalButton );
 
 			// Create a button inside the dropdown panel.
 			const buttonInsideDropdown = new ButtonView( locale );
@@ -501,12 +500,12 @@ describe( 'DropdownView', () => {
 			view.panelView.children.add( buttonInsideDropdown );
 			view.isOpen = true;
 
-			expect( document.activeElement ).to.equal( buttonInsideDropdown.element );
+			expect( global.document.activeElement ).to.equal( buttonInsideDropdown.element );
 
 			externalButton.focus();
 			view.isOpen = false;
 
-			expect( document.activeElement ).to.equal( externalButton );
+			expect( global.document.activeElement ).to.equal( externalButton );
 			sinon.assert.notCalled( spy );
 
 			// Cleanup.
