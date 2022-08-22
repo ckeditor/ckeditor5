@@ -473,39 +473,44 @@ describe( 'DropdownView', () => {
 
 	describe( 'on dropdown close', () => {
 		it( 'should focus a dropdown button if focus is inside the dropdown', () => {
+			const spy = sinon.spy( view.buttonView, 'focus' );
 			// Create a button inside the dropdown panel to enable focus.
-			view.panelView.children.add( new ButtonView( locale ) );
+			const button = new ButtonView( locale );
 
+			view.panelView.children.add( button );
 			view.isOpen = true;
 
-			expect( view.panelView.element.contains( document.activeElement ) ).to.be.true;
+			expect( document.activeElement ).to.equal( button.element );
 
 			view.isOpen = false;
 
-			expect( view.element.contains( document.activeElement ) ).to.be.true;
+			expect( document.activeElement ).to.equal( view.buttonView.element );
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should not focus dropdown button if focus is outside the dropdown', () => {
+			const spy = sinon.spy( view.buttonView, 'focus' );
 			// Setup an element that is not a child of the dropdown to be focused.
-			const button = document.body.appendChild( document.createElement( 'button' ) );
+			const externalButton = document.createElement( 'button' );
 
-			button.classList.add( 'test' );
+			document.body.appendChild( externalButton );
 
 			// Create a button inside the dropdown panel.
-			view.panelView.children.add( new ButtonView( locale ) );
+			const buttonInsideDropdown = new ButtonView( locale );
 
+			view.panelView.children.add( buttonInsideDropdown );
 			view.isOpen = true;
 
-			expect( view.panelView.element.contains( document.activeElement ) ).to.be.true;
+			expect( document.activeElement ).to.equal( buttonInsideDropdown.element );
 
-			document.querySelector( '.test' ).focus();
-
+			externalButton.focus();
 			view.isOpen = false;
 
-			expect( view.element.contains( document.activeElement ) ).to.be.false;
+			expect( document.activeElement ).to.equal( externalButton );
+			sinon.assert.notCalled( spy );
 
 			// Cleanup.
-			button.remove();
+			externalButton.remove();
 		} );
 	} );
 } );
