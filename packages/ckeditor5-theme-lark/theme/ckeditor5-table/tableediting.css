@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-color-table-focused-cell-background: hsla(208, 90%, 80%, .3);
+	--ck-color-table-focused-cell-background: hsla(212, 90%, 80%, .3);
 }
 
 .ck-widget.table {

@@ -8,9 +8,7 @@ order: 20
 
 # Pasting content from Google Docs
 
-The Paste from Google Docs feature is provided through the {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin.
-
-This feature allows you to paste content from Google Docs and maintain the original structure and formatting. After creating a document in Google Docs you can simply copy it to CKEditor 5 and retain basic text styling, heading levels, links, lists, tables and images.
+The paste from Google Docs feature allows you to paste content from Google Docs and maintain the original structure and formatting. After creating a document in Google Docs you can simply copy it to CKEditor 5 and retain basic text styling, heading levels, links, lists, tables and images.
 
 When the plugin is enabled, it automatically detects Google Docs content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
 
