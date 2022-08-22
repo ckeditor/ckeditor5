@@ -6,7 +6,7 @@ category: features
 
 {@snippet features/build-remove-format-source}
 
-The {@link module:remove-format/removeformat~RemoveFormat `Remove format`} feature allows you to quickly remove any text formatting applied using inline HTML elements and CSS styles, like {@link features/basic-styles basic text styles} (bold, italic, etc.), {@link features/font font family, size, and color} and similar.
+The remove format feature allows you to quickly remove any text formatting applied using inline HTML elements and CSS styles, like {@link features/basic-styles basic text styles} (bold, italic, etc.), {@link features/font font family, size, and color} and similar.
 
 Note that block-level formatting ({@link features/headings headings}, {@link features/images-overview images}) and semantic data ({@link features/link links}) will not be removed by this feature.
 
