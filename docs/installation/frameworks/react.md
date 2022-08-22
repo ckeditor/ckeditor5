@@ -72,7 +72,7 @@ class App extends Component {
 export default App;
 ```
 
-### Using the document editor build
+## Using the document editor build
 
 If you use the {@link framework/guides/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
@@ -140,6 +140,85 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:core/editor/editor~Editor `Editor`} instance.
+
+
+## Context feature
+
+The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor 5 collaboration features}.
+
+```jsx
+// This sample assumes that the application is using a CKEditor 5 editor built from source.
+import React, { Component } from 'react';
+import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
+
+import Context from '@ckeditor/ckeditor5-core/src/context';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
+class App extends Component {
+	render() {
+		return (
+			<div className="App">
+				<CKEditorContext context={ Context }>
+					<h2>Using the CKeditor 5 context feature in React</h2>
+					<CKEditor
+						editor={ ClassicEditor }
+						config={ {
+							plugins: [ Paragraph, Bold, Italic, Essentials ],
+							toolbar: [ 'bold', 'italic' ]
+						} }
+						data="<p>Hello from the first editor working with the context!</p>"
+						onReady={ editor => {
+							// You can store the "editor" and use when it is needed.
+							console.log( 'Editor1 is ready to use!', editor );
+						} }
+					/>
+
+					<CKEditor
+						editor={ ClassicEditor }
+						config={ {
+							plugins: [ Paragraph, Bold, Italic, Essentials ],
+							toolbar: [ 'bold', 'italic' ]
+						} }
+						data="<p>Hello from the first editor working with the context!</p>"
+						onReady={ editor => {
+							// You can store the "editor" and use when it is needed.
+							console.log( 'Editor1 is ready to use!', editor );
+						} }
+					/>
+				</CKEditorContext>
+			</div>
+		);
+	}
+}
+```
+
+### Context feature properties
+
+The `CKEditorContext` component supports the following properties:
+
+* `context` (required) &ndash; {@link module:core/context~Context The CKEditor 5 context class}.
+* `config` &ndash; The CKEditor 5 context configuration.
+* `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor 5 annotations or a presence list are used.
+* `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
+* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
+* `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
+    Error details is an object that contains two properties:
+    * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
+     * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
+
+<info-box>
+	An example build that exposes both context and classic editor can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
+</info-box>
+
+## Watchdog and context watchdog
+
+{@link features/watchdog Watchdog features} are built into CKEditor 5 React components, and shouldn't be imported and integrated manually.
+
+The main CKEditor components have the {@link module:watchdog/editorwatchdog~EditorWatchdog EditorWatchdog} integration, while the CKeditorContext component has built-in {@link module:watchdog/contextwatchdog~ContextWatchdog ContextWatchdog} integration.
 
 ## Customized installation
 
@@ -475,84 +554,6 @@ Another way is to {@link installation/frameworks/react#integrating-the-editor-fr
 It is not mandatory to build applications on top of the above samples, however, they should help you get started.
 
 Note: These integrations are meant to be as simple as possible, so they do not use the Create React App CLI.
-
-## Context feature
-
-The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor 5 collaboration features}.
-
-```jsx
-// This sample assumes that the application is using a CKEditor 5 editor built from source.
-import React, { Component } from 'react';
-import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
-
-import Context from '@ckeditor/ckeditor5-core/src/context';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-
-class App extends Component {
-	render() {
-		return (
-			<div className="App">
-				<CKEditorContext context={ Context }>
-					<h2>Using the CKeditor 5 context feature in React</h2>
-					<CKEditor
-						editor={ ClassicEditor }
-						config={ {
-							plugins: [ Paragraph, Bold, Italic, Essentials ],
-							toolbar: [ 'bold', 'italic' ]
-						} }
-						data="<p>Hello from the first editor working with the context!</p>"
-						onReady={ editor => {
-							// You can store the "editor" and use when it is needed.
-							console.log( 'Editor1 is ready to use!', editor );
-						} }
-					/>
-
-					<CKEditor
-						editor={ ClassicEditor }
-						config={ {
-							plugins: [ Paragraph, Bold, Italic, Essentials ],
-							toolbar: [ 'bold', 'italic' ]
-						} }
-						data="<p>Hello from the first editor working with the context!</p>"
-						onReady={ editor => {
-							// You can store the "editor" and use when it is needed.
-							console.log( 'Editor1 is ready to use!', editor );
-						} }
-					/>
-				</CKEditorContext>
-			</div>
-		);
-	}
-}
-```
-
-### Context feature properties
-
-The `CKEditorContext` component supports the following properties:
-
-* `context` (required) &ndash; {@link module:core/context~Context The CKEditor 5 context class}.
-* `config` &ndash; The CKEditor 5 context configuration.
-* `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor 5 annotations or a presence list are used.
-* `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
-* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
-* `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
-    Error details is an object that contains two properties:
-    * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
-     * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
-
-<info-box>
-	An example build that exposes both context and classic editor can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
-</info-box>
-
-## Watchdog and context watchdog
-
-{@link features/watchdog Watchdog features} are built into CKEditor 5 React components, and shouldn't be imported and integrated manually.
-
-The main CKEditor components have the {@link module:watchdog/editorwatchdog~EditorWatchdog EditorWatchdog} integration, while the CKeditorContext component has built-in {@link module:watchdog/contextwatchdog~ContextWatchdog ContextWatchdog} integration.
 
 ## Localization
 
