@@ -11,7 +11,11 @@ import { View, FocusCycler } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 /**
- * A view containing navigationView, gridView, infoView of the SpecialCharacters feature.
+ * A view that glues pieces of the special characters dropdown panel together:
+ *
+ * * the navigation view (allows selecting the category),
+ * * the grid view (displays characters as a grid),
+ * * and the info view (displays detailed info about a specific character).
  *
  * @extends module:ui/view~View
  */
