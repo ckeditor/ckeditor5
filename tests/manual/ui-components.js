@@ -302,160 +302,171 @@ document.body.querySelector( '#snippet-input-error' ).appendChild( labeledInputE
 
 // --- Toolbar ------------------------------------------------------------
 
-const toolbarBasic = new ToolbarView( locale );
+class ToolbarExample extends Plugin {
+	init() {
+		const buttons = [];
 
-const toolbarButtonExample = new ButtonView();
-toolbarButtonExample.set( {
-	label: 'A button',
-	withText: true
-} );
-const toolbarSwitchButtonExample = new SwitchButtonView();
-toolbarSwitchButtonExample.set( {
-	label: 'A switch button ',
-	withText: true
-} );
-const toolbarIconButtonExample = new ButtonView();
-toolbarIconButtonExample.set( {
-	label: 'An icon button',
-	icon: checkIcon,
-	tooltip: true
-} );
-toolbarBasic.items.add( toolbarButtonExample );
-toolbarBasic.items.add( toolbarIconButtonExample );
-toolbarBasic.items.add( toolbarSwitchButtonExample );
+		const toolbarButton = new ButtonView();
+		toolbarButton.set( {
+			label: 'A button',
+			withText: true
+		} );
+		const toolbarSwitchButton = new SwitchButtonView();
+		toolbarSwitchButton.set( {
+			label: 'A switch button ',
+			withText: true
+		} );
+		const toolbarIconButton = new ButtonView();
+		toolbarIconButton.set( {
+			label: 'An icon button',
+			icon: checkIcon,
+			tooltip: true
+		} );
+		buttons.push( toolbarButton, toolbarSwitchButton, toolbarIconButton );
 
-toolbarBasic.render();
-toolbarSwitchButtonExample.on( 'execute', () => {
-	toolbarSwitchButtonExample.isOn ? toolbarSwitchButtonExample.isOn = false : toolbarSwitchButtonExample.isOn = true;
-} );
-document.body.querySelector( '#snippet-toolbar' ).appendChild( toolbarBasic.element );
+		this.editor.ui.componentFactory.add( 'toolbar', () => {
+			const dropdown = createDropdown( locale );
 
-// --- Toolbar with rounded corners ------------------------------------------------------------
+			dropdown.buttonView.set( {
+				label: 'Open toolbar',
+				withText: true
+			} );
+			addToolbarToDropdown( dropdown, buttons );
 
-const toolbarRounded = new ToolbarView( locale );
+			return dropdown;
+		} );
 
-const roundedToolbarButton = new ButtonView();
-roundedToolbarButton.set( {
-	label: 'A button',
-	withText: true
-} );
-const roundedToolbarSwitchButton = new SwitchButtonView();
-roundedToolbarSwitchButton.set( {
-	label: 'A switch button ',
-	withText: true
-} );
-const roundedToolbarIconButton = new ButtonView();
-roundedToolbarIconButton.set( {
-	label: 'An icon button',
-	icon: checkIcon,
-	tooltip: true
-} );
-toolbarRounded.items.add( roundedToolbarButton );
-toolbarRounded.items.add( roundedToolbarSwitchButton );
-toolbarRounded.items.add( roundedToolbarIconButton );
+		this.listenTo( toolbarSwitchButton, 'execute', () => {
+			toolbarSwitchButton.isOn ? toolbarSwitchButton.isOn = false : toolbarSwitchButton.isOn = true;
+		} );
+	}
+}
 
-toolbarRounded.render();
-toolbarRounded.element.classList.add( 'ck-rounded-corners' );
-roundedToolbarSwitchButton.on( 'execute', () => {
-	roundedToolbarSwitchButton.isOn ? roundedToolbarSwitchButton.isOn = false : roundedToolbarSwitchButton.isOn = true;
-} );
-document.body.querySelector( '#snippet-toolbar-rounded' ).appendChild( toolbarRounded.element );
+// --- Wrapped toolbar  ------------------------------------------------------------
 
-// --- Wrapped toolbar ------------------------------------------------------------
+class WrappedToolbarExample extends Plugin {
+	init() {
+		const buttons = [];
 
-const toolbarWrapped = new ToolbarView( locale );
-const wrappedToolbarButtonExample = new ButtonView();
-wrappedToolbarButtonExample.set( {
-	label: 'A button',
-	withText: true
-} );
-const wrappedToolbarSwitchButtonExample = new SwitchButtonView();
-wrappedToolbarSwitchButtonExample.set( {
-	label: 'A switch button ',
-	withText: true
-} );
-const wrappedToolbarIconButtonExample = new ButtonView();
-wrappedToolbarIconButtonExample.set( {
-	label: 'An icon button',
-	icon: checkIcon,
-	tooltip: true
-} );
-toolbarWrapped.items.add( wrappedToolbarButtonExample );
-toolbarWrapped.items.add( wrappedToolbarSwitchButtonExample );
-toolbarWrapped.items.add( wrappedToolbarIconButtonExample );
+		const toolbarButton = new ButtonView();
+		toolbarButton.set( {
+			label: 'A button',
+			withText: true
+		} );
+		const toolbarSwitchButton = new SwitchButtonView();
+		toolbarSwitchButton.set( {
+			label: 'A switch button ',
+			withText: true
+		} );
+		const toolbarIconButton = new ButtonView();
+		toolbarIconButton.set( {
+			label: 'An icon button',
+			icon: checkIcon,
+			tooltip: true
+		} );
+		buttons.push( toolbarButton, toolbarSwitchButton, toolbarIconButton );
 
-toolbarWrapped.render();
-toolbarWrapped.element.style.width = '200px';
-wrappedToolbarSwitchButtonExample.on( 'execute', () => {
-	wrappedToolbarSwitchButtonExample.isOn ? wrappedToolbarSwitchButtonExample.isOn = false : wrappedToolbarSwitchButtonExample.isOn = true;
-} );
-document.body.querySelector( '#snippet-toolbar-wrapped' ).appendChild( toolbarWrapped.element );
+		this.editor.ui.componentFactory.add( 'toolbar', () => {
+			const dropdown = createDropdown( locale );
+			dropdown.buttonView.set( {
+				label: 'Open toolbar',
+				withText: true
+			} );
+			addToolbarToDropdown( dropdown, buttons );
+			dropdown.toolbarView.element.style.width = '200px';
+
+			return dropdown;
+		} );
+
+		this.listenTo( toolbarSwitchButton, 'execute', () => {
+			toolbarSwitchButton.isOn ? toolbarSwitchButton.isOn = false : toolbarSwitchButton.isOn = true;
+		} );
+	}
+}
 
 // --- Compact toolbar ------------------------------------------------------------
 
-const compactToolbar = new ToolbarView( locale );
-const compactToolbarButtonExample = new ButtonView();
-compactToolbarButtonExample.set( {
-	label: 'A button',
-	withText: true
-} );
-const compactToolbarSwitchButtonExample = new SwitchButtonView();
-compactToolbarSwitchButtonExample.set( {
-	label: 'A switch button ',
-	withText: true
-} );
-const compactToolbarIconButtonExample = new ButtonView();
-compactToolbarIconButtonExample.set( {
-	label: 'An icon button',
-	icon: checkIcon,
-	tooltip: true
-} );
-compactToolbar.items.add( compactToolbarButtonExample );
-compactToolbar.items.add( compactToolbarSwitchButtonExample );
-compactToolbar.items.add( compactToolbarIconButtonExample );
+class CompactToolbarExample extends Plugin {
+	init() {
+		const buttons = [];
 
-compactToolbar.render();
-compactToolbar.isCompact = true;
-compactToolbarSwitchButtonExample.on( 'execute', () => {
-	compactToolbarSwitchButtonExample.isOn ? compactToolbarSwitchButtonExample.isOn = false : compactToolbarSwitchButtonExample.isOn = true;
-} );
-document.body.querySelector( '#snippet-toolbar-compact' ).appendChild( compactToolbar.element );
+		const toolbarButton = new ButtonView();
+		toolbarButton.set( {
+			label: 'A button',
+			withText: true
+		} );
+		const toolbarSwitchButton = new SwitchButtonView();
+		toolbarSwitchButton.set( {
+			label: 'A switch button ',
+			withText: true
+		} );
+		const toolbarIconButton = new ButtonView();
+		toolbarIconButton.set( {
+			label: 'An icon button',
+			icon: checkIcon,
+			tooltip: true
+		} );
+		buttons.push( toolbarButton, toolbarSwitchButton, toolbarIconButton );
 
-// --- Toolbar ------------------------------------------------------------
+		this.editor.ui.componentFactory.add( 'toolbar', () => {
+			const dropdown = createDropdown( locale );
+			dropdown.buttonView.set( {
+				label: 'Open toolbar',
+				withText: true
+			} );
+			addToolbarToDropdown( dropdown, buttons );
+			dropdown.toolbarView.isCompact = true;
 
-const optionsToolbar = new ToolbarView( locale );
-const toolbarSeparator = new ToolbarSeparatorView();
-const toolbarLineBreak = new ToolbarLineBreakView();
+			return dropdown;
+		} );
 
-const optionsToolbarButton = new ButtonView();
-optionsToolbarButton.set( {
-	label: 'A button',
-	withText: true
-} );
-const optionsToolbarSwitchButton = new SwitchButtonView();
-optionsToolbarSwitchButton.set( {
-	label: 'A switch button ',
-	withText: true
-} );
+		this.listenTo( toolbarSwitchButton, 'execute', () => {
+			toolbarSwitchButton.isOn ? toolbarSwitchButton.isOn = false : toolbarSwitchButton.isOn = true;
+		} );
+	}
+}// --- Toolbar ------------------------------------------------------------
 
-const optionsToolbarIconButton = new ButtonView();
-optionsToolbarIconButton.set( {
-	label: 'An icon button',
-	icon: checkIcon,
-	tooltip: true
-} );
-optionsToolbar.items.add( optionsToolbarButton );
-optionsToolbar.items.add( toolbarSeparator );
-optionsToolbar.items.add( optionsToolbarSwitchButton );
-optionsToolbar.items.add( toolbarLineBreak );
-optionsToolbar.items.add( optionsToolbarIconButton );
+class OptionsToolbarExample extends Plugin {
+	init() {
+		const buttons = [];
 
-optionsToolbar.render();
-optionsToolbarSwitchButton.on( 'execute', () => {
-	optionsToolbarSwitchButton.isOn ? optionsToolbarSwitchButton.isOn = false : optionsToolbarSwitchButton.isOn = true;
-} );
+		const toolbarButton = new ButtonView();
+		toolbarButton.set( {
+			label: 'A button',
+			withText: true
+		} );
+		const toolbarSwitchButton = new SwitchButtonView();
+		toolbarSwitchButton.set( {
+			label: 'A switch button ',
+			withText: true
+		} );
+		const toolbarIconButton = new ButtonView();
+		toolbarIconButton.set( {
+			label: 'An icon button',
+			icon: checkIcon,
+			tooltip: true
+		} );
+		const toolbarSeparator = new ToolbarSeparatorView();
+		const toolbarLineBreak = new ToolbarLineBreakView();
+		buttons.push( toolbarButton, toolbarSeparator, toolbarSwitchButton, toolbarLineBreak, toolbarIconButton );
 
-document.body.querySelector( '#snippet-toolbar-options' ).appendChild( optionsToolbar.element );
+		this.editor.ui.componentFactory.add( 'toolbar', () => {
+			const dropdown = createDropdown( locale );
+			dropdown.buttonView.set( {
+				label: 'Open toolbar',
+				withText: true
+			} );
+			addToolbarToDropdown( dropdown, buttons );
+			dropdown.toolbarView.isCompact = true;
+
+			return dropdown;
+		} );
+
+		this.listenTo( toolbarSwitchButton, 'execute', () => {
+			toolbarSwitchButton.isOn ? toolbarSwitchButton.isOn = false : toolbarSwitchButton.isOn = true;
+		} );
+	}
+}
 
 // --- Dropdown list ------------------------------------------------------------
 
@@ -582,6 +593,30 @@ export default class FormView extends View {
 		const input = new LabeledFieldView( this.locale, createLabeledInputText );
 		input.label = 'Input field';
 
+		// --- Labeled input text -------------------------------------------------
+
+		const labeledNumberView = new LabeledFieldView( locale, createLabeledInputNumber );
+
+		labeledNumberView.label = 'Input field';
+
+		// --- Labeled input options -------------------------------------------------
+
+		const labeledInputDisabled = new LabeledFieldView( locale, createLabeledInputText );
+		labeledInputDisabled.value = 'The value of the input';
+
+		labeledInputDisabled.label = 'Read-only input field';
+		labeledInputDisabled.isEnabled = false;
+
+		const labeledInputInfo = new LabeledFieldView( locale, createLabeledInputText );
+
+		labeledInputInfo.label = 'Input field with info text';
+		labeledInputInfo.infoText = 'Info text goes here.';
+
+		const labeledInputError = new LabeledFieldView( locale, createLabeledInputText );
+
+		labeledInputError.label = 'Input field with error text';
+		labeledInputError.errorText = 'Error text goes here.';
+
 		const button = new ButtonView();
 		button.set( {
 			label: 'Close the balloon',
@@ -593,7 +628,9 @@ export default class FormView extends View {
 
 		button.delegate( 'execute' ).to( this, 'cancel' );
 
-		this.childViews = this.createCollection( [ input, button ] );
+		this.childViews = this.createCollection( [
+			input, button, labeledInputDisabled, labeledNumberView, labeledInputError, labeledInputInfo
+		] );
 
 		this.setTemplate( {
 			tag: 'form',
@@ -712,6 +749,58 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		plugins: [ Essentials, Paragraph, TooltipPlugin ],
 		toolbar: [ 'tooltip1', 'tooltip2', 'tooltip3', 'tooltip4', 'tooltip5', 'tooltip6' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#snippet-toolbar' ), {
+		cloudServices: CS_CONFIG,
+		plugins: [ Essentials, Paragraph, ToolbarExample ],
+		toolbar: [ 'toolbar' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#snippet-toolbar-wrapped' ), {
+		cloudServices: CS_CONFIG,
+		plugins: [ Essentials, Paragraph, WrappedToolbarExample ],
+		toolbar: [ 'toolbar' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#snippet-toolbar-compact' ), {
+		cloudServices: CS_CONFIG,
+		plugins: [ Essentials, Paragraph, CompactToolbarExample ],
+		toolbar: [ 'toolbar' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#snippet-toolbar-options' ), {
+		cloudServices: CS_CONFIG,
+		plugins: [ Essentials, Paragraph, OptionsToolbarExample ],
+		toolbar: [ 'toolbar' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
