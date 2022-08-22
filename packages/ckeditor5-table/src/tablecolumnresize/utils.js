@@ -23,7 +23,7 @@ import {
  * @param {module:engine/model/model~Model} model The model to collect the affected elements from.
  * @returns {Set.<module:engine/model/element~Element>} A set of table model elements.
  */
-export function getChangedTables( model ) {
+export function getChangedResizedTables( model ) {
 	const affectedTables = new Set();
 
 	for ( const change of model.document.differ.getChanges() ) {
