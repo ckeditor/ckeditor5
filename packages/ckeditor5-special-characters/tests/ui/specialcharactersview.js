@@ -51,10 +51,10 @@ describe( 'SpecialCahractersView', () => {
 
 				// Mock the character category button is focused.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.items.first.element;
+				view.focusTracker.focusedElement = view.navigationView.groupDropdownView.buttonView.element;
 
 				// Spy the next view which in this case is the grid view
-				const stub = sinon.stub( view.items.last, 'focus' );
+				const stub = sinon.stub( view.gridView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -72,10 +72,10 @@ describe( 'SpecialCahractersView', () => {
 
 				// Mock the grid view is focused.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.items.last.element;
+				view.focusTracker.focusedElement = view.gridView.element;
 
 				// Spy the previous view which in this case is the character category button
-				const spy = sinon.spy( view.items.first, 'focus' );
+				const spy = sinon.spy( view.navigationView.groupDropdownView.buttonView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
