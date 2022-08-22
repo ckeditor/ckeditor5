@@ -8,7 +8,6 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ButtonView from '../../src/button/buttonview';
 import IconView from '../../src/icon/iconview';
-// import TooltipView from '../../src/tooltipview';
 import View from '../../src/view';
 import ViewCollection from '../../src/viewcollection';
 import env from '@ckeditor/ckeditor5-utils/src/env';
@@ -32,10 +31,6 @@ describe( 'ButtonView', () => {
 	describe( 'constructor()', () => {
 		it( 'creates view#children collection', () => {
 			expect( view.children ).to.be.instanceOf( ViewCollection );
-		} );
-
-		it( 'creates #tooltipView', () => {
-			// expect( view.tooltipView ).to.be.instanceOf( TooltipView );
 		} );
 
 		it( 'creates #labelView', () => {
