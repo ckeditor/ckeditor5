@@ -195,7 +195,7 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 		} );
 	} );
 
-	describe( 'support with dynamic number of columns', () => {
+	describe( 'support for the dynamic number of columns in the grid via the callback', () => {
 		let view, keystrokes, focusTracker, gridElementsCollection, numberOfColumnsStub;
 
 		beforeEach( () => {
