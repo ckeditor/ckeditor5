@@ -44,5 +44,13 @@ describe( 'DropdownButtonView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'binds button\'s aria-expanded attribute to #isOn', () => {
+			view.isOn = true;
+			expect( view.element.getAttribute( 'aria-expanded' ) ).to.equal( 'true' );
+
+			view.isOn = false;
+			expect( view.element.getAttribute( 'aria-expanded' ) ).to.equal( 'false' );
+		} );
 	} );
 } );

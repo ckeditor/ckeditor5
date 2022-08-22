@@ -6,7 +6,7 @@ category: features
 
 {@snippet features/build-code-block-source}
 
-The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and editing blocks of pre–formatted code into the WYSIWYG editor. Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
+The code block feature allows inserting and editing blocks of pre–formatted code into the WYSIWYG editor. Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
 
 Code blocks is a perfect feature to present programming- or software-related issues in an accessible, attractive form that is easily readable. A great tool for education, support documents or training content, it visually presents code listings, snippets or software elements.
 
