@@ -71,7 +71,7 @@ You can also define the language that will translate the created editor by speci
 Examples:
 
 ```bash
-# Starts the server ands open the browser.
+# Starts the server and opens the browser.
 npm run start
 
 # Disable auto-opening the browser.
