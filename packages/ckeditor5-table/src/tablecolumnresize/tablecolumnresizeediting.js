@@ -393,12 +393,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 
-		this._domEmitter.listenTo( global.window.document, 'dragleave', () => {
-			if ( this._draggingState !== 'dragginactive' ) {
-				this._isDragging = true;
-			}
-			this._onDragLeaveHandler.bind( this );
-		} );
+		this._domEmitter.listenTo( global.window.document, 'dragleave', this._onDragLeaveHandler.bind( this ) );
 		this._domEmitter.listenTo( global.window.document, 'drop', () => {
 			this._draggingState = 'afterdragging';
 		}, { useCapture: true } );
@@ -704,13 +699,18 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Fires the `_onMouseUpHandler` when 'dragleave' event was fired.
+	 * Fires the `_onMouseUpHandler` when the 'drop' event did not fire, because
+	 * the dragged element, was dropped outside of the editor.
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo An object containing information about the fired event.
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData The data related to the DOM event.
 	 */
 	_onDragLeaveHandler( eventInfo, domEvent ) {
+		if ( this._draggingState !== 'dragginactive' ) {
+			this._isDragging = true;
+		}
+
 		if ( domEvent.buttons === 0 ) {
 			this._onMouseUpHandler( eventInfo, domEvent );
 		}
