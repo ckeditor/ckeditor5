@@ -8,7 +8,7 @@
  */
 
 import { throttle } from 'lodash-es';
-import { global, DomEmitterMixin } from 'ckeditor5/src/utils';
+import { global, DomEmitterMixin, env } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
 
 import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
@@ -112,9 +112,19 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
 			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
-			editor.editing.view.change( writer => {
-				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot() );
-			} );
+			// In Safari we have to sidewalk the writer as any change will trigger the render event,
+			// which breaks the table selection by moving it to the last cell.
+			if ( env.isSafari ) {
+				if ( value ) {
+					editor.editing.view.getDomRoot().classList.remove( 'ck-column-resize_disabled' );
+				} else if ( editor.editing.view.getDomRoot() ) {
+					editor.editing.view.getDomRoot().classList.add( 'ck-column-resize_disabled' );
+				}
+			} else {
+				editor.editing.view.change( writer => {
+					writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot() );
+				} );
+			}
 		} );
 
 		/**
