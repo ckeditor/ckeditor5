@@ -22,17 +22,15 @@ const CYAN = '\x1B[36;1m';
 const MAGENTA = '\x1B[35;1m';
 const NO_COLOR = '\x1B[0m';
 
-// Tests + Code coverage.
-if ( TRAVIS_JOB_TYPE === 'Tests' ) {
-	console.log( `\n${ CYAN }Running the "Tests" build.${ NO_COLOR }\n` );
+console.log( `\n${ CYAN }Running the "${ TRAVIS_JOB_TYPE }" build.${ NO_COLOR }\n` );
 
-	exec( 'node', './scripts/ci/check-packages-code-coverage.js' );
+// Tests + Code coverage.
+if ( [ 'TestsCore', 'TestsFeatures' ].includes( TRAVIS_JOB_TYPE ) ) {
+	exec( 'node', './scripts/ci/check-packages-code-coverage.js', TRAVIS_JOB_TYPE );
 }
 
 // Verifying the code style.
 if ( TRAVIS_JOB_TYPE === 'Validation' ) {
-	console.log( `\n${ CYAN }Running the "Validation" build.${ NO_COLOR }\n` );
-
 	// Linters.
 	exec( 'yarn', 'run', 'lint' );
 	exec( 'yarn', 'run', 'stylelint' );

@@ -9,7 +9,7 @@
 		"module": "es6",
 		"target": "es2020",
 		"moduleResolution": "node",
-		"sourceMap": true,
+		"sourceMap": false,
 		"declaration": false
 	},
 	"include": [

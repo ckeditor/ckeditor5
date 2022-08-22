@@ -21,17 +21,17 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const glob = require( 'glob' );
 
-const failedChecks = {
-	dependency: new Set(),
-	unitTests: new Set(),
-	codeCoverage: new Set()
-};
+const JOB_TYPE = process.argv[ 2 ];
 
 const RED = '\x1B[0;31m';
 const YELLOW = '\x1B[33;1m';
 const NO_COLOR = '\x1B[0m';
 
-runSubprocess( 'yarn', [ 'run', 'cli:build' ] );
+const failedChecks = {
+	dependency: new Set(),
+	unitTests: new Set(),
+	codeCoverage: new Set()
+};
 
 const travis = {
 	_lastTimerId: null,
@@ -72,17 +72,32 @@ childProcess.execSync( 'mkdir .nyc_output' );
 childProcess.execSync( 'rm -r -f .out' );
 childProcess.execSync( 'mkdir .out' );
 
+// TODO: remember to update.
 // Temporary: Do not check the `ckeditor5-minimap` package(s).
 const excludedPackages = [ 'ckeditor5-minimap' ];
-const packages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
+
+const corePackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
+	.map( filename => 'ckeditor5-' + filename.replace( /\.js$/, '' ) );
+
+corePackages.unshift( 'ckeditor5' );
+
+const featuresPackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
 	.toString()
 	.trim()
 	.split( '\n' )
-	.filter( fullPackageName => !excludedPackages.includes( fullPackageName ) );
+	.filter( fullPackageName => ![ ...excludedPackages, ...corePackages ].includes( fullPackageName ) );
 
-packages.unshift( 'ckeditor5' );
+const packagesToTest = {
+	TestsCore: corePackages,
+	TestsFeatures: featuresPackages
+}[ JOB_TYPE ];
 
-for ( const fullPackageName of packages ) {
+if ( JOB_TYPE === 'TEstsFeatures' ) {
+	runSubprocess( 'yarn', [ 'run', 'cli:build' ] );
+	runSubprocess( 'npx', [ 'rimraf', './packages/**/src/**/*.ts' ] );
+}
+
+for ( const fullPackageName of packagesToTest ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 	const foldLabelName = 'pkg-' + simplePackageName;
 
@@ -176,7 +191,8 @@ function appendCoverageReport() {
 }
 
 function shouldUploadCoverageReport() {
+	return false;
 	// If the repository slugs are different, the pull request comes from the community (forked repository).
 	// For such builds, sending the CC report will be disabled.
-	return ( process.env.TRAVIS_EVENT_TYPE !== 'pull_request' || process.env.TRAVIS_PULL_REQUEST_SLUG === process.env.TRAVIS_REPO_SLUG );
+	// return ( process.env.TRAVIS_EVENT_TYPE !== 'pull_request' || process.env.TRAVIS_PULL_REQUEST_SLUG === process.env.TRAVIS_REPO_SLUG );
 }

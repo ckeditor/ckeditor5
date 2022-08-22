@@ -30,5 +30,6 @@ after_script:
 - ckeditor5-dev-tests-notify-travis-status
 env:
   jobs:
-  - TRAVIS_JOB_TYPE=Tests
+  - TRAVIS_JOB_TYPE=TestsCore
+  - TRAVIS_JOB_TYPE=TestsFeatures
   - TRAVIS_JOB_TYPE=Validation
