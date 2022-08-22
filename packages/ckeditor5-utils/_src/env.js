@@ -14,8 +14,7 @@
  */
 
 // This file might be imported in environments without the navigator API.
-/* istanbul ignore next */
-const userAgent = navigator ? navigator.userAgent.toLowerCase() : '';
+const userAgent = navigator.userAgent.toLowerCase();
 
 /**
  * A namespace containing environment and browser information.
