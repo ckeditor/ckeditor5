@@ -94,7 +94,7 @@ const packagesToTest = {
 	TestsFeatures: featuresPackages
 }[ JOB_TYPE ];
 
-if ( JOB_TYPE === 'TEstsFeatures' ) {
+if ( JOB_TYPE === 'TestsFeatures' ) {
 	runSubprocess( 'yarn', [ 'run', 'cli:build' ] );
 	runSubprocess( 'npx', [ 'rimraf', './packages/**/src/**/*.ts' ] );
 }
