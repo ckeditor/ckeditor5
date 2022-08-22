@@ -174,10 +174,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	/**
 	 * Registers table column resize post-fixer.
 	 *
-	 * It checks if the change from the differ concerns a table-related element or an attribute. If yes, then it is responsible for the
-	 * following:
-	 *  * (1) Adjusting the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
-	 *  * (2) Checking if columns have been added or removed and adjusting the widths of the affected columns.
+	 * It checks if the change from the differ concerns a table-related element or attribute. For detected changes it:
+	 *  * Adjusts the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
+	 *  * Checks if the `columnWidths` attribute gets updated accordingly after columns have been added or removed.
 	 *
 	 * @private
 	 */
@@ -190,43 +189,10 @@ export default class TableColumnResizeEditing extends Plugin {
 
 			for ( const table of getChangedTables( model ) ) {
 				// (1) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
-				// It's an array at this point.
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );
 
-				const newTableColumnsCount = this._tableUtilsPlugin.getColumns( table );
-				const columnsCountDelta = newTableColumnsCount - columnWidths.length;
-
 				// (2) If the number of columns has changed, then we need to adjust the widths of the affected columns.
-				if ( columnsCountDelta != 0 ) {
-					// Collect all cells that are affected by the change.
-					const cellSet = _getAffectedCells( model.document.differ, table );
-
-					for ( const cell of cellSet ) {
-						const currentColumnsDelta = newTableColumnsCount - columnWidths.length;
-
-						if ( currentColumnsDelta === 0 ) {
-							continue;
-						}
-
-						// If the column count in the table changed, adjust the widths of the affected columns.
-						const hasMoreColumns = currentColumnsDelta > 0;
-						const currentColumnIndex = this._tableUtilsPlugin.getCellLocation( cell ).column;
-
-						if ( hasMoreColumns ) {
-							const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
-							const columnWidthsToInsert = createFilledArray( currentColumnsDelta, columnMinWidthAsPercentage );
-
-							columnWidths.splice( currentColumnIndex, 0, ...columnWidthsToInsert );
-						} else {
-							// Moves the widths of the removed columns to the preceding one.
-							// Other editors either reduce the width of the whole table or adjust the widths
-							// proportionally, so change of this behavior can be considered in the future.
-							const removedColumnWidths = columnWidths.splice( currentColumnIndex, Math.abs( currentColumnsDelta ) );
-
-							columnWidths[ currentColumnIndex ] += sumArray( removedColumnWidths );
-						}
-					}
-				}
+				adjustColumnsWidth( columnWidths, table, this );
 
 				const columnWidthsAttribute = columnWidths.map( width => `${ width }%` ).join( ',' );
 
@@ -241,6 +207,44 @@ export default class TableColumnResizeEditing extends Plugin {
 
 			return changed;
 		} );
+
+		function adjustColumnsWidth( columnWidths, table, plugin ) {
+			const newTableColumnsCount = plugin._tableUtilsPlugin.getColumns( table );
+			const columnsCountDelta = newTableColumnsCount - columnWidths.length;
+
+			if ( columnsCountDelta === 0 ) {
+				return;
+			}
+
+			// Collect all cells that are affected by the change.
+			const cellSet = _getAffectedCells( plugin.editor.model.document.differ, table );
+
+			for ( const cell of cellSet ) {
+				const currentColumnsDelta = newTableColumnsCount - columnWidths.length;
+
+				if ( currentColumnsDelta === 0 ) {
+					continue;
+				}
+
+				// If the column count in the table changed, adjust the widths of the affected columns.
+				const hasMoreColumns = currentColumnsDelta > 0;
+				const currentColumnIndex = plugin._tableUtilsPlugin.getCellLocation( cell ).column;
+
+				if ( hasMoreColumns ) {
+					const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, plugin.editor );
+					const columnWidthsToInsert = createFilledArray( currentColumnsDelta, columnMinWidthAsPercentage );
+
+					columnWidths.splice( currentColumnIndex, 0, ...columnWidthsToInsert );
+				} else {
+					// Moves the widths of the removed columns to the preceding one.
+					// Other editors either reduce the width of the whole table or adjust the widths
+					// proportionally, so change of this behavior can be considered in the future.
+					const removedColumnWidths = columnWidths.splice( currentColumnIndex, Math.abs( currentColumnsDelta ) );
+
+					columnWidths[ currentColumnIndex ] += sumArray( removedColumnWidths );
+				}
+			}
+		}
 
 		// Returns a of set of cells that have been changed in the given table.
 		//
