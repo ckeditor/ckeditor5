@@ -72,8 +72,25 @@ export default class SpecialCharactersView extends View {
 			}
 		} );
 
+		/**
+		 * An instance of the SpecialCharactersNavigationView.
+		 *
+		 * @member {module:special-characters/ui/specialcharactersnavigationview~SpecialCharactersNavigationView}
+		 */
 		this.navigationView = navigationView;
+
+		/**
+		 * An instance of the CharacterGridView.
+		 *
+		 * @member {module:special-characters/ui/charactergridview~CharacterGridView}
+		 */
 		this.gridView = gridView;
+
+		/**
+		 * An instance of the CharacterInfoView.
+		 *
+		 * @member {module:special-characters/ui/characterinfoview~CharacterInfoView}
+		 */
 		this.infoView = infoView;
 
 		this.setTemplate( {
