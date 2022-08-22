@@ -3,14 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 /**
  * @module ui/dropdown/dropdownview
  */
 
 import View from '../view';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import '../../theme/components/dropdown/dropdown.css';
 
@@ -256,8 +255,8 @@ export default class DropdownView extends View {
 		this.on( 'change:isOpen', () => {
 			if ( !this.isOpen ) {
 				// If the dropdown was closed, move the focus back to the button (#12125).
-				// Unless the executed button already moved the focus to the editable (#12178).
-				if ( this.element.contains( document.activeElement ) ) {
+				// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
+				if ( this.element.contains( global.document.activeElement ) ) {
 					this.focus();
 				}
 
