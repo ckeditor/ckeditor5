@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-basic-styles-source}
 
-The {@link api/basic-styles basic styles} feature allows you to apply the most frequently used formatting indispensable for content creation. This package provides essential text styling features such as bold, italic, underline, strikethrough, subscript, superscript, and code. Coupled with more [formatting features](#related-features), these serve as a base for any WYSIWYG editor toolset.
+The basic styles feature allows you to apply the most frequently used formatting indispensable for content creation. This package provides essential text styling features such as bold, italic, underline, strikethrough, subscript, superscript, and code. Coupled with more [formatting features](#related-features), these serve as a base for any WYSIWYG editor toolset.
 
 <info-box info>
 	All basic text styles can be removed with the {@link features/remove-format remove format} feature.

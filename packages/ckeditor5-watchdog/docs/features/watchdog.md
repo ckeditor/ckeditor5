@@ -9,7 +9,7 @@ Every non-trivial piece of software has bugs. Despite our high quality standards
 
 In order to limit the effect of an editor crash on the user experience, you can automatically restart the WYSIWYG editor with the content saved just before the crash.
 
-The {@link module:watchdog/watchdog~Watchdog} utility allows you to do exactly that. It ensures that an editor instance is running, despite a potential crash. It works by detecting that an editor crashed, destroying it, and automatically creating a new instance of that editor with the content of the previous editor.
+The watchdog utility allows you to do exactly that. It ensures that an editor instance is running, despite a potential crash. It works by detecting that an editor crashed, destroying it, and automatically creating a new instance of that editor with the content of the previous editor.
 
 Note that the most "dangerous" places in the CKEditor 5 API, like `editor.model.change()`, `editor.editing.view.change()` or emitters, are covered with checks and `try-catch` blocks that allow detecting unknown errors and restart the editor when they occur.
 
