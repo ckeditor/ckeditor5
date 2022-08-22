@@ -9,8 +9,8 @@
 		"module": "es6",
 		"target": "es2020",
 		"moduleResolution": "node",
-		"sourceMap": false,
-		"declaration": false
+		"sourceMap": true,
+		"declaration": true
 	},
 	"include": [
 		"../../packages/**/src"
