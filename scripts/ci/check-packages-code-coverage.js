@@ -23,6 +23,8 @@ const glob = require( 'glob' );
 
 const JOB_TYPE = process.argv[ 2 ];
 
+console.log( 'build trigger' );
+
 const RED = '\x1B[0;31m';
 const YELLOW = '\x1B[33;1m';
 const NO_COLOR = '\x1B[0m';
