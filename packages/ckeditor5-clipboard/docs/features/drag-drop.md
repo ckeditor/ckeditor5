@@ -8,9 +8,9 @@ order: 40
 
 The drag and drop feature brings support for dragging and dropping textual content as well as block objects (like images or tables) within the rich-text editor. It also allows for dropping HTML and plain text content from outside of the editor into CKEditor 5.
 
-This feature is implemented by the {@link module:clipboard/dragdrop~DragDrop} plugin which is a part of the {@link module:clipboard/clipboard~Clipboard} feature.
+This feature is implemented by the `DragDrop` plugin which is a part of the `Clipboard` feature.
 
-See the screencast below for what you can expect from drag and drop support of text and blocks in CKEditor 5. Use the [demo](#demo) below to play with dragging content from outside the editor into a document.
+See the screencast below for what you can expect from drag and drop support of text and blocks in CKEditor 5. Use the [demo](#demo) EDITOR to play with dragging content from outside the editor into a document.
 
 {@img assets/img/drag-drop.gif A screencast of drag and drop of text and blocks in CKEditor 5.}
 

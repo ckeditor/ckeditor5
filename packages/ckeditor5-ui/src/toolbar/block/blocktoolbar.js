@@ -166,6 +166,12 @@ export default class BlockToolbar extends Plugin {
 				this._hidePanel();
 			}
 		} );
+
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
+		editor.ui.addToolbar( this.toolbarView, {
+			beforeFocus: () => this._showPanel(),
+			afterBlur: () => this._hidePanel()
+		} );
 	}
 
 	/**
@@ -221,11 +227,14 @@ export default class BlockToolbar extends Plugin {
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	_createToolbarView() {
+		const t = this.editor.locale.t;
 		const shouldGroupWhenFull = !this._blockToolbarConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
 			shouldGroupWhenFull,
 			isFloating: true
 		} );
+
+		toolbarView.ariaLabel = t( 'Editor block content toolbar' );
 
 		// When toolbar lost focus then panel should hide.
 		toolbarView.focusTracker.on( 'change:isFocused', ( evt, name, is ) => {
@@ -363,6 +372,14 @@ export default class BlockToolbar extends Plugin {
 	 * @private
 	 */
 	_showPanel() {
+		// Usually, the only way to show the toolbar is by pressing the block button. It makes it impossible for
+		// the toolbar to show up when the button is invisible (feature does not make sense for the selection then).
+		// The toolbar navigation using Alt+F10 does not access the button but shows the panel directly using this method.
+		// So we need to check whether this is possible first.
+		if ( !this.buttonView.isVisible ) {
+			return;
+		}
+
 		const wasVisible = this.panelView.isVisible;
 
 		// So here's the thing: If there was no initial panelView#show() or these two were in different order, the toolbar

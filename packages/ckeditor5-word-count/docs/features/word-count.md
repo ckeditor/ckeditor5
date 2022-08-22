@@ -7,7 +7,7 @@ menu-title: Word and character count
 
 # Word count and character count
 
-The {@link module:word-count/wordcount~WordCount} feature provides a possibility to track the number of words and characters written in the rich-text editor.
+The word count feature provides a possibility to track the number of words and characters written in the rich-text editor.
 
 It is a feature crucial for writing professionals but also for students and marketers. Keeping track of the document's word or character count helps planning the overall content volume, meeting assignment requirements or keeping within the preset text length goal. The word or character count aids quick assessment of work that was done and needs yet to be done as well as supports the writing process planning and management.
 
