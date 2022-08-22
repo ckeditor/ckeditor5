@@ -23,8 +23,6 @@ const glob = require( 'glob' );
 
 const JOB_TYPE = process.argv[ 2 ];
 
-console.log( 'build trigger' );
-
 const RED = '\x1B[0;31m';
 const YELLOW = '\x1B[33;1m';
 const NO_COLOR = '\x1B[0m';
@@ -95,8 +93,12 @@ const packagesToTest = {
 }[ JOB_TYPE ];
 
 if ( JOB_TYPE === 'TestsFeatures' ) {
+	console.log( '\nCompiling TypeScript source files...' );
 	runSubprocess( 'yarn', [ 'run', 'cli:build' ] );
-	runSubprocess( 'npx', [ 'rimraf', './packages/**/src/**/*.ts' ] );
+
+	console.log( '\nRemoving TypeScript source files...' );
+	const tsSourceFiles = glob.sync( './packages/**/src/**/*.ts' );
+	tsSourceFiles.forEach( filePath => fs.unlinkSync( filePath ) );
 }
 
 for ( const fullPackageName of packagesToTest ) {
