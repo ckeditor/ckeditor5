@@ -209,27 +209,21 @@ export default class TableColumnResizeEditing extends Plugin {
 						}
 
 						// If the column count in the table changed, adjust the widths of the affected columns.
-						const operationType = currentColumnsDelta > 0 ? 'insert' : 'remove';
+						const hasMoreColumns = currentColumnsDelta > 0;
 						const currentColumnIndex = this._tableUtilsPlugin.getCellLocation( cell ).column;
 
-						if ( operationType == 'insert' ) {
+						if ( hasMoreColumns ) {
 							const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
 							const columnWidthsToInsert = createFilledArray( currentColumnsDelta, columnMinWidthAsPercentage );
 
 							columnWidths.splice( currentColumnIndex, 0, ...columnWidthsToInsert );
-
-							changed = true;
-						}
-
-						if ( operationType == 'remove' ) {
+						} else {
 							// Moves the widths of the removed columns to the preceding one.
 							// Other editors either reduce the width of the whole table or adjust the widths
 							// proportionally, so change of this behavior can be considered in the future.
 							const removedColumnWidths = columnWidths.splice( currentColumnIndex, Math.abs( currentColumnsDelta ) );
 
 							columnWidths[ currentColumnIndex ] += sumArray( removedColumnWidths );
-
-							changed = true;
 						}
 					}
 				}
