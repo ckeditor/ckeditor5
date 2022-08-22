@@ -5,20 +5,24 @@
 
 /* globals document,Event */
 
-import TestColorPlugin from '../_utils/testcolorplugin';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ColorTableView from './../../src/ui/colortableview';
+import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
+
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+
+import TestColorPlugin from '../_utils/testcolorplugin';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 
 describe( 'ColorTableView', () => {
 	let locale, colorTableView;
@@ -79,12 +83,16 @@ describe( 'ColorTableView', () => {
 			documentColorsLabel: 'Document colors',
 			documentColorsCount: 4
 		} );
-		colorTableView.appendGrids();
+		// Grids rendering is deferred (#6192) therefore render happens before appending grids.
 		colorTableView.render();
+		colorTableView.appendGrids();
+
+		document.body.appendChild( colorTableView.element );
 	} );
 
 	afterEach( () => {
 		colorTableView.destroy();
+		colorTableView.element.remove();
 	} );
 
 	testUtils.createSinonSandbox();
@@ -163,8 +171,8 @@ describe( 'ColorTableView', () => {
 		} );
 	} );
 
-	describe( 'focus tracker', () => {
-		it( 'should focus first child of colorTableView in DOM', () => {
+	describe( 'focus tracking', () => {
+		it( 'should focus first child of colorTableView in DOM on focus()', () => {
 			const spy = sinon.spy( colorTableView._focusCycler, 'focusFirst' );
 
 			colorTableView.focus();
@@ -172,12 +180,64 @@ describe( 'ColorTableView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should focuses the last child of colorTableView in DOM', () => {
+		it( 'should focus the last child of colorTableView in DOM on focusLast()', () => {
 			const spy = sinon.spy( colorTableView._focusCycler, 'focusLast' );
 
 			colorTableView.focusLast();
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		describe( 'navigation across table controls using Tab and Shift+Tab keys', () => {
+			beforeEach( () => {
+				// Needed for the document colors grid to show up in the view.
+				colorTableView.documentColors.add( {
+					color: '#000000',
+					label: 'Black',
+					options: {
+						hasBorder: false
+					}
+				} );
+			} );
+
+			it( 'should navigate forwards using the Tab key', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.tab,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				// Mock the remove color button is focused.
+				colorTableView.focusTracker.isFocused = true;
+				colorTableView.focusTracker.focusedElement = colorTableView.items.get( 0 ).element;
+
+				const spy = sinon.spy( colorTableView.staticColorsGrid, 'focus' );
+
+				colorTableView.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should navigate backwards using the Shift+Tab key', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.tab,
+					shiftKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				// Mock the remove color button is focused.
+				colorTableView.focusTracker.isFocused = true;
+				colorTableView.focusTracker.focusedElement = colorTableView.items.get( 0 ).element;
+
+				const spy = sinon.spy( colorTableView.documentColorsGrid, 'focus' );
+
+				colorTableView.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 
@@ -382,8 +442,9 @@ describe( 'ColorTableView', () => {
 					removeButtonLabel: 'Remove color',
 					documentColorsCount: 0
 				} );
-				colorTableView.appendGrids();
+				// Grids rendering is deferred (#6192) therefore render happens before appending grids.
 				colorTableView.render();
+				colorTableView.appendGrids();
 			} );
 
 			afterEach( () => {

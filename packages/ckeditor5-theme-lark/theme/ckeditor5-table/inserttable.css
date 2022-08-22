@@ -26,6 +26,7 @@
 	margin: var(--ck-insert-table-dropdown-box-margin);
 	border: 1px solid var(--ck-color-base-border);
 	border-radius: 1px;
+	outline: none;
 
 	&.ck-on {
 		border-color: var(--ck-color-focus-border);

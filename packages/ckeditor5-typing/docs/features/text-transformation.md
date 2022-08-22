@@ -7,7 +7,7 @@ menu-title: Automatic text transformation
 
 {@snippet features/build-text-transformation-source}
 
-The {@link module:typing/texttransformation~TextTransformation} feature brings support for implementing autocorrection options, i.e. automatically turning predefined snippets into their improved forms. Here are some examples that will be transformed in your WYSIWYG editor:
+The text transformation feature brings support for implementing autocorrection options, i.e. automatically turning predefined snippets into their improved forms or for autocorrect. Here are some examples that will be transformed in your WYSIWYG editor:
 
 <table style="width: unset">
 	<thead>
