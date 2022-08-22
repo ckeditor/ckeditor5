@@ -70,7 +70,7 @@ describe( 'ImageToolbar integration', () => {
 			balloonToolbar.show();
 
 			// BalloonToolbar should not be visible.
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView.ariaLabel ).to.equal( 'Image toolbar' );
 		} );
 
 		it( 'should listen to BalloonToolbar#show event with the high priority', () => {

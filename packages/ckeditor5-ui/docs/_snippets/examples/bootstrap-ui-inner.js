@@ -156,9 +156,6 @@ class BootstrapEditorUI extends EditorUI {
 		// Register editable element so it is available via getEditableElement() method.
 		this.setEditableElement( view.editable.name, editableElement );
 
-		// Let the editable UI element respond to the changes in the global editor focus tracker
-		// and let the focus tracker know about the editable element.
-		this.focusTracker.add( editableElement );
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
 
 		// Bind the editable UI element to the editing view, making it an end– and entry–point

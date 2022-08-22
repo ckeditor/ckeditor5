@@ -19,6 +19,7 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -34,7 +35,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
-	let resizeCallback;
+	let resizeCallback, addToolbarSpy;
 
 	testUtils.createSinonSandbox();
 
@@ -55,6 +56,8 @@ describe( 'BalloonToolbar', () => {
 				unobserve: sinon.spy()
 			};
 		} );
+
+		addToolbarSpy = sinon.spy( EditorUI.prototype, 'addToolbar' );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -182,6 +185,29 @@ describe( 'BalloonToolbar', () => {
 
 	it( 'should have the isFloating option set to true', () => {
 		expect( balloonToolbar.toolbarView.options.isFloating ).to.be.true;
+	} );
+
+	it( 'should have the accessible label', () => {
+		expect( balloonToolbar.toolbarView.ariaLabel ).to.equal( 'Editor contextual toolbar' );
+	} );
+
+	it( 'should register its toolbar as focusable toolbar in EditorUI with proper configuration responsible for presentation', () => {
+		const showPanelSpy = sinon.spy( balloonToolbar, 'show' );
+		const hidePanelSpy = sinon.spy( balloonToolbar, 'hide' );
+
+		sinon.assert.calledWithExactly( addToolbarSpy.lastCall, balloonToolbar.toolbarView, sinon.match( {
+			beforeFocus: sinon.match.func,
+			afterBlur: sinon.match.func,
+			isContextual: true
+		} ) );
+
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+		sinon.assert.calledOnceWithExactly( showPanelSpy, true );
+
+		addToolbarSpy.lastCall.args[ 1 ].afterBlur();
+
+		sinon.assert.calledOnce( hidePanelSpy );
 	} );
 
 	describe( 'pluginName', () => {
@@ -391,6 +417,13 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
+		} );
+
+		it( 'should display the toolbar for a focused selection when called with an argument', () => {
+			setData( model, '<paragraph>b[]ar</paragraph>' );
+
+			balloonToolbar.show( true );
+			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/6443
