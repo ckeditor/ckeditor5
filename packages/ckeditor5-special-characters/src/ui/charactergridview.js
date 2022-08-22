@@ -9,7 +9,7 @@
 
 import { View, ButtonView, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
 
-import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
+import { KeystrokeHandler, FocusTracker, global } from 'ckeditor5/src/utils';
 
 import '../../theme/charactergrid.css';
 
@@ -78,7 +78,11 @@ export default class CharacterGridView extends View {
 			keystrokeHandler: this.keystrokes,
 			focusTracker: this.focusTracker,
 			gridItems: this.tiles,
-			numberOfColumns: 10
+			numberOfColumns: () => global.window
+				.getComputedStyle( this.element.firstChild ) // Responsive .ck-character-grid__tiles
+				.getPropertyValue( 'grid-template-columns' )
+				.split( ' ' )
+				.length
 		} );
 
 		/**
