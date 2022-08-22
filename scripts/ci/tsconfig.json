@@ -3,12 +3,9 @@
 		"lib": [
 			"DOM"
 		],
-		"noImplicitAny": true,
-		"noImplicitOverride": true,
 		"strict": true,
 		"module": "es6",
 		"target": "es2020",
-		"moduleResolution": "node",
 		"sourceMap": true,
 		"declaration": true
 	},

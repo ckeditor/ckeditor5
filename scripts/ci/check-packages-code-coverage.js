@@ -33,6 +33,17 @@ const failedChecks = {
 	codeCoverage: new Set()
 };
 
+console.log( '\nCompiling TypeScript source files...' );
+runSubprocess( 'yarn', [ 'run', 'cli:build' ] );
+
+console.log( '\nRemoving TypeScript source files...' );
+const tsSourceFiles = glob.sync( './packages/**/src/**/*.ts' );
+tsSourceFiles.forEach( filePath => fs.unlinkSync( filePath ) );
+
+console.log( 'Done.\n' );
+
+process.exit();
+
 const travis = {
 	_lastTimerId: null,
 	_lastStartTime: null,
