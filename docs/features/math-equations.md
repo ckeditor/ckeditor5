@@ -17,6 +17,10 @@ Additionally, MathType offers a special tool designed to help you work with chem
 	You can report any issues in the official CKEditor 5 [GitHub repository](https://github.com/ckeditor/ckeditor5/issues). A license can be purchased [here](https://ckeditor.com/contact/).
 </info-box>
 
+<info-box info>
+	The Math equations and chemical formulas feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 To start creating math or chemical formulas in the WYSIWYG editor below, click the MathType {@icon @wiris/mathtype-ckeditor5/theme/icons/formula.svg MathType} or ChemType {@icon @wiris/mathtype-ckeditor5/theme/icons/chem.svg ChemType} buttons in the toolbar. This will open the relevant dialog on the screen.

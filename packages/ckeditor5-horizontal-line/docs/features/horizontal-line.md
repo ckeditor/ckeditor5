@@ -5,7 +5,7 @@ menu-title: Horizontal line
 
 # Horizontal line
 
-The {@link module:horizontal-line/horizontalline~HorizontalLine} plugin allows inserting a horizontal line into the rich-text editor.
+The horizontal line feature allows inserting a horizontal line into the rich-text editor.
 
 Often known as the horizontal rule, it provides a visual way to separate the content. It may indicate a thematic shift (like a change of topic) between paragraphs or parts of the story or just be a simple graphic separator to help organize the content.
 
