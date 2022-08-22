@@ -88,26 +88,28 @@ describe( 'CharacterGridView', () => {
 		} );
 	} );
 
-	describe( 'FocusTracker', () => {
-		it( 'should add tiles to focus tracker when tiles are added to #tiles', () => {
-			const tile = view.createTile( 'ε', 'foo bar baz' );
-			const spy = sinon.spy( view.focusTracker, 'add' );
+	describe( 'render()', () => {
+		describe( 'FocusTracker', () => {
+			it( 'should add tiles to focus tracker when tiles are added to #tiles', () => {
+				const tile = view.createTile( 'ε', 'foo bar baz' );
+				const spy = sinon.spy( view.focusTracker, 'add' );
 
-			view.tiles.add( tile );
+				view.tiles.add( tile );
 
-			sinon.assert.calledOnce( spy );
-		} );
+				sinon.assert.calledOnce( spy );
+			} );
 
-		it( 'should remove tiles from focus tracker when tiles are removed from #tiles', () => {
-			const tile = view.createTile( 'ε', 'foo bar baz' );
+			it( 'should remove tiles from focus tracker when tiles are removed from #tiles', () => {
+				const tile = view.createTile( 'ε', 'foo bar baz' );
 
-			view.tiles.add( tile );
+				view.tiles.add( tile );
 
-			const spy = sinon.spy( view.focusTracker, 'remove' );
+				const spy = sinon.spy( view.focusTracker, 'remove' );
 
-			view.tiles.remove( tile );
+				view.tiles.remove( tile );
 
-			sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 } );
