@@ -19,6 +19,8 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 import { modelTable, assertSelectedCells } from '../_utils/utils';
@@ -892,6 +894,26 @@ describe( 'TableColumnResizeEditing', () => {
 			editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
 
 			expect( editor.editing.view.document.getRoot().hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
+		} );
+
+		describe( 'safari', () => {
+			testUtils.createSinonSandbox();
+
+			beforeEach( () => {
+				testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
+			} );
+
+			it( 'editable should not have the "ck-column-resize_disabled" class if "_isResizingAllowed" is set to "true"', () => {
+				editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = true;
+
+				expect( editor.editing.view.getDomRoot().classList.contains( 'ck-column-resize_disabled' ) ).to.equal( false );
+			} );
+
+			it( 'editable should have the "ck-column-resize_disabled" class if "_isResizingAllowed" is set to "false"', () => {
+				editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
+
+				expect( editor.editing.view.getDomRoot().classList.contains( 'ck-column-resize_disabled' ) ).to.equal( true );
+			} );
 		} );
 	} );
 
