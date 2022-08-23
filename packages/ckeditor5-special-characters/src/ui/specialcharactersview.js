@@ -21,7 +21,7 @@ import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
  */
 export default class SpecialCharactersView extends View {
 	/**
-	 * Creates an instance of the SpecialCharacters view.
+	 * Creates an instance of the `SpecialCharactersView`.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 * @param {module:special-characters/ui/specialcharactersnavigationview~SpecialCharactersNavigationView} navigationView
@@ -73,21 +73,21 @@ export default class SpecialCharactersView extends View {
 		} );
 
 		/**
-		 * An instance of the SpecialCharactersNavigationView.
+		 * An instance of the `SpecialCharactersNavigationView`.
 		 *
 		 * @member {module:special-characters/ui/specialcharactersnavigationview~SpecialCharactersNavigationView}
 		 */
 		this.navigationView = navigationView;
 
 		/**
-		 * An instance of the CharacterGridView.
+		 * An instance of the `CharacterGridView`.
 		 *
 		 * @member {module:special-characters/ui/charactergridview~CharacterGridView}
 		 */
 		this.gridView = gridView;
 
 		/**
-		 * An instance of the CharacterInfoView.
+		 * An instance of the `CharacterInfoView`.
 		 *
 		 * @member {module:special-characters/ui/characterinfoview~CharacterInfoView}
 		 */
