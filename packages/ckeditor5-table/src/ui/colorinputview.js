@@ -7,8 +7,9 @@
  * @module table/ui/colorinputview
  */
 
-import { View, InputTextView, ButtonView, createDropdown, ColorGridView } from 'ckeditor5/src/ui';
+import { View, InputTextView, ButtonView, createDropdown, ColorGridView, FocusCycler, ViewCollection } from 'ckeditor5/src/ui';
 import { icons } from 'ckeditor5/src/core';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import '../../theme/colorinput.css';
 
@@ -110,6 +111,23 @@ export default class ColorInputView extends View {
 		this.options = options;
 
 		/**
+		 * Tracks information about the DOM focus in the view.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * A collection of views that can be focused in the view.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this._focusables = new ViewCollection();
+
+		/**
 		 * An instance of the dropdown allowing to select a color from a grid.
 		 *
 		 * @protected
@@ -135,6 +153,34 @@ export default class ColorInputView extends View {
 		 */
 		this._stillTyping = false;
 
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
+		/**
+		 * Helps cycling over focusable items in the view.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/focuscycler~FocusCycler}
+		 */
+		this._focusCycler = new FocusCycler( {
+			focusables: this._focusables,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				// Navigate items backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
+				focusPrevious: 'shift + tab',
+
+				// Navigate items forwards using the <kbd>Tab</kbd> key.
+				focusNext: 'tab'
+			}
+		} );
+
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -157,10 +203,30 @@ export default class ColorInputView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		// Start listening for the keystrokes coming from the dropdown panel view.
+		this.keystrokes.listenTo( this._dropdownView.panelView.element );
+	}
+
+	/**
 	 * Focuses the input.
 	 */
 	focus() {
 		this._inputView.focus();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
 	}
 
 	/**
@@ -214,6 +280,12 @@ export default class ColorInputView extends View {
 		dropdown.panelView.children.add( removeColorButton );
 		dropdown.panelView.children.add( colorGrid );
 		dropdown.bind( 'isEnabled' ).to( this, 'isReadOnly', value => !value );
+
+		this._focusables.add( removeColorButton );
+		this._focusables.add( colorGrid );
+
+		this.focusTracker.add( removeColorButton.element );
+		this.focusTracker.add( colorGrid.element );
 
 		return dropdown;
 	}
