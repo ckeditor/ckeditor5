@@ -209,20 +209,20 @@ npm run translations:upload -- --organization [ORGANIZATION] --project [PROJECT]
 
 Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/using-npm/scripts#life-cycle-scripts) that allow automatically performing operations in certain situations:
 
-- `prepare`: Triggers during package creation and before publishing.
-- `prepublishOnly`: Triggers only before publishing.
-- `postpublish`: Triggers after publishing.
+* `prepare` &ndash; triggers during package creation and before publishing.
+* `prepublishOnly` &ndash; triggers only before publishing.
+* `postpublish` &ndash; triggers after publishing.
 
 Scripts in this package ensure that DLL-compatible package build is available after creation of the package, and that correct files are published:
 
-- DLL-compatible package build
-- TypeScript files compiled to JavaScript, along with their typings exported
-- `package.json` field `main` points to a `.js` file
+* DLL-compatible package build.
+* TypeScript files compiled to JavaScript, along with their typings exported.
+* `package.json` field `main` points to a `.js` file.
 
 ...and that cleanup is performed afterwards:
 
-- Compiled TypeScript files are removed, as they clutter `src` directory
-- `package.json` field `main` reverts to pointing to a `.ts` file
+* Compiled TypeScript files are removed, as they clutter `src` directory.
+* `package.json` field `main` reverts to pointing to a `.ts` file.
 
 ### `ts:build` and `ts:clear`
 

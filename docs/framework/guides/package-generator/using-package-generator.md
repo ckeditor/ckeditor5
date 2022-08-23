@@ -49,5 +49,6 @@ npm run start
 There, the plugin can be seen within the example editor.
 
 You can check out what is available inside your package depending on the language you used:
+
 * {@link framework/guides/package-generator/javascript-package JavaScript}
 * {@link framework/guides/package-generator/typescript-package TypeScript}
