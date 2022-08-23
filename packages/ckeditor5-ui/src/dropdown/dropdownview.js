@@ -9,7 +9,7 @@
 
 import View from '../view';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import { global, FocusTracker } from '@ckeditor/ckeditor5-utils';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/dropdown.css';
 
@@ -263,14 +263,8 @@ export default class DropdownView extends View {
 
 		// Let the dropdown control the position of the panel. The position must
 		// be updated every time the dropdown is open.
-		this.on( 'change:isOpen', () => {
-			if ( !this.isOpen ) {
-				// If the dropdown was closed, move the focus back to the button (#12125).
-				// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
-				if ( this.element.contains( global.document.activeElement ) ) {
-					this.focus();
-				}
-
+		this.on( 'change:isOpen', ( evt, name, isOpen ) => {
+			if ( !isOpen ) {
 				return;
 			}
 
@@ -286,9 +280,6 @@ export default class DropdownView extends View {
 			} else {
 				this.panelView.position = this.panelPosition;
 			}
-
-			// Focus the first item in the dropdown when the dropdown opened.
-			this.panelView.focus();
 		} );
 
 		// Listen for keystrokes coming from within #element.

@@ -109,26 +109,6 @@ describe( 'DropdownView', () => {
 				} );
 			} );
 
-			describe( 'view#isOpen to view.panelView#focus', () => {
-				it( 'gets called upon opening', () => {
-					const spy = sinon.spy( view.panelView, 'focus' );
-
-					view.isOpen = true;
-
-					expect( spy.callCount ).to.equal( 1 );
-				} );
-
-				it( 'does not get called upon closing', () => {
-					view.isOpen = true;
-
-					const spy = sinon.spy( view.panelView, 'focus' );
-
-					view.isOpen = false;
-
-					expect( spy.callCount ).to.equal( 0 );
-				} );
-			} );
-
 			describe( 'view.panelView#isVisible to view#isOpen', () => {
 				it( 'is activated', () => {
 					const values = [];
@@ -488,49 +468,6 @@ describe( 'DropdownView', () => {
 				left: 275,
 				name: 'nmw'
 			} );
-		} );
-	} );
-
-	describe( 'on dropdown close', () => {
-		it( 'should focus a dropdown button if focus is inside the dropdown', () => {
-			const spy = sinon.spy( view.buttonView, 'focus' );
-			// Create a button inside the dropdown panel to enable focus.
-			const button = new ButtonView( locale );
-
-			view.panelView.children.add( button );
-			view.isOpen = true;
-
-			expect( global.document.activeElement ).to.equal( button.element );
-
-			view.isOpen = false;
-
-			expect( global.document.activeElement ).to.equal( view.buttonView.element );
-			sinon.assert.calledOnce( spy );
-		} );
-
-		it( 'should not focus dropdown button if focus is outside the dropdown', () => {
-			const spy = sinon.spy( view.buttonView, 'focus' );
-			// Setup an element that is not a child of the dropdown to be focused.
-			const externalButton = global.document.createElement( 'button' );
-
-			global.document.body.appendChild( externalButton );
-
-			// Create a button inside the dropdown panel.
-			const buttonInsideDropdown = new ButtonView( locale );
-
-			view.panelView.children.add( buttonInsideDropdown );
-			view.isOpen = true;
-
-			expect( global.document.activeElement ).to.equal( buttonInsideDropdown.element );
-
-			externalButton.focus();
-			view.isOpen = false;
-
-			expect( global.document.activeElement ).to.equal( externalButton );
-			sinon.assert.notCalled( spy );
-
-			// Cleanup.
-			externalButton.remove();
 		} );
 	} );
 } );
