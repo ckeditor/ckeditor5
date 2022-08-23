@@ -9,7 +9,8 @@ import ColorInputView from '../../src/ui/colorinputview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { ButtonView, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 
 const DEFAULT_COLORS = [
 	{
@@ -93,6 +94,22 @@ describe( 'ColorInputView', () => {
 
 			inputView.isFocused = false;
 			expect( view.isFocused ).to.be.false;
+		} );
+
+		it( 'should have #focusTracker', () => {
+			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+		} );
+
+		it( 'should have #_focusables', () => {
+			expect( view._focusables ).to.be.instanceOf( ViewCollection );
+		} );
+
+		it( 'should have #keystrokes', () => {
+			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+		} );
+
+		it( 'should have #_focusCycler', () => {
+			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
 		describe( 'dropdown', () => {
