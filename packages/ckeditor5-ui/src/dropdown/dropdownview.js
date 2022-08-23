@@ -108,7 +108,6 @@ export default class DropdownView extends View {
 		 * Controls whether the dropdown view is open, i.e. shows or hides the {@link #panelView panel}.
 		 *
 		 * **Note**: When the dropdown gets open, it will attempt to call `focus()` on the first child of its {@link #panelView}.
-		 * When it is closed, it will try to focus its {@link #buttonView} if the focus is still in the dropdown.
 		 * See {@link module:ui/dropdown/utils~addToolbarToDropdown}, {@link module:ui/dropdown/utils~addListToDropdown}, and
 		 * {@link module:ui/dropdown/utils~focusChildOnDropdownOpen} to learn more about focus management in dropdowns.
 		 *
