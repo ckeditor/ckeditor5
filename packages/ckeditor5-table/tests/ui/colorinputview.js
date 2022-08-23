@@ -10,7 +10,8 @@ import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import { ButtonView, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
+import { global } from 'ckeditor5/src/utils';
 
 const DEFAULT_COLORS = [
 	{
@@ -511,6 +512,70 @@ describe( 'ColorInputView', () => {
 						expect( view.value ).to.equal( 'rgb(255,0,0)' );
 					} );
 				} );
+			} );
+		} );
+
+		describe( 'activates keyboard navigation in the color input view', () => {
+			let view, locale;
+
+			beforeEach( () => {
+				locale = { t: val => val };
+				view = new ColorInputView( locale, {
+					colorDefinitions: DEFAULT_COLORS,
+					columns: 5
+				} );
+				view.render();
+				global.document.body.appendChild( view.element );
+			} );
+
+			afterEach( () => {
+				view.element.remove();
+				view.destroy();
+			} );
+
+			it( 'so "tab" focuses the next focusable item', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.tab,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				view._dropdownView.isOpen = true;
+
+				// Mock the remove color button view is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view._focusables.first.element;
+
+				// Spy the next view which in this case is the color grid view.
+				const spy = sinon.spy( view._focusables.last, 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'so "shift + tab" focuses the previous focusable item', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.tab,
+					shiftKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				view._dropdownView.isOpen = true;
+
+				// Mock the remove color button view is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view._focusables.first.element;
+
+				// Spy the previous view which in this case is the color grid view.
+				const spy = sinon.spy( view._focusables.last, 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
 			} );
 		} );
 	} );
