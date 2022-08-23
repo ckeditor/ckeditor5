@@ -11,6 +11,7 @@
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import TooltipManager from '@ckeditor/ckeditor5-ui/src/tooltipmanager';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -53,6 +54,14 @@ export default class EditorUI {
 		 * @member {module:utils/focustracker~FocusTracker} #focusTracker
 		 */
 		this.focusTracker = new FocusTracker();
+
+		/**
+		 * Manages the tooltips displayed on mouseover and focus across the UI.
+		 *
+		 * @readonly
+		 * @member {module:ui/tooltipmanager~TooltipManager}
+		 */
+		this.tooltipManager = new TooltipManager( editor );
 
 		/**
 		 * Stores viewport offsets from every direction.
@@ -157,6 +166,7 @@ export default class EditorUI {
 		this.stopListening();
 
 		this.focusTracker.destroy();
+		this.tooltipManager.destroy( this.editor );
 
 		// Clean–up the references to the CKEditor instance stored in the native editable DOM elements.
 		for ( const domElement of this._editableElementsMap.values() ) {

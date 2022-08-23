@@ -321,7 +321,6 @@ export default class ColorTableView extends View {
 		buttonView.set( {
 			withText: true,
 			icon: icons.eraser,
-			tooltip: true,
 			label: this.removeButtonLabel
 		} );
 

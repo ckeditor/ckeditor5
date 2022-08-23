@@ -32,7 +32,7 @@ describe( 'SwitchButtonView', () => {
 
 	describe( 'render', () => {
 		it( 'adds #toggleSwitchView to #children', () => {
-			expect( view.children.get( 2 ) ).to.equal( view.toggleSwitchView );
+			expect( view.children.get( 1 ) ).to.equal( view.toggleSwitchView );
 		} );
 	} );
 

@@ -7,9 +7,10 @@ import EditorUI from '../../src/editor/editorui';
 import Editor from '../../src/editor/editor';
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import TooltipManager from '@ckeditor/ckeditor5-ui/src/tooltipmanager';
 
 import testUtils from '../_utils/utils';
 
@@ -40,6 +41,10 @@ describe( 'EditorUI', () => {
 
 		it( 'should create #focusTracker', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
+		} );
+
+		it( 'should create #tooltipManager', () => {
+			expect( ui.tooltipManager ).to.be.instanceOf( TooltipManager );
 		} );
 
 		it( 'should have #element getter', () => {
@@ -120,6 +125,23 @@ describe( 'EditorUI', () => {
 
 			expect( fooElement.ckeditorInstance ).to.be.null;
 			expect( barElement.ckeditorInstance ).to.be.null;
+		} );
+
+		it( 'should destroy #focusTracker', () => {
+			const destroySpy = sinon.spy( ui.focusTracker, 'destroy' );
+
+			ui.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy #tooltipManager', () => {
+			const destroySpy = sinon.spy( ui.tooltipManager, 'destroy' );
+
+			ui.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+			sinon.assert.calledWithExactly( destroySpy, editor );
 		} );
 	} );
 
