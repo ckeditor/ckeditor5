@@ -123,7 +123,7 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.selectedColor ).to.equal( 'white' );
 		} );
 
-		it( 'should set tooltip for the remove color button', () => {
+		it( 'should set label for the remove color button', () => {
 			expect( colorTableView.removeButtonLabel ).to.equal( 'Remove color' );
 		} );
 
@@ -255,7 +255,6 @@ describe( 'ColorTableView', () => {
 		it( 'should have proper settings', () => {
 			expect( removeButton.withText ).to.be.true;
 			expect( removeButton.icon ).to.equal( removeButtonIcon );
-			expect( removeButton.tooltip ).to.be.true;
 			expect( removeButton.label ).to.equal( 'Remove color' );
 		} );
 
