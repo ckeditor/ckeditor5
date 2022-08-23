@@ -13,7 +13,6 @@
  * @module utils/env
  */
 
-// This file might be imported in environments without the navigator API.
 const userAgent = navigator.userAgent.toLowerCase();
 
 /**
