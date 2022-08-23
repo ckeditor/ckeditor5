@@ -93,17 +93,14 @@ export default class MediaEmbedUI extends Plugin {
 		dropdown.on( 'submit', () => {
 			if ( form.isValid() ) {
 				editor.execute( 'mediaEmbed', form.url );
-				closeUI();
+				editor.editing.view.focus();
 			}
 		} );
 
 		dropdown.on( 'change:isOpen', () => form.resetFormStatus() );
-		dropdown.on( 'cancel', () => closeUI() );
-
-		function closeUI() {
+		dropdown.on( 'cancel', () => {
 			editor.editing.view.focus();
-			dropdown.isOpen = false;
-		}
+		} );
 	}
 
 	/**

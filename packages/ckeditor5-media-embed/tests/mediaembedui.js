@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global setTimeout */
+
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import MediaEmbed from '../src/mediaembed';
 import MediaEmbedUI from '../src/mediaembedui';
@@ -36,10 +38,15 @@ describe( 'MediaEmbedUI', () => {
 				dropdown = editor.ui.componentFactory.create( 'mediaEmbed' );
 				button = dropdown.buttonView;
 				form = dropdown.panelView.children.get( 0 );
+
+				dropdown.render();
+
+				global.document.body.appendChild( dropdown.element );
 			} );
 	} );
 
 	afterEach( () => {
+		dropdown.element.remove();
 		editorElement.remove();
 
 		return editor.destroy();
@@ -142,7 +149,7 @@ describe( 'MediaEmbedUI', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'executes the command and closes the UI (if the form is valid)', () => {
+			it( 'executes the command and closes the UI (if the form is valid)', done => {
 				const viewFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 				const commandSpy = sinon.spy( editor.commands.get( 'mediaEmbed' ), 'execute' );
 
@@ -163,7 +170,11 @@ describe( 'MediaEmbedUI', () => {
 				sinon.assert.calledOnce( commandSpy );
 				sinon.assert.calledWithExactly( commandSpy, 'https://valid/url' );
 				sinon.assert.calledOnce( viewFocusSpy );
-				expect( dropdown.isOpen ).to.be.false;
+
+				setTimeout( () => {
+					expect( dropdown.isOpen ).to.be.false;
+					done();
+				}, 0 );
 			} );
 		} );
 
@@ -178,14 +189,18 @@ describe( 'MediaEmbedUI', () => {
 		} );
 
 		describe( '#cancel event', () => {
-			it( 'closes the UI', () => {
+			it( 'closes the UI', done => {
 				const viewFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 
 				dropdown.isOpen = true;
 				dropdown.fire( 'cancel' );
 
 				sinon.assert.calledOnce( viewFocusSpy );
-				expect( dropdown.isOpen ).to.be.false;
+
+				setTimeout( () => {
+					expect( dropdown.isOpen ).to.be.false;
+					done();
+				}, 0 );
 			} );
 		} );
 	} );
