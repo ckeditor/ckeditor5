@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event, console */
+/* globals document, Event, console, setTimeout */
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -93,7 +93,7 @@ describe( 'utils', () => {
 		} );
 
 		describe( 'has default behavior', () => {
-			describe( 'closeDropdownOnBlur()', () => {
+			describe( 'closeDropdownOnClickOutside()', () => {
 				beforeEach( () => {
 					dropdownView.render();
 					document.body.appendChild( dropdownView.element );
@@ -246,6 +246,62 @@ describe( 'utils', () => {
 					dropdownView.isOpen = true;
 					dropdownView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( spy );
+				} );
+			} );
+
+			describe( 'closeDropdownOnBlur()', () => {
+				let externalFocusableElement, focusableDropdownChild;
+
+				beforeEach( () => {
+					externalFocusableElement = document.createElement( 'button' );
+					focusableDropdownChild = document.createElement( 'button' );
+
+					dropdownView.render();
+					dropdownView.panelView.element.appendChild( focusableDropdownChild );
+
+					document.body.appendChild( dropdownView.element );
+					document.body.appendChild( externalFocusableElement );
+				} );
+
+				afterEach( () => {
+					dropdownView.element.remove();
+					externalFocusableElement.remove();
+				} );
+
+				it( 'should close the dropdown when the focus was in the #panelView but it went somewhere else', done => {
+					dropdownView.isOpen = true;
+					focusableDropdownChild.focus();
+
+					expect( dropdownView.focusTracker.isFocused ).to.be.true;
+					expect( dropdownView.isOpen ).to.be.true;
+
+					externalFocusableElement.focus();
+
+					// Allow the browser to move the focus.
+					setTimeout( () => {
+						expect( dropdownView.focusTracker.isFocused ).to.be.false;
+						expect( dropdownView.isOpen ).to.be.false;
+						done();
+					}, 50 );
+				} );
+
+				// This should not happen in real life because opening a dropdown always focuses its child (not the #buttonView) but
+				// better safe than sorry.
+				it( 'should close the dropdown when the focus was on the #buttonView and went somewhere else', done => {
+					dropdownView.isOpen = true;
+					dropdownView.buttonView.focus();
+
+					expect( dropdownView.focusTracker.isFocused ).to.be.true;
+					expect( dropdownView.isOpen ).to.be.true;
+
+					externalFocusableElement.focus();
+
+					// Allow the browser to move the focus.
+					setTimeout( () => {
+						expect( dropdownView.focusTracker.isFocused ).to.be.false;
+						expect( dropdownView.isOpen ).to.be.false;
+						done();
+					}, 50 );
 				} );
 			} );
 		} );

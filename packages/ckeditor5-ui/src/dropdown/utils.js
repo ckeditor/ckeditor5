@@ -295,15 +295,16 @@ export function focusChildOnDropdownOpen( dropdownView, childSelectorCallback ) 
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function addDefaultBehavior( dropdownView ) {
-	closeDropdownOnBlur( dropdownView );
+	closeDropdownOnClickOutside( dropdownView );
 	closeDropdownOnExecute( dropdownView );
 	focusDropdownContentsOnArrows( dropdownView );
+	closeDropdownOnBlur( dropdownView );
 }
 
 // Adds a behavior to a dropdownView that closes opened dropdown when user clicks outside the dropdown.
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
-function closeDropdownOnBlur( dropdownView ) {
+function closeDropdownOnClickOutside( dropdownView ) {
 	dropdownView.on( 'render', () => {
 		clickOutsideHandler( {
 			emitter: dropdownView,
@@ -313,6 +314,17 @@ function closeDropdownOnBlur( dropdownView ) {
 			},
 			contextElements: [ dropdownView.element ]
 		} );
+	} );
+}
+
+// Adds a behavior to a dropdown view that closes opened dropdown when it loses focus.
+//
+// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+function closeDropdownOnBlur( dropdownView ) {
+	dropdownView.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
+		if ( !isFocused ) {
+			dropdownView.isOpen = false;
+		}
 	} );
 }
 
