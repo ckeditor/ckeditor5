@@ -42,7 +42,6 @@ import type { Button } from './button';
  */
 export default class ButtonView extends View implements Button {
 	public readonly children: ViewCollection;
-	public readonly tooltipView: TooltipView;
 	public readonly labelView: View;
 	public readonly iconView: IconView;
 	public readonly keystrokeView: View;

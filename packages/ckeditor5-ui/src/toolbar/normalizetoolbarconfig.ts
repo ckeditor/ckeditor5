@@ -49,10 +49,10 @@ export default function normalizeToolbarConfig(
 		};
 	}
 
-	return Object.assign( {
-		items: [],
-		removeItems: []
-	}, config );
+	return {
+		items: config.items || [],
+		removeItems: config.removeItems || []
+	};
 }
 
-export type ToolbarConfig = string[] | { items?: string[]; removeItems?: string } | undefined;
+export type ToolbarConfig = string[] | { items?: string[]; removeItems?: string[] } | undefined;

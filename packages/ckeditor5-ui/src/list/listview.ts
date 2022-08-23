@@ -14,6 +14,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 import '../../theme/components/list/list.css';
 
+import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import type ViewCollection from '../viewcollection';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -23,7 +24,7 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  * @extends module:ui/view~View
  * @implements module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable
  */
-export default class ListView extends View {
+export default class ListView extends View implements DropdownPanelFocusable {
 	public readonly items: ViewCollection;
 	public readonly focusTracker: FocusTracker;
 	public readonly keystrokes: KeystrokeHandler;

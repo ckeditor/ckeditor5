@@ -389,74 +389,74 @@ export default class BalloonPanelView extends View {
 	}
 
 	/**
- * A side offset of the arrow tip from the edge of the balloon. Controlled by CSS.
- *
- *		 ┌───────────────────────┐
- *		 │                       │
- *		 │         Balloon       │
- *		 │         Content       │
- *		 │                       │
- *		 └──+    +───────────────┘
- *		 |   \  /
- *		 |    \/
- *		>┼─────┼< ─────────────────────── side offset
+	 * A side offset of the arrow tip from the edge of the balloon. Controlled by CSS.
+	 *
+	 *		 ┌───────────────────────┐
+	 *		 │                       │
+	 *		 │         Balloon       │
+	 *		 │         Content       │
+	 *		 │                       │
+	 *		 └──+    +───────────────┘
+	 *		 |   \  /
+	 *		 |    \/
+	 *		>┼─────┼< ─────────────────────── side offset
 	 *
 	 *
 	 * @default 25
- * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowSideOffset
+	 * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowSideOffset
 	 */
-BalloonPanelView.arrowSideOffset = 25;
+	public static arrowSideOffset = 25;
 
 	/**
- * A height offset of the arrow from the edge of the balloon. Controlled by CSS.
+	 * A height offset of the arrow from the edge of the balloon. Controlled by CSS.
 	 *
- *		 ┌───────────────────────┐
- *		 │                       │
- *		 │         Balloon       │
- *		 │         Content       │      ╱-- arrow height offset
- *		 │                       │      V
- *		 └──+    +───────────────┘ --- ─┼───────
- *		     \  /                       │
- *		      \/                        │
- *		────────────────────────────────┼───────
- *		                                ^
-	*
- *
- *		>┼────┼<  arrow height offset
- *		 │    │
- *		 │    ┌────────────────────────┐
- *		 │    │                        │
- *		 │   ╱                         │
- *		 │ ╱            Balloon        │
- *		 │ ╲            Content        │
- *		 │   ╲                         │
- *		 │    │                        │
- *		 │    └────────────────────────┘
- *
- *
-	* @default 10
- * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowHeightOffset
+	 *		 ┌───────────────────────┐
+	 *		 │                       │
+	 *		 │         Balloon       │
+	 *		 │         Content       │      ╱-- arrow height offset
+	 *		 │                       │      V
+	 *		 └──+    +───────────────┘ --- ─┼───────
+	 *		     \  /                       │
+	 *		      \/                        │
+	 *		────────────────────────────────┼───────
+	 *		                                ^
+	 *
+	 *
+	 *		>┼────┼<  arrow height offset
+	 *		 │    │
+	 *		 │    ┌────────────────────────┐
+	 *		 │    │                        │
+	 *		 │   ╱                         │
+	 *		 │ ╱            Balloon        │
+	 *		 │ ╲            Content        │
+	 *		 │   ╲                         │
+	 *		 │    │                        │
+	 *		 │    └────────────────────────┘
+	 *
+	 *
+	 * @default 10
+	 * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowHeightOffset
 	*/
-BalloonPanelView.arrowHeightOffset = 10;
+	public static arrowHeightOffset = 10;
 
 	/**
 	 * A vertical offset of the balloon panel from the edge of the viewport if sticky.
 	 * It helps in accessing toolbar buttons underneath the balloon panel.
 	 *
- *		  ┌───────────────────────────────────────────────────┐
- *		  │                      Target                       │
- *		  │                                                   │
- *		  │                            /── vertical offset    │
- *		┌─────────────────────────────V─────────────────────────┐
- *		│ Toolbar            ┌─────────────┐                    │
- *		├────────────────────│   Balloon   │────────────────────┤
- *		│ │                  └─────────────┘                  │ │
- *		│ │                                                   │ │
- *		│ │                                                   │ │
- *		│ │                                                   │ │
- *		│ └───────────────────────────────────────────────────┘ │
- *		│                        Viewport                       │
- *		└───────────────────────────────────────────────────────┘
+	 *		  ┌───────────────────────────────────────────────────┐
+	 *		  │                      Target                       │
+	 *		  │                                                   │
+	 *		  │                            /── vertical offset    │
+	 *		┌─────────────────────────────V─────────────────────────┐
+	 *		│ Toolbar            ┌─────────────┐                    │
+	 *		├────────────────────│   Balloon   │────────────────────┤
+	 *		│ │                  └─────────────┘                  │ │
+	 *		│ │                                                   │ │
+	 *		│ │                                                   │ │
+	 *		│ │                                                   │ │
+	 *		│ └───────────────────────────────────────────────────┘ │
+	 *		│                        Viewport                       │
+	 *		└───────────────────────────────────────────────────────┘
 	 *
 	 * @default 20
 	 * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.stickyVerticalOffset
@@ -740,28 +740,28 @@ BalloonPanelView.arrowHeightOffset = 10;
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *
- *
- *
- * **West**
- *
- * * `westArrowEast`
- *
- *		+-----------------+
- *		|     Balloon     |>[ Target ]
- *		+-----------------+
- *
- * **East**
- *
- * * `eastArrowWest`
- *
- *		           +-----------------+
- *		[ Target ]<|     Balloon     |
- *		           +-----------------+
- *
- *
- *
- * **Sticky**
- *
+	 *
+	 *
+	 * **West**
+	 *
+	 * * `westArrowEast`
+	 *
+	 *		+-----------------+
+	 *		|     Balloon     |>[ Target ]
+	 *		+-----------------+
+	 *
+	 * **East**
+	 *
+	 * * `eastArrowWest`
+	 *
+	 *		           +-----------------+
+	 *		[ Target ]<|     Balloon     |
+	 *		           +-----------------+
+	 *
+	 *
+	 *
+	 * **Sticky**
+	 *
 	 * * `viewportStickyNorth`
 	 *
 	 *		    +---------------------------+
@@ -839,14 +839,14 @@ function getDomElement( object: any ): HTMLElement | null {
  * @returns {Object.<String,module:utils/dom/position~PositioningFunction>}
  */
 export function generatePositions( options: {
-	sideOffset = BalloonPanelView.arrowSideOffset,
-	heightOffset = BalloonPanelView.arrowHeightOffset,
+	sideOffset?: number;
+	heightOffset?: number;
 	stickyVerticalOffset?: number;
 	config?: object;
 } = {} ): Record<string, PositioningFunction> {
 	const {
-		horizontalOffset = BalloonPanelView.arrowHorizontalOffset,
-		verticalOffset = BalloonPanelView.arrowVerticalOffset,
+		sideOffset = BalloonPanelView.arrowSideOffset,
+		heightOffset = BalloonPanelView.arrowHeightOffset,
 		stickyVerticalOffset = BalloonPanelView.stickyVerticalOffset,
 		config
 	} = options;
