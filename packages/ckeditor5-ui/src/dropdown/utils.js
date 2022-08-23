@@ -383,7 +383,7 @@ function focusDropdownButtonOnClose( dropdownView ) {
 		if ( dropdownView.panelView.element.contains( global.document.activeElement ) ) {
 			dropdownView.buttonView.focus();
 		}
-	}, { priority: 'low' } );
+	} );
 }
 
 // Adds a behavior that focuses the #panelView when dropdown gets open (accessibility).
