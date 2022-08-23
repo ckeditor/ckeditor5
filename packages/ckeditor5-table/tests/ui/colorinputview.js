@@ -178,6 +178,13 @@ describe( 'ColorInputView', () => {
 					expect( view._dropdownView.panelPosition ).to.equal( 'se' );
 				} );
 			} );
+
+			it( 'should register panelView children in #_focusables', () => {
+				expect( view._focusables.map( f => f ) ).to.have.members( [
+					view._dropdownView.panelView.children.first,
+					view._dropdownView.panelView.children.last
+				] );
+			} );
 		} );
 
 		describe( 'color grid', () => {
