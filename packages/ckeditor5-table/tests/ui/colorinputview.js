@@ -512,4 +512,21 @@ describe( 'ColorInputView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
+
+	describe( 'render()', () => {
+		it( 'starts listening for #keystrokes coming from the #element of the panel view in the dropdown view', () => {
+			const view = new ColorInputView( locale, {
+				colorDefinitions: DEFAULT_COLORS,
+				columns: 5
+			} );
+
+			const spy = sinon.spy( view.keystrokes, 'listenTo' );
+
+			view.render();
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, view._dropdownView.panelView.element );
+
+			view.destroy();
+		} );
+	} );
 } );
