@@ -9,7 +9,7 @@
 
 import View from '../view';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { global, FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/dropdown.css';
 
@@ -172,6 +172,14 @@ export default class DropdownView extends View {
 		 */
 		this.keystrokes = new KeystrokeHandler();
 
+		/**
+		 * Tracks information about the DOM focus in the dropdown.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
 		this.setTemplate( {
 			tag: 'div',
 
@@ -241,6 +249,9 @@ export default class DropdownView extends View {
 	 */
 	render() {
 		super.render();
+
+		this.focusTracker.add( this.buttonView.element );
+		this.focusTracker.add( this.panelView.element );
 
 		// Toggle the dropdown when its button has been clicked.
 		this.listenTo( this.buttonView, 'open', () => {
