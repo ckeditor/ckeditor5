@@ -132,7 +132,7 @@ export function getElementWidthInPixels( domElement ) {
  * across multiple columns.
  *
  * @param {module:engine/model/element~Element} cell A table cell model element.
- * @param {module:table/tableutils~/tableUtils} tableUtils The Table Utils plugin instance.
+ * @param {module:table/tableutils~TableUtils} tableUtils The Table Utils plugin instance.
  * @returns {Object} An object containing the indexes of the left and right edges of the cell.
  * @returns {Number} return.leftEdge The index of the left edge of the cell.
  * @returns {Number} return.rightEdge The index of the right edge of the cell.

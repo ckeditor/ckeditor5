@@ -394,7 +394,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		//
 		// @private
 		// @param {module:engine/model/element~Element} modelTable A table which columns should be measured.
-		// @param {module:table/tableutils~/tableUtils} tableUtils The Table Utils plugin instance.
+		// @param {module:table/tableutils~TableUtils} tableUtils The Table Utils plugin instance.
 		// @param {module:core/editor/editor~Editor} editor The editor instance.
 		// @returns {Array.<Number>} Columns' widths expressed in pixels (without unit).
 		function _calculateDomColumnWidths( modelTable, tableUtilsPlugin, editor ) {
