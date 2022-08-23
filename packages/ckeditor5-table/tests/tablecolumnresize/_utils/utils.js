@@ -9,7 +9,7 @@ import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/util
 import TableColumnResizeEditing from '../../../src/tablecolumnresize/tablecolumnresizeediting';
 
 export const tableColumnResizeMouseSimulator = {
-	down( editor, domTarget, options ) {
+	down( editor, domTarget, options = {} ) {
 		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
 		const stop = options.stop || sinon.spy().named( 'stop' );
 
@@ -78,6 +78,7 @@ export function getViewColumnWidthsPx( domTable ) {
 	Array.from( domTable.querySelectorAll( 'col' ) ).forEach( col => {
 		widths.push( getWidth( col ) );
 	} );
+
 	return widths;
 }
 
@@ -99,7 +100,7 @@ export function getViewColumnWidthsPc( viewTable ) {
 export function getDomResizer( domTable, columnIndex, rowIndex ) {
 	const rows = Array.from( domTable.querySelectorAll( 'tr' ) );
 	const row = rows[ rowIndex ? rowIndex : 0 ];
-	const domResizer = Array.from( row.querySelectorAll( '.table-column-resizer' ) )[ columnIndex ];
+	const domResizer = Array.from( row.querySelectorAll( '.ck-table-column-resizer' ) )[ columnIndex ];
 
 	return domResizer;
 }
