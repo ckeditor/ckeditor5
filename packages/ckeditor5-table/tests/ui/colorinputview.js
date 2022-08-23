@@ -185,6 +185,11 @@ describe( 'ColorInputView', () => {
 					view._dropdownView.panelView.children.last
 				] );
 			} );
+
+			it( 'should register panelView children elements in #focusTracker', () => {
+				expect( view.focusTracker._elements ).to.include( view._dropdownView.panelView.children.first.element );
+				expect( view.focusTracker._elements ).to.include( view._dropdownView.panelView.children.last.element );
+			} );
 		} );
 
 		describe( 'color grid', () => {
