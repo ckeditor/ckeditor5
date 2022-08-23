@@ -21,6 +21,7 @@
     "@ckeditor/ckeditor5-engine": "^35.0.1",
     "@ckeditor/ckeditor5-enter": "^35.0.1",
     "@ckeditor/ckeditor5-heading": "^35.0.1",
+    "@ckeditor/ckeditor5-image": "^35.0.1",
     "@ckeditor/ckeditor5-paragraph": "^35.0.1",
     "@ckeditor/ckeditor5-theme-lark": "^35.0.1",
     "@ckeditor/ckeditor5-typing": "^35.0.1",

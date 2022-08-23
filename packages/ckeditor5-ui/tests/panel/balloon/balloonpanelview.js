@@ -350,7 +350,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( BalloonPanelView.arrowVerticalOffset );
+				expect( view.top ).to.equal( BalloonPanelView.arrowHeightOffset );
 				expect( view.left ).to.equal( -100 );
 
 				positionedAncestor.remove();
@@ -375,7 +375,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( BalloonPanelView.arrowVerticalOffset + 100 );
+				expect( view.top ).to.equal( BalloonPanelView.arrowHeightOffset + 100 );
 				expect( view.left ).to.equal( 0 );
 
 				positionedAncestor.remove();
@@ -726,8 +726,8 @@ describe( 'BalloonPanelView', () => {
 
 		beforeEach( () => {
 			positions = BalloonPanelView.defaultPositions;
-			arrowHOffset = BalloonPanelView.arrowHorizontalOffset;
-			arrowVOffset = BalloonPanelView.arrowVerticalOffset;
+			arrowHOffset = BalloonPanelView.arrowSideOffset;
+			arrowVOffset = BalloonPanelView.arrowHeightOffset;
 
 			viewportRect = new Rect( {
 				top: 0,
@@ -758,7 +758,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should have a proper length', () => {
-			expect( Object.keys( positions ) ).to.have.length( 31 );
+			expect( Object.keys( positions ) ).to.have.length( 33 );
 		} );
 
 		// ------- North
@@ -1013,6 +1013,26 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
+		// ------- West
+
+		it( 'should define the "westArrowEast" position', () => {
+			expect( positions.westArrowEast( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 125,
+				left: 50 - arrowVOffset,
+				name: 'arrow_e'
+			} );
+		} );
+
+		// ------- East
+
+		it( 'should define the "eastArrowWest" position', () => {
+			expect( positions.eastArrowWest( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 125,
+				left: 200 + arrowVOffset,
+				name: 'arrow_w'
+			} );
+		} );
+
 		// ------- Sticky
 
 		it( 'should define the "viewportStickyNorth" position and return null if not sticky', () => {
@@ -1135,9 +1155,9 @@ describe( 'BalloonPanelView', () => {
 			}
 		} );
 
-		it( 'should respect the "horizontalOffset" option', () => {
+		it( 'should respect the "sideOffset" option', () => {
 			const generatedPositions = generatePositions( {
-				horizontalOffset: BalloonPanelView.arrowHorizontalOffset + 100
+				sideOffset: BalloonPanelView.arrowSideOffset + 100
 			} );
 
 			for ( const name in generatedPositions ) {
@@ -1155,18 +1175,28 @@ describe( 'BalloonPanelView', () => {
 			}
 		} );
 
-		it( 'should respect the "verticalOffset" option', () => {
+		it( 'should respect the "heightOffset" option', () => {
 			const generatedPositions = generatePositions( {
-				verticalOffset: BalloonPanelView.arrowVerticalOffset + 100
+				heightOffset: BalloonPanelView.arrowHeightOffset + 100
 			} );
 
 			for ( const name in generatedPositions ) {
 				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
 
-				if ( name.match( /^south/ ) ) {
+				if ( name.startsWith( 'south' ) ) {
 					generatedResult.top -= 100;
-				} else if ( name.match( /^north/ ) ) {
+				}
+
+				if ( name.startsWith( 'north' ) ) {
 					generatedResult.top += 100;
+				}
+
+				if ( name.startsWith( 'west' ) ) {
+					generatedResult.left += 100;
+				}
+
+				if ( name.startsWith( 'east' ) ) {
+					generatedResult.left -= 100;
 				}
 
 				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
