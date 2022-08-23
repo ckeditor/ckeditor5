@@ -178,7 +178,8 @@
 		"framework/guides/overview.html": "framework/index.html",
 		"updating/updating.html": "updating/index.html",
 		"features/overview.html": "features/index.html",
-		"installation/overview.html": "installation/index.html"
+		"installation/overview.html": "installation/index.html",
+		"framework/guides/plugins/package-generator.html": "framework/guides/plugins/package-generator/using-package-generator.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -409,6 +410,12 @@
 									"id": "simple-plugin",
 									"slug": "simple-plugin",
 									"order": 20
+								},
+								{
+									"name": "Package Generator",
+									"id": "package-generator",
+									"slug": "package-generator",
+									"order": 40
 								}
 							]
 						},
