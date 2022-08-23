@@ -195,6 +195,86 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 		} );
 	} );
 
+	describe( 'support for the dynamic number of columns in the grid via the callback', () => {
+		let view, keystrokes, focusTracker, gridElementsCollection, numberOfColumnsStub;
+
+		beforeEach( () => {
+			view = new TestView();
+			keystrokes = new KeystrokeHandler();
+			focusTracker = new FocusTracker();
+
+			view.render();
+
+			gridElementsCollection = view.createCollection();
+
+			for ( let i = 0; i < 7; i++ ) {
+				const button = new ButtonView( new Locale() );
+
+				button.render();
+				gridElementsCollection.add( button );
+				focusTracker.add( button.element );
+			}
+
+			numberOfColumnsStub = sinon.stub().returns( 2 );
+
+			addKeyboardHandlingForGrid( {
+				keystrokeHandler: keystrokes,
+				focusTracker,
+				gridItems: gridElementsCollection,
+				numberOfColumns: numberOfColumnsStub
+			} );
+
+			keystrokes.listenTo( view.element );
+		} );
+
+		afterEach( () => {
+			view.element.remove();
+			view.destroy();
+			keystrokes.destroy();
+			focusTracker.destroy();
+		} );
+
+		it( 'should navigate considering the dynamic geometry of the grid', () => {
+			// before: [x][ ]   after: [ ][ ]	key sequence: [→, →, ↓]
+			//         [ ][ ]          [ ][ ]
+			//         [ ][ ]          [x][ ]
+			//         [ ]             [ ]
+			focusTracker.focusedElement = gridElementsCollection.first.element;
+
+			const spy0 = sinon.spy( gridElementsCollection.get( 0 ), 'focus' );
+			const spy1 = sinon.spy( gridElementsCollection.get( 1 ), 'focus' );
+			const spy2 = sinon.spy( gridElementsCollection.get( 2 ), 'focus' );
+			const spy3 = sinon.spy( gridElementsCollection.get( 3 ), 'focus' );
+			const spy4 = sinon.spy( gridElementsCollection.get( 4 ), 'focus' );
+
+			pressRightArrow( keystrokes );
+			sinon.assert.calledOnce( spy1 );
+			focusTracker.focusedElement = gridElementsCollection.get( 1 ).element;
+
+			pressRightArrow( keystrokes );
+			sinon.assert.calledOnce( spy2 );
+			focusTracker.focusedElement = gridElementsCollection.get( 2 ).element;
+
+			pressDownArrow( keystrokes );
+			sinon.assert.calledOnce( spy4 );
+			focusTracker.focusedElement = gridElementsCollection.get( 4 ).element;
+
+			// Let's simulate a responsive grid changing its geometry.
+			numberOfColumnsStub.returns( 3 );
+
+			// before: [ ][ ][ ]   after: [x][ ][ ]	key sequence: [←, ↑]
+			//         [ ][x][ ]          [ ][ ][ ]
+			//         [ ]                [ ]
+			pressLeftArrow( keystrokes );
+			sinon.assert.calledOnce( spy3 );
+			focusTracker.focusedElement = gridElementsCollection.get( 3 ).element;
+
+			pressUpArrow( keystrokes );
+			sinon.assert.calledOnce( spy0 );
+			focusTracker.focusedElement = gridElementsCollection.get( 0 ).element;
+		} );
+	} );
+
 	class TestView extends View {
 		constructor( ...args ) {
 			super( ...args );

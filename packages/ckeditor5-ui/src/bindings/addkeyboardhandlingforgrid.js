@@ -15,9 +15,12 @@
  * keys.
  * @param {module:utils/focustracker~FocusTracker} options.focusTracker A focus tracker for grid elements.
  * @param {module:ui/viewcollection~ViewCollection} options.gridItems A collection of grid items.
- * @param {Number} options.numberOfColumns Number of columns in the grid.
+ * @param {Number|Function} options.numberOfColumns Number of columns in the grid. Can be specified as a function that returns
+ * the number (e.g. for responsive grids).
  */
 export default function addKeyboardHandlingForGrid( { keystrokeHandler, focusTracker, gridItems, numberOfColumns } ) {
+	const getNumberOfColumns = typeof numberOfColumns === 'number' ? () => numberOfColumns : numberOfColumns;
+
 	keystrokeHandler.set( 'arrowright', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
 		if ( focusedElementIndex === gridItems.length - 1 ) {
 			return 0;
@@ -35,13 +38,13 @@ export default function addKeyboardHandlingForGrid( { keystrokeHandler, focusTra
 	} ) );
 
 	keystrokeHandler.set( 'arrowup', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
-		let nextIndex = focusedElementIndex - numberOfColumns;
+		let nextIndex = focusedElementIndex - getNumberOfColumns();
 
 		if ( nextIndex < 0 ) {
-			nextIndex = focusedElementIndex + numberOfColumns * Math.floor( gridItems.length / numberOfColumns );
+			nextIndex = focusedElementIndex + getNumberOfColumns() * Math.floor( gridItems.length / getNumberOfColumns() );
 
 			if ( nextIndex > gridItems.length - 1 ) {
-				nextIndex -= numberOfColumns;
+				nextIndex -= getNumberOfColumns();
 			}
 		}
 
@@ -49,10 +52,10 @@ export default function addKeyboardHandlingForGrid( { keystrokeHandler, focusTra
 	} ) );
 
 	keystrokeHandler.set( 'arrowdown', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
-		let nextIndex = focusedElementIndex + numberOfColumns;
+		let nextIndex = focusedElementIndex + getNumberOfColumns();
 
 		if ( nextIndex > gridItems.length - 1 ) {
-			nextIndex = focusedElementIndex % numberOfColumns;
+			nextIndex = focusedElementIndex % getNumberOfColumns();
 		}
 
 		return nextIndex;
