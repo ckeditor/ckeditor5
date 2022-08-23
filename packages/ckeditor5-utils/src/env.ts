@@ -9,7 +9,22 @@
  * @module utils/env
  */
 
-const userAgent = navigator.userAgent.toLowerCase();
+/**
+ * Safely returns `userAgent` from browser's navigator API in a lower case.
+ * If navigator API is not available it will return an empty string.
+ *
+ * @returns {String}
+ */
+export function getUserAgent( ): string {
+	// In some environments navigator API might not be available.
+	try {
+		return navigator.userAgent.toLowerCase();
+	} catch ( e ) {
+		return '';
+	}
+}
+
+const userAgent = getUserAgent();
 
 /**
  * A namespace containing environment and browser information.
