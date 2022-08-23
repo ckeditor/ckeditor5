@@ -14,7 +14,7 @@ const crypto = require( 'crypto' );
 const path = require( 'path' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
-const { TRAVIS_JOB_TYPE } = process.env;
+const TRAVIS_JOB_TYPE = process.argv.pop();
 
 const RED = '\x1B[0;31m';
 const GREEN = '\x1B[32m';

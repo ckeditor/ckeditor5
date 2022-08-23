@@ -97,11 +97,11 @@ if ( JOB_TYPE === 'TestsFeatures' ) {
 	console.log( '\nCompiling TypeScript source files...' );
 	runSubprocess( 'yarn', [ 'run', 'cli:build' ] );
 
-	console.log( '\nRemoving TypeScript source files...' );
+	console.log( 'Removing TypeScript source files...' );
 	const tsSourceFiles = glob.sync( './packages/**/src/**/*.ts' );
 	tsSourceFiles.forEach( filePath => fs.unlinkSync( filePath ) );
 
-	console.log( '\nUpdating package entry points to JS...' );
+	console.log( 'Updating package entry points to JS...' );
 	const pkgJsonPaths = glob.sync( './packages/**/package.json' );
 	pkgJsonPaths.forEach( pkgJsonPath => {
 		updateJSONFile( pkgJsonPath, json => {
@@ -208,8 +208,7 @@ function appendCoverageReport() {
 }
 
 function shouldUploadCoverageReport() {
-	return false;
 	// If the repository slugs are different, the pull request comes from the community (forked repository).
 	// For such builds, sending the CC report will be disabled.
-	// return ( process.env.TRAVIS_EVENT_TYPE !== 'pull_request' || process.env.TRAVIS_PULL_REQUEST_SLUG === process.env.TRAVIS_REPO_SLUG );
+	return ( process.env.TRAVIS_EVENT_TYPE !== 'pull_request' || process.env.TRAVIS_PULL_REQUEST_SLUG === process.env.TRAVIS_REPO_SLUG );
 }

@@ -22,14 +22,25 @@ before_install:
 - npm i -g yarn
 install:
 - yarn install
-script:
-- ./scripts/ci/travis-check.js
-- if [[ $TRAVIS_JOB_TYPE == "Tests" && $TRAVIS_TEST_RESULT -eq 0 ]]; then ./scripts/ci/trigger-ckeditor5-continuous-integration.sh; fi
 after_script:
 - export END_TIME=$( date +%s )
 - ckeditor5-dev-tests-notify-travis-status
 env:
+  global:
+  - COVERALLS_PARALLEL=true
   jobs:
   - TRAVIS_JOB_TYPE=TestsCore
   - TRAVIS_JOB_TYPE=TestsFeatures
   - TRAVIS_JOB_TYPE=Validation
+  jobs:
+    include:
+    - stage: "Checks"
+        script: ./scripts/ci/travis-check.js TestsCore
+        name: "TestsCore"
+      - script: ./scripts/ci/travis-check.js TestsFeatures
+        name: "TestsFeatures"
+      - script: ./scripts/ci/travis-check.js Validation
+        name: "Validation"
+    - stage: "Coverage"
+        script: echo coverage check
+        name: "Coverage"
