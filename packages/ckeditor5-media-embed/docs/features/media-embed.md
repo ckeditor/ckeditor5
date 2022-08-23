@@ -8,7 +8,7 @@ modified_at: 2021-10-08
 
 # Media embed
 
-The {@link module:media-embed/mediaembed~MediaEmbed} feature brings support for inserting embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
+The media embed feature brings support for inserting embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
 
 <info-box info>
 	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.

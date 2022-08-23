@@ -10,6 +10,7 @@
 export { default as clickOutsideHandler } from './bindings/clickoutsidehandler';
 export { default as injectCssTransitionDisabler } from './bindings/injectcsstransitiondisabler';
 export { default as submitHandler } from './bindings/submithandler';
+export { default as addKeyboardHandlingForGrid } from './bindings/addkeyboardhandlingforgrid';
 
 export { default as BodyCollection } from './editorui/bodycollection';
 
@@ -57,7 +58,6 @@ export { default as Template } from './template';
 
 export { default as ToolbarView } from './toolbar/toolbarview';
 export { default as ToolbarSeparatorView } from './toolbar/toolbarseparatorview';
-export { default as enableToolbarKeyboardFocus } from './toolbar/enabletoolbarkeyboardfocus';
 export { default as normalizeToolbarConfig } from './toolbar/normalizetoolbarconfig';
 export { default as BalloonToolbar } from './toolbar/balloon/balloontoolbar';
 export { default as BlockToolbar } from './toolbar/block/blocktoolbar';

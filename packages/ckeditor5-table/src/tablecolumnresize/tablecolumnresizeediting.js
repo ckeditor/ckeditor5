@@ -31,7 +31,7 @@ import {
 	createFilledArray,
 	sumArray,
 	getColumnEdgesIndexes,
-	getChangedTables,
+	getChangedResizedTables,
 	getColumnMinWidthAsPercentage,
 	getElementWidthInPixels,
 	getTableWidthInPixels,
@@ -95,15 +95,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * @member {Object|null}
 		 */
 		this._resizingData = null;
-
-		/**
-		 * Internal map to store reference between a cell and its columnIndex. This information is required in postfixer to properly
-		 * recognize if the cell was inserted or deleted.
-		 *
-		 * @private
-		 * @member {Map}
-		 */
-		this._columnIndexMap = new Map();
 
 		/**
 		 * DOM emitter.
@@ -214,15 +205,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	/**
 	 * Registers table column resize post-fixer.
 	 *
-	 * It checks if the change from the differ concerns a table-related element or an attribute. If yes, then it is responsible for the
-	 * following:
-	 *  * (1) Adjusting the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
-	 *  * (2) Adding all cells to column index map with its column index (to properly handle column insertion and deletion).
-	 *  * (3) Checking if columns have been added or removed...
-	 *    * (3.1) ... in the middle of the table, or
-	 *    * (3.2) ... at the table end,
-	 *
-	 * and adjusting the widths of the affected columns.
+	 * It checks if the change from the differ concerns a table-related element or attribute. For detected changes it:
+	 *  * Adjusts the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
+	 *  * Checks if the `columnWidths` attribute gets updated accordingly after columns have been added or removed.
 	 *
 	 * @private
 	 */
@@ -233,83 +218,12 @@ export default class TableColumnResizeEditing extends Plugin {
 		model.document.registerPostFixer( writer => {
 			let changed = false;
 
-			for ( const table of getChangedTables( model ) ) {
+			for ( const table of getChangedResizedTables( model ) ) {
 				// (1) Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
-				// It's an array at this point.
 				const columnWidths = normalizeColumnWidths( table.getAttribute( 'columnWidths' ).split( ',' ) );
-				const columnIndexMap = this._columnIndexMap;
 
-				let removedColumnWidths = null;
-				let isColumnInsertionHandled = false;
-				let isColumnDeletionHandled = false;
-
-				for ( const { cell, column } of new TableWalker( table ) ) {
-					// (2) Add all cells to column index map with its column index. Do not process the given cell anymore, because the
-					// `columnIndex` reference in the map is required to properly handle column insertion and deletion.
-					if ( !columnIndexMap.has( cell ) ) {
-						columnIndexMap.set( cell, column );
-
-						changed = true;
-
-						continue;
-					}
-
-					const previousColumn = columnIndexMap.get( cell );
-
-					const isColumnInsertion = previousColumn < column;
-					const isColumnDeletion = previousColumn > column;
-
-					// (3.1) Handle column insertion and update the `columnIndex` references in column index map for affected cells.
-					if ( isColumnInsertion ) {
-						if ( !isColumnInsertionHandled ) {
-							const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
-							const columnWidthsToInsert = createFilledArray( column - previousColumn, columnMinWidthAsPercentage );
-
-							columnWidths.splice( previousColumn, 0, ...columnWidthsToInsert );
-
-							isColumnInsertionHandled = true;
-						}
-
-						columnIndexMap.set( cell, column );
-
-						changed = true;
-					}
-
-					// (3.1) Handle column deletion and update the `columnIndex` references in column index map for affected cells.
-					if ( isColumnDeletion ) {
-						if ( !isColumnDeletionHandled ) {
-							const columnToExpand = column > 0 ? column - 1 : column;
-
-							removedColumnWidths = columnWidths.splice( column, previousColumn - column );
-							columnWidths[ columnToExpand ] += sumArray( removedColumnWidths );
-							isColumnDeletionHandled = true;
-						}
-
-						columnIndexMap.set( cell, column );
-
-						changed = true;
-					}
-				}
-
-				const numberOfColumns = this._tableUtilsPlugin.getColumns( table );
-				const isColumnInsertionAtEnd = numberOfColumns > columnWidths.length;
-				const isColumnDeletionAtEnd = numberOfColumns < columnWidths.length;
-
-				// (3.2) Handle column insertion at table end.
-				if ( isColumnInsertionAtEnd ) {
-					const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, editor );
-					const numberOfInsertedColumns = numberOfColumns - columnWidths.length;
-					const insertedColumnWidths = createFilledArray( numberOfInsertedColumns, columnMinWidthAsPercentage );
-
-					columnWidths.splice( columnWidths.length, 0, ...insertedColumnWidths );
-				}
-
-				// (3.2) Handle column deletion at table end.
-				if ( isColumnDeletionAtEnd ) {
-					const removedColumnWidths = columnWidths.splice( numberOfColumns );
-
-					columnWidths[ numberOfColumns - 1 ] += sumArray( removedColumnWidths );
-				}
+				// (2) If the number of columns has changed, then we need to adjust the widths of the affected columns.
+				adjustColumnWidths( columnWidths, table, this );
 
 				const columnWidthsAttribute = columnWidths.map( width => `${ width }%` ).join( ',' );
 
@@ -324,6 +238,80 @@ export default class TableColumnResizeEditing extends Plugin {
 
 			return changed;
 		} );
+
+		// Adjusts if necessary the `columnWidths` in case if the number of column has changed.
+		//
+		// @private
+		// @param {Array.<Number>} columnWidths Note: this array **may be modified** by the function.
+		// @param {module:engine/model/element~Element} table Table to be checked.
+		// @param {module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing} plugin
+		function adjustColumnWidths( columnWidths, table, plugin ) {
+			const newTableColumnsCount = plugin._tableUtilsPlugin.getColumns( table );
+			const columnsCountDelta = newTableColumnsCount - columnWidths.length;
+
+			if ( columnsCountDelta === 0 ) {
+				return;
+			}
+
+			// Collect all cells that are affected by the change.
+			const cellSet = getAffectedCells( plugin.editor.model.document.differ, table );
+
+			for ( const cell of cellSet ) {
+				const currentColumnsDelta = newTableColumnsCount - columnWidths.length;
+
+				if ( currentColumnsDelta === 0 ) {
+					continue;
+				}
+
+				// If the column count in the table changed, adjust the widths of the affected columns.
+				const hasMoreColumns = currentColumnsDelta > 0;
+				const currentColumnIndex = plugin._tableUtilsPlugin.getCellLocation( cell ).column;
+
+				if ( hasMoreColumns ) {
+					const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, plugin.editor );
+					const columnWidthsToInsert = createFilledArray( currentColumnsDelta, columnMinWidthAsPercentage );
+
+					columnWidths.splice( currentColumnIndex, 0, ...columnWidthsToInsert );
+				} else {
+					// Moves the widths of the removed columns to the preceding one.
+					// Other editors either reduce the width of the whole table or adjust the widths
+					// proportionally, so change of this behavior can be considered in the future.
+					const removedColumnWidths = columnWidths.splice( currentColumnIndex, Math.abs( currentColumnsDelta ) );
+
+					columnWidths[ currentColumnIndex ] += sumArray( removedColumnWidths );
+				}
+			}
+		}
+
+		// Returns a set of cells that have been changed in a given table.
+		//
+		// @private
+		// @param {module:engine/model/differ~Differ} differ
+		// @param {module:engine/model/element~Element} table
+		// @returns {Set.<module:engine/model/element~Element>}
+		function getAffectedCells( differ, table ) {
+			const cellSet = new Set();
+
+			for ( const change of differ.getChanges() ) {
+				if (
+					change.type == 'insert' &&
+					change.position.nodeAfter &&
+					change.position.nodeAfter.name == 'tableCell' &&
+					change.position.nodeAfter.getAncestors().includes( table )
+				) {
+					cellSet.add( change.position.nodeAfter );
+				} else if ( change.type == 'remove' ) {
+					// If the first cell was removed, use the node after the change position instead.
+					const referenceNode = change.position.nodeBefore || change.position.nodeAfter;
+
+					if ( referenceNode.name == 'tableCell' && referenceNode.getAncestors().includes( table ) ) {
+						cellSet.add( referenceNode );
+					}
+				}
+			}
+
+			return cellSet;
+		}
 	}
 
 	/**
@@ -441,7 +429,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' ) );
 
 		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
-		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._columnIndexMap, this._tableUtilsPlugin, editor );
+		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._tableUtilsPlugin, editor );
 		const viewTable = target.findAncestor( 'table' );
 
 		// Insert colgroup for the table that is resized for the first time.
@@ -464,11 +452,10 @@ export default class TableColumnResizeEditing extends Plugin {
 		//
 		// @private
 		// @param {module:engine/model/element~Element} modelTable A table which columns should be measured.
-		// @param {Map.<Number, Number>} columnIndexMap A map that connects the cells with their column indices.
 		// @param {module:table/tableutils~/tableUtils} tableUtils The Table Utils plugin instance.
 		// @param {module:core/editor/editor~Editor} editor The editor instance.
 		// @returns {Array.<Number>} Columns' widths expressed in pixels (without unit).
-		function _calculateDomColumnWidths( modelTable, columnIndexMap, tableUtilsPlugin, editor ) {
+		function _calculateDomColumnWidths( modelTable, tableUtilsPlugin, editor ) {
 			const columnWidthsInPx = Array( tableUtilsPlugin.getColumns( modelTable ) );
 			const tableWalker = new TableWalker( modelTable );
 
@@ -479,10 +466,6 @@ export default class TableColumnResizeEditing extends Plugin {
 
 				if ( !columnWidthsInPx[ cellSlot.column ] || domCellWidth < columnWidthsInPx[ cellSlot.column ] ) {
 					columnWidthsInPx[ cellSlot.column ] = toPrecision( domCellWidth );
-				}
-
-				if ( !columnIndexMap.has( cellSlot.cell ) ) {
-					columnIndexMap.set( cellSlot.cell, cellSlot.column );
 				}
 			}
 
@@ -736,7 +719,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelLeftCell = editor.editing.mapper.toModelElement( viewLeftCell );
 		const modelTable = modelLeftCell.findAncestor( 'table' );
 
-		const leftColumnIndex = getColumnEdgesIndexes( modelLeftCell, this._columnIndexMap ).rightEdge;
+		const leftColumnIndex = getColumnEdgesIndexes( modelLeftCell, this._tableUtilsPlugin ).rightEdge;
 		const lastColumnIndex = this._tableUtilsPlugin.getColumns( modelTable ) - 1;
 
 		const isRightEdge = leftColumnIndex === lastColumnIndex;

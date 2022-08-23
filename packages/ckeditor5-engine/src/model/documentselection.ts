@@ -721,22 +721,7 @@ class LiveSelection extends Selection {
 
 		// Ensure selection is correct and up to date after each range change.
 		this.on<ChangeRangeEvent>( 'change:range', () => {
-			for ( const range of this.getRanges() ) {
-				if ( !this._document._validateSelectionRange( range ) ) {
-					/**
-					 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
-					 * starts or ends at incorrect position.
-					 *
-					 * @error document-selection-wrong-position
-					 * @param {module:engine/model/range~Range} range
-					 */
-					throw new CKEditorError(
-						'document-selection-wrong-position',
-						this,
-						{ range }
-					);
-				}
-			}
+			this._validateSelectionRanges( this.getRanges() );
 		} );
 
 		// Update markers data stored by the selection after each marker change.
@@ -884,6 +869,12 @@ class LiveSelection extends Selection {
 		this.updateMarkers();
 	}
 
+	protected override _replaceAllRanges( ranges: Range[] ): void {
+		this._validateSelectionRanges( ranges );
+
+		super._replaceAllRanges( ranges );
+	}
+
 	protected override _popRange(): void {
 		this._ranges.pop()!.detach();
 	}
@@ -894,6 +885,25 @@ class LiveSelection extends Selection {
 		// `undefined` is returned when given `range` is in graveyard root.
 		if ( liveRange ) {
 			this._ranges.push( liveRange );
+		}
+	}
+
+	private _validateSelectionRanges( ranges: Iterable<Range> ) {
+		for ( const range of ranges ) {
+			if ( !this._document._validateSelectionRange( range ) ) {
+				/**
+				 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
+				 * starts or ends at incorrect position.
+				 *
+				 * @error document-selection-wrong-position
+				 * @param {module:engine/model/range~Range} range
+				 */
+				throw new CKEditorError(
+					'document-selection-wrong-position',
+					this,
+					{ range }
+				);
+			}
 		}
 	}
 

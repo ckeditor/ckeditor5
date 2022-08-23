@@ -160,11 +160,28 @@ export default class WidgetToolbarRepository extends Plugin {
 
 		toolbarView.fillFromConfig( items, editor.ui.componentFactory );
 
-		this._toolbarDefinitions.set( toolbarId, {
+		const toolbarDefinition = {
 			view: toolbarView,
 			getRelatedElement,
 			balloonClassName
+		};
+
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
+		editor.ui.addToolbar( toolbarView, {
+			isContextual: true,
+			beforeFocus: () => {
+				const relatedElement = getRelatedElement( editor.editing.view.document.selection );
+
+				if ( relatedElement ) {
+					this._showToolbar( toolbarDefinition, relatedElement );
+				}
+			},
+			afterBlur: () => {
+				this._hideToolbar( toolbarDefinition );
+			}
 		} );
+
+		this._toolbarDefinitions.set( toolbarId, toolbarDefinition );
 	}
 
 	/**

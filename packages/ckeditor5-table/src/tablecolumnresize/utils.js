@@ -23,7 +23,7 @@ import {
  * @param {module:engine/model/model~Model} model The model to collect the affected elements from.
  * @returns {Set.<module:engine/model/element~Element>} A set of table model elements.
  */
-export function getChangedTables( model ) {
+export function getChangedResizedTables( model ) {
 	const affectedTables = new Set();
 
 	for ( const change of model.document.differ.getChanges() ) {
@@ -131,14 +131,14 @@ export function getElementWidthInPixels( domElement ) {
  * Returns the column indexes on the left and right edges of a cell. They differ if the cell spans
  * across multiple columns.
  *
- * @param {module:engine/model/element~Element} cell A cell model element.
- * @param {Map.<Number, Number>} columnIndexMap A map that connects the cells with their column indices.
+ * @param {module:engine/model/element~Element} cell A table cell model element.
+ * @param {module:table/tableutils~/tableUtils} tableUtils The Table Utils plugin instance.
  * @returns {Object} An object containing the indexes of the left and right edges of the cell.
  * @returns {Number} return.leftEdge The index of the left edge of the cell.
  * @returns {Number} return.rightEdge The index of the right edge of the cell.
  */
-export function getColumnEdgesIndexes( cell, columnIndexMap ) {
-	const cellColumnIndex = columnIndexMap.get( cell );
+export function getColumnEdgesIndexes( cell, tableUtils ) {
+	const cellColumnIndex = tableUtils.getCellLocation( cell ).column;
 	const cellWidth = cell.getAttribute( 'colspan' ) || 1;
 
 	return {

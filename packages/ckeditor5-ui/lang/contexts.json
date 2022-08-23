@@ -20,5 +20,7 @@
 	"Turquoise": "Label of a button that applies a turquoise color in color pickers.",
 	"Light blue": "Label of a button that applies a light blue color in color pickers.",
 	"Blue": "Label of a button that applies a blue color in color pickers.",
-	"Purple": "Label of a button that applies a purple color in color pickers."
+	"Purple": "Label of a button that applies a purple color in color pickers.",
+	"Editor block content toolbar": "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).",
+	"Editor contextual toolbar": "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 }
