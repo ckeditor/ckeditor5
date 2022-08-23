@@ -37,6 +37,7 @@ Use the toolbar dropdowns in the demo below to control font size {@icon @ckedito
 
 Here are some more CKEditor 5 features that can help you format your content:
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/style Styles} &ndash; apply pre-configured styles to existing elements in the editor content.
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
