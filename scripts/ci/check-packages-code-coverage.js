@@ -15,6 +15,7 @@
  * file that will be sent to Coveralls.
  */
 
+const { updateJSONFile } = require( '@ckeditor/ckeditor5-dev-utils' ).tools;
 const childProcess = require( 'child_process' );
 const crypto = require( 'crypto' );
 const fs = require( 'fs' );
@@ -99,6 +100,16 @@ if ( JOB_TYPE === 'TestsFeatures' ) {
 	console.log( '\nRemoving TypeScript source files...' );
 	const tsSourceFiles = glob.sync( './packages/**/src/**/*.ts' );
 	tsSourceFiles.forEach( filePath => fs.unlinkSync( filePath ) );
+
+	console.log( '\nUpdating package entry points to JS...' );
+	const pkgJsonPaths = glob.sync( './packages/**/package.json' );
+	pkgJsonPaths.forEach( pkgJsonPath => {
+		updateJSONFile( pkgJsonPath, json => {
+			json.main = json.main.replace( /(?<=\.)ts$/, 'js' );
+
+			return json;
+		} );
+	} );
 
 	console.log( 'Done.\n' );
 }
