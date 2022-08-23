@@ -616,8 +616,10 @@ describe( 'table properties', () => {
 				expect( view._focusables.map( f => f ) ).to.have.members( [
 					view.borderStyleDropdown,
 					view.borderColorInput,
+					view.borderColorInput.fieldView._dropdownView.buttonView,
 					view.borderWidthInput,
 					view.backgroundInput,
+					view.backgroundInput.fieldView._dropdownView.buttonView,
 					view.widthInput,
 					view.heightInput,
 					view.alignmentToolbar,
