@@ -25,22 +25,26 @@ install:
 after_script:
 - export END_TIME=$( date +%s )
 - ckeditor5-dev-tests-notify-travis-status
+notifications:
+  webhooks: https://coveralls.io/webhook
 env:
   global:
   - COVERALLS_PARALLEL=true
   jobs:
-  - TRAVIS_JOB_TYPE=TestsCore
-  - TRAVIS_JOB_TYPE=TestsFeatures
-  - TRAVIS_JOB_TYPE=Validation
-  jobs:
     include:
-    - stage: "Checks"
+      # Stage 1
+      - stage: Checks
+        # Script 1
+        name: TestsCore
         script: ./scripts/ci/travis-check.js TestsCore
-        name: "TestsCore"
-      - script: ./scripts/ci/travis-check.js TestsFeatures
-        name: "TestsFeatures"
-      - script: ./scripts/ci/travis-check.js Validation
-        name: "Validation"
-    - stage: "Coverage"
+        # Script 2
+      - name: TestsFeatures
+        script: ./scripts/ci/travis-check.js TestsFeatures
+        # Script 3
+      - name: Validation
+        script: ./scripts/ci/travis-check.js Validation
+      # Stage 2
+      - stage: Coverage
+        # Script 1
+        name: Coverage
         script: echo coverage check
-        name: "Coverage"
