@@ -271,4 +271,27 @@ describe( 'StylePanelView', () => {
 			} );
 		} );
 	} );
+
+	describe( 'render()', () => {
+		beforeEach( () => {
+			panel.render();
+			document.body.appendChild( panel.element );
+		} );
+
+		afterEach( () => {
+			panel.element.remove();
+		} );
+
+		it( 'should register styleGroupView grids in #_focusables', () => {
+			expect( panel._focusables.map( f => f ) ).to.have.members( [
+				panel.blockStylesGroupView.gridView,
+				panel.inlineStylesGroupView.gridView
+			] );
+		} );
+
+		it( 'should register styleGroupView grid elements in #focusTracker', () => {
+			expect( panel.focusTracker._elements ).to.include( panel.blockStylesGroupView.gridView.element );
+			expect( panel.focusTracker._elements ).to.include( panel.inlineStylesGroupView.gridView.element );
+		} );
+	} );
 } );
