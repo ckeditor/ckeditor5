@@ -4,7 +4,7 @@
  */
 
 import { ViewCollection } from '@ckeditor/ckeditor5-ui';
-import { Locale } from '@ckeditor/ckeditor5-utils';
+import { Locale, FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 
 import StyleGridButtonView from '../../src/ui/stylegridbuttonview';
 import StyleGridView from '../../src/ui/stylegridview';
@@ -33,6 +33,14 @@ describe( 'StyleGridView', () => {
 	} );
 
 	describe( 'constructor()', () => {
+		it( 'should have #focusTracker', () => {
+			expect( grid.focusTracker ).to.be.instanceOf( FocusTracker );
+		} );
+
+		it( 'should have #keystrokes', () => {
+			expect( grid.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+		} );
+
 		it( 'should set #children', () => {
 			expect( grid.children ).to.be.instanceOf( ViewCollection );
 		} );
@@ -106,6 +114,17 @@ describe( 'StyleGridView', () => {
 
 			expect( grid.element.firstChild ).to.equal( grid.children.first.element );
 			expect( grid.element.lastChild ).to.equal( grid.children.last.element );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		beforeEach( () => {
+			grid.render();
+		} );
+
+		it( 'should register styleGridView children elements in #focusTracker', () => {
+			expect( grid.focusTracker._elements ).to.include( grid.children.first.element );
+			expect( grid.focusTracker._elements ).to.include( grid.children.last.element );
 		} );
 	} );
 } );
