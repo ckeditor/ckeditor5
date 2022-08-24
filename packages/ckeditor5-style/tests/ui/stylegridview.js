@@ -4,7 +4,7 @@
  */
 
 import { ViewCollection } from '@ckeditor/ckeditor5-ui';
-import { Locale, FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { Locale, FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import StyleGridButtonView from '../../src/ui/stylegridbuttonview';
 import StyleGridView from '../../src/ui/stylegridview';
@@ -125,6 +125,79 @@ describe( 'StyleGridView', () => {
 		it( 'should register styleGridView children elements in #focusTracker', () => {
 			expect( grid.focusTracker._elements ).to.include( grid.children.first.element );
 			expect( grid.focusTracker._elements ).to.include( grid.children.last.element );
+		} );
+
+		describe( 'keyboard navigation in the styleGridView', () => {
+			let grid;
+
+			beforeEach( async () => {
+				grid = new StyleGridView( locale, [
+					{
+						name: 'Red heading',
+						element: 'h2',
+						classes: [ 'red-heading' ]
+					},
+					{
+						name: 'Yellow heading',
+						element: 'h2',
+						classes: [ 'yellow-heading' ]
+					},
+					{
+						name: 'Green heading',
+						element: 'h2',
+						classes: [ 'green-heading' ]
+					},
+					{
+						name: 'Large heading',
+						element: 'h2',
+						classes: [ 'large-heading' ]
+					}
+				] );
+
+				grid.render();
+			} );
+
+			afterEach( async () => {
+				grid.destroy();
+			} );
+
+			it( '"arrow right" should focus the next focusable style', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowright,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				// Mock the first color button is focused.
+				grid.focusTracker.isFocused = true;
+				grid.focusTracker.focusedElement = grid.children.first.element;
+
+				const spy = sinon.spy( grid.children.get( 1 ), 'focus' );
+
+				grid.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( '"arrow down" should focus the focusable style in the second row', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowdown,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				// Mock the first color button is focused.
+				grid.focusTracker.isFocused = true;
+				grid.focusTracker.focusedElement = grid.children.first.element;
+
+				const spy = sinon.spy( grid.children.get( 3 ), 'focus' );
+
+				grid.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 
 		it( 'starts listening for #keystrokes coming from the #element of the grid view', () => {
