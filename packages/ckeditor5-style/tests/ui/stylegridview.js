@@ -151,4 +151,22 @@ describe( 'StyleGridView', () => {
 			grid.destroy();
 		} );
 	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( grid.focusTracker, 'destroy' );
+
+			grid.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( grid.keystrokes, 'destroy' );
+
+			grid.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+	} );
 } );
