@@ -210,18 +210,18 @@ describe( 'StylePanelView', () => {
 			} );
 
 			describe( 'keyboard navigation in the panel', () => {
-				it( 'should focus the next focusable item on "arrowdown"', () => {
+				it( 'should focus the next focusable item on "tab"', () => {
 					const keyEvtData = {
-						keyCode: keyCodes.arrowdown,
+						keyCode: keyCodes.tab,
 						preventDefault: sinon.spy(),
 						stopPropagation: sinon.spy()
 					};
 
-					// Mock the first style button is focused.
+					// Mock the first style grid is focused.
 					panel.focusTracker.isFocused = true;
-					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.children.first.element;
+					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.element;
 
-					const spy = sinon.spy( panel.blockStylesGroupView.gridView.children.get( 1 ), 'focus' );
+					const spy = sinon.spy( panel.inlineStylesGroupView.gridView, 'focus' );
 
 					panel.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -229,56 +229,19 @@ describe( 'StylePanelView', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 
-				it( 'should focus the next focusable item on "arrowright"', () => {
+				it( 'should focus the previous focusable item on "sfift + tab"', () => {
 					const keyEvtData = {
-						keyCode: keyCodes.arrowright,
+						keyCode: keyCodes.tab,
+						shiftKey: true,
 						preventDefault: sinon.spy(),
 						stopPropagation: sinon.spy()
 					};
 
-					// Mock the first style button is focused.
+					// Mock the first style grid is focused.
 					panel.focusTracker.isFocused = true;
-					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.children.first.element;
+					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.element;
 
-					const spy = sinon.spy( panel.blockStylesGroupView.gridView.children.get( 1 ), 'focus' );
-
-					panel.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
-				} );
-
-				it( 'should focus the previous focusable item on "arrowleft"', () => {
-					const keyEvtData = {
-						keyCode: keyCodes.arrowleft,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
-					};
-
-					// Mock the first style button is focused.
-					panel.focusTracker.isFocused = true;
-					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.children.first.element;
-
-					const spy = sinon.spy( panel.inlineStylesGroupView.gridView.children.last, 'focus' );
-
-					panel.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
-				} );
-
-				it( 'should focus the previous focusable item on "arrowup"', () => {
-					const keyEvtData = {
-						keyCode: keyCodes.arrowup,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
-					};
-
-					// Mock the first style button is focused.
-					panel.focusTracker.isFocused = true;
-					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.children.first.element;
-
-					const spy = sinon.spy( panel.inlineStylesGroupView.gridView.children.last, 'focus' );
+					const spy = sinon.spy( panel.inlineStylesGroupView.gridView, 'focus' );
 
 					panel.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
