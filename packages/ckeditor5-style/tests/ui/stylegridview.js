@@ -152,6 +152,16 @@ describe( 'StyleGridView', () => {
 		} );
 	} );
 
+	describe( 'focus()', () => {
+		it( 'should focus the first style', () => {
+			const spy = sinon.spy( grid.children.first, 'focus' );
+
+			grid.focus();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
 			const destroySpy = sinon.spy( grid.focusTracker, 'destroy' );
