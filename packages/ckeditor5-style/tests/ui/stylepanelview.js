@@ -251,8 +251,8 @@ describe( 'StylePanelView', () => {
 			} );
 
 			describe( 'focus()', () => {
-				it( 'should focus the first button in the first grid', () => {
-					const spy = sinon.spy( panel.blockStylesGroupView.gridView.children.first, 'focus' );
+				it( 'should focus the first grid', () => {
+					const spy = sinon.spy( panel.blockStylesGroupView.gridView, 'focus' );
 
 					panel.focus();
 
@@ -261,8 +261,8 @@ describe( 'StylePanelView', () => {
 			} );
 
 			describe( 'focusLast()', () => {
-				it( 'should focus the last button in the last grid', () => {
-					const spy = sinon.spy( panel.inlineStylesGroupView.gridView.children.last, 'focus' );
+				it( 'should focus the last grid', () => {
+					const spy = sinon.spy( panel.inlineStylesGroupView.gridView, 'focus' );
 
 					panel.focusLast();
 
