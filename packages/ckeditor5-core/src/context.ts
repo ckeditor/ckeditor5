@@ -14,7 +14,7 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import type Editor from './editor/editor';
 import type { LoadedPlugins, PluginConstructor } from './plugin';
-import type { LanguageConfig } from './editor/editorconfig';
+import type { EditorConfig, LanguageConfig } from './editor/editorconfig';
 
 /**
  * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}
@@ -45,13 +45,13 @@ import type { LanguageConfig } from './editor/editorconfig';
  */
 export default class Context {
 	public readonly config: Config;
-	public readonly plugins: PluginCollection;
+	public readonly plugins: PluginCollection<Context | Editor>;
 	public readonly locale: Locale;
 	public readonly t: Locale[ 't' ];
 	public readonly editors: Collection<Editor>;
 
-	public static defaultConfig: { language?: string | LanguageConfig; [ key: string ]: unknown };
-	public static builtinPlugins: PluginConstructor[];
+	public static defaultConfig: ContextConfig;
+	public static builtinPlugins: PluginConstructor<Context | Editor>[];
 
 	private _contextOwner: Editor | null;
 
@@ -62,7 +62,7 @@ export default class Context {
 	 *
 	 * @param {Object} [config={}] The context configuration.
 	 */
-	constructor( config: { language?: string | LanguageConfig; [ key: string ]: unknown } ) {
+	constructor( config: ContextConfig ) {
 		/**
 		 * Stores all the configurations specific to this context instance.
 		 *
@@ -81,7 +81,7 @@ export default class Context {
 		 * @readonly
 		 * @type {module:core/plugincollection~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this, availablePlugins );
+		this.plugins = new PluginCollection<Context | Editor>( this, availablePlugins );
 
 		const languageConfig = ( this.config.get( 'language' ) || {} ) as string | LanguageConfig;
 
@@ -129,8 +129,8 @@ export default class Context {
 	 * once the initialization is completed, providing an array of loaded plugins.
 	 */
 	public initPlugins(): Promise<LoadedPlugins> {
-		const plugins = this.config.get( 'plugins' ) as ( PluginConstructor | string )[] || [];
-		const substitutePlugins = this.config.get( 'substitutePlugins' ) as PluginConstructor[] || [];
+		const plugins = this.config.get( 'plugins' ) as ( PluginConstructor<Context | Editor> )[] || [];
+		const substitutePlugins = this.config.get( 'substitutePlugins' ) as PluginConstructor<Context | Editor>[] || [];
 
 		// Plugins for substitution should be checked as well.
 		for ( const Plugin of plugins.concat( substitutePlugins ) ) {
@@ -367,3 +367,8 @@ export default class Context {
  * @static
  * @member {Object} module:core/context~Context.defaultConfig
  */
+
+export type ContextConfig = {
+	plugins?: PluginConstructor<Context | Editor>[];
+	substitutePlugins?: PluginConstructor<Context | Editor>[];
+} & Omit<EditorConfig, 'plugins' | 'substitutePlugins' | 'removePlugins' | 'extraPlugins'>;

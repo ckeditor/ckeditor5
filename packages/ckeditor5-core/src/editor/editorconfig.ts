@@ -5,6 +5,7 @@
 
 import type Context from '../context';
 import type { PluginConstructor } from '../plugin';
+import type Editor from './editor';
 
 /**
  * @module core/editor/editorconfig
@@ -342,13 +343,13 @@ import type { PluginConstructor } from '../plugin';
 
 export interface EditorConfig {
 	context?: Context;
-	extraPlugins?: PluginConstructor[];
+	extraPlugins?: PluginConstructor<Editor>[];
 	initialData?: string;
 	language?: string | LanguageConfig;
 	placeholder?: string;
-	plugins?: ( PluginConstructor | string )[];
-	removePlugins?: ( PluginConstructor | string )[];
-	substitutePlugins?: PluginConstructor[];
+	plugins?: ( PluginConstructor<Editor> | string )[];
+	removePlugins?: ( PluginConstructor<Editor> | string )[];
+	substitutePlugins?: PluginConstructor<Editor>[];
 	toolbar?: string[] | {
 		items?: string[];
 		removeItems?: string[];

@@ -9,8 +9,6 @@
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import type Context from './context';
-import type Editor from './editor/editor';
 import type { LoadedPlugins, PluginConstructor, PluginInterface } from './plugin';
 
 /**
@@ -18,11 +16,11 @@ import type { LoadedPlugins, PluginConstructor, PluginInterface } from './plugin
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class PluginCollection extends Emitter {
-	private _context: Editor | Context;
-	private _plugins: Map<PluginConstructor | string, PluginInterface>;
-	private _availablePlugins: Map<string, PluginConstructor>;
-	private _contextPlugins: Map<PluginConstructor | PluginInterface, PluginConstructor | PluginInterface>;
+export default class PluginCollection<TContext extends object> extends Emitter {
+	private _context: TContext;
+	private _plugins: Map<PluginConstructor<TContext> | string, PluginInterface>;
+	private _availablePlugins: Map<string, PluginConstructor<TContext>>;
+	private _contextPlugins: Map<PluginConstructor<TContext> | PluginInterface, PluginConstructor<TContext> | PluginInterface>;
 
 	/**
 	 * Creates an instance of the plugin collection class.
@@ -38,9 +36,9 @@ export default class PluginCollection extends Emitter {
 	 * `[ PluginConstructor, pluginInstance ]` pair.
 	 */
 	constructor(
-		context: Editor | Context,
-		availablePlugins: Iterable<PluginConstructor> = [],
-		contextPlugins: Iterable<[ PluginConstructor, PluginInterface ]> = []
+		context: TContext,
+		availablePlugins: Iterable<PluginConstructor<TContext>> = [],
+		contextPlugins: Iterable<[ PluginConstructor<TContext>, PluginInterface ]> = []
 	) {
 		super();
 
@@ -96,7 +94,7 @@ export default class PluginCollection extends Emitter {
 	 *
 	 * @returns {Iterable.<Array>}
 	 */
-	public* [ Symbol.iterator ](): IterableIterator<[ PluginConstructor, PluginInterface ]> {
+	public* [ Symbol.iterator ](): IterableIterator<[ PluginConstructor<TContext>, PluginInterface ]> {
 		for ( const entry of this._plugins ) {
 			if ( typeof entry[ 0 ] == 'function' ) {
 				yield entry as any;
@@ -123,9 +121,9 @@ export default class PluginCollection extends Emitter {
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 * @returns {module:core/plugin~PluginInterface}
 	 */
-	public get<TConstructor extends PluginConstructor>( key: TConstructor ): InstanceType<TConstructor>;
+	public get<TConstructor extends PluginConstructor<TContext>>( key: TConstructor ): InstanceType<TConstructor>;
 	public get( key: string ): PluginInterface;
-	public get( key: PluginConstructor | string ): PluginInterface {
+	public get( key: PluginConstructor<TContext> | string ): PluginInterface {
 		const plugin = this._plugins.get( key );
 
 		if ( !plugin ) {
@@ -169,7 +167,7 @@ export default class PluginCollection extends Emitter {
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 * @returns {Boolean}
 	 */
-	public has( key: PluginConstructor | string ): boolean {
+	public has( key: PluginConstructor<TContext> | string ): boolean {
 		return this._plugins.has( key );
 	}
 
@@ -191,9 +189,9 @@ export default class PluginCollection extends Emitter {
 	 * and available in the collection.
 	 */
 	public init(
-		plugins: ( PluginConstructor | string )[],
-		pluginsToRemove: ( PluginConstructor | string )[] = [],
-		pluginsSubstitutions: PluginConstructor[] = []
+		plugins: ( PluginConstructor<TContext> | string )[],
+		pluginsToRemove: ( PluginConstructor<TContext> | string )[] = [],
+		pluginsSubstitutions: PluginConstructor<TContext>[] = []
 	): Promise<LoadedPlugins> {
 		// Plugin initialization procedure consists of 2 main steps:
 		// 1) collecting all available plugin constructors,
@@ -229,15 +227,20 @@ export default class PluginCollection extends Emitter {
 			.then( () => initPlugins( pluginInstances, 'afterInit' ) )
 			.then( () => pluginInstances );
 
-		function isPluginConstructor( plugin: PluginConstructor | string | null ): plugin is PluginConstructor {
+		function isPluginConstructor( plugin: PluginConstructor<TContext> | string | null ): plugin is PluginConstructor<TContext> {
 			return typeof plugin === 'function';
 		}
 
-		function isContextPlugin( plugin: PluginConstructor | string | null ): plugin is PluginConstructor & { isContextPlugin: true } {
+		function isContextPlugin(
+			plugin: PluginConstructor<TContext> | string | null
+		): plugin is PluginConstructor<TContext> & { isContextPlugin: true } {
 			return isPluginConstructor( plugin ) && plugin.isContextPlugin;
 		}
 
-		function isPluginRemoved( plugin: PluginConstructor | string, pluginsToRemove: ( PluginConstructor | string )[] ) {
+		function isPluginRemoved(
+			plugin: PluginConstructor<TContext> | string,
+			pluginsToRemove: ( PluginConstructor<TContext> | string )[]
+		) {
 			return pluginsToRemove.some( removedPlugin => {
 				if ( removedPlugin === plugin ) {
 					return true;
@@ -255,13 +258,16 @@ export default class PluginCollection extends Emitter {
 			} );
 		}
 
-		function getPluginName( plugin: PluginConstructor | string ) {
+		function getPluginName( plugin: PluginConstructor<TContext> | string ) {
 			return isPluginConstructor( plugin ) ?
 				plugin.pluginName || plugin.name :
 				plugin;
 		}
 
-		function findAvailablePluginConstructors( plugins: ( PluginConstructor | string )[], processed = new Set<PluginConstructor>() ) {
+		function findAvailablePluginConstructors(
+			plugins: ( PluginConstructor<TContext> | string )[],
+			processed = new Set<PluginConstructor<TContext>>()
+		) {
 			plugins.forEach( plugin => {
 				if ( !isPluginConstructor( plugin ) ) {
 					return;
@@ -283,7 +289,10 @@ export default class PluginCollection extends Emitter {
 			} );
 		}
 
-		function getPluginConstructors( plugins: ( PluginConstructor | string )[], processed = new Set<PluginConstructor>() ) {
+		function getPluginConstructors(
+			plugins: ( PluginConstructor<TContext> | string )[],
+			processed = new Set<PluginConstructor<TContext>>()
+		) {
 			return plugins
 				.map( plugin => {
 					return isPluginConstructor( plugin ) ?
@@ -304,10 +313,13 @@ export default class PluginCollection extends Emitter {
 					}
 
 					return result.add( plugin );
-				}, new Set<PluginConstructor>() );
+				}, new Set<PluginConstructor<TContext>>() );
 		}
 
-		function validatePlugins( plugins: ( PluginConstructor | string )[], parentPluginConstructor: PluginConstructor | null = null ) {
+		function validatePlugins(
+			plugins: ( PluginConstructor<TContext> | string )[],
+			parentPluginConstructor: PluginConstructor<TContext> | null = null
+		) {
 			plugins
 				.map( plugin => {
 					return isPluginConstructor( plugin ) ?
@@ -321,7 +333,10 @@ export default class PluginCollection extends Emitter {
 				} );
 		}
 
-		function checkMissingPlugin( plugin: PluginConstructor | string, parentPluginConstructor: PluginConstructor | null ) {
+		function checkMissingPlugin(
+			plugin: PluginConstructor<TContext> | string,
+			parentPluginConstructor: PluginConstructor<TContext> | null
+		) {
 			if ( isPluginConstructor( plugin ) ) {
 				return;
 			}
@@ -386,7 +401,10 @@ export default class PluginCollection extends Emitter {
 			);
 		}
 
-		function checkContextPlugin( plugin: PluginConstructor | string, parentPluginConstructor: PluginConstructor | null ) {
+		function checkContextPlugin(
+			plugin: PluginConstructor<TContext> | string,
+			parentPluginConstructor: PluginConstructor<TContext> | null
+		) {
 			if ( !isContextPlugin( parentPluginConstructor ) ) {
 				return;
 			}
@@ -414,7 +432,10 @@ export default class PluginCollection extends Emitter {
 			);
 		}
 
-		function checkRemovedPlugin( plugin: PluginConstructor | string, parentPluginConstructor: PluginConstructor | null ) {
+		function checkRemovedPlugin(
+			plugin: PluginConstructor<TContext> | string,
+			parentPluginConstructor: PluginConstructor<TContext> | null
+		) {
 			if ( !parentPluginConstructor ) {
 				return;
 			}
@@ -437,7 +458,7 @@ export default class PluginCollection extends Emitter {
 			);
 		}
 
-		function loadPlugins( pluginConstructors: PluginConstructor[] ) {
+		function loadPlugins( pluginConstructors: PluginConstructor<TContext>[] ) {
 			return pluginConstructors.map( PluginConstructor => {
 				let pluginInstance = that._contextPlugins.get( PluginConstructor ) as ( PluginInterface | undefined );
 
@@ -467,7 +488,10 @@ export default class PluginCollection extends Emitter {
 		//
 		// @param {Array.<Function>} pluginConstructors
 		// @param {Array.<Function>} pluginsSubstitutions
-		function substitutePlugins( pluginConstructors: PluginConstructor[], pluginsSubstitutions: PluginConstructor[] ) {
+		function substitutePlugins(
+			pluginConstructors: PluginConstructor<TContext>[],
+			pluginsSubstitutions: PluginConstructor<TContext>[]
+		) {
 			for ( const pluginItem of pluginsSubstitutions ) {
 				if ( typeof pluginItem != 'function' ) {
 					/**
@@ -566,7 +590,7 @@ export default class PluginCollection extends Emitter {
 	 * @param {Function} PluginConstructor The plugin constructor.
 	 * @param {module:core/plugin~PluginInterface} plugin The instance of the plugin.
 	 */
-	private _add( PluginConstructor: PluginConstructor, plugin: PluginInterface ) {
+	private _add( PluginConstructor: PluginConstructor<TContext>, plugin: PluginInterface ) {
 		this._plugins.set( PluginConstructor, plugin );
 
 		const pluginName = PluginConstructor.pluginName;

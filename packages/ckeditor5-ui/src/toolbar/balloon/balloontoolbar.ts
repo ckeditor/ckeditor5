@@ -7,7 +7,7 @@
  * @module ui/toolbar/balloon/balloontoolbar
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView, { type GroupedItemsUpdateEvent } from '../toolbarview';
 import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview';
@@ -19,7 +19,7 @@ import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import { env, global } from '@ckeditor/ckeditor5-utils';
 
-import type { EditorWithUI } from '@ckeditor/ckeditor5-core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ReadyEvent } from '@ckeditor/ckeditor5-core/src/editor/editor';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type {
@@ -41,8 +41,6 @@ export default class BalloonToolbar extends Plugin {
 	public readonly toolbarView: ToolbarView;
 	public readonly focusTracker: FocusTracker;
 
-	declare public readonly editor: EditorWithUI;
-
 	private _balloonConfig: ReturnType<typeof normalizeToolbarConfig>;
 	private _resizeObserver: ResizeObserver | null;
 	private readonly _balloon: ContextualBalloon;
@@ -58,14 +56,14 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): any[] { // TODO: PluginConstructor needs some rethinking
+	public static get requires(): PluginConstructor<Editor>[] {
 		return [ ContextualBalloon ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor: EditorWithUI ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		/**
@@ -125,8 +123,7 @@ export default class BalloonToolbar extends Plugin {
 		 * @private
 		 * @type {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
 		 */
-		// TODO: PluginConstructor
-		this._balloon = editor.plugins.get( ContextualBalloon as any /* TODO */ ) as ContextualBalloon;
+		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		/**
 		 * Fires {@link #event:_selectionChangeDebounced} event using `lodash#debounce`.

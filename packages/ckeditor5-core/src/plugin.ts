@@ -11,7 +11,6 @@
 
 import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import { Observable, type SetEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import type Context from './context';
 import type Editor from './editor/editor';
 
 /**
@@ -20,8 +19,8 @@ import type Editor from './editor/editor';
  * @implements module:core/plugin~PluginInterface
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Plugin extends Observable implements PluginInterface {
-	public readonly editor: Editor;
+export default class Plugin<TEditor extends Editor = Editor> extends Observable implements PluginInterface {
+	public readonly editor: TEditor;
 
 	public declare isEnabled: boolean;
 
@@ -30,7 +29,7 @@ export default class Plugin extends Observable implements PluginInterface {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor: Editor ) {
+	constructor( editor: TEditor ) {
 		super();
 
 		/**
@@ -191,15 +190,15 @@ export default class Plugin extends Observable implements PluginInterface {
  */
 
 export interface PluginInterface {
-	init?(): Promise<void> | null | undefined | void;
-	afterInit?(): Promise<void> | null | undefined | void;
-	destroy(): Promise<void> | null | undefined | void;
+	init?(): Promise<unknown> | null | undefined | void;
+	afterInit?(): Promise<unknown> | null | undefined | void;
+	destroy(): Promise<unknown> | null | undefined | void;
 }
 
-export interface PluginConstructor {
-	new( editor: Editor | Context ): PluginInterface;
+export interface PluginConstructor<TContext> {
+	new( editor: TContext ): PluginInterface;
 
-	readonly requires?: ( PluginConstructor | string )[];
+	readonly requires?: ( PluginConstructor<TContext> | string )[];
 	readonly pluginName?: string;
 	readonly isContextPlugin: boolean;
 }

@@ -16,7 +16,7 @@ import { isElement, debounce, type DebouncedFunc } from 'lodash-es';
 
 import '../theme/components/tooltip/tooltip.css';
 
-import type EditorWithUI from '@ckeditor/ckeditor5-core/src/editor/editorwithui';
+import type Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import type { PositioningFunction } from '@ckeditor/ckeditor5-utils/src/dom/position';
@@ -87,7 +87,7 @@ export default class TooltipManager extends DomEmitter {
 	 * @private
 	 * @member {Set.<module:core/editor/editor~Editor>} module:ui/tooltipmanager~TooltipManager._editors
 	 */
-	private static _editors = new Set<EditorWithUI>();
+	private static _editors = new Set<Editor>();
 
 	/**
 	 * A reference to the `TooltipManager` instance. The class is a singleton and as such,
@@ -103,7 +103,7 @@ export default class TooltipManager extends DomEmitter {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
-	constructor( editor: EditorWithUI ) {
+	constructor( editor: Editor ) {
 		super();
 
 		TooltipManager._editors.add( editor );
@@ -201,7 +201,7 @@ export default class TooltipManager extends DomEmitter {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor the manager was created for.
 	 */
-	public destroy( editor: EditorWithUI ): void {
+	public destroy( editor: Editor ): void {
 		TooltipManager._editors.delete( editor );
 		this.stopListening( editor.ui );
 

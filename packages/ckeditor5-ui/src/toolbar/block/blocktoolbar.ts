@@ -27,7 +27,7 @@ import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import type { ExecuteEvent } from '../../button/button';
-import type { Editor, EditorWithUI } from '@ckeditor/ckeditor5-core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -82,8 +82,6 @@ export default class BlockToolbar extends Plugin {
 	public readonly toolbarView: ToolbarView;
 	public readonly panelView: BalloonPanelView;
 	public readonly buttonView: BlockButtonView;
-
-	declare public readonly editor: EditorWithUI;
 
 	private _resizeObserver: ResizeObserver | null;
 	private _blockToolbarConfig: ReturnType<typeof normalizeToolbarConfig>;
@@ -157,7 +155,7 @@ export default class BlockToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		const editor = this.editor as EditorWithUI;
+		const editor = this.editor;
 
 		// Hides panel on a direct selection change.
 		this.listenTo( editor.model.document.selection, 'change:range', ( evt, data ) => {

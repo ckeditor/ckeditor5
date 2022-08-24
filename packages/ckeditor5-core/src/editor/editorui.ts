@@ -17,7 +17,7 @@ import TooltipManager from '@ckeditor/ckeditor5-ui/src/tooltipmanager';
 import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
-import type EditorWithUI from './editorwithui';
+import type Editor from './editor';
 import type ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import type { RenderEvent } from '@ckeditor/ckeditor5-ui/src/view';
 import type EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
@@ -28,7 +28,7 @@ import type EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview'
  * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default abstract class EditorUI extends Observable {
-	public readonly editor: EditorWithUI;
+	public readonly editor: Editor;
 	public readonly componentFactory: ComponentFactory;
 	public readonly focusTracker: FocusTracker;
 	public readonly tooltipManager: TooltipManager;
@@ -51,7 +51,7 @@ export default abstract class EditorUI extends Observable {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 */
-	constructor( editor: EditorWithUI ) {
+	constructor( editor: Editor ) {
 		super();
 
 		/**

@@ -17,12 +17,13 @@ import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
+import type { LoadedPlugins, PluginConstructor } from '../plugin';
+import type EditorUI from './editorui';
+import type { EditorConfig } from './editorconfig';
 import { type ChangeEvent, Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-import type { EditorConfig } from './editorconfig';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { LoadedPlugins, PluginConstructor } from '../plugin';
 
 /**
  * The class representing a basic, generic editor.
@@ -45,7 +46,7 @@ import type { LoadedPlugins, PluginConstructor } from '../plugin';
  * @abstract
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Editor extends Observable {
+export default abstract class Editor extends Observable {
 	public readonly commands: CommandCollection;
 	public readonly config: Config;
 	public readonly conversion: Conversion;
@@ -53,7 +54,7 @@ export default class Editor extends Observable {
 	public readonly editing: EditingController;
 	public readonly locale: Locale;
 	public readonly model: Model;
-	public readonly plugins: PluginCollection;
+	public readonly plugins: PluginCollection<Editor>;
 	public readonly keystrokes: EditingKeystrokeHandler;
 	public readonly t: Locale[ 't' ];
 
@@ -62,7 +63,9 @@ export default class Editor extends Observable {
 	public declare state: 'initializing' | 'ready' | 'destroyed';
 
 	public static defaultConfig?: EditorConfig;
-	public static builtinPlugins?: PluginConstructor[];
+	public static builtinPlugins?: PluginConstructor<Editor>[];
+
+	public abstract get ui(): EditorUI;
 
 	protected readonly _context: Context;
 	protected readonly _readOnlyLocks: Set<symbol | string>;
@@ -117,7 +120,7 @@ export default class Editor extends Observable {
 		 * @readonly
 		 * @member {module:core/plugincollection~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this, availablePlugins, this._context.plugins );
+		this.plugins = new PluginCollection<Editor>( this, availablePlugins, this._context.plugins );
 
 		/**
 		 * The locale instance.

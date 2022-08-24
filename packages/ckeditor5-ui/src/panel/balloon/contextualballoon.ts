@@ -23,7 +23,7 @@ import '../../../theme/components/panel/fakepanel.css';
 
 import type { ExecuteEvent } from '../../button/button';
 import type ViewCollection from '../../viewcollection';
-import type { EditorWithUI } from '@ckeditor/ckeditor5-core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type { Options } from '@ckeditor/ckeditor5-utils/src/dom/position';
@@ -74,8 +74,6 @@ export default class ContextualBalloon extends Plugin {
 	public positionLimiter: Options[ 'limiter' ];
 	public visibleStack?: string;
 
-	declare public readonly editor: EditorWithUI;
-
 	declare public visibleView: View | null;
 	declare public _numberOfStacks: number;
 	declare public _singleViewMode: boolean;
@@ -95,7 +93,7 @@ export default class ContextualBalloon extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor: EditorWithUI ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		/**
