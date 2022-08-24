@@ -185,7 +185,7 @@ To install the Ruby on Rails service, follow the steps below:
 
 1. Download the [MathType Web Integration Services - Ruby on Rails](http://www.wiris.com/en/plugins/services/download) package.
 
-2. Instal the `wirispluginengine.gem` gem.
+2. Install the `wirispluginengine.gem` gem.
 
     ```
     gem install -l wirispluginengine.gem

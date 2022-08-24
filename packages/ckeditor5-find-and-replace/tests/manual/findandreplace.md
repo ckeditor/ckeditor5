@@ -13,7 +13,7 @@ Things to look for:
 
 #### Find is disabled in source mode
 * Click on the 'Source' button in toolbar to start source editing mode.
-* Find and replace similarily to all buttons, except the source editing, should be disabled.
+* Find and replace similarly to all buttons, except the source editing, should be disabled.
 
 #### Matches color
 * Open find dropdown.
