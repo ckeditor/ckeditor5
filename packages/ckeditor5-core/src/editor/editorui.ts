@@ -15,18 +15,26 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import TooltipManager from '@ckeditor/ckeditor5-ui/src/tooltipmanager';
 
 import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import type Editor from './editor';
 import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
+
+import type EditorWithUI from './editorwithui';
+import type ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import type { RenderEvent } from '@ckeditor/ckeditor5-ui/src/view';
+import type EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class EditorUI extends Observable {
-	public readonly editor: Editor;
+export default abstract class EditorUI extends Observable {
+	public readonly editor: EditorWithUI;
 	public readonly componentFactory: ComponentFactory;
 	public readonly focusTracker: FocusTracker;
+	public readonly tooltipManager: TooltipManager;
+	public isReady: boolean;
+
+	public abstract get view(): EditorUIView;
 
 	public declare viewportOffset: {
 		left?: number;
@@ -36,13 +44,14 @@ export default class EditorUI extends Observable {
 	};
 
 	private _editableElementsMap: Map<string, HTMLElement>;
+	private _focusableToolbarDefinitions: FocusableToolbarDefinition[];
 
 	/**
 	 * Creates an instance of the editor UI class.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 */
-	constructor( editor: Editor ) {
+	constructor( editor: EditorWithUI ) {
 		super();
 
 		/**
@@ -120,7 +129,7 @@ export default class EditorUI extends Observable {
 		 * @member {Boolean} #isReady
 		 */
 		this.isReady = false;
-		this.once( 'ready', () => {
+		this.once<ReadyEvent>( 'ready', () => {
 			this.isReady = true;
 		} );
 
@@ -232,7 +241,7 @@ export default class EditorUI extends Observable {
 		}
 		// For editable elements set while the editor is being created (e.g. DOM roots).
 		else {
-			this.once( 'ready', setUpKeystrokeHandler );
+			this.once<ReadyEvent>( 'ready', setUpKeystrokeHandler );
 		}
 	}
 
@@ -270,14 +279,14 @@ export default class EditorUI extends Observable {
 	 * @param {Function} [options.afterBlur] Specify a callback executed after the toolbar instance DOM element loses focus upon
 	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link #setEditableElement editable element}.
 	 */
-	addToolbar( toolbarView, options = {} ) {
+	public addToolbar( toolbarView: ToolbarView, options: FocusableToolbarOptions = {} ): void {
 		if ( toolbarView.isRendered ) {
-			this.focusTracker.add( toolbarView.element );
-			this.editor.keystrokes.listenTo( toolbarView.element );
+			this.focusTracker.add( toolbarView.element! );
+			this.editor.keystrokes.listenTo( toolbarView.element! );
 		} else {
-			toolbarView.once( 'render', () => {
-				this.focusTracker.add( toolbarView.element );
-				this.editor.keystrokes.listenTo( toolbarView.element );
+			toolbarView.once<RenderEvent>( 'render', () => {
+				this.focusTracker.add( toolbarView.element! );
+				this.editor.keystrokes.listenTo( toolbarView.element! );
 			} );
 		}
 
@@ -364,16 +373,16 @@ export default class EditorUI extends Observable {
 	 *
 	 * @private
 	 */
-	_initFocusTracking() {
+	private _initFocusTracking(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		let lastFocusedForeignElement;
-		let candidateDefinitions;
+		let lastFocusedForeignElement: HTMLElement | null;
+		let candidateDefinitions: FocusableToolbarDefinition[];
 
 		// Focus the next focusable toolbar on <kbd>Alt</kbd> + <kbd>F10</kbd>.
 		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
-			const focusedElement = this.focusTracker.focusedElement;
+			const focusedElement = this.focusTracker.focusedElement as HTMLElement;
 
 			// Focus moved out of a DOM element that
 			// * is not a toolbar,
@@ -393,13 +402,13 @@ export default class EditorUI extends Observable {
 			// * It could be that the focus went to the toolbar by clicking a toolbar item (e.g. a dropdown). In this case,
 			// there were no candidates so they must be obtained (#12339).
 			if ( !currentFocusedToolbarDefinition || !candidateDefinitions ) {
-				candidateDefinitions = this._getFocusableCandidateToolbarDefinitions( currentFocusedToolbarDefinition );
+				candidateDefinitions = this._getFocusableCandidateToolbarDefinitions();
 			}
 
 			// In a single Alt+F10 press, check all candidates but if none were focused, don't go any further.
 			// This prevents an infinite loop.
 			for ( let i = 0; i < candidateDefinitions.length; i++ ) {
-				const candidateDefinition = candidateDefinitions.shift();
+				const candidateDefinition = candidateDefinitions.shift()!;
 
 				// Put the first definition to the back of the array. This allows circular navigation over all toolbars
 				// on successive presses of Alt+F10.
@@ -468,7 +477,7 @@ export default class EditorUI extends Observable {
 	 * @private
 	 * @returns {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
 	 */
-	_getFocusableCandidateToolbarDefinitions() {
+	private _getFocusableCandidateToolbarDefinitions() {
 		const definitions = [];
 
 		for ( const toolbarDef of this._focusableToolbarDefinitions ) {
@@ -494,7 +503,7 @@ export default class EditorUI extends Observable {
 	 * @private
 	 * @returns {module:core/editor/editorui~FocusableToolbarDefinition|null}
 	 */
-	_getCurrentFocusedToolbarDefinition() {
+	private _getCurrentFocusedToolbarDefinition() {
 		for ( const definition of this._focusableToolbarDefinitions ) {
 			if ( definition.toolbarView.element && definition.toolbarView.element.contains( this.focusTracker.focusedElement ) ) {
 				return definition;
@@ -511,7 +520,7 @@ export default class EditorUI extends Observable {
 	 * @param {module:core/editor/editorui~FocusableToolbarDefinition} candidateToolbarDefinition A definition of the toolbar to focus.
 	 * @returns {Boolean} `true` when the toolbar candidate was focused. `false` otherwise.
 	 */
-	_focusFocusableCandidateToolbar( candidateToolbarDefinition ) {
+	private _focusFocusableCandidateToolbar( candidateToolbarDefinition: FocusableToolbarDefinition ) {
 		const { toolbarView, options: { beforeFocus } } = candidateToolbarDefinition;
 
 		if ( beforeFocus ) {
@@ -563,6 +572,17 @@ export type UpdateEvent = {
  * @interface module:core/editor/editorui~FocusableToolbarDefinition
  */
 
+export interface FocusableToolbarDefinition {
+	toolbarView: ToolbarView;
+	options: FocusableToolbarOptions;
+}
+
+export interface FocusableToolbarOptions {
+	isContextual?: boolean;
+	beforeFocus?: () => void;
+	afterBlur?: () => void;
+}
+
 /**
  * An instance of a focusable toolbar view.
  *
@@ -588,7 +608,7 @@ export type UpdateEvent = {
 // @private
 // @param {module:core/editor/editorui~FocusableToolbarDefinition} toolbarDef A toolbar definition to be weighted.
 // @returns {Number}
-function getToolbarDefinitionWeight( toolbarDef ) {
+function getToolbarDefinitionWeight( toolbarDef: FocusableToolbarDefinition ) {
 	const { toolbarView, options } = toolbarDef;
 	let weight = 10;
 

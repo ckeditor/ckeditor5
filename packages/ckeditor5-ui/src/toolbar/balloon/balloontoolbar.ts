@@ -9,15 +9,24 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
-import ToolbarView from '../toolbarview';
-import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview.js';
+import ToolbarView, { type GroupedItemsUpdateEvent } from '../toolbarview';
+import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
-import { debounce } from 'lodash-es';
+import { debounce, type DebouncedFunc } from 'lodash-es';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import { env, global } from '@ckeditor/ckeditor5-utils';
+
+import type { EditorWithUI } from '@ckeditor/ckeditor5-core';
+import type { ReadyEvent } from '@ckeditor/ckeditor5-core/src/editor/editor';
+import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type {
+	default as DocumentSelection,
+	ChangeEvent as SelectionChangeEvent
+} from '@ckeditor/ckeditor5-engine/src/model/documentselection';
+import type Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
 
 const toPx = toUnit( 'px' );
 
@@ -29,24 +38,34 @@ const toPx = toUnit( 'px' );
  * @extends module:core/plugin~Plugin
  */
 export default class BalloonToolbar extends Plugin {
+	public readonly toolbarView: ToolbarView;
+	public readonly focusTracker: FocusTracker;
+
+	declare public readonly editor: EditorWithUI;
+
+	private _balloonConfig: ReturnType<typeof normalizeToolbarConfig>;
+	private _resizeObserver: ResizeObserver | null;
+	private readonly _balloon: ContextualBalloon;
+	private readonly _fireSelectionChangeDebounced: DebouncedFunc<() => void>;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'BalloonToolbar' {
 		return 'BalloonToolbar';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): any[] { // TODO: PluginConstructor needs some rethinking
 		return [ ContextualBalloon ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: EditorWithUI ) {
 		super( editor );
 
 		/**
@@ -55,7 +74,7 @@ export default class BalloonToolbar extends Plugin {
 		 * @type {module:core/editor/editorconfig~EditorConfig#balloonToolbar}
 		 * @private
 		 */
-		this._balloonConfig = normalizeToolbarConfig( editor.config.get( 'balloonToolbar' ) );
+		this._balloonConfig = normalizeToolbarConfig( editor.config.get( 'balloonToolbar' ) as any );
 
 		/**
 		 * The toolbar view displayed in the balloon.
@@ -74,9 +93,9 @@ export default class BalloonToolbar extends Plugin {
 		this.focusTracker = new FocusTracker();
 
 		// Wait for the EditorUI#init. EditableElement is not available before.
-		editor.ui.once( 'ready', () => {
-			this.focusTracker.add( editor.ui.getEditableElement() );
-			this.focusTracker.add( this.toolbarView.element );
+		editor.ui.once<ReadyEvent>( 'ready', () => {
+			this.focusTracker.add( editor.ui.getEditableElement()! );
+			this.focusTracker.add( this.toolbarView.element! );
 		} );
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
@@ -106,7 +125,8 @@ export default class BalloonToolbar extends Plugin {
 		 * @private
 		 * @type {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
 		 */
-		this._balloon = editor.plugins.get( ContextualBalloon );
+		// TODO: PluginConstructor
+		this._balloon = editor.plugins.get( ContextualBalloon as any /* TODO */ ) as ContextualBalloon;
 
 		/**
 		 * Fires {@link #event:_selectionChangeDebounced} event using `lodash#debounce`.
@@ -127,12 +147,12 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
 		// Show/hide the toolbar on editable focus/blur.
-		this.listenTo( this.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
+		this.listenTo<ChangeEvent<boolean>>( this.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
 			const isToolbarVisible = this._balloon.visibleView === this.toolbarView;
 
 			if ( !isFocused && isToolbarVisible ) {
@@ -143,7 +163,7 @@ export default class BalloonToolbar extends Plugin {
 		} );
 
 		// Hide the toolbar when the selection is changed by a direct change or has changed to collapsed.
-		this.listenTo( selection, 'change:range', ( evt, data ) => {
+		this.listenTo<SelectionChangeEvent>( selection, 'change:range', ( evt, data ) => {
 			if ( data.directChange || selection.isCollapsed ) {
 				this.hide();
 			}
@@ -161,8 +181,8 @@ export default class BalloonToolbar extends Plugin {
 		} );
 
 		if ( !this._balloonConfig.shouldNotGroupWhenFull ) {
-			this.listenTo( editor, 'ready', () => {
-				const editableElement = editor.ui.view.editable.element;
+			this.listenTo<ReadyEvent>( editor, 'ready', () => {
+				const editableElement = editor.ui.view.editable.element!;
 
 				// Set #toolbarView's max-width on the initialization and update it on the editable resize.
 				this._resizeObserver = new ResizeObserver( editableElement, () => {
@@ -179,7 +199,7 @@ export default class BalloonToolbar extends Plugin {
 		// means the balloon could be pointing at the wrong place. Once updated, the balloon will point
 		// at the right selection in the content again.
 		// https://github.com/ckeditor/ckeditor5/issues/6444
-		this.listenTo( this.toolbarView, 'groupedItemsUpdate', () => {
+		this.listenTo<GroupedItemsUpdateEvent>( this.toolbarView, 'groupedItemsUpdate', () => {
 			this._updatePosition();
 		} );
 	}
@@ -190,7 +210,7 @@ export default class BalloonToolbar extends Plugin {
 	 *
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const factory = this.editor.ui.componentFactory;
 
 		this.toolbarView.fillFromConfig( this._balloonConfig, factory );
@@ -202,7 +222,7 @@ export default class BalloonToolbar extends Plugin {
 	 * @private
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
-	_createToolbarView() {
+	private _createToolbarView() {
 		const t = this.editor.locale.t;
 		const shouldGroupWhenFull = !this._balloonConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
@@ -224,7 +244,7 @@ export default class BalloonToolbar extends Plugin {
 	 * @param {Boolean} [showForCollapsedSelection=false] When set `true`, the toolbar will show despite collapsed selection in the
 	 * editing view.
 	 */
-	show( showForCollapsedSelection = false ) {
+	public show( showForCollapsedSelection: boolean = false ): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const schema = editor.model.schema;
@@ -247,7 +267,7 @@ export default class BalloonToolbar extends Plugin {
 
 		// Don not show the toolbar when all components inside are disabled
 		// see https://github.com/ckeditor/ckeditor5-ui/issues/269.
-		if ( Array.from( this.toolbarView.items ).every( item => item.isEnabled !== undefined && !item.isEnabled ) ) {
+		if ( Array.from( this.toolbarView.items ).every( ( item: any ) => item.isEnabled !== undefined && !item.isEnabled ) ) {
 			return;
 		}
 
@@ -267,7 +287,7 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * Hides the toolbar.
 	 */
-	hide() {
+	public hide(): void {
 		if ( this._balloon.hasView( this.toolbarView ) ) {
 			this.stopListening( this.editor.ui, 'update' );
 			this._balloon.remove( this.toolbarView );
@@ -281,7 +301,7 @@ export default class BalloonToolbar extends Plugin {
 	 * @private
 	 * @returns {module:utils/dom/position~Options}
 	 */
-	_getBalloonPositionData() {
+	private _getBalloonPositionData() {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
@@ -297,7 +317,7 @@ export default class BalloonToolbar extends Plugin {
 			// https://github.com/ckeditor/ckeditor5-ui/issues/195
 			target: () => {
 				const range = isBackward ? viewSelection.getFirstRange() : viewSelection.getLastRange();
-				const rangeRects = Rect.getDomRangeRects( view.domConverter.viewRangeToDom( range ) );
+				const rangeRects = Rect.getDomRangeRects( view.domConverter.viewRangeToDom( range! ) );
 
 				// Select the proper range rect depending on the direction of the selection.
 				if ( isBackward ) {
@@ -325,14 +345,14 @@ export default class BalloonToolbar extends Plugin {
 	 *
 	 * @private
 	 */
-	_updatePosition() {
+	private _updatePosition() {
 		this._balloon.updatePosition( this._getBalloonPositionData() );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.stopListening();
@@ -366,7 +386,7 @@ export default class BalloonToolbar extends Plugin {
 	 * @param {Boolean} isBackward
 	 * @returns {Array.<module:utils/dom/position~Position>}
 	 */
-	_getBalloonPositions( isBackward ) {
+	private _getBalloonPositions( isBackward: boolean ) {
 		const isSafariIniOS = env.isSafari && env.isiOS;
 
 		// https://github.com/ckeditor/ckeditor5/issues/7707
@@ -412,7 +432,7 @@ export default class BalloonToolbar extends Plugin {
 // @param {module:engine/model/selection~Selection} selection
 // @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
-function selectionContainsOnlyMultipleSelectables( selection, schema ) {
+function selectionContainsOnlyMultipleSelectables( selection: DocumentSelection, schema: Schema ) {
 	// It doesn't contain multiple objects if there is only one range.
 	if ( selection.rangeCount === 1 ) {
 		return false;
@@ -456,3 +476,8 @@ function selectionContainsOnlyMultipleSelectables( selection, schema ) {
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#balloonToolbar
  */
+
+export type ShowEvent = {
+	name: 'show';
+	args: [];
+};

@@ -350,7 +350,8 @@ export interface EditorConfig {
 	removePlugins?: ( PluginConstructor | string )[];
 	substitutePlugins?: PluginConstructor[];
 	toolbar?: string[] | {
-		items: string[];
+		items?: string[];
+		removeItems?: string[];
 		shouldNotGroupWhenFull?: boolean;
 	};
 	ui?: {

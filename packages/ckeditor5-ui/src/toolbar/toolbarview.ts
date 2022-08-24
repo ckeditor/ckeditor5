@@ -32,6 +32,7 @@ import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { AddEvent, ChangeEvent as CollectionChangeEvent, RemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 
 /**
  * The toolbar view class.
@@ -314,7 +315,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
 	public fillFromConfig(
-		itemsOrConfig: ToolbarConfig,
+		itemsOrConfig: EditorConfig[ 'toolbar' ],
 		factory: ComponentFactory
 	): void {
 		const config = normalizeToolbarConfig( itemsOrConfig );

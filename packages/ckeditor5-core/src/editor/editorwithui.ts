@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type Editor from './editor';
 import type EditorUI from './editorui';
 
 /**
@@ -30,6 +31,6 @@ import type EditorUI from './editorui';
  * @member {module:core/editor/editorui~EditorUI} #ui
  */
 
-export default interface EditorWithUI {
-    readonly ui: EditorUI;
+export default interface EditorWithUI extends Editor {
+	readonly ui: EditorUI;
 }

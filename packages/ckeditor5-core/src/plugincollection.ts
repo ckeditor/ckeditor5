@@ -123,6 +123,8 @@ export default class PluginCollection extends Emitter {
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 * @returns {module:core/plugin~PluginInterface}
 	 */
+	public get<TConstructor extends PluginConstructor>( key: TConstructor ): InstanceType<TConstructor>;
+	public get( key: string ): PluginInterface;
 	public get( key: PluginConstructor | string ): PluginInterface {
 		const plugin = this._plugins.get( key );
 

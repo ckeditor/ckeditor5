@@ -96,7 +96,7 @@ export default class DropdownView extends View {
 	 * @param {module:ui/dropdown/dropdownpanelview~DropdownPanelView} panelView
 	 */
 	constructor(
-		locale: Locale,
+		locale: Locale | undefined,
 		buttonView: DropdownButton & FocusableView,
 		panelView: DropdownPanelView
 	) {

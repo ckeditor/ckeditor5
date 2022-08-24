@@ -3,9 +3,29 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+
 /**
  * @module ui/colorgrid/utils
  */
+
+export type ColorOption = string | {
+	color: string;
+	label?: string;
+	hasBorder?: boolean;
+};
+
+export interface NormalizedColorOption {
+	model: string;
+	label: string;
+	hasBorder: boolean;
+	view: {
+		name: string;
+		styles: {
+			color: string;
+		};
+	};
+}
 
 /**
  * Returns color configuration options as defined in `editor.config.(fontColor|fontBackgroundColor).colors` or
@@ -19,9 +39,12 @@
  * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options
  * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}.
  */
-export function getLocalizedColorOptions( locale, options ) {
+export function getLocalizedColorOptions(
+	locale: Locale,
+	options: NormalizedColorOption[]
+): NormalizedColorOption[] {
 	const t = locale.t;
-	const localizedColorNames = {
+	const localizedColorNames: Record<string, string | undefined> = {
 		Black: t( 'Black' ),
 		'Dim grey': t( 'Dim grey' ),
 		Grey: t( 'Grey' ),
@@ -57,7 +80,7 @@ export function getLocalizedColorOptions( locale, options ) {
  * @param {module:ui/colorgrid/colorgrid~ColorDefinition} options
  * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
  */
-export function normalizeColorOptions( options ) {
+export function normalizeColorOptions( options: ColorOption[] ): NormalizedColorOption[] {
 	return options
 		.map( normalizeSingleColorDefinition )
 		.filter( option => !!option );
@@ -70,7 +93,7 @@ export function normalizeColorOptions( options ) {
 //
 // @param {String|module:ui/colorgrid/colorgrid~ColorDefinition}
 // @returns {module:ui/colorgrid/colorgrid~ColorDefinition}
-export function normalizeSingleColorDefinition( color ) {
+export function normalizeSingleColorDefinition( color: ColorOption ): NormalizedColorOption {
 	if ( typeof color === 'string' ) {
 		return {
 			model: color,

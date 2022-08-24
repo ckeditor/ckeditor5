@@ -7,8 +7,11 @@
  * @module ui/editorui/boxed/boxededitoruiview
  */
 
-import EditorUIView from '../../editorui/editoruiview';
+import EditorUIView from '../editoruiview';
 import LabelView from '../../label/labelview';
+
+import type ViewCollection from '../../viewcollection';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The boxed editor UI view class. This class represents an editor interface
@@ -16,13 +19,18 @@ import LabelView from '../../label/labelview';
  *
  * @extends module:ui/editorui/editoruiview~EditorUIView
  */
-export default class BoxedEditorUIView extends EditorUIView {
+export default abstract class BoxedEditorUIView extends EditorUIView {
+	public readonly top: ViewCollection;
+	public readonly main: ViewCollection;
+
+	private _voiceLabelView: LabelView;
+
 	/**
 	 * Creates an instance of the boxed editor UI view class.
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance..
 	 */
-	constructor( locale ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		/**
@@ -103,7 +111,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 	 * @private
 	 * @returns {module:ui/label/labelview~LabelView}
 	 */
-	_createVoiceLabel() {
+	private _createVoiceLabel() {
 		const t = this.t;
 		const voiceLabel = new LabelView();
 

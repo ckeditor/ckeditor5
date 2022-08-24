@@ -14,6 +14,9 @@ import ViewCollection from '../viewcollection';
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
+import type View from '../view';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+
 /**
  * This is a special {@link module:ui/viewcollection~ViewCollection} dedicated to elements that are detached
  * from the DOM structure of the editor, like panels, icons, etc.
@@ -33,13 +36,17 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
  * @extends module:ui/viewcollection~ViewCollection
  */
 export default class BodyCollection extends ViewCollection {
+	public readonly locale: Locale;
+
+	private _bodyCollectionContainer?: HTMLElement;
+
 	/**
 	 * Creates a new instance of the {@link module:ui/editorui/bodycollection~BodyCollection}.
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor editor's locale} instance.
 	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
 	 */
-	constructor( locale, initialItems = [] ) {
+	constructor( locale: Locale, initialItems: Iterable<View> = [] ) {
 		super( initialItems );
 
 		/**
@@ -55,7 +62,7 @@ export default class BodyCollection extends ViewCollection {
 	 * Attaches the body collection to the DOM body element. You need to execute this method to render the content of
 	 * the body collection.
 	 */
-	attachToDom() {
+	public attachToDom(): void {
 		/**
 		 * The element holding elements of the body region.
 		 *
@@ -74,7 +81,7 @@ export default class BodyCollection extends ViewCollection {
 				dir: this.locale.uiLanguageDirection
 			},
 			children: this
-		} ).render();
+		} ).render() as HTMLElement;
 
 		let wrapper = document.querySelector( '.ck-body-wrapper' );
 
@@ -90,7 +97,7 @@ export default class BodyCollection extends ViewCollection {
 	 * Detaches the collection from the DOM structure. Use this method when you do not need to use the body collection
 	 * anymore to clean-up the DOM structure.
 	 */
-	detachFromDom() {
+	public detachFromDom(): void {
 		super.destroy();
 
 		if ( this._bodyCollectionContainer ) {

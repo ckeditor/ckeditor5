@@ -15,6 +15,7 @@ import ListView from '../list/listview';
 import ListItemView from '../list/listitemview';
 import ListSeparatorView from '../list/listseparatorview';
 import ButtonView from '../button/buttonview';
+import SplitButtonView from './button/splitbuttonview';
 import SwitchButtonView from '../button/switchbuttonview';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
@@ -95,7 +96,7 @@ import type { Collection, Locale } from '@ckeditor/ckeditor5-utils';
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
 export function createDropdown(
-	locale: Locale,
+	locale: Locale | undefined,
 	ButtonClass: new ( locale?: Locale ) => DropdownButton & FocusableView = DropdownButtonView
 ): DropdownView {
 	const buttonView = new ButtonClass( locale );
@@ -105,11 +106,10 @@ export function createDropdown(
 
 	buttonView.bind( 'isEnabled' ).to( dropdownView );
 
-	if ( buttonView instanceof DropdownButtonView ) {
-		buttonView.bind( 'isOn' ).to( dropdownView, 'isOpen' );
+	if ( buttonView instanceof SplitButtonView ) {
+		buttonView.arrowView.bind( 'isOn' ).to( dropdownView, 'isOpen' );
 	} else {
-		// TODO? Shouldn't the condition be negated?
-		( buttonView as any ).arrowView.bind( 'isOn' ).to( dropdownView, 'isOpen' );
+		buttonView.bind( 'isOn' ).to( dropdownView, 'isOpen' );
 	}
 
 	addDefaultBehavior( dropdownView );

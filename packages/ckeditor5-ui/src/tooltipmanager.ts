@@ -10,11 +10,16 @@
 import View from './view';
 import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview';
 
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import { global, isVisible, mix, first } from '@ckeditor/ckeditor5-utils';
-import { isElement, debounce } from 'lodash-es';
+import { Emitter as DomEmitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import { global, isVisible, first } from '@ckeditor/ckeditor5-utils';
+import { isElement, debounce, type DebouncedFunc } from 'lodash-es';
 
 import '../theme/components/tooltip/tooltip.css';
+
+import type EditorWithUI from '@ckeditor/ckeditor5-core/src/editor/editorwithui';
+import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import type { PositioningFunction } from '@ckeditor/ckeditor5-utils/src/dom/position';
 
 const BALLOON_CLASS = 'ck-tooltip';
 
@@ -65,13 +70,42 @@ const BALLOON_CLASS = 'ck-tooltip';
  *
  * @mixes module:utils/domemittermixin~DomEmitterMixin
  */
-export default class TooltipManager {
+export default class TooltipManager extends DomEmitter {
+	public readonly tooltipTextView!: View & { text: string };
+	public readonly balloonPanelView!: BalloonPanelView;
+
+	private _currentElementWithTooltip!: HTMLElement | null;
+	private _currentTooltipPosition!: TooltipPosition | null;
+	private _pinTooltipDebounced!: DebouncedFunc<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
+
+	private readonly _watchdogExcluded!: true;
+
+	/**
+	 * A set of editors the single tooltip manager instance must listen to.
+	 * This is mostly to handle `EditorUI#update` listeners from individual editors.
+	 *
+	 * @private
+	 * @member {Set.<module:core/editor/editor~Editor>} module:ui/tooltipmanager~TooltipManager._editors
+	 */
+	private static _editors = new Set<EditorWithUI>();
+
+	/**
+	 * A reference to the `TooltipManager` instance. The class is a singleton and as such,
+	 * successive attempts at creating instances should return this instance.
+	 *
+	 * @private
+	 * @member {module:ui/tooltipmanager~TooltipManager} module:ui/tooltipmanager~TooltipManager._instance
+	 */
+	private static _instance: TooltipManager | null = null;
+
 	/**
 	 * Creates an instance of the tooltip manager.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
-	constructor( editor ) {
+	constructor( editor: EditorWithUI ) {
+		super();
+
 		TooltipManager._editors.add( editor );
 
 		// TooltipManager must be a singleton. Multiple instances would mean multiple tooltips attached
@@ -88,7 +122,7 @@ export default class TooltipManager {
 		 * @readonly
 		 * @member {module:ui/view~View} #tooltipTextView
 		 */
-		this.tooltipTextView = new View( editor.locale );
+		this.tooltipTextView = new View( editor.locale ) as any;
 		this.tooltipTextView.set( 'text', '' );
 		this.tooltipTextView.setTemplate( {
 			tag: 'span',
@@ -167,7 +201,7 @@ export default class TooltipManager {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor the manager was created for.
 	 */
-	destroy( editor ) {
+	public destroy( editor: EditorWithUI ): void {
 		TooltipManager._editors.delete( editor );
 		this.stopListening( editor.ui );
 
@@ -187,7 +221,7 @@ export default class TooltipManager {
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
 	 * @param {Event} domEvent The DOM event.
 	 */
-	_onEnterOrFocus( evt, { target } ) {
+	private _onEnterOrFocus( evt: unknown, { target }: any ) {
 		const elementWithTooltipAttribute = getDescendantWithTooltip( target );
 
 		// Abort when there's no descendant needing tooltip.
@@ -214,7 +248,7 @@ export default class TooltipManager {
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
 	 * @param {Event} domEvent The DOM event.
 	 */
-	_onLeaveOrBlur( evt, { target, relatedTarget } ) {
+	private _onLeaveOrBlur( evt: EventInfo, { target, relatedTarget }: any ) {
 		if ( evt.name === 'mouseleave' ) {
 			// Don't act when the event does not concern a DOM element (e.g. a mouseleave out of an entire document),
 			if ( !isElement( target ) ) {
@@ -258,7 +292,7 @@ export default class TooltipManager {
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
 	 * @param {Event} domEvent The DOM event.
 	 */
-	_onScroll( evt, { target } ) {
+	private _onScroll( evt: unknown, { target }: any ) {
 		// No tooltip, no reason to react on scroll.
 		if ( !this._currentElementWithTooltip ) {
 			return;
@@ -284,9 +318,12 @@ export default class TooltipManager {
 	 * @param {String} options.position The position of the tooltip.
 	 * @param {String} options.cssClass Additional CSS class of the balloon with the tooltip.
 	 */
-	_pinTooltip( targetDomElement, { text, position, cssClass } ) {
+	private _pinTooltip(
+		targetDomElement: HTMLElement,
+		{ text, position, cssClass }: TooltipData
+	): void {
 		// Use the body collection of the first editor.
-		const bodyViewCollection = first( TooltipManager._editors.values() ).ui.view.body;
+		const bodyViewCollection = first( TooltipManager._editors.values() )!.ui.view.body;
 
 		if ( !bodyViewCollection.has( this.balloonPanelView ) ) {
 			bodyViewCollection.add( this.balloonPanelView );
@@ -307,7 +344,7 @@ export default class TooltipManager {
 		// and a contextual toolbar attached to a content starts to move (and so should move the tooltip).
 		// Note: Using low priority to let other listeners that position contextual toolbars etc. to react first.
 		for ( const editor of TooltipManager._editors ) {
-			this.listenTo( editor.ui, 'update', this._updateTooltipPosition.bind( this ), { priority: 'low' } );
+			this.listenTo<UpdateEvent>( editor.ui, 'update', this._updateTooltipPosition.bind( this ), { priority: 'low' } );
 		}
 
 		this._currentElementWithTooltip = targetDomElement;
@@ -319,7 +356,7 @@ export default class TooltipManager {
 	 *
 	 * @private
 	 */
-	_unpinTooltip() {
+	private _unpinTooltip() {
 		this._pinTooltipDebounced.cancel();
 
 		this.balloonPanelView.unpin();
@@ -339,7 +376,7 @@ export default class TooltipManager {
 	 *
 	 * @private
 	 */
-	_updateTooltipPosition() {
+	private _updateTooltipPosition() {
 		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
 		// disappeared (e.g. removed an image).
 		if ( !isVisible( this._currentElementWithTooltip ) ) {
@@ -349,8 +386,8 @@ export default class TooltipManager {
 		}
 
 		this.balloonPanelView.pin( {
-			target: this._currentElementWithTooltip,
-			positions: TooltipManager.getPositioningFunctions( this._currentTooltipPosition )
+			target: this._currentElementWithTooltip!,
+			positions: TooltipManager.getPositioningFunctions( this._currentTooltipPosition! )
 		} );
 	}
 
@@ -362,7 +399,7 @@ export default class TooltipManager {
 	 * @param {String} position Name of the position (`s`, `se`, `sw`, `n`, `e`, or `w`).
 	 * @returns {Array.<module:utils/dom/position~PositioningFunction>} Positioning functions to be used by the {@link #balloonPanelView}.
 	 */
-	static getPositioningFunctions( position ) {
+	public static getPositioningFunctions( position: TooltipPosition ): PositioningFunction[] {
 		const defaultPositions = TooltipManager.defaultBalloonPositions;
 
 		return {
@@ -379,52 +416,40 @@ export default class TooltipManager {
 			se: [ defaultPositions.southArrowNorthWest ]
 		}[ position ];
 	}
+
+	/**
+	 * A set of default {@link module:utils/dom/position~PositioningFunction positioning functions} used by the `TooltipManager`
+	 * to pin tooltips in different positions.
+	 *
+	 * @member {Object.<String,module:utils/dom/position~PositioningFunction>}
+	 * module:ui/tooltipmanager~TooltipManager.defaultBalloonPositions
+	 */
+	public static defaultBalloonPositions = generatePositions( {
+		heightOffset: 5,
+		sideOffset: 13
+	} );
 }
 
-mix( TooltipManager, DomEmitterMixin );
+export type TooltipPosition = 's' | 'n' | 'e' | 'w' | 'sw' | 'se';
 
-/**
- * A set of default {@link module:utils/dom/position~PositioningFunction positioning functions} used by the `TooltipManager`
- * to pin tooltips in different positions.
- *
- * @member {Object.<String,module:utils/dom/position~PositioningFunction>}
- * module:ui/tooltipmanager~TooltipManager.defaultBalloonPositions
- */
-TooltipManager.defaultBalloonPositions = generatePositions( {
-	heightOffset: 5,
-	sideOffset: 13
-} );
-
-/**
- * A reference to the `TooltipManager` instance. The class is a singleton and as such,
- * successive attempts at creating instances should return this instance.
- *
- * @private
- * @member {module:ui/tooltipmanager~TooltipManager} module:ui/tooltipmanager~TooltipManager._instance
- */
-TooltipManager._instance = null;
-
-/**
- * An array of editors the single tooltip manager instance must listen to.
- * This is mostly to handle `EditorUI#update` listeners from individual editors.
- *
- * @private
- * @member {Set.<module:core/editor/editor~Editor>} module:ui/tooltipmanager~TooltipManager._editors
- */
-TooltipManager._editors = new Set();
-
-function getDescendantWithTooltip( element ) {
+function getDescendantWithTooltip( element: HTMLElement ) {
 	if ( !isElement( element ) ) {
 		return null;
 	}
 
-	return element.closest( '[data-cke-tooltip-text]:not([data-cke-tooltip-disabled])' );
+	return element.closest( '[data-cke-tooltip-text]:not([data-cke-tooltip-disabled])' ) as HTMLElement;
 }
 
-function getTooltipData( element ) {
+interface TooltipData {
+	text: string;
+	position: TooltipPosition;
+	cssClass: string;
+}
+
+function getTooltipData( element: HTMLElement ): TooltipData {
 	return {
-		text: element.dataset.ckeTooltipText,
-		position: element.dataset.ckeTooltipPosition || 's',
+		text: element.dataset.ckeTooltipText!,
+		position: ( element.dataset.ckeTooltipPosition || 's' ) as TooltipPosition,
 		cssClass: element.dataset.ckeTooltipClass || ''
 	};
 }

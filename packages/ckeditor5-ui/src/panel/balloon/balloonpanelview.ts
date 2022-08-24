@@ -232,7 +232,7 @@ export default class BalloonPanelView extends View {
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
 	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
-	public attachTo( options: Options ): void {
+	public attachTo( options: Partial<Options> ): void {
 		this.show();
 
 		const defaultPositions = BalloonPanelView.defaultPositions;
@@ -253,7 +253,7 @@ export default class BalloonPanelView extends View {
 			],
 			limiter: defaultLimiterElement,
 			fitInViewport: true
-		}, options );
+		}, options ) as Options;
 
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
 
@@ -305,7 +305,7 @@ export default class BalloonPanelView extends View {
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
 	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
-	public pin( options: Options ): void {
+	public pin( options: Partial<Options> ): void {
 		this.unpin();
 
 		this._pinWhenIsVisibleCallback = () => {
@@ -349,7 +349,7 @@ export default class BalloonPanelView extends View {
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}.
 	 */
-	private _startPinning( options: Options ) {
+	private _startPinning( options: Partial<Options> ) {
 		this.attachTo( options );
 
 		const targetElement = getDomElement( options.target );

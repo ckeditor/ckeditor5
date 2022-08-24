@@ -1779,6 +1779,20 @@ export type TemplateListenerSchema = ArrayOrItem<ListenerBinding>;
  * @type {Object|String|Array}
  */
 
+// `Template.bind( observable, emitter ).to( name )` is used in two different contexts:
+// - in `attribute` (or `text`) section of the `TemplateDefinition` - `name` is an observed property of the provided `observable`, or
+// - in `on` section - `name` is the event to be fired.
+//
+// In both cases, the returned type is `TemplateToBinding` which can be misleading.
+// Moreover, some forms of `to()` can be used in specific context only:
+// - `to( name, callback )` can only be used in `attribute` or `text`
+// - `to( callback )` can only be used in `on`.
+//
+// But note, that the fact it's `Template{To,If}Binding` is not relevant to the user.
+// The instances are both produced and consumed by this file only.
+// So let's invent some opaque types for outside use and only keep using `TemplateBinding` internally. They can be different for
+// `attribute` and `on` contexts.
+// To make them opaque, a non-exported symbol is used, so it's not possible to accidentally create an instance outside.
 declare const AttributeBindingSymbol: unique symbol;
 declare const ListenerBindingSymbol: unique symbol;
 

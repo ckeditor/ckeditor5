@@ -10,13 +10,18 @@
 import ButtonView from '../button/buttonview';
 import checkIcon from '../../theme/icons/color-tile-check.svg';
 
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+
 /**
  * This class represents a single color tile in the {@link module:ui/colorgrid/colorgrid~ColorGridView}.
  *
  * @extends module:ui/button/buttonview~ButtonView
  */
 export default class ColorTileView extends ButtonView {
-	constructor( locale ) {
+	declare public color: string | undefined;
+	declare public hasBorder: boolean;
+
+	constructor( locale?: Locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -26,7 +31,7 @@ export default class ColorTileView extends ButtonView {
 		 *
 		 * @type {String}
 		 */
-		this.set( 'color' );
+		this.set( 'color', undefined );
 
 		/**
 		 * A flag that toggles a special CSS class responsible for displaying
@@ -34,7 +39,7 @@ export default class ColorTileView extends ButtonView {
 		 *
 		 * @type {Boolean}
 		 */
-		this.set( 'hasBorder' );
+		this.set( 'hasBorder', false );
 
 		this.icon = checkIcon;
 
@@ -55,7 +60,7 @@ export default class ColorTileView extends ButtonView {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		this.iconView.fillColor = 'hsl(0, 0%, 100%)';

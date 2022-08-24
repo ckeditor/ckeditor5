@@ -12,18 +12,28 @@ import BodyCollection from './bodycollection';
 
 import '../../theme/components/editorui/editorui.css';
 
+import type EditableUIView from '../editableui/editableuiview';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+
 /**
  * The editor UI view class. Base class for the editor main views.
  *
  * @extends module:ui/view~View
  */
-export default class EditorUIView extends View {
+export default abstract class EditorUIView extends View {
+	public readonly body: BodyCollection;
+
+	declare public locale: Locale;
+	declare public t: Locale[ 't' ];
+
+	public abstract get editable(): EditableUIView;
+
 	/**
 	 * Creates an instance of the editor UI view class.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The locale instance.
 	 */
-	constructor( locale ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		/**
@@ -39,7 +49,7 @@ export default class EditorUIView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		this.body.attachToDom();
@@ -48,7 +58,7 @@ export default class EditorUIView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		this.body.detachFromDom();
 
 		return super.destroy();

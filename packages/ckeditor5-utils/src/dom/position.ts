@@ -272,7 +272,7 @@ export interface Position {
 	 * @readonly
 	 * @member {String}
 	 */
-	readonly name: string;
+	readonly name?: string;
 
 	/**
 	 * Additional position configuration, as passed from the {@link module:utils/dom/position~PositioningFunction positioning function}.
@@ -312,7 +312,7 @@ export interface Position {
 // @private
 // @implements {Position}
 class PositionObject implements Position {
-	public name!: string;
+	public name?: string;
 	public config?: object;
 
 	private _positioningFunctionCorrdinates!: { left: number; top: number };
@@ -565,6 +565,6 @@ export interface Options {
 export type PositioningFunction = ( elementRect: Rect, targetRect: Rect, viewportRect: Rect | null ) => ( {
 	top: number;
 	left: number;
-	name: string;
+	name?: string;
 	config?: object;
 } | null );

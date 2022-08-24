@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
+
 /**
  * @module ui/toolbar/normalizetoolbarconfig
  */
@@ -30,10 +32,11 @@
  * @returns {Object} A normalized toolbar config object.
  */
 export default function normalizeToolbarConfig(
-	config: ToolbarConfig
+	config: EditorConfig[ 'toolbar' ]
 ): {
 	items: string[];
 	removeItems: string[];
+	shouldNotGroupWhenFull?: boolean;
 } {
 	if ( Array.isArray( config ) ) {
 		return {
@@ -49,10 +52,8 @@ export default function normalizeToolbarConfig(
 		};
 	}
 
-	return {
-		items: config.items || [],
-		removeItems: config.removeItems || []
-	};
+	return Object.assign( {
+		items: [],
+		removeItems: []
+	}, config );
 }
-
-export type ToolbarConfig = string[] | { items?: string[]; removeItems?: string[] } | undefined;

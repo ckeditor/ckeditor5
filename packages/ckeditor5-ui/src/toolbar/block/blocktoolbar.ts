@@ -27,6 +27,12 @@ import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
+import type { ExecuteEvent } from '../../button/button';
+import type { Editor, EditorWithUI } from '@ckeditor/ckeditor5-core';
+import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import type { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
+import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
 const toPx = toUnit( 'px' );
 
 /**
@@ -71,17 +77,26 @@ const toPx = toUnit( 'px' );
  * @extends module:core/plugin~Plugin
  */
 export default class BlockToolbar extends Plugin {
+	public readonly toolbarView: ToolbarView;
+	public readonly panelView: BalloonPanelView;
+	public readonly buttonView: BlockButtonView;
+
+	declare public readonly editor: EditorWithUI;
+
+	private _resizeObserver: ResizeObserver | null;
+	private _blockToolbarConfig: ReturnType<typeof normalizeToolbarConfig>;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'BlockToolbar' {
 		return 'BlockToolbar';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		/**
@@ -90,7 +105,7 @@ export default class BlockToolbar extends Plugin {
 		 * @type {module:core/editor/editorconfig~EditorConfig#blockToolbar}
 		 * @private
 		 */
-		this._blockToolbarConfig = normalizeToolbarConfig( this.editor.config.get( 'blockToolbar' ) );
+		this._blockToolbarConfig = normalizeToolbarConfig( this.editor.config.get( 'blockToolbar' ) as EditorConfig[ 'toolbar' ] );
 
 		/**
 		 * The toolbar view.
@@ -130,7 +145,7 @@ export default class BlockToolbar extends Plugin {
 		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
 			emitter: this.panelView,
-			contextElements: [ this.panelView.element, this.buttonView.element ],
+			contextElements: [ this.panelView.element!, this.buttonView.element! ],
 			activator: () => this.panelView.isVisible,
 			callback: () => this._hidePanel()
 		} );
@@ -139,8 +154,8 @@ export default class BlockToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		const editor = this.editor;
+	public init(): void {
+		const editor = this.editor as EditorWithUI;
 
 		// Hides panel on a direct selection change.
 		this.listenTo( editor.model.document.selection, 'change:range', ( evt, data ) => {
@@ -149,13 +164,13 @@ export default class BlockToolbar extends Plugin {
 			}
 		} );
 
-		this.listenTo( editor.ui, 'update', () => this._updateButton() );
+		this.listenTo<UpdateEvent>( editor.ui, 'update', () => this._updateButton() );
 		// `low` priority is used because of https://github.com/ckeditor/ckeditor5-core/issues/133.
-		this.listenTo( editor, 'change:isReadOnly', () => this._updateButton(), { priority: 'low' } );
-		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => this._updateButton() );
+		this.listenTo<ChangeEvent>( editor, 'change:isReadOnly', () => this._updateButton(), { priority: 'low' } );
+		this.listenTo<ChangeEvent>( editor.ui.focusTracker, 'change:isFocused', () => this._updateButton() );
 
 		// Reposition button on resize.
-		this.listenTo( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
+		this.listenTo<ChangeEvent<boolean>>( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
 				// Keep correct position of button and panel on window#resize.
 				this.buttonView.listenTo( window, 'resize', () => this._updateButton() );
@@ -182,7 +197,7 @@ export default class BlockToolbar extends Plugin {
 	 *
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const factory = this.editor.ui.componentFactory;
 		const config = this._blockToolbarConfig;
 
@@ -190,12 +205,12 @@ export default class BlockToolbar extends Plugin {
 
 		// Hide panel before executing each button in the panel.
 		for ( const item of this.toolbarView.items ) {
-			item.on( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
+			item.on<ExecuteEvent>( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
 		}
 
 		if ( !config.shouldNotGroupWhenFull ) {
 			this.listenTo( this.editor, 'ready', () => {
-				const editableElement = this.editor.ui.view.editable.element;
+				const editableElement = this.editor.ui.view.editable.element!;
 
 				// Set #toolbarView's max-width just after the initialization and update it on the editable resize.
 				this._resizeObserver = new ResizeObserver( editableElement, () => {
@@ -208,7 +223,7 @@ export default class BlockToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
@@ -227,7 +242,7 @@ export default class BlockToolbar extends Plugin {
 	 * @private
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
-	_createToolbarView() {
+	private _createToolbarView() {
 		const t = this.editor.locale.t;
 		const shouldGroupWhenFull = !this._blockToolbarConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
@@ -253,14 +268,14 @@ export default class BlockToolbar extends Plugin {
 	 * @private
 	 * @returns {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
 	 */
-	_createPanelView() {
+	private _createPanelView() {
 		const editor = this.editor;
 		const panelView = new BalloonPanelView( editor.locale );
 
 		panelView.content.add( this.toolbarView );
 		panelView.class = 'ck-toolbar-container';
 		editor.ui.view.body.add( panelView );
-		editor.ui.focusTracker.add( panelView.element );
+		editor.ui.focusTracker.add( panelView.element! );
 
 		// Close #panelView on `Esc` press.
 		this.toolbarView.keystrokes.set( 'Esc', ( evt, cancel ) => {
@@ -277,7 +292,7 @@ export default class BlockToolbar extends Plugin {
 	 * @private
 	 * @returns {module:ui/toolbar/block/blockbuttonview~BlockButtonView}
 	 */
-	_createButtonView() {
+	private _createButtonView() {
 		const editor = this.editor;
 		const t = editor.t;
 		const buttonView = new BlockButtonView( editor.locale );
@@ -320,7 +335,7 @@ export default class BlockToolbar extends Plugin {
 		} );
 
 		editor.ui.view.body.add( buttonView );
-		editor.ui.focusTracker.add( buttonView.element );
+		editor.ui.focusTracker.add( buttonView.element! );
 
 		return buttonView;
 	}
@@ -331,7 +346,7 @@ export default class BlockToolbar extends Plugin {
 	 *
 	 * @private
 	 */
-	_updateButton() {
+	private _updateButton() {
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
@@ -354,20 +369,20 @@ export default class BlockToolbar extends Plugin {
 		const modelTarget = Array.from( model.document.selection.getSelectedBlocks() )[ 0 ];
 
 		// Hides the button when there is no enabled item in toolbar for the current block element.
-		if ( !modelTarget || Array.from( this.toolbarView.items ).every( item => !item.isEnabled ) ) {
+		if ( !modelTarget || Array.from( this.toolbarView.items ).every( ( item: any ) => !item.isEnabled ) ) {
 			this._hideButton();
 
 			return;
 		}
 
 		// Get DOM target element.
-		const domTarget = view.domConverter.mapViewToDom( editor.editing.mapper.toViewElement( modelTarget ) );
+		const domTarget = view.domConverter.mapViewToDom( editor.editing.mapper.toViewElement( modelTarget )! );
 
 		// Show block button.
 		this.buttonView.isVisible = true;
 
 		// Attach block button to target DOM element.
-		this._attachButtonToElement( domTarget );
+		this._attachButtonToElement( domTarget as any );
 
 		// When panel is opened then refresh it position to be properly aligned with block button.
 		if ( this.panelView.isVisible ) {
@@ -380,7 +395,7 @@ export default class BlockToolbar extends Plugin {
 	 *
 	 * @private
 	 */
-	_hideButton() {
+	private _hideButton() {
 		this.buttonView.isVisible = false;
 	}
 
@@ -390,7 +405,7 @@ export default class BlockToolbar extends Plugin {
 	 *
 	 * @private
 	 */
-	_showPanel() {
+	private _showPanel() {
 		// Usually, the only way to show the toolbar is by pressing the block button. It makes it impossible for
 		// the toolbar to show up when the button is invisible (feature does not make sense for the selection then).
 		// The toolbar navigation using Alt+F10 does not access the button but shows the panel directly using this method.
@@ -428,12 +443,12 @@ export default class BlockToolbar extends Plugin {
 		this.toolbarView.maxWidth = this._getToolbarMaxWidth();
 
 		this.panelView.pin( {
-			target: this.buttonView.element,
+			target: this.buttonView.element!,
 			limiter: this.editor.ui.getEditableElement()
 		} );
 
 		if ( !wasVisible ) {
-			this.toolbarView.items.get( 0 ).focus();
+			( this.toolbarView.items.get( 0 ) as any ).focus();
 		}
 	}
 
@@ -443,7 +458,7 @@ export default class BlockToolbar extends Plugin {
 	 * @private
 	 * @param {Boolean} [focusEditable=false] When `true`, the editable will be focused after hiding the panel.
 	 */
-	_hidePanel( focusEditable ) {
+	private _hidePanel( focusEditable?: boolean ) {
 		this.panelView.isVisible = false;
 
 		if ( focusEditable ) {
@@ -457,17 +472,17 @@ export default class BlockToolbar extends Plugin {
 	 * @protected
 	 * @param {HTMLElement} targetElement Target element.
 	 */
-	_attachButtonToElement( targetElement ) {
+	private _attachButtonToElement( targetElement: HTMLElement ) {
 		const contentStyles = window.getComputedStyle( targetElement );
 
-		const editableRect = new Rect( this.editor.ui.getEditableElement() );
+		const editableRect = new Rect( this.editor.ui.getEditableElement()! );
 		const contentPaddingTop = parseInt( contentStyles.paddingTop, 10 );
 		// When line height is not an integer then thread it as "normal".
 		// MDN says that 'normal' == ~1.2 on desktop browsers.
 		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
 
 		const position = getOptimalPosition( {
-			element: this.buttonView.element,
+			element: this.buttonView.element!,
 			target: targetElement,
 			positions: [
 				( contentRect, buttonRect ) => {
@@ -498,10 +513,10 @@ export default class BlockToolbar extends Plugin {
 	 * @private
 	 * @returns {String} maxWidth A maximum width that toolbar can have, in pixels.
 	 */
-	_getToolbarMaxWidth() {
-		const editableElement = this.editor.ui.view.editable.element;
+	private _getToolbarMaxWidth() {
+		const editableElement = this.editor.ui.view.editable.element!;
 		const editableRect = new Rect( editableElement );
-		const buttonRect = new Rect( this.buttonView.element );
+		const buttonRect = new Rect( this.buttonView.element! );
 		const isRTL = this.editor.locale.uiLanguageDirection === 'rtl';
 		const offset = isRTL ? ( buttonRect.left - editableRect.right ) + buttonRect.width : editableRect.left - buttonRect.left;
 

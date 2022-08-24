@@ -15,12 +15,26 @@ import addKeyboardHandlingForGrid from '../bindings/addkeyboardhandlingforgrid';
 
 import '../../theme/components/colorgrid/colorgrid.css';
 
+import type { ExecuteEvent as ButtonExecuteEvent } from '../button/button';
+import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
+import type ViewCollection from '../viewcollection';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { AddEvent, RemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
 /**
  * A grid of {@link module:ui/colorgrid/colortile~ColorTileView color tiles}.
  *
  * @extends module:ui/view~View
  */
-export default class ColorGridView extends View {
+export default class ColorGridView extends View implements DropdownPanelFocusable {
+	public readonly columns: number;
+	public readonly items: ViewCollection;
+	public readonly focusTracker: FocusTracker;
+	public readonly keystrokes: KeystrokeHandler;
+
+	declare public selectedColor: string | undefined;
+
 	/**
 	 * Creates an instance of a color grid containing {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
 	 *
@@ -30,11 +44,16 @@ export default class ColorGridView extends View {
 	 * required to create the {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
 	 * @param {Number} [options.columns=5] A number of columns to display the tiles.
 	 */
-	constructor( locale, options ) {
+	constructor(
+		locale?: Locale,
+		options?: {
+			colorDefinitions?: ColorDefinition[];
+			columns?: number;
+		}
+	) {
 		super( locale );
 
 		const colorDefinitions = options && options.colorDefinitions || [];
-		const viewStyleAttribute = {};
 
 		/**
 		 * A number of columns for the tiles grid.
@@ -44,7 +63,9 @@ export default class ColorGridView extends View {
 		 */
 		this.columns = options && options.columns ? options.columns : 5;
 
-		viewStyleAttribute.gridTemplateColumns = `repeat( ${ this.columns }, 1fr)`;
+		const viewStyleAttribute = {
+			gridTemplateColumns: `repeat( ${ this.columns }, 1fr)`
+		};
 
 		/**
 		 * The color of the currently selected color tile in {@link #items}.
@@ -52,7 +73,7 @@ export default class ColorGridView extends View {
 		 * @observable
 		 * @type {String}
 		 */
-		this.set( 'selectedColor' );
+		this.set( 'selectedColor', undefined );
 
 		/**
 		 * Collection of the child tile views.
@@ -78,7 +99,7 @@ export default class ColorGridView extends View {
 		 */
 		this.keystrokes = new KeystrokeHandler();
 
-		this.items.on( 'add', ( evt, colorTile ) => {
+		this.items.on<AddEvent<ColorTileView>>( 'add', ( evt, colorTile ) => {
 			colorTile.isOn = colorTile.color === this.selectedColor;
 		} );
 
@@ -92,7 +113,7 @@ export default class ColorGridView extends View {
 				hasBorder: color.options.hasBorder
 			} );
 
-			colorTile.on( 'execute', () => {
+			colorTile.on<ButtonExecuteEvent>( 'execute', () => {
 				this.fire( 'execute', {
 					value: color.color,
 					hasBorder: color.options.hasBorder,
@@ -115,9 +136,9 @@ export default class ColorGridView extends View {
 			}
 		} );
 
-		this.on( 'change:selectedColor', ( evt, name, selectedColor ) => {
+		this.on<ChangeEvent<string | undefined>>( 'change:selectedColor', ( evt, name, selectedColor ) => {
 			for ( const item of this.items ) {
-				item.isOn = item.color === selectedColor;
+				( item as ColorTileView ).isOn = ( item as ColorTileView ).color === selectedColor;
 			}
 		} );
 	}
@@ -125,42 +146,42 @@ export default class ColorGridView extends View {
 	/**
 	 * Focuses the first focusable in {@link #items}.
 	 */
-	focus() {
+	public focus(): void {
 		if ( this.items.length ) {
-			this.items.first.focus();
+			( this.items.first as ColorTileView ).focus();
 		}
 	}
 
 	/**
 	 * Focuses the last focusable in {@link #items}.
 	 */
-	focusLast() {
+	public focusLast(): void {
 		if ( this.items.length ) {
-			this.items.last.focus();
+			( this.items.last as ColorTileView ).focus();
 		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		// Items added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {
-			this.focusTracker.add( item.element );
+			this.focusTracker.add( item.element! );
 		}
 
-		this.items.on( 'add', ( evt, item ) => {
+		this.items.on<AddEvent>( 'add', ( evt, item ) => {
 			this.focusTracker.add( item.element );
 		} );
 
-		this.items.on( 'remove', ( evt, item ) => {
+		this.items.on<RemoveEvent>( 'remove', ( evt, item ) => {
 			this.focusTracker.remove( item.element );
 		} );
 
 		// Start listening for the keystrokes coming from #element.
-		this.keystrokes.listenTo( this.element );
+		this.keystrokes.listenTo( this.element! );
 
 		addKeyboardHandlingForGrid( {
 			keystrokeHandler: this.keystrokes,
@@ -173,7 +194,7 @@ export default class ColorGridView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.focusTracker.destroy();
@@ -215,3 +236,10 @@ export default class ColorGridView extends View {
  * @property {Boolean} options.hasBorder A flag that indicates if special a CSS class should be added
  * to {@link module:ui/colorgrid/colortile~ColorTileView}, which renders a border around it.
  */
+export interface ColorDefinition {
+	color: string;
+	label: string;
+	options: {
+		hasBorder: boolean;
+	};
+}

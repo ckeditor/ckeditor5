@@ -22,6 +22,13 @@ import nextIcon from '../../../theme/icons/next-arrow.svg';
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
 
+import type { ExecuteEvent } from '../../button/button';
+import type ViewCollection from '../../viewcollection';
+import type { EditorWithUI } from '@ckeditor/ckeditor5-core';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { Options } from '@ckeditor/ckeditor5-utils/src/dom/position';
+
 const toPx = toUnit( 'px' );
 
 /**
@@ -61,17 +68,32 @@ const toPx = toUnit( 'px' );
  * @extends module:core/plugin~Plugin
  */
 export default class ContextualBalloon extends Plugin {
+	public readonly view: BalloonPanelView;
+	public positionLimiter: Options[ 'limiter' ];
+	public visibleStack?: string;
+
+	declare public readonly editor: EditorWithUI;
+
+	declare public visibleView: View | null;
+	declare public _numberOfStacks: number;
+	declare public _singleViewMode: boolean;
+
+	private _viewToStack: Map<View, Stack>;
+	private _idToStack: Map<string, Stack>;
+	private readonly _rotatorView: RotatorView;
+	private readonly _fakePanelsView: FakePanelsView;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'ContextualBalloon' {
 		return 'ContextualBalloon';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: EditorWithUI ) {
 		super( editor );
 
 		/**
@@ -91,7 +113,7 @@ export default class ContextualBalloon extends Plugin {
 			const editableElement = viewDocument.selection.editableElement;
 
 			if ( editableElement ) {
-				return view.domConverter.mapViewToDom( editableElement.root );
+				return view.domConverter.mapViewToDom( editableElement.root ) as HTMLElement;
 			}
 
 			return null;
@@ -114,7 +136,7 @@ export default class ContextualBalloon extends Plugin {
 		 */
 		this.view = new BalloonPanelView( editor.locale );
 		editor.ui.view.body.add( this.view );
-		editor.ui.focusTracker.add( this.view.element );
+		editor.ui.focusTracker.add( this.view.element! );
 
 		/**
 		 * The map of views and their stacks.
@@ -173,7 +195,7 @@ export default class ContextualBalloon extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.view.destroy();
@@ -187,7 +209,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {module:ui/view~View} view
 	 * @returns {Boolean}
 	 */
-	hasView( view ) {
+	public hasView( view: View ): boolean {
 		return Array.from( this._viewToStack.keys() ).includes( view );
 	}
 
@@ -203,7 +225,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {Boolean} [data.withArrow=true] Whether the {@link #view balloon} should be rendered with an arrow.
 	 * @param {Boolean} [data.singleViewMode=false] Whether the view should be the only visible view even if other stacks were added.
 	 */
-	add( data ) {
+	public add( data: ViewConfiguration ): void {
 		if ( this.hasView( data.view ) ) {
 			/**
 			 * Trying to add configuration of the same view more than once.
@@ -221,7 +243,7 @@ export default class ContextualBalloon extends Plugin {
 		// If new stack is added, creates it and show view from this stack.
 		if ( !this._idToStack.has( stackId ) ) {
 			this._idToStack.set( stackId, new Map( [ [ data.view, data ] ] ) );
-			this._viewToStack.set( data.view, this._idToStack.get( stackId ) );
+			this._viewToStack.set( data.view, this._idToStack.get( stackId )! );
 			this._numberOfStacks = this._idToStack.size;
 
 			if ( !this._visibleStack || data.singleViewMode ) {
@@ -231,7 +253,7 @@ export default class ContextualBalloon extends Plugin {
 			return;
 		}
 
-		const stack = this._idToStack.get( stackId );
+		const stack = this._idToStack.get( stackId )!;
 
 		if ( data.singleViewMode ) {
 			this.showStack( stackId );
@@ -255,7 +277,7 @@ export default class ContextualBalloon extends Plugin {
 	 *
 	 * @param {module:ui/view~View} view A view to be removed from the balloon.
 	 */
-	remove( view ) {
+	public remove( view: View ): void {
 		if ( !this.hasView( view ) ) {
 			/**
 			 * Trying to remove the configuration of the view not defined in the stack.
@@ -268,7 +290,7 @@ export default class ContextualBalloon extends Plugin {
 			);
 		}
 
-		const stack = this._viewToStack.get( view );
+		const stack = this._viewToStack.get( view )!;
 
 		if ( this._singleViewMode && this.visibleView === view ) {
 			this._singleViewMode = false;
@@ -306,12 +328,12 @@ export default class ContextualBalloon extends Plugin {
 	 *
 	 * @param {module:utils/dom/position~Options} [position] position options.
 	 */
-	updatePosition( position ) {
+	public updatePosition( position?: Partial<Options> ): void {
 		if ( position ) {
-			this._visibleStack.get( this.visibleView ).position = position;
+			this._visibleStack.get( this.visibleView! )!.position = position;
 		}
 
-		this.view.pin( this._getBalloonPosition() );
+		this.view.pin( this._getBalloonPosition()! );
 		this._fakePanelsView.updatePosition();
 	}
 
@@ -320,7 +342,7 @@ export default class ContextualBalloon extends Plugin {
 	 *
 	 * @param {String} id
 	 */
-	showStack( id ) {
+	public showStack( id: string ): void {
 		this.visibleStack = id;
 		const stack = this._idToStack.get( id );
 
@@ -340,7 +362,7 @@ export default class ContextualBalloon extends Plugin {
 			return;
 		}
 
-		this._showView( Array.from( stack.values() ).pop() );
+		this._showView( Array.from( stack.values() ).pop()! );
 	}
 
 	/**
@@ -349,8 +371,8 @@ export default class ContextualBalloon extends Plugin {
 	 * @private
 	 * @type {Set}
 	 */
-	get _visibleStack() {
-		return this._viewToStack.get( this.visibleView );
+	private get _visibleStack() {
+		return this._viewToStack.get( this.visibleView! )!;
 	}
 
 	/**
@@ -360,8 +382,8 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {Set} stack
 	 * @returns {String}
 	 */
-	_getStackId( stack ) {
-		const entry = Array.from( this._idToStack.entries() ).find( entry => entry[ 1 ] === stack );
+	private _getStackId( stack: Stack ) {
+		const entry = Array.from( this._idToStack.entries() ).find( entry => entry[ 1 ] === stack )!;
 
 		return entry[ 0 ];
 	}
@@ -371,7 +393,7 @@ export default class ContextualBalloon extends Plugin {
 	 *
 	 * @private
 	 */
-	_showNextStack() {
+	private _showNextStack() {
 		const stacks = Array.from( this._idToStack.values() );
 
 		let nextIndex = stacks.indexOf( this._visibleStack ) + 1;
@@ -388,7 +410,7 @@ export default class ContextualBalloon extends Plugin {
 	 *
 	 * @private
 	 */
-	_showPrevStack() {
+	private _showPrevStack() {
 		const stacks = Array.from( this._idToStack.values() );
 
 		let nextIndex = stacks.indexOf( this._visibleStack ) - 1;
@@ -406,7 +428,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @private
 	 * @returns {module:ui/panel/balloon/contextualballoon~RotatorView}
 	 */
-	_createRotatorView() {
+	private _createRotatorView() {
 		const view = new RotatorView( this.editor.locale );
 		const t = this.editor.locale.t;
 
@@ -418,7 +440,7 @@ export default class ContextualBalloon extends Plugin {
 		} );
 
 		// Update balloon position after toggling navigation.
-		view.on( 'change:isNavigationVisible', () => ( this.updatePosition() ), { priority: 'low' } );
+		view.on<ChangeEvent>( 'change:isNavigationVisible', () => ( this.updatePosition() ), { priority: 'low' } );
 
 		// Update stacks counter value.
 		view.bind( 'counter' ).to( this, 'visibleView', this, '_numberOfStacks', ( visibleView, numberOfStacks ) => {
@@ -431,7 +453,7 @@ export default class ContextualBalloon extends Plugin {
 			return t( '%0 of %1', [ current, numberOfStacks ] );
 		} );
 
-		view.buttonNextView.on( 'execute', () => {
+		view.buttonNextView.on<ExecuteEvent>( 'execute', () => {
 			// When current view has a focus then move focus to the editable before removing it,
 			// otherwise editor will lost focus.
 			if ( view.focusTracker.isFocused ) {
@@ -441,7 +463,7 @@ export default class ContextualBalloon extends Plugin {
 			this._showNextStack();
 		} );
 
-		view.buttonPrevView.on( 'execute', () => {
+		view.buttonPrevView.on<ExecuteEvent>( 'execute', () => {
 			// When current view has a focus then move focus to the editable before removing it,
 			// otherwise editor will lost focus.
 			if ( view.focusTracker.isFocused ) {
@@ -458,7 +480,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @private
 	 * @returns {module:ui/view~View}
 	 */
-	_createFakePanelsView() {
+	private _createFakePanelsView() {
 		const view = new FakePanelsView( this.editor.locale, this.view );
 
 		view.bind( 'numberOfPanels' ).to( this, '_numberOfStacks', this, '_singleViewMode', ( number, isSingleViewMode ) => {
@@ -467,8 +489,8 @@ export default class ContextualBalloon extends Plugin {
 			return showPanels ? Math.min( number - 1, 2 ) : 0;
 		} );
 
-		view.listenTo( this.view, 'change:top', () => view.updatePosition() );
-		view.listenTo( this.view, 'change:left', () => view.updatePosition() );
+		view.listenTo<ChangeEvent>( this.view, 'change:top', () => view.updatePosition() );
+		view.listenTo<ChangeEvent>( this.view, 'change:left', () => view.updatePosition() );
 
 		this.editor.ui.view.body.add( view );
 
@@ -485,13 +507,13 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {String} [data.balloonClassName=''] Additional class name which will be added to the {@link #view balloon}.
 	 * @param {Boolean} [data.withArrow=true] Whether the {@link #view balloon} should be rendered with an arrow.
 	 */
-	_showView( { view, balloonClassName = '', withArrow = true, singleViewMode = false } ) {
+	private _showView( { view, balloonClassName = '', withArrow = true, singleViewMode = false }: ViewConfiguration ) {
 		this.view.class = balloonClassName;
 		this.view.withArrow = withArrow;
 
 		this._rotatorView.showView( view );
 		this.visibleView = view;
-		this.view.pin( this._getBalloonPosition() );
+		this.view.pin( this._getBalloonPosition()! );
 		this._fakePanelsView.updatePosition();
 
 		if ( singleViewMode ) {
@@ -506,8 +528,8 @@ export default class ContextualBalloon extends Plugin {
 	 * @private
 	 * @returns {module:utils/dom/position~Options}
 	 */
-	_getBalloonPosition() {
-		let position = Array.from( this._visibleStack.values() ).pop().position;
+	private _getBalloonPosition() {
+		let position = Array.from( this._visibleStack.values() ).pop()!.position;
 
 		if ( position ) {
 			// Use the default limiter if none has been specified.
@@ -528,6 +550,17 @@ export default class ContextualBalloon extends Plugin {
 	}
 }
 
+export interface ViewConfiguration {
+	stackId?: string;
+	view: View;
+	position?: Partial<Options>;
+	balloonClassName?: string;
+	withArrow?: boolean;
+	singleViewMode?: boolean;
+}
+
+type Stack = Map<View, ViewConfiguration>;
+
 /**
  * Rotator view is a helper class for the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon}.
  * It is used for displaying the last view from the current stack and providing navigation buttons for switching stacks.
@@ -536,10 +569,18 @@ export default class ContextualBalloon extends Plugin {
  * @extends module:ui/view~View
  */
 class RotatorView extends View {
+	public readonly focusTracker: FocusTracker;
+	public readonly buttonPrevView: ButtonView;
+	public readonly buttonNextView: ButtonView;
+	public readonly content: ViewCollection;
+
+	declare public isNavigationVisible: boolean;
+	declare public counter: string;
+
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		const t = locale.t;
@@ -633,16 +674,16 @@ class RotatorView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
-		this.focusTracker.add( this.element );
+		this.focusTracker.add( this.element! );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.focusTracker.destroy();
@@ -653,7 +694,7 @@ class RotatorView extends View {
 	 *
 	 * @param {module:ui/view~View} view The view to show.
 	 */
-	showView( view ) {
+	public showView( view: View ): void {
 		this.hideView();
 		this.content.add( view );
 	}
@@ -661,7 +702,7 @@ class RotatorView extends View {
 	/**
 	 * Hides the currently displayed view.
 	 */
-	hideView() {
+	public hideView(): void {
 		this.content.clear();
 	}
 
@@ -673,7 +714,7 @@ class RotatorView extends View {
 	 * @param {String} icon The button icon.
 	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
-	_createButtonView( label, icon ) {
+	private _createButtonView( label: string, icon: string ) {
 		const view = new ButtonView( this.locale );
 
 		view.set( {
@@ -691,8 +732,18 @@ class RotatorView extends View {
 // @private
 // @extends module:ui/view~View
 class FakePanelsView extends View {
+	public readonly content: ViewCollection;
+
+	declare public top: number;
+	declare public left: number;
+	declare public height: number;
+	declare public width: number;
+	declare public numberOfPanels: number;
+
+	private readonly _balloonPanelView: BalloonPanelView;
+
 	// @inheritDoc
-	constructor( locale, balloonPanelView ) {
+	constructor( locale: Locale, balloonPanelView: BalloonPanelView ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -756,7 +807,7 @@ class FakePanelsView extends View {
 			children: this.content
 		} );
 
-		this.on( 'change:numberOfPanels', ( evt, name, next, prev ) => {
+		this.on<ChangeEvent<number>>( 'change:numberOfPanels', ( evt, name, next, prev ) => {
 			if ( next > prev ) {
 				this._addPanels( next - prev );
 			} else {
@@ -769,7 +820,7 @@ class FakePanelsView extends View {
 
 	// @private
 	// @param {Number} number
-	_addPanels( number ) {
+	private _addPanels( number: number ) {
 		while ( number-- ) {
 			const view = new View();
 
@@ -782,9 +833,9 @@ class FakePanelsView extends View {
 
 	// @private
 	// @param {Number} number
-	_removePanels( number ) {
+	private _removePanels( number: number ) {
 		while ( number-- ) {
-			const view = this.content.last;
+			const view = this.content.last!;
 
 			this.content.remove( view );
 			this.deregisterChild( view );
@@ -793,10 +844,10 @@ class FakePanelsView extends View {
 	}
 
 	// Updates coordinates of fake panels.
-	updatePosition() {
+	public updatePosition() {
 		if ( this.numberOfPanels ) {
 			const { top, left } = this._balloonPanelView;
-			const { width, height } = new Rect( this._balloonPanelView.element );
+			const { width, height } = new Rect( this._balloonPanelView.element! );
 
 			Object.assign( this, { top, left, width, height } );
 		}

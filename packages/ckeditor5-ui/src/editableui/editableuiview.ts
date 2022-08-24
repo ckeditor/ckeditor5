@@ -9,12 +9,25 @@
 
 import View from '../view';
 
+import type { View as EditingView } from '@ckeditor/ckeditor5-engine';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
 /**
  * The editable UI view class.
  *
  * @extends module:ui/view~View
  */
 export default class EditableUIView extends View {
+	public name: string | null;
+
+	declare public isFocused: boolean;
+
+	protected _editingView: EditingView;
+
+	private _editableElement: HTMLElement | null | undefined;
+	private _hasExternalElement: boolean;
+
 	/**
 	 * Creates an instance of EditableUIView class.
 	 *
@@ -23,7 +36,11 @@ export default class EditableUIView extends View {
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, this view
 	 * should create it. Otherwise, the existing element should be used.
 	 */
-	constructor( locale, editingView, editableElement ) {
+	constructor(
+		locale: Locale,
+		editingView: EditingView,
+		editableElement?: HTMLElement
+	) {
 		super( locale );
 
 		this.setTemplate( {
@@ -90,25 +107,25 @@ export default class EditableUIView extends View {
 	 * Renders the view by either applying the {@link #template} to the existing
 	 * {@link #_editableElement} or assigning {@link #element} as {@link #_editableElement}.
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		if ( this._hasExternalElement ) {
-			this.template.apply( this.element = this._editableElement );
+			this.template!.apply( this.element = this._editableElement! );
 		} else {
 			this._editableElement = this.element;
 		}
 
-		this.on( 'change:isFocused', () => this._updateIsFocusedClasses() );
+		this.on<ChangeEvent>( 'change:isFocused', () => this._updateIsFocusedClasses() );
 		this._updateIsFocusedClasses();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		if ( this._hasExternalElement ) {
-			this.template.revert( this._editableElement );
+			this.template!.revert( this._editableElement! );
 		}
 
 		super.destroy();
@@ -120,7 +137,7 @@ export default class EditableUIView extends View {
 	 *
 	 * @private
 	 */
-	_updateIsFocusedClasses() {
+	private _updateIsFocusedClasses() {
 		const editingView = this._editingView;
 
 		if ( editingView.isRenderingInProgress ) {
@@ -129,9 +146,9 @@ export default class EditableUIView extends View {
 			update( this );
 		}
 
-		function update( view ) {
+		function update( view: EditableUIView ) {
 			editingView.change( writer => {
-				const viewRoot = editingView.document.getRoot( view.name );
+				const viewRoot = editingView.document.getRoot( view.name! )!;
 
 				writer.addClass( view.isFocused ? 'ck-focused' : 'ck-blurred', viewRoot );
 				writer.removeClass( view.isFocused ? 'ck-blurred' : 'ck-focused', viewRoot );
@@ -143,8 +160,8 @@ export default class EditableUIView extends View {
 		// callback and render is called inside the already pending render.
 		// We need to be sure that callback is executed only when the value has changed from `true` to `false`.
 		// See https://github.com/ckeditor/ckeditor5/issues/1676.
-		function updateAfterRender( view ) {
-			editingView.once( 'change:isRenderingInProgress', ( evt, name, value ) => {
+		function updateAfterRender( view: EditableUIView ) {
+			editingView.once<ChangeEvent<boolean>>( 'change:isRenderingInProgress', ( evt, name, value ) => {
 				if ( !value ) {
 					update( view );
 				} else {

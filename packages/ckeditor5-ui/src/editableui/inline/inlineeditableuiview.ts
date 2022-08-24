@@ -7,7 +7,10 @@
  * @module ui/editableui/inline/inlineeditableuiview
  */
 
-import EditableUIView from '../../editableui/editableuiview';
+import EditableUIView from '../editableuiview';
+
+import type { View } from '@ckeditor/ckeditor5-engine';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The inline editable UI class implementing an inline {@link module:ui/editableui/editableuiview~EditableUIView}.
@@ -15,6 +18,8 @@ import EditableUIView from '../../editableui/editableuiview';
  * @extends module:ui/editableui/editableuiview~EditableUIView
  */
 export default class InlineEditableUIView extends EditableUIView {
+	private readonly _generateLabel: ( view: InlineEditableUIView ) => string;
+
 	/**
 	 * Creates an instance of the InlineEditableUIView class.
 	 *
@@ -28,7 +33,12 @@ export default class InlineEditableUIView extends EditableUIView {
 	 * and should return a string that represents the label of the editable for assistive technologies. If not provided,
 	 * a default label generator is used.
 	 */
-	constructor( locale, editingView, editableElement, options = {} ) {
+	constructor(
+		locale: Locale,
+		editingView: View,
+		editableElement?: HTMLElement,
+		options: { label?: ( view: InlineEditableUIView ) => string } = {}
+	) {
 		super( locale, editingView, editableElement );
 
 		const t = locale.t;
@@ -48,21 +58,21 @@ export default class InlineEditableUIView extends EditableUIView {
 		 * @readonly
 		 * @param {Function}
 		 */
-		this._generateLabel = options.label || ( () => t( 'Editor editing area: %0', this.name ) );
+		this._generateLabel = options.label || ( () => t( 'Editor editing area: %0', this.name! ) );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		const editingView = this._editingView;
 
 		editingView.change( writer => {
-			const viewRoot = editingView.document.getRoot( this.name );
+			const viewRoot = editingView.document.getRoot( this.name! );
 
-			writer.setAttribute( 'aria-label', this._generateLabel( this ), viewRoot );
+			writer.setAttribute( 'aria-label', this._generateLabel( this ), viewRoot! );
 		} );
 	}
 }
