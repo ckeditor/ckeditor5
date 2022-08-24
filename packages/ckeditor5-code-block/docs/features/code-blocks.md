@@ -119,7 +119,7 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 * To **increase** indentation: Select the line (or lines) you want to indent. Hit the <kbd>Tab</kbd> key or press the "Increase indent" button in the toolbar.
 * To **decrease** indentation: Select the line (or lines) the indent should decrease. Hit the <kbd>Shift</kbd>+<kbd>Tab</kbd> keys or press the "Decrease indent" button in the toolbar.
 
-{@img assets/img/code-blocks-outdent-indent.gif 770 The animation shows changing indention inside code blocks in CKEditor 5 rich text editor.}
+{@img assets/img/code-blocks-outdent-indent.gif 770 The animation shows changing indentation inside code blocks in CKEditor 5 rich text editor.}
 
 <info-box>
 	The indentation created this way can be changed. Use the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration to choose some other character (or characters) of your preference (e.g. four spaces). By default, the indentation changes by a single tab (`\t`) character.
@@ -133,7 +133,7 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 
 To speed up the editing, when typing in a code block, the indentation of the current line is preserved when you hit <kbd>Enter</kbd> and create a new line. If you want to change the indentation of the new line, take a look at [some easy ways to do that](#changing-line-indentation).
 
-{@img assets/img/code-blocks-preserve-indentation.gif 770 The animation shows preserving indention inside code blocks in CKEditor 5 rich text editor.}
+{@img assets/img/code-blocks-preserve-indentation.gif 770 The animation shows preserving indentation inside code blocks in CKEditor 5 rich text editor.}
 
 ## Installation
 
