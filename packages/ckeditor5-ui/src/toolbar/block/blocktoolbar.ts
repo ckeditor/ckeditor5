@@ -10,7 +10,6 @@
 /* global window */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import pilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
 
 import BlockButtonView from './blockbuttonview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview';
@@ -32,6 +31,9 @@ import type { Editor, EditorWithUI } from '@ckeditor/ckeditor5-core';
 import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pilcrow = require( '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg' ).default as string;
 
 const toPx = toUnit( 'px' );
 

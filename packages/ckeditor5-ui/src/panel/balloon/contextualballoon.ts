@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 /**
  * @module ui/panel/balloon/contextualballoon
  */
@@ -16,9 +18,6 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
-import prevIcon from '../../../theme/icons/previous-arrow.svg';
-import nextIcon from '../../../theme/icons/next-arrow.svg';
-
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
 
@@ -28,6 +27,9 @@ import type { EditorWithUI } from '@ckeditor/ckeditor5-core';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type { Options } from '@ckeditor/ckeditor5-utils/src/dom/position';
+
+const prevIcon = require( '../../../theme/icons/previous-arrow.svg' ).default as string;
+const nextIcon = require( '../../../theme/icons/next-arrow.svg' ).default as string;
 
 const toPx = toUnit( 'px' );
 

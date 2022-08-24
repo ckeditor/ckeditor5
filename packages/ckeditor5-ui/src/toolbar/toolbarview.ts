@@ -20,8 +20,7 @@ import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import normalizeToolbarConfig, { type ToolbarConfig } from './normalizetoolbarconfig';
-import threeVerticalDots from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
+import normalizeToolbarConfig from './normalizetoolbarconfig';
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -33,6 +32,9 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { AddEvent, ChangeEvent as CollectionChangeEvent, RemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const threeVerticalDots = require( '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg' ).default as string;
 
 /**
  * The toolbar view class.
