@@ -55,7 +55,15 @@ describe( 'TableUI', () => {
 
 		beforeEach( () => {
 			insertTable = editor.ui.componentFactory.create( 'insertTable' );
+			insertTable.render();
+
+			document.body.appendChild( insertTable.element );
+
 			insertTable.isOpen = true; // Dropdown is lazy loaded, so make sure its open (#6193).
+		} );
+
+		afterEach( () => {
+			insertTable.element.remove();
 		} );
 
 		it( 'should register insertTable button', () => {
@@ -103,11 +111,11 @@ describe( 'TableUI', () => {
 			beforeEach( () => {
 				insertTable = editor.ui.componentFactory.create( 'insertTable' );
 
-				insertTable.isOpen = true; // Dropdown is lazy loaded (#6193).
-				insertTable.isOpen = false;
-
 				insertTable.render();
 				document.body.appendChild( insertTable.element );
+
+				insertTable.isOpen = true; // Dropdown is lazy loaded (#6193).
+				insertTable.isOpen = false;
 			} );
 
 			afterEach( () => {
