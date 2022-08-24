@@ -515,17 +515,19 @@ describe( 'ColorInputView', () => {
 			} );
 		} );
 
-		describe( 'activates keyboard navigation in the color input view', () => {
-			let view, locale;
+		describe( 'keyboard navigation', () => {
+			let view, locale, colorGridView;
 
 			beforeEach( () => {
 				locale = { t: val => val };
 				view = new ColorInputView( locale, {
 					colorDefinitions: DEFAULT_COLORS,
-					columns: 5
+					columns: 2
 				} );
 				view.render();
 				global.document.body.appendChild( view.element );
+
+				colorGridView = view._dropdownView.panelView.children.last;
 			} );
 
 			afterEach( () => {
@@ -533,49 +535,95 @@ describe( 'ColorInputView', () => {
 				view.destroy();
 			} );
 
-			it( 'so "tab" focuses the next focusable item', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
+			describe( 'activates keyboard navigation in the color input view', () => {
+				it( 'so "tab" focuses the next focusable item', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.tab,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
 
-				view._dropdownView.isOpen = true;
+					view._dropdownView.isOpen = true;
 
-				// Mock the remove color button view is focused.
-				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view._focusables.first.element;
+					// Mock the remove color button view is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view._focusables.first.element;
 
-				// Spy the next view which in this case is the color grid view.
-				const spy = sinon.spy( view._focusables.last, 'focus' );
+					// Spy the next view which in this case is the color grid view.
+					const spy = sinon.spy( view._focusables.last, 'focus' );
 
-				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'so "shift + tab" focuses the previous focusable item', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.tab,
+						shiftKey: true,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					view._dropdownView.isOpen = true;
+
+					// Mock the remove color button view is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view._focusables.first.element;
+
+					// Spy the previous view which in this case is the color grid view.
+					const spy = sinon.spy( view._focusables.last, 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
 			} );
 
-			it( 'so "shift + tab" focuses the previous focusable item', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: true,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
+			describe( 'keyboard navigation in the color input grid', () => {
+				it( '"arrow right" should focus the next focusable color button', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
 
-				view._dropdownView.isOpen = true;
+					view._dropdownView.isOpen = true;
 
-				// Mock the remove color button view is focused.
-				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view._focusables.first.element;
+					// Mock the first color button is focused.
+					colorGridView.focusTracker.isFocused = true;
+					colorGridView.focusTracker.focusedElement = colorGridView.items.first.element;
 
-				// Spy the previous view which in this case is the color grid view.
-				const spy = sinon.spy( view._focusables.last, 'focus' );
+					const spy = sinon.spy( colorGridView.items.get( 1 ), 'focus' );
 
-				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+					colorGridView.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( '"arrow down" should focus the focusable color button in the second row', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					view._dropdownView.isOpen = true;
+
+					// Mock the first color button is focused.
+					colorGridView.focusTracker.isFocused = true;
+					colorGridView.focusTracker.focusedElement = colorGridView.items.first.element;
+
+					const spy = sinon.spy( colorGridView.items.get( 2 ), 'focus' );
+
+					colorGridView.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
 			} );
 		} );
 	} );
