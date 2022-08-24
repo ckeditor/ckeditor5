@@ -178,7 +178,9 @@
 		"framework/guides/overview.html": "framework/index.html",
 		"updating/updating.html": "updating/index.html",
 		"features/overview.html": "features/index.html",
-		"installation/overview.html": "installation/index.html"
+		"installation/overview.html": "installation/index.html",
+		"features/revision-history/revision-history.html": "features/collaboration/revision-history/revision-history.html",
+		"features/revision-history/revision-history-integration.htm": "features/collaboration/revision-history/revision-history-integration.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
