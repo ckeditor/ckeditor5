@@ -126,5 +126,29 @@ describe( 'StyleGridView', () => {
 			expect( grid.focusTracker._elements ).to.include( grid.children.first.element );
 			expect( grid.focusTracker._elements ).to.include( grid.children.last.element );
 		} );
+
+		it( 'starts listening for #keystrokes coming from the #element of the grid view', () => {
+			const grid = new StyleGridView( locale, [
+				{
+					name: 'Red heading',
+					element: 'h2',
+					classes: [ 'red-heading' ]
+				},
+				{
+					name: 'Large heading',
+					element: 'h2',
+					classes: [ 'large-heading' ]
+				}
+			] );
+
+			const spy = sinon.spy( grid.keystrokes, 'listenTo' );
+
+			grid.render();
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, grid.element );
+
+			grid.destroy();
+		} );
 	} );
 } );
