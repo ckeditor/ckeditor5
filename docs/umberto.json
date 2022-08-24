@@ -179,6 +179,8 @@
 		"updating/updating.html": "updating/index.html",
 		"features/overview.html": "features/index.html",
 		"installation/overview.html": "installation/index.html",
+		"features/revision-history/revision-history.html": "features/collaboration/revision-history/revision-history.html",
+		"features/revision-history/revision-history-integration.htm": "features/collaboration/revision-history/revision-history-integration.html",
 		"framework/guides/plugins/package-generator.html": "framework/guides/plugins/package-generator/using-package-generator.html"
 	},
 	"scripts": {
@@ -296,10 +298,17 @@
 							"badges": [ "premium" ]
 						},
 						{
+							"name": "Revision history",
+							"id": "features-revision-history",
+							"slug": "revision-history",
+							"order": 400,
+							"badges": [ "premium" ]
+						},
+						{
 							"name": "Annotations",
 							"id": "features-annotations",
 							"slug": "annotations",
-							"order": 400
+							"order": 500
 						}
 					]
 				},
@@ -331,12 +340,6 @@
 					"name": "Pasting",
 					"id": "features-pasting",
 					"slug": "pasting"
-				},
-				{
-					"name": "Revision history",
-					"id": "features-revision-history",
-					"slug": "revision-history",
-					"badges": [ "premium" ]
 				},
 				{
 					"name": "Toolbar",
