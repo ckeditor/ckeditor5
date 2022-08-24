@@ -5,7 +5,7 @@ menu-title: Special characters
 
 # Special characters
 
-The {@link module:special-characters/specialcharacters~SpecialCharacters} plugin provides a possibility to insert special characters into the rich-text editor. These would typically include characters and signs that serve a specific purpose, like mathematical operators, currency symbols, punctuation, graphic symbols (e.g. arrows or bullets). The feature may be used to provide fast access to a broader selection of Unicode letters typically not accessible from the keyboard, like umlauts or other diacritics. It also provides support for emojis.
+The special characters feature provides the ability to insert special characters into the rich-text editor. These would typically include characters and signs that serve a specific purpose, like mathematical operators, currency symbols, punctuation, graphic symbols (e.g. arrows or bullets). The feature may be used to provide fast access to a broader selection of Unicode letters typically not accessible from the keyboard, like umlauts or other diacritics. It also provides support for emojis.
 
 <info-box info>
 	The Special characters feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.

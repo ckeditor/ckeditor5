@@ -6,7 +6,7 @@ modified_at: 2022-07-22
 
 # Styles
 
-The {@link module:style/style~Style Style} feature lets the user apply pre-configured styles to existing elements in the editor content.
+The style feature lets the user apply pre-configured styles to existing elements in the editor content.
 
 Under the hood, every style applies one or more HTML classes to such an element which, depending on your integration requirements, can be used to either control the visual styles of that element or apply additional semantics. <!-- The {@link features/remove-format remove formatting} feature can be used to clear those styles. -->
 
@@ -228,7 +228,7 @@ Check out also these CKEditor 5 features to gain better control over your conten
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 * {@link features/general-html-support General HTML support} &ndash; Allows enabling additional HTML, such as `<style>` and `<classes>` attributes.
 
-### Installation
+## Installation
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-style`](https://www.npmjs.com/package/@ckeditor/ckeditor5-style) package:
 

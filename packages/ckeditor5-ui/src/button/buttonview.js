@@ -9,7 +9,6 @@
 
 import View from '../view';
 import IconView from '../icon/iconview';
-import TooltipView from '../tooltip/tooltipview';
 
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -72,14 +71,6 @@ export default class ButtonView extends View {
 		this.children = this.createCollection();
 
 		/**
-		 * Tooltip of the button view. It is configurable using the {@link #tooltip tooltip attribute}.
-		 *
-		 * @readonly
-		 * @member {module:ui/tooltip/tooltipview~TooltipView} #tooltipView
-		 */
-		this.tooltipView = this._createTooltipView();
-
-		/**
 		 * Label of the button view. It is configurable using the {@link #label label attribute}.
 		 *
 		 * @readonly
@@ -119,7 +110,7 @@ export default class ButtonView extends View {
 		 * @see #_getTooltipString
 		 * @private
 		 * @observable
-		 * @member {Boolean} #_tooltipString
+		 * @member {String|undefined} #_tooltipString
 		 */
 		this.bind( '_tooltipString' ).to(
 			this, 'tooltip',
@@ -146,7 +137,9 @@ export default class ButtonView extends View {
 				tabindex: bind.to( 'tabindex' ),
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
-				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( !!value ) : false )
+				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( !!value ) : false ),
+				'data-cke-tooltip-text': bind.to( '_tooltipString' ),
+				'data-cke-tooltip-position': bind.to( 'tooltipPosition' )
 			},
 
 			children: this.children,
@@ -189,7 +182,6 @@ export default class ButtonView extends View {
 			this.children.add( this.iconView );
 		}
 
-		this.children.add( this.tooltipView );
 		this.children.add( this.labelView );
 
 		if ( this.withKeystroke && this.keystroke ) {
@@ -202,22 +194,6 @@ export default class ButtonView extends View {
 	 */
 	focus() {
 		this.element.focus();
-	}
-
-	/**
-	 * Creates a {@link module:ui/tooltip/tooltipview~TooltipView} instance and binds it with button
-	 * attributes.
-	 *
-	 * @private
-	 * @returns {module:ui/tooltip/tooltipview~TooltipView}
-	 */
-	_createTooltipView() {
-		const tooltipView = new TooltipView();
-
-		tooltipView.bind( 'text' ).to( this, '_tooltipString' );
-		tooltipView.bind( 'position' ).to( this, 'tooltipPosition' );
-
-		return tooltipView;
 	}
 
 	/**
@@ -284,7 +260,7 @@ export default class ButtonView extends View {
 	}
 
 	/**
-	 * Gets the text for the {@link #tooltipView} from the combination of
+	 * Gets the text for the tooltip from the combination of
 	 * {@link #tooltip}, {@link #label} and {@link #keystroke} attributes.
 	 *
 	 * @private

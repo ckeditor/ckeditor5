@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, KeyboardEvent */
 
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import InsertTableView from '../../src/ui/inserttableview';
+
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'InsertTableView', () => {
 	let view, locale;
@@ -23,6 +25,7 @@ describe( 'InsertTableView', () => {
 
 	afterEach( () => {
 		view.element.remove();
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -49,9 +52,33 @@ describe( 'InsertTableView', () => {
 			expect( view.element.children[ 1 ].classList.contains( 'ck-insert-table-dropdown__label' ) ).to.be.true;
 		} );
 
-		it( 'creates view#items collection', () => {
-			expect( view.items ).to.be.instanceOf( ViewCollection );
-			expect( view.items ).to.have.length( 100 );
+		describe( 'view#items collection', () => {
+			it( 'should be created', () => {
+				expect( view.items ).to.be.instanceOf( ViewCollection );
+				expect( view.items ).to.have.length( 100 );
+			} );
+
+			it( 'should create items from template', () => {
+				expect( Array.from( view.items ).every(
+					item => item.element.classList.contains( 'ck' )
+				), 'ck class' ).to.be.true;
+
+				expect( Array.from( view.items ).every(
+					item => item.element.classList.contains( 'ck-insert-table-dropdown-grid-box' )
+				), 'grid box class' ).to.be.true;
+
+				expect( Array.from( view.items ).every(
+					item => item.element.getAttribute( 'tabindex' ) === '-1'
+				), 'tabindex' ).to.be.true;
+			} );
+
+			it( 'should give every item an accessible label', () => {
+				const labelId = view.element.children[ 1 ].id;
+
+				expect( Array.from( view.items ).every(
+					item => item.element.getAttribute( 'aria-labelledby' ) === labelId
+				), 'aria attribute' ).to.be.true;
+			} );
 		} );
 
 		it( 'should not throw error for DropdownPanelFocusable interface methods', () => {
@@ -108,6 +135,92 @@ describe( 'InsertTableView', () => {
 
 					sinon.assert.calledOnce( spy );
 				} );
+			} );
+
+			describe( 'keydown', () => {
+				it( 'should execute the command on Enter', () => {
+					const spy = sinon.spy();
+
+					view.on( 'execute', spy );
+					view.items.first.element.dispatchEvent( new KeyboardEvent( 'keydown', { key: 'Enter', bubbles: true } ) );
+
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'should not execute the command on other keys', () => {
+					const spy = sinon.spy();
+
+					view.on( 'execute', spy );
+					view.items.first.element.dispatchEvent( new KeyboardEvent( 'keydown', { key: 'Space', bubbles: true } ) );
+
+					sinon.assert.notCalled( spy );
+				} );
+			} );
+
+			describe( 'focus', () => {
+				it( 'should not update #columns and #rows when the focus is moved out of view', () => {
+					view.focusTracker.focusedElement = view.items.first.element;
+
+					expect( view.columns ).to.equal( 1 );
+					expect( view.rows ).to.equal( 1 );
+
+					view.focusTracker.focusedElement = null;
+
+					expect( view.columns ).to.equal( 1 );
+					expect( view.rows ).to.equal( 1 );
+				} );
+
+				it( 'should update #columns and #rows (focus the first tile) when the focus is moved to the view', () => {
+					view.focusTracker.focusedElement = null;
+
+					view.focusTracker.focusedElement = view.items.first.element;
+
+					expect( view.columns ).to.equal( 1 );
+					expect( view.rows ).to.equal( 1 );
+
+					view.focusTracker.focusedElement = view.items.get( 24 ).element;
+
+					expect( view.columns ).to.equal( 5 );
+					expect( view.rows ).to.equal( 3 );
+				} );
+			} );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		describe( 'keyboard navigation in the insert table grid', () => {
+			it( '"arrow right" should focus the next focusable tile', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowright,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				view.focusTracker.focusedElement = view.items.first.element;
+
+				const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( '"arrow down" should focus the focusable tile in the second row', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowdown,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				view.focusTracker.focusedElement = view.items.first.element;
+
+				const spy = sinon.spy( view.items.get( 10 ), 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
 			} );
 		} );
 	} );

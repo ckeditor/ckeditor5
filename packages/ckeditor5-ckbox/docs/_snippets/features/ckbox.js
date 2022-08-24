@@ -33,8 +33,8 @@ ClassicEditor
 				'imageStyle:block',
 				'imageStyle:side',
 				'|',
-				'resizeImage:100',
-				'resizeImage:200',
+				'resizeImage:25',
+				'resizeImage:50',
 				'resizeImage:original'
 			],
 			resizeOptions: [
@@ -44,17 +44,17 @@ ClassicEditor
 					icon: 'original'
 				},
 				{
-					name: 'resizeImage:100',
-					value: '100',
-					icon: 'medium'
+					name: 'resizeImage:25',
+					value: '25',
+					icon: 'small'
 				},
 				{
-					name: 'resizeImage:200',
-					value: '200',
-					icon: 'large'
+					name: 'resizeImage:50',
+					value: '50',
+					icon: 'medium'
 				}
 			],
-			resizeUnit: 'px'
+			resizeUnit: '%'
 		},
 		ui: {
 			viewportOffset: {

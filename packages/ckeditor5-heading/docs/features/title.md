@@ -5,7 +5,7 @@ menu-title: Document title
 
 # Document title
 
-The {@link module:heading/title~Title} feature enables support for adding the title field to your document. It helps ensure that there will always be a single title field at the beginning of the document.
+The title feature enables support for adding the title field to your document. It helps ensure that there will always be a single title field at the beginning of the document.
 
 This feature can be used to implement a rich-text editor with a clear division of content into the title and body sections, similar to solutions available in Medium, Grammarly, Slack post editor or some content management systems.
 

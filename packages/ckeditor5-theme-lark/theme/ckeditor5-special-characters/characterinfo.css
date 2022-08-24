@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+
 .ck.ck-character-info {
 	padding: var(--ck-spacing-small) var(--ck-spacing-large);
 	border-top: 1px solid var(--ck-color-base-border);
@@ -20,5 +22,9 @@
 
 	& .ck-character-info__code {
 		opacity: .6;
+	}
+
+	@mixin ck-media-phone {
+		max-width: 190px;
 	}
 }

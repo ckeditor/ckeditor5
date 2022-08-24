@@ -7,7 +7,9 @@
  * @module table/ui/inserttableview
  */
 
-import { View } from 'ckeditor5/src/ui';
+import { View, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
+
+import { KeystrokeHandler, FocusTracker, uid } from 'ckeditor5/src/utils';
 
 import './../../theme/inserttable.css';
 
@@ -29,12 +31,32 @@ export default class InsertTableView extends View {
 		const bind = this.bindTemplate;
 
 		/**
+		 * A unique id of a label element displaying the current geometry of the table.
+		 * Used by every {@link #items item} of the view as a pointer to an accessible label.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {String}
+		 */
+		this._geometryLabelId = `ck-editor__label_${ uid() }`;
+
+		/**
 		 * A collection of table size box items.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this.items = this._createGridCollection();
+
+		this.keystrokes = new KeystrokeHandler();
+
+		/**
+		 * Tracks information about the DOM focus in the grid.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
 
 		/**
 		 * The currently selected number of rows of the new table.
@@ -81,7 +103,11 @@ export default class InsertTableView extends View {
 				{
 					tag: 'div',
 					attributes: {
-						class: [ 'ck-insert-table-dropdown__label' ]
+						id: this._geometryLabelId,
+						class: [
+							'ck',
+							'ck-insert-table-dropdown__label'
+						]
 					},
 					children: [
 						{
@@ -98,12 +124,33 @@ export default class InsertTableView extends View {
 
 				click: bind.to( () => {
 					this.fire( 'execute' );
+				} ),
+
+				keydown: bind.to( evt => {
+					if ( evt.key === 'Enter' ) {
+						this.fire( 'execute' );
+						evt.preventDefault();
+					}
 				} )
 			}
 		} );
 
+		// #rows and #columns are set via changes to #focusTracker on mouse over.
 		this.on( 'boxover', ( evt, domEvt ) => {
 			const { row, column } = domEvt.target.dataset;
+
+			this.items.get( ( row - 1 ) * 10 + ( column - 1 ) ).focus();
+		} );
+
+		// This allows the #rows and #columns to be updated when:
+		// * the user navigates the grid using the keyboard,
+		// * the user moves the mouse over grid items.
+		this.focusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
+			if ( !focusedElement ) {
+				return;
+			}
+
+			const { row, column } = focusedElement.dataset;
 
 			// As row & column indexes are zero-based transform it to number of selected rows & columns.
 			this.set( {
@@ -112,29 +159,39 @@ export default class InsertTableView extends View {
 			} );
 		} );
 
-		this.on( 'change:columns', () => {
-			this._highlightGridBoxes();
+		this.on( 'change:columns', () => this._highlightGridBoxes() );
+		this.on( 'change:rows', () => this._highlightGridBoxes() );
+	}
+
+	render() {
+		super.render();
+
+		addKeyboardHandlingForGrid( {
+			keystrokeHandler: this.keystrokes,
+			focusTracker: this.focusTracker,
+			gridItems: this.items,
+			numberOfColumns: 10
 		} );
 
-		this.on( 'change:rows', () => {
-			this._highlightGridBoxes();
-		} );
+		for ( const item of this.items ) {
+			this.focusTracker.add( item.element );
+		}
+
+		this.keystrokes.listenTo( this.element );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	focus() {
-		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
-		// The method should be implemented while working on keyboard support for this view. See #22.
+		this.items.get( 0 ).focus();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	focusLast() {
-		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
-		// The method should be implemented while working on keyboard support for this view. See #22.
+		this.items.get( 0 ).focus();
 	}
 
 	/**
@@ -170,7 +227,7 @@ export default class InsertTableView extends View {
 			const row = Math.floor( index / 10 );
 			const column = index % 10;
 
-			boxes.push( new TableSizeGridBoxView( this.locale, row + 1, column + 1 ) );
+			boxes.push( new TableSizeGridBoxView( this.locale, row + 1, column + 1, this._geometryLabelId ) );
 		}
 
 		return this.createCollection( boxes );
@@ -194,7 +251,7 @@ class TableSizeGridBoxView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale, row, column ) {
+	constructor( locale, row, column, ariaLabelledById ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -211,12 +268,22 @@ class TableSizeGridBoxView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
+					'ck',
 					'ck-insert-table-dropdown-grid-box',
 					bind.if( 'isOn', 'ck-on' )
 				],
 				'data-row': row,
-				'data-column': column
+				'data-column': column,
+				'tabindex': -1,
+				'aria-labelledby': ariaLabelledById
 			}
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	focus() {
+		this.element.focus();
 	}
 }

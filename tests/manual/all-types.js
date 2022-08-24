@@ -5,18 +5,19 @@
 
 /* globals console, window, document, CKEditorInspector */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
+import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
+
+import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 
 window.editors = {};
 
-function createEditor( EditorConstructor, containerId, extraPlugins = [], editorName = '', afterCreate ) {
+function createEditor( EditorConstructor, containerId, extraPlugins = [], afterCreate ) {
 	const config = {
 		initialData: document.getElementById( 'fixtures' ).innerHTML,
 		plugins: [ ArticlePluginSet ],
@@ -51,7 +52,7 @@ function createEditor( EditorConstructor, containerId, extraPlugins = [], editor
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [
@@ -64,10 +65,6 @@ function createEditor( EditorConstructor, containerId, extraPlugins = [], editor
 
 	if ( extraPlugins.includes( SourceEditing ) ) {
 		config.toolbar.unshift( 'sourceEditing', '|' );
-	}
-
-	if ( editorName.length > 0 ) {
-		config.label = editorName;
 	}
 
 	EditorConstructor
@@ -86,11 +83,11 @@ function createEditor( EditorConstructor, containerId, extraPlugins = [], editor
 		} );
 }
 
-createEditor( ClassicEditor, '#editor-classic', [ SourceEditing ], 'foo' );
+createEditor( ClassicEditor, '#editor-classic', [ SourceEditing ] );
 createEditor( InlineEditor, '#editor-inline' );
 createEditor( BalloonEditor, '#editor-balloon' );
 createEditor( BalloonEditor, '#editor-balloon-block', [ BlockToolbar ] );
-createEditor( DecoupledEditor, '#editor-document', [], '', editor => {
+createEditor( DecoupledEditor, '#editor-document', [], editor => {
 	const toolbarContainer = document.querySelector( '#editor-document-toolbar' );
 
 	toolbarContainer.appendChild( editor.ui.view.toolbar.element );

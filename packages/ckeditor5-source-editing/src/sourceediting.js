@@ -252,6 +252,9 @@ export default class SourceEditing extends Plugin {
 				writer.addClass( 'ck-hidden', viewRoot );
 			} );
 
+			// Register the element so it becomes available for Alt+F10 and Esc navigation.
+			editor.ui.setEditableElement( 'sourceEditing:' + rootName, domSourceEditingElementTextarea );
+
 			this._replacedRoots.set( rootName, domSourceEditingElementWrapper );
 
 			this._elementReplacer.replace( domRootElement, domSourceEditingElementWrapper );
@@ -318,9 +321,15 @@ export default class SourceEditing extends Plugin {
 	 * @private
 	 */
 	_focusSourceEditing() {
+		const editor = this.editor;
 		const [ domSourceEditingElementWrapper ] = this._replacedRoots.values();
-
 		const textarea = domSourceEditingElementWrapper.querySelector( 'textarea' );
+
+		// The FocusObserver was disabled by View.render() while the DOM root was getting hidden and the replacer
+		// revealed the textarea. So it couldn't notice that the DOM root got blurred in the process.
+		// Let's sync this state manually here because otherwise Renderer will attempt to render selection
+		// in an invisible DOM root.
+		editor.editing.view.document.isFocused = false;
 
 		textarea.focus();
 	}
