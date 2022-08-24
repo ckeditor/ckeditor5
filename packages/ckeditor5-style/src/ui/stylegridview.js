@@ -98,4 +98,11 @@ export default class StyleGridView extends View {
 		 * @event execute
 		 */
 	}
+
+	/**
+	 * Focuses the first style button in the grid.
+	 */
+	focus() {
+		this.children.first.focus();
+	}
 }
