@@ -36,10 +36,10 @@ jobs:
     - stage: Checks
       # Script 1
       name: TestsCore
-      script: ./scripts/ci/travis-check.js TestsCore
+      script: COVERALLS_FLAG_NAME=test-1 ./scripts/ci/travis-check.js TestsCore
       # Script 2
     - name: TestsFeatures
-      script: ./scripts/ci/travis-check.js TestsFeatures
+      script: COVERALLS_FLAG_NAME=test-2 ./scripts/ci/travis-check.js TestsFeatures
       # Script 3
     # - name: Validation // temporarily disabled due to outside url failing to load that breaks the build
     #   script: ./scripts/ci/travis-check.js Validation
