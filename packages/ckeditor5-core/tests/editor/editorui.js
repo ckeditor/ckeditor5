@@ -605,7 +605,7 @@ describe( 'EditorUI', () => {
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/12339
-			it( 'should work if the focus was already in to the toolbar (e.g. a user clicked an item)', () => {
+			it( 'should work if the focus was already in the toolbar (e.g. a user clicked an item)', () => {
 				ui.focusTracker.focusedElement = visibleContextualToolbar.element;
 
 				pressAltF10();
