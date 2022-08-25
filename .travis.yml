@@ -31,20 +31,19 @@ env:
   global:
   - COVERALLS_PARALLEL=true
   jobs:
-    include:
-      # Stage 1
-      - stage: Checks
-        # Script 1
-        name: TestsCore
-        script: ./scripts/ci/travis-check.js TestsCore
-        # Script 2
-      - name: TestsFeatures
-        script: ./scripts/ci/travis-check.js TestsFeatures
-        # Script 3
-      - name: Validation
-        script: ./scripts/ci/travis-check.js Validation
-      # Stage 2
-      - stage: Coverage
-        # Script 1
-        name: Coverage
-        script: echo coverage check
+    # Stage 1
+    - stage: Checks
+      # Script 1
+      name: TestsCore
+      script: ./scripts/ci/travis-check.js TestsCore
+      # Script 2
+    - name: TestsFeatures
+      script: ./scripts/ci/travis-check.js TestsFeatures
+      # Script 3
+    - name: Validation
+      script: ./scripts/ci/travis-check.js Validation
+    # Stage 2
+    - stage: Coverage
+      # Script 1
+      name: Coverage
+      script: echo coverage check
