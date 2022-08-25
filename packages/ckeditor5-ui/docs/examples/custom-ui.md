@@ -358,7 +358,7 @@ BootstrapEditor
 <summary>View editor content listing</summary>
 
 ```
-<!-- The outermost cotainer of the editor. -->
+<!-- The outermost container of the editor. -->
 <div class="ck-editor">
 	<!-- The toolbar of the editor. -->
 	<div class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
