@@ -30,7 +30,8 @@ notifications:
 env:
   global:
   - COVERALLS_PARALLEL=true
-  jobs:
+jobs:
+  include:
     # Stage 1
     - stage: Checks
       # Script 1
