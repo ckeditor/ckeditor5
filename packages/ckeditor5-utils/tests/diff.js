@@ -6,7 +6,7 @@
 import diff from '../src/diff';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import getLongText from './_utils/longtext';
+// import getLongText from './_utils/longtext';
 
 describe( 'diff', () => {
 	let fastDiffSpy;
@@ -22,6 +22,7 @@ describe( 'diff', () => {
 		testUtils.sinon.assert.notCalled( fastDiffSpy );
 	} );
 
+	/*
 	it( 'should diff arrays', () => {
 		expect( diff( Array.from( 'aba' ), Array.from( 'acca' ) ) ).to.deep.equal( [ 'equal', 'insert', 'insert', 'delete', 'equal' ] );
 		testUtils.sinon.assert.notCalled( fastDiffSpy );
@@ -159,4 +160,5 @@ describe( 'diff', () => {
 			} );
 		} );
 	} );
+	*/
 } );
