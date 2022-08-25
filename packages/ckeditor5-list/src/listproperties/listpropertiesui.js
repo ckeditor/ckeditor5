@@ -185,7 +185,11 @@ function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, butto
 		dropdownView.panelView.children.add( listPropertiesView );
 
 		// Accessibility: focus the first active style when opening the dropdown.
-		focusChildOnDropdownOpen( dropdownView, () => listPropertiesView.stylesView.children.find( child => child.isOn ) );
+		focusChildOnDropdownOpen( dropdownView, () => {
+			if ( listPropertiesView.stylesView ) {
+				return listPropertiesView.stylesView.children.find( child => child.isOn );
+			}
+		} );
 
 		// Focus the editable after executing the command.
 		// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
