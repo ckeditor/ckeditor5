@@ -121,10 +121,10 @@ export default class StylePanelView extends View {
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate style buttons backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
+				// Navigate style groups backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
 				focusPrevious: [ 'shift + tab' ],
 
-				// Navigate style buttons forward using the <kbd>Tab</kbd> key.
+				// Navigate style groups forward using the <kbd>Tab</kbd> key.
 				focusNext: [ 'tab' ]
 			}
 		} );

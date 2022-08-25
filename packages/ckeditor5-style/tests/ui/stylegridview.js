@@ -127,7 +127,7 @@ describe( 'StyleGridView', () => {
 			expect( grid.focusTracker._elements ).to.include( grid.children.last.element );
 		} );
 
-		describe( 'keyboard navigation in the styleGridView', () => {
+		describe( 'keyboard navigation in the grid', () => {
 			let grid;
 
 			beforeEach( async () => {

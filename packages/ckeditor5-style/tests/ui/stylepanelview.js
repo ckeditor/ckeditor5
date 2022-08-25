@@ -209,7 +209,7 @@ describe( 'StylePanelView', () => {
 				panel.element.remove();
 			} );
 
-			describe( 'keyboard navigation in the panel', () => {
+			describe( 'keyboard navigation between style groups in the panel', () => {
 				it( 'should focus the next focusable item on "tab"', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
