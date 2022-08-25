@@ -371,10 +371,12 @@ export default class EditorUI {
 
 			const currentFocusedToolbarDefinition = this._getCurrentFocusedToolbarDefinition();
 
-			// When focusing a toolbar for the first time, set the array of definitions for successive presses of Alt+F10.
+			// * When focusing a toolbar for the first time, set the array of definitions for successive presses of Alt+F10.
 			// This ensures, the navigation works always the same and no pair of toolbars takes over
 			// (e.g. image and table toolbars when a selected image is inside a cell).
-			if ( !currentFocusedToolbarDefinition ) {
+			// * It could be that the focus went to the toolbar by clicking a toolbar item (e.g. a dropdown). In this case,
+			// there were no candidates so they must be obtained (#12339).
+			if ( !currentFocusedToolbarDefinition || !candidateDefinitions ) {
 				candidateDefinitions = this._getFocusableCandidateToolbarDefinitions( currentFocusedToolbarDefinition );
 			}
 
