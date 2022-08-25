@@ -96,7 +96,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Ac
 	 * @param {String} message The action message.
 	 * @returns {Object} An observable object that represents a pending action.
 	 */
-	public add( message: string ): unknown {
+	public add( message: string ): Action {
 		if ( typeof message !== 'string' ) {
 			/**
 			 * The message must be a string.

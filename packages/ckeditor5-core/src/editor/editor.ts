@@ -58,7 +58,7 @@ export default abstract class Editor extends Observable {
 	public readonly keystrokes: EditingKeystrokeHandler;
 	public readonly t: Locale[ 't' ];
 
-	public readonly id?: string;
+	public readonly id!: string;
 
 	public declare state: 'initializing' | 'ready' | 'destroyed';
 

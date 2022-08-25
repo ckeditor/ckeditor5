@@ -225,9 +225,9 @@ export function addToolbarToDropdown(
  * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} items
  * A collection of the list item definitions to populate the list.
  */
-export function addListToDropdown(
+export function addListToDropdown<I extends string>(
 	dropdownView: DropdownView,
-	items: Collection<ListDropdownItemDefinition>
+	items: Collection<ListDropdownItemDefinition & { [ id in I ]?: string }, I>
 ): void {
 	const locale = dropdownView.locale;
 	const listView = dropdownView.listView = new ListView( locale );
@@ -388,9 +388,7 @@ function focusDropdownContentsOnArrows( dropdownView: DropdownView ) {
  */
 export type ListDropdownItemDefinition = {
 	type: 'separator';
-	id?: string;
 } | {
 	type: 'button' | 'switchbutton';
 	model: Model;
-	id?: string;
 };

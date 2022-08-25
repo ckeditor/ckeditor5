@@ -62,7 +62,7 @@ export default class Context {
 	 *
 	 * @param {Object} [config={}] The context configuration.
 	 */
-	constructor( config: ContextConfig ) {
+	constructor( config?: ContextConfig ) {
 		/**
 		 * Stores all the configurations specific to this context instance.
 		 *
@@ -299,7 +299,7 @@ export default class Context {
 	 * @param {Object} [config] The context configuration.
 	 * @returns {Promise} A promise resolved once the context is ready. The promise resolves with the created context instance.
 	 */
-	public static create( config: Record<string, unknown> ): Promise<Context> {
+	public static create( config?: ContextConfig ): Promise<Context> {
 		return new Promise( resolve => {
 			const context = new this( config );
 

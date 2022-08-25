@@ -44,7 +44,7 @@ export default function ObservableMixin<Base extends abstract new( ...args: any[
 			// If the first parameter is an Object, iterate over its properties.
 			if ( isObject( name ) ) {
 				Object.keys( name ).forEach( property => {
-					this.set( property as any, name[ property ] );
+					this.set( property, name[ property ] );
 				}, this );
 
 				return;

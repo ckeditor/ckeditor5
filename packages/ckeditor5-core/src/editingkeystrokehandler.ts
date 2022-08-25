@@ -8,6 +8,7 @@
  */
 
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import type { PriorityString } from '@ckeditor/ckeditor5-utils/src/priorities';
 import type Editor from './editor/editor';
 
 /**
@@ -63,7 +64,7 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	public override set(
 		keystroke: string | ( string | number )[],
 		callback: string | ( ( ev: KeyboardEvent, cancel: () => void ) => void ),
-		options = {}
+		options: { readonly priority?: PriorityString | number } = {}
 	): void {
 		if ( typeof callback == 'string' ) {
 			const commandName = callback;
