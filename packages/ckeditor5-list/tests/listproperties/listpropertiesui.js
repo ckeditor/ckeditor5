@@ -434,7 +434,7 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				it( 'should focus start index when styles are disabled', () => {
+				it( 'should focus the start index field on open when styles are disabled', () => {
 					return withEditor( {
 						styles: false,
 						startIndex: true,
