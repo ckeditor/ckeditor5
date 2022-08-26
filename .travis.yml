@@ -41,10 +41,10 @@ jobs:
     - name: TestsFeatures
       script: COVERALLS_FLAG_NAME=TestsFeatures ./scripts/ci/travis-check.js TestsFeatures
       # Script 3
-    # - name: Validation // temporarily disabled due to outside url failing to load that breaks the build
-    #   script: ./scripts/ci/travis-check.js Validation
+    - name: Validation // temporarily disabled due to outside url failing to load that breaks the build
+      script: ./scripts/ci/travis-check.js Validation
     # Stage 2
     - stage: Coverage
       # Script 1
       name: Coverage
-      script: echo coverage check
+      script: curl -k $COVERALLS_ENDPOINT/webhook -d "payload[build_num]=$BUILD_NUMBER&payload[status]=done"
