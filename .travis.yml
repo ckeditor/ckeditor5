@@ -47,6 +47,9 @@ jobs:
       - COVERALLS_FLAG_NAME=TestsFeatures
       - COVERALLS_SERVICE_JOB_NUMBER=2
       script: ./scripts/ci/travis-check.js TestsFeatures
+      # Script 3
+    - name: Validation
+      script: ./scripts/ci/travis-check.js Validation
     # Stage 2
     - stage: Coverage
       # Script 1
