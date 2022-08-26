@@ -37,15 +37,13 @@ jobs:
       # Script 1
       name: TestsCore
       env:
-      - COVERALLS_FLAG_NAME=TestsCore
       - COVERALLS_SERVICE_JOB_NUMBER=1
-      script: ./scripts/ci/travis-check.js TestsCore
+      script: COVERALLS_FLAG_NAME=TestsCore ./scripts/ci/travis-check.js TestsCore
       # Script 2
     - name: TestsFeatures
       env:
-      - COVERALLS_FLAG_NAME=TestsFeatures
       - COVERALLS_SERVICE_JOB_NUMBER=2
-      script: ./scripts/ci/travis-check.js TestsFeatures
+      script: COVERALLS_FLAG_NAME=TestsFeatures ./scripts/ci/travis-check.js TestsFeatures
       # Script 3
     # - name: Validation // temporarily disabled due to outside url failing to load that breaks the build
     #   script: ./scripts/ci/travis-check.js Validation
