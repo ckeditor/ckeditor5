@@ -47,4 +47,4 @@ jobs:
     - stage: Coverage
       # Script 1
       name: Coverage
-      script: curl -k $COVERALLS_ENDPOINT/webhook -d "payload[build_num]=$BUILD_NUMBER&payload[status]=done"
+      script: ./scripts/ci/merge_coverage.sh
