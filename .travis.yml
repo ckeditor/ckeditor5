@@ -16,6 +16,7 @@ node_js:
 - "14"
 cache: yarn
 before_install:
+- export COVERALLS_SERVICE_NUMBER=$( TRAVIS_BUILD_NUMBER )
 - export START_TIME=$( date +%s )
 - export COVERALLS_SERVICE_JOB_ID=$( TRAVIS_JOB_ID )
 - export COVERALLS_SERVICE_NAME="CKEditor5 code coverage"
@@ -36,13 +37,16 @@ jobs:
     - stage: Checks
       # Script 1
       name: TestsCore
-      script: COVERALLS_FLAG_NAME=test-1 ./scripts/ci/travis-check.js TestsCore
+      env:
+      - COVERALLS_FLAG_NAME=TestsCore
+      - COVERALLS_SERVICE_JOB_NUMBER=1
+      script: ./scripts/ci/travis-check.js TestsCore
       # Script 2
     - name: TestsFeatures
-      script: COVERALLS_FLAG_NAME=test-2 ./scripts/ci/travis-check.js TestsFeatures
-      # Script 3
-    - name: Validation
-      script: ./scripts/ci/travis-check.js Validation
+      env:
+      - COVERALLS_FLAG_NAME=TestsFeatures
+      - COVERALLS_SERVICE_JOB_NUMBER=2
+      script: ./scripts/ci/travis-check.js TestsFeatures
     # Stage 2
     - stage: Coverage
       # Script 1
