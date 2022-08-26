@@ -32,8 +32,8 @@ if ( [ 'TestsCore', 'TestsFeatures' ].includes( TRAVIS_JOB_TYPE ) ) {
 // Verifying the code style.
 if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 	// Linters.
-	exec( 'yarn', 'run', 'lint' );
-	exec( 'yarn', 'run', 'stylelint' );
+	exec( 'yarn', 'run', 'lint', '--cache' );
+	exec( 'yarn', 'run', 'stylelint', '--cache' );
 
 	// Verifying manual tests.
 	exec( 'yarn', 'run', 'dll:build' );
