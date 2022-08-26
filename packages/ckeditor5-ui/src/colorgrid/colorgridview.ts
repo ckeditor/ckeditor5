@@ -114,7 +114,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 			} );
 
 			colorTile.on<ButtonExecuteEvent>( 'execute', () => {
-				this.fire( 'execute', {
+				this.fire<ExecuteEvent>( 'execute', {
 					value: color.color,
 					hasBorder: color.options.hasBorder,
 					label: color.label
@@ -172,12 +172,12 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 			this.focusTracker.add( item.element! );
 		}
 
-		this.items.on<AddEvent>( 'add', ( evt, item ) => {
-			this.focusTracker.add( item.element );
+		this.items.on<AddEvent<ColorTileView>>( 'add', ( evt, item ) => {
+			this.focusTracker.add( item.element! );
 		} );
 
-		this.items.on<RemoveEvent>( 'remove', ( evt, item ) => {
-			this.focusTracker.remove( item.element );
+		this.items.on<RemoveEvent<ColorTileView>>( 'remove', ( evt, item ) => {
+			this.focusTracker.remove( item.element! );
 		} );
 
 		// Start listening for the keystrokes coming from #element.
@@ -243,3 +243,12 @@ export interface ColorDefinition {
 		hasBorder: boolean;
 	};
 }
+
+export type ExecuteEvent = {
+	name: 'execute';
+	args: [ {
+		value: string;
+		hasBorder: boolean;
+		label: string;
+	} ];
+};

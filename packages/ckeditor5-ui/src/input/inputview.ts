@@ -13,6 +13,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import '../../theme/components/input/input.css';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * The base input view class.
@@ -177,7 +178,7 @@ export default class InputView extends View<HTMLInputElement> {
 
 		// Bind `this.value` to the DOM element's value.
 		// We cannot use `value` DOM attribute because removing it on Edge does not clear the DOM element's value property.
-		this.on( 'change:value', ( evt, name, value ) => {
+		this.on<ChangeEvent>( 'change:value', ( evt, name, value ) => {
 			this._setDomElementValue( value );
 			this._updateIsEmpty();
 		} );
@@ -228,3 +229,8 @@ export default class InputView extends View<HTMLInputElement> {
 function isInputElementEmpty( domElement: HTMLInputElement ) {
 	return !domElement.value;
 }
+
+export type InputEvent = {
+	name: 'input';
+	args: [ InstanceType<typeof global.InputEvent> ];
+};

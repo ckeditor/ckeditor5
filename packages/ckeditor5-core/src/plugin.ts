@@ -19,8 +19,8 @@ import type Editor from './editor/editor';
  * @implements module:core/plugin~PluginInterface
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Plugin<TEditor extends Editor = Editor> extends Observable implements PluginInterface {
-	public readonly editor: TEditor;
+export default class Plugin extends Observable implements PluginInterface {
+	public readonly editor: Editor;
 
 	public declare isEnabled: boolean;
 
@@ -29,7 +29,7 @@ export default class Plugin<TEditor extends Editor = Editor> extends Observable 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor: TEditor ) {
+	constructor( editor: Editor ) {
 		super();
 
 		/**

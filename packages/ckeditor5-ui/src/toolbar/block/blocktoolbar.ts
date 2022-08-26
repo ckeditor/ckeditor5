@@ -27,6 +27,7 @@ import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import type { ExecuteEvent } from '../../button/button';
+import type { ChangeRangeEvent as SelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
@@ -158,7 +159,7 @@ export default class BlockToolbar extends Plugin {
 		const editor = this.editor;
 
 		// Hides panel on a direct selection change.
-		this.listenTo( editor.model.document.selection, 'change:range', ( evt, data ) => {
+		this.listenTo<SelectionChangeRangeEvent>( editor.model.document.selection, 'change:range', ( evt, data ) => {
 			if ( data.directChange ) {
 				this._hidePanel();
 			}
@@ -326,7 +327,7 @@ export default class BlockToolbar extends Plugin {
 		buttonView.bind( 'tooltip' ).to( this.panelView, 'isVisible', isVisible => !isVisible );
 
 		// Toggle the panelView upon buttonView#execute.
-		this.listenTo( buttonView, 'execute', () => {
+		this.listenTo<ExecuteEvent>( buttonView, 'execute', () => {
 			if ( !this.panelView.isVisible ) {
 				this._showPanel();
 			} else {

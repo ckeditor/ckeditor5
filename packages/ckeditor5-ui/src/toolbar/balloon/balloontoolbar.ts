@@ -21,6 +21,7 @@ import { env, global } from '@ckeditor/ckeditor5-utils';
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ReadyEvent } from '@ckeditor/ckeditor5-core/src/editor/editor';
+import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type {
 	default as DocumentSelection,
@@ -269,7 +270,7 @@ export default class BalloonToolbar extends Plugin {
 		}
 
 		// Update the toolbar position when the editor ui should be refreshed.
-		this.listenTo( this.editor.ui, 'update', () => {
+		this.listenTo<UpdateEvent>( this.editor.ui, 'update', () => {
 			this._updatePosition();
 		} );
 

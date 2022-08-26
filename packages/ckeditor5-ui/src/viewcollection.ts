@@ -52,7 +52,7 @@ import type View from './view';
 export default class ViewCollection extends Collection<View, 'viewUid'> {
 	public id?: string;
 
-	private _parentElement: HTMLElement | null;
+	private _parentElement: DocumentFragment | HTMLElement | null;
 
 	/**
 	 * Creates a new instance of the {@link module:ui/viewcollection~ViewCollection}.
@@ -102,7 +102,7 @@ export default class ViewCollection extends Collection<View, 'viewUid'> {
 	 *
 	 * @param {HTMLElement} element A new parent element.
 	 */
-	public setParent( elementOrDocFragment: HTMLElement ): void {
+	public setParent( elementOrDocFragment: DocumentFragment | HTMLElement ): void {
 		this._parentElement = elementOrDocFragment;
 
 		// Take care of the initial collection items passed to the constructor.

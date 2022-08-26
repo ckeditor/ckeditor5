@@ -1207,7 +1207,7 @@ function getStyleUpdater( el: any, styleName: string ): Updater {
 //
 // @param {module:ui/template~TemplateDefinition} def
 // @returns {module:ui/template~TemplateDefinition}
-function clone<T>( def: T ): T {
+function clone( def: unknown ) {
 	const clone = cloneDeepWith( def, value => {
 		// Don't clone the `Template.bind`* bindings because of the references to Observable
 		// and DomEmitterMixin instances inside, which would also be traversed and cloned by greedy

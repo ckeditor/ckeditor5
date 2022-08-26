@@ -270,12 +270,12 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 			this.focusTracker.add( item.element! );
 		}
 
-		this.items.on( 'add', ( evt, item ) => {
-			this.focusTracker.add( item.element );
+		this.items.on<AddEvent<View>>( 'add', ( evt, item ) => {
+			this.focusTracker.add( item.element! );
 		} );
 
-		this.items.on( 'remove', ( evt, item ) => {
-			this.focusTracker.remove( item.element );
+		this.items.on<RemoveEvent<View>>( 'remove', ( evt, item ) => {
+			this.focusTracker.remove( item.element! );
 		} );
 
 		// Start listening for the keystrokes coming from #element.

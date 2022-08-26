@@ -90,7 +90,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	public element: TElement | null;
 	public isRendered: boolean;
 	public locale: Locale | undefined;
-	public readonly t: Locale[ 't' ] | undefined;
+	public t: Locale[ 't' ] | undefined;
 	public template?: Template;
 	public viewUid?: string;
 
@@ -191,6 +191,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 		// Pass parent locale to its children.
 		this._viewCollections.on<AddEvent<View>>( 'add', ( evt, collection ) => {
 			collection.locale = locale;
+			collection.t = locale && locale.t;
 		} );
 
 		/**
@@ -473,7 +474,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 *		// Late rendering allows customization of the view.
 	 *		view.render();
 	 */
-	public render(): void | Promise<unknown> {
+	public render(): void {
 		if ( this.isRendered ) {
 			/**
 			 * This View has already been rendered.

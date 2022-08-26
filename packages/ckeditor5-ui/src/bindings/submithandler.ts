@@ -47,6 +47,11 @@ import type View from '../view';
 export default function submitHandler( { view }: { view: View } ): void {
 	view.listenTo( view.element!, 'submit', ( evt, domEvt ) => {
 		domEvt.preventDefault();
-		view.fire( 'submit' );
+		view.fire<SubmitEvent>( 'submit' );
 	}, { useCapture: true } );
 }
+
+export type SubmitEvent = {
+	name: 'submit';
+	args: [];
+};

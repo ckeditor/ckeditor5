@@ -16,8 +16,9 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import '../../../theme/components/dropdown/splitbutton.css';
 
 import type ViewCollection from '../../viewcollection';
-import type { Button } from '../../button/button';
+import type Button from '../../button/button';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type DropdownButton from './dropdownbutton';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const dropdownArrowIcon = require( '../../../theme/icons/dropdown-arrow.svg' ).default as string;
@@ -42,7 +43,7 @@ const dropdownArrowIcon = require( '../../../theme/icons/dropdown-arrow.svg' ).d
  * @implements module:ui/dropdown/button/dropdownbutton~DropdownButton
  * @extends module:ui/view~View
  */
-export default class SplitButtonView extends View implements Button {
+export default class SplitButtonView extends View implements DropdownButton {
 	public readonly children: ViewCollection;
 	public readonly actionView: ButtonView;
 	public readonly arrowView: ButtonView;

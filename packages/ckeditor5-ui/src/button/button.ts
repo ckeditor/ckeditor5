@@ -15,7 +15,7 @@
  * @interface module:ui/button/button~Button
  */
 
-export interface Button {
+export default interface Button {
 	label: string | undefined;
 	keystroke: string | undefined;
 	tooltip: boolean | string | ( ( label: string, keystroke: string | undefined ) => string );

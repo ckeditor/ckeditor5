@@ -32,6 +32,7 @@ import type DropdownButton from './button/dropdownbutton';
 import type { FocusableView } from '../focuscycler';
 import type { FalsyValue } from '../template';
 import type { Collection, Locale } from '@ckeditor/ckeditor5-utils';
+import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
@@ -285,7 +286,7 @@ export function focusChildOnDropdownOpen(
 	dropdownView: DropdownView,
 	childSelectorCallback: () => View | FalsyValue
 ): void {
-	dropdownView.on( 'change:isOpen', () => {
+	dropdownView.on<ChangeEvent>( 'change:isOpen', () => {
 		if ( !dropdownView.isOpen ) {
 			return;
 		}
