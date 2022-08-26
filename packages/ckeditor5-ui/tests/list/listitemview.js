@@ -30,7 +30,7 @@ describe( 'ListItemView', () => {
 			expect( view.isVisible ).to.be.true;
 		} );
 
-		describe( '<button> bindings', () => {
+		describe( 'DOM element bindings', () => {
 			describe( 'class', () => {
 				it( 'reacts on view#isVisible', () => {
 					view.isVisible = true;
