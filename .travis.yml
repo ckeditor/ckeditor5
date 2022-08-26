@@ -41,8 +41,8 @@ jobs:
     - name: TestsFeatures
       script: COVERALLS_FLAG_NAME=TestsFeatures ./scripts/ci/travis-check.js TestsFeatures
       # Script 3
-    - name: Validation // temporarily disabled due to outside url failing to load that breaks the build
-      script: ./scripts/ci/travis-check.js Validation
+    # - name: Validation // temporarily disabled due to outside url failing to load that breaks the build
+    #   script: ./scripts/ci/travis-check.js Validation
     # Stage 2
     - stage: Coverage
       # Script 1
