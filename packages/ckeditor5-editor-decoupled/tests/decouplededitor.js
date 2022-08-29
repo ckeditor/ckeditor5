@@ -119,6 +119,27 @@ describe( 'DecoupledEditor', () => {
 				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
 			} );
 		} );
+
+		describe( 'config.label', () => {
+			it( 'if not set, editor._name will be set with a default value of `editor{n}`', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				const editor = new DecoupledEditor( editorElement );
+
+				expect( editor.config.get( 'label' ) ).to.be.undefined;
+				expect( editor._name ).to.match( /^[A-Za-z]+\d{1}/ );
+			} );
+
+			it( 'if set, editor._name is updated appropriately', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				const editor = new DecoupledEditor( editorElement, { label: 'foo' } );
+
+				expect( editor._name ).to.equal( 'foo' );
+			} );
+		} );
 	} );
 
 	describe( 'create()', () => {

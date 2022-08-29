@@ -107,13 +107,33 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.editable.isRendered ).to.be.false;
 			} );
 
+			it( 'should have the _editorName set based on passed editorName constructor option', () => {
+				view.destroy();
+
+				view = new InlineEditorUIView( locale, editingView, null, {
+					editorName: 'foo'
+				} );
+
+				expect( view._editorName ).to.be.equal( 'foo' );
+			} );
+
 			it( 'is given an accessible aria label', () => {
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor' );
 
 				view.destroy();
 			} );
+		} );
+
+		it( 'updates the label if options.editorName has been passed', () => {
+			view.destroy();
+
+			view = new InlineEditorUIView( locale, editingView, null, {
+				editorName: 'foo'
+			} );
+
+			expect( view.editable._generateLabel() ).to.equal( 'Rich Text Editor, foo' );
 		} );
 	} );
 
