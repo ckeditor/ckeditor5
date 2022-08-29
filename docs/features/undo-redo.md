@@ -22,8 +22,13 @@ Use the demo below to toggle between editing modes and test the feature. Some fe
 
 ## Common API
 
-The editor provides the following API to manage the read-only mode:
+The {@link module:undo/undo~Undo Undo} feature registers:
 
-*
+* The {@link module:undo/undocommand~UndoCommand} stores batches applied to the document and is able to undo a batch by reversing it and transforming.
+* The {@link module:undo/redocommand~RedoCommand} stores batches that were used to undo a batch by UndoCommand.
+* The {@link module:undo/undoui~UndoUI} introduces the `undo` and `redo` buttons to the editor.
 
+<info-box>
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
 
