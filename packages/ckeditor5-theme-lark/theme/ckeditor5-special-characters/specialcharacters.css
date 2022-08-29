@@ -4,6 +4,7 @@
  */
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-special-characters-navigation {
 
@@ -18,5 +19,14 @@
 		max-height: 250px;
 		overflow-y: auto;
 		overflow-x: hidden;
+	}
+
+	@mixin ck-media-phone {
+		max-width: 190px;
+
+		& > .ck-form__header__label {
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
 	}
 }

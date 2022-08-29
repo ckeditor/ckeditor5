@@ -8,7 +8,7 @@
  */
 
 import { EditorUI } from 'ckeditor5/src/core';
-import { enableToolbarKeyboardFocus, normalizeToolbarConfig } from 'ckeditor5/src/ui';
+import { normalizeToolbarConfig } from 'ckeditor5/src/ui';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 
 /**
@@ -74,11 +74,6 @@ export default class InlineEditorUI extends EditorUI {
 		// editable areas (roots) but the inline editor has only one.
 		this.setEditableElement( editable.name, editableElement );
 
-		// Let the global focus tracker know that the editable UI element is focusable and
-		// belongs to the editor. From now on, the focus tracker will sustain the editor focus
-		// as long as the editable is focused (e.g. the user is typing).
-		this.focusTracker.add( editableElement );
-
 		// Let the editable UI element respond to the changes in the global editor focus
 		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
 		// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
@@ -119,7 +114,6 @@ export default class InlineEditorUI extends EditorUI {
 		const editor = this.editor;
 		const view = this.view;
 		const editableElement = view.editable.element;
-		const editingView = editor.editing.view;
 		const toolbar = view.toolbar;
 
 		// Set–up the view#panel.
@@ -141,12 +135,8 @@ export default class InlineEditorUI extends EditorUI {
 
 		toolbar.fillFromConfig( this._toolbarConfig, this.componentFactory );
 
-		enableToolbarKeyboardFocus( {
-			origin: editingView,
-			originFocusTracker: this.focusTracker,
-			originKeystrokeHandler: editor.keystrokes,
-			toolbar
-		} );
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
+		this.addToolbar( toolbar );
 	}
 
 	/**

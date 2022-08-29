@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
 /* eslint-disable no-var */
 
 /**
@@ -11,6 +10,7 @@
  */
 
 import CKEditorError from './ckeditorerror';
+import global from './dom/global';
 
 declare global {
 	var CKEDITOR_TRANSLATIONS: {
@@ -22,8 +22,8 @@ declare global {
 }
 
 /* istanbul ignore else */
-if ( !window.CKEDITOR_TRANSLATIONS ) {
-	window.CKEDITOR_TRANSLATIONS = {};
+if ( !global.window.CKEDITOR_TRANSLATIONS ) {
+	global.window.CKEDITOR_TRANSLATIONS = {};
 }
 
 /**
@@ -78,15 +78,15 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  * the one below:
  *
  *		function addTranslations( language, translations, getPluralForm ) {
- *			if ( !window.CKEDITOR_TRANSLATIONS ) {
- *				window.CKEDITOR_TRANSLATIONS = {};
+ *			if ( !global.window.CKEDITOR_TRANSLATIONS ) {
+ *				global.window.CKEDITOR_TRANSLATIONS = {};
  *			}
 
- *			if ( !window.CKEDITOR_TRANSLATIONS[ language ] ) {
- *				window.CKEDITOR_TRANSLATIONS[ language ] = {};
+ *			if ( !global.window.CKEDITOR_TRANSLATIONS[ language ] ) {
+ *				global.window.CKEDITOR_TRANSLATIONS[ language ] = {};
  *			}
  *
- *			const languageTranslations = window.CKEDITOR_TRANSLATIONS[ language ];
+ *			const languageTranslations = global.window.CKEDITOR_TRANSLATIONS[ language ];
  *
  * 			languageTranslations.dictionary = languageTranslations.dictionary || {};
  * 			languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm;
@@ -106,11 +106,11 @@ export function add(
 	translations: { readonly [ messageId: string ]: string | readonly string[] },
 	getPluralForm?: ( n: number ) => number
 ): void {
-	if ( !window.CKEDITOR_TRANSLATIONS[ language ] ) {
-		window.CKEDITOR_TRANSLATIONS[ language ] = {} as any;
+	if ( !global.window.CKEDITOR_TRANSLATIONS[ language ] ) {
+		global.window.CKEDITOR_TRANSLATIONS[ language ] = {} as any;
 	}
 
-	const languageTranslations = window.CKEDITOR_TRANSLATIONS[ language ];
+	const languageTranslations = global.window.CKEDITOR_TRANSLATIONS[ language ];
 
 	languageTranslations.dictionary = languageTranslations.dictionary || {};
 	languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm;
@@ -166,7 +166,7 @@ export function _translate( language: string, message: Message, quantity: number
 	if ( numberOfLanguages === 1 ) {
 		// Override the language to the only supported one.
 		// This can't be done in the `Locale` class, because the translations comes after the `Locale` class initialization.
-		language = Object.keys( window.CKEDITOR_TRANSLATIONS )[ 0 ];
+		language = Object.keys( global.window.CKEDITOR_TRANSLATIONS )[ 0 ];
 	}
 
 	const messageId = message.id || message.string;
@@ -180,8 +180,8 @@ export function _translate( language: string, message: Message, quantity: number
 		return message.string;
 	}
 
-	const dictionary = window.CKEDITOR_TRANSLATIONS[ language ].dictionary;
-	const getPluralForm = window.CKEDITOR_TRANSLATIONS[ language ].getPluralForm || ( n => n === 1 ? 0 : 1 );
+	const dictionary = global.window.CKEDITOR_TRANSLATIONS[ language ].dictionary;
+	const getPluralForm = global.window.CKEDITOR_TRANSLATIONS[ language ].getPluralForm || ( n => n === 1 ? 0 : 1 );
 	const translation = dictionary[ messageId ];
 
 	if ( typeof translation === 'string' ) {
@@ -200,19 +200,19 @@ export function _translate( language: string, message: Message, quantity: number
  * @protected
  */
 export function _clear(): void {
-	window.CKEDITOR_TRANSLATIONS = {};
+	global.window.CKEDITOR_TRANSLATIONS = {};
 }
 
 // Checks whether the dictionary exists and translation in that dictionary exists.
 function hasTranslation( language: string, messageId: string ): boolean {
 	return (
-		!!window.CKEDITOR_TRANSLATIONS[ language ] &&
-		!!window.CKEDITOR_TRANSLATIONS[ language ].dictionary[ messageId ]
+		!!global.window.CKEDITOR_TRANSLATIONS[ language ] &&
+		!!global.window.CKEDITOR_TRANSLATIONS[ language ].dictionary[ messageId ]
 	);
 }
 
 function getNumberOfLanguages(): number {
-	return Object.keys( window.CKEDITOR_TRANSLATIONS ).length;
+	return Object.keys( global.window.CKEDITOR_TRANSLATIONS ).length;
 }
 
 /**

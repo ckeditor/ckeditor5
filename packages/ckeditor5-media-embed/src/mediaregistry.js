@@ -7,7 +7,7 @@
  * @module media-embed/mediaregistry
  */
 
-import { TooltipView, IconView, Template } from 'ckeditor5/src/ui';
+import { IconView, Template } from 'ckeditor5/src/ui';
 import { logWarning, toArray } from 'ckeditor5/src/utils';
 
 import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
@@ -185,7 +185,7 @@ class Media {
 		 * @see module:utils/locale~Locale#t
 		 * @method
 		 */
-		this._t = locale.t;
+		this._locale = locale;
 
 		/**
 		 * The output of the `RegExp.match` which validated the {@link #url} of this media.
@@ -271,10 +271,9 @@ class Media {
 	 * @returns {String}
 	 */
 	_getPlaceholderHtml() {
-		const tooltip = new TooltipView();
 		const icon = new IconView();
+		const t = this._locale.t;
 
-		tooltip.text = this._t( 'Open media in new tab' );
 		icon.content = mediaPlaceholderIcon;
 		icon.viewBox = mediaPlaceholderIconViewBox;
 
@@ -297,7 +296,8 @@ class Media {
 						class: 'ck-media__placeholder__url',
 						target: '_blank',
 						rel: 'noopener noreferrer',
-						href: this.url
+						href: this.url,
+						'data-cke-tooltip-text': t( 'Open media in new tab' )
 					},
 					children: [
 						{
@@ -306,8 +306,7 @@ class Media {
 								class: 'ck-media__placeholder__url__text'
 							},
 							children: [ this.url ]
-						},
-						tooltip
+						}
 					]
 				}
 			]

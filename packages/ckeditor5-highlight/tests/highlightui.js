@@ -189,6 +189,15 @@ describe( 'HighlightUI', () => {
 				validateButton( 5 );
 			} );
 
+			it( 'should execute the command only once', () => {
+				const executeSpy = sinon.spy( command, 'execute' );
+
+				buttons[ 5 ].fire( 'execute' );
+
+				sinon.assert.calledOnce( executeSpy );
+				sinon.assert.calledWith( executeSpy, { value: 'greenPen' } );
+			} );
+
 			it( 'should focus view after command execution', () => {
 				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
@@ -269,6 +278,15 @@ describe( 'HighlightUI', () => {
 			expect( removeHighlightButton ).to.have.property( 'tooltip', true );
 			expect( removeHighlightButton ).to.have.property( 'label', 'Remove highlight' );
 			expect( removeHighlightButton ).to.have.property( 'icon', eraserIcon );
+		} );
+
+		it( 'should execute the command only once', () => {
+			const executeSpy = sinon.spy( command, 'execute' );
+
+			removeHighlightButton.fire( 'execute' );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWith( executeSpy, { value: null } );
 		} );
 
 		describe( 'model to command binding', () => {

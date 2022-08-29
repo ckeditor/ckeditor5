@@ -4,12 +4,10 @@
  */
 
 @import "../../mixins/_unselectable.css";
-@import "../tooltip/mixins/_tooltip.css";
 
 .ck.ck-button,
 a.ck.ck-button {
 	@mixin ck-unselectable;
-	@mixin ck-tooltip_enabled;
 
 	position: relative;
 	display: inline-flex;
@@ -29,14 +27,5 @@ a.ck.ck-button {
 	/* Center the icon horizontally in a button without text. */
 	&:not(.ck-button_with-text)  {
 		justify-content: center;
-	}
-
-	&:hover {
-		@mixin ck-tooltip_visible;
-	}
-
-	/* Get rid of the native focus outline around the tooltip when focused (but not :hover). */
-	&:focus:not(:hover) {
-		@mixin ck-tooltip_disabled;
 	}
 }

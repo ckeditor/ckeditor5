@@ -67,3 +67,8 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+document.querySelector( 'button#read-only' ).addEventListener( 'click', () => {
+	window.editor.isReadOnly ? window.editor.disableReadOnlyMode( 'test' ) : window.editor.enableReadOnlyMode( 'test' );
+	window.editorRTL.isReadOnly ? window.editorRTL.disableReadOnlyMode( 'test' ) : window.editorRTL.enableReadOnlyMode( 'test' );
+} );

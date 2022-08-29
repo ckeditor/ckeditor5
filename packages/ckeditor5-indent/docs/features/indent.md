@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-indent-source}
 
-The block indentation feature allows you to set indentation for text blocks such as paragraphs or headings and lists. It is implemented by three plugins: {@link module:indent/indent~Indent}, {@link module:indent/indentblock~IndentBlock} and {@link module:list/list~List}.
+The block indentation feature allows you to set indentation for text blocks such as paragraphs or headings and lists.
 
 Its main purpose is to visually distinguish parts of the content. Block indentation is mostly useful for graphically differentiate structure elements like headings or lists. It can also be applied to present quotes or to make paragraphs or passages that need to be separated from the main content body stick out more.
 
@@ -37,7 +37,7 @@ Here are some CKEditor 5 features that may aid structuring your content better:
 
 ## Configuring the block indentation feature
 
-This feature offers a few configuration options that can be used to adjust the text block indentation behavior.
+This feature offers a few configuration options that can be used to adjust the text block indentation behavior. It is implemented by three plugins: {@link module:indent/indent~Indent}, {@link module:indent/indentblock~IndentBlock} and {@link module:list/list~List}.
 
 ### Using offset and unit
 

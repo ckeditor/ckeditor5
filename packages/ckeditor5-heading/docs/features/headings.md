@@ -6,7 +6,7 @@ category: features
 
 {@snippet features/heading-source}
 
-The {@link module:heading/heading~Heading} feature enables support for headings. These are used by the creators to structure their documents. They also aid both the readers, making the content more organized and easier to read, and the search indexers scanning for crucial information.
+The heading feature enables support for headings. These are used by the creators to structure their documents. They also aid both the readers, making the content more organized and easier to read, and the search indexers scanning for crucial information.
 
 Headings can easily be added with toolbar dropdown, buttons or with {@link features/autoformat Markdown code} as you type. They can also be cleared with the {@link features/remove-format remove format} feature.
 

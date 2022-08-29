@@ -6,7 +6,7 @@ order: 60
 
 # Simple upload adapter
 
-The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin allows uploading images to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal [editor configuration](#configuration).
+The simple upload adapter allows uploading images to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal [editor configuration](#configuration).
 
 See the [Server–side configuration](#server-side-configuration) section to learn about the requirements your server–side application must meet to support this upload adapter.
 
