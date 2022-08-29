@@ -130,10 +130,9 @@ export default class ColorInputView extends View {
 		/**
 		 * An instance of the dropdown allowing to select a color from a grid.
 		 *
-		 * @protected
 		 * @member {module:ui/dropdown/dropdown~DropdownView}
 		 */
-		this._dropdownView = this._createDropdownView();
+		this.dropdownView = this._createDropdownView();
 
 		/**
 		 * An instance of the input allowing the user to type a color value.
@@ -194,7 +193,7 @@ export default class ColorInputView extends View {
 				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 			children: [
-				this._dropdownView,
+				this.dropdownView,
 				this._inputView
 			]
 		} );
@@ -209,7 +208,7 @@ export default class ColorInputView extends View {
 		super.render();
 
 		// Start listening for the keystrokes coming from the dropdown panel view.
-		this.keystrokes.listenTo( this._dropdownView.panelView.element );
+		this.keystrokes.listenTo( this.dropdownView.panelView.element );
 	}
 
 	/**
@@ -230,7 +229,7 @@ export default class ColorInputView extends View {
 	}
 
 	/**
-	 * Creates and configures the {@link #_dropdownView}.
+	 * Creates and configures the {@link #dropdownView}.
 	 *
 	 * @private
 	 */
@@ -347,7 +346,7 @@ export default class ColorInputView extends View {
 		removeColorButton.label = removeColorButtonLabel;
 		removeColorButton.on( 'execute', () => {
 			this.value = defaultColor;
-			this._dropdownView.isOpen = false;
+			this.dropdownView.isOpen = false;
 			this.fire( 'input' );
 		} );
 
@@ -355,7 +354,7 @@ export default class ColorInputView extends View {
 	}
 
 	/**
-	 * Creates and configures the color grid inside the {@link #_dropdownView}.
+	 * Creates and configures the color grid inside the {@link #dropdownView}.
 	 *
 	 * @private
 	 */
@@ -367,7 +366,7 @@ export default class ColorInputView extends View {
 
 		colorGrid.on( 'execute', ( evtData, data ) => {
 			this.value = data.value;
-			this._dropdownView.isOpen = false;
+			this.dropdownView.isOpen = false;
 			this.fire( 'input' );
 		} );
 		colorGrid.bind( 'selectedColor' ).to( this, 'value' );

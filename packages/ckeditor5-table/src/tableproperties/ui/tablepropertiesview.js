@@ -360,10 +360,10 @@ export default class TablePropertiesView extends View {
 		[
 			this.borderStyleDropdown,
 			this.borderColorInput,
-			this.borderColorInput.fieldView._dropdownView.buttonView,
+			this.borderColorInput.fieldView.dropdownView.buttonView,
 			this.borderWidthInput,
 			this.backgroundInput,
-			this.backgroundInput.fieldView._dropdownView.buttonView,
+			this.backgroundInput.fieldView.dropdownView.buttonView,
 			this.widthInput,
 			this.heightInput,
 			this.alignmentToolbar,
