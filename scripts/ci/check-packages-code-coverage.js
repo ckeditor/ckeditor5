@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
@@ -9,17 +7,12 @@
 
 'use strict';
 
-/**
- * This script should be used on Travis CI. It executes tests and prepares the code coverage report
- * for each package found in the `packages/` directory. Then, all reports are merged into a single
- * file that will be sent to Coveralls.
- */
-
 const childProcess = require( 'child_process' );
-const crypto = require( 'crypto' );
 const fs = require( 'fs' );
-const path = require( 'path' );
 const glob = require( 'glob' );
+const path = require( 'path' );
+const Travis = require( './travis-folder' );
+const { red, yellow } = require( './ansi-colors' );
 
 const failedChecks = {
 	dependency: new Set(),
@@ -27,114 +20,101 @@ const failedChecks = {
 	codeCoverage: new Set()
 };
 
-const RED = '\x1B[0;31m';
-const YELLOW = '\x1B[33;1m';
-const NO_COLOR = '\x1B[0m';
+/**
+ * This script should be used on Travis CI. It executes tests and prepares the code coverage report
+ * for each package found in the `packages/` directory. Then, all reports are merged into a single
+ * file that will be sent to Coveralls.
+ */
+module.exports = function checkPackagesCodeCoverage() {
+	const travis = new Travis();
 
-const travis = {
-	_lastTimerId: null,
-	_lastStartTime: null,
+	childProcess.execSync( 'rm -r -f .nyc_output' );
+	childProcess.execSync( 'mkdir .nyc_output' );
+	childProcess.execSync( 'rm -r -f .out' );
+	childProcess.execSync( 'mkdir .out' );
 
-	foldStart( packageName, foldLabel ) {
-		console.log( `travis_fold:start:${ packageName }${ YELLOW }${ foldLabel }${ NO_COLOR }` );
-		this._timeStart();
-	},
+	// Temporary: Do not check the `ckeditor5-minimap` package(s).
+	const excludedPackages = [ 'ckeditor5-minimap' ];
+	const packages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
+		.toString()
+		.trim()
+		.split( '\n' )
+		.filter( fullPackageName => !excludedPackages.includes( fullPackageName ) );
 
-	foldEnd( packageName ) {
-		this._timeFinish();
-		console.log( `\ntravis_fold:end:${ packageName }\n` );
-	},
+	packages.unshift( 'ckeditor5' );
 
-	_timeStart() {
-		const nanoSeconds = process.hrtime.bigint();
+	for ( const fullPackageName of packages ) {
+		const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
+		const foldLabelName = 'pkg-' + simplePackageName;
 
-		this._lastTimerId = crypto.createHash( 'md5' ).update( nanoSeconds.toString() ).digest( 'hex' );
-		this._lastStartTime = nanoSeconds;
+		travis.foldStart( `travis_fold:start:${ foldLabelName }${ yellow( `Testing ${ fullPackageName }` ) }` );
 
-		// Intentional direct write to stdout, to manually control EOL.
-		process.stdout.write( `travis_time:start:${ this._lastTimerId }\r\n` );
-	},
+		appendCoverageReport();
 
-	_timeFinish() {
-		const travisEndTime = process.hrtime.bigint();
-		const duration = travisEndTime - this._lastStartTime;
+		runSubprocess( {
+			binaryName: 'npx',
+			cliArguments: [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ],
+			packageName: simplePackageName,
+			checkName: 'dependency',
+			failMessage: 'have a dependency problem'
+		} );
 
-		// Intentional direct write to stdout, to manually control EOL.
-		process.stdout.write( `\ntravis_time:end:${ this._lastTimerId }:start=${ this._lastStartTime },` +
-			`finish=${ travisEndTime },duration=${ duration }\r\n` );
+		runSubprocess( {
+			binaryName: 'yarn',
+			cliArguments: [ 'run', 'test', '-f', simplePackageName, '--reporter=dots', '--production', '--coverage' ],
+			packageName: simplePackageName,
+			checkName: 'unitTests',
+			failMessage: 'failed to pass unit tests'
+		} );
+
+		childProcess.execSync( 'cp coverage/*/coverage-final.json .nyc_output' );
+
+		runSubprocess( {
+			binaryName: 'npx',
+			cliArguments: [ 'nyc', 'check-coverage', '--branches', '100', '--functions', '100', '--lines', '100', '--statements', '100' ],
+			packageName: simplePackageName,
+			checkName: 'codeCoverage',
+			failMessage: 'doesn\'t have required code coverage'
+		} );
+
+		travis.foldEnd( `\ntravis_fold:end:${ foldLabelName }\n` );
+	}
+
+	console.log( 'Uploading combined code coverage report…' );
+
+	if ( shouldUploadCoverageReport() ) {
+		childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
+	} else {
+		console.log( 'Since the PR comes from the community, we do not upload code coverage report.' );
+		console.log( 'Read more why: https://github.com/ckeditor/ckeditor5/issues/7745.' );
+	}
+
+	console.log( 'Done' );
+
+	if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
+		console.log( '\n---\n' );
+
+		console.log( red( '🔥 Errors were detected by the CI.\n\n' ) );
+
+		showFailedCheck( 'dependency', 'The following packages have dependencies that are not included in its package.json' );
+		showFailedCheck( 'unitTests', 'The following packages did not pass unit tests' );
+		showFailedCheck( 'codeCoverage', 'The following packages did not provide required code coverage' );
+
+		console.log( '\n---\n' );
+
+		process.exit( 1 ); // Exit code 1 will break the CI build.
 	}
 };
 
-childProcess.execSync( 'rm -r -f .nyc_output' );
-childProcess.execSync( 'mkdir .nyc_output' );
-childProcess.execSync( 'rm -r -f .out' );
-childProcess.execSync( 'mkdir .out' );
-
-// Temporary: Do not check the `ckeditor5-minimap` package(s).
-const excludedPackages = [ 'ckeditor5-minimap' ];
-const packages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
-	.toString()
-	.trim()
-	.split( '\n' )
-	.filter( fullPackageName => !excludedPackages.includes( fullPackageName ) );
-
-packages.unshift( 'ckeditor5' );
-
-for ( const fullPackageName of packages ) {
-	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
-	const foldLabelName = 'pkg-' + simplePackageName;
-
-	travis.foldStart( foldLabelName, `Testing ${ fullPackageName }${ NO_COLOR }` );
-
-	appendCoverageReport();
-
-	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ], simplePackageName, 'dependency',
-		'have a dependency problem' );
-
-	const testArguments = [ 'run', 'test', '-f', simplePackageName, '--reporter=dots', '--production', '--coverage' ];
-	runSubprocess( 'yarn', testArguments, simplePackageName, 'unitTests', 'failed to pass unit tests' );
-
-	childProcess.execSync( 'cp coverage/*/coverage-final.json .nyc_output' );
-
-	const nyc = [ 'nyc', 'check-coverage', '--branches', '100', '--functions', '100', '--lines', '100', '--statements', '100' ];
-	runSubprocess( 'npx', nyc, simplePackageName, 'codeCoverage', 'doesn\'t have required code coverage' );
-
-	travis.foldEnd( foldLabelName );
-}
-
-console.log( 'Uploading combined code coverage report…' );
-
-if ( shouldUploadCoverageReport() ) {
-	childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
-} else {
-	console.log( 'Since the PR comes from the community, we do not upload code coverage report.' );
-	console.log( 'Read more why: https://github.com/ckeditor/ckeditor5/issues/7745.' );
-}
-
-console.log( 'Done' );
-
-if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
-	console.log( '\n---\n' );
-
-	console.log( `🔥 ${ RED }Errors were detected by the CI.${ NO_COLOR }\n\n` );
-
-	showFailedCheck( 'dependency', 'The following packages have dependencies that are not included in its package.json' );
-	showFailedCheck( 'unitTests', 'The following packages did not pass unit tests' );
-	showFailedCheck( 'codeCoverage', 'The following packages did not provide required code coverage' );
-
-	console.log( '\n---\n' );
-
-	process.exit( 1 ); // Exit code 1 will break the CI build.
-}
-
 /**
- * @param {String} binaryName Name of a CLI binary to be called.
- * @param {Array.<String>} cliArguments An array of arguments to be passed to the `binaryName`.
- * @param {String} packageName Checked package name.
- * @param {String} checkName A key associated with the problem in the `failedChecks` dictionary.
- * @param {String} failMessage Message to be shown if check failed.
+ * @param {Object} options
+ * @param {String} options.binaryName Name of a CLI binary to be called.
+ * @param {Array.<String>} options.cliArguments An array of arguments to be passed to the `binaryName`.
+ * @param {String} options.packageName Checked package name.
+ * @param {String} options.checkName A key associated with the problem in the `failedChecks` dictionary.
+ * @param {String} options.failMessage Message to be shown if check failed.
  */
-function runSubprocess( binaryName, cliArguments, packageName, checkName, failMessage ) {
+function runSubprocess( { binaryName, cliArguments, packageName, checkName, failMessage } ) {
 	const subprocess = childProcess.spawnSync( binaryName, cliArguments, {
 		encoding: 'utf8',
 		shell: true
@@ -148,7 +128,7 @@ function runSubprocess( binaryName, cliArguments, packageName, checkName, failMe
 
 	if ( subprocess.status !== 0 ) {
 		failedChecks[ checkName ].add( packageName );
-		console.log( `💥 ${ RED }${ packageName }${ NO_COLOR } ` + failMessage + ' 💥' );
+		console.log( red( `💥 ${ packageName } ` ) + failMessage + ' 💥' );
 	}
 }
 
@@ -156,7 +136,7 @@ function showFailedCheck( checkKey, errorMessage ) {
 	const failedPackages = failedChecks[ checkKey ];
 
 	if ( failedPackages.size ) {
-		console.log( `${ errorMessage }: ${ RED }${ Array.from( failedPackages.values() ).join( ', ' ) }${ NO_COLOR }` );
+		console.log( `${ errorMessage }: ${ red( Array.from( failedPackages.values() ).join( ', ' ) ) }` );
 	}
 }
 
