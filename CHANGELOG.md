@@ -5,7 +5,7 @@ Changelog
 
 ### Release highlights
 
-We are happy to announce the release of CKEditor 5 v34.1.0.
+We are happy to announce the release of CKEditor 5 v35.1.0.
 
 This release introduces the following new features:
 
