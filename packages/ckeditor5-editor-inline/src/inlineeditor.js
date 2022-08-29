@@ -55,6 +55,7 @@ export default class InlineEditor extends Editor {
 	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
+	 * @param {String} [config.editorName] Editor's name used for the creation of a voice label view instance.
 	 */
 	constructor( sourceElementOrData, config = {} ) {
 		// If both `config.initialData` and initial data parameter in `create()` are set, then throw.
@@ -80,7 +81,8 @@ export default class InlineEditor extends Editor {
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 
 		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
-			shouldToolbarGroupWhenFull
+			shouldToolbarGroupWhenFull,
+			editorName: this._name
 		} );
 		this.ui = new InlineEditorUI( this, view );
 

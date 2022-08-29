@@ -30,6 +30,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	 * @param {HTMLElement} [options.editableElement] The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
 	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
+	 * @param {String} [options.editorName] Editor's name used for the creation of a voice label view instance.
 	 * in the main {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
 	 */
@@ -49,14 +50,27 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		} );
 
 		/**
+		 * Editor's label defined by the `options` passed to the constructor.
+		 * Used to generate the label used by assistive technologies.
+		 *
+		 * @protected
+		 * @readonly
+		 */
+		this._editorName = options.editorName;
+
+		/**
 		 * The editable of the decoupled editor UI.
 		 *
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
 		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement, {
-			label: editableView => {
-				return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+			label: () => {
+				if ( this._editorName && this._editorName !== '' ) {
+					return t( 'Rich Text Editor, ' + this._editorName );
+				} else {
+					return t( 'Rich Text Editor' );
+				}
 			}
 		} );
 

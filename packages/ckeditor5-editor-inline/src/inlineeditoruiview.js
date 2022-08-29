@@ -26,6 +26,7 @@ export default class InlineEditorUIView extends EditorUIView {
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
 	 * @param {Object} [options={}] Configuration options for the view instance.
 	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
+	 * @param {Object} [options.editorName] Editor's name used for the creation of a voice label view instance.
 	 * in the main {@link module:editor-inline/inlineeditoruiview~InlineEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
 	 */
@@ -64,6 +65,15 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @member {Number} #viewportTopOffset
 		 */
 		this.set( 'viewportTopOffset', 0 );
+
+		/**
+		 * Editor's label defined by the `options` passed to the constructor.
+		 * Used to generate the label used by assistive technologies.
+		 *
+		 * @protected
+		 * @readonly
+		 */
+		this._editorName = options.editorName;
 
 		/**
 		 * A balloon panel view instance.
@@ -135,8 +145,12 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
 		this.editable = new InlineEditableUIView( locale, editingView, editableElement, {
-			label: editableView => {
-				return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+			label: () => {
+				if ( this._editorName && this._editorName !== '' ) {
+					return t( 'Rich Text Editor, ' + this._editorName );
+				} else {
+					return t( 'Rich Text Editor' );
+				}
 			}
 		} );
 
