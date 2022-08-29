@@ -290,8 +290,31 @@ describe( 'StylePanelView', () => {
 		} );
 
 		it( 'should register styleGroupView grid elements in #focusTracker', () => {
-			expect( panel.focusTracker._elements ).to.include( panel.blockStylesGroupView.gridView.element );
-			expect( panel.focusTracker._elements ).to.include( panel.inlineStylesGroupView.gridView.element );
+			const panel = new StylePanelView( locale, {
+				block: [
+					{
+						name: 'Red heading',
+						element: 'h2',
+						classes: [ 'red-heading' ]
+					}
+				],
+				inline: [
+					{
+						name: 'Deleted text',
+						element: 'span',
+						classes: [ 'deleted' ]
+					}
+				]
+			} );
+
+			const spyView = sinon.spy( panel.focusTracker, 'add' );
+
+			panel.render();
+
+			sinon.assert.calledWithExactly( spyView.getCall( 0 ), panel.blockStylesGroupView.gridView.element );
+			sinon.assert.calledWithExactly( spyView.getCall( 1 ), panel.inlineStylesGroupView.gridView.element );
+
+			panel.destroy();
 		} );
 	} );
 } );
