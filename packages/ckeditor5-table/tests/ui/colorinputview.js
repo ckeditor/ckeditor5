@@ -45,8 +45,8 @@ describe( 'ColorInputView', () => {
 		view.render();
 
 		inputView = view._inputView;
-		removeColorButton = view._dropdownView.panelView.children.first;
-		colorGridView = view._dropdownView.panelView.children.last;
+		removeColorButton = view.dropdownView.panelView.children.first;
+		colorGridView = view.dropdownView.panelView.children.last;
 	} );
 
 	afterEach( () => {
@@ -115,29 +115,29 @@ describe( 'ColorInputView', () => {
 
 		describe( 'dropdown', () => {
 			it( 'should be created', () => {
-				expect( view._dropdownView ).to.be.instanceOf( DropdownView );
-				expect( view._dropdownView.buttonView.element.classList.contains( 'ck-input-color__button' ) ).to.be.true;
-				expect( view._dropdownView.buttonView.tooltip ).to.be.true;
-				expect( view._dropdownView.buttonView.label ).to.equal( 'Color picker' );
+				expect( view.dropdownView ).to.be.instanceOf( DropdownView );
+				expect( view.dropdownView.buttonView.element.classList.contains( 'ck-input-color__button' ) ).to.be.true;
+				expect( view.dropdownView.buttonView.tooltip ).to.be.true;
+				expect( view.dropdownView.buttonView.label ).to.equal( 'Color picker' );
 			} );
 
 			it( 'should bind #isEnabled to the view\'s #isReadOnly', () => {
 				view.isReadOnly = false;
-				expect( view._dropdownView.isEnabled ).to.be.true;
+				expect( view.dropdownView.isEnabled ).to.be.true;
 
 				view.isReadOnly = true;
-				expect( view._dropdownView.isEnabled ).to.be.false;
+				expect( view.dropdownView.isEnabled ).to.be.false;
 			} );
 
 			it( 'should have the color preview', () => {
-				const preview = view._dropdownView.buttonView.children.first;
+				const preview = view.dropdownView.buttonView.children.first;
 
 				expect( preview.element.classList.contains( 'ck' ) ).to.be.true;
 				expect( preview.element.classList.contains( 'ck-input-color__button__preview' ) ).to.be.true;
 			} );
 
 			it( 'should display no-color preview when color is not set', () => {
-				const preview = view._dropdownView.buttonView.children.first;
+				const preview = view.dropdownView.buttonView.children.first;
 				const noColorPreview = preview.element.firstChild;
 
 				view.value = 'hsl(0, 0, 50%)';
@@ -150,7 +150,7 @@ describe( 'ColorInputView', () => {
 			} );
 
 			it( 'should have the remove color button', () => {
-				const removeColorButton = view._dropdownView.panelView.children.first;
+				const removeColorButton = view.dropdownView.panelView.children.first;
 
 				expect( removeColorButton ).to.be.instanceOf( ButtonView );
 				expect( removeColorButton.label ).to.equal( 'Remove color' );
@@ -165,7 +165,7 @@ describe( 'ColorInputView', () => {
 					} );
 					view.render();
 
-					expect( view._dropdownView.panelPosition ).to.equal( 'sw' );
+					expect( view.dropdownView.panelPosition ).to.equal( 'sw' );
 				} );
 
 				it( 'should be SouthEast in RTL', () => {
@@ -176,20 +176,20 @@ describe( 'ColorInputView', () => {
 					} );
 					view.render();
 
-					expect( view._dropdownView.panelPosition ).to.equal( 'se' );
+					expect( view.dropdownView.panelPosition ).to.equal( 'se' );
 				} );
 			} );
 
 			it( 'should register panelView children in #_focusables', () => {
 				expect( view._focusables.map( f => f ) ).to.have.members( [
-					view._dropdownView.panelView.children.first,
-					view._dropdownView.panelView.children.last
+					view.dropdownView.panelView.children.first,
+					view.dropdownView.panelView.children.last
 				] );
 			} );
 
 			it( 'should register panelView children elements in #focusTracker', () => {
-				expect( view.focusTracker._elements ).to.include( view._dropdownView.panelView.children.first.element );
-				expect( view.focusTracker._elements ).to.include( view._dropdownView.panelView.children.last.element );
+				expect( view.focusTracker._elements ).to.include( view.dropdownView.panelView.children.first.element );
+				expect( view.focusTracker._elements ).to.include( view.dropdownView.panelView.children.last.element );
 			} );
 		} );
 
@@ -215,11 +215,11 @@ describe( 'ColorInputView', () => {
 			} );
 
 			it( 'should close the dropdown upon ColorTileView#execute', () => {
-				view._dropdownView.isOpen = true;
+				view.dropdownView.isOpen = true;
 
 				colorGridView.items.last.fire( 'execute' );
 
-				expect( view._dropdownView.isOpen ).to.be.false;
+				expect( view.dropdownView.isOpen ).to.be.false;
 			} );
 
 			it( 'should fire the ColorInputView#input event upon ColorTileView#execute', () => {
@@ -254,12 +254,12 @@ describe( 'ColorInputView', () => {
 				expect( view.value ).to.equal( '' );
 			} );
 
-			it( 'should close the #_dropdownView upon #execute', () => {
-				view._dropdownView.isOpen = true;
+			it( 'should close the #dropdownView upon #execute', () => {
+				view.dropdownView.isOpen = true;
 
 				removeColorButton.fire( 'execute' );
 
-				expect( view._dropdownView.isOpen ).to.be.false;
+				expect( view.dropdownView.isOpen ).to.be.false;
 			} );
 		} );
 
@@ -410,7 +410,7 @@ describe( 'ColorInputView', () => {
 		it( 'should set the template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-input-color' ) ).to.be.true;
-			expect( view.element.firstChild ).to.equal( view._dropdownView.element );
+			expect( view.element.firstChild ).to.equal( view.dropdownView.element );
 			expect( view.element.lastChild ).to.equal( inputView.element );
 		} );
 
@@ -496,7 +496,7 @@ describe( 'ColorInputView', () => {
 					let removeColorButton;
 
 					beforeEach( () => {
-						removeColorButton = view._dropdownView.panelView.children.first;
+						removeColorButton = view.dropdownView.panelView.children.first;
 					} );
 
 					it( 'should replace "Remove color" with "Restore default"', () => {
@@ -527,7 +527,7 @@ describe( 'ColorInputView', () => {
 				view.render();
 				global.document.body.appendChild( view.element );
 
-				colorGridView = view._dropdownView.panelView.children.last;
+				colorGridView = view.dropdownView.panelView.children.last;
 			} );
 
 			afterEach( () => {
@@ -543,7 +543,7 @@ describe( 'ColorInputView', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					view._dropdownView.isOpen = true;
+					view.dropdownView.isOpen = true;
 
 					// Mock the remove color button view is focused.
 					view.focusTracker.isFocused = true;
@@ -566,7 +566,7 @@ describe( 'ColorInputView', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					view._dropdownView.isOpen = true;
+					view.dropdownView.isOpen = true;
 
 					// Mock the remove color button view is focused.
 					view.focusTracker.isFocused = true;
@@ -590,7 +590,7 @@ describe( 'ColorInputView', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					view._dropdownView.isOpen = true;
+					view.dropdownView.isOpen = true;
 
 					// Mock the first color button is focused.
 					colorGridView.focusTracker.isFocused = true;
@@ -611,7 +611,7 @@ describe( 'ColorInputView', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					view._dropdownView.isOpen = true;
+					view.dropdownView.isOpen = true;
 
 					// Mock the first color button is focused.
 					colorGridView.focusTracker.isFocused = true;
@@ -649,7 +649,7 @@ describe( 'ColorInputView', () => {
 
 			view.render();
 			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, view._dropdownView.panelView.element );
+			sinon.assert.calledWithExactly( spy, view.dropdownView.panelView.element );
 
 			view.destroy();
 		} );
