@@ -123,8 +123,27 @@ describe( 'StyleGridView', () => {
 		} );
 
 		it( 'should register styleGridView children elements in #focusTracker', () => {
-			expect( grid.focusTracker._elements ).to.include( grid.children.first.element );
-			expect( grid.focusTracker._elements ).to.include( grid.children.last.element );
+			const grid = new StyleGridView( new Locale(), [
+				{
+					name: 'Red heading',
+					element: 'h2',
+					classes: [ 'red-heading' ]
+				},
+				{
+					name: 'Large heading',
+					element: 'h2',
+					classes: [ 'large-heading' ]
+				}
+			] );
+
+			const spyView = sinon.spy( grid.focusTracker, 'add' );
+
+			grid.render();
+
+			sinon.assert.calledWithExactly( spyView.getCall( 0 ), grid.children.first.element );
+			sinon.assert.calledWithExactly( spyView.getCall( 1 ), grid.children.last.element );
+
+			grid.destroy();
 		} );
 
 		describe( 'keyboard navigation in the grid', () => {
