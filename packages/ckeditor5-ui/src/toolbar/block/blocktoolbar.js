@@ -281,7 +281,7 @@ export default class BlockToolbar extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const buttonView = new BlockButtonView( editor.locale );
-		const buttonBind = buttonView.bindTemplate;
+		const bind = buttonView.bindTemplate;
 
 		buttonView.set( {
 			label: t( 'Edit block' ),
@@ -289,13 +289,17 @@ export default class BlockToolbar extends Plugin {
 			withText: false
 		} );
 
+		// Note that this piece over here overrides the default mousedown logic in ButtonView
+		// to make it work with BlockToolbar. See the implementation of the ButtonView class to learn more.
 		buttonView.extendTemplate( {
 			on: {
-				mousedown: buttonBind.to( evt => {
-					// Workaround to #12115.
+				mousedown: bind.to( evt => {
+					// On Safari we have to force the focus on a button on click as it's the only browser
+					// that doesn't do that automatically. See #12115.
 					if ( env.isSafari && this.panelView.isVisible ) {
 						this.toolbarView.focus();
 					}
+
 					// Workaround to #12184, see https://github.com/ckeditor/ckeditor5/issues/12184#issuecomment-1199147964.
 					evt.preventDefault();
 				} )
