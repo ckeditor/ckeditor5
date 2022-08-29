@@ -118,10 +118,6 @@ describe( 'StyleGridView', () => {
 	} );
 
 	describe( 'render()', () => {
-		beforeEach( () => {
-			grid.render();
-		} );
-
 		it( 'should register styleGridView children elements in #focusTracker', () => {
 			const grid = new StyleGridView( new Locale(), [
 				{
