@@ -43,6 +43,7 @@ export default class SelectionObserver extends Observer {
 	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: SelectionObserverEventData ) => void>;
 	private readonly _clearInfiniteLoopInterval: ReturnType<typeof setInterval>;
 	private readonly _documentIsSelectingInactivityTimeoutDebounced: DebouncedFunc<() => void>;
+	private readonly _endDocumentIsSelectingDebounced: DebouncedFunc<() => void>;
 	private _loopbackCounter: number;
 
 	constructor( view: View ) {
@@ -120,6 +121,14 @@ export default class SelectionObserver extends Observer {
 		this._documentIsSelectingInactivityTimeoutDebounced = debounce( () => ( this.document.isSelecting = false ), 5000 );
 
 		/**
+		 * TODO
+		 *
+		 * @private
+		 * @method #_endDocumentIsSelectingDebounced
+		 */
+		this._endDocumentIsSelectingDebounced = debounce( () => this._endDocumentIsSelecting(), 100 );
+
+		/**
 		 * Private property to check if the code does not enter infinite loop.
 		 *
 		 * @private
@@ -134,33 +143,20 @@ export default class SelectionObserver extends Observer {
 	public override observe( domElement: HTMLElement ): void {
 		const domDocument = domElement.ownerDocument;
 
-		const startDocumentIsSelecting = () => {
-			this.document.isSelecting = true;
-
-			// Let's activate the safety timeout each time the document enters the "is selecting" state.
-			this._documentIsSelectingInactivityTimeoutDebounced();
-		};
-
-		const endDocumentIsSelecting = () => {
-			this.document.isSelecting = false;
-
-			// The safety timeout can be canceled when the document leaves the "is selecting" state.
-			this._documentIsSelectingInactivityTimeoutDebounced.cancel();
-		};
-
 		// The document has the "is selecting" state while the user keeps making (extending) the selection
 		// (e.g. by holding the mouse button and moving the cursor). The state resets when they either released
 		// the mouse button or interrupted the process by pressing or releasing any key.
-		this.listenTo( domElement, 'selectstart', startDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domElement, 'keydown', endDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domElement, 'selectstart', () => this._startDocumentIsSelecting(), { priority: 'highest' } );
+		this.listenTo( domElement, 'keydown', () => this._endDocumentIsSelectingDebounced(), { priority: 'highest' } );
+		this.listenTo( domElement, 'keyup', () => this._endDocumentIsSelectingDebounced(), { priority: 'highest' } );
 
 		// Add document-wide listeners only once. This method could be called for multiple editing roots.
 		if ( this._documents.has( domDocument ) ) {
 			return;
 		}
 
-		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domDocument, 'mouseup', () => this._endDocumentIsSelectingDebounced(), { priority: 'highest' } );
+
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
 
@@ -180,6 +176,33 @@ export default class SelectionObserver extends Observer {
 
 		clearInterval( this._clearInfiniteLoopInterval );
 		this._fireSelectionChangeDoneDebounced.cancel();
+		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
+		this._endDocumentIsSelectingDebounced.cancel();
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	private _startDocumentIsSelecting(): void {
+		this.document.isSelecting = true;
+
+		// Let's activate the safety timeout each time the document enters the "is selecting" state.
+		this._documentIsSelectingInactivityTimeoutDebounced();
+
+		this._endDocumentIsSelectingDebounced.cancel();
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	private _endDocumentIsSelecting(): void {
+		this.document.isSelecting = false;
+
+		// The safety timeout can be canceled when the document leaves the "is selecting" state.
 		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 

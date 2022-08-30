@@ -150,7 +150,7 @@ export default class Renderer extends Observable {
 		// When the user stops selecting, all pending changes should be rendered ASAP, though.
 		if ( env.isBlink && !env.isAndroid ) {
 			this.on<ObservableChangeEvent>( 'change:isSelecting', () => {
-				if ( !this.isSelecting && this._pendingSelectionUpdate ) {
+				if ( !this.isSelecting /* && this._pendingSelectionUpdate */ ) {
 					this.render();
 				}
 			} );
