@@ -51,8 +51,8 @@
  */
 
 /**
- * (Optional) The position of the tooltip. See {@link module:ui/tooltip/tooltipview~TooltipView#position}
- * to learn more about the available position values.
+ * (Optional) The position of the tooltip. See {@link module:ui/tooltipmanager~TooltipManager}
+ * to learn more about the tooltip system.
  *
  * **Note:** It makes sense only when the {@link #tooltip `tooltip` attribute} is defined.
  *

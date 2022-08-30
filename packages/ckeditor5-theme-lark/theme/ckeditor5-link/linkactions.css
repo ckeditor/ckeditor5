@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/components/tooltip/mixins/_tooltip.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 @import "../mixins/_focus.css";

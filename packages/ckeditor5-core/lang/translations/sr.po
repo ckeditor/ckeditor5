@@ -46,4 +46,4 @@ msgstr "Постављање фајла је неуспешно:"
 
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
-msgstr ""
+msgstr "Uređivač obogaćenog teksta. Prostor za uređivanje: %0"

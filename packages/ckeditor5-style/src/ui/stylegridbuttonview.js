@@ -85,7 +85,9 @@ export default class StyleGridButtonView extends ButtonView {
 					'ck-reset_all-excluded',
 					'ck-style-grid__button__preview',
 					'ck-content'
-				]
+				],
+				// The preview "AaBbCcDdEeFfGgHhIiJj" should not be read by screen readers because it is purely presentational.
+				'aria-hidden': 'true'
 			},
 
 			children: [

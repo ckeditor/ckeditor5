@@ -1005,22 +1005,27 @@ export default class Model extends Observable {
 
 		this.fire( '_beforeChanges' );
 
-		while ( this._pendingChanges.length ) {
-			// Create a new writer using batch instance created for this chain of changes.
-			const currentBatch = this._pendingChanges[ 0 ].batch;
-			this._currentWriter = new Writer( this, currentBatch );
+		try {
+			while ( this._pendingChanges.length ) {
+				// Create a new writer using batch instance created for this chain of changes.
+				const currentBatch = this._pendingChanges[ 0 ].batch;
+				this._currentWriter = new Writer( this, currentBatch );
 
-			// Execute changes callback and gather the returned value.
-			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
-			ret.push( callbackReturnValue );
+				// Execute changes callback and gather the returned value.
+				const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
+				ret.push( callbackReturnValue );
 
-			this.document._handleChangeBlock( this._currentWriter );
+				this.document._handleChangeBlock( this._currentWriter );
 
-			this._pendingChanges.shift();
+				this._pendingChanges.shift();
+				this._currentWriter = null;
+			}
+		} finally {
+			this._pendingChanges.length = 0;
 			this._currentWriter = null;
-		}
 
-		this.fire( '_afterChanges' );
+			this.fire( '_afterChanges' );
+		}
 
 		return ret;
 	}

@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
 msgid "Yellow marker"
-msgstr "زرد نشان"
+msgstr "پیلا نشان"
 
 msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
 msgid "Green marker"

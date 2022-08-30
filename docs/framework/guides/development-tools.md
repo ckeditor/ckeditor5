@@ -126,4 +126,4 @@ See the helper documentation to learn more about useful options.
 
 For a quick jump start on development of a plugin, use the [CKEditor5 Package Generator](https://www.npmjs.com/package/ckeditor5-package-generator).
 
-See the {@link framework/guides/package-generator documentation} to learn more.
+See the {@link framework/guides/package-generator/using-package-generator documentation} to learn more.
