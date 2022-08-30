@@ -209,19 +209,19 @@ describe( 'StylePanelView', () => {
 				panel.element.remove();
 			} );
 
-			describe( 'keyboard navigation in the panel', () => {
-				it( 'should focus the next focusable item on "arrowdown"', () => {
+			describe( 'keyboard navigation between style groups in the panel', () => {
+				it( 'should focus the next focusable item on "tab"', () => {
 					const keyEvtData = {
-						keyCode: keyCodes.arrowdown,
+						keyCode: keyCodes.tab,
 						preventDefault: sinon.spy(),
 						stopPropagation: sinon.spy()
 					};
 
-					// Mock the first style button is focused.
+					// Mock the first style grid is focused.
 					panel.focusTracker.isFocused = true;
-					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.children.first.element;
+					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.element;
 
-					const spy = sinon.spy( panel.blockStylesGroupView.gridView.children.get( 1 ), 'focus' );
+					const spy = sinon.spy( panel.inlineStylesGroupView.gridView, 'focus' );
 
 					panel.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -229,56 +229,19 @@ describe( 'StylePanelView', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 
-				it( 'should focus the next focusable item on "arrowright"', () => {
+				it( 'should focus the previous focusable item on "sfift + tab"', () => {
 					const keyEvtData = {
-						keyCode: keyCodes.arrowright,
+						keyCode: keyCodes.tab,
+						shiftKey: true,
 						preventDefault: sinon.spy(),
 						stopPropagation: sinon.spy()
 					};
 
-					// Mock the first style button is focused.
+					// Mock the first style grid is focused.
 					panel.focusTracker.isFocused = true;
-					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.children.first.element;
+					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.element;
 
-					const spy = sinon.spy( panel.blockStylesGroupView.gridView.children.get( 1 ), 'focus' );
-
-					panel.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
-				} );
-
-				it( 'should focus the previous focusable item on "arrowleft"', () => {
-					const keyEvtData = {
-						keyCode: keyCodes.arrowleft,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
-					};
-
-					// Mock the first style button is focused.
-					panel.focusTracker.isFocused = true;
-					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.children.first.element;
-
-					const spy = sinon.spy( panel.inlineStylesGroupView.gridView.children.last, 'focus' );
-
-					panel.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
-				} );
-
-				it( 'should focus the previous focusable item on "arrowup"', () => {
-					const keyEvtData = {
-						keyCode: keyCodes.arrowup,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
-					};
-
-					// Mock the first style button is focused.
-					panel.focusTracker.isFocused = true;
-					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.children.first.element;
-
-					const spy = sinon.spy( panel.inlineStylesGroupView.gridView.children.last, 'focus' );
+					const spy = sinon.spy( panel.inlineStylesGroupView.gridView, 'focus' );
 
 					panel.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -288,8 +251,8 @@ describe( 'StylePanelView', () => {
 			} );
 
 			describe( 'focus()', () => {
-				it( 'should focus the first button in the first grid', () => {
-					const spy = sinon.spy( panel.blockStylesGroupView.gridView.children.first, 'focus' );
+				it( 'should focus the first grid', () => {
+					const spy = sinon.spy( panel.blockStylesGroupView.gridView, 'focus' );
 
 					panel.focus();
 
@@ -298,14 +261,60 @@ describe( 'StylePanelView', () => {
 			} );
 
 			describe( 'focusLast()', () => {
-				it( 'should focus the last button in the last grid', () => {
-					const spy = sinon.spy( panel.inlineStylesGroupView.gridView.children.last, 'focus' );
+				it( 'should focus the last grid', () => {
+					const spy = sinon.spy( panel.inlineStylesGroupView.gridView, 'focus' );
 
 					panel.focusLast();
 
 					sinon.assert.calledOnce( spy );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		beforeEach( () => {
+			panel.render();
+			document.body.appendChild( panel.element );
+		} );
+
+		afterEach( () => {
+			panel.element.remove();
+		} );
+
+		it( 'should register styleGroupView grids in #_focusables', () => {
+			expect( panel._focusables.map( f => f ) ).to.have.members( [
+				panel.blockStylesGroupView.gridView,
+				panel.inlineStylesGroupView.gridView
+			] );
+		} );
+
+		it( 'should register styleGroupView grid elements in #focusTracker', () => {
+			const panel = new StylePanelView( locale, {
+				block: [
+					{
+						name: 'Red heading',
+						element: 'h2',
+						classes: [ 'red-heading' ]
+					}
+				],
+				inline: [
+					{
+						name: 'Deleted text',
+						element: 'span',
+						classes: [ 'deleted' ]
+					}
+				]
+			} );
+
+			const spyView = sinon.spy( panel.focusTracker, 'add' );
+
+			panel.render();
+
+			sinon.assert.calledWithExactly( spyView.getCall( 0 ), panel.blockStylesGroupView.gridView.element );
+			sinon.assert.calledWithExactly( spyView.getCall( 1 ), panel.inlineStylesGroupView.gridView.element );
+
+			panel.destroy();
 		} );
 	} );
 } );

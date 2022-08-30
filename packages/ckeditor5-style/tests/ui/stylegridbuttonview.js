@@ -63,6 +63,10 @@ describe( 'StyleGridButtonView', () => {
 				expect( button.previewView.element.classList.contains( 'ck-reset_all-excluded' ) ).to.be.true;
 			} );
 
+			it( 'should exclude the presentational preview text from assistive technologies', () => {
+				expect( button.previewView.element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
+			} );
+
 			it( 'should render the inner preview as the element specified in definition if previewable', () => {
 				const previewElement = button.previewView.element.firstChild;
 
