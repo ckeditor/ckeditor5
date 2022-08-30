@@ -59,13 +59,11 @@ function findSibling( viewElement, direction, writer, { blockElements, inlineObj
 
 	// Find first position that is just before a first:
 	// * text node,
-	// * BR element,
 	// * block element,
 	// * inline object element.
 	// It's ignoring any inline (non-object) elements like span, strong, etc.
 	position = position.getLastMatchingPosition( ( { item } ) => (
 		item.is( 'element' ) &&
-		item.name != 'br' &&
 		!blockElements.includes( item.name ) &&
 		!inlineObjectElements.includes( item.name )
 	), { direction } );

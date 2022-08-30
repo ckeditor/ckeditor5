@@ -30,6 +30,15 @@ describe( 'PasteFromOffice - filters', () => {
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p></p><p>foo</p>' );
 		} );
 
+		it( 'should replace multiple br elements before a paragraph', () => {
+			const inputData = '<br><br><p>foo</p>';
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformBlockBrsToParagraphs( documentFragment, writer );
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p></p><p></p><p>foo</p>' );
+		} );
+
 		it( 'should replace a single br element after a paragraph', () => {
 			const inputData = '<p>foo</p><br>';
 			const documentFragment = htmlDataProcessor.toView( inputData );
@@ -37,6 +46,15 @@ describe( 'PasteFromOffice - filters', () => {
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p>foo</p><p></p>' );
+		} );
+
+		it( 'should replace multiple br elements after a paragraph', () => {
+			const inputData = '<p>foo</p><br><br>';
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformBlockBrsToParagraphs( documentFragment, writer );
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p>foo</p><p></p><p></p>' );
 		} );
 
 		it( 'should replace a single br element between paragraphs', () => {
@@ -55,6 +73,15 @@ describe( 'PasteFromOffice - filters', () => {
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<h2>foo</h2><p></p><p>bar</p>' );
+		} );
+
+		it( 'should replace a single br element between paragraphs wrapped with block quote', () => {
+			const inputData = '<blockquote><p>foo</p><br><p>bar</p></blockquote>';
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformBlockBrsToParagraphs( documentFragment, writer );
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<blockquote><p>foo</p><p></p><p>bar</p></blockquote>' );
 		} );
 
 		it( 'should replace multiple br elements between paragraphs', () => {
@@ -140,6 +167,24 @@ describe( 'PasteFromOffice - filters', () => {
 
 		it( 'should not replace a br element if there is an inline object after it', () => {
 			const inputData = '<br><img src="foo"><p></p>';
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformBlockBrsToParagraphs( documentFragment, writer );
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+		} );
+
+		it( 'should not replace a br element if there is no other content', () => {
+			const inputData = '<br>';
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformBlockBrsToParagraphs( documentFragment, writer );
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+		} );
+
+		it( 'should not replace a multiple br elements if there is no other content', () => {
+			const inputData = '<br><br>';
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
