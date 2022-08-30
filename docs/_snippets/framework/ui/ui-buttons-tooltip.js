@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, ButtonView */
+/* globals document, ButtonView */
 
 const tooltip1 = new ButtonView();
 tooltip1.set( {

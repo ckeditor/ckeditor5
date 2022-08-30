@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, ButtonView, SwitchButtonView, createDropdown, addToolbarToDropdown,
+/* globals document, ButtonView, SwitchButtonView, SplitButtonView, createDropdown, addToolbarToDropdown,
 addListToDropdown, checkIcon, Collection, Model, Locale */
 const locale = new Locale();
 
@@ -11,17 +11,17 @@ const buttons = [];
 
 const toolbarButton = new ButtonView();
 toolbarButton.set( {
-	label: 'A button',
+	label: 'Button',
 	withText: true
 } );
 const toolbarSwitchButton = new SwitchButtonView();
 toolbarSwitchButton.set( {
-	label: 'A switch button ',
+	label: 'Switch button ',
 	withText: true
 } );
 const toolbarIconButton = new ButtonView();
 toolbarIconButton.set( {
-	label: 'An icon button',
+	label: 'Icon button',
 	icon: checkIcon,
 	tooltip: true
 } );
@@ -30,11 +30,12 @@ buttons.push( toolbarButton, toolbarSwitchButton, toolbarIconButton );
 const dropdown = createDropdown( locale );
 
 dropdown.buttonView.set( {
-	label: 'Open toolbar',
+	label: 'Toolbar dropdown',
 	withText: true
 } );
 
 addToolbarToDropdown( dropdown, buttons );
+dropdown.class = 'ck ck-reset_all';
 
 dropdown.render();
 document.getElementById( 'ui-dropdown-toolbar' ).appendChild( dropdown.element );
@@ -66,10 +67,10 @@ items.add( {
 	} )
 } );
 
-const dropdownList = createDropdown( locale );
+const dropdownList = createDropdown( locale, SplitButtonView );
 
 dropdownList.buttonView.set( {
-	label: 'A dropdown',
+	label: 'List dropdown',
 	withText: true
 } );
 addListToDropdown( dropdownList, items );

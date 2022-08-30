@@ -3,13 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, Locale, LabeledFieldView, createLabeledInputText, createLabeledInputNumber */
+/* globals document, Locale, LabeledFieldView, createLabeledInputText, createLabeledInputNumber */
 const locale = new Locale();
 
 // --- Labeled input text -------------------------------------------------
 
 const labeledInputView = new LabeledFieldView( locale, createLabeledInputText );
-labeledInputView.isEnabled = true;
 
 labeledInputView.label = 'Input text field';
 labeledInputView.render();
@@ -19,7 +18,6 @@ document.body.querySelector( '#snippet-text-input' ).appendChild( labeledInputVi
 // --- Labeled input number -------------------------------------------------
 
 const labeledNumberView = new LabeledFieldView( locale, createLabeledInputNumber );
-labeledNumberView.isEnabled = true;
 
 labeledNumberView.label = 'Input number field';
 

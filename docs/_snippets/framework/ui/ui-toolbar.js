@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, ButtonView, SwitchButtonView, createDropdown,
-addToolbarToDropdown, checkIcon, Locale, ToolbarView, ToolbarSeparatorView, ToolbarLineBreakView, View */
+/* globals document, ButtonView, SwitchButtonView, checkIcon, Locale, ToolbarView */
 
 const locale = new Locale();
 
@@ -12,17 +11,17 @@ const buttons = [];
 const toolbar = new ToolbarView( locale );
 const toolbarButton = new ButtonView();
 toolbarButton.set( {
-	label: 'A button',
+	label: 'Button',
 	withText: true
 } );
 const toolbarSwitchButton = new SwitchButtonView();
 toolbarSwitchButton.set( {
-	label: 'A switch button ',
+	label: 'Switch button ',
 	withText: true
 } );
 const toolbarIconButton = new ButtonView();
 toolbarIconButton.set( {
-	label: 'An icon button',
+	label: 'Icon button',
 	icon: checkIcon,
 	tooltip: true
 } );
@@ -30,6 +29,7 @@ toolbarIconButton.set( {
 buttons.push( toolbarButton, toolbarSwitchButton, toolbarIconButton );
 
 buttons.forEach( c => toolbar.items.add( c ) );
+toolbar.class = 'ck-editor-toolbar ck-reset_all';
 
 toolbar.render();
 

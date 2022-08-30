@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, ButtonView, SwitchButtonView, createDropdown,
-addToolbarToDropdown, checkIcon, Locale, ToolbarView, ToolbarSeparatorView, ToolbarLineBreakView, View */
+/* globals document, ButtonView, SwitchButtonView, checkIcon, Locale, ToolbarView, ToolbarSeparatorView, ToolbarLineBreakView */
 
 const locale = new Locale();
 
@@ -48,17 +47,17 @@ const compactToolbar = new ToolbarView( locale );
 
 const compactToolbarButton = new ButtonView();
 compactToolbarButton.set( {
-	label: 'A button',
+	label: 'Button',
 	withText: true
 } );
 const compactToolbarSwitchButton = new SwitchButtonView();
 compactToolbarSwitchButton.set( {
-	label: 'A switch button ',
+	label: 'Switch button ',
 	withText: true
 } );
 const compactToolbarIconButton = new ButtonView();
 compactToolbarIconButton.set( {
-	label: 'An icon button',
+	label: 'Icon button',
 	icon: checkIcon,
 	tooltip: true
 } );
@@ -80,17 +79,17 @@ const toolbar = new ToolbarView( locale );
 
 const toolbarButton = new ButtonView();
 toolbarButton.set( {
-	label: 'A button',
+	label: 'Button',
 	withText: true
 } );
 const toolbarSwitchButton = new SwitchButtonView();
 toolbarSwitchButton.set( {
-	label: 'A switch button ',
+	label: 'Switch button ',
 	withText: true
 } );
 const toolbarIconButton = new ButtonView();
 toolbarIconButton.set( {
-	label: 'An icon button',
+	label: 'Icon button',
 	icon: checkIcon,
 	tooltip: true
 } );
