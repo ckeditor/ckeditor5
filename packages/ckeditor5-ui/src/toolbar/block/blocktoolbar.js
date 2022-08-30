@@ -293,7 +293,7 @@ export default class BlockToolbar extends Plugin {
 			on: {
 				mousedown: buttonBind.to( evt => {
 					// Workaround to #12115.
-					if ( env.isSafari ) {
+					if ( env.isSafari && this.panelView.isVisible ) {
 						this.toolbarView.focus();
 					}
 					// Workaround to #12184, see https://github.com/ckeditor/ckeditor5/issues/12184#issuecomment-1199147964.

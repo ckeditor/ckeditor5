@@ -338,22 +338,29 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		describe( 'in Safari', () => {
-			let view, stub;
+			let view, stub, spy;
 
 			beforeEach( () => {
 				stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
 				view = blockToolbar.buttonView;
+				spy = sinon.spy( blockToolbar.toolbarView, 'focus' );
 			} );
 
 			afterEach( () => {
 				stub.resetBehavior();
 			} );
 
-			it( 'the toolbar is focused', () => {
-				const spy = sinon.spy( blockToolbar.toolbarView, 'focus' );
+			it( 'the toolbar is open, and gets focused', () => {
+				blockToolbar.panelView.isVisible = true;
 				view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
 				expect( spy.callCount ).to.equal( 1 );
+			} );
+
+			it( 'the toolbar is closed, and it doesn\'t get focused', () => {
+				view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+				expect( spy.callCount ).to.equal( 0 );
 			} );
 
 			it( 'the event is prevented', () => {
