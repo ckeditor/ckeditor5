@@ -7,7 +7,7 @@ modified_at: 2022-08-29
 
 The undo features lets the user withdraw recent changes done to the editor content, as well as bring them back again. All operations are remembered and organized info batches, that can later be easily undone or redone.
 
-The feature supports both {@link features/keyboard-support keyboard shortcuts} and toolbar buttons for convenient operation.
+The feature supports both toolbar buttons and {@link features/keyboard-support keyboard shortcuts} for convenient and easy operation.
 
 <info-box info>
 	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
@@ -15,7 +15,9 @@ The feature supports both {@link features/keyboard-support keyboard shortcuts} a
 
 ## Demo
 
-Use the demo below to try out the undo and redo mechanism. Introduce some changes and then withdraw the with the toolbar buttons: {@icon @ckeditor/ckeditor5-undo/theme/icons/undo.svg Undo} and {@icon @ckeditor/ckeditor5-undo/theme/icons/redo.svg Redo}. Alternatively, utilize the popular  keyboard shortcuts: <kbd>Ctrl</kbd> + <kbd>Z</kbd> (it would be <kbd>Cmd</kbd> + <kbd>Z</kbd> on Mac) for undo and <kbd>Ctrl</kbd> + <kbd>Y</kbd> for redo.
+Use the demo below to try out the undo and redo mechanism. Play around the content, try to introduce some changes and then use the toolbar buttons to undo {@icon @ckeditor/ckeditor5-undo/theme/icons/undo.svg Undo} or redo {@icon @ckeditor/ckeditor5-undo/theme/icons/redo.svg Redo} these.
+
+Alternatively, utilize the well-known keyboard shortcuts: <kbd>Ctrl</kbd> + <kbd>Z</kbd> (it would be <kbd>Cmd</kbd> + <kbd>Z</kbd> on Mac) for undo and <kbd>Ctrl</kbd> + <kbd>Y</kbd> for redo.
 
 {@snippet features/undo-redo}
 
