@@ -75,7 +75,7 @@ The `UndoEditing` feature registers the following commands:
 	It can be used to retrieve changes from the latest batch, or from some previous batch (e.g. changes made by a selected user in a collaborative environment):
 
 	```js
-	editor.execute( 'undo', batchToUndo);
+	editor.execute( 'undo', batchToUndo );
 	```
 
 * The {@link module:undo/redocommand~RedoCommand} is used to restore undo state from batch and is called as `redo`.
