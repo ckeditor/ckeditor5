@@ -12,7 +12,7 @@ const fs = require( 'fs' );
 const glob = require( 'glob' );
 const path = require( 'path' );
 const Travis = require( './travis-folder' );
-const { red, yellow } = require( './ansi-colors' );
+const { red, yellow, magenta } = require( './ansi-colors' );
 
 const failedChecks = {
 	dependency: new Set(),
@@ -20,14 +20,14 @@ const failedChecks = {
 	codeCoverage: new Set()
 };
 
+const travis = new Travis();
+
 /**
  * This script should be used on Travis CI. It executes tests and prepares the code coverage report
  * for each package found in the `packages/` directory. Then, all reports are merged into a single
  * file that will be sent to Coveralls.
  */
 module.exports = function checkPackagesCodeCoverage() {
-	const travis = new Travis();
-
 	childProcess.execSync( 'rm -r -f .nyc_output' );
 	childProcess.execSync( 'mkdir .nyc_output' );
 	childProcess.execSync( 'rm -r -f .out' );
@@ -35,50 +35,51 @@ module.exports = function checkPackagesCodeCoverage() {
 
 	// Temporary: Do not check the `ckeditor5-minimap` package(s).
 	const excludedPackages = [ 'ckeditor5-minimap' ];
-	const packages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
+
+	const corePackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
+		.map( filename => 'ckeditor5-' + filename.replace( /\.js$/, '' ) );
+
+	const featurePackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
 		.toString()
 		.trim()
 		.split( '\n' )
-		.filter( fullPackageName => !excludedPackages.includes( fullPackageName ) );
+		.filter( fullPackageName => ![ ...excludedPackages, ...corePackages ].includes( fullPackageName ) );
 
-	packages.unshift( 'ckeditor5' );
+	console.log( magenta( '\nTesting core packages.' ) );
+	checkPackage( 'ckeditor5' );
+	corePackages.forEach( fullPackageName => checkPackage( fullPackageName ) );
 
-	for ( const fullPackageName of packages ) {
-		const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
-		const foldLabelName = 'pkg-' + simplePackageName;
+	travis.foldStart( `travis_fold:start:coreTsCompilation${ magenta( 'Compiling core TS packages' ) }` );
 
-		travis.foldStart( `travis_fold:start:${ foldLabelName }${ yellow( `Testing ${ fullPackageName }` ) }` );
+	for ( const fullPackageName of corePackages ) {
+		console.log( yellow( `\nCompiling ${ fullPackageName }` ) );
 
-		appendCoverageReport();
+		const cwd = path.join( 'packages', fullPackageName );
+		const pkgJsonPath = path.join( cwd, 'package.json' );
 
-		runSubprocess( {
-			binaryName: 'npx',
-			cliArguments: [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ],
-			packageName: simplePackageName,
-			checkName: 'dependency',
-			failMessage: 'have a dependency problem'
-		} );
+		const pkgJson = JSON.parse( fs.readFileSync( pkgJsonPath, 'utf-8' ) );
+		const hasBuildScript = pkgJson.scripts && pkgJson.scripts.build;
 
-		runSubprocess( {
-			binaryName: 'yarn',
-			cliArguments: [ 'run', 'test', '-f', simplePackageName, '--reporter=dots', '--production', '--coverage' ],
-			packageName: simplePackageName,
-			checkName: 'unitTests',
-			failMessage: 'failed to pass unit tests'
-		} );
+		if ( !hasBuildScript ) {
+			console.log( 'No build script found, skipping.' );
 
-		childProcess.execSync( 'cp coverage/*/coverage-final.json .nyc_output' );
+			continue;
+		}
 
-		runSubprocess( {
-			binaryName: 'npx',
-			cliArguments: [ 'nyc', 'check-coverage', '--branches', '100', '--functions', '100', '--lines', '100', '--statements', '100' ],
-			packageName: simplePackageName,
-			checkName: 'codeCoverage',
-			failMessage: 'doesn\'t have required code coverage'
-		} );
+		const command = 'yarn run build --sourceMap';
 
-		travis.foldEnd( `\ntravis_fold:end:${ foldLabelName }\n` );
+		console.log( command );
+		childProcess.execSync( command, { cwd } );
+
+		console.log( 'Updating the "main" field in package.json.' );
+		pkgJson.main = pkgJson.main.replace( /(?<=\.)ts$/, 'js' );
+		fs.writeFileSync( pkgJsonPath, JSON.stringify( pkgJson, null, 2 ) + '\n', 'utf-8' );
 	}
+
+	travis.foldEnd( '\ntravis_fold:end:coreTsCompilation\n' );
+
+	console.log( magenta( '\nTesting feature packages.' ) );
+	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, '--js-first' ) );
 
 	console.log( 'Uploading combined code coverage report…' );
 
@@ -107,6 +108,47 @@ module.exports = function checkPackagesCodeCoverage() {
 };
 
 /**
+ * @param {String} fullPackageName
+ * @param {Array<String>} testArgs
+ */
+function checkPackage( fullPackageName, testArgs = [] ) {
+	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
+	const foldLabelName = 'pkg-' + simplePackageName;
+
+	travis.foldStart( `travis_fold:start:${ foldLabelName }${ yellow( `Testing ${ fullPackageName }` ) }` );
+
+	appendCoverageReport();
+
+	runSubprocess( {
+		binaryName: 'npx',
+		cliArguments: [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ],
+		packageName: simplePackageName,
+		checkName: 'dependency',
+		failMessage: 'have a dependency problem'
+	} );
+
+	runSubprocess( {
+		binaryName: 'yarn',
+		cliArguments: [ 'run', 'test', '-f', simplePackageName, '--reporter=dots', '--production', '--coverage', ...testArgs ],
+		packageName: simplePackageName,
+		checkName: 'unitTests',
+		failMessage: 'failed to pass unit tests'
+	} );
+
+	childProcess.execSync( 'cp coverage/*/coverage-final.json .nyc_output' );
+
+	runSubprocess( {
+		binaryName: 'npx',
+		cliArguments: [ 'nyc', 'check-coverage', '--branches', '100', '--functions', '100', '--lines', '100', '--statements', '100' ],
+		packageName: simplePackageName,
+		checkName: 'codeCoverage',
+		failMessage: 'doesn\'t have required code coverage'
+	} );
+
+	travis.foldEnd( `\ntravis_fold:end:${ foldLabelName }\n` );
+}
+
+/**
  * @param {Object} options
  * @param {String} options.binaryName Name of a CLI binary to be called.
  * @param {Array.<String>} options.cliArguments An array of arguments to be passed to the `binaryName`.
@@ -132,6 +174,11 @@ function runSubprocess( { binaryName, cliArguments, packageName, checkName, fail
 	}
 }
 
+/**
+ *
+ * @param {String} checkKey
+ * @param {String} errorMessage
+ */
 function showFailedCheck( checkKey, errorMessage ) {
 	const failedPackages = failedChecks[ checkKey ];
 
@@ -140,9 +187,11 @@ function showFailedCheck( checkKey, errorMessage ) {
 	}
 }
 
+/**
+ * Appends coverage data to the combined code coverage info file. It's used because all the results
+ * need to be uploaded at once (#6742).
+ */
 function appendCoverageReport() {
-	// Appends coverage data to the combined code coverage info file. It's used because all the results
-	// needs to be uploaded at once (#6742).
 	const matches = glob.sync( 'coverage/*/lcov.info' );
 
 	matches.forEach( filePath => {
@@ -153,8 +202,12 @@ function appendCoverageReport() {
 	} );
 }
 
+/**
+ * If the repository slugs are different, the pull request comes from the community (forked repository).
+ * For such builds, sending the CC report will be disabled.
+ *
+ * @returns {Boolean}
+ */
 function shouldUploadCoverageReport() {
-	// If the repository slugs are different, the pull request comes from the community (forked repository).
-	// For such builds, sending the CC report will be disabled.
 	return ( process.env.TRAVIS_EVENT_TYPE !== 'pull_request' || process.env.TRAVIS_PULL_REQUEST_SLUG === process.env.TRAVIS_REPO_SLUG );
 }
