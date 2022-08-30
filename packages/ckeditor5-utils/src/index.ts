@@ -39,6 +39,7 @@ export { default as KeystrokeHandler } from './keystrokehandler';
 export { default as toArray } from './toarray';
 export { default as toMap } from './tomap';
 export { default as priorities } from './priorities';
+export { default as insertToPriorityArray } from './inserttopriorityarray';
 
 export { default as uid } from './uid';
 
