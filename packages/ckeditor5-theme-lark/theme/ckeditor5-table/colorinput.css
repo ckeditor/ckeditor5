@@ -24,15 +24,21 @@
 			padding: 0;
 
 			@mixin ck-dir ltr {
-				border-left-width: 0;
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
+
+				&:not(:focus) {
+					border-left: 1px solid transparent;
+				}
 			}
 
 			@mixin ck-dir rtl {
-				border-right-width: 0;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
+
+				&:not(:focus) {
+					border-right: 1px solid transparent;
+				}
 			}
 
 			&.ck-disabled {
