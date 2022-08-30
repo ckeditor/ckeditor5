@@ -329,44 +329,49 @@ describe( 'BlockToolbar', () => {
 				const blockToolbar = editor.plugins.get( BlockToolbar );
 				expect( blockToolbar.buttonView.isVisible ).to.be.false;
 			} );
-		} );
 
-		it( 'should prevent the mousedown event', () => {
-			const ret = blockToolbar.buttonView.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+			describe( 'mousedown event', () => {
+				// https://github.com/ckeditor/ckeditor5/issues/12184
+				it( 'should call preventDefault to avoid stealing the focus', () => {
+					const ret = blockToolbar.buttonView.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-			expect( ret ).to.false;
-		} );
+					expect( ret ).to.false;
+				} );
 
-		describe( 'in Safari', () => {
-			let view, stub, spy;
+				// https://github.com/ckeditor/ckeditor5/issues/12115
+				describe( 'in Safari', () => {
+					let view, stub, spy;
 
-			beforeEach( () => {
-				stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
-				view = blockToolbar.buttonView;
-				spy = sinon.spy( blockToolbar.toolbarView, 'focus' );
-			} );
+					beforeEach( () => {
+						stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
+						view = blockToolbar.buttonView;
+						spy = sinon.spy( blockToolbar.toolbarView, 'focus' );
+					} );
 
-			afterEach( () => {
-				stub.resetBehavior();
-			} );
+					afterEach( () => {
+						stub.resetBehavior();
+					} );
 
-			it( 'the toolbar is open, and gets focused', () => {
-				blockToolbar.panelView.isVisible = true;
-				view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+					it( 'should focus the toolbar when it shows up', () => {
+						blockToolbar.panelView.isVisible = true;
+						view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-				expect( spy.callCount ).to.equal( 1 );
-			} );
+						expect( spy.callCount ).to.equal( 1 );
+					} );
 
-			it( 'the toolbar is closed, and it doesn\'t get focused', () => {
-				view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+					it( 'should not focus the toolbar when it hides', () => {
+						blockToolbar.panelView.isVisible = false;
+						view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-				expect( spy.callCount ).to.equal( 0 );
-			} );
+						expect( spy.callCount ).to.equal( 0 );
+					} );
 
-			it( 'the event is prevented', () => {
-				const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+					it( 'should also preventDefault the event', () => {
+						const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-				expect( ret ).to.false;
+						expect( ret ).to.false;
+					} );
+				} );
 			} );
 		} );
 	} );
