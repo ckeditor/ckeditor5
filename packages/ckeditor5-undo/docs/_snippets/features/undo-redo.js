@@ -7,15 +7,17 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
+import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config';
 
 ClassicEditor
 	.create( document.querySelector( '#undo-redo' ), {
-		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices ],
+		plugins: [ ArticlePluginSet, PictureEditing, CKBox, ImageUpload, CloudServices ],
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
@@ -31,6 +33,7 @@ ClassicEditor
 				'|',
 				'blockQuote',
 				'link',
+				'ckbox',
 				'mediaEmbed',
 				'insertTable',
 				'|',
@@ -54,6 +57,9 @@ ClassicEditor
 				'toggleImageCaption',
 				'imageTextAlternative'
 			]
+		},
+		ckbox: {
+			tokenUrl: TOKEN_URL
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]

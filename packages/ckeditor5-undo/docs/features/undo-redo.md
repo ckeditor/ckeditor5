@@ -15,7 +15,7 @@ The feature supports both {@link features/keyboard-support keyboard shortcuts} a
 
 ## Demo
 
-Use the demo below to try out the undo and redo mechanism. Introduce some changes and then withdraw the with the toolbar buttons: {@icon @ckeditor/ckeditor5-undo/theme/icons/undo.svg Undo} and {@icon @ckeditor/ckeditor5-undo/theme/icons/redo.svg Redo}. Alternatively, utilize the popular  keyboard shortcuts: <kbd>Ctrl</kbd> + <kbd>Z</kbd> (it would be <kbd>Cmd</kbd> + <kbd>Z</kbd> on Mac) for undo and <kbd>Cmd</kbd> + <kbd>Y</kbd> for redo.
+Use the demo below to try out the undo and redo mechanism. Introduce some changes and then withdraw the with the toolbar buttons: {@icon @ckeditor/ckeditor5-undo/theme/icons/undo.svg Undo} and {@icon @ckeditor/ckeditor5-undo/theme/icons/redo.svg Redo}. Alternatively, utilize the popular  keyboard shortcuts: <kbd>Ctrl</kbd> + <kbd>Z</kbd> (it would be <kbd>Cmd</kbd> + <kbd>Z</kbd> on Mac) for undo and <kbd>Ctrl</kbd> + <kbd>Y</kbd> for redo.
 
 {@snippet features/undo-redo}
 
