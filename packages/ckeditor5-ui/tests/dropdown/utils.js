@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event, console, setTimeout */
+/* globals document, Event, console */
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
@@ -203,40 +203,40 @@ describe( 'utils', () => {
 					externalFocusableElement.remove();
 				} );
 
-				it( 'should close the dropdown when the focus was in the #panelView but it went somewhere else', done => {
+				it( 'should close the dropdown when the focus was in the #panelView but it went somewhere else', async () => {
 					dropdownView.isOpen = true;
-					focusableDropdownChild.focus();
+					focusableDropdownChild.dispatchEvent( new Event( 'focus' ) );
 
-					expect( dropdownView.focusTracker.isFocused ).to.be.true;
-					expect( dropdownView.isOpen ).to.be.true;
+					expect( dropdownView.focusTracker.isFocused, 'isFocused' ).to.be.true;
+					expect( dropdownView.isOpen, 'isOpen' ).to.be.true;
 
-					externalFocusableElement.focus();
+					focusableDropdownChild.dispatchEvent( new Event( 'blur' ) );
+					externalFocusableElement.dispatchEvent( new Event( 'focus' ) );
 
 					// FocusTracker reacts to blur with a timeout.
-					setTimeout( () => {
-						expect( dropdownView.focusTracker.isFocused ).to.be.false;
-						expect( dropdownView.isOpen ).to.be.false;
-						done();
-					}, 0 );
+					await wait( 10 );
+
+					expect( dropdownView.focusTracker.isFocused, 'isFocused' ).to.be.false;
+					expect( dropdownView.isOpen, 'isOpen' ).to.be.false;
 				} );
 
 				// This should not happen in real life because opening a dropdown always focuses its child (not the #buttonView) but
 				// better safe than sorry.
-				it( 'should close the dropdown when the focus was on the #buttonView and went somewhere else', done => {
+				it( 'should close the dropdown when the focus was on the #buttonView and went somewhere else', async () => {
 					dropdownView.isOpen = true;
-					dropdownView.buttonView.focus();
+					dropdownView.buttonView.element.dispatchEvent( new Event( 'focus' ) );
 
 					expect( dropdownView.focusTracker.isFocused ).to.be.true;
 					expect( dropdownView.isOpen ).to.be.true;
 
-					externalFocusableElement.focus();
+					dropdownView.buttonView.element.dispatchEvent( new Event( 'blur' ) );
+					externalFocusableElement.dispatchEvent( new Event( 'focus' ) );
 
 					// FocusTracker reacts to blur with a timeout.
-					setTimeout( () => {
-						expect( dropdownView.focusTracker.isFocused ).to.be.false;
-						expect( dropdownView.isOpen ).to.be.false;
-						done();
-					}, 0 );
+					await wait( 10 );
+
+					expect( dropdownView.focusTracker.isFocused ).to.be.false;
+					expect( dropdownView.isOpen ).to.be.false;
 				} );
 			} );
 
@@ -786,3 +786,9 @@ describe( 'utils', () => {
 		} );
 	} );
 } );
+
+function wait( time ) {
+	return new Promise( res => {
+		global.window.setTimeout( res, time );
+	} );
+}
