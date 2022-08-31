@@ -35,8 +35,6 @@ export default class ColorInputView extends View {
 	constructor( locale, options ) {
 		super( locale );
 
-		const bind = this.bindTemplate;
-
 		/**
 		 * The value of the input.
 		 *
@@ -47,14 +45,6 @@ export default class ColorInputView extends View {
 		this.set( 'value', '' );
 
 		/**
-		 * The `id` attribute of the input (i.e. to pair with the `<label>` element).
-		 *
-		 * @observable
-		 * @member {String} #id
-		 */
-		this.set( 'id' );
-
-		/**
 		 * Controls whether the input view is in read-only mode.
 		 *
 		 * @observable
@@ -62,16 +52,6 @@ export default class ColorInputView extends View {
 		 * @default false
 		 */
 		this.set( 'isReadOnly', false );
-
-		/**
-		 * Set to `true` when the field has some error. Usually controlled via
-		 * {@link module:ui/labeledinput/labeledinputview~LabeledInputView#errorText}.
-		 *
-		 * @observable
-		 * @member {Boolean} #hasError
-		 * @default false
-		 */
-		this.set( 'hasError', false );
 
 		/**
 		 * An observable flag set to `true` when the input is focused by the user.
@@ -93,15 +73,6 @@ export default class ColorInputView extends View {
 		 * @default true
 		 */
 		this.set( 'isEmpty', true );
-
-		/**
-		 * The `id` of the element describing this field. When the field has
-		 * some error, it helps screen readers read the error text.
-		 *
-		 * @observable
-		 * @member {String} #ariaDescribedById
-		 */
-		this.set( 'ariaDescribedById' );
 
 		/**
 		 * A cached reference to the options passed to the constructor.
@@ -184,12 +155,8 @@ export default class ColorInputView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-input-color',
-					bind.if( 'hasError', 'ck-error' )
-				],
-				id: bind.to( 'id' ),
-				'aria-invalid': bind.if( 'hasError', true ),
-				'aria-describedby': bind.to( 'ariaDescribedById' )
+					'ck-input-color'
+				]
 			},
 			children: [
 				this.dropdownView,
