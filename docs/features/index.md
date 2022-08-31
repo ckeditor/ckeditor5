@@ -1,6 +1,5 @@
 ---
 category: features
-menu-title: Overview
 order: -999
 feedback-widget: false
 ---
