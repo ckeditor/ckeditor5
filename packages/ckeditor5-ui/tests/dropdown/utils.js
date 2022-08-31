@@ -19,7 +19,12 @@ import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import SplitButtonView from '../../src/dropdown/button/splitbuttonview';
 import View from '../../src/view';
 import ToolbarView from '../../src/toolbar/toolbarview';
-import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../src/dropdown/utils';
+import {
+	createDropdown,
+	addToolbarToDropdown,
+	addListToDropdown,
+	focusChildOnDropdownOpen
+} from '../../src/dropdown/utils';
 import ListItemView from '../../src/list/listitemview';
 import ListSeparatorView from '../../src/list/listseparatorview';
 import ListView from '../../src/list/listview';
@@ -783,6 +788,32 @@ describe( 'utils', () => {
 			function getListViewDomButton( listView ) {
 				return listView.children.first.element;
 			}
+		} );
+	} );
+
+	describe( 'focusChildOnDropdownOpen()', () => {
+		it( 'should do its job after focusDropdownPanelOnOpen()', () => {
+			const dropdownView = createDropdown( locale );
+
+			const focusableElementA = document.createElement( 'button' );
+			const focusableElementB = document.createElement( 'button' );
+
+			dropdownView.render();
+			document.body.appendChild( dropdownView.element );
+
+			dropdownView.panelView.element.appendChild( focusableElementA );
+			dropdownView.panelView.element.appendChild( focusableElementB );
+
+			focusChildOnDropdownOpen( dropdownView, () => focusableElementB );
+
+			const panelFocusSpy = sinon.spy( dropdownView.panelView, 'focus' );
+			const elementBFocusSpy = sinon.spy( focusableElementB, 'focus' );
+
+			dropdownView.isOpen = true;
+
+			sinon.assert.callOrder( panelFocusSpy, elementBFocusSpy );
+
+			dropdownView.element.remove();
 		} );
 	} );
 } );

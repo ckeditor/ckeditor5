@@ -19,8 +19,7 @@ import SwitchButtonView from '../button/switchbuttonview';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { global, priorities, logWarning } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
@@ -289,7 +288,10 @@ export function focusChildOnDropdownOpen( dropdownView, childSelectorCallback ) 
 			 */
 			logWarning( 'ui-dropdown-focus-child-on-open-child-missing-focus', { view: childToFocus } );
 		}
-	}, { priority: 'low' } );
+
+	// * Let the panel show up first (do not focus an invisible element).
+	// * Execute after focusDropdownPanelOnOpen(). See focusDropdownPanelOnOpen() to learn more.
+	}, { priority: priorities.low - 10 } );
 }
 
 // Add a set of default behaviors to dropdown view.
@@ -397,7 +399,11 @@ function focusDropdownPanelOnOpen( dropdownView ) {
 
 		// Focus the first item in the dropdown when the dropdown opened.
 		dropdownView.panelView.focus();
-	}, { priority: 'low' } ); // Let the panel show up first.
+
+	// * Let the panel show up first (do not focus an invisible element).
+	// * Also, execute before focusChildOnDropdownOpen() to make sure this helper does not break the
+	//   focus of a specific child by kicking in too late and resetting the focus in the panel.
+	}, { priority: 'low' } );
 }
 
 /**
