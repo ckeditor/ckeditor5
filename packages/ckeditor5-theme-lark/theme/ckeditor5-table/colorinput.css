@@ -17,6 +17,12 @@
 			border-top-left-radius: 0;
 			border-bottom-left-radius: 0;
 		}
+
+		/* Make sure the focused input is always on top of the dropdown button so its
+		   outline and border are never cropped (also when the input is read-only). */
+		&:focus {
+			z-index: 0;
+		}
 	}
 
 	& > .ck.ck-dropdown {
