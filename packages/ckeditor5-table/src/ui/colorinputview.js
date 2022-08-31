@@ -137,14 +137,13 @@ export default class ColorInputView extends View {
 		/**
 		 * An instance of the input allowing the user to type a color value.
 		 *
-		 * @protected
 		 * @member {module:ui/inputtext/inputtextview~InputTextView}
 		 */
-		this._inputView = this._createInputTextView();
+		this.inputView = this._createInputTextView();
 
 		/**
 		 * The flag that indicates whether the user is still typing.
-		 * If set to true, it means that the text input field ({@link #_inputView}) still has the focus.
+		 * If set to true, it means that the text input field ({@link #inputView}) still has the focus.
 		 * So, we should interrupt the user by replacing the input's value.
 		 *
 		 * @protected
@@ -194,7 +193,7 @@ export default class ColorInputView extends View {
 			},
 			children: [
 				this.dropdownView,
-				this._inputView
+				this.inputView
 			]
 		} );
 
@@ -215,7 +214,7 @@ export default class ColorInputView extends View {
 	 * Focuses the input.
 	 */
 	focus() {
-		this._inputView.focus();
+		this.inputView.focus();
 	}
 
 	/**
@@ -293,7 +292,7 @@ export default class ColorInputView extends View {
 	 * Creates and configures an instance of {@link module:ui/inputtext/inputtextview~InputTextView}.
 	 *
 	 * @private
-	 * @returns {module:ui/inputtext/inputtextview~InputTextView} A configured instance to be set as {@link #_inputView}.
+	 * @returns {module:ui/inputtext/inputtextview~InputTextView} A configured instance to be set as {@link #inputView}.
 	 */
 	_createInputTextView() {
 		const locale = this.locale;
@@ -375,7 +374,7 @@ export default class ColorInputView extends View {
 	}
 
 	/**
-	 * Sets {@link #_inputView}'s value property to the color value or color label,
+	 * Sets {@link #inputView}'s value property to the color value or color label,
 	 * if there is one and the user is not typing.
 	 *
 	 * Handles cases like:
@@ -393,9 +392,9 @@ export default class ColorInputView extends View {
 			const mappedColor = this.options.colorDefinitions.find( def => normalizedInputValue === normalizeColor( def.color ) );
 
 			if ( mappedColor ) {
-				this._inputView.value = mappedColor.label;
+				this.inputView.value = mappedColor.label;
 			} else {
-				this._inputView.value = inputValue || '';
+				this.inputView.value = inputValue || '';
 			}
 		}
 	}
