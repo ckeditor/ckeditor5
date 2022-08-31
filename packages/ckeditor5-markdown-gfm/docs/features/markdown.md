@@ -17,7 +17,7 @@ Please remember that Markdown syntax is very simple and it does not cover all th
 The CKEditor 5 instance below is configured to output GitHub Flavored Markdown. Use the editor to create your content and see the Markdown output displayed as you type below the editor.
 
 <info-box info>
-	Please observe that the {@link features/source-editing source editing} feature in the demo below is a separate plugin. If you would like to use it in your integration, it needs to be installed separately.
+	Please observe that the source editing feature in the demo below is a {@link features/source-editing separate plugin}. If you would like to use it in your integration, it needs to be installed separately.
 </info-box>
 
 {@snippet features/markdown}

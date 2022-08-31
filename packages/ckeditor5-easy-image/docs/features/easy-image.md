@@ -7,7 +7,7 @@ badges: [ premium ]
 
 # Easy Image integration
 
-The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) feature takes care of handling images, with a strong focus on the end–user experience. Its goal is to make the image upload as effortless and intuitive as possible.
+The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) feature takes care of handling images with a strong focus on the end–user experience. Its goal is to make the image upload as effortless and intuitive as possible.
 
 <info-box info>
 	Easy Image is part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds} for convenience, but the editor will still work properly without activating it.
