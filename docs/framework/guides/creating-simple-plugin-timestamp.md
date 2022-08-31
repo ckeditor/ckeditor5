@@ -111,7 +111,7 @@ Rebuild the editor and check in your console whether the timestamp was initializ
 
 ## Registering a toolbar button
 
-CKEditor 5 has a rich UI library. From it, we will grab the `ButtonView` class for our toolbar button.
+CKEditor 5 has a rich UI library. We will grab the `ButtonView` class for our toolbar button from there.
 
 Once we create a new instance of the `ButtonView`, we will be able to customize it by setting its properties. We will create a label, which will be visible on the button thanks to the `withText` property.
 
