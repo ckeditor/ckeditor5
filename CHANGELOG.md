@@ -9,14 +9,14 @@ We are happy to announce the release of CKEditor 5 v35.1.0.
 
 This release introduces the following new features:
 
-* [Accessibility improvements](https://github.com/ckeditor/ckeditor5/issues/11712)
-* Changes in the editor theme improve the UI
-* The column resize feature has been improved
-* Migration to TypeScript takes another step
+* [Accessibility improvements](https://github.com/ckeditor/ckeditor5/issues/11712).
+* Changes in the editor theme improve the UI.
+* The column resize feature has been improved.
+* Migration to TypeScript takes another step.
 
 There were also bug fixes:
 
-* Fixed revision history crashes during various actions when the revision data contained `<br>` at the end of a block element (like `<p>`)
+* Fixed revision history crashes during various actions when the revision data contained `<br>` at the end of a block element (like `<p>`).
 * [Fixed the focus after inserting an image](https://github.com/ckeditor/ckeditor5/issues/12229) - it is now moved to editable.
 
 <!-- TODO: Add a link to the blog post. -->
