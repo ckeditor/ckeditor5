@@ -44,7 +44,7 @@ describe( 'ColorInputView', () => {
 		} );
 		view.render();
 
-		inputView = view._inputView;
+		inputView = view.inputView;
 		removeColorButton = view.dropdownView.panelView.children.first;
 		colorGridView = view.dropdownView.panelView.children.last;
 	} );
@@ -67,10 +67,6 @@ describe( 'ColorInputView', () => {
 
 		it( 'should set #isReadOnly', () => {
 			expect( view.isReadOnly ).to.be.false;
-		} );
-
-		it( 'should set #hasError', () => {
-			expect( view.hasError ).to.be.false;
 		} );
 
 		it( 'should set #isFocused', () => {
@@ -313,14 +309,6 @@ describe( 'ColorInputView', () => {
 				expect( inputView.isReadOnly ).to.equal( false );
 			} );
 
-			it( 'should have #hasError bound to the color input', () => {
-				view.hasError = true;
-				expect( inputView.hasError ).to.equal( true );
-
-				view.hasError = false;
-				expect( inputView.hasError ).to.equal( false );
-			} );
-
 			it( 'should set #value on #input event', () => {
 				inputView.element.value = 'foo';
 				inputView.fire( 'input' );
@@ -441,36 +429,6 @@ describe( 'ColorInputView', () => {
 
 			it( 'should pass the number of columns to the color grid', () => {
 				expect( colorGridView.element.getAttribute( 'style' ) ).to.match( /repeat\(5/g );
-			} );
-		} );
-
-		describe( 'template bindings', () => {
-			it( 'should bind the element class to #hasError', () => {
-				expect( view.element.classList.contains( 'ck-error' ) ).to.be.false;
-
-				view.hasError = true;
-				expect( view.element.classList.contains( 'ck-error' ) ).to.be.true;
-			} );
-
-			it( 'should bind element id to #id', () => {
-				expect( view.element.id ).to.equal( '' );
-
-				view.id = 'foo';
-				expect( view.element.id ).to.equal( 'foo' );
-			} );
-
-			it( 'should bind the "aria-invalid" attribute to #hasError', () => {
-				expect( view.element.getAttribute( 'aria-invalid' ) ).to.be.null;
-
-				view.hasError = true;
-				expect( view.element.getAttribute( 'aria-invalid' ) ).to.equal( 'true' );
-			} );
-
-			it( 'should bind the "aria-describedby" attribute to #ariaDescribedById', () => {
-				expect( view.element.getAttribute( 'aria-describedby' ) ).to.be.null;
-
-				view.ariaDescribedById = 'foo';
-				expect( view.element.getAttribute( 'aria-describedby' ) ).to.equal( 'foo' );
 			} );
 		} );
 
