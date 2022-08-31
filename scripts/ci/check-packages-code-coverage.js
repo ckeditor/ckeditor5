@@ -79,7 +79,7 @@ module.exports = function checkPackagesCodeCoverage() {
 	travis.foldEnd( '\ntravis_fold:end:coreTsCompilation\n' );
 
 	console.log( magenta( '\nTesting feature packages.' ) );
-	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, '--js-first' ) );
+	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, [ '--js-first', '--cache' ] ) );
 
 	console.log( 'Uploading combined code coverage report…' );
 
