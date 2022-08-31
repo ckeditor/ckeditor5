@@ -46,4 +46,4 @@ msgstr "לא ניתן להעלות את הקובץ הבא:"
 
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
-msgstr ""
+msgstr "עורך פורמט טקסט עשיר. אזור עריכה: %0"

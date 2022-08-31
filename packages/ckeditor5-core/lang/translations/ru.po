@@ -46,4 +46,4 @@ msgstr "Невозможно загрузить файл"
 
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
-msgstr ""
+msgstr "Редактор форматированного текста. Область редактирования: %0"

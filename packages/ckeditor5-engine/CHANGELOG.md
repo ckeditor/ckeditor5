@@ -307,7 +307,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * `ContainerElement#getFillerOffset()` can now be re-used in other places in the code (it is now exported by the module). See [ckeditor/ckeditor5-list#117](https://github.com/ckeditor/ckeditor5-list/issues/117). ([12f28bb](https://github.com/ckeditor/ckeditor5-engine/commit/12f28bb))
 * Moved `Position`, `Range` and `Selection` static factories from those classes to the model/view writers and `Model`/`View` instances. Previously, those factories were available as static methods of the `Position`, `Range` and `Selection` classes which meant that you needed to import those classes to your plugin's code to create new instances. That required your package to depend on `@ckeditor/ckeditor5-engine` and was not very useful in general. After this change, you can create instances of those classes without importing anything. See the "Breaking changes" section for more details. Closes [#1555](https://github.com/ckeditor/ckeditor5-engine/issues/1555). ([e7f8467](https://github.com/ckeditor/ckeditor5-engine/commit/e7f8467))
-* Vairous fixes in the API docs. Thanks to [@denisname](https://github.com/denisname)!
+* Various fixes in the API docs. Thanks to [@denisname](https://github.com/denisname)!
 
 ### BREAKING CHANGES
 
@@ -470,7 +470,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * Increased the specificity of CSS rules. Introduced the `.ck` class for editor UI components (see: [ckeditor/ckeditor5#494](https://github.com/ckeditor/ckeditor5/issues/494)). ([6bf32c0](https://github.com/ckeditor/ckeditor5-engine/commit/6bf32c0))
 * Refactored how markers removal is converted from the model to the view. Closes [#1226](https://github.com/ckeditor/ckeditor5-engine/issues/1226). ([f6de5f5](https://github.com/ckeditor/ckeditor5-engine/commit/f6de5f5))
-* Removed the unnecesary `model.Writer#setTextData()` method. Closes [#1363](https://github.com/ckeditor/ckeditor5-engine/issues/1363). ([b484822](https://github.com/ckeditor/ckeditor5-engine/commit/b484822))
+* Removed the unnecessary `model.Writer#setTextData()` method. Closes [#1363](https://github.com/ckeditor/ckeditor5-engine/issues/1363). ([b484822](https://github.com/ckeditor/ckeditor5-engine/commit/b484822))
 * Renamed plural method names to singular and singular attribute names to plural. See [ckeditor/ckeditor5#742](https://github.com/ckeditor/ckeditor5/issues/742). ([9465c82](https://github.com/ckeditor/ckeditor5-engine/commit/9465c82))
 * View selection is now split onto Selection and DocumentSelection. Closes [#1304](https://github.com/ckeditor/ckeditor5-engine/issues/1304) . ([b466e3f](https://github.com/ckeditor/ckeditor5-engine/commit/b466e3f))
 
@@ -547,7 +547,7 @@ The good news is that the our focus when designing the new API was on developer 
   Fixed: Markers are cleared now before an operation is applied to `model.Document` tree to fix scenarios where marker range could not be converted to the view after the model changed.
 * Prevented `Writer` from usage outside of the `change` block. Closes [#1212](https://github.com/ckeditor/ckeditor5-engine/issues/1212). ([2592bf1](https://github.com/ckeditor/ckeditor5-engine/commit/2592bf1))
 * Provided one API for two types of markers, improved docs. Closes [#1086](https://github.com/ckeditor/ckeditor5-engine/issues/1086). ([bfe23c9](https://github.com/ckeditor/ckeditor5-engine/commit/bfe23c9))
-* Refactor: engine/model reorganization, introducing new chnage and enqueueChange block, split batch/writer. Related: [#1186](https://github.com/ckeditor/ckeditor5-engine/issues/1186). ([5be1ad6](https://github.com/ckeditor/ckeditor5-engine/commit/5be1ad6))
+* Refactor: engine/model reorganization, introducing new change and enqueueChange block, split batch/writer. Related: [#1186](https://github.com/ckeditor/ckeditor5-engine/issues/1186). ([5be1ad6](https://github.com/ckeditor/ckeditor5-engine/commit/5be1ad6))
 * Refactored events fired by model classes. Closes [#1207](https://github.com/ckeditor/ckeditor5-engine/issues/1207). ([f56bddf](https://github.com/ckeditor/ckeditor5-engine/commit/f56bddf))
 * Refactoring of the view API. Closes [#1210](https://github.com/ckeditor/ckeditor5-engine/issues/1210). ([dd9ae51](https://github.com/ckeditor/ckeditor5-engine/commit/dd9ae51))
 * Refactoring: Conversion refactoring. Introduced `model.Differ`. Changes now will be converted after all changes in a change block are done. Closes [#1172](https://github.com/ckeditor/ckeditor5-engine/issues/1172). ([6479bfd](https://github.com/ckeditor/ckeditor5-engine/commit/6479bfd))
@@ -572,7 +572,7 @@ The good news is that the our focus when designing the new API was on developer 
 * Format od data object passed across conversion callback has been changed.
 Feature: `Schema#findAllowedParent` has been introduced.
 Feature: `SchemaContext#concat` has been introduced.
-* `DataController#parse`, `DataController#toModel`, `ViewConversionDispatcher#convert` gets `SchemaContextDefinition` as a contex instead of `String`.
+* `DataController#parse`, `DataController#toModel`, `ViewConversionDispatcher#convert` gets `SchemaContextDefinition` as a context instead of `String`.
 
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)

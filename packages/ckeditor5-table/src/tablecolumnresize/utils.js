@@ -118,13 +118,25 @@ function getChildrenViewElement( modelTable, elementName, editor ) {
 }
 
 /**
- * Returns the computed width (in pixels) of the DOM element.
+ * Returns the computed width (in pixels) of the DOM element without padding and borders.
  *
  * @param {HTMLElement} domElement A DOM element.
  * @returns {Number} The width of the DOM element in pixels.
  */
 export function getElementWidthInPixels( domElement ) {
-	return parseFloat( global.window.getComputedStyle( domElement ).width );
+	const styles = global.window.getComputedStyle( domElement );
+
+	// In the 'border-box' box sizing algorithm, the element's width
+	// already includes the padding and border width (#12335).
+	if ( styles.boxSizing === 'border-box' ) {
+		return parseFloat( styles.width ) -
+			parseFloat( styles.paddingLeft ) -
+			parseFloat( styles.paddingRight ) -
+			parseFloat( styles.borderLeftWidth ) -
+			parseFloat( styles.borderRightWidth );
+	} else {
+		return parseFloat( styles.width );
+	}
 }
 
 /**
@@ -306,8 +318,14 @@ export function ensureColumnResizerElement( viewWriter, viewCell ) {
 export function getDomCellOuterWidth( domCell ) {
 	const styles = global.window.getComputedStyle( domCell );
 
-	return parseFloat( styles.width ) +
-		parseFloat( styles.paddingLeft ) +
-		parseFloat( styles.paddingRight ) +
-		parseFloat( styles.borderWidth );
+	// In the 'border-box' box sizing algorithm, the element's width
+	// already includes the padding and border width (#12335).
+	if ( styles.boxSizing === 'border-box' ) {
+		return parseInt( styles.width );
+	} else {
+		return parseFloat( styles.width ) +
+			parseFloat( styles.paddingLeft ) +
+			parseFloat( styles.paddingRight ) +
+			parseFloat( styles.borderWidth );
+	}
 }

@@ -50,6 +50,14 @@ require( '@ckeditor/ckeditor5-dev-env' )
 				'build/translations/*.js'
 			]
 		},
+		optionalFilesAndDirectories: [
+			// Some of CKEditor 5 features do not contain the UI layer. Hence, it is not required to publish the directory.
+			'lang',
+			// Some of CKEditor 5 features do not define styles or icons.
+			'theme',
+			// The CKEditor 5 framework does not define features.
+			'ckeditor5-metadata.json'
+		],
 		dryRun: process.argv.includes( '--dry-run' )
 	} );
 

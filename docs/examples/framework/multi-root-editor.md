@@ -203,7 +203,7 @@ class MultirootEditorUI extends EditorUI {
 		// If the focus tracker loses focus, stop tracking the last focused editable element.
 		// Wherever the focus is restored, it will no longer be in the context of that editable
 		// because the focus "came from the outside", as opposed to the focus moving from one element
-		// to another withing the editor UI.
+		// to another within the editor UI.
 		this.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
 			if ( !isFocused ) {
 				lastFocusedEditableElement = null;

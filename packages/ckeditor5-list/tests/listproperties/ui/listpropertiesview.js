@@ -521,6 +521,28 @@ describe( 'ListPropertiesView', () => {
 						sinon.assert.calledOnce( keyEvtData.stopPropagation );
 						sinon.assert.calledOnce( spy );
 					} );
+
+					// https://github.com/ckeditor/ckeditor5/issues/12340
+					it( 'should work regardless of the geometry of the grid', () => {
+						view.stylesView.element.style.gridTemplateColumns = 'repeat(2, 1fr)';
+
+						const keyEvtData = {
+							keyCode: keyCodes.arrowdown,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						// Mock the first style button is focused.
+						view.stylesView.focusTracker.isFocused = true;
+						view.stylesView.focusTracker.focusedElement = view.stylesView.children.first.element;
+
+						const spy = sinon.spy( view.stylesView.children.get( 2 ), 'focus' );
+
+						view.stylesView.keystrokes.press( keyEvtData );
+						sinon.assert.calledOnce( keyEvtData.preventDefault );
+						sinon.assert.calledOnce( keyEvtData.stopPropagation );
+						sinon.assert.calledOnce( spy );
+					} );
 				} );
 			} );
 
