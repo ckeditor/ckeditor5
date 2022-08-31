@@ -350,23 +350,27 @@ export interface EditorConfig {
 	plugins?: ( PluginConstructor<Editor> | string )[];
 	removePlugins?: ( PluginConstructor<Editor> | string )[];
 	substitutePlugins?: PluginConstructor<Editor>[];
-	toolbar?: string[] | {
-		items?: string[];
-		removeItems?: string[];
-		shouldNotGroupWhenFull?: boolean;
-	};
-	ui?: {
-		viewportOffset?: {
-			bottom?: number;
-			left?: number;
-			right?: number;
-			top?: number;
-		};
-	};
+	toolbar?: string[] | ToolbarConfig;
+	ui?: UiConfig;
 	updateSourceElementOnDestroy?: boolean;
 }
 
 export interface LanguageConfig {
 	ui?: string;
 	content?: string;
+}
+
+export interface ToolbarConfig {
+	items?: string[];
+	removeItems?: string[];
+	shouldNotGroupWhenFull?: boolean;
+}
+
+export interface UiConfig {
+	viewportOffset?: {
+		bottom?: number;
+		left?: number;
+		right?: number;
+		top?: number;
+	};
 }

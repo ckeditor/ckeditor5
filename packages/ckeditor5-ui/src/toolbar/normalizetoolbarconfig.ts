@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
+import type { ToolbarConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 
 /**
  * @module ui/toolbar/normalizetoolbarconfig
@@ -32,7 +32,7 @@ import type { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorcon
  * @returns {Object} A normalized toolbar config object.
  */
 export default function normalizeToolbarConfig(
-	config: EditorConfig[ 'toolbar' ]
+	config: string[] | ToolbarConfig | undefined
 ): {
 	items: string[];
 	removeItems: string[];

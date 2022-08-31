@@ -48,7 +48,7 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  */
 export default abstract class Editor extends Observable {
 	public readonly commands: CommandCollection;
-	public readonly config: Config;
+	public readonly config: Config<EditorConfig>;
 	public readonly conversion: Conversion;
 	public readonly data: DataController;
 	public readonly editing: EditingController;
@@ -108,7 +108,7 @@ export default abstract class Editor extends Observable {
 		 * @readonly
 		 * @member {module:utils/config~Config}
 		 */
-		this.config = new Config( config, constructor.defaultConfig );
+		this.config = new Config<EditorConfig>( config, constructor.defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
 
@@ -387,12 +387,12 @@ export default abstract class Editor extends Observable {
 	 */
 	public initPlugins(): Promise<LoadedPlugins> {
 		const config = this.config;
-		const plugins = config.get( 'plugins' ) as EditorConfig[ 'plugins' ];
-		const removePlugins = config.get( 'removePlugins' ) as EditorConfig[ 'removePlugins' ] || [];
-		const extraPlugins = config.get( 'extraPlugins' ) as EditorConfig[ 'extraPlugins' ] || [];
-		const substitutePlugins = config.get( 'substitutePlugins' ) as EditorConfig[ 'substitutePlugins' ] || [];
+		const plugins = config.get( 'plugins' )!;
+		const removePlugins = config.get( 'removePlugins' ) || [];
+		const extraPlugins = config.get( 'extraPlugins' ) || [];
+		const substitutePlugins = config.get( 'substitutePlugins' ) || [];
 
-		return this.plugins.init( plugins!.concat( extraPlugins ), removePlugins, substitutePlugins );
+		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins, substitutePlugins );
 	}
 
 	/**

@@ -44,7 +44,7 @@ import type { EditorConfig, LanguageConfig } from './editor/editorconfig';
  * See {@link module:core/context~Context.create `Context.create()`} for usage examples.
  */
 export default class Context {
-	public readonly config: Config;
+	public readonly config: Config<ContextConfig>;
 	public readonly plugins: PluginCollection<Context | Editor>;
 	public readonly locale: Locale;
 	public readonly t: Locale[ 't' ];
@@ -69,7 +69,7 @@ export default class Context {
 		 * @readonly
 		 * @type {module:utils/config~Config}
 		 */
-		this.config = new Config( config, ( this.constructor as typeof Context ).defaultConfig );
+		this.config = new Config<ContextConfig>( config, ( this.constructor as typeof Context ).defaultConfig );
 
 		const availablePlugins = ( this.constructor as typeof Context ).builtinPlugins;
 
@@ -83,7 +83,7 @@ export default class Context {
 		 */
 		this.plugins = new PluginCollection<Context | Editor>( this, availablePlugins );
 
-		const languageConfig = ( this.config.get( 'language' ) || {} ) as string | LanguageConfig;
+		const languageConfig = this.config.get( 'language' ) || {};
 
 		/**
 		 * @readonly
@@ -91,7 +91,7 @@ export default class Context {
 		 */
 		this.locale = new Locale( {
 			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
-			contentLanguage: this.config.get( 'language.content' ) as string | undefined
+			contentLanguage: this.config.get( 'language.content' )
 		} );
 
 		/**
@@ -129,8 +129,8 @@ export default class Context {
 	 * once the initialization is completed, providing an array of loaded plugins.
 	 */
 	public initPlugins(): Promise<LoadedPlugins> {
-		const plugins = this.config.get( 'plugins' ) as ( PluginConstructor<Context | Editor> )[] || [];
-		const substitutePlugins = this.config.get( 'substitutePlugins' ) as PluginConstructor<Context | Editor>[] || [];
+		const plugins = this.config.get( 'plugins' ) || [];
+		const substitutePlugins = this.config.get( 'substitutePlugins' ) || [];
 
 		// Plugins for substitution should be checked as well.
 		for ( const Plugin of plugins.concat( substitutePlugins ) ) {
@@ -238,7 +238,7 @@ export default class Context {
 	 * @protected
 	 * @returns {Object} Configuration as a plain object.
 	 */
-	public _getEditorConfig(): Record<string, unknown> {
+	public _getEditorConfig(): Partial<EditorConfig> {
 		const result: Record<string, unknown> = {};
 
 		for ( const name of this.config.names() ) {

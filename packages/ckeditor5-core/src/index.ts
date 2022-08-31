@@ -18,6 +18,7 @@ export { default as ContextPlugin } from './contextplugin';
 
 export { default as Editor } from './editor/editor';
 export { default as EditorUI } from './editor/editorui';
+export { EditorConfig } from './editor/editorconfig';
 
 export { default as attachToForm } from './editor/utils/attachtoform';
 export { default as DataApiMixin } from './editor/utils/dataapimixin';

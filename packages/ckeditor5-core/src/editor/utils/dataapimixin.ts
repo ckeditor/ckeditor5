@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import type { DataController } from '@ckeditor/ckeditor5-engine';
+import type Editor from '../editor';
 
 /**
  * @module core/editor/utils/dataapimixin
@@ -17,7 +17,7 @@ import type { DataController } from '@ckeditor/ckeditor5-engine';
  * @mixin DataApiMixin
  * @implements module:core/editor/utils/dataapimixin~DataApi
  */
-export default function DataApiMixin<Base extends abstract new( ...args: any[] ) => { data: DataController }>( base: Base ) {
+export default function DataApiMixin<Base extends abstract new( ...args: any[] ) => Editor>( base: Base ) {
 	abstract class Mixin extends base implements DataApi {
 		public setData( data: string ): void {
 			this.data.set( data );

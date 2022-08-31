@@ -336,12 +336,13 @@ export default abstract class EditorUI extends Observable {
 	 */
 	private _readViewportOffsetFromConfig() {
 		const editor = this.editor;
-		const viewportOffsetConfig = editor.config.get( 'ui.viewportOffset' ) as EditorUI[ 'viewportOffset' ] | undefined;
+		const viewportOffsetConfig = editor.config.get( 'ui.viewportOffset' );
 
 		if ( viewportOffsetConfig ) {
 			return viewportOffsetConfig;
 		}
 
+		// Not present in EditorConfig type, because it's legacy. Hence the `as` expression.
 		const legacyOffsetConfig = editor.config.get( 'toolbar.viewportTopOffset' ) as number | undefined;
 
 		// Fall back to deprecated toolbar config.

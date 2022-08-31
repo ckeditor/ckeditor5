@@ -20,6 +20,7 @@ import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import { env, global } from '@ckeditor/ckeditor5-utils';
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { ToolbarConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 import type { ReadyEvent } from '@ckeditor/ckeditor5-core/src/editor/editor';
 import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -73,7 +74,7 @@ export default class BalloonToolbar extends Plugin {
 		 * @type {module:core/editor/editorconfig~EditorConfig#balloonToolbar}
 		 * @private
 		 */
-		this._balloonConfig = normalizeToolbarConfig( editor.config.get( 'balloonToolbar' ) as any );
+		this._balloonConfig = normalizeToolbarConfig( editor.config.get( 'balloonToolbar' ) );
 
 		/**
 		 * The toolbar view displayed in the balloon.
@@ -474,6 +475,11 @@ function selectionContainsOnlyMultipleSelectables( selection: DocumentSelection,
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#balloonToolbar
  */
+declare module '@ckeditor/ckeditor5-core' {
+	interface EditorConfig {
+		balloonToolbar?: string[] | ToolbarConfig;
+	}
+}
 
 export type ShowEvent = {
 	name: 'show';

@@ -7,8 +7,7 @@
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
-import type Config from '@ckeditor/ckeditor5-utils/src/config';
-import type { DataController } from '@ckeditor/ckeditor5-engine';
+import type Editor from '../editor';
 
 /**
  * @module core/editor/utils/elementapimixin
@@ -20,7 +19,7 @@ import type { DataController } from '@ckeditor/ckeditor5-engine';
  * @mixin ElementApiMixin
  * @implements module:core/editor/utils/elementapimixin~ElementApi
  */
-export default function ElementApiMixin<Base extends abstract new( ...args: any[] ) => { config: Config; data: DataController }>(
+export default function ElementApiMixin<Base extends abstract new( ...args: any[] ) => Editor>(
 	base: Base
 ) {
 	abstract class Mixin extends base implements ElementApi {

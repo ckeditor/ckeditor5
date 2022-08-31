@@ -30,7 +30,7 @@ import type { ExecuteEvent } from '../../button/button';
 import type { ChangeRangeEvent as SelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import type { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
+import type { ToolbarConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -106,7 +106,7 @@ export default class BlockToolbar extends Plugin {
 		 * @type {module:core/editor/editorconfig~EditorConfig#blockToolbar}
 		 * @private
 		 */
-		this._blockToolbarConfig = normalizeToolbarConfig( this.editor.config.get( 'blockToolbar' ) as EditorConfig[ 'toolbar' ] );
+		this._blockToolbarConfig = normalizeToolbarConfig( this.editor.config.get( 'blockToolbar' ) );
 
 		/**
 		 * The toolbar view.
@@ -554,3 +554,8 @@ export default class BlockToolbar extends Plugin {
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#blockToolbar
  */
+ declare module '@ckeditor/ckeditor5-core' {
+	interface EditorConfig {
+		blockToolbar?: string[] | ToolbarConfig;
+	}
+}
