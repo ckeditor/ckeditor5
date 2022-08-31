@@ -5,26 +5,38 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck-vertical-form .ck-button::after {
-	content: "";
-	width: 0;
-	position: absolute;
-	right: -1px;
-	top: var(--ck-spacing-small);
-	bottom: var(--ck-spacing-small);
-	z-index: 1;
+.ck-vertical-form .ck-button {
+	&::after {
+		content: "";
+		width: 0;
+		position: absolute;
+		right: -1px;
+		top: -1px;
+		bottom: -1px;
+		z-index: 1;
+	}
+
+	&:focus::after {
+		display: none;
+	}
 }
 
 .ck.ck-responsive-form {
 	@mixin ck-media-phone {
-		& .ck-button::after {
-			content: "";
-			width: 0;
-			position: absolute;
-			right: -1px;
-			top: var(--ck-spacing-small);
-			bottom: var(--ck-spacing-small);
-			z-index: 1;
+		& .ck-button {
+			&::after {
+				content: "";
+				width: 0;
+				position: absolute;
+				right: -1px;
+				top: -1px;
+				bottom: -1px;
+				z-index: 1;
+			}
+
+			&:focus::after {
+				display: none;
+			}
 		}
 	}
 }

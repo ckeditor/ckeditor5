@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable new-cap */
+
 /* globals document, window, Event, MouseEvent */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import DomEmitterMixin from '../../src/dom/emittermixin';
-import EmitterMixin from '../../src/emittermixin';
+import DomEmitterMixin, { Emitter as DomEmitter } from '../../src/dom/emittermixin';
+import EmitterMixin, { Emitter } from '../../src/emittermixin';
 
 describe( 'DomEmitterMixin', () => {
 	let emitter, domEmitter, node;
@@ -15,13 +17,50 @@ describe( 'DomEmitterMixin', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		emitter = Object.create( EmitterMixin );
-		domEmitter = Object.create( DomEmitterMixin );
+		emitter = new Emitter();
+		domEmitter = new DomEmitter();
 		node = document.createElement( 'div' );
 	} );
 
 	afterEach( () => {
 		domEmitter.stopListening();
+	} );
+
+	it( 'mixes in EmitterMixin', () => {
+		expect( new DomEmitter() ).to.have.property( 'on', Emitter.prototype.on );
+	} );
+
+	it( 'inherits any emitter directly', () => {
+		class TestClass {
+			constructor( value ) {
+				this.value = value;
+			}
+		}
+
+		const EmitterClass = EmitterMixin( TestClass );
+		const ObservableClass = DomEmitterMixin( EmitterClass );
+
+		const observable = new ObservableClass( 5 );
+
+		expect( observable ).to.be.instanceOf( TestClass );
+		expect( observable.value ).to.equal( 5 );
+	} );
+
+	it( 'inherits any emitter indirectly', () => {
+		class TestClass extends Emitter {
+			constructor( value ) {
+				super();
+
+				this.value = value;
+			}
+		}
+
+		const ObservableClass = DomEmitterMixin( TestClass );
+
+		const observable = new ObservableClass( 5 );
+
+		expect( observable ).to.be.instanceOf( TestClass );
+		expect( observable.value ).to.equal( 5 );
 	} );
 
 	describe( 'listenTo', () => {

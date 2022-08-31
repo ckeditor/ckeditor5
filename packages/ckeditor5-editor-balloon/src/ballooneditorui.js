@@ -8,7 +8,6 @@
  */
 
 import { EditorUI } from 'ckeditor5/src/core';
-import { enableToolbarKeyboardFocus } from 'ckeditor5/src/ui';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 
 /**
@@ -48,7 +47,6 @@ export default class BalloonEditorUI extends EditorUI {
 	init() {
 		const editor = this.editor;
 		const view = this.view;
-		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 		const editingView = editor.editing.view;
 		const editable = view.editable;
 		const editingRoot = editingView.document.getRoot();
@@ -67,11 +65,6 @@ export default class BalloonEditorUI extends EditorUI {
 		// editable areas (roots) but the balloon editor has only one.
 		this.setEditableElement( editable.name, editableElement );
 
-		// Let the global focus tracker know that the editable UI element is focusable and
-		// belongs to the editor. From now on, the focus tracker will sustain the editor focus
-		// as long as the editable is focused (e.g. the user is typing).
-		this.focusTracker.add( editableElement );
-
 		// Let the editable UI element respond to the changes in the global editor focus
 		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
 		// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
@@ -84,19 +77,6 @@ export default class BalloonEditorUI extends EditorUI {
 		// Bind the editable UI element to the editing view, making it an end– and entry–point
 		// of the editor's engine. This is where the engine meets the UI.
 		editingView.attachDomRoot( editableElement );
-
-		enableToolbarKeyboardFocus( {
-			origin: editingView,
-			originFocusTracker: this.focusTracker,
-			originKeystrokeHandler: editor.keystrokes,
-			toolbar: balloonToolbar.toolbarView,
-			beforeFocus() {
-				balloonToolbar.show();
-			},
-			afterBlur() {
-				balloonToolbar.hide();
-			}
-		} );
 
 		this._initPlaceholder();
 		this.fire( 'ready' );

@@ -166,7 +166,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Vairous fixes in the API docs. Thanks to [@denisname](https://github.com/denisname)!
+* Various fixes in the API docs. Thanks to [@denisname](https://github.com/denisname)!
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.1...v11.0.0) (2018-10-08)

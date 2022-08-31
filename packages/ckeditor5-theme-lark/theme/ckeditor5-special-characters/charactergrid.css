@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 @import "../mixins/_rounded.css";
 
 :root {
@@ -15,10 +16,18 @@
 	width: 350px;
 	max-height: 200px;
 
+	@mixin ck-media-phone {
+		width: 190px;
+	}
+
 	& .ck-character-grid__tiles {
-		grid-template-columns: repeat(auto-fit, minmax(var(--ck-character-grid-tile-size), 1fr));
+		grid-template-columns: repeat(10, 1fr);
 		margin: var(--ck-spacing-standard) var(--ck-spacing-large);
 		grid-gap: var(--ck-spacing-standard);
+
+		@mixin ck-media-phone {
+			grid-template-columns: repeat(5, 1fr);
+		}
 	}
 
 	& .ck-character-grid__tile {

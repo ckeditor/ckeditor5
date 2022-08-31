@@ -1,0 +1,118 @@
+<h2>Tooltip positions (hover to test)</h2>
+<div class="tooltip-positions">
+	<div class="tooltip-demo" data-cke-tooltip-text="Tooltip: S" data-cke-tooltip-position="s">S</div>
+	<div class="tooltip-demo" data-cke-tooltip-text="Tooltip: N" data-cke-tooltip-position="n">N</div>
+	<div class="tooltip-demo" data-cke-tooltip-text="Tooltip: E" data-cke-tooltip-position="e">E</div>
+	<div class="tooltip-demo" data-cke-tooltip-text="Tooltip: W" data-cke-tooltip-position="w">W</div>
+	<div class="tooltip-demo" data-cke-tooltip-text="Tooltip: SW" data-cke-tooltip-position="sw">SW</div>
+	<div class="tooltip-demo" data-cke-tooltip-text="Tooltip: SE" data-cke-tooltip-position="se">SE</div>
+	<div class="tooltip-demo far-left" data-cke-tooltip-text="S but close to left edge" data-cke-tooltip-position="s">S: far left</div>
+	<div class="tooltip-demo far-right" data-cke-tooltip-text="S but close to right edge" data-cke-tooltip-position="s">S: far right</div>
+</div>
+
+<h2>Tooltips in editor</h2>
+
+<div id="editor">
+	<h2>Heading 1</h2>
+	<p>Paragraph</p>
+	<figure class="media"><oembed url="https://twitter.com/adatta02/status/1535341970188541952"></oembed></figure>
+	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+	<ul>
+		<li>UL List item 1</li>
+		<li>UL List item 2</li>
+	</ul>
+	<ol>
+		<li>OL List item 1</li>
+		<li>OL List item 2</li>
+	</ol>
+	<figure class="image image-style-side">
+		<img alt="bar" src="sample.jpg">
+		<figcaption>Caption</figcaption>
+	</figure>
+	<blockquote>
+		<p>Quote</p>
+		<ul>
+			<li>Quoted UL List item 1</li>
+			<li>Quoted UL List item 2</li>
+		</ul>
+		<p>Quote</p>
+	</blockquote>
+</div>
+
+<h2>Tooltips in editor with scrollable parent</h2>
+
+<div class="scrollable-parent">
+	<div id="editor-scrollable-parent">
+		<h2>Heading 1</h2>
+		<p>Paragraph</p>
+		<figure class="media"><oembed url="https://twitter.com/adatta02/status/1535341970188541952"></oembed></figure>
+		<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+		<ul>
+			<li>UL List item 1</li>
+			<li>UL List item 2</li>
+		</ul>
+		<ol>
+			<li>OL List item 1</li>
+			<li>OL List item 2</li>
+		</ol>
+		<figure class="image image-style-side">
+			<img alt="bar" src="sample.jpg">
+			<figcaption>Caption</figcaption>
+		</figure>
+		<blockquote>
+			<p>Quote</p>
+			<ul>
+				<li>Quoted UL List item 1</li>
+				<li>Quoted UL List item 2</li>
+			</ul>
+			<p>Quote</p>
+		</blockquote>
+	</div>
+</div>
+
+<style>
+	.tooltip-positions {
+		margin-left: 100px;
+		display: grid;
+		grid-template-columns: repeat(3, 100px);
+		grid-template-rows: repeat(2, 100px);
+		gap: 20px;
+	}
+
+	.tooltip-demo {
+		background: linear-gradient(90deg, hsla(0, 0%, 0%, 0.49) 50%, hsla(0, 0%, 100%, 0.302) 50%), linear-gradient(0deg, hsla(0, 0%, 0%, 0.51) 50%, hsl(0, 0%, 78%) 50%);
+		color: hsl(0, 0%, 0%);
+		font-size: 25px;
+		text-shadow: 0 0 12px #fff;
+		width: 100px;
+		height: 100px;
+		text-align: center;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.tooltip-demo.far-left,
+	.tooltip-demo.far-right {
+		position: absolute;
+
+		/* Force the tooltip to find a nicer position */
+		width: 50px;
+	}
+
+	.tooltip-demo.far-left {
+		left: 0;
+	}
+
+	.tooltip-demo.far-right {
+		right: 0;
+	}
+
+	.scrollable-parent {
+		overflow: scroll;
+		padding: 50px;
+		border: 1px solid black;
+		background: rgb(126, 213, 184);
+		height: 300px;
+	}
+</style>

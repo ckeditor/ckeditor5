@@ -21,6 +21,7 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -30,7 +31,7 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
-	let resizeCallback;
+	let resizeCallback, addToolbarSpy;
 
 	testUtils.createSinonSandbox();
 
@@ -51,6 +52,8 @@ describe( 'BlockToolbar', () => {
 				unobserve: sinon.spy()
 			};
 		} );
+
+		addToolbarSpy = sinon.spy( EditorUI.prototype, 'addToolbar' );
 
 		return ClassicTestEditor.create( element, {
 			plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, Image, ImageCaption ],
@@ -122,6 +125,37 @@ describe( 'BlockToolbar', () => {
 
 	it( 'should have the isFloating option set to true', () => {
 		expect( blockToolbar.toolbarView.options.isFloating ).to.be.true;
+	} );
+
+	it( 'should have an accessible ARIA label set on the toolbar', () => {
+		expect( blockToolbar.toolbarView.ariaLabel ).to.equal( 'Editor block content toolbar' );
+	} );
+
+	it( 'should register its toolbar as focusable toolbar in EditorUI with proper configuration responsible for presentation', () => {
+		sinon.assert.calledWithExactly( addToolbarSpy.lastCall, blockToolbar.toolbarView, sinon.match( {
+			beforeFocus: sinon.match.func,
+			afterBlur: sinon.match.func
+		} ) );
+
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+		expect( blockToolbar.panelView.isVisible ).to.be.true;
+
+		addToolbarSpy.lastCall.args[ 1 ].afterBlur();
+
+		expect( blockToolbar.panelView.isVisible ).to.be.false;
+	} );
+
+	it( 'should not show the panel on Alt+F10 when the button is invisible', () => {
+		// E.g. due to the toolbar not making sense for a selection.
+		blockToolbar.buttonView.isVisible = false;
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+		expect( blockToolbar.panelView.isVisible ).to.be.false;
+
+		blockToolbar.buttonView.isVisible = true;
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+		expect( blockToolbar.panelView.isVisible ).to.be.true;
 	} );
 
 	describe( 'child views', () => {

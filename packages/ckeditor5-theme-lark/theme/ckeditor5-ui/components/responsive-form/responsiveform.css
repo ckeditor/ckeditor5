@@ -49,14 +49,21 @@
 		}
 
 		/* Styles for two last buttons in the form (save&cancel, edit&unlink, etc.). */
+		& > .ck-button:nth-last-child(2) {
+			&::after {
+				border-right: 1px solid var(--ck-color-base-border);
+			}
+		}
+
 		& > .ck-button:nth-last-child(1),
 		& > .ck-button:nth-last-child(2) {
 			padding: var(--ck-spacing-standard);
 			margin-top: var(--ck-spacing-large);
-
 			border-radius: 0;
-			border: 0;
-			border-top: 1px solid var(--ck-color-base-border);
+
+			&:not(:focus) {
+				border-top: 1px solid var(--ck-color-base-border);
+			}
 
 			@mixin ck-dir ltr {
 				margin-left: 0;
@@ -68,12 +75,6 @@
 				&:last-of-type {
 					border-right: 1px solid var(--ck-color-base-border);
 				}
-			}
-		}
-
-		& > .ck-button:nth-last-child(2) {
-			&::after {
-				border-right: 1px solid var(--ck-color-base-border);
 			}
 		}
 	}

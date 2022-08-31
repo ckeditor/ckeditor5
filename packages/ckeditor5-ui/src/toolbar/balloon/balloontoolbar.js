@@ -79,6 +79,13 @@ export default class BalloonToolbar extends Plugin {
 			this.focusTracker.add( this.toolbarView.element );
 		} );
 
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
+		editor.ui.addToolbar( this.toolbarView, {
+			beforeFocus: () => this.show( true ),
+			afterBlur: () => this.hide(),
+			isContextual: true
+		} );
+
 		/**
 		 * An instance of the resize observer that allows to respond to changes in editable's geometry
 		 * so the toolbar can stay within its boundaries (and group toolbar items that do not fit).
@@ -196,12 +203,14 @@ export default class BalloonToolbar extends Plugin {
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	_createToolbarView() {
+		const t = this.editor.locale.t;
 		const shouldGroupWhenFull = !this._balloonConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
 			shouldGroupWhenFull,
 			isFloating: true
 		} );
 
+		toolbarView.ariaLabel = t( 'Editor contextual toolbar' );
 		toolbarView.render();
 
 		return toolbarView;
@@ -211,8 +220,11 @@ export default class BalloonToolbar extends Plugin {
 	 * Shows the toolbar and attaches it to the selection.
 	 *
 	 * Fires {@link #event:show} event which can be stopped to prevent the toolbar from showing up.
+	 *
+	 * @param {Boolean} [showForCollapsedSelection=false] When set `true`, the toolbar will show despite collapsed selection in the
+	 * editing view.
 	 */
-	show() {
+	show( showForCollapsedSelection = false ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const schema = editor.model.schema;
@@ -223,7 +235,7 @@ export default class BalloonToolbar extends Plugin {
 		}
 
 		// Do not show the toolbar when the selection is collapsed.
-		if ( selection.isCollapsed ) {
+		if ( selection.isCollapsed && !showForCollapsedSelection ) {
 			return;
 		}
 
@@ -361,8 +373,8 @@ export default class BalloonToolbar extends Plugin {
 		const positions = isSafariIniOS ? generatePositions( {
 			// 20px when zoomed out. Less then 20px when zoomed in; the "radius" of the native selection handle gets
 			// smaller as the user zooms in. No less than the default v-offset, though.
-			verticalOffset: Math.max(
-				BalloonPanelView.arrowVerticalOffset,
+			heightOffset: Math.max(
+				BalloonPanelView.arrowHeightOffset,
 				Math.round( 20 / global.window.visualViewport.scale )
 			)
 		} ) : BalloonPanelView.defaultPositions;
@@ -426,7 +438,7 @@ function selectionContainsOnlyMultipleSelectables( selection, schema ) {
  * You can also use `'|'` to create a separator between groups of items:
  *
  *		const config = {
- *			balloonToolbar: [ 'bold', 'italic', | 'undo', 'redo' ]
+ *			balloonToolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *		};
  *
  * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
