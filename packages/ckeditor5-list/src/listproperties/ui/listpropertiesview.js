@@ -18,7 +18,8 @@ import {
 } from 'ckeditor5/src/ui';
 import {
 	FocusTracker,
-	KeystrokeHandler
+	KeystrokeHandler,
+	global
 } from 'ckeditor5/src/utils';
 
 import CollapsibleView from './collapsibleview';
@@ -196,7 +197,13 @@ export default class ListPropertiesView extends View {
 				keystrokeHandler: this.stylesView.keystrokes,
 				focusTracker: this.stylesView.focusTracker,
 				gridItems: this.stylesView.children,
-				numberOfColumns: 4
+				// Note: The styles view has a different number of columns depending on whether the other properties
+				// are enabled in the dropdown or not (https://github.com/ckeditor/ckeditor5/issues/12340)
+				numberOfColumns: () => global.window
+					.getComputedStyle( this.stylesView.element )
+					.getPropertyValue( 'grid-template-columns' )
+					.split( ' ' )
+					.length
 			} );
 		}
 

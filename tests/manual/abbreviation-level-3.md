@@ -257,7 +257,7 @@ SCREENSHOT
 
 ## The model and the view layers
 
-CKEditor 5 implements its custom data model, which does not map to the DOM 1:1. Inline elements, such as `<abbr>`, are represented as attributes in the model, not as seperate elements. In order for our plugin to work, we will need to make sure that we can add abbreviation attribute to the text node.
+CKEditor 5 implements its custom data model, which does not map to the DOM 1:1. Inline elements, such as `<abbr>`, are represented as attributes in the model, not as separate elements. In order for our plugin to work, we will need to make sure that we can add abbreviation attribute to the text node.
 
 ### Defining the schema
 
@@ -461,7 +461,7 @@ The UI for this plugin will consist of a dialog box with a form, which will use 
 
 ### Creating a form view
 
-We now need to create a dialog box with a form, which will include two input fields (for the abbreviation and the title), and the 'submit' and 'cancel' buttons. We will do it in a seperate view. Create a new file `abbreviationview.js` in the `abbreviation/` directory.
+We now need to create a dialog box with a form, which will include two input fields (for the abbreviation and the title), and the 'submit' and 'cancel' buttons. We will do it in a separate view. Create a new file `abbreviationview.js` in the `abbreviation/` directory.
 
 We need to import a couple of things from our UI library, most importantly the {@link framework/guides/architecture/ui-library#view view} class. We will also get the `ButtonView` and `LabeledInputView`, as well as useful helper functions - `createLabeledInputText()` and `submitHandler()`.
 We will use 'check' and 'cancel' icons for our buttons.

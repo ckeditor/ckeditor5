@@ -205,7 +205,7 @@ Whenever there is a multi-line function call:
 
 * Put the first parameter in a new line.
 * Put every parameter in a separate line indented by one tab.
-* Put the last closing parenthesis in a new line, at the same indendation level as the beginning of the call.
+* Put the last closing parenthesis in a new line, at the same indentation level as the beginning of the call.
 
 Examples:
 

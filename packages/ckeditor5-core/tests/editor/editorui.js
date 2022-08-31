@@ -603,6 +603,17 @@ describe( 'EditorUI', () => {
 
 				secondToolbarWithSetupAndCleanup.element.remove();
 			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/12339
+			it( 'should work if the focus was already in the toolbar (e.g. a user clicked an item)', () => {
+				ui.focusTracker.focusedElement = visibleContextualToolbar.element;
+
+				pressAltF10();
+				ui.focusTracker.focusedElement = visibleToolbar.element;
+
+				sinon.assert.calledOnce( visibleSpy );
+				sinon.assert.notCalled( visibleContextualSpy );
+			} );
 		} );
 
 		describe( 'Restoring focus on Esc key press', () => {

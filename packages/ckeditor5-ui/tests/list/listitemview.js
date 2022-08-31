@@ -25,6 +25,22 @@ describe( 'ListItemView', () => {
 		it( 'creates view#children collection', () => {
 			expect( view.children ).to.be.instanceOf( ViewCollection );
 		} );
+
+		it( 'sets the #isVisible property', () => {
+			expect( view.isVisible ).to.be.true;
+		} );
+
+		describe( 'DOM element bindings', () => {
+			describe( 'class', () => {
+				it( 'reacts on view#isVisible', () => {
+					view.isVisible = true;
+					expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+
+					view.isVisible = false;
+					expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'focus()', () => {

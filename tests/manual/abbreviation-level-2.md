@@ -311,7 +311,7 @@ Let's write a basic `_createFormView()` function, just to create an instance of 
 
 We also need to create a function, which will give us the target position for our balloon from user's selection. We need to convert selected view range into DOM range. We can use {@link module:engine/view/domconverter~DomConverter#viewRangeToDom `viewRangeToDom()` method} to do so.
 
-Finally, let's add our balloon amd fpr, view to the `init()` method.
+Finally, let's add our balloon and form view to the `init()` method.
 
 ```js
 // abbreviation/abbreviationui.js

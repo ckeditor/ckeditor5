@@ -121,11 +121,11 @@ export default class StylePanelView extends View {
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate style buttons backwards using the ↑ or ← keystrokes.
-				focusPrevious: [ 'arrowup', 'arrowleft' ],
+				// Navigate style groups backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
+				focusPrevious: [ 'shift + tab' ],
 
-				// Navigate style buttons forward using the Arrow ↓ or → keystrokes.
-				focusNext: [ 'arrowdown', 'arrowright' ]
+				// Navigate style groups forward using the <kbd>Tab</kbd> key.
+				focusNext: [ 'tab' ]
 			}
 		} );
 
@@ -169,18 +169,13 @@ export default class StylePanelView extends View {
 	render() {
 		super.render();
 
-		const childViews = [
-			...this.blockStylesGroupView.gridView.children,
-			...this.inlineStylesGroupView.gridView.children
-		];
+		// Register the views as focusable.
+		this._focusables.add( this.blockStylesGroupView.gridView );
+		this._focusables.add( this.inlineStylesGroupView.gridView );
 
-		childViews.forEach( v => {
-			// Register the view as focusable.
-			this._focusables.add( v );
-
-			// Register the view in the focus tracker.
-			this.focusTracker.add( v.element );
-		} );
+		// Register the views in the focus tracker.
+		this.focusTracker.add( this.blockStylesGroupView.gridView.element );
+		this.focusTracker.add( this.inlineStylesGroupView.gridView.element );
 
 		this.keystrokes.listenTo( this.element );
 	}
