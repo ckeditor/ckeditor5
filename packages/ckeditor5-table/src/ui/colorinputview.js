@@ -113,6 +113,14 @@ export default class ColorInputView extends View {
 		this.inputView = this._createInputTextView();
 
 		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
+		/**
 		 * The flag that indicates whether the user is still typing.
 		 * If set to true, it means that the text input field ({@link #inputView}) still has the focus.
 		 * So, we should interrupt the user by replacing the input's value.
@@ -121,14 +129,6 @@ export default class ColorInputView extends View {
 		 * @member {Boolean}
 		 */
 		this._stillTyping = false;
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
-		this.keystrokes = new KeystrokeHandler();
 
 		/**
 		 * Helps cycling over focusable items in the view.
