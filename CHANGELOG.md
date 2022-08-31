@@ -17,6 +17,8 @@ There were also bug fixes:
 
 <!-- TODO: Add a link to the blog post. -->
 
+Please refer to the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/migration-to-35.html#migration-to-ckeditor-5-v3510) to learn more about these changes.
+
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `enableToolbarKeyboardFocus()` helper has been removed. Please use the [`EditorUI#addToolbar()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editorui-EditorUI.html#function-addToolbar) method instead to enable accessible toolbar navigation (and focusing) using the `Alt+F10` and `Esc` keystrokes (see [#10368](https://github.com/ckeditor/ckeditor5/issues/10368)).
