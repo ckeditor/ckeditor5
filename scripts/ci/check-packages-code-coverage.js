@@ -11,7 +11,7 @@ const childProcess = require( 'child_process' );
 const fs = require( 'fs' );
 const glob = require( 'glob' );
 const path = require( 'path' );
-const Travis = require( './travis-folder' );
+const TravisFolder = require( './travis-folder' );
 const { red, yellow, magenta } = require( './ansi-colors' );
 
 const failedChecks = {
@@ -20,7 +20,10 @@ const failedChecks = {
 	codeCoverage: new Set()
 };
 
-const travis = new Travis();
+const travisFolder = new TravisFolder();
+
+// Temporarily do not check the `ckeditor5-minimap` package(s). TODO: Update.
+const EXCLUDED_PACKAGES = [ 'ckeditor5-minimap' ];
 
 /**
  * This script should be used on Travis CI. It executes tests and prepares the code coverage report
@@ -33,9 +36,6 @@ module.exports = function checkPackagesCodeCoverage() {
 	childProcess.execSync( 'rm -r -f .out' );
 	childProcess.execSync( 'mkdir .out' );
 
-	// Temporary: Do not check the `ckeditor5-minimap` package(s).
-	const excludedPackages = [ 'ckeditor5-minimap' ];
-
 	const corePackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
 		.map( filename => 'ckeditor5-' + filename.replace( /\.js$/, '' ) );
 
@@ -43,13 +43,12 @@ module.exports = function checkPackagesCodeCoverage() {
 		.toString()
 		.trim()
 		.split( '\n' )
-		.filter( fullPackageName => ![ ...excludedPackages, ...corePackages ].includes( fullPackageName ) );
+		.filter( fullPackageName => ![ ...EXCLUDED_PACKAGES, ...corePackages ].includes( fullPackageName ) );
 
-	console.log( magenta( '\nTesting core packages.' ) );
-	checkPackage( 'ckeditor5' );
-	corePackages.forEach( fullPackageName => checkPackage( fullPackageName ) );
+	console.log( magenta( '\nTesting core packages.\n' ) );
+	[ 'ckeditor5', ...corePackages ].forEach( fullPackageName => checkPackage( fullPackageName ) );
 
-	travis.foldStart( `travis_fold:start:coreTsCompilation${ magenta( 'Compiling core TS packages' ) }` );
+	travisFolder.start( `travis_fold:start:coreTsCompilation${ magenta( 'Compiling core TS packages' ) }` );
 
 	for ( const fullPackageName of corePackages ) {
 		console.log( yellow( `\nCompiling ${ fullPackageName }` ) );
@@ -76,21 +75,19 @@ module.exports = function checkPackagesCodeCoverage() {
 		fs.writeFileSync( pkgJsonPath, JSON.stringify( pkgJson, null, 2 ) + '\n', 'utf-8' );
 	}
 
-	travis.foldEnd( '\ntravis_fold:end:coreTsCompilation\n' );
+	travisFolder.end( '\ntravis_fold:end:coreTsCompilation\n' );
 
-	console.log( magenta( '\nTesting feature packages.' ) );
+	console.log( magenta( '\nTesting feature packages.\n' ) );
 	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, [ '--js-first', '--cache' ] ) );
 
-	console.log( 'Uploading combined code coverage report…' );
-
 	if ( shouldUploadCoverageReport() ) {
+		console.log( 'Uploading combined code coverage report…' );
 		childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
+		console.log( 'Done' );
 	} else {
 		console.log( 'Since the PR comes from the community, we do not upload code coverage report.' );
 		console.log( 'Read more why: https://github.com/ckeditor/ckeditor5/issues/7745.' );
 	}
-
-	console.log( 'Done' );
 
 	if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
 		console.log( '\n---\n' );
@@ -109,13 +106,13 @@ module.exports = function checkPackagesCodeCoverage() {
 
 /**
  * @param {String} fullPackageName
- * @param {Array<String>} testArgs
+ * @param {Array.<String>} testArgs additional arguments to pass into test script.
  */
 function checkPackage( fullPackageName, testArgs = [] ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 	const foldLabelName = 'pkg-' + simplePackageName;
 
-	travis.foldStart( `travis_fold:start:${ foldLabelName }${ yellow( `Testing ${ fullPackageName }` ) }` );
+	travisFolder.start( `travis_fold:start:${ foldLabelName }${ yellow( `Testing ${ fullPackageName }` ) }` );
 
 	appendCoverageReport();
 
@@ -145,7 +142,7 @@ function checkPackage( fullPackageName, testArgs = [] ) {
 		failMessage: 'doesn\'t have required code coverage'
 	} );
 
-	travis.foldEnd( `\ntravis_fold:end:${ foldLabelName }\n` );
+	travisFolder.end( `\ntravis_fold:end:${ foldLabelName }\n` );
 }
 
 /**
@@ -175,7 +172,6 @@ function runSubprocess( { binaryName, cliArguments, packageName, checkName, fail
 }
 
 /**
- *
  * @param {String} checkKey
  * @param {String} errorMessage
  */

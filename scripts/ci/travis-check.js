@@ -12,13 +12,13 @@
 const checkPackagesCodeCoverage = require( './check-packages-code-coverage' );
 const childProcess = require( 'child_process' );
 const path = require( 'path' );
-const Travis = require( './travis-folder' );
+const TravisFolder = require( './travis-folder' );
 const { red, cyan, green, magenta } = require( './ansi-colors' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 const { TRAVIS_JOB_TYPE } = process.env;
 
-const travis = new Travis();
+const travisFolder = new TravisFolder();
 
 console.log( cyan( `\nRunning the "${ TRAVIS_JOB_TYPE }" build.\n` ) );
 
@@ -48,7 +48,7 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
  * @param {..String} command
  */
 function exec( ...command ) {
-	travis.foldStart( `travis_fold:start:script${ magenta( '$ ' + command.join( ' ' ) ) }` );
+	travisFolder.start( `travis_fold:start:script${ magenta( '$ ' + command.join( ' ' ) ) }` );
 
 	const childProcessStatus = childProcess.spawnSync( command[ 0 ], command.slice( 1 ), {
 		encoding: 'utf8',
@@ -61,7 +61,7 @@ function exec( ...command ) {
 	const EXIT_CODE = childProcessStatus.status;
 	const color = EXIT_CODE ? red : green;
 
-	travis.foldEnd( '\ntravis_fold:end:script\n' );
+	travisFolder.end( '\ntravis_fold:end:script\n' );
 
 	console.log( color( `The command "${ command.join( ' ' ) }" exited with ${ EXIT_CODE }.\n` ) );
 

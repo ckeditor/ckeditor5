@@ -9,13 +9,17 @@
 
 const crypto = require( 'crypto' );
 
-module.exports = class Travis {
+/**
+ * Allows enclosing part of console output on Travis CI in a foldable folder.
+ * Execution time of the script within the folder will also be displayed.
+ */
+module.exports = class TravisFolder {
 	constructor() {
 		this._lastTimerId = null;
 		this._lastStartTime = null;
 	}
 
-	foldStart( message ) {
+	start( message ) {
 		console.log( message );
 
 		const nanoSeconds = process.hrtime.bigint();
@@ -27,7 +31,7 @@ module.exports = class Travis {
 		process.stdout.write( `travis_time:start:${ this._lastTimerId }\r\n` );
 	}
 
-	foldEnd( message ) {
+	end( message ) {
 		const travisEndTime = process.hrtime.bigint();
 		const duration = travisEndTime - this._lastStartTime;
 
