@@ -21,6 +21,8 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 export default class ListItemView extends View {
 	public readonly children: ViewCollection;
 
+	declare public isVisible: boolean;
+
 	/**
 	 * @inheritDoc
 	 */
