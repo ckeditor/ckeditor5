@@ -141,10 +141,15 @@ export default class TableColumnResizeEditing extends Plugin {
 		/**
 		 * Indicating the current state of drag.
 		 *
+		 * The plugin can be in the following states:
+		 * * inactive &ndash; No drag event currently happening.
+		 * * active &ndash; Drag event is in progress.
+		 * * finished &ndash; Drag has finished. This state will enforce changing the value to `inactive` again.
+		 *
 		 * @private
-		 * @member {String}
+		 * @member {'inactive'|'active'|'finished'} #state
 		 */
-		this._draggingState = 'notdragging';
+		this._draggingState = 'inactive';
 	}
 
 	/**
@@ -155,6 +160,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._registerPostFixer();
 		this._registerConverters();
 		this._registerResizingListeners();
+		this._integrateDragAndDrop();
 		this._registerColgroupFixer();
 		this._registerResizerInserter();
 
@@ -358,38 +364,53 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Registers listeners to handle resizing process.
+	 * Registers `mouse` related listeners to handle resizing process.
 	 *
 	 * @private
 	 */
 	_registerResizingListeners() {
 		const editingView = this.editor.editing.view;
+		const domDocument = global.window.document;
 
 		editingView.addObserver( MouseEventsObserver );
 		this._domEmitter.listenTo(
-			global.window.document, 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' }
+			domDocument, 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' }
 		);
 
+		this._domEmitter.listenTo( domDocument, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ), { useCapture: true } );
+
+		// We need second listener that will stop the propagation of the `mousemove` event if column resizing is in progress.
+		// In particular, it stops selecting table cells using mouse, to prevent cell selection change while resizing columns. See: #11770.
 		this._domEmitter.listenTo(
-			global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ), { useCapture: true }
-		);
-		this._domEmitter.listenTo(
-			global.window.document, 'mousemove', ( evt, domEventData ) => {
+			domDocument, 'mousemove', ( evt, domEventData ) => {
 				if ( this._isResizingActive ) {
 					domEventData.stopPropagation();
 				}
 			}, { priority: 'low', useCapture: true }
 		);
 
-		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
+		this._domEmitter.listenTo( domDocument, 'mouseup', this._onMouseUpHandler.bind( this ) );
+	}
 
-		this._domEmitter.listenTo( global.window.document, 'dragleave', this._onDragLeaveHandler.bind( this ) );
-		this._domEmitter.listenTo( global.window.document, 'drop', () => {
-			this._draggingState = 'afterdragging';
+	/**
+	 * Registers drag and drop related listeners to handle resizing process.
+	 *
+	 * @private
+	 */
+	_integrateDragAndDrop() {
+		const domDocument = global.window.document;
+
+		this._domEmitter.listenTo( domDocument, 'dragstart', () => {
+			this._draggingState = 'active';
 		}, { useCapture: true } );
-		this._domEmitter.listenTo( global.window.document, 'dragstart', () => {
-			this._draggingState = 'dragginactive';
-		}, { useCapture: true } );
+
+		this._domEmitter.listenTo( domDocument, 'dragleave', () => {
+			this._onDragLeaveHandler.bind( this );
+		} );
+
+		this._domEmitter.listenTo( domDocument, 'drop', () => {
+			this._draggingState = 'finished';
+		}, { useCapture: true, priority: 'lowest' } );
 	}
 
 	/**
@@ -452,7 +473,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		//
 		// @private
 		// @param {module:engine/model/element~Element} modelTable A table which columns should be measured.
-		// @param {module:table/tableutils~/tableUtils} tableUtils The Table Utils plugin instance.
+		// @param {module:table/tableutils~TableUtils} tableUtils The Table Utils plugin instance.
 		// @param {module:core/editor/editor~Editor} editor The editor instance.
 		// @returns {Array.<Number>} Columns' widths expressed in pixels (without unit).
 		function _calculateDomColumnWidths( modelTable, tableUtilsPlugin, editor ) {
@@ -692,7 +713,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData The data related to the DOM event.
 	 */
 	_onDragLeaveHandler( eventInfo, domEvent ) {
-		if ( this._draggingState !== 'dragginactive' ) {
+		if ( this._draggingState !== 'active' ) {
 			this._isDragging = true;
 		}
 
@@ -805,9 +826,9 @@ export default class TableColumnResizeEditing extends Plugin {
 				} );
 			}
 
-			if ( this._draggingState === 'afterdragging' ) {
+			if ( this._draggingState === 'finished' ) {
 				this._isDragging = false;
-				this._draggingState = 'notdragging';
+				this._draggingState = 'inactive';
 			}
 		}, { priority: 'lowest' } );
 	}
