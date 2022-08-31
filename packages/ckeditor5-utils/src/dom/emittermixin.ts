@@ -289,7 +289,7 @@ class ProxyEmitter extends BaseEmitter {
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
@@ -386,7 +386,7 @@ export interface Emitter extends BaseEmitter {
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered

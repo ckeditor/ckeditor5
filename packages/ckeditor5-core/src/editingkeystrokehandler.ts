@@ -64,7 +64,7 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	public override set(
 		keystroke: string | ( string | number )[],
 		callback: string | ( ( ev: KeyboardEvent, cancel: () => void ) => void ),
-		options: { readonly priority?: PriorityString | number } = {}
+		options: { readonly priority?: PriorityString } = {}
 	): void {
 		if ( typeof callback == 'string' ) {
 			const commandName = callback;

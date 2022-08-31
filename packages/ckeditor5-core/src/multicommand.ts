@@ -39,7 +39,7 @@ import { type ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin'
  * @extends module:core/command~Command
  */
 export default class MultiCommand extends Command {
-	private _childCommandsDefinitions: { command: Command; priority: PriorityString | number }[];
+	private _childCommandsDefinitions: { command: Command; priority: PriorityString }[];
 
 	/**
 	 * @inheritDoc
@@ -83,7 +83,7 @@ export default class MultiCommand extends Command {
 	 */
 	public registerChildCommand(
 		command: Command,
-		options: { priority?: PriorityString | number } = {}
+		options: { priority?: PriorityString } = {}
 	): void {
 		insertToPriorityArray( this._childCommandsDefinitions, { command, priority: options.priority || 'normal' } );
 

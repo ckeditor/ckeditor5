@@ -93,7 +93,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	public elementToElement( config: {
 		view: MatcherPattern;
 		model: string | ElementCreatorFunction;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastElementToElement( config ) );
 	}
@@ -187,7 +187,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 			key: string;
 			value: unknown;
 		};
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastElementToAttribute( config ) );
 	}
@@ -325,7 +325,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 			key: string;
 			value: unknown | ( ( viewElement: ViewElement, conversionApi: UpcastConversionApi ) => unknown );
 		};
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastAttributeToAttribute( config ) );
 	}
@@ -384,7 +384,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	public elementToMarker( config: {
 		view: MatcherPattern;
 		model: string | MarkerFromElementCreatorFunction;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastElementToMarker( config ) );
 	}
@@ -459,7 +459,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	public dataToMarker( config: {
 		view: string;
 		model?: MarkerFromAttributeCreatorFunction;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastDataToMarker( config ) );
 	}
@@ -592,7 +592,7 @@ export function convertSelectionChange( model: Model, mapper: Mapper ) {
 function upcastElementToElement( config: {
 	view: MatcherPattern;
 	model: string | ElementCreatorFunction;
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
 
@@ -623,7 +623,7 @@ function upcastElementToAttribute( config: {
 		key: string;
 		value: unknown | AttributeCreatorFunction;
 	};
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
 
@@ -667,7 +667,7 @@ function upcastAttributeToAttribute( config: {
 		key: string;
 		value: unknown | ( ( viewElement: ViewElement, conversionApi: UpcastConversionApi ) => unknown );
 	};
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
 
@@ -699,7 +699,7 @@ function upcastAttributeToAttribute( config: {
 function upcastElementToMarker( config: {
 	view: MatcherPattern;
 	model: string | MarkerFromElementCreatorFunction;
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	const model = normalizeElementToMarkerModelConfig( config.model );
 
@@ -718,7 +718,7 @@ function upcastElementToMarker( config: {
 function upcastDataToMarker( config: {
 	view: string;
 	model?: MarkerFromAttributeCreatorFunction;
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
 
