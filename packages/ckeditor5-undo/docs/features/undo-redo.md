@@ -3,9 +3,9 @@ category: features
 modified_at: 2022-08-29
 ---
 
-# Undo/Redo support
+# Undo/Redo
 
-The undo features lets the user withdraw recent changes done to the editor content, as well as bring them back again. All operations are remembered and organized info batches, that can later be easily undone or redone. By utilizing the batches approach, the feature is capable of selectively reverting past changes, not just the latest ones. This allows handling asynchronous actions such as image uploads without blocking the user from editing the document in the meantime.
+The undo features lets the user withdraw recent changes done to the editor content, as well as bring them back again. All operations are remembered and organized into batches, that can later be easily undone or redone. By utilizing the batches approach, the feature is capable of selectively reverting past changes, not just the latest ones. This allows handling asynchronous actions such as image uploads without blocking the user from editing the document in the meantime.
 
 The selective undo is heavily used in {@link features/real-time-collaboration real-time collaboration} environments. In such scenario, a specific user should only be able to revert their changes, while keeping the changes made by other users intact (unless there is an editing conflict). By omitting some changes and going down the stack, it is possible to only revert selected changes.
 
