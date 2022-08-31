@@ -5,7 +5,7 @@ order: 20
 
 # Quick start
 
-This guide will show you how to initialize CKEditor 5 rich-text editor from source.
+This guide will show you how to initialize the CKEditor 5 rich-text editor from source.
 
 ## How to install the framework?
 
