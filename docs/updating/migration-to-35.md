@@ -9,7 +9,9 @@ modified_at: 2022-08-18
 
 ## Migration to CKEditor 5 v35.1.0
 
-### Changes to API providing the accessible navigation between editing roots and toolbars on <kbd>Alt</kbd>+<kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes
+### Important changes
+
+#### Changes to API providing the accessible navigation between editing roots and toolbars on <kbd>Alt</kbd>+<kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes
 
 <info-box>
 	This information applies only to integrators who develop their own {@link framework/guides/custom-editor-creator editor creators} from scratch by using the {@link module:core/editor/editor~Editor} and {@link module:core/editor/editorui~EditorUI} classes as building blocks.
@@ -76,7 +78,7 @@ export default class MyEditorUI extends EditorUI {
 }
 ```
 
-### Removal of the `TooltipView` class and changes to the tooltip system
+#### Removal of the `TooltipView` class and changes to the tooltip system
 
 <info-box>
 	Please note, that this change does not affect integrations that configure tooltips of core UI components, for instance {@link module:ui/button/buttonview~ButtonView#tooltip}.
