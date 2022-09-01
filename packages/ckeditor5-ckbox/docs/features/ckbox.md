@@ -10,7 +10,7 @@ badges: [ premium ]
 
 # CKBox file manager
 
-This CKBox integration feature allows you to effortlessly and intuitively insert images as well as links to other files into the rich-text editor content. CKBox is a file manager and a file uploader that acts as a convenient interface for the cloud storage service. The CKBox feature provides a simple integration with this service for the CKEditor 5 WYSIWYG editor. To find out more about CKBox, the brand-new file manager, visit the [CKBox website](https://ckeditor.com/ckbox/).
+This CKBox integration feature allows you to effortlessly and intuitively insert images as well as links to other files into the rich-text editor content. CKBox is a file manager and a file uploader that acts as a convenient interface for the cloud storage service. The CKBox feature provides a simple integration with this service for the CKEditor 5 WYSIWYG editor. To find out more about CKBox, the brand-new file manager, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
 
 <info-box info>
 	CKBox is a commercial solution. Please [contact us](https://ckeditor.com/contact/) if you would like to purchase a license. Let us know if you have any feedback or questions!
