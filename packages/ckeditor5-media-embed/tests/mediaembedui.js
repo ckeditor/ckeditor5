@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global setTimeout */
+/* global Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import MediaEmbed from '../src/mediaembed';
@@ -149,13 +149,14 @@ describe( 'MediaEmbedUI', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'executes the command and closes the UI (if the form is valid)', done => {
+			it( 'executes the command and closes the UI (if the form is valid)', async () => {
 				const viewFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 				const commandSpy = sinon.spy( editor.commands.get( 'mediaEmbed' ), 'execute' );
 
 				// The form is invalid.
 				form.url = 'https://invalid/url';
 				dropdown.isOpen = true;
+				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'focus' ) );
 
 				dropdown.fire( 'submit' );
 
@@ -166,15 +167,15 @@ describe( 'MediaEmbedUI', () => {
 				// The form is valid.
 				form.url = 'https://valid/url';
 				dropdown.fire( 'submit' );
+				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'blur' ) );
 
 				sinon.assert.calledOnce( commandSpy );
 				sinon.assert.calledWithExactly( commandSpy, 'https://valid/url' );
 				sinon.assert.calledOnce( viewFocusSpy );
 
-				setTimeout( () => {
-					expect( dropdown.isOpen ).to.be.false;
-					done();
-				}, 0 );
+				await wait( 10 );
+
+				expect( dropdown.isOpen ).to.be.false;
 			} );
 		} );
 
@@ -189,18 +190,20 @@ describe( 'MediaEmbedUI', () => {
 		} );
 
 		describe( '#cancel event', () => {
-			it( 'closes the UI', done => {
+			it( 'closes the UI', async () => {
 				const viewFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 
 				dropdown.isOpen = true;
+				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'focus' ) );
+
 				dropdown.fire( 'cancel' );
+				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'blur' ) );
 
 				sinon.assert.calledOnce( viewFocusSpy );
 
-				setTimeout( () => {
-					expect( dropdown.isOpen ).to.be.false;
-					done();
-				}, 0 );
+				await wait( 10 );
+
+				expect( dropdown.isOpen ).to.be.false;
 			} );
 		} );
 	} );
@@ -269,3 +272,9 @@ describe( 'MediaEmbedUI', () => {
 		} );
 	} );
 } );
+
+function wait( time ) {
+	return new Promise( res => {
+		global.window.setTimeout( res, time );
+	} );
+}
