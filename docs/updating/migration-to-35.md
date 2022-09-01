@@ -82,9 +82,9 @@ export default class MyEditorUI extends EditorUI {
 	Please note, that this change does not affect integrations that configure tooltips of core UI components, for instance {@link module:ui/button/buttonview~ButtonView#tooltip}.
 </info-box>
 
-Starting with v35.1.0, the `TooltipView` UI component has been removed from the [ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package. Instead, a new tooltip API is available based on `data-cke-tooltip-*` DOM element attributes.
+Starting with v35.1.0, the `TooltipView` UI component has been removed from the [ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package. Instead, a new tooltip API is available based on the `data-cke-tooltip-*` DOM element attributes.
 
-If your integration creates instances `TooltipView` and injects them into the DOM in a similar way:
+It may happen that your integration creates instances of `TooltipView` and injects them into the DOM in a similar way:
 
 ```js
 // ❌ Old tooltip API
@@ -107,7 +107,7 @@ DOMElementThatNeedsTooltip.appendChild( tooltip.element );
 }
 ```
 
-you should now use the `data-cke-tooltip-*` attributes and let the editor's built–in {@link module:ui/tooltipmanager~TooltipManager} handle the rest:
+If this is the case, you should now use the `data-cke-tooltip-*` attributes and let the editor's built–in {@link module:ui/tooltipmanager~TooltipManager} handle the rest:
 
 ```js
 // ✅ New tooltip API
@@ -115,7 +115,7 @@ DOMElementThatNeedsTooltip.dataset.ckeTooltipText = 'Tooltip text';
 DOMElementThatNeedsTooltip.dataset.ckeTooltipPosition = 'sw';
 ```
 
-Keep in mind that you do not have to worry about showing and hiding your custom tooltip in CSS. The `TooltipManager` will attach a tooltip whenever the user moves the mouse or brings the focus to a DOM element with the `data-cke-tooltip-*` attributes. For more information, please refer to the API of {@link module:ui/tooltipmanager~TooltipManager}.
+Keep in mind that you do not need to worry about showing and hiding your custom tooltips in CSS. The `TooltipManager` will attach a tooltip whenever the user moves the mouse or brings the focus to a DOM element with the `data-cke-tooltip-*` attributes. For more information, please refer to the {@link module:ui/tooltipmanager~TooltipManager} API.
 
 ## Migration to CKEditor 5 v35.0.0
 
