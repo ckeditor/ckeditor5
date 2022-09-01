@@ -13,7 +13,7 @@ services:
 - xvfb
 node_js:
 - "14"
-cache: yarn
+cache: false
 before_install:
 - export START_TIME=$( date +%s )
 - export COVERALLS_SERVICE_JOB_ID=$( TRAVIS_JOB_ID )
