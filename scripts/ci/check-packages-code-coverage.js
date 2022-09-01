@@ -38,7 +38,7 @@ module.exports = function checkPackagesCodeCoverage() {
 	childProcess.execSync( 'mkdir .out' );
 
 	const frameworkPackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
-		.map( filename => 'ckeditor5-' + filename.replace( /\.[js|ts]$/, '' ) );
+		.map( filename => 'ckeditor5-' + filename.replace( /\.(js|ts)$/, '' ) );
 
 	const featurePackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
 		.toString()
