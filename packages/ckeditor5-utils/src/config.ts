@@ -8,11 +8,12 @@
  */
 
 import { isPlainObject, isElement, cloneDeepWith } from 'lodash-es';
+import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
  * Handles a configuration dictionary.
  */
-export default class Config {
+export default class Config extends Emitter {
 	private readonly _config: Record<string, any>;
 
 	/**
@@ -22,6 +23,8 @@ export default class Config {
 	 * @param {Object} [defaultConfigurations] The default configurations. Usually, provided by the system.
 	 */
 	constructor( configurations: Record<string, any>, defaultConfigurations: Record<string, any> ) {
+		super();
+
 		/**
 		 * Store for the whole configuration.
 		 *
@@ -85,6 +88,8 @@ export default class Config {
 	 */
 	public set( name: string | Record<string, any>, value?: any ): void {
 		this._setToTarget( this._config, name, value );
+
+		this.fire( 'change', name, value );
 	}
 
 	public define( name: string, value: any ): void;

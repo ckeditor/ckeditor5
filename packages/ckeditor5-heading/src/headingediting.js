@@ -44,6 +44,14 @@ export default class HeadingEditing extends Plugin {
 				{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
 			]
 		} );
+
+		this.listenTo( editor.config, 'change', ( evt, name, value ) => {
+			if ( name != 'heading.options' ) {
+				return;
+			}
+
+			console.log( 'HeadingEditing config change', name, value );
+		} );
 	}
 
 	/**

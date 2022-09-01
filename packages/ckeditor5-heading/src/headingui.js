@@ -111,5 +111,13 @@ export default class HeadingUI extends Plugin {
 
 			return dropdownView;
 		} );
+
+		this.listenTo( editor.config, 'change', ( evt, name, value ) => {
+			if ( name != 'heading.options' ) {
+				return;
+			}
+
+			console.log( 'Heading UI config change', name, value );
+		} );
 	}
 }
