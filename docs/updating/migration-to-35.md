@@ -2,7 +2,7 @@
 category: updating
 menu-title: Migration to v35.x
 order: 89
-modified_at: 2022-07-18
+modified_at: 2022-08-18
 ---
 
 # Migration to CKEditor 5 v35.x
