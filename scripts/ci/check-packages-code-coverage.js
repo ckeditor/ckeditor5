@@ -115,8 +115,6 @@ function checkPackage( fullPackageName, testArgs = [] ) {
 
 	travisFolder.start( foldLabelName, yellow( `Testing ${ fullPackageName }` ) );
 
-	appendCoverageReport();
-
 	runSubprocess( {
 		binaryName: 'npx',
 		cliArguments: [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ],
@@ -142,6 +140,8 @@ function checkPackage( fullPackageName, testArgs = [] ) {
 		checkName: 'codeCoverage',
 		failMessage: 'doesn\'t have required code coverage'
 	} );
+
+	appendCoverageReport();
 
 	travisFolder.end( foldLabelName );
 }
