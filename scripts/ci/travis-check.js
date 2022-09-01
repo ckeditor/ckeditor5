@@ -48,7 +48,7 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
  * @param {..String} command
  */
 function exec( ...command ) {
-	travisFolder.start( `travis_fold:start:script${ magenta( '$ ' + command.join( ' ' ) ) }` );
+	travisFolder.start( 'script', magenta( '$ ' + command.join( ' ' ) ) );
 
 	const childProcessStatus = childProcess.spawnSync( command[ 0 ], command.slice( 1 ), {
 		encoding: 'utf8',
@@ -61,7 +61,7 @@ function exec( ...command ) {
 	const EXIT_CODE = childProcessStatus.status;
 	const color = EXIT_CODE ? red : green;
 
-	travisFolder.end( '\ntravis_fold:end:script\n' );
+	travisFolder.end( 'script' );
 
 	console.log( color( `The command "${ command.join( ' ' ) }" exited with ${ EXIT_CODE }.\n` ) );
 

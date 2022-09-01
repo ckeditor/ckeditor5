@@ -22,7 +22,8 @@ const failedChecks = {
 
 const travisFolder = new TravisFolder();
 
-// Temporarily do not check the `ckeditor5-minimap` package(s). TODO: Update.
+// Name of packages we do not want to check on CI.
+// They might lack tests. To avoid invalid builds, let's skip these packages.
 const EXCLUDED_PACKAGES = [ 'ckeditor5-minimap' ];
 
 /**
@@ -36,21 +37,21 @@ module.exports = function checkPackagesCodeCoverage() {
 	childProcess.execSync( 'rm -r -f .out' );
 	childProcess.execSync( 'mkdir .out' );
 
-	const corePackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
-		.map( filename => 'ckeditor5-' + filename.replace( /\.js$/, '' ) );
+	const frameworkPackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
+		.map( filename => 'ckeditor5-' + filename.replace( /\.[js|ts]$/, '' ) );
 
 	const featurePackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
 		.toString()
 		.trim()
 		.split( '\n' )
-		.filter( fullPackageName => ![ ...EXCLUDED_PACKAGES, ...corePackages ].includes( fullPackageName ) );
+		.filter( fullPackageName => ![ ...EXCLUDED_PACKAGES, ...frameworkPackages ].includes( fullPackageName ) );
 
-	console.log( magenta( '\nTesting core packages.\n' ) );
-	[ 'ckeditor5', ...corePackages ].forEach( fullPackageName => checkPackage( fullPackageName ) );
+	console.log( magenta( '\nVerifying CKEditor 5 Framework\n' ) );
+	[ 'ckeditor5', ...frameworkPackages ].forEach( fullPackageName => checkPackage( fullPackageName ) );
 
-	travisFolder.start( `travis_fold:start:coreTsCompilation${ magenta( 'Compiling core TS packages' ) }` );
+	travisFolder.start( 'typescript-compilation', magenta( 'Compiling CKEditor 5 Framework TypeScript packages' ) );
 
-	for ( const fullPackageName of corePackages ) {
+	for ( const fullPackageName of frameworkPackages ) {
 		console.log( yellow( `\nCompiling ${ fullPackageName }` ) );
 
 		const cwd = path.join( 'packages', fullPackageName );
@@ -67,18 +68,18 @@ module.exports = function checkPackagesCodeCoverage() {
 
 		const command = 'yarn run build --sourceMap';
 
-		console.log( command );
+		console.log( '* ' + command );
 		childProcess.execSync( command, { cwd } );
 
-		console.log( 'Updating the "main" field in package.json.' );
+		console.log( '* Updating the "main" field in `package.json`.' );
 		pkgJson.main = pkgJson.main.replace( /(?<=\.)ts$/, 'js' );
 		fs.writeFileSync( pkgJsonPath, JSON.stringify( pkgJson, null, 2 ) + '\n', 'utf-8' );
 	}
 
-	travisFolder.end( '\ntravis_fold:end:coreTsCompilation\n' );
+	travisFolder.end( 'typescript-compilation' );
 
-	console.log( magenta( '\nTesting feature packages.\n' ) );
-	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, [ '--js-first', '--cache' ] ) );
+	console.log( magenta( '\nVerifying CKEditor 5 Features\n' ) );
+	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, [ '--resolve-js-first', '--cache' ] ) );
 
 	if ( shouldUploadCoverageReport() ) {
 		console.log( 'Uploading combined code coverage report…' );
@@ -112,7 +113,7 @@ function checkPackage( fullPackageName, testArgs = [] ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 	const foldLabelName = 'pkg-' + simplePackageName;
 
-	travisFolder.start( `travis_fold:start:${ foldLabelName }${ yellow( `Testing ${ fullPackageName }` ) }` );
+	travisFolder.start( foldLabelName, yellow( `Testing ${ fullPackageName }` ) );
 
 	appendCoverageReport();
 
@@ -142,7 +143,7 @@ function checkPackage( fullPackageName, testArgs = [] ) {
 		failMessage: 'doesn\'t have required code coverage'
 	} );
 
-	travisFolder.end( `\ntravis_fold:end:${ foldLabelName }\n` );
+	travisFolder.end( foldLabelName );
 }
 
 /**

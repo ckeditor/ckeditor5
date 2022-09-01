@@ -19,8 +19,8 @@ module.exports = class TravisFolder {
 		this._lastStartTime = null;
 	}
 
-	start( message ) {
-		console.log( message );
+	start( badge, description ) {
+		console.log( `travis_fold:start:${ badge }${ description }` );
 
 		const nanoSeconds = process.hrtime.bigint();
 
@@ -31,7 +31,7 @@ module.exports = class TravisFolder {
 		process.stdout.write( `travis_time:start:${ this._lastTimerId }\r\n` );
 	}
 
-	end( message ) {
+	end( badge ) {
 		const travisEndTime = process.hrtime.bigint();
 		const duration = travisEndTime - this._lastStartTime;
 
@@ -40,6 +40,6 @@ module.exports = class TravisFolder {
 			`\ntravis_time:end:${ this._lastTimerId }:start=${ this._lastStartTime },finish=${ travisEndTime },duration=${ duration }\r\n`
 		);
 
-		console.log( message );
+		console.log( `\ntravis_fold:end:${ badge }\n` );
 	}
 };
