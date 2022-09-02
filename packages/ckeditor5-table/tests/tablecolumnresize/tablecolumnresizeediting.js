@@ -1269,8 +1269,8 @@ describe( 'TableColumnResizeEditing', () => {
 				assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
 			} );
 
-			describe( 'in editor with TableProperties, where there are 2 tables: centered and aligned', () => {
-				let editor, view, editorElement;
+			describe( 'in editor with TableProperties', () => {
+				let editor, view, editorElement, model;
 
 				beforeEach( async () => {
 					editorElement = document.createElement( 'div' );
@@ -1278,6 +1278,7 @@ describe( 'TableColumnResizeEditing', () => {
 					editor = await createEditor( null, [ TableProperties ] );
 
 					view = editor.editing.view;
+					model = editor.model;
 					contentDirection = editor.locale.contentLanguageDirection;
 				} );
 
@@ -1291,47 +1292,196 @@ describe( 'TableColumnResizeEditing', () => {
 					}
 				} );
 
-				it( 'shrinks the table twice as much when resizing centered table as compared to aligned table', () => {
-					const columnToResizeIndex = 1;
-					const mouseMovementVector = { x: -10, y: 0 };
+				describe( 'where there are 2 tables: centered and aligned', () => {
+					it( 'shrinks the table twice as much when resizing centered table as compared to aligned table', () => {
+						const columnToResizeIndex = 1;
+						const mouseMovementVector = { x: -10, y: 0 };
 
-					editor.setData(
-						`<figure class="table" style="float:left;width:500px;">
-							<table>
-								<tbody>
-									<tr>
-										<td>11</td>
-										<td>12</td>
-									</tr>
-								</tbody>
-							</table>
-						</figure>`
-					);
+						editor.setData(
+							`<figure class="table" style="float:left;width:500px;">
+								<table>
+									<tbody>
+										<tr>
+											<td>11</td>
+											<td>12</td>
+										</tr>
+									</tbody>
+								</table>
+							</figure>`
+						);
 
-					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
+						tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
 
-					const alignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+						const alignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
-					editor.setData(
-						`<figure class="table" style="width:500px;">
-							<table>
-								<tbody>
-									<tr>
-										<td>11</td>
-										<td>12</td>
-									</tr>
-								</tbody>
-							</table>
-						</figure>`
-					);
+						editor.setData(
+							`<figure class="table" style="width:500px;">
+								<table>
+									<tbody>
+										<tr>
+											<td>11</td>
+											<td>12</td>
+										</tr>
+									</tbody>
+								</table>
+							</figure>`
+						);
 
-					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
+						tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
 
-					const centeredTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
-					const widthDifference = centeredTableColumnWidthsPx[ 1 ] - alignedTableColumnWidthsPx[ 1 ];
+						const centeredTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+						const widthDifference = centeredTableColumnWidthsPx[ 1 ] - alignedTableColumnWidthsPx[ 1 ];
 
-					expect( Math.abs( widthDifference - mouseMovementVector.x ) < PIXEL_PRECISION ).to.be.true;
+						expect( Math.abs( widthDifference - mouseMovementVector.x ) < PIXEL_PRECISION ).to.be.true;
+					} );
 				} );
+				describe( 'correctly updates the resizer\'s positions', () => {
+					describe( 'when the table is aligned right, and ', () => {
+						it( 'allows for dragging the left table border in order to expand it', () => {
+							const columnToResizeIndex = 0;
+							const mouseMovementVector = { x: -10, y: 0 };
+							const initialTableWidth = 500;
+
+							setModelData( model, modelTable( [
+								[ '00', '01' ],
+								[ '10', '11' ]
+							], { columnWidths: '50%,50%', tableWidth: '500px', tableAlignment: 'right' } ) );
+
+							tableColumnResizeMouseSimulator.resize(
+								editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0
+							);
+
+							const rightAlignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+							const tableWidthSum = rightAlignedTableColumnWidthsPx[ 0 ] + rightAlignedTableColumnWidthsPx[ 1 ];
+
+							expect( tableWidthSum > initialTableWidth ).to.be.true;
+						} );
+
+						it( 'does not break on resizing any of the columns in the middle', () => {
+							const columnToResizeIndex = 1;
+							const mouseMovementVector = { x: -10, y: 0 };
+
+							setModelData( model, modelTable( [
+								[ '00', '01' ],
+								[ '10', '11' ]
+							], { columnWidths: '50%,50%', tableWidth: '500px', tableAlignment: 'right' } ) );
+
+							const initialRightAlignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+							tableColumnResizeMouseSimulator.resize(
+								editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0
+							);
+
+							const rightAlignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+							expect( initialRightAlignedTableColumnWidthsPx[ 0 ] > rightAlignedTableColumnWidthsPx[ 0 ] ).to.be.true;
+						} );
+					} );
+
+					describe( 'when the table is aligned left with rtl', () => {
+						it( 'allows for dragging the right table border in order to expand it', () => {
+							const columnToResizeIndex = 0;
+							const mouseMovementVector = { x: 10, y: 0 };
+							const initialTableWidth = 500;
+
+							editor.locale.contentLanguageDirection = 'rtl';
+
+							setModelData( model, modelTable( [
+								[ '00', '01' ],
+								[ '10', '11' ]
+							], { columnWidths: '50%,50%', tableWidth: '500px', tableAlignment: 'left' } ) );
+
+							tableColumnResizeMouseSimulator.resize(
+								editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0
+							);
+
+							const rightAlignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+							const tableWidthSum = rightAlignedTableColumnWidthsPx[ 0 ] + rightAlignedTableColumnWidthsPx[ 1 ];
+
+							expect( tableWidthSum > initialTableWidth ).to.be.true;
+						} );
+
+						it( 'does not break the resizing of the columns in the middle', () => {
+							const columnToResizeIndex = 1;
+							const mouseMovementVector = { x: 10, y: 0 };
+
+							editor.locale.contentLanguageDirection = 'rtl';
+
+							setModelData( model, modelTable( [
+								[ '00', '01' ],
+								[ '10', '11' ]
+							], { columnWidths: '50%,50%', tableWidth: '500px', tableAlignment: 'left' } ) );
+
+							const initialRightAlignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+							tableColumnResizeMouseSimulator.resize(
+								editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0
+							);
+
+							const rightAlignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+							expect( initialRightAlignedTableColumnWidthsPx[ 0 ] > rightAlignedTableColumnWidthsPx[ 0 ] ).to.be.true;
+						} );
+					} );
+				} );
+				// describe( 'where the table is aligned, correctly updates the resizer position', () => {
+				// 	it( 'allowing for dragging left table border, when the table is aligned right', () => {
+
+				// 	} );
+
+				// 	it( 'allowing for dragging left table border, when the table is aligned right', () => {
+				// 		const columnToResizeIndex = 0;
+				// 		const mouseMovementVector = { x: -10, y: 0 };
+				// 		const initialTableWidth = 500;
+
+				// 		editor.setData(
+				// 			`<figure class="table" style="float:right;width:500px;">
+				// 				<table>
+				// 					<tbody>
+				// 						<tr>
+				// 							<td>11</td>
+				// 							<td>12</td>
+				// 						</tr>
+				// 					</tbody>
+				// 				</table>
+				// 			</figure>`
+				// 		);
+
+				// 		tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
+				// 		const rightAlignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+				// 		const tableWidthSum = rightAlignedTableColumnWidthsPx[ 0 ] + rightAlignedTableColumnWidthsPx[ 1 ];
+
+				// 		expect( tableWidthSum > initialTableWidth ).to.be.true;
+				// 	} );
+
+				// 	it( 'allowing for dragging right border, when the table is aligned left', () => {
+				// 		const columnToResizeIndex = 0;
+				// 		const mouseMovementVector = { x: 10, y: 0 };
+				// 		const initialTableWidth = 500;
+
+				// 		editor.locale.contentLanguageDirection = 'rtl';
+
+				// 		editor.setData(
+				// 			`<figure class="table" style="float:left;width:500px;">
+				// 				<table>
+				// 					<tbody>
+				// 						<tr>
+				// 							<td>11</td>
+				// 							<td>12</td>
+				// 						</tr>
+				// 					</tbody>
+				// 				</table>
+				// 			</figure>`
+				// 		);
+
+				// 		tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
+
+				// 		const rightAlignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+				// 		const tableWidthSum = rightAlignedTableColumnWidthsPx[ 0 ] + rightAlignedTableColumnWidthsPx[ 1 ];
+
+				// 		expect( tableWidthSum > initialTableWidth ).to.be.true;
+				// 	} );
+				// } );
 			} );
 
 			describe( 'nested table ', () => {
