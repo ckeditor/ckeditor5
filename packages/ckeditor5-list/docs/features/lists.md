@@ -184,7 +184,7 @@ ClassicEditor
 ### Document list feature
 
 <info-box info>
-	Only the [base list feature](#ordered-and-unordered-lists) is enabled by default in all {@link installation/advanced/predefined-builds predefined editor builds}. If you wish to use the [document list feature](#document-list), you need to add it .
+	Only the [base list feature](#ordered-and-unordered-lists) is enabled by default in all {@link installation/getting-started/predefined-builds predefined editor builds}. If you wish to use the [document list feature](#document-list), you need to add it .
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
