@@ -10,11 +10,11 @@
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import PluginCollection from './plugincollection';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import Locale, { type LocaleTranslate } from '@ckeditor/ckeditor5-utils/src/locale';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import type Editor from './editor/editor';
 import type { LoadedPlugins, PluginConstructor } from './plugin';
-import type { EditorConfig, LanguageConfig } from './editor/editorconfig';
+import type { EditorConfig } from './editor/editorconfig';
 
 /**
  * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}
@@ -47,7 +47,7 @@ export default class Context {
 	public readonly config: Config<ContextConfig>;
 	public readonly plugins: PluginCollection<Context | Editor>;
 	public readonly locale: Locale;
-	public readonly t: Locale[ 't' ];
+	public readonly t: LocaleTranslate;
 	public readonly editors: Collection<Editor>;
 
 	public static defaultConfig: ContextConfig;

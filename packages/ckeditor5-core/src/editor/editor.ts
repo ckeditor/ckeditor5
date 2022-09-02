@@ -23,7 +23,7 @@ import type { EditorConfig } from './editorconfig';
 import { type ChangeEvent, Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The class representing a basic, generic editor.
@@ -56,7 +56,7 @@ export default abstract class Editor extends Observable {
 	public readonly model: Model;
 	public readonly plugins: PluginCollection<Editor>;
 	public readonly keystrokes: EditingKeystrokeHandler;
-	public readonly t: Locale[ 't' ];
+	public readonly t: LocaleTranslate;
 
 	public readonly id!: string;
 

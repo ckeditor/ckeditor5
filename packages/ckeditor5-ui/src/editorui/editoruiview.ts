@@ -13,7 +13,7 @@ import BodyCollection from './bodycollection';
 import '../../theme/components/editorui/editorui.css';
 
 import type EditableUIView from '../editableui/editableuiview';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The editor UI view class. Base class for the editor main views.
@@ -24,7 +24,7 @@ export default abstract class EditorUIView extends View {
 	public readonly body: BodyCollection;
 
 	declare public locale: Locale;
-	declare public t: Locale[ 't' ];
+	declare public t: LocaleTranslate;
 
 	public abstract get editable(): EditableUIView;
 

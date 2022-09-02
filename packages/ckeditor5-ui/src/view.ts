@@ -17,7 +17,7 @@ import { Observable, type DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils
 import Collection, { type AddEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 
 import '../theme/globals/globals.css';
 
@@ -90,7 +90,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	public element: TElement | null;
 	public isRendered: boolean;
 	public locale: Locale | undefined;
-	public t: Locale[ 't' ] | undefined;
+	public t: LocaleTranslate | undefined;
 	public template?: Template;
 	public viewUid?: string;
 
