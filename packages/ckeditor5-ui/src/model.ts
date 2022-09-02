@@ -16,7 +16,7 @@ import { extend } from 'lodash-es';
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Model extends Observable {
-	[ x: string ]: any;
+	[ x: string ]: unknown;
 
 	/**
 	 * Creates a new Model instance.

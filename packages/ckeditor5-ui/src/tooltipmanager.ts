@@ -74,6 +74,18 @@ export default class TooltipManager extends DomEmitter {
 	public readonly tooltipTextView!: View & { text: string };
 	public readonly balloonPanelView!: BalloonPanelView;
 
+	/**
+	 * A set of default {@link module:utils/dom/position~PositioningFunction positioning functions} used by the `TooltipManager`
+	 * to pin tooltips in different positions.
+	 *
+	 * @member {Object.<String,module:utils/dom/position~PositioningFunction>}
+	 * module:ui/tooltipmanager~TooltipManager.defaultBalloonPositions
+	 */
+	public static defaultBalloonPositions = generatePositions( {
+		heightOffset: 5,
+		sideOffset: 13
+	} );
+
 	private _currentElementWithTooltip!: HTMLElement | null;
 	private _currentTooltipPosition!: TooltipPosition | null;
 	private _pinTooltipDebounced!: DebouncedFunc<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
@@ -212,6 +224,32 @@ export default class TooltipManager extends DomEmitter {
 
 			TooltipManager._instance = null;
 		}
+	}
+
+	/**
+	 * Returns {@link #balloonPanelView} {@link module:utils/dom/position~PositioningFunction positioning functions} for a given position
+	 * name.
+	 *
+	 * @static
+	 * @param {String} position Name of the position (`s`, `se`, `sw`, `n`, `e`, or `w`).
+	 * @returns {Array.<module:utils/dom/position~PositioningFunction>} Positioning functions to be used by the {@link #balloonPanelView}.
+	 */
+	public static getPositioningFunctions( position: TooltipPosition ): PositioningFunction[] {
+		const defaultPositions = TooltipManager.defaultBalloonPositions;
+
+		return {
+			// South is most popular. We can use positioning heuristics to avoid clipping by the viewport with the sane fallback.
+			s: [
+				defaultPositions.southArrowNorth,
+				defaultPositions.southArrowNorthEast,
+				defaultPositions.southArrowNorthWest
+			],
+			n: [ defaultPositions.northArrowSouth ],
+			e: [ defaultPositions.eastArrowWest ],
+			w: [ defaultPositions.westArrowEast ],
+			sw: [ defaultPositions.southArrowNorthEast ],
+			se: [ defaultPositions.southArrowNorthWest ]
+		}[ position ];
 	}
 
 	/**
@@ -390,44 +428,6 @@ export default class TooltipManager extends DomEmitter {
 			positions: TooltipManager.getPositioningFunctions( this._currentTooltipPosition! )
 		} );
 	}
-
-	/**
-	 * Returns {@link #balloonPanelView} {@link module:utils/dom/position~PositioningFunction positioning functions} for a given position
-	 * name.
-	 *
-	 * @static
-	 * @param {String} position Name of the position (`s`, `se`, `sw`, `n`, `e`, or `w`).
-	 * @returns {Array.<module:utils/dom/position~PositioningFunction>} Positioning functions to be used by the {@link #balloonPanelView}.
-	 */
-	public static getPositioningFunctions( position: TooltipPosition ): PositioningFunction[] {
-		const defaultPositions = TooltipManager.defaultBalloonPositions;
-
-		return {
-			// South is most popular. We can use positioning heuristics to avoid clipping by the viewport with the sane fallback.
-			s: [
-				defaultPositions.southArrowNorth,
-				defaultPositions.southArrowNorthEast,
-				defaultPositions.southArrowNorthWest
-			],
-			n: [ defaultPositions.northArrowSouth ],
-			e: [ defaultPositions.eastArrowWest ],
-			w: [ defaultPositions.westArrowEast ],
-			sw: [ defaultPositions.southArrowNorthEast ],
-			se: [ defaultPositions.southArrowNorthWest ]
-		}[ position ];
-	}
-
-	/**
-	 * A set of default {@link module:utils/dom/position~PositioningFunction positioning functions} used by the `TooltipManager`
-	 * to pin tooltips in different positions.
-	 *
-	 * @member {Object.<String,module:utils/dom/position~PositioningFunction>}
-	 * module:ui/tooltipmanager~TooltipManager.defaultBalloonPositions
-	 */
-	public static defaultBalloonPositions = generatePositions( {
-		heightOffset: 5,
-		sideOffset: 13
-	} );
 }
 
 export type TooltipPosition = 's' | 'n' | 'e' | 'w' | 'sw' | 'se';
