@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { addListToDropdown, createDropdown, Model, SplitButtonView } from 'ckeditor5/src/ui';
+import { addListToDropdown, createDropdown, Model, SplitButtonView, SwitchButtonView } from 'ckeditor5/src/ui';
 import { Collection } from 'ckeditor5/src/utils';
 
 import InsertTableView from './ui/inserttableview';
@@ -72,12 +72,6 @@ export default class TableUI extends Plugin {
 				dropdownView.panelView.children.add( insertTableView );
 
 				insertTableView.delegate( 'execute' ).to( dropdownView );
-
-				dropdownView.buttonView.on( 'open', () => {
-					// Reset the chooser before showing it to the user.
-					insertTableView.rows = 0;
-					insertTableView.columns = 0;
-				} );
 
 				dropdownView.on( 'execute', () => {
 					editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );
@@ -256,7 +250,11 @@ export default class TableUI extends Plugin {
 
 		this.listenTo( dropdownView, 'execute', evt => {
 			editor.execute( evt.source.commandName );
-			editor.editing.view.focus();
+
+			// Toggling a switch button view should not move the focus to the editable.
+			if ( !( evt.source instanceof SwitchButtonView ) ) {
+				editor.editing.view.focus();
+			}
 		} );
 
 		return dropdownView;

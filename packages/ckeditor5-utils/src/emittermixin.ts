@@ -7,6 +7,8 @@
  * @module utils/emittermixin
  */
 
+/* eslint-disable new-cap */
+
 import EventInfo from './eventinfo';
 import uid from './uid';
 import priorities, { type PriorityString } from './priorities';
@@ -31,300 +33,321 @@ const _delegations = Symbol( 'delegations' );
  * @mixin EmitterMixin
  * @implements module:utils/emittermixin~Emitter
  */
-const EmitterMixin: Emitter = {
-	/**
-	 * @inheritDoc
-	 */
-	on( event, callback, options = {} ) {
-		this.listenTo( this, event, callback, options );
-	},
+export default function EmitterMixin<Base extends abstract new( ...args: any ) => object>(
+	base: Base
+): {
+	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Emitter;
+	prototype: InstanceType<Base> & Emitter;
+} {
+	abstract class Mixin extends base implements EmitterInternal {
+		public on<TEvent extends BaseEvent>(
+			event: TEvent[ 'name' ],
+			callback: GetCallback<TEvent>,
+			options?: CallbackOptions
+		): void {
+			this.listenTo( this, event, callback, options );
+		}
 
-	/**
-	 * @inheritDoc
-	 */
-	once( event, callback, options ) {
-		let wasFired = false;
+		public once<TEvent extends BaseEvent>(
+			event: TEvent[ 'name' ],
+			callback: GetCallback<TEvent>,
+			options?: CallbackOptions
+		): void {
+			let wasFired = false;
 
-		const onceCallback = ( event: EventInfo, ...args: any[] ) => {
-			// Ensure the callback is called only once even if the callback itself leads to re-firing the event
-			// (which would call the callback again).
-			if ( !wasFired ) {
-				wasFired = true;
+			const onceCallback: typeof callback = ( event, ...args ) => {
+				// Ensure the callback is called only once even if the callback itself leads to re-firing the event
+				// (which would call the callback again).
+				if ( !wasFired ) {
+					wasFired = true;
 
-				// Go off() at the first call.
-				event.off();
+					// Go off() at the first call.
+					event.off();
 
-				// Go with the original callback.
-				callback.call( this, event, ...args );
+					// Go with the original callback.
+					callback.call( this, event, ...args );
+				}
+			};
+
+			// Make a similar on() call, simply replacing the callback.
+			this.listenTo( this, event, onceCallback, options );
+		}
+
+		public off( event: string, callback: Function ): void {
+			this.stopListening( this, event, callback );
+		}
+
+		public listenTo<TEvent extends BaseEvent>(
+			emitter: Emitter,
+			event: TEvent[ 'name' ],
+			callback: GetCallback<TEvent>,
+			options: CallbackOptions = {}
+		): void {
+			let emitterInfo, eventCallbacks;
+
+			// _listeningTo contains a list of emitters that this object is listening to.
+			// This list has the following format:
+			//
+			// _listeningTo: {
+			//     emitterId: {
+			//         emitter: emitter,
+			//         callbacks: {
+			//             event1: [ callback1, callback2, ... ]
+			//             ....
+			//         }
+			//     },
+			//     ...
+			// }
+
+			if ( !this[ _listeningTo ] ) {
+				this[ _listeningTo ] = {};
 			}
-		};
 
-		// Make a similar on() call, simply replacing the callback.
-		this.listenTo( this, event, onceCallback, options );
-	},
+			const emitters = this[ _listeningTo ]!;
 
-	/**
-	 * @inheritDoc
-	 */
-	off( event, callback ) {
-		this.stopListening( this, event, callback );
-	},
+			if ( !_getEmitterId( emitter ) ) {
+				_setEmitterId( emitter );
+			}
 
-	/**
-	 * @inheritDoc
-	 */
-	listenTo( emitter, event, callback, options = {} ) {
-		let emitterInfo, eventCallbacks;
+			const emitterId = _getEmitterId( emitter )!;
 
-		// _listeningTo contains a list of emitters that this object is listening to.
-		// This list has the following format:
-		//
-		// _listeningTo: {
-		//     emitterId: {
-		//         emitter: emitter,
-		//         callbacks: {
-		//             event1: [ callback1, callback2, ... ]
-		//             ....
-		//         }
-		//     },
-		//     ...
-		// }
+			if ( !( emitterInfo = emitters[ emitterId ] ) ) {
+				emitterInfo = emitters[ emitterId ] = {
+					emitter,
+					callbacks: {}
+				};
+			}
 
-		if ( !this[ _listeningTo ] ) {
-			this[ _listeningTo ] = {};
+			if ( !( eventCallbacks = emitterInfo.callbacks[ event ] ) ) {
+				eventCallbacks = emitterInfo.callbacks[ event ] = [];
+			}
+
+			eventCallbacks.push( callback );
+
+			// Finally register the callback to the event.
+			addEventListener( this, emitter, event, callback, options );
 		}
 
-		const emitters = this[ _listeningTo ]!;
+		public stopListening( emitter?: Emitter, event?: string, callback?: Function ): void {
+			const emitters = this[ _listeningTo ];
+			let emitterId = emitter && _getEmitterId( emitter );
+			const emitterInfo = ( emitters && emitterId ) ? emitters[ emitterId ] : undefined;
+			const eventCallbacks = ( emitterInfo && event ) ? emitterInfo.callbacks[ event ] : undefined;
 
-		if ( !_getEmitterId( emitter ) ) {
-			_setEmitterId( emitter );
+			// Stop if nothing has been listened.
+			if ( !emitters || ( emitter && !emitterInfo ) || ( event && !eventCallbacks ) ) {
+				return;
+			}
+
+			// All params provided. off() that single callback.
+			if ( callback ) {
+				removeEventListener( this, emitter!, event!, callback );
+
+				// We must remove callbacks as well in order to prevent memory leaks.
+				// See https://github.com/ckeditor/ckeditor5/pull/8480
+				const index = eventCallbacks!.indexOf( callback );
+
+				if ( index !== -1 ) {
+					if ( eventCallbacks!.length === 1 ) {
+						delete emitterInfo!.callbacks[ event! ];
+					} else {
+						removeEventListener( this, emitter!, event!, callback );
+					}
+				}
+			}
+			// Only `emitter` and `event` provided. off() all callbacks for that event.
+			else if ( eventCallbacks ) {
+				while ( ( callback = eventCallbacks.pop() ) ) {
+					removeEventListener( this, emitter!, event!, callback );
+				}
+
+				delete emitterInfo!.callbacks[ event! ];
+			}
+			// Only `emitter` provided. off() all events for that emitter.
+			else if ( emitterInfo ) {
+				for ( event in emitterInfo.callbacks ) {
+					this.stopListening( emitter!, event );
+				}
+				delete emitters[ emitterId! ];
+			}
+			// No params provided. off() all emitters.
+			else {
+				for ( emitterId in emitters ) {
+					this.stopListening( emitters[ emitterId ].emitter );
+				}
+				delete this[ _listeningTo ];
+			}
 		}
 
-		const emitterId = _getEmitterId( emitter )!;
+		public fire<TEvent extends BaseEvent>(
+			eventOrInfo: GetNameOrEventInfo<TEvent>,
+			...args: TEvent[ 'args' ]
+		): GetEventInfo<TEvent>[ 'return' ] {
+			try {
+				const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
+				const event = eventInfo.name;
+				let callbacks = getCallbacksForEvent( this, event );
 
-		if ( !( emitterInfo = emitters[ emitterId ] ) ) {
-			emitterInfo = emitters[ emitterId ] = {
-				emitter,
-				callbacks: {}
+				// Record that the event passed this emitter on its path.
+				eventInfo.path.push( this );
+
+				// Handle event listener callbacks first.
+				if ( callbacks ) {
+					// Arguments passed to each callback.
+					const callbackArgs = [ eventInfo, ...args ];
+
+					// Copying callbacks array is the easiest and most secure way of preventing infinite loops, when event callbacks
+					// are added while processing other callbacks. Previous solution involved adding counters (unique ids) but
+					// failed if callbacks were added to the queue before currently processed callback.
+					// If this proves to be too inefficient, another method is to change `.on()` so callbacks are stored if same
+					// event is currently processed. Then, `.fire()` at the end, would have to add all stored events.
+					callbacks = Array.from( callbacks );
+
+					for ( let i = 0; i < callbacks.length; i++ ) {
+						callbacks[ i ].callback.apply( this, callbackArgs );
+
+						// Remove the callback from future requests if off() has been called.
+						if ( eventInfo.off.called ) {
+							// Remove the called mark for the next calls.
+							delete eventInfo.off.called;
+
+							this._removeEventListener( event, callbacks[ i ].callback );
+						}
+
+						// Do not execute next callbacks if stop() was called.
+						if ( eventInfo.stop.called ) {
+							break;
+						}
+					}
+				}
+
+				// Delegate event to other emitters if needed.
+				const delegations = this[ _delegations ];
+
+				if ( delegations ) {
+					const destinations = delegations.get( event );
+					const passAllDestinations = delegations.get( '*' );
+
+					if ( destinations ) {
+						fireDelegatedEvents( destinations, eventInfo, args );
+					}
+
+					if ( passAllDestinations ) {
+						fireDelegatedEvents( passAllDestinations, eventInfo, args );
+					}
+				}
+
+				return eventInfo.return;
+			} catch ( err ) {
+				// @if CK_DEBUG // throw err;
+				/* istanbul ignore next */
+				CKEditorError.rethrowUnexpectedError( err as Error, this );
+			}
+		}
+
+		public delegate( ...events: string[] ): EmitterMixinDelegateChain {
+			return {
+				to: ( emitter, nameOrFunction ) => {
+					if ( !this[ _delegations ] ) {
+						this[ _delegations ] = new Map();
+					}
+
+					// Originally there was a for..of loop which unfortunately caused an error in Babel that didn't allow
+					// build an application. See: https://github.com/ckeditor/ckeditor5-react/issues/40.
+					events.forEach( eventName => {
+						const destinations = this[ _delegations ]!.get( eventName );
+
+						if ( !destinations ) {
+							this[ _delegations ]!.set( eventName, new Map( [ [ emitter, nameOrFunction ] ] ) );
+						} else {
+							destinations.set( emitter, nameOrFunction );
+						}
+					} );
+				}
 			};
 		}
 
-		if ( !( eventCallbacks = emitterInfo.callbacks[ event ] ) ) {
-			eventCallbacks = emitterInfo.callbacks[ event ] = [];
-		}
-
-		eventCallbacks.push( callback );
-
-		// Finally register the callback to the event.
-		addEventListener( this, emitter, event, callback, options );
-	},
-
-	/**
-	 * @inheritDoc
-	 */
-	stopListening( emitter?: Emitter, event?: string, callback?: Function ) {
-		const emitters = this[ _listeningTo ];
-		let emitterId = emitter && _getEmitterId( emitter );
-		const emitterInfo = ( emitters && emitterId ) ? emitters[ emitterId ] : undefined;
-		const eventCallbacks = ( emitterInfo && event ) ? emitterInfo.callbacks[ event ] : undefined;
-
-		// Stop if nothing has been listened.
-		if ( !emitters || ( emitter && !emitterInfo ) || ( event && !eventCallbacks ) ) {
-			return;
-		}
-
-		// All params provided. off() that single callback.
-		if ( callback ) {
-			removeEventListener( this, emitter!, event!, callback );
-
-			// We must remove callbacks as well in order to prevent memory leaks.
-			// See https://github.com/ckeditor/ckeditor5/pull/8480
-			const index = eventCallbacks!.indexOf( callback );
-
-			if ( index !== -1 ) {
-				if ( eventCallbacks!.length === 1 ) {
-					delete emitterInfo!.callbacks[ event! ];
-				} else {
-					removeEventListener( this, emitter!, event!, callback );
-				}
-			}
-		}
-		// Only `emitter` and `event` provided. off() all callbacks for that event.
-		else if ( eventCallbacks ) {
-			while ( ( callback = eventCallbacks.pop() ) ) {
-				removeEventListener( this, emitter!, event!, callback );
+		public stopDelegating( event?: string, emitter?: Emitter ): void {
+			if ( !this[ _delegations ] ) {
+				return;
 			}
 
-			delete emitterInfo!.callbacks[ event! ];
-		}
-		// Only `emitter` provided. off() all events for that emitter.
-		else if ( emitterInfo ) {
-			for ( event in emitterInfo.callbacks ) {
-				this.stopListening( emitter!, event );
-			}
-			delete emitters[ emitterId! ];
-		}
-		// No params provided. off() all emitters.
-		else {
-			for ( emitterId in emitters ) {
-				this.stopListening( emitters[ emitterId ].emitter );
-			}
-			delete this[ _listeningTo ];
-		}
-	},
-
-	/**
-	 * @inheritDoc
-	 */
-	fire( eventOrInfo, ...args ) {
-		try {
-			const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
-			const event = eventInfo.name;
-			let callbacks = getCallbacksForEvent( this, event );
-
-			// Record that the event passed this emitter on its path.
-			eventInfo.path.push( this );
-
-			// Handle event listener callbacks first.
-			if ( callbacks ) {
-				// Arguments passed to each callback.
-				const callbackArgs = [ eventInfo, ...args ];
-
-				// Copying callbacks array is the easiest and most secure way of preventing infinite loops, when event callbacks
-				// are added while processing other callbacks. Previous solution involved adding counters (unique ids) but
-				// failed if callbacks were added to the queue before currently processed callback.
-				// If this proves to be too inefficient, another method is to change `.on()` so callbacks are stored if same
-				// event is currently processed. Then, `.fire()` at the end, would have to add all stored events.
-				callbacks = Array.from( callbacks );
-
-				for ( let i = 0; i < callbacks.length; i++ ) {
-					callbacks[ i ].callback.apply( this, callbackArgs );
-
-					// Remove the callback from future requests if off() has been called.
-					if ( eventInfo.off.called ) {
-						// Remove the called mark for the next calls.
-						delete eventInfo.off.called;
-
-						this._removeEventListener( event, callbacks[ i ].callback );
-					}
-
-					// Do not execute next callbacks if stop() was called.
-					if ( eventInfo.stop.called ) {
-						break;
-					}
-				}
-			}
-
-			// Delegate event to other emitters if needed.
-			const delegations = this[ _delegations ];
-
-			if ( delegations ) {
-				const destinations = delegations.get( event );
-				const passAllDestinations = delegations.get( '*' );
+			if ( !event ) {
+				this[ _delegations ]!.clear();
+			} else if ( !emitter ) {
+				this[ _delegations ]!.delete( event );
+			} else {
+				const destinations = this[ _delegations ]!.get( event );
 
 				if ( destinations ) {
-					fireDelegatedEvents( destinations, eventInfo, args );
-				}
-
-				if ( passAllDestinations ) {
-					fireDelegatedEvents( passAllDestinations, eventInfo, args );
+					destinations.delete( emitter );
 				}
 			}
-
-			return eventInfo.return;
-		} catch ( err ) {
-			// @if CK_DEBUG // throw err;
-			/* istanbul ignore next */
-			CKEditorError.rethrowUnexpectedError( err as Error, this );
 		}
-	},
 
-	/**
-	 * @inheritDoc
-	 */
-	delegate( ...events ) {
-		return {
-			to: ( emitter, nameOrFunction ) => {
-				if ( !this[ _delegations ] ) {
-					this[ _delegations ] = new Map();
-				}
+		public _addEventListener<TEvent extends BaseEvent>(
+			event: TEvent[ 'name' ],
+			callback: GetCallback<TEvent>,
+			options: CallbackOptions
+		): void {
+			createEventNamespace( this, event );
 
-				// Originally there was a for..of loop which unfortunately caused an error in Babel that didn't allow
-				// build an application. See: https://github.com/ckeditor/ckeditor5-react/issues/40.
-				events.forEach( eventName => {
-					const destinations = this[ _delegations ]!.get( eventName );
+			const lists = getCallbacksListsForNamespace( this, event );
+			const priority = priorities.get( options.priority );
 
-					if ( !destinations ) {
-						this[ _delegations ]!.set( eventName, new Map( [ [ emitter, nameOrFunction ] ] ) );
-					} else {
-						destinations.set( emitter, nameOrFunction );
+			const callbackDefinition = {
+				callback,
+				priority
+			};
+
+			// Add the callback to all callbacks list.
+			for ( const callbacks of lists ) {
+				// Add the callback to the list in the right priority position.
+				insertToPriorityArray( callbacks, callbackDefinition );
+			}
+		}
+
+		public _removeEventListener( event: string, callback: Function ): void {
+			const lists = getCallbacksListsForNamespace( this, event );
+
+			for ( const callbacks of lists ) {
+				for ( let i = 0; i < callbacks.length; i++ ) {
+					if ( callbacks[ i ].callback == callback ) {
+						// Remove the callback from the list (fixing the next index).
+						callbacks.splice( i, 1 );
+						i--;
 					}
-				} );
-			}
-		};
-	},
-
-	/**
-	 * @inheritDoc
-	 */
-	stopDelegating( event?: string, emitter?: Emitter ) {
-		if ( !this[ _delegations ] ) {
-			return;
-		}
-
-		if ( !event ) {
-			this[ _delegations ]!.clear();
-		} else if ( !emitter ) {
-			this[ _delegations ]!.delete( event );
-		} else {
-			const destinations = this[ _delegations ]!.get( event );
-
-			if ( destinations ) {
-				destinations.delete( emitter );
-			}
-		}
-	},
-
-	/**
-	 * @inheritDoc
-	 */
-	_addEventListener( event, callback, options ) {
-		createEventNamespace( this, event );
-
-		const lists = getCallbacksListsForNamespace( this, event );
-		const priority = priorities.get( options.priority );
-
-		const callbackDefinition = {
-			callback,
-			priority
-		};
-
-		// Add the callback to all callbacks list.
-		for ( const callbacks of lists ) {
-			// Add the callback to the list in the right priority position.
-			insertToPriorityArray( callbacks, callbackDefinition );
-		}
-	},
-
-	/**
-	 * @inheritDoc
-	 */
-	_removeEventListener( event, callback ) {
-		const lists = getCallbacksListsForNamespace( this, event );
-
-		for ( const callbacks of lists ) {
-			for ( let i = 0; i < callbacks.length; i++ ) {
-				if ( callbacks[ i ].callback == callback ) {
-					// Remove the callback from the list (fixing the next index).
-					callbacks.splice( i, 1 );
-					i--;
 				}
 			}
 		}
-	}
-};
 
-export default EmitterMixin;
+		public _events?: { [ eventName: string ]: EventNode };
+
+		public [ _emitterId ]?: string;
+
+		public [ _listeningTo ]?: {
+			[ emitterId: string ]: {
+				emitter: Emitter;
+				callbacks: { [ event: string]: Function[] };
+			};
+		};
+
+		public [ _delegations ]?: Map<string, Map<Emitter, string | ( ( name: string ) => string ) | undefined>>;
+	}
+
+	return Mixin as any;
+}
+
+export const Emitter = EmitterMixin( Object );
+
+// Backward compatibility with `mix`
+( [
+	'on', 'once', 'off', 'listenTo',
+	'stopListening', 'fire', 'delegate', 'stopDelegating',
+	'_addEventListener', '_removeEventListener'
+] ).forEach( key => {
+	( EmitterMixin as any )[ key ] = ( Emitter.prototype as any )[ key ];
+} );
 
 /**
  * Emitter/listener interface.
@@ -354,9 +377,9 @@ export interface Emitter {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	on(
-		event: string,
-		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
+	on<TEvent extends BaseEvent>(
+		event: TEvent[ 'name' ],
+		callback: GetCallback<TEvent>,
 		options?: CallbackOptions
 	): void;
 
@@ -372,9 +395,9 @@ export interface Emitter {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	once(
-		event: string,
-		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
+	once<TEvent extends BaseEvent>(
+		event: TEvent[ 'name' ],
+		callback: GetCallback<TEvent>,
 		options?: CallbackOptions
 	): void;
 
@@ -417,10 +440,10 @@ export interface Emitter {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	listenTo(
+	listenTo<TEvent extends BaseEvent>(
 		emitter: Emitter,
-		event: string,
-		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
+		event: TEvent[ 'name' ],
+		callback: GetCallback<TEvent>,
 		options?: CallbackOptions
 	): void;
 
@@ -454,7 +477,10 @@ export interface Emitter {
 	 * through modification of the {@link module:utils/eventinfo~EventInfo#return `evt.return`}'s property (the event info
 	 * is the first param of every callback).
 	 */
-	fire( eventOrInfo: string | EventInfo, ...args: unknown[] ): unknown;
+	fire<TEvent extends BaseEvent>(
+		eventOrInfo: GetNameOrEventInfo<TEvent>,
+		...args: TEvent[ 'args' ]
+	): GetEventInfo<TEvent>[ 'return' ];
 
 	/**
 	 * Delegates selected events to another {@link module:utils/emittermixin~Emitter}. For instance:
@@ -489,11 +515,13 @@ export interface Emitter {
 	 * If omitted, stops delegation of `event` to all emitters.
 	 */
 	stopDelegating( event?: string, emitter?: Emitter ): void;
+}
+
+interface EmitterInternal extends Emitter {
 
 	/**
 	 * Adds callback to emitter for given event.
 	 *
-	 * @internal
 	 * @protected
 	 * @method #_addEventListener
 	 * @param {String} event The name of the event.
@@ -503,30 +531,26 @@ export interface Emitter {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	_addEventListener(
-		event: string,
-		callback: ( this: this, ev: EventInfo, ...args: any[] ) => void,
+	_addEventListener?: <TEvent extends BaseEvent>(
+		event: TEvent[ 'name' ],
+		callback: GetCallback<TEvent>,
 		options: CallbackOptions
-	): void;
+	) => void;
 
 	/**
 	 * Removes callback from emitter for given event.
 	 *
-	 * @internal
 	 * @protected
 	 * @method #_removeEventListener
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to stop being called.
 	 */
-	_removeEventListener( event: string, callback: Function ): void;
+	_removeEventListener?: ( event: string, callback: Function ) => void;
 
-	/** @internal */
 	_events?: { [ eventName: string ]: EventNode };
 
-	/** @internal */
 	[ _emitterId ]?: string;
 
-	/** @internal */
 	[ _listeningTo ]?: {
 		[ emitterId: string ]: {
 			emitter: Emitter;
@@ -534,9 +558,23 @@ export interface Emitter {
 		};
 	};
 
-	/** @internal */
 	[ _delegations ]?: Map<string, Map<Emitter, string | ( ( name: string ) => string ) | undefined>>;
 }
+
+export type BaseEvent = {
+	name: string;
+	args: any[];
+};
+
+export type GetEventInfo<TEvent extends BaseEvent> = TEvent extends { eventInfo: EventInfo } ?
+	TEvent[ 'eventInfo' ] :
+	EventInfo<TEvent[ 'name' ], ( TEvent extends { return: infer TReturn } ? TReturn : unknown )>;
+
+export type GetNameOrEventInfo<TEvent extends BaseEvent> = TEvent extends { eventInfo: EventInfo } ?
+	TEvent[ 'eventInfo' ] :
+	TEvent[ 'name' ] | EventInfo<TEvent[ 'name' ], ( TEvent extends { return: infer TReturn } ? TReturn : unknown )>;
+
+export type GetCallback<TEvent extends BaseEvent> = ( this: Emitter, ev: GetEventInfo<TEvent>, ...args: TEvent[ 'args' ] ) => void;
 
 /**
  * Additional options for registering a callback.
@@ -561,7 +599,7 @@ export interface CallbackOptions {
  * @returns {module:utils/emittermixin~Emitter|null}
  */
 export function _getEmitterListenedTo( listeningEmitter: Emitter, listenedToEmitterId: string ): Emitter | null {
-	const listeningTo = listeningEmitter[ _listeningTo ];
+	const listeningTo = ( listeningEmitter as EmitterInternal )[ _listeningTo ];
 	if ( listeningTo && listeningTo[ listenedToEmitterId ] ) {
 		return listeningTo[ listenedToEmitterId ].emitter;
 	}
@@ -580,8 +618,8 @@ export function _getEmitterListenedTo( listeningEmitter: Emitter, listenedToEmit
  * @param {String} [id] Unique id to set. If not passed, random unique id will be set.
  */
 export function _setEmitterId( emitter: Emitter, id?: string ): void {
-	if ( !emitter[ _emitterId ] ) {
-		emitter[ _emitterId ] = id || uid();
+	if ( !( emitter as EmitterInternal )[ _emitterId ] ) {
+		( emitter as EmitterInternal )[ _emitterId ] = id || uid();
 	}
 }
 
@@ -594,7 +632,7 @@ export function _setEmitterId( emitter: Emitter, id?: string ): void {
  * @returns {String|undefined}
  */
 export function _getEmitterId( emitter: Emitter ): string | undefined {
-	return emitter[ _emitterId ];
+	return ( emitter as EmitterInternal )[ _emitterId ];
 }
 
 interface EventNode {
@@ -605,7 +643,7 @@ interface EventNode {
 // Gets the internal `_events` property of the given object.
 // `_events` property store all lists with callbacks for registered event names.
 // If there were no events registered on the object, empty `_events` object is created.
-function getEvents( source: Emitter ): { [ eventName: string ]: EventNode } {
+function getEvents( source: EmitterInternal ): { [ eventName: string ]: EventNode } {
 	if ( !source._events ) {
 		Object.defineProperty( source, '_events', {
 			value: {}
@@ -628,7 +666,7 @@ function makeEventNode(): EventNode {
 // is foo:bar:abc, it will create foo:bar:abc, foo:bar and foo event and tie them together.
 // It also copies callbacks from more generic events to more specific events when
 // specific events are created.
-function createEventNamespace( source: Emitter, eventName: string ): void {
+function createEventNamespace( source: EmitterInternal, eventName: string ): void {
 	const events = getEvents( source );
 
 	// First, check if the event we want to add to the structure already exists.
@@ -693,7 +731,7 @@ function createEventNamespace( source: Emitter, eventName: string ): void {
 // Gets an array containing callbacks list for a given event and it's more specific events.
 // I.e. if given event is foo:bar and there is also foo:bar:abc event registered, this will
 // return callback list of foo:bar and foo:bar:abc (but not foo).
-function getCallbacksListsForNamespace( source: Emitter, eventName: string ): EventNode[ 'callbacks' ][] {
+function getCallbacksListsForNamespace( source: EmitterInternal, eventName: string ): EventNode[ 'callbacks' ][] {
 	const eventNode = getEvents( source )[ eventName ];
 
 	if ( !eventNode ) {
@@ -714,7 +752,7 @@ function getCallbacksListsForNamespace( source: Emitter, eventName: string ): Ev
 // Get the list of callbacks for a given event, but only if there any callbacks have been registered.
 // If there are no callbacks registered for given event, it checks if this is a specific event and looks
 // for callbacks for it's more generic version.
-function getCallbacksForEvent( source: Emitter, eventName: string ): EventNode[ 'callbacks' ] | null {
+function getCallbacksForEvent( source: EmitterInternal, eventName: string ): EventNode[ 'callbacks' ] | null {
 	let event;
 
 	if ( !source._events || !( event = source._events[ eventName ] ) || !event.callbacks.length ) {
@@ -760,11 +798,11 @@ function fireDelegatedEvents(
 }
 
 // Helper for registering event callback on the emitter.
-function addEventListener(
-	listener: Emitter,
-	emitter: Emitter,
-	event: string,
-	callback: ( this: Emitter, ev: EventInfo, ...args: any[] ) => void,
+function addEventListener<TEvent extends BaseEvent>(
+	listener: EmitterInternal,
+	emitter: EmitterInternal,
+	event: TEvent[ 'name' ],
+	callback: GetCallback<TEvent>,
 	options: CallbackOptions
 ) {
 	if ( emitter._addEventListener ) {
@@ -772,18 +810,18 @@ function addEventListener(
 	} else {
 		// Allow listening on objects that do not implement Emitter interface.
 		// This is needed in some tests that are using mocks instead of the real objects with EmitterMixin mixed.
-		listener._addEventListener.call( emitter, event, callback, options );
+		( listener._addEventListener!<TEvent> ).call( emitter, event, callback, options );
 	}
 }
 
 // Helper for removing event callback from the emitter.
-function removeEventListener( listener: Emitter, emitter: Emitter, event: string, callback: Function ): void {
+function removeEventListener( listener: EmitterInternal, emitter: EmitterInternal, event: string, callback: Function ): void {
 	if ( emitter._removeEventListener ) {
 		emitter._removeEventListener( event, callback );
 	} else {
 		// Allow listening on objects that do not implement Emitter interface.
 		// This is needed in some tests that are using mocks instead of the real objects with EmitterMixin mixed.
-		listener._removeEventListener.call( emitter, event, callback );
+		listener._removeEventListener!.call( emitter, event, callback );
 	}
 }
 

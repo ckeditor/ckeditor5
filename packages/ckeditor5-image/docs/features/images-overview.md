@@ -16,6 +16,11 @@ To see the all image features in action, check out the [**demo**](#demo) below. 
 
 {@snippet features/image-full}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
+
 ## Base image feature
 
 The base image feature does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (listed below) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows the developers to build their own customized experience by implementing specific subfeatures differently.
@@ -27,7 +32,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * The [contextual toolbar](#image-contextual-toolbar) available on mouse click gives access to image features.
 * {@link features/images-captions Image captions} allow adding descriptive text under the image.
 * The {@link features/images-styles image styles} help control the placement, size and other characteristics with predefined styles.
-* The {@link features/images-text-alternative text alternative} tag aids accessability and SEO, provides additional image description and supports better navigation.
+* The {@link features/images-text-alternative text alternative} tag aids accessibility and SEO, provides additional image description and supports better navigation.
 * {@link features/images-resizing Image resizing} lets the user control the dimensions of images in the content.
 * {@link features/images-linking Linking images} makes it possible to use them as URL anchors.
 * A selection of {@link features/image-upload image upload methods} allows for the most convenient way of adding images. These include support for {@link features/images-inserting#inserting-images-via-pasting-url-into-editor inserting an image via URL} and even {@link features/images-inserting#inserting-images-via-source-url via pasting a URL into the editor} along with custom integrations.
@@ -191,6 +196,14 @@ See the common API of image-related features such as {@link module:image/imagest
 ## Responsive images
 
 Support for responsive images in CKEditor 5 is brought by the {@link features/ckbox CKBox} management platform. The {@link features/easy-image Easy Image} feature can also be used without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.
+
+## Typing around images
+
+To type before or after an image easily, select the image, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after respectively. The image becomes no longer selected and whatever text you type will appear in the desired position.
+
+You can also use the **Insert paragraph** handles on the bottom or top edge of the selected image to add a paragraph below or above the image, respectively.
+
+{@img assets/img/image-insert-paragraph.png 640 Paragraph insertion handles.}
 
 ## Contribute
 

@@ -2,20 +2,21 @@
 category: support
 order: 10
 toc: false
-feedback-widget: false
 meta-title: CKEditor 5 support documentation
-meta-description: Learn about getting support while integrating CKEditor 5.
+meta-description: Learn how to get help and support and how to provide feedback.
 ---
 
-# Getting support with CKEditor 5
+# Getting support
 
-Need help with CKEditor 5? Learn how to get support and find answers for the most frequently asked questions!
+## Commercial support
 
-<info-box>
-	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through the documentation. Newly added or meaningfully updated guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting.
-</info-box>
+If you are a licensed customer, CKEditor 5 comes with benefits, such as direct support from the core CKEditor development team. Commercial licenses are designed with professionals and enterprises in mind. [Contact us](https://ckeditor.com/contact/) with any support requests you may have.
 
-**Related links**
+For more information, check the [CKEditor 5 Pricing page](https://ckeditor.com/ckeditor-5-builds/pricing/).
 
- * {@link installation/index CKEditor 5 installation} &ndash; Learn how to install, integrate and configure CKEditor 5. More complex aspects, like creating custom builds, building plugins or integrating frameworks are also explained here.
- * {@link framework/guides/overview CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins, custom editors, how to change the UI or even bring your own UI to the editor.
+## Stack Overflow
+
+[Stack Overflow](https://stackoverflow.com) is the best place for developers to share their problems and solutions.
+
+Make sure to tag your questions with ["ckeditor"](https://stackoverflow.com/questions/tagged/ckeditor) and ["ckeditor5"](https://stackoverflow.com/questions/tagged/ckeditor5) to reach the widest audience.
+

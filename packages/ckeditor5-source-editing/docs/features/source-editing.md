@@ -6,7 +6,7 @@ modified_at: 2021-06-28
 # Source editing
 {@snippet features/source-editing-imports}
 
-The {@link module:source-editing/sourceediting~SourceEditing} feature provides the ability for viewing and editing the source of the document. The source editing plugin is a low-level document editing interface, while all the buttons and dropdowns located in a editor's toolbar are high-level ones.
+The {source editing feature provides the ability for viewing and editing the source of the document. The source editing plugin is a low-level document editing interface, while all the buttons and dropdowns located in a editor's toolbar are high-level ones.
 
 The changes made to the document source will be applied to the editor's {@link framework/guides/architecture/editing-engine data model} only, if the editor understands (via loaded plugins) the given syntax. You will lose all changes that the editor features cannot understand. For example, if the editor does not have a {@link features/horizontal-line horizontal line} plugin loaded, the `<hr>` tag added in the document source will be removed upon exit from the source editing mode.
 
@@ -19,6 +19,10 @@ The changes made to the document source will be applied to the editor's {@link f
 Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing}, make some changes in the HTML code (i.e. add new paragraphs or an ordered list), and go back to see that they are present in the document content. You can also use one of the numerous CKEditor 5 features available via the toolbar and observe how they render in the HTML source. Notice the collapsible table of contents, available thanks to the {@link features/general-html-support General HTML support} feature and introducing HTML elements not yet covered by official plugins.
 
 {@snippet features/source-editing}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Markdown source view
 

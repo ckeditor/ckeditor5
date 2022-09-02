@@ -19,7 +19,7 @@ import SwitchButtonView from '../button/switchbuttonview';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
 
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { global, priorities, logWarning } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
@@ -288,22 +288,28 @@ export function focusChildOnDropdownOpen( dropdownView, childSelectorCallback ) 
 			 */
 			logWarning( 'ui-dropdown-focus-child-on-open-child-missing-focus', { view: childToFocus } );
 		}
-	}, { priority: 'low' } );
+
+	// * Let the panel show up first (do not focus an invisible element).
+	// * Execute after focusDropdownPanelOnOpen(). See focusDropdownPanelOnOpen() to learn more.
+	}, { priority: priorities.low - 10 } );
 }
 
 // Add a set of default behaviors to dropdown view.
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function addDefaultBehavior( dropdownView ) {
-	closeDropdownOnBlur( dropdownView );
+	closeDropdownOnClickOutside( dropdownView );
 	closeDropdownOnExecute( dropdownView );
+	closeDropdownOnBlur( dropdownView );
 	focusDropdownContentsOnArrows( dropdownView );
+	focusDropdownButtonOnClose( dropdownView );
+	focusDropdownPanelOnOpen( dropdownView );
 }
 
 // Adds a behavior to a dropdownView that closes opened dropdown when user clicks outside the dropdown.
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
-function closeDropdownOnBlur( dropdownView ) {
+function closeDropdownOnClickOutside( dropdownView ) {
 	dropdownView.on( 'render', () => {
 		clickOutsideHandler( {
 			emitter: dropdownView,
@@ -331,6 +337,17 @@ function closeDropdownOnExecute( dropdownView ) {
 	} );
 }
 
+// Adds a behavior to a dropdown view that closes opened dropdown when it loses focus.
+//
+// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+function closeDropdownOnBlur( dropdownView ) {
+	dropdownView.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
+		if ( dropdownView.isOpen && !isFocused ) {
+			dropdownView.isOpen = false;
+		}
+	} );
+}
+
 // Adds a behavior to a dropdownView that focuses the dropdown's panel view contents on keystrokes.
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
@@ -350,6 +367,43 @@ function focusDropdownContentsOnArrows( dropdownView ) {
 			cancel();
 		}
 	} );
+}
+
+// Adds a behavior that focuses the #buttonView when the dropdown was closed but focus was within the #panelView element.
+// This makes sure the focus is never lost.
+//
+// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+function focusDropdownButtonOnClose( dropdownView ) {
+	dropdownView.on( 'change:isOpen', ( evt, name, isOpen ) => {
+		if ( isOpen ) {
+			return;
+		}
+
+		// If the dropdown was closed, move the focus back to the button (#12125).
+		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
+		// Note: Don't use the state of the DropdownView#focusTracker here. It fires #blur with the timeout.
+		if ( dropdownView.panelView.element.contains( global.document.activeElement ) ) {
+			dropdownView.buttonView.focus();
+		}
+	} );
+}
+
+// Adds a behavior that focuses the #panelView when dropdown gets open (accessibility).
+//
+// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+function focusDropdownPanelOnOpen( dropdownView ) {
+	dropdownView.on( 'change:isOpen', ( evt, name, isOpen ) => {
+		if ( !isOpen ) {
+			return;
+		}
+
+		// Focus the first item in the dropdown when the dropdown opened.
+		dropdownView.panelView.focus();
+
+	// * Let the panel show up first (do not focus an invisible element).
+	// * Also, execute before focusChildOnDropdownOpen() to make sure this helper does not break the
+	//   focus of a specific child by kicking in too late and resetting the focus in the panel.
+	}, { priority: 'low' } );
 }
 
 /**

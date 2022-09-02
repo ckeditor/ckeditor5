@@ -6,10 +6,8 @@
 :root {
 	--ck-style-panel-button-width: 120px;
 	--ck-style-panel-button-height: 80px;
-	--ck-style-panel-button-shadow-color: hsl(0deg 0% 0% / 10%);
-	--ck-style-panel-button-shadow: 0px 0px 6px var(--ck-style-panel-button-shadow-color);
-	--ck-style-panel-button-label-background: hsl(0, 0%, 90%);
-	--ck-style-panel-button-hover-label-background: hsl(0, 0%, 80%);
+	--ck-style-panel-button-label-background: hsl(0, 0%, 94.1%);
+	--ck-style-panel-button-hover-label-background: hsl(0, 0%, 92.1%);
 	--ck-style-panel-button-hover-border-color: hsl(0, 0%, 70%);
 }
 
@@ -28,7 +26,6 @@
 		/* Let default .ck-button :focus styles apply */
 		&:not(:focus) {
 			border: 1px solid var(--ck-color-base-border);
-			box-shadow: var(--ck-style-panel-button-shadow);
 		}
 
 		& .ck-button__label {
@@ -39,7 +36,6 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			flex-shrink: 0;
-			background: var(--ck-style-panel-button-label-background);
 		}
 
 		& .ck-style-grid__button__preview {
@@ -48,6 +44,7 @@
 			opacity: .9;
 
 			padding: var(--ck-spacing-medium);
+			background: var(--ck-color-base-background);
 			border: 2px solid var(--ck-color-base-background);
 		}
 
@@ -56,12 +53,7 @@
 
 			/* Let default .ck-button :focus styles apply */
 			&:not(:focus) {
-				box-shadow: none;
 				border-color: var(--ck-style-panel-button-label-background);
-			}
-
-			& .ck-button__label {
-				background: var(--ck-style-panel-button-label-background);
 			}
 
 			& .ck-style-grid__button__preview {
@@ -73,24 +65,25 @@
 		}
 
 		&.ck-on {
-			--ck-color-button-on-background: var(--ck-color-base-background);
-			--ck-color-button-on-hover-background: var(--ck-color-base-background);
-			--ck-color-button-on-active-background: var(--ck-color-base-background);
-			--ck-style-panel-button-shadow-color: hsla(208, 88%, 52%, 0.1);
-
 			border-color: var(--ck-color-base-active);
 
 			& .ck-button__label {
-				background: var(--ck-color-base-active);
-				color: var(--ck-color-base-background);
+				box-shadow: 0 -1px 0 var(--ck-color-base-active);
+				z-index: 1; /* Stay on top of the preview with the shadow. */
 			}
 
 			&:hover {
 				border-color: var(--ck-color-base-active-focus);
+			}
+		}
 
-				& .ck-button__label {
-					background: var(--ck-color-base-active-focus);
-				}
+		&:not(.ck-on) {
+			& .ck-button__label {
+				background: var(--ck-style-panel-button-label-background);
+			}
+
+			&:hover .ck-button__label {
+				background: var(--ck-style-panel-button-hover-label-background);
 			}
 		}
 
@@ -99,10 +92,6 @@
 
 			& .ck-style-grid__button__preview {
 				opacity: 1;
-			}
-
-			& .ck-button__label {
-				background: var(--ck-style-panel-button-hover-label-background);
 			}
 		}
 	}

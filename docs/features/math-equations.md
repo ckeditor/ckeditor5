@@ -17,6 +17,10 @@ Additionally, MathType offers a special tool designed to help you work with chem
 	You can report any issues in the official CKEditor 5 [GitHub repository](https://github.com/ckeditor/ckeditor5/issues). A license can be purchased [here](https://ckeditor.com/contact/).
 </info-box>
 
+<info-box info>
+	The Math equations and chemical formulas feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 To start creating math or chemical formulas in the WYSIWYG editor below, click the MathType {@icon @wiris/mathtype-ckeditor5/theme/icons/formula.svg MathType} or ChemType {@icon @wiris/mathtype-ckeditor5/theme/icons/chem.svg ChemType} buttons in the toolbar. This will open the relevant dialog on the screen.
@@ -26,6 +30,10 @@ Use the toolbar to write your equation or formula. At any time you can also clic
 When you are done creating your scientific content, click the "OK" button to insert your formula into CKEditor 5. You can also edit any existing formulas by double-clicking them in your document.
 
 {@snippet features/mathtype}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Usage
 
@@ -177,7 +185,7 @@ To install the Ruby on Rails service, follow the steps below:
 
 1. Download the [MathType Web Integration Services - Ruby on Rails](http://www.wiris.com/en/plugins/services/download) package.
 
-2. Instal the `wirispluginengine.gem` gem.
+2. Install the `wirispluginengine.gem` gem.
 
     ```
     gem install -l wirispluginengine.gem

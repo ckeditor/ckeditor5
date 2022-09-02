@@ -8,7 +8,7 @@ modified_at: 2022-05-12
 
 # Lists
 
-The lists feature lets you create ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
+The list feature lets you create ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
 
 Lists are useful when you want to emphasize selected information, highlight a series of steps, enumerate items of a collection. They draw the reader's attention and, just like {@link features/block-quote block quotes} or {@link features/indent indentation}, give the text a structure and breathing room. They help visually separate passages for a better reading experience and make skimming for information easier.
 
@@ -54,6 +54,10 @@ Just like regular lists, the document list feature supports both ordered and uno
 Use the demo below to add block elements like tables, images or nested lists and see the document retain ordering and list styles. Use the toolbar buttons to insert new ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list} list items.
 
 {@snippet features/lists-document}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## List properties
 

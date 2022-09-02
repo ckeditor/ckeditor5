@@ -5,14 +5,15 @@
 
 /* global setTimeout, clearTimeout */
 
+/* eslint-disable new-cap */
+
 /**
  * @module utils/focustracker
  */
 
-import DomEmitterMixin, { type Emitter as DomEmitter } from './dom/emittermixin';
-import ObservableMixin, { type Observable } from './observablemixin';
+import DomEmitterMixin from './dom/emittermixin';
+import { Observable } from './observablemixin';
 import CKEditorError from './ckeditorerror';
-import mix from './mix';
 
 /**
  * Allows observing a group of `Element`s whether at least one of them is focused.
@@ -29,7 +30,7 @@ import mix from './mix';
  * @mixes module:utils/dom/emittermixin~EmitterMixin
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-class FocusTracker {
+export default class FocusTracker extends DomEmitterMixin( Observable ) {
 	/**
 	 * True when one of the registered elements is focused.
 	 *
@@ -69,6 +70,8 @@ class FocusTracker {
 	private _nextEventLoopTimeout: ReturnType<typeof setTimeout> | null;
 
 	constructor() {
+		super();
+
 		this.set( 'isFocused', false );
 		this.set( 'focusedElement', null );
 
@@ -150,11 +153,3 @@ class FocusTracker {
 		}, 0 );
 	}
 }
-
-mix( FocusTracker, DomEmitterMixin );
-mix( FocusTracker, ObservableMixin );
-
-type ObservableDomEmitter = DomEmitter & Observable;
-interface FocusTracker extends ObservableDomEmitter {}
-
-export default FocusTracker;

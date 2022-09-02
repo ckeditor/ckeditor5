@@ -74,7 +74,7 @@ Changes for the past releases are available below.
 * Enabled additional box-shadow on `.ck-button` to meet WCAG AA recommendations. Adjusted the color of the `--ck-color-focus-border` for the same reason (editables, widget selection, etc.). Closes [ckeditor/ckeditor5#5580](https://github.com/ckeditor/ckeditor5/issues/5580). ([0fe1500](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0fe1500))
 
   Also:
-  * Optimized the color of a gird component for WCAG AA.
+  * Optimized the color of a grid component for WCAG AA.
   * Imported insert table UI styles from ckeditor5-table (code refactoring).
      * Improved the table UI contrast and accessibility.
 
@@ -101,7 +101,7 @@ Changes for the past releases are available below.
 ### Other changes
 
 * The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([59e4777](https://github.com/ckeditor/ckeditor5-theme-lark/commit/59e4777))
-* The `.ck-progress-bar` styles should not be under with `.ck-content`. Additionaly removed two unused custom properties: `--ck-color-upload-infinite-background` and `--ck-image-upload-progress-line-width`. Closes https://github.com/ckeditor/ckeditor5-theme-lark/issues/239. Closes https://github.com/ckeditor/ckeditor5/issues/1915. ([cb92793](https://github.com/ckeditor/ckeditor5-theme-lark/commit/cb92793))
+* The `.ck-progress-bar` styles should not be under with `.ck-content`. Additionally removed two unused custom properties: `--ck-color-upload-infinite-background` and `--ck-image-upload-progress-line-width`. Closes https://github.com/ckeditor/ckeditor5-theme-lark/issues/239. Closes https://github.com/ckeditor/ckeditor5/issues/1915. ([cb92793](https://github.com/ckeditor/ckeditor5-theme-lark/commit/cb92793))
 
 
 ## [14.1.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.1.0...v14.1.1) (2019-07-10)

@@ -433,6 +433,30 @@ describe( 'ListPropertiesUI', () => {
 						expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
 					} );
 				} );
+
+				it( 'should focus the start index field on open when styles are disabled', () => {
+					return withEditor( {
+						styles: false,
+						startIndex: true,
+						reversed: true
+					}, editor => {
+						const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
+						const listPropertiesView = numberedListDropdown.panelView.children.first;
+						const startIndexFieldView = listPropertiesView.startIndexFieldView;
+
+						numberedListDropdown.render();
+						document.body.appendChild( numberedListDropdown.element );
+
+						const spy = sinon.spy( startIndexFieldView, 'focus' );
+
+						numberedListDropdown.isOpen = true;
+
+						sinon.assert.calledOnce( spy );
+
+						numberedListDropdown.element.remove();
+						numberedListDropdown.destroy();
+					} );
+				} );
 			} );
 
 			describe( 'main split button', () => {

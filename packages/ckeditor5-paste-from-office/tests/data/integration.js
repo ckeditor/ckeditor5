@@ -93,7 +93,7 @@ describe( 'PasteFromOffice - integration', () => {
 		type: 'integration',
 		browsers,
 		editorConfig: {
-			plugins: [ Clipboard, Paragraph, Bold, PasteFromOffice ]
+			plugins: [ Clipboard, Paragraph, Bold, ShiftEnter, PasteFromOffice ]
 		}
 	} );
 
@@ -103,15 +103,6 @@ describe( 'PasteFromOffice - integration', () => {
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, List, PasteFromOffice ]
-		}
-	} );
-
-	generateTests( {
-		input: 'google-docs-paragraph',
-		type: 'integration',
-		browsers,
-		editorConfig: {
-			plugins: [ Clipboard, Paragraph, ShiftEnter, PasteFromOffice ]
 		}
 	} );
 
@@ -150,6 +141,15 @@ describe( 'PasteFromOffice - integration', () => {
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Bold, PasteFromOffice, PageBreak ]
+		}
+	} );
+
+	generateTests( {
+		input: 'google-docs-br-paragraphs',
+		type: 'integration',
+		browsers,
+		editorConfig: {
+			plugins: [ Clipboard, Paragraph, Bold, ShiftEnter, PasteFromOffice ]
 		}
 	} );
 } );

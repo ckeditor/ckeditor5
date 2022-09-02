@@ -104,7 +104,7 @@ export default class ImageResizeHandles extends Plugin {
 					},
 					getResizeHost() {
 						// Return the model image element parent to avoid setting an inline element (<a>/<span>) as a resize host.
-						return domConverter.viewToDom( mapper.toViewElement( imageModel.parent ) );
+						return domConverter.mapViewToDom( mapper.toViewElement( imageModel.parent ) );
 					},
 					// TODO consider other positions.
 					isCentered() {

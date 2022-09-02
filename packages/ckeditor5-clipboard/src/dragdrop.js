@@ -551,7 +551,7 @@ export default class DragDrop extends Plugin {
 					const domElement = this.toDomElement( domDocument );
 
 					// Using word joiner to make this marker as high as text and also making text not break on marker.
-					domElement.innerHTML = '&NoBreak;<span></span>&NoBreak;';
+					domElement.append( '\u2060', domDocument.createElement( 'span' ), '\u2060' );
 
 					return domElement;
 				} );

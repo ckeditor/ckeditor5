@@ -18,19 +18,18 @@ export default class FormView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		const t = locale.t;
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
-		this.abbrInputView = this._createInput( t( 'Add abbreviation' ) );
-		this.titleInputView = this._createInput( t( 'Add title' ) );
+		this.abbrInputView = this._createInput( 'Add abbreviation' );
+		this.titleInputView = this._createInput( 'Add title' );
 
-		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
+		this.saveButtonView = this._createButton( 'Save', icons.check, 'ck-button-save' );
 
 		// Submit type of the button will trigger the submit event on entire form when clicked (see submitHandler() in render() below).
 		this.saveButtonView.type = 'submit';
 
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel' );
+		this.cancelButtonView = this._createButton( 'Cancel', icons.cancel, 'ck-button-cancel' );
 
 		// Delegate ButtonView#execute to FormView#cancel
 		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
@@ -108,7 +107,7 @@ export default class FormView extends View {
 	}
 
 	_createButton( label, icon, className ) {
-		const button = new ButtonView( this.locale );
+		const button = new ButtonView();
 
 		button.set( {
 			label,

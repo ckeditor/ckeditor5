@@ -103,7 +103,9 @@ export default class IconView extends View {
 				this.viewBox = viewBox;
 			}
 
-			this.element.innerHTML = '';
+			while ( this.element.firstChild ) {
+				this.element.removeChild( this.element.firstChild );
+			}
 
 			while ( svg.childNodes.length > 0 ) {
 				this.element.appendChild( svg.childNodes[ 0 ] );

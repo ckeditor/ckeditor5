@@ -5,7 +5,7 @@ menu-title: Text part language
 
 # Text part language
 
-The {@link module:language/textpartlanguage~TextPartLanguage} feature provides the ability to mark the language of selected text fragments. It makes working with multilingual content convenient and ensures that user agents can correctly present the content written in multiple languages, so graphical browsers and screen readers are able to identify how to pronounce text and display characters.
+The text part language feature provides the ability to mark the language of selected text fragments. It makes working with multilingual content convenient and ensures that user agents can correctly present the content written in multiple languages, so graphical browsers and screen readers are able to identify how to pronounce text and display characters.
 
 This feature is especially useful when your content includes text sections written in different text directions, e.g. when the whole content is written in English but includes some citations in Arabic.
 
@@ -20,6 +20,10 @@ The text part language feature implements the [WCAG 3.1.2 Language of Parts](htt
 Use the language toolbar dropdown in the editor below to see the feature in action. Select a text fragment and use the toolbar dropdown to choose from predefined available languages that can be applied to the content.
 
 {@snippet features/textpartlanguage}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 

@@ -17,19 +17,22 @@ import WidgetToolbarRepository from '../src/widgettoolbarrepository';
 import { isWidget, toWidget } from '../src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'WidgetToolbarRepository', () => {
-	let editor, model, balloon, widgetToolbarRepository, editorElement;
+	let editor, model, balloon, widgetToolbarRepository, editorElement, addToolbarSpy;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
+
+		addToolbarSpy = sinon.spy( EditorUI.prototype, 'addToolbar' );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -76,6 +79,61 @@ describe( 'WidgetToolbarRepository', () => {
 
 			expect( widgetToolbarRepository._toolbarDefinitions.size ).to.equal( 1 );
 			expect( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ) ).to.be.an( 'object' );
+		} );
+
+		describe( 'Focus handling and navigation across toolbars using keyboard', () => {
+			it( 'should register the toolbar as focusable toolbar in EditorUI with proper configuration', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => null
+				} );
+
+				sinon.assert.calledWithExactly(
+					addToolbarSpy.lastCall,
+					widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view,
+					sinon.match( {
+						isContextual: true,
+						beforeFocus: sinon.match.func
+					} )
+				);
+			} );
+
+			it( 'should show the toolbar when Alt+F10 is pressed if there is an element to attach to', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => editor.editing.view.document.getRoot()
+				} );
+
+				addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+				expect( balloon.visibleView ).to.equal( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view );
+			} );
+
+			it( 'should not show the toolbar when Alt+F10 is pressed if not possible because there is no element to attach to', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => null
+				} );
+
+				addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+				expect( balloon.visibleView ).to.be.null;
+			} );
+
+			it( 'should provide the logic to hide the toolbar', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => editor.editing.view.document.getRoot()
+				} );
+
+				addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+				expect( balloon.visibleView ).to.equal( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view );
+
+				addToolbarSpy.lastCall.args[ 1 ].afterBlur();
+
+				expect( balloon.visibleView ).to.be.null;
+			} );
 		} );
 
 		it( 'should throw when adding two times widget with the same id', () => {
@@ -402,7 +460,7 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( balloon.visibleView ).to.equal( fakeChildWidgetToolbarView );
 
 			expect( updatePositionSpy.firstCall.args[ 0 ].position.target ).to.equal(
-				view.domConverter.viewToDom( fakeChildViewElement ) );
+				view.domConverter.mapViewToDom( fakeChildViewElement ) );
 		} );
 
 		it( 'should not update balloon position when toolbar is in not visible stack', () => {

@@ -7,7 +7,7 @@ menu-title: Automatic text transformation
 
 {@snippet features/build-text-transformation-source}
 
-The {@link module:typing/texttransformation~TextTransformation} feature brings support for implementing autocorrection options, i.e. automatically turning predefined snippets into their improved forms. Here are some examples that will be transformed in your WYSIWYG editor:
+The text transformation feature brings support for implementing autocorrection options, i.e. automatically turning predefined snippets into their improved forms or for autocorrect. Here are some examples that will be transformed in your WYSIWYG editor:
 
 <table style="width: unset">
 	<thead>
@@ -55,6 +55,10 @@ You may find additional interesting details and usage examples in the [Automatic
 Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the rich-text editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
 
 {@snippet features/text-transformation}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related productivity features
 
