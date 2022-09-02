@@ -60,3 +60,13 @@
 	left: var(--ck-table-column-resizer-position-offset);
 	right: unset;
 }
+
+.ck.ck-editor__editable .table[style*="float:right"] .ck-table-column-resizer {
+	right: inherit;
+	left: var(--ck-table-column-resizer-position-offset);
+}
+
+.ck.ck-editor__editable[dir="rtl"] .table[style*="float:left"] .ck-table-column-resizer {
+	right: var(--ck-table-column-resizer-position-offset);
+	left: inherit;
+}
