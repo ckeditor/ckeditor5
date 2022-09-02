@@ -1424,64 +1424,6 @@ describe( 'TableColumnResizeEditing', () => {
 						} );
 					} );
 				} );
-				// describe( 'where the table is aligned, correctly updates the resizer position', () => {
-				// 	it( 'allowing for dragging left table border, when the table is aligned right', () => {
-
-				// 	} );
-
-				// 	it( 'allowing for dragging left table border, when the table is aligned right', () => {
-				// 		const columnToResizeIndex = 0;
-				// 		const mouseMovementVector = { x: -10, y: 0 };
-				// 		const initialTableWidth = 500;
-
-				// 		editor.setData(
-				// 			`<figure class="table" style="float:right;width:500px;">
-				// 				<table>
-				// 					<tbody>
-				// 						<tr>
-				// 							<td>11</td>
-				// 							<td>12</td>
-				// 						</tr>
-				// 					</tbody>
-				// 				</table>
-				// 			</figure>`
-				// 		);
-
-				// 		tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
-				// 		const rightAlignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
-				// 		const tableWidthSum = rightAlignedTableColumnWidthsPx[ 0 ] + rightAlignedTableColumnWidthsPx[ 1 ];
-
-				// 		expect( tableWidthSum > initialTableWidth ).to.be.true;
-				// 	} );
-
-				// 	it( 'allowing for dragging right border, when the table is aligned left', () => {
-				// 		const columnToResizeIndex = 0;
-				// 		const mouseMovementVector = { x: 10, y: 0 };
-				// 		const initialTableWidth = 500;
-
-				// 		editor.locale.contentLanguageDirection = 'rtl';
-
-				// 		editor.setData(
-				// 			`<figure class="table" style="float:left;width:500px;">
-				// 				<table>
-				// 					<tbody>
-				// 						<tr>
-				// 							<td>11</td>
-				// 							<td>12</td>
-				// 						</tr>
-				// 					</tbody>
-				// 				</table>
-				// 			</figure>`
-				// 		);
-
-				// 		tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
-
-				// 		const rightAlignedTableColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
-				// 		const tableWidthSum = rightAlignedTableColumnWidthsPx[ 0 ] + rightAlignedTableColumnWidthsPx[ 1 ];
-
-				// 		expect( tableWidthSum > initialTableWidth ).to.be.true;
-				// 	} );
-				// } );
 			} );
 
 			describe( 'nested table ', () => {
