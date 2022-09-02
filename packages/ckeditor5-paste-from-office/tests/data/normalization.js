@@ -64,4 +64,11 @@ describe( 'PasteFromOffice - normalization', () => {
 		browsers,
 		editorConfig
 	} );
+
+	generateTests( {
+		input: 'google-docs-br-paragraphs',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
 } );

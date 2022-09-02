@@ -199,7 +199,7 @@ Support for responsive images in CKEditor 5 is brought by the {@link features/ck
 
 ## Typing around images
 
-To type before or after an image easily, select the image, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after. The image is no longer selected and whatever text you type will appear in the desired position.
+To type before or after an image easily, select the image, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after respectively. The image becomes no longer selected and whatever text you type will appear in the desired position.
 
 You can also use the **Insert paragraph** handles on the bottom or top edge of the selected image to add a paragraph below or above the image, respectively.
 

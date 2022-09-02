@@ -9,6 +9,7 @@
 
 import View from '../view';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { FocusTracker, type Locale } from '@ckeditor/ckeditor5-utils';
 import { getOptimalPosition, type PositioningFunction } from '@ckeditor/ckeditor5-utils/src/dom/position';
 
 import '../../theme/components/dropdown/dropdown.css';
@@ -18,7 +19,6 @@ import type { default as DropdownPanelView, PanelPosition } from './dropdownpane
 import type { FocusableView } from '../focuscycler';
 import type ListView from '../list/listview';
 import type ToolbarView from '../toolbar/toolbarview';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
@@ -74,6 +74,7 @@ import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin'
 export default class DropdownView extends View {
 	public readonly buttonView: DropdownButton & FocusableView;
 	public readonly panelView: DropdownPanelView;
+	public readonly focusTracker: FocusTracker;
 	public readonly keystrokes: KeystrokeHandler;
 	public listView?: ListView;
 	public toolbarView?: ToolbarView;
@@ -195,6 +196,14 @@ export default class DropdownView extends View {
 		 */
 		this.keystrokes = new KeystrokeHandler();
 
+		/**
+		 * Tracks information about the DOM focus in the dropdown.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
 		this.setTemplate( {
 			tag: 'div',
 
@@ -266,6 +275,9 @@ export default class DropdownView extends View {
 	public override render(): void {
 		super.render();
 
+		this.focusTracker.add( this.buttonView.element! );
+		this.focusTracker.add( this.panelView.element! );
+
 		// Toggle the dropdown when its button has been clicked.
 		this.listenTo<OpenEvent>( this.buttonView, 'open', () => {
 			this.isOpen = !this.isOpen;
@@ -276,11 +288,8 @@ export default class DropdownView extends View {
 
 		// Let the dropdown control the position of the panel. The position must
 		// be updated every time the dropdown is open.
-		this.on<ChangeEvent>( 'change:isOpen', () => {
-			if ( !this.isOpen ) {
-				// If the dropdown was closed, move the focus back to the button (#12125).
-				this.focus();
-
+		this.on<ChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
+			if ( !isOpen ) {
 				return;
 			}
 
@@ -296,9 +305,6 @@ export default class DropdownView extends View {
 			} else {
 				this.panelView.position = this.panelPosition;
 			}
-
-			// Focus the first item in the dropdown when the dropdown opened
-			this.panelView.focus();
 		} );
 
 		// Listen for keystrokes coming from within #element.

@@ -10,6 +10,7 @@ import ButtonView from '../../src/button/buttonview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 describe( 'DropdownView', () => {
 	let view, buttonView, panelView, locale;
@@ -75,6 +76,10 @@ describe( 'DropdownView', () => {
 			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
+		it( 'creates #focusTracker instance', () => {
+			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+		} );
+
 		it( 'creates #element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-dropdown' ) ).to.be.true;
@@ -101,26 +106,6 @@ describe( 'DropdownView', () => {
 					view.buttonView.fire( 'open' );
 
 					expect( values ).to.have.members( [ true, false, true ] );
-				} );
-			} );
-
-			describe( 'view#isOpen to view.panelView#focus', () => {
-				it( 'gets called upon opening', () => {
-					const spy = sinon.spy( view.panelView, 'focus' );
-
-					view.isOpen = true;
-
-					expect( spy.callCount ).to.equal( 1 );
-				} );
-
-				it( 'does not get called upon closing', () => {
-					view.isOpen = true;
-
-					const spy = sinon.spy( view.panelView, 'focus' );
-
-					view.isOpen = false;
-
-					expect( spy.callCount ).to.equal( 0 );
 				} );
 			} );
 
@@ -229,6 +214,22 @@ describe( 'DropdownView', () => {
 	} );
 
 	describe( 'render()', () => {
+		it( 'registers child views in #focusTracker', () => {
+			const view = new DropdownView( locale,
+				new ButtonView( locale ),
+				new DropdownPanelView( locale ) );
+
+			const addSpy = sinon.spy( view.focusTracker, 'add' );
+
+			view.render();
+
+			sinon.assert.calledTwice( addSpy );
+			sinon.assert.calledWithExactly( addSpy.firstCall, view.buttonView.element );
+			sinon.assert.calledWithExactly( addSpy.secondCall, view.panelView.element );
+
+			view.destroy();
+		} );
+
 		it( 'starts listening for #keystrokes coming from #element', () => {
 			const view = new DropdownView( locale,
 				new ButtonView( locale ),
@@ -321,7 +322,7 @@ describe( 'DropdownView', () => {
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				sinon.assert.notCalled( spy );
 				expect( view.isOpen ).to.be.false;
 			} );
 
@@ -344,7 +345,7 @@ describe( 'DropdownView', () => {
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				sinon.assert.notCalled( spy );
 				expect( view.isOpen ).to.be.false;
 			} );
 		} );

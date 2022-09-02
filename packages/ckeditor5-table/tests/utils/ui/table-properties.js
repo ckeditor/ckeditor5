@@ -461,11 +461,11 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should set ColorInputView#id', () => {
-				expect( labeledField.fieldView.id ).to.match( /^ck-labeled-field-view-.+/ );
+				expect( labeledField.fieldView.inputView.id ).to.match( /^ck-labeled-field-view-.+/ );
 			} );
 
 			it( 'should set ColorInputView#ariaDescribedById', () => {
-				expect( labeledField.fieldView.ariaDescribedById ).to.match( /^ck-labeled-field-view-status-.+/ );
+				expect( labeledField.fieldView.inputView.ariaDescribedById ).to.match( /^ck-labeled-field-view-status-.+/ );
 			} );
 
 			it( 'should bind ColorInputView#isReadOnly to LabeledFieldView#isEnabled', () => {

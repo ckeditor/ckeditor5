@@ -14,6 +14,7 @@ const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' 
 
 const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
 const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
+const { CI } = process.env;
 
 if ( ROOT_DIRECTORY !== process.cwd() ) {
 	throw new Error( 'This script should be called from the package root directory.' );
@@ -162,6 +163,12 @@ if ( !IS_DEVELOPMENT_MODE ) {
 			extractComments: false
 		} )
 	];
+}
+
+if ( CI ) {
+	webpackConfig.cache = {
+		type: 'filesystem'
+	};
 }
 
 module.exports = webpackConfig;

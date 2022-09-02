@@ -10,7 +10,7 @@ meta-description: Learn how to maintain and keep you CKEditor 5 up-to-date at al
 CKEditor 5 is an active, rapidly developing software project. It is, therefore, important to keep in touch with all the new features and APIs, changes and bug fixes that are periodically released. As in the case of every software project, it is always wise and highly advised to keep your copy of CKEditor 5 and all plugins up-to-date to maintain the highest level of security and stability. Updating is an important process that should become your routine. Our team constantly introduces new features, bug fixes and improvements, so keeping the editor up-to-date is a way to make sure that you get the best out of CKEditor 5.
 
 <info-box>
-  This guide covers the topic of keeping your CKEditor 5 copy up-to-date. If you would like to upgrade form CKEditor 4 to CKEditor 5, please see the {@link installation/getting-started/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
+  This guide covers the topic of keeping your CKEditor 5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor 5, please see the {@link installation/getting-started/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
 </info-box>
 
 ## Daily maintenance
@@ -151,7 +151,7 @@ That's it! Your editor is updated and now you can focus on adjusting your custom
 
 While using real-time collaboration it is important to remember about preparing existing documents for the updated editor. Basically, it is not possible to join the document that was created with a CKEditor 5 version different than the one used by the client. For example, imagine a situation when the document has been initialized with the editor version 30.0.0 and after the update, a user connects to this document with the editor version 31.0.0. In such a case, an error about incompatible engine version will be thrown.
 
-A collaboration session will be removed 24 hours after the last user disconnects. You can also manually [flush](https://help.cke-cs.com/api/v4/docs#tag/Collaboration/paths/~1collaborations~1{document_id}/delete) the existing collaboration sessions using the {@link @cs guides/apis/overview Cloud Services REST API}. After the collaboration session removal, users will be able to connect to the documents using a new editor.
+A collaboration session will be removed 24 hours after the last user disconnects. You can also manually [flush](https://help.cke-cs.com/api/v4/docs#tag/Collaboration/paths/~1collaborations~1{document_id}/delete) any existing collaboration sessions using the {@link @cs guides/apis/overview Cloud Services REST API}. After the collaboration session removal, users will be able to connect to the documents using a new editor.
 
 <info-box>
 	If you are using Collaboration Server On-premises, it is recommended to keep it updated at all times, just like CKEditor 5. Our collaboration features are strongly linked with Cloud Services, so it is important to keep compatibility between On-premises and CKEditor 5.

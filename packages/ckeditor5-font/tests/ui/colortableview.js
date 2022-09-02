@@ -498,14 +498,14 @@ describe( 'ColorTableView', () => {
 					model = editor.model;
 
 					dropdown = editor.ui.componentFactory.create( 'testColor' );
+					dropdown.render();
+					global.document.body.appendChild( dropdown.element );
+
 					dropdown.isOpen = true;
 					dropdown.isOpen = false;
-					dropdown.render();
 
 					staticColorsGrid = dropdown.colorTableView.staticColorsGrid;
 					documentColorsGrid = dropdown.colorTableView.documentColorsGrid;
-
-					global.document.body.appendChild( dropdown.element );
 				} );
 		} );
 

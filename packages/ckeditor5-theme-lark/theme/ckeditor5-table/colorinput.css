@@ -17,6 +17,12 @@
 			border-top-left-radius: 0;
 			border-bottom-left-radius: 0;
 		}
+
+		/* Make sure the focused input is always on top of the dropdown button so its
+		   outline and border are never cropped (also when the input is read-only). */
+		&:focus {
+			z-index: 0;
+		}
 	}
 
 	& > .ck.ck-dropdown {
@@ -24,15 +30,21 @@
 			padding: 0;
 
 			@mixin ck-dir ltr {
-				border-left-width: 0;
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
+
+				&:not(:focus) {
+					border-left: 1px solid transparent;
+				}
 			}
 
 			@mixin ck-dir rtl {
-				border-right-width: 0;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
+
+				&:not(:focus) {
+					border-right: 1px solid transparent;
+				}
 			}
 
 			&.ck-disabled {
@@ -62,11 +74,14 @@
 
 	& .ck.ck-input-color__remove-color {
 		width: 100%;
-		border-bottom: 1px solid var(--ck-color-input-border);
 		padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
 
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
+
+		&:not(:focus) {
+			border-bottom: 1px solid var(--ck-color-input-border);
+		}
 
 		@mixin ck-dir ltr {
 			border-top-right-radius: 0;
