@@ -479,6 +479,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			},
 			elements: {
 				viewFigure,
+				modelTable,
 				viewLeftColumn,
 				viewRightColumn
 			},
@@ -499,7 +500,12 @@ export default class TableColumnResizeEditing extends Plugin {
 		// The multiplier is needed for calculating the proper movement offset:
 		// - it should negate the sign if content language direction is right-to-left,
 		// - it should double the offset if the table edge is resized and table is centered.
-		const multiplier = ( isLtrContent ? 1 : -1 ) * ( isRightEdge && isTableCentered ? 2 : 1 );
+		let multiplier = ( isLtrContent ? 1 : -1 ) * ( isRightEdge && isTableCentered ? 2 : 1 );
+
+		if ( ( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) ||
+			modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) {
+			multiplier *= -1;
+		}
 
 		const dx = clamp(
 			( mouseEventData.clientX - columnPosition ) * multiplier,
@@ -643,23 +649,39 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelTable = modelLeftCell.findAncestor( 'table' );
 
 		const leftColumnIndex = getColumnEdgesIndexes( modelLeftCell, this._tableUtilsPlugin ).rightEdge;
-		const lastColumnIndex = this._tableUtilsPlugin.getColumns( modelTable ) - 1;
+		let lastColumnIndex = this._tableUtilsPlugin.getColumns( modelTable ) - 1;
 
-		const isRightEdge = leftColumnIndex === lastColumnIndex;
 		const isTableCentered = !modelTable.hasAttribute( 'tableAlignment' );
 		const isLtrContent = editor.locale.contentLanguageDirection !== 'rtl';
+
+		if ( !isTableCentered ) {
+			if ( ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) ||
+				( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) ) {
+				lastColumnIndex = 0;
+			}
+		}
+
+		const isRightEdge = leftColumnIndex === lastColumnIndex;
 
 		const viewTable = viewLeftCell.findAncestor( 'table' );
 		const viewFigure = viewTable.findAncestor( 'figure' );
 		const viewColgroup = [ ...viewTable.getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) );
 		const viewLeftColumn = viewColgroup.getChild( leftColumnIndex );
-		const viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex + 1 );
+		let viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex + 1 );
 
 		const viewFigureParentWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure.parent ) );
 		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure ) );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
 		const leftColumnWidth = columnWidths[ leftColumnIndex ];
-		const rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex + 1 ];
+		let rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex + 1 ];
+
+		if ( !isTableCentered ) {
+			if ( ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) ||
+				( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) ) {
+				viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex - 1 );
+				rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex - 1 ];
+			}
+		}
 
 		return {
 			columnPosition,
