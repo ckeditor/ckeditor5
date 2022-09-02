@@ -473,7 +473,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const {
 			columnPosition,
 			flags: {
-				isRightEdge,
+				isDraggableEdge,
 				isTableCentered,
 				isLtrContent
 			},
@@ -493,15 +493,17 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		const dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
 
-		const dxUpperBound = isRightEdge ?
+		const dxUpperBound = isDraggableEdge ?
 			viewFigureParentWidth - tableWidth :
 			rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
 
 		// The multiplier is needed for calculating the proper movement offset:
 		// - it should negate the sign if content language direction is right-to-left,
 		// - it should double the offset if the table edge is resized and table is centered.
-		let multiplier = ( isLtrContent ? 1 : -1 ) * ( isRightEdge && isTableCentered ? 2 : 1 );
+		let multiplier = ( isLtrContent ? 1 : -1 ) * ( isDraggableEdge && isTableCentered ? 2 : 1 );
 
+		// Because we're updating the resizers position on tableAlignment we have to update multiplier
+		// so it can continue to work the expected way. See #11785.
 		if ( ( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) ||
 			modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) {
 			multiplier *= -1;
@@ -522,7 +524,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 			writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
 
-			if ( isRightEdge ) {
+			if ( isDraggableEdge ) {
 				const tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / viewFigureParentWidth );
 
 				writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
@@ -654,39 +656,38 @@ export default class TableColumnResizeEditing extends Plugin {
 		const isTableCentered = !modelTable.hasAttribute( 'tableAlignment' );
 		const isLtrContent = editor.locale.contentLanguageDirection !== 'rtl';
 
-		if ( !isTableCentered ) {
-			if ( ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) ||
-				( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) ) {
-				lastColumnIndex = 0;
-			}
+		// We're enforcing the change of the resizers position using CSS, so the lastColumnIndex
+		// needs to be updated too. See #11785.
+		if ( ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) ||
+			( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) ) {
+			lastColumnIndex = 0;
 		}
 
-		const isRightEdge = leftColumnIndex === lastColumnIndex;
+		const isDraggableEdge = leftColumnIndex === lastColumnIndex;
 
 		const viewTable = viewLeftCell.findAncestor( 'table' );
 		const viewFigure = viewTable.findAncestor( 'figure' );
 		const viewColgroup = [ ...viewTable.getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) );
 		const viewLeftColumn = viewColgroup.getChild( leftColumnIndex );
-		let viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex + 1 );
+		let viewRightColumn = isDraggableEdge ? undefined : viewColgroup.getChild( leftColumnIndex + 1 );
 
 		const viewFigureParentWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure.parent ) );
 		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure ) );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
 		const leftColumnWidth = columnWidths[ leftColumnIndex ];
-		let rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex + 1 ];
+		let rightColumnWidth = isDraggableEdge ? undefined : columnWidths[ leftColumnIndex + 1 ];
 
-		if ( !isTableCentered ) {
-			if ( ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) ||
-				( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) ) {
-				viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex - 1 );
-				rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex - 1 ];
-			}
+		// The data needs to be updated on right/left table alignment. See #11785.
+		if ( ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) ||
+			( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) ) {
+			viewRightColumn = isDraggableEdge ? undefined : viewColgroup.getChild( leftColumnIndex - 1 );
+			rightColumnWidth = isDraggableEdge ? undefined : columnWidths[ leftColumnIndex - 1 ];
 		}
 
 		return {
 			columnPosition,
 			flags: {
-				isRightEdge,
+				isDraggableEdge,
 				isTableCentered,
 				isLtrContent
 			},
