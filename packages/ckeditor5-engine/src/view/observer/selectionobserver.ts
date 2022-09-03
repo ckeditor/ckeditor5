@@ -142,6 +142,10 @@ export default class SelectionObserver extends Observer {
 		};
 
 		const endDocumentIsSelecting = () => {
+			if ( !this.document.isSelecting ) {
+				return;
+			}
+
 			// Make sure that model selection is up-to-date at the end of selecting process.
 			// Sometimes `selectionchange` events could arrive after the `mouseup` event and that selection could be already outdated.
 			this._handleSelectionChange( null, domDocument );
