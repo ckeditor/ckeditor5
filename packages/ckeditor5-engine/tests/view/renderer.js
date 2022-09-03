@@ -4338,31 +4338,9 @@ describe( 'Renderer', () => {
 				expect( renderer.isSelecting ).to.be.false;
 
 				renderer.isSelecting = true;
-				renderer._pendingSelectionUpdate = true;
 				renderer.isSelecting = false;
 
 				sinon.assert.calledOnce( renderSpy );
-
-				expect( renderer._pendingSelectionUpdate ).to.be.false;
-			} );
-
-			it( 'should not call #render() as soon as the user stops selecting in the document in Blink (no pending change)', () => {
-				testUtils.sinon.stub( env, 'isBlink' ).get( () => true );
-
-				viewDocument = new ViewDocument( new StylesProcessor() );
-				selection = new DocumentSelection();
-				domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
-				renderer = new Renderer( domConverter, selection );
-				renderer.domDocuments.add( document );
-
-				const renderSpy = sinon.spy( renderer, 'render' );
-
-				expect( renderer.isSelecting ).to.be.false;
-
-				renderer.isSelecting = true;
-				renderer.isSelecting = false;
-
-				sinon.assert.notCalled( renderSpy );
 			} );
 
 			it( 'should not call #render() as soon as the user stops selecting in Blink on Android', () => {
@@ -5058,23 +5036,6 @@ describe( 'Renderer', () => {
 					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
 					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
 					expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
-					expect( renderer._pendingSelectionUpdate ).to.be.true;
-
-					// Last step: check if it renders after isSelecting = false
-					// https://github.com/ckeditor/ckeditor5/issues/12219
-
-					const renderSpy = sinon.spy( renderer, 'render' );
-
-					renderer.isSelecting = false;
-
-					expect( renderSpy.calledOnce ).to.be.true;
-
-					// <p><b>fo{o}</b></p>
-					expect( domSelection.rangeCount ).to.equal( 1 );
-					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
-					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
-					expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
-					expect( renderer._pendingSelectionUpdate ).to.be.false;
 				} );
 
 				it( 'should update despite the selection being made if there were some children marked to render', () => {
@@ -5124,7 +5085,6 @@ describe( 'Renderer', () => {
 					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
 					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
 					expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
-					expect( renderer._pendingSelectionUpdate ).to.be.false;
 				} );
 			} );
 
@@ -5176,7 +5136,6 @@ describe( 'Renderer', () => {
 				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
 				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
 				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
-				expect( renderer._pendingSelectionUpdate ).to.be.false;
 			} );
 
 			it( 'should update despite the selection being made in browsers other than Blink', () => {
@@ -5226,7 +5185,6 @@ describe( 'Renderer', () => {
 				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
 				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
 				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
-				expect( renderer._pendingSelectionUpdate ).to.be.false;
 			} );
 		} );
 	} );
