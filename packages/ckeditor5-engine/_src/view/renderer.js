@@ -124,7 +124,7 @@ export default class Renderer {
 		// When the user stops selecting, all pending changes should be rendered ASAP, though.
 		if ( env.isBlink && !env.isAndroid ) {
 			this.on( 'change:isSelecting', () => {
-				if ( !this.isSelecting && this._pendingSelectionUpdate ) {
+				if ( !this.isSelecting ) {
 					this.render();
 				}
 			} );
@@ -145,14 +145,6 @@ export default class Renderer {
 		 * @type {null|HTMLElement}
 		 */
 		this._fakeSelectionContainer = null;
-
-		/**
-		 * Whether there is some selection change pending to get rendered after isSelecting is done.
-		 *
-		 * @private
-		 * @type {Boolean}
-		 */
-		this._pendingSelectionUpdate = false;
 	}
 
 	/**
@@ -751,12 +743,8 @@ export default class Renderer {
 		// to, may disappear in DOM which would break the selection (e.g. in real-time collaboration scenarios).
 		// https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723
 		if ( env.isBlink && !env.isAndroid && this.isSelecting && !this.markedChildren.size ) {
-			this._pendingSelectionUpdate = true;
-
 			return;
 		}
-
-		this._pendingSelectionUpdate = false;
 
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
