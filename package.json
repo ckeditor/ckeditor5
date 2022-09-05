@@ -96,6 +96,7 @@
     "@ckeditor/ckeditor5-track-changes": ">=28.0.0",
     "@webspellchecker/wproofreader-ckeditor5": "^2.0.1",
     "@wiris/mathtype-ckeditor5": "^7.24.0",
+    "assert": "^2.0.0",
     "babel-standalone": "^6.26.0",
     "chalk": "^4.1.0",
     "cli-table": "^0.3.1",
