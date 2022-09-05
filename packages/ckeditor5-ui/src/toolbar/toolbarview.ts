@@ -20,7 +20,7 @@ import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import normalizeToolbarConfig, { type ToolbarConfig } from './normalizetoolbarconfig';
+import normalizeToolbarConfig from './normalizetoolbarconfig';
 import threeVerticalDots from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
 
 import '../../theme/components/toolbar/toolbar.css';
