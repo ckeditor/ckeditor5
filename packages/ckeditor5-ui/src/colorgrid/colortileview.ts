@@ -8,11 +8,9 @@
  */
 
 import ButtonView from '../button/buttonview';
+import checkIcon from '../../theme/icons/color-tile-check.svg';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const checkIcon = require( '../../theme/icons/color-tile-check.svg' ).default as string;
 
 /**
  * This class represents a single color tile in the {@link module:ui/colorgrid/colorgrid~ColorGridView}.

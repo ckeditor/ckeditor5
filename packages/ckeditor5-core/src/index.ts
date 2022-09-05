@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 /**
  * @module core
  */
@@ -27,39 +25,39 @@ export { default as secureSourceElement } from './editor/utils/securesourceeleme
 
 export { default as PendingActions } from './pendingactions';
 
-const cancel = require( './../theme/icons/cancel.svg' ).default as string;
-const caption = require( './../theme/icons/caption.svg' ).default as string;
-const check = require( './../theme/icons/check.svg' ).default as string;
-const cog = require( './../theme/icons/cog.svg' ).default as string;
-const eraser = require( './../theme/icons/eraser.svg' ).default as string;
-const lowVision = require( './../theme/icons/low-vision.svg' ).default as string;
-const image = require( './../theme/icons/image.svg' ).default as string;
+import cancel from './../theme/icons/cancel.svg';
+import caption from './../theme/icons/caption.svg';
+import check from './../theme/icons/check.svg';
+import cog from './../theme/icons/cog.svg';
+import eraser from './../theme/icons/eraser.svg';
+import lowVision from './../theme/icons/low-vision.svg';
+import image from './../theme/icons/image.svg';
 
-const alignBottom = require( './../theme/icons/align-bottom.svg' ).default as string;
-const alignMiddle = require( './../theme/icons/align-middle.svg' ).default as string;
-const alignTop = require( './../theme/icons/align-top.svg' ).default as string;
-const alignLeft = require( './../theme/icons/align-left.svg' ).default as string;
-const alignCenter = require( './../theme/icons/align-center.svg' ).default as string;
-const alignRight = require( './../theme/icons/align-right.svg' ).default as string;
-const alignJustify = require( './../theme/icons/align-justify.svg' ).default as string;
+import alignBottom from './../theme/icons/align-bottom.svg';
+import alignMiddle from './../theme/icons/align-middle.svg';
+import alignTop from './../theme/icons/align-top.svg';
+import alignLeft from './../theme/icons/align-left.svg';
+import alignCenter from './../theme/icons/align-center.svg';
+import alignRight from './../theme/icons/align-right.svg';
+import alignJustify from './../theme/icons/align-justify.svg';
 
-const objectBlockLeft = require( './../theme/icons/object-left.svg' ).default as string;
-const objectCenter = require( './../theme/icons/object-center.svg' ).default as string;
-const objectBlockRight = require( './../theme/icons/object-right.svg' ).default as string;
-const objectFullWidth = require( './../theme/icons/object-full-width.svg' ).default as string;
-const objectInline = require( './../theme/icons/object-inline.svg' ).default as string;
-const objectLeft = require( './../theme/icons/object-inline-left.svg' ).default as string;
-const objectRight = require( './../theme/icons/object-inline-right.svg' ).default as string;
+import objectBlockLeft from './../theme/icons/object-left.svg';
+import objectCenter from './../theme/icons/object-center.svg';
+import objectBlockRight from './../theme/icons/object-right.svg';
+import objectFullWidth from './../theme/icons/object-full-width.svg';
+import objectInline from './../theme/icons/object-inline.svg';
+import objectLeft from './../theme/icons/object-inline-left.svg';
+import objectRight from './../theme/icons/object-inline-right.svg';
 
-const objectSizeFull = require( './../theme/icons/object-size-full.svg' ).default as string;
-const objectSizeLarge = require( './../theme/icons/object-size-large.svg' ).default as string;
-const objectSizeSmall = require( './../theme/icons/object-size-small.svg' ).default as string;
-const objectSizeMedium = require( './../theme/icons/object-size-medium.svg' ).default as string;
+import objectSizeFull from './../theme/icons/object-size-full.svg';
+import objectSizeLarge from './../theme/icons/object-size-large.svg';
+import objectSizeSmall from './../theme/icons/object-size-small.svg';
+import objectSizeMedium from './../theme/icons/object-size-medium.svg';
 
-const pencil = require( './../theme/icons/pencil.svg' ).default as string;
-const pilcrow = require( './../theme/icons/pilcrow.svg' ).default as string;
-const quote = require( './../theme/icons/quote.svg' ).default as string;
-const threeVerticalDots = require( './../theme/icons/three-vertical-dots.svg' ).default as string;
+import pencil from './../theme/icons/pencil.svg';
+import pilcrow from './../theme/icons/pilcrow.svg';
+import quote from './../theme/icons/quote.svg';
+import threeVerticalDots from './../theme/icons/three-vertical-dots.svg';
 
 export const icons = {
 	cancel,

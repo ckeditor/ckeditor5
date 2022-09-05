@@ -9,12 +9,10 @@
 
 import ButtonView from '../../button/buttonview';
 
+import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 import IconView from '../../icon/iconview';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const dropdownArrowIcon = require( '../../../theme/icons/dropdown-arrow.svg' ).default as string;
 
 /**
  * The default dropdown button view class.

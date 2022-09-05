@@ -13,15 +13,14 @@ import ButtonView from '../../button/buttonview';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
+import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
+
 import '../../../theme/components/dropdown/splitbutton.css';
 
 import type ViewCollection from '../../viewcollection';
 import type Button from '../../button/button';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type DropdownButton from './dropdownbutton';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const dropdownArrowIcon = require( '../../../theme/icons/dropdown-arrow.svg' ).default as string;
 
 /**
  * The split button view class.
