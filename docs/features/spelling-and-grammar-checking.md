@@ -16,7 +16,7 @@ After reading this guide, you may find additional interesting details and exampl
 <info-box>
 	This is a premium feature available for the [Flexible plan](https://ckeditor.com/pricing/) and delivered by our partner, [WebSpellChecker](https://webspellchecker.com/). Please [contact us](https://ckeditor.com/contact/) if you would like to purchase a license or let us know if you have any feedback or questions.
 
-	You can also report any issues in the official [CKEditor 5 GitHub repository](https://github.com/WebSpellChecker/wproofreader).
+	You can also report any issues in [its official GitHub repository](https://github.com/WebSpellChecker/wproofreader).
 </info-box>
 
 <info-box info>
