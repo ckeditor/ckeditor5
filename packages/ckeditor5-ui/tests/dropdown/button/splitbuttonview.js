@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals KeyboardEvent */
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '../../../src/button/buttonview';
@@ -94,6 +96,26 @@ describe( 'SplitButtonView', () => {
 			view.label = 'foo';
 
 			expect( view.arrowView.label ).to.equal( 'foo' );
+		} );
+
+		it( 'opens the dropdown on arrowdown on the view', () => {
+			const spy = sinon.spy();
+
+			view.on( 'open', spy );
+
+			view.element.dispatchEvent( new KeyboardEvent( 'keydown', { 'keyCode': keyCodes.arrowdown } ) );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'does not open the dropdown on other arrow keys (e.g. arrowup) on the view', () => {
+			const spy = sinon.spy();
+
+			view.on( 'open', spy );
+
+			view.element.dispatchEvent( new KeyboardEvent( 'keydown', { 'keyCode': keyCodes.arrowup } ) );
+
+			sinon.assert.notCalled( spy );
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
