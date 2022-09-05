@@ -110,6 +110,16 @@ describe( 'ImageTextAlternativeUI', () => {
 
 			sinon.assert.callOrder( disableCssTransitionsSpy, addSpy, selectSpy, enableCssTransitionsSpy );
 		} );
+
+		it( 'has isOn bound to command\'s value', () => {
+			const button = editor.ui.componentFactory.create( 'imageTextAlternative' );
+
+			command.value = '';
+			expect( button ).to.have.property( 'isOn', false );
+
+			command.value = 'alternative text';
+			expect( button ).to.have.property( 'isOn', true );
+		} );
 	} );
 
 	describe( 'balloon panel form', () => {
