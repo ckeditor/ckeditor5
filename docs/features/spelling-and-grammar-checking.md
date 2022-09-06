@@ -14,7 +14,9 @@ You can fine-tune the spell checking rules via the dedicated settings menu. You 
 After reading this guide, you may find additional interesting details and examples in the [Spell and grammar check in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-spell-and-grammar-check-in-ckeditor-5/) blog post.
 
 <info-box>
-	The spell checker for CKEditor 5 is a commercial solution provided by our partner, [WebSpellChecker](https://webspellchecker.com/). You can report any issues in its [GitHub repository](https://github.com/WebSpellChecker/wproofreader). The license can be purchased [here](https://ckeditor.com/contact/).
+	This is a premium feature available for the [Flexible plan](https://ckeditor.com/pricing/) and delivered by our partner, [WebSpellChecker](https://webspellchecker.com/). Please [contact us](https://ckeditor.com/contact/) if you would like to purchase a license or let us know if you have any feedback or questions.
+
+	You can also report any issues in [its official GitHub repository](https://github.com/WebSpellChecker/wproofreader).
 </info-box>
 
 <info-box info>
@@ -72,6 +74,10 @@ The feature's UI is designed and oriented toward the comfort and ease of use. Th
 The feature is compliant with WCAG 2.1 and Section 508 accessibility standards.
 
 ## Installation
+
+<info-box>
+	This is a premium feature that requires a commercial license. If you do not have one yet, please [contact us](https://ckeditor.com/contact/).
+</info-box>
 
 WProofreader is delivered as a CKEditor 5 plugin, so it can be combined into an editor build just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
