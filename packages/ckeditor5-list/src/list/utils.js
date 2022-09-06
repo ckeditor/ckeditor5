@@ -297,7 +297,7 @@ export function getSiblingNodes( position, direction ) {
 	const items = [];
 	const listItem = position.parent;
 	const walkerOptions = {
-		ignoreElementEnd: true,
+		ignoreElementEnd: false,
 		startPosition: position,
 		shallow: true,
 		direction
@@ -395,7 +395,6 @@ export function getSelectedListItems( model ) {
 		.filter( element => element.is( 'element', 'listItem' ) )
 		.map( element => {
 			const position = model.change( writer => writer.createPositionAt( element, 0 ) );
-
 			return [
 				...getSiblingNodes( position, 'backward' ),
 				...getSiblingNodes( position, 'forward' )
