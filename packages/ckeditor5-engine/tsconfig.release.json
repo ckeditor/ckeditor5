@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.release.json",
   "include": [
-    "./src"
+    "./src/",
   ],
   "exclude": [
     "./tests/"

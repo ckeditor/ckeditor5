@@ -3,5 +3,8 @@
   "compilerOptions": {
     "sourceMap": false,
     "declaration": false
-  }
+  },
+  "include": [
+    "./typings/"
+  ]
 }
