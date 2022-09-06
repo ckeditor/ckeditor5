@@ -289,6 +289,8 @@ export function findNestedList( viewElement ) {
  *
  * It means that values of `listIndent`, `listType`, `listStyle`, `listReversed` and `listStart` for all items are equal.
  *
+ * Additionally, if the `position` is inside a list item that list item will be returned as well.
+ *
  * @param {module:engine/model/position~Position} position Starting position.
  * @param {'forward'|'backward'} direction Walking direction.
  * @returns {Array.<module:engine/model/element~Element>}
@@ -395,6 +397,7 @@ export function getSelectedListItems( model ) {
 		.filter( element => element.is( 'element', 'listItem' ) )
 		.map( element => {
 			const position = model.change( writer => writer.createPositionAt( element, 0 ) );
+
 			return [
 				...getSiblingNodes( position, 'backward' ),
 				...getSiblingNodes( position, 'forward' )

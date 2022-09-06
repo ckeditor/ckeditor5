@@ -308,6 +308,7 @@ describe( 'utils', () => {
 				'<listItem listType="bulleted" listIndent="0">3.</listItem>' +
 				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
 			);
+
 			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
 				document.getRoot().getChild( 2 ),
 				document.getRoot().getChild( 3 ),
@@ -455,13 +456,32 @@ describe( 'utils', () => {
 			] );
 		} );
 
-		it( 'should return only list items from block quoted list when selection is inside (direction="forward")', () => {
+		it( 'should return only list items that are inside the same parent element (direction="backward")', () => {
 			setData( model,
 				'<listItem listStart="0" listType="numbered" listIndent="0">0.</listItem>' +
 				'<listItem listStart="0" listType="numbered" listIndent="0">1.</listItem>' +
 				'<blockQuote>' +
-					'<listItem listStart="0" listType="numbered" listIndent="0">[]2.</listItem>' +
-					'<listItem listStart="0" listType="numbered" listIndent="0">3.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">[]2.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">3.</listItem>' +
+				'</blockQuote>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">4.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">5.</listItem>'
+			);
+
+			const blockQuoteElement = document.getRoot().getChild( 2 );
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+				blockQuoteElement.getChild( 0 )
+			] );
+		} );
+
+		it( 'should return only list items that are inside the same parent element (direction="forward")', () => {
+			setData( model,
+				'<listItem listStart="0" listType="numbered" listIndent="0">0.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">1.</listItem>' +
+				'<blockQuote>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">[]2.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">3.</listItem>' +
 				'</blockQuote>' +
 				'<listItem listStart="0" listType="numbered" listIndent="0">4.</listItem>' +
 				'<listItem listStart="0" listType="numbered" listIndent="0">5.</listItem>'
