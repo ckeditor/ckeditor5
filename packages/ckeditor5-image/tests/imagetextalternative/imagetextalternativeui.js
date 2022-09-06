@@ -112,8 +112,6 @@ describe( 'ImageTextAlternativeUI', () => {
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
-			const button = editor.ui.componentFactory.create( 'imageTextAlternative' );
-
 			command.value = '';
 			expect( button ).to.have.property( 'isOn', false );
 
