@@ -1,9 +1,5 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "sourceMap": false,
-    "declaration": false
-  },
+  "extends": "../../tsconfig.release.json",
   "include": [
     "./src"
   ],
