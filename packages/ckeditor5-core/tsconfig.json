@@ -13,6 +13,6 @@
     "moduleResolution": "node"
   },
   "include": [
-    "./typings"
+    "../../typings/"
   ]
 }
