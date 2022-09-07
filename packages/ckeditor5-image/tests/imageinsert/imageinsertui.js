@@ -323,7 +323,7 @@ describe( 'ImageInsertUI', () => {
 				dropdown.on( 'change:isOpen', () => {
 					const imageInsertPanelView = dropdown.panelView.children.first;
 					spy = sinon.spy( imageInsertPanelView, 'focus' );
-				}, { priority: 'highest' } );
+				} );
 
 				dropdown.buttonView.fire( 'open' );
 				sinon.assert.calledOnce( spy );
@@ -357,7 +357,7 @@ describe( 'ImageInsertUI', () => {
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-			dropdown.buttonView.fire( 'open' );
+			dropdown.isOpen = true;
 
 			expect( dropdown.panelView.children.first._integrations.length ).to.equal( 2 );
 			expect( dropdown.panelView.children.first._integrations.first ).to.be.instanceOf( LabeledFieldView );
@@ -621,7 +621,7 @@ describe( 'ImageInsertUI', () => {
 				dropdown.on( 'change:isOpen', () => {
 					const imageInsertPanelView = dropdown.panelView.children.first;
 					spy = sinon.spy( imageInsertPanelView, 'focus' );
-				}, { priority: 'highest' } );
+				} );
 
 				dropdown.buttonView.fire( 'open' );
 				sinon.assert.calledOnce( spy );
