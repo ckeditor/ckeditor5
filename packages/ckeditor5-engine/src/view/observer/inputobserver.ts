@@ -99,13 +99,20 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// @if CK_DEBUG_TYPING // }
 		}
 
-		this.fire( domEvent.type, domEvent, {
-			data,
-			dataTransfer,
-			isComposing: domEvent.isComposing,
-			targetRanges,
-			inputType: domEvent.inputType
-		} );
+		if ( env.isAndroid && domEvent.inputType == 'insertCompositionText' && data && data.endsWith( '\n' ) ) {
+			this.fire( domEvent.type, domEvent, {
+				inputType: 'insertParagraph',
+				targetRanges: [ view.createRange( targetRanges[ 0 ].end ) ]
+			} );
+		} else {
+			this.fire( domEvent.type, domEvent, {
+				data,
+				dataTransfer,
+				isComposing: domEvent.isComposing,
+				targetRanges,
+				inputType: domEvent.inputType
+			} );
+		}
 
 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
