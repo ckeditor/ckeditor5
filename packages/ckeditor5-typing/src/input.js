@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import InsertTextCommand from './inserttextcommand';
 import InsertTextObserver from './inserttextobserver';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -54,23 +55,27 @@ export default class Input extends Plugin {
 				return editor.editing.mapper.toModelRange( viewRange );
 			} );
 
-			const selectedText = Array.from( modelRanges[ 0 ].getItems() ).reduce( ( rangeText, node ) => {
-				return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
-			}, '' );
-
 			let insertText = text;
 
-			if ( selectedText ) {
-				if ( selectedText.length <= insertText.length ) {
-					if ( insertText.startsWith( selectedText ) ) {
-						insertText = insertText.substring( selectedText.length );
-						modelRanges[ 0 ].start = modelRanges[ 0 ].start.getShiftedBy( selectedText.length );
-					}
-				} else {
-					if ( selectedText.startsWith( insertText ) ) {
-						// TODO this should be mapped as delete?
-						modelRanges[ 0 ].start = modelRanges[ 0 ].start.getShiftedBy( insertText.length );
-						insertText = '';
+			// Typing in English on Android is firing composition events for the whole typed word.
+			// We need to check the target range text to only apply the difference.
+			if ( env.isAndroid ) {
+				const selectedText = Array.from( modelRanges[ 0 ].getItems() ).reduce( ( rangeText, node ) => {
+					return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
+				}, '' );
+
+				if ( selectedText ) {
+					if ( selectedText.length <= insertText.length ) {
+						if ( insertText.startsWith( selectedText ) ) {
+							insertText = insertText.substring( selectedText.length );
+							modelRanges[ 0 ].start = modelRanges[ 0 ].start.getShiftedBy( selectedText.length );
+						}
+					} else {
+						if ( selectedText.startsWith( insertText ) ) {
+							// TODO this should be mapped as delete?
+							modelRanges[ 0 ].start = modelRanges[ 0 ].start.getShiftedBy( insertText.length );
+							insertText = '';
+						}
 					}
 				}
 			}
