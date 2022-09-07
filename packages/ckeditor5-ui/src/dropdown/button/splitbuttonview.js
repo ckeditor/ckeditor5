@@ -12,7 +12,6 @@ import ButtonView from '../../button/buttonview';
 
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 
@@ -119,15 +118,7 @@ export default class SplitButtonView extends View {
 				]
 			},
 
-			children: this.children,
-
-			on: {
-				keydown: bind.to( evt => {
-					if ( evt.keyCode == keyCodes.arrowdown ) {
-						this.fire( 'open' );
-					}
-				} )
-			}
+			children: this.children
 		} );
 	}
 
