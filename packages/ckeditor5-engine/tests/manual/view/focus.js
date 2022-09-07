@@ -8,7 +8,7 @@
 import View from '../../../src/view/view';
 import ViewPosition from '../../../src/view/position';
 import ViewRange from '../../../src/view/range';
-import createViewRoot from '../_utils/createroot';
+import createViewRoot from '../../view/_utils/createroot';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 const view = new View( new StylesProcessor() );
