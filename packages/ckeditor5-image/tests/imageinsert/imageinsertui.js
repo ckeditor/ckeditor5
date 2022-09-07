@@ -119,6 +119,15 @@ describe( 'ImageInsertUI', () => {
 			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
 		} );
 
+		it( 'should insert panel view children on first dropdown open', () => {
+			expect( dropdown.panelView.children.length ).to.equal( 0 );
+
+			dropdown.isOpen = true;
+
+			expect( dropdown.panelView.children.length ).to.equal( 1 );
+			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
+		} );
+
 		describe( 'dropdown action button', () => {
 			it( 'should belong to a split button', () => {
 				expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
