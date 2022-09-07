@@ -1,7 +1,7 @@
 ---
 category: framework-contributing
 order: 20
-modified_at: 2021-11-24
+modified_at: 2022-09-07
 ---
 
 # Testing environment
@@ -24,7 +24,7 @@ It accepts the following arguments that must be passed after the `--` option:
 * `--source-map` (alias `-s`) &ndash; Whether to generate useful source maps for the code.
 * `--coverage` (alias `-c`) &ndash; Whether to generate code coverage.
 * `--verbose` (alias `-v`) &ndash; Allows switching on webpack logs.
-* `--files` &ndash; Specifies test files to run. Accepts a package name or a glob. For example `--files=engine` will run tests from `ckeditor5-engine` package. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
+* `--files` &ndash; Specifies test files to run. [See the "Rules for using the `--files` option" section.](#rules-for-using-the-files-option)
 * `--browsers` &ndash; Browsers that will be used to run the tests. Defaults to `Chrome`.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `9876`.
@@ -38,16 +38,16 @@ Run all tests with the code coverage check of the [`ckeditor5-core`](https://git
 yarn run test -c --files=core
 ```
 
-Run and watch the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing/tests):
+Run and watch with the code coverage check the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing/tests):
 
 ```
-yarn run test -cw --files=engine/view,typing
+yarn run test -cw --files=engine/view/,typing
 ```
 
-Run the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package:
+Run and watch the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package:
 
 ```
-yarn run test -cw --files=basic-styles/bold*.js
+yarn run test -w --files=basic-styles/bold*
 ```
 
 ### Custom Chai assertions
@@ -101,7 +101,7 @@ In order to start the manual tests server, use the `yarn run manual` task.
 
 The task accepts the following options:
 
-* `--files` (alias `-f`) &ndash; Specifies test files to run. Accepts a package name or a glob. For example `--files=ckeditor5` will only run tests from the CKEditor 5 main package. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
+* `--files` &ndash; Specifies test files to run. [See the "Rules for using the `--files` option" section.](#rules-for-using-the-files-option)
 * `--language="pl"` &ndash; The main language build in into all test editors, passed to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin).  Check out the {@link features/ui-language UI language guide} to learn more. When unspecified, `'en'` is passed to the test runner.
 * `--additional-languages="ar,pl,..."` &ndash; Specifies extra languages passed to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
@@ -188,6 +188,72 @@ yarn run manual:verify
 ```
 
 Read more about the crawler in {@link framework/guides/contributing/development-environment#verifying-documentation Verifying documentation}.
+
+## Rules for using the `--files` option
+
+The `--files` (alias `-f`) option is used by both manual and automated tests, and it accepts following types of patterns:
+
+<table>
+	<tr>
+		<th>Patterns</th>
+		<th>Result</th>
+	</tr>
+	<tr>
+		<td><code>ckeditor5</code></td>
+		<td>Run all tests of the root <a href="https://github.com/ckeditor/ckeditor5/tree/master/tests"><code>ckeditor5</code></a> package.</td>
+	</tr>
+	<tr>
+		<td><code>core</code></td>
+		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> package.</td>
+	</tr>
+	<tr>
+		<td><code>build-*</code></td>
+		<td>Run all tests of the <code>build-*</code> packages. (<code>ckeditor5-build-classic</code>, <code>ckeditor5-build-balloon</code> etc.)</td>
+	</tr>
+	<tr>
+		<td><code>!core</code></td>
+		<td>Run all tests <b>except</b> those of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> package.</td>
+	</tr>
+	<tr>
+		<td><code>!(core|engine)</code></td>
+		<td>Run all tests <b>except</b> those of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> <b>and</b> the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests"><code>ckeditor5-engine</code></a> packages. Any number of packages can be excluded.</td>
+	</tr>
+	<tr>
+		<td><code>engine/view/</code></td>
+		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view"><code>ckeditor5-engine</code></a> package located in the <code>./packages/ckeditor5-engine/tests/view/</code> directory.</td>
+	</tr>
+	<tr>
+		<td><code>core/editor/utils/</code></td>
+		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests/editor/utils"><code>ckeditor5-core</code></a> package located in the <code>./packages/ckeditor5-core/tests/editor/utils/</code> directory.</td>
+	</tr>
+	<tr>
+		<td><code>basic-styles/bold</code></td>
+		<td>Run all tests with the filename <code>bold.js</code> in the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests"><code>ckeditor5-basic-styles</code></a> package.</td>
+	</tr>
+	<tr>
+		<td><code>basic-styles/bold*</code></td>
+		<td>
+			Runs all tests matching filename pattern <code>bold*.js</code> in the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests"><code>ckeditor5-basic-styles</code></a> package:
+			<ul>
+				<li><code>./packages/ckeditor5-basic-styles/tests/bold.js</code></li>
+				<li><code>./packages/ckeditor5-basic-styles/tests/bold/boldediting.js</code></li>
+				<li><code>./packages/ckeditor5-basic-styles/tests/bold/boldui.js</code></li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td><code>ckeditor5,list/list/,style/*grid*</code></td>
+		<td>Sum of all arguments separated by comma <code>,</code>. This can use any combination of argument types. Note that since it is a sum, using multiple <code>!foo</code> excluding arguments might not work as expected.</td>
+	</tr>
+</table>
+
+<info-box>
+	You can use multiple arguments separated by comma <code>,</code>, and sum of the outputs will be compiled.
+</info-box>
+
+<info-box>
+	All of the patterns support wildcard <code>*</code>.
+</info-box>
 
 ## Test suite and CI
 
