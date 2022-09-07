@@ -52,7 +52,7 @@
 				background: var(--ck-color-list-button-on-background-focus);
 			}
 
-			&:focus:not(.ck-disabled) {
+			&:focus:not(.ck-switchbutton):not(.ck-disabled) {
 				border-color: var(--ck-color-base-background);
 			}
 		}

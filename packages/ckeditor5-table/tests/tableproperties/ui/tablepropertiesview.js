@@ -616,8 +616,10 @@ describe( 'table properties', () => {
 				expect( view._focusables.map( f => f ) ).to.have.members( [
 					view.borderStyleDropdown,
 					view.borderColorInput,
+					view.borderColorInput.fieldView.dropdownView.buttonView,
 					view.borderWidthInput,
 					view.backgroundInput,
+					view.backgroundInput.fieldView.dropdownView.buttonView,
 					view.widthInput,
 					view.heightInput,
 					view.alignmentToolbar,
@@ -810,7 +812,7 @@ describe( 'table properties', () => {
 
 						it( 'should replace "Remove color" with the "Restore default" label', () => {
 							const { borderColorInput } = view;
-							const { panelView } = borderColorInput.fieldView._dropdownView;
+							const { panelView } = borderColorInput.fieldView.dropdownView;
 
 							expect( panelView.children.first.label ).to.equal( 'Restore default' );
 						} );
@@ -820,7 +822,7 @@ describe( 'table properties', () => {
 				describe( 'background row', () => {
 					it( 'should replace "Remove color" with the "Restore default" label', () => {
 						const { backgroundInput } = view;
-						const { panelView } = backgroundInput.fieldView._dropdownView;
+						const { panelView } = backgroundInput.fieldView.dropdownView;
 
 						expect( panelView.children.first.label ).to.equal( 'Restore default' );
 					} );

@@ -46,4 +46,4 @@ msgstr "No es pot pujar l'arxiu:"
 
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
-msgstr ""
+msgstr "Editor de text enriquit. Àrea d'edició: %0"

@@ -20,25 +20,27 @@ import AttributeOperation from '@ckeditor/ckeditor5-engine/src/model/operation/a
 
 import TableColumnResize from '../../src/tablecolumnresize';
 import {
-	getAffectedTables,
-	getColumnIndex,
+	getColumnEdgesIndexes,
+	getChangedResizedTables,
 	toPrecision,
 	clamp,
-	fillArray,
+	createFilledArray,
 	sumArray,
-	normalizeColumnWidthsAttribute,
-	getTableWidthInPixels
+	normalizeColumnWidths,
+	getTableWidthInPixels,
+	getColumnMinWidthAsPercentage,
+	getElementWidthInPixels,
+	getDomCellOuterWidth
 } from '../../src/tablecolumnresize/utils';
 
-/* globals window */
+/* globals window, document */
 
 describe( 'TableColumnResize utils', () => {
-	describe( 'getAffectedTables()', () => {
-		let differ, root, model;
+	describe( 'getChangedResizedTables()', () => {
+		let root, model;
 
 		beforeEach( () => {
 			model = new Model();
-			differ = model.document.differ;
 			root = model.document.createRoot();
 
 			root._appendChild( [
@@ -46,6 +48,40 @@ describe( 'TableColumnResize utils', () => {
 				createTable( 2, 3 ),
 				createTable( 2, 3 )
 			] );
+		} );
+
+		it( 'should do nothing if there is no table affected while inserting', () => {
+			model.change( () => {
+				insert(
+					model,
+					new Element( 'paragraph' ),
+					new Position( root, [ 2, 0, 0 ] )
+				);
+
+				const affectedTables = getChangedResizedTables( model );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
+		} );
+
+		it( 'should do nothing if there is no table affected while changing attribute', () => {
+			model.change( () => {
+				insert(
+					model,
+					new Element( 'paragraph' ),
+					new Position( root, [ 2, 0, 0 ] )
+				);
+			} );
+
+			model.change( () => {
+				const range = new Range( new Position( root, [ 2, 0, 0 ] ), new Position( root, [ 2, 0, 1 ] ) );
+
+				attribute( model, range, 'attrName', null, 'attrVal' );
+
+				const affectedTables = getChangedResizedTables( model );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
 		} );
 
 		it( 'should find affected table - cells insertion in first column', () => {
@@ -64,8 +100,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 1, 0 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -88,8 +123,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 1, 3 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -106,8 +140,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 0 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -124,8 +157,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 2 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -148,8 +180,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -172,8 +203,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -190,8 +220,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -208,8 +237,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -224,8 +252,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -240,8 +267,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -256,8 +282,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -297,13 +322,39 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 2, 1, 0 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 3 );
 				expect( affectedTables.has( firstTable ), 'first table is affected' ).to.be.true;
 				expect( affectedTables.has( secondTable ), 'second table is affected' ).to.be.true;
 				expect( affectedTables.has( thirdTable ), 'third table is affected' ).to.be.true;
+			} );
+		} );
+
+		it( 'should not find affected table - table removal', () => {
+			model.change( () => {
+				remove( model, new Position( root, [ 0 ] ), 1 );
+
+				const affectedTables = getChangedResizedTables( model );
+
+				expect( affectedTables.size ).to.equal( 0 );
+			} );
+		} );
+
+		it( 'should not find affected table - table replacement', () => {
+			model.change( () => {
+				remove( model, new Position( root, [ 0 ] ), 1 );
+
+				// Table plugin inserts a paragraph when a table is removed - #12201.
+				insert(
+					model,
+					new Element( 'paragraph' ),
+					new Position( root, [ 0 ] )
+				);
+
+				const affectedTables = getChangedResizedTables( model );
+
+				expect( affectedTables.size ).to.equal( 0 );
 			} );
 		} );
 
@@ -327,8 +378,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 2, 1, 2, 0 ] )
 				);
 
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -337,8 +387,8 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should not find any affected table if it was a text formatting removal operation', () => {
 			let range;
 
-			// To test the getAffectedTables(), when the attribute is being removed we need
-			// to frist insert the text inside one of the table cells.
+			// To test the getChangedResizedTables(), when the attribute is being removed we need
+			// to first insert the text inside one of the table cells.
 			model.change( () => {
 				insert(
 					model,
@@ -351,19 +401,49 @@ describe( 'TableColumnResize utils', () => {
 				attribute( model, range, 'linkHref', null, 'www' );
 			} );
 
-			// And in a different model.change() remove the attribute, beacuse otherwise the changes would be empty.
+			// And in a different model.change() remove the attribute, because otherwise the changes would be empty.
 			model.change( () => {
 				attribute( model, range, 'linkHref', 'www', null );
-				const changes = differ.getChanges();
-				const affectedTables = getAffectedTables( changes, model );
+
+				const affectedTables = getChangedResizedTables( model );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
 		} );
 	} );
 
+	describe( 'getColumnMinWidthAsPercentage()', () => {
+		let model, editor, editorElement;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+			editor = await ClassicEditor.create( editorElement, {
+				plugins: [ Table, TableColumnResize, Paragraph ]
+			} );
+
+			model = editor.model;
+		} );
+
+		afterEach( async () => {
+			if ( editorElement ) {
+				editorElement.remove();
+			}
+
+			if ( editor ) {
+				await editor.destroy();
+			}
+		} );
+
+		it( 'should return the correct value', () => {
+			setModelData( model, modelTable( [ [ '00' ] ], { 'tableWidth': '401px' } ) );
+
+			expect( getColumnMinWidthAsPercentage( model.document.getRoot().getChild( 0 ), editor ) ).to.equal( 10 );
+		} );
+	} );
+
 	describe( 'getColumnIndex()', () => {
-		let editor;
+		let editor, tableUtils;
 
 		beforeEach( () => {
 			return ClassicEditor
@@ -372,6 +452,7 @@ describe( 'TableColumnResize utils', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
+					tableUtils = editor.plugins.get( 'TableUtils' );
 				} );
 		} );
 
@@ -390,13 +471,13 @@ describe( 'TableColumnResize utils', () => {
 			const cell00 = [ ...row0.getChildren() ][ 0 ];
 
 			expect(
-				getColumnIndex( cell00, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell00, tableUtils )
 			).to.deep.equal( { leftEdge: 0, rightEdge: 0 } );
 
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, tableUtils )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 1 } );
 		} );
 
@@ -411,7 +492,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, tableUtils )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 2 } );
 		} );
 
@@ -426,7 +507,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
-				getColumnIndex( cell01, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell01, tableUtils )
 			).to.deep.equal( { leftEdge: 1, rightEdge: 3 } );
 		} );
 
@@ -441,7 +522,7 @@ describe( 'TableColumnResize utils', () => {
 			const cell02 = [ ...row0.getChildren() ][ 2 ];
 
 			expect(
-				getColumnIndex( cell02, getColumnIndexMap( editor ) )
+				getColumnEdgesIndexes( cell02, tableUtils )
 			).to.deep.equal( { leftEdge: 2, rightEdge: 5 } );
 		} );
 	} );
@@ -473,11 +554,11 @@ describe( 'TableColumnResize utils', () => {
 		} );
 	} );
 
-	describe( 'fillArray()', () => {
+	describe( 'createFilledArray()', () => {
 		it( 'should properly create filled array', () => {
-			expect( fillArray( 0, 'foo' ) ).to.deep.equal( [] );
-			expect( fillArray( 3, 'foo' ) ).to.deep.equal( [ 'foo', 'foo', 'foo' ] );
-			expect( fillArray( 3 ) ).to.deep.equal( [ undefined, undefined, undefined ] );
+			expect( createFilledArray( 0, 'foo' ) ).to.deep.equal( [] );
+			expect( createFilledArray( 3, 'foo' ) ).to.deep.equal( [ 'foo', 'foo', 'foo' ] );
+			expect( createFilledArray( 3 ) ).to.deep.equal( [ undefined, undefined, undefined ] );
 		} );
 	} );
 
@@ -492,35 +573,92 @@ describe( 'TableColumnResize utils', () => {
 		} );
 	} );
 
-	describe( 'normalizeColumnWidthsAttribute()', () => {
+	describe( 'normalizeColumnWidths()', () => {
 		it( 'should not change the widths of the columns if they sum up to 100%', () => {
-			expect( normalizeColumnWidthsAttribute( '25%, 25%, 25%, 25%' ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidthsAttribute( '10%, 20%, 30%, 40%' ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
-			expect( normalizeColumnWidthsAttribute( '10.32%, 20.12%, 30.87%, 38.69%' ) ).to.deep.equal( [ 10.32, 20.12, 30.87, 38.69 ] );
-			expect( normalizeColumnWidthsAttribute( '100%' ) ).to.deep.equal( [ 100 ] );
+			expect( normalizeColumnWidths( [ '25%', '25%', '25%', '25%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
+			expect( normalizeColumnWidths( [ '10%', '20%', '30%', '40%' ] ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
+			expect( normalizeColumnWidths( [ '10.32%', '20.12%', '30.87%', '38.69%' ] ) ).to.deep.equal( [ 10.32, 20.12, 30.87, 38.69 ] );
+			expect( normalizeColumnWidths( [ '100%' ] ) ).to.deep.equal( [ 100 ] );
 		} );
 
 		it( 'should extend uninitialized columns equally if the free space per column is wider than the minimum column width', () => {
-			expect( normalizeColumnWidthsAttribute( 'auto, auto, auto, auto' ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto, 25%, auto, 25%' ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto, auto, auto, 40%' ) ).to.deep.equal( [ 20, 20, 20, 40 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto, 45%, 45%, auto' ) ).to.deep.equal( [ 5, 45, 45, 5 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto' ) ).to.deep.equal( [ 100 ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', 'auto' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
+			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '40%' ] ) ).to.deep.equal( [ 20, 20, 20, 40 ] );
+			expect( normalizeColumnWidths( [ 'auto', '45%', '45%', 'auto' ] ) ).to.deep.equal( [ 5, 45, 45, 5 ] );
+			expect( normalizeColumnWidths( [ 'auto' ] ) ).to.deep.equal( [ 100 ] );
 		} );
 
 		it( 'should set the minimum column width for uninitialized columns if there is not enough free space per column', () => {
-			expect( normalizeColumnWidthsAttribute( 'auto, auto, auto, 90%' ) ).to.deep.equal( [ 4.76, 4.76, 4.76, 85.72 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto, 50%, auto, 50%' ) ).to.deep.equal( [ 4.55, 45.45, 4.55, 45.45 ] );
-			expect( normalizeColumnWidthsAttribute( 'auto, 50%, 50%, 50%' ) ).to.deep.equal( [ 3.23, 32.26, 32.26, 32.25 ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '90%' ] ) ).to.deep.equal( [ 4.76, 4.76, 4.76, 85.72 ] );
+			expect( normalizeColumnWidths( [ 'auto', '50%', 'auto', '50%' ] ) ).to.deep.equal( [ 4.55, 45.45, 4.55, 45.45 ] );
+			expect( normalizeColumnWidths( [ 'auto', '50%', '50%', '50%' ] ) ).to.deep.equal( [ 3.23, 32.26, 32.26, 32.25 ] );
 		} );
 
 		it( 'should proportionally align all the column widths if their sum is not exactly 100%', () => {
-			expect( normalizeColumnWidthsAttribute( '10%, 20%, 30%, 50%' ) ).to.deep.equal( [ 9.09, 18.18, 27.27, 45.46 ] );
-			expect( normalizeColumnWidthsAttribute( '10%, 10%, 10%, 10%' ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidthsAttribute( '100%, 100%, 100%, 100%' ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidthsAttribute( '1%, 2%, 3%, 4%' ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
-			expect( normalizeColumnWidthsAttribute( '12.33%, 17.4%, 21.49%, 33.52%, 26.6%, 10.43%' ) )
+			expect( normalizeColumnWidths( [ '10%', '20%', '30%', '50%' ] ) ).to.deep.equal( [ 9.09, 18.18, 27.27, 45.46 ] );
+			expect( normalizeColumnWidths( [ '10%', '10%', '10%', '10%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
+			expect( normalizeColumnWidths( [ '100%', '100%', '100%', '100%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
+			expect( normalizeColumnWidths( [ '1%', '2%', '3%', '4%' ] ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
+			expect( normalizeColumnWidths( [ '12.33%', '17.4%', '21.49%', '33.52%', '26.6%', '10.43%' ] ) )
 				.to.deep.equal( [ 10.13, 14.29, 17.65, 27.53, 21.84, 8.56 ] );
+		} );
+	} );
+
+	describe( 'getElementWidthInPixels()', () => {
+		let element;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+
+			document.body.appendChild( element );
+			element.style.width = '100px';
+			element.style.padding = '15px';
+			element.style.border = '10px solid #000';
+		} );
+
+		afterEach( () => {
+			element.remove();
+		} );
+
+		it( 'should return the correct width for content-box algorithm', () => {
+			expect( getElementWidthInPixels( element ) ).to.equal( 100 );
+		} );
+
+		it( 'should return the correct width for border-box algorithm', () => {
+			element.style.boxSizing = 'border-box';
+
+			expect( getElementWidthInPixels( element ) ).to.equal( 50 );
+		} );
+	} );
+
+	describe( 'getDomCellOuterWidth()', () => {
+		let tableElement, cellElement;
+
+		beforeEach( () => {
+			tableElement = document.createElement( 'table' );
+			tableElement.innerHTML = '<tr><td>foo</td></tr>';
+
+			document.body.appendChild( tableElement );
+
+			cellElement = tableElement.querySelector( 'td' );
+			cellElement.style.width = '100px';
+			cellElement.style.padding = '15px';
+			cellElement.style.border = '10px solid #000';
+		} );
+
+		afterEach( () => {
+			tableElement.remove();
+		} );
+
+		it( 'should return the correct width for content-box algorithm', () => {
+			expect( getDomCellOuterWidth( cellElement ) ).to.equal( 140 );
+		} );
+
+		it( 'should return the correct width for border-box algorithm', () => {
+			cellElement.style.boxSizing = 'border-box';
+
+			expect( getDomCellOuterWidth( cellElement ) ).to.equal( 100 );
 		} );
 	} );
 
@@ -577,7 +715,11 @@ describe( 'TableColumnResize utils', () => {
 } );
 
 function createTable( rows, cols ) {
-	return new Element( 'table', {}, createTableRows( rows, cols ) );
+	// We need to set the `columnWidths` attribute because tables without it are ignored.
+	const colWidth = `${ 100 / cols }%`;
+	const columnWidths = new Array( cols ).fill( colWidth ).join( ',' );
+
+	return new Element( 'table', { columnWidths }, createTableRows( rows, cols ) );
 }
 
 function createTableRows( rows, cols ) {
@@ -608,8 +750,4 @@ function attribute( model, range, key, oldValue, newValue ) {
 	const operation = new AttributeOperation( range, key, oldValue, newValue, doc.version );
 
 	model.applyOperation( operation );
-}
-
-function getColumnIndexMap( editor ) {
-	return editor.plugins.get( 'TableColumnResizeEditing' )._columnIndexMap;
 }

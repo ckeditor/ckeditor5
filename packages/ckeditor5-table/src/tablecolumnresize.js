@@ -13,9 +13,9 @@ import TableColumnResizeEditing from './tablecolumnresize/tablecolumnresizeediti
 import '../theme/tablecolumnresize.css';
 
 /**
- * The table column resizer feature.
+ * The table column resize feature.
  *
- * It provides the possibility to set the width of each column in a table using a resize handle.
+ * It provides the possibility to set the width of each column in a table using a resize handler.
  *
  * @extends module:core/plugin~Plugin
  */

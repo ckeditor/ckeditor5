@@ -1272,11 +1272,14 @@ describe( 'MediaEmbedEditing', () => {
 						'<div[^>]+>' +
 							'<div class="ck ck-media__placeholder ck-reset_all">' +
 								'<div class="ck-media__placeholder__icon">.*</div>' +
-								`<a class="ck-media__placeholder__url" href="${ expectedUrl }" rel="noopener noreferrer" target="_blank">` +
-									`<span class="ck-media__placeholder__url__text">${ expectedUrl }</span>` +
-									'<span class="ck ck-tooltip ck-tooltip_s">' +
-										'<span class="ck ck-tooltip__text">Open media in new tab</span>' +
-									'</span>' +
+								'<a ' +
+									'class="ck-media__placeholder__url" ' +
+									'data-cke-tooltip-text="Open media in new tab" ' +
+									`href="${ expectedUrl }" ` +
+									'rel="noopener noreferrer" ' +
+									'target="_blank"' +
+								'>' +
+										`<span class="ck-media__placeholder__url__text">${ expectedUrl }</span>` +
 								'</a>' +
 							'</div>' +
 						'</div>' +

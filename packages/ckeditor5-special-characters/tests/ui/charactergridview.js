@@ -3,10 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import CharacterGridView from '../../src/ui/charactergridview';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'CharacterGridView', () => {
 	let view;
@@ -40,6 +43,108 @@ describe( 'CharacterGridView', () => {
 			expect( tilesElement.classList.contains( 'ck-character-grid__tiles' ) ).to.be.true;
 
 			expect( tile.element.parentNode ).to.equal( tilesElement );
+		} );
+
+		describe( 'Focus management across the grid items using arrow keys', () => {
+			let view;
+
+			beforeEach( () => {
+				view = new CharacterGridView();
+
+				createTilesForGrid( view );
+
+				view.render();
+				document.body.appendChild( view.element );
+			} );
+
+			afterEach( () => {
+				view.element.remove();
+				view.destroy();
+			} );
+
+			describe( 'Default grid - 10 tiles in a row', () => {
+				it( '"arrow right" should focus the next focusable grid item', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the first grid item is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.tiles.first.element;
+
+					const spy = sinon.spy( view.tiles.get( 1 ), 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( '"arrow down" should focus the focusable grid item in the second row', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the first grid item is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.tiles.first.element;
+
+					const spy = sinon.spy( view.tiles.get( 10 ), 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+			} );
+
+			describe( 'Responsive grid - changed to 5 tiles in a row instead of 10', () => {
+				beforeEach( () => {
+					view.element.firstChild.style.gridTemplateColumns = 'repeat(5, 1fr)';
+				} );
+
+				it( '"arrow right" should focus the next focusable grid item', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the first grid item is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.tiles.first.element;
+
+					const spy = sinon.spy( view.tiles.get( 1 ), 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( '"arrow down" should focus the focusable grid item in the second row', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the first grid item is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.tiles.first.element;
+
+					const spy = sinon.spy( view.tiles.get( 5 ), 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+			} );
 		} );
 	} );
 
@@ -75,4 +180,47 @@ describe( 'CharacterGridView', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );
 		} );
 	} );
+
+	describe( 'focus()', () => {
+		it( 'focuses the first tile', () => {
+			const tile = view.createTile( 'ε', 'foo bar baz' );
+			const spy = sinon.spy( tile, 'focus' );
+
+			view.tiles.add( tile );
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		describe( 'FocusTracker', () => {
+			it( 'should add tiles to focus tracker when tiles are added to #tiles', () => {
+				const tile = view.createTile( 'ε', 'foo bar baz' );
+				const spy = sinon.spy( view.focusTracker, 'add' );
+
+				view.tiles.add( tile );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should remove tiles from focus tracker when tiles are removed from #tiles', () => {
+				const tile = view.createTile( 'ε', 'foo bar baz' );
+
+				view.tiles.add( tile );
+
+				const spy = sinon.spy( view.focusTracker, 'remove' );
+
+				view.tiles.remove( tile );
+
+				sinon.assert.calledOnce( spy );
+			} );
+		} );
+	} );
+
+	function createTilesForGrid( gridView ) {
+		for ( let i = 0; i < 11; i++ ) {
+			gridView.tiles.add( gridView.createTile( 'ε', 'foo bar baz' ) );
+		}
+	}
 } );

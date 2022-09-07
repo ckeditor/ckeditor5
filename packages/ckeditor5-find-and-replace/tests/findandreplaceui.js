@@ -34,11 +34,15 @@ describe( 'FindAndReplaceUI', () => {
 				form = dropdown.panelView.children.get( 0 );
 				findCommand = editor.commands.get( 'find' );
 				plugin = editor.plugins.get( 'FindAndReplaceUI' );
+
+				dropdown.render();
+				global.document.body.appendChild( dropdown.element );
 			} );
 	} );
 
 	afterEach( () => {
 		editorElement.remove();
+		dropdown.element.remove();
 
 		return editor.destroy();
 	} );
@@ -122,16 +126,6 @@ describe( 'FindAndReplaceUI', () => {
 			} );
 
 			describe( 'upon dropdown close', () => {
-				it( 'the form should be focused', () => {
-					dropdown.isOpen = true;
-
-					const spy = sinon.spy( form, 'focus' );
-
-					dropdown.isOpen = false;
-
-					sinon.assert.calledOnce( spy );
-				} );
-
 				it( 'the #searchReseted event should be emitted', () => {
 					dropdown.isOpen = true;
 
