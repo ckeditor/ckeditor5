@@ -73,12 +73,6 @@ export default class TableUI extends Plugin {
 
 				insertTableView.delegate( 'execute' ).to( dropdownView );
 
-				dropdownView.buttonView.on( 'open', () => {
-					// Reset the chooser before showing it to the user.
-					insertTableView.rows = 0;
-					insertTableView.columns = 0;
-				} );
-
 				dropdownView.on( 'execute', () => {
 					editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );
 					editor.editing.view.focus();

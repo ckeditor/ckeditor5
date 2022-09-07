@@ -5,190 +5,26 @@
 
 @import "../../../mixins/_rounded.css";
 
-:root {
-	--ck-tooltip-arrow-size: 5px;
-}
+.ck.ck-balloon-panel.ck-tooltip {
+	--ck-balloon-border-width: 0px;
+	--ck-balloon-arrow-offset: 0px;
+	--ck-balloon-arrow-half-width: 4px;
+	--ck-balloon-arrow-height: 4px;
+	--ck-color-panel-background: var(--ck-color-tooltip-background);
 
-.ck.ck-tooltip {
-	left: 50%;
-
-	/*
-	 * Prevent blurry tooltips in LoDPI environments.
-	 * See https://github.com/ckeditor/ckeditor5/issues/1802.
-	 */
-	top: 0;
-
-	/*
-	 * For the transition to work, the tooltip must be controlled
-	 * using visibility+opacity. A delay prevents a "tooltip avalanche"
-	 * i.e. when scanning the toolbar with mouse cursor.
-	 */
-	transition: opacity .2s ease-in-out .2s;
+	padding: 0 var(--ck-spacing-medium);
 
 	& .ck-tooltip__text {
-		@mixin ck-rounded-corners;
-
 		font-size: .9em;
 		line-height: 1.5;
 		color: var(--ck-color-tooltip-text);
-		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-		background: var(--ck-color-tooltip-background);
-		position: relative;
-		left: -50%;
-
-		&::after {
-			/*
-			 * For the transition to work, the tooltip must be controlled
-			 * using visibility+opacity. A delay prevents a "tooltip avalanche"
-			 * i.e. when scanning the toolbar with mouse cursor.
-			 */
-			transition: opacity .2s ease-in-out .2s;
-			border-style: solid;
-			left: 50%;
-		}
 	}
 
-	/**
-	 * A class that displays the tooltip south of the element.
-	 *
-	 *       [element]
-	 *           ^
-	 *     +-----------+
-	 *     |  Tooltip  |
-	 *     +-----------+
-	 */
-	&.ck-tooltip_s,
-	&.ck-tooltip_sw,
-	&.ck-tooltip_se {
-		bottom: calc(-1 * var(--ck-tooltip-arrow-size));
-		transform: translateY( 100% );
+	/* Reset balloon panel styles */
+	box-shadow: none;
 
-		& .ck-tooltip__text::after {
-			/* 1px addresses gliches in rendering causing gap between the triangle and the text */
-			top: calc(-1 * var(--ck-tooltip-arrow-size) + 1px);
-			transform: translateX( -50% );
-			border-color: transparent transparent var(--ck-color-tooltip-background) transparent;
-			border-width: 0 var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size);
-		}
-	}
-
-	/**
-	 * A class that displays the tooltip south-west of the element.
-	 *
-	 *        [element]
-	 *            ^
-	 *  +-----------+
-	 *  |  Tooltip  |
-	 *  +-----------+
-	 */
-
-	&.ck-tooltip_sw {
-		right: 50%;
-		left: auto;
-
-		& .ck-tooltip__text {
-			left: auto;
-			right: calc( -2 * var(--ck-tooltip-arrow-size));
-		}
-
-		& .ck-tooltip__text::after {
-			left: auto;
-			right: 0;
-		}
-	}
-
-	/**
-	 * A class that displays the tooltip south-east of the element.
-	 *
-	 *  [element]
-	 *      ^
-	 *    +-----------+
-	 *    |  Tooltip  |
-	 *    +-----------+
-	 */
-	&.ck-tooltip_se {
-		left: 50%;
-		right: auto;
-
-		& .ck-tooltip__text {
-			right: auto;
-			left: calc( -2 * var(--ck-tooltip-arrow-size));
-		}
-
-		& .ck-tooltip__text::after {
-			right: auto;
-			left: 0;
-			transform: translateX( 50% );
-		}
-	}
-
-	/**
-	 * A class that displays the tooltip north of the element.
-	 *
-	 *     +-----------+
-	 *     |  Tooltip  |
-	 *     +-----------+
-	 *           V
-	 *       [element]
-	 */
-	&.ck-tooltip_n {
-		top: calc(-1 * var(--ck-tooltip-arrow-size));
-		transform: translateY( -100% );
-
-		& .ck-tooltip__text::after {
-			bottom: calc(-1 * var(--ck-tooltip-arrow-size));
-			transform: translateX( -50% );
-			border-color: var(--ck-color-tooltip-background) transparent transparent transparent;
-			border-width: var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) 0 var(--ck-tooltip-arrow-size);
-		}
-	}
-
-	/**
-	 * A class that displays the tooltip east of the element.
-	 *
-	 *                +----------+
-	 *    [element] < |   east   |
-	 *                +----------+
-	 */
-	&.ck-tooltip_e {
-		left: calc(100% + var(--ck-tooltip-arrow-size));
-		top: 50%;
-
-		& .ck-tooltip__text {
-			left: 0;
-			transform: translateY( -50% );
-
-			&::after {
-				left: calc(-1 * var(--ck-tooltip-arrow-size));
-				top: calc(50% - 1 * var(--ck-tooltip-arrow-size));
-				border-color: transparent var(--ck-color-tooltip-background) transparent transparent;
-				border-width: var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) 0;
-			}
-		}
-	}
-
-	/**
-	 * A class that displays the tooltip west of the element.
-	 *
-	 *    +----------+
-	 *    |   west   | > [element]
-	 *    +----------+
-	 */
-	&.ck-tooltip_w {
-		right: calc(100% + var(--ck-tooltip-arrow-size));
-		left: auto;
-		top: 50%;
-
-		& .ck-tooltip__text {
-			left: 0;
-			transform: translateY( -50% );
-
-			&::after {
-				left: 100%;
-				top: calc(50% - 1 * var(--ck-tooltip-arrow-size));
-				border-color: transparent transparent transparent var(--ck-color-tooltip-background);
-				border-width: var(--ck-tooltip-arrow-size) 0 var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size);
-			}
-		}
+	/* Hide the default shadow of the .ck-balloon-panel tip */
+	&::before {
+		display: none;
 	}
 }

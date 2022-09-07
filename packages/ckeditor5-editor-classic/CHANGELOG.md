@@ -162,7 +162,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The former attributes controling the position of the toolbar provided by the `StickyToolbarView` are now available under `ClassicEditorUIView#stickyPanel` (`editor.ui.view.stickyPanel`).
+* The former attributes controlling the position of the toolbar provided by the `StickyToolbarView` are now available under `ClassicEditorUIView#stickyPanel` (`editor.ui.view.stickyPanel`).
 
 
 ## [0.8.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.3...v0.8.0) (2017-09-03)

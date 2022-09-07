@@ -6,7 +6,7 @@
 /* globals document, Event, console */
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -19,7 +19,12 @@ import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import SplitButtonView from '../../src/dropdown/button/splitbuttonview';
 import View from '../../src/view';
 import ToolbarView from '../../src/toolbar/toolbarview';
-import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../src/dropdown/utils';
+import {
+	createDropdown,
+	addToolbarToDropdown,
+	addListToDropdown,
+	focusChildOnDropdownOpen
+} from '../../src/dropdown/utils';
 import ListItemView from '../../src/list/listitemview';
 import ListSeparatorView from '../../src/list/listseparatorview';
 import ListView from '../../src/list/listview';
@@ -93,7 +98,7 @@ describe( 'utils', () => {
 		} );
 
 		describe( 'has default behavior', () => {
-			describe( 'closeDropdownOnBlur()', () => {
+			describe( 'closeDropdownOnClickOutside()', () => {
 				beforeEach( () => {
 					dropdownView.render();
 					document.body.appendChild( dropdownView.element );
@@ -184,6 +189,62 @@ describe( 'utils', () => {
 				} );
 			} );
 
+			describe( 'closeDropdownOnBlur()', () => {
+				let externalFocusableElement, focusableDropdownChild;
+
+				beforeEach( () => {
+					externalFocusableElement = document.createElement( 'button' );
+					focusableDropdownChild = document.createElement( 'button' );
+
+					dropdownView.render();
+					dropdownView.panelView.element.appendChild( focusableDropdownChild );
+
+					document.body.appendChild( dropdownView.element );
+					document.body.appendChild( externalFocusableElement );
+				} );
+
+				afterEach( () => {
+					dropdownView.element.remove();
+					externalFocusableElement.remove();
+				} );
+
+				it( 'should close the dropdown when the focus was in the #panelView but it went somewhere else', async () => {
+					dropdownView.isOpen = true;
+					focusableDropdownChild.dispatchEvent( new Event( 'focus' ) );
+
+					expect( dropdownView.focusTracker.isFocused, 'isFocused' ).to.be.true;
+					expect( dropdownView.isOpen, 'isOpen' ).to.be.true;
+
+					focusableDropdownChild.dispatchEvent( new Event( 'blur' ) );
+					externalFocusableElement.dispatchEvent( new Event( 'focus' ) );
+
+					// FocusTracker reacts to blur with a timeout.
+					await wait( 10 );
+
+					expect( dropdownView.focusTracker.isFocused, 'isFocused' ).to.be.false;
+					expect( dropdownView.isOpen, 'isOpen' ).to.be.false;
+				} );
+
+				// This should not happen in real life because opening a dropdown always focuses its child (not the #buttonView) but
+				// better safe than sorry.
+				it( 'should close the dropdown when the focus was on the #buttonView and went somewhere else', async () => {
+					dropdownView.isOpen = true;
+					dropdownView.buttonView.element.dispatchEvent( new Event( 'focus' ) );
+
+					expect( dropdownView.focusTracker.isFocused ).to.be.true;
+					expect( dropdownView.isOpen ).to.be.true;
+
+					dropdownView.buttonView.element.dispatchEvent( new Event( 'blur' ) );
+					externalFocusableElement.dispatchEvent( new Event( 'focus' ) );
+
+					// FocusTracker reacts to blur with a timeout.
+					await wait( 10 );
+
+					expect( dropdownView.focusTracker.isFocused ).to.be.false;
+					expect( dropdownView.isOpen ).to.be.false;
+				} );
+			} );
+
 			describe( 'focusDropdownContentsOnArrows()', () => {
 				let panelChildView;
 
@@ -246,6 +307,88 @@ describe( 'utils', () => {
 					dropdownView.isOpen = true;
 					dropdownView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( spy );
+				} );
+			} );
+
+			describe( 'focusDropdownButtonOnClose()', () => {
+				beforeEach( () => {
+					dropdownView.render();
+					document.body.appendChild( dropdownView.element );
+				} );
+
+				afterEach( () => {
+					dropdownView.element.remove();
+				} );
+
+				it( 'should focus a #buttonView if focus is inside the dropdown while closing', () => {
+					const spy = sinon.spy( dropdownView.buttonView, 'focus' );
+					// Create a button inside the dropdown panel to enable focus.
+					const button = new ButtonView( locale );
+
+					dropdownView.panelView.children.add( button );
+					dropdownView.isOpen = true;
+
+					expect( global.document.activeElement ).to.equal( button.element );
+
+					dropdownView.isOpen = false;
+
+					expect( global.document.activeElement ).to.equal( dropdownView.buttonView.element );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'should not focus dropdown button if focus is outside the dropdown while closing', () => {
+					const spy = sinon.spy( dropdownView.buttonView, 'focus' );
+					// Setup an element that is not a child of the dropdown to be focused.
+					const externalButton = global.document.createElement( 'button' );
+
+					global.document.body.appendChild( externalButton );
+
+					// Create a button inside the dropdown panel.
+					const buttonInsideDropdown = new ButtonView( locale );
+
+					dropdownView.panelView.children.add( buttonInsideDropdown );
+					dropdownView.isOpen = true;
+
+					expect( global.document.activeElement ).to.equal( buttonInsideDropdown.element );
+
+					externalButton.focus();
+
+					dropdownView.isOpen = false;
+
+					expect( global.document.activeElement ).to.equal( externalButton );
+					sinon.assert.notCalled( spy );
+
+					// Cleanup.
+					externalButton.remove();
+				} );
+			} );
+
+			describe( 'focusDropdownPanelOnOpen()', () => {
+				beforeEach( () => {
+					dropdownView.render();
+					document.body.appendChild( dropdownView.element );
+				} );
+
+				afterEach( () => {
+					dropdownView.element.remove();
+				} );
+
+				it( 'should focus the panel when the dropdown gets open', () => {
+					const spy = sinon.spy( dropdownView.panelView, 'focus' );
+
+					dropdownView.isOpen = true;
+
+					expect( spy.callCount ).to.equal( 1 );
+				} );
+
+				it( 'should not engage when the dropdown gets closed', () => {
+					dropdownView.isOpen = true;
+
+					const spy = sinon.spy( dropdownView.panelView, 'focus' );
+
+					dropdownView.isOpen = false;
+
+					expect( spy.callCount ).to.equal( 0 );
 				} );
 			} );
 		} );
@@ -647,4 +790,36 @@ describe( 'utils', () => {
 			}
 		} );
 	} );
+
+	describe( 'focusChildOnDropdownOpen()', () => {
+		it( 'should do its job after focusDropdownPanelOnOpen()', () => {
+			const dropdownView = createDropdown( locale );
+
+			const focusableElementA = document.createElement( 'button' );
+			const focusableElementB = document.createElement( 'button' );
+
+			dropdownView.render();
+			document.body.appendChild( dropdownView.element );
+
+			dropdownView.panelView.element.appendChild( focusableElementA );
+			dropdownView.panelView.element.appendChild( focusableElementB );
+
+			focusChildOnDropdownOpen( dropdownView, () => focusableElementB );
+
+			const panelFocusSpy = sinon.spy( dropdownView.panelView, 'focus' );
+			const elementBFocusSpy = sinon.spy( focusableElementB, 'focus' );
+
+			dropdownView.isOpen = true;
+
+			sinon.assert.callOrder( panelFocusSpy, elementBFocusSpy );
+
+			dropdownView.element.remove();
+		} );
+	} );
 } );
+
+function wait( time ) {
+	return new Promise( res => {
+		global.window.setTimeout( res, time );
+	} );
+}

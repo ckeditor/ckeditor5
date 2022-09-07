@@ -21,6 +21,18 @@ export default class ListItemView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		const bind = this.bindTemplate;
+
+		/**
+		 * Controls whether the item view is visible. Visible by default, list items are hidden
+		 * using a CSS class.
+		 *
+		 * @observable
+		 * @default true
+		 * @member {Boolean} #isVisible
+		 */
+		this.set( 'isVisible', true );
+
 		/**
 		 * Collection of the child views inside of the list item {@link #element}.
 		 *
@@ -35,7 +47,8 @@ export default class ListItemView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-list__item'
+					'ck-list__item',
+					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				]
 			},
 

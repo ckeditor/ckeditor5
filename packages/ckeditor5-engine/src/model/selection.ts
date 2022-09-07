@@ -503,11 +503,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 			return;
 		}
 
-		this._removeAllRanges();
-
-		for ( const range of ranges ) {
-			this._pushRange( range );
-		}
+		this._replaceAllRanges( ranges );
 
 		this._lastRangeBackward = !!isLastBackward;
 
@@ -775,6 +771,21 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 					{ addedRange: range, intersectingRange: this._ranges[ i ] }
 				);
 			}
+		}
+	}
+
+	/**
+	 * Replaces all the ranges by the given ones.
+	 * Uses {@link #_popRange _popRange} and {@link #_pushRange _pushRange} to ensure proper ranges removal and addition.
+	 *
+	 * @param {Array.<module:engine/model/range~Range>} ranges
+	 * @protected
+	 */
+	protected _replaceAllRanges( ranges: Range[] ): void {
+		this._removeAllRanges();
+
+		for ( const range of ranges ) {
+			this._pushRange( range );
 		}
 	}
 

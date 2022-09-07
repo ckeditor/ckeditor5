@@ -164,6 +164,23 @@ export default {
 			}
 		},
 		{
+			model: 'htmlColgroup',
+			view: 'colgroup',
+			modelSchema: {
+				allowIn: 'htmlTable',
+				allowChildren: 'col',
+				isBlock: true
+			}
+		},
+		{
+			model: 'htmlCol',
+			view: 'col',
+			modelSchema: {
+				allowIn: 'htmlColgroup',
+				isBlock: true
+			}
+		},
+		{
 			model: 'htmlTr',
 			view: 'tr',
 			modelSchema: {

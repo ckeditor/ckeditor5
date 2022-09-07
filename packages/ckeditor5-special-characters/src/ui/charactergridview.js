@@ -7,7 +7,9 @@
  * @module special-characters/ui/charactergridview
  */
 
-import { View, ButtonView } from 'ckeditor5/src/ui';
+import { View, ButtonView, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
+
+import { KeystrokeHandler, FocusTracker, global } from 'ckeditor5/src/utils';
 
 import '../../theme/charactergrid.css';
 
@@ -54,6 +56,33 @@ export default class CharacterGridView extends View {
 					'ck-character-grid'
 				]
 			}
+		} );
+
+		/**
+		 * Tracks information about the DOM focus in the grid.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
+		addKeyboardHandlingForGrid( {
+			keystrokeHandler: this.keystrokes,
+			focusTracker: this.focusTracker,
+			gridItems: this.tiles,
+			numberOfColumns: () => global.window
+				.getComputedStyle( this.element.firstChild ) // Responsive .ck-character-grid__tiles
+				.getPropertyValue( 'grid-template-columns' )
+				.split( ' ' )
+				.length
 		} );
 
 		/**
@@ -112,5 +141,47 @@ export default class CharacterGridView extends View {
 		} );
 
 		return tile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		for ( const item of this.tiles ) {
+			this.focusTracker.add( item.element );
+		}
+
+		this.tiles.on( 'change', ( eventInfo, { added, removed } ) => {
+			if ( added.length > 0 ) {
+				for ( const item of added ) {
+					this.focusTracker.add( item.element );
+				}
+			}
+			if ( removed.length > 0 ) {
+				for ( const item of removed ) {
+					this.focusTracker.remove( item.element );
+				}
+			}
+		} );
+
+		this.keystrokes.listenTo( this.element );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.keystrokes.destroy();
+	}
+
+	/**
+	 * Focuses the first focusable in {@link #tiles}.
+	 */
+	focus() {
+		this.tiles.get( 0 ).focus();
 	}
 }
