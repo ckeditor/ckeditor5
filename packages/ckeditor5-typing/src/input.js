@@ -100,21 +100,41 @@ export default class Input extends Plugin {
 			editor.execute( 'insertText', insertTextCommandData );
 		} );
 
-		// Note: The priority must precede the CompositionObserver handler to call it before
-		// the renderer is blocked, because we want to render this change.
-		this.listenTo( view.document, 'compositionstart', () => {
-			if ( modelSelection.isCollapsed ) {
-				return;
-			}
+		if ( env.isAndroid ) {
+			// On Android with English keyboard, the composition starts just by putting caret
+			// at the word end or by selecting a table column. This is not a real composition started.
+			// Trigger delete content on first composition key pressed.
+			this.listenTo( view.document, 'keydown', ( evt, data ) => {
+				if ( modelSelection.isCollapsed || data.keyCode != 229 ) {
+					return;
+				}
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Composition start -> model.deleteContent()',
-			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
-			// @if CK_DEBUG_TYPING // 		`[${ modelSelection.getFirstPosition().path }]-[${ modelSelection.getLastPosition().path }]`
-			// @if CK_DEBUG_TYPING // 	);
-			// @if CK_DEBUG_TYPING // }
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c KeyDown 229 -> model.deleteContent()',
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
+				// @if CK_DEBUG_TYPING // 		`[${ modelSelection.getFirstPosition().path }]-[${ modelSelection.getLastPosition().path }]`
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
 
-			model.deleteContent( modelSelection );
-		} );
+				model.deleteContent( modelSelection );
+			} );
+		} else {
+			// Note: The priority must precede the CompositionObserver handler to call it before
+			// the renderer is blocked, because we want to render this change.
+			this.listenTo( view.document, 'compositionstart', () => {
+				if ( modelSelection.isCollapsed ) {
+					return;
+				}
+
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Composition start -> model.deleteContent()',
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
+				// @if CK_DEBUG_TYPING // 		`[${ modelSelection.getFirstPosition().path }]-[${ modelSelection.getLastPosition().path }]`
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
+
+				model.deleteContent( modelSelection );
+			} );
+		}
 	}
 }
