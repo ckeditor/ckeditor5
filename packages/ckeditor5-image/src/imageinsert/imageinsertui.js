@@ -122,7 +122,7 @@ export default class ImageInsertUI extends Plugin {
 
 		// Defer the children injection to improve initial performance.
 		// See https://github.com/ckeditor/ckeditor5/pull/8019#discussion_r484069652.
-		dropdownView.buttonView.once( 'open', () => {
+		dropdownView.once( 'change:isOpen', () => {
 			panelView.children.add( imageInsertView );
 		} );
 
