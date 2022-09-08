@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event, KeyboardEvent */
+/* globals document, Event */
 
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import InsertTableView from '../../src/ui/inserttableview';
+
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
@@ -52,6 +54,15 @@ describe( 'InsertTableView', () => {
 			expect( view.element.children[ 1 ].classList.contains( 'ck-insert-table-dropdown__label' ) ).to.be.true;
 		} );
 
+		describe( 'createGridButton()', () => {
+			it( 'creates a new grid button', () => {
+				const btn = view.createGridButton( locale, 1, 1 );
+				expect( btn ).to.be.instanceOf( ButtonView );
+				expect( btn.label ).to.equal( '1 × 1' );
+				expect( btn.withText ).to.be.false;
+			} );
+		} );
+
 		describe( 'view#items collection', () => {
 			it( 'should be created', () => {
 				expect( view.items ).to.be.instanceOf( ViewCollection );
@@ -73,11 +84,15 @@ describe( 'InsertTableView', () => {
 			} );
 
 			it( 'should give every item an accessible label', () => {
-				const labelId = view.element.children[ 1 ].id;
-
 				expect( Array.from( view.items ).every(
-					item => item.element.getAttribute( 'aria-labelledby' ) === labelId
+					item => item.element.getAttribute( 'aria-labelledby' ) === item.element.children[ 0 ].id
 				), 'aria attribute' ).to.be.true;
+			} );
+
+			it( 'every item should be a #ButtonView instance', () => {
+				expect( Array.from( view.items ).every(
+					item => expect( item ).to.be.instanceOf( ButtonView )
+				), '#ButtonView instance' ).to.be.true;
 			} );
 		} );
 
@@ -134,26 +149,6 @@ describe( 'InsertTableView', () => {
 					dispatchEvent( view.element, 'click' );
 
 					sinon.assert.calledOnce( spy );
-				} );
-			} );
-
-			describe( 'keydown', () => {
-				it( 'should execute the command on Enter', () => {
-					const spy = sinon.spy();
-
-					view.on( 'execute', spy );
-					view.items.first.element.dispatchEvent( new KeyboardEvent( 'keydown', { key: 'Enter', bubbles: true } ) );
-
-					sinon.assert.calledOnce( spy );
-				} );
-
-				it( 'should not execute the command on other keys', () => {
-					const spy = sinon.spy();
-
-					view.on( 'execute', spy );
-					view.items.first.element.dispatchEvent( new KeyboardEvent( 'keydown', { key: 'Space', bubbles: true } ) );
-
-					sinon.assert.notCalled( spy );
 				} );
 			} );
 

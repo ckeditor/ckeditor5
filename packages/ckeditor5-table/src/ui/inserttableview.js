@@ -7,9 +7,9 @@
  * @module table/ui/inserttableview
  */
 
-import { View, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
+import { View, ButtonView, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
 
-import { KeystrokeHandler, FocusTracker, uid } from 'ckeditor5/src/utils';
+import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
 
 import './../../theme/inserttable.css';
 
@@ -29,16 +29,6 @@ export default class InsertTableView extends View {
 		super( locale );
 
 		const bind = this.bindTemplate;
-
-		/**
-		 * A unique id of a label element displaying the current geometry of the table.
-		 * Used by every {@link #items item} of the view as a pointer to an accessible label.
-		 *
-		 * @private
-		 * @readonly
-		 * @member {String}
-		 */
-		this._geometryLabelId = `ck-editor__label_${ uid() }`;
 
 		/**
 		 * A collection of table size box items.
@@ -103,11 +93,11 @@ export default class InsertTableView extends View {
 				{
 					tag: 'div',
 					attributes: {
-						id: this._geometryLabelId,
 						class: [
 							'ck',
 							'ck-insert-table-dropdown__label'
-						]
+						],
+						'aria-hidden': true
 					},
 					children: [
 						{
@@ -124,13 +114,6 @@ export default class InsertTableView extends View {
 
 				click: bind.to( () => {
 					this.fire( 'execute' );
-				} ),
-
-				keydown: bind.to( evt => {
-					if ( evt.key === 'Enter' ) {
-						this.fire( 'execute' );
-						evt.preventDefault();
-					}
 				} )
 			}
 		} );
@@ -138,8 +121,7 @@ export default class InsertTableView extends View {
 		// #rows and #columns are set via changes to #focusTracker on mouse over.
 		this.on( 'boxover', ( evt, domEvt ) => {
 			const { row, column } = domEvt.target.dataset;
-
-			this.items.get( ( row - 1 ) * 10 + ( column - 1 ) ).focus();
+			this.items.get( ( parseInt( row ) - 1 ) * 10 + ( parseInt( column ) - 1 ) ).focus();
 		} );
 
 		// This allows the #rows and #columns to be updated when:
@@ -161,6 +143,36 @@ export default class InsertTableView extends View {
 
 		this.on( 'change:columns', () => this._highlightGridBoxes() );
 		this.on( 'change:rows', () => this._highlightGridBoxes() );
+	}
+
+	/**
+	 * Creates a new Button for the grid.
+	 *
+	 * @returns {module:ui/button/buttonview~ButtonView}
+	 */
+	createGridButton( locale, row, column ) {
+		const button = new ButtonView( locale );
+		const bind = this.bindTemplate;
+
+		button.set( {
+			label: `${ row } × ${ column }`,
+			withText: false,
+			'isOn': false
+		} );
+
+		button.extendTemplate( {
+			attributes: {
+				class: [
+					'ck',
+					'ck-insert-table-dropdown-grid-box',
+					bind.if( 'isOn', 'ck-on' )
+				],
+				'data-row': row,
+				'data-column': column
+			}
+		} );
+
+		return button;
 	}
 
 	render() {
@@ -227,7 +239,7 @@ export default class InsertTableView extends View {
 			const row = Math.floor( index / 10 );
 			const column = index % 10;
 
-			boxes.push( new TableSizeGridBoxView( this.locale, row + 1, column + 1, this._geometryLabelId ) );
+			boxes.push( this.createGridButton( this.locale, row + 1, column + 1 ) );
 		}
 
 		return this.createCollection( boxes );
@@ -238,52 +250,4 @@ export default class InsertTableView extends View {
 	 *
 	 * @event boxover
 	 */
-}
-
-/**
- * A single grid box view element.
- *
- * This class is used to render the table size selection grid in {@link module:table/ui/inserttableview~InsertTableView}.
- *
- * @private
- */
-class TableSizeGridBoxView extends View {
-	/**
-	 * @inheritDoc
-	 */
-	constructor( locale, row, column, ariaLabelledById ) {
-		super( locale );
-
-		const bind = this.bindTemplate;
-
-		/**
-		 * Controls whether the grid box view is "on".
-		 *
-		 * @observable
-		 * @member {Boolean} #isOn
-		 */
-		this.set( 'isOn', false );
-
-		this.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-insert-table-dropdown-grid-box',
-					bind.if( 'isOn', 'ck-on' )
-				],
-				'data-row': row,
-				'data-column': column,
-				'tabindex': -1,
-				'aria-labelledby': ariaLabelledById
-			}
-		} );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	focus() {
-		this.element.focus();
-	}
 }
