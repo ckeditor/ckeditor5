@@ -59,7 +59,7 @@ const { FontColor, FontFamily, FontSize, FontBackgroundColor } = window.CKEditor
 const { Indent, IndentBlock } = window.CKEditor5.indent;
 const { List, ListProperties, TodoList } = window.CKEditor5.list;
 const { SpecialCharacters, SpecialCharactersEssentials } = window.CKEditor5.specialCharacters;
-const { Table, TableToolbar, TableCellProperties, TableProperties, TableCaption } = window.CKEditor5.table;
+const { Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize } = window.CKEditor5.table;
 const { Alignment } = window.CKEditor5.alignment;
 const { Autoformat } = window.CKEditor5.autoformat;
 const { BlockQuote } = window.CKEditor5.blockQuote;
@@ -135,7 +135,7 @@ const config = {
 		PasteFromOffice,
 		RemoveFormat,
 		SpecialCharacters, SpecialCharactersEssentials,
-		Table, TableToolbar, TableCellProperties, TableProperties, TableCaption,
+		Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize,
 		TextPartLanguage,
 		WordCount,
 		SourceEditing
