@@ -497,19 +497,19 @@ export default class TableColumnResizeEditing extends Plugin {
 			viewFigureParentWidth - tableWidth :
 			rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
 
-		// The multiplier is needed for calculating the proper movement offset:
-		// - it should negate the sign if content language direction is right-to-left,
-		// - it should double the offset if the table edge is resized and table is centered.
-		let multiplier = ( isLtrContent ? 1 : -1 ) * ( isTableResizeEdge && isTableCentered ? 2 : 1 );
+		// The multiplier is needed for calculating the proper movement offset.
+		// It should double the offset if the table edge is resized and table is centered.
+		let multiplier = isTableResizeEdge && isTableCentered ? 2 : 1;
 
-		// TODO rephrase Because we're updating the resizers position on tableAlignment we have to update the multiplier. See #11785.
-		if ( ( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) ||
-			modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) {
+		// It should negate the sign if content language direction is right-to-left.
+		if ( !isLtrContent ) {
 			multiplier *= -1;
 		}
-		// if ( modelTable.getAttribute( 'tableAlignment' ) === ( isLtrContent ? 'right' : 'left' ) ) {
 
-		// }
+		// It should negate the sign in some specific cases depending on the table alignment and content language direction. See #11785.
+		if ( isTableSideAlignedAway( modelTable, isLtrContent ) ) {
+			multiplier *= -1;
+		}
 
 		const dx = clamp(
 			( mouseEventData.clientX - columnPosition ) * multiplier,
@@ -660,11 +660,11 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		// We're enforcing the change of the resizers position using CSS, so the lastColumnIndex
 		// needs to be updated too. See #11785.
-		if ( modelTable.getAttribute( 'tableAlignment' ) === ( isLtrContent ? 'right' : 'left' ) ) {
+		if ( isTableSideAlignedAway( modelTable, isLtrContent ) ) {
 			lastColumnIndex = 0;
 		}
 
-		const nextColumnOffset = modelTable.getAttribute( 'tableAlignment' ) === ( isLtrContent ? 'right' : 'left' ) ? -1 : 1;
+		const nextColumnOffset = isTableSideAlignedAway( modelTable, isLtrContent ) ? -1 : 1;
 		const isTableResizeEdge = leftColumnIndex === lastColumnIndex;
 
 		const viewTable = viewLeftCell.findAncestor( 'table' );
@@ -747,4 +747,17 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 		}, { priority: 'lowest' } );
 	}
+}
+
+// Helper function for checking if the table is:
+// 	- aligned right with left-to-right content language direction
+// 	- aligned left with right-to-left content language direction
+//
+// The function got extracted to avoid code duplication as we are using it multiple times.
+function isTableSideAlignedAway( modelTable, isLtrContent ) {
+	if ( modelTable.getAttribute( 'tableAlignment' ) === ( isLtrContent ? 'right' : 'left' ) ) {
+		return true;
+	}
+
+	return false;
 }
