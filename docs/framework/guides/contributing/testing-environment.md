@@ -101,8 +101,8 @@ In order to start the manual tests server, use the `yarn run manual` task.
 
 The task accepts the following options:
 
-* `--files` &ndash; Specifies test files to run. [See the "Rules for using the `--files` option" section.](#rules-for-using-the-files-option)
-* `--language="pl"` &ndash; The main language build in into all test editors, passed to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin).  Check out the {@link features/ui-language UI language guide} to learn more. When unspecified, `'en'` is passed to the test runner.
+* `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
+* `--language="pl"` &ndash; The main language build in into all test editors, passed to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin).  Check out the {@link features/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
 * `--additional-languages="ar,pl,..."` &ndash; Specifies extra languages passed to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `8125`.
@@ -195,7 +195,7 @@ To check manual tests, start the server (`yarn manual --files=XYZ`), and then ru
 yarn run manual:verify
 ```
 
-Read more about the crawler in {@link framework/guides/contributing/development-environment#verifying-documentation Verifying documentation}.
+Read more about the crawler in the {@link framework/guides/contributing/development-environment#verifying-documentation Verifying documentation} guide.
 
 ## Rules for using the `--files` option
 
@@ -203,8 +203,8 @@ The `--files` (alias `-f`) option is used by both manual and automated tests, an
 
 <table>
 	<tr>
-		<th>Patterns</th>
-		<th>Result</th>
+		<th width="25%">Patterns</th>
+		<th width="75%">Result</th>
 	</tr>
 	<tr>
 		<td><code>ckeditor5</code></td>
@@ -241,7 +241,7 @@ The `--files` (alias `-f`) option is used by both manual and automated tests, an
 	<tr>
 		<td><code>basic-styles/bold*</code></td>
 		<td>
-			Runs all tests matching filename pattern <code>bold*.js</code> in the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests"><code>ckeditor5-basic-styles</code></a> package:
+			Run all tests matching the filename pattern <code>bold*.js</code> in the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests"><code>ckeditor5-basic-styles</code></a> package:
 			<ul>
 				<li><code>./packages/ckeditor5-basic-styles/tests/bold.js</code></li>
 				<li><code>./packages/ckeditor5-basic-styles/tests/bold/boldediting.js</code></li>
@@ -256,11 +256,9 @@ The `--files` (alias `-f`) option is used by both manual and automated tests, an
 </table>
 
 <info-box>
-	You can use multiple arguments separated by comma <code>,</code>, and sum of the outputs will be compiled.
-</info-box>
+	You can use multiple arguments separated by a comma <code>,</code> to have the sum of the outputs compiled.
 
-<info-box>
-	All of the patterns support wildcard <code>*</code>.
+	All of the patterns support the <code>*</code> wildcard.
 </info-box>
 
 ## Test suite and CI
