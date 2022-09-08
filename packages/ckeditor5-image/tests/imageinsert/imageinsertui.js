@@ -110,15 +110,6 @@ describe( 'ImageInsertUI', () => {
 			expect( dropdown.isEnabled, 'dropdown state #2' ).to.be.false;
 		} );
 
-		it( 'should not insert panel view children until dropdown is not open for the first time', () => {
-			expect( dropdown.panelView.children.length ).to.equal( 0 );
-
-			dropdown.buttonView.fire( 'open' );
-
-			expect( dropdown.panelView.children.length ).to.equal( 1 );
-			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
-		} );
-
 		it( 'should insert panel view children on first dropdown open', () => {
 			expect( dropdown.panelView.children.length ).to.equal( 0 );
 
