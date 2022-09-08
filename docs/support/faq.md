@@ -93,9 +93,9 @@ We plan to provide more official integrations with time. [Your feedback on what 
 
 ## How to get a fully–featured editor build?
 
-We prepared a build containing almost all available plugins, and it is called the superbuild. Instructions about how to integrate it quickly can be found in the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn quick start guide}.
+We have prepared a build containing almost all available plugins, and it is called the superbuild. Instructions on how to integrate it quickly can be found in the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn quick start guide}.
 
-In the {@link installation/getting-started/predefined-builds predefined builds} guide are available details about the {@link installation/getting-started/predefined-builds#superbuild superbuild} as well as the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds list of features} included in the superbuild (with comparison to other types of builds).
+In the {@link installation/getting-started/predefined-builds predefined builds} guide, there are details available about the {@link installation/getting-started/predefined-builds#superbuild superbuild}, together with the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds list of features included in the superbuild}, compared to other types of builds.
 
 ## How to customize the CKEditor 5 icons?
 
