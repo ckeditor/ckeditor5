@@ -19,14 +19,12 @@ const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 // those tests from being compiled while running tests using the `--files` argument.
 // See: https://github.com/ckeditor/ckeditor5/issues/12251.
 
-const manualDirectoriesNotInTestsRoot = new Set(
-	glob.sync( 'packages/*/tests/*/**/manual/**/*.@(js|ts|html|md)', { cwd: ROOT_DIRECTORY } )
-);
+const manualDirectoriesNotInTestsRoot = glob.sync( 'packages/*/tests/*/**/manual/**/*.@(js|ts|html|md)', { cwd: ROOT_DIRECTORY } );
 
-if ( manualDirectoriesNotInTestsRoot.size ) {
+if ( manualDirectoriesNotInTestsRoot.length ) {
 	console.log( red( 'The "manual/" directory should be stored directly in the "tests/" directory.' ) );
 	console.log( red( 'The following tests do not follow this rule:' ) );
-	console.log( red( [ ...manualDirectoriesNotInTestsRoot ].map( str => ` - ${ str }` ).join( '\n' ) ) );
+	console.log( red( manualDirectoriesNotInTestsRoot.map( str => ` - ${ str }` ).join( '\n' ) ) );
 
 	process.exit( 1 );
 }
