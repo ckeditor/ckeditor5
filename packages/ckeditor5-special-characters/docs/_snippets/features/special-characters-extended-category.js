@@ -7,7 +7,7 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-function SpecialCharactersArrowsExtended( editor ) {
+function SpecialCharactersExtended( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
 		{ title: 'alpha', character: 'α' },
 		{ title: 'beta', character: 'β' },
@@ -17,7 +17,7 @@ function SpecialCharactersArrowsExtended( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-special-characters-extended-category' ), {
-		extraPlugins: [ SpecialCharactersEssentials, SpecialCharactersArrowsExtended ],
+		extraPlugins: [ SpecialCharactersEssentials, SpecialCharactersExtended ],
 		toolbar: {
 			items: [
 				'heading',

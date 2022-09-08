@@ -78,7 +78,7 @@ By using the {@link module:special-characters/specialcharacters~SpecialCharacter
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 
-function SpecialCharactersArrowsExtended( editor ) {
+function SpecialCharactersExtended( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
 		{ title: 'alpha', character: 'α' },
 		{ title: 'beta', character: 'β' },
@@ -89,7 +89,7 @@ function SpecialCharactersArrowsExtended( editor ) {
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersArrowsExtended,
+			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
 
 			// Other plugins...
 		],
