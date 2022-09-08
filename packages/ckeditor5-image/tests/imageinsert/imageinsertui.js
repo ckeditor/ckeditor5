@@ -117,6 +117,13 @@ describe( 'ImageInsertUI', () => {
 
 			expect( dropdown.panelView.children.length ).to.equal( 1 );
 			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
+
+			dropdown.isOpen = false;
+			dropdown.isOpen = true;
+
+			// Make sure it happens only once.
+			expect( dropdown.panelView.children.length ).to.equal( 1 );
+			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
 		} );
 
 		describe( 'dropdown action button', () => {
