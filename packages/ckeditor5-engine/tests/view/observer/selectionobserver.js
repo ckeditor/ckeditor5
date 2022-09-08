@@ -395,11 +395,68 @@ describe( 'SelectionObserver', () => {
 			// Note: The listener in SelectionObserver has the same priority but was attached first.
 			selectionObserver.listenTo( domDocument, 'mouseup', () => {
 				expect( viewDocument.isSelecting ).to.be.false;
-			}, { priority: 'highest' } );
+			}, { priority: 'highest', useCapture: true } );
 
 			domDocument.dispatchEvent( new Event( 'mouseup' ) );
 
 			expect( viewDocument.isSelecting ).to.be.false;
+		} );
+
+		it( 'should fire selectionChange event upon the "mouseup" event (if DOM selection differs from view selection', done => {
+			// Disable DOM selectionchange event to make sure that mouseup triggered view event.
+			selectionObserver.listenTo( domDocument, 'selectionchange', evt => {
+				evt.stop();
+			}, { priority: 'highest' } );
+
+			viewDocument.on( 'selectionChange', ( evt, data ) => {
+				expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
+
+				expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( DocumentSelection );
+				expect( data.oldSelection.rangeCount ).to.equal( 0 );
+
+				expect( data ).to.have.property( 'newSelection' ).that.is.instanceof( ViewSelection );
+				expect( data.newSelection.rangeCount ).to.equal( 1 );
+
+				const newViewRange = data.newSelection.getFirstRange();
+				const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+
+				expect( newViewRange.start.parent ).to.equal( viewFoo );
+				expect( newViewRange.start.offset ).to.equal( 2 );
+				expect( newViewRange.end.parent ).to.equal( viewFoo );
+				expect( newViewRange.end.offset ).to.equal( 2 );
+
+				// Make sure that selectionChange event was triggered before the isSelecting flag reset
+				// so that model and view selection could get updated before isSelecting is reset
+				// and renderer updates the DOM selection.
+				expect( viewDocument.isSelecting ).to.be.true;
+
+				done();
+			} );
+
+			viewDocument.isSelecting = true;
+
+			changeDomSelection();
+			domDocument.dispatchEvent( new Event( 'mouseup' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+		} );
+
+		it( 'should not fire selectionChange event upon the "mouseup" event if it was not selecting', done => {
+			// Disable DOM selectionchange event to make sure that mouseup triggered view event.
+			selectionObserver.listenTo( domDocument, 'selectionchange', evt => {
+				evt.stop();
+			}, { priority: 'highest' } );
+
+			viewDocument.on( 'selectionChange', () => {
+				throw 'selectionChange fired';
+			} );
+
+			viewDocument.isSelecting = false;
+
+			changeDomSelection();
+			domDocument.dispatchEvent( new Event( 'mouseup' ) );
+
+			setTimeout( done, 100 );
 		} );
 
 		it( 'should set #isSelecting to false upon the "mouseup" event only once (editor with multiple roots)', () => {
@@ -439,7 +496,7 @@ describe( 'SelectionObserver', () => {
 			// Note: The listener in SelectionObserver has the same priority but was attached first.
 			selectionObserver.listenTo( domMain, 'keydown', () => {
 				expect( viewDocument.isSelecting ).to.be.false;
-			}, { priority: 'highest' } );
+			}, { priority: 'highest', useCapture: true } );
 
 			domMain.dispatchEvent( new Event( 'keydown' ) );
 
@@ -468,7 +525,7 @@ describe( 'SelectionObserver', () => {
 			// Note: The listener in SelectionObserver has the same priority but was attached first.
 			selectionObserver.listenTo( domMain, 'keyup', () => {
 				expect( viewDocument.isSelecting ).to.be.false;
-			}, { priority: 'highest' } );
+			}, { priority: 'highest', useCapture: true } );
 
 			domMain.dispatchEvent( new Event( 'keyup' ) );
 
