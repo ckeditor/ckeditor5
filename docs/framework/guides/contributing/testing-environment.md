@@ -177,6 +177,14 @@ ClassicEditor
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
+<info-box>
+	The <code>manual/</code> test directories should always be located in the root of the <code>tests/</code> directories.
+	<ul>
+		<li><code>packages/ckeditor5-engine/tests/manual/view/focus.js</code> &ndash; correct path.</li>
+		<li><code>packages/ckeditor5-engine/tests/view/manual/focus.js</code> &ndash; incorrect path.</li>
+	</ul>
+</info-box>
+
 ### Verifying all manual tests
 
 To verify that all manual tests can be **opened** without any errors (the crawler does not execute the manual test steps, it just visits the page), you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and it visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
