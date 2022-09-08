@@ -37,7 +37,7 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 	exec( 'yarn', 'run', 'dll:build' );
 	exec( 'sh', './scripts/check-manual-tests.sh', '-r', 'ckeditor5', '-f', 'ckeditor5' );
 
-	exec( 'node', './scripts/ci/check-directory-structure.js' );
+	exec( 'node', './scripts/ci/check-manual-tests-directory-structure.js' );
 }
 
 /**
