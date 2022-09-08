@@ -1,3 +1,3 @@
 {
-  "extends": "../../tsconfig.json"
+  "extends": "ckeditor5/tsconfig.json"
 }
