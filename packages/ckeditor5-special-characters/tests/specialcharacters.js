@@ -151,7 +151,7 @@ describe( 'SpecialCharacters', () => {
 					expect( grid.tiles.get( 0 ).label ).to.equal( '<' );
 					navigation.groupDropdownView.fire( new EventInfo( { label: 'Arrows' }, 'execute' ) );
 
-					expect( grid.tiles.get( 0 ).label ).to.equal( '⇐' );
+					expect( grid.tiles.get( 0 ).label ).to.equal( '←' );
 				} );
 			} );
 
