@@ -1292,7 +1292,7 @@ describe( 'TableColumnResizeEditing', () => {
 					}
 				} );
 
-				describe( 'where there are 2 tables: centered and aligned', () => {
+				describe( 'with 2 tables: centered and aligned', () => {
 					it( 'shrinks the table twice as much when resizing centered table as compared to aligned table', () => {
 						const columnToResizeIndex = 1;
 						const mouseMovementVector = { x: -10, y: 0 };
