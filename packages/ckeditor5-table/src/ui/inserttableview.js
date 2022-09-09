@@ -207,24 +207,22 @@ export default class InsertTableView extends View {
 	 * Creates a new Button for the grid.
 	 *
 	 * @private
+	 * @param {module:utils/locale~Locale} locale The locale instance.
+	 * @param {Number} row Row number.
+	 * @param {Number} column Column number.
+	 * @param {String} label The grid button label.
 	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	_createGridButton( locale, row, column, label ) {
 		const button = new ButtonView( locale );
-		const bind = this.bindTemplate;
 
 		button.set( {
 			label,
-			withText: false,
-			'isOn': false
+			class: 'ck-insert-table-dropdown-grid-box'
 		} );
 
 		button.extendTemplate( {
 			attributes: {
-				class: [
-					'ck-insert-table-dropdown-grid-box',
-					bind.if( 'isOn', 'ck-on' )
-				],
 				'data-row': row,
 				'data-column': column
 			}
