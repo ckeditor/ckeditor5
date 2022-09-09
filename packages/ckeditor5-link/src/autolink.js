@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { Delete, TextWatcher, getLastTextLine } from 'ckeditor5/src/typing';
 
-import { addLinkProtocolIfApplicable } from './utils';
+import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
@@ -233,14 +233,15 @@ export default class AutoLink extends Plugin {
 		const model = this.editor.model;
 		const deletePlugin = this.editor.plugins.get( 'Delete' );
 
-		if ( !this.isEnabled || !isLinkAllowedOnRange( range, model ) ) {
+		const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
+		const parsedUrl = addLinkProtocolIfApplicable( link, defaultProtocol );
+
+		if ( !this.isEnabled || !isLinkAllowedOnRange( range, model ) || !linkHasProtocol( parsedUrl ) ) {
 			return;
 		}
 
 		// Enqueue change to make undo step.
 		model.enqueueChange( writer => {
-			const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
-			const parsedUrl = addLinkProtocolIfApplicable( link, defaultProtocol );
 			writer.setAttribute( 'linkHref', parsedUrl, range );
 
 			model.enqueueChange( () => {
