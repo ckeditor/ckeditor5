@@ -1265,7 +1265,6 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 
 		expect( checkboxElement.tagName ).to.equal( 'INPUT' );
 		expect( checkboxElement.checked ).to.equal( false );
-		expect( checkboxElement.hasAttribute( 'tabindex' ) ).to.be.true;
 		expect( checkboxElement.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 	} );
 
