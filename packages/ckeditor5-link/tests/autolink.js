@@ -237,6 +237,15 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		it( 'does not autolink address without protocol (defaultProtocol is not set or not valid)', () => {
+			editor.config.set( 'link.defaultProtocol', '' );
+			simulateTyping( 'www.cksource.com ' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>www.cksource.com []</paragraph>'
+			);
+		} );
+
 		// Some examples came from https://mathiasbynens.be/demo/url-regex.
 		describe( 'supported URL', () => {
 			const supportedURLs = [
@@ -245,7 +254,6 @@ describe( 'AutoLink', () => {
 				'https://cksource.com:8080',
 				'http://www.cksource.com',
 				'hTtP://WwW.cKsOuRcE.cOm',
-				'www.cksource.com',
 				'http://foo.bar.cksource.com',
 				'http://www.cksource.com/some/path/index.html#abc',
 				'http://www.cksource.com/some/path/index.html?foo=bar',
@@ -303,7 +311,7 @@ describe( 'AutoLink', () => {
 			}
 		} );
 
-		describe( 'invalid or supported URL', () => {
+		describe( 'invalid or unsupported URL', () => {
 			// Some examples came from https://mathiasbynens.be/demo/url-regex.
 			const unsupportedOrInvalid = [
 				'http://',

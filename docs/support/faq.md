@@ -91,11 +91,11 @@ If an official integration for the framework of your choice does not exist yet, 
 
 We plan to provide more official integrations with time. [Your feedback on what should we work on next](https://github.com/ckeditor/ckeditor5/issues/1002) will be most welcome!
 
-## How to get a fully–featured editor build (a.k.a. CKEditor 4 "Full Package")?
+## How to get a fully–featured editor build?
 
-We believe each editor build should serve its purpose. Including features that are not used makes little sense because they increase the size of the editor and make the website heavier for no good reason. This is why we do not provide a full editor package similar to what we offer in CKEditor 4.
+We have prepared a build containing almost all available plugins, and it is called the superbuild. Instructions on how to integrate it quickly can be found in the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn quick start guide}.
 
-At the same time, we recommend you to {@link installation/getting-started/installing-plugins install plugins} to enable {@link features/index additional features} or even create a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} to make sure you make the most out of CKEditor 5.
+In the {@link installation/getting-started/predefined-builds predefined builds} guide, there are details available about the {@link installation/getting-started/predefined-builds#superbuild superbuild}, together with the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds list of features included in the superbuild}, compared to other types of builds.
 
 ## How to customize the CKEditor 5 icons?
 

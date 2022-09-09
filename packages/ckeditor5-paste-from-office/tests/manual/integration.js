@@ -19,6 +19,7 @@ import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolo
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
@@ -44,6 +45,7 @@ ClassicEditor
 			PageBreak,
 			TableProperties,
 			TableCellProperties,
+			TableColumnResize,
 			ImageUpload,
 			CloudServices,
 			EasyImage,

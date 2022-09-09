@@ -6,7 +6,7 @@
 /* globals console, document */
 
 import View from '../../../src/view/view';
-import createViewRoot from '../_utils/createroot';
+import createViewRoot from '../../view/_utils/createroot';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 const view = new View( new StylesProcessor() );

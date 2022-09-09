@@ -78,19 +78,18 @@ By using the {@link module:special-characters/specialcharacters~SpecialCharacter
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 
-function SpecialCharactersArrowsExtended( editor ) {
-	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
-		{ title: 'simple arrow left', character: '←' },
-		{ title: 'simple arrow up', character: '↑' },
-		{ title: 'simple arrow right', character: '→' },
-		{ title: 'simple arrow down', character: '↓' }
+function SpecialCharactersExtended( editor ) {
+	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
+		{ title: 'alpha', character: 'α' },
+		{ title: 'beta', character: 'β' },
+		{ title: 'gamma', character: 'γ' }
 	] );
 }
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersArrowsExtended,
+			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
 
 			// Other plugins...
 		],
@@ -104,7 +103,7 @@ ClassicEditor
 	The title of a special character must be unique across the entire special characters set.
 </info-box>
 
-Below, you can see a demo based on the example shown above. Use the special characters icon in the editor toolbar and then select "Arrows" in the select dropdown. You will see that the category now contains the additional arrow characters added in the configuration above.
+Below, you can see a demo based on the example shown above. Use the special characters icon in the editor toolbar and then select "Mathematical" in the select dropdown. You will see that the category now contains the additional greek letters added in the configuration above.
 
 {@snippet features/special-characters-extended-category}
 
