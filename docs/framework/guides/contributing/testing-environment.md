@@ -24,7 +24,7 @@ It accepts the following arguments that must be passed after the `--` option:
 * `--source-map` (alias `-s`) &ndash; Whether to generate useful source maps for the code.
 * `--coverage` (alias `-c`) &ndash; Whether to generate code coverage.
 * `--verbose` (alias `-v`) &ndash; Allows switching on webpack logs.
-* `--files` &ndash; Specifies test files to run. [See the "Rules for using the `--files` option" section.](#rules-for-using-the-files-option)
+* `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
 * `--browsers` &ndash; Browsers that will be used to run the tests. Defaults to `Chrome`.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `9876`.
