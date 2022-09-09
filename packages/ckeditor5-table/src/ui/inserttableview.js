@@ -38,6 +38,12 @@ export default class InsertTableView extends View {
 		 */
 		this.items = this._createGridCollection();
 
+		/**
+		 * Listen to `keydown` events fired in this view's main element.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokeHandler~KeystrokeHandler}
+		 */
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
@@ -121,7 +127,7 @@ export default class InsertTableView extends View {
 		// #rows and #columns are set via changes to #focusTracker on mouse over.
 		this.on( 'boxover', ( evt, domEvt ) => {
 			const { row, column } = domEvt.target.dataset;
-			this.items.get( ( parseInt( row ) - 1 ) * 10 + ( parseInt( column ) - 1 ) ).focus();
+			this.items.get( ( parseInt( row, 10 ) - 1 ) * 10 + ( parseInt( column, 10 ) - 1 ) ).focus();
 		} );
 
 		// This allows the #rows and #columns to be updated when:
@@ -143,36 +149,6 @@ export default class InsertTableView extends View {
 
 		this.on( 'change:columns', () => this._highlightGridBoxes() );
 		this.on( 'change:rows', () => this._highlightGridBoxes() );
-	}
-
-	/**
-	 * Creates a new Button for the grid.
-	 *
-	 * @returns {module:ui/button/buttonview~ButtonView}
-	 */
-	createGridButton( locale, row, column ) {
-		const button = new ButtonView( locale );
-		const bind = this.bindTemplate;
-
-		button.set( {
-			label: `${ row } × ${ column }`,
-			withText: false,
-			'isOn': false
-		} );
-
-		button.extendTemplate( {
-			attributes: {
-				class: [
-					'ck',
-					'ck-insert-table-dropdown-grid-box',
-					bind.if( 'isOn', 'ck-on' )
-				],
-				'data-row': row,
-				'data-column': column
-			}
-		} );
-
-		return button;
 	}
 
 	render() {
@@ -228,6 +204,36 @@ export default class InsertTableView extends View {
 	}
 
 	/**
+	 * Creates a new Button for the grid.
+	 *
+	 * @private
+	 * @returns {module:ui/button/buttonview~ButtonView}
+	 */
+	_createGridButton( locale, row, column, label ) {
+		const button = new ButtonView( locale );
+		const bind = this.bindTemplate;
+
+		button.set( {
+			label,
+			withText: false,
+			'isOn': false
+		} );
+
+		button.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-insert-table-dropdown-grid-box',
+					bind.if( 'isOn', 'ck-on' )
+				],
+				'data-row': row,
+				'data-column': column
+			}
+		} );
+
+		return button;
+	}
+
+	/**
 	 * @private
 	 * @returns {module:ui/viewcollection~ViewCollection} A view collection containing boxes to be placed in a table grid.
 	 */
@@ -238,8 +244,9 @@ export default class InsertTableView extends View {
 		for ( let index = 0; index < 100; index++ ) {
 			const row = Math.floor( index / 10 );
 			const column = index % 10;
+			const label = `${ row + 1 } × ${ column + 1 }`;
 
-			boxes.push( this.createGridButton( this.locale, row + 1, column + 1 ) );
+			boxes.push( this._createGridButton( this.locale, row + 1, column + 1, label ) );
 		}
 
 		return this.createCollection( boxes );

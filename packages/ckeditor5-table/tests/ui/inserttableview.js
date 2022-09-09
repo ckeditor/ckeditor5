@@ -5,12 +5,8 @@
 
 /* globals document, Event */
 
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-
+import { ViewCollection, ButtonView } from '@ckeditor/ckeditor5-ui';
 import InsertTableView from '../../src/ui/inserttableview';
-
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'InsertTableView', () => {
@@ -54,19 +50,16 @@ describe( 'InsertTableView', () => {
 			expect( view.element.children[ 1 ].classList.contains( 'ck-insert-table-dropdown__label' ) ).to.be.true;
 		} );
 
-		describe( 'createGridButton()', () => {
-			it( 'creates a new grid button', () => {
-				const btn = view.createGridButton( locale, 1, 1 );
-				expect( btn ).to.be.instanceOf( ButtonView );
-				expect( btn.label ).to.equal( '1 × 1' );
-				expect( btn.withText ).to.be.false;
-			} );
-		} );
-
 		describe( 'view#items collection', () => {
 			it( 'should be created', () => {
 				expect( view.items ).to.be.instanceOf( ViewCollection );
 				expect( view.items ).to.have.length( 100 );
+			} );
+
+			it( 'should create a single new grid button', () => {
+				const btn = view._createGridButton( locale, 1, 1, '1 × 1' );
+				expect( btn.label ).to.equal( '1 × 1' );
+				expect( btn.withText ).to.be.false;
 			} );
 
 			it( 'should create items from template', () => {
@@ -81,6 +74,14 @@ describe( 'InsertTableView', () => {
 				expect( Array.from( view.items ).every(
 					item => item.element.getAttribute( 'tabindex' ) === '-1'
 				), 'tabindex' ).to.be.true;
+
+				expect( Array.from( view.items ).every(
+					item => 'row' in item.element.dataset
+				), 'row data attribute' ).to.be.true;
+
+				expect( Array.from( view.items ).every(
+					item => 'column' in item.element.dataset
+				), 'column data attribute' ).to.be.true;
 			} );
 
 			it( 'should give every item an accessible label', () => {
@@ -89,7 +90,7 @@ describe( 'InsertTableView', () => {
 				), 'aria attribute' ).to.be.true;
 			} );
 
-			it( 'every item should be a #ButtonView instance', () => {
+			it( 'every item should be the #ButtonView instance', () => {
 				expect( Array.from( view.items ).every(
 					item => expect( item ).to.be.instanceOf( ButtonView )
 				), '#ButtonView instance' ).to.be.true;
