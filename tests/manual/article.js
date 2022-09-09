@@ -39,6 +39,9 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		ui: {
+			label: 'My custom label'
 		}
 	} )
 	.then( editor => {

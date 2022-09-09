@@ -24,7 +24,7 @@ export default class ClassicEditorUI extends EditorUI {
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
-	constructor( editor, view ) {
+	constructor( editor ) {
 		super( editor );
 
 		/**
@@ -33,7 +33,6 @@ export default class ClassicEditorUI extends EditorUI {
 		 * @readonly
 		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
 		 */
-		this.view = view;
 
 		/**
 		 * A normalized `config.toolbar` object.
@@ -122,6 +121,10 @@ export default class ClassicEditorUI extends EditorUI {
 		view.destroy();
 
 		super.destroy();
+	}
+
+	setView( view ) {
+		this.view = view;
 	}
 
 	/**

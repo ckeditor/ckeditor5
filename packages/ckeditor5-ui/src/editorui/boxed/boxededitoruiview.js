@@ -22,7 +22,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance..
 	 */
-	constructor( locale ) {
+	constructor( locale, options = {} ) {
 		super( locale );
 
 		/**
@@ -50,7 +50,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/view~View} #_voiceLabelView
 		 */
-		this._voiceLabelView = this._createVoiceLabel();
+		this._voiceLabelView = this._createVoiceLabel( options.label );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -103,11 +103,10 @@ export default class BoxedEditorUIView extends EditorUIView {
 	 * @private
 	 * @returns {module:ui/label/labelview~LabelView}
 	 */
-	_createVoiceLabel() {
-		const t = this.t;
+	_createVoiceLabel( labelText ) {
 		const voiceLabel = new LabelView();
 
-		voiceLabel.text = t( 'Rich Text Editor' );
+		voiceLabel.text = labelText;
 
 		voiceLabel.extendTemplate( {
 			attributes: {

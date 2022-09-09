@@ -29,7 +29,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
 	 */
 	constructor( locale, editingView, options = {} ) {
-		super( locale );
+		super( locale, { label: options.label } );
 
 		/**
 		 * Sticky panel view instance. This is a parent view of a {@link #toolbar}

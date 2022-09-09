@@ -108,6 +108,13 @@ export default class EditorUI {
 			this.isReady = true;
 		} );
 
+		const t = editor.locale.t;
+
+		// Prevents incrementing the counter for editors with name set in the config.
+		if ( !editor.config.get( 'ui.label' ) ) {
+			editor.config.define( 'ui.label', `${ t( 'Rich Text Editor' ) } ${ ++EditorUI._editorCount }` );
+		}
+
 		/**
 		 * Stores all editable elements used by the editor instance.
 		 *
@@ -580,3 +587,5 @@ function getToolbarDefinitionWeight( toolbarDef ) {
 
 	return weight;
 }
+
+EditorUI._editorCount = 0;

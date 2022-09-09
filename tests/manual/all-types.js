@@ -17,7 +17,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 
 window.editors = {};
 
-function createEditor( EditorConstructor, containerId, extraPlugins = [], afterCreate ) {
+function createEditor( EditorConstructor, containerId, extraPlugins = [], afterCreate, extraConfig ) {
 	const config = {
 		initialData: document.getElementById( 'fixtures' ).innerHTML,
 		plugins: [ ArticlePluginSet ],
@@ -63,6 +63,8 @@ function createEditor( EditorConstructor, containerId, extraPlugins = [], afterC
 		}
 	};
 
+	Object.assign( config, extraConfig );
+
 	if ( extraPlugins.includes( SourceEditing ) ) {
 		config.toolbar.unshift( 'sourceEditing', '|' );
 	}
@@ -84,7 +86,11 @@ function createEditor( EditorConstructor, containerId, extraPlugins = [], afterC
 }
 
 createEditor( ClassicEditor, '#editor-classic', [ SourceEditing ] );
-createEditor( InlineEditor, '#editor-inline' );
+createEditor( InlineEditor, '#editor-inline', [], () => {}, {
+	ui: {
+		label: 'My Editor'
+	}
+} );
 createEditor( BalloonEditor, '#editor-balloon' );
 createEditor( BalloonEditor, '#editor-balloon-block', [ BlockToolbar ] );
 createEditor( DecoupledEditor, '#editor-document', [], editor => {
