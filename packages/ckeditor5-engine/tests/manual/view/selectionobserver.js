@@ -7,7 +7,7 @@
 
 import View from '../../../src/view/view';
 import { setData } from '../../../src/dev-utils/view';
-import createViewRoot from '../_utils/createroot';
+import createViewRoot from '../../view/_utils/createroot';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 const view = new View( new StylesProcessor() );
@@ -16,16 +16,15 @@ createViewRoot( viewDocument );
 view.attachDomRoot( document.getElementById( 'editor' ) );
 
 setData( view,
-	'<container:p>fo{}o</container:p>' +
-	'<container:p></container:p>' +
-	'<container:p><attribute:strong></attribute:strong></container:p>' +
-	'<container:p>bar</container:p>' );
-
-view.focus();
+	'<container:p><attribute:b>foo</attribute:b>bar</container:p>' +
+	'<container:p>bom</container:p>' );
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
-	const node = data.newSelection.getFirstPosition().parent;
-	console.log( node.name ? node.name : node._data );
+	console.log( 'selectionChange', data );
+	view.change( writer => writer.setSelection( data.newSelection ) );
+} );
 
+viewDocument.on( 'selectionChangeDone', ( evt, data ) => {
+	console.log( '%c selectionChangeDone ', 'background: #222; color: #bada55', data );
 	view.change( writer => writer.setSelection( data.newSelection ) );
 } );
