@@ -82,6 +82,27 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				return view.domConverter.domRangeToView( domRange )!;
 			} );
 
+			// if (
+			// 	env.isAndroid &&
+			// 	targetRanges.length == 1 && !targetRanges[ 0 ] &&
+			// 	domTargetRanges.length == 1
+			// ) {
+			// 	const startContainer = domTargetRanges[ 0 ].startContainer;
+			// 	const anchorElement = ( startContainer.nodeType == Node.TEXT_NODE ? startContainer.parentNode : startContainer ) as HTMLElement;
+			//
+			// 	if ( anchorElement.closest( '.ck-fake-selection-container' ) ) {
+			// 		targetRanges = Array.from( view.domConverter.fakeSelectionToView( anchorElement )!.getRanges() );
+			//
+			// 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// 		// @if CK_DEBUG_TYPING // 	console.info( '%c@@@@@@ [InputObserver]%c ignoring beforeinput in fake selection container:',
+			// 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges, domTargetRanges
+			// 		// @if CK_DEBUG_TYPING // 	);
+			// 		// @if CK_DEBUG_TYPING //
+			// 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// 		// @if CK_DEBUG_TYPING // }
+			// 	}
+			// }
+
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using target ranges:',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
@@ -98,6 +119,29 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 		}
+
+		// if (
+		// 	env.isAndroid &&
+		// 	targetRanges.length == 1 && !targetRanges[ 0 ] &&
+		// 	domTargetRanges.length == 1
+		// ) {
+		// 	const startContainer = domTargetRanges[ 0 ].startContainer;
+		// 	const anchorElement = ( startContainer.nodeType == Node.TEXT_NODE ? startContainer.parentNode : startContainer ) as HTMLElement;
+		//
+		// 	if ( anchorElement.closest( '.ck-fake-selection-container' ) ) {
+		// 		targetRanges = Array.from( view.domConverter.fakeSelectionToView( anchorElement )!.getRanges() );
+		//
+		// 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// 		// @if CK_DEBUG_TYPING // 	console.info( '%c@@@@@@ [InputObserver]%c ignoring beforeinput in fake selection container:',
+		// 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges, domTargetRanges
+		// 		// @if CK_DEBUG_TYPING // 	);
+		// 		// @if CK_DEBUG_TYPING //
+		// 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// 		// @if CK_DEBUG_TYPING // }
+		//
+		// 		return;
+		// 	}
+		// }
 
 		if ( env.isAndroid && domEvent.inputType == 'insertCompositionText' && data && data.endsWith( '\n' ) ) {
 			this.fire( domEvent.type, domEvent, {
