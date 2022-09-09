@@ -175,8 +175,7 @@ export function addLinkProtocolIfApplicable( link, defaultProtocol ) {
 }
 
 /**
- * Checks if protocol is already included in the link
- *
+ * Checks if protocol is already included in the link.
  *
  * @param {String} link
  * @returns {Boolean}
