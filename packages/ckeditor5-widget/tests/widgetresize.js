@@ -163,6 +163,18 @@ describe( 'WidgetResize', () => {
 				expect( isVisible( resizer ) ).to.be.true;
 			}
 		} );
+
+		it( 'it\'s hidden when resizer is not enabled and widget is focused', () => {
+			// Widget is focused by default.
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			widgetResizePlugin.visibleResizer.isEnabled = false;
+
+			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
+
+			for ( const resizer of allResizers ) {
+				expect( isVisible( resizer ) ).to.be.false;
+			}
+		} );
 	} );
 
 	describe( 'integration (pixels)', () => {
