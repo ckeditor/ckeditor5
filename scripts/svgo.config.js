@@ -7,8 +7,7 @@
 
 const { extendDefaultPlugins } = require( 'svgo' );
 
-// TODO: fix deprecated warning.
-// https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/svgo/index.d.ts#L823
+// TODO: https://github.com/ckeditor/ckeditor5/issues/10601.
 module.exports = {
 	plugins: extendDefaultPlugins( [
 		{
