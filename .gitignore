@@ -1,5 +1,5 @@
 # All "dot directories".
-.*/**
+.yarn/*
 !.github/**
 
 # Files associated with CKEditor 5 repository.
@@ -10,6 +10,7 @@ docs/api/output.json
 yarn.lock
 package-lock.json
 coverage/
+!.yarn/releases
 
 # Files associated with external repositories.
 external/
@@ -23,7 +24,6 @@ mrgit.json
 # Ignore yalc
 .yalc
 yalc.lock
-
 
 # Ignore compiled TypeScript files.
 packages/ckeditor5-utils/src/**/*.js

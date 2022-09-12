@@ -9,6 +9,7 @@ branches:
   - release
   - /^v\d+\.\d+\.\d+$/
   - /^(ck|cf|ci)\/epic\/\d+/
+  - yarn2spike
 services:
 - xvfb
 node_js:
@@ -20,7 +21,7 @@ before_install:
 - export COVERALLS_SERVICE_NAME="CKEditor5 code coverage"
 - npm i -g yarn
 install:
-- yarn install
+- yarn install --no-immutable
 script:
 - ./scripts/ci/travis-check.js
 - if [[ $TRAVIS_JOB_TYPE == "Tests" && $TRAVIS_TEST_RESULT -eq 0 ]]; then ./scripts/ci/trigger-ckeditor5-continuous-integration.sh; fi

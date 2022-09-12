@@ -131,6 +131,7 @@
     "webpack": "^5.58.1",
     "wrapper-webpack-plugin": "^2.2.0-beta.0"
   },
+  "packageManager": "yarn@3.2.3",
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=5.7.1"
