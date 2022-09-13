@@ -135,7 +135,7 @@ export default {
 			view: 'tbody',
 			modelSchema: {
 				allowIn: 'htmlTable',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -143,7 +143,7 @@ export default {
 			view: 'thead',
 			modelSchema: {
 				allowIn: 'htmlTable',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -151,7 +151,7 @@ export default {
 			view: 'tfoot',
 			modelSchema: {
 				allowIn: 'htmlTable',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -160,7 +160,8 @@ export default {
 			modelSchema: {
 				allowIn: 'htmlTable',
 				allowChildren: '$text',
-				isBlock: true
+				isBlock: false,
+				isLimit: true
 			}
 		},
 		{
@@ -169,7 +170,7 @@ export default {
 			modelSchema: {
 				allowIn: 'htmlTable',
 				allowChildren: 'col',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -177,7 +178,7 @@ export default {
 			view: 'col',
 			modelSchema: {
 				allowIn: 'htmlColgroup',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -211,7 +212,7 @@ export default {
 			view: 'figure',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		// TODO can also include other block elements.
@@ -221,7 +222,8 @@ export default {
 			modelSchema: {
 				allowIn: 'htmlFigure',
 				allowChildren: '$text',
-				isBlock: true
+				isBlock: false,
+				isLimit: true
 			}
 		},
 		// TODO can also include text.
@@ -230,7 +232,7 @@ export default {
 			view: 'address',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -239,7 +241,7 @@ export default {
 			view: 'aside',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -248,7 +250,7 @@ export default {
 			view: 'main',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -257,7 +259,7 @@ export default {
 			view: 'details',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -266,7 +268,7 @@ export default {
 			modelSchema: {
 				allowChildren: '$text',
 				allowIn: 'htmlDetails',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -283,7 +285,7 @@ export default {
 			view: 'fieldset',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		// TODO can also include h1-h6.
@@ -301,7 +303,7 @@ export default {
 			view: 'header',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -310,7 +312,7 @@ export default {
 			view: 'footer',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -334,7 +336,7 @@ export default {
 					'htmlH5',
 					'htmlH6'
 				],
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -384,7 +386,7 @@ export default {
 			modelSchema: {
 				allowWhere: '$container',
 				allowChildren: [ '$htmlList', 'htmlLi' ],
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -422,7 +424,7 @@ export default {
 			modelSchema: {
 				allowIn: '$htmlList',
 				allowChildren: '$text',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -437,7 +439,7 @@ export default {
 			view: 'article',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -445,7 +447,7 @@ export default {
 			view: 'section',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -454,7 +456,7 @@ export default {
 			view: 'nav',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -463,7 +465,7 @@ export default {
 			modelSchema: {
 				allowWhere: '$container',
 				allowChildren: [ 'htmlDt', 'htmlDd' ],
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -471,7 +473,7 @@ export default {
 			view: 'dt',
 			modelSchema: {
 				allowChildren: '$block',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -479,7 +481,7 @@ export default {
 			view: 'dd',
 			modelSchema: {
 				allowChildren: '$block',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -487,7 +489,7 @@ export default {
 			view: 'center',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		}
 	],
