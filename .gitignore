@@ -1,6 +1,14 @@
 # All "dot directories".
-.yarn/*
 !.github/**
+
+# Files associated with Yarn.
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 # Files associated with CKEditor 5 repository.
 **/node_modules
