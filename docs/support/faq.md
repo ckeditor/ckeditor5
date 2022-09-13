@@ -85,7 +85,7 @@ If an official integration for the framework of your choice does not exist yet, 
 
 We plan to provide more official integrations with time. [Your feedback on what should we work on next](https://github.com/ckeditor/ckeditor5/issues/1002) will be most welcome!
 
-## How to get a fully–featured editor build?
+## How to get a full–featured editor build?
 
 We have prepared a build containing almost all available plugins, and it is called the superbuild. Instructions on how to integrate it quickly can be found in the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn quick start guide}.
 
