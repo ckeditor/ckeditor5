@@ -68,40 +68,22 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 		// If the editor selection is fake (an object is selected), the DOM range does not make sense because it is anchored
 		// in the fake selection container.
-		if ( viewDocument.selection.isFake ) {
+		// On Android it is sometimes trying to use target range inside the fake selection container
+		// (but selected widget is already removed from model and DOM) while replacing a widget with a keyboard suggestion.
+		if ( viewDocument.selection.isFake || env.isAndroid && isInsideFakeSelectionContainer( domTargetRanges ) ) {
 			// Future-proof: in case of multi-range fake selections being possible.
 			targetRanges = Array.from( viewDocument.selection.getRanges() );
 
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using fake selection:',
-			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges,
+			// @if CK_DEBUG_TYPING // 		viewDocument.selection.isFake ? 'fake view selection' : 'fake DOM parent'
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 		} else if ( domTargetRanges.length ) {
 			targetRanges = domTargetRanges.map( domRange => {
 				return view.domConverter.domRangeToView( domRange )!;
 			} );
-
-			// if (
-			// 	env.isAndroid &&
-			// 	targetRanges.length == 1 && !targetRanges[ 0 ] &&
-			// 	domTargetRanges.length == 1
-			// ) {
-			// 	const startContainer = domTargetRanges[ 0 ].startContainer;
-			// 	const anchorElement = ( startContainer.nodeType == Node.TEXT_NODE ? startContainer.parentNode : startContainer ) as HTMLElement;
-			//
-			// 	if ( anchorElement.closest( '.ck-fake-selection-container' ) ) {
-			// 		targetRanges = Array.from( view.domConverter.fakeSelectionToView( anchorElement )!.getRanges() );
-			//
-			// 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-			// 		// @if CK_DEBUG_TYPING // 	console.info( '%c@@@@@@ [InputObserver]%c ignoring beforeinput in fake selection container:',
-			// 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges, domTargetRanges
-			// 		// @if CK_DEBUG_TYPING // 	);
-			// 		// @if CK_DEBUG_TYPING //
-			// 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
-			// 		// @if CK_DEBUG_TYPING // }
-			// 	}
-			// }
 
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using target ranges:',
@@ -119,29 +101,6 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 		}
-
-		// if (
-		// 	env.isAndroid &&
-		// 	targetRanges.length == 1 && !targetRanges[ 0 ] &&
-		// 	domTargetRanges.length == 1
-		// ) {
-		// 	const startContainer = domTargetRanges[ 0 ].startContainer;
-		// 	const anchorElement = ( startContainer.nodeType == Node.TEXT_NODE ? startContainer.parentNode : startContainer ) as HTMLElement;
-		//
-		// 	if ( anchorElement.closest( '.ck-fake-selection-container' ) ) {
-		// 		targetRanges = Array.from( view.domConverter.fakeSelectionToView( anchorElement )!.getRanges() );
-		//
-		// 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-		// 		// @if CK_DEBUG_TYPING // 	console.info( '%c@@@@@@ [InputObserver]%c ignoring beforeinput in fake selection container:',
-		// 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges, domTargetRanges
-		// 		// @if CK_DEBUG_TYPING // 	);
-		// 		// @if CK_DEBUG_TYPING //
-		// 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
-		// 		// @if CK_DEBUG_TYPING // }
-		//
-		// 		return;
-		// 	}
-		// }
 
 		if ( env.isAndroid && domEvent.inputType == 'insertCompositionText' && data && data.endsWith( '\n' ) ) {
 			this.fire( domEvent.type, domEvent, {
@@ -241,3 +200,14 @@ export type InputObserverEvent = {
  * @readonly
  * @member {String|null} module:engine/view/observer/inputobserver~InputEventData#data
  */
+
+function isInsideFakeSelectionContainer( domTargetRanges: StaticRange[] ): boolean {
+	if ( !domTargetRanges.length ) {
+		return false;
+	}
+
+	const startContainer = domTargetRanges[ 0 ].startContainer;
+	const anchorElement = ( startContainer.nodeType == Node.TEXT_NODE ? startContainer.parentNode : startContainer ) as HTMLElement;
+
+	return !!anchorElement.closest( '.ck-fake-selection-container' );
+}

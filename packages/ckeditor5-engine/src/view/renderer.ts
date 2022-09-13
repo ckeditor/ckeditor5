@@ -25,7 +25,6 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import type { ChangeType } from './document';
 import type DocumentSelection from './documentselection';
 import type DomConverter from './domconverter';
-import type EditableElement from './editableelement';
 import type ViewElement from './element';
 import type ViewNode from './node';
 
@@ -680,7 +679,12 @@ export default class Renderer extends Observable {
 		}
 
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
-		const actions = this._findReplaceActions( diff, actualDomChildren, expectedDomChildren, { replaceText: true } );
+
+		// We need to check whether there are some text nodes to update data to make sure that replacing such nodes
+		// as a whole would break composition on Android (on other browser the whole rendering is disabled while composing).
+		const actions = env.isAndroid ?
+			this._findReplaceActions( diff, actualDomChildren, expectedDomChildren, { replaceText: true } ) :
+			diff;
 
 		let i = 0;
 		const nodesToUnbind: Set<DomNode> = new Set();
@@ -707,26 +711,19 @@ export default class Renderer extends Observable {
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'replace' ) {
-				if ( !this.isComposing ) {
-					// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-					// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text node',
-					// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
-					// @if CK_DEBUG_TYPING // 	);
-					// @if CK_DEBUG_TYPING // }
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text node',
+				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
 
-					updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
+				updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
 
-					// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-					// @if CK_DEBUG_TYPING // 	console.groupEnd();
-					// @if CK_DEBUG_TYPING // }
-				} else {
-					// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-					// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Ignore text node update while composing',
-					// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
-					// @if CK_DEBUG_TYPING // 	);
-					// @if CK_DEBUG_TYPING // }
-				}
 				i++;
+
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.groupEnd();
+				// @if CK_DEBUG_TYPING // }
 			} else if ( action === 'equal' ) {
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
 				// Do it here (not in the loop above) because only after insertions the `i` index is correct.

@@ -7,6 +7,8 @@
  * @module typing/deleteobserver
  */
 
+/* globals Node */
+
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
@@ -166,6 +168,19 @@ export default class DeleteObserver extends Observer {
 			if ( env.isAndroid && inputType === 'deleteContentBackward' ) {
 				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
 				const { focusNode, anchorNode, anchorOffset, focusOffset } = domSelection;
+
+				const anchorElement = anchorNode.nodeType == Node.TEXT_NODE ? anchorNode.parentNode : anchorNode;
+
+				// Ignore deletions inside a fake selection container.
+				if ( anchorElement.closest( '.ck-fake-selection-container' ) ) {
+					// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.log( '%c[DeleteObserver]%c Ignore deleteContentBackward in fake container:',
+					// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', ''
+					// @if CK_DEBUG_TYPING // 	);
+					// @if CK_DEBUG_TYPING // }
+
+					return;
+				}
 
 				// On Android, deleteContentBackward has sequence 1 by default.
 				deleteData.sequence = 1;
