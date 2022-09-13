@@ -498,15 +498,17 @@ export default class TableColumnResizeEditing extends Plugin {
 			rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
 
 		// The multiplier is needed for calculating the proper movement offset.
-		// It should double the offset if the table edge is resized and table is centered.
+		// If the center-aligned table is resized we need to double it (because it should expand both ways).
 		let multiplier = isTableResizeEdge && isTableCentered ? 2 : 1;
 
-		// It should negate the sign if content language direction is right-to-left.
+		// In case of right-to-left languages the colum/table is enlarged by moving cursor left, so cursor delta
+		// needs to be inverted.
 		if ( !isLtrContent ) {
 			multiplier *= -1;
 		}
 
-		// It should negate the sign in some specific cases depending on the table alignment and content language direction. See #11785.
+		// If the table is right aligned in LTR language then the table resize handle is moved to the beginning of the table,
+		// so moving left should enlarge the table (and opposite for RTL languages). See #11785.
 		if ( isTableSideAlignedAway( modelTable, isLtrContent ) ) {
 			multiplier *= -1;
 		}
@@ -753,7 +755,9 @@ export default class TableColumnResizeEditing extends Plugin {
 // 	- aligned right with left-to-right content language direction
 // 	- aligned left with right-to-left content language direction
 //
-// The function got extracted to avoid code duplication as we are using it multiple times.
+// @param {module:engine/model/element~Element} modelTable A table which alignment will be checked.
+// @param {Boolean} isLtrContent
+// @returns {Boolean}
 function isTableSideAlignedAway( modelTable, isLtrContent ) {
 	if ( modelTable.getAttribute( 'tableAlignment' ) === ( isLtrContent ? 'right' : 'left' ) ) {
 		return true;
