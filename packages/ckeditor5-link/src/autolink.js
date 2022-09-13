@@ -223,26 +223,39 @@ export default class AutoLink extends Plugin {
 	}
 
 	/**
-	 * Applies a link on a given range.
+	 * Applies a link on a given range if the link should be applied.
 	 *
 	 * @param {String} url The URL to link.
 	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.
 	 * @private
 	 */
-	_applyAutoLink( link, range ) {
+	_applyAutoLink( url, range ) {
 		const model = this.editor.model;
-		const deletePlugin = this.editor.plugins.get( 'Delete' );
 
 		const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
-		const parsedUrl = addLinkProtocolIfApplicable( link, defaultProtocol );
+		const fullUrl = addLinkProtocolIfApplicable( url, defaultProtocol );
 
-		if ( !this.isEnabled || !isLinkAllowedOnRange( range, model ) || !linkHasProtocol( parsedUrl ) ) {
+		if ( !this.isEnabled || !isLinkAllowedOnRange( range, model ) || !linkHasProtocol( fullUrl ) || linkIsAlreadySet( range ) ) {
 			return;
 		}
 
+		this._persistAutoLink( fullUrl, range );
+	}
+
+	/**
+	 * Enqueue autolink changes in model.
+	 *
+	 * @param {String} url The URL to link.
+	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.
+	 * @protected
+	 */
+	_persistAutoLink( url, range ) {
+		const model = this.editor.model;
+		const deletePlugin = this.editor.plugins.get( 'Delete' );
+
 		// Enqueue change to make undo step.
 		model.enqueueChange( writer => {
-			writer.setAttribute( 'linkHref', parsedUrl, range );
+			writer.setAttribute( 'linkHref', url, range );
 
 			model.enqueueChange( () => {
 				deletePlugin.requestUndoOnBackspace();
@@ -264,4 +277,9 @@ function getUrlAtTextEnd( text ) {
 
 function isLinkAllowedOnRange( range, model ) {
 	return model.schema.checkAttributeInSelection( model.createSelection( range ), 'linkHref' );
+}
+
+function linkIsAlreadySet( range ) {
+	const item = range.start.nodeAfter;
+	return item && item.hasAttribute( 'linkHref' );
 }

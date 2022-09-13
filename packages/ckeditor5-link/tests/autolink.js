@@ -246,6 +246,17 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		it( 'does not autolink if link is already created', () => {
+			setData( model, '<paragraph><$text linkHref="http://www.cksource.com">http://www.cksource.com</$text>[]</paragraph>' );
+
+			const plugin = editor.plugins.get( 'AutoLink' );
+			const spy = sinon.spy( plugin, '_persistAutoLink' );
+
+			editor.execute( 'enter' );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		// Some examples came from https://mathiasbynens.be/demo/url-regex.
 		describe( 'supported URL', () => {
 			const supportedURLs = [
@@ -412,6 +423,28 @@ describe( 'AutoLink', () => {
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com []</paragraph>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/12447
+		it( 'should not undo auto-linking by pressing backspace after any other change has been made', () => {
+			const viewDocument = editor.editing.view.document;
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
+
+			simulateTyping( ' abc' );
+
+			viewDocument.fire( 'delete', deleteEvent );
+			viewDocument.fire( 'delete', deleteEvent );
+			viewDocument.fire( 'delete', deleteEvent );
+			viewDocument.fire( 'delete', deleteEvent );
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.co[]</$text></paragraph>'
 			);
 		} );
 	} );
