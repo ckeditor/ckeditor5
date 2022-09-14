@@ -5,11 +5,9 @@
 
 /* eslint-env node */
 
-const { extendDefaultPlugins } = require( 'svgo' );
-
-// TODO: https://github.com/ckeditor/ckeditor5/issues/10601.
 module.exports = {
-	plugins: extendDefaultPlugins( [
+	name: 'preset-default',
+	plugins: [
 		{
 			name: 'removeViewBox',
 			active: false
@@ -31,5 +29,5 @@ module.exports = {
 		{ name: 'removeTitle' },
 		{ name: 'removeComments' },
 		{ name: 'removeMetadata' }
-	] )
+	]
 };
