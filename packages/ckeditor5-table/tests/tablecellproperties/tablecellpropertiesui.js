@@ -18,6 +18,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 
 import Table from '../../src/table';
 import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting';
 import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview';
 import { defaultColors } from '../../src/utils/ui/table-properties';
@@ -38,7 +39,7 @@ describe( 'table cell properties', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, Paragraph, Undo ],
+					plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo ],
 					initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>'
 				} )
 				.then( newEditor => {
@@ -689,7 +690,7 @@ describe( 'table cell properties', () => {
 
 				return ClassicTestEditor
 					.create( editorElement, {
-						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, Paragraph, Undo ],
+						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo ],
 						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
 						table: {
 							tableCellProperties: {
@@ -758,6 +759,7 @@ describe( 'table cell properties', () => {
 						editor.commands.get( 'tableCellBorderColor' ).value = null;
 						editor.commands.get( 'tableCellBorderWidth' ).value = null;
 						editor.commands.get( 'tableCellBackgroundColor' ).value = null;
+						editor.commands.get( 'tableCellWidth' ).value = null;
 						editor.commands.get( 'tableCellHeight' ).value = null;
 						editor.commands.get( 'tableCellPadding' ).value = null;
 						editor.commands.get( 'tableCellHorizontalAlignment' ).value = null;
@@ -771,6 +773,7 @@ describe( 'table cell properties', () => {
 							borderColor: '#ff0',
 							borderWidth: '2px',
 							backgroundColor: '#00f',
+							width: '250px',
 							height: '150px',
 							padding: '10px',
 							horizontalAlignment: 'center',
