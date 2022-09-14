@@ -6,7 +6,7 @@
 /* globals console, window, document, CKEditorInspector */
 
 // Dll core.
-import 'ckeditor5/build/ckeditor5-dll.js';
+import '../../build/ckeditor5-dll.js';
 
 // Editor creators.
 import '@ckeditor/ckeditor5-editor-classic/build/editor-classic';
@@ -25,7 +25,7 @@ import '@ckeditor/ckeditor5-media-embed/build/media-embed';
 import '@ckeditor/ckeditor5-table/build/table';
 
 // Translations:DE.
-import 'ckeditor5/build/translations/de';
+import '../../build/translations/de';
 import '@ckeditor/ckeditor5-block-quote/build/translations/de';
 import '@ckeditor/ckeditor5-basic-styles/build/translations/de';
 import '@ckeditor/ckeditor5-heading/build/translations/de';
@@ -37,7 +37,7 @@ import '@ckeditor/ckeditor5-media-embed/build/translations/de';
 import '@ckeditor/ckeditor5-table/build/translations/de';
 
 // Translations:PL.
-import 'ckeditor5/build/translations/pl';
+import '../../build/translations/pl';
 import '@ckeditor/ckeditor5-block-quote/build/translations/pl';
 import '@ckeditor/ckeditor5-basic-styles/build/translations/pl';
 import '@ckeditor/ckeditor5-heading/build/translations/pl';

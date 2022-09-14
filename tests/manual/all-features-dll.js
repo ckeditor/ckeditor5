@@ -5,7 +5,7 @@
 
 /* globals console, window, document, CKEditorInspector */
 // Dll core.
-import 'ckeditor5/build/ckeditor5-dll.js';
+import '../../build/ckeditor5-dll.js';
 
 // Editor creators.
 import '@ckeditor/ckeditor5-editor-classic/build/editor-classic';
