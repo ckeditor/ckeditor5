@@ -56,12 +56,6 @@ describe( 'InsertTableView', () => {
 				expect( view.items ).to.have.length( 100 );
 			} );
 
-			it( 'should create a single new grid button', () => {
-				const btn = view._createGridButton( locale, 1, 1, '1 × 1' );
-				expect( btn.label ).to.equal( '1 × 1' );
-				expect( btn.withText ).to.be.false;
-			} );
-
 			it( 'should create items from template', () => {
 				expect( Array.from( view.items ).every(
 					item => item.element.classList.contains( 'ck' )
@@ -84,16 +78,24 @@ describe( 'InsertTableView', () => {
 				), 'column data attribute' ).to.be.true;
 			} );
 
-			it( 'should give every item an accessible label', () => {
-				expect( Array.from( view.items ).every(
-					item => item.element.getAttribute( 'aria-labelledby' ) === item.element.children[ 0 ].id
-				), 'aria attribute' ).to.be.true;
-			} );
-
 			it( 'every item should be the #ButtonView instance', () => {
 				expect( Array.from( view.items ).every(
-					item => expect( item ).to.be.instanceOf( ButtonView )
+					item => item instanceof ButtonView
 				), '#ButtonView instance' ).to.be.true;
+
+				expect( Array.from( view.items ).every(
+					item => item.withText === false
+				), '#ButtonView withText' ).to.be.true;
+
+				expect( Array.from( view.items ).every(
+					( item, index ) => {
+						const row = Math.ceil( ( index + 1 ) / 10 );
+						const col = ( index % 10 ) + 1;
+						const labelToCompare = `${ row } × ${ col }`;
+
+						return item.label === labelToCompare;
+					}
+				), '#ButtonView correct label' ).to.be.true;
 			} );
 		} );
 
