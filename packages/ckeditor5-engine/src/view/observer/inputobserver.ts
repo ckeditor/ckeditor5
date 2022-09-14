@@ -70,7 +70,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		// in the fake selection container.
 		// On Android it is sometimes trying to use target range inside the fake selection container
 		// (but selected widget is already removed from model and DOM) while replacing a widget with a keyboard suggestion.
-		if ( viewDocument.selection.isFake || env.isAndroid && isInsideFakeSelectionContainer( domTargetRanges ) ) {
+		if ( viewDocument.selection.isFake ) {
 			// Future-proof: in case of multi-range fake selections being possible.
 			targetRanges = Array.from( viewDocument.selection.getRanges() );
 
@@ -200,14 +200,3 @@ export type InputObserverEvent = {
  * @readonly
  * @member {String|null} module:engine/view/observer/inputobserver~InputEventData#data
  */
-
-function isInsideFakeSelectionContainer( domTargetRanges: StaticRange[] ): boolean {
-	if ( !domTargetRanges.length ) {
-		return false;
-	}
-
-	const startContainer = domTargetRanges[ 0 ].startContainer;
-	const anchorElement = ( startContainer.nodeType == Node.TEXT_NODE ? startContainer.parentNode : startContainer ) as HTMLElement;
-
-	return !!anchorElement.closest( '.ck-fake-selection-container' );
-}

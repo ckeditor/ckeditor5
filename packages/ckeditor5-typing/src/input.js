@@ -105,7 +105,7 @@ export default class Input extends Plugin {
 			// at the word end or by selecting a table column. This is not a real composition started.
 			// Trigger delete content on first composition key pressed.
 			this.listenTo( view.document, 'keydown', ( evt, data ) => {
-				if ( modelSelection.isCollapsed || data.keyCode != 229 ) {
+				if ( modelSelection.isCollapsed || data.keyCode != 229 || !view.document.isComposing ) {
 					return;
 				}
 

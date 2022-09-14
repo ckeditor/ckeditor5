@@ -870,8 +870,10 @@ export default class Renderer extends Observable {
 		// Render selection.
 		if ( this.selection.isFake ) {
 			this._updateFakeSelection( domRoot );
-		} else if ( !this.isComposing ) {
+		} else if ( this._fakeSelectionContainer ) {
 			this._removeFakeSelection();
+			this._updateDomSelection( domRoot );
+		} else if ( !env.isAndroid || !this.isComposing ) {
 			this._updateDomSelection( domRoot );
 		}
 	}
