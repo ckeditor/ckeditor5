@@ -7,6 +7,7 @@
 
 const { extendDefaultPlugins } = require( 'svgo' );
 
+// TODO: https://github.com/ckeditor/ckeditor5/issues/10601.
 module.exports = {
 	plugins: extendDefaultPlugins( [
 		{
