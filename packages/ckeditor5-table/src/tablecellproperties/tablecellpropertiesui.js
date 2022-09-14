@@ -33,7 +33,6 @@ const propertyToCommandMap = {
 	borderStyle: 'tableCellBorderStyle',
 	borderColor: 'tableCellBorderColor',
 	borderWidth: 'tableCellBorderWidth',
-	width: 'tableCellWidth',
 	height: 'tableCellHeight',
 	padding: 'tableCellPadding',
 	backgroundColor: 'tableCellBackgroundColor',

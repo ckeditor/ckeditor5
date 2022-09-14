@@ -9,17 +9,17 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import { assertTableCellStyle, modelTable, viewTable } from '../../_utils/utils';
-import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
-import TableCellWidthCommand from '../../../src/tablecellproperties/commands/tablecellwidthcommand';
+import TableCellWidthEditing from '../../../src/tablecellwidth/tablecellwidthediting';
+import TableCellWidthCommand from '../../../src/tablecellwidth/commands/tablecellwidthcommand';
 
-describe( 'table cell properties', () => {
+describe( 'table cell width property', () => {
 	describe( 'commands', () => {
 		describe( 'TableCellWidthCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
 				editor = await ModelTestEditor.create( {
-					plugins: [ Paragraph, TableCellPropertiesEditing ]
+					plugins: [ Paragraph, TableCellWidthEditing ]
 				} );
 
 				model = editor.model;
@@ -316,7 +316,7 @@ describe( 'table cell properties', () => {
 
 			beforeEach( async () => {
 				editor = await ModelTestEditor.create( {
-					plugins: [ Paragraph, TableCellPropertiesEditing ]
+					plugins: [ Paragraph, TableCellWidthEditing ]
 				} );
 
 				model = editor.model;

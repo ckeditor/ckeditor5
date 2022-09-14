@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import TableCellPropertiesUI from './tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertiesediting';
+import TableCellWidthEditing from './tablecellwidth/tablecellwidthediting';
 
 /**
  * The table cell properties feature. Enables support for setting properties of table cells (size, border, background, etc.).
@@ -35,7 +36,7 @@ export default class TableCellProperties extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableCellPropertiesEditing, TableCellPropertiesUI ];
+		return [ TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing ];
 	}
 }
 

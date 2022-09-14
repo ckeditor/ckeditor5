@@ -13,7 +13,6 @@ import { addBorderRules, addPaddingRules, addBackgroundRules } from 'ckeditor5/s
 import { downcastAttributeToStyle, upcastStyleToAttribute, upcastBorderStyles } from './../converters/tableproperties';
 import TableEditing from './../tableediting';
 import TableCellPaddingCommand from './commands/tablecellpaddingcommand';
-import TableCellWidthCommand from './commands/tablecellwidthcommand';
 import TableCellHeightCommand from './commands/tablecellheightcommand';
 import TableCellBackgroundColorCommand from './commands/tablecellbackgroundcolorcommand';
 import TableCellVerticalAlignmentCommand from './commands/tablecellverticalalignmentcommand';
@@ -91,13 +90,6 @@ export default class TableCellPropertiesEditing extends Plugin {
 		editor.commands.add( 'tableCellBorderStyle', new TableCellBorderStyleCommand( editor, defaultTableCellProperties.borderStyle ) );
 		editor.commands.add( 'tableCellBorderColor', new TableCellBorderColorCommand( editor, defaultTableCellProperties.borderColor ) );
 		editor.commands.add( 'tableCellBorderWidth', new TableCellBorderWidthCommand( editor, defaultTableCellProperties.borderWidth ) );
-
-		enableProperty( schema, conversion, {
-			modelAttribute: 'tableCellWidth',
-			styleName: 'width',
-			defaultValue: defaultTableCellProperties.width
-		} );
-		editor.commands.add( 'tableCellWidth', new TableCellWidthCommand( editor, defaultTableCellProperties.width ) );
 
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellHeight',

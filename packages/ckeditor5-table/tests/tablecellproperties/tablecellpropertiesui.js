@@ -129,7 +129,6 @@ describe( 'table cell properties', () => {
 						'tableCellBorderStyle',
 						'tableCellBorderColor',
 						'tableCellBorderWidth',
-						'tableCellWidth',
 						'tableCellHeight',
 						'tableCellPadding',
 						'tableCellBackgroundColor',
@@ -590,12 +589,11 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellBorderStyle' ).value = 'a';
 					editor.commands.get( 'tableCellBorderColor' ).value = 'b';
 					editor.commands.get( 'tableCellBorderWidth' ).value = 'c';
-					editor.commands.get( 'tableCellWidth' ).value = 'd';
-					editor.commands.get( 'tableCellHeight' ).value = 'e';
-					editor.commands.get( 'tableCellPadding' ).value = 'f';
-					editor.commands.get( 'tableCellBackgroundColor' ).value = 'g';
-					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'h';
-					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'i';
+					editor.commands.get( 'tableCellHeight' ).value = 'd';
+					editor.commands.get( 'tableCellPadding' ).value = 'e';
+					editor.commands.get( 'tableCellBackgroundColor' ).value = 'f';
+					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'g';
+					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'h';
 
 					tableCellPropertiesButton.fire( 'execute' );
 
@@ -604,12 +602,11 @@ describe( 'table cell properties', () => {
 						borderStyle: 'a',
 						borderColor: 'b',
 						borderWidth: 'c',
-						width: 'd',
-						height: 'e',
-						padding: 'f',
-						backgroundColor: 'g',
-						horizontalAlignment: 'h',
-						verticalAlignment: 'i'
+						height: 'd',
+						padding: 'e',
+						backgroundColor: 'f',
+						horizontalAlignment: 'g',
+						verticalAlignment: 'h'
 					} );
 				} );
 
@@ -617,7 +614,6 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellBorderStyle' ).value = null;
 					editor.commands.get( 'tableCellBorderColor' ).value = null;
 					editor.commands.get( 'tableCellBorderWidth' ).value = null;
-					editor.commands.get( 'tableCellWidth' ).value = null;
 					editor.commands.get( 'tableCellHeight' ).value = null;
 					editor.commands.get( 'tableCellPadding' ).value = null;
 					editor.commands.get( 'tableCellBackgroundColor' ).value = null;
@@ -631,7 +627,6 @@ describe( 'table cell properties', () => {
 						borderStyle: 'none',
 						borderColor: '',
 						borderWidth: '',
-						width: '',
 						height: '',
 						padding: '',
 						backgroundColor: '',
@@ -763,7 +758,6 @@ describe( 'table cell properties', () => {
 						editor.commands.get( 'tableCellBorderColor' ).value = null;
 						editor.commands.get( 'tableCellBorderWidth' ).value = null;
 						editor.commands.get( 'tableCellBackgroundColor' ).value = null;
-						editor.commands.get( 'tableCellWidth' ).value = null;
 						editor.commands.get( 'tableCellHeight' ).value = null;
 						editor.commands.get( 'tableCellPadding' ).value = null;
 						editor.commands.get( 'tableCellHorizontalAlignment' ).value = null;
@@ -777,7 +771,6 @@ describe( 'table cell properties', () => {
 							borderColor: '#ff0',
 							borderWidth: '2px',
 							backgroundColor: '#00f',
-							width: '250px',
 							height: '150px',
 							padding: '10px',
 							horizontalAlignment: 'center',
@@ -796,7 +789,6 @@ describe( 'table cell properties', () => {
 							borderColor: '',
 							borderWidth: '',
 							backgroundColor: '#00f',
-							width: '250px',
 							height: '150px',
 							padding: '10px',
 							horizontalAlignment: 'center',
