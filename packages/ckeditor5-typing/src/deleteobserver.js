@@ -157,14 +157,16 @@ export default class DeleteObserver extends Observer {
 
 			// Split deleting a single character from deleting the selected (wider) range.
 			if ( env.isAndroid && inputType === 'deleteContentBackward' ) {
-				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
-				const { focusNode, anchorNode, anchorOffset, focusOffset } = domSelection;
-
 				// On Android, deleteContentBackward has sequence 1 by default.
 				deleteData.sequence = 1;
 
-				// This is the former scenario when the IME wants more than a single character to be removed.
-				if ( anchorNode === focusNode && anchorOffset + 1 !== focusOffset ) {
+				// IME wants more than a single character to be removed.
+				if (
+					targetRanges.length == 1 && (
+						targetRanges[ 0 ].start.parent != targetRanges[ 0 ].end.parent ||
+						targetRanges[ 0 ].start.offset + 1 != targetRanges[ 0 ].end.offset
+					)
+				) {
 					deleteData.unit = DELETE_SELECTION;
 					deleteData.selectionToRemove = view.createSelection( targetRanges );
 				}

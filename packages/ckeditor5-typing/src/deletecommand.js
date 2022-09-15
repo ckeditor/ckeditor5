@@ -127,7 +127,7 @@ export default class DeleteCommand extends Command {
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.log( '%c[DeleteCommand]%c Delete content',
 			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
-			// @if CK_DEBUG_TYPING // 		`[${ selection.getFirstPosition().path }]-[${ selection.getLastPosition().path }]`
+			// @if CK_DEBUG_TYPING // 		`[${ selection.getFirstPosition().path }]-[${ selection.getLastPosition().path }]`, options
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
