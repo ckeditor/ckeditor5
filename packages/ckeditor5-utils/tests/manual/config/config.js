@@ -46,24 +46,16 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		document.querySelector( '#heading-config-mini' ).addEventListener( 'click', () => {
-			console.log( 'Setting minimal config of the feature' );
+		buttonHandler( '#heading-config-mini', 'heading.options', [
+			{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+			{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' }
+		] );
 
-			editor.config.set( 'heading.options', [
-				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-				{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' }
-			] );
-		} );
-
-		document.querySelector( '#heading-config-midi' ).addEventListener( 'click', () => {
-			console.log( 'Setting medium config of the feature' );
-
-			editor.config.set( 'heading.options', [
-				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-				{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
-				{ model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' }
-			] );
-		} );
+		buttonHandler( '#heading-config-midi', 'heading.options', [
+			{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+			{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
+			{ model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' }
+		] );
 
 		buttonHandler( '#heading-config-maxi', 'heading.options', [
 			{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
@@ -88,6 +80,16 @@ ClassicEditor
 			const position = editor.model.document.selection.getFirstPosition();
 			const ancestors = position.getAncestors();
 			const cellElement = ancestors.reverse().find( ancestor => ancestor.is( 'element', 'tableCell' ) );
+
+			if ( cellElement ) {
+				editor.config.set( 'toolbar', [
+					'tableColumn',
+					'tableRow',
+					'mergeTableCells' ]
+				);
+			} else {
+				editor.config.set( 'toolbar', toolbarItems );
+			}
 
 			console.log( cellElement );
 
