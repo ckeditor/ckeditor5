@@ -48,33 +48,7 @@ export default class HeadingUI extends Plugin {
 
 			const commands = [ headingCommand ];
 
-			for ( const option of options ) {
-				const def = {
-					type: 'button',
-					model: new Model( {
-						label: option.title,
-						class: option.class,
-						withText: true
-					} )
-				};
-
-				if ( option.model === 'paragraph' ) {
-					def.model.bind( 'isOn' ).to( paragraphCommand, 'value' );
-					def.model.set( 'commandName', 'paragraph' );
-					commands.push( paragraphCommand );
-				} else {
-					def.model.bind( 'isOn' ).to( headingCommand, 'value', value => value === option.model );
-					def.model.set( {
-						commandName: 'heading',
-						commandValue: option.model
-					} );
-				}
-
-				// Add the option to the collection.
-				itemDefinitions.add( def );
-
-				titles[ option.model ] = option.title;
-			}
+			updateDropdownItemsDefinitions( itemDefinitions, options, paragraphCommand, commands, headingCommand, titles );
 
 			const dropdownView = createDropdown( locale );
 			addListToDropdown( dropdownView, itemDefinitions );
@@ -114,6 +88,10 @@ export default class HeadingUI extends Plugin {
 					return;
 				}
 
+				updateDropdownItemsDefinitions(
+					itemDefinitions, getLocalizedOptions( editor ), paragraphCommand, commands, headingCommand, titles
+				);
+
 				console.log( 'Heading UI config change', name, value );
 			} );
 
@@ -121,3 +99,36 @@ export default class HeadingUI extends Plugin {
 		} );
 	}
 }
+
+function updateDropdownItemsDefinitions( itemDefinitions, options, paragraphCommand, commands, headingCommand, titles ) {
+	itemDefinitions.clear();
+
+	for ( const option of options ) {
+		const def = {
+			type: 'button',
+			model: new Model( {
+				label: option.title,
+				class: option.class,
+				withText: true
+			} )
+		};
+
+		if ( option.model === 'paragraph' ) {
+			def.model.bind( 'isOn' ).to( paragraphCommand, 'value' );
+			def.model.set( 'commandName', 'paragraph' );
+			commands.push( paragraphCommand );
+		} else {
+			def.model.bind( 'isOn' ).to( headingCommand, 'value', value => value === option.model );
+			def.model.set( {
+				commandName: 'heading',
+				commandValue: option.model
+			} );
+		}
+
+		// Add the option to the collection.
+		itemDefinitions.add( def );
+
+		titles[ option.model ] = option.title;
+	}
+}
+
