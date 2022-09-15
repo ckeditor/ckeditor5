@@ -185,7 +185,8 @@ export default {
 			model: 'htmlTr',
 			view: 'tr',
 			modelSchema: {
-				allowIn: [ 'htmlTable', 'htmlThead', 'htmlTbody' ]
+				allowIn: [ 'htmlTable', 'htmlThead', 'htmlTbody' ],
+				isLimit: true
 			}
 		},
 		// TODO can also include text.
@@ -194,7 +195,9 @@ export default {
 			view: 'td',
 			modelSchema: {
 				allowIn: 'htmlTr',
-				allowContentOf: '$container'
+				allowContentOf: '$container',
+				isLimit: true,
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -203,7 +206,9 @@ export default {
 			view: 'th',
 			modelSchema: {
 				allowIn: 'htmlTr',
-				allowContentOf: '$container'
+				allowContentOf: '$container',
+				isLimit: true,
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -212,7 +217,8 @@ export default {
 			view: 'figure',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: false
+				isBlock: true,
+				isObject: true
 			}
 		},
 		// TODO can also include other block elements.
