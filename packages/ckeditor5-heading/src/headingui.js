@@ -109,15 +109,15 @@ export default class HeadingUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
+			this.listenTo( editor.config, 'change', ( evt, name, value ) => {
+				if ( name != 'heading.options' ) {
+					return;
+				}
+
+				console.log( 'Heading UI config change', name, value );
+			} );
+
 			return dropdownView;
-		} );
-
-		this.listenTo( editor.config, 'change', ( evt, name, value ) => {
-			if ( name != 'heading.options' ) {
-				return;
-			}
-
-			console.log( 'Heading UI config change', name, value );
 		} );
 	}
 }
