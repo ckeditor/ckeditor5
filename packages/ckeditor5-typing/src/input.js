@@ -116,7 +116,7 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
-				model.deleteContent( modelSelection );
+				deleteSelectionContent( model, insertTextCommand );
 			} );
 		} else {
 			// Note: The priority must precede the CompositionObserver handler to call it before
@@ -133,8 +133,20 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
-				model.deleteContent( modelSelection );
+				deleteSelectionContent( model, insertTextCommand );
 			} );
 		}
 	}
+}
+
+function deleteSelectionContent( model, insertTextCommand ) {
+	const buffer = insertTextCommand.buffer;
+
+	buffer.lock();
+
+	model.enqueueChange( buffer.batch, () => {
+		model.deleteContent( model.document.selection );
+	} );
+
+	buffer.unlock();
 }
