@@ -160,8 +160,7 @@ export default {
 			modelSchema: {
 				allowIn: 'htmlTable',
 				allowChildren: '$text',
-				isBlock: false,
-				isLimit: true
+				isBlock: false
 			}
 		},
 		{
@@ -217,8 +216,7 @@ export default {
 			view: 'figure',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true,
-				isObject: true
+				isBlock: false
 			}
 		},
 		// TODO can also include other block elements.
@@ -228,8 +226,7 @@ export default {
 			modelSchema: {
 				allowIn: 'htmlFigure',
 				allowChildren: '$text',
-				isBlock: false,
-				isLimit: true
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
