@@ -139,6 +139,19 @@ export default class ClassicEditorUI extends EditorUI {
 
 		view.toolbar.fillFromConfig( this._toolbarConfig, this.componentFactory );
 
+		this.listenTo( this.editor.config, 'change', ( event, name, value ) => {
+			// @todo: we handle only array format. We need to support also toolbar.items.
+			if ( name !== 'toolbar' ) {
+				return;
+			}
+
+			this._toolbarConfig = normalizeToolbarConfig( this.editor.config.get( 'toolbar' ) );
+
+			this.view.toolbar.items.clear();
+
+			this.view.toolbar.fillFromConfig( this._toolbarConfig, this.componentFactory );
+		} );
+
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		this.addToolbar( view.toolbar );
 	}
