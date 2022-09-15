@@ -82,6 +82,19 @@ ClassicEditor
 				editor.config.set( configName, configValue );
 			} );
 		}
+
+		editor.model.document.selection.on( 'change:range', () => {
+			// const selectedElement = editor.model.document.selection.getSelectedElement();
+			const position = editor.model.document.selection.getFirstPosition();
+			const ancestors = position.getAncestors();
+			const cellElement = ancestors.reverse().find( ancestor => ancestor.is( 'element', 'tableCell' ) );
+
+			console.log( cellElement );
+
+			// if ( selectedElement.name === 'table' ) {
+			// 	editor.config.set( 'toolbar',  );
+			// }
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
