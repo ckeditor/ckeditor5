@@ -10,7 +10,7 @@
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 const DELETE_CHARACTER = 'character';
 const DELETE_WORD = 'word';
@@ -187,6 +187,10 @@ export default class DeleteObserver extends Observer {
 				evt.stop();
 			}
 		} );
+
+		if ( env.isBlink ) {
+			enableChromeWorkaround( this );
+		}
 	}
 
 	/**
@@ -211,3 +215,73 @@ export default class DeleteObserver extends Observer {
  * current selection should be used.
  * @param {String} data.inputType The `beforeinput` event type that caused the deletion.
  */
+
+// Enables workaround for the issue https://github.com/ckeditor/ckeditor5/issues/11904.
+function enableChromeWorkaround( observer ) {
+	const view = observer.view;
+	const document = view.document;
+
+	let pressedKeyCode = null;
+	let beforeInputReceived = false;
+
+	document.on( 'keydown', ( evt, { keyCode } ) => {
+		pressedKeyCode = keyCode;
+		beforeInputReceived = false;
+	} );
+
+	document.on( 'keyup', ( evt, { keyCode, domEvent } ) => {
+		const selection = document.selection;
+		const shouldFireDeleteEvent = observer.isEnabled &&
+			keyCode == pressedKeyCode &&
+			isDeleteKeyCode( keyCode ) &&
+			!selection.isCollapsed &&
+			!beforeInputReceived;
+
+		pressedKeyCode = null;
+
+		if ( shouldFireDeleteEvent ) {
+			const targetRange = selection.getFirstRange();
+			const eventInfo = new BubblingEventInfo( document, 'delete', targetRange );
+			const deleteData = {
+				unit: DELETE_SELECTION,
+				direction: getDeleteDirection( keyCode ),
+				selectionToRemove: selection
+			};
+
+			document.fire( eventInfo, new DomEventData( document, domEvent, deleteData ) );
+
+			if ( eventInfo.stop.called ) {
+				evt.stop();
+			}
+		}
+	} );
+
+	document.on( 'beforeinput', ( evt, { inputType } ) => {
+		const deleteEventSpec = DELETE_EVENT_TYPES[ inputType ];
+		const isMatchingBeforeInput = isDeleteKeyCode( pressedKeyCode ) &&
+			deleteEventSpec &&
+			deleteEventSpec.direction == getDeleteDirection( pressedKeyCode );
+
+		if ( isMatchingBeforeInput ) {
+			beforeInputReceived = true;
+		}
+	} );
+
+	document.on( 'beforeinput', ( evt, { inputType, data } ) => {
+		const shouldIgnoreBeforeInput = pressedKeyCode == keyCodes.delete &&
+			inputType == 'insertText' &&
+			data == '\x7f'; // Delete character :P
+
+		if ( shouldIgnoreBeforeInput ) {
+			evt.stop();
+		}
+	}, { priority: 'high' } );
+
+	function isDeleteKeyCode( keyCode ) {
+		return keyCode == keyCodes.backspace || keyCode == keyCodes.delete;
+	}
+
+	function getDeleteDirection( keyCode ) {
+		return keyCode == keyCodes.backspace ? DELETE_BACKWARD : DELETE_FORWARD;
+	}
+}
