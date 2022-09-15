@@ -243,7 +243,7 @@ export default class AutoLink extends Plugin {
 	}
 
 	/**
-	 * Enqueue autolink changes in model.
+	 * Enqueues autolink changes in the model.
 	 *
 	 * @param {String} url The URL to link.
 	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.
