@@ -18,7 +18,7 @@ import spliceArray from '@ckeditor/ckeditor5-utils/src/splicearray';
  * or {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment}.
  */
 export default class NodeList implements Iterable<Node> {
-	private readonly _nodes: Node[];
+	private _nodes: Node[];
 
 	/**
 	 * Creates an empty node list.
@@ -195,7 +195,7 @@ export default class NodeList implements Iterable<Node> {
 			}
 		}
 
-		spliceArray<Node>( this._nodes, Array.from( nodes ), index, 0 );
+		this._nodes = spliceArray<Node>( this._nodes, Array.from( nodes ), index, 0 );
 	}
 
 	/**
