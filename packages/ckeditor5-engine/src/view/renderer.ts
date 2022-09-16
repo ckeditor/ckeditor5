@@ -697,6 +697,11 @@ export default class Renderer extends Observable {
 		// It doesn't matter in what order we remove or add nodes, as long as we remove and add correct nodes at correct indexes.
 		for ( const action of actions ) {
 			if ( action === 'delete' ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Remove node',
+				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', actualDomChildren[ i ]
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
 				nodesToUnbind.add( actualDomChildren[ i ] as DomElement );
 				remove( actualDomChildren[ i ] );
 			} else if ( action === 'equal' || action === 'replace' ) {
@@ -708,6 +713,12 @@ export default class Renderer extends Observable {
 
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Insert node',
+				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', expectedDomChildren[ i ]
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
+
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'replace' ) {
@@ -718,7 +729,6 @@ export default class Renderer extends Observable {
 				// @if CK_DEBUG_TYPING // }
 
 				updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
-
 				i++;
 
 				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
