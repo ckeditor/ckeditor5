@@ -78,7 +78,7 @@ export default class WidgetResize extends Plugin {
 		this._observer.listenTo( domDocument, 'mouseup', this._mouseUpListener.bind( this ) );
 
 		const redrawFocusedResizer = () => {
-			if ( this.visibleResizer && this.visibleResizer.isEnabled ) {
+			if ( this.visibleResizer ) {
 				this.visibleResizer.redraw();
 			}
 		};
@@ -112,7 +112,10 @@ export default class WidgetResize extends Plugin {
 		viewSelection.on( 'change', () => {
 			const selectedElement = viewSelection.getSelectedElement();
 
-			this.visibleResizer = this.getResizerByViewElement( selectedElement ) || null;
+			const resizer = this.getResizerByViewElement( selectedElement ) || null;
+			if ( resizer && resizer.isEnabled ) {
+				this.visibleResizer = resizer;
+			}
 		} );
 	}
 
