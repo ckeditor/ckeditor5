@@ -38,6 +38,8 @@ export default class Enter extends Plugin {
 		editor.commands.add( 'enter', new EnterCommand( editor ) );
 
 		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+			// Rendering is disabled while composing so prevent events that will be rendered by the engine
+			// and should not be applied by the browser.
 			if ( !viewDocument.isComposing ) {
 				data.preventDefault();
 			}
