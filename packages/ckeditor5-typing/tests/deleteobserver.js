@@ -90,7 +90,7 @@ describe( 'Delete', () => {
 				} ) );
 
 				fireBeforeInputDomEvent( domRoot, {
-					inputType: 'deleteContentBackward'
+					inputType: 'deleteContentForward'
 				} );
 			}
 
@@ -103,7 +103,7 @@ describe( 'Delete', () => {
 			} ) );
 
 			fireBeforeInputDomEvent( domRoot, {
-				inputType: 'deleteContentBackward'
+				inputType: 'deleteContentForward'
 			} );
 
 			sinon.assert.callCount( deleteSpy, 6 );
