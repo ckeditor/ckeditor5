@@ -491,11 +491,17 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 		} = this._resizingData;
 
-		const dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
+		let dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
 
-		const dxUpperBound = isTableResizeEdge ?
+		let dxUpperBound = isTableResizeEdge ?
 			viewFigureParentWidth - tableWidth :
 			rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
+
+		if ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent && isTableResizeEdge ) {
+			dxLowerBound = rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
+
+			dxUpperBound = -viewFigureParentWidth + tableWidth;
+		}
 
 		// The multiplier is needed for calculating the proper movement offset.
 		// If the center-aligned table is resized we need to double it (because it should expand both ways).
@@ -509,33 +515,57 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		// If the table is right aligned in LTR language then the table resize handle is moved to the beginning of the table,
 		// so moving left should enlarge the table (and opposite for RTL languages). See #11785.
-		if ( isTableSideAlignedAway( modelTable, isLtrContent ) ) {
+		if ( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) {
 			multiplier *= -1;
 		}
 
-		const dx = clamp(
+		let dx = clamp(
 			( mouseEventData.clientX - columnPosition ) * multiplier,
 			Math.min( dxLowerBound, 0 ),
 			Math.max( dxUpperBound, 0 )
 		);
+
+		if ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent && isTableResizeEdge ) {
+			dx = clamp(
+				( mouseEventData.clientX - columnPosition ) * multiplier,
+				Math.min( dxUpperBound, 0 ),
+				Math.max( dxLowerBound, 0 )
+			);
+		}
 
 		if ( dx === 0 ) {
 			return;
 		}
 
 		this.editor.editing.view.change( writer => {
-			const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
-
-			writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
-
-			if ( isTableResizeEdge ) {
-				const tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / viewFigureParentWidth );
-
-				writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
-			} else {
+			if ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) {
 				const rightColumnWidthAsPercentage = toPrecision( ( rightColumnWidth - dx ) * 100 / tableWidth );
 
 				writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn );
+
+				if ( isTableResizeEdge ) {
+					const tableWidthAsPercentage = toPrecision( ( tableWidth - dx ) * 100 / viewFigureParentWidth );
+
+					writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
+				} else {
+					const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
+
+					writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
+				}
+			} else {
+				const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
+
+				writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
+
+				if ( isTableResizeEdge ) {
+					const tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / viewFigureParentWidth );
+
+					writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
+				} else {
+					const rightColumnWidthAsPercentage = toPrecision( ( rightColumnWidth - dx ) * 100 / tableWidth );
+
+					writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn );
+				}
 			}
 		} );
 	}
@@ -655,31 +685,41 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelTable = modelLeftCell.findAncestor( 'table' );
 
 		const leftColumnIndex = getColumnEdgesIndexes( modelLeftCell, this._tableUtilsPlugin ).rightEdge;
-		let lastColumnIndex = this._tableUtilsPlugin.getColumns( modelTable ) - 1;
+		let outerColumnIndex = this._tableUtilsPlugin.getColumns( modelTable ) - 1;
 
 		const isTableCentered = !modelTable.hasAttribute( 'tableAlignment' );
 		const isLtrContent = editor.locale.contentLanguageDirection !== 'rtl';
 
-		// We're enforcing the change of the resizers position using CSS, so the lastColumnIndex
+		// We're enforcing the change of the resizers position using CSS, so the outerColumnIndex
 		// needs to be updated too. See #11785.
 		if ( isTableSideAlignedAway( modelTable, isLtrContent ) ) {
-			lastColumnIndex = 0;
+			outerColumnIndex = 0;
 		}
 
 		const nextColumnOffset = isTableSideAlignedAway( modelTable, isLtrContent ) ? -1 : 1;
-		const isTableResizeEdge = leftColumnIndex === lastColumnIndex;
+		const isTableResizeEdge = leftColumnIndex === outerColumnIndex;
 
 		const viewTable = viewLeftCell.findAncestor( 'table' );
 		const viewFigure = viewTable.findAncestor( 'figure' );
 		const viewColgroup = [ ...viewTable.getChildren() ].find( viewCol => viewCol.is( 'element', 'colgroup' ) );
-		const viewLeftColumn = viewColgroup.getChild( leftColumnIndex );
-		const viewRightColumn = isTableResizeEdge ? undefined : viewColgroup.getChild( leftColumnIndex + nextColumnOffset );
+		let viewLeftColumn = viewColgroup.getChild( leftColumnIndex );
+		let viewRightColumn = isTableResizeEdge ? undefined : viewColgroup.getChild( leftColumnIndex + nextColumnOffset );
+
+		if ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) {
+			viewLeftColumn = isTableResizeEdge ? undefined : viewColgroup.getChild( leftColumnIndex + nextColumnOffset );
+			viewRightColumn = viewColgroup.getChild( leftColumnIndex );
+		}
 
 		const viewFigureParentWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure.parent ) );
 		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure ) );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
-		const leftColumnWidth = columnWidths[ leftColumnIndex ];
-		const rightColumnWidth = isTableResizeEdge ? undefined : columnWidths[ leftColumnIndex + nextColumnOffset ];
+		let leftColumnWidth = columnWidths[ leftColumnIndex ];
+		let rightColumnWidth = isTableResizeEdge ? undefined : columnWidths[ leftColumnIndex + nextColumnOffset ];
+
+		if ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) {
+			leftColumnWidth = isTableResizeEdge ? undefined : columnWidths[ leftColumnIndex + nextColumnOffset ];
+			rightColumnWidth = columnWidths[ leftColumnIndex ];
+		}
 
 		return {
 			columnPosition,
