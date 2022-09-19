@@ -19,7 +19,7 @@ There were also bug fixes:
 * Fixed revision history crashes during various actions when the revision data contained `<br>` at the end of a block element (like `<p>`).
 * [Fixed the focus after inserting an image](https://github.com/ckeditor/ckeditor5/issues/12229) - it is now moved to editable.
 
-<!-- TODO: Add a link to the blog post. -->
+Read about release highlights in a dedicated blog post: https://ckeditor.com/blog/ckeditor-5-v35.1.0-with-an-updated-interface-table-improvements-and-more-typescript/
 
 Please refer to the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/migration-to-35.html#migration-to-ckeditor-5-v3510) to learn more about these changes.
 

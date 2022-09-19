@@ -6,7 +6,7 @@
 /* globals document */
 
 import View from '../../../src/view/view';
-import createViewRoot from '../_utils/createroot';
+import createViewRoot from '../../view/_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 

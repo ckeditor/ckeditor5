@@ -8,6 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
@@ -47,7 +48,7 @@ function initEditor() {
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [
-				ArticlePluginSet, CodeBlock, Alignment,
+				ArticlePluginSet, CodeBlock, Alignment, TableColumnResize,
 				TableProperties, TableCellProperties, SpecialCharacters, SpecialCharactersEssentials,
 				Code, Underline, Strikethrough, Superscript, Subscript,
 				Highlight, FontColor, FontBackgroundColor, FontFamily, FontSize,
