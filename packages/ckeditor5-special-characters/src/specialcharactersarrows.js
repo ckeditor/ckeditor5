@@ -37,6 +37,10 @@ export default class SpecialCharactersArrows extends Plugin {
 		const t = editor.t;
 
 		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
+			{ title: t( 'leftwards simple arrow' ), character: '←' },
+			{ title: t( 'rightwards simple arrow' ), character: '→' },
+			{ title: t( 'upwards simple arrow' ), character: '↑' },
+			{ title: t( 'downwards simple arrow' ), character: '↓' },
 			{ title: t( 'leftwards double arrow' ), character: '⇐' },
 			{ title: t( 'rightwards double arrow' ), character: '⇒' },
 			{ title: t( 'upwards double arrow' ), character: '⇑' },

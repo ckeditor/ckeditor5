@@ -301,7 +301,7 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 			contenteditable: false
 		},
 		function( domDocument ) {
-			const checkbox = createElement( document, 'input', { type: 'checkbox' } );
+			const checkbox = createElement( document, 'input', { type: 'checkbox', tabindex: -1 } );
 
 			if ( isChecked ) {
 				checkbox.setAttribute( 'checked', 'checked' );
