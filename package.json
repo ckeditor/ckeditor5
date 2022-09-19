@@ -124,7 +124,7 @@
     "svgo": "^2.2.2",
     "terser-webpack-plugin": "^4.2.3",
     "ts-loader": "^9.3.0",
-    "umberto": "^2.1.6",
+    "umberto": "^2.1.7",
     "upath": "^2.0.0",
     "wait-on": "^6.0.1",
     "webpack": "^5.58.1",
