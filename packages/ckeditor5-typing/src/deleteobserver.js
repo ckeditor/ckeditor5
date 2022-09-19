@@ -188,6 +188,7 @@ export default class DeleteObserver extends Observer {
 			}
 		} );
 
+		// TODO: to be removed when https://bugs.chromium.org/p/chromium/issues/detail?id=1365311 is solved.
 		if ( env.isBlink ) {
 			enableChromeWorkaround( this );
 		}
