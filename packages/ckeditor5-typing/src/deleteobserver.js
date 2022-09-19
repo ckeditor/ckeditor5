@@ -249,10 +249,6 @@ function enableChromeWorkaround( observer ) {
 			};
 
 			document.fire( eventInfo, new DomEventData( document, domEvent, deleteData ) );
-
-			if ( eventInfo.stop.called ) {
-				evt.stop();
-			}
 		}
 	} );
 

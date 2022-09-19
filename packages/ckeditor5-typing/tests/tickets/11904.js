@@ -15,7 +15,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { fireBeforeInputDomEvent } from '../_utils/utils';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 describe( 'Bug ckeditor5-typing#11904', () => {
 	let view, domRoot, viewDocument;
@@ -100,36 +99,6 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 			} ) );
 
 			sinon.assert.callCount( deleteSpy, 2 );
-		} );
-
-		it( 'should cancel `keyup` event if `delete` event is cancelled', () => {
-			viewDocument.on( 'delete', evt => evt.stop() );
-
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'backspace' )
-			} ) );
-
-			const keyUpEvent = new EventInfo( viewDocument, 'keyup' );
-
-			viewDocument.fire( keyUpEvent, new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'backspace' )
-			} ) );
-
-			expect( keyUpEvent.stop.called ).to.be.true;
-		} );
-
-		it( 'should not cancel `keyup` event if `delete` event is not cancelled', () => {
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'backspace' )
-			} ) );
-
-			const keyUpEvent = new EventInfo( viewDocument, 'keyup' );
-
-			viewDocument.fire( keyUpEvent, new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'backspace' )
-			} ) );
-
-			expect( keyUpEvent.stop.called ).to.be.undefined;
 		} );
 
 		it( 'should ignore `beforeinput` inserting single delete (x7f) character', () => {
