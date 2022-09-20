@@ -492,15 +492,15 @@ export default class TableColumnResizeEditing extends Plugin {
 		} = this._resizingData;
 
 		let dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
-
 		let dxUpperBound = isTableResizeEdge ?
 			viewFigureParentWidth - tableWidth :
 			rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
 
-		if ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent && isTableResizeEdge ) {
-			dxLowerBound = rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
+		const isTableAlignedAway = isTableSideAlignedAway( modelTable, isLtrContent );
 
-			dxUpperBound = -viewFigureParentWidth + tableWidth;
+		if ( isTableAlignedAway && isTableResizeEdge && isLtrContent ) {
+			dxUpperBound = rightColumnWidth - COLUMN_MIN_WIDTH_IN_PIXELS;
+			dxLowerBound = -viewFigureParentWidth + tableWidth;
 		}
 
 		// The multiplier is needed for calculating the proper movement offset.
@@ -515,30 +515,22 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		// If the table is right aligned in LTR language then the table resize handle is moved to the beginning of the table,
 		// so moving left should enlarge the table (and opposite for RTL languages). See #11785.
-		if ( modelTable.getAttribute( 'tableAlignment' ) === 'left' && !isLtrContent ) {
+		if ( isTableAlignedAway && !isLtrContent ) {
 			multiplier *= -1;
 		}
 
-		let dx = clamp(
+		const dx = clamp(
 			( mouseEventData.clientX - columnPosition ) * multiplier,
 			Math.min( dxLowerBound, 0 ),
 			Math.max( dxUpperBound, 0 )
 		);
-
-		if ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent && isTableResizeEdge ) {
-			dx = clamp(
-				( mouseEventData.clientX - columnPosition ) * multiplier,
-				Math.min( dxUpperBound, 0 ),
-				Math.max( dxLowerBound, 0 )
-			);
-		}
 
 		if ( dx === 0 ) {
 			return;
 		}
 
 		this.editor.editing.view.change( writer => {
-			if ( modelTable.getAttribute( 'tableAlignment' ) === 'right' && isLtrContent ) {
+			if ( isTableAlignedAway && isLtrContent ) {
 				const rightColumnWidthAsPercentage = toPrecision( ( rightColumnWidth - dx ) * 100 / tableWidth );
 
 				writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn );
