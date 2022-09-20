@@ -11,7 +11,7 @@ modified_at: 2022-09-20
 
 # Document list
 
-The document list feature, provided by a separate plugin, is based on a completely different approach tha the original {@link features/lists lists feature}. Unlike regular list, which is a content block in itself, the document list plugin will let any part of the content be part of a list. Content blocks and elements – such as blockquotes, tables, paragraphs, and others – can now be put inside a list item, ensuring the continuity of numbering and retaining indentation.
+The document list feature is based on a completely different approach than the regular list. Unlike regular list, which is a content block in itself, the document list plugin will let any part of the content be part of a list. Content blocks and elements – such as blockquotes, tables, paragraphs, and others – can now be put inside a list item, ensuring the continuity of numbering and retaining indentation.
 
 Just like regular lists, the document list feature supports both ordered and unordered lists.
 
