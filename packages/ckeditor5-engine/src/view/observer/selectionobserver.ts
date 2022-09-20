@@ -142,6 +142,14 @@ export default class SelectionObserver extends Observer {
 		};
 
 		const endDocumentIsSelecting = () => {
+			if ( !this.document.isSelecting ) {
+				return;
+			}
+
+			// Make sure that model selection is up-to-date at the end of selecting process.
+			// Sometimes `selectionchange` events could arrive after the `mouseup` event and that selection could be already outdated.
+			this._handleSelectionChange( null, domDocument );
+
 			this.document.isSelecting = false;
 
 			// The safety timeout can be canceled when the document leaves the "is selecting" state.
@@ -152,15 +160,19 @@ export default class SelectionObserver extends Observer {
 		// (e.g. by holding the mouse button and moving the cursor). The state resets when they either released
 		// the mouse button or interrupted the process by pressing or releasing any key.
 		this.listenTo( domElement, 'selectstart', startDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domElement, 'keydown', endDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest' } );
+
+		this.listenTo( domElement, 'keydown', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
+		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 
 		// Add document-wide listeners only once. This method could be called for multiple editing roots.
 		if ( this._documents.has( domDocument ) ) {
 			return;
 		}
 
-		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
+		// This listener is using capture mode to make sure that selection is upcasted before any other
+		// handler would like to check it and update (for example table multi cell selection).
+		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
+
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
 

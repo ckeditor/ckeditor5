@@ -1,5 +1,9 @@
 {
 	"Special characters": "Name of the special characters plugins, visible in a dropdown and as a button tooltip.",
+  	"leftwards simple arrow": "A label for the \"leftwards simple arrow\" symbol.",
+  	"rightwards simple arrow": "A label for the \"rightwards simple arrow\" symbol.",
+  	"upwards simple arrow": "A label for the \"upwards simple arrow\" symbol.",
+  	"downwards simple arrow": "A label for the \"downwards simple arrow\" symbol.",
 	"leftwards double arrow": "A label for the \"leftwards double arrow\" symbol.",
 	"rightwards double arrow": "A label for the \"rightwards double arrow\" symbol.",
 	"upwards double arrow": "A label for the \"upwards double arrow\" symbol.",
