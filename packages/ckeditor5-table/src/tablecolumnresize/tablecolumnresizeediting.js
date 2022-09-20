@@ -519,7 +519,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			multiplier *= -1;
 		}
 
-		const dx = clamp(
+		let dx = clamp(
 			( mouseEventData.clientX - columnPosition ) * multiplier,
 			Math.min( dxLowerBound, 0 ),
 			Math.max( dxUpperBound, 0 )
@@ -530,34 +530,28 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		this.editor.editing.view.change( writer => {
-			if ( isTableAlignedAway && isLtrContent ) {
-				const rightColumnWidthAsPercentage = toPrecision( ( rightColumnWidth - dx ) * 100 / tableWidth );
+			const isTableAlignedAwayInLtr = isTableAlignedAway && isLtrContent;
 
-				writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn );
+			if ( !isTableAlignedAwayInLtr ) {
+				dx = dx * -1;
+			}
 
-				if ( isTableResizeEdge ) {
-					const tableWidthAsPercentage = toPrecision( ( tableWidth - dx ) * 100 / viewFigureParentWidth );
+			const referenceColumnWidth = isTableAlignedAwayInLtr ? rightColumnWidth : leftColumnWidth;
+			const referenceColumn = isTableAlignedAwayInLtr ? viewRightColumn : viewLeftColumn;
+			const otherColumn = isTableAlignedAwayInLtr ? viewLeftColumn : viewRightColumn; // @todo: better name
+			const otherColumnWidth = isTableAlignedAwayInLtr ? leftColumnWidth : rightColumnWidth; // @todo: better name
+			const columnWidthAsPercentage = toPrecision( ( referenceColumnWidth - dx ) * 100 / tableWidth );
 
-					writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
-				} else {
-					const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
+			writer.setStyle( 'width', `${ columnWidthAsPercentage }%`, referenceColumn );
 
-					writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
-				}
+			if ( isTableResizeEdge ) {
+				const tableWidthAsPercentage = toPrecision( ( tableWidth - dx ) * 100 / viewFigureParentWidth );
+
+				writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
 			} else {
-				const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
+				const referenceColumnWidthAsPercentage = toPrecision( ( otherColumnWidth + dx ) * 100 / tableWidth );
 
-				writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
-
-				if ( isTableResizeEdge ) {
-					const tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / viewFigureParentWidth );
-
-					writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
-				} else {
-					const rightColumnWidthAsPercentage = toPrecision( ( rightColumnWidth - dx ) * 100 / tableWidth );
-
-					writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn );
-				}
+				writer.setStyle( 'width', `${ referenceColumnWidthAsPercentage }%`, otherColumn );
 			}
 		} );
 	}
