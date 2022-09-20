@@ -68,8 +68,6 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 		// If the editor selection is fake (an object is selected), the DOM range does not make sense because it is anchored
 		// in the fake selection container.
-		// On Android it is sometimes trying to use target range inside the fake selection container
-		// (but selected widget is already removed from model and DOM) while replacing a widget with a keyboard suggestion.
 		if ( viewDocument.selection.isFake ) {
 			// Future-proof: in case of multi-range fake selections being possible.
 			targetRanges = Array.from( viewDocument.selection.getRanges() );

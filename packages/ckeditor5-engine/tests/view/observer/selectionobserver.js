@@ -17,6 +17,7 @@ import MutationObserver from '../../../src/view/observer/mutationobserver';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
@@ -97,6 +98,34 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 
 		setTimeout( done, 100 );
+	} );
+
+	it( 'should fire selectionChange while user is composing on Android', done => {
+		testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+		viewDocument.isComposing = true;
+
+		viewDocument.on( 'selectionChange', ( evt, data ) => {
+			expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
+
+			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( DocumentSelection );
+			expect( data.oldSelection.rangeCount ).to.equal( 0 );
+
+			expect( data ).to.have.property( 'newSelection' ).that.is.instanceof( ViewSelection );
+			expect( data.newSelection.rangeCount ).to.equal( 1 );
+
+			const newViewRange = data.newSelection.getFirstRange();
+			const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+
+			expect( newViewRange.start.parent ).to.equal( viewFoo );
+			expect( newViewRange.start.offset ).to.equal( 2 );
+			expect( newViewRange.end.parent ).to.equal( viewFoo );
+			expect( newViewRange.end.offset ).to.equal( 2 );
+
+			done();
+		} );
+
+		changeDomSelection();
 	} );
 
 	it( 'should add only one #selectionChange listener to one document', done => {

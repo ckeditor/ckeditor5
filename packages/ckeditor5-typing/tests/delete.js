@@ -12,9 +12,8 @@ import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-/* globals window, document */
+/* globals document */
 
 describe( 'Delete feature', () => {
 	let element, editor, viewDocument;
@@ -109,7 +108,7 @@ describe( 'Delete feature', () => {
 		sinon.assert.callOrder( executeSpy, scrollSpy );
 	} );
 
-	it( 'should always preventDefault() the original beforeinput event', () => {
+	it( 'should preventDefault() the original beforeinput event if not while composing', () => {
 		const spy = sinon.spy();
 
 		viewDocument.fire( 'delete', {
@@ -119,6 +118,20 @@ describe( 'Delete feature', () => {
 		} );
 
 		sinon.assert.calledOnce( spy );
+	} );
+
+	it( 'should not preventDefault() the original beforeinput event if while composing', () => {
+		const spy = sinon.spy();
+
+		viewDocument.isComposing = true;
+
+		viewDocument.fire( 'delete', {
+			preventDefault: spy,
+			direction: 'backward',
+			unit: 'character'
+		} );
+
+		sinon.assert.notCalled( spy );
 	} );
 } );
 
@@ -335,105 +348,6 @@ describe( 'Delete using the beforeinput event', () => {
 			sinon.assert.calledWithMatch( executeSpy, 'delete', {
 				sequence: 42
 			} );
-		} );
-	} );
-
-	describe( 'in Android environment (with some quirks)', () => {
-		let element, editor;
-
-		beforeEach( async () => {
-			// Force the Android mode.
-			testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
-
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			editor = await ClassicTestEditor.create( element, {
-				plugins: [ Delete, Paragraph ]
-			} );
-
-			const modelRoot = editor.model.document.getRoot();
-
-			// <paragraph>Foo[]bar</paragraph>
-			editor.model.change( writer => {
-				writer.insertElement( 'paragraph', modelRoot, 0 );
-				writer.insertText( 'Foobar', modelRoot.getChild( 0 ), 0 );
-				writer.setSelection( modelRoot.getChild( 0 ), 3 );
-			} );
-		} );
-
-		afterEach( async () => {
-			element.remove();
-
-			await editor.destroy();
-		} );
-
-		it( 'should re-set selection on keyup event if it was changed after deletion but before the input was fired', () => {
-			// This test covers a quirk on Android. We will recreate what browser does in this scenario.
-			// The test is not perfect because there are difficulties converting model selection to DOM in unit tests.
-			const view = editor.editing.view;
-			const viewDocument = view.document;
-			const domRoot = view.getDomRoot();
-			const domSelection = window.getSelection();
-			const domText = domRoot.childNodes[ 0 ].childNodes[ 0 ];
-
-			// Change the selection ("manual conversion").
-			// Because it all works quite bad the selection will be moved to quite a random place after delete is fired but
-			// all we care is checking if the selection is reversed on `keyup` event.
-			domSelection.collapse( domText, 3 );
-
-			// On `delete` the selection is saved.
-			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
-				direction: 'backward',
-				unit: 'character',
-				sequence: 1,
-				domTarget: domRoot
-			} ) );
-
-			// Store what was the selection when it was saved in `delete`.
-			const anchorNodeBefore = domSelection.anchorNode;
-			const anchorOffsetBefore = domSelection.anchorOffset;
-			const focusNodeBefore = domSelection.focusNode;
-			const focusOffsetBefore = domSelection.focusOffset;
-
-			// Change the selection.
-			domSelection.collapse( domText, 0 );
-
-			// On `keyup` it should be reversed.
-			viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
-				domTarget: domRoot
-			} ) );
-
-			expect( domSelection.anchorNode ).to.equal( anchorNodeBefore );
-			expect( domSelection.anchorOffset ).to.equal( anchorOffsetBefore );
-			expect( domSelection.focusNode ).to.equal( focusNodeBefore );
-			expect( domSelection.focusOffset ).to.equal( focusOffsetBefore );
-		} );
-
-		it( 'should not crash on keyup event if it was not changed after typing', () => {
-			// This test covers a quirk on Android. We will recreate what browser does in this scenario.
-			const view = editor.editing.view;
-			const viewDocument = view.document;
-
-			const domEvt = {
-				preventDefault: sinon.spy()
-			};
-
-			const domRoot = view.getDomRoot();
-			const domEvent = {
-				preventDefault: sinon.spy()
-			};
-
-			viewDocument.fire( 'input', domEvent );
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, domEvent, {
-				keyCode: getCode( 'A' )
-			} ) );
-
-			expect( () => {
-				viewDocument.fire( 'keyup', new DomEventData( viewDocument, domEvt, {
-					domTarget: domRoot
-				} ) );
-			} ).not.to.throw();
 		} );
 	} );
 

@@ -44,6 +44,8 @@ export default class Input extends Plugin {
 		editor.commands.add( 'input', insertTextCommand );
 
 		this.listenTo( view.document, 'insertText', ( evt, data ) => {
+			// Rendering is disabled while composing so prevent events that will be rendered by the engine
+			// and should not be applied by the browser.
 			if ( !view.document.isComposing ) {
 				data.preventDefault();
 			}

@@ -26,10 +26,6 @@ const TYPING_INPUT_TYPES = [
 	'insertReplacementText'
 ];
 
-if ( env.isAndroid ) {
-	TYPING_INPUT_TYPES.push( 'insertCompositionText' );
-}
-
 /**
  * Text insertion observer introduces the {@link module:engine/view/document~Document#event:insertText} event.
  *
@@ -41,6 +37,10 @@ export default class InsertTextObserver extends Observer {
 	 */
 	constructor( view ) {
 		super( view );
+
+		if ( env.isAndroid ) {
+			TYPING_INPUT_TYPES.push( 'insertCompositionText' );
+		}
 
 		const viewDocument = view.document;
 
