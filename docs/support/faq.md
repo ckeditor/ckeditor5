@@ -25,7 +25,7 @@ Each kind of content must be handled by some feature. For instance the [`ckedito
 
 If you load some content unknown to any editor feature, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them. Once you do that, CKEditor 5 will not filter anything out.
 
-## How to turn the source mode on? How to write a source mode plugin?
+## How to turn the source mode on?
 
 The {@link features/source-editing source editing} feature provides basic support for viewing and editing the source of the document.
 
