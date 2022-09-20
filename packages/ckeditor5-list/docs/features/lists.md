@@ -1,4 +1,3 @@
-
 ---
 menu-title: Ordered and unordered lists
 category: features-lists
@@ -15,7 +14,7 @@ Lists are useful when you want to emphasize selected information, highlight a se
 You may find additional interesting details and examples in the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post after reading this guide.
 
 <info-box info>
-	There are currently two plugins providing lists support for CKEditor 5: the original **lists feature** and the new {@link features/document-lists document lists} feature, based on a different approach.
+	There are currently two plugins providing lists support for CKEditor 5: this regular **lists feature** and the new {@link features/document-lists document lists feature}, based on a different approach.
 
 	The lists feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 

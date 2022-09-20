@@ -1,4 +1,3 @@
-
 ---
 menu-title: Document lists
 category: features-lists
@@ -16,7 +15,7 @@ The document list feature is based on a completely different approach than the r
 Just like regular lists, the document list feature supports both ordered and unordered lists.
 
 <info-box info>
-	There are currently two plugins providing lists support for CKEditor 5: the original {@link features/lists lists feature} and this new **document lists** feature.
+	There are currently two plugins providing lists support for CKEditor 5: the regular {@link features/lists lists feature} and this new **document lists feature**.
 
 	The document lists feature is not enabled in any builds, you need to [install it](#installation) by hand.
 </info-box>
@@ -31,25 +30,9 @@ Use the demo below to add block elements like tables, images or nested lists and
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## List properties
+## List styles
 
-Document lists offers additional formatting tools that allow controlling the lists, just like regular lists. There are ordered and unordered lists, selectable styles for list markers, the ability to set the start index or to reverse the list order. These additional features can be enabled separately or all together. You can test all of these in the demo above.
-
-### List styles
-
-The list style feature introduces some more styles for the list item markers. When {@link module:list/listproperties~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
-
-### List start index
-
-The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be `1` (or `A`, or `I` &mdash; see the [list styles section](#list-styles)), but in certain situations it may be desired to start a list with some other digit or letter.
-
-When this feature is {@link module:list/listproperties~ListPropertiesConfig#startIndex enabled}, an additional dropdown option is available in the ordered list toolbar button. Thanks to it, the user may set or change the starting marker.
-
-### Reversed list
-
-The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is especially useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in a disassembling instruction in an owners manual).
-
-When this feature is {@link module:list/listproperties~ListPropertiesConfig#reversed enabled}, an additional dropdown switch is available in the ordered list toolbar button. Thanks to it,  the user may easily reverse the order of a list with a single click.
+Document lists offers additional formatting tools that allow controlling the lists, just like regular lists. The list style feature introduces some more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
 ## List indentation
 
