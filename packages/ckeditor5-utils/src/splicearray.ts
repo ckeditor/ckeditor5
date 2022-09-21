@@ -13,6 +13,8 @@ const BIG_CHUNK_SIZE = 10000;
  * Splices one array into another. To be used instead of `Array.prototype.splice` as the latter may
  * throw "Maximum call stack size exceeded" when passed huge number of items to insert.
  *
+ * Note: in contrary to Array.splice, this function does not modify the original `target`.
+ *
  * 		spliceArray( [ 1, 2 ], [ 3, 4 ], 0, 0 );		// [ 3, 4, 1, 2 ]
  * 		spliceArray( [ 1, 2 ], [ 3, 4 ], 1, 1 );		// [ 1, 3, 4 ]
  * 		spliceArray( [ 1, 2 ], [ 3, 4 ], 1, 0 );		// [ 1, 3, 4, 2 ]
