@@ -26,7 +26,6 @@ const BIG_CHUNK_SIZE = 10000;
  * @param {Number} count Number of items.
  *
  * @returns {Array} New spliced array.
- *
  */
 export default function spliceArray<T>( target: Array<T>, source: Array<T>, start: number, count: number ): Array<T> {
 	// In case of performance problems, see: https://github.com/ckeditor/ckeditor5/pull/12429/files#r965850568
