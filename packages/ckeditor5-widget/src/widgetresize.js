@@ -42,12 +42,12 @@ export default class WidgetResize extends Plugin {
 		const domDocument = global.window.document;
 
 		/**
-		 * The currently visible resizer.
+		 * The currently selected resizer.
 		 *
 		 * @observable
-		 * @member {module:widget/widgetresize/resizer~Resizer|null} #visibleResizer
+		 * @member {module:widget/widgetresize/resizer~Resizer|null} #selectedResizer
 		 */
-		this.set( 'visibleResizer', null );
+		this.set( 'selectedResizer', null );
 
 		/**
 		 * References an active resizer.
@@ -77,20 +77,16 @@ export default class WidgetResize extends Plugin {
 		this._observer.listenTo( domDocument, 'mousemove', this._mouseMoveListener.bind( this ) );
 		this._observer.listenTo( domDocument, 'mouseup', this._mouseUpListener.bind( this ) );
 
-		const redrawFocusedResizer = () => {
-			if ( this.visibleResizer ) {
-				this.visibleResizer.redraw();
+		const redrawSelectedResizer = () => {
+			if ( this.selectedResizer && this.selectedResizer.isVisible ) {
+				this.selectedResizer.redraw();
 			}
 		};
 
-		this._redrawFocusedResizerThrottled = throttle( redrawFocusedResizer, 200 );
-
-		// Redraws occurring upon a change of visible resizer must not be throttled, as it is crucial for the initial
-		// render. Without it the resizer frame would be misaligned with resizing host for a fraction of second.
-		this.on( 'change:visibleResizer', redrawFocusedResizer );
+		this._redrawSelectedResizerThrottled = throttle( redrawSelectedResizer, 200 );
 
 		// Redrawing on any change of the UI of the editor (including content changes).
-		this.editor.ui.on( 'update', this._redrawFocusedResizerThrottled );
+		this.editor.ui.on( 'update', this._redrawSelectedResizerThrottled );
 
 		// Remove view widget-resizer mappings for widgets that have been removed from the document.
 		// https://github.com/ckeditor/ckeditor5/issues/10156
@@ -105,7 +101,7 @@ export default class WidgetResize extends Plugin {
 		}, { priority: 'lowest' } );
 
 		// Resizers need to be redrawn upon window resize, because new window might shrink resize host.
-		this._observer.listenTo( global.window, 'resize', this._redrawFocusedResizerThrottled );
+		this._observer.listenTo( global.window, 'resize', this._redrawSelectedResizerThrottled );
 
 		const viewSelection = this.editor.editing.view.document.selection;
 
@@ -113,8 +109,10 @@ export default class WidgetResize extends Plugin {
 			const selectedElement = viewSelection.getSelectedElement();
 
 			const resizer = this.getResizerByViewElement( selectedElement ) || null;
-			if ( resizer && resizer.isEnabled ) {
-				this.visibleResizer = resizer;
+			if ( resizer ) {
+				this.select( resizer );
+			} else {
+				this.deselect( resizer );
 			}
 		} );
 	}
@@ -129,7 +127,28 @@ export default class WidgetResize extends Plugin {
 			resizer.destroy();
 		}
 
-		this._redrawFocusedResizerThrottled.cancel();
+		this._redrawSelectedResizerThrottled.cancel();
+	}
+
+	/**
+	 * mark resizer as selected
+	 *
+	 * @param {module:widget/widgetresize/resizer~Resizer} resizer
+	 */
+	select( resizer ) {
+		this.deselect();
+		this.selectedResizer = resizer;
+		this.selectedResizer.isSelected = true;
+	}
+
+	/**
+	 * deselect currently set resizer
+	 */
+	deselect() {
+		if ( this.selectedResizer ) {
+			this.selectedResizer.isSelected = false;
+		}
+		this.selectedResizer = null;
 	}
 
 	/**
@@ -167,7 +186,7 @@ export default class WidgetResize extends Plugin {
 
 		// If the element the resizer is created for is currently focused, it should become visible.
 		if ( this.getResizerByViewElement( selectedElement ) == resizer ) {
-			this.visibleResizer = resizer;
+			this.select( resizer );
 		}
 
 		return resizer;

@@ -104,7 +104,7 @@ describe( 'Resizer', () => {
 			resizerInstance.attach();
 
 			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
-			expect( domResizerWrapper.style.display ).to.equal( 'none' );
+			expect( domResizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.true;
 		} );
 
 		it( 'hides the resizer if it gets disabled at a runtime', () => {
@@ -114,7 +114,7 @@ describe( 'Resizer', () => {
 			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
 
 			resizerInstance.isEnabled = false;
-			expect( domResizerWrapper.style.display ).to.equal( 'none' );
+			expect( domResizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.true;
 		} );
 
 		it( 'restores the resizer if it gets enabled at a runtime', () => {

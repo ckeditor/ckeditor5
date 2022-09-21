@@ -68,9 +68,26 @@ export default class Resizer {
 		 */
 
 		/**
+		 * flag that indicates whether resizer can be used
+		 *
 		 * @observable
 		 */
 		this.set( 'isEnabled', true );
+
+		/**
+		 * flag that indicates that resizer is currently focused
+		 *
+		 * @observable
+		 */
+		this.set( 'isSelected', false );
+
+		/**
+		 * flag that indicates whether resizer is rendered (visible on the screen)
+		 *
+		 * @readonly
+		 * @observable
+		 */
+		this.set( 'isVisible', false );
 
 		this.decorate( 'begin' );
 		this.decorate( 'cancel' );
@@ -86,12 +103,31 @@ export default class Resizer {
 			}
 		}, { priority: 'high' } );
 
-		this.on( 'change:isEnabled', () => {
-			// We should redraw the resize handles when the plugin is enabled again.
-			// Otherwise they won't show up.
-			if ( this.isEnabled ) {
+		this.on( 'change:isEnabled', this._updateIsVisible );
+		this.on( 'change:isSelected', this._updateIsVisible );
+		this.on( 'change:isVisible', () => {
+			if ( this.isVisible ) {
+				this.show();
 				this.redraw();
+			} else {
+				this.hide();
 			}
+		} );
+	}
+
+	show() {
+		const editingView = this._options.editor.editing.view;
+
+		editingView.change( writer => {
+			writer.removeClass( 'ck-hidden', this._viewResizerWrapper );
+		} );
+	}
+
+	hide() {
+		const editingView = this._options.editor.editing.view;
+
+		editingView.change( writer => {
+			writer.addClass( 'ck-hidden', this._viewResizerWrapper );
 		} );
 	}
 
@@ -112,12 +148,6 @@ export default class Resizer {
 				that._appendHandles( domElement );
 				that._appendSizeUI( domElement );
 
-				that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
-					domElement.style.display = newValue ? '' : 'none';
-				} );
-
-				domElement.style.display = that.isEnabled ? '' : 'none';
-
 				return domElement;
 			} );
 
@@ -126,6 +156,10 @@ export default class Resizer {
 			writer.addClass( 'ck-widget_with-resizer', widgetElement );
 
 			this._viewResizerWrapper = viewResizerWrapper;
+
+			if ( !this.isVisible ) {
+				this.hide();
+			}
 		} );
 	}
 
@@ -286,6 +320,13 @@ export default class Resizer {
 
 	static isResizeHandle( domElement ) {
 		return domElement.classList.contains( 'ck-widget__resizer__handle' );
+	}
+
+	/**
+	 * @private
+	 */
+	_updateIsVisible() {
+		this.isVisible = this.isEnabled && this.isSelected;
 	}
 
 	/**
