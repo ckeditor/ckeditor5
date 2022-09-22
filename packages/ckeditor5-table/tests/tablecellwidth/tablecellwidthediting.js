@@ -36,7 +36,7 @@ describe( 'TableCellWidthEditing', () => {
 		expect( editor.commands.get( 'tableCellWidth' ) ).to.be.instanceOf( TableCellWidthCommand );
 	} );
 
-	describe( 'cell width', () => {
+	describe.only( 'cell width', () => {
 		it( 'should set proper schema rules', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellWidth' ) ).to.be.true;
 		} );
@@ -47,6 +47,51 @@ describe( 'TableCellWidthEditing', () => {
 				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 				expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '20px' );
+			} );
+
+			// #12426
+			it( 'should upcast width attribute on table cells', () => {
+				editor.setData(
+					'<table>' +
+					'	<tbody>' +
+					'		<tr>' +
+					'			<td style="width:94px">&nbsp;</td>' +
+					'			<td style="width:291px">&nbsp;</td>' +
+					'		</tr>' +
+					'		<tr>' +
+					'			<td style="width:94px">&nbsp;</td>' +
+					'			<td style="width:291px">&nbsp;</td>' +
+					'		</tr>' +
+					'	</tbody>' +
+					'</table>' );
+				const tableCell00 = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+				const tableCell01 = model.document.getRoot().getNodeByPath( [ 0, 0, 1 ] );
+
+				expect( tableCell00.getAttribute( 'tableCellWidth' ) ).to.equal( '94px' );
+				expect( tableCell01.getAttribute( 'tableCellWidth' ) ).to.equal( '291px' );
+			} );
+		} );
+
+		describe( 'upcast conversion with more than one cell', () => {
+			it( 'should upcast width attribute on table cells', () => {
+				editor.setData(
+					'<table>' +
+					'	<tbody>' +
+					'		<tr>' +
+					'			<td style="width:94px">&nbsp;</td>' +
+					'			<td style="width:291px">&nbsp;</td>' +
+					'		</tr>' +
+					'		<tr>' +
+					'			<td style="width:94px">&nbsp;</td>' +
+					'			<td style="width:291px">&nbsp;</td>' +
+					'		</tr>' +
+					'	</tbody>' +
+					'</table>' );
+				const tableCell00 = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+				const tableCell01 = model.document.getRoot().getNodeByPath( [ 0, 0, 1 ] );
+
+				expect( tableCell00.getAttribute( 'tableCellWidth' ) ).to.equal( '94px' );
+				expect( tableCell01.getAttribute( 'tableCellWidth' ) ).to.equal( '291px' );
 			} );
 		} );
 
