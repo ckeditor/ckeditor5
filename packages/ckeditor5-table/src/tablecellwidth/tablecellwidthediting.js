@@ -9,21 +9,16 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import { downcastAttributeToStyle, upcastStyleToAttribute } from './../converters/tableproperties';
 import TableEditing from './../tableediting';
 import TableCellWidthCommand from './commands/tablecellwidthcommand';
 import { getNormalizedDefaultProperties } from '../utils/table-properties';
+import { enableProperty } from '../utils/common';
 
 /**
  * The table cell width editing feature.
  *
- * Introduces table cell model attribute and their conversion:
- *
- * - cell width: `tableCellWidth`
- *
- * It also registers a command used to manipulate the above attribute:
- *
- * - width: the `'tableCellWidth'` command
+ * Introduces `tableCellWidth` table cell model attribute alongside with its converters
+ * and a command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -47,38 +42,17 @@ export default class TableCellWidthEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const schema = editor.model.schema;
-		const conversion = editor.conversion;
 
 		const defaultTableCellProperties = getNormalizedDefaultProperties(
 			editor.config.get( 'table.tableCellProperties.defaultProperties' )
 		);
 
-		enableProperty( schema, conversion, {
+		enableProperty( editor.model.schema, editor.conversion, {
 			modelAttribute: 'tableCellWidth',
 			styleName: 'width',
 			defaultValue: defaultTableCellProperties.width
 		} );
+
 		editor.commands.add( 'tableCellWidth', new TableCellWidthCommand( editor, defaultTableCellProperties.width ) );
 	}
-}
-
-// Enables conversion for an attribute for simple view-model mappings.
-//
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/conversion/conversion~Conversion} conversion
-// @param {Object} options
-// @param {String} options.modelAttribute
-// @param {String} options.styleName
-// @param {String} options.defaultValue The default value for the specified `modelAttribute`.
-// @param {Boolean} [options.reduceBoxSides=false]
-function enableProperty( schema, conversion, options ) {
-	const { modelAttribute } = options;
-
-	schema.extend( 'tableCell', {
-		allowAttributes: [ modelAttribute ]
-	} );
-
-	upcastStyleToAttribute( conversion, { viewElement: /^(td|th)$/, ...options } );
-	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', ...options } );
 }

@@ -19,18 +19,18 @@ import { addDefaultUnitToNumericValue } from '../../utils/table-properties';
  *
  *		editor.execute( 'tableCellWidth', {
  *			value: '50px'
-*		} );
-*
-* **Note**: This command adds a default `'px'` unit to numeric values. Executing:
-*
-*		editor.execute( 'tableCellWidth', {
-*			value: '50'
-*		} );
-*
-* will set the `width` attribute to `'50px'` in the model.
-*
-* @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
-*/
+ *		} );
+ *
+ * **Note**: This command adds a default `'px'` unit to numeric values. Executing:
+ *
+ *		editor.execute( 'tableCellWidth', {
+ *			value: '50'
+ *		} );
+ *
+ * will set the `width` attribute to `'50px'` in the model.
+ *
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
+ */
 export default class TableCellWidthCommand extends TableCellPropertyCommand {
 	/**
 	 * Creates a new `TableCellWidthCommand` instance.

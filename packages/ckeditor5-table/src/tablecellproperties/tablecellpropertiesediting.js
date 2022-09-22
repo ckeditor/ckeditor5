@@ -10,8 +10,9 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { addBorderRules, addPaddingRules, addBackgroundRules } from 'ckeditor5/src/engine';
 
-import { downcastAttributeToStyle, upcastStyleToAttribute, upcastBorderStyles } from './../converters/tableproperties';
+import { downcastAttributeToStyle, upcastBorderStyles } from './../converters/tableproperties';
 import TableEditing from './../tableediting';
+import TableCellWidthEditing from '../tablecellwidth/tablecellwidthediting';
 import TableCellPaddingCommand from './commands/tablecellpaddingcommand';
 import TableCellHeightCommand from './commands/tablecellheightcommand';
 import TableCellBackgroundColorCommand from './commands/tablecellbackgroundcolorcommand';
@@ -21,6 +22,7 @@ import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand'
 import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand';
 import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand';
 import { getNormalizedDefaultProperties } from '../utils/table-properties';
+import { enableProperty } from '../utils/common';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -58,7 +60,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableEditing ];
+		return [ TableEditing, TableCellWidthEditing ];
 	}
 
 	/**
@@ -279,24 +281,4 @@ function enableVerticalAlignmentProperty( schema, conversion, defaultValue ) {
 				}
 			}
 		} );
-}
-
-// Enables conversion for an attribute for simple view-model mappings.
-//
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/conversion/conversion~Conversion} conversion
-// @param {Object} options
-// @param {String} options.modelAttribute
-// @param {String} options.styleName
-// @param {String} options.defaultValue The default value for the specified `modelAttribute`.
-// @param {Boolean} [options.reduceBoxSides=false]
-function enableProperty( schema, conversion, options ) {
-	const { modelAttribute } = options;
-
-	schema.extend( 'tableCell', {
-		allowAttributes: [ modelAttribute ]
-	} );
-
-	upcastStyleToAttribute( conversion, { viewElement: /^(td|th)$/, ...options } );
-	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', ...options } );
 }
