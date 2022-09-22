@@ -783,6 +783,8 @@ export default class Renderer extends Observable {
 	 * @param {Array.<String>} actions Actions array which is a result of the {@link module:utils/diff~diff} function.
 	 * @param {Array.<ViewNode>|NodeList} actualDom Actual DOM children
 	 * @param {Array.<ViewNode>} expectedDom Expected DOM children.
+	 * @param {Object} [options] Options
+	 * @param {Boolean} [options.replaceText] Mark text nodes replacement.
 	 * @returns {Array.<String>} Actions array modified with the `replace` actions.
 	 */
 	private _findReplaceActions(
@@ -1124,6 +1126,7 @@ function areSimilar( node1: DomNode, node2: DomNode ): boolean {
 		( node1 as DomElement ).tagName.toLowerCase() === ( node2 as DomElement ).tagName.toLowerCase();
 }
 
+// Whether two DOM nodes are text nodes.
 function areTextNodes( node1: DomNode, node2: DomNode ): boolean {
 	return isNode( node1 ) && isNode( node2 ) &&
 		isText( node1 ) && isText( node2 );

@@ -3718,6 +3718,37 @@ describe( 'Renderer', () => {
 				] );
 			} );
 
+			it( 'should update existing text node (mixed content, on Android)', () => {
+				testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+				viewRoot._appendChild( parse( '<container:p>foo<container:b>123</container:b>456</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot.getChild( 0 ).getChild( 0 )._textData = 'foobar';
+
+				observer.disconnect();
+				observer.observe( domRoot, {
+					childList: true,
+					attributes: false,
+					characterData: true,
+					subtree: true
+				} );
+
+				renderer.markToSync( 'children', viewRoot.getChild( 0 ) );
+				renderer.render();
+
+				const mutationRecords = observer.takeRecords();
+
+				expect( mutationRecords.length ).to.equal( 1 );
+				expect( mutationRecords[ 0 ].type ).to.equal( 'characterData' );
+				expect( getMutationStats( mutationRecords ) ).to.deep.equal( [
+					'added: 0, removed: 0'
+				] );
+			} );
+
 			it( 'should not touch the FSC when rendering children', () => {
 				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
 
@@ -5438,6 +5469,43 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should not modify selection', () => {
+				const domSelection = document.getSelection();
+
+				const { view: viewP, selection: newSelection } = parse( '<container:p>fo{}o</container:p>' );
+
+				viewRoot._appendChild( viewP );
+				selection._setTo( newSelection );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const domP = domRoot.childNodes[ 0 ];
+
+				expect( domSelection.isCollapsed ).to.true;
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
+				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domP.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
+
+				const selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
+				const selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+
+				selection._setTo( [
+					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
+				] );
+
+				renderer.isComposing = true;
+				renderer.markToSync( 'children', viewP );
+				renderAndExpectNoChanges( renderer, domRoot );
+
+				expect( selectionCollapseSpy.notCalled ).to.true;
+				expect( selectionExtendSpy.notCalled ).to.true;
+			} );
+
+			it( 'should not modify selection on Android', () => {
+				testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
 				const domSelection = document.getSelection();
 
 				const { view: viewP, selection: newSelection } = parse( '<container:p>fo{}o</container:p>' );
