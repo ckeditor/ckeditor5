@@ -131,7 +131,7 @@ export default class WidgetResize extends Plugin {
 	}
 
 	/**
-	 * mark resizer as selected
+	 * Marks resizer as selected.
 	 *
 	 * @param {module:widget/widgetresize/resizer~Resizer} resizer
 	 */
@@ -142,7 +142,7 @@ export default class WidgetResize extends Plugin {
 	}
 
 	/**
-	 * deselect currently set resizer
+	 * Deselects currently set resizer.
 	 */
 	deselect() {
 		if ( this.selectedResizer ) {

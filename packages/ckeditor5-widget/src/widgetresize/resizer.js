@@ -68,26 +68,26 @@ export default class Resizer {
 		 */
 
 		/**
-		 * flag that indicates whether resizer can be used
+		 * Flag that indicates whether resizer can be used.
 		 *
 		 * @observable
 		 */
 		this.set( 'isEnabled', true );
 
 		/**
-		 * flag that indicates that resizer is currently focused
+		 * Flag that indicates that resizer is currently focused.
 		 *
 		 * @observable
 		 */
 		this.set( 'isSelected', false );
 
 		/**
-		 * flag that indicates whether resizer is rendered (visible on the screen)
+		 * Flag that indicates whether resizer is rendered (visible on the screen).
 		 *
 		 * @readonly
 		 * @observable
 		 */
-		this.set( 'isVisible', false );
+		this.bind( 'isVisible' ).to( this, 'isEnabled', this, 'isSelected', ( isEnabled, isSelected ) => isEnabled && isSelected );
 
 		this.decorate( 'begin' );
 		this.decorate( 'cancel' );
@@ -103,8 +103,6 @@ export default class Resizer {
 			}
 		}, { priority: 'high' } );
 
-		this.on( 'change:isEnabled', this._updateIsVisible );
-		this.on( 'change:isSelected', this._updateIsVisible );
 		this.on( 'change:isVisible', () => {
 			if ( this.isVisible ) {
 				this.show();
@@ -115,6 +113,9 @@ export default class Resizer {
 		} );
 	}
 
+	/**
+	 * Makes resizer visible in the UI.
+	 */
 	show() {
 		const editingView = this._options.editor.editing.view;
 
@@ -123,6 +124,9 @@ export default class Resizer {
 		} );
 	}
 
+	/**
+	 * Hides resizer in the UI.
+	 */
 	hide() {
 		const editingView = this._options.editor.editing.view;
 
@@ -320,13 +324,6 @@ export default class Resizer {
 
 	static isResizeHandle( domElement ) {
 		return domElement.classList.contains( 'ck-widget__resizer__handle' );
-	}
-
-	/**
-	 * @private
-	 */
-	_updateIsVisible() {
-		this.isVisible = this.isEnabled && this.isSelected;
 	}
 
 	/**
