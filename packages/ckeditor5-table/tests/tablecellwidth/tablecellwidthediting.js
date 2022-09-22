@@ -36,7 +36,7 @@ describe( 'TableCellWidthEditing', () => {
 		expect( editor.commands.get( 'tableCellWidth' ) ).to.be.instanceOf( TableCellWidthCommand );
 	} );
 
-	describe.only( 'cell width', () => {
+	describe( 'cell width', () => {
 		it( 'should set proper schema rules', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellWidth' ) ).to.be.true;
 		} );
