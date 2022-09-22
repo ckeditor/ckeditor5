@@ -10,7 +10,6 @@ import WidgetResize from '../src/widgetresize';
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 import { toWidget } from '../src/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -139,43 +138,25 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
-	describe( 'visibility', () => {
+	describe( 'selectability', () => {
 		beforeEach( () => {
 			createResizer();
 		} );
-
-		it( 'it\'s hidden when no widget is focused', () => {
+		it( 'handles resizer selection on view element focus', () => {
 			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const viewSelection = editor.editing.view.document.selection;
+			const selectedElement = viewSelection.getSelectedElement();
+			const resizer = widgetResizePlugin.getResizerByViewElement( selectedElement );
+
+			widgetResizePlugin.select( resizer );
+
+			expect( widgetResizePlugin.selectedResizer ).to.not.be.null;
+			expect( resizer.isSelected ).to.be.true;
+
 			widgetResizePlugin.deselect();
 
-			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
-
-			for ( const resizer of allResizers ) {
-				expect( isVisible( resizer ) ).to.be.false;
-			}
-		} );
-
-		it( 'it\'s visible once the widget is focused', () => {
-			const widgetResizePlugin = editor.plugins.get( WidgetResize );
-			widgetResizePlugin.select( widgetResizePlugin.selectedResizer );
-
-			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
-
-			for ( const resizer of allResizers ) {
-				expect( isVisible( resizer ) ).to.be.true;
-			}
-		} );
-
-		it( 'it\'s hidden when resizer is not enabled and widget is focused', () => {
-			const widgetResizePlugin = editor.plugins.get( WidgetResize );
-			widgetResizePlugin.select( widgetResizePlugin.selectedResizer );
-			widgetResizePlugin.selectedResizer.isEnabled = false;
-
-			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
-
-			for ( const resizer of allResizers ) {
-				expect( isVisible( resizer ) ).to.be.false;
-			}
+			expect( widgetResizePlugin.selectedResizer ).to.be.null;
+			expect( resizer.isSelected ).to.be.false;
 		} );
 	} );
 
