@@ -52,16 +52,16 @@ describe( 'TableCellWidthEditing', () => {
 			it( 'should upcast width attribute on table cells', () => {
 				editor.setData(
 					'<table>' +
-					'	<tbody>' +
-					'		<tr>' +
-					'			<td style="width:94px">&nbsp;</td>' +
-					'			<td style="width:291px">&nbsp;</td>' +
-					'		</tr>' +
-					'		<tr>' +
-					'			<td style="width:94px">&nbsp;</td>' +
-					'			<td style="width:291px">&nbsp;</td>' +
-					'		</tr>' +
-					'	</tbody>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td style="width:94px">&nbsp;</td>' +
+								'<td style="width:291px">&nbsp;</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td style="width:94px">&nbsp;</td>' +
+								'<td style="width:291px">&nbsp;</td>' +
+							'</tr>' +
+						'</tbody>' +
 					'</table>' );
 				const tableCell00 = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				const tableCell01 = model.document.getRoot().getNodeByPath( [ 0, 0, 1 ] );
@@ -75,16 +75,16 @@ describe( 'TableCellWidthEditing', () => {
 			it( 'should upcast width attribute on table cells', () => {
 				editor.setData(
 					'<table>' +
-					'	<tbody>' +
-					'		<tr>' +
-					'			<td style="width:94px">&nbsp;</td>' +
-					'			<td style="width:291px">&nbsp;</td>' +
-					'		</tr>' +
-					'		<tr>' +
-					'			<td style="width:94px">&nbsp;</td>' +
-					'			<td style="width:291px">&nbsp;</td>' +
-					'		</tr>' +
-					'	</tbody>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td style="width:94px">&nbsp;</td>' +
+								'<td style="width:291px">&nbsp;</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td style="width:94px">&nbsp;</td>' +
+								'<td style="width:291px">&nbsp;</td>' +
+							'</tr>' +
+						'</tbody>' +
 					'</table>' );
 				const tableCell00 = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				const tableCell01 = model.document.getRoot().getNodeByPath( [ 0, 0, 1 ] );
