@@ -21,9 +21,27 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import normalizeToolbarConfig from './normalizetoolbarconfig';
+import { isObject } from 'lodash-es';
+
 import threeVerticalDots from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
 
 import '../../theme/components/toolbar/toolbar.css';
+
+import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
+import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
+import importExportIcon from '@ckeditor/ckeditor5-core/theme/icons/importexport.svg';
+import paragraphIcon from '@ckeditor/ckeditor5-core/theme/icons/paragraph.svg';
+import plusIcon from '@ckeditor/ckeditor5-core/theme/icons/plus.svg';
+import textIcon from '@ckeditor/ckeditor5-core/theme/icons/text.svg';
+
+const NESTED_TOOLBAR_ICONS = {
+	alignLeft: alignLeftIcon,
+	bold: boldIcon,
+	importExport: importExportIcon,
+	paragraph: paragraphIcon,
+	plus: plusIcon,
+	text: textIcon
+};
 
 /**
  * The toolbar view class.
@@ -330,7 +348,7 @@ export default class ToolbarView extends View {
 				}
 
 				// For the items that cannot be instantiated we are sending warning message. We also filter them out.
-				if ( !factory.has( name ) ) {
+				if ( !isObject( name ) && !factory.has( name ) ) {
 					/**
 					 * There was a problem processing the configuration of the toolbar. The item with the given
 					 * name does not exist so it was omitted when rendering the toolbar.
@@ -359,7 +377,10 @@ export default class ToolbarView extends View {
 		const itemsToAdd = this._cleanSeparators( itemsToClean )
 			// Instantiate toolbar items.
 			.map( name => {
-				if ( name === '|' ) {
+				if ( isObject( name ) ) {
+					return this._createNestedToolbarDropdown( name, factory );
+				}
+				else if ( name === '|' ) {
 					return new ToolbarSeparatorView();
 				} else if ( name === '-' ) {
 					return new ToolbarLineBreakView();
@@ -403,6 +424,42 @@ export default class ToolbarView extends View {
 
 				return !isDuplicated;
 			} );
+	}
+
+	/**
+	 * Creates a user-defined dropdown containing a toolbar with items.
+	 *
+	 * @private
+	 * @param {Object} definition A definition of the nested toolbar drop-down.
+	 * @param {String} definition.label A label of the dropdown.
+	 * @param {String} definition.icon An icon of the drop-down. One of 'bold', 'plus', 'text', 'importExport', 'alignLeft', 'paragraph'
+	 * or an SVG string. Not required if `withText` is `true`.
+	 * @param {Boolean} [definition.withText=false] When set `true`, the label of the drop-down will be visible. See
+	 * {@link module:ui/button/buttonview~ButtonView#withText} to learn more.
+	 * @param {Boolean|String|Function} [definition.tooltip=true] A tooltip of the drop-down button. See
+	 * {@link module:ui/button/buttonview~ButtonView#tooltip} to learn more.
+	 * @param {module:ui/componentfactory~ComponentFactory} componentFactory Component factory used to create items
+	 * of the nested toolbar.
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 */
+	_createNestedToolbarDropdown( definition, componentFactory ) {
+		const { label, icon, items, tooltip = true, withText = false } = definition;
+		const locale = this.locale;
+		const dropdownView = createDropdown( locale );
+
+		dropdownView.class = 'ck-toolbar__nested-toolbar-dropdown';
+		dropdownView.buttonView.set( {
+			label,
+			tooltip,
+			withText: !!withText,
+			icon: NESTED_TOOLBAR_ICONS[ icon ] || icon
+		} );
+
+		addToolbarToDropdown( dropdownView, [] );
+
+		dropdownView.toolbarView.fillFromConfig( items, componentFactory );
+
+		return dropdownView;
 	}
 
 	/**
