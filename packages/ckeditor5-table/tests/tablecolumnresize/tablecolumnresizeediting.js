@@ -2476,43 +2476,26 @@ describe( 'TableColumnResizeEditing', () => {
 				} );
 			} );
 
-			describe( 'having cells with tableCellWidth property set', () => {
-				let model, editor, editorElement;
+			it( 'should upcast tableCellWidth property correctly', () => {
+				editor.setData(
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td style="width:94px">&nbsp;</td>' +
+								'<td style="width:291px">&nbsp;</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td style="width:94px">&nbsp;</td>' +
+								'<td style="width:291px">&nbsp;</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' );
 
-				beforeEach( async () => {
-					editorElement = document.createElement( 'div' );
-					document.body.appendChild( editorElement );
+				const tableCell00 = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+				const tableCell01 = model.document.getRoot().getNodeByPath( [ 0, 0, 1 ] );
 
-					editor = await createEditor();
-					model = editor.model;
-				} );
-
-				afterEach( async () => {
-					editorElement.remove();
-					await editor.destroy();
-				} );
-
-				it( 'should upcast correctly', () => {
-					editor.setData(
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td style="width:94px">&nbsp;</td>' +
-									'<td style="width:291px">&nbsp;</td>' +
-								'</tr>' +
-								'<tr>' +
-									'<td style="width:94px">&nbsp;</td>' +
-									'<td style="width:291px">&nbsp;</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' );
-
-					const tableCell00 = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-					const tableCell01 = model.document.getRoot().getNodeByPath( [ 0, 0, 1 ] );
-
-					expect( tableCell00.getAttribute( 'tableCellWidth' ) ).to.equal( '94px' );
-					expect( tableCell01.getAttribute( 'tableCellWidth' ) ).to.equal( '291px' );
-				} );
+				expect( tableCell00.getAttribute( 'tableCellWidth' ) ).to.equal( '94px' );
+				expect( tableCell01.getAttribute( 'tableCellWidth' ) ).to.equal( '291px' );
 			} );
 		} );
 
