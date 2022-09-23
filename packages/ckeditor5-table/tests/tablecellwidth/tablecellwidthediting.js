@@ -6,7 +6,6 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import TableEditing from '../../src/tableediting';
 import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting';
 import TableCellWidthCommand from '../../src/tablecellwidth/commands/tablecellwidthcommand';
 
@@ -18,7 +17,7 @@ describe( 'TableCellWidthEditing', () => {
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ TableCellWidthEditing, Paragraph, TableEditing ]
+			plugins: [ TableCellWidthEditing, Paragraph ]
 		} );
 
 		model = editor.model;
@@ -169,7 +168,7 @@ describe( 'TableCellWidthEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ TableCellWidthEditing, Paragraph, TableEditing ],
+					plugins: [ TableCellWidthEditing, Paragraph ],
 					table: {
 						tableCellProperties: {
 							defaultProperties: {
