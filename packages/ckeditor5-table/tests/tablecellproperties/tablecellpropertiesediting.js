@@ -1240,7 +1240,6 @@ describe( 'table cell properties', () => {
 									borderColor: '#ff0',
 									borderWidth: '2px',
 									backgroundColor: '#00f',
-									width: '250px',
 									height: '150px',
 									padding: '10px'
 								}
@@ -1338,22 +1337,6 @@ describe( 'table cell properties', () => {
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
-				} );
-			} );
-
-			describe( 'width', () => {
-				it( 'should upcast the default `width` value from <td>', () => {
-					editor.setData( '<table><tr><td style="width:250px">foo</td></tr></table>' );
-					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-
-					expect( tableCell.getAttribute( 'width' ) ).to.be.undefined;
-				} );
-
-				it( 'should not upcast the default `width` value from <th>', () => {
-					editor.setData( '<table><tr><th style="width:250px">foo</th></tr></table>' );
-					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-
-					expect( tableCell.getAttribute( 'width' ) ).to.be.undefined;
 				} );
 			} );
 
