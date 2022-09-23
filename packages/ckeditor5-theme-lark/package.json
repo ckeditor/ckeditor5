@@ -28,7 +28,6 @@
     "@ckeditor/ckeditor5-list": "^35.1.0",
     "@ckeditor/ckeditor5-media-embed": "^35.1.0",
     "@ckeditor/ckeditor5-page-break": "^35.1.0",
-    "@ckeditor/ckeditor5-paragraph": "^35.1.0",
     "@ckeditor/ckeditor5-remove-format": "^35.1.0",
     "@ckeditor/ckeditor5-restricted-editing": "^35.1.0",
     "@ckeditor/ckeditor5-select-all": "^35.1.0",
