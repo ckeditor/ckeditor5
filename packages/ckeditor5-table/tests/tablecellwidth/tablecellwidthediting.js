@@ -187,20 +187,18 @@ describe( 'TableCellWidthEditing', () => {
 			editor.destroy();
 		} );
 
-		describe( 'width', () => {
-			it( 'should upcast the default `width` value from <td>', () => {
-				editor.setData( '<table><tr><td style="width:250px">foo</td></tr></table>' );
-				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+		it( 'should not upcast the default `width` value from <td>', () => {
+			editor.setData( '<table><tr><td style="width:250px">foo</td></tr></table>' );
+			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-				expect( tableCell.getAttribute( 'width' ) ).to.be.undefined;
-			} );
+			expect( tableCell.getAttribute( 'width' ) ).to.be.undefined;
+		} );
 
-			it( 'should not upcast the default `width` value from <th>', () => {
-				editor.setData( '<table><tr><th style="width:250px">foo</th></tr></table>' );
-				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+		it( 'should not upcast the default `width` value from <th>', () => {
+			editor.setData( '<table><tr><th style="width:250px">foo</th></tr></table>' );
+			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-				expect( tableCell.getAttribute( 'width' ) ).to.be.undefined;
-			} );
+			expect( tableCell.getAttribute( 'width' ) ).to.be.undefined;
 		} );
 	} );
 } );
