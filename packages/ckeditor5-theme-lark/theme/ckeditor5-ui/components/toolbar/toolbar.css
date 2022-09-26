@@ -99,6 +99,11 @@
 		& > .ck-dropdown__panel {
 			min-width: auto;
 		}
+
+		& > .ck-button > .ck-button__label {
+			max-width: 7em;
+			width: auto;
+		}
 	}
 
 	@nest .ck-toolbar-container & {
