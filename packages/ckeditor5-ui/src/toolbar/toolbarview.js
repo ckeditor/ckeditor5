@@ -27,21 +27,16 @@ import threeVerticalDots from '@ckeditor/ckeditor5-core/theme/icons/three-vertic
 
 import '../../theme/components/toolbar/toolbar.css';
 
-import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
-import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
-import importExportIcon from '@ckeditor/ckeditor5-core/theme/icons/importexport.svg';
-import paragraphIcon from '@ckeditor/ckeditor5-core/theme/icons/paragraph.svg';
-import plusIcon from '@ckeditor/ckeditor5-core/theme/icons/plus.svg';
-import textIcon from '@ckeditor/ckeditor5-core/theme/icons/text.svg';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 const NESTED_TOOLBAR_ICONS = {
-	alignLeft: alignLeftIcon,
-	bold: boldIcon,
-	importExport: importExportIcon,
-	paragraph: paragraphIcon,
-	plus: plusIcon,
-	text: textIcon,
-	threeVerticalDots
+	alignLeft: icons.alignLeft,
+	bold: icons.bold,
+	importExport: icons.importExport,
+	paragraph: icons.paragraph,
+	plus: icons.plus,
+	text: icons.text,
+	threeVerticalDots: icons.threeVerticalDots
 };
 
 /**
