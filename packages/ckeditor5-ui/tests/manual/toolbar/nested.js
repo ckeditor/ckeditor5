@@ -72,6 +72,14 @@ ClassicEditor
 				},
 				'-',
 				{
+					label: 'Icon: "bold"',
+					withText: true,
+					icon: 'bold',
+					items: [
+						'insertImage', 'insertTable', 'mediaEmbed'
+					]
+				},
+				{
 					label: 'Icon: "plus"',
 					withText: true,
 					icon: 'plus',
