@@ -128,7 +128,7 @@ You can use one of the icons listed below for your drop-down:
 | `'importExport'`  | {@icon @ckeditor/ckeditor5-core/theme/icons/importexport.svg Import export} |
 | `'paragraph'`     | {@icon @ckeditor/ckeditor5-core/theme/icons/paragraph.svg Paragraph}        |
 | `'text'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/text.svg Text}                  |
-| `'three-vertical-dots'` | {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Three vertical dots} |
+| `'threeVerticalDots'` | {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Three vertical dots} |
 
 You can also set a custom icon for the drop-down by passing an SVG string.
 
@@ -161,9 +161,9 @@ By default, the tooltip of the button shares its text with the label. You can cu
 ```js
 toolbar: [
 	{
-		label: 'Basic styles',
-		tooltip: 'Custom tooltip of the drop-down',
-		icon: 'text',
+		label: 'Others',
+		tooltip: 'Additional editing features',
+		icon: 'threeVerticalDots',
 		items: [ 'bold', 'italic' ]
 	},
 	'|',

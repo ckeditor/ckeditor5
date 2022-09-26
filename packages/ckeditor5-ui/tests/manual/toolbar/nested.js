@@ -120,6 +120,14 @@ ClassicEditor
 					]
 				},
 				{
+					label: 'Icon: "threeVerticalDots"',
+					withText: true,
+					icon: 'threeVerticalDots',
+					items: [
+						'insertImage', 'insertTable', 'mediaEmbed'
+					]
+				},
+				{
 					label: 'Icon: custom SVG',
 					withText: true,
 					// eslint-disable-next-line max-len

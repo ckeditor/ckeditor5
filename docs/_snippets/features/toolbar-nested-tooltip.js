@@ -11,9 +11,9 @@ ClassicEditor
 	.create( document.querySelector( '#toolbar-nested-tooltip' ), {
 		toolbar: [
 			{
-				label: 'Basic styles',
-				tooltip: 'Custom tooltip of the drop-down',
-				icon: 'text',
+				label: 'Others',
+				tooltip: 'Additional editing features',
+				icon: 'threeVerticalDots',
 				items: [ 'bold', 'italic' ]
 			},
 			'|',
