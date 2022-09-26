@@ -200,7 +200,7 @@
  *	* **Selecting an icon**
  *
  *		You can use one of the common icons provided by the editor (`'bold'`, `'plus'`, `'text'`, `'importExport'`, `'alignLeft'`,
- *		`'paragraph'`):
+ *		`'paragraph'`, `'threeVerticalDots'`):
  *
  *				{
  *					label: '...',

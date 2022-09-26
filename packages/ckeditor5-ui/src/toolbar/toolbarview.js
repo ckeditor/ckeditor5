@@ -40,7 +40,8 @@ const NESTED_TOOLBAR_ICONS = {
 	importExport: importExportIcon,
 	paragraph: paragraphIcon,
 	plus: plusIcon,
-	text: textIcon
+	text: textIcon,
+	threeVerticalDots
 };
 
 /**
