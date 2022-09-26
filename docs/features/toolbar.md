@@ -78,7 +78,7 @@ The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull`
 
 {@snippet features/toolbar-grouping}
 
-## Grouping toolbar items (nested toolbars)
+## Grouping toolbar items in drop-downs (nested toolbars)
 
 To save space in your toolbar you can group several items into a drop-down. For instance, the following configuration
 
@@ -98,7 +98,7 @@ will create a "Basic styles" drop-down with a "text" icon containing "bold" and 
 
 {@snippet features/toolbar-nested-simple}
 
-### Customizing drop-downs
+### Customization
 
 You can customize the look of the drop-down by configuring additional properties:
 

@@ -448,6 +448,49 @@ export default class ToolbarView extends View {
 		const locale = this.locale;
 		const dropdownView = createDropdown( locale );
 
+		if ( !label ) {
+			/**
+			 * A drop-down definition in the toolbar configuration is missing a text label.
+			 *
+			 * Without a label, the drop-down becomes inaccessible to users relying on assistive technologies.
+			 * Make sure the `label` property is set in your drop-down configuration:
+			 *
+ 			 *		{
+ 			 *			label: 'A human-readable label',
+			 *			icon: '...',
+			 *			items: [ ... ]
+ 			 *		},
+			 *
+			 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+			 *
+			 * @error toolbarview-nested-toolbar-drop-down-missing-label
+			 */
+			logWarning( 'toolbarview-nested-toolbar-drop-down-missing-label', definition );
+		}
+
+		if ( !icon && !withText ) {
+			/**
+			 * A drop-down definition in the toolbar configuration is missing an icon or a visible label.
+			 * Without an icon or a visible label, the drop-down becomes undistinguishable in the interface of the editor.
+			 *
+			 * Make sure either the `icon` or `withText` property is set in your drop-down configuration:
+			 *
+ 			 *		{
+ 			 *			label: '...',
+			 *			items: [ ... ],
+			 *
+			 *			// At least one of these properties should be set:
+			 *			withText: '...'
+ 			 *			icon: '...'
+ 			 *		},
+			 *
+			 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+			 *
+			 * @error toolbarview-nested-toolbar-drop-down-missing-presentational-config
+			 */
+			logWarning( 'toolbarview-nested-toolbar-drop-down-missing-presentational-config', definition );
+		}
+
 		dropdownView.class = 'ck-toolbar__nested-toolbar-dropdown';
 		dropdownView.buttonView.set( {
 			label,

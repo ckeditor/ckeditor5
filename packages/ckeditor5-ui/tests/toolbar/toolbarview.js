@@ -21,6 +21,9 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import ToolbarLineBreakView from '../../src/toolbar/toolbarlinebreakview';
+import DropdownView from '../../src/dropdown/dropdownview';
+
+import plusIcon from '@ckeditor/ckeditor5-core/theme/icons/plus.svg';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
@@ -649,6 +652,208 @@ describe( 'ToolbarView', () => {
 			expect( items ).to.have.length( 2 );
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
 			expect( items.get( 1 ).name ).to.equal( 'bar' );
+		} );
+
+		describe( 'nested drop-downs with toolbar', () => {
+			let dropdownView, toolbarView;
+
+			it( 'should create a drop-down with configured items', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: 'plus'
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+				toolbarView = dropdownView.toolbarView;
+
+				const items = view.items;
+
+				expect( items ).to.have.length( 2 );
+				expect( items.get( 0 ).name ).to.equal( 'foo' );
+				expect( items.get( 1 ) ).to.be.instanceOf( DropdownView );
+
+				expect( dropdownView.buttonView.label, 'label' ).to.equal( 'Some label' );
+				expect( dropdownView.buttonView.withText, 'withText' ).to.be.false;
+				expect( dropdownView.buttonView.icon, 'icon' ).to.match( /^<svg viewBox/ );
+				expect( dropdownView.buttonView.tooltip, 'tooltip' ).to.be.true;
+
+				const nestedToolbarItems = toolbarView.items;
+
+				expect( nestedToolbarItems.get( 0 ).name ).to.equal( 'bar' );
+				expect( nestedToolbarItems.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+				expect( nestedToolbarItems.get( 2 ).name ).to.equal( 'foo' );
+			} );
+
+			it( 'should set proper CSS class on the drop-down', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: 'plus'
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.class ).to.equal( 'ck-toolbar__nested-toolbar-dropdown' );
+			} );
+
+			it( 'should allow configuring the drop-down\'s label', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: 'plus'
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.label ).to.equal( 'Some label' );
+			} );
+
+			it( 'should allow configuring the drop-down\'s label visibility', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: 'plus',
+						withText: true
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.withText ).to.be.true;
+			} );
+
+			it( 'should allow configuring the drop-down\'s icon', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: 'plus'
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.icon ).to.equal( plusIcon );
+			} );
+
+			describe( 'pre-configured icons', () => {
+				const iconNames = [
+					'alignLeft',
+					'bold',
+					'importExport',
+					'paragraph',
+					'plus',
+					'text',
+					'threeVerticalDots'
+				];
+
+				for ( const name of iconNames ) {
+					it( `should provide the "${ name }" icon`, () => {
+						view.fillFromConfig( [
+							{
+								label: 'Some label',
+								items: [ 'bar', '|', 'foo' ],
+								icon: name
+							}
+						], factory );
+
+						dropdownView = view.items.get( 0 );
+
+						expect( dropdownView.buttonView.icon ).to.match( /^<svg/ );
+					} );
+				}
+			} );
+
+			it( 'should allow configuring the drop-down\'s tooltip', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: 'plus',
+						tooltip: 'Foo bar'
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.tooltip ).to.equal( 'Foo bar' );
+			} );
+
+			it( 'should allow deep nested structures', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Level 0',
+						items: [
+							'bar',
+							'|',
+							{
+								label: 'Level 1',
+								icon: 'bold',
+								items: [ 'bar' ]
+							}
+						],
+						icon: 'plus',
+						tooltip: 'Foo bar'
+					}
+				], factory );
+
+				const level0DropdownView = view.items.get( 1 );
+				const level1DropdownView = level0DropdownView.toolbarView.items.get( 2 );
+
+				expect( level1DropdownView.toolbarView.items.length ).to.equal( 1 );
+				expect( level1DropdownView.toolbarView.items.get( 0 ).name ).to.equal( 'bar' );
+			} );
+
+			it( 'should warn when the drop-down has no label', () => {
+				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const brokenDefinition = {
+					items: [ 'bar', '|', 'foo' ],
+					icon: 'plus',
+					tooltip: 'Foo bar'
+				};
+
+				view.fillFromConfig( [ 'foo', brokenDefinition ], factory );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^toolbarview-nested-toolbar-drop-down-missing-label/ ),
+					brokenDefinition,
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
+			it( 'should warn when the drop-down has neither an icon nor a visible label', () => {
+				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const brokenDefinition = {
+					label: 'Some label',
+					items: [ 'bar', '|', 'foo' ],
+					tooltip: 'Foo bar'
+				};
+
+				view.fillFromConfig( [ 'foo', brokenDefinition ], factory );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^toolbarview-nested-toolbar-drop-down-missing-presentational-config/ ),
+					brokenDefinition,
+					sinon.match.string // Link to the documentation
+				);
+			} );
 		} );
 	} );
 
