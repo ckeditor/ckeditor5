@@ -62,7 +62,7 @@ import bold from './../theme/icons/bold.svg';
 import paragraph from './../theme/icons/paragraph.svg';
 import plus from './../theme/icons/plus.svg';
 import text from './../theme/icons/text.svg';
-import importexport from './../theme/icons/importexport.svg';
+import importExport from './../theme/icons/importexport.svg';
 
 export const icons = {
 	bold,
@@ -73,7 +73,7 @@ export const icons = {
 	eraser,
 	image,
 	lowVision,
-	importexport,
+	importExport,
 	paragraph,
 	plus,
 	text,

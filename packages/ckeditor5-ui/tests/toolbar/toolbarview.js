@@ -23,7 +23,7 @@ import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import ToolbarLineBreakView from '../../src/toolbar/toolbarlinebreakview';
 import DropdownView from '../../src/dropdown/dropdownview';
 
-import plusIcon from '@ckeditor/ckeditor5-core/theme/icons/plus.svg';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
@@ -746,7 +746,7 @@ describe( 'ToolbarView', () => {
 
 				dropdownView = view.items.get( 1 );
 
-				expect( dropdownView.buttonView.icon ).to.equal( plusIcon );
+				expect( dropdownView.buttonView.icon ).to.equal( icons.plus );
 			} );
 
 			describe( 'pre-configured icons', () => {
@@ -772,7 +772,7 @@ describe( 'ToolbarView', () => {
 
 						dropdownView = view.items.get( 0 );
 
-						expect( dropdownView.buttonView.icon ).to.match( /^<svg/ );
+						expect( dropdownView.buttonView.icon ).to.equal( icons[ name ] );
 					} );
 				}
 			} );
