@@ -308,6 +308,11 @@ describe( 'WidgetTypeAround', () => {
 				expect( buttonAfter.classList.contains( 'ck-widget__type-around__button' ) ).to.be.true;
 			} );
 
+			it( 'should be hidden from assistive technologies by setting aria-hidden to true', () => {
+				expect( buttonBefore.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
+				expect( buttonAfter.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
+			} );
+
 			describe( 'button to type "before" a widget', () => {
 				it( 'should have a specific class', () => {
 					expect( buttonBefore.classList.contains( 'ck-widget__type-around__button_before' ) ).to.be.true;
