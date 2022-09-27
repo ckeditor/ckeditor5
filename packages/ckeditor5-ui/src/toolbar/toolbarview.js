@@ -21,9 +21,23 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import normalizeToolbarConfig from './normalizetoolbarconfig';
+import { isObject } from 'lodash-es';
+
 import threeVerticalDots from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
 
 import '../../theme/components/toolbar/toolbar.css';
+
+import { icons } from '@ckeditor/ckeditor5-core';
+
+const NESTED_TOOLBAR_ICONS = {
+	alignLeft: icons.alignLeft,
+	bold: icons.bold,
+	importExport: icons.importExport,
+	paragraph: icons.paragraph,
+	plus: icons.plus,
+	text: icons.text,
+	threeVerticalDots: icons.threeVerticalDots
+};
 
 /**
  * The toolbar view class.
@@ -330,7 +344,7 @@ export default class ToolbarView extends View {
 				}
 
 				// For the items that cannot be instantiated we are sending warning message. We also filter them out.
-				if ( !factory.has( name ) ) {
+				if ( !isObject( name ) && !factory.has( name ) ) {
 					/**
 					 * There was a problem processing the configuration of the toolbar. The item with the given
 					 * name does not exist so it was omitted when rendering the toolbar.
@@ -359,7 +373,10 @@ export default class ToolbarView extends View {
 		const itemsToAdd = this._cleanSeparators( itemsToClean )
 			// Instantiate toolbar items.
 			.map( name => {
-				if ( name === '|' ) {
+				if ( isObject( name ) ) {
+					return this._createNestedToolbarDropdown( name, factory );
+				}
+				else if ( name === '|' ) {
 					return new ToolbarSeparatorView();
 				} else if ( name === '-' ) {
 					return new ToolbarLineBreakView();
@@ -403,6 +420,71 @@ export default class ToolbarView extends View {
 
 				return !isDuplicated;
 			} );
+	}
+
+	/**
+	 * Creates a user-defined dropdown containing a toolbar with items.
+	 *
+	 * @private
+	 * @param {Object} definition A definition of the nested toolbar dropdown.
+	 * @param {String} definition.label A label of the dropdown.
+	 * @param {String|Boolean} [definition.icon] An icon of the drop-down. One of 'bold', 'plus', 'text', 'importExport', 'alignLeft',
+	 * 'paragraph' or an SVG string. When `false` is passed, no icon will be used.
+	 * @param {Boolean} [definition.withText=false] When set `true`, the label of the dropdown will be visible. See
+	 * {@link module:ui/button/buttonview~ButtonView#withText} to learn more.
+	 * @param {Boolean|String|Function} [definition.tooltip=true] A tooltip of the dropdown button. See
+	 * {@link module:ui/button/buttonview~ButtonView#tooltip} to learn more.
+	 * @param {module:ui/componentfactory~ComponentFactory} componentFactory Component factory used to create items
+	 * of the nested toolbar.
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 */
+	_createNestedToolbarDropdown( definition, componentFactory ) {
+		const { label, icon, items, tooltip = true, withText = false } = definition;
+		const locale = this.locale;
+		const dropdownView = createDropdown( locale );
+
+		if ( !label ) {
+			/**
+			 * A dropdown definition in the toolbar configuration is missing a text label.
+			 *
+			 * Without a label, the dropdown becomes inaccessible to users relying on assistive technologies.
+			 * Make sure the `label` property is set in your drop-down configuration:
+			 *
+ 			 *		{
+ 			 *			label: 'A human-readable label',
+			 *			icon: '...',
+			 *			items: [ ... ]
+ 			 *		},
+			 *
+			 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+			 *
+			 * @error toolbarview-nested-toolbar-dropdown-missing-label
+			 */
+			logWarning( 'toolbarview-nested-toolbar-dropdown-missing-label', definition );
+		}
+
+		dropdownView.class = 'ck-toolbar__nested-toolbar-dropdown';
+		dropdownView.buttonView.set( {
+			label,
+			tooltip,
+			withText: !!withText
+		} );
+
+		// Allow disabling icon by passing false.
+		if ( icon !== false ) {
+			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon ] || icon || NESTED_TOOLBAR_ICONS.threeVerticalDots;
+		}
+		// If the icon is disabled, display the label automatically.
+		else {
+			dropdownView.buttonView.withText = true;
+		}
+
+		addToolbarToDropdown( dropdownView, [] );
+
+		dropdownView.toolbarView.fillFromConfig( items, componentFactory );
+
+		return dropdownView;
 	}
 
 	/**
