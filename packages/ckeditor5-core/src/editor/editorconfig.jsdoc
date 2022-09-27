@@ -171,7 +171,7 @@
  *
  *	Line break will work only in the extended format when `shouldNotGroupWhenFull` option is set to `true`.
  *
- *	**Note**: To save space in your toolbar you can group several items into a drop-down:
+ *	**Note**: To save space in your toolbar you can group several items into a dropdown:
  *
  *		toolbar: [
  *			{
@@ -183,8 +183,8 @@
  *			'undo', 'redo'
  *		]
  *
- *	The code above will create a "Basic styles" drop-down with a "text" icon containing "bold" and "italic" buttons.
- *	You can customize the look of the drop-down by setting `withText`, `icon`, and `tooltip` properties:
+ *	The code above will create a "Basic styles" dropdown with a "text" icon containing "bold" and "italic" buttons.
+ *	You can customize the look of the dropdown by setting the `withText`, `icon`, and `tooltip` properties:
  *
  *	* **Displaying a label**
  *
@@ -213,7 +213,7 @@
  *
  *				{
  *					label: '...',
- *					// If you want your icon to change the color dynamically (e.g. when the drop-down opens), avoid fill="..."
+ *					// If you want your icon to change the color dynamically (e.g. when the dropdown opens), avoid fill="..."
  *					// and stroke="..." styling attributes. Use solid shapes and avoid paths with strokes.
  *					icon: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">...</svg>',
  *					items: [ ... ]
@@ -221,7 +221,7 @@
  *
  *	* **Customizing the tooltip**
  *
- *		By default, the tooltip of the button shares its text with the label. You can customize it to better describe your drop-down
+ *		By default, the tooltip of the button shares its text with the label. You can customize it to better describe your dropdown
  *		using the `tooltip` property ({@link module:ui/button/buttonview~ButtonView#tooltip learn more}):
  *
  *				{

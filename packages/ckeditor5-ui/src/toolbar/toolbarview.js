@@ -426,13 +426,13 @@ export default class ToolbarView extends View {
 	 * Creates a user-defined dropdown containing a toolbar with items.
 	 *
 	 * @private
-	 * @param {Object} definition A definition of the nested toolbar drop-down.
+	 * @param {Object} definition A definition of the nested toolbar dropdown.
 	 * @param {String} definition.label A label of the dropdown.
 	 * @param {String} [definition.icon] An icon of the drop-down. One of 'bold', 'plus', 'text', 'importExport', 'alignLeft', 'paragraph'
 	 * or an SVG string. Not required if `withText` is `true`.
-	 * @param {Boolean} [definition.withText=false] When set `true`, the label of the drop-down will be visible. See
+	 * @param {Boolean} [definition.withText=false] When set `true`, the label of the dropdown will be visible. See
 	 * {@link module:ui/button/buttonview~ButtonView#withText} to learn more.
-	 * @param {Boolean|String|Function} [definition.tooltip=true] A tooltip of the drop-down button. See
+	 * @param {Boolean|String|Function} [definition.tooltip=true] A tooltip of the dropdown button. See
 	 * {@link module:ui/button/buttonview~ButtonView#tooltip} to learn more.
 	 * @param {module:ui/componentfactory~ComponentFactory} componentFactory Component factory used to create items
 	 * of the nested toolbar.
@@ -445,9 +445,9 @@ export default class ToolbarView extends View {
 
 		if ( !label ) {
 			/**
-			 * A drop-down definition in the toolbar configuration is missing a text label.
+			 * A dropdown definition in the toolbar configuration is missing a text label.
 			 *
-			 * Without a label, the drop-down becomes inaccessible to users relying on assistive technologies.
+			 * Without a label, the dropdown becomes inaccessible to users relying on assistive technologies.
 			 * Make sure the `label` property is set in your drop-down configuration:
 			 *
  			 *		{
@@ -466,9 +466,9 @@ export default class ToolbarView extends View {
 		if ( !icon && !withText ) {
 			/**
 			 * A drop-down definition in the toolbar configuration is missing an icon or a visible label.
-			 * Without an icon or a visible label, the drop-down becomes undistinguishable in the interface of the editor.
+			 * Without an icon or a visible label, the dropdown becomes undistinguishable in the interface of the editor.
 			 *
-			 * Make sure either the `icon` or `withText` property is set in your drop-down configuration:
+			 * Make sure either the `icon` or `withText` property is set in your dropdown configuration:
 			 *
  			 *		{
  			 *			label: '...',
