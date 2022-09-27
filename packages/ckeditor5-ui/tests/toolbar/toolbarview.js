@@ -657,13 +657,12 @@ describe( 'ToolbarView', () => {
 		describe( 'nested drop-downs with toolbar', () => {
 			let dropdownView, toolbarView;
 
-			it( 'should create a drop-down with configured items', () => {
+			it( 'should create a drop-down with the default look and configured items', () => {
 				view.fillFromConfig( [
 					'foo',
 					{
 						label: 'Some label',
-						items: [ 'bar', '|', 'foo' ],
-						icon: 'plus'
+						items: [ 'bar', '|', 'foo' ]
 					}
 				], factory );
 
@@ -678,7 +677,7 @@ describe( 'ToolbarView', () => {
 
 				expect( dropdownView.buttonView.label, 'label' ).to.equal( 'Some label' );
 				expect( dropdownView.buttonView.withText, 'withText' ).to.be.false;
-				expect( dropdownView.buttonView.icon, 'icon' ).to.match( /^<svg viewBox/ );
+				expect( dropdownView.buttonView.icon, 'icon' ).to.equal( icons.threeVerticalDots );
 				expect( dropdownView.buttonView.tooltip, 'tooltip' ).to.be.true;
 
 				const nestedToolbarItems = toolbarView.items;
@@ -734,19 +733,35 @@ describe( 'ToolbarView', () => {
 				expect( dropdownView.buttonView.withText ).to.be.true;
 			} );
 
-			it( 'should allow configuring the drop-down\'s icon', () => {
+			it( 'should allow configuring the drop-down\'s icon by SVG string', () => {
 				view.fillFromConfig( [
 					'foo',
 					{
 						label: 'Some label',
 						items: [ 'bar', '|', 'foo' ],
-						icon: 'plus'
+						icon: '<svg viewBox="0 0 68 64" xmlns="http://www.w3.org/2000/svg"></svg>'
 					}
 				], factory );
 
 				dropdownView = view.items.get( 1 );
 
-				expect( dropdownView.buttonView.icon ).to.equal( icons.plus );
+				expect( dropdownView.buttonView.icon ).to.equal( '<svg viewBox="0 0 68 64" xmlns="http://www.w3.org/2000/svg"></svg>' );
+			} );
+
+			it( 'should allow disabling the drop-down\'s icon by passing false (text label shows up instead)', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						icon: false,
+						items: [ 'bar', '|', 'foo' ]
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.icon ).to.be.undefined;
+				expect( dropdownView.buttonView.withText ).to.be.true;
 			} );
 
 			describe( 'pre-configured icons', () => {
@@ -775,6 +790,21 @@ describe( 'ToolbarView', () => {
 						expect( dropdownView.buttonView.icon ).to.equal( icons[ name ] );
 					} );
 				}
+			} );
+
+			it( 'should fall back to a default icon when none was provided', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ]
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.icon ).to.equal( icons.threeVerticalDots );
+				expect( dropdownView.buttonView.withText ).to.be.false;
 			} );
 
 			it( 'should allow configuring the drop-down\'s tooltip', () => {
@@ -831,25 +861,7 @@ describe( 'ToolbarView', () => {
 
 				sinon.assert.calledOnce( warnStub );
 				sinon.assert.calledWithExactly( warnStub,
-					sinon.match( /^toolbarview-nested-toolbar-drop-down-missing-label/ ),
-					brokenDefinition,
-					sinon.match.string // Link to the documentation
-				);
-			} );
-
-			it( 'should warn when the drop-down has neither an icon nor a visible label', () => {
-				const warnStub = testUtils.sinon.stub( console, 'warn' );
-				const brokenDefinition = {
-					label: 'Some label',
-					items: [ 'bar', '|', 'foo' ],
-					tooltip: 'Foo bar'
-				};
-
-				view.fillFromConfig( [ 'foo', brokenDefinition ], factory );
-
-				sinon.assert.calledOnce( warnStub );
-				sinon.assert.calledWithExactly( warnStub,
-					sinon.match( /^toolbarview-nested-toolbar-drop-down-missing-presentational-config/ ),
+					sinon.match( /^toolbarview-nested-toolbar-dropdown-missing-label/ ),
 					brokenDefinition,
 					sinon.match.string // Link to the documentation
 				);

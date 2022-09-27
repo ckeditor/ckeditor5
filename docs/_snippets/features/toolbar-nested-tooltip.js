@@ -13,7 +13,6 @@ ClassicEditor
 			{
 				label: 'Others',
 				tooltip: 'Additional editing features',
-				icon: 'threeVerticalDots',
 				items: [ 'bold', 'italic' ]
 			},
 			'|',

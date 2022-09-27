@@ -11,6 +11,15 @@ ClassicEditor
 	.create( document.querySelector( '#toolbar-nested-icon' ), {
 		toolbar: [
 			{
+				label: 'Default icon',
+				items: [ 'bold', 'italic' ]
+			},
+			{
+				label: 'Icon disabled',
+				icon: false,
+				items: [ 'bold', 'italic' ]
+			},
+			{
 				label: 'Insert',
 				icon: 'plus',
 				items: [ 'uploadImage', 'insertTable' ]

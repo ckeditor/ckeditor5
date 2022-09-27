@@ -56,7 +56,7 @@ ClassicEditor
 				},
 				{
 					label: 'Just label',
-					withText: true,
+					icon: false,
 					items: [
 						'strikethrough', 'underline', 'code', 'subscript', 'superscript',
 						'|',
@@ -71,6 +71,13 @@ ClassicEditor
 					]
 				},
 				'-',
+				{
+					label: 'Icon: default',
+					withText: true,
+					items: [
+						'insertImage', 'insertTable', 'mediaEmbed'
+					]
+				},
 				{
 					label: 'Icon: "bold"',
 					withText: true,

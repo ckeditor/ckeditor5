@@ -209,6 +209,23 @@
  *					items: [ ... ]
  *				}
  *
+ *		If no icon is specified, `'threeVerticalDots'` will be used as a default:
+ *
+ *				// No icon specified, using a default one.
+ *				{
+ *					label: 'Default icon',
+ *					items: [ ... ]
+ *				}
+ *
+ *		If `icon: false` is configured, no icon will be displayed at all and the text label will show up instead:
+ *
+ *				// This drop-down has no icon. The text label will be displayed instead.
+ *				{
+ *					label: 'No icon',
+ *					icon: false,
+ *					items: [ ... ]
+ *				}
+ *
  *		You can also set a custom icon for the drop-down by passing an SVG string:
  *
  *				{
