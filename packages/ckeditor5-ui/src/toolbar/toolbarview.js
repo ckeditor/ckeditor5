@@ -428,7 +428,7 @@ export default class ToolbarView extends View {
 	 * @private
 	 * @param {Object} definition A definition of the nested toolbar drop-down.
 	 * @param {String} definition.label A label of the dropdown.
-	 * @param {String} definition.icon An icon of the drop-down. One of 'bold', 'plus', 'text', 'importExport', 'alignLeft', 'paragraph'
+	 * @param {String} [definition.icon] An icon of the drop-down. One of 'bold', 'plus', 'text', 'importExport', 'alignLeft', 'paragraph'
 	 * or an SVG string. Not required if `withText` is `true`.
 	 * @param {Boolean} [definition.withText=false] When set `true`, the label of the drop-down will be visible. See
 	 * {@link module:ui/button/buttonview~ButtonView#withText} to learn more.
