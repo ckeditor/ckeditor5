@@ -112,7 +112,7 @@ export default class WidgetResize extends Plugin {
 			if ( resizer ) {
 				this.select( resizer );
 			} else {
-				this.deselect( resizer );
+				this.deselect();
 			}
 		} );
 	}
@@ -148,6 +148,7 @@ export default class WidgetResize extends Plugin {
 		if ( this.selectedResizer ) {
 			this.selectedResizer.isSelected = false;
 		}
+
 		this.selectedResizer = null;
 	}
 
