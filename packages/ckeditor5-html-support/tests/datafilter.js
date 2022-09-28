@@ -863,6 +863,9 @@ describe( 'DataFilter', () => {
 			// At this point we will be trying to register converter without valid view name.
 			expect( () => {
 				dataFilter.allowElement( 'bar' );
+
+				// Apply filtering rules added after initial data load.
+				editor.setData( '' );
 			} ).to.not.throw();
 		} );
 
@@ -1269,6 +1272,9 @@ describe( 'DataFilter', () => {
 				} );
 
 				dataFilter.allowElement( 'xyz' );
+
+				// Apply filtering rules added after initial data load.
+				editor.setData( '' );
 
 				expect( editor.model.schema.getAttributeProperties( 'htmlXyz' ) ).to.deep.equal( {} );
 			} );
@@ -3695,7 +3701,7 @@ describe( 'DataFilter', () => {
 	} );
 
 	describe( 'loadAllowedConfig', () => {
-		it( 'should allow match all elements by ommiting pattern name', () => {
+		it( 'should allow match all elements by omitting pattern name', () => {
 			dataSchema.registerBlockElement( {
 				model: 'htmlXyz',
 				view: 'xyz',
