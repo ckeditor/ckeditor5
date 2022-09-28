@@ -51,8 +51,8 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^35.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^30.0.0",
-    "@ckeditor/ckeditor5-dev-webpack-plugin": "^30.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^31.0.0",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^31.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^35.1.0",
     "css-loader": "^5.2.7",
     "postcss-loader": "^4.3.0",

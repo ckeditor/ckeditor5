@@ -554,6 +554,6 @@ export default class BlockToolbar extends Plugin {
  */
  declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
-		blockToolbar?: string[] | ToolbarConfig;
+		blockToolbar?: ToolbarConfig;
 	}
 }

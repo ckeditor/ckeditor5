@@ -21,7 +21,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import normalizeToolbarConfig from './normalizetoolbarconfig';
-import threeVerticalDots from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
+import { isObject } from 'lodash-es';
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -32,7 +32,21 @@ import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { AddEvent, ChangeEvent as CollectionChangeEvent, RemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import type { ToolbarConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
+import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
+
+import { icons } from '@ckeditor/ckeditor5-core';
+
+const { threeVerticalDots } = icons;
+
+const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = {
+	alignLeft: icons.alignLeft,
+	bold: icons.bold,
+	importExport: icons.importExport,
+	paragraph: icons.paragraph,
+	plus: icons.plus,
+	text: icons.text,
+	threeVerticalDots: icons.threeVerticalDots
+};
 
 /**
  * The toolbar view class.
@@ -313,25 +327,60 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 *
 	 * @param {Array.<String>|Object} itemsOrConfig The toolbar items or the entire toolbar configuration object.
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
+	 * @param {Array.<String>} [removeItems] An array of items names to be removed from the configuration. When present, applies
+	 * to this toolbar and all nested ones as well.
 	 */
 	public fillFromConfig(
-		itemsOrConfig: string[] | ToolbarConfig | undefined,
-		factory: ComponentFactory
+		itemsOrConfig: ToolbarConfig | undefined,
+		factory: ComponentFactory,
+		removeItems?: string[]
 	): void {
 		const config = normalizeToolbarConfig( itemsOrConfig );
+		const normalizedRemoveItems = removeItems || config.removeItems;
+		const itemsToAdd = this._cleanItemsConfiguration( config.items, factory, normalizedRemoveItems )
+			.map( item => {
+				if ( isObject( item ) ) {
+					return this._createNestedToolbarDropdown( item, factory, normalizedRemoveItems );
+				} else if ( item === '|' ) {
+					return new ToolbarSeparatorView();
+				} else if ( item === '-' ) {
+					return new ToolbarLineBreakView();
+				}
 
-		const itemsToClean = config.items
-			.filter( ( name, idx, items ) => {
-				if ( name === '|' ) {
+				return factory.create( item );
+			} )
+			.filter( ( item ): item is View => !!item );
+
+		this.items.addMany( itemsToAdd );
+	}
+
+	/**
+	 * Cleans up the {@link module:ui/toolbar/toolbarview~ToolbarView#items} of the toolbar by removing unwanted items and
+	 * duplicated (obsolete) separators or line breaks.
+	 *
+	 * @private
+	 * @param {Array.<String>} items The toolbar items configuration.
+	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
+	 * @param {Array.<String>} removeItems An array of items names to be removed from the configuration.
+	 * @returns {Array.<String>}  Items after the clean-up.
+	 */
+	private _cleanItemsConfiguration(
+		items: ToolbarConfigItem[],
+		factory: ComponentFactory,
+		removeItems: string[]
+	) {
+		const filteredItems = items
+			.filter( ( item, idx, items ) => {
+				if ( item === '|' ) {
 					return true;
 				}
 
 				// Items listed in `config.removeItems` should not be added to the toolbar.
-				if ( config.removeItems.indexOf( name ) !== -1 ) {
+				if ( removeItems.indexOf( item as any ) !== -1 ) {
 					return false;
 				}
 
-				if ( name === '-' ) {
+				if ( item === '-' ) {
 					// The toolbar line breaks must not be rendered when toolbar grouping is enabled.
 					// (https://github.com/ckeditor/ckeditor5/issues/8582)
 					if ( this.options.shouldGroupWhenFull ) {
@@ -360,7 +409,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 				}
 
 				// For the items that cannot be instantiated we are sending warning message. We also filter them out.
-				if ( !factory.has( name ) ) {
+				if ( !isObject( item ) && !factory.has( item ) ) {
 					/**
 					 * There was a problem processing the configuration of the toolbar. The item with the given
 					 * name does not exist so it was omitted when rendering the toolbar.
@@ -378,7 +427,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 					 * @error toolbarview-item-unavailable
 					 * @param {String} name The name of the component.
 					 */
-					logWarning( 'toolbarview-item-unavailable', { name } );
+					logWarning( 'toolbarview-item-unavailable', { name: item } );
 
 					return false;
 				}
@@ -386,19 +435,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 				return true;
 			} );
 
-		const itemsToAdd = this._cleanSeparators( itemsToClean )
-			// Instantiate toolbar items.
-			.map( name => {
-				if ( name === '|' ) {
-					return new ToolbarSeparatorView();
-				} else if ( name === '-' ) {
-					return new ToolbarLineBreakView();
-				}
-
-				return factory.create( name );
-			} );
-
-		this.items.addMany( itemsToAdd );
+		return this._cleanSeparatorsAndLineBreaks( filteredItems );
 	}
 
 	/**
@@ -406,23 +443,29 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 *
 	 * @private
 	 * @param {Array.<String>} items
+	 * @returns {Array.<String>} Toolbar items after the separator and line break clean-up.
 	 */
-	private _cleanSeparators( items: string[] ) {
-		const nonSeparatorPredicate = ( item: string ) => ( item !== '-' && item !== '|' );
+	private _cleanSeparatorsAndLineBreaks( items: ToolbarConfigItem[] ) {
+		const nonSeparatorPredicate = ( item: ToolbarConfigItem ) => ( item !== '-' && item !== '|' );
 		const count = items.length;
 
 		// Find an index of the first item that is not a separator.
-		const firstCommandItem = items.findIndex( nonSeparatorPredicate );
+		const firstCommandItemIndex = items.findIndex( nonSeparatorPredicate );
+
+		// Items include separators only. There is no point in displaying them.
+		if ( firstCommandItemIndex === -1 ) {
+			return [];
+		}
 
 		// Search from the end of the list, then convert found index back to the original direction.
-		const lastCommandItem = count - items
+		const lastCommandItemIndex = count - items
 			.slice()
 			.reverse()
 			.findIndex( nonSeparatorPredicate );
 
 		return items
 			// Return items without the leading and trailing separators.
-			.slice( firstCommandItem, lastCommandItem )
+			.slice( firstCommandItemIndex, lastCommandItemIndex )
 			// Remove duplicated separators.
 			.filter( ( name, idx, items ) => {
 				// Filter only separators.
@@ -433,6 +476,83 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 
 				return !isDuplicated;
 			} );
+	}
+
+	/**
+	 * Creates a user-defined dropdown containing a toolbar with items.
+	 *
+	 * @private
+	 * @param {Object} definition A definition of the nested toolbar dropdown.
+	 * @param {String} definition.label A label of the dropdown.
+	 * @param {String|Boolean} [definition.icon] An icon of the drop-down. One of 'bold', 'plus', 'text', 'importExport', 'alignLeft',
+	 * 'paragraph' or an SVG string. When `false` is passed, no icon will be used.
+	 * @param {Boolean} [definition.withText=false] When set `true`, the label of the dropdown will be visible. See
+	 * {@link module:ui/button/buttonview~ButtonView#withText} to learn more.
+	 * @param {Boolean|String|Function} [definition.tooltip=true] A tooltip of the dropdown button. See
+	 * {@link module:ui/button/buttonview~ButtonView#tooltip} to learn more.
+	 * @param {module:ui/componentfactory~ComponentFactory} componentFactory Component factory used to create items
+	 * of the nested toolbar.
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 */
+	private _createNestedToolbarDropdown(
+		definition: Exclude<ToolbarConfigItem, string>,
+		componentFactory: ComponentFactory,
+		removeItems: string[]
+	) {
+		let { label, icon, items, tooltip = true, withText = false } = definition;
+
+		items = this._cleanItemsConfiguration( items, componentFactory, removeItems );
+
+		// There is no point in rendering a dropdown without items.
+		if ( !items.length ) {
+			return null;
+		}
+
+		const locale = this.locale;
+		const dropdownView = createDropdown( locale );
+
+		if ( !label ) {
+			/**
+			 * A dropdown definition in the toolbar configuration is missing a text label.
+			 *
+			 * Without a label, the dropdown becomes inaccessible to users relying on assistive technologies.
+			 * Make sure the `label` property is set in your drop-down configuration:
+			 *
+ 			 *		{
+ 			 *			label: 'A human-readable label',
+			 *			icon: '...',
+			 *			items: [ ... ]
+ 			 *		},
+			 *
+			 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+			 *
+			 * @error toolbarview-nested-toolbar-dropdown-missing-label
+			 */
+			logWarning( 'toolbarview-nested-toolbar-dropdown-missing-label', definition );
+		}
+
+		dropdownView.class = 'ck-toolbar__nested-toolbar-dropdown';
+		dropdownView.buttonView.set( {
+			label,
+			tooltip,
+			withText: !!withText
+		} );
+
+		// Allow disabling icon by passing false.
+		if ( icon !== false ) {
+			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || threeVerticalDots;
+		}
+		// If the icon is disabled, display the label automatically.
+		else {
+			dropdownView.buttonView.withText = true;
+		}
+
+		addToolbarToDropdown( dropdownView, [] );
+
+		dropdownView.toolbarView!.fillFromConfig( items, componentFactory, removeItems );
+
+		return dropdownView;
 	}
 
 	/**

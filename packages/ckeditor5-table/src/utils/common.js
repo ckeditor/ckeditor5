@@ -7,6 +7,8 @@
  * @module table/utils/common
  */
 
+import { downcastAttributeToStyle, upcastStyleToAttribute } from './../converters/tableproperties';
+
 /**
  * A common method to update the numeric value. If a value is the default one, it will be unset.
  *
@@ -54,4 +56,26 @@ export function isHeadingColumnCell( tableUtils, tableCell ) {
 	const { column } = tableUtils.getCellLocation( tableCell );
 
 	return !!headingColumns && column < headingColumns;
+}
+
+/**
+ * Enables conversion for an attribute for simple view-model mappings.
+ *
+ * @param {module:engine/model/schema~Schema} schema
+ * @param {module:engine/conversion/conversion~Conversion} conversion
+ * @param {Object} options
+ * @param {String} options.modelAttribute
+ * @param {String} options.styleName
+ * @param {String} options.defaultValue The default value for the specified `modelAttribute`.
+ * @param {Boolean} [options.reduceBoxSides=false]
+ */
+export function enableProperty( schema, conversion, options ) {
+	const { modelAttribute } = options;
+
+	schema.extend( 'tableCell', {
+		allowAttributes: [ modelAttribute ]
+	} );
+
+	upcastStyleToAttribute( conversion, { viewElement: /^(td|th)$/, ...options } );
+	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', ...options } );
 }

@@ -6,14 +6,13 @@
 /**
  * @module table/tablecellproperties/commands/tablecellwidthcommand
  */
-
-import TableCellPropertyCommand from './tablecellpropertycommand';
+import TableCellPropertyCommand from '../../tablecellproperties/commands/tablecellpropertycommand';
 import { addDefaultUnitToNumericValue } from '../../utils/table-properties';
 
 /**
  * The table cell width command.
  *
- * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * The command is registered by the {@link module:table/tablecellwidth/tablecellwidthediting~TableCellWidthEditing} as
  * the `'tableCellWidth'` editor command.
  *
  * To change the width of selected cells, execute the command:

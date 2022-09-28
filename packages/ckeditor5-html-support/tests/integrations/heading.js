@@ -92,7 +92,7 @@ describe( 'HeadingElementSupport', () => {
 						'heading2',
 						'otherHeading'
 					],
-					isBlock: true
+					isBlock: false
 				},
 				isBlock: true
 			} ] );
@@ -446,7 +446,7 @@ describe( 'HeadingElementSupport', () => {
 						'htmlH5',
 						'htmlH6'
 					],
-					isBlock: true
+					isBlock: false
 				},
 				isBlock: true
 			} ] );

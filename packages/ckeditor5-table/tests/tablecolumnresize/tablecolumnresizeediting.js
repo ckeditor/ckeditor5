@@ -2475,6 +2475,28 @@ describe( 'TableColumnResizeEditing', () => {
 					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 				} );
 			} );
+
+			it( 'should upcast tableCellWidth property correctly', () => {
+				editor.setData(
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td style="width:94px">&nbsp;</td>' +
+								'<td style="width:291px">&nbsp;</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td style="width:94px">&nbsp;</td>' +
+								'<td style="width:291px">&nbsp;</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' );
+
+				const tableCell00 = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+				const tableCell01 = model.document.getRoot().getNodeByPath( [ 0, 0, 1 ] );
+
+				expect( tableCell00.getAttribute( 'tableCellWidth' ) ).to.equal( '94px' );
+				expect( tableCell01.getAttribute( 'tableCellWidth' ) ).to.equal( '291px' );
+			} );
 		} );
 
 		describe( 'GHS integration', () => {

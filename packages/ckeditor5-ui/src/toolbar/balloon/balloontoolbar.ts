@@ -477,7 +477,7 @@ function selectionContainsOnlyMultipleSelectables( selection: DocumentSelection,
  */
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
-		balloonToolbar?: string[] | ToolbarConfig;
+		balloonToolbar?: ToolbarConfig;
 	}
 }
 

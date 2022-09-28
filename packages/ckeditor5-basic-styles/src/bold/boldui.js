@@ -7,10 +7,8 @@
  * @module basic-styles/bold/boldui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-
-import boldIcon from '../../theme/icons/bold.svg';
 
 const BOLD = 'bold';
 
@@ -41,7 +39,7 @@ export default class BoldUI extends Plugin {
 
 			view.set( {
 				label: t( 'Bold' ),
-				icon: boldIcon,
+				icon: icons.bold,
 				keystroke: 'CTRL+B',
 				tooltip: true,
 				isToggleable: true

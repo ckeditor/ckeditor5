@@ -110,11 +110,18 @@ describe( 'ImageInsertUI', () => {
 			expect( dropdown.isEnabled, 'dropdown state #2' ).to.be.false;
 		} );
 
-		it( 'should not insert panel view children until dropdown is not open for the first time', () => {
+		it( 'should insert panel view children on first dropdown open', () => {
 			expect( dropdown.panelView.children.length ).to.equal( 0 );
 
-			dropdown.buttonView.fire( 'open' );
+			dropdown.isOpen = true;
 
+			expect( dropdown.panelView.children.length ).to.equal( 1 );
+			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
+
+			dropdown.isOpen = false;
+			dropdown.isOpen = true;
+
+			// Make sure it happens only once.
 			expect( dropdown.panelView.children.length ).to.equal( 1 );
 			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
 		} );
@@ -323,7 +330,7 @@ describe( 'ImageInsertUI', () => {
 				dropdown.on( 'change:isOpen', () => {
 					const imageInsertPanelView = dropdown.panelView.children.first;
 					spy = sinon.spy( imageInsertPanelView, 'focus' );
-				}, { priority: 'highest' } );
+				} );
 
 				dropdown.buttonView.fire( 'open' );
 				sinon.assert.calledOnce( spy );
@@ -357,7 +364,7 @@ describe( 'ImageInsertUI', () => {
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-			dropdown.buttonView.fire( 'open' );
+			dropdown.isOpen = true;
 
 			expect( dropdown.panelView.children.first._integrations.length ).to.equal( 2 );
 			expect( dropdown.panelView.children.first._integrations.first ).to.be.instanceOf( LabeledFieldView );
@@ -621,7 +628,7 @@ describe( 'ImageInsertUI', () => {
 				dropdown.on( 'change:isOpen', () => {
 					const imageInsertPanelView = dropdown.panelView.children.first;
 					spy = sinon.spy( imageInsertPanelView, 'focus' );
-				}, { priority: 'highest' } );
+				} );
 
 				dropdown.buttonView.fire( 'open' );
 				sinon.assert.calledOnce( spy );

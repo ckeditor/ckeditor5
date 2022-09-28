@@ -17,23 +17,17 @@ The height of the editing area can be easily controlled with CSS.
 }
 ```
 
-## Why does the editor filter out my content (styles, classes, elements)? Where is `config.allowedContent = true`?
+## Why does the editor filter out my content (styles, classes, elements)?
 
-Unlike [CKEditor 4](https://ckeditor.com/ckeditor-4/), CKEditor 5 implements a custom {@link framework/guides/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
+CKEditor 5 implements a custom {@link framework/guides/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
 
 Each kind of content must be handled by some feature. For instance the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
 
 If you load some content unknown to any editor feature, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them. Once you do that, CKEditor 5 will not filter anything out.
 
-## How to turn the source mode on? How to write a source mode plugin?
+## How to turn the source mode on?
 
 The {@link features/source-editing source editing} feature provides basic support for viewing and editing the source of the document.
-
-## What happened to the `contents.css` file? How do I style the content of the editor?
-
-There is no such thing as the `contents.css` file because in CKEditor 5 features bring their own content styles, which are by default included in the JavaScript build and {@link framework/guides/theme-customization#styles-processing-and-bundling loaded by the style loader}. It optimizes the size of the builds as the styles of unused features are simply excluded.
-
-You can get the full list of editor content styles in a {@link installation/advanced/content-styles dedicated guide}. You can also {@link installation/advanced/integrating-from-source#option-extracting-css extract all CSS} brought by CKEditor 5 (content and UI) to a separate file when creating a custom editor build.
 
 ## The build I downloaded is missing some features. How do I add them?
 
@@ -41,7 +35,7 @@ See the {@link installation/getting-started/installing-plugins Installing plugin
 
 You can learn which editor features are available in the {@link features/index feature index}.
 
-## Where are the `editor.insertHtml()` and `editor.insertText()` methods? How to insert some content?
+## How to insert some content into the editor?
 
 Because CKEditor 5 uses a custom {@link framework/guides/architecture/editing-engine data model}, whenever you want to insert anything, you should modify the model first, which is then converted back to the view where the users input their content (called "editable"). In CKEditor 5, HTML is just one of many possible output formats. You can learn more about the ways of changing the model in the {@link framework/guides/architecture/editing-engine#changing-the-model dedicated guide}.
 
@@ -75,7 +69,7 @@ const modelFragment = editor.data.toModel( viewFragment );
 editor.model.insertContent( modelFragment );
 ```
 
-## What happened to the global `window.CKEDITOR`? How to list all instances of the editor?
+## How to list all instances of the editor?
 
 By default, CKEditor 5 has no global registry of editor instances. But if necessary, such feature can be easily implemented as explained in the [Stack Overflow answer](https://stackoverflow.com/a/48682501/1485219).
 
@@ -91,11 +85,11 @@ If an official integration for the framework of your choice does not exist yet, 
 
 We plan to provide more official integrations with time. [Your feedback on what should we work on next](https://github.com/ckeditor/ckeditor5/issues/1002) will be most welcome!
 
-## How to get a fully–featured editor build (a.k.a. CKEditor 4 "Full Package")?
+## How to get a full–featured editor build?
 
-We believe each editor build should serve its purpose. Including features that are not used makes little sense because they increase the size of the editor and make the website heavier for no good reason. This is why we do not provide a full editor package similar to what we offer in CKEditor 4.
+We have prepared a build containing almost all available plugins, and it is called the superbuild. Instructions on how to integrate it quickly can be found in the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn quick start guide}.
 
-At the same time, we recommend you to {@link installation/getting-started/installing-plugins install plugins} to enable {@link features/index additional features} or even create a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} to make sure you make the most out of CKEditor 5.
+In the {@link installation/getting-started/predefined-builds predefined builds} guide, there are details available about the {@link installation/getting-started/predefined-builds#superbuild superbuild}, together with the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds list of features included in the superbuild}, compared to other types of builds.
 
 ## How to customize the CKEditor 5 icons?
 
