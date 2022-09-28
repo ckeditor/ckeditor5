@@ -300,18 +300,48 @@ export default class ToolbarView extends View {
 	 *
 	 * @param {Array.<String>|Object} itemsOrConfig The toolbar items or the entire toolbar configuration object.
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
+	 * @param {Array.<String>} [removeItems] An array of items names to be removed from the configuration. When present, applies
+	 * to this toolbar and all nested ones as well.
 	 */
-	fillFromConfig( itemsOrConfig, factory ) {
+	fillFromConfig( itemsOrConfig, factory, removeItems ) {
 		const config = normalizeToolbarConfig( itemsOrConfig );
+		const normalizedRemoveItems = removeItems || config.removeItems;
+		const itemsToAdd = this._cleanItemsConfiguration( config.items, factory, normalizedRemoveItems )
+			.map( name => {
+				if ( isObject( name ) ) {
+					return this._createNestedToolbarDropdown( name, factory, normalizedRemoveItems );
+				} else if ( name === '|' ) {
+					return new ToolbarSeparatorView();
+				} else if ( name === '-' ) {
+					return new ToolbarLineBreakView();
+				}
 
-		const itemsToClean = config.items
+				return factory.create( name );
+			} )
+			.filter( item => item );
+
+		this.items.addMany( itemsToAdd );
+	}
+
+	/**
+	 * Cleans up the {@link module:ui/toolbar/toolbarview~ToolbarView#items} of the toolbar by removing unwanted items and
+	 * duplicated (obsolete) separators or line breaks.
+	 *
+	 * @private
+	 * @param {Array.<String>} items The toolbar items configuration.
+	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
+	 * @param {Array.<String>} removeItems An array of items names to be removed from the configuration.
+	 * @returns {Array.<String>}  Items after the clean-up.
+	 */
+	_cleanItemsConfiguration( items, factory, removeItems ) {
+		const filteredItems = items
 			.filter( ( name, idx, items ) => {
 				if ( name === '|' ) {
 					return true;
 				}
 
 				// Items listed in `config.removeItems` should not be added to the toolbar.
-				if ( config.removeItems.indexOf( name ) !== -1 ) {
+				if ( removeItems.indexOf( name ) !== -1 ) {
 					return false;
 				}
 
@@ -370,22 +400,7 @@ export default class ToolbarView extends View {
 				return true;
 			} );
 
-		const itemsToAdd = this._cleanSeparators( itemsToClean )
-			// Instantiate toolbar items.
-			.map( name => {
-				if ( isObject( name ) ) {
-					return this._createNestedToolbarDropdown( name, factory );
-				}
-				else if ( name === '|' ) {
-					return new ToolbarSeparatorView();
-				} else if ( name === '-' ) {
-					return new ToolbarLineBreakView();
-				}
-
-				return factory.create( name );
-			} );
-
-		this.items.addMany( itemsToAdd );
+		return this._cleanSeparatorsAndLineBreaks( filteredItems );
 	}
 
 	/**
@@ -393,23 +408,29 @@ export default class ToolbarView extends View {
 	 *
 	 * @private
 	 * @param {Array.<String>} items
+	 * @returns {Array.<String>} Toolbar items after the separator and line break clean-up.
 	 */
-	_cleanSeparators( items ) {
+	_cleanSeparatorsAndLineBreaks( items ) {
 		const nonSeparatorPredicate = item => ( item !== '-' && item !== '|' );
 		const count = items.length;
 
 		// Find an index of the first item that is not a separator.
-		const firstCommandItem = items.findIndex( nonSeparatorPredicate );
+		const firstCommandItemIndex = items.findIndex( nonSeparatorPredicate );
+
+		// Items include separators only. There is no point in displaying them.
+		if ( firstCommandItemIndex === -1 ) {
+			return [];
+		}
 
 		// Search from the end of the list, then convert found index back to the original direction.
-		const lastCommandItem = count - items
+		const lastCommandItemIndex = count - items
 			.slice()
 			.reverse()
 			.findIndex( nonSeparatorPredicate );
 
 		return items
 			// Return items without the leading and trailing separators.
-			.slice( firstCommandItem, lastCommandItem )
+			.slice( firstCommandItemIndex, lastCommandItemIndex )
 			// Remove duplicated separators.
 			.filter( ( name, idx, items ) => {
 				// Filter only separators.
@@ -438,8 +459,16 @@ export default class ToolbarView extends View {
 	 * of the nested toolbar.
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
-	_createNestedToolbarDropdown( definition, componentFactory ) {
-		const { label, icon, items, tooltip = true, withText = false } = definition;
+	_createNestedToolbarDropdown( definition, componentFactory, removeItems ) {
+		let { label, icon, items, tooltip = true, withText = false } = definition;
+
+		items = this._cleanItemsConfiguration( items, componentFactory, removeItems );
+
+		// There is no point in rendering a dropdown without items.
+		if ( !items.length ) {
+			return null;
+		}
+
 		const locale = this.locale;
 		const dropdownView = createDropdown( locale );
 
@@ -482,7 +511,7 @@ export default class ToolbarView extends View {
 
 		addToolbarToDropdown( dropdownView, [] );
 
-		dropdownView.toolbarView.fillFromConfig( items, componentFactory );
+		dropdownView.toolbarView.fillFromConfig( items, componentFactory, removeItems );
 
 		return dropdownView;
 	}

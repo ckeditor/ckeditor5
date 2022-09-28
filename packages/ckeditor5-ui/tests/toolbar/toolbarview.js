@@ -502,6 +502,7 @@ describe( 'ToolbarView', () => {
 
 			factory.add( 'foo', namedFactory( 'foo' ) );
 			factory.add( 'bar', namedFactory( 'bar' ) );
+			factory.add( 'baz', namedFactory( 'baz' ) );
 		} );
 
 		it( 'expands the config into collection', () => {
@@ -610,7 +611,7 @@ describe( 'ToolbarView', () => {
 			const items = view.items;
 			const consoleWarnStub = sinon.stub( console, 'warn' );
 
-			view.fillFromConfig( [ 'foo', 'bar', 'baz' ], factory );
+			view.fillFromConfig( [ 'foo', 'bar', 'non-existing' ], factory );
 
 			expect( items ).to.have.length( 2 );
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
@@ -619,7 +620,7 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,
 				sinon.match( /^toolbarview-item-unavailable/ ),
-				sinon.match( { name: 'baz' } ),
+				sinon.match( { name: 'non-existing' } ),
 				sinon.match.string // Link to the documentation.
 			);
 		} );
@@ -865,6 +866,99 @@ describe( 'ToolbarView', () => {
 					brokenDefinition,
 					sinon.match.string // Link to the documentation
 				);
+			} );
+
+			describe( 'toolbar.removeItems support', () => {
+				it( 'should allow removing items from the nested toolbar', () => {
+					view.fillFromConfig( {
+						items: [
+							'foo',
+							{
+								label: 'Some label',
+								items: [ 'bar', '|', 'foo' ]
+							}
+						],
+						removeItems: [ 'bar' ]
+					}, factory );
+
+					dropdownView = view.items.get( 1 );
+					toolbarView = dropdownView.toolbarView;
+
+					const nestedToolbarItems = toolbarView.items;
+
+					expect( nestedToolbarItems.length ).to.equal( 1 );
+					expect( nestedToolbarItems.get( 0 ).name ).to.equal( 'foo' );
+				} );
+
+				it( 'should allow removing items from the nested toolbar deep in the structure', () => {
+					view.fillFromConfig( {
+						items: [
+							'foo',
+							{
+								label: 'Level 0',
+								items: [
+									'bar',
+									{
+										label: 'Level 1',
+										items: [
+											'foo', 'bar'
+										]
+									}
+								]
+							}
+						],
+						removeItems: [ 'bar' ]
+					}, factory );
+
+					const level0DropdownView = view.items.get( 1 );
+					const level1DropdownView = level0DropdownView.toolbarView.items.get( 0 );
+
+					const level0NestedToolbarItems = level0DropdownView.toolbarView.items;
+					const level1NestedToolbarItems = level1DropdownView.toolbarView.items;
+
+					expect( level0NestedToolbarItems.length ).to.equal( 1 );
+					expect( level0NestedToolbarItems.get( 0 ) ).to.be.instanceOf( DropdownView );
+					expect( level0NestedToolbarItems.get( 0 ).buttonView.label ).to.equal( 'Level 1' );
+
+					expect( level1NestedToolbarItems.length ).to.equal( 1 );
+					expect( level1NestedToolbarItems.get( 0 ).name ).to.equal( 'foo' );
+				} );
+
+				it( 'should remove the nested drop-down if all its toolbar items have also been removed', () => {
+					view.fillFromConfig( {
+						items: [
+							'foo',
+							{
+								label: 'Some label',
+								items: [ 'bar', 'baz' ]
+							}
+						],
+						removeItems: [ 'bar', 'baz' ]
+					}, factory );
+
+					const items = view.items;
+
+					expect( items.length ).to.equal( 1 );
+					expect( items.get( 0 ).name ).to.equal( 'foo' );
+				} );
+
+				it( 'should remove the nested drop-down if all its toolbar items (but separators) have also been removed', () => {
+					view.fillFromConfig( {
+						items: [
+							'foo',
+							{
+								label: 'Some label',
+								items: [ 'bar', '|', 'baz' ]
+							}
+						],
+						removeItems: [ 'bar', 'baz' ]
+					}, factory );
+
+					const items = view.items;
+
+					expect( items.length ).to.equal( 1 );
+					expect( items.get( 0 ).name ).to.equal( 'foo' );
+				} );
 			} );
 		} );
 	} );
