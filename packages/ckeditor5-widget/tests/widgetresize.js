@@ -139,24 +139,74 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( 'selectability', () => {
+		let resizer;
+
 		beforeEach( () => {
-			createResizer();
+			resizer = createResizer();
 		} );
-		it( 'handles resizer selection on view element focus', () => {
+
+		it( 'deselect() should properly deselected currently selected resizer', () => {
 			const widgetResizePlugin = editor.plugins.get( WidgetResize );
-			const viewSelection = editor.editing.view.document.selection;
-			const selectedElement = viewSelection.getSelectedElement();
-			const resizer = widgetResizePlugin.getResizerByViewElement( selectedElement );
+			const selectedResizer = widgetResizePlugin.selectedResizer;
 
-			widgetResizePlugin.select( resizer );
-
-			expect( widgetResizePlugin.selectedResizer ).to.not.be.null;
-			expect( resizer.isSelected ).to.be.true;
+			expect( selectedResizer ).not.to.be.null;
+			expect( selectedResizer.isSelected ).to.be.true;
 
 			widgetResizePlugin.deselect();
 
 			expect( widgetResizePlugin.selectedResizer ).to.be.null;
+			expect( selectedResizer.isSelected ).to.be.false;
+		} );
+
+		it( 'select() should properly set selected resizer', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+
+			widgetResizePlugin.deselect();
+			widgetResizePlugin.select( resizer );
+
+			expect( widgetResizePlugin.selectedResizer ).to.equal( resizer );
+			expect( resizer.isSelected ).to.be.true;
+		} );
+
+		it( 'select() should deselect current resizer if different resizer is selected', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const otherResizer = createResizer();
+
+			widgetResizePlugin.select( resizer );
+			widgetResizePlugin.select( otherResizer );
+
 			expect( resizer.isSelected ).to.be.false;
+		} );
+
+		it( 'should deselect and select resizer when view element with attached resizer is selected and deselected', () => {
+			const view = editor.editing.view;
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+
+			sinon.spy( widgetResizePlugin, 'select' );
+			sinon.spy( widgetResizePlugin, 'deselect' );
+
+			view.change( writer => {
+				writer.setSelection( null );
+			} );
+
+			expect( widgetResizePlugin.deselect.calledOnce ).to.be.true;
+			expect( widgetResizePlugin.select.called ).to.be.false;
+
+			view.change( writer => {
+				writer.setSelection( widget, 'on' );
+			} );
+
+			expect( widgetResizePlugin.select.calledWithExactly( resizer ) ).to.be.true;
+
+			widgetResizePlugin.deselect.resetHistory();
+			widgetResizePlugin.select.resetHistory();
+
+			view.change( writer => {
+				writer.setSelection( null );
+			} );
+
+			expect( widgetResizePlugin.deselect.calledOnce ).to.be.true;
+			expect( widgetResizePlugin.select.called ).to.be.false;
 		} );
 	} );
 
