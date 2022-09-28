@@ -7,53 +7,101 @@
 
 /* eslint-env node */
 
-const childProcess = require( 'child_process' );
-const path = require( 'path' );
 const chalk = require( 'chalk' );
+const childProcess = require( 'child_process' );
+const minimist = require( 'minimist' );
+const path = require( 'path' );
 
-const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
-const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
+const argv = minimist( process.argv.slice( 2 ) );
+
+const ROOT_DIRECTORY = argv.cwd ? path.resolve( argv.cwd ) : path.resolve( __dirname, '..', '..' );
+const BASE_DLL_CONFIG_PATH = argv[ 'base-dll-config' ] ? path.resolve( argv[ 'base-dll-config' ] ) : null;
+const BASE_DLL_PATH = argv[ 'base-dll-path' ];
+const IS_DEVELOPMENT_MODE = argv.dev;
+const VERBOSE_MODE = argv.verbose;
+
+// Lets highlight and space out the messages in the verbose mode to
+// make them stand out from the wall of text that webpack spits out.
+const prefix = VERBOSE_MODE ? '\n📍 ' : '';
 
 if ( IS_DEVELOPMENT_MODE ) {
-	console.log( '🛠️️  ' + chalk.yellow( 'Development mode is active.' ) );
+	console.log( chalk.yellow( '\n🛠️️  Development mode is active.\n' ) );
 } else {
-	console.log( '⚠️  ' + chalk.magenta( 'Production mode is active. Use --dev to build in the development mode.' ) );
+	console.log( chalk.magenta( '\n⚠️  Production mode is active. Use the "--dev" flag to build in the development mode.\n' ) );
 }
 
-// -------------------------------------------------------------
-// ------------------------------------------- Base DLL build --
+if ( BASE_DLL_CONFIG_PATH ) {
+	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
 
-console.log( '\n📍 ' + chalk.cyan.underline( 'Creating the base DLL build...\n' ) );
-
-const webpackArguments = [ '--config=./scripts/dll/webpack.config.dll.js' ];
-
-if ( IS_DEVELOPMENT_MODE ) {
-	webpackArguments.push( '--mode=development' );
+	execute( {
+		command: [ 'webpack', `--config=${ BASE_DLL_CONFIG_PATH }` ],
+		cwd: BASE_DLL_PATH || ROOT_DIRECTORY
+	} );
 }
 
-childProcess.spawnSync( 'webpack', webpackArguments, {
-	encoding: 'utf8',
-	shell: true,
-	cwd: ROOT_DIRECTORY,
-	stdio: 'inherit',
-	stderr: 'inherit'
-} );
+console.log( prefix + chalk.bold( 'Creating DLL-compatible package builds...' ) );
 
-// -------------------------------------------------------------
-// ---------------------------- DLL-compatible package builds --
+getPackageNames( ROOT_DIRECTORY )
+	.filter( isNotBaseDll )
+	.filter( hasDLLBuildScript )
+	.forEach( fullPackageName => {
+		console.log( prefix + `Building ${ fullPackageName }...` );
 
-console.log( '\n📍 ' + chalk.underline( 'Creating DLL-compatible package builds...\n' ) );
+		execute( {
+			command: [ 'yarn', 'run', 'dll:build' ],
+			cwd: path.join( ROOT_DIRECTORY, 'packages', fullPackageName )
+		} );
+	} );
 
-const nodeArguments = [ './scripts/dll/build-packages-dlls.js' ];
-
-if ( IS_DEVELOPMENT_MODE ) {
-	nodeArguments.push( '--mode=development' );
+/**
+ * @param {String} cwd
+ * @returns {Array<String>}
+ */
+function getPackageNames( cwd ) {
+	return childProcess.execSync( 'ls -1 packages', {
+		encoding: 'utf8',
+		cwd
+	} ).toString().trim().split( '\n' );
 }
 
-childProcess.spawnSync( 'node', nodeArguments, {
-	encoding: 'utf8',
-	shell: true,
-	cwd: ROOT_DIRECTORY,
-	stdio: 'inherit',
-	stderr: 'inherit'
-} );
+/**
+ * @param {String} name
+ * @returns {Boolean}
+ */
+function isNotBaseDll( name ) {
+	return name !== 'ckeditor5-dll';
+}
+
+/**
+ * @param {String} name
+ * @returns {Boolean}
+ */
+function hasDLLBuildScript( name ) {
+	const packageJsonPath = path.join( process.cwd(), 'packages', name, 'package.json' );
+	const scripts = require( packageJsonPath ).scripts;
+
+	return scripts && scripts[ 'dll:build' ];
+}
+
+/**
+ * @param {Object} options
+ * @param {Array<String>} options.command
+ * @param {String} options.cwd
+ */
+function execute( options ) {
+	if ( IS_DEVELOPMENT_MODE ) {
+		options.command.push( '--mode=development' );
+	}
+
+	const subprocess = childProcess.spawnSync( options.command.join( ' ' ), {
+		encoding: 'utf8',
+		shell: true,
+		cwd: options.cwd,
+		stdio: VERBOSE_MODE ? 'inherit' : 'pipe'
+	} );
+
+	if ( subprocess.stderr && !VERBOSE_MODE ) {
+		const color = subprocess.status !== 0 ? chalk.red : chalk.yellow;
+		console.log( color( subprocess.stderr.trim() ) );
+	}
+}
