@@ -4909,6 +4909,10 @@ describe( 'Renderer', () => {
 					renderer.isSelecting = false;
 				} );
 
+				// This test is skipped because on Android we disabled inline filler at the edge of an element.
+				// On Android it's not possible to prevent default the beforeInput deleteContent events so
+				// inline filler would be trimmed and lost.
+				// (it's still used inside an empty inline element).
 				it.skip( 'should remove the inline filler despite the user making selection', () => {
 					const domSelection = document.getSelection();
 
@@ -4965,6 +4969,10 @@ describe( 'Renderer', () => {
 					expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
 				} );
 
+				// This test is skipped because on Android we disabled inline filler at the edge of an element.
+				// On Android it's not possible to prevent default the beforeInput deleteContent events so
+				// inline filler would be trimmed and lost.
+				// (it's still used inside an empty inline element).
 				it.skip( 'should add the inline filler despite the user making selection', () => {
 					const domSelection = document.getSelection();
 

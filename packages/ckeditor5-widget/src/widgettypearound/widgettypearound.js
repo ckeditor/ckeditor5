@@ -652,7 +652,7 @@ export default class WidgetTypeAround extends Plugin {
 			// On Android with English keyboard, the composition starts just by putting caret
 			// at the word end or by selecting a table column. This is not a real composition started.
 			// Trigger delete content on first composition key pressed.
-			this.listenTo( viewDocument, 'keydown', ( evt, data ) => {
+			this._listenToIfEnabled( viewDocument, 'keydown', ( evt, data ) => {
 				if ( data.keyCode == 229 ) {
 					this._insertParagraphAccordingToFakeCaretPosition();
 				}
