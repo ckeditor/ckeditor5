@@ -13,9 +13,7 @@ MathType is based upon standards like MathML for internal representation and the
 Additionally, MathType offers a special tool designed to help you work with chemical notation. When enabled, ChemType adds a specialized toolbar with the common chemical symbols as well as changes the notation to make it more intuitive to work with chemical formulas.
 
 <info-box>
-	This is a premium feature available for the [Flexible plan](https://ckeditor.com/pricing/) and delivered by our partner, [Wiris](https://www.wiris.com/en/).
-
-	Please [contact us](https://ckeditor.com/contact/) if you would like to purchase a license or let us know if you have any feedback or questions.
+	This is a premium feature that is additionally payable on top of CKEditor 5 commercial license fee and delivered by our partner, [Wiris](https://www.wiris.com/en/). Please [contact us](https://ckeditor.com/contact/) if you have any feedback or questions.
 
 	You can also report any issues in the official [CKEditor 5 GitHub repository](https://github.com/ckeditor/ckeditor5/issues).
 </info-box>
