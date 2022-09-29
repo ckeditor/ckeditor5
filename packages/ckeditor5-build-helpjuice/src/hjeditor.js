@@ -357,6 +357,17 @@ HelpjuiceEditor.defaultConfig = {
 					);
 				}
 			},
+			{
+				name: 'externalProvider',
+				url: /.*\.(ogg|mp4|webm)/i,
+				html: match => {
+					const getUrl = match.input;
+
+					return (
+						`<video controls="" style="max-width: 100%" src="${getUrl}">Your browser does not support HTML5 video.</video>`
+					);
+				}
+			}
 		]
 	},
 	indentBlock: {
