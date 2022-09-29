@@ -425,9 +425,9 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 					 *		Array.from( editor.ui.componentFactory.names() );
 					 *
 					 * @error toolbarview-item-unavailable
-					 * @param {String} name The name of the component.
+					 * @param {String|Object} item The name of the component or nested toolbar definition.
 					 */
-					logWarning( 'toolbarview-item-unavailable', { name: item } );
+					logWarning( 'toolbarview-item-unavailable', { item } );
 
 					return false;
 				}
