@@ -42,7 +42,7 @@ msgstr "새 탭에서 링크 열기"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr "이 링크에는 URL이 없습니다."
+msgstr "이 주소에는 URL이 없습니다."
 
 msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
 msgid "Open in a new tab"
