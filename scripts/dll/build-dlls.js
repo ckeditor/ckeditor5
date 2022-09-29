@@ -24,12 +24,6 @@ const VERBOSE_MODE = argv.verbose;
 // make them stand out from the wall of text that webpack spits out.
 const prefix = VERBOSE_MODE ? '\n📍 ' : '';
 
-if ( IS_DEVELOPMENT_MODE ) {
-	console.log( chalk.yellow( '\n🛠️️  Development mode is active.\n' ) );
-} else {
-	console.log( chalk.magenta( '\n⚠️  Production mode is active. Use the "--dev" flag to build in the development mode.\n' ) );
-}
-
 if ( BASE_DLL_CONFIG_PATH ) {
 	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
 
@@ -93,15 +87,26 @@ function execute( options ) {
 		options.command.push( '--mode=development' );
 	}
 
-	const subprocess = childProcess.spawnSync( options.command.join( ' ' ), {
+	const command = options.command.join( ' ' );
+
+	const subprocess = childProcess.spawnSync( command, {
 		encoding: 'utf8',
 		shell: true,
 		cwd: options.cwd,
 		stdio: VERBOSE_MODE ? 'inherit' : 'pipe'
 	} );
 
-	if ( subprocess.stderr && !VERBOSE_MODE ) {
-		const color = subprocess.status !== 0 ? chalk.red : chalk.yellow;
-		console.log( color( subprocess.stderr.trim() ) );
+	if ( subprocess.status !== 0 && subprocess.stderr && !VERBOSE_MODE ) {
+		const normalizedPath = options.cwd.split( path.sep ).join( path.posix.sep );
+
+		console.log( chalk.red( [
+			chalk.bold( '💥 Build ended with an error:' ),
+			subprocess.stderr.trim(),
+			'',
+			chalk.bold( '🛠️  To reproduce this error, run these commands:' ),
+			` - cd ${ normalizedPath }`,
+			` - ${ command }`,
+			''
+		].join( '\n' ) ) );
 	}
 }
