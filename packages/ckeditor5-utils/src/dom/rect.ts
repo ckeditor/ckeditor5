@@ -11,7 +11,6 @@ import isRange from './isrange';
 import isWindow from './iswindow';
 import getBorderWidths from './getborderwidths';
 import isText from './istext';
-import { isElement } from 'lodash-es';
 
 const rectProperties: ( keyof RectLike )[] = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
@@ -481,13 +480,13 @@ function isBody( value: unknown ): value is HTMLBodyElement {
 	return value === value.ownerDocument.body;
 }
 
-// Checks if provided object is a DOM Element.
-//
-// It's just a wrapper for lodash `isElement` but with type guard.
+// Checks if provided object "looks like" a DOM Element and has API required by `Rect` class.
 //
 // @private
 // @param {*} value
 // @returns {Boolean}
-function isDomElement( value: unknown ): value is Element {
-	return isElement( value );
+function isDomElement( value: any ): value is Element {
+	// Note: earlier we used `isElement()` from lodash library, however that function is less performant because
+	// it makes complicated checks to make sure that given value is a DOM element.
+	return value !== null && typeof value === 'object' && value.nodeType === 1 && typeof value.getBoundingClientRect === 'function';
 }

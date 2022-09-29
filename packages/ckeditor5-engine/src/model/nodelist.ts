@@ -10,6 +10,7 @@
 import Node from './node';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import spliceArray from '@ckeditor/ckeditor5-utils/src/splicearray';
 
 /**
  * Provides an interface to operate on a list of {@link module:engine/model/node~Node nodes}. `NodeList` is used internally
@@ -17,7 +18,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * or {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment}.
  */
 export default class NodeList implements Iterable<Node> {
-	private readonly _nodes: Node[];
+	private _nodes: Node[];
 
 	/**
 	 * Creates an empty node list.
@@ -194,7 +195,7 @@ export default class NodeList implements Iterable<Node> {
 			}
 		}
 
-		this._nodes.splice( index, 0, ...nodes );
+		this._nodes = spliceArray<Node>( this._nodes, Array.from( nodes ), index, 0 );
 	}
 
 	/**

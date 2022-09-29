@@ -10,7 +10,6 @@ import WidgetResize from '../src/widgetresize';
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 import { toWidget } from '../src/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -139,29 +138,75 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
-	describe( 'visibility', () => {
+	describe( 'selectability', () => {
+		let resizer;
+
 		beforeEach( () => {
-			createResizer();
+			resizer = createResizer();
 		} );
 
-		it( 'it\'s hidden when no widget is focused', () => {
-			// This particular test needs a paragraph, so that widget is no longer focused.
-			setModelData( editor.model, '<widget></widget><paragraph>[]</paragraph>' );
+		it( 'deselect() should properly deselected currently selected resizer', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const selectedResizer = widgetResizePlugin.selectedResizer;
 
-			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
+			expect( selectedResizer ).not.to.be.null;
+			expect( selectedResizer.isSelected ).to.be.true;
 
-			for ( const resizer of allResizers ) {
-				expect( isVisible( resizer ) ).to.be.false;
-			}
+			widgetResizePlugin.deselect();
+
+			expect( widgetResizePlugin.selectedResizer ).to.be.null;
+			expect( selectedResizer.isSelected ).to.be.false;
 		} );
 
-		it( 'it\'s visible once the widget is focused', () => {
-			// Widget is focused by default.
-			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
+		it( 'select() should properly set selected resizer', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
 
-			for ( const resizer of allResizers ) {
-				expect( isVisible( resizer ) ).to.be.true;
-			}
+			widgetResizePlugin.deselect();
+			widgetResizePlugin.select( resizer );
+
+			expect( widgetResizePlugin.selectedResizer ).to.equal( resizer );
+			expect( resizer.isSelected ).to.be.true;
+		} );
+
+		it( 'select() should deselect current resizer if different resizer is selected', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const otherResizer = createResizer();
+
+			widgetResizePlugin.select( resizer );
+			widgetResizePlugin.select( otherResizer );
+
+			expect( resizer.isSelected ).to.be.false;
+		} );
+
+		it( 'should deselect and select resizer when view element with attached resizer is selected and deselected', () => {
+			const view = editor.editing.view;
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+
+			sinon.spy( widgetResizePlugin, 'select' );
+			sinon.spy( widgetResizePlugin, 'deselect' );
+
+			view.change( writer => {
+				writer.setSelection( null );
+			} );
+
+			expect( widgetResizePlugin.deselect.calledOnce ).to.be.true;
+			expect( widgetResizePlugin.select.called ).to.be.false;
+
+			view.change( writer => {
+				writer.setSelection( widget, 'on' );
+			} );
+
+			expect( widgetResizePlugin.select.calledWithExactly( resizer ) ).to.be.true;
+
+			widgetResizePlugin.deselect.resetHistory();
+			widgetResizePlugin.select.resetHistory();
+
+			view.change( writer => {
+				writer.setSelection( null );
+			} );
+
+			expect( widgetResizePlugin.deselect.calledOnce ).to.be.true;
+			expect( widgetResizePlugin.select.called ).to.be.false;
 		} );
 	} );
 
@@ -491,13 +536,13 @@ describe( 'WidgetResize', () => {
 			// Nothing should be thrown.
 		} );
 
-		it( 'sets the visible resizer if associated widget is already selected', async () => {
+		it( 'sets the selected resizer if associated widget is already selected', async () => {
 			setModelData( localEditor.model, '[<widget></widget>]' );
 
 			const widgetResizePlugin = localEditor.plugins.get( WidgetResize );
 			const resizer = widgetResizePlugin.attachTo( gerResizerOptions( localEditor ) );
 
-			expect( widgetResizePlugin.visibleResizer ).to.eql( resizer );
+			expect( widgetResizePlugin.selectedResizer ).to.eql( resizer );
 		} );
 
 		it( 'sets the visible resizer if the associated inline widget surrounded by an attribute is already selected', async () => {
@@ -551,28 +596,11 @@ describe( 'WidgetResize', () => {
 				onCommit: commitStub
 			} );
 
-			expect( widgetResizePlugin.visibleResizer ).to.eql( resizer );
+			expect( widgetResizePlugin.selectedResizer ).to.eql( resizer );
 		} );
 	} );
 
 	describe( 'init()', () => {
-		it( 'adds listener to redraw resizer on visible resizer change', async () => {
-			setModelData( editor.model, '<widget></widget><paragraph>[]</paragraph>' );
-			widget = editor.editing.view.document.getRoot().getChild( 0 );
-
-			const resizer = createResizer();
-			const redrawSpy = sinon.spy( resizer, 'redraw' );
-
-			await focusEditor( editor );
-
-			editor.model.change( writer => {
-				const widgetModel = editor.model.document.getRoot().getChild( 0 );
-				writer.setSelection( widgetModel, 'on' );
-			} );
-
-			expect( redrawSpy.callCount ).to.equal( 1 );
-		} );
-
 		// https://github.com/ckeditor/ckeditor5/issues/10156
 		it( 'removes references to and destroys resizers of widget removed from the model document', () => {
 			const plugin = editor.plugins.get( WidgetResize );
