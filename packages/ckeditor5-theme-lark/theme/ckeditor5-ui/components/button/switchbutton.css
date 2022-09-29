@@ -96,6 +96,8 @@ of the component, floating–point numbers have been used which, for the default
 	}
 
 	&.ck-on {
+		color: inherit;
+
 		& .ck-button__toggle {
 			background: var(--ck-color-switch-button-on-background);
 
