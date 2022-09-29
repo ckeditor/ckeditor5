@@ -3,13 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console, ClassicEditor, ImageResize */
+/* globals window, document, console, ClassicEditor, DocumentList, DocumentListProperties, ImageResize */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
+/* import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist'; */
+
 ClassicEditor
-	.create( document.querySelector( '#snippet-lists-basic' ), {
-		extraPlugins: [ ImageResize ],
+	.create( document.querySelector( '#snippet-lists-document' ), {
+		removePlugins: [ 'List' ],
+		extraPlugins: [ DocumentList, DocumentListProperties, ImageResize ],
 		toolbar: {
 			items: [
 				'heading',
@@ -49,16 +52,15 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
+		list: {
+			properties: {
+				styles: true
+			}
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
-		window.editorBasic = editor;
-
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Numbered List' ),
-			text: 'Click to create an ordered or unordered list.',
-			editor
-		} );
+		window.editorStyles = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
