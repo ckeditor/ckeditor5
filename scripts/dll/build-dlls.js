@@ -97,7 +97,10 @@ function execute( options ) {
 	} );
 
 	if ( subprocess.status !== 0 && subprocess.stderr && !VERBOSE_MODE ) {
-		const normalizedPath = options.cwd.split( path.sep ).join( path.posix.sep );
+		const normalizedPath = path
+			.relative( process.cwd(), options.cwd )
+			.split( path.sep )
+			.join( path.posix.sep );
 
 		console.log( chalk.red( [
 			chalk.bold( '💥 Build ended with an error:' ),
