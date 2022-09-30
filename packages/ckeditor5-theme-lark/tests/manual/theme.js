@@ -591,6 +591,8 @@ function switchbutton( {
 
 	button.set( { label, isEnabled, isOn, withText, icon, keystroke, tooltip, tooltipPosition } );
 
+	button.on( 'execute', () => ( button.isOn = !button.isOn ) );
+
 	return button;
 }
 
