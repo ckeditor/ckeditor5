@@ -7,6 +7,70 @@ modified_at: 2022-08-18
 
 # Migration to CKEditor 5 v35.x
 
+## Migration to CKEditor 5 v35.2.0
+
+### Introduced external comments
+
+In this release, we are introducing external comments and suggestions. Curerntly, they are used by import from Word feature. However, other features may use them in future as well.
+
+External comments and suggestions display their content, author name and date as provided from an external source (e.g. Word document).
+
+Even if you do not plan to use import from Word feature, we recommend following this migration guide. It will make your integration ready in case you will use external comments or suggestions in the future.
+
+#### Saving external comments and suggestions data
+
+<info-box>
+    This information applies only to integrations that use **non-real-time** collaboration features.
+</info-box>
+
+The external data for external comments and suggestions is kept in newly added `@external` {@link module:comments/comments/commentsrepository~Comment#attributes attribute}. It is an object with two fields: `authorName` (`String`) and `createdAt` (`Date`).
+
+Other properties and attributes for comments and suggestions are used in the regular way. The `authorId` property is set to the author who performed the import.
+
+The external data is shown in the UI, but it is not authenticated (as it comes from external source). For this reason, it is important to introduce some security measures when saving external comments and suggestions:
+
+* Attribute `@external` should be read-only and possible to set only when a comment or suggestion is created.
+* Other comment and suggestion properties (like `content`) should be read-only as well, if `@external` attribute is set.
+
+#### Templates for {@link module:comments/comments/ui/view/commentview~CommentView#getTemplate `CommentView`} and {@link module:track-changes/ui/view/suggestionthreadview~SuggestionThreadView#getTemplate `SuggestionThreadView`} has changed
+
+<info-box>
+    This information applies only to integrations that use custom annotation views or templates.
+</info-box>
+
+Since data in external comments and suggestions is not authenticated, we decided to add a label that informs users that given item comes from an external source. 
+
+This changes the {@link module:comments/comments/ui/view/commentview~CommentView#getTemplate `CommentView` template} and the {@link module:track-changes/ui/view/suggestionthreadview~SuggestionThreadView#getTemplate `SuggestionThreadView` template}. The label is added at the end of templates. Please check the new templates to see whether this change affects your custom view.
+
+### Comment input editor is now loaded on demand
+
+<info-box>
+    This information applies only to custom features depending on comment input editor.
+</info-box>
+
+Comment input editor is now initialized on demand (when the comment view is focused for the first time) instead of when it is rendered.
+
+If your custom feature somehow depends on comment input editor it may need to be changed.
+
+### Custom annotations must be registered in {@link module:comments/annotations/editorannotations~EditorAnnotations `EditorAnnotations`} plugin
+
+<info-box>
+    This information applies only to custom features that create their own {@link module:comments/annotations/annotation~Annotation `Annotation`} instances.
+</info-box>
+
+{@link module:comments/annotations/annotation~Annotation `Annotation`} instances **which target to a marker or a DOM element inside the editor editable** must now be manually registered using {@link module:comments/annotations/editorannotations~EditorAnnotations#registerAnnotation `EditorAnnotations#registerAnnotation()`} to provide correct focus tracking between the annotation and the editor.
+
+```js
+// Before:
+const annotation = new Annotation( ... );
+editor.plugins.get( 'Annotations' ).add( annotation );
+
+// After:
+const annotation = new Annotation( ... );
+editor.plugins.get( 'EditorAnnotations' ).registerAnnotation( annotation );
+editor.plugins.get( 'Annotations' ).add( annotation );
+```
+
 ## Migration to CKEditor 5 v35.1.0
 
 ### Important changes
