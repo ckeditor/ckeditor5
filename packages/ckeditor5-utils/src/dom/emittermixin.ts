@@ -22,6 +22,16 @@ import isNode from './isnode';
 import isWindow from './iswindow';
 import type EventInfo from '../eventinfo';
 
+function isVisualViewport( obj: unknown ): obj is VisualViewport {
+	const stringifiedObject = Object.prototype.toString.apply( obj );
+
+	if ( stringifiedObject == '[object VisualViewport]' ) {
+		return true;
+	}
+
+	return false;
+}
+
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
  * compatible with {@link module:utils/emittermixin~EmitterMixin}.
@@ -70,7 +80,7 @@ export default function DomEmitterMixin<Base extends abstract new( ...args: any[
 			options: CallbackOptions & { readonly useCapture?: boolean; readonly usePassive?: boolean } = {}
 		): void {
 			// Check if emitter is an instance of DOM Node. If so, use corresponding ProxyEmitter (or create one if not existing).
-			if ( isNode( emitter ) || isWindow( emitter ) ) {
+			if ( isNode( emitter ) || isWindow( emitter ) || isVisualViewport( emitter ) ) {
 				const proxyOptions = {
 					capture: !!options.useCapture,
 					passive: !!options.usePassive
@@ -116,7 +126,7 @@ export default function DomEmitterMixin<Base extends abstract new( ...args: any[
 		 * @returns {module:utils/dom/emittermixin~ProxyEmitter|null} ProxyEmitter instance bound to the DOM Node.
 		 */
 		private _getProxyEmitter(
-			node: Node | Window,
+			node: Node | Window | VisualViewport,
 			options: { capture: boolean; passive: boolean }
 		): BaseEmitter | null {
 			return _getEmitterListenedTo( this, getProxyEmitterId( node, options ) );
@@ -187,7 +197,7 @@ export const Emitter = DomEmitterMixin( BaseEmitter );
  * @private
  */
 class ProxyEmitter extends BaseEmitter {
-	private readonly _domNode: Node | Window;
+	private readonly _domNode: Node | Window | VisualViewport;
 	private readonly _options: { capture: boolean; passive: boolean };
 
 	/**
@@ -199,7 +209,7 @@ class ProxyEmitter extends BaseEmitter {
 	 * and prevents blocking browser's main thread by this event handler.
 	 */
 	constructor(
-		node: Node | Window,
+		node: Node | Window | VisualViewport,
 		options: { capture: boolean; passive: boolean }
 	) {
 		super();
@@ -359,7 +369,7 @@ function getNodeUID( node: any ): string {
 // @param {Node} node
 // @param {Object} options Additional options.
 // @returns {String} ProxyEmitter id.
-function getProxyEmitterId( node: Node | Window, options: { [ option: string ]: any } ): string {
+function getProxyEmitterId( node: Node | Window | VisualViewport, options: { [ option: string ]: any } ): string {
 	let id = getNodeUID( node );
 
 	for ( const option of Object.keys( options ).sort() ) {
