@@ -239,6 +239,10 @@ export default class Renderer extends Observable {
 	 * removed as long as the selection is in the text node which needed it at first.
 	 */
 	public render(): void {
+		// Ignore rendering while in the composition mode. Composition events are not cancellable and browser will modify the DOM tree.
+		// All marked elements, attributes, etc. will wait until next render after the composition ends.
+		// On Android composition events are immediately applied to the model, so we don't need to skip rendering,
+		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
 		if ( this.isComposing && !env.isAndroid ) {
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
@@ -644,6 +648,9 @@ export default class Renderer extends Observable {
 	/**
 	 * Checks if elements child list needs to be updated and possibly updates it.
 	 *
+	 * Note that on Android, to reduce the risk of composition breaks, it tries to update data of an existing
+	 * child text nodes instead of replacing them completely.
+	 *
 	 * @private
 	 * @param {module:engine/view/element~Element} viewElement View element to update.
 	 * @param {Object} options
@@ -680,8 +687,14 @@ export default class Renderer extends Observable {
 
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
 
-		// We need to check whether there are some text nodes to update data to make sure that replacing such nodes
-		// as a whole would break composition on Android (on other browser the whole rendering is disabled while composing).
+		// The rendering is not disabled on Android in the composition mode.
+		// Composition events are not cancellable and browser will modify the DOM tree.
+		// On Android composition events are immediately applied to the model, so we don't need to skip rendering,
+		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
+		// Since the composition is fragile and often breaks if the composed text node is replaced while composing
+		// we need to make sure that we update the existing text node and not replace it with another one.
+		// We don't want to change the behavior on other browsers for safety, but maybe one day cause it seems to make sense.
+		// https://github.com/ckeditor/ckeditor5/issues/12455.
 		const actions = env.isAndroid ?
 			this._findReplaceActions( diff, actualDomChildren, expectedDomChildren, { replaceText: true } ) :
 			diff;
@@ -721,7 +734,9 @@ export default class Renderer extends Observable {
 
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
 				i++;
-			} else if ( action === 'replace' ) {
+			}
+			// Update the existing text node data. Note that replace action is generated only for Android for now.
+			else if ( action === 'replace' ) {
 				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text node',
 				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
@@ -879,13 +894,21 @@ export default class Renderer extends Observable {
 			return;
 		}
 
-		// Render selection.
+		// Render fake selection - create the fake selection container (if needed) and move DOM selection to it.
 		if ( this.selection.isFake ) {
 			this._updateFakeSelection( domRoot );
-		} else if ( this._fakeSelectionContainer ) {
+		}
+		// There was a fake selection so remove it and update the DOM selection.
+		// This is especially important on Android because otherwise IME will try to compose over the fake selection container.
+		else if ( this._fakeSelectionContainer ) {
 			this._removeFakeSelection();
 			this._updateDomSelection( domRoot );
-		} else if ( !env.isAndroid || !this.isComposing ) {
+		}
+		// Update the DOM selection in case of a plain selection change (no fake selection is involved).
+		// On non-Android the whole rendering is disabled in composition mode (including DOM selection update),
+		// but updating DOM selection should be also disabled on Android if in the middle of the composition
+		// (to not interrupt it).
+		else if ( !( this.isComposing && env.isAndroid ) ) {
 			this._updateDomSelection( domRoot );
 		}
 	}
@@ -1228,6 +1251,11 @@ function createFakeSelectionContainer( domDocument: DomDocument ): DomElement {
 	return container;
 }
 
+// Checks if text needs to be updated and possibly updates it by removing and inserting only parts
+// of the data from the existing text node to reduce impact on the IME composition.
+//
+// @param {Text} domText DOM text node to update.
+// @param {String} expectedText The expected data of a text node.
 function updateTextNode( domText: DomText, expectedText: string ) {
 	const actualText = domText.data;
 

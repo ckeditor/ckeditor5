@@ -155,7 +155,9 @@ export default class DeleteObserver extends Observer {
 				deleteData.selectionToRemove = view.createSelection( targetRanges[ 0 ] );
 			}
 
-			// Split deleting a single character from deleting the selected (wider) range.
+			// The default deletion unit for deleteContentBackward is a single code point
+			// but on Android it sometimes passes a wider target range, so we need to change
+			// the unit of deletion to include the whole range to be removed and not a single code point.
 			if ( env.isAndroid && inputType === 'deleteContentBackward' ) {
 				// On Android, deleteContentBackward has sequence 1 by default.
 				deleteData.sequence = 1;

@@ -88,7 +88,10 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
-		} else if ( env.isAndroid ) {
+		}
+		// For Android devices we use a fallback to the current DOM selection, Android modifies it according
+		// to the expected target ranges of input event.
+		else if ( env.isAndroid ) {
 			const domSelection = ( domEvent.target as HTMLElement ).ownerDocument.defaultView!.getSelection()!;
 
 			targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
@@ -100,20 +103,32 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// @if CK_DEBUG_TYPING // }
 		}
 
+		// Android sometimes fires insertCompositionText with a new-line character at the end of the data
+		// instead of firing insertParagraph beforeInput event.
+		// Fire the correct type of beforeInput event and ignore the replaced fragment of text because
+		// it wants to replace "test" with "test\n".
+		// https://github.com/ckeditor/ckeditor5/issues/12368.
 		if ( env.isAndroid && domEvent.inputType == 'insertCompositionText' && data && data.endsWith( '\n' ) ) {
 			this.fire( domEvent.type, domEvent, {
 				inputType: 'insertParagraph',
 				targetRanges: [ view.createRange( targetRanges[ 0 ].end ) ]
 			} );
-		} else {
-			this.fire( domEvent.type, domEvent, {
-				data,
-				dataTransfer,
-				isComposing: domEvent.isComposing,
-				targetRanges,
-				inputType: domEvent.inputType
-			} );
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
+
+			return;
 		}
+
+		// Fire the normalized beforeInput event.
+		this.fire( domEvent.type, domEvent, {
+			data,
+			dataTransfer,
+			isComposing: domEvent.isComposing,
+			targetRanges,
+			inputType: domEvent.inputType
+		} );
 
 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();

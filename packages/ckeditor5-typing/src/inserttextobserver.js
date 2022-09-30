@@ -38,6 +38,9 @@ export default class InsertTextObserver extends Observer {
 	constructor( view ) {
 		super( view );
 
+		// On Android composition events should immediately be applied to the model. Rendering is not disabled.
+		// On non-Android the model is updated only on composition end.
+		// On Android we can't rely on composition start/end to update model.
 		if ( env.isAndroid ) {
 			TYPING_INPUT_TYPES.push( 'insertCompositionText' );
 		}
@@ -71,6 +74,9 @@ export default class InsertTextObserver extends Observer {
 
 		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
 		viewDocument.on( 'compositionend', ( evt, { data, domEvent } ) => {
+			// On Android composition events are immediately applied to the model.
+			// On non-Android the model is updated only on composition end.
+			// On Android we can't rely on composition start/end to update model.
 			if ( !this.isEnabled || env.isAndroid ) {
 				return;
 			}

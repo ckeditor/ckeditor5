@@ -54,6 +54,8 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+			// When not in composition, we handle the action, so prevent the default one.
+			// When in composition, it's the browser who modify the DOM (renderer is disabled).
 			if ( !viewDocument.isComposing ) {
 				data.preventDefault();
 			}
