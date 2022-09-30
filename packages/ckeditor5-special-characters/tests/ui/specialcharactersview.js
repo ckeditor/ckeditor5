@@ -38,6 +38,11 @@ describe( 'SpecialCahractersView', () => {
 			expect( view.items.get( 1 ) ).to.equal( gridView );
 			expect( view.items.length ).to.equal( 2 );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/pull/12319#issuecomment-1231779819
+		it( 'sets tabindex to -1 to avoid focus loss', () => {
+			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+		} );
 	} );
 
 	describe( 'render()', () => {

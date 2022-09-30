@@ -122,7 +122,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Added missing `return` to the data initialization step (fixes asynchrounous data initialization, important for real-time collaboration features). Closes [#13](https://github.com/ckeditor/ckeditor5-editor-decoupled/issues/13). ([f4e496d](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/f4e496d))
+* Added missing `return` to the data initialization step (fixes asynchronous data initialization, important for real-time collaboration features). Closes [#13](https://github.com/ckeditor/ckeditor5-editor-decoupled/issues/13). ([f4e496d](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/f4e496d))
 
 
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)

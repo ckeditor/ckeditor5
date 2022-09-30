@@ -67,7 +67,7 @@ Additionally, you can configure:
 
 * How the item is rendered in the autocomplete panel (via setting {@link module:mention/mention~MentionFeed `itemRenderer`}). See ["Customizing the autocomplete list"](#customizing-the-autocomplete-list).
 * How the item is converted during the {@link framework/guides/architecture/editing-engine#conversion conversion}. See ["Customizing the output"](#customizing-the-output).
-* Multiple feeds. Te demo above uses only one feed, which is triggered by the `'@'` character. You can define multiple feeds but they must use different markers. For example, you can use `'@'` for people and `'#'` for tags.
+* Multiple feeds. The demo above uses only one feed, which is triggered by the `'@'` character. You can define multiple feeds but they must use different markers. For example, you can use `'@'` for people and `'#'` for tags.
 
 ### Providing the feed
 

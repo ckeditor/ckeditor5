@@ -242,7 +242,7 @@ msgstr "유효하지 않은 색입니다. \"#FF0000\"이나 \"rgb(255,0,0)\", �
 
 msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
-msgstr "유효하지 않은 값입니다. \"10px\"이나 \"2em\", 또는 그냥 \"2\"를 입력해 보세요."
+msgstr "유효하지 않은 값입니다. \"10px\"나 \"2em\" 또는 그냥 \"2\"를 입력해 보세요."
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"

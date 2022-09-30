@@ -1,13 +1,14 @@
 ---
 category: framework
 order: 10
+menu-title: Overview
 meta-title: CKEditor 5 Framework documentation
 meta-description: Learn how to install, integrate, configure and develop CKEditor 5 Framework. Browse through API documentation and online samples.
 ---
 
 # CKEditor 5 Framework overview
 
-CKEditor 5 is a project that allows you to quickly and easily initialize one of the many types of editors it offers in your application. At the same time, it is a framework for creating custom-tailored rich-text editing solutions. The former requirement is met thanks to {@link installation/getting-started/predefined-builds CKEditor 5 builds}. The latter &mdash; thanks to CKEditor 5 Framework.
+CKEditor 5 is a project that allows you to quickly and easily initialize one of the many types of editors it offers in your application. At the same time, it is a framework for creating custom-tailored rich-text editing solutions. The former requirement is met thanks to the {@link installation/getting-started/predefined-builds predefined CKEditor 5 builds}. The latter &mdash; thanks to CKEditor 5 Framework.
 
 CKEditor 5 Framework is a highly-flexible and universal platform providing a set of components allowing you to create any kind of rich text editing solution. It enables creating different, custom-tailored editors that suit specific needs. It also provides tools for creation and integration of user-made features and for customizing the existing ones.
 
@@ -19,13 +20,13 @@ If the documentation is insufficient, do not be afraid to look into the source c
 
 ## When to use the framework?
 
-{@link installation/getting-started/quick-start CKEditor 5 builds can be customized}, but certain types of customizations require using the framework.
+The CKEditor 5 predefined builds {@link installation/getting-started/predefined-builds#build-customization can be customized}, but certain types of customizations require using the framework.
 
-* **Writing your own features.** Features are implemented using the framework.
-* **Customizing existing features.** Changing the behavior or look of existing features can be done using the framework capabilities.
+* **Writing your own features.** New features are implemented using the framework.
+* **Customizing existing features.** Changing the behavior or look of existing features can be done thanks to the framework capabilities.
 * **Creating new types of editors.** You can create new editor types using the framework.
 
-To sum up: you need to start using the framework as soon as existing builds do not meet your requirements or cannot be customized to the extent you want.
+To sum up: you need to start using the framework as soon as existing builds do not meet your requirements or cannot be customized to the extent you need.
 
 ## Design
 
@@ -63,5 +64,4 @@ To start using the framework refer to:
 
 * The {@link framework/guides/quick-start Quick start} guide.
 * The {@link framework/guides/architecture/intro Introduction to the framework architecture} guide.
-
-<!-- * The {@linkTODO framework/guides/creating-plugin Creating a plugin} guide. -->
+* The {@linkTODO framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide.

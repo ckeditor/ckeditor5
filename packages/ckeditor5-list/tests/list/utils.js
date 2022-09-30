@@ -13,6 +13,7 @@ import ListPropertiesEditing from '../../src/listproperties/listpropertieseditin
 
 import { createViewListItemElement, getListTypeFromListStyleType, getSiblingListItem, getSiblingNodes } from '../../src/list/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
 describe( 'utils', () => {
 	let writer;
@@ -271,7 +272,7 @@ describe( 'utils', () => {
 		let editor, model, document;
 
 		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ Paragraph, ListPropertiesEditing ] } )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, BlockQuoteEditing, ListPropertiesEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
@@ -309,6 +310,7 @@ describe( 'utils', () => {
 			);
 
 			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 2 ),
 				document.getRoot().getChild( 3 ),
 				document.getRoot().getChild( 4 )
 			] );
@@ -342,6 +344,7 @@ describe( 'utils', () => {
 			);
 
 			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 0 ),
 				document.getRoot().getChild( 1 ),
 				document.getRoot().getChild( 2 )
 			] );
@@ -374,6 +377,7 @@ describe( 'utils', () => {
 			);
 
 			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 0 ),
 				document.getRoot().getChild( 1 ),
 				document.getRoot().getChild( 2 )
 			] );
@@ -406,6 +410,7 @@ describe( 'utils', () => {
 			);
 
 			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 0 ),
 				document.getRoot().getChild( 1 ),
 				document.getRoot().getChild( 2 )
 			] );
@@ -425,6 +430,7 @@ describe( 'utils', () => {
 			);
 
 			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 0 ),
 				document.getRoot().getChild( 1 ),
 				document.getRoot().getChild( 2 ),
 				document.getRoot().getChild( 5 ),
@@ -444,8 +450,48 @@ describe( 'utils', () => {
 			);
 
 			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 2 ),
 				document.getRoot().getChild( 3 ),
 				document.getRoot().getChild( 4 )
+			] );
+		} );
+
+		it( 'should return only list items that are inside the same parent element (direction="backward")', () => {
+			setData( model,
+				'<listItem listStart="0" listType="numbered" listIndent="0">0.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">1.</listItem>' +
+				'<blockQuote>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">[]2.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">3.</listItem>' +
+				'</blockQuote>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">4.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">5.</listItem>'
+			);
+
+			const blockQuoteElement = document.getRoot().getChild( 2 );
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+				blockQuoteElement.getChild( 0 )
+			] );
+		} );
+
+		it( 'should return only list items that are inside the same parent element (direction="forward")', () => {
+			setData( model,
+				'<listItem listStart="0" listType="numbered" listIndent="0">0.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">1.</listItem>' +
+				'<blockQuote>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">[]2.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">3.</listItem>' +
+				'</blockQuote>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">4.</listItem>' +
+				'<listItem listStart="0" listType="numbered" listIndent="0">5.</listItem>'
+			);
+
+			const blockQuoteElement = document.getRoot().getChild( 2 );
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				blockQuoteElement.getChild( 0 ),
+				blockQuoteElement.getChild( 1 )
 			] );
 		} );
 	} );

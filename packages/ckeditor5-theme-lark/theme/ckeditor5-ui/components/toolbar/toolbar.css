@@ -93,6 +93,19 @@
 		}
 	}
 
+	/* A drop-down containing the nested toolbar with configured items. */
+	& .ck-toolbar__nested-toolbar-dropdown {
+		/* Prevent empty space in the panel when the dropdown label is visible and long but the toolbar has few items. */
+		& > .ck-dropdown__panel {
+			min-width: auto;
+		}
+
+		& > .ck-button > .ck-button__label {
+			max-width: 7em;
+			width: auto;
+		}
+	}
+
 	@nest .ck-toolbar-container & {
 		border: 0;
 	}

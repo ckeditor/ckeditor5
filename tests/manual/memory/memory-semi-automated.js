@@ -39,6 +39,7 @@ import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
@@ -57,7 +58,7 @@ function initEditor() {
 				ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 				FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
 				CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption,
-				EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
+				TableColumnResize, EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
 				AutoLink, Mention, TextTransformation,
 				Alignment, IndentBlock,
 				PasteFromOffice, PageBreak, HorizontalLine,

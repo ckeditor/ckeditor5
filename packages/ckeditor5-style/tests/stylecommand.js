@@ -158,6 +158,25 @@ describe( 'StyleCommand', () => {
 				] );
 			} );
 
+			it( 'should enable styles for paragraphs when nested inside html section', () => {
+				const dataFilter = editor.plugins.get( 'DataFilter' );
+				dataFilter.allowElement( 'htmlSection' );
+
+				setData( model,
+					'<htmlSection><paragraph>[Foo</paragraph></htmlSection>' +
+					'<htmlSection><paragraph>Bar</paragraph></htmlSection>' +
+					'<htmlSection><paragraph>Baz]</paragraph></htmlSection>'
+				);
+
+				command.execute( { styleName: 'Red paragraph' } );
+
+				expect( getData( model ) ).to.equal(
+					'<htmlSection><paragraph htmlAttributes="{"classes":["red"]}">[Foo</paragraph></htmlSection>' +
+					'<htmlSection><paragraph htmlAttributes="{"classes":["red"]}">Bar</paragraph></htmlSection>' +
+					'<htmlSection><paragraph htmlAttributes="{"classes":["red"]}">Baz]</paragraph></htmlSection>'
+				);
+			} );
+
 			it( 'should enable styles for the code block', () => {
 				setData( model, '<codeBlock language="plaintext">foo[bar]baz</codeBlock>' );
 
@@ -765,6 +784,16 @@ describe( 'StyleCommand', () => {
 			plugins: [ Paragraph, ImageBlock, ImageCaption, Heading, CodeBlock, BlockQuote, Table, GeneralHtmlSupport, Style ],
 			style: {
 				definitions: styleDefinitions
+			},
+			htmlSupport: {
+				allow: [
+					{
+						name: /^.*$/,
+						styles: true,
+						attributes: true,
+						classes: true
+					}
+				]
 			}
 		} );
 

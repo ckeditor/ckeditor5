@@ -64,10 +64,14 @@ describe( 'SpecialCharacters', () => {
 
 			beforeEach( () => {
 				dropdown = editor.ui.componentFactory.create( 'specialCharacters' );
+				dropdown.render();
+				document.body.appendChild( dropdown.element );
+
 				dropdown.isOpen = true; // Dropdown is lazy loaded, so needs to be open to be verified (#6175).
 			} );
 
 			afterEach( () => {
+				dropdown.element.remove();
 				dropdown.destroy();
 			} );
 
@@ -147,7 +151,7 @@ describe( 'SpecialCharacters', () => {
 					expect( grid.tiles.get( 0 ).label ).to.equal( '<' );
 					navigation.groupDropdownView.fire( new EventInfo( { label: 'Arrows' }, 'execute' ) );
 
-					expect( grid.tiles.get( 0 ).label ).to.equal( '⇐' );
+					expect( grid.tiles.get( 0 ).label ).to.equal( '←' );
 				} );
 			} );
 

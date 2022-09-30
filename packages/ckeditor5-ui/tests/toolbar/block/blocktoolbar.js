@@ -28,6 +28,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
@@ -327,6 +328,50 @@ describe( 'BlockToolbar', () => {
 
 				const blockToolbar = editor.plugins.get( BlockToolbar );
 				expect( blockToolbar.buttonView.isVisible ).to.be.false;
+			} );
+
+			describe( 'mousedown event', () => {
+				// https://github.com/ckeditor/ckeditor5/issues/12184
+				it( 'should call preventDefault to avoid stealing the focus', () => {
+					const ret = blockToolbar.buttonView.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+					expect( ret ).to.false;
+				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/12115
+				describe( 'in Safari', () => {
+					let view, stub, spy;
+
+					beforeEach( () => {
+						stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
+						view = blockToolbar.buttonView;
+						spy = sinon.spy( blockToolbar.toolbarView, 'focus' );
+					} );
+
+					afterEach( () => {
+						stub.resetBehavior();
+					} );
+
+					it( 'should focus the toolbar when it shows up', () => {
+						blockToolbar.panelView.isVisible = true;
+						view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+						expect( spy.callCount ).to.equal( 1 );
+					} );
+
+					it( 'should not focus the toolbar when it hides', () => {
+						blockToolbar.panelView.isVisible = false;
+						view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+						expect( spy.callCount ).to.equal( 0 );
+					} );
+
+					it( 'should also preventDefault the event', () => {
+						const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+						expect( ret ).to.false;
+					} );
+				} );
 			} );
 		} );
 	} );

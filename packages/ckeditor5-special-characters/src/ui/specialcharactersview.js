@@ -99,7 +99,12 @@ export default class SpecialCharactersView extends View {
 				this.navigationView,
 				this.gridView,
 				this.infoView
-			]
+			],
+			attributes: {
+				// Avoid focus loss when the user clicks the area of the grid that is not a button.
+				// https://github.com/ckeditor/ckeditor5/pull/12319#issuecomment-1231779819
+				tabindex: '-1'
+			}
 		} );
 
 		this.items.add( this.navigationView.groupDropdownView.buttonView );
