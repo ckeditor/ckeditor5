@@ -228,12 +228,15 @@ describe( 'Widget', () => {
 	it( 'should apply fake view selection if model selection is on widget element', () => {
 		setModelData( model, '[<widget>foo bar</widget>]' );
 
+		const labelUid = viewDocument.getRoot().getChild( 0 ).getChild( 3 ).getAttribute( 'id' );
+
 		expect( getViewData( view ) ).to.equal(
-			'[<div class="ck-widget ck-widget_selected" ' +
+			'[<div aria-describedby="' + labelUid + '" class="ck-widget ck-widget_selected" ' +
 			'contenteditable="false">' +
 				'foo bar' +
 				'<b></b>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>]'
 		);
 		expect( viewDocument.selection.isFake ).to.be.true;
@@ -366,17 +369,22 @@ describe( 'Widget', () => {
 	it( 'should add selected class when other content is selected with widget', () => {
 		setModelData( model, '[<paragraph>foo</paragraph><widget></widget><widget></widget>]' );
 
+		const labelUid1 = viewDocument.getRoot().getChild( 1 ).getChild( 2 ).getAttribute( 'id' );
+		const labelUid2 = viewDocument.getRoot().getChild( 2 ).getChild( 2 ).getAttribute( 'id' );
+
 		expect( viewDocument.selection.isFake ).to.be.false;
 		expect( getViewData( view ) ).to.equal(
 			'<p>{foo</p>' +
-			'<div class="ck-widget ck-widget_selected" contenteditable="false">' +
+			'<div aria-describedby="' + labelUid1 + '" class="ck-widget ck-widget_selected" contenteditable="false">' +
 				'<b></b>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid1 + '"></label>' +
 			'</div>' +
-			'<div class="ck-widget ck-widget_selected" ' +
+			'<div aria-describedby="' + labelUid2 + '" class="ck-widget ck-widget_selected" ' +
 			'contenteditable="false">' +
 				'<b></b>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid2 + '"></label>' +
 			'</div>]'
 		);
 	} );
@@ -390,12 +398,15 @@ describe( 'Widget', () => {
 	it( 'should toggle selected class', () => {
 		setModelData( model, '<paragraph>foo</paragraph>[<widget>foo</widget>]' );
 
+		const labelUid = viewDocument.getRoot().getChild( 1 ).getChild( 3 ).getAttribute( 'id' );
+
 		expect( getViewData( view ) ).to.equal(
 			'<p>foo</p>' +
-			'[<div class="ck-widget ck-widget_selected" contenteditable="false">' +
+			'[<div aria-describedby="' + labelUid + '" class="ck-widget ck-widget_selected" contenteditable="false">' +
 				'foo' +
 				'<b></b>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>]'
 		);
 
@@ -405,10 +416,11 @@ describe( 'Widget', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'<p>{}foo</p>' +
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div aria-describedby="' + labelUid + '" class="ck-widget" contenteditable="false">' +
 				'foo' +
 				'<b></b>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>'
 		);
 	} );
@@ -416,11 +428,14 @@ describe( 'Widget', () => {
 	it( 'should do nothing when selection is placed in other editable', () => {
 		setModelData( model, '<widget><editable>foo bar</editable></widget><editable>[baz]</editable>' );
 
+		const labelUid = viewDocument.getRoot().getChild( 0 ).getChild( 3 ).getAttribute( 'id' );
+
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div aria-describedby="' + labelUid + '" class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo bar</figcaption>' +
 				'<b></b>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>' +
 			'<figcaption contenteditable="true">{baz}</figcaption>'
 		);
@@ -1513,6 +1528,10 @@ describe( 'Widget', () => {
 			// The top-outer widget.
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
 
+			const labelUid1 = viewWidgetSelectionHandle.getChild( 4 ).getAttribute( 'id' );
+			const labelUid2 = viewWidgetSelectionHandle.getChild( 0 ).getChild( 2 ).getAttribute( 'id' );
+			const labelUid3 = viewWidgetSelectionHandle.getChild( 1 ).getChild( 2 ).getAttribute( 'id' );
+
 			const domEventDataMock = new DomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
@@ -1521,23 +1540,26 @@ describe( 'Widget', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<div class="' +
+				'[<div aria-describedby="' + labelUid1 + '" class="' +
 					'ck-widget ' +
 					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
 				'>' +
-					'<div class="' +
+					'<div aria-describedby="' + labelUid2 + '" class="' +
 						'ck-widget ' +
 						'ck-widget_with-selection-handle" contenteditable="false"' +
 					'>' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'<label class="ck ck-hidden ck-label" id="' + labelUid2 + '"></label>' +
 					'</div>' +
-					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+					'<div aria-describedby="' + labelUid3 + '" class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'<label class="ck ck-hidden ck-label" id="' + labelUid3 + '"></label>' +
 					'</div>' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'<label class="ck ck-hidden ck-label" id="' + labelUid1 + '"></label>' +
 				'</div>]'
 			);
 		} );
@@ -1554,6 +1576,12 @@ describe( 'Widget', () => {
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 1 );
 
+			const labelUid1 = viewDocument.getRoot().getChild( 0 ).getChild( 2 ).getAttribute( 'id' );
+			const labelUid2 = viewWidgetSelectionHandle.getChild( 4 ).getAttribute( 'id' );
+			const labelUid3 = viewWidgetSelectionHandle.getChild( 0 ).getChild( 2 ).getAttribute( 'id' );
+			const labelUid4 = viewWidgetSelectionHandle.getChild( 1 ).getChild( 2 ).getAttribute( 'id' );
+			const labelUid5 = viewDocument.getRoot().getChild( 2 ).getChild( 2 ).getAttribute( 'id' );
+
 			const domEventDataMock = new DomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
@@ -1562,34 +1590,39 @@ describe( 'Widget', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'<div class="ck-widget ck-widget_with-selection-handle" ' +
+				'<div aria-describedby="' + labelUid1 + '" class="ck-widget ck-widget_with-selection-handle" ' +
 				'contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'<label class="ck ck-hidden ck-label" id="' + labelUid1 + '"></label>' +
 				'</div>' +
-				'[<div class="' +
+				'[<div aria-describedby="' + labelUid2 + '" class="' +
 					'ck-widget ' +
 					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
 				'>' +
-					'<div ' +
+					'<div aria-describedby="' + labelUid3 + '" ' +
 					'class="ck-widget ck-widget_with-selection-handle" ' +
 					'contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'<label class="ck ck-hidden ck-label" id="' + labelUid3 + '"></label>' +
 				'</div>' +
-					'<div class="ck-widget ck-widget_with-selection-handle" ' +
+					'<div aria-describedby="' + labelUid4 + '" class="ck-widget ck-widget_with-selection-handle" ' +
 					'contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'<label class="ck ck-hidden ck-label" id="' + labelUid4 + '"></label>' +
 				'</div>' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'<label class="ck ck-hidden ck-label" id="' + labelUid2 + '"></label>' +
 				'</div>]' +
-					'<div ' +
+					'<div aria-describedby="' + labelUid5 + '" ' +
 					'class="ck-widget ck-widget_with-selection-handle" ' +
 					'contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'<label class="ck ck-hidden ck-label" id="' + labelUid5 + '"></label>' +
 				'</div>'
 			);
 		} );
@@ -1603,6 +1636,8 @@ describe( 'Widget', () => {
 			);
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
+			const labelUid1 = viewWidgetSelectionHandle.getChild( 4 ).getAttribute( 'id' );
+			const labelUid2 = viewWidgetSelectionHandle.getChild( 1 ).getChild( 2 ).getAttribute( 'id' );
 
 			const domEventDataMock = new DomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
@@ -1612,17 +1647,19 @@ describe( 'Widget', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<div class="' +
+				'[<div aria-describedby="' + labelUid1 + '" class="' +
 					'ck-widget ' +
 					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
 				'>' +
 					'<figcaption contenteditable="true">foo bar</figcaption>' +
-					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+					'<div aria-describedby="' + labelUid2 + '" class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'<label class="ck ck-hidden ck-label" id="' + labelUid2 + '"></label>' +
 					'</div>' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'<label class="ck ck-hidden ck-label" id="' + labelUid1 + '"></label>' +
 				'</div>]'
 			);
 		} );
@@ -1638,6 +1675,10 @@ describe( 'Widget', () => {
 			);
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
+			const labelUid1 = viewDocument.getRoot().getChild( 0 ).getChild( 4 ).getAttribute( 'id' );
+			const labelUid2 = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 2 ).getAttribute( 'id' );
+			const labelUid3 = viewWidgetSelectionHandle.getChild( 3 ).getAttribute( 'id' );
+			const labelUid4 = viewWidgetSelectionHandle.getChild( 0 ).getChild( 2 ).getAttribute( 'id' );
 
 			const domEventDataMock = new DomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
@@ -1647,30 +1688,35 @@ describe( 'Widget', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'<div class="' +
+				'<div aria-describedby="' + labelUid1 + '" class="' +
 					'ck-widget ' +
 					'ck-widget_with-selection-handle" contenteditable="false"' +
 				'>' +
-					'<div class="' +
+					'<div aria-describedby="' + labelUid2 + '" class="' +
 						'ck-widget ' +
 						'ck-widget_with-selection-handle" contenteditable="false"' +
 					'>' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'<label class="ck ck-hidden ck-label" id="' + labelUid2 + '"></label>' +
 					'</div>' +
-					'[<div class="' +
+					'[<div aria-describedby="' + labelUid3 + '" class="' +
 						'ck-widget ' +
 						'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
 					'>' +
-						'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+						'<div aria-describedby="' + labelUid4 + '" class="ck-widget ' +
+								'ck-widget_with-selection-handle" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
 							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+							'<label class="ck ck-hidden ck-label" id="' + labelUid4 + '"></label>' +
 						'</div>' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'<label class="ck ck-hidden ck-label" id="' + labelUid3 + '"></label>' +
 					'</div>]' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'<label class="ck ck-hidden ck-label" id="' + labelUid1 + '"></label>' +
 				'</div>'
 			);
 		} );
@@ -1681,6 +1727,8 @@ describe( 'Widget', () => {
 			setModelData( model, '[]<widget><nested><widget></widget></nested></widget>' );
 
 			const widgetInEditable = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
+			const labelUid1 = viewDocument.getRoot().getChild( 0 ).getChild( 3 ).getAttribute( 'id' );
+			const labelUid2 = widgetInEditable.getChild( 2 ).getAttribute( 'id' );
 
 			const domEventDataMock = new DomEventData( view, {
 				target: view.domConverter.mapViewToDom( widgetInEditable ),
@@ -1690,21 +1738,23 @@ describe( 'Widget', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'<div class="' +
+				'<div aria-describedby="' + labelUid1 + '" class="' +
 					'ck-widget ' +
 					'ck-widget_with-selection-handle" contenteditable="false"' +
 				'>' +
 					'<figcaption contenteditable="true">[' +
-						'<div class="' +
+						'<div aria-describedby="' + labelUid2 + '" class="' +
 							'ck-widget ' +
 							'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
 						'>' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
 							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+							'<label class="ck ck-hidden ck-label" id="' + labelUid2 + '"></label>' +
 						'</div>]' +
 					'</figcaption>' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'<label class="ck ck-hidden ck-label" id="' + labelUid1 + '"></label>' +
 				'</div>'
 			);
 		} );
