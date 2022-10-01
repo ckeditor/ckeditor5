@@ -103,6 +103,7 @@ describe( 'Widget - integration', () => {
 		setModelData( model, '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 1 );
 		const viewFigcaption = viewDiv.getChild( 0 );
+		const labelUid = viewDiv.getChild( 2 ).getAttribute( 'id' );
 
 		const preventDefault = sinon.spy();
 
@@ -118,9 +119,10 @@ describe( 'Widget - integration', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'<p>[]</p>' +
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div aria-describedby="' + labelUid + '" class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo bar</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>'
 		);
 
@@ -132,6 +134,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
+		const labelUid = viewDiv.getChild( 2 ).getAttribute( 'id' );
 		const preventDefault = sinon.spy();
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
@@ -144,9 +147,10 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div aria-describedby="' + labelUid + '" class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>'
 		);
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[foo bar]</nested></widget>' );
@@ -157,6 +161,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewLink = viewDiv.getChild( 0 ).getChild( 1 );
+		const labelUid = viewDiv.getChild( 2 ).getAttribute( 'id' );
 		const preventDefault = sinon.spy();
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewLink ),
@@ -169,9 +174,10 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false">' +
-			'<figcaption contenteditable="true">{foo <a href="abc">bar</a>]</figcaption>' +
-			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+			'<div aria-describedby="' + labelUid + '" class="ck-widget" contenteditable="false">' +
+				'<figcaption contenteditable="true">{foo <a href="abc">bar</a>]</figcaption>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>'
 		);
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[foo <$text linkHref="abc">bar</$text>]</nested></widget>' );
@@ -190,6 +196,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewLink = viewDiv.getChild( 0 ).getChild( 1 ).getChild( 1 );
+		const labelUid = viewDiv.getChild( 2 ).getAttribute( 'id' );
 		const preventDefault = sinon.spy();
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewLink ),
@@ -202,13 +209,14 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div aria-describedby="' + labelUid + '" class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">' +
 					'<p>foo</p>' +
 					'<p>{foo <a href="abc">bar</a>]</p>' +
 					'<p>bar</p>' +
 				'</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>'
 		);
 		expect( getModelData( model ) ).to.equal(
@@ -233,16 +241,18 @@ describe( 'Widget - integration', () => {
 			preventDefault,
 			detail: 3
 		} );
+		const labelUid = viewDiv.getChild( 3 ).getAttribute( 'id' );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div aria-describedby="' + labelUid + '" class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo</figcaption>' +
 				'<figcaption contenteditable="true">{bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>'
 		);
 
@@ -254,6 +264,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
+		const labelUid = viewDiv.getChild( 2 ).getAttribute( 'id' );
 		const preventDefault = sinon.spy();
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
@@ -266,9 +277,10 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div aria-describedby="' + labelUid + '" class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>'
 		);
 
@@ -305,6 +317,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 1 );
 		const viewFigcaption = viewDiv.getChild( 0 );
+		const labelUid = viewDiv.getChild( 2 ).getAttribute( 'id' );
 		const preventDefault = sinon.spy();
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
@@ -318,9 +331,10 @@ describe( 'Widget - integration', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'<p>[]</p>' +
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div aria-describedby="' + labelUid + '" class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo bar</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<label class="ck ck-hidden ck-label" id="' + labelUid + '"></label>' +
 			'</div>'
 		);
 
