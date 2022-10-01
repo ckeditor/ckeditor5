@@ -235,10 +235,10 @@ describe( 'WidgetTypeAround', () => {
 			const firstViewWidget = viewRoot.getChild( 1 );
 			const lastViewWidget = viewRoot.getChild( 3 );
 
-			expect( firstViewWidget.childCount ).to.equal( 2 );
+			expect( firstViewWidget.childCount ).to.equal( 3 );
 			expect( firstViewWidget.getChild( 1 ).hasClass( 'ck-widget__type-around' ) ).to.be.true;
 
-			expect( lastViewWidget.childCount ).to.equal( 2 );
+			expect( lastViewWidget.childCount ).to.equal( 3 );
 			expect( lastViewWidget.getChild( 1 ).hasClass( 'ck-widget__type-around' ) ).to.be.true;
 		} );
 
