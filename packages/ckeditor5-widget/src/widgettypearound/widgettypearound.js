@@ -17,6 +17,7 @@ import {
 	isForwardArrowKeyCode,
 	keyCodes
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 import {
 	isTypeAroundWidget,
@@ -232,6 +233,11 @@ export default class WidgetTypeAround extends Plugin {
 			// Filter out non-widgets and inline widgets.
 			if ( isTypeAroundWidget( viewElement, data.item, schema ) ) {
 				injectUIIntoWidget( conversionApi.writer, buttonTitles, viewElement );
+				addAriaDescribedbyToWidget(
+					conversionApi.writer,
+					t( 'Press Enter to type after or press Shift + Enter to type before the widget.' ),
+					viewElement
+				);
 			}
 		}, { priority: 'low' } );
 	}
@@ -864,6 +870,28 @@ function injectUIIntoWidget( viewWriter, buttonTitles, widgetViewElement ) {
 
 	// Inject the type around wrapper into the widget's wrapper.
 	viewWriter.insert( viewWriter.createPositionAt( widgetViewElement, 'end' ), typeAroundWrapper );
+}
+
+// Inserts aria-describedby label into the widget.
+// It will be used by assistive technologies to announce how to type around the selected widget.
+// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
+// @param {String} text to be inserted into the label
+// @param {module:engine/view/element~Element} viewElement
+function addAriaDescribedbyToWidget( viewWriter, text, widgetViewElement ) {
+	const label = viewWriter.createUIElement( 'label', {
+		class: 'ck ck-label ck-hidden',
+		id: `ck-editor__label_${ uid() }`
+	}, function( domDocument ) {
+		const domElement = this.toDomElement( domDocument );
+
+		domElement.innerText = text;
+
+		return domElement;
+	} );
+
+	viewWriter.insert( viewWriter.createPositionAt( widgetViewElement, 'end' ), label );
+
+	viewWriter.setAttribute( 'aria-describedby', label.getAttribute( 'id' ), widgetViewElement );
 }
 
 // FYI: Not using the IconView class because each instance would need to be destroyed to avoid memory leaks
