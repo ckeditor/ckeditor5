@@ -394,6 +394,44 @@ describe( 'WidgetTypeAround', () => {
 		} );
 	} );
 
+	describe( 'aria-describedby in type around widgets', () => {
+		it( 'should insert a label', () => {
+			setModelData( editor.model,
+				'<blockWidget></blockWidget>'
+			);
+
+			const widget = viewRoot.getChild( 0 );
+
+			expect( widget.childCount ).to.equal( 3 );
+			expect( widget.getChild( 2 ).getAttribute( 'id' ) ).to.match( /^ck-editor__label_\w+$/ );
+		} );
+
+		it( 'should not insert a label in inline widgets', () => {
+			setModelData( editor.model,
+				'<paragraph>foo<inlineWidget></inlineWidget></paragraph>' +
+				'<paragraph><inlineWidget></inlineWidget>bar</paragraph>'
+			);
+
+			const firstViewWidget = viewRoot.getChild( 0 ).getChild( 1 );
+			const lastViewWidget = viewRoot.getChild( 1 ).getChild( 0 );
+
+			expect( firstViewWidget.childCount ).to.equal( 1 );
+			expect( firstViewWidget.getChild( 0 ).is( '$text' ) ).to.be.true;
+			expect( lastViewWidget.childCount ).to.equal( 1 );
+			expect( lastViewWidget.getChild( 0 ).is( '$text' ) ).to.be.true;
+		} );
+
+		it( 'should connect inserted label to the widget\'s aria-describedby', () => {
+			setModelData( editor.model,
+				'<blockWidget></blockWidget>'
+			);
+
+			const widget = viewRoot.getChild( 0 );
+
+			expect( widget.getAttribute( 'aria-describedby' ) ).to.equal( widget.getChild( 2 ).getAttribute( 'id' ) );
+		} );
+	} );
+
 	describe( 'typing around view widgets using keyboard', () => {
 		let model, modelSelection, eventInfoStub, domEventDataStub;
 
