@@ -77,13 +77,13 @@ export default class WidgetResize extends Plugin {
 		this._observer.listenTo( domDocument, 'mousemove', this._mouseMoveListener.bind( this ) );
 		this._observer.listenTo( domDocument, 'mouseup', this._mouseUpListener.bind( this ) );
 
-		const redrawSelectedResizer = () => {
+		this.redrawSelectedResizer = () => {
 			if ( this.selectedResizer && this.selectedResizer.isVisible ) {
 				this.selectedResizer.redraw();
 			}
 		};
 
-		this._redrawSelectedResizerThrottled = throttle( redrawSelectedResizer, 200 );
+		this._redrawSelectedResizerThrottled = throttle( this.redrawSelectedResizer, 200 );
 
 		// Redrawing on any change of the UI of the editor (including content changes).
 		this.editor.ui.on( 'update', this._redrawSelectedResizerThrottled );

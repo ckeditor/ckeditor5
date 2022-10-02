@@ -129,8 +129,9 @@ describe( 'Resizer', () => {
 				getHandleHost: widgetWrapper => widgetWrapper
 			} );
 			resizerInstance.attach();
-			resizerInstance.isVisible = true;
+			resizerInstance.isEnabled = true;
 			resizerInstance.isSelected = true;
+			resizerInstance.attach();
 
 			resizerInstance.isSelected = false;
 

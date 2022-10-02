@@ -208,6 +208,29 @@ describe( 'WidgetResize', () => {
 			expect( widgetResizePlugin.deselect.calledOnce ).to.be.true;
 			expect( widgetResizePlugin.select.called ).to.be.false;
 		} );
+
+		it( 'should redraw resizer when it is visible and has been selected', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const selectedResizer = widgetResizePlugin.selectedResizer;
+			const spy = sinon.spy( selectedResizer, 'redraw' );
+
+			widgetResizePlugin.redrawSelectedResizer();
+
+			expect( spy.called ).to.be.true;
+		} );
+
+		it( 'should not select resizer after attaching when selection was not on resizer', async () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const spy = sinon.spy( widgetResizePlugin, 'select' );
+			const view = editor.editing.view;
+
+			view.change( writer => {
+				writer.setSelection( null );
+			} );
+			widgetResizePlugin.attachTo( gerResizerOptions( editor ) );
+
+			expect( spy.called ).to.be.false;
+		} );
 	} );
 
 	describe( 'integration (pixels)', () => {
@@ -634,6 +657,10 @@ describe( 'WidgetResize', () => {
 				view: 'wrapperBlock'
 			} );
 
+			editor.model.change( writer => {
+				writer.setSelection( null );
+			} );
+
 			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.equal( resizer );
 			sinon.assert.notCalled( resizerDestroySpy );
 
@@ -643,6 +670,20 @@ describe( 'WidgetResize', () => {
 
 			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.be.undefined;
 			sinon.assert.calledOnce( resizerDestroySpy );
+		} );
+
+		it( 'does not remove resizer when model document has been changed, but resizer is still attached', () => {
+			const plugin = editor.plugins.get( WidgetResize );
+			const resizer = plugin.attachTo( gerResizerOptions( editor ) );
+			const widgetViewElement = editor.editing.view.document.getRoot().getChild( 0 );
+			const resizerDestroySpy = sinon.spy( resizer, 'destroy' );
+
+			editor.model.change( writer => {
+				writer.setSelection( null );
+			} );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.equal( resizer );
+			sinon.assert.notCalled( resizerDestroySpy );
 		} );
 	} );
 
