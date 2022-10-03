@@ -102,15 +102,6 @@ export default class Resizer {
 				event.stop();
 			}
 		}, { priority: 'high' } );
-
-		this.on( 'change:isVisible', () => {
-			if ( this.isVisible ) {
-				this.show();
-				this.redraw();
-			} else {
-				this.hide();
-			}
-		} );
 	}
 
 	/**
@@ -162,6 +153,15 @@ export default class Resizer {
 			this._viewResizerWrapper = viewResizerWrapper;
 
 			if ( !this.isVisible ) {
+				this.hide();
+			}
+		} );
+
+		this.on( 'change:isVisible', () => {
+			if ( this.isVisible ) {
+				this.show();
+				this.redraw();
+			} else {
 				this.hide();
 			}
 		} );

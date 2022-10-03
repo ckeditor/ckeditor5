@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, window */
 
 import WidgetResize from '../src/widgetresize';
 
@@ -138,6 +138,79 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
+	describe( 'redrawSelectedResizer()', () => {
+		beforeEach( () => {
+			createResizer();
+		} );
+
+		it( 'should redraw the selected resizer', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const selectedResizer = widgetResizePlugin.selectedResizer;
+			const spy = sinon.spy( selectedResizer, 'redraw' );
+
+			selectedResizer.isVisible = true;
+
+			widgetResizePlugin.redrawSelectedResizer();
+
+			expect( spy.called ).to.be.true;
+		} );
+
+		it( 'should not redraw the selected resizer if it is not visible', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const selectedResizer = widgetResizePlugin.selectedResizer;
+			const spy = sinon.spy( selectedResizer, 'redraw' );
+
+			selectedResizer.isVisible = false;
+
+			widgetResizePlugin.redrawSelectedResizer();
+
+			expect( spy.called ).to.be.false;
+		} );
+
+		it( 'should not crash if there is no selected resizer', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			widgetResizePlugin.selectedResizer = null;
+
+			expect( () => {
+				widgetResizePlugin.redrawSelectedResizer();
+			} ).not.to.throw;
+		} );
+	} );
+
+	it( 'should redraw the resizer after editor ui update', () => {
+		createResizer();
+
+		const widgetResizePlugin = editor.plugins.get( WidgetResize );
+
+		const spy = sinon.spy( widgetResizePlugin, 'redrawSelectedResizer' );
+		const clock = sinon.useFakeTimers();
+
+		editor.ui.fire( 'update' );
+
+		clock.tick( 200 );
+
+		expect( spy.called ).to.be.true;
+
+		sinon.restore();
+	} );
+
+	it( 'should redraw the resizer after window resize', () => {
+		createResizer();
+
+		const widgetResizePlugin = editor.plugins.get( WidgetResize );
+		const spy = sinon.spy( widgetResizePlugin, 'redrawSelectedResizer' );
+
+		const clock = sinon.useFakeTimers();
+
+		window.dispatchEvent( new Event( 'resize' ) );
+
+		clock.tick( 200 );
+
+		expect( spy.called ).to.be.true;
+
+		sinon.restore();
+	} );
+
 	describe( 'selectability', () => {
 		let resizer;
 
@@ -207,6 +280,19 @@ describe( 'WidgetResize', () => {
 
 			expect( widgetResizePlugin.deselect.calledOnce ).to.be.true;
 			expect( widgetResizePlugin.select.called ).to.be.false;
+		} );
+
+		it( 'should not select resizer after attaching when selection was not on resizer', async () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const spy = sinon.spy( widgetResizePlugin, 'select' );
+			const view = editor.editing.view;
+
+			view.change( writer => {
+				writer.setSelection( null );
+			} );
+			widgetResizePlugin.attachTo( gerResizerOptions( editor ) );
+
+			expect( spy.called ).to.be.false;
 		} );
 	} );
 
@@ -634,6 +720,10 @@ describe( 'WidgetResize', () => {
 				view: 'wrapperBlock'
 			} );
 
+			editor.model.change( writer => {
+				writer.setSelection( null );
+			} );
+
 			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.equal( resizer );
 			sinon.assert.notCalled( resizerDestroySpy );
 
@@ -643,6 +733,20 @@ describe( 'WidgetResize', () => {
 
 			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.be.undefined;
 			sinon.assert.calledOnce( resizerDestroySpy );
+		} );
+
+		it( 'does not remove resizer when model document has been changed, but resizer is still attached', () => {
+			const plugin = editor.plugins.get( WidgetResize );
+			const resizer = plugin.attachTo( gerResizerOptions( editor ) );
+			const widgetViewElement = editor.editing.view.document.getRoot().getChild( 0 );
+			const resizerDestroySpy = sinon.spy( resizer, 'destroy' );
+
+			editor.model.change( writer => {
+				writer.setSelection( null );
+			} );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.equal( resizer );
+			sinon.assert.notCalled( resizerDestroySpy );
 		} );
 	} );
 
