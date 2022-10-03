@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, window */
 
 import WidgetResize from '../src/widgetresize';
 
@@ -138,6 +138,79 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
+	describe( 'redrawSelectedResizer()', () => {
+		beforeEach( () => {
+			createResizer();
+		} );
+
+		it( 'should redraw the selected resizer', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const selectedResizer = widgetResizePlugin.selectedResizer;
+			const spy = sinon.spy( selectedResizer, 'redraw' );
+
+			selectedResizer.isVisible = true;
+
+			widgetResizePlugin.redrawSelectedResizer();
+
+			expect( spy.called ).to.be.true;
+		} );
+
+		it( 'should not redraw the selected resizer if it is not visible', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			const selectedResizer = widgetResizePlugin.selectedResizer;
+			const spy = sinon.spy( selectedResizer, 'redraw' );
+
+			selectedResizer.isVisible = false;
+
+			widgetResizePlugin.redrawSelectedResizer();
+
+			expect( spy.called ).to.be.false;
+		} );
+
+		it( 'should not crash if there is no selected resizer', () => {
+			const widgetResizePlugin = editor.plugins.get( WidgetResize );
+			widgetResizePlugin.selectedResizer = null;
+
+			expect( () => {
+				widgetResizePlugin.redrawSelectedResizer();
+			} ).not.to.throw;
+		} );
+	} );
+
+	it( 'should redraw the resizer after editor ui update', () => {
+		createResizer();
+
+		const widgetResizePlugin = editor.plugins.get( WidgetResize );
+
+		const spy = sinon.spy( widgetResizePlugin, 'redrawSelectedResizer' );
+		const clock = sinon.useFakeTimers();
+
+		editor.ui.fire( 'update' );
+
+		clock.tick( 200 );
+
+		expect( spy.called ).to.be.true;
+
+		sinon.restore();
+	} );
+
+	it( 'should redraw the resizer after window resize', () => {
+		createResizer();
+
+		const widgetResizePlugin = editor.plugins.get( WidgetResize );
+		const spy = sinon.spy( widgetResizePlugin, 'redrawSelectedResizer' );
+
+		const clock = sinon.useFakeTimers();
+
+		window.dispatchEvent( new Event( 'resize' ) );
+
+		clock.tick( 200 );
+
+		expect( spy.called ).to.be.true;
+
+		sinon.restore();
+	} );
+
 	describe( 'selectability', () => {
 		let resizer;
 
@@ -207,16 +280,6 @@ describe( 'WidgetResize', () => {
 
 			expect( widgetResizePlugin.deselect.calledOnce ).to.be.true;
 			expect( widgetResizePlugin.select.called ).to.be.false;
-		} );
-
-		it( 'should redraw resizer when it is visible and has been selected', () => {
-			const widgetResizePlugin = editor.plugins.get( WidgetResize );
-			const selectedResizer = widgetResizePlugin.selectedResizer;
-			const spy = sinon.spy( selectedResizer, 'redraw' );
-
-			widgetResizePlugin.redrawSelectedResizer();
-
-			expect( spy.called ).to.be.true;
 		} );
 
 		it( 'should not select resizer after attaching when selection was not on resizer', async () => {

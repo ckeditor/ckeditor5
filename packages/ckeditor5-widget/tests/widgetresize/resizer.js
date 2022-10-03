@@ -98,7 +98,31 @@ describe( 'Resizer', () => {
 	} );
 
 	describe( 'visibility', () => {
-		it( 'doesn\'t show in the UI when resizer is set as not visible', () => {
+		it( 'does not show the ui if the resizer is not visible when attached', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+
+			resizerInstance.isVisible = false;
+			resizerInstance.attach();
+
+			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
+			expect( domResizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.true;
+		} );
+
+		it( 'shows the ui if the resizer is visible when attached', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+
+			resizerInstance.isVisible = true;
+			resizerInstance.attach();
+
+			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
+			expect( domResizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.false;
+		} );
+
+		it( 'does not show in the UI when resizer is set as not visible', () => {
 			const resizerInstance = createResizer( {
 				getHandleHost: widgetWrapper => widgetWrapper
 			} );
@@ -129,9 +153,8 @@ describe( 'Resizer', () => {
 				getHandleHost: widgetWrapper => widgetWrapper
 			} );
 			resizerInstance.attach();
-			resizerInstance.isEnabled = true;
+			resizerInstance.isVisible = true;
 			resizerInstance.isSelected = true;
-			resizerInstance.attach();
 
 			resizerInstance.isSelected = false;
 
