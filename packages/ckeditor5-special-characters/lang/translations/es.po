@@ -22,19 +22,19 @@ msgstr "Caracteres especiales"
 
 msgctxt "A label for the \"leftwards simple arrow\" symbol."
 msgid "leftwards simple arrow"
-msgstr ""
+msgstr "flecha simple hacia la izquierda"
 
 msgctxt "A label for the \"rightwards simple arrow\" symbol."
 msgid "rightwards simple arrow"
-msgstr ""
+msgstr "flecha simple hacia la derecha"
 
 msgctxt "A label for the \"upwards simple arrow\" symbol."
 msgid "upwards simple arrow"
-msgstr ""
+msgstr "flecha simple hacia arriba"
 
 msgctxt "A label for the \"downwards simple arrow\" symbol."
 msgid "downwards simple arrow"
-msgstr ""
+msgstr "flecha simple hacia abajo"
 
 msgctxt "A label for the \"leftwards double arrow\" symbol."
 msgid "leftwards double arrow"

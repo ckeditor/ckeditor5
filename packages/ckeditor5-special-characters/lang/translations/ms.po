@@ -22,19 +22,19 @@ msgstr "Aksara istimewa"
 
 msgctxt "A label for the \"leftwards simple arrow\" symbol."
 msgid "leftwards simple arrow"
-msgstr ""
+msgstr "anak panah mudah ke kiri"
 
 msgctxt "A label for the \"rightwards simple arrow\" symbol."
 msgid "rightwards simple arrow"
-msgstr ""
+msgstr "anak panah mudah ke kanan"
 
 msgctxt "A label for the \"upwards simple arrow\" symbol."
 msgid "upwards simple arrow"
-msgstr ""
+msgstr "anak panah mudah ke atas"
 
 msgctxt "A label for the \"downwards simple arrow\" symbol."
 msgid "downwards simple arrow"
-msgstr ""
+msgstr "anak panah mudah ke bawah"
 
 msgctxt "A label for the \"leftwards double arrow\" symbol."
 msgid "leftwards double arrow"
