@@ -58,4 +58,4 @@ msgstr "제목을 입력해주세요"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr "여기에 내용을 입력하거나 붙여넣기 하세요."
+msgstr "여기에 내용을 입력하거나 붙여넣으세요."

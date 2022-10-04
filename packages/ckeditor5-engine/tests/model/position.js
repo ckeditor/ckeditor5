@@ -599,7 +599,15 @@ describe( 'Position', () => {
 			expect( positionB.isTouching( positionA ) ).to.be.true;
 		} );
 
-		it( 'should return false if there are whole nodes between positions', () => {
+		it( 'should return false if there are whole nodes between positions - same level', () => {
+			const positionA = new Position( root, [ 0 ] );
+			const positionB = new Position( root, [ 2 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.false;
+			expect( positionB.isTouching( positionA ) ).to.be.false;
+		} );
+
+		it( 'should return false if there are whole nodes between positions - different levels', () => {
 			const positionA = new Position( root, [ 2 ] );
 			const positionB = new Position( root, [ 1, 0, 3 ] );
 

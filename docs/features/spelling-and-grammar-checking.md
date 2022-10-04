@@ -14,7 +14,7 @@ You can fine-tune the spell checking rules via the dedicated settings menu. You 
 After reading this guide, you may find additional interesting details and examples in the [Spell and grammar check in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-spell-and-grammar-check-in-ckeditor-5/) blog post.
 
 <info-box>
-	This is a premium feature available for the [Flexible plan](https://ckeditor.com/pricing/) and delivered by our partner, [WebSpellChecker](https://webspellchecker.com/). Please [contact us](https://ckeditor.com/contact/) if you would like to purchase a license or let us know if you have any feedback or questions.
+	This is a premium feature that is additionally payable on top of CKEditor 5 commercial license fee and delivered by our partner, [WebSpellChecker](https://webspellchecker.com/). Please [contact us](https://ckeditor.com/contact/) if you have any feedback or questions.
 
 	You can also report any issues in [its official GitHub repository](https://github.com/WebSpellChecker/wproofreader).
 </info-box>

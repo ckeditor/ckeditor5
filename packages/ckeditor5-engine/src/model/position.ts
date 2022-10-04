@@ -525,57 +525,47 @@ export default class Position extends TypeCheckable {
 	 * @returns {Boolean} True if positions touch.
 	 */
 	public isTouching( otherPosition: Position ): boolean {
-		let left = null;
-		let right = null;
-		const compare = this.compareWith( otherPosition );
+		if ( this.root !== otherPosition.root ) {
+			return false;
+		}
 
-		switch ( compare ) {
-			case 'same':
-				return true;
+		const commonLevel = Math.min( this.path.length, otherPosition.path.length );
 
-			case 'before':
-				left = Position._createAt( this );
-				right = Position._createAt( otherPosition );
-				break;
+		for ( let level = 0; level < commonLevel; level++ ) {
+			const diff = this.path[ level ] - otherPosition.path[ level ];
 
-			case 'after':
-				left = Position._createAt( otherPosition );
-				right = Position._createAt( this );
-				break;
-
-			default:
+			// Positions are spread by a node, so they are not touching.
+			if ( diff < -1 || diff > 1 ) {
 				return false;
+			} else if ( diff === 1 ) {
+				// `otherPosition` is on the left.
+				// `this` is on the right.
+				return checkTouchingBranch( otherPosition, this, level );
+			} else if ( diff === -1 ) {
+				// `this` is on the left.
+				// `otherPosition` is on the right.
+				return checkTouchingBranch( this, otherPosition, level );
+			}
+			// `diff === 0`.
+			// Positions are inside the same element on this level, compare deeper.
 		}
 
-		// Cached for optimization purposes.
-		let leftParent = left.parent;
-
-		while ( left.path.length + right.path.length ) {
-			if ( left.isEqual( right ) ) {
-				return true;
-			}
-
-			if ( left.path.length > right.path.length ) {
-				if ( left.offset !== leftParent.maxOffset ) {
-					return false;
-				}
-
-				left.path = left.path.slice( 0, -1 );
-				leftParent = leftParent.parent!;
-				left.offset++;
-			} else {
-				if ( right.offset !== 0 ) {
-					return false;
-				}
-
-				right.path = right.path.slice( 0, -1 );
-			}
+		// If we ended up here, it means that positions paths have the same beginning.
+		// If the paths have the same length, then it means that they are identical, so the positions are same.
+		if ( this.path.length === otherPosition.path.length ) {
+			return true;
 		}
-
-		// TypeScript compiler thinks that the flow can reach the end of this function without `return` and requires `undefined` or `void`
-		// as the return type. This `throw` convinces the compiler that the flow won't pass till the end.
-		/* istanbul ignore next */
-		throw new Error( 'unreachable code' );
+		// If positions have different length of paths, then the common part is the same.
+		// In this case, the "shorter" position is on the left, the "longer" position is on the right.
+		//
+		// If the positions are touching, the "longer" position must have only zeroes. For example:
+		// [ 1, 2 ] vs [ 1, 2, 0 ]
+		// [ 1, 2 ] vs [ 1, 2, 0, 0, 0 ]
+		else if ( this.path.length > otherPosition.path.length ) {
+			return checkOnlyZeroes( this.path, commonLevel );
+		} else {
+			return checkOnlyZeroes( otherPosition.path, commonLevel );
+		}
 	}
 
 	/**
@@ -1218,4 +1208,98 @@ export function getNodeBeforePosition(
 	}
 
 	return positionParent.getChild( positionParent.offsetToIndex( position.offset ) - 1 );
+}
+
+// This is a helper function for `Position#isTouching()`.
+//
+// It checks whether to given positions are touching, considering that they have the same root and paths
+// until given level, and at given level they differ by 1 (so they are branching at `level` point).
+//
+// The exact requirements for touching positions are described in `Position#isTouching()` and also
+// in the body of this function.
+//
+// @param {module:engine/model/position~Position} left Position "on the left" (it is before `right`).
+// @param {module:engine/model/position~Position} right Position "on the right" (it is after `left`).
+// @param {Number} level Level on which the positions are different.
+// @returns {Boolean}
+function checkTouchingBranch( left: Position, right: Position, level: number ): boolean {
+	if ( level + 1 === left.path.length ) {
+		// Left position does not have any more entries after the point where the positions differ.
+		// [ 2 ] vs [ 3 ]
+		// [ 2 ] vs [ 3, 0, 0 ]
+		// The positions are spread by node at [ 2 ].
+		return false;
+	}
+
+	if ( !checkOnlyZeroes( right.path, level + 1 ) ) {
+		// Right position does not have only zeroes, so we have situation like:
+		// [ 2, maxOffset ] vs [ 3, 1 ]
+		// [ 2, maxOffset ] vs [ 3, 1, 0, 0 ]
+		// The positions are spread by node at [ 3, 0 ].
+		return false;
+	}
+
+	if ( !checkOnlyMaxOffset( left, level + 1 ) ) {
+		// Left position does not have only max offsets, so we have situation like:
+		// [ 2, 4 ] vs [ 3 ]
+		// [ 2, 4 ] vs [ 3, 0, 0 ]
+		// The positions are spread by node at [ 2, 5 ].
+		return false;
+	}
+
+	// Left position has only max offsets and right position has only zeroes or nothing.
+	// [ 2, maxOffset ] vs [ 3 ]
+	// [ 2, maxOffset, maxOffset ] vs [ 3, 0 ]
+	// There are not elements between positions. The positions are touching.
+	return true;
+}
+
+// Checks whether for given array, starting from given index until the end of the array, all items are `0`s.
+//
+// This is a helper function for `Position#isTouching()`.
+//
+// @private
+// @param {Array.<Number>} arr Array to check.
+// @param {Number} idx Index to start checking from.
+// @returns {Boolean}
+function checkOnlyZeroes( arr: Array<number>, idx: number ): boolean {
+	while ( idx < arr.length ) {
+		if ( arr[ idx ] !== 0 ) {
+			return false;
+		}
+
+		idx++;
+	}
+
+	return true;
+}
+
+// Checks whether for given position, starting from given path level, whether the position is at the end of
+// its parent and whether each element on the path to the position is also at at the end of its parent.
+//
+// This is a helper function for `Position#isTouching()`.
+//
+// @private
+// @param {module:engine/model/position~Position} pos Position to check.
+// @param {Number} level Level to start checking from.
+// @returns {Boolean}
+function checkOnlyMaxOffset( pos: Position, level: number ): boolean {
+	let parent = pos.parent;
+	let idx = pos.path.length - 1;
+	let add = 0;
+
+	while ( idx >= level ) {
+		if ( pos.path[ idx ] + add !== parent.maxOffset ) {
+			return false;
+		}
+
+		// After the first check, we "go up", and check whether the position's parent-parent is the last element.
+		// However, we need to add 1 to the value in the path to "simulate" moving the path after the parent.
+		// It happens just once.
+		add = 1;
+		idx--;
+		parent = parent.parent!;
+	}
+
+	return true;
 }

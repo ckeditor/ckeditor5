@@ -128,7 +128,7 @@ describe( 'ImageResizeHandles', () => {
 				const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 
 				expect( resizer.isEnabled ).to.be.false;
-				expect( resizerWrapper.style.display ).to.equal( 'none' );
+				expect( resizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.true;
 			} );
 
 			it( 'removes the image_resized class if the command was overriden and canceled', async () => {
@@ -605,7 +605,7 @@ describe( 'ImageResizeHandles', () => {
 				const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 
 				expect( resizer.isEnabled ).to.be.false;
-				expect( resizerWrapper.style.display ).to.equal( 'none' );
+				expect( resizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.true;
 			} );
 		} );
 

@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import icon from '../theme/icons/paragraph.svg';
+import icon from '@ckeditor/ckeditor5-core/theme/icons/paragraph.svg';
 
 /**
  * This plugin defines the `'paragraph'` button. It can be used together with
