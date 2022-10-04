@@ -23,6 +23,7 @@ import type Writer from '../writer';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { LiveRange } from '../../index';
+import * as path from 'path';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste functionality to work.
@@ -79,138 +80,249 @@ export default function insertContent(
 
 		const insertion = new Insertion( model, writer, selection.anchor! );
 		const fakeMarkerElements = [];
+		const markers: { name: string; offset: number; isEdge: boolean; variant: string; isAtEnd: boolean; element: Node | null }[] = [];
 
 		let nodesToInsert: any;
 
 		if ( content.is( 'documentFragment' ) ) {
-			// If document fragment has any markers, these markers should be inserted into the model as well.
 			if ( content.markers.size ) {
-				const markersPosition = [];
-
 				for ( const [ name, range ] of content.markers ) {
 					const { start, end } = range;
-					const isCollapsed = start.isEqual( end );
 
-					markersPosition.push(
-						{ position: start, name, isCollapsed },
-						{ position: end, name, isCollapsed }
-					);
-				}
+					[ start, end ].forEach( marker => {
+						const isOutside = marker.parent.is( 'documentFragment' );
+						let element = null;
+						let offset = 0;
 
-				// Markers position is sorted backwards to ensure that the insertion of fake markers will not change
-				// the position of the next markers.
-				markersPosition.sort( ( { position: posA }, { position: posB } ) => posA.isBefore( posB ) ? 1 : -1 );
+						if ( isOutside ) {
+							element = marker.isAtEnd ? marker.nodeBefore : marker.nodeAfter;
+							offset = marker.isAtEnd && element ? ( element as Element ).maxOffset : 0;
+						} else {
+							element = marker.parent;
+							offset = marker.offset;
+						}
 
-				for ( const { position, name, isCollapsed } of markersPosition ) {
-					let fakeElement = null;
-					let collapsed = null;
-					const isAtBeginning = position.parent === content && position.isAtStart;
-					const isAtEnd = position.parent === content && position.isAtEnd;
-
-					// We have two ways of handling markers. In general, we want to add temporary <$marker> model elements to
-					// represent marker boundaries. These elements will be inserted into content together with the rest
-					// of the document fragment. After insertion is done, positions for these elements will be read
-					// and proper, actual markers will be created in the model and fake elements will be removed.
-					//
-					// However, if the <$marker> element is at the beginning or at the end of the document fragment,
-					// it may affect how the inserted content is merged with current model, impacting the insertion
-					// result. To avoid that, we don't add <$marker> elements at these positions. Instead, we will use
-					// `Insertion#getAffectedRange()` to figure out new positions for these marker boundaries.
-					if ( !isAtBeginning && !isAtEnd ) {
-						fakeElement = writer.createElement( '$marker' );
-						writer.insert( fakeElement, position );
-					} else if ( isCollapsed ) {
-						// Save whether the collapsed marker was at the beginning or at the end of document fragment
-						// to know where to create it after the insertion is done.
-						collapsed = isAtBeginning ? 'start' as const : 'end' as const;
-					}
-
-					fakeMarkerElements.push( {
-						name,
-						element: fakeElement,
-						collapsed
+						markers.push( {
+							name,
+							offset,
+							// handle this field to support diffrent edges
+							isEdge: ( element as Element ).startOffset === 0 || content.maxOffset === ( element as Element ).offsetSize,
+							variant: isOutside ? 'outside' : 'inside',
+							isAtEnd: marker.isAtEnd,
+							element
+						} );
 					} );
 				}
 			}
+			// If document fragment has any markers, these markers should be inserted into the model as well.
+			// if ( content.markers.size ) {
+			// 	const markersPosition = [];
+			//
+			// 	for ( const [ name, range ] of content.markers ) {
+			// 		const { start, end } = range;
+			// 		const isCollapsed = start.isEqual( end );
+			//
+			// 		markersPosition.push(
+			// 			{ position: start, name, isCollapsed },
+			// 			{ position: end, name, isCollapsed }
+			// 		);
+			// 	}
+			//
+			// 	// Markers position is sorted backwards to ensure that the insertion of fake markers will not change
+			// 	// the position of the next markers.
+			// 	markersPosition.sort( ( { position: posA }, { position: posB } ) => posA.isBefore( posB ) ? 1 : -1 );
+			//
+			// 	for ( const { position, name, isCollapsed } of markersPosition ) {
+			// 		let fakeElement = null;
+			// 		let collapsed = null;
+			// 		const isAtBeginning = position.parent === content && position.isAtStart;
+			// 		const isAtEnd = position.parent === content && position.isAtEnd;
+			//
+			// 		// We have two ways of handling markers. In general, we want to add temporary <$marker> model elements to
+			// 		// represent marker boundaries. These elements will be inserted into content together with the rest
+			// 		// of the document fragment. After insertion is done, positions for these elements will be read
+			// 		// and proper, actual markers will be created in the model and fake elements will be removed.
+			// 		//
+			// 		// However, if the <$marker> element is at the beginning or at the end of the document fragment,
+			// 		// it may affect how the inserted content is merged with current model, impacting the insertion
+			// 		// result. To avoid that, we don't add <$marker> elements at these positions. Instead, we will use
+			// 		// `Insertion#getAffectedRange()` to figure out new positions for these marker boundaries.
+			// 		if ( !isAtBeginning && !isAtEnd ) {
+			// 			fakeElement = writer.createElement( '$marker' );
+			// 			writer.insert( fakeElement, position );
+			// 		} else if ( isCollapsed ) {
+			// 			// Save whether the collapsed marker was at the beginning or at the end of document fragment
+			// 			// to know where to create it after the insertion is done.
+			// 			collapsed = isAtBeginning ? 'start' as const : 'end' as const;
+			// 		}
+			//
+			// 		fakeMarkerElements.push( {
+			// 			name,
+			// 			element: fakeElement,
+			// 			collapsed
+			// 		} );
+			// 	}
+			// }
 
 			nodesToInsert = content.getChildren();
 		} else {
 			nodesToInsert = [ content ];
 		}
 
-		insertion.handleNodes( nodesToInsert );
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		insertion.handleNodes( nodesToInsert, content.markers );
 
-		let newRange = insertion.getSelectionRange();
+		const newRange = insertion.getSelectionRange();
 
-		if ( content.is( 'documentFragment' ) && fakeMarkerElements.length ) {
-			// After insertion was done, the selection was set but the model contains fake <$marker> elements.
-			// These <$marker> elements will be now removed. Because of that, we will need to fix the selection.
-			// We will create a live range that will automatically be update as <$marker> elements are removed.
-			const selectionLiveRange = newRange ? LiveRange.fromRange( newRange ) : null;
-
-			// Marker name -> [ start position, end position ].
+		if ( content.is( 'documentFragment' ) && markers.length ) {
 			const markersData: Record<string, Position[]> = {};
 
-			// Note: `fakeMarkerElements` are sorted backwards. However, now, we want to handle the markers
-			// from the beginning, so that existing <$marker> elements do not affect markers positions.
-			// This is why we iterate from the end to the start.
-			for ( let i = fakeMarkerElements.length - 1; i >= 0; i-- ) {
-				const { name, element, collapsed } = fakeMarkerElements[ i ];
-				const isStartBoundary = !markersData[ name ];
+			for ( let { name, offset, isEdge, variant, isAtEnd, element } of markers ) {
+				// const root = model.document.getRoot();
+				let isMerged = false;
 
-				if ( isStartBoundary ) {
-					markersData[ name ] = [];
+				if ( isEdge && ( insertion.isMergeOnLeft || insertion.isMergeOnRight ) ) {
+					const rangeOnInsertion = insertion.getAffectedRange() as Range;
+					const positionOnMerge = insertion.isMergeOnLeft ? rangeOnInsertion.start : rangeOnInsertion.end;
+
+					isMerged = true;
+					element = positionOnMerge.parent as Node;
+					offset += positionOnMerge.offset;
 				}
 
-				if ( element ) {
-					// Read fake marker element position to learn where the marker should be created.
-					const elementPosition = writer.createPositionAt( element, 'before' );
+				// if ( root ) {
+				// 	const allChildren = Array.from( root.getChildren() );
+				// 	const existingElement = allChildren.find( el => {
+				// 		console.log( el, element );
+				// 		if ( el === element ) {
+				// 			return el;
+				// 		}
+				// 	} );
+				//
+				// 	if ( !existingElement ) {
+				// 		const rangeOnInsertion = insertion.getAffectedRange() as Range;
+				//
+				// 		isMerged = true;
+				// 		element = rangeOnInsertion.start.parent as Node;
+				// 		offset += rangeOnInsertion.start.offset;
+				// 	}
+				// }
 
-					markersData[ name ].push( elementPosition );
+				// const isClosingMarker = Boolean( markersData[ name ] );
+				//
+				// const edgeElementAfterInsertion = isAtEnd ? insertion._lastNode : insertion._firstNode;
+				// const isMerged = isEdge && edgeElementAfterInsertion && ( element !== edgeElementAfterInsertion );
+				//
+				// if ( isMerged ) {
+				// 	const rangeOnInsertion = insertion.getAffectedRange() as Range;
+				//
+				// 	offset += rangeOnInsertion.start.offset;
+				// 	element = edgeElementAfterInsertion;
+				// }
 
-					writer.remove( element );
-				} else {
-					// If the fake marker element does not exist, it means that the marker boundary was at the beginning or at the end.
-					const rangeOnInsertion = insertion.getAffectedRange();
+				let position;
 
-					if ( !rangeOnInsertion ) {
-						// If affected range is `null` it means that nothing was in the document fragment or all content was filtered out.
-						// Some markers that were in the filtered content may be removed (partially or totally).
-						// Let's handle only those markers that were at the beginning or at the end of the document fragment.
-						if ( collapsed ) {
-							markersData[ name ].push( insertion.position );
+				if ( variant === 'outside' ) {
+					if ( isEdge ) {
+						if ( isMerged ) {
+							position = Position._createAt( element as Node, offset );
+						} else {
+							position = isAtEnd ?
+								Position._createAfter( element as Node ) :
+								Position._createBefore( element as Node );
 						}
-
-						continue;
-					}
-
-					if ( collapsed ) {
-						// If the marker was collapsed at the beginning or at the end of the document fragment,
-						// put both boundaries at the beginning or at the end of inserted range (to keep the marker collapsed).
-						markersData[ name ].push( rangeOnInsertion[ collapsed ] );
 					} else {
-						markersData[ name ].push( isStartBoundary ? rangeOnInsertion.start : rangeOnInsertion.end );
+						position = Position._createBefore( element as Node );
 					}
+				} else {
+					position = Position._createAt( element as Node, offset );
+				}
+
+				if ( markersData[ name ] ) {
+					markersData[ name ].push( position );
+				} else {
+					markersData[ name ] = [ position ];
 				}
 			}
 
 			for ( const [ name, [ start, end ] ] of Object.entries( markersData ) ) {
-				// For now, we ignore markers if they are included in the filtered-out content.
-				// In the future implementation we will improve that case to create markers that are not filtered out completely.
-				if ( start && end && start.root === end.root ) {
-					writer.addMarker( name, {
-						usingOperation: true,
-						affectsData: true,
-						range: new Range( start, end )
-					} );
-				}
-			}
-
-			if ( selectionLiveRange ) {
-				newRange = selectionLiveRange.toRange();
-				selectionLiveRange.detach();
+				writer.addMarker( name, {
+					usingOperation: true,
+					affectsData: true,
+					range: new Range( start, end )
+				} );
 			}
 		}
+		// if ( content.is( 'documentFragment' ) && fakeMarkerElements.length ) {
+		// 	// After insertion was done, the selection was set but the model contains fake <$marker> elements.
+		// 	// These <$marker> elements will be now removed. Because of that, we will need to fix the selection.
+		// 	// We will create a live range that will automatically be update as <$marker> elements are removed.
+		// 	const selectionLiveRange = newRange ? LiveRange.fromRange( newRange ) : null;
+		//
+		// 	// Marker name -> [ start position, end position ].
+		// 	const markersData: Record<string, Position[]> = {};
+		//
+		// 	// Note: `fakeMarkerElements` are sorted backwards. However, now, we want to handle the markers
+		// 	// from the beginning, so that existing <$marker> elements do not affect markers positions.
+		// 	// This is why we iterate from the end to the start.
+		// 	for ( let i = fakeMarkerElements.length - 1; i >= 0; i-- ) {
+		// 		const { name, element, collapsed } = fakeMarkerElements[ i ];
+		// 		const isStartBoundary = !markersData[ name ];
+		//
+		// 		if ( isStartBoundary ) {
+		// 			markersData[ name ] = [];
+		// 		}
+		//
+		// 		if ( element ) {
+		// 			// Read fake marker element position to learn where the marker should be created.
+		// 			const elementPosition = writer.createPositionAt( element, 'before' );
+		//
+		// 			markersData[ name ].push( elementPosition );
+		//
+		// 			writer.remove( element );
+		// 		} else {
+		// 			// If the fake marker element does not exist, it means that the marker boundary was at the beginning or at the end.
+		// 			const rangeOnInsertion = insertion.getAffectedRange();
+		//
+		// 			if ( !rangeOnInsertion ) {
+		// 				// If affected range is `null` it means that nothing was in the document fragment or all content was filtered out.
+		// 				// Some markers that were in the filtered content may be removed (partially or totally).
+		// 				// Let's handle only those markers that were at the beginning or at the end of the document fragment.
+		// 				if ( collapsed ) {
+		// 					markersData[ name ].push( insertion.position );
+		// 				}
+		//
+		// 				continue;
+		// 			}
+		//
+		// 			if ( collapsed ) {
+		// 				// If the marker was collapsed at the beginning or at the end of the document fragment,
+		// 				// put both boundaries at the beginning or at the end of inserted range (to keep the marker collapsed).
+		// 				markersData[ name ].push( rangeOnInsertion[ collapsed ] );
+		// 			} else {
+		// 				markersData[ name ].push( isStartBoundary ? rangeOnInsertion.start : rangeOnInsertion.end );
+		// 			}
+		// 		}
+		// 	}
+		//
+		// 	for ( const [ name, [ start, end ] ] of Object.entries( markersData ) ) {
+		// 		// For now, we ignore markers if they are included in the filtered-out content.
+		// 		// In the future implementation we will improve that case to create markers that are not filtered out completely.
+		// 		if ( start && end && start.root === end.root ) {
+		// 			writer.addMarker( name, {
+		// 				usingOperation: true,
+		// 				affectsData: true,
+		// 				range: new Range( start, end )
+		// 			} );
+		// 		}
+		// 	}
+		//
+		// 	if ( selectionLiveRange ) {
+		// 		newRange = selectionLiveRange.toRange();
+		// 		selectionLiveRange.detach();
+		// 	}
+		// }
 
 		/* istanbul ignore else */
 		if ( newRange ) {
@@ -245,6 +357,8 @@ class Insertion {
 	public position: Position;
 	public readonly canMergeWith: Set<Node | DocumentFragment | null>;
 	public readonly schema: Schema;
+	public isMergeOnRight: boolean;
+	public isMergeOnLeft: boolean;
 
 	private readonly _documentFragment: DocumentFragment;
 	private _documentFragmentPosition: Position;
@@ -361,6 +475,9 @@ class Insertion {
 		 * @member {module:engine/model/liveposition~LivePosition|null} #_affectedEnd
 		 */
 		this._affectedEnd = null;
+
+		this.isMergeOnRight = false;
+		this.isMergeOnLeft = false;
 	}
 
 	/**
@@ -368,7 +485,7 @@ class Insertion {
 	 *
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes to insert.
 	 */
-	public handleNodes( nodes: Iterable<Node> ): void {
+	public handleNodes( nodes: Iterable<Node>, markers?: Map<string, Range> ): void {
 		for ( const node of Array.from( nodes ) ) {
 			this._handleNode( node );
 		}
@@ -383,7 +500,8 @@ class Insertion {
 
 		// After the content was inserted we may try to merge it with its next sibling if the selection was in it initially.
 		// Merging with the previous sibling was performed just after inserting the first node to the document.
-		this._mergeOnRight();
+		const isMergeOnRight = this._mergeOnRight();
+		this.isMergeOnRight = isMergeOnRight;
 
 		// TMP this will become a post-fixer.
 		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
@@ -525,7 +643,8 @@ class Insertion {
 
 			// We must merge the first node just after inserting it to avoid problems with OT.
 			// (See: https://github.com/ckeditor/ckeditor5/pull/8773#issuecomment-760945652).
-			this._mergeOnLeft();
+			const isMergeOnLeft = this._mergeOnLeft();
+			this.isMergeOnLeft = isMergeOnLeft;
 
 			this.position = livePosition.toPosition();
 		}
@@ -649,15 +768,15 @@ class Insertion {
 	 *
 	 * @private
 	 */
-	private _mergeOnLeft(): void {
+	private _mergeOnLeft(): boolean {
 		const node = this._firstNode;
 
 		if ( !( node instanceof Element ) ) {
-			return;
+			return false;
 		}
 
 		if ( !this._canMergeLeft( node ) ) {
-			return;
+			return false;
 		}
 
 		const mergePosLeft = LivePosition._createBefore( node );
@@ -719,6 +838,8 @@ class Insertion {
 		this._filterAttributesOf.push( this.position.parent as any );
 
 		mergePosLeft.detach();
+
+		return true;
 	}
 
 	/**
@@ -729,15 +850,15 @@ class Insertion {
 	 *
 	 * @private
 	 */
-	private _mergeOnRight(): void {
+	private _mergeOnRight(): boolean {
 		const node = this._lastNode;
 
 		if ( !( node instanceof Element ) ) {
-			return;
+			return false;
 		}
 
 		if ( !this._canMergeRight( node ) ) {
-			return;
+			return false;
 		}
 
 		const mergePosRight = LivePosition._createAfter( node );
@@ -805,6 +926,8 @@ class Insertion {
 		this._filterAttributesOf.push( this.position.parent as any );
 
 		mergePosRight.detach();
+
+		return true;
 	}
 
 	/**
