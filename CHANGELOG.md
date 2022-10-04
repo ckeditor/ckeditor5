@@ -5,17 +5,35 @@ Changelog
 
 ### Release highlights
 
+We are happy to announce the release of CKEditor 5 v35.2.0.
+
+This release introduces the following new features:
+
+* Sidebar performance improvements for scenarios with huge number of annotations.
+* [New category "Arrows" is available in the default configuration of Special characters dropdown.](https://github.com/ckeditor/ckeditor5/issues/6167).
+* [Ability to group toolbar items using a declarative config](https://github.com/ckeditor/ckeditor5/issues/12490).
+
+There were also bug fixes:
+
+* [Image's alternative text button state now indicates whether any value is applied](https://github.com/ckeditor/ckeditor5/issues/12268)
+* [Toolbar 'Show more items' button will no longer steal focus after clicking a button from it](https://github.com/ckeditor/ckeditor5/issues/12178)
+* [The block toolbar will close properly upon clicking its button](https://github.com/ckeditor/ckeditor5/issues/12184)
+* [Auto-linking will not happen for URLs without a protocol if `config.link.defaultProtocol` is not set](https://github.com/ckeditor/ckeditor5/issues/11040)
+* [Improvement for keyboard navigation for style feature](https://github.com/ckeditor/ckeditor5/issues/12250)
+* [The image insertion pane is no longer empty if opened with <kbd>arrow down</kbd> key](https://github.com/ckeditor/ckeditor5/issues/12215)
+* [Made color pickers in table and table cell properties forms accessible for keyboard users](https://github.com/ckeditor/ckeditor5/issues/12193)
+* [To-do list items should not interrupt the <kbd>tab</kbd> key navigation across the editor content](https://github.com/ckeditor/ckeditor5/issues/6535)
+
 <!-- TODO: Add a link to the blog post. -->
 
-### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
-
-* **[basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)**: The bold icon has been moved to the ckeditor5-core package.
-* **[paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph)**: The paragraph icon has been moved to the ckeditor5-core package.
+Please refer to the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/migration-to-35.html#migration-to-ckeditor-5-v3520) to learn more about these changes.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced external comments and suggestions which require special handling when saving them in the database. This will impact you if you use non real-time collaboration and import from Word feature. See description in the migration guide.
+* **[basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)**: The `bold` icon has been moved to the `@ckeditor/ckeditor5-core` package.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced external comments and suggestions which require special handling when saving them in the database. This will impact you if you use non real-time collaboration and import from Word feature. Read more in the migration guide.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Templates for `CommentView` and `SuggestionThreadView` has changed. This may impact you if you use custom annotation views or templates and import from Word feature.
+* **[paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph)**: The `paragraph` icon has been moved to the `@ckeditor/ckeditor5-core` package.
 * Comment input editor is now initialized on demand instead of being created in `CommentInputView` constructor and initialized on render. `CommentInputView#editor` is now `null` right after the instance is created. This may impact you if you use custom comment views.
 * Annotations with targets set to markers or DOM elements inside editor editable must now be registered in `EditorAnnotations#registerAnnotation()` after they are created. This will impact you if you have a custom feature that creates `Annotation` instances inside the editor. This does not affect comments outside editor feature.
 
@@ -23,8 +41,8 @@ Changelog
 
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced integration for import from Word feature to handle comments and suggestion included in the imported Word file.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced support for comments and suggestions that come from an external source (e.g. an imported document). Annotations for these items will be labelled to differentiate them from regular comments and suggestions. To mark an annotation as external, set `@external` attribute when creating a comment or a suggestion.
-* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: GHS can exclude elements from the allowed list of elements. ([commit](https://github.com/ckeditor/ckeditor5/commit/3707c366acf32e15a9d5b9f2472b449dfb8b40f5))
-* **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Added a new package (`@ckeditor/ckeditor5-import-word`), which allows importing the Word documents into the CKEditor 5.
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: The General HTML Support (GHS) feature can exclude elements from the allowed list of elements. ([commit](https://github.com/ckeditor/ckeditor5/commit/3707c366acf32e15a9d5b9f2472b449dfb8b40f5))
+* **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Added a new package (`@ckeditor/ckeditor5-import-word`), that allows importing the Word documents into CKEditor 5.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced integration for import from Word feature to handle comments and suggestion included in the imported Word file.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced support for comments and suggestions that come from an external source (e.g. an imported document). Annotations for these items will be labelled to differentiate them from regular comments and suggestions. To mark an annotation as external, set `@external` attribute when creating a comment or a suggestion.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Allowed grouping toolbar items into drop-downs by using a declarative config. Closes [#12490](https://github.com/ckeditor/ckeditor5/issues/12490). ([commit](https://github.com/ckeditor/ckeditor5/commit/a0f92cb226535011e47bc60f1b1cbbb052a892de))
@@ -32,25 +50,25 @@ Changelog
 ### Bug fixes
 
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: It was impossible to switch between annotations when multiple inline annotations were displayed in the contextual balloon.
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed editor throwing `Maximum call stack size exceeded` error when huge number of nodes were inserted at once into an element. Closes [#12428](https://github.com/ckeditor/ckeditor5/issues/12428). ([commit](https://github.com/ckeditor/ckeditor5/commit/f1e84275883964e77b7d7ca081168d29f0d65ff6))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed editor throwing the `Maximum call stack size exceeded` error when huge number of nodes were inserted at once into an element. Closes [#12428](https://github.com/ckeditor/ckeditor5/issues/12428). ([commit](https://github.com/ckeditor/ckeditor5/commit/f1e84275883964e77b7d7ca081168d29f0d65ff6))
 * **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Redefine most GHS-elements as not blocks in schema. Closes [#12430](https://github.com/ckeditor/ckeditor5/issues/12430). ([commit](https://github.com/ckeditor/ckeditor5/commit/d9500fe4cdcc5ad6c5fc89b07fd530159cdd02be))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The image insertion pane should not be empty if opened by arrow down key press. Closes [#12215](https://github.com/ckeditor/ckeditor5/issues/12215). ([commit](https://github.com/ckeditor/ckeditor5/commit/3f415af49e3c3c19fa8cfd9ca6a9daa7a8632531))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Alternative text button now indicates whether any value is applied. Closes [#12268](https://github.com/ckeditor/ckeditor5/issues/12268). ([commit](https://github.com/ckeditor/ckeditor5/commit/961d05cdc182a54c7db2dc44857f5d88f3a281d0))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Fixed incorrect behavior when text before auto-linked url was removed by pressing backspace. Previously, the removed text was reinserted on backspace press. Closes [#12447](https://github.com/ckeditor/ckeditor5/issues/12447). ([commit](https://github.com/ckeditor/ckeditor5/commit/38979ed46eb536b8064f48354e452499c6f71fd8))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Corrected autolinking URLs without protocol. Closes [#11040](https://github.com/ckeditor/ckeditor5/issues/11040). ([commit](https://github.com/ckeditor/ckeditor5/commit/628e959bd3e8d253ea85bf6318eedee47e1a0f55))
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Improved styles for indented lists. Closes [#12179](https://github.com/ckeditor/ckeditor5/issues/12179). ([commit](https://github.com/ckeditor/ckeditor5/commit/f167b5cb6f4daae282acd722780078394df1bdbe))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: To-do list items should not interrupt the Tab key navigation across the editor content. Closes [#6535](https://github.com/ckeditor/ckeditor5/issues/6535). ([commit](https://github.com/ckeditor/ckeditor5/commit/08e61060dbd420a754abfb901d7a01eb3cab19b2))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: To-do list items should not interrupt the `Tab` key navigation across the editor content. Closes [#6535](https://github.com/ckeditor/ckeditor5/issues/6535). ([commit](https://github.com/ckeditor/ckeditor5/commit/08e61060dbd420a754abfb901d7a01eb3cab19b2))
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: List properties changes made on a list inside a container element (e.g. block quote) were incorrectly propagated also to a list directly after that container. Closes [#11082](https://github.com/ckeditor/ckeditor5/issues/11082). ([commit](https://github.com/ckeditor/ckeditor5/commit/c3aa4ba07e26ba0d2fbf55d75a652baae9c02155))
 * **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: The focus will move to the editor after inserting a media. Closes [#12186](https://github.com/ckeditor/ckeditor5/issues/12186). ([commit](https://github.com/ckeditor/ckeditor5/commit/e8a33da62a875d105e625b20ef85a55eb8df8603))
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Pagination should work correctly for blocks with inline elements and soft breaks.
 * **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Extra line breaks should not be generated while pasting from Google Docs. Closes [#10217](https://github.com/ckeditor/ckeditor5/issues/10217). ([commit](https://github.com/ckeditor/ckeditor5/commit/f2efceed1a98d0235d8829c1317ca62820b0fd35))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Table cell widths will be preserved after pasting into the editor with table column resize feature and without table cell properties one. Closes [#12426](https://github.com/ckeditor/ckeditor5/issues/12426). ([commit](https://github.com/ckeditor/ckeditor5/commit/21a7ed2d50c488b7299c0b00abce98fc1d330ec1))
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Added keyboard (spacebar) support for the table insertion dropdown. Closes [#12344](https://github.com/ckeditor/ckeditor5/issues/12344). ([commit](https://github.com/ckeditor/ckeditor5/commit/9ff9d4497404febde725b998de23dc11284008dd))
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Added keyboard (`spacebar`) support for the table insertion dropdown. Closes [#12344](https://github.com/ckeditor/ckeditor5/issues/12344). ([commit](https://github.com/ckeditor/ckeditor5/commit/9ff9d4497404febde725b998de23dc11284008dd))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Made color pickers in table and table cell properties forms accessible for keyboard users. Closes [#12193](https://github.com/ckeditor/ckeditor5/issues/12193). ([commit](https://github.com/ckeditor/ckeditor5/commit/8162d9258f21b2a8d6a33936f8787976228abd8f))
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed editor crashing or disconnecting from real-time collaboration session when the initial content contained big number of suggestions.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Word count plugin callback will no longer be called when track changes data plugin is used.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: The Word count plugin callback will no longer be called when track changes data plugin is used.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Styles dropdown integration will correctly create suggestions for block quotes and other elements containing block elements.
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: DropdownView should close when it gets blurred. Also, DropdownView should focus its #buttonView only when it gets closed and the focus was inside its panelView. Closes [#12178](https://github.com/ckeditor/ckeditor5/issues/12178), [#12005](https://github.com/ckeditor/ckeditor5/issues/12005). ([commit](https://github.com/ckeditor/ckeditor5/commit/e8a33da62a875d105e625b20ef85a55eb8df8603))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: `DropdownView` should close when it gets blurred. Also, `DropdownView` should focus its `#buttonView` only when it gets closed and the focus was inside its `panelView`. Closes [#12178](https://github.com/ckeditor/ckeditor5/issues/12178), [#12005](https://github.com/ckeditor/ckeditor5/issues/12005). ([commit](https://github.com/ckeditor/ckeditor5/commit/e8a33da62a875d105e625b20ef85a55eb8df8603))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The block toolbar should close upon clicking its button. Closes [#12184](https://github.com/ckeditor/ckeditor5/issues/12184). ([commit](https://github.com/ckeditor/ckeditor5/commit/f811d4961665b2c9954a35aad5a200b70e894485))
 * **[widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: Image resizer handle should not be visible when resizer is not enabled (e.g. in comments-only mode). Closes [#11891](https://github.com/ckeditor/ckeditor5/issues/11891). ([commit](https://github.com/ckeditor/ckeditor5/commit/560bbce6bd56b76ad7f57fec3de717abce9aca26))
 
@@ -58,13 +76,13 @@ Changelog
 
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced substantial performance improvements in scenarios with big number (hundreds) of comments and suggestions. Improved editor initialization time and editor responsiveness.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced `EditorAnnotations#registerAnnotation()`.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced optional [@external](https://github.com/external) attribute for comments and suggestions. [@external](https://github.com/external) is an object that contains fields with author name (`authorName`) and date (`createdAt`). The attribute is read-only and can be set only when a comment or suggestion is created.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced optional `@external` attribute for comments and suggestions. `@external` is an object that contains fields with author name (`authorName`) and date (`createdAt`). The attribute is read-only and can be set only when a comment or suggestion is created.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `Model#insertContent()` will now insert markers added to `DocumentFragment#markers`. Closes [#12467](https://github.com/ckeditor/ckeditor5/issues/12467). ([commit](https://github.com/ckeditor/ckeditor5/commit/c8c05bce112d07f3a599874f4a39d63e96043ad8))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Reimplemented `Position#isTouching()` in order to achieve better editor performance. ([commit](https://github.com/ckeditor/ckeditor5/commit/10448f60ab6ff4a140b0fa0a573b8b6672e4b166))
-* **[special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters)**: Added missing arrow characters (↑, →, ↓, ←). Closes [#6167](https://github.com/ckeditor/ckeditor5/issues/6167). ([commit](https://github.com/ckeditor/ckeditor5/commit/d8e1dbd73ad190356bf74375f21c6db9164a7f50))
+* **[special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters)**: Added missing arrow characters (`↑`, `→`, `↓`, `←`). Closes [#6167](https://github.com/ckeditor/ckeditor5/issues/6167). ([commit](https://github.com/ckeditor/ckeditor5/commit/d8e1dbd73ad190356bf74375f21c6db9164a7f50))
 * **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: Improved keyboard navigation in the style feature drop-down. Closes [#12250](https://github.com/ckeditor/ckeditor5/issues/12250). ([commit](https://github.com/ckeditor/ckeditor5/commit/50f6eba9c1a8195db25734ec4e9b7537ac08acec))
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced substantial performance improvements in scenarios with big number (hundreds) of comments and suggestions. Improved editor initialization time and editor responsiveness.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced optional [@external](https://github.com/external) attribute for comments and suggestions. [@external](https://github.com/external) is an object that contains fields with author name (`authorName`) and date (`createdAt`). The attribute is read-only and can be set only when a comment or suggestion is created.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced optional `@external` attribute for comments and suggestions. `@external` is an object that contains fields with author name (`authorName`) and date (`createdAt`). The attribute is read-only and can be set only when a comment or suggestion is created.
 * **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Dropped using lodash `isElement()` in `Rect` class in order to achieve better editor performance. ([commit](https://github.com/ckeditor/ckeditor5/commit/10448f60ab6ff4a140b0fa0a573b8b6672e4b166))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/00f5e2d01204f4ee7b1fc77107faf4c544703112), [commit](https://github.com/ckeditor/ckeditor5/commit/16ee7f5ba7ec2df026d5344bedb14e2af5e6e9d9), [commit](https://github.com/ckeditor/ckeditor5/commit/35f2f349ce957af442136eaf8c10de66aa0fc8d1))
 
@@ -79,14 +97,11 @@ New packages:
 
 * [@ckeditor/ckeditor5-import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word): v35.2.0
 
-Major releases (contain major breaking changes):
-
-* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles): v35.1.0 => v35.2.0
-* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph): v35.1.0 => v35.2.0
-
 Minor releases (contain minor breaking changes):
 
+* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles): v35.1.0 => v35.2.0
 * [@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments): v35.1.0 => v35.2.0
+* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph): v35.1.0 => v35.2.0
 
 Releases containing new features:
 
