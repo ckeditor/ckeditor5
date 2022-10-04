@@ -168,7 +168,7 @@
     "release:clean": "npx rimraf \"packages/ckeditor5-@(utils|engine)/src/**/*.@(js|d.ts)\"",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
-    "dll:build": "node ./scripts/dll/build-dlls.js --cwd . --base-dll-config ./scripts/dll/webpack.config.dll.js",
+    "dll:build": "node ./scripts/dll/build-dlls.js --base-dll-config ./scripts/dll/webpack.config.dll.js",
     "check-dependencies": "ckeditor5-dev-tests-check-dependencies"
   },
   "lint-staged": {

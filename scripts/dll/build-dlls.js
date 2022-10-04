@@ -15,7 +15,7 @@ const path = require( 'path' );
 const argv = minimist( process.argv.slice( 2 ) );
 
 const ROOT_DIRECTORY = argv.cwd ? path.resolve( argv.cwd ) : path.resolve( __dirname, '..', '..' );
-const BASE_DLL_CONFIG_PATH = argv[ 'base-dll-config' ] ? path.resolve( argv[ 'base-dll-config' ] ) : null;
+const BASE_DLL_CONFIG_PATH = argv[ 'base-dll-config' ] ? path.relative( ROOT_DIRECTORY, argv[ 'base-dll-config' ] ) : null;
 const BASE_DLL_PATH = argv[ 'base-dll-path' ];
 const IS_DEVELOPMENT_MODE = argv.dev;
 const VERBOSE_MODE = argv.verbose;
@@ -27,10 +27,16 @@ const prefix = VERBOSE_MODE ? '\n📍 ' : '';
 if ( BASE_DLL_CONFIG_PATH ) {
 	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
 
-	execute( {
-		command: [ 'webpack', `--config=${ BASE_DLL_CONFIG_PATH }` ],
+	const status = execute( {
+		command: [ 'yarn', 'webpack', `--config=${ normalizePath( BASE_DLL_CONFIG_PATH ) }` ],
 		cwd: BASE_DLL_PATH || ROOT_DIRECTORY
 	} );
+
+	if ( status ) {
+		console.log( chalk.bold.red( 'Halting the script due to failed base DLL build.' ) );
+
+		process.exit();
+	}
 }
 
 console.log( prefix + chalk.bold( 'Creating DLL-compatible package builds...' ) );
@@ -41,10 +47,15 @@ getPackageNames( ROOT_DIRECTORY )
 	.forEach( fullPackageName => {
 		console.log( prefix + `Building ${ fullPackageName }...` );
 
-		execute( {
+		const status = execute( {
 			command: [ 'yarn', 'run', 'dll:build' ],
 			cwd: path.join( ROOT_DIRECTORY, 'packages', fullPackageName )
 		} );
+
+		if ( status ) {
+			console.log( chalk.bold.red( 'Script will continue the execution for other packages, but the failed build will be missing.' ) );
+			console.log( chalk.bold.red( 'If the missing build is built manually, the entire script does not have to be repeated.' ) );
+		}
 	} );
 
 /**
@@ -71,10 +82,18 @@ function isNotBaseDll( name ) {
  * @returns {Boolean}
  */
 function hasDLLBuildScript( name ) {
-	const packageJsonPath = path.join( process.cwd(), 'packages', name, 'package.json' );
+	const packageJsonPath = path.join( ROOT_DIRECTORY, 'packages', name, 'package.json' );
 	const scripts = require( packageJsonPath ).scripts;
 
-	return scripts && scripts[ 'dll:build' ];
+	return Boolean( scripts && scripts[ 'dll:build' ] );
+}
+
+/**
+ * @param {String} string
+ * @returns {String}
+ */
+function normalizePath( string ) {
+	return string.split( path.sep ).join( path.posix.sep );
 }
 
 /**
@@ -97,19 +116,23 @@ function execute( options ) {
 	} );
 
 	if ( subprocess.status !== 0 && subprocess.stderr && !VERBOSE_MODE ) {
-		const normalizedPath = path
-			.relative( process.cwd(), options.cwd )
-			.split( path.sep )
-			.join( path.posix.sep );
+		const relativePath = path.relative( process.cwd(), options.cwd );
 
-		console.log( chalk.red( [
+		const message = [
 			chalk.bold( '💥 Build ended with an error:' ),
 			subprocess.stderr.trim(),
 			'',
-			chalk.bold( '🛠️  To reproduce this error, run these commands:' ),
-			` - cd ${ normalizedPath }`,
-			` - ${ command }`,
-			''
-		].join( '\n' ) ) );
+			chalk.bold( '🛠️  To reproduce this error, run:' )
+		];
+
+		if ( relativePath ) {
+			message.push( ` - cd ${ normalizePath( relativePath ) }` );
+		}
+
+		message.push( ` - ${ command }`, '' );
+
+		console.log( chalk.red( message.join( '\n' ) ) );
 	}
+
+	return subprocess.status;
 }
