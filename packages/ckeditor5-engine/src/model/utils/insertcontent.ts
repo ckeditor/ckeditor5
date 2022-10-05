@@ -103,6 +103,8 @@ export default function insertContent(
 
 				for ( const { position, name, isCollapsed } of markersPosition ) {
 					let fakeElement = null;
+					let connectedElement = null;
+					let elementPosition = null;
 					let collapsed = null;
 					const isAtBeginning = position.parent === content && position.isAtStart;
 					const isAtEnd = position.parent === content && position.isAtEnd;
@@ -125,9 +127,19 @@ export default function insertContent(
 						collapsed = isAtBeginning ? 'start' as const : 'end' as const;
 					}
 
+					if ( isAtBeginning ) {
+						connectedElement = position.nodeAfter;
+						elementPosition = 'after';
+					} else if ( isAtEnd ) {
+						connectedElement = position.nodeBefore;
+						elementPosition = 'before';
+					}
+
 					fakeMarkerElements.push( {
 						name,
 						element: fakeElement,
+						connectedElement,
+						elementPosition,
 						collapsed
 					} );
 				}
@@ -155,7 +167,7 @@ export default function insertContent(
 			// from the beginning, so that existing <$marker> elements do not affect markers positions.
 			// This is why we iterate from the end to the start.
 			for ( let i = fakeMarkerElements.length - 1; i >= 0; i-- ) {
-				const { name, element, collapsed } = fakeMarkerElements[ i ];
+				const { name, element, connectedElement, elementPosition, collapsed } = fakeMarkerElements[ i ];
 				const isStartBoundary = !markersData[ name ];
 
 				if ( isStartBoundary ) {
@@ -172,6 +184,17 @@ export default function insertContent(
 				} else {
 					// If the fake marker element does not exist, it means that the marker boundary was at the beginning or at the end.
 					const rangeOnInsertion = insertion.getAffectedRange();
+
+					const leftImpact = insertion.isMergedOnLeft && elementPosition === 'after';
+					const rightImpact = insertion.isMergedOnRight && elementPosition === 'before';
+
+					if ( connectedElement && !insertion.disallowedNodes.includes( connectedElement ) && !leftImpact && !rightImpact ) {
+						markersData[ name ].push( elementPosition === 'before' ?
+							Position._createAfter( connectedElement ) :
+							Position._createBefore( connectedElement ) );
+
+						continue;
+					}
 
 					if ( !rangeOnInsertion ) {
 						// If affected range is `null` it means that nothing was in the document fragment or all content was filtered out.
@@ -245,6 +268,9 @@ class Insertion {
 	public position: Position;
 	public readonly canMergeWith: Set<Node | DocumentFragment | null>;
 	public readonly schema: Schema;
+	public isMergedOnLeft: boolean;
+	public isMergedOnRight: boolean;
+	public disallowedNodes: Array<Node>;
 
 	private readonly _documentFragment: DocumentFragment;
 	private _documentFragmentPosition: Position;
@@ -361,6 +387,10 @@ class Insertion {
 		 * @member {module:engine/model/liveposition~LivePosition|null} #_affectedEnd
 		 */
 		this._affectedEnd = null;
+
+		this.isMergedOnLeft = false;
+		this.isMergedOnRight = false;
+		this.disallowedNodes = [];
 	}
 
 	/**
@@ -383,7 +413,8 @@ class Insertion {
 
 		// After the content was inserted we may try to merge it with its next sibling if the selection was in it initially.
 		// Merging with the previous sibling was performed just after inserting the first node to the document.
-		this._mergeOnRight();
+		const isMergedOnRight = this._mergeOnRight();
+		this.isMergedOnRight = isMergedOnRight;
 
 		// TMP this will become a post-fixer.
 		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
@@ -525,7 +556,8 @@ class Insertion {
 
 			// We must merge the first node just after inserting it to avoid problems with OT.
 			// (See: https://github.com/ckeditor/ckeditor5/pull/8773#issuecomment-760945652).
-			this._mergeOnLeft();
+			const isMergedOnLeft = this._mergeOnLeft();
+			this.isMergedOnLeft = isMergedOnLeft;
 
 			this.position = livePosition.toPosition();
 		}
@@ -649,15 +681,15 @@ class Insertion {
 	 *
 	 * @private
 	 */
-	private _mergeOnLeft(): void {
+	private _mergeOnLeft(): boolean {
 		const node = this._firstNode;
 
 		if ( !( node instanceof Element ) ) {
-			return;
+			return false;
 		}
 
 		if ( !this._canMergeLeft( node ) ) {
-			return;
+			return false;
 		}
 
 		const mergePosLeft = LivePosition._createBefore( node );
@@ -719,6 +751,8 @@ class Insertion {
 		this._filterAttributesOf.push( this.position.parent as any );
 
 		mergePosLeft.detach();
+
+		return true;
 	}
 
 	/**
@@ -729,15 +763,15 @@ class Insertion {
 	 *
 	 * @private
 	 */
-	private _mergeOnRight(): void {
+	private _mergeOnRight(): boolean {
 		const node = this._lastNode;
 
 		if ( !( node instanceof Element ) ) {
-			return;
+			return false;
 		}
 
 		if ( !this._canMergeRight( node ) ) {
-			return;
+			return false;
 		}
 
 		const mergePosRight = LivePosition._createAfter( node );
@@ -805,6 +839,8 @@ class Insertion {
 		this._filterAttributesOf.push( this.position.parent as any );
 
 		mergePosRight.detach();
+
+		return true;
 	}
 
 	/**
@@ -852,6 +888,8 @@ class Insertion {
 		if ( this._getAllowedIn( this.position.parent as any, paragraph ) && this.schema.checkChild( paragraph, node ) ) {
 			paragraph._appendChild( node );
 			this._handleNode( paragraph );
+		} else {
+			this.disallowedNodes.push( node );
 		}
 	}
 

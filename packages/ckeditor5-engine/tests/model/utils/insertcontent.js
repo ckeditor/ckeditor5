@@ -1913,7 +1913,7 @@ describe( 'DataController utils', () => {
 					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
 				} );
 
-			it.skip( 'should create marker on imageInline and part of paragraph text after inserting next to paragraph', () => {
+			it( 'should create marker on imageInline and part of paragraph text after inserting next to paragraph', () => {
 				// <paragraph>Foo</paragraph>[]
 				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
 				//
@@ -1929,11 +1929,11 @@ describe( 'DataController utils', () => {
 				expect( getData( model ) )
 					.to.equal( '<paragraph>Foo[]</paragraph><paragraph><imageInline></imageInline></paragraph><paragraph>bar</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1, 1 ] );
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1, 0 ] );
 				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2, 2 ] );
 			} );
 
-			it.skip( 'should create marker from imageInline  and part of paragraph text after inserting before paragraph', () => {
+			it( 'should create marker from imageInline  and part of paragraph text after inserting before paragraph', () => {
 				// []<paragraph>Foo</paragraph>
 				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
 				//
@@ -1953,7 +1953,7 @@ describe( 'DataController utils', () => {
 				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
 			} );
 
-			it.skip( 'should create marker which contains the part of paragraph and imageInline', () => {
+			it( 'should create marker which contains the part of paragraph and imageInline', () => {
 				// <paragraph>Foo[]</paragraph>
 				// <paragraph>b{ar</paragraph><imageInline></imageInline>}
 				//
@@ -1991,7 +1991,7 @@ describe( 'DataController utils', () => {
 				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
 			} );
 
-			it.skip( 'should create marker on imageBlock after inserting in the middle of paragraph', () => {
+			it( 'should create marker on imageBlock after inserting in the middle of paragraph', () => {
 				// <paragraph>Fo[]o</paragraph>
 				// {<imageBlock></imageBlock>}
 				//
@@ -2124,7 +2124,7 @@ describe( 'DataController utils', () => {
 				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
 			} );
 
-			it.skip( 'should create marker on imageBlock and imageInline after inserting', () => {
+			it( 'should create marker on imageBlock and imageInline after inserting', () => {
 				// <paragraph>[]</paragraph>
 				// {<imageBlock></imageBlock><imageInline></imageInline>}
 				//
@@ -2143,7 +2143,7 @@ describe( 'DataController utils', () => {
 				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
 			} );
 
-			it.skip( 'should create marker on imageBlock after inserting in block quoted paragraph', () => {
+			it( 'should create marker on imageBlock after inserting in block quoted paragraph', () => {
 				// <blockQuote><paragraph>f[]oo</paragraph></blockQuote>
 				// {<imageBlock></imageBlock>}
 				//
@@ -2440,7 +2440,7 @@ describe( 'DataController utils', () => {
 					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
 				} );
 
-				it.skip( 'should create collapsed marker after inserting imageInline next to paragraph', () => {
+				it( 'should create collapsed marker after inserting imageInline next to paragraph', () => {
 					// <paragraph>foo</paragraph>[]
 					// {}<imageInline></imageInline>
 					//
@@ -2455,8 +2455,8 @@ describe( 'DataController utils', () => {
 
 					expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph><imageInline></imageInline></paragraph>' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1, 1 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1, 0 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 0 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting imageInline before paragraph', () => {
@@ -2474,8 +2474,8 @@ describe( 'DataController utils', () => {
 
 					expect( getData( model ) ).to.equal( '<paragraph><imageInline></imageInline></paragraph><paragraph>[]foo</paragraph>' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0 ] );
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting imageBlock at the beginning of paragraph', () => {
@@ -2497,7 +2497,7 @@ describe( 'DataController utils', () => {
 					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0 ] );
 				} );
 
-				it.skip( 'should create collapsed marker after inserting imageBlock in the middle of paragraph', () => {
+				it( 'should create collapsed marker after inserting imageBlock in the middle of paragraph', () => {
 					// <paragraph>f[]oo</paragraph>
 					// {}<imageBlock></imageBlock>
 					//
