@@ -300,6 +300,8 @@ export default class TooltipManager {
 		} );
 
 		this._resizeObserver = new ResizeObserver( targetDomElement, () => {
+			// The ResizeObserver will call its callback when the target element hides and the tooltip
+			// should also disappear (https://github.com/ckeditor/ckeditor5/issues/12492).
 			if ( !isVisible( targetDomElement ) ) {
 				this._unpinTooltip();
 			}
