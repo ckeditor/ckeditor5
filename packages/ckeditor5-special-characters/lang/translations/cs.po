@@ -22,19 +22,19 @@ msgstr "Speciální znaky"
 
 msgctxt "A label for the \"leftwards simple arrow\" symbol."
 msgid "leftwards simple arrow"
-msgstr ""
+msgstr "jednoduchá šipka doleva"
 
 msgctxt "A label for the \"rightwards simple arrow\" symbol."
 msgid "rightwards simple arrow"
-msgstr ""
+msgstr "jednoduchá šipka doprava"
 
 msgctxt "A label for the \"upwards simple arrow\" symbol."
 msgid "upwards simple arrow"
-msgstr ""
+msgstr "jednoduchá šipka nahoru"
 
 msgctxt "A label for the \"downwards simple arrow\" symbol."
 msgid "downwards simple arrow"
-msgstr ""
+msgstr "jednoduchá šipka dolů"
 
 msgctxt "A label for the \"leftwards double arrow\" symbol."
 msgid "leftwards double arrow"
