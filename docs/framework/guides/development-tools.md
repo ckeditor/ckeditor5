@@ -41,7 +41,7 @@ If you do not wish to import the inspector, you can create a bookmarklet in your
 
 **Important note: this method will not work if the page has Content Security Policy enabled.**
 
-To create such bookmarklet, paste the following code as the URL of a newly created bookmark in the browser of your choice:
+To create such a bookmarklet, paste the following code as the URL of a new bookmark in the browser of your choice:
 
 ```js
 javascript:(function(){let script=document.createElement('script');script.src='https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js';script.onload=()=>CKEditorInspector.attachToAll();document.head.appendChild(script);})()

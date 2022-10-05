@@ -97,7 +97,7 @@ expect( selection ).to.not.have.attribute( 'linkHref' );
 
 ## Running manual tests
 
-In order to start the manual tests server, use the `yarn run manual` task. After calling this command, you may be asked if you want to re-create the DLL builds. You do not have to re-create the DLL builds each time you run the manual tests, but only when you want to check your changes in tests, that require DLL builds.
+In order to start the manual tests server, use the `yarn run manual` task. After calling this command, you may be asked if you want to re-create the DLL builds. You do not have to re-create the DLL builds each time you run the manual tests. Do it only if you want to check your changes in those tests that require the DLL builds.
 
 <info-box hint>
 	You can read more about the DLL builds in a {@link installation/advanced/dll-builds dedicated guide}.
@@ -204,7 +204,7 @@ Read more about the crawler in the {@link framework/guides/contributing/developm
 
 ## Rules for using the `--files` option
 
-The `--files` (alias `-f`) option is used by both manual and automated tests, and it accepts following types of patterns:
+The `--files` (alias `-f`) option is used by both the manual and automated tests, and it accepts the following types of patterns:
 
 <table>
 	<tr>
@@ -256,7 +256,7 @@ The `--files` (alias `-f`) option is used by both manual and automated tests, an
 	</tr>
 	<tr>
 		<td><code>ckeditor5,list/list/,style/*grid*</code></td>
-		<td>Sum of all arguments separated by comma <code>,</code>. This can use any combination of argument types. Note that since it is a sum, using multiple <code>!foo</code> excluding arguments might not work as expected.</td>
+		<td>Sum of all arguments separated by a comma <code>,</code>. This one can use any combination of argument types. Note that since it is a sum, using multiple <code>!foo</code> excluding arguments might not work as expected.</td>
 	</tr>
 </table>
 
