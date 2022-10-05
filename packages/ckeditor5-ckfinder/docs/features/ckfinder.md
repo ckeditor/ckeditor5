@@ -12,7 +12,7 @@ badges: [ premium ]
 This CKFinder integration feature allows you to insert images as well as links to files into the rich-text editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader. CKFinder is a commercial application that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET and Java and version 2.x for ASP and ColdFusion.
 
 <info-box info>
-	This is a premium feature available for all [pricing plans](https://ckeditor.com/pricing/). Please [contact us](https://ckeditor.com/contact/) if you have any feedback or questions.
+	This is a premium feature that is additionally payable on top of CKEditor 5 commercial license fee. Please contact us at [sales@cksource.com](mailto:sales@cksource.com) to receive a custom offer tailored to your needs.
 
 	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
 
