@@ -10,7 +10,7 @@ order: 10
 The toolbar is the most basic user interface element of the WYSIWYG editor that gives convenient access to all its features. It contains various items like buttons or dropdowns that you can use to format, manage, insert and alter elements of the content.
 
 <info-box hint>
-    Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link builds/guides/integration/configuration#removing-features removing features} for more information.
+    Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link installation/getting-started/configuration#removing-features removing features} for more information.
 </info-box>
 
 ## Basic toolbar configuration
@@ -77,6 +77,118 @@ toolbar: {
 The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are excess toolbar items for the display width, the toolbar gets grouped and some of the items are accessible via the clickable "Show more items" (⋮) button.
 
 {@snippet features/toolbar-grouping}
+
+## Grouping toolbar items in drop-downs (nested toolbars)
+
+To save space in your toolbar or arrange the features thematically, you can group several items into a dropdown. For instance, check out the following configuration:
+
+```js
+toolbar: [
+	{
+		label: 'Basic styles',
+		icon: 'text',
+		items: [ 'bold', 'italic' ]
+	},
+	'|',
+	'undo', 'redo'
+]
+```
+
+It will create a "Basic styles" dropdown with a "text" icon containing the "bold" and "italic" buttons. You can test it in the demo below.
+
+{@snippet features/toolbar-nested-simple}
+
+### Customization
+
+You can customize the look of the dropdown by configuring additional properties, such as the icon, label or tooltip text.
+
+#### Displaying the label
+
+You can control the way the UI element is displayed. For instance, to hide the icon and to display the label only, you can use the following configuration:
+
+```js
+{
+	label: 'Basic styles',
+	// Show the textual label of the dropdown. Note that the "icon" property is not configured.
+	withText: true,
+	items: [ 'bold', 'italic' ]
+}
+```
+
+**Note**: The label will automatically show up if the `icon` is `false` ([learn more](#changing-the-icon)).
+
+{@snippet features/toolbar-nested-label}
+
+#### Changing the icon
+
+You can use one of the icons listed below for your dropdown:
+
+| Icon name         | Preview                                                                     |
+|-------------------|-----------------------------------------------------------------------------|
+| `'threeVerticalDots'` **(default)** | {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Three vertical dots} |
+| `'alignLeft'`     | {@icon @ckeditor/ckeditor5-core/theme/icons/align-left.svg Align left}      |
+| `'bold'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/bold.svg Bold}                  |
+| `'importExport'`  | {@icon @ckeditor/ckeditor5-core/theme/icons/importexport.svg Import export} |
+| `'paragraph'`     | {@icon @ckeditor/ckeditor5-core/theme/icons/paragraph.svg Paragraph}        |
+| `'text'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/text.svg Text}                  |
+
+* If no icon is specified, `'threeVerticalDots'` will be used as a default.
+* If `icon: false` is configured, no icon will be displayed and the text label will show up instead.
+* You can set a custom icon for the drop-down by passing an SVG string.
+
+Here is an example:
+
+```js
+toolbar: [
+	{
+		// Using a default icon because none was specified.
+		label: 'Default icon',
+		items: [ 'bold', 'italic' ]
+	},
+	{
+		label: 'Icon disabled',
+		// This drop-down has the icon disabled and a text label instead.
+		icon: false,
+		items: [ 'bold', 'italic' ]
+	},
+	{
+		label: 'Insert',
+		// A "plus" sign icon works best for content insertion tools.
+		icon: 'plus',
+		items: [ 'bold', 'italic' ]
+	},
+	{
+		label: 'A dropdown with a custom icon',
+		// If you want your icon to change the color dynamically (e.g. when the dropdown opens), avoid fill="..."
+		// and stroke="..." styling attributes. Use solid shapes and avoid paths with strokes.
+		icon: '<svg viewBox="0 0 68 64" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M43.71 11.025a11.508 11.508 0 0 0-1.213 5.159c0 6.42 5.244 11.625 11.713 11.625.083 0 .167 0 .25-.002v16.282a5.464 5.464 0 0 1-2.756 4.739L30.986 60.7a5.548 5.548 0 0 1-5.512 0L4.756 48.828A5.464 5.464 0 0 1 2 44.089V20.344c0-1.955 1.05-3.76 2.756-4.738L25.474 3.733a5.548 5.548 0 0 1 5.512 0l12.724 7.292z" fill="#FFF"/><path d="M45.684 8.79a12.604 12.604 0 0 0-1.329 5.65c0 7.032 5.744 12.733 12.829 12.733.091 0 .183-.001.274-.003v17.834a5.987 5.987 0 0 1-3.019 5.19L31.747 63.196a6.076 6.076 0 0 1-6.037 0L3.02 50.193A5.984 5.984 0 0 1 0 45.003V18.997c0-2.14 1.15-4.119 3.019-5.19L25.71.804a6.076 6.076 0 0 1 6.037 0L45.684 8.79zm-29.44 11.89c-.834 0-1.51.671-1.51 1.498v.715c0 .828.676 1.498 1.51 1.498h25.489c.833 0 1.51-.67 1.51-1.498v-.715c0-.827-.677-1.498-1.51-1.498h-25.49.001zm0 9.227c-.834 0-1.51.671-1.51 1.498v.715c0 .828.676 1.498 1.51 1.498h18.479c.833 0 1.509-.67 1.509-1.498v-.715c0-.827-.676-1.498-1.51-1.498H16.244zm0 9.227c-.834 0-1.51.671-1.51 1.498v.715c0 .828.676 1.498 1.51 1.498h25.489c.833 0 1.51-.67 1.51-1.498v-.715c0-.827-.677-1.498-1.51-1.498h-25.49.001zm41.191-14.459c-5.835 0-10.565-4.695-10.565-10.486 0-5.792 4.73-10.487 10.565-10.487C63.27 3.703 68 8.398 68 14.19c0 5.791-4.73 10.486-10.565 10.486v-.001z" fill="#1EBC61" fill-rule="nonzero"/><path d="M60.857 15.995c0-.467-.084-.875-.251-1.225a2.547 2.547 0 0 0-.686-.88 2.888 2.888 0 0 0-1.026-.531 4.418 4.418 0 0 0-1.259-.175c-.134 0-.283.006-.447.018-.15.01-.3.034-.446.07l.075-1.4h3.587v-1.8h-5.462l-.214 5.06c.319-.116.682-.21 1.089-.28.406-.071.77-.107 1.088-.107.218 0 .437.021.655.063.218.041.413.114.585.218s.313.244.422.419c.109.175.163.391.163.65 0 .424-.132.745-.396.961a1.434 1.434 0 0 1-.938.325c-.352 0-.656-.1-.912-.3-.256-.2-.43-.453-.523-.762l-1.925.588c.1.35.258.664.472.943.214.279.47.514.767.706.298.191.63.339.995.443.365.104.749.156 1.151.156.437 0 .86-.064 1.272-.193.41-.13.778-.323 1.1-.581a2.8 2.8 0 0 0 .775-.981c.193-.396.29-.864.29-1.405h-.001z" fill="#FFF" fill-rule="nonzero"/></g></svg>',
+		items: [ 'bold', 'italic' ]
+	},
+	'|',
+	'undo', 'redo'
+]
+```
+And here is the effect:
+
+{@snippet features/toolbar-nested-icon}
+
+#### Customizing the tooltip
+
+By default, the tooltip of the button shares its text with the label. You can customize it to better describe your dropdown and make it more accessible by using the `tooltip` property ({@link module:ui/button/buttonview~ButtonView#tooltip learn more}):
+
+```js
+toolbar: [
+	{
+		label: 'Others',
+		tooltip: 'Additional editing features',
+		items: [ 'bold', 'italic' ]
+	},
+	'|',
+	'undo', 'redo'
+]
+```
+
+{@snippet features/toolbar-nested-tooltip}
 
 ## Multiline (wrapping) toolbar
 
@@ -156,8 +268,8 @@ Array.from( editor.ui.componentFactory.names() );
 
 ## Adding a custom button
 
-Refer to the {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
+Refer to the {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
 
 ## Block toolbar
 
-The {@link features/blocktoolbar BlockToolbar} feature provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (e.g. in certain {@link builds/guides/overview#balloon-block-editor balloon block editor} scenarios).
+The {@link features/blocktoolbar BlockToolbar} feature provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (e.g. in certain {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).

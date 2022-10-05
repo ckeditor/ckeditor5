@@ -22,8 +22,7 @@ import { first } from 'ckeditor5/src/utils';
  */
 export function createInlineImageViewElement( writer ) {
 	return writer.createContainerElement( 'span', { class: 'image-inline' },
-		writer.createEmptyElement( 'img' ),
-		{ isAllowedInsideAttributeElement: true }
+		writer.createEmptyElement( 'img' )
 	);
 }
 
@@ -54,16 +53,18 @@ export function createBlockImageViewElement( writer ) {
  * @returns {module:engine/view/matcher~MatcherPattern}
  */
 export function getImgViewElementMatcher( editor, matchImageType ) {
-	if ( editor.plugins.has( 'ImageInlineEditing' ) !== editor.plugins.has( 'ImageBlockEditing' ) ) {
-		return { name: 'img' };
-	}
-
 	const imageUtils = editor.plugins.get( 'ImageUtils' );
+	const areBothImagePluginsLoaded = editor.plugins.has( 'ImageInlineEditing' ) && editor.plugins.has( 'ImageBlockEditing' );
 
 	return element => {
-		// Check if view element is an `img`.
+		// Check if the matched view element is an <img>.
 		if ( !imageUtils.isInlineImageView( element ) ) {
 			return null;
+		}
+
+		// If just one of the plugins is loaded (block or inline), it will match all kinds of images.
+		if ( !areBothImagePluginsLoaded ) {
+			return getPositiveMatchPattern( element );
 		}
 
 		// The <img> can be standalone, wrapped in <figure>...</figure> (ImageBlock plugin) or
@@ -74,8 +75,21 @@ export function getImgViewElementMatcher( editor, matchImageType ) {
 			return null;
 		}
 
-		return { name: true };
+		return getPositiveMatchPattern( element );
 	};
+
+	function getPositiveMatchPattern( element ) {
+		const pattern = {
+			name: true
+		};
+
+		// This will trigger src consumption (See https://github.com/ckeditor/ckeditor5/issues/11530).
+		if ( element.hasAttribute( 'src' ) ) {
+			pattern.attributes = [ 'src' ];
+		}
+
+		return pattern;
+	}
 }
 
 /**

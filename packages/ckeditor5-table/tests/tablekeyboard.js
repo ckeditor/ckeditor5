@@ -61,7 +61,8 @@ describe( 'TableKeyboard', () => {
 			domEvtDataStub = {
 				keyCode: getCode( 'Tab' ),
 				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				stopPropagation: sinon.spy(),
+				domTarget: global.document.body
 			};
 		} );
 
@@ -256,22 +257,205 @@ describe( 'TableKeyboard', () => {
 				] ) );
 			} );
 
-			it( 'should listen with the lower priority than its children', () => {
-				// Cancel TAB event.
-				editor.keystrokes.set( 'Tab', ( data, cancel ) => cancel() );
-
+			it( 'should handle tab press when in table cell and create a new row', () => {
 				setModelData( model, modelTable( [
-					[ '11[]', '12' ]
+					[ '11', '12[]' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
 				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
-					[ '11[]', '12' ]
+					[ '11', '12' ],
+					[ '[]', '' ]
 				] ) );
+			} );
+
+			it( 'should handle tab press when in table header and create a new row', () => {
+				setModelData( model,
+					modelTable(
+						[
+							[ '11', '12[]' ]
+						],
+						{
+							headingRows: 1
+						}
+					) );
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ '11', '12' ],
+					[ '[]', '' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should not handle tab if it was handled by a listener with higher priority', () => {
+				setModelData( model,
+					modelTable(
+						[
+							[ '11', '12[]' ]
+						],
+						{
+							headingRows: 1
+						}
+					) );
+
+				editor.editing.view.document.on(
+					'tab',
+					( bubblingEventInfo, domEventData ) => {
+						domEventData.preventDefault();
+						domEventData.stopPropagation();
+						bubblingEventInfo.stop();
+					},
+					{
+						context: [ 'th', 'td' ],
+						priority: 'high'
+					}
+				);
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ '11', '12[]' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should handle event over other listeners with lower priority', () => {
+				const lowerPriorityListenerSpy = sinon.spy();
+
+				setModelData( model, modelTable(
+					[
+						[ '11', '12[]' ]
+					],
+					{
+						headingRows: 1
+					}
+				) );
+
+				editor.editing.view.document.on(
+					'tab',
+					lowerPriorityListenerSpy,
+					{
+						context: [ 'th', 'td' ],
+						priority: 'low'
+					}
+				);
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				sinon.assert.notCalled( lowerPriorityListenerSpy );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable(
+					[
+						[ '11', '12' ],
+						[ '[]', '' ]
+					],
+					{
+						headingRows: 1
+					}
+				) );
+			} );
+
+			it( 'should select whole next table cell if selection is in table header', () => {
+				const innerTable = modelTable( [
+					[ '' ]
+				] );
+
+				setModelData( model,
+					modelTable(
+						[
+							[ innerTable + '<paragraph>[]A</paragraph>', innerTable + '<paragraph>B</paragraph>' ],
+							[ 'C', 'D' ]
+						],
+						{
+							headingColumns: 1
+						}
+					) );
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ innerTable + '<paragraph>A</paragraph>', '[' + innerTable + '<paragraph>B]</paragraph>' ],
+					[ 'C', 'D' ]
+				], { headingColumns: 1 } ) );
+			} );
+
+			it( 'should select whole next table cell if selection is in table data cell', () => {
+				const innerTable = modelTable( [
+					[ '' ]
+				] );
+
+				setModelData( model,
+					modelTable(
+						[
+							[ innerTable + '<paragraph>A</paragraph>', innerTable + '<paragraph>B[]</paragraph>' ],
+							[ 'C', 'D' ]
+						],
+						{
+							headingColumns: 1
+						}
+					) );
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ innerTable + '<paragraph>A</paragraph>', innerTable + '<paragraph>B</paragraph>' ],
+					[ '[C]', 'D' ]
+				], { headingColumns: 1 } ) );
+			} );
+
+			it( 'tab handler should execute at target and create a new cell in table header', () => {
+				const innerTable = modelTable( [
+					[ 'A[]' ]
+				] );
+
+				const innerTableOutput = modelTable( [
+					[ 'A' ],
+					[ '[]' ]
+				] );
+
+				setModelData( model, modelTable(
+					[
+						[ innerTable, 'B' ],
+						[ 'C', 'D' ]
+					],
+					{
+						headingColumns: 1
+					}
+				) );
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					modelTable(
+						[
+							[ innerTableOutput, 'B' ],
+							[ 'C', 'D' ]
+						],
+						{
+							headingColumns: 1
+						}
+					) );
 			} );
 
 			describe( 'on table widget selected', () => {
@@ -310,7 +494,7 @@ describe( 'TableKeyboard', () => {
 				it( 'shouldn\'t do anything on other blocks', () => {
 					const spy = sinon.spy();
 
-					editor.editing.view.document.on( 'keydown', spy );
+					editor.editing.view.document.on( 'tab', spy );
 
 					setModelData( model, '[<block>foo</block>]' );
 
@@ -323,6 +507,63 @@ describe( 'TableKeyboard', () => {
 
 					// Should not cancel event.
 					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'table tab handler for selected table should not capture event if selection is not a table', () => {
+					editor.conversion.elementToElement( {
+						model: 'fakeFigure',
+						view: 'figure'
+					} );
+
+					model.schema.register( 'fakeFigure', {
+						inheritAllFrom: '$blockObject'
+					} );
+
+					setModelData( model, '<fakeFigure>[]</fakeFigure>' );
+
+					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+					sinon.assert.notCalled( domEvtDataStub.preventDefault );
+					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+					expect( getModelData( model ) ).to.equalMarkup( '[<fakeFigure></fakeFigure>]' );
+				} );
+
+				it( 'table tab handler for td should not capture event if selection is not in a tableCell', () => {
+					editor.conversion.elementToElement( {
+						model: 'fakeTableCell',
+						view: 'td'
+					} );
+
+					model.schema.register( 'fakeTableCell', {
+						inheritAllFrom: '$blockObject'
+					} );
+
+					setModelData( model, '<fakeTableCell>[]</fakeTableCell>' );
+
+					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+					sinon.assert.notCalled( domEvtDataStub.preventDefault );
+					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+					expect( getModelData( model ) ).to.equalMarkup( '[<fakeTableCell></fakeTableCell>]' );
+				} );
+
+				it( 'table tab handler for th should not capture event if selection is not in a tableCell marked as a header', () => {
+					editor.conversion.elementToElement( {
+						model: 'fakeTableHeader',
+						view: 'th'
+					} );
+
+					model.schema.register( 'fakeTableHeader', {
+						inheritAllFrom: '$blockObject'
+					} );
+
+					setModelData( model, '<fakeTableHeader>[]</fakeTableHeader>' );
+
+					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+					sinon.assert.notCalled( domEvtDataStub.preventDefault );
+					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+					expect( getModelData( model ) ).to.equalMarkup( '[<fakeTableHeader></fakeTableHeader>]' );
 				} );
 			} );
 		} );
@@ -2342,6 +2583,9 @@ describe( 'TableKeyboard', () => {
 							padding: 0 !important;
 							border: 0 !important
 						}
+						table {
+							table-layout: initial !important;
+						}
 						td { width: 30px !important; }
 						tr:nth-child(2) td:nth-child(2) { width: 300px !important; }
 						`
@@ -2802,7 +3046,7 @@ describe( 'TableKeyboard', () => {
 							] ) );
 						} );
 
-						it( 'should not move the caret if it\'s 2 characters before the last space in the line next to last one', () => {
+						it( 'should not move the caret if its 2 characters before the last space in the line next to last one', () => {
 							setModelData( model, modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', text.substring( 0, text.length - 2 ) + '[]od word word word', '12' ],

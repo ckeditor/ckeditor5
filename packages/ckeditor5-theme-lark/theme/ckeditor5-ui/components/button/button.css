@@ -139,6 +139,8 @@ a.ck.ck-button {
 	/* A style of the button which is currently on, e.g. its feature is active. */
 	&.ck-on {
 		@mixin ck-button-colors --ck-color-button-on;
+
+		color: var(--ck-color-button-on-color);
 	}
 
 	&.ck-button-save {

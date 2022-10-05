@@ -65,9 +65,6 @@
 
 			/* Items in a vertical toolbar span the entire width so rounded corners are pointless. */
 			border-radius: 0;
-
-			/* Items in a vertical toolbar span the entire width so any border is pointless. */
-			border: 0;
 		}
 	}
 
@@ -93,6 +90,19 @@
 		 */
 		& > .ck.ck-button.ck-dropdown__button {
 			padding-left: var(--ck-spacing-tiny);
+		}
+	}
+
+	/* A drop-down containing the nested toolbar with configured items. */
+	& .ck-toolbar__nested-toolbar-dropdown {
+		/* Prevent empty space in the panel when the dropdown label is visible and long but the toolbar has few items. */
+		& > .ck-dropdown__panel {
+			min-width: auto;
+		}
+
+		& > .ck-button > .ck-button__label {
+			max-width: 7em;
+			width: auto;
 		}
 	}
 

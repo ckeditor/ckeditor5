@@ -17,12 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgctxt "Title of the CKEditor5 editor."
-msgid "Rich Text Editor, %0"
-msgstr "Проширени уређивач текста, %0"
-
-msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
 msgstr "Проширен уређивач текста"
+
+msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
+msgid "Editor editing area: %0"
+msgstr "Област за уређивање уредника: %0"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
@@ -103,3 +103,11 @@ msgstr "Плава"
 msgctxt "Label of a button that applies a purple color in color pickers."
 msgid "Purple"
 msgstr "Љубичаста"
+
+msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
+msgid "Editor block content toolbar"
+msgstr "Трака са алаткама за блокирање садржаја уређивача"
+
+msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
+msgid "Editor contextual toolbar"
+msgstr "Контекстуална трака са алаткама Едитор"

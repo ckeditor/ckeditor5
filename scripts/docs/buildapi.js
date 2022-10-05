@@ -16,6 +16,7 @@ module.exports = function buildApiDocs() {
 			readmePath: 'README.md',
 			sourceFiles: [
 				'packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
+				'packages/@(ckeditor|ckeditor5)-*/_src/**/*.@(js|jsdoc)',
 				'!packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
 				'!packages/ckeditor5-build-*/src/**/*.js',
 				'external/*/packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',

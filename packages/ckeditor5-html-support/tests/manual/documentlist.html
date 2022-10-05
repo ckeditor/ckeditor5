@@ -1,0 +1,36 @@
+<div class="options-container">
+	<input id="chbx-show-borders" type="checkbox" />
+	<label for="chbx-show-borders">Show borders</label>
+</div>
+
+<div id="editor">
+	<ul data-main="list" style="background-color: yellow">
+		<li data-main="item" style="background-color: pink">
+			<p data-node="p1">foo</p>
+			<p data-node="p2">bar</p>
+			<ol data-nested="list" style="background-color: orange">
+				<li data-nested="item" style="background-color: red">x</li>
+				<li data-nested="item2" style="background-color: red">y</li>
+			</ol>
+		</li>
+	</ul>
+</div>
+
+<style>
+	.show-borders ul, .show-borders ol {
+		border: 2px dashed blue;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin: 5px;
+	}
+
+	.show-borders li {
+		border: 2px dotted red;
+		padding: 5px;
+		margin: 5px;
+	}
+
+	.options-container {
+		margin-bottom: 16px;
+	}
+</style>

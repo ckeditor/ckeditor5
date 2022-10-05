@@ -106,6 +106,31 @@ describe( 'TextPartLanguageEditing', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p><span dir="ltr" lang="fr">foo</span>bar</p>' );
 		} );
+
+		// #11538.
+		// #11563.
+		it( 'should not convert attribute set on other items than text', () => {
+			editor.conversion.elementToElement( { view: 'fakeBlock', model: 'fakeBlock' } );
+			model.schema.register( 'fakeBlock', { inheritAllFrom: '$block' } );
+
+			setModelData( model, '<fakeBlock language="fr:ltr">foo</fakeBlock>' );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.to.equal( '<fakeBlock>foo</fakeBlock>' );
+		} );
+
+		// #11538.
+		// #11563.
+		it( 'should convert attribute set on document selection', () => {
+			setModelData( model, '<paragraph>foo[]</paragraph>', {
+				selectionAttributes: {
+					language: 'fr:ltr'
+				}
+			} );
+
+			expect( getViewData( editor.editing.view ) )
+				.to.equal( '<p>foo<span dir="ltr" lang="fr">[]</span></p>' );
+		} );
 	} );
 
 	describe( 'config', () => {

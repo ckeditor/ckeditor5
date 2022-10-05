@@ -8,6 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
@@ -47,7 +48,7 @@ function initEditor() {
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [
-				ArticlePluginSet, CodeBlock, Alignment,
+				ArticlePluginSet, CodeBlock, Alignment, TableColumnResize,
 				TableProperties, TableCellProperties, SpecialCharacters, SpecialCharactersEssentials,
 				Code, Underline, Strikethrough, Superscript, Subscript,
 				Highlight, FontColor, FontBackgroundColor, FontFamily, FontSize,
@@ -107,7 +108,7 @@ function initEditor() {
 
 			document.getElementById( 'clear-content' ).addEventListener( 'click', clearData );
 			document.getElementById( 'print-data-action' ).addEventListener( 'click', printData );
-			document.getElementById( 'read-only' ).addEventListener( 'click', readOnly );
+			document.getElementById( 'read-only' ).addEventListener( 'click', toggleReadOnly );
 			document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
 
 			function destroyEditor() {
@@ -116,13 +117,24 @@ function initEditor() {
 				document.getElementById( 'destroyEditor' ).removeEventListener( 'click', destroyEditor );
 				document.getElementById( 'clear-content' ).removeEventListener( 'click', clearData );
 				document.getElementById( 'print-data-action' ).removeEventListener( 'click', printData );
-				document.getElementById( 'read-only' ).removeEventListener( 'click', readOnly );
+				document.getElementById( 'read-only' ).removeEventListener( 'click', toggleReadOnly );
 			}
 
-			function readOnly() {
-				editor.isReadOnly = !editor.isReadOnly;
-				document.getElementById( 'read-only' ).textContent =
-					editor.isReadOnly ? 'Turn off read-only mode' : 'Turn on read-only mode';
+			const button = document.getElementById( 'read-only' );
+			let isReadOnly = false;
+
+			function toggleReadOnly() {
+				isReadOnly = !isReadOnly;
+
+				if ( isReadOnly ) {
+					editor.enableReadOnlyMode( 'manual-test' );
+				} else {
+					editor.disableReadOnlyMode( 'manual-test' );
+				}
+
+				button.textContent = isReadOnly ?
+					'Turn off read-only mode' :
+					'Turn on read-only mode';
 
 				editor.editing.view.focus();
 			}

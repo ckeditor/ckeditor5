@@ -8,9 +8,7 @@ order: 20
 
 # Pasting content from Google Docs
 
-The Paste from Google Docs feature is provided through the {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin.
-
-This feature allows you to paste content from Google Docs and maintain the original structure and formatting. After creating a document in Google Docs you can simply copy it to CKEditor 5 and retain basic text styling, heading levels, links, lists, tables and images.
+The paste from Google Docs feature allows you to paste content from Google Docs and maintain the original structure and formatting. After creating a document in Google Docs you can simply copy it to CKEditor 5 and retain basic text styling, heading levels, links, lists, tables and images.
 
 When the plugin is enabled, it automatically detects Google Docs content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
 
@@ -21,7 +19,7 @@ The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also
 </info-box>
 
 <info-box info>
-	This feature is enabled by default in all {@link builds/guides/overview predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo
@@ -29,6 +27,10 @@ The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also
 To test how Paste from Office works, open the [sample Google Docs document](https://docs.google.com/document/d/1a9YzJidjxRPrxY9BL4ZReNFkPAgd_ItnZoFxcjSiJ4U/edit?usp=sharing), open it, copy the content, and paste it into CKEditor 5 below.
 
 {@snippet features/paste-from-office}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 
@@ -38,7 +40,7 @@ CKEditor 5 supports a wider range of paste features, including:
 
 ## Automatic content filtering
 
-With CKEditor 5 you do not need to worry about pasting messy content from Google Docs (or any other possible sources). Thanks to the CKEditor 5 {@link framework/guides/overview custom data model}, only content which is specifically handled by the loaded rich-text editor features will be preserved.
+With CKEditor 5 you do not need to worry about pasting messy content from Google Docs (or any other possible sources). Thanks to the CKEditor 5 {@link framework/index custom data model}, only content which is specifically handled by the loaded rich-text editor features will be preserved.
 
 This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Google Docs and other sources (e.g. other websites).
 
@@ -68,7 +70,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Support for other applications

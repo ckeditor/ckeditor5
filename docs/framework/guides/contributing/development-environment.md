@@ -176,7 +176,7 @@ The following error types are supported: `uncaught-exception`, `request-failure`
 * `navigation-error` &ndash; The navigation error may happen, when:
 	* there's an SSL error (e.g. in case of self-signed certificate or expired one),
 	* target URL is invalid,
-	* the timeout is exceeded during navigation to a page, so the `load` event is not emmited (e.g. due to an infinite loop in the JavaScript code).
+	* the timeout is exceeded during navigation to a page, so the `load` event is not emitted (e.g. due to an infinite loop in the JavaScript code).
 * `page-crash` &ndash; The general page malfunction, that does not fit to other categories (e.g. running out of a RAM).
 
 | Error&nbsp;type      | Example              |
@@ -230,7 +230,7 @@ yarn docs:content-styles
 
 The stylesheet will be saved in the `build/content-styles` folder.
 
-To learn more, refer to the {@link builds/guides/integration/content-styles Content styles} guide.
+To learn more, refer to the {@link installation/advanced/content-styles Content styles} guide.
 
 ## Additional information for contributors
 

@@ -9,10 +9,10 @@
 
 import View from '../view';
 import IconView from '../icon/iconview';
-import TooltipView from '../tooltip/tooltipview';
 
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../../theme/components/button/button.css';
 
@@ -71,14 +71,6 @@ export default class ButtonView extends View {
 		this.children = this.createCollection();
 
 		/**
-		 * Tooltip of the button view. It is configurable using the {@link #tooltip tooltip attribute}.
-		 *
-		 * @readonly
-		 * @member {module:ui/tooltip/tooltipview~TooltipView} #tooltipView
-		 */
-		this.tooltipView = this._createTooltipView();
-
-		/**
 		 * Label of the button view. It is configurable using the {@link #label label attribute}.
 		 *
 		 * @readonly
@@ -118,7 +110,7 @@ export default class ButtonView extends View {
 		 * @see #_getTooltipString
 		 * @private
 		 * @observable
-		 * @member {Boolean} #_tooltipString
+		 * @member {String|undefined} #_tooltipString
 		 */
 		this.bind( '_tooltipString' ).to(
 			this, 'tooltip',
@@ -127,7 +119,7 @@ export default class ButtonView extends View {
 			this._getTooltipString.bind( this )
 		);
 
-		this.setTemplate( {
+		const template = {
 			tag: 'button',
 
 			attributes: {
@@ -145,16 +137,14 @@ export default class ButtonView extends View {
 				tabindex: bind.to( 'tabindex' ),
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
-				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( value ) : false )
+				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( !!value ) : false ),
+				'data-cke-tooltip-text': bind.to( '_tooltipString' ),
+				'data-cke-tooltip-position': bind.to( 'tooltipPosition' )
 			},
 
 			children: this.children,
 
 			on: {
-				mousedown: bind.to( evt => {
-					evt.preventDefault();
-				} ),
-
 				click: bind.to( evt => {
 					// We can't make the button disabled using the disabled attribute, because it won't be focusable.
 					// Though, shouldn't this condition be moved to the button controller?
@@ -167,7 +157,18 @@ export default class ButtonView extends View {
 					}
 				} )
 			}
-		} );
+		};
+
+		// On Safari we have to force the focus on a button on click as it's the only browser
+		// that doesn't do that automatically. See #12115.
+		if ( env.isSafari ) {
+			template.on.mousedown = bind.to( evt => {
+				this.focus();
+				evt.preventDefault();
+			} );
+		}
+
+		this.setTemplate( template );
 	}
 
 	/**
@@ -181,7 +182,6 @@ export default class ButtonView extends View {
 			this.children.add( this.iconView );
 		}
 
-		this.children.add( this.tooltipView );
 		this.children.add( this.labelView );
 
 		if ( this.withKeystroke && this.keystroke ) {
@@ -194,22 +194,6 @@ export default class ButtonView extends View {
 	 */
 	focus() {
 		this.element.focus();
-	}
-
-	/**
-	 * Creates a {@link module:ui/tooltip/tooltipview~TooltipView} instance and binds it with button
-	 * attributes.
-	 *
-	 * @private
-	 * @returns {module:ui/tooltip/tooltipview~TooltipView}
-	 */
-	_createTooltipView() {
-		const tooltipView = new TooltipView();
-
-		tooltipView.bind( 'text' ).to( this, '_tooltipString' );
-		tooltipView.bind( 'position' ).to( this, 'tooltipPosition' );
-
-		return tooltipView;
 	}
 
 	/**
@@ -276,7 +260,7 @@ export default class ButtonView extends View {
 	}
 
 	/**
-	 * Gets the text for the {@link #tooltipView} from the combination of
+	 * Gets the text for the tooltip from the combination of
 	 * {@link #tooltip}, {@link #label} and {@link #keystroke} attributes.
 	 *
 	 * @private

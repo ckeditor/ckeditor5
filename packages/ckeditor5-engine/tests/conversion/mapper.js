@@ -445,7 +445,7 @@ describe( 'Mapper', () => {
 
 				expect( () => {
 					mapper.toViewPosition( modelPosition );
-				} ).to.throw( CKEditorError, 'mapping-view-position-parent-not-found' );
+				} ).to.throw( CKEditorError, 'mapping-model-position-view-parent-not-found' );
 			} );
 
 			// Default algorithm tests.

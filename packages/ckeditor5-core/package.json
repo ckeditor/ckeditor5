@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-core",
-  "version": "33.0.0",
+  "version": "35.2.0",
   "description": "The core architecture of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "wysiwyg",
@@ -23,25 +23,25 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-engine": "^33.0.0",
-    "@ckeditor/ckeditor5-ui": "^33.0.0",
-    "@ckeditor/ckeditor5-utils": "^33.0.0",
+    "@ckeditor/ckeditor5-engine": "^35.2.0",
+    "@ckeditor/ckeditor5-ui": "^35.2.0",
+    "@ckeditor/ckeditor5-utils": "^35.2.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-autoformat": "^33.0.0",
-    "@ckeditor/ckeditor5-basic-styles": "^33.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^33.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^33.0.0",
-    "@ckeditor/ckeditor5-essentials": "^33.0.0",
-    "@ckeditor/ckeditor5-heading": "^33.0.0",
-    "@ckeditor/ckeditor5-image": "^33.0.0",
-    "@ckeditor/ckeditor5-indent": "^33.0.0",
-    "@ckeditor/ckeditor5-link": "^33.0.0",
-    "@ckeditor/ckeditor5-list": "^33.0.0",
-    "@ckeditor/ckeditor5-media-embed": "^33.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^33.0.0",
-    "@ckeditor/ckeditor5-table": "^33.0.0"
+    "@ckeditor/ckeditor5-autoformat": "^35.2.0",
+    "@ckeditor/ckeditor5-basic-styles": "^35.2.0",
+    "@ckeditor/ckeditor5-block-quote": "^35.2.0",
+    "@ckeditor/ckeditor5-editor-classic": "^35.2.0",
+    "@ckeditor/ckeditor5-essentials": "^35.2.0",
+    "@ckeditor/ckeditor5-heading": "^35.2.0",
+    "@ckeditor/ckeditor5-image": "^35.2.0",
+    "@ckeditor/ckeditor5-indent": "^35.2.0",
+    "@ckeditor/ckeditor5-link": "^35.2.0",
+    "@ckeditor/ckeditor5-list": "^35.2.0",
+    "@ckeditor/ckeditor5-media-embed": "^35.2.0",
+    "@ckeditor/ckeditor5-paragraph": "^35.2.0",
+    "@ckeditor/ckeditor5-table": "^35.2.0"
   },
   "engines": {
     "node": ">=14.0.0",
@@ -60,6 +60,7 @@
     "lang",
     "src",
     "theme",
-    "ckeditor5-metadata.json"
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
   ]
 }

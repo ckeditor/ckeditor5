@@ -125,7 +125,7 @@ describe( 'MentionUI', () => {
 		it( 'should hide the contextual balloon when editor turns into a readonly mode', () => {
 			expect( panelView.isVisible ).to.be.true;
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( panelView.isVisible ).to.be.false;
 		} );
@@ -870,6 +870,69 @@ describe( 'MentionUI', () => {
 					} )
 					.then( waitForDebounce )
 					.then( () => expect( panelView.isVisible ).to.be.false );
+			} );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/11400
+		describe( 'matching with whitespaces', () => {
+			const feedItems = [
+				{ id: '@foo', name: 'Foo' },
+				{ id: '@marry', name: 'Marry Foo' },
+				{ id: '@marry', name: 'Marry Bar' },
+				{ id: '@marry', name: 'Marry Baz' }
+			];
+
+			beforeEach( async () => {
+				await createClassicTestEditor( {
+					feeds: [
+						{
+							feed: queryText => feedItems.filter( ( { name } ) => name.toLowerCase().includes( queryText ) ),
+							marker: '@'
+						}
+					]
+				} );
+			} );
+
+			it( 'should not show panel when the selection is at the whitespace after an existing mention', async () => {
+				setData( model, '<paragraph>foo @marry bar[]</paragraph>' );
+
+				model.change( writer => {
+					const range = writer.createRange(
+						// <paragraph>foo [@marry] bar</paragraph>
+						writer.createPositionAt( doc.getRoot().getChild( 0 ), 4 ),
+						writer.createPositionAt( doc.getRoot().getChild( 0 ), 10 )
+					);
+
+					writer.setAttribute( 'mention', { id: '@marry', uid: 1234 }, range );
+				} );
+
+				await waitForDebounce();
+
+				model.change( writer => {
+					writer.setSelection( doc.getRoot().getChild( 0 ), 0 );
+				} );
+
+				expect( panelView.isVisible ).to.be.false;
+
+				model.change( writer => {
+					// <paragraph>foo @marry []bar</paragraph>
+					// All "Marry *" could match here if it wasn't for the existing mention.
+					writer.setSelection( doc.getRoot().getChild( 0 ), 11 );
+				} );
+
+				expect( panelView.isVisible ).to.be.false;
+				expect( model.markers.has( 'mention' ) ).to.be.false;
+			} );
+
+			it( 'should show the panel when the selection is at the whitespace after a matching marker and text', async () => {
+				// This should match all "Marry *" because there's no marker for @marry yet.
+				setData( model, '<paragraph>foo @marry []bar</paragraph>' );
+
+				await waitForDebounce();
+
+				expect( panelView.isVisible ).to.be.true;
+				expect( model.markers.has( 'mention' ) ).to.be.true;
+				expect( mentionsView.items ).to.have.length( 3 );
 			} );
 		} );
 

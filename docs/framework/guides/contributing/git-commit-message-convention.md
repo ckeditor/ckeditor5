@@ -49,7 +49,7 @@ Each commit can contain additional notes that will be inserted into the changelo
 
 If any change contains the `MAJOR BREAKING CHANGE` note, the next release will automatically be marked as `major`.
 
-For reference on how to identify minor or major breaking change see the {@link framework/guides/support/versioning-policy versioning policy guide}.
+For reference on how to identify minor or major breaking change see the {@link support/versioning-policy versioning policy guide}.
 
 Each `MAJOR BREAKING CHANGE` or `MINOR BREAKING CHANGE` note must be followed by the package name.
 
@@ -81,7 +81,7 @@ When creating PRs that address specific issues, use the following messages to in
 
 ### Methods name syntax
 
-All methods mentioned in the git commit message should use the **#** sign inbetween the class name and the method name. And example of a properly named method:
+All methods mentioned in the git commit message should use the **#** sign between the class name and the method name. And example of a properly named method:
 
 ```
 MarkerCollection#has()
@@ -172,7 +172,7 @@ Changelog
 
 ## [1.0.0](https://github.com/ckeditor/ckeditor5/compare/v1.0.0...v0.0.1) (2017-01-04)
 
-### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils#foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
 

@@ -42,23 +42,20 @@ export default class TableKeyboard extends Plugin {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 
-		// Handle Tab key navigation.
-		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
-		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
-		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
-
 		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
+		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { context: 'figure' } );
+		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTab( ...args ), { context: [ 'th', 'td' ] } );
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
+	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * when the table widget is selected.
 	 *
 	 * @private
-	 * @param {module:engine/view/observer/keyobserver~KeyEventData} data Key event data.
-	 * @param {Function} cancel The stop/stopPropagation/preventDefault function.
+	 * @param {module:engine/view/observer/bubblingeventinfo~BubblingEventInfo} bubblingEventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_handleTabOnSelectedTable( data, cancel ) {
+	_handleTabOnSelectedTable( bubblingEventInfo, domEventData ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const selectedElement = selection.getSelectedElement();
@@ -67,7 +64,9 @@ export default class TableKeyboard extends Plugin {
 			return;
 		}
 
-		cancel();
+		domEventData.preventDefault();
+		domEventData.stopPropagation();
+		bubblingEventInfo.stop();
 
 		editor.model.change( writer => {
 			writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
@@ -75,87 +74,90 @@ export default class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Returns a handler for {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
+	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
 	 *
 	 * @private
-	 * @param {Boolean} isForward Whether this handler will move the selection to the next or the previous cell.
+	 * @param {module:engine/view/observer/bubblingeventinfo~BubblingEventInfo} bubblingEventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_getTabHandler( isForward ) {
+	_handleTab( bubblingEventInfo, domEventData ) {
 		const editor = this.editor;
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
-		return ( domEventData, cancel ) => {
-			const selection = editor.model.document.selection;
-			let tableCell = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
+		const selection = editor.model.document.selection;
+		const isForward = !domEventData.shiftKey;
 
-			if ( !tableCell ) {
-				tableCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
-			}
+		let tableCell = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
 
-			if ( !tableCell ) {
-				return;
-			}
+		if ( !tableCell ) {
+			tableCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
+		}
 
-			cancel();
+		if ( !tableCell ) {
+			return;
+		}
 
-			const tableRow = tableCell.parent;
-			const table = tableRow.parent;
+		domEventData.preventDefault();
+		domEventData.stopPropagation();
+		bubblingEventInfo.stop();
 
-			const currentRowIndex = table.getChildIndex( tableRow );
-			const currentCellIndex = tableRow.getChildIndex( tableCell );
+		const tableRow = tableCell.parent;
+		const table = tableRow.parent;
 
-			const isFirstCellInRow = currentCellIndex === 0;
+		const currentRowIndex = table.getChildIndex( tableRow );
+		const currentCellIndex = tableRow.getChildIndex( tableCell );
 
-			if ( !isForward && isFirstCellInRow && currentRowIndex === 0 ) {
-				// Set the selection over the whole table if the selection was in the first table cell.
+		const isFirstCellInRow = currentCellIndex === 0;
+
+		if ( !isForward && isFirstCellInRow && currentRowIndex === 0 ) {
+			// Set the selection over the whole table if the selection was in the first table cell.
+			editor.model.change( writer => {
+				writer.setSelection( writer.createRangeOn( table ) );
+			} );
+
+			return;
+		}
+
+		const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
+		const isLastRow = currentRowIndex === tableUtils.getRows( table ) - 1;
+
+		if ( isForward && isLastRow && isLastCellInRow ) {
+			editor.execute( 'insertTableRowBelow' );
+
+			// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
+			// or it got overwritten) set the selection over the whole table to mirror the first cell case.
+			if ( currentRowIndex === tableUtils.getRows( table ) - 1 ) {
 				editor.model.change( writer => {
 					writer.setSelection( writer.createRangeOn( table ) );
 				} );
 
 				return;
 			}
+		}
 
-			const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
-			const isLastRow = currentRowIndex === tableUtils.getRows( table ) - 1;
+		let cellToFocus;
 
-			if ( isForward && isLastRow && isLastCellInRow ) {
-				editor.execute( 'insertTableRowBelow' );
+		// Move to the first cell in the next row.
+		if ( isForward && isLastCellInRow ) {
+			const nextRow = table.getChild( currentRowIndex + 1 );
 
-				// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
-				// or it got overwritten) set the selection over the whole table to mirror the first cell case.
-				if ( currentRowIndex === tableUtils.getRows( table ) - 1 ) {
-					editor.model.change( writer => {
-						writer.setSelection( writer.createRangeOn( table ) );
-					} );
+			cellToFocus = nextRow.getChild( 0 );
+		}
+		// Move to the last cell in the previous row.
+		else if ( !isForward && isFirstCellInRow ) {
+			const previousRow = table.getChild( currentRowIndex - 1 );
 
-					return;
-				}
-			}
+			cellToFocus = previousRow.getChild( previousRow.childCount - 1 );
+		}
+		// Move to the next/previous cell.
+		else {
+			cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) );
+		}
 
-			let cellToFocus;
-
-			// Move to the first cell in the next row.
-			if ( isForward && isLastCellInRow ) {
-				const nextRow = table.getChild( currentRowIndex + 1 );
-
-				cellToFocus = nextRow.getChild( 0 );
-			}
-			// Move to the last cell in the previous row.
-			else if ( !isForward && isFirstCellInRow ) {
-				const previousRow = table.getChild( currentRowIndex - 1 );
-
-				cellToFocus = previousRow.getChild( previousRow.childCount - 1 );
-			}
-			// Move to the next/previous cell.
-			else {
-				cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) );
-			}
-
-			editor.model.change( writer => {
-				writer.setSelection( writer.createRangeIn( cellToFocus ) );
-			} );
-		};
+		editor.model.change( writer => {
+			writer.setSelection( writer.createRangeIn( cellToFocus ) );
+		} );
 	}
 
 	/**

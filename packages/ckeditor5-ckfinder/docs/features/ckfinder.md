@@ -1,17 +1,22 @@
 ---
 category: features-image-upload
 menu-title: CKFinder file manager
-order: 30
+order: 40
+badges: [ premium ]
 ---
 
 {@snippet features/build-ckfinder-source}
 
 # CKFinder file manager integration
 
-This feature allows you to insert images as well as links to files into the rich-text editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader. CKFinder is a commercial application that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET and Java and version 2.x for ASP and ColdFusion.
+This CKFinder integration feature allows you to insert images as well as links to files into the rich-text editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader. CKFinder is a commercial application that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET and Java and version 2.x for ASP and ColdFusion.
 
 <info-box info>
-	CKFinder is a commercial solution. This feature is enabled by default in all {@link builds/guides/overview predefined builds} for convenience, but the editor will still work properly without activating it.
+	This is a premium feature that is additionally payable on top of CKEditor 5 commercial license fee. Please contact us at [sales@cksource.com](mailto:sales@cksource.com) to receive a custom offer tailored to your needs.
+
+	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
+
+	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) for convenience, but the editor will still work properly without activating it.
 </info-box>
 
 This feature can be used in the rich-text editor in two different ways:
@@ -39,6 +44,10 @@ This demo shows the integration where the file manager's server connector handle
 * Use the "Insert image" button in the toolbar to insert an image.
 
 {@snippet features/ckfinder-upload-only}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ### Full integration
 

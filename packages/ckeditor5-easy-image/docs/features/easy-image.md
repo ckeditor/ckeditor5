@@ -1,18 +1,23 @@
 ---
 category: features-image-upload
 menu-title: Easy Image
-order: 20
+order: 30
+badges: [ premium ]
 ---
 
 # Easy Image integration
 
-CKEditor 5 introduces a new way of handling images, with a strong focus on the end–user experience. This feature is called [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) and its goal is to make the image upload as effortless and intuitive as possible.
+The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) feature takes care of handling images with a strong focus on the end–user experience. Its goal is to make the image upload as effortless and intuitive as possible.
 
 <info-box info>
-	Easy Image is part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. This feature is enabled by default in all {@link builds/guides/overview predefined builds} for convenience, but the editor will still work properly without activating it.
+	This is a premium feature that is additionally payable on top of CKEditor 5 commercial license fee. Please contact us at [sales@cksource.com](mailto:sales@cksource.com) to receive a custom offer tailored to your needs.
+
+	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
+
+	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) for convenience, but the editor will still work properly without activating it.
 </info-box>
 
-Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product which:
+Easy Image is part of the CKEditor Cloud Services. It is a <abbr title="Software as a service">SaaS</abbr> product which:
 
 * securely uploads images,
 * takes care of rescaling and [optimizing them](https://ckeditor.com/docs/cs/latest/guides/easy-image/service-details.html#image-processing) as well as providing [various image sizes](#responsive-images) (responsive images), <!-- absolute link -->
@@ -22,11 +27,15 @@ All that with virtually zero server setup.
 
 ## Demo
 
-The demo below uses the {@link builds/guides/overview#classic-editor Classic editor} configured to use the Easy Image service provided by CKEditor Cloud Services:
+The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor} configured to use the Easy Image service provided by CKEditor Cloud Services:
 
 {@snippet build-classic-source}
 
 {@snippet features/easy-image}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Configuration
 

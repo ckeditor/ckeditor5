@@ -35,16 +35,50 @@ describe( 'Model', () => {
 			expect( schema.isLimit( '$root' ) ).to.be.true;
 		} );
 
+		it( 'registers $container to the schema', () => {
+			expect( schema.isRegistered( '$container' ) ).to.be.true;
+			expect( schema.checkChild( [ '$root' ], '$container' ) ).to.be.true;
+			expect( schema.checkChild( [ '$container' ], '$container' ) ).to.be.true;
+			expect( schema.checkChild( [ '$container' ], '$block' ) ).to.be.true;
+		} );
+
 		it( 'registers $block to the schema', () => {
 			expect( schema.isRegistered( '$block' ) ).to.be.true;
 			expect( schema.isBlock( '$block' ) ).to.be.true;
 			expect( schema.checkChild( [ '$root' ], '$block' ) ).to.be.true;
+			expect( schema.checkChild( [ '$container' ], '$block' ) ).to.be.true;
+		} );
+
+		it( 'registers $blockObject to the schema', () => {
+			expect( schema.isRegistered( '$blockObject' ) ).to.be.true;
+			expect( schema.isBlock( '$blockObject' ) ).to.be.true;
+			expect( schema.isObject( '$blockObject' ) ).to.be.true;
+			expect( schema.checkChild( [ '$root' ], '$blockObject' ) ).to.be.true;
+			expect( schema.checkChild( [ '$container' ], '$blockObject' ) ).to.be.true;
+			expect( schema.checkChild( [ '$block' ], '$blockObject' ) ).to.be.false;
+		} );
+
+		it( 'registers $inlineObject to the schema', () => {
+			expect( schema.isRegistered( '$inlineObject' ) ).to.be.true;
+			expect( schema.isInline( '$inlineObject' ) ).to.be.true;
+			expect( schema.isObject( '$inlineObject' ) ).to.be.true;
+			expect( schema.checkChild( [ '$root' ], '$inlineObject' ) ).to.be.false;
+			expect( schema.checkChild( [ '$container' ], '$inlineObject' ) ).to.be.false;
+			expect( schema.checkChild( [ '$block' ], '$inlineObject' ) ).to.be.true;
+
+			schema.extend( '$text', {
+				allowAttributes: [ 'foo', 'bar' ]
+			} );
+
+			expect( schema.checkAttribute( '$inlineObject', 'foo' ) ).to.be.true;
+			expect( schema.checkAttribute( '$inlineObject', 'bar' ) ).to.be.true;
 		} );
 
 		it( 'registers $text to the schema', () => {
 			expect( schema.isRegistered( '$text' ) ).to.be.true;
 			expect( schema.isContent( '$text' ) ).to.be.true;
 			expect( schema.checkChild( [ '$block' ], '$text' ) ).to.be.true;
+			expect( schema.checkChild( [ '$container' ], '$text' ) ).to.be.false;
 		} );
 
 		it( 'registers $clipboardHolder to the schema', () => {
@@ -350,6 +384,26 @@ describe( 'Model', () => {
 			} );
 		} );
 
+		it( 'should fire `_beforeChanges` and `_afterChanges` events', () => {
+			model.on( '_beforeChanges', () => {
+				changes += 'A';
+			} );
+
+			model.on( '_afterChanges', () => {
+				changes += 'D';
+			} );
+
+			model.change( () => {
+				changes += 'B';
+
+				model.enqueueChange( () => {
+					changes += 'C';
+				} );
+			} );
+
+			expect( changes ).to.equal( 'ABCD' );
+		} );
+
 		it( 'should rethrow native errors as they are in the dubug=true mode in the model.change() block', () => {
 			const error = new TypeError( 'foo' );
 
@@ -388,6 +442,40 @@ describe( 'Model', () => {
 					throw err;
 				} );
 			}, /foo/, null, { foo: 1 } );
+		} );
+
+		it( 'should not keep failed change pending', () => {
+			expect( () => {
+				model.change( () => {
+					changes += 'A';
+
+					throw new Error();
+				} );
+			} ).to.throw();
+
+			expect( () => {
+				model.enqueueChange( () => {
+					changes += 'B';
+				} );
+			} ).to.not.throw();
+
+			expect( changes ).to.equal( 'AB' );
+		} );
+
+		it( 'should fire `_afterChanges` after failed change', () => {
+			model.on( '_afterChanges', () => {
+				changes += 'B';
+			} );
+
+			expect( () => {
+				model.change( () => {
+					changes += 'A';
+
+					throw new Error();
+				} );
+			} ).to.throw();
+
+			expect( changes ).to.equal( 'AB' );
 		} );
 	} );
 

@@ -1721,6 +1721,29 @@ describe( 'ListPropertiesEditing', () => {
 				}
 			} );
 
+			describe( 'toggling list', () => {
+				// #11408
+				it( 'should copy the `listStyle` attribute from the previous list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Apollo</listItem>' +
+						'<paragraph>[Space shuttle</paragraph>' +
+						'<paragraph>Dragon]</paragraph>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Apollo</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">[Space shuttle</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Dragon]</listItem>'
+					);
+				} );
+			} );
+
 			describe( 'the FontColor feature', () => {
 				let editor, view, container;
 
@@ -3431,6 +3454,29 @@ describe( 'ListPropertiesEditing', () => {
 					};
 				}
 			} );
+
+			describe( 'toggling list', () => {
+				// #11408
+				it( 'should copy the `listReversed` attribute from the previous list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Apollo</listItem>' +
+						'<paragraph>[Space shuttle</paragraph>' +
+						'<paragraph>Dragon]</paragraph>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Apollo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">[Space shuttle</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Dragon]</listItem>'
+					);
+				} );
+			} );
 		} );
 	} );
 
@@ -5080,6 +5126,29 @@ describe( 'ListPropertiesEditing', () => {
 					};
 				}
 			} );
+
+			describe( 'toggling list', () => {
+				// #11408
+				it( 'should copy the `listStart` attribute from the previous list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listStart="5" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">Apollo</listItem>' +
+						'<paragraph>[Space shuttle</paragraph>' +
+						'<paragraph>Dragon]</paragraph>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStart="5" listType="numbered">Mercury</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">Gemini</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">Apollo</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">[Space shuttle</listItem>' +
+						'<listItem listIndent="0" listStart="5" listType="numbered">Dragon]</listItem>'
+					);
+				} );
+			} );
 		} );
 	} );
 
@@ -5163,7 +5232,7 @@ describe( 'ListPropertiesEditing', () => {
 					);
 
 					expect( editor.getData() ).to.equal(
-						'<ol style="list-style-type:circle;" reversed="reversed" start="5"><li>Foo</li><li>Bar</li></ol>'
+						'<ol style="list-style-type:circle;" start="5" reversed="reversed"><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
 
@@ -5213,7 +5282,7 @@ describe( 'ListPropertiesEditing', () => {
 							'</li>' +
 							'<li>2</li>' +
 							'<li>3' +
-								'<ol style="list-style-type:circle;" reversed="reversed" start="3">' +
+								'<ol style="list-style-type:circle;" start="3" reversed="reversed">' +
 									'<li>3.1</li>' +
 								'</ol>' +
 							'</li>' +

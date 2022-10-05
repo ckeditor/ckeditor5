@@ -1,30 +1,32 @@
 ---
 title: Tables
 category: features
-modified_at: 2021-06-07
+modified_at: 2022-05-19
 ---
 
 {@snippet features/build-table-source}
 
-The {@link module:table/table~Table} feature offers table creation and editing tools that help content authors bring tabular data into their documents. Tables help organize the content in a distinct, visual way that stands out from the text and is more easily readable for certain types of information. They are perfect for listing, grouping, and otherwise organizing data sets or for providing information in a clear, efficient way.
-
-Tables are great for schedules, timetables, price lists or menus; for listing terms and conditions or providing troubleshooting solutions. They also visually break and provide relief from large body texts. CKEditor 5 offers all necessary functionality to produce advanced, visually appealing and highly efficient tables.
+The table feature offers table creation and editing tools that help content authors bring tabular data into their documents. Tables help organize the content in a distinct, visual way that stands out from the text and is more easily readable for certain types of information. They are perfect for listing, grouping, and otherwise organizing data sets or for providing information in a clear, efficient way. CKEditor 5 offers all necessary functionality to produce advanced, visually appealing and highly efficient tables.
 
 You may look for more interesting details in the [Tables in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-tables-in-ckeditor-5/) blog post after reading this guide.
 
 <info-box info>
-	The basic table feature feature is enabled by default in all {@link builds/guides/overview predefined builds}.
+	The basic table feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demos
 
 ### Basic table features
 
-The editor bellow shows the basic set of table features focusing on the **structure and semantics**. Use the **Insert table** toolbar button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table} in the editor below to create new tables. Focus any cell in the table to display the toolbar with buttons that will help you further shape the structure of the table.
+The editor below shows the basic set of table features focusing on the **structure and semantics**. Use the **Insert table** toolbar button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table} in the editor below to create new tables. Focus any cell in the table to display the toolbar with buttons that will help you further shape the structure of the table.
 
-Click anywhere inside the table to invoke the table toolbar. The features available in there allow users to add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
+Click anywhere inside the table to invoke the table toolbar. The features available in there allow users to add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}. It is also worth noting that you will find them out–of–the–box in all {@link installation/getting-started/predefined-builds predefined builds}.
 
 {@snippet features/table}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ### Table and cell styling tools
 
@@ -37,23 +39,37 @@ Put the caret anywhere inside the table to invoke the table toolbar. Then click 
 [Learn more](#configuring-styling-tools) about configuring color palettes in the table styling pop–up interfaces.
 
 <info-box>
-	By default, table styling tools are not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
+	By default, table styling tools are not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
+</info-box>
+
+### Table column resize
+
+The {@link module:table/tablecolumnresize~TableColumnResize} plugin adds support for resizing tables and table columns. It gives the content creator full control over the column width. It is a great tool to control both the content and the look of the table. By resizing individual columns, the authors can adjust them to their needs, depending on content inside.
+
+To resize a column, simply hover your pointer over the column edge until it gets highlighted. Just drag the column edge until you achieve the desired size and release.
+
+The column resize feature is compatible with the {@link features/export-word Export to Word} feature. The converter will respect the column width set in the editor and retain it in the effecting .DOCX file.
+
+{@snippet features/table-column-resize}
+
+<info-box>
+	By default, the table column resize feature is not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately.
 </info-box>
 
 ### Table caption
 
-The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions. These work very much like image captions &mdash; the caption informs the reader about the content of the table. Using captions is also beneficial from the accessability point of view as they would be read by screen readers.
+The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions. These work very much like image captions &mdash; the caption informs the reader about the content of the table. Using captions is also beneficial from the accessibility point of view as they would be read by screen readers.
 
 Click on the table caption in the demo to edit it or use the table toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption} to toggle the caption on and off.
 
 {@snippet features/table-caption}
 
 <info-box>
-	By default, the table caption feature is not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-caption-2) section to learn how to enable it in your editor.
+	By default, the table caption feature is not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately. See the [installation](#table-caption-2) section to learn how to enable it in your editor.
 </info-box>
 
 
-By default, the table caption is placed above the table. You can change the placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
+By default, the table caption is placed above the table. You can change the placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link installation/advanced/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
 
 ### Nesting tables
 
@@ -75,6 +91,10 @@ The {@link module:table/tableselection~TableSelection} plugin introduces support
 * Apply formatting or add a link to all selected cells at once.
 
 The table selection plugin is loaded automatically by the `Table` plugin and can be tested in the [demos above](#demos).
+
+## Typing around tables
+
+To type before or after a table easily, select the table, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after. The table is no longer selected and whatever text you type will appear in the desired position.
 
 ## Installation
 
@@ -176,6 +196,28 @@ ClassicEditor
 	Learn more about [configuring color palettes](#configuring-styling-tools) in the table and table cell property pop–ups.
 </info-box>
 
+### Table column resize
+
+To enable the table column resize feature in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
+
+```
+npm install --save @ckeditor/ckeditor5-table
+```
+
+Then add the `Table` and **`TableColumnResize`** plugins to your plugin list and configure the table toolbar:
+
+```js
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Table, TableColumnResize, ... ],
+		toolbar: [ 'insertTable', ... ],
+	} )
+	.then( ... )
+	.catch( ... );
+```
 ### Table caption
 
 To enable the table caption feature in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
@@ -206,13 +248,13 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuring styling tools
 
 <info-box>
-	By default, table styling tools are not included in any {@link builds/guides/overview predefined editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
+	By default, table styling tools are not included in any {@link installation/getting-started/predefined-builds predefined editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
 </info-box>
 
 Among other formatting options, table and cell styling tools allow users to create tables with colorful backgrounds and borders. These colors can be easily picked using color palettes in the **"Table properties"** and **"Cell properties"** pop–ups. To help users choose the right colors for the content, the color palettes can be pre–configured, like in the editor below:
@@ -231,7 +273,7 @@ You can use these specific configuration options to define customized color pale
 * {@link module:table/table~TableConfig#tableCellProperties `tableCellProperties.backgroundColors`} &ndash; Defines the color palette for cell background.
 
 <info-box>
-	The above configurations **do not** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}, i.e. they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
+	The above configurations **do not** impact the {@link installation/getting-started/basic-api#setting-the-editor-data-with-setdata data loaded into the editor}, i.e. they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
 </info-box>
 
 For instance, to define the same color palette for all border and background configurations, use the following code snippet:
@@ -295,7 +337,7 @@ ClassicEditor
 
 ### Default table and table cell styles
 
-The table styles feature allows for configuring the default look of the tables in the editor. The configuration object should be synchronized with the {@link builds/guides/integration/content-styles editor content styles}.
+The table styles feature allows for configuring the default look of the tables in the editor. The configuration object should be synchronized with the {@link installation/advanced/content-styles editor content styles}.
 
 The **“Table properties”** and **“Table cell properties”** buttons in the toolbar will show the table and table cell properties applied to the table or table cells.
 
@@ -365,7 +407,7 @@ The same will be applied for new tables and cells if they are inserted into the 
 Read more about all supported properties for the {@link module:table/tableproperties~TablePropertiesOptions table} and {@link module:table/tablecellproperties~TableCellPropertiesOptions table cell} features in their API documentation.
 
 <info-box>
-	The default table and table cell styles **do** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}. Default properties will not be kept in the editor model.
+	The default table and table cell styles **do** impact the {@link installation/getting-started/basic-api#setting-the-editor-data-with-setdata data loaded into the editor}. Default properties will not be kept in the editor model.
 </info-box>
 
 ## Block vs inline content in table cells
@@ -502,7 +544,7 @@ ClassicEditor
 	.catch( ... );
 ```
 <info-box>
-	Check the {@link framework/guides/creating-simple-plugin plugin development guide} if you need more information about the technical side of this solution.
+	Check the {@link framework/guides/creating-simple-plugin-timestamp plugin development guide} if you need more information about the technical side of this solution.
 </info-box>
 
 ## Common API

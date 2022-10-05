@@ -1,17 +1,31 @@
-node_modules/
-coverage/
-packages/*/node_modules/
+# All "dot directories".
+.*/**
+!.github/**
+
+# Files associated with CKEditor 5 repository.
+**/node_modules
+build/
+!packages/ckeditor5-build-*/build
 docs/api/output.json
+yarn.lock
+package-lock.json
+coverage/
+
+# Files associated with external repositories.
 external/
-lerna-debug.log
+mrgit.json
+
+# Files associated with specific development environments.
+.DS_Store
 .idea
 .vscode
 
-# Ignore `yarn.lock` - this file might contain info from external repositories.
-yarn.lock
+# Ignore yalc
+.yalc
+yalc.lock
 
-# Ignore `mrgit.json` this file contains info about external repositories.
-mrgit.json
 
-build/
-!packages/ckeditor5-build-*/build
+# Ignore compiled TypeScript files.
+packages/ckeditor5-utils/src/**/*.js
+packages/ckeditor5-engine/src/**/*.js
+packages/*/src/**/*.d.ts

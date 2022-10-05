@@ -7,6 +7,8 @@
  * @module html-support/datafilter
  */
 
+/* globals document */
+
 import DataSchema from './dataschema';
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -53,6 +55,9 @@ import '../theme/datafilter.css';
  *			}
  *		} );
  *
+ * To apply the information about allowed and disallowed attributes in custom integration plugin,
+ * use the {@link module:html-support/datafilter~DataFilter#processViewAttributes `processViewAttributes()`} method.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class DataFilter extends Plugin {
@@ -98,6 +103,15 @@ export default class DataFilter extends Plugin {
 		this._allowedElements = new Set();
 
 		/**
+		 * Disallowed element names by {@link module:html-support/datafilter~DataFilter#disallowElement} method.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {Set.<String>} #_disallowedElements
+		 */
+		this._disallowedElements = new Set();
+
+		/**
 		 * Indicates if {@link module:engine/controller/datacontroller~DataController editor's data controller}
 		 * data has been already initialized.
 		 *
@@ -106,8 +120,18 @@ export default class DataFilter extends Plugin {
 		*/
 		this._dataInitialized = false;
 
+		/**
+		 * Cached map of coupled attributes. Keys are the feature attributes names
+		 * and values are arrays with coupled GHS attributes names.
+		 *
+		 * @private
+		 * @member {Map.<String,Array>}
+		 */
+		this._coupledAttributes = null;
+
 		this._registerElementsAfterInit();
 		this._registerElementHandlers();
+		this._registerModelPostFixer();
 	}
 
 	/**
@@ -127,21 +151,46 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Load a configuration of one or many elements, where their attributes should be allowed.
 	 *
+	 * **Note**: Rules will be applied just before next data pipeline data init or set.
+	 *
 	 * @param {Array.<module:engine/view/matcher~MatcherPattern>} config Configuration of elements
 	 * that should have their attributes accepted in the editor.
 	 */
 	loadAllowedConfig( config ) {
-		this._loadConfig( config, pattern => this.allowAttributes( pattern ) );
+		for ( const pattern of config ) {
+			// MatcherPattern allows omitting `name` to widen the search of elements.
+			// Let's keep it consistent and match every element if a `name` has not been provided.
+			const elementName = pattern.name || /[\s\S]+/;
+			const rules = splitRules( pattern );
+
+			this.allowElement( elementName );
+
+			rules.forEach( pattern => this.allowAttributes( pattern ) );
+		}
 	}
 
 	/**
 	 * Load a configuration of one or many elements, where their attributes should be disallowed.
 	 *
+	 * **Note**: Rules will be applied just before next data pipeline data init or set.
+	 *
 	 * @param {Array.<module:engine/view/matcher~MatcherPattern>} config Configuration of elements
 	 * that should have their attributes rejected from the editor.
 	 */
 	loadDisallowedConfig( config ) {
-		this._loadConfig( config, pattern => this.disallowAttributes( pattern ) );
+		for ( const pattern of config ) {
+			// MatcherPattern allows omitting `name` to widen the search of elements.
+			// Let's keep it consistent and match every element if a `name` has not been provided.
+			const elementName = pattern.name || /[\s\S]+/;
+			const rules = splitRules( pattern );
+
+			// Disallow element itself if there is no other rules.
+			if ( rules.length == 0 ) {
+				this.disallowElement( elementName );
+			} else {
+				rules.forEach( pattern => this.disallowAttributes( pattern ) );
+			}
+		}
 	}
 
 	/**
@@ -149,6 +198,8 @@ export default class DataFilter extends Plugin {
 	 *
 	 * This method will only allow elements described by the {@link module:html-support/dataschema~DataSchema} used
 	 * to create data filter.
+	 *
+	 * **Note**: Rules will be applied just before next data pipeline data init or set.
 	 *
 	 * @param {String|RegExp} viewName String or regular expression matching view name.
 	 */
@@ -165,8 +216,33 @@ export default class DataFilter extends Plugin {
 			// If the data has not been initialized yet, _registerElementsAfterInit() method will take care of
 			// registering elements.
 			if ( this._dataInitialized ) {
-				this._fireRegisterEvent( definition );
+				// Defer registration to the next data pipeline data set so any disallow rules could be applied
+				// even if added after allow rule (disallowElement).
+				this.editor.data.once( 'set', () => {
+					this._fireRegisterEvent( definition );
+				}, {
+					// With the highest priority listener we are able to register elements right before
+					// running data conversion.
+					priority: priorities.get( 'highest' ) + 1
+				} );
 			}
+
+			// Reset cached map to recalculate it on the next usage.
+			this._coupledAttributes = null;
+		}
+	}
+
+	/**
+	 * Disallow the given element in the editor context.
+	 *
+	 * This method will only disallow elements described by the {@link module:html-support/dataschema~DataSchema} used
+	 * to create data filter.
+	 *
+	 * @param {String|RegExp} viewName String or regular expression matching view name.
+	 */
+	disallowElement( viewName ) {
+		for ( const definition of this._dataSchema.getDefinitionsForView( viewName, false ) ) {
+			this._disallowedElements.add( definition.view );
 		}
 	}
 
@@ -189,36 +265,30 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * Batch load of the filtering configuration.
+	 * Processes all allowed and disallowed attributes on the view element by consuming them and returning the allowed ones.
 	 *
-	 * @private
-	 * @param {Array.<module:engine/view/matcher~MatcherPattern>} config Filtering configuration.
-	 * @param {Function} handleAttributes Callback handling the way the attributes should be processed.
-	 */
-	_loadConfig( config, handleAttributes ) {
-		for ( const pattern of config ) {
-			// MatcherPattern allows omitting `name` to widen the search of elements.
-			// Let's keep it consistent and match every element if a `name` has not been provided.
-			const elementName = pattern.name || /[\s\S]+/;
-
-			this.allowElement( elementName );
-
-			splitRules( pattern ).forEach( handleAttributes );
-		}
-	}
-
-	/**
-	 * Matches and consumes allowed and disallowed view attributes and returns the allowed ones.
+	 * This method applies the configuration set up by {@link #allowAttributes `allowAttributes()`}
+	 * and {@link #disallowAttributes `disallowAttributes()`} over the given view element by consuming relevant attributes.
+	 * It returns the allowed attributes that were found on the given view element for further processing by integration code.
 	 *
-	 * @protected
+	 *		dispatcher.on( 'element:myElement', ( evt, data, conversionApi ) => {
+	 *			// Get rid of disallowed and extract all allowed attributes from a viewElement.
+	 *			const viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
+	 *			// Do something with them, i.e. store inside a model as a dictionary.
+	 *			if ( viewAttributes ) {
+	 *				conversionApi.writer.setAttribute( 'htmlAttributesOfMyElement', viewAttributes, data.modelRange );
+	 *			}
+	 *		} );
+	 *
+	 * @see module:engine/conversion/viewconsumable~ViewConsumable#consume
 	 * @param {module:engine/view/element~Element} viewElement
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+	 * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi
 	 * @returns {Object} [result]
 	 * @returns {Object} result.attributes Set with matched attribute names.
 	 * @returns {Object} result.styles Set with matched style names.
 	 * @returns {Array.<String>} result.classes Set with matched class names.
 	 */
-	_consumeAllowedAttributes( viewElement, conversionApi ) {
+	processViewAttributes( viewElement, conversionApi ) {
 		// Make sure that the disabled attributes are handled before the allowed attributes are called.
 		// For example, for block images the <figure> converter triggers conversion for <img> first and then for other elements, i.e. <a>.
 		consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
@@ -289,12 +359,101 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
+	 * Registers a model post-fixer that is removing coupled GHS attributes of inline elements. Those attributes
+	 * are removed if a coupled feature attribute is removed.
+	 *
+	 * For example, consider following HTML:
+	 *
+	 *		<a href="foo.html" id="myId">bar</a>
+	 *
+	 * Which would be upcasted to following text node in the model:
+	 *
+	 *		<$text linkHref="foo.html" htmlA="{ attributes: { id: 'myId' } }">bar</$text>
+	 *
+	 * When the user removes the link from that text (using UI), only `linkHref` attribute would be removed:
+	 *
+	 *		<$text htmlA="{ attributes: { id: 'myId' } }">bar</$text>
+	 *
+	 * The `htmlA` attribute would stay in the model and would cause GHS to generate an `<a>` element.
+	 * This is incorrect from UX point of view, as the user wanted to remove the whole link (not only `href`).
+	 *
+	 * @private
+	 */
+	_registerModelPostFixer() {
+		const model = this.editor.model;
+
+		model.document.registerPostFixer( writer => {
+			const changes = model.document.differ.getChanges();
+			let changed = false;
+
+			const coupledAttributes = this._getCoupledAttributesMap();
+
+			for ( const change of changes ) {
+				// Handle only attribute removals.
+				if ( change.type != 'attribute' || change.attributeNewValue !== null ) {
+					continue;
+				}
+
+				// Find a list of coupled GHS attributes.
+				const attributeKeys = coupledAttributes.get( change.attributeKey );
+
+				if ( !attributeKeys ) {
+					continue;
+				}
+
+				// Remove the coupled GHS attributes on the same range as the feature attribute was removed.
+				for ( const { item } of change.range.getWalker( { shallow: true } ) ) {
+					for ( const attributeKey of attributeKeys ) {
+						if ( item.hasAttribute( attributeKey ) ) {
+							writer.removeAttribute( attributeKey, item );
+							changed = true;
+						}
+					}
+				}
+			}
+
+			return changed;
+		} );
+	}
+
+	/**
+	 * Collects the map of coupled attributes. The returned map is keyed by the feature attribute name
+	 * and coupled GHS attribute names are stored in the value array .
+	 *
+	 * @private
+	 * @returns {Map.<String,Array>}
+	 */
+	_getCoupledAttributesMap() {
+		if ( this._coupledAttributes ) {
+			return this._coupledAttributes;
+		}
+
+		this._coupledAttributes = new Map();
+
+		for ( const definition of this._allowedElements ) {
+			if ( definition.coupledAttribute && definition.model ) {
+				const attributeNames = this._coupledAttributes.get( definition.coupledAttribute );
+
+				if ( attributeNames ) {
+					attributeNames.push( definition.model );
+				} else {
+					this._coupledAttributes.set( definition.coupledAttribute, [ definition.model ] );
+				}
+			}
+		}
+	}
+
+	/**
 	 * Fires `register` event for the given element definition.
 	 *
 	 * @private
 	 * @param {module:html-support/dataschema~DataSchemaDefinition} definition
 	 */
 	_fireRegisterEvent( definition ) {
+		if ( definition.view && this._disallowedElements.has( definition.view ) ) {
+			return;
+		}
+
 		this.fire( definition.view ? `register:${ definition.view }` : 'register', definition );
 	}
 
@@ -312,6 +471,7 @@ export default class DataFilter extends Plugin {
 
 		schema.register( modelName, definition.modelSchema );
 
+		/* istanbul ignore next: paranoid check */
 		if ( !viewName ) {
 			return;
 		}
@@ -336,7 +496,12 @@ export default class DataFilter extends Plugin {
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
 
 		conversion.for( 'editingDowncast' ).elementToStructure( {
-			model: modelName,
+			model: {
+				name: modelName,
+				attributes: [
+					'htmlAttributes'
+				]
+			},
 			view: toObjectWidgetConverter( editor, definition )
 		} );
 
@@ -432,14 +597,14 @@ export default class DataFilter extends Plugin {
 	 * as an event namespace, e.g. `register:span`.
 	 *
 	 * 		dataFilter.on( 'register', ( evt, definition ) => {
-	 * 			editor.schema.register( definition.model, definition.modelSchema );
+	 * 			editor.model.schema.register( definition.model, definition.modelSchema );
 	 * 			editor.conversion.elementToElement( { model: definition.model, view: definition.view } );
 	 *
 	 * 			evt.stop();
 	 * 		} );
 	 *
 	 * 		dataFilter.on( 'register:span', ( evt, definition ) => {
-	 * 			editor.schema.extend( '$text', { allowAttributes: 'htmlSpan' } );
+	 * 			editor.model.schema.extend( '$text', { allowAttributes: 'htmlSpan' } );
 	 *
 	 * 			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'span', model: 'htmlSpan' } );
 	 * 			editor.conversion.for( 'downcast' ).attributeToElement( { view: 'span', model: 'htmlSpan' } );
@@ -456,7 +621,7 @@ export default class DataFilter extends Plugin {
 //
 // @private
 // @param {module:engine/view/element~Element} viewElement
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi
 // @param {module:engine/view/matcher~Matcher Matcher} matcher
 // @returns {Object} [result]
 // @returns {Object} result.attributes
@@ -466,6 +631,15 @@ function consumeAttributes( viewElement, conversionApi, matcher ) {
 	const matches = consumeAttributeMatches( viewElement, conversionApi, matcher );
 	const { attributes, styles, classes } = mergeMatchResults( matches );
 	const viewAttributes = {};
+
+	// Remove invalid DOM element attributes.
+	if ( attributes.size ) {
+		for ( const key of attributes ) {
+			if ( !isValidAttributeName( key ) ) {
+				attributes.delete( key );
+			}
+		}
+	}
 
 	if ( attributes.size ) {
 		viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
@@ -490,7 +664,7 @@ function consumeAttributes( viewElement, conversionApi, matcher ) {
 //
 // @private
 // @param {module:engine/view/element~Element} viewElement
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi
 // @param {module:engine/view/matcher~Matcher Matcher} matcher
 // @returns {Array.<Object>} Array with match information about found attributes.
 function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
@@ -503,9 +677,8 @@ function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
 		// We only want to consume attributes, so element can be still processed by other converters.
 		delete match.match.name;
 
-		if ( consumable.consume( viewElement, match.match ) ) {
-			consumedMatches.push( match );
-		}
+		consumable.consume( viewElement, match.match );
+		consumedMatches.push( match );
 	}
 
 	return consumedMatches;
@@ -515,7 +688,7 @@ function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
 //
 // @private
 // @param {module:engine/view/element~Element} viewElement
-// @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable
+// @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable
 // @param {Object} match
 function removeConsumedAttributes( consumable, viewElement, match ) {
 	for ( const key of [ 'attributes', 'classes', 'styles' ] ) {
@@ -525,7 +698,8 @@ function removeConsumedAttributes( consumable, viewElement, match ) {
 			continue;
 		}
 
-		for ( const value of attributes ) {
+		// Iterating over a copy of an array so removing items doesn't influence iteration.
+		for ( const value of Array.from( attributes ) ) {
 			if ( !consumable.test( viewElement, ( { [ key ]: [ value ] } ) ) ) {
 				removeItemFromArray( attributes, value );
 			}
@@ -631,4 +805,15 @@ function splitRules( rules ) {
 	}
 
 	return splittedRules;
+}
+
+// Returns true if name is valid for a DOM attribute name.
+function isValidAttributeName( name ) {
+	try {
+		document.createAttribute( name );
+	} catch ( error ) {
+		return false;
+	}
+
+	return true;
 }

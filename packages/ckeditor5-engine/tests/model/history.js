@@ -15,28 +15,53 @@ describe( 'History', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create an empty History instance', () => {
-			expect( Array.from( history.getOperations() ).length ).to.equal( 0 );
+			expect( history.getOperations().length ).to.equal( 0 );
+			expect( history.getOperations().length ).to.equal( 0 );
+		} );
+
+		it( 'should set the version to 0', () => {
+			expect( history.version ).to.equal( 0 );
 		} );
 	} );
 
-	describe( 'addOperation', () => {
+	describe( 'reset()', () => {
+		it( 'should reset the history of operations', () => {
+			const op1 = new Operation( 0 );
+			const op2 = new Operation( 1 );
+			history.addOperation( op1 );
+			history.addOperation( op2 );
+
+			history.reset();
+
+			expect( history.getOperations() ).to.deep.equal( [] );
+			expect( history.version ).to.equal( 0 );
+			expect( history.lastOperation ).to.be.undefined;
+		} );
+
+		it( 'should reset the history of undone operations', () => {
+			const undone = new Operation( 0 );
+			const undoing = new Operation( 1 );
+
+			history.addOperation( undone );
+			history.addOperation( undoing );
+
+			history.setOperationAsUndone( undone, undoing );
+
+			history.reset();
+
+			expect( history.isUndoingOperation( undoing ) ).to.equal( false );
+			expect( history.isUndoneOperation( undone ) ).to.equal( false );
+			expect( history.getUndoneOperation( undoing ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'addOperation()', () => {
 		it( 'should save operation in the history', () => {
 			const op = new Operation( 0 );
 
 			history.addOperation( op );
 
-			const ops = Array.from( history.getOperations() );
-			expect( ops.length ).to.equal( 1 );
-			expect( ops[ 0 ] ).to.equal( op );
-		} );
-
-		it( 'should save each operation only once', () => {
-			const op = new Operation( 0 );
-
-			history.addOperation( op );
-			history.addOperation( op );
-
-			const ops = Array.from( history.getOperations() );
+			const ops = history.getOperations();
 			expect( ops.length ).to.equal( 1 );
 			expect( ops[ 0 ] ).to.equal( op );
 		} );
@@ -57,7 +82,7 @@ describe( 'History', () => {
 		} );
 	} );
 
-	describe( 'getOperation', () => {
+	describe( 'getOperation()', () => {
 		it( 'should return operation with given base version', () => {
 			const op0 = new Operation( 0 );
 			const op1 = new Operation( 1 );
@@ -67,8 +92,13 @@ describe( 'History', () => {
 			history.addOperation( op1 );
 			history.addOperation( op2 );
 
-			const historyOperation = history.getOperation( 1 );
-			expect( historyOperation ).to.equal( op1 );
+			const historyOperation0 = history.getOperation( 0 );
+			const historyOperation1 = history.getOperation( 1 );
+			const historyOperation2 = history.getOperation( 2 );
+
+			expect( historyOperation0 ).to.equal( op0 );
+			expect( historyOperation1 ).to.equal( op1 );
+			expect( historyOperation2 ).to.equal( op2 );
 		} );
 
 		it( 'should return undefined if operation has not been found in history', () => {
@@ -81,17 +111,27 @@ describe( 'History', () => {
 		} );
 	} );
 
-	describe( 'getOperations', () => {
+	describe( 'getOperations()', () => {
+		it( 'should return all operations if no argument is provided', () => {
+			history.addOperation( new Operation( 0 ) );
+			history.addOperation( new Operation( 1 ) );
+			history.addOperation( new Operation( 2 ) );
+
+			const versions = history.getOperations()
+				.map( operation => operation.baseVersion );
+
+			expect( versions ).to.deep.equal( [ 0, 1, 2 ] );
+		} );
+
 		it( 'should return only operations from given base version', () => {
 			history.addOperation( new Operation( 0 ) );
 			history.addOperation( new Operation( 1 ) );
 			history.addOperation( new Operation( 2 ) );
 
-			const ops = history.getOperations( 1 );
+			const versions = history.getOperations( 1 )
+				.map( operation => operation.baseVersion );
 
-			expect( ops.length ).to.equal( 2 );
-			expect( ops[ 0 ].baseVersion ).to.equal( 1 );
-			expect( ops[ 1 ].baseVersion ).to.equal( 2 );
+			expect( versions ).to.deep.equal( [ 1, 2 ] );
 		} );
 
 		it( 'should return only operations up to given base version', () => {
@@ -109,32 +149,94 @@ describe( 'History', () => {
 			history.addOperation( new Operation( 0 ) );
 			history.addOperation( new Operation( 1 ) );
 
-			expect( history.getOperations( 20 ).length ).to.equal( 0 );
+			expect( history.getOperations( 2 ).length ).to.equal( 0 );
 			expect( history.getOperations( -3, 0 ).length ).to.equal( 0 );
 		} );
 
 		it( 'should return correct values if history holds operations with negative base version', () => {
+			history.version = -2;
+
 			history.addOperation( new Operation( -2 ) );
 			history.addOperation( new Operation( -1 ) );
 			history.addOperation( new Operation( 0 ) );
 			history.addOperation( new Operation( 1 ) );
 			history.addOperation( new Operation( 2 ) );
 
-			expect( history.getOperations( -1, 2 ).map( op => op.baseVersion ) ).to.deep.equal( [ -1, 0, 1 ] );
+			expect( getVersions( history.getOperations( -1, 2 ) ) ).to.deep.equal( [ -1, 0, 1 ] );
 		} );
 
-		it( 'should return correct values if history holds operations with base versions that differ by more than one', () => {
-			history.addOperation( new Operation( 0 ) );
-			history.addOperation( new Operation( 4 ) );
-			history.addOperation( new Operation( 6 ) );
-			history.addOperation( new Operation( 9 ) );
-			history.addOperation( new Operation( 13 ) );
+		describe( 'for history with version gaps', () => {
+			it( 'should return correct operations if the history starts with a gap', () => {
+				history.version = 10;
 
-			expect( history.getOperations( 2, 11 ).map( op => op.baseVersion ) ).to.deep.equal( [ 4, 6, 9 ] );
+				history.addOperation( new Operation( 10 ) );
+				history.addOperation( new Operation( 11 ) );
+				history.addOperation( new Operation( 12 ) );
+				history.addOperation( new Operation( 13 ) );
+
+				expect( getVersions( history.getOperations( 0, 10 ) ) ).to.deep.equal( [] );
+				expect( getVersions( history.getOperations( 0 ) ) ).to.deep.equal( [ 10, 11, 12, 13 ] );
+				expect( getVersions( history.getOperations( 12 ) ) ).to.deep.equal( [ 12, 13 ] );
+			} );
+
+			describe( 'should return correct operations if the history contains a gap', () => {
+				beforeEach( () => {
+					history.version = -10;
+
+					history.addOperation( new Operation( -10 ) );
+					history.addOperation( new Operation( -9 ) );
+
+					history.version = 0;
+
+					history.addOperation( new Operation( 0 ) );
+					history.addOperation( new Operation( 1 ) );
+
+					history.version = 10;
+
+					history.addOperation( new Operation( 10 ) );
+					history.addOperation( new Operation( 11 ) );
+				} );
+
+				it( 'range larger than the history', () => {
+					expect( getVersions( history.getOperations() ) ).to.deep.equal( [ -10, -9, 0, 1, 10, 11 ] );
+					expect( getVersions( history.getOperations( -10 ) ) ).to.deep.equal( [ -10, -9, 0, 1, 10, 11 ] );
+					expect( getVersions( history.getOperations( -30 ) ) ).to.deep.equal( [ -10, -9, 0, 1, 10, 11 ] );
+					expect( getVersions( history.getOperations( -30, 300 ) ) ).to.deep.equal( [ -10, -9, 0, 1, 10, 11 ] );
+				} );
+
+				it( 'range starts in the middle of the history', () => {
+					expect( getVersions( history.getOperations( -9 ) ) ).to.deep.equal( [ -9, 0, 1, 10, 11 ] );
+					expect( getVersions( history.getOperations( -5 ) ) ).to.deep.equal( [ 0, 1, 10, 11 ] );
+					expect( getVersions( history.getOperations( 0 ) ) ).to.deep.equal( [ 0, 1, 10, 11 ] );
+					expect( getVersions( history.getOperations( 1 ) ) ).to.deep.equal( [ 1, 10, 11 ] );
+					expect( getVersions( history.getOperations( 5 ) ) ).to.deep.equal( [ 10, 11 ] );
+					expect( getVersions( history.getOperations( 11 ) ) ).to.deep.equal( [ 11 ] );
+					expect( getVersions( history.getOperations( 12 ) ) ).to.deep.equal( [] );
+				} );
+
+				it( 'range ends in the middle of history', () => {
+					expect( getVersions( history.getOperations( -5, 5 ) ) ).to.deep.equal( [ 0, 1 ] );
+					expect( getVersions( history.getOperations( -5, 10 ) ) ).to.deep.equal( [ 0, 1 ] );
+					expect( getVersions( history.getOperations( -5, 11 ) ) ).to.deep.equal( [ 0, 1, 10 ] );
+					expect( getVersions( history.getOperations( -5, 12 ) ) ).to.deep.equal( [ 0, 1, 10, 11 ] );
+					expect( getVersions( history.getOperations( -5, 300 ) ) ).to.deep.equal( [ 0, 1, 10, 11 ] );
+				} );
+
+				it( 'empty ranges', () => {
+					expect( getVersions( history.getOperations( -11, -11 ) ) ).to.deep.equal( [] );
+					expect( getVersions( history.getOperations( -10, -10 ) ) ).to.deep.equal( [] );
+					expect( getVersions( history.getOperations( -9, -9 ) ) ).to.deep.equal( [] );
+					expect( getVersions( history.getOperations( 0, 0 ) ) ).to.deep.equal( [] );
+					expect( getVersions( history.getOperations( 1, 1 ) ) ).to.deep.equal( [] );
+					expect( getVersions( history.getOperations( 9, 9 ) ) ).to.deep.equal( [] );
+					expect( getVersions( history.getOperations( 10, 10 ) ) ).to.deep.equal( [] );
+					expect( getVersions( history.getOperations( 12, 12 ) ) ).to.deep.equal( [] );
+				} );
+			} );
 		} );
 	} );
 
-	describe( 'isUndoingOperation', () => {
+	describe( 'isUndoingOperation()', () => {
 		let undoing, undone;
 
 		beforeEach( () => {
@@ -158,7 +260,7 @@ describe( 'History', () => {
 		} );
 	} );
 
-	describe( 'isUndoneOperation', () => {
+	describe( 'isUndoneOperation()', () => {
 		let undoing, undone;
 
 		beforeEach( () => {
@@ -182,7 +284,7 @@ describe( 'History', () => {
 		} );
 	} );
 
-	describe( 'getUndoneOperation', () => {
+	describe( 'getUndoneOperation()', () => {
 		let undoing, undone;
 
 		beforeEach( () => {
@@ -207,3 +309,7 @@ describe( 'History', () => {
 		} );
 	} );
 } );
+
+function getVersions( operations ) {
+	return operations.map( op => op.baseVersion );
+}

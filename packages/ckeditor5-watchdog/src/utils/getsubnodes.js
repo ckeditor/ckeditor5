@@ -16,9 +16,11 @@ export default function getSubNodes( head, excludedProperties = new Set() ) {
 
 	// Nodes are stored to prevent infinite looping.
 	const subNodes = new Set();
+	let nodeIndex = 0;
 
-	while ( nodes.length > 0 ) {
-		const node = nodes.shift();
+	while ( nodes.length > nodeIndex ) {
+		// Incrementing the iterator is much faster than changing size of the array with Array.prototype.shift().
+		const node = nodes[ nodeIndex++ ];
 
 		if ( subNodes.has( node ) || shouldNodeBeSkipped( node ) || excludedProperties.has( node ) ) {
 			continue;
@@ -81,6 +83,12 @@ function shouldNodeBeSkipped( node ) {
 
 		node === undefined ||
 		node === null ||
+
+		// This flag is meant to exclude singletons shared across editor instances. So when an error is thrown in one editor,
+		// the other editors connected through the reference to the same singleton are not restarted. This is a temporary workaround
+		// until a better solution is found.
+		// More in https://github.com/ckeditor/ckeditor5/issues/12292.
+		node._watchdogExcluded === true ||
 
 		// Skip native DOM objects, e.g. Window, nodes, events, etc.
 		node instanceof EventTarget ||

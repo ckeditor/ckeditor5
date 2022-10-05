@@ -156,9 +156,6 @@ class BootstrapEditorUI extends EditorUI {
 		// Register editable element so it is available via getEditableElement() method.
 		this.setEditableElement( view.editable.name, editableElement );
 
-		// Let the editable UI element respond to the changes in the global editor focus tracker
-		// and let the focus tracker know about the editable element.
-		this.focusTracker.add( editableElement );
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
 
 		// Bind the editable UI element to the editing view, making it an end– and entry–point
@@ -309,9 +306,25 @@ BootstrapEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		const readOnlyLock = Symbol( 'read-only-lock' );
+		const button = window.document.getElementById( 'toggle-readonly' );
+		let isReadOnly = false;
 
-		$( '#toggle-readonly' ).on( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
+		button.addEventListener( 'click', () => {
+			if ( isReadOnly ) {
+				editor.disableReadOnlyMode( readOnlyLock );
+			}
+			else {
+				editor.enableReadOnlyMode( readOnlyLock );
+			}
+
+			isReadOnly = !isReadOnly;
+
+			button.textContent = isReadOnly ?
+				'Turn off read-only mode' :
+				'Turn on read-only mode';
+
+			editor.editing.view.focus();
 		} );
 	} )
 	.catch( err => {

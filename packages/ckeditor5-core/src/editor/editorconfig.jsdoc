@@ -24,7 +24,7 @@
  *			.then( ... )
  *			.catch( ... );
  *
- * Check the {@glink builds/guides/integration/configuration Configuration guide} for more information
+ * Check the {@glink installation/getting-started/predefined-builds Configuration guide} for more information
  * about setting configuration options.
  *
  * @interface EditorConfig
@@ -66,7 +66,7 @@
 /**
  * The list of plugins to load.
  *
- * If you use an {@glink builds/guides/predefined-builds/overview editor build} you can define the list of plugins to load
+ * If you use an {@glink installation/getting-started/predefined-builds editor build} you can define the list of plugins to load
  * using the names of plugins that are available:
  *
  *		const config = {
@@ -98,7 +98,7 @@
 
 /**
  * The list of additional plugins to load along those already available in the
- * {@glink builds/guides/predefined-builds/overview editor build}. It extends the {@link #plugins `plugins`} configuration.
+ * {@glink installation/getting-started/predefined-builds editor build}. It extends the {@link #plugins `plugins`} configuration.
  *
  *		function MyPlugin( editor ) {
  *			// ...
@@ -110,7 +110,8 @@
  *
  * **Note:** This configuration works only for simple plugins which utilize the
  * {@link module:core/plugin~PluginInterface plugin interface} and have no dependencies. To extend a
- * build with complex features, create a {@glink builds/guides/development/custom-builds custom build}.
+ * build with complex features, create a {@glink installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder
+ * custom build}.
  *
  * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
  * about the {@glink features/toolbar/toolbar toolbar setup}.
@@ -119,7 +120,8 @@
  */
 
 /**
- * The list of plugins which should not be loaded despite being available in an {@glink builds/guides/predefined-builds/overview editor build}.
+ * The list of plugins which should not be loaded despite being available in an {@glink installation/getting-started/predefined-builds
+ * editor build}.
  *
  *		const config = {
  *			removePlugins: [ 'Bold', 'Italic' ]
@@ -169,11 +171,90 @@
  *
  *	Line break will work only in the extended format when `shouldNotGroupWhenFull` option is set to `true`.
  *
- * * **`toolbar.viewportTopOffset` (deprecated)** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
+ *	**Note**: To save space in your toolbar, you can group several items into a dropdown:
+ *
+ *		toolbar: [
+ *			{
+ *				label: 'Basic styles',
+ *				icon: 'text',
+ *				items: [ 'bold', 'italic', ... ]
+ *			},
+ *			'|',
+ *			'undo', 'redo'
+ *		]
+ *
+ *	The code above will create a "Basic styles" dropdown with a "text" icon containing the "bold" and "italic" buttons.
+ *	You can customize the look of the dropdown by setting the `withText`, `icon`, and `tooltip` properties:
+ *
+ *	* **Displaying a label**
+ *
+ *		For instance, to hide the icon and to display the label only, you can use the following configuration:
+ *
+ *				{
+ *					label: 'Basic styles',
+ *					// Show the textual label of the drop-down. Note that the "icon" property is not configured.
+ *					withText: true,
+ *					items: [ 'bold', 'italic', ... ]
+ *				}
+ *
+ *	* **Selecting an icon**
+ *
+ *		You can use one of the common icons provided by the editor (`'bold'`, `'plus'`, `'text'`, `'importExport'`, `'alignLeft'`,
+ *		`'paragraph'`, `'threeVerticalDots'`):
+ *
+ *				{
+ *					label: '...',
+ *					// A "plus" sign icon works best for content insertion tools.
+ *					icon: 'plus',
+ *					items: [ ... ]
+ *				}
+ *
+ *		If no icon is specified, `'threeVerticalDots'` will be used as a default:
+ *
+ *				// No icon specified, using a default one.
+ *				{
+ *					label: 'Default icon',
+ *					items: [ ... ]
+ *				}
+ *
+ *		If `icon: false` is configured, no icon will be displayed at all and the text label will show up instead:
+ *
+ *				// This drop-down has no icon. The text label will be displayed instead.
+ *				{
+ *					label: 'No icon',
+ *					icon: false,
+ *					items: [ ... ]
+ *				}
+ *
+ *		You can also set a custom icon for the drop-down by passing an SVG string:
+ *
+ *				{
+ *					label: '...',
+ *					// If you want your icon to change the color dynamically (e.g. when the dropdown opens), avoid fill="..."
+ *					// and stroke="..." styling attributes. Use solid shapes and avoid paths with strokes.
+ *					icon: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">...</svg>',
+ *					items: [ ... ]
+ *				}
+ *
+ *	* **Customizing the tooltip**
+ *
+ *		By default, the tooltip of the button shares its text with the label. You can customize it to better describe your dropdown
+ *		using the `tooltip` property ({@link module:ui/button/buttonview~ButtonView#tooltip learn more}):
+ *
+ *				{
+ *					label: 'Drop-down label',
+ *					tooltip: 'Custom tooltip of the drop-down',
+ *					icon: '...',
+ *					items: [ ... ]
+ *				}
+ *
+ * * **`toolbar.viewportTopOffset` (deprecated)** &ndash; The offset (in pixels) from the top of the viewport used when positioning a
+ * sticky toolbar.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
  * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar will not be positioned underneath or above the page's UI.
  *
- * 	**This property has been deprecated and will be removed in the future versions of CKEditor. Please use `{@link module:core/editor/editorconfig~EditorConfig#ui EditorConfig#ui.viewportOffset}` instead.**
+ * 	**This property has been deprecated and will be removed in the future versions of CKEditor. Please use
+ * `{@link module:core/editor/editorconfig~EditorConfig#ui EditorConfig#ui.viewportOffset}` instead.**
  *
  * * **`toolbar.shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items
  * and let them wrap to the next line if there is not enough space to display them in a single row.
@@ -315,15 +396,31 @@
  *
  * Options which can be set using the UI config:
  *
- * * **`ui.viewportOffset`** &ndash; The offset (in pixels) of the viewport from every direction used when positioning a sticky toolbar or other absolutely positioned UI elements.
+ * * **`ui.viewportOffset`** &ndash; The offset (in pixels) of the viewport from every direction used when positioning a sticky toolbar
+ * or other absolutely positioned UI elements.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
- * (e.g. the top menu). Thanks to setting the UI viewport offset the toolbar and other contextual balloons will not be positioned underneath or above the page's UI.
+ * (e.g. the top menu). Thanks to setting the UI viewport offset the toolbar and other contextual balloons will not be positioned
+ * underneath or above the page's UI.
  *
  *		ui: {
  *			viewportOffset: { top: 10, right: 10, bottom: 10, left: 10 }
  *		}
  *
- * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding {@link module:core/editor/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
+ * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding
+ * {@link module:core/editor/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
  *
  * @member {Object} module:core/editor/editorconfig~EditorConfig#ui
+ */
+
+/**
+ * Enables updating the source element after the editor destroy.
+ *
+ * Enabling this option might have some security implications, as the editor doesn't have control over all data
+ * in the output.
+ *
+ * Be careful, especially while using
+ * {@glink features/markdown Markdown}, {@glink features/general-html-support General HTML Support} or
+ * {@glink features/html-embed HTML embed} features.
+ *
+ * @member {Boolean} module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy
  */

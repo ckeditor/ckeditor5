@@ -7,7 +7,9 @@
  * @module table/ui/inserttableview
  */
 
-import { View } from 'ckeditor5/src/ui';
+import { View, ButtonView, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
+
+import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
 
 import './../../theme/inserttable.css';
 
@@ -35,6 +37,22 @@ export default class InsertTableView extends View {
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this.items = this._createGridCollection();
+
+		/**
+		 * Listen to `keydown` events fired in this view's main element.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokeHandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
+		/**
+		 * Tracks information about the DOM focus in the grid.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
 
 		/**
 		 * The currently selected number of rows of the new table.
@@ -81,7 +99,11 @@ export default class InsertTableView extends View {
 				{
 					tag: 'div',
 					attributes: {
-						class: [ 'ck-insert-table-dropdown__label' ]
+						class: [
+							'ck',
+							'ck-insert-table-dropdown__label'
+						],
+						'aria-hidden': true
 					},
 					children: [
 						{
@@ -102,8 +124,21 @@ export default class InsertTableView extends View {
 			}
 		} );
 
+		// #rows and #columns are set via changes to #focusTracker on mouse over.
 		this.on( 'boxover', ( evt, domEvt ) => {
 			const { row, column } = domEvt.target.dataset;
+			this.items.get( ( parseInt( row, 10 ) - 1 ) * 10 + ( parseInt( column, 10 ) - 1 ) ).focus();
+		} );
+
+		// This allows the #rows and #columns to be updated when:
+		// * the user navigates the grid using the keyboard,
+		// * the user moves the mouse over grid items.
+		this.focusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
+			if ( !focusedElement ) {
+				return;
+			}
+
+			const { row, column } = focusedElement.dataset;
 
 			// As row & column indexes are zero-based transform it to number of selected rows & columns.
 			this.set( {
@@ -112,29 +147,39 @@ export default class InsertTableView extends View {
 			} );
 		} );
 
-		this.on( 'change:columns', () => {
-			this._highlightGridBoxes();
+		this.on( 'change:columns', () => this._highlightGridBoxes() );
+		this.on( 'change:rows', () => this._highlightGridBoxes() );
+	}
+
+	render() {
+		super.render();
+
+		addKeyboardHandlingForGrid( {
+			keystrokeHandler: this.keystrokes,
+			focusTracker: this.focusTracker,
+			gridItems: this.items,
+			numberOfColumns: 10
 		} );
 
-		this.on( 'change:rows', () => {
-			this._highlightGridBoxes();
-		} );
+		for ( const item of this.items ) {
+			this.focusTracker.add( item.element );
+		}
+
+		this.keystrokes.listenTo( this.element );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	focus() {
-		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
-		// The method should be implemented while working on keyboard support for this view. See #22.
+		this.items.get( 0 ).focus();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	focusLast() {
-		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
-		// The method should be implemented while working on keyboard support for this view. See #22.
+		this.items.get( 0 ).focus();
 	}
 
 	/**
@@ -159,6 +204,34 @@ export default class InsertTableView extends View {
 	}
 
 	/**
+	 * Creates a new Button for the grid.
+	 *
+	 * @private
+	 * @param {module:utils/locale~Locale} locale The locale instance.
+	 * @param {Number} row Row number.
+	 * @param {Number} column Column number.
+	 * @param {String} label The grid button label.
+	 * @returns {module:ui/button/buttonview~ButtonView}
+	 */
+	_createGridButton( locale, row, column, label ) {
+		const button = new ButtonView( locale );
+
+		button.set( {
+			label,
+			class: 'ck-insert-table-dropdown-grid-box'
+		} );
+
+		button.extendTemplate( {
+			attributes: {
+				'data-row': row,
+				'data-column': column
+			}
+		} );
+
+		return button;
+	}
+
+	/**
 	 * @private
 	 * @returns {module:ui/viewcollection~ViewCollection} A view collection containing boxes to be placed in a table grid.
 	 */
@@ -169,8 +242,9 @@ export default class InsertTableView extends View {
 		for ( let index = 0; index < 100; index++ ) {
 			const row = Math.floor( index / 10 );
 			const column = index % 10;
+			const label = `${ row + 1 } × ${ column + 1 }`;
 
-			boxes.push( new TableSizeGridBoxView( this.locale, row + 1, column + 1 ) );
+			boxes.push( this._createGridButton( this.locale, row + 1, column + 1, label ) );
 		}
 
 		return this.createCollection( boxes );
@@ -181,42 +255,4 @@ export default class InsertTableView extends View {
 	 *
 	 * @event boxover
 	 */
-}
-
-/**
- * A single grid box view element.
- *
- * This class is used to render the table size selection grid in {@link module:table/ui/inserttableview~InsertTableView}.
- *
- * @private
- */
-class TableSizeGridBoxView extends View {
-	/**
-	 * @inheritDoc
-	 */
-	constructor( locale, row, column ) {
-		super( locale );
-
-		const bind = this.bindTemplate;
-
-		/**
-		 * Controls whether the grid box view is "on".
-		 *
-		 * @observable
-		 * @member {Boolean} #isOn
-		 */
-		this.set( 'isOn', false );
-
-		this.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck-insert-table-dropdown-grid-box',
-					bind.if( 'isOn', 'ck-on' )
-				],
-				'data-row': row,
-				'data-column': column
-			}
-		} );
-	}
 }

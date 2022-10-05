@@ -46,6 +46,14 @@ describe( 'HorizontalLineEditing', () => {
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'horizontalLine' ) ).to.be.false;
 	} );
 
+	it( 'inherits attributes from $blockObject', () => {
+		model.schema.extend( '$blockObject', {
+			allowAttributes: 'foo'
+		} );
+
+		expect( model.schema.checkAttribute( 'horizontalLine', 'foo' ) ).to.be.true;
+	} );
+
 	it( 'should register horizontalLine command', () => {
 		expect( editor.commands.get( 'horizontalLine' ) ).to.be.instanceOf( HorizontalLineCommand );
 	} );

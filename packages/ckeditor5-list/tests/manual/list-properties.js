@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, document */
+/* globals CKEditorInspector, console, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -84,6 +84,9 @@ ClassicEditor
 			}
 		}
 	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'Styles + Start index + Reversed': editor } );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
@@ -99,6 +102,9 @@ ClassicEditor
 			}
 		}
 	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'Styles + Start index': editor } );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
@@ -113,6 +119,9 @@ ClassicEditor
 				reversed: true
 			}
 		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'Styles + Reversed': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -131,6 +140,9 @@ ClassicEditor
 			}
 		}
 	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'Start index + Reversed': editor } );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
@@ -146,6 +158,9 @@ ClassicEditor
 			}
 		}
 	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'Start index': editor } );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
@@ -160,6 +175,9 @@ ClassicEditor
 				reversed: true
 			}
 		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'Reversed': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -178,6 +196,9 @@ ClassicEditor
 			}
 		}
 	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'Just styles': editor } );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
@@ -194,6 +215,9 @@ ClassicEditor
 				reversed: false
 			}
 		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'No properties enabled': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );

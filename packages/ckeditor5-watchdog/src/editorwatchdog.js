@@ -253,11 +253,6 @@ export default class EditorWatchdog extends Watchdog {
 	_save() {
 		const version = this._editor.model.document.version;
 
-		// Operation may not result in a model change, so the document's version can be the same.
-		if ( version === this._lastDocumentVersion ) {
-			return;
-		}
-
 		try {
 			this._data = this._getData();
 			this._lastDocumentVersion = version;

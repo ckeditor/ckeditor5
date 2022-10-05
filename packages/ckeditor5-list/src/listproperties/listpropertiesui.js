@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView, SplitButtonView, createDropdown } from 'ckeditor5/src/ui';
+import { ButtonView, SplitButtonView, createDropdown, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
 
 import ListPropertiesView from './ui/listpropertiesview';
 
@@ -184,6 +184,12 @@ function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, butto
 
 		dropdownView.panelView.children.add( listPropertiesView );
 
+		// Focus the editable after executing the command.
+		// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+		dropdownView.on( 'execute', () => {
+			editor.editing.view.focus();
+		} );
+
 		return dropdownView;
 	};
 }
@@ -234,8 +240,6 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 					editor.execute( 'listStyle', { type } );
 				} );
 			}
-
-			editor.editing.view.focus();
 		} );
 
 		return button;
@@ -277,7 +281,12 @@ function createListPropertiesView( {
 			listStyleCommand
 		} );
 
-		styleButtonViews = styleDefinitions.map( styleButtonCreator );
+		// The command can be ListStyleCommand or DocumentListStyleCommand.
+		const isStyleTypeSupported = typeof listStyleCommand.isStyleTypeSupported == 'function' ?
+			styleDefinition => listStyleCommand.isStyleTypeSupported( styleDefinition.type ) :
+			() => true;
+
+		styleButtonViews = styleDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
 	}
 
 	const listPropertiesView = new ListPropertiesView( locale, {
@@ -285,6 +294,13 @@ function createListPropertiesView( {
 		enabledProperties,
 		styleButtonViews
 	} );
+
+	if ( enabledProperties.styles ) {
+		// Accessibility: focus the first active style when opening the dropdown.
+		focusChildOnDropdownOpen( dropdownView, () => {
+			return listPropertiesView.stylesView.children.find( child => child.isOn );
+		} );
+	}
 
 	if ( enabledProperties.startIndex ) {
 		const listStartCommand = editor.commands.get( 'listStart' );

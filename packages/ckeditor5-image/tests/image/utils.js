@@ -128,42 +128,75 @@ describe( 'image utils', () => {
 	} );
 
 	describe( 'getImgViewElementMatcher()', () => {
-		let editor;
+		describe( 'when one of the image editing plugins is not loaded', () => {
+			let editor;
 
-		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( {
-				plugins: [ ImageUtils, ImageEditing ]
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( {
+					plugins: [ ImageUtils, ImageEditing ]
+				} );
+
+				imageUtils = editor.plugins.get( 'ImageUtils' );
+
+				writer = new UpcastWriter( editor.editing.view.document );
 			} );
 
-			imageUtils = editor.plugins.get( 'ImageUtils' );
-		} );
-
-		afterEach( async () => {
-			editor.destroy();
-		} );
-
-		describe( 'when one of the image editing plugins is not loaded', () => {
-			const returnValue = {
-				name: 'img'
-			};
+			afterEach( async () => {
+				editor.destroy();
+			} );
 
 			it( 'should return a matcher pattern for an img element if ImageBlockEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
 
-				expect( getImgViewElementMatcher( editor, 'imageBlock' ) ).to.eql( returnValue );
-				expect( getImgViewElementMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
+				element = writer.createElement( 'img', { src: 'sample.jpg' } );
+				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
+
+				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
+					name: true,
+					attributes: [ 'src' ]
+				} );
+
+				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).to.deep.equal( {
+					name: true,
+					attributes: [ 'src' ]
+				} );
 			} );
 
-			it( 'should return a matcher patter for an img element if ImageInlineEditing plugin is not loaded', () => {
+			it( 'should return a matcher pattern for an img element if ImageInlineEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
 
-				expect( getImgViewElementMatcher( editor, 'imageBlock', editor ) ).to.eql( returnValue );
-				expect( getImgViewElementMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
+				element = writer.createElement( 'img', { src: 'sample.jpg' } );
+				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
+
+				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
+					name: true,
+					attributes: [ 'src' ]
+				} );
+
+				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).to.deep.equal( {
+					name: true,
+					attributes: [ 'src' ]
+				} );
+			} );
+
+			it( 'should not include "src" in the matcher pattern if the image has no "src"', () => {
+				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
+
+				element = writer.createElement( 'img' );
+				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
+
+				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
+					name: true
+				} );
+
+				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).to.deep.equal( {
+					name: true
+				} );
 			} );
 		} );
 
 		describe( 'when both image editing plugins are loaded', () => {
-			let matcherPattern, editorElement;
+			let editor, matcherPattern, editorElement;
 
 			beforeEach( async () => {
 				editorElement = document.createElement( 'div' );
@@ -184,7 +217,7 @@ describe( 'image utils', () => {
 			} );
 
 			describe( 'the returned matcherPattern function', () => {
-				describe( 'for the "image" type requested', () => {
+				describe( 'for the "imageBlock" type requested', () => {
 					beforeEach( () => {
 						matcherPattern = getImgViewElementMatcher( editor, 'imageBlock' );
 					} );
@@ -226,6 +259,16 @@ describe( 'image utils', () => {
 						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
+							name: true,
+							attributes: [ 'src' ]
+						} );
+					} );
+
+					it( 'should not include "src" in the matcher pattern if the image has no "src"', () => {
+						element = writer.createElement( 'img' );
+						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
+
+						expect( matcherPattern( element ) ).to.deep.equal( {
 							name: true
 						} );
 					} );
@@ -261,7 +304,8 @@ describe( 'image utils', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
-							name: true
+							name: true,
+							attributes: [ 'src' ]
 						} );
 					} );
 
@@ -273,6 +317,15 @@ describe( 'image utils', () => {
 						);
 
 						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.deep.equal( {
+							name: true,
+							attributes: [ 'src' ]
+						} );
+					} );
+
+					it( 'should not include "src" in the matcher pattern if the image has no "src"', () => {
+						element = writer.createElement( 'img' );
+
+						expect( matcherPattern( element ) ).to.deep.equal( {
 							name: true
 						} );
 					} );

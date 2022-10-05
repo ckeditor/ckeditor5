@@ -5,6 +5,8 @@
 
 import Command from './command';
 
+import insertToPriorityArray from '@ckeditor/ckeditor5-utils/src/inserttopriorityarray';
+
 /**
  * @module core/multicommand
  */
@@ -14,16 +16,17 @@ import Command from './command';
  *
  * This command is used to proxy multiple commands. The multi-command is enabled when
  * at least one of its registered child commands is enabled.
- * When executing a multi-command the first command that is enabled will be executed.
+ * When executing a multi-command the first enabled command with highest priority will be executed.
  *
  *		const multiCommand = new MultiCommand( editor );
  *
  *		const commandFoo = new Command( editor );
  *		const commandBar = new Command( editor );
  *
- *		// Register child commands.
+ *		// Register a child command.
  *		multiCommand.registerChildCommand( commandFoo );
- *		multiCommand.registerChildCommand( commandBar );
+ *		// Register a child command with a low priority.
+ *		multiCommand.registerChildCommand( commandBar, { priority: 'low' } );
  *
  *		// Enable one of the commands.
  *		commandBar.isEnabled = true;
@@ -40,12 +43,12 @@ export default class MultiCommand extends Command {
 		super( editor );
 
 		/**
-		 * Registered child commands.
+		 * Registered child commands definitions.
 		 *
-		 * @type {Array.<module:core/command~Command>}
+		 * @type {Array.<Object>}
 		 * @private
 		 */
-		this._childCommands = [];
+		this._childCommandsDefinitions = [];
 	}
 
 	/**
@@ -56,23 +59,25 @@ export default class MultiCommand extends Command {
 	}
 
 	/**
-	 * Executes the first of it registered child commands.
+	 * Executes the first enabled command which has the highest priority of all registered child commands.
 	 *
 	 * @returns {*} The value returned by the {@link module:core/command~Command#execute `command.execute()`}.
 	 */
 	execute( ...args ) {
 		const command = this._getFirstEnabledCommand();
 
-		return command != null && command.execute( args );
+		return !!command && command.execute( args );
 	}
 
 	/**
 	 * Registers a child command.
 	 *
 	 * @param {module:core/command~Command} command
+	 * @param {Object} options An object with configuration options.
+	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] Priority of a command to register.
 	 */
-	registerChildCommand( command ) {
-		this._childCommands.push( command );
+	registerChildCommand( command, options = { priority: 'normal' } ) {
+		insertToPriorityArray( this._childCommandsDefinitions, { command, priority: options.priority } );
 
 		// Change multi command enabled state when one of registered commands changes state.
 		command.on( 'change:isEnabled', () => this._checkEnabled() );
@@ -90,12 +95,14 @@ export default class MultiCommand extends Command {
 	}
 
 	/**
-	 * Returns a first enabled command or undefined if none of them is enabled.
+	 * Returns a first enabled command with the highest priority or `undefined` if none of them is enabled.
 	 *
 	 * @returns {module:core/command~Command|undefined}
 	 * @private
 	 */
 	_getFirstEnabledCommand() {
-		return this._childCommands.find( command => command.isEnabled );
+		const commandDefinition = this._childCommandsDefinitions.find( ( { command } ) => command.isEnabled );
+
+		return commandDefinition && commandDefinition.command;
 	}
 }

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-paragraph",
-  "version": "33.0.0",
+  "version": "35.2.0",
   "description": "Paragraph feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,20 +12,20 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^33.0.0",
-    "@ckeditor/ckeditor5-ui": "^33.0.0",
-    "@ckeditor/ckeditor5-utils": "^33.0.0"
+    "@ckeditor/ckeditor5-core": "^35.2.0",
+    "@ckeditor/ckeditor5-ui": "^35.2.0",
+    "@ckeditor/ckeditor5-utils": "^35.2.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^33.0.0",
-    "@ckeditor/ckeditor5-clipboard": "^33.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^33.0.0",
-    "@ckeditor/ckeditor5-engine": "^33.0.0",
-    "@ckeditor/ckeditor5-enter": "^33.0.0",
-    "@ckeditor/ckeditor5-heading": "^33.0.0",
-    "@ckeditor/ckeditor5-link": "^33.0.0",
-    "@ckeditor/ckeditor5-typing": "^33.0.0",
-    "@ckeditor/ckeditor5-undo": "^33.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^35.2.0",
+    "@ckeditor/ckeditor5-clipboard": "^35.2.0",
+    "@ckeditor/ckeditor5-editor-classic": "^35.2.0",
+    "@ckeditor/ckeditor5-engine": "^35.2.0",
+    "@ckeditor/ckeditor5-enter": "^35.2.0",
+    "@ckeditor/ckeditor5-heading": "^35.2.0",
+    "@ckeditor/ckeditor5-link": "^35.2.0",
+    "@ckeditor/ckeditor5-typing": "^35.2.0",
+    "@ckeditor/ckeditor5-undo": "^35.2.0"
   },
   "engines": {
     "node": ">=14.0.0",
@@ -44,6 +44,7 @@
     "lang",
     "src",
     "theme",
-    "ckeditor5-metadata.json"
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
   ]
 }

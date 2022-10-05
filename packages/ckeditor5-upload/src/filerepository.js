@@ -17,7 +17,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 import FileReader from './filereader.js';
 
-import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * File repository plugin. A central point for managing file upload.
@@ -154,7 +154,8 @@ export default class FileRepository extends Plugin {
 			 * This warning shows up when {@link module:upload/filerepository~FileRepository} is being used
 			 * without {@link #createUploadAdapter defining an upload adapter}.
 			 *
-			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**
+			 * **If you see this warning when using one of the {@glink installation/getting-started/predefined-builds
+			 * CKEditor 5 Builds}**
 			 * it means that you did not configure any of the upload adapters available by default in those builds.
 			 *
 			 * See the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn which upload

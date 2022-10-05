@@ -5,7 +5,7 @@ menu-title: HTML embed
 
 # HTML embed
 
-The {@link module:html-embed/htmlembed~HtmlEmbed} plugin allows embedding an arbitrary HTML snippet in the editor. The feature is targeted at more advanced users who want to directly interact with HTML fragments.
+The HTML embed feature allows embedding an arbitrary HTML snippet in the editor. The feature is targeted at more advanced users who want to directly interact with HTML fragments.
 
 This feature can be used to embed any HTML code and bypass the CKEditor 5's filtering mechanisms. Thanks to that it is possible to enrich content produced by CKEditor 5 with fragments of HTML that are not supported by any other CKEditor 5 feature.
 
@@ -26,11 +26,19 @@ It is recommended to use the {@link features/media-embed media embed} feature fo
 	Incorrect configuration may **lead to security issues**.
 </info-box>
 
+<info-box info>
+	The HTML embed feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the **"Preview editor data"** button below the editor to see a preview of the editor content, including the embedded HTML.
 
 {@snippet features/html-embed}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 
@@ -62,7 +70,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration

@@ -626,7 +626,7 @@ function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
 		// ■ List item 1.
 		// ■ Paragraph[]  // <-- The inserted item.
 		if ( !existingListItem || !existingListItem.is( 'element', 'listItem' ) ) {
-			existingListItem = insertedListItems[ insertedListItems.length - 1 ].previousSibling;
+			existingListItem = insertedListItems[ 0 ].previousSibling;
 
 			if ( existingListItem ) {
 				const indent = insertedListItems[ 0 ].getAttribute( 'listIndent' );

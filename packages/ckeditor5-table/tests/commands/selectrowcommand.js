@@ -67,7 +67,7 @@ describe( 'SelectRowCommand', () => {
 				[ '00[]' ]
 			] ) );
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );

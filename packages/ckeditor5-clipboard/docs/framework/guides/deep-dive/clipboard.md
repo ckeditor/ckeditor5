@@ -20,7 +20,7 @@ Both pipelines allow the features to process the content to be inserted or set t
 When the user pastes or drops content into the editor, the browser fires an event which is intercepted by the clipboard feature and which kickstarts the following mechanism:
 
 1. {@link module:clipboard/clipboardobserver~ClipboardObserver} turns this event into a synthetic {@link module:engine/view/document~Document#event:paste `view.Document#paste`} or {@link module:engine/view/document~Document#event:drop `view.Document#drop`}.
-1. Since the content to be inserted by both actions (paste and drop) should usually be processed in the same way and both actions have a very simillar effect, both events are turned into a single {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event for easier handling.
+1. Since the content to be inserted by both actions (paste and drop) should usually be processed in the same way and both actions have a very similar effect, both events are turned into a single {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event for easier handling.
 1. Next, the clipboard feature listens to the `view.Document#clipboardInput` event, retrieves and pre-processes the `text/html` or `text/plain` content which it finds in the {@link module:clipboard/datatransfer~DataTransfer event's `dataTransfer`} and fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event with the retrieved content in the event data `content` property as a {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`}.
 1. Then, the clipboard feature listens to the `ClipboardPipeline#inputTransformation` event, takes the processed content, transforms it to the {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`} and fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event with the transformed content in the event data `content` property as a {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}.
 1. Finally, the clipboard feature listens to the `ClipboardPipeline#contentInsertion` event, takes the model fragment, {@link module:engine/model/model~Model#insertContent inserts} it into the editor and stores the range which contains all the performed changes in the `resultRange` property of the event data.
@@ -124,7 +124,7 @@ editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', ( evt, data ) 
 
 You can use the knowledge from the previous sections to create a complete plugin that will allow users to paste the content as plain text while the feature is toggled on.
 
-If you are not familiar with creating plugins in CKEditor 5, it is recommended to start from reading the {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to get a better understanding of what happens in the code below.
+If you are not familiar with creating plugins in CKEditor 5, it is recommended to start from reading the {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide to get a better understanding of what happens in the code below.
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';

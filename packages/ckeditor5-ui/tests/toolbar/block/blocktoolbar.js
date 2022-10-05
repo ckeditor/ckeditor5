@@ -21,16 +21,18 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
-	let resizeCallback;
+	let resizeCallback, addToolbarSpy;
 
 	testUtils.createSinonSandbox();
 
@@ -51,6 +53,8 @@ describe( 'BlockToolbar', () => {
 				unobserve: sinon.spy()
 			};
 		} );
+
+		addToolbarSpy = sinon.spy( EditorUI.prototype, 'addToolbar' );
 
 		return ClassicTestEditor.create( element, {
 			plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, Image, ImageCaption ],
@@ -122,6 +126,37 @@ describe( 'BlockToolbar', () => {
 
 	it( 'should have the isFloating option set to true', () => {
 		expect( blockToolbar.toolbarView.options.isFloating ).to.be.true;
+	} );
+
+	it( 'should have an accessible ARIA label set on the toolbar', () => {
+		expect( blockToolbar.toolbarView.ariaLabel ).to.equal( 'Editor block content toolbar' );
+	} );
+
+	it( 'should register its toolbar as focusable toolbar in EditorUI with proper configuration responsible for presentation', () => {
+		sinon.assert.calledWithExactly( addToolbarSpy.lastCall, blockToolbar.toolbarView, sinon.match( {
+			beforeFocus: sinon.match.func,
+			afterBlur: sinon.match.func
+		} ) );
+
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+		expect( blockToolbar.panelView.isVisible ).to.be.true;
+
+		addToolbarSpy.lastCall.args[ 1 ].afterBlur();
+
+		expect( blockToolbar.panelView.isVisible ).to.be.false;
+	} );
+
+	it( 'should not show the panel on Alt+F10 when the button is invisible', () => {
+		// E.g. due to the toolbar not making sense for a selection.
+		blockToolbar.buttonView.isVisible = false;
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+
+		expect( blockToolbar.panelView.isVisible ).to.be.false;
+
+		blockToolbar.buttonView.isVisible = true;
+		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+		expect( blockToolbar.panelView.isVisible ).to.be.true;
 	} );
 
 	describe( 'child views', () => {
@@ -293,6 +328,50 @@ describe( 'BlockToolbar', () => {
 
 				const blockToolbar = editor.plugins.get( BlockToolbar );
 				expect( blockToolbar.buttonView.isVisible ).to.be.false;
+			} );
+
+			describe( 'mousedown event', () => {
+				// https://github.com/ckeditor/ckeditor5/issues/12184
+				it( 'should call preventDefault to avoid stealing the focus', () => {
+					const ret = blockToolbar.buttonView.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+					expect( ret ).to.false;
+				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/12115
+				describe( 'in Safari', () => {
+					let view, stub, spy;
+
+					beforeEach( () => {
+						stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
+						view = blockToolbar.buttonView;
+						spy = sinon.spy( blockToolbar.toolbarView, 'focus' );
+					} );
+
+					afterEach( () => {
+						stub.resetBehavior();
+					} );
+
+					it( 'should focus the toolbar when it shows up', () => {
+						blockToolbar.panelView.isVisible = true;
+						view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+						expect( spy.callCount ).to.equal( 1 );
+					} );
+
+					it( 'should not focus the toolbar when it hides', () => {
+						blockToolbar.panelView.isVisible = false;
+						view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+						expect( spy.callCount ).to.equal( 0 );
+					} );
+
+					it( 'should also preventDefault the event', () => {
+						const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+						expect( ret ).to.false;
+					} );
+				} );
 			} );
 		} );
 	} );
@@ -603,7 +682,7 @@ describe( 'BlockToolbar', () => {
 			blockToolbar.buttonView.isVisible = true;
 			blockToolbar.panelView.isVisible = true;
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 			expect( blockToolbar.panelView.isVisible ).to.be.false;
@@ -614,11 +693,11 @@ describe( 'BlockToolbar', () => {
 
 			expect( blockToolbar.buttonView.isVisible ).to.true;
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.false;
 
-			editor.isReadOnly = false;
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
@@ -645,7 +724,7 @@ describe( 'BlockToolbar', () => {
 			blockToolbar.buttonView.isVisible = true;
 			blockToolbar.panelView.isVisible = false;
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 			expect( blockToolbar.panelView.isVisible ).to.be.false;

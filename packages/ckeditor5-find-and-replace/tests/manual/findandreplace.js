@@ -28,9 +28,18 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		let isReadOnly = false;
 
 		document.getElementById( 'readonly-toggle' ).addEventListener( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
+			isReadOnly = !isReadOnly;
+
+			if ( isReadOnly ) {
+				editor.enableReadOnlyMode( 'manual-test' );
+			} else {
+				editor.disableReadOnlyMode( 'manual-test' );
+			}
+
+			editor.editing.view.focus();
 		} );
 	} )
 	.catch( err => {

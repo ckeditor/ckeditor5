@@ -6,7 +6,7 @@ since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Introduction
+# Introduction to conversion helpers
 
 The editor supports a vast amount of the most commonly used HTML elements via {@link features/index existing editor features} out-of-the-box.
 
@@ -16,6 +16,6 @@ There are, however, cases where you might want to provide a rich editing experie
 
 ## Helpers by category
 
-* **{@link framework/guides/deep-dive/conversion/helpers/downcast Downcast helpers (model to view)}**
+* **{@link framework/guides/deep-dive/conversion/helpers/downcast Downcast helpers &mdash; model to view conversion}**
 
-* **{@link framework/guides/deep-dive/conversion/helpers/upcast Upcast helpers (view to model)}**
+* **{@link framework/guides/deep-dive/conversion/helpers/upcast Upcast helpers &mdash; view to model conversion}**

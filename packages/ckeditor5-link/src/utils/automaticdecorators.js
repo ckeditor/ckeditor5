@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -66,6 +66,12 @@ export default class AutomaticDecorators {
 				if ( !conversionApi.consumable.test( data.item, 'attribute:linkHref' ) ) {
 					return;
 				}
+
+				// Automatic decorators for block links are handled e.g. in LinkImageEditing.
+				if ( !( data.item.is( 'selection' ) || conversionApi.schema.isInline( data.item ) ) ) {
+					return;
+				}
+
 				const viewWriter = conversionApi.writer;
 				const viewSelection = viewWriter.document.selection;
 

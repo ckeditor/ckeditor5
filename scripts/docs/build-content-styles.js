@@ -7,17 +7,17 @@
 
 const path = require( 'path' );
 const mkdirp = require( 'mkdirp' );
-const postcss = require( 'postcss' );
 const webpack = require( 'webpack' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-env/lib/release-tools/utils/versions' );
 const { writeFile, getCkeditor5Plugins, normalizePath } = require( './utils' );
+const postCssContentStylesPlugin = require( './list-content-styles-plugin' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
 const OUTPUT_FILE_PATH = path.join( DESTINATION_DIRECTORY, 'content-styles.css' );
 
-const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html';
+const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/content-styles.html';
 
 const VARIABLE_DEFINITION_REGEXP = /(--[\w-]+):\s+(.*);/g;
 const VARIABLE_USAGE_REGEXP = /var\((--[\w-]+)\)/g;
@@ -172,7 +172,8 @@ function getWebpackConfig() {
 			filename: '[name].js'
 		},
 		resolve: {
-			modules: getModuleResolvePaths()
+			modules: getModuleResolvePaths(),
+			extensions: [ '.ts', '.js', '.json' ]
 		},
 		resolveLoader: {
 			modules: getModuleResolvePaths()
@@ -195,96 +196,14 @@ function getWebpackConfig() {
 							}
 						}
 					]
+				},
+				{
+					test: /\.ts$/,
+					use: [ 'ts-loader' ]
 				}
 			]
 		}
 	};
-}
-
-/**
- * Returns the PostCSS plugin that allows intercepting CSS definition used in the editor's build.
- *
- * @param {Object} contentRules
- * @param {Array.<String>} contentRules.variables Variables defined as `:root`.
- * @param {Object} contentRules.atRules Definitions of behaves.
- * @param {Array.<String>} contentRules.selector CSS definitions for all selectors.
- * @returns {Function}
- */
-function postCssContentStylesPlugin( contentRules ) {
-	return postcss.plugin( 'list-content-styles', function() {
-		const selectorStyles = contentRules.selector;
-		const variables = contentRules.variables;
-
-		return root => {
-			root.walkRules( rule => {
-				for ( const selector of rule.selectors ) {
-					const data = {
-						file: root.source.input.file,
-						css: rule.toString()
-					};
-
-					if ( selector.match( ':root' ) ) {
-						addDefinition( variables, data );
-					}
-
-					if ( selector.match( '.ck-content' ) ) {
-						if ( rule.parent.name && rule.parent.params ) {
-							const atRule = getAtRuleArray( contentRules.atRules, rule.parent.name, rule.parent.params );
-
-							addDefinition( atRule, data );
-						} else {
-							addDefinition( selectorStyles, data );
-						}
-					}
-				}
-			} );
-		};
-	} );
-
-	/**
-	 * @param {Object} collection
-	 * @param {String} name Name of an `at-rule`.
-	 * @param {String} params Parameters that describes the `at-rule`.
-	 * @returns {Array}
-	 */
-	function getAtRuleArray( collection, name, params ) {
-		const definition = `${ name } ${ params }`;
-
-		if ( !collection[ definition ] ) {
-			collection[ definition ] = [];
-		}
-
-		return collection[ definition ];
-	}
-
-	/**
-	 * Checks whether specified definition is duplicated in the collection.
-	 *
-	 * @param {Array.<StyleStructure>} collection
-	 * @param {StyleStructure} def
-	 * @returns {Boolean}
-	 */
-	function isDuplicatedDefinition( collection, def ) {
-		for ( const item of collection ) {
-			if ( item.file === def.file && item.css === def.css ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Adds definition to the collection if it does not exist in the collection.
-	 *
-	 * @param {Array.<StyleStructure>} collection
-	 * @param {StyleStructure} def
-	 */
-	function addDefinition( collection, def ) {
-		if ( !isDuplicatedDefinition( collection, def ) ) {
-			collection.push( def );
-		}
-	}
 }
 
 /**

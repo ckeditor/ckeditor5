@@ -109,6 +109,14 @@ export default class Editor {
 		this.t = this.locale.t;
 
 		/**
+		 * A set of lock IDs for the {@link #isReadOnly} getter.
+		 *
+		 * @private
+		 * @type {Set.<String|Symbol>}
+		 */
+		this._readOnlyLocks = new Set();
+
+		/**
 		 * Commands registered to the editor.
 		 *
 		 * Use the shorthand {@link #execute `editor.execute()`} method to execute commands:
@@ -141,21 +149,6 @@ export default class Editor {
 		this.set( 'state', 'initializing' );
 		this.once( 'ready', () => ( this.state = 'ready' ), { priority: 'high' } );
 		this.once( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
-
-		/**
-		 * Defines whether this editor is in read-only mode.
-		 *
-		 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
-		 * to modify the document by using them. Also, the editable element(s) become non-editable.
-		 *
-		 * In order to make the editor read-only, you can set this value directly:
-		 *
-		 *		editor.isReadOnly = true;
-		 *
-		 * @observable
-		 * @member {Boolean} #isReadOnly
-		 */
-		this.set( 'isReadOnly', false );
 
 		/**
 		 * The editor's model.
@@ -227,6 +220,133 @@ export default class Editor {
 		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view.document );
+	}
+
+	/**
+	 * Defines whether the editor is in the read-only mode.
+	 *
+	 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
+	 * to modify the document by using them. Also, the editable element(s) become non-editable.
+	 *
+	 * In order to make the editor read-only, you need to call the {@link #enableReadOnlyMode} method:
+	 *
+	 *		editor.enableReadOnlyMode( 'feature-id' );
+	 *
+     * Later, to turn off the read-only mode, call {@link #disableReadOnlyMode}:
+	 *
+	 * 		editor.disableReadOnlyMode( 'feature-id' );
+	 *
+	 * @readonly
+	 * @observable
+	 * @member {Boolean} #isReadOnly
+	 */
+	get isReadOnly() {
+		return this._readOnlyLocks.size > 0;
+	}
+
+	set isReadOnly( value ) {
+		/**
+		 * The {@link #isReadOnly Editor#isReadOnly} property is read-only since version `34.0.0` and can be set only using
+		 * {@link #enableReadOnlyMode `Editor#enableReadOnlyMode( lockId )`} and
+		 * {@link #disableReadOnlyMode `Editor#disableReadOnlyMode( lockId )`}.
+		 *
+		 * Usage before version `34.0.0`:
+		 *
+		 *		editor.isReadOnly = true;
+		 * 		editor.isReadOnly = false;
+		 *
+		 * Usage since version `34.0.0`:
+		 *
+		 *		editor.enableReadOnlyMode( 'my-feature-id' );
+		 * 		editor.disableReadOnlyMode( 'my-feature-id' );
+		 *
+		 * @error editor-isreadonly-has-no-setter
+		 */
+		throw new CKEditorError( 'editor-isreadonly-has-no-setter' );
+	}
+
+	/**
+	 * Turns on the read-only mode in the editor.
+	 *
+	 * Editor can be switched to or out of the read-only mode by many features, under various circumstances. The editor supports locking
+	 * mechanism for the read-only mode. It enables easy control over the read-only mode when many features wants to turn it on or off at
+	 * the same time, without conflicting with each other. It guarantees that you will not make the editor editable accidentally (which
+	 * could lead to errors).
+	 *
+	 * Each read-only mode request is identified by a unique id (also called "lock"). If multiple plugins requested to turn on the
+	 * read-only mode, then, the editor will become editable only after all these plugins turn the read-only mode off (using the same ids).
+	 *
+	 * Note, that you cannot force the editor to disable the read-only mode if other plugins set it.
+	 *
+	 * After the first `enableReadOnlyMode()` call, the {@link #isReadOnly `isReadOnly` property} will be set to `true`:
+	 *
+	 *		editor.isReadOnly; // `false`.
+	 * 		editor.enableReadOnlyMode( 'my-feature-id' );
+	 * 		editor.isReadOnly; // `true`.
+	 *
+	 * You can turn off the read-only mode ("clear the lock") using the {@link #disableReadOnlyMode `disableReadOnlyMode()`} method:
+	 *
+	 * 		editor.enableReadOnlyMode( 'my-feature-id' );
+	 * 		// ...
+	 * 		editor.disableReadOnlyMode( 'my-feature-id' );
+	 * 		editor.isReadOnly; // `false`.
+	 *
+	 * All "locks" need to be removed to enable editing:
+	 *
+	 * 		editor.enableReadOnlyMode( 'my-feature-id' );
+	 * 		editor.enableReadOnlyMode( 'my-other-feature-id' );
+	 * 		// ...
+	 * 		editor.disableReadOnlyMode( 'my-feature-id' );
+	 * 		editor.isReadOnly; // `true`.
+	 * 		editor.disableReadOnlyMode( 'my-other-feature-id' );
+	 * 		editor.isReadOnly; // `false`.
+	 *
+	 * @param {String|Symbol} lockId A unique ID for setting the editor to the read-only state.
+	 */
+	enableReadOnlyMode( lockId ) {
+		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
+			/**
+			 * The lock ID is missing or it is not a string or symbol.
+			 *
+			 * @error editor-read-only-lock-id-invalid
+			 */
+			throw new CKEditorError( 'editor-read-only-lock-id-invalid', null, { lockId } );
+		}
+
+		if ( this._readOnlyLocks.has( lockId ) ) {
+			return;
+		}
+
+		this._readOnlyLocks.add( lockId );
+
+		if ( this._readOnlyLocks.size === 1 ) {
+			// Manually fire the `change:isReadOnly` event as only getter is provided.
+			this.fire( 'change:isReadOnly', 'isReadOnly', true, false );
+		}
+	}
+
+	/**
+	 * Removes the read-only lock from the editor with given lock ID.
+	 *
+	 * When no lock is present on the editor anymore, then the {@link #isReadOnly `isReadOnly` property} will be set to `false`.
+	 *
+	 * @param {String|Symbol} lockId The lock ID for setting the editor to the read-only state.
+	 */
+	disableReadOnlyMode( lockId ) {
+		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
+			throw new CKEditorError( 'editor-read-only-lock-id-invalid', null, { lockId } );
+		}
+
+		if ( !this._readOnlyLocks.has( lockId ) ) {
+			return;
+		}
+
+		this._readOnlyLocks.delete( lockId );
+
+		if ( this._readOnlyLocks.size === 0 ) {
+			// Manually fire the `change:isReadOnly` event as only getter is provided.
+			this.fire( 'change:isReadOnly', 'isReadOnly', false, true );
+		}
 	}
 
 	/**
@@ -361,7 +481,7 @@ mix( Editor, ObservableMixin );
  * This error is thrown when trying to pass a `<textarea>` element to a `create()` function of an editor class.
  *
  * The only editor type which can be initialized on `<textarea>` elements is
- * the {@glink builds/guides/predefined-builds/overview#classic-editor classic editor}.
+ * the {@glink installation/getting-started/predefined-builds#classic-editor classic editor}.
  * This editor hides the passed element and inserts its own UI next to it. Other types of editors reuse the passed element as their root
  * editable element and therefore `<textarea>` is not appropriate for them. Use a `<div>` or another text container instead:
  *

@@ -379,6 +379,102 @@ describe( 'ContextWatchdog', () => {
 			await watchdog.destroy();
 		} );
 
+		it( 'should add items simultaneously', async () => {
+			watchdog = new ContextWatchdog( Context );
+
+			watchdog.create();
+
+			let res1, res2;
+
+			const p1 = sinon.stub().resolves( new Promise( res => {
+				res1 = res;
+			} ) );
+
+			const p2 = sinon.stub().resolves( new Promise( res => {
+				res2 = res;
+			} ) );
+
+			watchdog.add( {
+				id: 'editor1',
+				type: 'editor',
+				creator: ( el, config ) => p1().then( () => ClassicTestEditor.create( el, config ) ),
+				sourceElementOrData: element1,
+				config: {}
+			} );
+
+			watchdog.add( {
+				id: 'editor2',
+				type: 'editor',
+				creator: ( el, config ) => p2().then( () => ClassicTestEditor.create( el, config ) ),
+				sourceElementOrData: element2,
+				config: {}
+			} );
+
+			await waitCycle();
+
+			sinon.assert.calledOnce( p1 );
+			sinon.assert.calledOnce( p2 );
+
+			// Resolve only the second promise to test if the second editor loads before the first one.
+			res2();
+
+			await waitCycle();
+
+			expect( watchdog.getItem( 'editor2' ) ).to.be.instanceOf( ClassicTestEditor );
+
+			// Then resolve the first promise to test if the first editor can still be loaded.
+			res1();
+
+			await waitCycle();
+
+			expect( watchdog.getItem( 'editor1' ) ).to.be.instanceOf( ClassicTestEditor );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should add and destroy items simultaneously', async () => {
+			watchdog = new ContextWatchdog( Context );
+
+			watchdog.create();
+
+			let resolve;
+
+			const p1 = sinon.stub().resolves( new Promise( res => {
+				resolve = res;
+			} ) );
+
+			const destructionSpy = sinon.spy();
+
+			watchdog.add( {
+				id: 'editor1',
+				type: 'editor',
+				creator: ( el, config ) => p1().then( () => ClassicTestEditor.create( el, config ) ),
+				sourceElementOrData: element1,
+				config: {}
+			} );
+
+			watchdog.add( {
+				id: 'editor2',
+				type: 'editor',
+				creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+				sourceElementOrData: element2,
+				config: {},
+				destructor: destructionSpy
+			} );
+
+			watchdog.remove( 'editor2' );
+			watchdog.remove( 'editor1' );
+
+			await waitCycle();
+
+			// The second editor should be destroyed while the first one is still being created.
+			sinon.assert.calledOnce( destructionSpy );
+
+			resolve();
+
+			await watchdog.destroy();
+		} );
+
 		describe( 'in case of error handling', () => {
 			it( 'should restart the whole structure of editors if an error happens inside the `Context`', async () => {
 				watchdog = new ContextWatchdog( Context );

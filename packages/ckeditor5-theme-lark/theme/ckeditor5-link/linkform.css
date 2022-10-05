@@ -22,13 +22,15 @@
 		}
 	}
 
-	& .ck-button {
+	& > .ck-button {
 		padding: var(--ck-spacing-standard);
 		margin: 0;
-		border-radius: 0;
-		border: 0;
-		border-top: 1px solid var(--ck-color-base-border);
 		width: 50%;
+		border-radius: 0;
+
+		&:not(:focus) {
+			border-top: 1px solid var(--ck-color-base-border);
+		}
 
 		@mixin ck-dir ltr {
 			margin-left: 0;
@@ -48,7 +50,6 @@
 		margin: var(--ck-spacing-standard) var(--ck-spacing-large);
 
 		& .ck-button.ck-switchbutton {
-			border: 0;
 			padding: 0;
 			width: 100%;
 

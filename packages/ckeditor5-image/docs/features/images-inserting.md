@@ -1,7 +1,7 @@
 ---
 category: features-image-upload
 menu-title: Inserting images via URL
-order: 60
+order: 70
 ---
 {@snippet features/build-image-source}
 
@@ -27,6 +27,10 @@ ClassicEditor
 This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} in the toolbar. To upload the image, click on the image icon. To open the panel and add the image URL, click the arrow next to the image button. Check the demo below to insert a new image via URL or update an existing image by selecting it, opening the dropdown panel and pasting a new URL.
 
 {@snippet features/image-insert-via-url}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ### Inserting images via pasting URL into editor
 

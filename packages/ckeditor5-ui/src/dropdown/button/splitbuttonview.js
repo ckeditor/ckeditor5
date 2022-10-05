@@ -222,13 +222,18 @@ export default class SplitButtonView extends View {
 
 		arrowView.extendTemplate( {
 			attributes: {
-				class: 'ck-splitbutton__arrow',
+				class: [
+					'ck-splitbutton__arrow'
+				],
+				'data-cke-tooltip-disabled': bind.to( 'isOn' ),
 				'aria-haspopup': true,
 				'aria-expanded': bind.to( 'isOn', value => String( value ) )
 			}
 		} );
 
 		arrowView.bind( 'isEnabled' ).to( this );
+		arrowView.bind( 'label' ).to( this );
+		arrowView.bind( 'tooltip' ).to( this );
 
 		arrowView.delegate( 'execute' ).to( this, 'open' );
 

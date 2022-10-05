@@ -10,15 +10,15 @@ const upath = require( 'upath' );
 const fs = require( 'fs' );
 const minimatch = require( 'minimatch' );
 const webpack = require( 'webpack' );
-const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const { bundler, styles, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const ProgressBarPlugin = require( 'progress-bar-webpack-plugin' );
 const glob = require( 'glob' );
 
 const DEFAULT_LANGUAGE = 'en';
 const MULTI_LANGUAGE = 'multi-language';
+const SNIPPETS_BUILD_CHUNK_SIZE = 50;
 
 /**
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
@@ -29,7 +29,7 @@ const MULTI_LANGUAGE = 'multi-language';
  * @param {Object.<String, Function>} umbertoHelpers
  * @returns {Promise}
  */
-module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
+module.exports = async function snippetAdapter( snippets, options, umbertoHelpers ) {
 	const { getSnippetPlaceholder, getSnippetSourcePaths } = umbertoHelpers;
 	const snippetsDependencies = new Map();
 
@@ -89,7 +89,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		console.log( `Found ${ snippets.size } matching {@snippet} tags.` );
 	}
 
-	console.log( `Building ${ countUniqueSnippets( snippets ) } snippets...` );
+	console.log( 'Preparing to build snippets...' );
 
 	const groupedSnippetsByLanguage = {};
 
@@ -111,40 +111,55 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		groupedSnippetsByLanguage[ snippetData.snippetConfig.language ].add( snippetData );
 	}
 
-	// For each language prepare own Webpack configuration.
+	// For each language prepare own Webpack configuration. Additionally, split all snippets into smaller sets (chunks), so that the
+	// building process will not end unexpectedly due to lack of memory.
 	const webpackConfigs = Object.keys( groupedSnippetsByLanguage )
-		.map( language => {
-			return getWebpackConfig( groupedSnippetsByLanguage[ language ], {
-				language,
-				production: options.production,
-				definitions: {
-					...( options.definitions || {} ),
-					...constantDefinitions
-				}
+		.flatMap( language => {
+			const snippetsChunks = splitSnippetsIntoChunks( groupedSnippetsByLanguage[ language ], SNIPPETS_BUILD_CHUNK_SIZE );
+
+			return snippetsChunks.map( snippetsChunk => {
+				return getWebpackConfig( snippetsChunk, {
+					language,
+					production: options.production,
+					definitions: {
+						...( options.definitions || {} ),
+						...constantDefinitions
+					}
+				} );
 			} );
 		} );
 
-	let promise = Promise.resolve();
-
 	// Nothing to build.
 	if ( !webpackConfigs.length ) {
-		return promise;
+		return;
 	}
 
 	for ( const config of webpackConfigs ) {
-		promise = promise.then( () => runWebpack( config ) );
+		const { language, additionalLanguages } = config.plugins.find( plugin => plugin instanceof CKEditorWebpackPlugin ).options;
+		const textLang = additionalLanguages ? additionalLanguages.join( ', ' ) : language;
+
+		const spinner = tools.createSpinner(
+			`Building next group of snippets (${ Object.keys( config.entry ).length }) for language "${ textLang }"...`
+		);
+		spinner.start();
+
+		await runWebpack( config );
+
+		spinner.finish( { emoji: '✔️ ' } );
 	}
 
-	return promise
-		.then( () => {
-			const webpackConfig = getWebpackConfigForAssets( {
-				production: options.production,
-				snippetWebpackConfig: webpackConfigs[ 0 ]
-			} );
+	const webpackConfig = getWebpackConfigForAssets( {
+		production: options.production,
+		snippetWebpackConfig: webpackConfigs[ 0 ]
+	} );
 
-			return runWebpack( webpackConfig );
-		} )
+	const spinnerAssets = tools.createSpinner( 'Building documentation assets...' );
+	spinnerAssets.start();
+
+	return runWebpack( webpackConfig )
 		.then( () => {
+			spinnerAssets.finish( { emoji: '✔️ ' } );
+
 			// Group snippets by destination path in order to attach required HTML code and assets (CSS and JS).
 			const groupedSnippetsByDestinationPath = {};
 
@@ -403,10 +418,7 @@ function getWebpackConfig( snippets, config ) {
 				banner: bundler.getLicenseBanner(),
 				raw: true
 			} ),
-			new webpack.DefinePlugin( definitions ),
-			new ProgressBarPlugin( {
-				format: `Building snippets for language "${ config.language }": :percent (:msg)`
-			} )
+			new webpack.DefinePlugin( definitions )
 		],
 
 		// Configure the paths so building CKEditor 5 snippets work even if the script
@@ -415,7 +427,8 @@ function getWebpackConfig( snippets, config ) {
 			modules: [
 				...getPackageDependenciesPaths(),
 				...getModuleResolvePaths()
-			]
+			],
+			extensions: [ '.ts', '.js', '.json' ]
 		},
 
 		resolveLoader: {
@@ -445,6 +458,10 @@ function getWebpackConfig( snippets, config ) {
 							}
 						}
 					]
+				},
+				{
+					test: /\.ts$/,
+					use: [ 'ts-loader' ]
 				}
 			]
 		}
@@ -549,13 +566,42 @@ function getHTMLImports( files, mapFunction ) {
 }
 
 /**
- * Returns a number of unique snippet names that will be built.
+ * Splits all snippets into smaller sets (chunks).
+ *
+ * Snippets belonging to the same page will not be separated from others on that page to make sure they all are built correctly. Such
+ * snippets cannot be divided. For this reason, the size of each created chunk may not be exactly equal to the requested chunk size
+ * and the final size depends on whether a page contained many indivisible snippets to build.
  *
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
- * @returns {Number}
+ * @param {Number} chunkSize The size of the group of snippets to be built simultaneously by one webpack process.
+ * @returns {Array.<Set.<Snippet>>}
  */
-function countUniqueSnippets( snippets ) {
-	return new Set( Array.from( snippets, snippet => snippet.snippetName ) ).size;
+function splitSnippetsIntoChunks( snippets, chunkSize ) {
+	const groupedSnippetsByPage = [ ...snippets ].reduce( ( result, snippet ) => {
+		if ( !result[ snippet.pageSourcePath ] ) {
+			result[ snippet.pageSourcePath ] = [];
+		}
+
+		result[ snippet.pageSourcePath ].push( snippet );
+
+		return result;
+	}, {} );
+
+	const chunks = [ {} ];
+
+	for ( const snippets of Object.values( groupedSnippetsByPage ) ) {
+		const lastChunk = chunks.pop();
+		const numberOfSnippetsInLastChunk = Object.keys( lastChunk ).length;
+		const snippetsEntries = Object.fromEntries( snippets.map( snippet => [ snippet.snippetName, snippet ] ) );
+
+		if ( numberOfSnippetsInLastChunk < chunkSize ) {
+			chunks.push( { ...lastChunk, ...snippetsEntries } );
+		} else {
+			chunks.push( lastChunk, snippetsEntries );
+		}
+	}
+
+	return chunks.map( chunk => new Set( Object.values( chunk ) ) );
 }
 
 /**
@@ -601,9 +647,6 @@ function getWebpackConfigForAssets( config ) {
 			new webpack.BannerPlugin( {
 				banner: bundler.getLicenseBanner(),
 				raw: true
-			} ),
-			new ProgressBarPlugin( {
-				format: 'Building assets for snippets: :percent (:msg)'
 			} )
 		],
 
@@ -613,7 +656,8 @@ function getWebpackConfigForAssets( config ) {
 			modules: [
 				...getPackageDependenciesPaths(),
 				...getModuleResolvePaths()
-			]
+			],
+			extensions: [ '.ts', '.js', '.json' ]
 		},
 
 		resolveLoader: {
@@ -628,6 +672,10 @@ function getWebpackConfigForAssets( config ) {
 						MiniCssExtractPlugin.loader,
 						'css-loader'
 					]
+				},
+				{
+					test: /\.ts$/,
+					use: [ 'ts-loader' ]
 				}
 			]
 		}

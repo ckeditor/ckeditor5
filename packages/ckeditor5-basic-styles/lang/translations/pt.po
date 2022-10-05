@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Language-Team: Portuguese (https://www.transifex.com/ckeditor/teams/11143/pt/)\n"
 "Language: pt\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
@@ -26,7 +26,7 @@ msgstr "Itálico"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr ""
+msgstr "Sublinhado"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
@@ -34,12 +34,12 @@ msgstr "Código"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr ""
+msgstr "Riscado"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "Subscrito"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "Sobrescrito"

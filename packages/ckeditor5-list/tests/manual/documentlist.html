@@ -1,0 +1,124 @@
+<div class="options-container">
+	<input id="chbx-show-borders" type="checkbox" />
+	<label for="chbx-show-borders">Show borders</label>
+</div>
+
+<div id="editor">
+	a
+	<ul>
+		<li>
+			<ul>
+				<li>
+					<p>b</p>
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<h2>Document lists</h2>
+	<ul>
+		<li>
+			<p>First</p>
+			<p>Second</p>
+			<p>Third</p>
+		</li>
+		<li><img alt="bar" src="sample.jpg" style="width:20%;">Second list item</li>
+		<li>Another list item</li>
+		<li>Jet another list item</li>
+		<li>
+			<p>2 First</p>
+			<p>2 Second</p>
+			<p>2 Third</p>
+		</li>
+		<li>
+			<p>First</p>
+			<ul>
+				<li>Nested a</li>
+				<li>Nested b</li>
+				<li>
+					<p>Nested multi a</p>
+					<p>Nested multi b</p>
+				</li>
+			</ul>
+		</li>
+		<li>
+			before horizontal line
+			<hr>
+			after horizontal line
+		</li>
+		<li>
+			before page break
+			<div class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>
+			after page break
+		</li>
+		<li>
+			before image
+			<figure class="image">
+				<img alt="bar" src="sample.jpg">
+			</figure>
+			after image
+		</li>
+		<li>
+			before image with caption
+			<figure class="image">
+				<img alt="bar" src="sample.jpg">
+				<figcaption>Caption</figcaption>
+			</figure>
+			after image with caption
+		</li>
+		<li>
+			<h2>Heading 1</h2>
+			<p>Text</p>
+			<p>Text</p>
+		</li>
+		<li><h3>Heading 2</h3></li>
+		<li><h4>Heading 3</h4></li>
+		<li>
+			before block quote
+			<blockquote>
+				<p>Quote</p>
+				<ul>
+					<li>List in quote</li>
+				</ul>
+				<p>End of quote</p>
+			</blockquote>
+			after block quote
+		</li>
+		<li>
+			before table
+			<table>
+				<tr><td>Foo</td><td>Bar</td></tr>
+				<tr>
+					<td>
+						<ul><li>1</li><li>2</li></ul>
+					</td>
+					<td>
+						123
+					</td>
+				</tr>
+			</table>
+			after table
+		</li>
+		<li>
+			<pre><code class="language-css">abc</code></pre>
+		</li>
+	</ul>
+</div>
+
+<style>
+	.show-borders ul, .show-borders ol {
+		border: 2px dashed blue;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin: 5px;
+	}
+
+	.show-borders li {
+		border: 2px dotted red;
+		padding: 5px;
+		margin: 5px;
+	}
+
+	.options-container {
+		margin-bottom: 16px;
+	}
+</style>

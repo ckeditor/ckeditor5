@@ -91,7 +91,7 @@ describe( 'Widget', () => {
 
 				editor.conversion.for( 'downcast' )
 					.elementToElement( { model: 'inline', view: ( modelItem, { writer } ) => {
-						return writer.createContainerElement( 'figure', null, { isAllowedInsideAttributeElement: true } );
+						return writer.createContainerElement( 'figure' );
 					} } )
 					.elementToElement( { model: 'imageBlock', view: 'img' } )
 					.elementToElement( { model: 'blockQuote', view: 'blockquote' } )
@@ -109,7 +109,7 @@ describe( 'Widget', () => {
 					.elementToElement( {
 						model: 'inline-widget',
 						view: ( modelItem, { writer } ) => {
-							const span = writer.createContainerElement( 'span', null, { isAllowedInsideAttributeElement: true } );
+							const span = writer.createContainerElement( 'span' );
 
 							return toWidget( span, writer );
 						}
@@ -1391,7 +1391,7 @@ describe( 'Widget', () => {
 				'<paragraph>foo</paragraph>'
 			);
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
 
@@ -1419,7 +1419,7 @@ describe( 'Widget', () => {
 				'<paragraph>foo</paragraph>'
 			);
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
 

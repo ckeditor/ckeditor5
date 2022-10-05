@@ -9,6 +9,9 @@
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import {
+	findOptimalInsertionRange as engineFindOptimalInsertionRange
+} from '@ckeditor/ckeditor5-engine/src/model/utils/findoptimalinsertionrange';
 
 import HighlightStack from './highlightstack';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
@@ -237,7 +240,7 @@ export function getLabel( element ) {
  *				view: ( modelItem, { writer } ) => {
  *					const div = writer.createEditableElement( 'div', { class: 'nested' } );
  *
- *					return toWidgetEditable( nested, writer );
+ *					return toWidgetEditable( nested, writer, { label: 'label for editable' } );
  *				}
  *			} );
  *
@@ -254,10 +257,18 @@ export function getLabel( element ) {
  *
  * @param {module:engine/view/editableelement~EditableElement} editable
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {Object} [options] Additional options.
+ * @param {String} [options.label] Editable's label used by assistive technologies (e.g. screen readers).
  * @returns {module:engine/view/editableelement~EditableElement} Returns the same element that was provided in the `editable` parameter
  */
-export function toWidgetEditable( editable, writer ) {
+export function toWidgetEditable( editable, writer, options = {} ) {
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
+
+	writer.setAttribute( 'role', 'textbox', editable );
+
+	if ( options.label ) {
+		writer.setAttribute( 'aria-label', options.label, editable );
+	}
 
 	// Set initial contenteditable value.
 	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
@@ -307,33 +318,9 @@ export function findOptimalInsertionRange( selection, model ) {
 		if ( typeAroundFakeCaretPosition ) {
 			return model.createRange( model.createPositionAt( selectedElement, typeAroundFakeCaretPosition ) );
 		}
-
-		if ( model.schema.isObject( selectedElement ) && !model.schema.isInline( selectedElement ) ) {
-			return model.createRangeOn( selectedElement );
-		}
 	}
 
-	const firstBlock = selection.getSelectedBlocks().next().value;
-
-	if ( firstBlock ) {
-		// If inserting into an empty block – return position in that block. It will get
-		// replaced with the image by insertContent(). #42.
-		if ( firstBlock.isEmpty ) {
-			return model.createRange( model.createPositionAt( firstBlock, 0 ) );
-		}
-
-		const positionAfter = model.createPositionAfter( firstBlock );
-
-		// If selection is at the end of the block - return position after the block.
-		if ( selection.focus.isTouching( positionAfter ) ) {
-			return model.createRange( positionAfter );
-		}
-
-		// Otherwise return position before the block.
-		return model.createRange( model.createPositionBefore( firstBlock ) );
-	}
-
-	return model.createRange( selection.focus );
+	return engineFindOptimalInsertionRange( selection, model );
 }
 
 /**

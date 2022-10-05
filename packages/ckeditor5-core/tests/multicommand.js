@@ -4,11 +4,15 @@
  */
 
 import MultiCommand from '../src/multicommand';
-import ModelTestEditor from './_utils/modeltesteditor';
 import Command from '../src/command';
+
+import ModelTestEditor from './_utils/modeltesteditor';
+import testUtils from './_utils/utils';
 
 describe( 'MultiCommand', () => {
 	let editor, multiCommand;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return ModelTestEditor
@@ -21,7 +25,6 @@ describe( 'MultiCommand', () => {
 
 	afterEach( () => {
 		multiCommand.destroy();
-
 		return editor.destroy();
 	} );
 
@@ -133,6 +136,92 @@ describe( 'MultiCommand', () => {
 
 			sinon.assert.notCalled( spyA );
 			sinon.assert.calledOnce( spyB );
+			sinon.assert.notCalled( spyC );
+		} );
+	} );
+
+	describe( 'support for command\'s priority', () => {
+		it( 'should execute command with higher priority', () => {
+			const commandA = new Command( editor );
+			const commandB = new Command( editor );
+
+			multiCommand.registerChildCommand( commandB, { priority: 'high' } );
+			multiCommand.registerChildCommand( commandA, { priority: 'low' } );
+
+			const spyA = sinon.spy( commandA, 'execute' );
+			const spyB = sinon.spy( commandB, 'execute' );
+
+			commandA.isEnabled = true;
+			commandB.isEnabled = true;
+
+			multiCommand.execute();
+
+			sinon.assert.notCalled( spyA );
+			sinon.assert.calledOnce( spyB );
+		} );
+
+		it( 'should execute command with higher priority even if it was registered after command with lower priority', () => {
+			const commandA = new Command( editor );
+			const commandB = new Command( editor );
+
+			multiCommand.registerChildCommand( commandA, { priority: 'low' } );
+			multiCommand.registerChildCommand( commandB, { priority: 'high' } );
+
+			const spyA = sinon.spy( commandA, 'execute' );
+			const spyB = sinon.spy( commandB, 'execute' );
+
+			commandA.isEnabled = true;
+			commandB.isEnabled = true;
+
+			multiCommand.execute();
+
+			sinon.assert.notCalled( spyA );
+			sinon.assert.calledOnce( spyB );
+		} );
+
+		it( 'should execute first registered command if all have the same priority', () => {
+			const commandA = new Command( editor );
+			const commandB = new Command( editor );
+			const commandC = new Command( editor );
+
+			multiCommand.registerChildCommand( commandA, { priority: 'normal' } );
+			multiCommand.registerChildCommand( commandB, { priority: 'normal' } );
+			multiCommand.registerChildCommand( commandC, { priority: 'normal' } );
+
+			const spyA = sinon.spy( commandA, 'execute' );
+			const spyB = sinon.spy( commandB, 'execute' );
+			const spyC = sinon.spy( commandC, 'execute' );
+
+			commandA.isEnabled = true;
+			commandB.isEnabled = true;
+			commandC.isEnabled = true;
+
+			multiCommand.execute();
+
+			sinon.assert.calledOnce( spyA );
+			sinon.assert.notCalled( spyB );
+			sinon.assert.notCalled( spyC );
+		} );
+
+		it( 'should execute command with lower priority if commands with higher priority are disabled', () => {
+			const commandA = new Command( editor );
+			const commandB = new Command( editor );
+			const commandC = new Command( editor );
+
+			multiCommand.registerChildCommand( commandA, { priority: 'low' } );
+			multiCommand.registerChildCommand( commandB, { priority: 'high' } );
+			multiCommand.registerChildCommand( commandC, { priority: 'highest' } );
+
+			const spyA = sinon.spy( commandA, 'execute' );
+			const spyB = sinon.spy( commandB, 'execute' );
+			const spyC = sinon.spy( commandC, 'execute' );
+
+			commandA.isEnabled = true;
+
+			multiCommand.execute();
+
+			sinon.assert.calledOnce( spyA );
+			sinon.assert.notCalled( spyB );
 			sinon.assert.notCalled( spyC );
 		} );
 	} );

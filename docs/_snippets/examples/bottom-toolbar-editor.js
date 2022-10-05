@@ -251,7 +251,7 @@ DecoupledEditor
 			text: 'Click to open formatting options.',
 			editor,
 			tippyOptions: {
-				placement: 'bottom-start'
+				placement: 'top-start'
 			}
 		} );
 	} )

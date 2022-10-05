@@ -22,15 +22,15 @@ msgstr "resim aracı"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "Metni kaydır"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "Metni böl"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "Aynı hizada"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"
@@ -94,11 +94,11 @@ msgstr "Orijinal"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
-msgstr ""
+msgstr "Resim yeniden boyutlandırma listesi"
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
-msgstr ""
+msgstr "Ekle"
 
 msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"
@@ -106,8 +106,16 @@ msgstr "Güncelle"
 
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
-msgstr ""
+msgstr "URL ile görüntü ekle"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr ""
+msgstr "Görüntü URL'sini güncelle"
+
+msgctxt "Text used by screen readers do describe an image when the image has no text alternative."
+msgid "Caption for the image"
+msgstr "Resim için başlık"
+
+msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
+msgid "Caption for image: %0"
+msgstr "Resim için başlık: %0"

@@ -537,7 +537,7 @@ Major releases (contain breaking changes):
 
 We are happy to report the release of CKEditor 5 v11.2.0. This editor version brings the long-awaited [support for paste from Office](https://ckeditor.com/docs/ckeditor5/latest/features/paste-from-word.html) (e.g. from Microsoft Word), [integration with CKFinder file manager](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html), improved [image upload documentation](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html), improved [editor UI on mobile devices](https://github.com/ckeditor/ckeditor5/issues/416#issuecomment-430246472), as well as many smaller features and improvements.
 
-Blog post is comming soon...
+Blog post is coming soon...
 
 ### Dependencies
 
@@ -647,7 +647,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 This is a major releases that introduces many smaller features, dozens of bug fixes and a couple of infrastructure changes (an upgrade to `webpack@4`, simplified structure of the build repository). Additionally, the `InlineEditor#element` property was renamed to `InlineEditor#sourceElement` and the `InlineEditor#updateElement()` method was renamed to `InlineEditor#updateSourceElement()`.
 
-If you maintain a [custom build of CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html) or [integrate CKEditor 5 from source](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
+If you maintain a [custom build of CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/custom-builds.html) or [integrate CKEditor 5 from source](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/integrating-from-source.html), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
 
 Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v11.0.0-released/
 

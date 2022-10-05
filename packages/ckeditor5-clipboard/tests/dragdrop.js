@@ -616,7 +616,7 @@ describe( 'Drag and Drop', () => {
 				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
 			);
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			// Dragging.
 
@@ -628,7 +628,7 @@ describe( 'Drag and Drop', () => {
 			expect( model.markers.has( 'drop-target' ) ).to.be.false;
 			expect( getViewData( view, { renderUIElements: true } ) ).to.equal( '<p>{foo}bar</p>' );
 
-			editor.isReadOnly = false;
+			editor.disableReadOnlyMode( 'unit-test' );
 			// Dropping.
 
 			dataTransferMock.dropEffect = 'move';
@@ -808,7 +808,7 @@ describe( 'Drag and Drop', () => {
 				const dataTransferMock = createDataTransfer();
 				const spyClipboardOutput = sinon.spy();
 
-				editor.isReadOnly = true;
+				editor.enableReadOnlyMode( 'unit-test' );
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 
@@ -890,7 +890,7 @@ describe( 'Drag and Drop', () => {
 					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
 				);
 
-				editor.isReadOnly = true;
+				editor.enableReadOnlyMode( 'unit-test' );
 
 				const dataTransferMock = createDataTransfer();
 				const spyClipboardOutput = sinon.spy();
@@ -1379,7 +1379,7 @@ describe( 'Drag and Drop', () => {
 			it( 'should not focus the editor while dragging over disabled editor', () => {
 				const stubFocus = sinon.stub( view, 'focus' );
 
-				editor.isReadOnly = true;
+				editor.enableReadOnlyMode( 'unit-test' );
 
 				viewDocument.fire( 'dragenter' );
 
@@ -1444,7 +1444,7 @@ describe( 'Drag and Drop', () => {
 			it( 'should not focus the editor while dragging over disabled editor', () => {
 				const stubFocus = sinon.stub( view, 'focus' );
 
-				editor.isReadOnly = true;
+				editor.enableReadOnlyMode( 'unit-test' );
 
 				viewDocument.fire( 'dragenter' );
 

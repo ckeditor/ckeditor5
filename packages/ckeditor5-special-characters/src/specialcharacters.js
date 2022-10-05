@@ -14,6 +14,7 @@ import { CKEditorError } from 'ckeditor5/src/utils';
 import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
 import CharacterGridView from './ui/charactergridview';
 import CharacterInfoView from './ui/characterinfoview';
+import SpecialCharactersView from './ui/specialcharactersview';
 
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 import '../theme/specialcharacters.css';
@@ -97,9 +98,14 @@ export default class SpecialCharacters extends Plugin {
 				if ( !dropdownPanelContent ) {
 					dropdownPanelContent = this._createDropdownPanelContent( locale, dropdownView );
 
-					dropdownView.panelView.children.add( dropdownPanelContent.navigationView );
-					dropdownView.panelView.children.add( dropdownPanelContent.gridView );
-					dropdownView.panelView.children.add( dropdownPanelContent.infoView );
+					const specialCharactersView = new SpecialCharactersView(
+						locale,
+						dropdownPanelContent.navigationView,
+						dropdownPanelContent.gridView,
+						dropdownPanelContent.infoView
+					);
+
+					dropdownView.panelView.children.add( specialCharactersView );
 				}
 
 				dropdownPanelContent.infoView.set( {

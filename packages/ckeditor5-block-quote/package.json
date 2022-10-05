@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-block-quote",
-  "version": "33.0.0",
+  "version": "35.2.0",
   "description": "Block quote feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,22 +12,22 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^33.0.0"
+    "ckeditor5": "^35.2.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^33.0.0",
-    "@ckeditor/ckeditor5-core": "^33.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^28.0.1",
-    "@ckeditor/ckeditor5-editor-classic": "^33.0.0",
-    "@ckeditor/ckeditor5-engine": "^33.0.0",
-    "@ckeditor/ckeditor5-enter": "^33.0.0",
-    "@ckeditor/ckeditor5-heading": "^33.0.0",
-    "@ckeditor/ckeditor5-image": "^33.0.0",
-    "@ckeditor/ckeditor5-list": "^33.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^33.0.0",
-    "@ckeditor/ckeditor5-table": "^33.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^33.0.0",
-    "@ckeditor/ckeditor5-typing": "^33.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^35.2.0",
+    "@ckeditor/ckeditor5-core": "^35.2.0",
+    "@ckeditor/ckeditor5-dev-utils": "^31.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^35.2.0",
+    "@ckeditor/ckeditor5-engine": "^35.2.0",
+    "@ckeditor/ckeditor5-enter": "^35.2.0",
+    "@ckeditor/ckeditor5-heading": "^35.2.0",
+    "@ckeditor/ckeditor5-image": "^35.2.0",
+    "@ckeditor/ckeditor5-list": "^35.2.0",
+    "@ckeditor/ckeditor5-paragraph": "^35.2.0",
+    "@ckeditor/ckeditor5-table": "^35.2.0",
+    "@ckeditor/ckeditor5-theme-lark": "^35.2.0",
+    "@ckeditor/ckeditor5-typing": "^35.2.0",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },
@@ -49,7 +49,8 @@
     "src",
     "theme",
     "build",
-    "ckeditor5-metadata.json"
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "dll:build": "webpack"

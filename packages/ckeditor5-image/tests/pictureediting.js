@@ -104,8 +104,8 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 								'<img src="/assets/sample.png">' +
 							'</picture>bar' +
 						'</p>'
@@ -123,12 +123,14 @@ describe( 'PictureEditing', () => {
 						{
 							srcset: '/assets/sample.png',
 							type: 'image/png',
-							media: '(min-width: 800px)'
+							media: '(min-width: 800px)',
+							sizes: '2000px'
 						},
 						{
 							srcset: '/assets/sample.png?foo',
 							type: 'image/png',
-							media: '(max-width: 800px)'
+							media: '(max-width: 800px)',
+							sizes: '400px'
 						}
 					] );
 				} );
@@ -137,9 +139,9 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
 								'<img src="/assets/sample.png">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 							'</picture>bar' +
 						'</p>'
 					);
@@ -156,12 +158,14 @@ describe( 'PictureEditing', () => {
 						{
 							srcset: '/assets/sample.png',
 							type: 'image/png',
-							media: '(min-width: 800px)'
+							media: '(min-width: 800px)',
+							sizes: '2000px'
 						},
 						{
 							srcset: '/assets/sample.png?foo',
 							type: 'image/png',
-							media: '(max-width: 800px)'
+							media: '(max-width: 800px)',
+							sizes: '400px'
 						}
 					] );
 				} );
@@ -188,7 +192,7 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<a href="http://ckeditor.com"><picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
 								'<img src="/assets/sample.png">' +
 							'</a></picture>bar' +
 						'</p>'
@@ -207,7 +211,8 @@ describe( 'PictureEditing', () => {
 						{
 							srcset: '/assets/sample.png',
 							type: 'image/png',
-							media: '(min-width: 800px)'
+							media: '(min-width: 800px)',
+							sizes: '2000px'
 						}
 					] );
 				} );
@@ -216,7 +221,7 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
 								'<img src="/assets/sample.png" style="width:123px">' +
 							'</picture>bar' +
 						'</p>'
@@ -234,7 +239,8 @@ describe( 'PictureEditing', () => {
 						{
 							srcset: '/assets/sample.png',
 							type: 'image/png',
-							media: '(min-width: 800px)'
+							media: '(min-width: 800px)',
+							sizes: '2000px'
 						}
 					] );
 				} );
@@ -289,8 +295,8 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<figure class="image">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 								'<img src="/assets/sample.png">' +
 							'</picture>' +
 						'</figure>'
@@ -305,12 +311,14 @@ describe( 'PictureEditing', () => {
 						{
 							srcset: '/assets/sample.png',
 							type: 'image/png',
-							media: '(min-width: 800px)'
+							media: '(min-width: 800px)',
+							sizes: '2000px'
 						},
 						{
 							srcset: '/assets/sample.png?foo',
 							type: 'image/png',
-							media: '(max-width: 800px)'
+							media: '(max-width: 800px)',
+							sizes: '400px'
 						}
 					] );
 				} );
@@ -319,8 +327,8 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<figure class="image">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 								'<img src="/assets/sample.png">' +
 							'</picture>' +
 							'<figcaption>' +
@@ -339,12 +347,14 @@ describe( 'PictureEditing', () => {
 						{
 							srcset: '/assets/sample.png',
 							type: 'image/png',
-							media: '(min-width: 800px)'
+							media: '(min-width: 800px)',
+							sizes: '2000px'
 						},
 						{
 							srcset: '/assets/sample.png?foo',
 							type: 'image/png',
-							media: '(max-width: 800px)'
+							media: '(max-width: 800px)',
+							sizes: '400px'
 						}
 					] );
 				} );
@@ -356,8 +366,8 @@ describe( 'PictureEditing', () => {
 								'Text of the caption' +
 							'</figcaption>' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 								'<img src="/assets/sample.png">' +
 							'</picture>' +
 						'</figure>'
@@ -373,12 +383,14 @@ describe( 'PictureEditing', () => {
 						{
 							srcset: '/assets/sample.png',
 							type: 'image/png',
-							media: '(min-width: 800px)'
+							media: '(min-width: 800px)',
+							sizes: '2000px'
 						},
 						{
 							srcset: '/assets/sample.png?foo',
 							type: 'image/png',
-							media: '(max-width: 800px)'
+							media: '(max-width: 800px)',
+							sizes: '400px'
 						}
 					] );
 				} );
@@ -388,8 +400,8 @@ describe( 'PictureEditing', () => {
 						'<figure class="image">' +
 							'<a href="https://cksource.com">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 									'<img src="/assets/sample.png">' +
 								'</picture>' +
 							'</a>' +
@@ -409,12 +421,14 @@ describe( 'PictureEditing', () => {
 						{
 							srcset: '/assets/sample.png',
 							type: 'image/png',
-							media: '(min-width: 800px)'
+							media: '(min-width: 800px)',
+							sizes: '2000px'
 						},
 						{
 							srcset: '/assets/sample.png?foo',
 							type: 'image/png',
-							media: '(max-width: 800px)'
+							media: '(max-width: 800px)',
+							sizes: '400px'
 						}
 					] );
 				} );
@@ -423,8 +437,8 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<figure class="image" style="width:123px">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 								'<img src="/assets/sample.png">' +
 							'</picture>' +
 							'<figcaption>' +
@@ -447,12 +461,14 @@ describe( 'PictureEditing', () => {
 						{
 							srcset: '/assets/sample.png',
 							type: 'image/png',
-							media: '(min-width: 800px)'
+							media: '(min-width: 800px)',
+							sizes: '2000px'
 						},
 						{
 							srcset: '/assets/sample.png?foo',
 							type: 'image/png',
-							media: '(max-width: 800px)'
+							media: '(max-width: 800px)',
+							sizes: '400px'
 						}
 					] );
 				} );
@@ -513,8 +529,8 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 								'<img src="/assets/sample.png">' +
 							'</picture>bar' +
 						'</p>'
@@ -526,15 +542,15 @@ describe( 'PictureEditing', () => {
 				it( 'should not upcast individual <source> attributes if already consumed by other converters', () => {
 					editor.data.upcastDispatcher.on( 'element:picture', ( evt, data, conversionApi ) => {
 						for ( const childSourceElement of data.viewItem.getChildren() ) {
-							conversionApi.consumable.consume( childSourceElement, { attributes: 'media' } );
+							conversionApi.consumable.consume( childSourceElement, { attributes: [ 'media', 'sizes' ] } );
 						}
 					}, { priority: 'highest' } );
 
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 								'<img src="/assets/sample.png">' +
 							'</picture>bar' +
 						'</p>'
@@ -570,8 +586,8 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 							'</picture>bar' +
 						'</p>'
 					);
@@ -589,8 +605,8 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 								'<img alt="alt text">' +
 							'</picture>bar' +
 						'</p>'
@@ -615,8 +631,8 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<p>' +
 								'foo<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 									'<img src="/assets/sample.png">' +
 								'</picture>bar' +
 							'</p>'
@@ -627,8 +643,18 @@ describe( 'PictureEditing', () => {
 								'{}foo' +
 								'<span class="ck-widget image-inline" contenteditable="false">' +
 									'<picture>' +
-										'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-										'<source media="(max-width: 800px)" srcset="/assets/sample.png?foo" type="image/png"></source>' +
+										'<source ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px" ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png">' +
+										'</source>' +
+										'<source ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px" ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png">' +
+										'</source>' +
 										'<img src="/assets/sample.png"></img>' +
 									'</picture>' +
 								'</span>' +
@@ -641,7 +667,7 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<p>' +
 								'foo<a href="http://ckeditor.com"><picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
 									'<img src="/assets/sample.png">' +
 								'</picture></a>bar' +
 							'</p>'
@@ -653,7 +679,12 @@ describe( 'PictureEditing', () => {
 								'<a href="http://ckeditor.com">' +
 									'<span class="ck-widget image-inline" contenteditable="false">' +
 										'<picture>' +
-											'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
+											'<source ' +
+												'media="(min-width: 800px)" ' +
+												'sizes="2000px" ' +
+												'srcset="/assets/sample.png" ' +
+												'type="image/png">' +
+											'</source>' +
 											'<img src="/assets/sample.png"></img>' +
 										'</picture>' +
 									'</span>' +
@@ -667,8 +698,8 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<p>' +
 								'foo<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 									'<img src="/assets/sample.png" style="width:321px">' +
 								'</picture>bar' +
 							'</p>'
@@ -679,8 +710,18 @@ describe( 'PictureEditing', () => {
 								'{}foo' +
 								'<span class="ck-widget image-inline image_resized" contenteditable="false" style="width:321px">' +
 									'<picture>' +
-										'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-										'<source media="(max-width: 800px)" srcset="/assets/sample.png?foo" type="image/png"></source>' +
+										'<source ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px" ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png">' +
+										'</source>' +
+										'<source ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px" ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png">' +
+										'</source>' +
 										'<img src="/assets/sample.png"></img>' +
 									'</picture>' +
 								'</span>' +
@@ -805,8 +846,16 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<p>' +
 									'foo<picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-										'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+										'<source ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png" ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px">' +
+										'<source ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png" ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px">' +
 										'<img src="/assets/sample.png">' +
 									'</picture>bar' +
 								'</p>'
@@ -831,7 +880,7 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<p>' +
 									'foo<a href="http://ckeditor.com"><picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
 										'<img src="/assets/sample.png">' +
 									'</a></picture>bar' +
 								'</p>'
@@ -858,7 +907,7 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<p>' +
 									'foo<picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
 										'<img src="/assets/sample.png" style="width:123px">' +
 									'</picture>bar' +
 								'</p>'
@@ -883,8 +932,16 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<p>' +
 									'foo<picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-										'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+										'<source ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png" ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px">' +
+										'<source ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png" ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px">' +
 										'<img src="/assets/sample.png">' +
 									'</picture>bar' +
 								'</p>'
@@ -930,8 +987,8 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 									'<img src="/assets/sample.png">' +
 								'</picture>' +
 							'</figure>'
@@ -940,8 +997,18 @@ describe( 'PictureEditing', () => {
 						expect( getViewData( view ) ).to.equal(
 							'[<figure class="ck-widget image" contenteditable="false">' +
 								'<picture>' +
-									'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-									'<source media="(max-width: 800px)" srcset="/assets/sample.png?foo" type="image/png"></source>' +
+									'<source ' +
+										'media="(min-width: 800px)" ' +
+										'sizes="2000px" ' +
+										'srcset="/assets/sample.png" ' +
+										'type="image/png">' +
+									'</source>' +
+									'<source ' +
+										'media="(max-width: 800px)" ' +
+										'sizes="400px" ' +
+										'srcset="/assets/sample.png?foo" ' +
+										'type="image/png">' +
+									'</source>' +
 									'<img src="/assets/sample.png"></img>' +
 								'</picture>' +
 							'</figure>]'
@@ -952,8 +1019,8 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 									'<img src="/assets/sample.png">' +
 								'</picture>' +
 								'<figcaption>Caption</figcaption>' +
@@ -963,14 +1030,26 @@ describe( 'PictureEditing', () => {
 						expect( getViewData( view ) ).to.equal(
 							'[<figure class="ck-widget image" contenteditable="false">' +
 								'<picture>' +
-									'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-									'<source media="(max-width: 800px)" srcset="/assets/sample.png?foo" type="image/png"></source>' +
+									'<source ' +
+										'media="(min-width: 800px)" ' +
+										'sizes="2000px" ' +
+										'srcset="/assets/sample.png" ' +
+										'type="image/png">' +
+									'</source>' +
+									'<source ' +
+										'media="(max-width: 800px)" ' +
+										'sizes="400px" ' +
+										'srcset="/assets/sample.png?foo" ' +
+										'type="image/png">' +
+									'</source>' +
 									'<img src="/assets/sample.png"></img>' +
 								'</picture>' +
 								'<figcaption ' +
+									'aria-label="Caption for the image" ' +
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
 									'contenteditable="true" ' +
-									'data-placeholder="Enter image caption"' +
+									'data-placeholder="Enter image caption" ' +
+									'role="textbox"' +
 								'>' +
 									'Caption' +
 								'</figcaption>' +
@@ -983,8 +1062,16 @@ describe( 'PictureEditing', () => {
 							'<figure class="image">' +
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-										'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+										'<source ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png" ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px">' +
+										'<source ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png" ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px">' +
 										'<img src="/assets/sample.png">' +
 									'</picture>' +
 								'</a>' +
@@ -995,8 +1082,18 @@ describe( 'PictureEditing', () => {
 							'[<figure class="ck-widget image" contenteditable="false">' +
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
-										'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-										'<source media="(max-width: 800px)" srcset="/assets/sample.png?foo" type="image/png"></source>' +
+										'<source ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px" ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png">' +
+										'</source>' +
+										'<source ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px" ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png">' +
+										'</source>' +
 										'<img src="/assets/sample.png"></img>' +
 									'</picture>' +
 								'</a>' +
@@ -1008,8 +1105,8 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 									'<img src="/assets/sample.png">' +
 								'</picture>' +
 							'</figure>'
@@ -1023,8 +1120,18 @@ describe( 'PictureEditing', () => {
 							'[<figure class="ck-widget image" contenteditable="false">' +
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
-										'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-										'<source media="(max-width: 800px)" srcset="/assets/sample.png?foo" type="image/png"></source>' +
+										'<source ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px" ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png">' +
+										'</source>' +
+										'<source ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px" ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png">' +
+										'</source>' +
 										'<img src="/assets/sample.png"></img>' +
 									'</picture>' +
 								'</a>' +
@@ -1037,8 +1144,16 @@ describe( 'PictureEditing', () => {
 							'<figure class="image">' +
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-										'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+										'<source ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png" ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px">' +
+										'<source ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png" ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px">' +
 										'<img src="/assets/sample.png">' +
 									'</picture>' +
 								'</a>' +
@@ -1052,8 +1167,18 @@ describe( 'PictureEditing', () => {
 						expect( getViewData( view ) ).to.equal(
 							'[<figure class="ck-widget image" contenteditable="false">' +
 								'<picture>' +
-									'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-									'<source media="(max-width: 800px)" srcset="/assets/sample.png?foo" type="image/png"></source>' +
+									'<source ' +
+										'media="(min-width: 800px)" ' +
+										'sizes="2000px" ' +
+										'srcset="/assets/sample.png" ' +
+										'type="image/png">' +
+									'</source>' +
+									'<source ' +
+										'media="(max-width: 800px)" ' +
+										'sizes="400px" ' +
+										'srcset="/assets/sample.png?foo" ' +
+										'type="image/png">' +
+									'</source>' +
 									'<img src="/assets/sample.png"></img>' +
 								'</picture>' +
 							'</figure>]'
@@ -1064,8 +1189,8 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<figure class="image" style="width:123px">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 									'<img src="/assets/sample.png">' +
 								'</picture>' +
 								'<figcaption>' +
@@ -1077,14 +1202,26 @@ describe( 'PictureEditing', () => {
 						expect( getViewData( view ) ).to.equal(
 							'[<figure class="ck-widget image image_resized" contenteditable="false" style="width:123px">' +
 								'<picture>' +
-									'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-									'<source media="(max-width: 800px)" srcset="/assets/sample.png?foo" type="image/png"></source>' +
+									'<source ' +
+										'media="(min-width: 800px)" ' +
+										'sizes="2000px" ' +
+										'srcset="/assets/sample.png" ' +
+										'type="image/png">' +
+									'</source>' +
+									'<source ' +
+										'media="(max-width: 800px)" ' +
+										'sizes="400px" ' +
+										'srcset="/assets/sample.png?foo" ' +
+										'type="image/png">' +
+									'</source>' +
 									'<img src="/assets/sample.png"></img>' +
 								'</picture>' +
 								'<figcaption ' +
+									'aria-label="Caption for the image" ' +
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
 									'contenteditable="true" ' +
-									'data-placeholder="Enter image caption"' +
+									'data-placeholder="Enter image caption" ' +
+									'role="textbox"' +
 								'>' +
 									'Text of the caption' +
 								'</figcaption>' +
@@ -1190,8 +1327,16 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<figure class="image">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-										'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+										'<source ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png" ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px">' +
+										'<source ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png" ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px">' +
 										'<img src="/assets/sample.png">' +
 									'</picture>' +
 								'</figure>'
@@ -1212,8 +1357,16 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<figure class="image">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-										'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+										'<source ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png" ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px">' +
+										'<source ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png" ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px">' +
 										'<img src="/assets/sample.png">' +
 									'</picture>' +
 									'<figcaption>Caption</figcaption>' +
@@ -1228,9 +1381,11 @@ describe( 'PictureEditing', () => {
 								'[<figure class="ck-widget image" contenteditable="false">' +
 									'<img src="/assets/sample.png"></img>' +
 									'<figcaption ' +
+										'aria-label="Caption for the image" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
 										'contenteditable="true" ' +
-										'data-placeholder="Enter image caption"' +
+										'data-placeholder="Enter image caption" ' +
+										'role="textbox"' +
 									'>' +
 										'Caption' +
 									'</figcaption>' +
@@ -1243,8 +1398,16 @@ describe( 'PictureEditing', () => {
 								'<figure class="image">' +
 									'<a href="https://cksource.com">' +
 										'<picture>' +
-											'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-											'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+											'<source ' +
+												'srcset="/assets/sample.png" ' +
+												'type="image/png" ' +
+												'media="(min-width: 800px)" ' +
+												'sizes="2000px">' +
+											'<source ' +
+												'srcset="/assets/sample.png?foo" ' +
+												'type="image/png" ' +
+												'media="(max-width: 800px)" ' +
+												'sizes="400px">' +
 											'<img src="/assets/sample.png">' +
 										'</picture>' +
 									'</a>' +
@@ -1264,9 +1427,11 @@ describe( 'PictureEditing', () => {
 										'<img src="/assets/sample.png"></img>' +
 									'</a>' +
 									'<figcaption ' +
+										'aria-label="Caption for the image" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
 										'contenteditable="true" ' +
-										'data-placeholder="Enter image caption"' +
+										'data-placeholder="Enter image caption" ' +
+										'role="textbox"' +
 									'>' +
 										'Text of the caption' +
 									'</figcaption>' +
@@ -1278,8 +1443,16 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<figure class="image" style="width:123px">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-										'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+										'<source ' +
+											'srcset="/assets/sample.png" ' +
+											'type="image/png" ' +
+											'media="(min-width: 800px)" ' +
+											'sizes="2000px">' +
+										'<source ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'type="image/png" ' +
+											'media="(max-width: 800px)" ' +
+											'sizes="400px">' +
 										'<img src="/assets/sample.png">' +
 									'</picture>' +
 									'<figcaption>' +
@@ -1296,9 +1469,11 @@ describe( 'PictureEditing', () => {
 								'[<figure class="ck-widget image image_resized" contenteditable="false" style="width:123px">' +
 									'<img src="/assets/sample.png"></img>' +
 									'<figcaption ' +
+										'aria-label="Caption for the image" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
 										'contenteditable="true" ' +
-										'data-placeholder="Enter image caption"' +
+										'data-placeholder="Enter image caption" ' +
+										'role="textbox"' +
 									'>' +
 										'Text of the caption' +
 									'</figcaption>' +
@@ -1314,8 +1489,8 @@ describe( 'PictureEditing', () => {
 					it( 'should downcast a plain inline image', () => {
 						const data = '<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png">' +
-								'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png">' +
+								'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
 								'<img src="/assets/sample.png">' +
 							'</picture>bar' +
 						'</p>';
@@ -1327,7 +1502,7 @@ describe( 'PictureEditing', () => {
 					it( 'should downcast a linked inline image', () => {
 						const data = '<p>' +
 							'foo<a href="http://ckeditor.com"><picture>' +
-								'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png">' +
+								'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
 								'<img src="/assets/sample.png">' +
 							'</picture></a>bar' +
 						'</p>';
@@ -1484,8 +1659,8 @@ describe( 'PictureEditing', () => {
 						const data =
 							'<p>' +
 								'foo<picture>' +
-									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png">' +
-									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png">' +
+									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
 									'<img class="image_resized" style="width:321px;" src="/assets/sample.png">' +
 								'</picture>bar' +
 							'</p>';
@@ -1500,8 +1675,8 @@ describe( 'PictureEditing', () => {
 						const data =
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png">' +
-									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png">' +
+									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
 									'<img src="/assets/sample.png">' +
 								'</picture>' +
 							'</figure>';
@@ -1514,8 +1689,8 @@ describe( 'PictureEditing', () => {
 						const data =
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png">' +
-									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png">' +
+									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
 									'<img src="/assets/sample.png">' +
 								'</picture>' +
 								'<figcaption>Caption</figcaption>' +
@@ -1530,8 +1705,16 @@ describe( 'PictureEditing', () => {
 							'<figure class="image">' +
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png">' +
-										'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png">' +
+										'<source ' +
+											'srcset="/assets/sample.png" ' +
+											'media="(min-width: 800px)" ' +
+											'type="image/png" ' +
+											'sizes="2000px">' +
+										'<source ' +
+											'srcset="/assets/sample.png?foo" ' +
+											'media="(max-width: 800px)" ' +
+											'type="image/png" ' +
+											'sizes="400px">' +
 										'<img src="/assets/sample.png">' +
 									'</picture>' +
 								'</a>' +
@@ -1636,8 +1819,8 @@ describe( 'PictureEditing', () => {
 						const data =
 							'<figure class="image image_resized" style="width:123px;">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png">' +
-									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png">' +
+									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
 									'<img src="/assets/sample.png">' +
 								'</picture>' +
 								'<figcaption>' +
@@ -1660,8 +1843,8 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 								'<img src="/assets/sample.png">' +
 							'</picture>bar' +
 						'</p>'

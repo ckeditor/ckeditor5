@@ -78,7 +78,8 @@ describe( 'HighlightUI', () => {
 		it( 'button has the base properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'tooltip', 'Highlight' );
+			expect( button ).to.have.property( 'label', 'Highlight' );
+			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'icon', markerIcon );
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );
@@ -131,6 +132,15 @@ describe( 'HighlightUI', () => {
 				.to.deep.equal( [ false, true, false, false, false, false, undefined, false ] );
 		} );
 
+		it( 'should focus the first active button when dropdown is opened', () => {
+			const greenMarker = dropdown.toolbarView.items.get( 1 );
+			const spy = sinon.spy( greenMarker, 'focus' );
+
+			greenMarker.isOn = true;
+			dropdown.isOpen = true;
+			sinon.assert.calledOnce( spy );
+		} );
+
 		it( 'should mark as toggleable all markers and pens', () => {
 			const toolbar = dropdown.toolbarView;
 
@@ -179,6 +189,15 @@ describe( 'HighlightUI', () => {
 				validateButton( 5 );
 			} );
 
+			it( 'should execute the command only once', () => {
+				const executeSpy = sinon.spy( command, 'execute' );
+
+				buttons[ 5 ].fire( 'execute' );
+
+				sinon.assert.calledOnce( executeSpy );
+				sinon.assert.calledWith( executeSpy, { value: 'greenPen' } );
+			} );
+
 			it( 'should focus view after command execution', () => {
 				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
@@ -208,7 +227,7 @@ describe( 'HighlightUI', () => {
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
-				expect( buttonView.tooltip ).to.equal( 'Zakreślacz' );
+				expect( buttonView.label ).to.equal( 'Zakreślacz' );
 			} );
 
 			it( 'works for the listView#items in the panel', () => {
@@ -259,6 +278,15 @@ describe( 'HighlightUI', () => {
 			expect( removeHighlightButton ).to.have.property( 'tooltip', true );
 			expect( removeHighlightButton ).to.have.property( 'label', 'Remove highlight' );
 			expect( removeHighlightButton ).to.have.property( 'icon', eraserIcon );
+		} );
+
+		it( 'should execute the command only once', () => {
+			const executeSpy = sinon.spy( command, 'execute' );
+
+			removeHighlightButton.fire( 'execute' );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWith( executeSpy, { value: null } );
 		} );
 
 		describe( 'model to command binding', () => {

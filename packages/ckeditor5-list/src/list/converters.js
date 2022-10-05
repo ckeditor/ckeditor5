@@ -218,6 +218,10 @@ export function modelViewChangeIndent( model ) {
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
 export function modelViewSplitOnInsert( evt, data, conversionApi ) {
+	if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+		return;
+	}
+
 	if ( data.item.name != 'listItem' ) {
 		let viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 

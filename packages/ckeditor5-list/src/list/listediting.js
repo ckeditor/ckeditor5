@@ -171,19 +171,18 @@ export default class ListEditing extends Plugin {
 			evt.stop();
 		}, { context: 'li' } );
 
-		const getCommandExecuter = commandName => {
-			return ( data, cancel ) => {
-				const command = this.editor.commands.get( commandName );
+		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
+			const commandName = data.shiftKey ? 'outdentList' : 'indentList';
+			const command = this.editor.commands.get( commandName );
 
-				if ( command.isEnabled ) {
-					this.editor.execute( commandName );
-					cancel();
-				}
-			};
-		};
+			if ( command.isEnabled ) {
+				editor.execute( commandName );
 
-		editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentList' ) );
-		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentList' ) );
+				data.stopPropagation();
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: 'li' } );
 	}
 
 	/**

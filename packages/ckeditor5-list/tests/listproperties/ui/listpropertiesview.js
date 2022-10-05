@@ -36,6 +36,9 @@ describe( 'ListPropertiesView', () => {
 			},
 			styleButtonViews: [
 				new ButtonView( locale ),
+				new ButtonView( locale ),
+				new ButtonView( locale ),
+				new ButtonView( locale ),
 				new ButtonView( locale )
 			],
 			styleGridAriaLabel: 'Foo'
@@ -274,7 +277,7 @@ describe( 'ListPropertiesView', () => {
 				} );
 
 				it( 'should popupate the view with style buttons', () => {
-					expect( view.stylesView.children.length ).to.equal( 2 );
+					expect( view.stylesView.children.length ).to.equal( 5 );
 					expect( view.stylesView.children.get( 0 ) ).to.be.instanceOf( ButtonView );
 					expect( view.stylesView.children.get( 1 ) ).to.be.instanceOf( ButtonView );
 					expect( view.stylesView.element.firstChild.classList.contains( 'ck-button' ) ).to.be.true;
@@ -308,8 +311,7 @@ describe( 'ListPropertiesView', () => {
 			describe( 'when styles and all numbered list properties are enabled', () => {
 				it( 'should register child views in #focusables', () => {
 					expect( view.focusables.map( f => f ) ).to.have.members( [
-						view.stylesView.children.first,
-						view.stylesView.children.last,
+						view.children.first,
 						view.children.last.buttonView,
 						view.startIndexFieldView,
 						view.reversedSwitchButtonView
@@ -330,15 +332,38 @@ describe( 'ListPropertiesView', () => {
 						styleGridAriaLabel: 'Foo'
 					} );
 
-					const spy = sinon.spy( view.focusTracker, 'add' );
+					const spyView = sinon.spy( view.focusTracker, 'add' );
 
 					view.render();
 
-					sinon.assert.calledWithExactly( spy.getCall( 0 ), view.stylesView.children.first.element );
-					sinon.assert.calledWithExactly( spy.getCall( 1 ), view.stylesView.children.last.element );
-					sinon.assert.calledWithExactly( spy.getCall( 2 ), view.children.last.buttonView.element );
-					sinon.assert.calledWithExactly( spy.getCall( 3 ), view.startIndexFieldView.element );
-					sinon.assert.calledWithExactly( spy.getCall( 4 ), view.reversedSwitchButtonView.element );
+					sinon.assert.calledWithExactly( spyView.getCall( 0 ), view.children.first.element );
+					sinon.assert.calledWithExactly( spyView.getCall( 1 ), view.children.last.buttonView.element );
+					sinon.assert.calledWithExactly( spyView.getCall( 2 ), view.startIndexFieldView.element );
+					sinon.assert.calledWithExactly( spyView.getCall( 3 ), view.reversedSwitchButtonView.element );
+
+					view.destroy();
+				} );
+
+				it( 'should register style view\'s items in style view\'s focus tracker', () => {
+					const view = new ListPropertiesView( locale, {
+						enabledProperties: {
+							styles: true,
+							startIndex: true,
+							reversed: true
+						},
+						styleButtonViews: [
+							new ButtonView( locale ),
+							new ButtonView( locale )
+						],
+						styleGridAriaLabel: 'Foo'
+					} );
+
+					const spyStylesView = sinon.spy( view.stylesView.focusTracker, 'add' );
+
+					view.render();
+
+					sinon.assert.calledWithExactly( spyStylesView.getCall( 0 ), view.stylesView.children.first.element );
+					sinon.assert.calledWithExactly( spyStylesView.getCall( 1 ), view.stylesView.children.last.element );
 
 					view.destroy();
 				} );
@@ -423,11 +448,12 @@ describe( 'ListPropertiesView', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					// Mock the first style button is focused.
+					// Mock the styles view is focused.
 					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.stylesView.children.first.element;
+					view.focusTracker.focusedElement = view.children.first.element;
 
-					const spy = sinon.spy( view.stylesView.children.last, 'focus' );
+					// Spy the next view which in this case is the ListProperties button
+					const spy = sinon.spy( view.children.last.buttonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -443,17 +469,80 @@ describe( 'ListPropertiesView', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					// Mock the first style button is focused.
+					// Mock the styles view is focused.
 					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.stylesView.children.first.element;
+					view.focusTracker.focusedElement = view.children.first.element;
 					view.children.last.isCollapsed = false;
 
+					// Spy the previous view which in this case is the Reversed order switch button
 					const spy = sinon.spy( view.reversedSwitchButtonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
 					sinon.assert.calledOnce( keyEvtData.stopPropagation );
 					sinon.assert.calledOnce( spy );
+				} );
+
+				describe( 'keyboard navigation in the styles grid', () => {
+					it( '"arrow right" should focus the next focusable style button', () => {
+						const keyEvtData = {
+							keyCode: keyCodes.arrowright,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						// Mock the first style button is focused.
+						view.stylesView.focusTracker.isFocused = true;
+						view.stylesView.focusTracker.focusedElement = view.stylesView.children.first.element;
+
+						const spy = sinon.spy( view.stylesView.children.get( 1 ), 'focus' );
+
+						view.stylesView.keystrokes.press( keyEvtData );
+						sinon.assert.calledOnce( keyEvtData.preventDefault );
+						sinon.assert.calledOnce( keyEvtData.stopPropagation );
+						sinon.assert.calledOnce( spy );
+					} );
+
+					it( '"arrow down" should focus the focusable style button in the second row', () => {
+						const keyEvtData = {
+							keyCode: keyCodes.arrowdown,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						// Mock the first style button is focused.
+						view.stylesView.focusTracker.isFocused = true;
+						view.stylesView.focusTracker.focusedElement = view.stylesView.children.first.element;
+
+						const spy = sinon.spy( view.stylesView.children.get( 4 ), 'focus' );
+
+						view.stylesView.keystrokes.press( keyEvtData );
+						sinon.assert.calledOnce( keyEvtData.preventDefault );
+						sinon.assert.calledOnce( keyEvtData.stopPropagation );
+						sinon.assert.calledOnce( spy );
+					} );
+
+					// https://github.com/ckeditor/ckeditor5/issues/12340
+					it( 'should work regardless of the geometry of the grid', () => {
+						view.stylesView.element.style.gridTemplateColumns = 'repeat(2, 1fr)';
+
+						const keyEvtData = {
+							keyCode: keyCodes.arrowdown,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						// Mock the first style button is focused.
+						view.stylesView.focusTracker.isFocused = true;
+						view.stylesView.focusTracker.focusedElement = view.stylesView.children.first.element;
+
+						const spy = sinon.spy( view.stylesView.children.get( 2 ), 'focus' );
+
+						view.stylesView.keystrokes.press( keyEvtData );
+						sinon.assert.calledOnce( keyEvtData.preventDefault );
+						sinon.assert.calledOnce( keyEvtData.stopPropagation );
+						sinon.assert.calledOnce( spy );
+					} );
 				} );
 			} );
 

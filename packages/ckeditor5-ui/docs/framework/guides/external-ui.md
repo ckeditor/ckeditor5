@@ -124,7 +124,7 @@ Although the editor is ready to use, it is just a bare editable area &mdash; whi
 With the Bootstrap framework loaded in the web page, you can define the actual UI of the editor in HTML:
 
 ```html
-<!-- The outermost cotainer of the editor. -->
+<!-- The outermost container of the editor. -->
 <div class="ck-editor">
 	<!-- The toolbar of the editor. -->
 	<div class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
@@ -334,7 +334,7 @@ class BootstrapEditorUI extends EditorUI {
 Almost every feature in the editor defines some command, e.g. {@link module:heading/headingcommand~HeadingCommand} or {@link module:undo/undocommand~UndoCommand}. Commands can be executed:
 
 ```js
-editor.exectute( 'undo' );
+editor.execute( 'undo' );
 ```
 
 But they also come with default observable properties like `value` and `isEnabled`. These are the entry points when it comes to creating a custom user interface because their values represent the actual state of the editor and can be followed in simple event listeners:
@@ -501,4 +501,4 @@ BootstrapEditor
 	} );
 ```
 
-Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link builds/guides/development/custom-builds Creating custom builds guide}.
+Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.

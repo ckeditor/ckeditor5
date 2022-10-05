@@ -145,6 +145,82 @@ describe( 'WidgetTypeAround', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should inherit attributes from widget that have copyOnReplace property', () => {
+			editor.model.schema.extend( 'paragraph', {
+				allowAttributes: 'a'
+			} );
+
+			editor.model.schema.extend( '$blockObject', {
+				allowAttributes: 'a'
+			} );
+
+			editor.model.schema.setAttributeProperties( 'a', {
+				copyOnReplace: true
+			} );
+
+			setModelData( editor.model, '[<blockWidget a="true"></blockWidget>]' );
+
+			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
+
+			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+
+			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph a="true">[]</paragraph><blockWidget a="true"></blockWidget>' );
+		} );
+
+		it( 'should not copy attribute if it has copyOnReplace property but it is not allowed on paragraph', () => {
+			editor.model.schema.extend( '$blockObject', {
+				allowAttributes: 'a'
+			} );
+
+			editor.model.schema.setAttributeProperties( 'a', {
+				copyOnReplace: true
+			} );
+
+			setModelData( editor.model, '[<blockWidget a="true"></blockWidget>]' );
+
+			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
+
+			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+
+			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget a="true"></blockWidget>' );
+		} );
+
+		it( 'should not copy attribute if it has not got copyOnReplace attribute', () => {
+			editor.model.schema.extend( 'paragraph', {
+				allowAttributes: 'a'
+			} );
+
+			editor.model.schema.extend( '$blockObject', {
+				allowAttributes: 'a'
+			} );
+
+			setModelData( editor.model, '[<blockWidget a="true"></blockWidget>]' );
+
+			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
+
+			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+
+			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget a="true"></blockWidget>' );
+		} );
 	} );
 
 	describe( 'UI to type around view widgets', () => {
@@ -191,7 +267,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( viewWidget.getChild( 1 ).hasClass( 'ck-reset_all' ) ).to.be.true;
 			expect( viewWidget.getChild( 1 ).hasClass( 'ck-widget__type-around' ) ).to.be.true;
 
-			const domWrapper = editingView.domConverter.viewToDom( viewWidget.getChild( 1 ) );
+			const domWrapper = editingView.domConverter.mapViewToDom( viewWidget.getChild( 1 ) );
 
 			expect( domWrapper.querySelectorAll( '.ck-widget__type-around__button' ) ).to.have.length( 2 );
 		} );
@@ -206,7 +282,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( viewWidget.getChild( 1 ).hasClass( 'ck-reset_all' ) ).to.be.true;
 			expect( viewWidget.getChild( 1 ).hasClass( 'ck-widget__type-around' ) ).to.be.true;
 
-			const domWrapper = editingView.domConverter.viewToDom( viewWidget.getChild( 1 ) );
+			const domWrapper = editingView.domConverter.mapViewToDom( viewWidget.getChild( 1 ) );
 
 			expect( domWrapper.querySelectorAll( '.ck-widget__type-around__fake-caret' ) ).to.have.length( 1 );
 		} );
@@ -218,7 +294,7 @@ describe( 'WidgetTypeAround', () => {
 				setModelData( editor.model, '<blockWidget></blockWidget>' );
 
 				const viewWidget = viewRoot.getChild( 0 );
-				const domWrapper = editingView.domConverter.viewToDom( viewWidget.getChild( 1 ) );
+				const domWrapper = editingView.domConverter.mapViewToDom( viewWidget.getChild( 1 ) );
 
 				buttonBefore = domWrapper.children[ 0 ];
 				buttonAfter = domWrapper.children[ 1 ];
@@ -266,7 +342,7 @@ describe( 'WidgetTypeAround', () => {
 					const eventInfo = new EventInfo( viewDocument, 'mousedown' );
 					const domEventDataMock = new DomEventData( editingView, {
 						// Clicking a widget.
-						target: editingView.domConverter.viewToDom( viewRoot.getChild( 0 ) ),
+						target: editingView.domConverter.mapViewToDom( viewRoot.getChild( 0 ) ),
 						preventDefault: sinon.spy()
 					} );
 
@@ -1694,6 +1770,82 @@ describe( 'WidgetTypeAround', () => {
 				writer.insertText( text, paragraph );
 
 				return paragraph;
+			} );
+		}
+
+		function setupBatchWatch() {
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, [ operation ] ) => {
+				if ( operation.isDocumentOperation ) {
+					createdBatches.add( operation.batch );
+				}
+			} );
+
+			return createdBatches;
+		}
+	} );
+
+	describe( 'Model#insertObject() integration', () => {
+		let model, modelSelection;
+
+		beforeEach( () => {
+			model = editor.model;
+			modelSelection = model.document.selection;
+		} );
+
+		it( 'should not alter insertObject\'s findOptimalPosition parameter other than the document selection', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+			const selection = model.createSelection( modelSelection );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+				model.insertObject( createObject(), selection );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget><paragraph>baz</paragraph>' );
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should not alter insertObject when the "fake caret" is not active', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+
+			model.insertObject( createObject() );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should alter insertObject\'s findOptimalPosition when the fake carret is active', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+			const insertObjectSpy = sinon.spy( model, 'insertObject' );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+			} );
+
+			model.insertObject( createObject(), undefined, undefined, { setSelection: 'on', findOptimalPosition: 'before' } );
+
+			expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget>[<blockWidget></blockWidget>]' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+			expect( insertObjectSpy.firstCall.args[ 3 ].findOptimalPosition ).to.equal( 'after' );
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		function createObject( ) {
+			return model.change( writer => {
+				const object = writer.createElement( 'blockWidget' );
+
+				return object;
 			} );
 		}
 

@@ -4,7 +4,7 @@
 			"name": "Autosave",
 			"className": "Autosave",
 			"description": "Allows you to automatically save the data (e.g. send it to the server) when needed, for example, when the user changed the content.",
-			"docs": "builds/guides/integration/saving-data.html#autosave-feature",
+			"docs": "installation/advanced/saving-data.html#autosave-feature",
 			"path": "src/autosave.js"
 		}
 	]

@@ -129,13 +129,19 @@ export default class ImageStyleUI extends Plugin {
 
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
+			const splitButtonViewArrow = splitButtonView.arrowView;
 
-			addToolbarToDropdown( dropdownView, buttonViews );
+			addToolbarToDropdown( dropdownView, buttonViews, { enableActiveItemFocusOnDropdownOpen: true } );
 
 			splitButtonView.set( {
 				label: getDropdownButtonTitle( title, defaultButton.label ),
 				class: null,
 				tooltip: true
+			} );
+
+			splitButtonViewArrow.unbind( 'label' );
+			splitButtonViewArrow.set( {
+				label: title
 			} );
 
 			splitButtonView.bind( 'icon' ).toMany( buttonViews, 'isOn', ( ...areOn ) => {
@@ -165,6 +171,12 @@ export default class ImageStyleUI extends Plugin {
 
 			dropdownView.bind( 'isEnabled' )
 				.toMany( buttonViews, 'isEnabled', ( ...areEnabled ) => areEnabled.some( identity ) );
+
+			// Focus the editable after executing the command.
+			// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+			this.listenTo( dropdownView, 'execute', () => {
+				this.editor.editing.view.focus();
+			} );
 
 			return dropdownView;
 		} );

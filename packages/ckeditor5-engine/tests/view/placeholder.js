@@ -339,6 +339,21 @@ describe( 'placeholder', () => {
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
+		it( 'should not set attributes/class when first child is an AttributeElement (isDirectHost=false)', () => {
+			setData( view, '<attribute:ul><attribute:li>foo</attribute:li></attribute:ul>' );
+			viewDocument.isFocused = false;
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'foo bar baz',
+				isDirectHost: false
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
+
 		it( 'should keep the placeholder visible when the host element is focused (keepOnFocus = true)', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );

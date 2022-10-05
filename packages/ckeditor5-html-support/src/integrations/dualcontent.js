@@ -46,6 +46,13 @@ export default class DualContentModelElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'DualContentModelElementSupport';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
@@ -111,10 +118,19 @@ export default class DualContentModelElementSupport extends Plugin {
 	 * @returns {Boolean}
 	 */
 	_hasBlockContent( viewElement ) {
-		const blockElements = this.editor.editing.view.domConverter.blockElements;
+		const view = this.editor.editing.view;
+		const blockElements = view.domConverter.blockElements;
 
-		return Array.from( viewElement.getChildren() )
-			.some( node => blockElements.includes( node.name ) );
+		// Traversing the viewElement subtree looking for block elements.
+		// Especially for the cases like <div><a href="#"><p>foo</p></a></div>.
+		// https://github.com/ckeditor/ckeditor5/issues/11513
+		for ( const viewItem of view.createRangeIn( viewElement ).getItems() ) {
+			if ( viewItem.is( 'element' ) && blockElements.includes( viewItem.name ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

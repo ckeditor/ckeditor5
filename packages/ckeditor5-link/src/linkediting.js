@@ -193,8 +193,13 @@ export default class LinkEditing extends Plugin {
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: decorator.id,
-				view: ( manualDecoratorName, { writer } ) => {
-					if ( manualDecoratorName ) {
+				view: ( manualDecoratorValue, { writer, schema }, { item } ) => {
+					// Manual decorators for block links are handled e.g. in LinkImageEditing.
+					if ( !( item.is( 'selection' ) || schema.isInline( item ) ) ) {
+						return;
+					}
+
+					if ( manualDecoratorValue ) {
 						const element = writer.createAttributeElement( 'a', decorator.attributes, { priority: 5 } );
 
 						if ( decorator.classes ) {
@@ -209,7 +214,8 @@ export default class LinkEditing extends Plugin {
 
 						return element;
 					}
-				} } );
+				}
+			} );
 
 			editor.conversion.for( 'upcast' ).elementToAttribute( {
 				view: {

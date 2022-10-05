@@ -48,7 +48,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * This plugin is used by features like {@link module:upload/filerepository~FileRepository} to register their ongoing actions
  * and by features like {@link module:autosave/autosave~Autosave} to detect whether there are any ongoing actions.
- * Read more about saving the data in the {@glink builds/guides/integration/saving-data Saving and getting data} guide.
+ * Read more about saving the data in the {@glink installation/advanced/saving-data Saving and getting data} guide.
  *
  * @extends module:core/contextplugin~ContextPlugin
  */

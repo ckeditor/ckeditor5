@@ -20,6 +20,7 @@ import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
 
 import TableEditing from '../src/tableediting';
 import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
+import TableCellWidthEditing from '../src/tablecellwidth/tablecellwidthediting';
 import TableWalker from '../src/tablewalker';
 
 import TableClipboard from '../src/tableclipboard';
@@ -53,7 +54,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should be disabled in a readonly mode', () => {
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
@@ -65,7 +66,7 @@ describe( 'table clipboard', () => {
 				[ 'ba', 'bb' ]
 			] );
 
-			editor.isReadOnly = false;
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02', '03' ],
@@ -85,8 +86,6 @@ describe( 'table clipboard', () => {
 			};
 			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
 			viewDocument.fire( 'paste', data );
-
-			editor.isReadOnly = false;
 
 			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00foo[]', '01', '02', '03' ],
@@ -143,8 +142,6 @@ describe( 'table clipboard', () => {
 			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
 			viewDocument.fire( 'paste', data );
 
-			editor.isReadOnly = false;
-
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo[]</paragraph>' + modelTable( [
 				[ '00', '01', '02', '03' ],
 				[ '10', '11', '12', '13' ],
@@ -171,8 +168,6 @@ describe( 'table clipboard', () => {
 			};
 			data.dataTransfer.setData( 'text/html', table );
 			viewDocument.fire( 'paste', data );
-
-			editor.isReadOnly = false;
 
 			expect( getModelData( model ) ).to.equalMarkup(
 				'[' + modelTable( [
@@ -3870,7 +3865,7 @@ describe( 'table clipboard', () => {
 			);
 
 			pasteTable( [
-				[ { contents: 'aa', style: 'border:1px solid #f00;background:#ba7;width:1337px' }, 'ab' ],
+				[ { contents: 'aa', style: 'border:1px solid #f00;background:#ba7' }, 'ab' ],
 				[ 'ba', 'bb' ]
 			] );
 
@@ -3880,6 +3875,29 @@ describe( 'table clipboard', () => {
 			expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'solid' );
 			expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
 			expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( '#ba7' );
+		} );
+
+		it( 'handles table cell width property', async () => {
+			await createEditor( [ TableCellWidthEditing ] );
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '01', '11', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			pasteTable( [
+				[ { contents: 'aa', style: 'width:1337px' }, 'ab' ],
+				[ 'ba', 'bb' ]
+			] );
+
+			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
 			expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '1337px' );
 		} );
 

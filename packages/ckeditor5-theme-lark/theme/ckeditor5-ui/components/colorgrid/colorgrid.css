@@ -11,7 +11,7 @@
 	/* Not using global colors here because these may change but some colors in a pallette
 	 * require special treatment. For instance, this ensures no matter what the UI text color is,
 	 * the check icon will look good on the black color tile. */
-	--ck-color-color-grid-check-icon: hsl(0, 0%, 0%);
+	--ck-color-color-grid-check-icon: hsl(212, 81%, 46%);
 }
 
 .ck.ck-color-grid {

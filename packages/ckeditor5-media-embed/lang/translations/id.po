@@ -47,3 +47,7 @@ msgstr "Sisipkan media"
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Media toolbar"
 msgstr "Alat media"
+
+msgctxt "A tooltip displayed when the user hovers a non-previewable media URL in the editor content."
+msgid "Open media in new tab"
+msgstr "Buka media di tab baru"

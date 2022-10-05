@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-minimap",
-  "version": "33.0.0",
+  "version": "35.2.0",
   "description": "Content minimap feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,23 +12,23 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^33.0.0"
+    "ckeditor5": "^35.2.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-alignment": "^33.0.0",
-    "@ckeditor/ckeditor5-basic-styles": "^33.0.0",
-    "@ckeditor/ckeditor5-cloud-services": "^33.0.0",
-    "@ckeditor/ckeditor5-code-block": "^33.0.0",
-    "@ckeditor/ckeditor5-core": "^33.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^28.0.1",
-    "@ckeditor/ckeditor5-easy-image": "^33.0.0",
-    "@ckeditor/ckeditor5-editor-decoupled": "^33.0.0",
-    "@ckeditor/ckeditor5-font": "^33.0.0",
-    "@ckeditor/ckeditor5-image": "^33.0.0",
-    "@ckeditor/ckeditor5-indent": "^33.0.0",
-    "@ckeditor/ckeditor5-page-break": "^33.0.0",
-    "@ckeditor/ckeditor5-table": "^33.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^33.0.0",
+    "@ckeditor/ckeditor5-alignment": "^35.2.0",
+    "@ckeditor/ckeditor5-basic-styles": "^35.2.0",
+    "@ckeditor/ckeditor5-cloud-services": "^35.2.0",
+    "@ckeditor/ckeditor5-code-block": "^35.2.0",
+    "@ckeditor/ckeditor5-core": "^35.2.0",
+    "@ckeditor/ckeditor5-dev-utils": "^31.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^35.2.0",
+    "@ckeditor/ckeditor5-editor-decoupled": "^35.2.0",
+    "@ckeditor/ckeditor5-font": "^35.2.0",
+    "@ckeditor/ckeditor5-image": "^35.2.0",
+    "@ckeditor/ckeditor5-indent": "^35.2.0",
+    "@ckeditor/ckeditor5-page-break": "^35.2.0",
+    "@ckeditor/ckeditor5-table": "^35.2.0",
+    "@ckeditor/ckeditor5-theme-lark": "^35.2.0",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },
@@ -50,7 +50,8 @@
     "src",
     "theme",
     "build",
-    "ckeditor5-metadata.json"
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "dll:build": "webpack"

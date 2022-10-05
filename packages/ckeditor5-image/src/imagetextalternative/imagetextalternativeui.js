@@ -74,6 +74,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+			view.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 			this.listenTo( view, 'execute', () => {
 				this._showForm();

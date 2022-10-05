@@ -50,4 +50,4 @@ msgstr "Avaa uudelle välilehdelle"
 
 msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
 msgid "Downloadable"
-msgstr ""
+msgstr "Ladattava"

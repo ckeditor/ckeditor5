@@ -16,7 +16,7 @@ See the {@link module:upload/filerepository~FileRepository} plugin documentation
 
 This repository contains the following upload adapters:
 
-* {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} - A plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link builds/guides/integration/saving-data editor output}.
+* {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} - A plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/advanced/saving-data editor output}.
 * {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter `SimpleUploadAdapter`} - A plugin that uploads images inserted into the editor to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API.
 
 ## Installation

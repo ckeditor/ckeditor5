@@ -72,12 +72,9 @@ export default class FindAndReplaceUI extends Plugin {
 
 					formView.reset();
 					formView._findInputView.fieldView.select();
-					formView.focus();
 
 					formView.enableCssTransitions();
 				} else {
-					formView.focus();
-
 					this.fire( 'searchReseted' );
 				}
 			}, { priority: 'low' } );

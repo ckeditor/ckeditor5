@@ -6,6 +6,13 @@
 			"../scripts/docs/build-content-styles.js"
 		]
 	},
+	"reportIssueWidget": {
+		"enabled": true,
+		"issueUrl": "https://github.com/ckeditor/ckeditor5/issues/new?labels=squad%3Accx%2Ctype%3Adocs&template=7-docs-issue-community.yml",
+		"skipPages": [
+			"**/index.html"
+		]
+	},
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
 	"extraScripts": "assets/buildwarningbanner.js",
@@ -17,18 +24,55 @@
 		"api/easy-video.html": "api/media-embed.html",
 		"api/module_iframe-embed_iframeembed-IframeEmbed.html": "api/module_ui_iframe_iframeview.html",
 		"api/video.html": "api/media-embed.html",
-		"builds/guides/browser-compatibility.html": "builds/guides/support/browser-compatibility.html",
-		"builds/guides/development/installing-plugins.html": "builds/guides/integration/installing-plugins.html",
-		"builds/guides/integration/frameworks/vuejs.html": "builds/guides/integration/frameworks/vuejs-v3.html",
-		"builds/guides/integration/advancedsetup.html": "builds/guides/integration/advanced-setup.html",
-		"builds/guides/license-and-legal.html": "builds/guides/support/license-and-legal.html",
-		"builds/guides/migrate.html": "builds/guides/migration/migration-from-ckeditor-4.html",
-		"builds/guides/migration/migration-to-25.0.0.html": "builds/guides/migration/migration-to-25.html",
-		"builds/guides/migration/migration-to-26.0.0.html": "builds/guides/migration/migration-to-26.html",
-		"builds/guides/migration/migration-to-27.0.0.html": "builds/guides/migration/migration-to-27.html",
-		"builds/guides/migration/migration-to-27.1.0.html": "guides/migration/migration-to-27.html#migration-to-ckeditor-5-v2710",
-		"builds/guides/reporting-issues.html": "builds/guides/support/reporting-issues.html",
-		"builds/guides/whats-new.html": "features/index.html",
+		"api/module_image_image_imageinsertcommand-ImageInsertCommand.html": "api/module_image_image_insertimagecommand-InsertImageCommand.html",
+		"api/cloud-services-core.html": "api/module_cloud-services_cloudservicescore.html",
+		"api/module_cloud-services-core_uploadgateway_fileuploader.html": "api/module_cloud-services_uploadgateway_fileuploader.html",
+		"api/module_cloud-services-core_uploadgateway_fileuploader-FileUploader.html": "api/module_cloud-services_uploadgateway_fileuploader-FileUploader.html",
+		"api/module_cloud-services-core_uploadgateway_uploadgateway.html": "api/module_cloud-services_uploadgateway_uploadgateway.html",
+		"api/module_cloud-services-core_uploadgateway_uploadgateway-UploadGateway.html": "api/module_cloud-services_uploadgateway_uploadgateway-UploadGateway.html",
+		"api/module_cloud-services-core_token.html": "api/module_cloud-services_token.html",
+		"api/module_cloud-services-core_token-Token.html": "api/module_cloud-services_token-Token.html",
+		"api/module_html-embed_inserthtmlembedcommand.html": "api/module_html-embed_htmlembedcommand.html",
+		"api/module_html-embed_inserthtmlembedcommand-InsertHtmlEmbedCommand.html": "api/module_html-embed_htmlembedcommand-HtmlEmbedCommand.html",
+		"api/module_html-embed_updatehtmlembedcommand.html": "api/module_html-embed_htmlembedcommand.html",
+		"api/module_html-embed_updatehtmlembedcommand-UpdateHtmlEmbedCommand.html": "api/module_html-embed_htmlembedcommand-HtmlEmbedCommand.html",
+		"api/module_editor-balloon_ballooneditor-BallonEditor.html": "api/module_editor-balloon_ballooneditor-BalloonEditor.html",
+		"api/module_list_checktodolistcommand.html": "api/module_list_todolist_checktodolistcommand.html",
+		"api/module_list_checktodolistcommand-CheckTodoListCommand.html": "api/module_list_todolist_checktodolistcommand-CheckTodoListCommand.html",
+		"api/module_list_converters.html": "api/module_list_list_converters.html",
+		"api/module_list_indentcommand.html": "api/module_list_list_indentcommand.html",
+		"api/module_list_indentcommand-IndentCommand.html": "api/module_list_list_indentcommand-IndentCommand.html",
+		"api/module_list_listcommand.html": "api/module_list_list_listcommand.html",
+		"api/module_list_listcommand-ListCommand.html": "api/module_list_list_listcommand-ListCommand.html",
+		"api/module_list_listediting.html": "api/module_list_list_listediting.html",
+		"api/module_list_listediting-ListEditing.html": "api/module_list_list_listediting-ListEditing.html",
+		"api/module_list_listpropertiesediting.html": "api/module_list_listproperties_listpropertiesediting.html",
+		"api/module_list_listpropertiesediting-ListPropertiesEditing.html": "api/module_list_listproperties_listpropertiesediting-ListPropertiesEditing.html",
+		"api/module_list_listpropertiesediting-AttributeStrategy.html": "api/module_list_listproperties_listpropertiesediting-AttributeStrategy.html",
+		"api/module_list_listpropertiesui.html": "api/module_list_listproperties_listpropertiesui.html",
+		"api/module_list_listpropertiesui-ListPropertiesUI.html": "api/module_list_listproperties_listpropertiesui-ListPropertiesUI.html",
+		"api/module_list_listreversedcommand.html": "api/module_list_listproperties_listreversedcommand.html",
+		"api/module_list_listreversedcommand-ListReversedCommand.html": "api/module_list_listproperties_listreversedcommand-ListReversedCommand.html",
+		"api/module_list_liststartcommand.html": "api/module_list_listproperties_liststartcommand.html",
+		"api/module_list_liststartcommand-ListStartCommand.html": "api/module_list_listproperties_liststartcommand-ListStartCommand.html",
+		"api/module_list_liststylecommand.html": "api/module_list_listproperties_liststylecommand.html",
+		"api/module_list_liststylecommand-ListStyleCommand.html": "api/module_list_listproperties_liststylecommand-ListStyleCommand.html",
+		"api/module_list_listui.html": "api/module_list_list_listui.html",
+		"api/module_list_listui-ListUI.html": "api/module_list_list_listui-ListUI.html",
+		"api/module_list_todolistconverters.html": "api/module_list_todolist_todolistconverters.html",
+		"api/module_list_todolistediting.html": "api/module_list_todolist_todolistediting.html",
+		"api/module_list_todolistediting-TodoListEditing.html": "api/module_list_todolist_todolistediting-TodoListEditing.html",
+		"api/module_list_todolistui.html": "api/module_list_todolist_todolistui.html",
+		"api/module_list_todolistui-TodoListUI.html": "api/module_list_todolist_todolistui-TodoListUI.html",
+		"api/module_list_utils.html": "api/module_list_list_utils.html",
+		"builds/guides/browser-compatibility.html": "support/browser-compatibility.html",
+		"builds/guides/development/installing-plugins.html": "installation/getting-started/installing-plugins.html",
+		"builds/guides/integration/frameworks/vuejs.html": "installation/frameworks/vuejs-v3.html",
+		"builds/guides/integration/advanced-setup.html": "installation/advanced/alternative-setups/integrating-from-source.html",
+		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
+		"builds/guides/reporting-issues.html": "support/reporting-issues.html",
+		"builds/guides/whats-new.html": "features/overview.html",
+		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
 		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html",
 		"features/ckfinder.html": "features/images/image-upload/ckfinder.html",
 		"features/collaboration/annotation-customization/annotations-custom-configuration.html": "features/collaboration/annotations/annotations-custom-configuration.html",
@@ -38,7 +82,7 @@
 		"features/collaboration/annotation-customization/annotations-customization.html": "features/collaboration/annotations/annotations.html",
 		"features/collaboration/collaborative-comments.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/collaboration/collaborative-editing.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
-		"features/collaboration/comment-only-mode.html": "features/collaboration/comments/comment-only-mode.html",
+		"features/collaboration/comment-only-mode.html": "features/collaboration/comments/comments-only-mode.html",
 		"features/collaboration/comments/display-mode.html": "features/collaboration/annotations/display-mode.html",
 		"features/collaboration/comments/integrate-comments-with-application.html": "features/collaboration/comments/comments-integration.html",
 		"features/collaboration/overview.html": "features/collaboration/real-time-collaboration/real-time-collaboration.html",
@@ -47,29 +91,97 @@
 		"features/collaboration/real-time-collaboration/real-time-collaborative-editing.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
 		"features/collaboration/comments/comments-display-mode.html": "features/collaboration/annotations/annotations-display-mode.html",
-		"features/easy-image.html": "features/image-upload/easy-image.html",
+		"features/image.html": "features/images/images-overview.html",
+		"features/image-upload.html": "features/images/image-upload/image-upload.html",
+		"features/easy-image.html": "features/images/image-upload/easy-image.html",
+		"features/image-upload/image-upload.html": "features/images/image-upload/image-upload.html",
+		"features/image-upload/easy-image.html": "features/images/image-upload/easy-image.html",
+		"features/image-upload/ckfinder.html": "features/images/image-upload/ckfinder.html",
+		"features/image-upload/base64-upload-adapter.html": "features/images/image-upload/base64-upload-adapter.html",
+		"features/image-upload/simple-upload-adapter.html": "features/images/image-upload/simple-upload-adapter.html",
+		"features/lists.html": "features/lists/lists.html",
+		"features/todo-lists.html": "features/lists/todo-lists.html",
 		"features/easy-video.html": "features/media-embed.html",
 		"features/iframe-embed.html": "features/media-embed.html",
+		"features/video.html": "features/media-embed.html",
+		"features/video-upload.html": "features/media-embed.html",
 		"features/images/overview.html": "features/images/images-overview.html",
-		"features/image-upload.html": "features/image-upload/image-upload.html",
-		"features/image.html": "features/images/overview.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/pagination.html": "features/pagination/pagination.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
 		"features/paste-from-office.html": "features/pasting/paste-from-word.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
-		"features/video.html": "features/media-embed.html",
-		"features/video-upload.html": "features/media-embed.html",
+		"features/collaboration/comments/comments-api.html": "api/comments.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
-		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html",
+		"framework/guides/plugins/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin-timestamp.html",
+		"builds/index.html": "installation/index.html",
+		"builds/guides/migrate.html": "installation/getting-started/migration-from-ckeditor-4.html",
+		"builds/guides/migration/migration-to-25.0.0.html": "updating/migration-to-25.html",
+		"builds/guides/migration/migration-to-26.0.0.html": "updating/migration-to-26.html",
+		"builds/guides/migration/migration-to-27.0.0.html": "updating/migration-to-27.html",
+		"builds/guides/migration/migration-to-27.1.0.html": "updating/migration-to-27.html#migration-to-ckeditor-5-v2710",
+		"builds/guides/migration/migration-from-ckeditor-4.html": "installation/getting-started/migration-from-ckeditor-4.html",
+		"builds/guides/migration/migration-to-25.html": "updating/migration-to-25.html",
+		"builds/guides/migration/migration-to-26.html": "updating/migration-to-26.html",
+		"builds/guides/migration/migration-to-27.html": "updating/migration-to-27.html",
+		"builds/guides/migration/migration-to-28.html": "updating/migration-to-28.html",
+		"builds/guides/migration/migration-to-29.html": "updating/migration-to-29.html",
+		"builds/guides/migration/migration-to-30.html": "updating/migration-to-30.html",
+		"builds/guides/migration/migration-to-31.html": "updating/migration-to-31.html",
+		"builds/guides/migration/migration-to-32.html": "updating/migration-to-32.html",
+		"builds/guides/migration/migration-to-33.html": "updating/migration-to-33.html",
+		"builds/guides/predefined-builds/overview.html": "installation/getting-started/predefined-builds.html",
+		"builds/guides/overview.html": "installation/getting-started/predefined-builds.html",
+		"builds/guides/quick-start.html": "installation/getting-started/quick-start.html",
+		"builds/guides/predefined-builds/quick-start.html": "installation/getting-started/predefined-builds.html",
+		"builds/guides/integration/installation.html": "installation/getting-started/quick-start.html",
+		"builds/guides/integration/basic-api.html": "installation/getting-started/basic-api.html",
+		"builds/guides/integration/configuration.html": "installation/getting-started/configuration.html",
+		"builds/guides/integration/saving-data.html": "installation/advanced/saving-data.html",
+		"builds/guides/integration/installing-plugins.html": "installation/getting-started/installing-plugins.html",
+		"builds/guides/integration/csp.html": "installation/advanced/csp.html",
+		"builds/guides/integration/features-html-output-overview.html": "installation/advanced/features-html-output-overview.html",
+		"builds/guides/integration/frameworks/overview.html": "installation/getting-started/frameworks/overview.html",
+		"builds/guides/integration/frameworks/angular.html": "installation/getting-started/frameworks/angular.html",
+		"builds/guides/integration/frameworks/react.html": "installation/getting-started/frameworks/react.html",
+		"builds/guides/integration/frameworks/vuejs-v2.html": "installation/getting-started/frameworks/vuejs-v2.html",
+		"builds/guides/integration/frameworks/vuejs-v3.html": "installation/getting-started/frameworks/vuejs-v3.html",
+		"builds/guides/integration/frameworks/css.html": "installation/getting-started/frameworks/css.html",
+		"builds/guides/integration/content-styles.html": "installation/advanced/content-styles.html",
+		"builds/guides/development/custom-builds.html": "installation/getting-started/quick-start.html#creating-custom-builds",
+		"builds/guides/development/plugins.html": "installation/advanced/plugins.html",
+		"builds/guides/development/dll-builds.html": "installation/advanced/alternative-setups/dll-builds.html",
+		"builds/guides/development/dll-builds-collaboration-features.html": "installation/advanced/alternative-setups/dll-builds-collaboration-features.html",
+		"builds/guides/faq.html": "support/faq.html",
+		"builds/guides/support/reporting-issues.html": "support/reporting-issues.html",
+		"builds/guides/support/license-and-legal.html": "support/license-and-legal.html",
+		"builds/guides/support/getting-support.html": "support/getting-support.html",
+		"builds/guides/support/browser-compatibility.html": "support/browser-compatibility.html",
+		"framework/guides/support/reporting-issues.html": "support/reporting-issues.html",
+		"framework/guides/support/license-and-legal.html": "support/license-and-legal.html",
+		"framework/guides/support/getting-support.html": "support/getting-support.html",
+		"framework/guides/support/browser-compatibility.html": "support/browser-compatibility.html",
+		"framework/guides/support/error-codes.html": "support/error-codes.html",
 		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
 		"framework/guides/deep-dive/conversion/conversion-introduction.html": "framework/guides/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/conversion-extending-output.html": "framework/guides/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/conversion-preserving-custom-content.html": "framework/guides/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/custom-element-conversion.html": "framework/guides/deep-dive/conversion/intro.html",
-		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/guides/deep-dive/conversion/intro.html"
+		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/guides/deep-dive/conversion/intro.html",
+		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
+		"installation/getting-started/quick-start-other.html#building-the-editor-from-source": "installation/getting-started/quick-start.html#building-the-editor-from-source",
+		"installation/getting-started/maintenance.html": "updating/updating.html",
+		"installation/advanced/alternative-setups/predefined-builds.html": "installation/getting-started/predefined-builds.html",
+		"support/getting-support.html": "support/index.html",
+		"framework/guides/overview.html": "framework/index.html",
+		"updating/updating.html": "updating/index.html",
+		"features/overview.html": "features/index.html",
+		"installation/overview.html": "installation/index.html",
+		"features/revision-history/revision-history.html": "features/collaboration/revision-history/revision-history.html",
+		"features/revision-history/revision-history-integration.htm": "features/collaboration/revision-history/revision-history-integration.html",
+		"framework/guides/plugins/package-generator.html": "framework/guides/plugins/package-generator/using-package-generator.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -118,60 +230,166 @@
 	"groups": [
 		{
 			"name": "Installation",
-			"id": "builds",
-			"slug": "builds",
+			"id": "installation",
+			"slug": "installation",
+			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Guides",
-					"id": "builds-guides",
-					"slug": "guides",
+					"name": "Getting started",
+					"id": "getting-started",
+					"slug": "getting-started",
+					"order": 20,
 					"categories": [
 						{
-							"name": "Predefined builds",
-							"id": "builds-predefined",
-							"slug": "predefined-builds",
+							"name": "Frameworks",
+							"id": "frameworks",
+							"slug": "frameworks",
+							"order": 70
+						}
+					]
+				},
+				{
+					"name": "Advanced",
+					"id": "advanced",
+					"slug": "advanced",
+					"order": 30,
+					"categories": [
+						{
+							"name": "Alternative setups",
+							"id": "alternative-setups",
+							"slug": "alternative-setups",
 							"order": 100
-						},
-						{
-							"name": "Integration",
-							"id": "builds-integration",
-							"slug": "integration",
-							"order": 200,
-							"categories": [
-								{
-									"name": "Frameworks",
-									"id": "builds-integration-frameworks",
-									"slug": "frameworks",
-									"order": 200
-								}
-							]
-						},
-						{
-							"name": "Development",
-							"id": "builds-development",
-							"slug": "development",
-							"order": 300
-						},
-						{
-							"name": "Migration / update",
-							"id": "builds-migration",
-							"slug": "migration",
-							"order": 400
-						},
-						{
-							"name": "Support",
-							"id": "builds-support",
-							"slug": "support",
-							"order": 500
 						}
 					]
 				}
 			]
 		},
 		{
+			"name": "Features",
+			"id": "features",
+			"slug": "features",
+			"navigationIncludeIndex": true,
+			"categories": [
+				{
+					"name": "Collaboration",
+					"id": "features-collaboration",
+					"slug": "collaboration",
+					"badges": [ "premium" ],
+					"categories": [
+						{
+							"name": "Comments",
+							"id": "features-comments",
+							"slug": "comments",
+							"order": 100,
+							"badges": [ "premium" ]
+						},
+						{
+							"name": "Track changes",
+							"id": "features-track-changes",
+							"slug": "track-changes",
+							"order": 200,
+							"badges": [ "premium" ]
+						},
+						{
+							"name": "Real-time collaboration",
+							"id": "features-real-time-collaboration",
+							"slug": "real-time-collaboration",
+							"order": 300,
+							"badges": [ "premium" ]
+						},
+						{
+							"name": "Revision history",
+							"id": "features-revision-history",
+							"slug": "revision-history",
+							"order": 400,
+							"badges": [ "premium" ]
+						},
+						{
+							"name": "Annotations",
+							"id": "features-annotations",
+							"slug": "annotations",
+							"order": 500
+						}
+					]
+				},
+				{
+					"name": "Images",
+					"id": "features-images",
+					"slug": "images",
+					"categories": [
+						{
+							"name": "Image upload",
+							"id": "features-image-upload",
+							"slug": "image-upload",
+							"order": 80
+						}
+					]
+				},
+				{
+					"name": "Lists",
+					"id": "features-lists",
+					"slug": "lists"
+				},
+				{
+					"name": "Pagination",
+					"id": "features-pagination",
+					"slug": "pagination",
+					"badges": [ "premium" ]
+				},
+				{
+					"name": "Pasting",
+					"id": "features-pasting",
+					"slug": "pasting"
+				},
+				{
+					"name": "Toolbar",
+					"id": "features-toolbar",
+					"slug": "toolbar"
+				}
+			]
+		},
+		{
+			"name": "Examples",
+			"id": "examples",
+			"slug": "examples",
+			"categories": [
+				{
+					"name": "Predefined builds",
+					"id": "examples-builds",
+					"slug": "builds",
+					"order": 100
+				},
+				{
+					"name": "Custom builds",
+					"id": "examples-builds-custom",
+					"slug": "builds-custom",
+					"order": 200
+				},
+				{
+					"name": "Framework",
+					"id": "examples-framework",
+					"slug": "framework",
+					"order": 300
+				}
+			]
+		},
+		{
+			"name": "Updating",
+			"id": "updating",
+			"navigationIncludeIndex": true,
+			"slug": "updating"
+		},
+		{
+			"name": "Support",
+			"id": "support",
+			"navigationIncludeIndex": true,
+			"slug": "support"
+		},
+		{
 			"name": "Framework",
 			"id": "framework",
 			"slug": "framework",
+			"navigationIncludeIndex": true,
 			"categories": [
 				{
 					"name": "Guides",
@@ -188,7 +406,21 @@
 							"name": "Developing custom plugins",
 							"id": "framework-plugins",
 							"slug": "plugins",
-							"order": 200
+							"order": 200,
+							"categories": [
+								{
+									"name": "Creating a simple plugin",
+									"id": "simple-plugin",
+									"slug": "simple-plugin",
+									"order": 20
+								},
+								{
+									"name": "Package Generator",
+									"id": "package-generator",
+									"slug": "package-generator",
+									"order": 40
+								}
+							]
 						},
 						{
 							"name": "Advanced tutorials",
@@ -229,121 +461,8 @@
 							"id": "framework-contributing",
 							"slug": "contributing",
 							"order": 400
-						},
-						{
-							"name": "Support",
-							"id": "framework-support",
-							"slug": "support",
-							"order": 500
 						}
 					]
-				}
-			]
-		},
-		{
-			"name": "Features",
-			"id": "features",
-			"slug": "features",
-			"categories": [
-				{
-					"name": "Collaboration",
-					"id": "features-collaboration",
-					"slug": "collaboration",
-					"badges": [ "premium" ],
-					"categories": [
-						{
-							"name": "Comments",
-							"id": "features-comments",
-							"slug": "comments",
-							"order": 100,
-							"badges": [ "premium" ]
-						},
-						{
-							"name": "Track changes",
-							"id": "features-track-changes",
-							"slug": "track-changes",
-							"order": 200,
-							"badges": [ "premium" ]
-						},
-						{
-							"name": "Real-time collaboration",
-							"id": "features-real-time-collaboration",
-							"slug": "real-time-collaboration",
-							"order": 300,
-							"badges": [ "premium" ]
-						},
-						{
-							"name": "Annotations",
-							"id": "features-annotations",
-							"slug": "annotations",
-							"order": 400
-						}
-					]
-				},
-				{
-					"name": "Images",
-					"id": "features-images",
-					"slug": "images",
-					"categories": [
-						{
-							"name": "Image upload",
-							"id": "features-image-upload",
-							"slug": "image-upload",
-							"order": 80
-						}
-					]
-				},
-				{
-					"name": "Lists",
-					"id": "features-lists",
-					"slug": "lists"
-				},
-				{
-					"name": "Pagination",
-					"id": "features-pagination",
-					"slug": "pagination",
-					"badges": [ "premium" ]
-				},
-				{
-					"name": "Pasting",
-					"id": "features-pasting",
-					"slug": "pasting"
-				},
-				{
-					"name": "Revision history",
-					"id": "features-revision-history",
-					"slug": "revision-history",
-					"badges": [ "premium" ]
-				},
-				{
-					"name": "Toolbar",
-					"id": "features-toolbar",
-					"slug": "toolbar"
-				}
-			]
-		},
-		{
-			"name": "Examples",
-			"id": "examples",
-			"slug": "examples",
-			"categories": [
-				{
-					"name": "Predefined builds",
-					"id": "examples-builds",
-					"slug": "builds",
-					"order": 100
-				},
-				{
-					"name": "Custom builds",
-					"id": "examples-builds-custom",
-					"slug": "builds-custom",
-					"order": 200
-				},
-				{
-					"name": "Framework",
-					"id": "examples-framework",
-					"slug": "framework",
-					"order": 300
 				}
 			]
 		},

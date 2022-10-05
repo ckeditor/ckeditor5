@@ -233,20 +233,31 @@ describe( 'ImageStyleUI', () => {
 			dropdowns = [ ...defaultDropdowns, ...customDropdowns ].map( dropdown => {
 				const view = factory.create( dropdown.name );
 
+				view.render();
+				global.document.body.appendChild( view.element );
+
 				return { view, buttonView: view.buttonView, config: dropdown };
 			} );
+		} );
+
+		afterEach( () => {
+			dropdowns.forEach( ( { view } ) => view.element.remove() );
 		} );
 
 		it( 'should define the drop-down properties and children properly', () => {
 			for ( const { config, view, buttonView } of dropdowns ) {
 				const defaultItem = allStyles.find( style => style.name === config.defaultItem.replace( 'imageStyle:', '' ) );
+				const expectedLabel = ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title;
 
 				expect( view ).to.be.instanceOf( DropdownView );
 				expect( buttonView ).to.be.instanceOf( SplitButtonView );
 
-				expect( buttonView.label ).to.equal( ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title );
+				expect( buttonView.label ).to.equal( expectedLabel );
 				expect( buttonView.tooltip ).to.be.true;
 				expect( buttonView.class ).to.be.null;
+
+				expect( buttonView.arrowView.label ).to.equal( config.title );
+				expect( buttonView.arrowView.tooltip ).to.be.true;
 
 				expect( view.toolbarView.items ).to.have.lengthOf( config.items.length );
 
@@ -254,6 +265,28 @@ describe( 'ImageStyleUI', () => {
 					expect( item ).to.be.instanceOf( ButtonView );
 				} );
 			}
+		} );
+
+		it( 'should focus the first active button when dropdown is opened', () => {
+			for ( const { view } of dropdowns ) {
+				const secondButton = view.toolbarView.items.get( 1 );
+				const spy = sinon.spy( secondButton, 'focus' );
+
+				secondButton.isOn = true;
+				view.isOpen = true;
+				sinon.assert.calledOnce( spy );
+			}
+		} );
+
+		it( 'should keep the same label of the secondary (arrow) button when the user changes styles of the image', () => {
+			const dropdownView = editor.ui.componentFactory.create( 'imageStyle:breakText' );
+
+			expect( dropdownView.buttonView.arrowView.label ).to.equal( 'Default title' );
+
+			// Simulate the user changing the style of an image.
+			dropdownView.toolbarView.items.get( 0 ).isOn = true;
+
+			expect( dropdownView.buttonView.arrowView.label ).to.equal( 'Default title' );
 		} );
 
 		it( 'should translate the drop-down title if taken from default styles', async () => {
