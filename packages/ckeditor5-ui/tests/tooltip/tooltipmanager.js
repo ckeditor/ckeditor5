@@ -663,6 +663,8 @@ describe( 'TooltipManager', () => {
 				utils.dispatchMouseEnter( elements.a );
 				utils.waitForTheTooltipToShow( clock );
 				clock.restore();
+
+				// ResizeObserver is asynchronous.
 				await wait( 100 );
 
 				sinon.assert.calledOnce( pinSpy );
@@ -675,6 +677,7 @@ describe( 'TooltipManager', () => {
 
 				elements.a.remove();
 
+				// ResizeObserver is asynchronous.
 				await wait( 100 );
 
 				sinon.assert.calledOnce( unpinSpy );
@@ -684,6 +687,8 @@ describe( 'TooltipManager', () => {
 				utils.dispatchMouseEnter( elements.a );
 				utils.waitForTheTooltipToShow( clock );
 				clock.restore();
+
+				// ResizeObserver is asynchronous.
 				await wait( 100 );
 
 				sinon.assert.calledOnce( pinSpy );
@@ -696,6 +701,7 @@ describe( 'TooltipManager', () => {
 
 				elements.a.style.display = 'none';
 
+				// ResizeObserver is asynchronous.
 				await wait( 100 );
 
 				sinon.assert.calledOnce( unpinSpy );
