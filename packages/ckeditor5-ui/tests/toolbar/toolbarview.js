@@ -41,6 +41,11 @@ describe( 'ToolbarView', () => {
 
 	after( () => {
 		clearTranslations();
+
+		// Clean up after the ResizeObserver stub in beforeEach(). Even though the global.window.ResizeObserver
+		// stub is restored, the ResizeObserver class (CKE5 module) keeps the reference to the single native
+		// observer. Resetting it will allow fresh start for any other test using ResizeObserver.
+		ResizeObserver._observerInstance = null;
 	} );
 
 	beforeEach( () => {
@@ -51,7 +56,6 @@ describe( 'ToolbarView', () => {
 	} );
 
 	afterEach( () => {
-		sinon.restore();
 		view.destroy();
 		view.element.remove();
 	} );
@@ -1044,6 +1048,7 @@ describe( 'ToolbarView', () => {
 		} );
 
 		afterEach( () => {
+			testUtils.sinon.restore();
 			view.element.remove();
 			view.destroy();
 		} );

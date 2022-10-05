@@ -10,12 +10,13 @@ import BalloonPanelView from '../../src/panel/balloon/balloonpanelview';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import TooltipManager from '../../src/tooltipmanager';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import TooltipManager from '../../src/tooltipmanager';
 
-describe.only( 'TooltipManager', () => {
+describe( 'TooltipManager', () => {
 	let editor, element, tooltipManager;
 
 	const utils = getUtils();
@@ -496,7 +497,7 @@ describe.only( 'TooltipManager', () => {
 
 			elements = getElementsWithTooltips( {
 				a: {
-					text: 'A',
+					text: 'A'
 				},
 
 				b: {
@@ -515,10 +516,10 @@ describe.only( 'TooltipManager', () => {
 			elements.a.appendChild( elements.childOfA );
 		} );
 
-		// afterEach( () => {
-		// 	destroyElements( elements );
-		// 	clock.restore();
-		// } );
+		afterEach( () => {
+			destroyElements( elements );
+			clock.restore();
+		} );
 
 		describe( 'on mouseleave', () => {
 			it( 'should not work for unrelated event targets such as DOM document', () => {
@@ -657,12 +658,12 @@ describe.only( 'TooltipManager', () => {
 			} );
 		} );
 
-		describe.only( 'on remove', () => {
-			it( 'should unpin if the element that it was attached to no longer exists', (done) => {
-				// debugger;
-
+		describe( 'when the element disappears', () => {
+			it( 'should unpin if the element that it was attached was removed from DOM', async () => {
 				utils.dispatchMouseEnter( elements.a );
 				utils.waitForTheTooltipToShow( clock );
+				clock.restore();
+				await wait( 100 );
 
 				sinon.assert.calledOnce( pinSpy );
 				sinon.assert.calledWith( pinSpy, {
@@ -672,17 +673,32 @@ describe.only( 'TooltipManager', () => {
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 
-				clock.restore();
-
 				elements.a.remove();
 
-				// editor.ui.update();
-				// sinon.assert.calledOnce( pinSpy );
+				await wait( 100 );
 
-				setTimeout( () => {
-					sinon.assert.calledOnce( unpinSpy );
-					done();
-				}, 100 );
+				sinon.assert.calledOnce( unpinSpy );
+			} );
+
+			it( 'should unpin if the element that it was attached was hidden in CSS', async () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+				clock.restore();
+				await wait( 100 );
+
+				sinon.assert.calledOnce( pinSpy );
+				sinon.assert.calledWith( pinSpy, {
+					target: elements.a,
+					positions: sinon.match.array
+				} );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+
+				elements.a.style.display = 'none';
+
+				await wait( 100 );
+
+				sinon.assert.calledOnce( unpinSpy );
 			} );
 		} );
 	} );
@@ -869,4 +885,10 @@ function getUtils() {
 			element.dispatchEvent( new Event( 'scroll' ) );
 		}
 	};
+}
+
+function wait( time ) {
+	return new Promise( res => {
+		global.window.setTimeout( res, time );
+	} );
 }
