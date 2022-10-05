@@ -9,10 +9,9 @@ We are happy to announce the release of CKEditor 5 v35.2.0.
 
 This release introduces the following new features:
 
-* Sidebar performance improvements for scenarios with huge number of annotations.
+* Substantial performance improvements in scenarios with big number (hundreds) of comments and suggestions.
 * [The ability to group toolbar items using a declarative config](https://github.com/ckeditor/ckeditor5/issues/12490).
 * [New category "Arrows" is available in the default configuration of the special characters dropdown](https://github.com/ckeditor/ckeditor5/issues/6167).
-
 
 There were also bug fixes:
 
@@ -35,8 +34,9 @@ Please refer to the [migration guide](https://ckeditor.com/docs/ckeditor5/latest
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced external comments and suggestions which require special handling when saving them in the database. This will concern you, if you use non real-time collaboration and the import from Word feature. Read more about it in the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/migration-to-35.html#migration-to-ckeditor-5-v3520).
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The templates for `CommentView` and `SuggestionThreadView` have changed. This may concern you, if you use custom annotation views or templates and the import from Word feature.
 * **[paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph)**: The `paragraph` icon has been moved to the `@ckeditor/ckeditor5-core` package.
-* Comment input editor is now initialized on demand instead of being created in the `CommentInputView` constructor and initialized on render. `CommentInputView#editor` is now `null` right after the instance is created. This may concern you, if you use custom comment views.
-* Annotations with targets set to markers or DOM elements inside the editor editable must now be registered in `EditorAnnotations#registerAnnotation()` after they are created. This will concern you, if you have a custom feature that creates `Annotation` instances inside the editor. This does not affect the comments outside the editor feature.
+* **[widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: Renamed `WidgetResizer#visibleResizer` to `selectedResizer`. `Resizer#isEnabled` no longer directly changes resizer visibility. Instead, `Resizer#isVisible` was introduced. `Resizer#isVisible` value depends on `Resizer#isEnabled` and (new) `Resizer#isSelected`. This may concern you if you implemented a custom widget that can be resized.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment input editor is now initialized on demand instead of being created in the `CommentInputView` constructor and initialized on render. `CommentInputView#editor` is now `null` right after the instance is created. This may concern you, if you use custom comment views.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Annotations with targets set to markers or DOM elements inside the editor editable must now be registered in `EditorAnnotations#registerAnnotation()` after they are created. This will concern you, if you have a custom feature that creates `Annotation` instances inside the editor. This does not affect the comments outside the editor feature.
 
 ### Features
 
