@@ -80,7 +80,14 @@ export default function insertContent(
 
 		const insertion = new Insertion( model, writer, selection.anchor! );
 		const fakeMarkerElements = [];
-		const markers: { name: string; offset: number; isEdge: boolean; variant: string; isAtEnd: boolean; element: Node | null }[] = [];
+		const markers: {
+			name: string;
+			offset: number;
+			rightOffset: number;
+			edge: string | null;
+			variant: string;
+			isAtEnd: boolean;
+			element: Node | null; }[] = [];
 
 		let nodesToInsert: any;
 
@@ -93,20 +100,38 @@ export default function insertContent(
 						const isOutside = marker.parent.is( 'documentFragment' );
 						let element = null;
 						let offset = 0;
+						let rightOffset = 0;
 
 						if ( isOutside ) {
 							element = marker.isAtEnd ? marker.nodeBefore : marker.nodeAfter;
 							offset = marker.isAtEnd && element ? ( element as Element ).maxOffset : 0;
+							rightOffset = marker.isAtEnd && element ? 0 : ( element as Element ).maxOffset;
 						} else {
 							element = marker.parent;
 							offset = marker.offset;
 						}
 
+						let edge = null;
+						const isLeft = ( element as Element ).startOffset === 0;
+						const isRight = content.maxOffset === ( element as Element ).endOffset;
+
+						if ( isLeft && isRight ) {
+							edge = 'both';
+						} else if ( isLeft ) {
+							edge = 'left';
+						} else if ( isRight ) {
+							edge = 'right';
+						}
+
+						if ( isRight && !isOutside ) {
+							rightOffset = ( element as Element ).maxOffset - marker.offset;
+						}
+
 						markers.push( {
 							name,
 							offset,
-							// handle this field to support diffrent edges
-							isEdge: ( element as Element ).startOffset === 0 || content.maxOffset === ( element as Element ).offsetSize,
+							rightOffset,
+							edge,
 							variant: isOutside ? 'outside' : 'inside',
 							isAtEnd: marker.isAtEnd,
 							element
@@ -177,54 +202,43 @@ export default function insertContent(
 
 		if ( content.is( 'documentFragment' ) && markers.length ) {
 			const markersData: Record<string, Position[]> = {};
+			const rangeOnInsertion = insertion.getAffectedRange() as Range;
 
-			for ( let { name, offset, isEdge, variant, isAtEnd, element } of markers ) {
-				// const root = model.document.getRoot();
+			for ( let { name, offset, rightOffset, edge, variant, isAtEnd, element } of markers ) {
 				let isMerged = false;
 
-				if ( isEdge && ( insertion.isMergeOnLeft || insertion.isMergeOnRight ) ) {
-					const rangeOnInsertion = insertion.getAffectedRange() as Range;
+				console.log( edge, insertion.isMergeOnLeft, insertion.isMergeOnRight );
+				if ( edge === 'both' && ( insertion.isMergeOnLeft || insertion.isMergeOnRight ) ) {
 					const positionOnMerge = insertion.isMergeOnLeft ? rangeOnInsertion.start : rangeOnInsertion.end;
 
 					isMerged = true;
 					element = positionOnMerge.parent as Node;
-					offset += positionOnMerge.offset;
+
+					if ( insertion.isMergeOnRight ) {
+						offset = rangeOnInsertion.end.offset - rightOffset;
+						element = rangeOnInsertion.end.parent as Node;
+					} else {
+						offset += positionOnMerge.offset;
+					}
 				}
+				else if ( edge === 'left' && insertion.isMergeOnLeft ) {
+					const positionOnMerge = rangeOnInsertion.start;
 
-				// if ( root ) {
-				// 	const allChildren = Array.from( root.getChildren() );
-				// 	const existingElement = allChildren.find( el => {
-				// 		console.log( el, element );
-				// 		if ( el === element ) {
-				// 			return el;
-				// 		}
-				// 	} );
-				//
-				// 	if ( !existingElement ) {
-				// 		const rangeOnInsertion = insertion.getAffectedRange() as Range;
-				//
-				// 		isMerged = true;
-				// 		element = rangeOnInsertion.start.parent as Node;
-				// 		offset += rangeOnInsertion.start.offset;
-				// 	}
-				// }
+					isMerged = true;
+					element = positionOnMerge.parent as Node;
+					offset += positionOnMerge.offset;
+				} else if ( edge === 'right' && insertion.isMergeOnRight ) {
+					const positionOnMerge = rangeOnInsertion.end;
 
-				// const isClosingMarker = Boolean( markersData[ name ] );
-				//
-				// const edgeElementAfterInsertion = isAtEnd ? insertion._lastNode : insertion._firstNode;
-				// const isMerged = isEdge && edgeElementAfterInsertion && ( element !== edgeElementAfterInsertion );
-				//
-				// if ( isMerged ) {
-				// 	const rangeOnInsertion = insertion.getAffectedRange() as Range;
-				//
-				// 	offset += rangeOnInsertion.start.offset;
-				// 	element = edgeElementAfterInsertion;
-				// }
+					isMerged = true;
+					element = positionOnMerge.parent as Node;
+					offset = positionOnMerge.offset - rightOffset;
+				}
 
 				let position;
 
 				if ( variant === 'outside' ) {
-					if ( isEdge ) {
+					if ( edge ) {
 						if ( isMerged ) {
 							position = Position._createAt( element as Node, offset );
 						} else {
@@ -236,6 +250,7 @@ export default function insertContent(
 						position = Position._createBefore( element as Node );
 					}
 				} else {
+					console.log( 'tu wchodzi' );
 					position = Position._createAt( element as Node, offset );
 				}
 
