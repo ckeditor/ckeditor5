@@ -15,7 +15,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import TooltipManager from '../../src/tooltipmanager';
 
-describe( 'TooltipManager', () => {
+describe.only( 'TooltipManager', () => {
 	let editor, element, tooltipManager;
 
 	const utils = getUtils();
@@ -496,7 +496,7 @@ describe( 'TooltipManager', () => {
 
 			elements = getElementsWithTooltips( {
 				a: {
-					text: 'A'
+					text: 'A',
 				},
 
 				b: {
@@ -515,10 +515,10 @@ describe( 'TooltipManager', () => {
 			elements.a.appendChild( elements.childOfA );
 		} );
 
-		afterEach( () => {
-			destroyElements( elements );
-			clock.restore();
-		} );
+		// afterEach( () => {
+		// 	destroyElements( elements );
+		// 	clock.restore();
+		// } );
 
 		describe( 'on mouseleave', () => {
 			it( 'should not work for unrelated event targets such as DOM document', () => {
@@ -654,6 +654,35 @@ describe( 'TooltipManager', () => {
 				utils.dispatchScroll( elements.unrelated );
 
 				sinon.assert.calledOnce( unpinSpy );
+			} );
+		} );
+
+		describe.only( 'on remove', () => {
+			it( 'should unpin if the element that it was attached to no longer exists', (done) => {
+				// debugger;
+
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+				sinon.assert.calledWith( pinSpy, {
+					target: elements.a,
+					positions: sinon.match.array
+				} );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+
+				clock.restore();
+
+				elements.a.remove();
+
+				// editor.ui.update();
+				// sinon.assert.calledOnce( pinSpy );
+
+				setTimeout( () => {
+					sinon.assert.calledOnce( unpinSpy );
+					done();
+				}, 100 );
 			} );
 		} );
 	} );
@@ -798,6 +827,7 @@ function getElementsWithTooltips( definitions ) {
 		}
 
 		element.id = name;
+		element.textContent = 'foo';
 
 		document.body.appendChild( element );
 
