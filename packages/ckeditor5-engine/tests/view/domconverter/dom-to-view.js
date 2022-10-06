@@ -1124,7 +1124,8 @@ describe( 'DomConverter', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/12375
-		it( 'should not use DOM Range', () => {
+		// It happens on Safari that current selection doesn't make any sense.
+		it( 'should not throw when selection.focusOffset is greater than the number of elements', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, [ domFoo ] );
 
@@ -1135,19 +1136,30 @@ describe( 'DomConverter', () => {
 			document.body.appendChild( domP );
 
 			const domRange = document.createRange();
-			domRange.setStart( domFoo, 2 );
+			domRange.setStart( domFoo, 1 );
 			domRange.collapse( true );
 
-			const domSelection = document.getSelection();
-			domSelection.removeAllRanges();
-			domSelection.addRange( domRange );
-			domSelection.extend( domFoo, 1 );
+			const domSelection = {
+				rangeCount: 1,
+				isCollapsed: false,
+				anchorNode: domFoo,
+				anchorOffset: 1,
+				focusNode: domFoo,
+				focusOffset: 100,
 
-			const spy = sinon.spy( converter._domDocument, 'createRange' );
+				getRangeAt() { return domRange; }
+			};
 
-			converter.domSelectionToView( domSelection );
+			let viewSelection;
 
-			expect( spy.notCalled ).to.be.true;
+			expect( () => {
+				viewSelection = converter.domSelectionToView( domSelection );
+			} ).to.not.throw();
+
+			expect( viewSelection.rangeCount ).to.equal( 1 );
+			expect( viewSelection.isBackward ).to.be.false;
+
+			domP.remove();
 		} );
 
 		it( 'should not add null ranges', () => {

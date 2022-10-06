@@ -1164,20 +1164,22 @@ export default class DomConverter {
 			return false;
 		}
 
-		const position = selection.anchorNode!.compareDocumentPosition( selection.focusNode! );
+		// Since it takes multiple lines of code to check whether a "DOM Position" is before/after another "DOM Position",
+		// we will use the fact that range will collapse if it's end is before it's start.
+		const range = this._domDocument.createRange();
 
-		const isFocusBeforeAnchor = ( position & Node.DOCUMENT_POSITION_PRECEDING ) != 0;
-		const isFocusAfterAnchor = ( position & Node.DOCUMENT_POSITION_FOLLOWING ) != 0;
-
-		if ( isFocusBeforeAnchor ) {
-			return true;
-		}
-
-		if ( isFocusAfterAnchor ) {
+		try {
+			range.setStart( selection.anchorNode!, selection.anchorOffset );
+			range.setEnd( selection.focusNode!, selection.focusOffset );
+		} catch {
 			return false;
 		}
 
-		return selection.focusOffset < selection.anchorOffset;
+		const backward = range.collapsed;
+
+		range.detach();
+
+		return backward;
 	}
 
 	/**
