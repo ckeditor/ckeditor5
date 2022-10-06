@@ -77,7 +77,7 @@ export default function insertContent(
 			model.deleteContent( selection, { doNotAutoparagraph: true } );
 		}
 
-		const fakeMarkerElements = [];
+		const fakeMarkerElements: FakeMarker[] | undefined = [];
 		let nodesToInsert: any;
 
 		if ( content.is( 'documentFragment' ) ) {
@@ -102,8 +102,9 @@ export default function insertContent(
 				for ( const { position, name, isCollapsed } of markersPosition ) {
 					let fakeElement = null;
 					// let collapsed = null;
-					// const isAtBeginning = position.parent === content && position.isAtStart;
-					// const isAtEnd = position.parent === content && position.isAtEnd;
+					const isAtBeginning = position.parent === content && position.isAtStart;
+					const isAtEnd = position.parent === content && position.isAtEnd;
+					const isEdge = isAtBeginning || isAtEnd;
 
 					// We have two ways of handling markers. In general, we want to add temporary <$marker> model elements to
 					// represent marker boundaries. These elements will be inserted into content together with the rest
@@ -122,13 +123,19 @@ export default function insertContent(
 					// 	// to know where to create it after the insertion is done.
 					// 	collapsed = isAtBeginning ? 'start' as const : 'end' as const;
 					// }
+					let reference = position.nodeAfter || position.nodeBefore;
+					const markerReference = fakeMarkerElements && fakeMarkerElements.find( marker => marker.element === reference );
+
+					if ( markerReference ) {
+						reference = markerReference.reference || null;
+					}
 
 					fakeElement = writer.createElement( '$marker' );
 					writer.insert( fakeElement, position );
-
 					fakeMarkerElements.push( {
 						name,
-						element: fakeElement
+						element: fakeElement,
+						reference: isEdge ? reference : null
 						// collapsed
 					} );
 				}
@@ -237,6 +244,19 @@ export default function insertContent(
 	} );
 }
 
+type FakeMarker = {
+	name: string;
+	element: Element;
+	reference?: Node | null;
+	position?: 'after' | 'before';
+};
+
+type FakeMarkerPosition = {
+	livePosition: LivePosition;
+	reference: Node | null;
+	position: FakeMarker['position'];
+};
+
 /**
  * Utility class for performing content insertion.
  *
@@ -258,10 +278,10 @@ class Insertion {
 	private _affectedStart: LivePosition | null;
 	private _affectedEnd: LivePosition | null;
 	private _nodeToSelect?: Node | null;
-	private _fakeMarkerElements?: { name: string; element: Element }[];
-	private _fakeMarkerPositions: Record<string, Array<LivePosition>>;
+	private _fakeMarkerElements?: FakeMarker[];
+	private _fakeMarkerPositions: Record<string, FakeMarkerPosition[]>;
 
-	constructor( model: Model, writer: Writer, position: Position, fakeMarkers?: Array<{ name: string; element: Element }> ) {
+	constructor( model: Model, writer: Writer, position: Position, fakeMarkers?: FakeMarker[] ) {
 		/**
 		 * The model in context of which the insertion should be performed.
 		 *
@@ -377,7 +397,11 @@ class Insertion {
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes to insert.
 	 */
 	public handleNodes( nodes: Iterable<Node> ): void {
-		for ( const node of Array.from( nodes ) ) {
+		const nodesArray = Array.from( nodes );
+
+		this._prepareMarkersPosition( nodesArray );
+
+		for ( const node of nodesArray ) {
 			this._handleNode( node );
 		}
 
@@ -520,19 +544,45 @@ class Insertion {
 	}
 
 	/**
+	 * prepare fake markers elements.
+	 *
+	 * @private
+	 * @param {Array<Node>} nodes
+	 */
+	private _prepareMarkersPosition( nodes: Node[] ): void {
+		const fakeMarkers = this._fakeMarkerElements;
+
+		if ( fakeMarkers && fakeMarkers.length ) {
+			for ( let i = fakeMarkers.length - 1; i >= 0; i-- ) {
+				const { element, reference } = fakeMarkers[ i ];
+
+				if ( reference ) {
+					const elementIndex = nodes.findIndex( node => node === element );
+					const referenceIndex = nodes.findIndex( node => node === reference );
+
+					if ( elementIndex > referenceIndex ) {
+						fakeMarkers[ i ].position = 'before';
+					} else {
+						fakeMarkers[ i ].position = 'after';
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * Handles fake markers elements.
 	 *
 	 * @private
-	 * @param {Array} fakeMarkers
 	 */
 	private _handleFakeMarkersElements(): void {
 		const fakeMarkers = this._fakeMarkerElements;
 
 		if ( fakeMarkers && fakeMarkers.length ) {
-			const markersData: Record<string, Array<LivePosition>> = this._fakeMarkerPositions;
+			const markersData = this._fakeMarkerPositions;
 
 			for ( let i = fakeMarkers.length - 1; i >= 0; i-- ) {
-				const { name, element } = fakeMarkers[ i ];
+				const { name, element, reference, position } = fakeMarkers[ i ];
 				if ( element.root && element.root.is( 'rootElement' ) ) {
 					const isStartBoundary = !markersData[ name ];
 
@@ -542,7 +592,11 @@ class Insertion {
 
 					// Read fake marker element position to learn where the marker should be created.
 					const elementPosition = this.writer.createPositionAt( element, 'before' );
-					markersData[ name ].push( LivePosition.fromPosition( elementPosition, 'toNone' ) );
+					markersData[ name ].push( {
+						livePosition: LivePosition.fromPosition( elementPosition, 'toNone' ),
+						reference: reference || null,
+						position
+					} );
 
 					this.writer.remove( element );
 					fakeMarkers.splice( i, 1 );
@@ -555,15 +609,33 @@ class Insertion {
 	 * Handles fake markers live positions.
 	 *
 	 * @private
-	 * @param {Array} fakeMarkers
 	 */
 	private _handleFakeMarkersLivePosition(): void {
 		const fakeMarkersPositions = this._fakeMarkerPositions;
 
 		if ( fakeMarkersPositions ) {
 			for ( const [ name, [ start, end ] ] of Object.entries( fakeMarkersPositions ) ) {
-				const startPosition = start.toPosition();
-				const endPosition = end.toPosition();
+				if ( !start || !end ) {
+					return;
+				}
+
+				const [ startPosition, endPosition ] = [ start, end ].map( ( { livePosition, reference, position }, index ) => {
+					let markerPosition = livePosition.toPosition();
+
+					if ( reference ) {
+						if ( reference.root === this.position.root ) {
+							markerPosition = position === 'after' ?
+								Position._createBefore( reference ) :
+								Position._createAfter( reference );
+						} else if ( this._affectedStart && this._affectedEnd ) {
+							markerPosition = index === 0 ? this._affectedStart.toPosition() : this._affectedEnd.toPosition();
+						} else {
+							markerPosition = this.position;
+						}
+					}
+
+					return markerPosition;
+				} );
 
 				this.writer.addMarker( name, {
 					usingOperation: true,
@@ -591,7 +663,6 @@ class Insertion {
 		// If the very first node of the whole insertion process is inserted, insert it separately for OT reasons (undo).
 		// Note: there can be multiple calls to `_insertPartialFragment()` during one insertion process.
 		// Note: only the very first node can be merged so we have to do separate operation only for it.
-		console.log( this.position.path, this._documentFragment.getChild( 0 ) );
 		if ( this._documentFragment.getChild( 0 ) == this._firstNode ) {
 			this.writer.insert( this._firstNode!, this.position );
 			this.writer.insert( this._documentFragment, this.position.getShiftedBy( 1 ) );
