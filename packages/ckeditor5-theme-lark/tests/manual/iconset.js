@@ -9,7 +9,6 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
-import bold from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italic from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 import underline from '@ckeditor/ckeditor5-basic-styles/theme/icons/underline.svg';
 import code from '@ckeditor/ckeditor5-basic-styles/theme/icons/code.svg';
@@ -54,8 +53,6 @@ import media from '@ckeditor/ckeditor5-media-embed/theme/icons/media.svg';
 
 import pageBreak from '@ckeditor/ckeditor5-page-break/theme/icons/pagebreak.svg';
 
-import paragraph from '@ckeditor/ckeditor5-paragraph/theme/icons/paragraph.svg';
-
 import removeFormat from '@ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg';
 
 import contentLock from '@ckeditor/ckeditor5-restricted-editing/theme/icons/contentlock.svg';
@@ -86,7 +83,7 @@ import '../../theme/ckeditor5-ui/components/editorui/editorui.css';
 
 const icons = {
 	// basic-styles
-	bold, italic, underline, code, strikethrough, subscript, superscript,
+	italic, underline, code, strikethrough, subscript, superscript,
 
 	// ckfinder
 	browseFiles,
@@ -123,9 +120,6 @@ const icons = {
 
 	// page-break
 	pageBreak,
-
-	// paragraph
-	paragraph,
 
 	// remove-format
 	removeFormat,

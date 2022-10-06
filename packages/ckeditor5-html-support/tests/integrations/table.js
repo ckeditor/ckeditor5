@@ -1378,6 +1378,9 @@ describe( 'TableElementSupport', () => {
 				classes: true
 			} ] );
 
+			// Apply filtering rules added after initial data load.
+			editor.setData( '' );
+
 			editor.model.schema.extend( 'table', { allowAttributes: [ 'barAttr' ] } );
 
 			editor.conversion.for( 'upcast' ).attributeToAttribute( {

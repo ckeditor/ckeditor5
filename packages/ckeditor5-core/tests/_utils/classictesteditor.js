@@ -77,7 +77,7 @@ export default class ClassicTestEditor extends Editor {
 							throw new CKEditorError( 'editor-create-initial-data', null );
 						}
 
-						editor.data.init( config.initialData || getInitialData( sourceElementOrData ) );
+						return editor.data.init( config.initialData || getInitialData( sourceElementOrData ) );
 					} )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
