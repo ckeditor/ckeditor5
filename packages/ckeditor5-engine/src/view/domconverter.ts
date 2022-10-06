@@ -1171,7 +1171,7 @@ export default class DomConverter {
 		try {
 			range.setStart( selection.anchorNode!, selection.anchorOffset );
 			range.setEnd( selection.focusNode!, selection.focusOffset );
-		} catch {
+		} catch ( e ) {
 			return false;
 		}
 
