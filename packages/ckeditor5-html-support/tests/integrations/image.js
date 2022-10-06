@@ -2401,6 +2401,9 @@ describe( 'ImageElementSupport', () => {
 						name: /^(img)$/
 					} ] );
 
+					// Apply filtering rules added after initial data load.
+					editor.setData( '' );
+
 					expect( schema.getDefinition( 'imageBlock' ).allowAttributes ).to.deep.equal( [
 						'alt',
 						'src',
@@ -2433,6 +2436,9 @@ describe( 'ImageElementSupport', () => {
 						name: /^(img)$/
 					} ] );
 
+					// Apply filtering rules added after initial data load.
+					editor.setData( '' );
+
 					expect( schema.getDefinition( 'imageInline' ).allowAttributes ).to.deep.equal( [
 						'alt',
 						'src',
@@ -2462,6 +2468,9 @@ describe( 'ImageElementSupport', () => {
 					dataFilter.loadAllowedConfig( [ {
 						name: /^(img)$/
 					} ] );
+
+					// Apply filtering rules added after initial data load.
+					editor.setData( '' );
 
 					expect( schema.getDefinition( 'imageBlock' ).allowAttributes ).to.deep.equal( [
 						'htmlAttributes'

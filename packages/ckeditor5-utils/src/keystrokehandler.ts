@@ -87,7 +87,7 @@ export default class KeystrokeHandler {
 	 * the {@link module:utils/keyboard~parseKeystroke} function.
 	 * @param {Function} callback A function called with the
 	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
-	 * a helper funcion to call both `preventDefault()` and `stopPropagation()` on the underlying event.
+	 * a helper function to call both `preventDefault()` and `stopPropagation()` on the underlying event.
 	 * @param {Object} [options={}] Additional options.
 	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of the keystroke
 	 * callback. The higher the priority value the sooner the callback will be executed. Keystrokes having the same priority

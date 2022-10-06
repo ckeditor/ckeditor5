@@ -7,7 +7,8 @@
  * @module style/ui/stylegridview
  */
 
-import { View } from 'ckeditor5/src/ui';
+import { View, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 import StyleGridButtonView from './stylegridbuttonview';
 
 import '../../theme/stylegrid.css';
@@ -28,6 +29,22 @@ export default class StyleGridView extends View {
 	 */
 	constructor( locale, styleDefinitions ) {
 		super( locale );
+
+		/**
+		 * Tracks information about the DOM focus in the view.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
 
 		/**
 		 * Array of active style names. They must correspond to the names of styles from
@@ -97,5 +114,43 @@ export default class StyleGridView extends View {
 		 *
 		 * @event execute
 		 */
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		for ( const child of this.children ) {
+			this.focusTracker.add( child.element );
+		}
+
+		addKeyboardHandlingForGrid( {
+			keystrokeHandler: this.keystrokes,
+			focusTracker: this.focusTracker,
+			gridItems: this.children,
+			numberOfColumns: 3
+		} );
+
+		// Start listening for the keystrokes coming from the grid view.
+		this.keystrokes.listenTo( this.element );
+	}
+
+	/**
+	 * Focuses the first style button in the grid.
+	 */
+	focus() {
+		this.children.first.focus();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
 	}
 }

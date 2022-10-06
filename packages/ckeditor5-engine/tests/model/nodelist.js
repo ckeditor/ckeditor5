@@ -162,6 +162,16 @@ describe( 'NodeList', () => {
 				nodes._insertNodes( 0, [ 'foo' ] );
 			}, 'nodelist-insertnodes-not-node', nodes );
 		} );
+
+		it( 'should insert large number of nodes (250 000) without throwing an error', () => {
+			const numberOfNodes = 250000;
+			const largeArray = 'a'.repeat( numberOfNodes ).split( '' ).map( el => new Text( el ) );
+			const expectedLength = nodes.length + largeArray.length;
+
+			nodes._insertNodes( 0, largeArray );
+
+			expect( nodes.length ).to.equal( expectedLength );
+		} );
 	} );
 
 	describe( '_removeNodes', () => {
