@@ -7,53 +7,134 @@
 
 /* eslint-env node */
 
-const childProcess = require( 'child_process' );
-const path = require( 'path' );
 const chalk = require( 'chalk' );
+const childProcess = require( 'child_process' );
+const minimist = require( 'minimist' );
+const path = require( 'path' );
 
-const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
-const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
+const argv = minimist( process.argv.slice( 2 ) );
 
-if ( IS_DEVELOPMENT_MODE ) {
-	console.log( '🛠️️  ' + chalk.yellow( 'Development mode is active.' ) );
-} else {
-	console.log( '⚠️  ' + chalk.magenta( 'Production mode is active. Use --dev to build in the development mode.' ) );
+const ROOT_DIRECTORY = argv.cwd ? path.resolve( argv.cwd ) : path.resolve( __dirname, '..', '..' );
+const DEVELOPMENT_MODE = argv.dev;
+const VERBOSE_MODE = argv.verbose;
+
+// Lets highlight and space out the messages in the verbose mode to
+// make them stand out from the wall of text that webpack spits out.
+const prefix = VERBOSE_MODE ? '\n📍 ' : '';
+
+if ( argv[ 'base-dll-config' ] ) {
+	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
+
+	const baseDllPath = argv[ 'base-dll-path' ] || ROOT_DIRECTORY;
+	const baseDllConfigPath = path.relative( baseDllPath, argv[ 'base-dll-config' ] );
+
+	const status = execute( {
+		command: [ 'yarn', 'webpack', `--config=${ normalizePath( baseDllConfigPath ) }` ],
+		cwd: baseDllPath
+	} );
+
+	if ( status ) {
+		console.log( chalk.bold.red( 'Halting the script due to failed base DLL build.' ) );
+
+		process.exit( 1 );
+	}
 }
 
-// -------------------------------------------------------------
-// ------------------------------------------- Base DLL build --
+console.log( prefix + chalk.bold( 'Creating DLL-compatible package builds...' ) );
 
-console.log( '\n📍 ' + chalk.cyan.underline( 'Creating the base DLL build...\n' ) );
+let exitCode = 0;
 
-const webpackArguments = [ '--config=./scripts/dll/webpack.config.dll.js' ];
+getPackageNames( ROOT_DIRECTORY )
+	.filter( isNotBaseDll )
+	.filter( hasDLLBuildScript )
+	.forEach( fullPackageName => {
+		console.log( prefix + `Building ${ fullPackageName }...` );
 
-if ( IS_DEVELOPMENT_MODE ) {
-	webpackArguments.push( '--mode=development' );
+		const status = execute( {
+			command: [ 'yarn', 'run', 'dll:build' ],
+			cwd: path.join( ROOT_DIRECTORY, 'packages', fullPackageName )
+		} );
+
+		if ( status ) {
+			console.log( chalk.bold.red( 'Script will continue the execution for other packages, but the failed build will be missing.' ) );
+			console.log( chalk.bold.red( 'If the missing build is built manually, the entire script does not have to be repeated.' ) );
+
+			exitCode = 1;
+		}
+	} );
+
+process.exit( exitCode );
+
+/**
+ * @param {String} cwd
+ * @returns {Array<String>}
+ */
+function getPackageNames( cwd ) {
+	return childProcess.execSync( 'ls -1 packages', {
+		encoding: 'utf8',
+		cwd
+	} ).toString().trim().split( '\n' );
 }
 
-childProcess.spawnSync( 'webpack', webpackArguments, {
-	encoding: 'utf8',
-	shell: true,
-	cwd: ROOT_DIRECTORY,
-	stdio: 'inherit',
-	stderr: 'inherit'
-} );
-
-// -------------------------------------------------------------
-// ---------------------------- DLL-compatible package builds --
-
-console.log( '\n📍 ' + chalk.underline( 'Creating DLL-compatible package builds...\n' ) );
-
-const nodeArguments = [ './scripts/dll/build-packages-dlls.js' ];
-
-if ( IS_DEVELOPMENT_MODE ) {
-	nodeArguments.push( '--mode=development' );
+/**
+ * @param {String} name
+ * @returns {Boolean}
+ */
+function isNotBaseDll( name ) {
+	return name !== 'ckeditor5-dll';
 }
 
-childProcess.spawnSync( 'node', nodeArguments, {
-	encoding: 'utf8',
-	shell: true,
-	cwd: ROOT_DIRECTORY,
-	stdio: 'inherit',
-	stderr: 'inherit'
-} );
+/**
+ * @param {String} name
+ * @returns {Boolean}
+ */
+function hasDLLBuildScript( name ) {
+	const packageJsonPath = path.join( ROOT_DIRECTORY, 'packages', name, 'package.json' );
+	const scripts = require( packageJsonPath ).scripts;
+
+	return Boolean( scripts && scripts[ 'dll:build' ] );
+}
+
+/**
+ * @param {String} string
+ * @returns {String}
+ */
+function normalizePath( string ) {
+	return string.split( path.sep ).join( path.posix.sep );
+}
+
+/**
+ * @param {Object} options
+ * @param {Array<String>} options.command
+ * @param {String} options.cwd
+ */
+function execute( options ) {
+	if ( DEVELOPMENT_MODE ) {
+		options.command.push( '--mode=development' );
+	}
+
+	const command = options.command.join( ' ' );
+
+	const subprocess = childProcess.spawnSync( command, {
+		encoding: 'utf8',
+		shell: true,
+		cwd: options.cwd,
+		stdio: VERBOSE_MODE ? 'inherit' : 'pipe'
+	} );
+
+	if ( subprocess.status !== 0 && subprocess.stderr && !VERBOSE_MODE ) {
+		const message = [
+			chalk.bold( '💥 Build ended with an error:' ),
+			subprocess.stderr.trim(),
+			'',
+			chalk.bold( '🛠️  To reproduce this error, run:' ),
+			` - cd ${ normalizePath( path.resolve( options.cwd ) ) }`,
+			` - ${ command }`,
+			''
+		];
+
+		console.log( chalk.red( message.join( '\n' ) ) );
+	}
+
+	return subprocess.status;
+}
