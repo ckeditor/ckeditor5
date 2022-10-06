@@ -15,31 +15,34 @@ const path = require( 'path' );
 const argv = minimist( process.argv.slice( 2 ) );
 
 const ROOT_DIRECTORY = argv.cwd ? path.resolve( argv.cwd ) : path.resolve( __dirname, '..', '..' );
-const BASE_DLL_CONFIG_PATH = argv[ 'base-dll-config' ] ? path.relative( ROOT_DIRECTORY, argv[ 'base-dll-config' ] ) : null;
-const BASE_DLL_PATH = argv[ 'base-dll-path' ];
-const IS_DEVELOPMENT_MODE = argv.dev;
+const DEVELOPMENT_MODE = argv.dev;
 const VERBOSE_MODE = argv.verbose;
 
 // Lets highlight and space out the messages in the verbose mode to
 // make them stand out from the wall of text that webpack spits out.
 const prefix = VERBOSE_MODE ? '\n📍 ' : '';
 
-if ( BASE_DLL_CONFIG_PATH ) {
+if ( argv[ 'base-dll-config' ] ) {
 	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
 
+	const baseDllPath = argv[ 'base-dll-path' ] || ROOT_DIRECTORY;
+	const baseDllConfigPath = path.relative( baseDllPath, argv[ 'base-dll-config' ] );
+
 	const status = execute( {
-		command: [ 'yarn', 'webpack', `--config=${ normalizePath( BASE_DLL_CONFIG_PATH ) }` ],
-		cwd: BASE_DLL_PATH || ROOT_DIRECTORY
+		command: [ 'yarn', 'webpack', `--config=${ normalizePath( baseDllConfigPath ) }` ],
+		cwd: baseDllPath
 	} );
 
 	if ( status ) {
 		console.log( chalk.bold.red( 'Halting the script due to failed base DLL build.' ) );
 
-		process.exit();
+		process.exit( 1 );
 	}
 }
 
 console.log( prefix + chalk.bold( 'Creating DLL-compatible package builds...' ) );
+
+let exitCode = 0;
 
 getPackageNames( ROOT_DIRECTORY )
 	.filter( isNotBaseDll )
@@ -55,8 +58,12 @@ getPackageNames( ROOT_DIRECTORY )
 		if ( status ) {
 			console.log( chalk.bold.red( 'Script will continue the execution for other packages, but the failed build will be missing.' ) );
 			console.log( chalk.bold.red( 'If the missing build is built manually, the entire script does not have to be repeated.' ) );
+
+			exitCode = 1;
 		}
 	} );
+
+process.exit( exitCode );
 
 /**
  * @param {String} cwd
@@ -102,7 +109,7 @@ function normalizePath( string ) {
  * @param {String} options.cwd
  */
 function execute( options ) {
-	if ( IS_DEVELOPMENT_MODE ) {
+	if ( DEVELOPMENT_MODE ) {
 		options.command.push( '--mode=development' );
 	}
 
