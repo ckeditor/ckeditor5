@@ -123,20 +123,15 @@ function execute( options ) {
 	} );
 
 	if ( subprocess.status !== 0 && subprocess.stderr && !VERBOSE_MODE ) {
-		const relativePath = path.relative( process.cwd(), options.cwd );
-
 		const message = [
 			chalk.bold( '💥 Build ended with an error:' ),
 			subprocess.stderr.trim(),
 			'',
-			chalk.bold( '🛠️  To reproduce this error, run:' )
+			chalk.bold( '🛠️  To reproduce this error, run:' ),
+			` - cd ${ normalizePath( path.resolve( options.cwd ) ) }`,
+			` - ${ command }`,
+			''
 		];
-
-		if ( relativePath ) {
-			message.push( ` - cd ${ normalizePath( relativePath ) }` );
-		}
-
-		message.push( ` - ${ command }`, '' );
 
 		console.log( chalk.red( message.join( '\n' ) ) );
 	}
