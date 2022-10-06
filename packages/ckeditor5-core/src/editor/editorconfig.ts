@@ -175,7 +175,7 @@ import type Editor from './editor';
  *
  *	Line break will work only in the extended format when `shouldNotGroupWhenFull` option is set to `true`.
  *
- *	**Note**: To save space in your toolbar you can group several items into a dropdown:
+ *	**Note**: To save space in your toolbar, you can group several items into a dropdown:
  *
  *		toolbar: [
  *			{
@@ -187,7 +187,7 @@ import type Editor from './editor';
  *			'undo', 'redo'
  *		]
  *
- *	The code above will create a "Basic styles" dropdown with a "text" icon containing "bold" and "italic" buttons.
+ *	The code above will create a "Basic styles" dropdown with a "text" icon containing the "bold" and "italic" buttons.
  *	You can customize the look of the dropdown by setting the `withText`, `icon`, and `tooltip` properties:
  *
  *	* **Displaying a label**
