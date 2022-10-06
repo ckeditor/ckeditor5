@@ -78,6 +78,8 @@ Among other changes, a few icons have been moved around the project. Please obse
 * The `bold` icon has been moved to the `@ckeditor/ckeditor5-core` package.
 * The `paragraph` icon has been moved to the `@ckeditor/ckeditor5-core` package.
 
+The rest of the import path remained unchanged (`/theme/icons/`).
+
 ## Migration to CKEditor 5 v35.1.0
 
 ### Important changes
