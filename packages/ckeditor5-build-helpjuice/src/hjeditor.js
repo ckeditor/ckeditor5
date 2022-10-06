@@ -406,7 +406,6 @@ HelpjuiceEditor.defaultConfig = {
 		disallow: [ /* HTML features to disallow */ ]
 	},
 	link: {
-		addTargetToExternalLinks: true,
 		decorators: {
 			toggleDownloadable: {
 				mode: 'manual',
