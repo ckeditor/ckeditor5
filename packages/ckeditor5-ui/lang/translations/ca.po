@@ -106,8 +106,8 @@ msgstr "Lila"
 
 msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
 msgid "Editor block content toolbar"
-msgstr ""
+msgstr "Barra d'eines de contingut del bloc de l'editor"
 
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
-msgstr ""
+msgstr "Barra d'eines contextual de l'editor"

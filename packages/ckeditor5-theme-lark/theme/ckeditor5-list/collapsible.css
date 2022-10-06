@@ -13,6 +13,7 @@
 		font-weight: bold;
 		padding: var(--ck-spacing-medium) var(--ck-spacing-large);
 		border-radius: 0;
+		color: inherit;
 
 		&:focus {
 			background: transparent;
