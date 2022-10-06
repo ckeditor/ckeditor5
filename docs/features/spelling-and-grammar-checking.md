@@ -59,7 +59,7 @@ The most popular languages used with WProofreader include: American English, Aus
 
 There are, however, more languages available from the WebSpellChecker site. Grammar checking is available for over 20 languages.
 
-The AI-driven tools approach for English, German, and Spanish is a recent addition to the software. It offers a far better checking quality, and generates proofreading suggestions based on the context of a sentence. It provides more suitable suggestions that address mistakes with 3 times the accuracy compared to a traditional mechanism. The AI-based support is currently available for English and German.
+The AI-driven tools approach for English, German, and Spanish is a recent addition to the software. It offers a far better checking quality, and generates proofreading suggestions based on the context of a sentence. It provides more suitable suggestions that address mistakes with 3 times the accuracy compared to a traditional mechanism.
 
 Here you can check the [full list of available languages](https://webspellchecker.com/additional-dictionaries/).
 
