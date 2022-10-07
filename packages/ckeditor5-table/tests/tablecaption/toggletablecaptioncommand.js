@@ -13,6 +13,7 @@ import { modelTable } from '../_utils/utils';
 
 import ToggleTableCaptionCommand from '../../src/tablecaption/toggletablecaptioncommand';
 import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 
 describe( 'ToggleTableCaptionCommand', () => {
 	let editor, model, command;
@@ -20,7 +21,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ Paragraph, TableEditing, TableCaptionEditing, TableSelection ]
+				plugins: [ Paragraph, TableEditing, TableCaptionEditing, TableSelection, BoldEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

@@ -89,7 +89,7 @@ export default class ToggleTableCaptionCommand extends Command {
 		// Try restoring the caption from the TableCaptionEditing plugin storage.
 		const newCaptionElement = savedCaptionElement || writer.createElement( 'caption' );
 
-		writer.append( newCaptionElement, tableElement );
+		model.insertContent( newCaptionElement, tableElement, 'end' );
 
 		if ( focusCaptionOnShow ) {
 			writer.setSelection( newCaptionElement, 'in' );
@@ -114,7 +114,8 @@ export default class ToggleTableCaptionCommand extends Command {
 		// Store the caption content so it can be restored quickly if the user changes their mind.
 		tableCaptionEditing._saveCaption( tableElement, captionElement );
 
+		writer.setSelection( captionElement, 'on' );
+		model.deleteContent( model.document.selection );
 		writer.setSelection( writer.createRangeIn( tableElement.getChild( 0 ).getChild( 0 ) ) );
-		writer.remove( captionElement );
 	}
 }
