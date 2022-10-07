@@ -1172,6 +1172,8 @@ export default class DomConverter {
 			range.setStart( selection.anchorNode!, selection.anchorOffset );
 			range.setEnd( selection.focusNode!, selection.focusOffset );
 		} catch ( e ) {
+			// Safari sometimes gives us a selection that makes Range.set{Start,End} throw.
+			// See https://github.com/ckeditor/ckeditor5/issues/12375.
 			return false;
 		}
 
