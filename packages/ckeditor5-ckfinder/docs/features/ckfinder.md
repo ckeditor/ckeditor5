@@ -58,7 +58,6 @@ This demo shows the [full integration](#configuring-the-full-integration) with t
 
 {@snippet features/ckfinder}
 
-
 ## Configuration
 
 The feature is configurable by using the {@link module:ckfinder/ckfinder~CKFinderConfig `config.ckfinder`} object.
