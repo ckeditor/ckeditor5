@@ -25,7 +25,6 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import type { ChangeType } from './document';
 import type DocumentSelection from './documentselection';
 import type DomConverter from './domconverter';
-import type EditableElement from './editableelement';
 import type ViewElement from './element';
 import type ViewNode from './node';
 
