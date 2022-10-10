@@ -3,10 +3,6 @@ Changelog
 
 ## [35.2.1](https://github.com/ckeditor/ckeditor5/compare/v35.2.0...v35.2.1) (2022-10-10)
 
-### Release highlights
-
-<!-- TODO: Add a link to the blog post. -->
-
 ### Bug fixes
 
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Suggestions imported from Word file were not saved in the database.
