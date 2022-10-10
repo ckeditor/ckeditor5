@@ -30,7 +30,7 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { icons } from '@ckeditor/ckeditor5-core';
 
 /* globals $ */
@@ -43,9 +43,8 @@ class References extends Plugin {
 
 		// The button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
-
 		editor.ui.componentFactory.add( 'references', () => {
-		// The button will be an instance of ButtonView.
+			// The button will be an instance of ButtonView.
 			const button = new ButtonView();
 
 			button.set( {
@@ -58,14 +57,13 @@ class References extends Plugin {
 				const $modelContainer = $( '#references-modal-container' );
 				$modelContainer.removeClass( 'display-none' );
 				$modelContainer.find( '.modal-title' ).text( 'References' ); // window.polyglot.t('app.references.title')
-				// $modelContainer.find('.modal-body').text('References');
 				$modelContainer.modal( {
 					dismissible: false
 				} );
-				// on modal show
+
 				this.onModalShow( editor );
 				// on ok, write to the model
-				$modelContainer.find( '.model-button-ok' ).on( 'click', () => {
+				$modelContainer.find( '.model-button-ok' ).off( 'click' ).on( 'click', () => {
 					const checked = $( 'input[name="references-list"]' ).filter( ':checked' );
 
 					if ( checked.length === 0 || this.insertMode ) {
@@ -90,15 +88,13 @@ class References extends Plugin {
 		this.insertMode = false;
 		this.elementTest = editor.model.document.selection.getFirstRange();
 
-		// $( editor.sourceElement ).find( 'a' );
-
 		if ( !this.element ||
 			!this.element.start ||
 			!this.element.start.textNode ||
 			!this.element.start.textNode.getAttributeKeys().next().value === 'linkHref' ) {
 			return;
 		}
-		// element = document.createElement( 'a' );
+
 		this.insertMode = true;
 	}
 
