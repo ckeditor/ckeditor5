@@ -174,8 +174,10 @@ export default class LabeledFieldView extends View {
 		this.statusView = this._createStatusView( statusUid );
 
 		/**
-		 * A collection of children of the internal wrapper element. Allows inserting additional DOM elements (view) next to
-		 * the {@link #fieldView} with easy styling (positioning). By default, contains {@link #fieldView} and {@link #labelView}.
+		 * A collection of children of the internal wrapper element. Allows inserting additional DOM elements (views) next to
+		 * the {@link #fieldView} for easy styling (e.g. positioning).
+		 *
+		 * By default, the collection contains {@link #fieldView} and {@link #labelView}.
 		 *
 		 * @member {module:ui/viewcollection~ViewCollection} #fieldWrapperChildren
 		 */
