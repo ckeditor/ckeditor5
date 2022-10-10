@@ -114,8 +114,7 @@ export default class ToggleTableCaptionCommand extends Command {
 		// Store the caption content so it can be restored quickly if the user changes their mind.
 		tableCaptionEditing._saveCaption( tableElement, captionElement );
 
-		writer.setSelection( captionElement, 'on' );
-		model.deleteContent( model.document.selection );
+		model.deleteContent( writer.createSelection( captionElement, 'on' ) );
 		writer.setSelection( writer.createRangeIn( tableElement.getChild( 0 ).getChild( 0 ) ) );
 	}
 }
