@@ -32,6 +32,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -62,7 +63,8 @@ ClassicEditor.builtinPlugins = [
 	PictureEditing,
 	Table,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
+	SourceEditing
 ];
 
 // Editor configuration.
@@ -85,7 +87,8 @@ ClassicEditor.defaultConfig = {
 			'insertTable',
 			'mediaEmbed',
 			'undo',
-			'redo'
+			'redo',
+			'sourceEditing'
 		]
 	},
 	image: {
