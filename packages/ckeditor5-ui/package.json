@@ -13,7 +13,6 @@
   "dependencies": {
     "@ckeditor/ckeditor5-utils": "^35.2.0",
     "@ckeditor/ckeditor5-core": "^35.2.0",
-    "@ckeditor/ckeditor5-engine": "^35.2.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
@@ -21,6 +20,7 @@
     "@ckeditor/ckeditor5-block-quote": "^35.2.0",
     "@ckeditor/ckeditor5-editor-balloon": "^35.2.0",
     "@ckeditor/ckeditor5-editor-classic": "^35.2.0",
+    "@ckeditor/ckeditor5-engine": "^35.2.0",
     "@ckeditor/ckeditor5-enter": "^35.2.0",
     "@ckeditor/ckeditor5-essentials": "^35.2.0",
     "@ckeditor/ckeditor5-font": "^35.2.0",
