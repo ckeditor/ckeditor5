@@ -672,8 +672,26 @@ export default class Renderer extends Observable {
 		// @if CK_DEBUG_TYPING // 	);
 		// @if CK_DEBUG_TYPING // }
 
+		// IME on Android inserts a new text node while typing after a link
+		// instead of updating an existing text node that follows the link.
+		// We must normalize those text nodes so the diff won't get confused.
+		// https://github.com/ckeditor/ckeditor5/issues/12574.
+		if ( env.isAndroid ) {
+			let previousDomNode = null;
+
+			for ( const domNode of Array.from( domElement.childNodes ) ) {
+				if ( previousDomNode && isText( previousDomNode ) && isText( domNode ) ) {
+					domElement.normalize();
+
+					break;
+				}
+
+				previousDomNode = domNode;
+			}
+		}
+
 		const inlineFillerPosition = options.inlineFillerPosition;
-		const actualDomChildren = this.domConverter.mapViewToDom( viewElement )!.childNodes;
+		const actualDomChildren = domElement.childNodes;
 		const expectedDomChildren = Array.from(
 			this.domConverter.viewChildrenToDom( viewElement, { bind: true } )
 		);
