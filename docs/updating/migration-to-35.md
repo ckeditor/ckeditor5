@@ -32,7 +32,7 @@ The external data is shown in the UI, but it is not authenticated (as it comes f
 * The `@external` attribute should be read-only and possible to set only when a comment or suggestion is created.
 * Other comment and suggestion properties (like `content`) should be read-only as well, if the `@external` attribute is set.
 
-#### Templates for {@link module:comments/comments/ui/view/commentview~CommentView#getTemplate `CommentView`} and {@link module:track-changes/ui/view/suggestionthreadview~SuggestionThreadView#getTemplate `SuggestionThreadView`} has changed
+#### Templates for {@link module:comments/comments/ui/view/commentview~CommentView#getTemplate `CommentView`} and {@link module:track-changes/ui/view/suggestionthreadview~SuggestionThreadView#getTemplate `SuggestionThreadView`} have changed
 
 <info-box>
 	This information applies only to integrations that use custom annotation views or templates.

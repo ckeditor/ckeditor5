@@ -18,10 +18,10 @@ import priorities, { type PriorityString } from './priorities';
  *
  * @typedef {Object} module:utils/inserttopriorityarray~ObjectWithPriority
  *
- * @property {module:utils/priorities~PriorityString|Number} priority Priority of the object.
+ * @property {module:utils/priorities~PriorityString} priority Priority of the object.
  */
 export interface ObjectWithPriority {
-	priority: PriorityString | number;
+	priority: PriorityString;
 }
 
 /**

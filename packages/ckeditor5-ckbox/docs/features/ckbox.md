@@ -12,8 +12,11 @@ badges: [ premium ]
 
 This CKBox integration feature allows you to effortlessly and intuitively insert images as well as links to other files into the rich-text editor content. CKBox is a file manager and a file uploader that acts as a convenient interface for the cloud storage service. The CKBox feature provides a simple integration with this service for the CKEditor 5 WYSIWYG editor. To find out more about CKBox, the brand-new file manager, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
 
-<info-box info>
-	This is a premium feature that is additionally payable on top of CKEditor 5 commercial license fee. Please contact us at [sales@cksource.com](mailto:sales@cksource.com) to receive a custom offer tailored to your needs.
+<info-box>
+	This is a premium feature and you need a subscription to use it. You can [purchase it here](https://ckeditor.com/pricing/) for your open source CKEditor implementation. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) if:
+	* CKEditor commercial license is needed for your application.
+	* You need on-premises (self-hosted) version of the service.
+	* You have other licensing questions.
 
 	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
 
