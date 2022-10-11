@@ -174,6 +174,16 @@ export default class LabeledFieldView extends View {
 		this.statusView = this._createStatusView( statusUid );
 
 		/**
+		 * A collection of children of the internal wrapper element. Allows inserting additional DOM elements (views) next to
+		 * the {@link #fieldView} for easy styling (e.g. positioning).
+		 *
+		 * By default, the collection contains {@link #fieldView} and {@link #labelView}.
+		 *
+		 * @member {module:ui/viewcollection~ViewCollection} #fieldWrapperChildren
+		 */
+		this.fieldWrapperChildren = this.createCollection( [ this.fieldView, this.labelView ] );
+
+		/**
 		 * The combined status text made of {@link #errorText} and {@link #infoText}.
 		 * Note that when present, {@link #errorText} always takes precedence in the
 		 * status.
@@ -216,10 +226,7 @@ export default class LabeledFieldView extends View {
 							'ck-labeled-field-view__input-wrapper'
 						]
 					},
-					children: [
-						this.fieldView,
-						this.labelView
-					]
+					children: this.fieldWrapperChildren
 				},
 				this.statusView
 			]
