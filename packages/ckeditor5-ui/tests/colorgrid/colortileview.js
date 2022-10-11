@@ -17,7 +17,7 @@ describe( 'ColorTileView', () => {
 		colorTile.render();
 
 		expect( colorTile.color ).to.be.undefined;
-		expect( colorTile.hasBorder ).to.be.undefined;
+		expect( colorTile.hasBorder ).to.be.false;
 
 		colorTile.set( 'color', 'green' );
 		expect( colorTile.color ).to.equal( 'green' );

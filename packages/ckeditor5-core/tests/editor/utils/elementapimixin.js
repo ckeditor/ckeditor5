@@ -7,17 +7,15 @@
 
 import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
 import Editor from '../../../src/editor/editor';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'ElementApiMixin', () => {
 	let editor;
 
 	beforeEach( () => {
-		class CustomEditor extends Editor {
+		// eslint-disable-next-line new-cap
+		class CustomEditor extends ElementApiMixin( Editor ) {
 		}
-
-		mix( CustomEditor, ElementApiMixin );
 
 		editor = new CustomEditor();
 		editor.model.document.createRoot();
@@ -27,6 +25,10 @@ describe( 'ElementApiMixin', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
+	} );
+
+	it( 'is compatible with `mix` function', () => {
+		expect( ElementApiMixin ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
 	} );
 
 	describe( 'updateSourceElement()', () => {

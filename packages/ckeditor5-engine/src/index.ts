@@ -35,6 +35,7 @@ export { default as Text } from './model/text';
 
 export { default as DomConverter } from './view/domconverter';
 export { default as Renderer } from './view/renderer';
+export { default as View } from './view/view';
 export { default as ViewDocument } from './view/document';
 export { default as ViewText } from './view/text';
 export { default as ViewElement } from './view/element';

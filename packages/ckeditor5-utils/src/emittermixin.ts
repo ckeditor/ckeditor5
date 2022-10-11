@@ -373,7 +373,7 @@ export interface Emitter {
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {module:utils/emittermixin~CallbackOptions} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
@@ -391,7 +391,7 @@ export interface Emitter {
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {module:utils/emittermixin~CallbackOptions} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
@@ -436,7 +436,7 @@ export interface Emitter {
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {module:utils/emittermixin~CallbackOptions} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
@@ -527,7 +527,7 @@ interface EmitterInternal extends Emitter {
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {module:utils/emittermixin~CallbackOptions} options={} Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
@@ -580,12 +580,12 @@ export type GetCallback<TEvent extends BaseEvent> = ( this: Emitter, ev: GetEven
  * Additional options for registering a callback.
  *
  * @typedef {Object} module:utils/emittermixin~CallbackOptions
- * @property {module:utils/priorities~PriorityString|Number} [priority] The priority of this event callback. The higher
+ * @property {module:utils/priorities~PriorityString} [priority] The priority of this event callback. The higher
  * the priority value the sooner the callback will be fired. Events having the same priority are called in the
  * order they were added.
  */
 export interface CallbackOptions {
-	readonly priority?: PriorityString | number;
+	readonly priority?: PriorityString;
 }
 
 /**
