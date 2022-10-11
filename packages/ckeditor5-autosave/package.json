@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-autosave",
-  "version": "35.2.0",
+  "version": "35.2.1",
   "description": "Autosave feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
