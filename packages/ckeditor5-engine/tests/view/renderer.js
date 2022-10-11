@@ -3718,6 +3718,41 @@ describe( 'Renderer', () => {
 				] );
 			} );
 
+			// https://github.com/ckeditor/ckeditor5/issues/12574.
+			it( 'should normalize text nodes (on Android)', () => {
+				testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+				viewRoot._appendChild( parse( '<container:p>foo</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot.getChild( 0 ).getChild( 0 )._textData = 'xfoo';
+				domRoot.firstChild.insertBefore( document.createTextNode( 'x' ), domRoot.firstChild.firstChild );
+
+				observer.disconnect();
+				observer.observe( domRoot, {
+					childList: true,
+					attributes: false,
+					characterData: true,
+					subtree: true
+				} );
+
+				renderer.markToSync( 'children', viewRoot.getChild( 0 ) );
+				renderer.render();
+
+				const mutationRecords = observer.takeRecords();
+
+				expect( mutationRecords.length ).to.equal( 2 );
+				expect( mutationRecords[ 0 ].type ).to.equal( 'characterData' );
+				expect( mutationRecords[ 1 ].type ).to.equal( 'childList' );
+				expect( mutationRecords[ 1 ].removedNodes[ 0 ].data ).to.equal( 'foo' );
+
+				expect( domRoot.firstChild.childNodes.length ).to.equal( 1 );
+				expect( domRoot.firstChild.firstChild.data ).to.equal( 'xfoo' );
+			} );
+
 			it( 'should update existing text node (mixed content, on Android)', () => {
 				testUtils.sinon.stub( env, 'isAndroid' ).value( true );
 
