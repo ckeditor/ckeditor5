@@ -21,7 +21,7 @@
     "ckeditor5-lib",
     "ckeditor5-dll"
   ],
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-engine": "^35.2.1",
     "@ckeditor/ckeditor5-ui": "^35.2.1",
@@ -41,7 +41,10 @@
     "@ckeditor/ckeditor5-list": "^35.2.1",
     "@ckeditor/ckeditor5-media-embed": "^35.2.1",
     "@ckeditor/ckeditor5-paragraph": "^35.2.1",
-    "@ckeditor/ckeditor5-table": "^35.2.1"
+    "@ckeditor/ckeditor5-table": "^35.2.1",
+    "typescript": "^4.6.4",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
   },
   "engines": {
     "node": ">=14.0.0",
@@ -58,9 +61,14 @@
   },
   "files": [
     "lang",
-    "src",
+    "src/**/*.js",
+    "src/**/*.d.ts",
     "theme",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
-  ]
+  ],
+  "scripts": {
+    "build": "tsc -p ./tsconfig.release.json",
+    "postversion": "npm run build"
+  }
 }

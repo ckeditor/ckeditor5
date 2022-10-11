@@ -60,7 +60,7 @@ export default class CKEditorError extends Error {
 	 * will be appended to the error message, so the data are quickly visible in the console. The original
 	 * data object will also be later available under the {@link #data} property.
 	 */
-	constructor( errorName: string, context: object | null | undefined, data?: object ) {
+	constructor( errorName: string, context?: object | null, data?: object ) {
 		super( getErrorMessage( errorName, data ) );
 
 		/**
