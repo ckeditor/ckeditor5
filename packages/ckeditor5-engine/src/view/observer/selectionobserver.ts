@@ -232,16 +232,16 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		const domSelection = domDocument.defaultView!.getSelection();
+		const domSelection = domDocument.defaultView!.getSelection()!;
 
-		if ( this.checkShouldIgnoreEventFromTarget( domSelection!.anchorNode! ) ) {
+		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode! ) ) {
 			return;
 		}
 
 		// Ensure the mutation event will be before selection event on all browsers.
 		this.mutationObserver.flush();
 
-		const newViewSelection = this.domConverter.domSelectionToView( domSelection! );
+		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
 		// Do not convert selection change if the new view selection has no ranges in it.
 		//
@@ -255,7 +255,7 @@ export default class SelectionObserver extends Observer {
 
 		this.view.hasDomSelection = true;
 
-		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection! ) ) {
+		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection ) ) {
 			return;
 		}
 
@@ -281,7 +281,7 @@ export default class SelectionObserver extends Observer {
 			const data: SelectionObserverEventData = {
 				oldSelection: this.selection,
 				newSelection: newViewSelection,
-				domSelection: domSelection!
+				domSelection
 			};
 
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {

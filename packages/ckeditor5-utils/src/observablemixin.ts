@@ -44,7 +44,7 @@ export default function ObservableMixin<Base extends abstract new( ...args: any[
 			// If the first parameter is an Object, iterate over its properties.
 			if ( isObject( name ) ) {
 				Object.keys( name ).forEach( property => {
-					this.set( property as any, name[ property ] );
+					this.set( property, name[ property ] );
 				}, this );
 
 				return;
@@ -772,7 +772,7 @@ export interface Observable extends Emitter {
 	 * @param {*} [value] The property's value (if `name` was passed in the first parameter).
 	 */
 	set<K extends keyof this & string>( name: K, value: this[ K ] ): void;
-	set( values: { readonly [ K in keyof this ]?: unknown } ): void;
+	set( values: object & { readonly [ K in keyof this ]?: unknown } ): void;
 
 	bind<K extends keyof this & string>(
 		bindProperty: K

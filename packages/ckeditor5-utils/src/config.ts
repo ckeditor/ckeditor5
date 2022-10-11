@@ -12,7 +12,7 @@ import { isPlainObject, isElement, cloneDeepWith } from 'lodash-es';
 /**
  * Handles a configuration dictionary.
  */
-export default class Config {
+export default class Config<Cfg> {
 	private readonly _config: Record<string, any>;
 
 	/**
@@ -21,7 +21,7 @@ export default class Config {
 	 * @param {Object} [configurations] The initial configurations to be set. Usually, provided by the user.
 	 * @param {Object} [defaultConfigurations] The default configurations. Usually, provided by the system.
 	 */
-	constructor( configurations: Record<string, any>, defaultConfigurations: Record<string, any> ) {
+	constructor( configurations?: Partial<Cfg>, defaultConfigurations?: Partial<Cfg> ) {
 		/**
 		 * Store for the whole configuration.
 		 *
@@ -43,8 +43,8 @@ export default class Config {
 		}
 	}
 
-	public set( name: string, value: any ): void;
-	public set( config: Record<string, any> ): void;
+	public set<K extends string>( name: K, value: GetSubConfig<Cfg, K> ): void;
+	public set( config: Partial<Cfg> ): void;
 
 	/**
 	 * Set configuration values.
@@ -87,8 +87,8 @@ export default class Config {
 		this._setToTarget( this._config, name, value );
 	}
 
-	public define( name: string, value: any ): void;
-	public define( config: Record<string, any> ): void;
+	public define<K extends string>( name: K, value: GetSubConfig<Cfg, K> ): void;
+	public define( config: Partial<Cfg> ): void;
 
 	/**
 	 * Does exactly the same as {@link #set} with one exception – passed configuration extends
@@ -119,7 +119,7 @@ export default class Config {
 	 * @param {String} name The configuration name. Configuration names are case-sensitive.
 	 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.
 	 */
-	public get( name: string ): unknown {
+	public get<K extends string>( name: K ): GetSubConfig<Cfg, K> | undefined {
 		return this._getFromSource( this._config, name );
 	}
 
@@ -200,7 +200,7 @@ export default class Config {
 	 * @param {String} name The configuration name. Configuration names are case-sensitive.
 	 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.
 	 */
-	private _getFromSource( source: any, name: string ): unknown {
+	private _getFromSource( source: any, name: string ): any {
 		// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`].
 		const parts = name.split( '.' );
 
@@ -249,6 +249,16 @@ function cloneConfig<T>( source: T ): T {
 //
 // @param {*} value
 // @returns {Element|undefined}
-function leaveDOMReferences( value: undefined ): unknown {
+function leaveDOMReferences( value: unknown ): unknown {
 	return isElement( value ) ? value : undefined;
 }
+
+type OnlyObject<T> = Exclude<T, undefined | null | string | number | boolean | any[]>;
+
+type GetSubConfig<T, K> = K extends keyof T ?
+	T[ K ] :
+	K extends `${ infer K1 }.${ infer K2 }` ?
+		K1 extends keyof T ?
+			GetSubConfig<OnlyObject<T[ K1 ]>, K2> :
+			unknown :
+		unknown;

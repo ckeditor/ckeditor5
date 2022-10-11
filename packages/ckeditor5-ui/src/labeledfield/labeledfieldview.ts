@@ -12,6 +12,10 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import LabelView from '../label/labelview';
 import '../../theme/components/labeledfield/labeledfieldview.css';
 
+import type { FocusableView } from '../focuscycler';
+import type ViewCollection from '../viewcollection';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+
 /**
  * The labeled field view class. It can be used to enhance any view with the following features:
  *
@@ -51,6 +55,21 @@ import '../../theme/components/labeledfield/labeledfieldview.css';
  * @extends module:ui/view~View
  */
 export default class LabeledFieldView extends View {
+	public readonly fieldView: FocusableView;
+	public readonly labelView: LabelView;
+	public readonly statusView: View;
+	public readonly fieldWrapperChildren: ViewCollection;
+
+	declare public label: string | undefined;
+	declare public isEnabled: boolean;
+	declare public isEmpty: boolean;
+	declare public isFocused: boolean;
+	declare public errorText: string | null;
+	declare public infoText: string | null;
+	declare public class: string | undefined;
+	declare public placeholder: string | undefined;
+	declare public _statusText: string | null;
+
 	/**
 	 * Creates an instance of the labeled field view class using a provided creator function
 	 * that provides the view to be labeled.
@@ -63,7 +82,10 @@ export default class LabeledFieldView extends View {
 	 * * an UID string that connects the {@link #labelView label} and the labeled field view in DOM,
 	 * * an UID string that connects the {@link #statusView status} and the labeled field view in DOM.
 	 */
-	constructor( locale, viewCreator ) {
+	constructor(
+		locale: Locale | undefined,
+		viewCreator: ( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ) => FocusableView
+	) {
 		super( locale );
 
 		const viewUid = `ck-labeled-field-view-${ uid() }`;
@@ -82,7 +104,7 @@ export default class LabeledFieldView extends View {
 		 * @observable
 		 * @member {String} #label
 		 */
-		this.set( 'label' );
+		this.set( 'label', undefined );
 
 		/**
 		 * Controls whether the component is in read-only mode.
@@ -148,7 +170,7 @@ export default class LabeledFieldView extends View {
 		 * @observable
 		 * @member {String} #class
 		 */
-		this.set( 'class' );
+		this.set( 'class', undefined );
 
 		/**
 		 * The content of the `placeholder` attribute of the {@link #fieldView}.
@@ -156,7 +178,7 @@ export default class LabeledFieldView extends View {
 		 * @observable
 		 * @member {String} #placeholder
 		 */
-		this.set( 'placeholder' );
+		this.set( 'placeholder', undefined );
 
 		/**
 		 * The label view instance that describes the entire view.
@@ -172,6 +194,16 @@ export default class LabeledFieldView extends View {
 		 * @member {module:ui/view~View} #statusView
 		 */
 		this.statusView = this._createStatusView( statusUid );
+
+		/**
+		 * A collection of children of the internal wrapper element. Allows inserting additional DOM elements (views) next to
+		 * the {@link #fieldView} for easy styling (e.g. positioning).
+		 *
+		 * By default, the collection contains {@link #fieldView} and {@link #labelView}.
+		 *
+		 * @member {module:ui/viewcollection~ViewCollection} #fieldWrapperChildren
+		 */
+		this.fieldWrapperChildren = this.createCollection( [ this.fieldView, this.labelView ] );
 
 		/**
 		 * The combined status text made of {@link #errorText} and {@link #infoText}.
@@ -216,10 +248,7 @@ export default class LabeledFieldView extends View {
 							'ck-labeled-field-view__input-wrapper'
 						]
 					},
-					children: [
-						this.fieldView,
-						this.labelView
-					]
+					children: this.fieldWrapperChildren
 				},
 				this.statusView
 			]
@@ -233,7 +262,7 @@ export default class LabeledFieldView extends View {
 	 * @param {String} id Unique id to set as labelView#for attribute.
 	 * @returns {module:ui/label/labelview~LabelView}
 	 */
-	_createLabelView( id ) {
+	private _createLabelView( id: string ): LabelView {
 		const labelView = new LabelView( this.locale );
 
 		labelView.for = id;
@@ -251,7 +280,7 @@ export default class LabeledFieldView extends View {
 	 * `aria-describedby` attribute.
 	 * @returns {module:ui/view~View}
 	 */
-	_createStatusView( statusUid ) {
+	private _createStatusView( statusUid: string ): View {
 		const statusView = new View( this.locale );
 		const bind = this.bindTemplate;
 
@@ -280,7 +309,7 @@ export default class LabeledFieldView extends View {
 	/**
 	 * Focuses the {@link #fieldView}.
 	 */
-	focus() {
+	public focus(): void {
 		this.fieldView.focus();
 	}
 }

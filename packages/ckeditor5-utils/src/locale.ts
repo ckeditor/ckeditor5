@@ -105,7 +105,7 @@ export default class Locale {
 	 * For messages supporting plural forms the first value will determine the plural form.
 	 * @returns {String}
 	 */
-	public readonly t: ( message: string | Message, values?: number | string | readonly ( number | string )[] ) => string;
+	public readonly t: LocaleTranslate;
 
 	/**
 	 * Creates a new instance of the locale class. Learn more about
@@ -174,6 +174,8 @@ export default class Locale {
 		return interpolateString( translatedString, values );
 	}
 }
+
+export type LocaleTranslate = ( message: string | Message, values?: number | string | readonly ( number | string )[] ) => string;
 
 // Fills the `%0, %1, ...` string placeholders with values.
 function interpolateString( string: string, values: readonly any[] ): string {

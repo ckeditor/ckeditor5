@@ -7,7 +7,7 @@
  * @module utils/keystrokehandler
  */
 
-import DomEmitterMixin, { type Emitter as DomEmitter } from './dom/emittermixin';
+import { Emitter as DomEmitter } from './dom/emittermixin';
 import type { Emitter } from './emittermixin';
 import { getCode, parseKeystroke, type KeystrokeInfo } from './keyboard';
 import type { PriorityString } from './priorities';
@@ -57,7 +57,7 @@ export default class KeystrokeHandler {
 	 * Creates an instance of the keystroke handler.
 	 */
 	constructor() {
-		this._listener = Object.create( DomEmitterMixin );
+		this._listener = new DomEmitter();
 	}
 
 	/**
@@ -89,14 +89,14 @@ export default class KeystrokeHandler {
 	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
 	 * a helper function to call both `preventDefault()` and `stopPropagation()` on the underlying event.
 	 * @param {Object} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of the keystroke
+	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] The priority of the keystroke
 	 * callback. The higher the priority value the sooner the callback will be executed. Keystrokes having the same priority
 	 * are called in the order they were added.
 	 */
 	public set(
 		keystroke: string | readonly ( string | number )[],
 		callback: ( ev: KeyboardEvent, cancel: () => void ) => void,
-		options: { readonly priority?: PriorityString | number } = {}
+		options: { readonly priority?: PriorityString } = {}
 	): void {
 		const keyCode = parseKeystroke( keystroke );
 		const priority = options.priority;

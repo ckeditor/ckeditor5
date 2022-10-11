@@ -6,6 +6,7 @@
 import View from '../../src/view';
 import LabeledFieldView from '../../src/labeledfield/labeledfieldview';
 import LabelView from '../../src/label/labelview';
+import ViewCollection from '../../src/viewcollection';
 
 describe( 'LabeledFieldView', () => {
 	const locale = {};
@@ -79,6 +80,13 @@ describe( 'LabeledFieldView', () => {
 			expect( labeledField.statusView.element.classList.contains( 'ck-labeled-field-view__status' ) ).to.be.true;
 		} );
 
+		it( 'should create a #fieldWrapperChildren collection with #fieldView and #labelView', () => {
+			expect( labeledField.fieldWrapperChildren ).to.be.instanceOf( ViewCollection );
+			expect( Array.from( labeledField.fieldWrapperChildren ) ).to.have.ordered.members( [
+				labeledField.fieldView, labeledField.labelView
+			] );
+		} );
+
 		it( 'should allow pairing #view and #labelView by unique id', () => {
 			expect( labeledField.labelView.for ).to.equal( fieldView.viewUid );
 		} );
@@ -99,12 +107,8 @@ describe( 'LabeledFieldView', () => {
 			expect( labeledField.element.firstChild.classList.contains( 'ck-labeled-field-view__input-wrapper' ) ).to.be.true;
 		} );
 
-		it( 'should have #fieldView', () => {
-			expect( labeledField.template.children[ 0 ].children[ 0 ] ).to.equal( fieldView );
-		} );
-
-		it( 'should have #labelView', () => {
-			expect( labeledField.template.children[ 0 ].children[ 1 ] ).to.equal( labeledField.labelView );
+		it( 'should use the #fieldWrapperChildren collection', () => {
+			expect( labeledField.template.children[ 0 ].children[ 0 ] ).to.equal( labeledField.fieldWrapperChildren );
 		} );
 
 		it( 'should have the #statusView container', () => {
