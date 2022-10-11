@@ -919,7 +919,6 @@ export default class Renderer extends Observable {
 		// There was a fake selection so remove it and update the DOM selection.
 		// This is especially important on Android because otherwise IME will try to compose over the fake selection container.
 		else if ( this._fakeSelectionContainer && this._fakeSelectionContainer.isConnected ) {
-			console.log( 'remove fake selection container' );
 			this._removeFakeSelection();
 			this._updateDomSelection( domRoot );
 		}
