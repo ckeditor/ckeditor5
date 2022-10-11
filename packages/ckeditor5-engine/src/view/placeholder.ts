@@ -53,6 +53,10 @@ export function enablePlaceholder( options: {
 		// If a post-fixer callback makes a change, it should return `true` so other post–fixers
 		// can re–evaluate the document again.
 		doc.registerPostFixer( writer => updateDocumentPlaceholders( doc, writer ) );
+
+		doc.on( 'change:isComposing', () => {
+			view.change( writer => updateDocumentPlaceholders( doc, writer ) );
+		}, { priority: 'high' } );
 	}
 
 	// Store information about the element placeholder under its document.
@@ -171,20 +175,23 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 		return false;
 	}
 
+	const doc = element.document;
+	const viewSelection = doc.selection;
+	const selectionAnchor = viewSelection.anchor;
+
+	if ( doc.isComposing && selectionAnchor && selectionAnchor.parent === element ) {
+		return false;
+	}
+
 	// Skip the focus check and make the placeholder visible already regardless of document focus state.
 	if ( keepOnFocus ) {
 		return true;
 	}
 
-	const doc = element.document;
-
 	// If the document is blurred.
 	if ( !doc.isFocused ) {
 		return true;
 	}
-
-	const viewSelection = doc.selection;
-	const selectionAnchor = viewSelection.anchor;
 
 	// If document is focused and the element is empty but the selection is not anchored inside it.
 	return !!selectionAnchor && selectionAnchor.parent !== element;
