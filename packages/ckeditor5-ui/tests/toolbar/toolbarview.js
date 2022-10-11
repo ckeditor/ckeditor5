@@ -620,7 +620,7 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,
 				sinon.match( /^toolbarview-item-unavailable/ ),
-				sinon.match( { name: 'non-existing' } ),
+				sinon.match( { item: 'non-existing' } ),
 				sinon.match.string // Link to the documentation.
 			);
 		} );

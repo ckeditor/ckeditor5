@@ -2,7 +2,7 @@
 category: updating
 menu-title: Migration to v35.x
 order: 89
-modified_at: 2022-08-18
+modified_at: 2022-10-05
 ---
 
 # Migration to CKEditor 5 v35.x
@@ -32,7 +32,7 @@ The external data is shown in the UI, but it is not authenticated (as it comes f
 * The `@external` attribute should be read-only and possible to set only when a comment or suggestion is created.
 * Other comment and suggestion properties (like `content`) should be read-only as well, if the `@external` attribute is set.
 
-#### Templates for {@link module:comments/comments/ui/view/commentview~CommentView#getTemplate `CommentView`} and {@link module:track-changes/ui/view/suggestionthreadview~SuggestionThreadView#getTemplate `SuggestionThreadView`} has changed
+#### Templates for {@link module:comments/comments/ui/view/commentview~CommentView#getTemplate `CommentView`} and {@link module:track-changes/ui/view/suggestionthreadview~SuggestionThreadView#getTemplate `SuggestionThreadView`} have changed
 
 <info-box>
 	This information applies only to integrations that use custom annotation views or templates.
@@ -70,6 +70,15 @@ const annotation = new Annotation( ... );
 editor.plugins.get( 'EditorAnnotations' ).registerAnnotation( annotation );
 editor.plugins.get( 'Annotations' ).add( annotation );
 ```
+
+### Icons paths changed
+
+Among other changes, a few icons have been moved around the project. Please observe these changes especially if you use custom UI elements that call these icons.
+
+* The `bold` icon has been moved to the `@ckeditor/ckeditor5-core` package.
+* The `paragraph` icon has been moved to the `@ckeditor/ckeditor5-core` package.
+
+The rest of the import path remained unchanged (`/theme/icons/`).
 
 ## Migration to CKEditor 5 v35.1.0
 

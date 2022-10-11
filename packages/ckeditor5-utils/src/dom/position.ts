@@ -272,7 +272,7 @@ export interface Position {
 	 * @readonly
 	 * @member {String}
 	 */
-	readonly name: string;
+	readonly name?: string;
 
 	/**
 	 * Additional position configuration, as passed from the {@link module:utils/dom/position~PositioningFunction positioning function}.
@@ -312,7 +312,7 @@ export interface Position {
 // @private
 // @implements {Position}
 class PositionObject implements Position {
-	public name!: string;
+	public name?: string;
 	public config?: object;
 
 	private _positioningFunctionCorrdinates!: { left: number; top: number };
@@ -494,7 +494,7 @@ export interface Options {
 	 *
 	 * @member {module:utils/dom/rect~RectSource|Function}
 	 */
-	readonly limiter: RectSource | ( () => RectSource );
+	readonly limiter?: RectSource | ( () => ( RectSource | null ) ) | null;
 
 	/**
 	 * When set, the algorithm will chose such a position which fits `element`
@@ -565,6 +565,6 @@ export interface Options {
 export type PositioningFunction = ( elementRect: Rect, targetRect: Rect, viewportRect: Rect | null ) => ( {
 	top: number;
 	left: number;
-	name: string;
+	name?: string;
 	config?: object;
 } | null );
