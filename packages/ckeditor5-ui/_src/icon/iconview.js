@@ -83,7 +83,13 @@ export default class IconView extends View {
 				class: [
 					'ck',
 					'ck-icon',
+
+					// Exclude icon internals from the CSS reset to allow rich (non-monochromatic) icons
+					// (https://github.com/ckeditor/ckeditor5/issues/12599).
 					'ck-reset_all-excluded',
+
+					// The class to remove the dynamic color inheritance is toggleable
+					// (https://github.com/ckeditor/ckeditor5/issues/12599).
 					bind.if( 'isColorInherited', 'ck-icon_inherit-color' )
 				],
 				viewBox: bind.to( 'viewBox' )
@@ -129,7 +135,7 @@ export default class IconView extends View {
 
 			// Preserve presentational attributes of the <svg> element from the source.
 			// They can affect rendering of the entire icon (https://github.com/ckeditor/ckeditor5/issues/12597).
-			for ( const { name, value } of svg.attributes ) {
+			for ( const { name, value } of Array.from( svg.attributes ) ) {
 				if ( IconView.presentationalAttributeNames.includes( name ) ) {
 					this.element.setAttribute( name, value );
 				}
