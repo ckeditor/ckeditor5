@@ -52,13 +52,13 @@ describe( 'IconView', () => {
 
 		describe( 'color inheritance CSS class', () => {
 			it( 'should toggle depending view#isColorInherited', () => {
-				expect( view.element.classList.contains( 'ck-icon_monochrome' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.true;
 
 				view.isColorInherited = false;
-				expect( view.element.classList.contains( 'ck-icon_monochrome' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.false;
 
 				view.isColorInherited = true;
-				expect( view.element.classList.contains( 'ck-icon_monochrome' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.true;
 			} );
 		} );
 
