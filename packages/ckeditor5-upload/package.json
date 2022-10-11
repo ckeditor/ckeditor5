@@ -11,9 +11,9 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^35.2.0",
-    "@ckeditor/ckeditor5-utils": "^35.2.0",
-    "@ckeditor/ckeditor5-ui": "^35.2.0"
+    "@ckeditor/ckeditor5-core": "^35.2.1",
+    "@ckeditor/ckeditor5-utils": "^35.2.1",
+    "@ckeditor/ckeditor5-ui": "^35.2.1"
   },
   "engines": {
     "node": ">=14.0.0",
