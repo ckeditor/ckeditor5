@@ -176,6 +176,8 @@ export default class IconView extends View {
  * A list of presentational attributes that can be set on the `<svg>` element and should be preserved
  * when the icon {@link module:ui/icon~IconView#content content} is loaded.
  *
+ * See https://www.w3.org/TR/SVG/styling.html#TermPresentationAttribute.
+ *
  * @protected
  * @member {Array.<String>} module:ui/icon~IconView.presentationalAttributeNames
  */
