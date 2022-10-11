@@ -1168,8 +1168,14 @@ export default class DomConverter {
 		// we will use the fact that range will collapse if it's end is before it's start.
 		const range = this._domDocument.createRange();
 
-		range.setStart( selection.anchorNode!, selection.anchorOffset );
-		range.setEnd( selection.focusNode!, selection.focusOffset );
+		try {
+			range.setStart( selection.anchorNode!, selection.anchorOffset );
+			range.setEnd( selection.focusNode!, selection.focusOffset );
+		} catch ( e ) {
+			// Safari sometimes gives us a selection that makes Range.set{Start,End} throw.
+			// See https://github.com/ckeditor/ckeditor5/issues/12375.
+			return false;
+		}
 
 		const backward = range.collapsed;
 

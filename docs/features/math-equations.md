@@ -57,7 +57,7 @@ If you visit a page using MathType with your mobile device, the handwriting inte
 ## Installation
 
 <info-box>
-	This is a premium feature that requires a commercial license. If you do not have one yet, please [contact us](https://ckeditor.com/contact/).
+	This is an additionally payable feature. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 </info-box>
 
 MathType is delivered as a CKEditor 5 plugin, so it can be combined into an editor build just like other features. To add this feature to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
