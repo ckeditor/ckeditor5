@@ -326,6 +326,12 @@
 					]
 				},
 				{
+					"name": "Import from Word",
+					"id": "import-word",
+					"slug": "import-word",
+					"badges": [ "premium" ]
+				},
+				{
 					"name": "Lists",
 					"id": "features-lists",
 					"slug": "lists"
