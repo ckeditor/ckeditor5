@@ -49,80 +49,26 @@ class References extends Plugin {
 
 			button.set( {
 				icon: icons.references,
-				label: 'References', // window.polyglot.t('app.asset.editlink'),
+				label: 'References',
 				tooltip: true
 			} );
 
 			button.on( 'execute', () => {
-				const $modelContainer = $( '#references-modal-container' );
-				$modelContainer.removeClass( 'display-none' );
-				$modelContainer.find( '.modal-title' ).text( 'References' ); // window.polyglot.t('app.references.title')
-				$modelContainer.modal( {
+				const $referencesModalContainer = $( '#references-modal-container' );
+				$referencesModalContainer.removeClass( 'display-none' );
+				$referencesModalContainer.find( '.modal-title' ).text( 'References' );
+				$referencesModalContainer.modal( {
 					dismissible: false
-				} );
-
-				this.onModalShow( editor );
-				// on ok, write to the model
-				$modelContainer.find( '.model-button-ok' ).off( 'click' ).on( 'click', () => {
-					const checked = $( 'input[name="references-list"]' ).filter( ':checked' );
-
-					if ( checked.length === 0 || this.insertMode ) {
-						return;
-					}
-
-					editor.model.change( writer => {
-						const id = checked[ 0 ].value;
-						this.addAttributesToLink( editor, id );
-
-						const insertPosition = editor.model.document.selection.getFirstPosition();
-						writer.insertText( '[' + id + ']', { linkHref: '#', 'reference': id }, insertPosition );
-					} );
 				} );
 			} );
 
 			return button;
 		} );
 	}
-
-	onModalShow( editor ) {
-		this.insertMode = false;
-		this.elementTest = editor.model.document.selection.getFirstRange();
-
-		if ( !this.element ||
-			!this.element.start ||
-			!this.element.start.textNode ||
-			!this.element.start.textNode.getAttributeKeys().next().value === 'linkHref' ) {
-			return;
-		}
-
-		this.insertMode = true;
-	}
-
-	addAttributesToLink( editor, id ) {
-		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( 'attribute:reference', ( evt, data, conversionApi ) => {
-				const viewWriter = conversionApi.writer;
-				const viewSelection = viewWriter.document.selection;
-				const viewElement = viewWriter.createAttributeElement( 'a', {
-					class: 'reference',
-					'data-reference-link': id
-				}, {
-					priority: 5
-				} );
-
-				if ( data.item.is( 'selection' ) ) {
-					viewWriter.wrap( viewSelection.getFirstRange(), viewElement );
-				} else {
-					viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
-				}
-			}, { priority: 'low' } );
-		} );
-	}
 }
 
 class AssetLink extends Plugin {
 	init() {
-		// console.log( 'test' );
 		const editor = this.editor;
 
 		// The button must be registered among the UI components of the editor
@@ -133,18 +79,23 @@ class AssetLink extends Plugin {
 
 			button.set( {
 				icon: icons.assetlink,
-				label: 'Asset Link', // window.polyglot.t('app.asset.editlink'),
+				label: 'Asset Link',
 				tooltip: true
 			} );
 
 			button.on( 'execute', () => {
-				const now = new Date();
+				const $assetlinkModalContainer = $( '#assetlink-modal-container' );
+				$assetlinkModalContainer.removeClass( 'display-none' );
+				$assetlinkModalContainer.find( '.modal-title' ).text( 'Asset Link' );
+				$assetlinkModalContainer.modal( {
+					dismissible: false
+				} );
 
 				// Change the model using the model writer.
-				editor.model.change( writer => {
-					// Insert the text at the user's current position.
-					editor.model.insertContent( writer.createText( now.toString() ) );
-				} );
+				// editor.model.change( writer => {
+				// 	// Insert the text at the user's current position.
+				// 	editor.model.insertContent( writer.createText( now.toString() ) );
+				// } );
 			} );
 
 			return button;
@@ -165,8 +116,6 @@ ClassicEditor.builtinPlugins = [
 	Indent,
 	BlockQuote,
 	Alignment,
-	// UploadAdapter,
-	// Autoformat,
 	Bold,
 	Italic,
 	Underline,
@@ -178,22 +127,9 @@ ClassicEditor.builtinPlugins = [
 	Highlight,
 	SpecialCharacters,
 	Table,
-	// CKBox,
-	// CKFinder,
-	// CloudServices,
-	// EasyImage,
-	// Heading,
-	// Image,
-	// ImageCaption,
-	// ImageStyle,
-	// ImageToolbar,
-	// ImageUpload,
-	// Indent,
 	Link,
-	// MediaEmbed,
 	Paragraph,
 	PasteFromOffice
-	// PictureEditing
 ];
 
 // Editor configuration.
@@ -213,23 +149,6 @@ ClassicEditor.defaultConfig = {
 		],
 		shouldNotGroupWhenFull: true
 	},
-	// image: {
-	// 	toolbar: [
-	// 		'imageStyle:inline',
-	// 		'imageStyle:block',
-	// 		'imageStyle:side',
-	// 		'|',
-	// 		'toggleImageCaption',
-	// 		'imageTextAlternative'
-	// 	]
-	// },
-	// table: {
-	// 	contentToolbar: [
-	// 		'tableColumn',
-	// 		'tableRow',
-	// 		'mergeTableCells'
-	// 	]
-	// },
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
 };
