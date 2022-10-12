@@ -1,6 +1,6 @@
 ---
 category: features
-menu-title: Spelling and grammar checking
+menu-title: Spell and grammar checker
 modified_at: 2022-10-05
 badges: [ premium ]
 ---
@@ -151,8 +151,8 @@ ClassicEditor
 		wproofreader: {
 			serviceProtocol: 'https',
 			serviceHost: 'localhost',
-			servicePort: '2880',
-			servicePath: '/',
+			servicePort: '443',
+			servicePath: 'virtual_directory/api/',
 			srcUrl: 'https://host_name/virtual_directory/wscbundle/wscbundle.js'
 		}
 	} )
