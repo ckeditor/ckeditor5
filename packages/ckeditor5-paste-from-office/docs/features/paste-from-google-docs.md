@@ -37,6 +37,7 @@ To test how Paste from Office works, open the [sample Google Docs document](http
 CKEditor 5 supports a wider range of paste features, including:
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
 * {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
+* {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
 
 ## Automatic content filtering
 
