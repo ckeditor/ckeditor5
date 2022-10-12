@@ -214,8 +214,16 @@ export default class TooltipManager extends DomEmitter {
 	 * @param {module:core/editor/editor~Editor} editor The editor the manager was created for.
 	 */
 	public destroy( editor: Editor ): void {
+		const editorBodyViewCollection = editor.ui.view.body;
+
 		TooltipManager._editors.delete( editor );
 		this.stopListening( editor.ui );
+
+		// Prevent the balloon panel from being destroyed in the EditorUI#destroy() cascade. It should be destroyed along
+		// with the last editor only (https://github.com/ckeditor/ckeditor5/issues/12602).
+		if ( editorBodyViewCollection.has( this.balloonPanelView ) ) {
+			editorBodyViewCollection.remove( this.balloonPanelView );
+		}
 
 		if ( !TooltipManager._editors.size ) {
 			this._unpinTooltip();

@@ -91,6 +91,36 @@ describe( 'TooltipManager', () => {
 				sinon.assert.calledWithExactly( stopListeningSpy.secondCall, secondEditor.ui );
 				sinon.assert.calledWithExactly( stopListeningSpy.thirdCall );
 			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/12602
+			it( 'should avoid destroying #balloonPanelView until the last editor gets destroyed', async () => {
+				const spy = testUtils.sinon.spy( tooltipManager.balloonPanelView, 'destroy' );
+				const elements = getElementsWithTooltips( {
+					a: {
+						text: 'A'
+					}
+				} );
+				const clock = sinon.useFakeTimers();
+
+				const secondEditor = await ClassicTestEditor.create( element, {
+					plugins: [ Paragraph, Bold, Italic ],
+					balloonToolbar: [ 'bold', 'italic' ]
+				} );
+
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				await editor.destroy();
+
+				sinon.assert.notCalled( spy );
+
+				await secondEditor.destroy();
+
+				sinon.assert.calledOnce( spy );
+
+				destroyElements( elements );
+				clock.restore();
+			} );
 		} );
 
 		it( 'should unpin the #balloonPanelView', () => {
