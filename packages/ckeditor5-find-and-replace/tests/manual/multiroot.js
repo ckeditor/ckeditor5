@@ -138,6 +138,8 @@ class MultirootEditorUI extends EditorUI {
 	}
 
 	destroy() {
+		super.destroy();
+
 		const view = this.view;
 		const editingView = this.editor.editing.view;
 
@@ -146,8 +148,6 @@ class MultirootEditorUI extends EditorUI {
 		}
 
 		view.destroy();
-
-		super.destroy();
 	}
 
 	_initToolbar() {
