@@ -231,9 +231,19 @@ export default class MutationObserver extends Observer {
 
 		// In case only non-relevant mutations were recorded it skips the event and force render (#5600).
 		if ( hasMutations ) {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.group( '%c[MutationObserver]%c Mutations detected',
+			// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
 			// At this point we have "dirty DOM" (changed) and de-synched view (which has not been changed).
 			// In order to "reset DOM" we render the view again.
 			this.view.forceRender();
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
 		}
 	}
 

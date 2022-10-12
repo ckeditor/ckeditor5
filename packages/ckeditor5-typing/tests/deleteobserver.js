@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document */
+/* globals document */
 
 import DeleteObserver from '../src/deleteobserver';
 
@@ -374,13 +374,11 @@ describe( 'Delete', () => {
 		} );
 
 		describe( 'in Android environment (with some quirks)', () => {
-			let domElement, viewRoot, domText;
-
-			testUtils.createSinonSandbox();
+			let domElement, viewRoot, viewText;
 
 			beforeEach( () => {
 				// Force the the Android mode.
-				testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
+				testUtils.sinon.stub( env, 'isAndroid' ).value( true );
 
 				domElement = document.createElement( 'div' );
 				domElement.contenteditable = true;
@@ -403,7 +401,7 @@ describe( 'Delete', () => {
 					writer.insert( writer.createPositionAt( p, 0 ), text );
 				} );
 
-				domText = domElement.childNodes[ 0 ].childNodes[ 0 ];
+				viewText = viewRoot.getChild( 0 ).getChild( 0 );
 			} );
 
 			afterEach( () => {
@@ -416,12 +414,12 @@ describe( 'Delete', () => {
 
 					viewDocument.on( 'delete', spy );
 
-					setDomSelection( domText, 1, domText, 2 );
-
 					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
 						domTarget: domElement,
 						inputType: 'deleteContentBackward',
-						targetRanges: []
+						targetRanges: [
+							view.createRange( view.createPositionAt( viewText, 1 ), view.createPositionAt( viewText, 2 ) )
+						]
 					} ) );
 
 					expect( spy.calledOnce ).to.be.true;
@@ -433,7 +431,7 @@ describe( 'Delete', () => {
 					expect( data ).not.to.have.property( 'selectionToRemove' );
 				} );
 
-				it( 'should set selectionToRemove if DOM selection size is different than 1', () => {
+				it( 'should set selectionToRemove if target ranges size is different than 1', () => {
 					// In real scenarios, before `beforeinput` is fired, browser changes DOM selection to a selection that contains
 					// all content that should be deleted. If the selection is big (> 1 character) we need to pass special parameter
 					// so that `DeleteCommand` will know what to delete. This test checks that case.
@@ -441,12 +439,12 @@ describe( 'Delete', () => {
 
 					viewDocument.on( 'delete', spy );
 
-					setDomSelection( domText, 0, domText, 3 );
-
 					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
 						domTarget: domElement,
 						inputType: 'deleteContentBackward',
-						targetRanges: []
+						targetRanges: [
+							view.createRange( view.createPositionAt( viewText, 0 ), view.createPositionAt( viewText, 3 ) )
+						]
 					} ) );
 
 					expect( spy.calledOnce ).to.be.true;
@@ -454,12 +452,40 @@ describe( 'Delete', () => {
 					const data = spy.args[ 0 ][ 1 ];
 					expect( data ).to.have.property( 'selectionToRemove' );
 
-					const viewText = viewRoot.getChild( 0 ).getChild( 0 );
 					const range = data.selectionToRemove.getFirstRange();
 
 					expect( range.start.offset ).to.equal( 0 );
 					expect( range.start.parent ).to.equal( viewText );
 					expect( range.end.offset ).to.equal( 3 );
+					expect( range.end.parent ).to.equal( viewText );
+				} );
+
+				it( 'should set selectionToRemove if target ranges spans different parent nodes', () => {
+					// In real scenarios, before `beforeinput` is fired, browser changes DOM selection to a selection that contains
+					// all content that should be deleted. If the selection is big (> 1 character) we need to pass special parameter
+					// so that `DeleteCommand` will know what to delete. This test checks that case.
+					const spy = sinon.spy();
+
+					viewDocument.on( 'delete', spy );
+
+					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
+						domTarget: domElement,
+						inputType: 'deleteContentBackward',
+						targetRanges: [
+							view.createRange( view.createPositionAt( viewRoot.getChild( 0 ), 0 ), view.createPositionAt( viewText, 1 ) )
+						]
+					} ) );
+
+					expect( spy.calledOnce ).to.be.true;
+
+					const data = spy.args[ 0 ][ 1 ];
+					expect( data ).to.have.property( 'selectionToRemove' );
+
+					const range = data.selectionToRemove.getFirstRange();
+
+					expect( range.start.offset ).to.equal( 0 );
+					expect( range.start.parent ).to.equal( viewRoot.getChild( 0 ) );
+					expect( range.end.offset ).to.equal( 1 );
 					expect( range.end.parent ).to.equal( viewText );
 				} );
 
@@ -505,13 +531,6 @@ describe( 'Delete', () => {
 					sinon.assert.calledOnce( keydownSpy );
 				} );
 			} );
-
-			function setDomSelection( anchorNode, anchorOffset, focusNode, focusOffset ) {
-				const selection = window.getSelection();
-
-				selection.collapse( anchorNode, anchorOffset );
-				selection.extend( focusNode, focusOffset );
-			}
 		} );
 	} );
 

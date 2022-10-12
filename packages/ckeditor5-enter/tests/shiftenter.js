@@ -94,6 +94,16 @@ describe( 'ShiftEnter feature', () => {
 		sinon.assert.calledOnce( domEvt.preventDefault );
 	} );
 
+	it( 'does not prevent default event action in composing mode', () => {
+		const domEvt = getDomEvent();
+
+		viewDocument.isComposing = true;
+
+		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
+
+		sinon.assert.notCalled( domEvt.preventDefault );
+	} );
+
 	function getDomEvent() {
 		return {
 			preventDefault: sinon.spy()

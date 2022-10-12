@@ -12,9 +12,13 @@ import View from '../../../src/view/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 import createViewRoot from '../_utils/createroot';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'InputObserver', () => {
 	let domEditable, view, viewRoot, viewDocument, observer, evtData, beforeInputSpy;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new View( new StylesProcessor() );
@@ -23,6 +27,7 @@ describe( 'InputObserver', () => {
 		viewRoot = createViewRoot( viewDocument );
 
 		view.attachDomRoot( domEditable );
+		global.document.body.appendChild( domEditable );
 
 		// <p>foo</p>
 		view.change( writer => {
@@ -140,6 +145,29 @@ describe( 'InputObserver', () => {
 
 				expect( evtData.targetRanges ).to.have.ordered.members( [ 'fakeRange1', 'fakeRange2' ] );
 			} );
+
+			it( 'should provide editing view ranges corresponding to DOM selection ranges (Android)', () => {
+				testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+				const selection = domEditable.ownerDocument.defaultView.getSelection();
+
+				// <p>[fo]o</p>
+				selection.collapse( domEditable.firstChild.firstChild, 0 );
+				selection.extend( domEditable.firstChild.firstChild, 2 );
+
+				fireMockNativeBeforeInput( { target: domEditable } );
+
+				expect( evtData.targetRanges ).to.have.length( 1 );
+
+				const viewRange = evtData.targetRanges[ 0 ];
+
+				expect( viewRange ).to.be.instanceOf( Range );
+
+				expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( viewRange.start.offset ).to.equal( 0 );
+				expect( viewRange.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( viewRange.end.offset ).to.equal( 2 );
+			} );
 		} );
 
 		describe( '#data', () => {
@@ -214,6 +242,26 @@ describe( 'InputObserver', () => {
 				expect( evtData.isComposing ).to.be.undefined;
 			} );
 		} );
+	} );
+
+	it( 'should fire insertParagraph if newline character is at the end of data on Android', () => {
+		testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+		const domRange = global.document.createRange();
+
+		domRange.selectNodeContents( domEditable.firstChild.firstChild );
+
+		fireMockNativeBeforeInput( {
+			inputType: 'insertCompositionText',
+			data: 'foo\n',
+			getTargetRanges: () => [ domRange ]
+		} );
+
+		expect( evtData.inputType ).to.equal( 'insertParagraph' );
+		expect( evtData.targetRanges.length ).to.equal( 1 );
+		expect( evtData.targetRanges[ 0 ].isEqual( view.createRange(
+			view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 'end' )
+		) ) ).to.be.true;
 	} );
 
 	function fireMockNativeBeforeInput( domEvtMock ) {

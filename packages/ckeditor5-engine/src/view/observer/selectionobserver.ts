@@ -11,6 +11,7 @@
 
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import type View from '../view';
@@ -182,7 +183,9 @@ export default class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
-			if ( this.document.isComposing ) {
+			// The Renderer is disabled while composing on non-android browsers, so we can't update the view selection
+			// because the DOM and view tree drifted apart. Position mapping could fail because of it.
+			if ( this.document.isComposing && !env.isAndroid ) {
 				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Selection change ignored (isComposing)',
 				// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''

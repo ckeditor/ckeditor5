@@ -75,7 +75,6 @@ export default class View extends Observable {
 	public readonly domRoots: Map<string, HTMLElement>;
 
 	declare public isFocused: boolean;
-	declare public isSelecting: boolean;
 	declare public isRenderingInProgress: boolean;
 	declare public hasDomSelection: boolean;
 

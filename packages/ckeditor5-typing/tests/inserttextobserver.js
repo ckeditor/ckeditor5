@@ -12,6 +12,7 @@ import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData as viewSetData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'InsertTextObserver', () => {
 	let view, viewDocument, insertTextEventSpy;
@@ -196,5 +197,50 @@ describe( 'InsertTextObserver', () => {
 		} );
 
 		sinon.assert.notCalled( insertTextEventSpy );
+	} );
+
+	describe( 'in Android environment', () => {
+		let view, viewDocument, insertTextEventSpy;
+		let domRoot;
+
+		beforeEach( () => {
+			testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+			domRoot = document.createElement( 'div' );
+
+			view = new View();
+			viewDocument = view.document;
+			createViewRoot( viewDocument );
+			view.attachDomRoot( domRoot );
+			view.addObserver( InsertTextObserver );
+
+			insertTextEventSpy = testUtils.sinon.spy();
+			viewDocument.on( 'insertText', insertTextEventSpy );
+		} );
+
+		afterEach( () => {
+			view.destroy();
+		} );
+
+		it( 'should handle the insertCompositionText input type and fire the insertText event', () => {
+			viewSetData( view, '<p>f{o}o</p>' );
+
+			const viewRange = view.document.selection.getFirstRange();
+			const domRange = view.domConverter.viewRangeToDom( viewRange );
+			const viewSelection = view.createSelection( viewRange );
+
+			fireBeforeInputDomEvent( domRoot, {
+				inputType: 'insertCompositionText',
+				ranges: [ domRange ],
+				data: 'bar'
+			} );
+
+			sinon.assert.calledOnce( insertTextEventSpy );
+
+			const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+
+			expect( firstCallArgs.text ).to.equal( 'bar' );
+			expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
+		} );
 	} );
 } );

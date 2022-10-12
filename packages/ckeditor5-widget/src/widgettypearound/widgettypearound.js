@@ -28,6 +28,7 @@ import { isWidget } from '../utils';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ];
 
@@ -647,10 +648,21 @@ export default class WidgetTypeAround extends Plugin {
 			}
 		}, { priority: 'high' } );
 
-		// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
-		this._listenToIfEnabled( viewDocument, 'compositionstart', () => {
-			this._insertParagraphAccordingToFakeCaretPosition();
-		}, { priority: 'high' } );
+		if ( env.isAndroid ) {
+			// On Android with English keyboard, the composition starts just by putting caret
+			// at the word end or by selecting a table column. This is not a real composition started.
+			// Trigger delete content on first composition key pressed.
+			this._listenToIfEnabled( viewDocument, 'keydown', ( evt, data ) => {
+				if ( data.keyCode == 229 ) {
+					this._insertParagraphAccordingToFakeCaretPosition();
+				}
+			} );
+		} else {
+			// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
+			this._listenToIfEnabled( viewDocument, 'compositionstart', () => {
+				this._insertParagraphAccordingToFakeCaretPosition();
+			}, { priority: 'high' } );
+		}
 	}
 
 	/**

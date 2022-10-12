@@ -18,9 +18,10 @@ import { toWidget } from '../../src/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'WidgetTypeAround', () => {
-	let element, plugin, editor, editingView, viewDocument, modelRoot, viewRoot;
+	let element, plugin, editor, editingView, viewDocument, modelRoot, viewRoot, model, modelSelection;
 
 	testUtils.createSinonSandbox();
 
@@ -28,22 +29,7 @@ describe( 'WidgetTypeAround', () => {
 		element = global.document.createElement( 'div' );
 		global.document.body.appendChild( element );
 
-		editor = await ClassicEditor.create( element, {
-			plugins: [
-				ArticlePluginSet, Widget,
-
-				blockWidgetPlugin, inlineWidgetPlugin
-			],
-			image: {
-				toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
-			}
-		} );
-
-		editingView = editor.editing.view;
-		viewDocument = editingView.document;
-		viewRoot = viewDocument.getRoot();
-		modelRoot = editor.model.document.getRoot();
-		plugin = editor.plugins.get( WidgetTypeAround );
+		await createEditor();
 	} );
 
 	afterEach( async () => {
@@ -389,12 +375,7 @@ describe( 'WidgetTypeAround', () => {
 	} );
 
 	describe( 'typing around view widgets using keyboard', () => {
-		let model, modelSelection, eventInfoStub, domEventDataStub;
-
-		beforeEach( () => {
-			model = editor.model;
-			modelSelection = model.document.selection;
-		} );
+		let eventInfoStub, domEventDataStub;
 
 		describe( '"fake caret" activation', () => {
 			it( 'should activate before when the collapsed selection is before a widget and the navigation is forward', () => {
@@ -1267,6 +1248,72 @@ describe( 'WidgetTypeAround', () => {
 					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
+
+				describe( 'Android', () => {
+					beforeEach( async () => {
+						await editor.destroy();
+						sinon.stub( env, 'isAndroid' ).value( true );
+
+						await createEditor();
+					} );
+
+					it( 'should insert a character inside a new paragraph before a widget if the caret was "before" it', () => {
+						setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+						fireKeyboardEvent( 'arrowleft' );
+						expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+
+						fireCompositionKeyDownEvent();
+
+						expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
+						expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+					} );
+
+					it( 'should insert a character inside a new paragraph after a widget if the caret was "after" it', () => {
+						setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+						fireKeyboardEvent( 'arrowright' );
+						expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
+
+						fireCompositionKeyDownEvent();
+
+						expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
+						expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+					} );
+
+					it( 'should do nothing if selection is collapsed', () => {
+						setModelData( editor.model, '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
+
+						fireCompositionKeyDownEvent();
+
+						expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
+						expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+					} );
+
+					it( 'should do nothing on compositionstart event', () => {
+						setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+						fireKeyboardEvent( 'arrowleft' );
+						expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+
+						fireCompositionStartEvent();
+
+						expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
+						expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+					} );
+
+					it( 'should not insert multiple paragraphs on other keydown event', () => {
+						setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+						fireKeyboardEvent( 'arrowleft' );
+						expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+
+						fireKeyboardEvent( 'x' );
+
+						expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
+						expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+					} );
+				} );
 			} );
 		} );
 
@@ -1695,6 +1742,22 @@ describe( 'WidgetTypeAround', () => {
 			viewDocument.fire( eventInfoStub, domEventDataStub );
 		}
 
+		function fireCompositionKeyDownEvent() {
+			eventInfoStub = new BubblingEventInfo( viewDocument, 'keydown' );
+
+			sinon.spy( eventInfoStub, 'stop' );
+
+			const data = {
+				document: viewDocument,
+				domTarget: editingView.getDomRoot(),
+				keyCode: 229
+			};
+
+			domEventDataStub = new DomEventData( viewDocument, getDomEvent(), data );
+
+			viewDocument.fire( eventInfoStub, domEventDataStub );
+		}
+
 		function fireEnter( isSoft ) {
 			viewDocument.fire( new BubblingEventInfo( viewDocument, 'enter' ), new DomEventData( viewDocument, {
 				preventDefault: sinon.spy()
@@ -2081,6 +2144,27 @@ describe( 'WidgetTypeAround', () => {
 			return createdBatches;
 		}
 	} );
+
+	async function createEditor() {
+		editor = await ClassicEditor.create( element, {
+			plugins: [
+				ArticlePluginSet, Widget,
+
+				blockWidgetPlugin, inlineWidgetPlugin
+			],
+			image: {
+				toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
+			}
+		} );
+
+		model = editor.model;
+		modelSelection = model.document.selection;
+		editingView = editor.editing.view;
+		viewDocument = editingView.document;
+		viewRoot = viewDocument.getRoot();
+		modelRoot = editor.model.document.getRoot();
+		plugin = editor.plugins.get( WidgetTypeAround );
+	}
 
 	function blockWidgetPlugin( editor ) {
 		editor.model.schema.register( 'blockWidget', {

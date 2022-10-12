@@ -36,7 +36,7 @@ export default class EnterObserver extends Observer {
 			}
 
 			const domEvent = data.domEvent;
-			const enterEventSpec = ENTER_EVENT_TYPES[ domEvent.inputType ];
+			const enterEventSpec = ENTER_EVENT_TYPES[ data.inputType ];
 
 			if ( !enterEventSpec ) {
 				return;

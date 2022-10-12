@@ -155,25 +155,22 @@ export default class DeleteObserver extends Observer {
 				deleteData.selectionToRemove = view.createSelection( targetRanges[ 0 ] );
 			}
 
-			// Android IMEs have a quirk. Sometimes it may change the DOM selection on `beforeinput` event so that
-			// the selection contains all the text that the IME wants to remove. But sometimes it is only expanding
-			// it by a single character (in case of the collapsed selection).
-			//
-			// The code below checks if the former scenario occurred (the latter is fine, needs no correction) and it
-			// uses this information to correct the "delete" event so it knows the proper part of the content to be removed.
-			//
-			// **Note**: See the Delete plugin for the second part of this quirk.
+			// The default deletion unit for deleteContentBackward is a single code point
+			// but on Android it sometimes passes a wider target range, so we need to change
+			// the unit of deletion to include the whole range to be removed and not a single code point.
 			if ( env.isAndroid && inputType === 'deleteContentBackward' ) {
-				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
-				const { focusNode, anchorNode, anchorOffset, focusOffset } = domSelection;
-
 				// On Android, deleteContentBackward has sequence 1 by default.
 				deleteData.sequence = 1;
 
-				// This is the former scenario when the IME wants more than a single character to be removed.
-				if ( anchorNode === focusNode && anchorOffset + 1 !== focusOffset ) {
+				// IME wants more than a single character to be removed.
+				if (
+					targetRanges.length == 1 && (
+						targetRanges[ 0 ].start.parent != targetRanges[ 0 ].end.parent ||
+						targetRanges[ 0 ].start.offset + 1 != targetRanges[ 0 ].end.offset
+					)
+				) {
 					deleteData.unit = DELETE_SELECTION;
-					deleteData.selectionToRemove = view.domConverter.domSelectionToView( domSelection );
+					deleteData.selectionToRemove = view.createSelection( targetRanges );
 				}
 			}
 

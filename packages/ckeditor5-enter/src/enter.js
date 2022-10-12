@@ -38,7 +38,11 @@ export default class Enter extends Plugin {
 		editor.commands.add( 'enter', new EnterCommand( editor ) );
 
 		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
-			data.preventDefault();
+			// When not in composition, we handle the action, so prevent the default one.
+			// When in composition, it's the browser who modify the DOM (renderer is disabled).
+			if ( !viewDocument.isComposing ) {
+				data.preventDefault();
+			}
 
 			// The soft enter key is handled by the ShiftEnter plugin.
 			if ( data.isSoft ) {
