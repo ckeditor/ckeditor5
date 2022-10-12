@@ -86,13 +86,13 @@ export default class BalloonEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
+		super.destroy();
+
 		const view = this.view;
 		const editingView = this.editor.editing.view;
 
 		editingView.detachDomRoot( view.editable.name );
 		view.destroy();
-
-		super.destroy();
 	}
 
 	/**
