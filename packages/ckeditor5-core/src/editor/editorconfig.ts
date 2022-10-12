@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type Context from '../context';
+import type { PluginConstructor } from '../plugin';
+import type Editor from './editor';
+
 /**
  * @module core/editor/editorconfig
  */
@@ -171,7 +175,7 @@
  *
  *	Line break will work only in the extended format when `shouldNotGroupWhenFull` option is set to `true`.
  *
- *	**Note**: To save space in your toolbar you can group several items into a dropdown:
+ *	**Note**: To save space in your toolbar, you can group several items into a dropdown:
  *
  *		toolbar: [
  *			{
@@ -183,7 +187,7 @@
  *			'undo', 'redo'
  *		]
  *
- *	The code above will create a "Basic styles" dropdown with a "text" icon containing "bold" and "italic" buttons.
+ *	The code above will create a "Basic styles" dropdown with a "text" icon containing the "bold" and "italic" buttons.
  *	You can customize the look of the dropdown by setting the `withText`, `icon`, and `tooltip` properties:
  *
  *	* **Displaying a label**
@@ -424,3 +428,45 @@
  *
  * @member {Boolean} module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy
  */
+
+export interface EditorConfig {
+	context?: Context;
+	extraPlugins?: PluginConstructor<Editor>[];
+	initialData?: string;
+	language?: string | LanguageConfig;
+	placeholder?: string;
+	plugins?: ( PluginConstructor<Editor> | string )[];
+	removePlugins?: ( PluginConstructor<Editor> | string )[];
+	substitutePlugins?: PluginConstructor<Editor>[];
+	toolbar?: ToolbarConfig;
+	ui?: UiConfig;
+	updateSourceElementOnDestroy?: boolean;
+}
+
+export interface LanguageConfig {
+	ui?: string;
+	content?: string;
+}
+
+export type ToolbarConfig = ToolbarConfigItem[] | {
+	items?: ToolbarConfigItem[];
+	removeItems?: string[];
+	shouldNotGroupWhenFull?: boolean;
+};
+
+export type ToolbarConfigItem = string | {
+	items: ToolbarConfigItem[];
+	label: string;
+	icon?: string | false;
+	withText?: boolean;
+	tooltip?: boolean | string | ( ( label: string, keystroke: string | undefined ) => string );
+};
+
+export interface UiConfig {
+	viewportOffset?: {
+		bottom?: number;
+		left?: number;
+		right?: number;
+		top?: number;
+	};
+}

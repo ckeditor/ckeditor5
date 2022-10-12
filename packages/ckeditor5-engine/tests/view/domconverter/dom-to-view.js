@@ -15,11 +15,14 @@ import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../
 import { StylesProcessor } from '../../../src/view/stylesmap';
 import { parse, stringify } from '../../../src/dev-utils/view';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;
+
+	testUtils.createSinonSandbox();
 
 	before( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
@@ -990,7 +993,72 @@ describe( 'DomConverter', () => {
 			expect( viewSelection.rangeCount ).to.equal( 0 );
 		} );
 
-		it( 'should handle selection direction', () => {
+		it( 'should handle selection direction (forward, same node)', () => {
+			const domFoo = document.createTextNode( 'foo' );
+			const domP = createElement( document, 'p', null, [ domFoo ] );
+
+			const viewP = parse( '<p>foo</p>' );
+
+			converter.bindElements( domP, viewP );
+
+			document.body.appendChild( domP );
+
+			const domRange = document.createRange();
+			domRange.setStart( domFoo, 1 );
+			domRange.collapse( true );
+
+			const domSelection = document.getSelection();
+			domSelection.removeAllRanges();
+			domSelection.addRange( domRange );
+			domSelection.extend( domFoo, 2 );
+
+			const viewSelection = converter.domSelectionToView( domSelection );
+
+			expect( viewSelection.rangeCount ).to.equal( 1 );
+			expect( viewSelection.anchor.offset ).to.equal( 1 );
+			expect( viewSelection.focus.offset ).to.equal( 2 );
+			expect( viewSelection.isBackward ).to.be.false;
+
+			domP.remove();
+		} );
+
+		it( 'should handle selection direction (forward, different node)', () => {
+			const domFoo = document.createTextNode( 'foo' );
+			const domBar = document.createTextNode( 'bar' );
+			const domB = createElement( document, 'b', null, [ domFoo ] );
+			const domI = createElement( document, 'i', null, [ domBar ] );
+			const domP = createElement( document, 'p', null, [ domB, domI ] );
+
+			const viewP = parse( '<p><b>foo</b><i>bar</i></p>' );
+
+			converter.bindElements( domP, viewP );
+			converter.bindElements( domB, viewP.getChild( 0 ) );
+			converter.bindElements( domI, viewP.getChild( 1 ) );
+
+			document.body.appendChild( domP );
+
+			const domRange = document.createRange();
+			domRange.setStart( domFoo, 2 );
+			domRange.collapse( true );
+
+			const domSelection = document.getSelection();
+			domSelection.removeAllRanges();
+			domSelection.addRange( domRange );
+			domSelection.extend( domBar, 1 );
+
+			const viewSelection = converter.domSelectionToView( domSelection );
+
+			expect( viewSelection.rangeCount ).to.equal( 1 );
+			expect( viewSelection.anchor.parent.parent.name ).to.equal( 'b' );
+			expect( viewSelection.anchor.offset ).to.equal( 2 );
+			expect( viewSelection.focus.parent.parent.name ).to.equal( 'i' );
+			expect( viewSelection.focus.offset ).to.equal( 1 );
+			expect( viewSelection.isBackward ).to.be.false;
+
+			domP.remove();
+		} );
+
+		it( 'should handle selection direction (backward, same node)', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, [ domFoo ] );
 
@@ -1015,6 +1083,81 @@ describe( 'DomConverter', () => {
 			expect( viewSelection.anchor.offset ).to.equal( 2 );
 			expect( viewSelection.focus.offset ).to.equal( 1 );
 			expect( viewSelection.isBackward ).to.be.true;
+
+			domP.remove();
+		} );
+
+		it( 'should handle selection direction (backward, different node)', () => {
+			const domFoo = document.createTextNode( 'foo' );
+			const domBar = document.createTextNode( 'bar' );
+			const domB = createElement( document, 'b', null, [ domFoo ] );
+			const domI = createElement( document, 'i', null, [ domBar ] );
+			const domP = createElement( document, 'p', null, [ domB, domI ] );
+
+			const viewP = parse( '<p><b>foo</b><i>bar</i></p>' );
+
+			converter.bindElements( domP, viewP );
+			converter.bindElements( domB, viewP.getChild( 0 ) );
+			converter.bindElements( domI, viewP.getChild( 1 ) );
+
+			document.body.appendChild( domP );
+
+			const domRange = document.createRange();
+			domRange.setStart( domBar, 1 );
+			domRange.collapse( true );
+
+			const domSelection = document.getSelection();
+			domSelection.removeAllRanges();
+			domSelection.addRange( domRange );
+			domSelection.extend( domFoo, 2 );
+
+			const viewSelection = converter.domSelectionToView( domSelection );
+
+			expect( viewSelection.rangeCount ).to.equal( 1 );
+			expect( viewSelection.anchor.parent.parent.name ).to.equal( 'i' );
+			expect( viewSelection.anchor.offset ).to.equal( 1 );
+			expect( viewSelection.focus.parent.parent.name ).to.equal( 'b' );
+			expect( viewSelection.focus.offset ).to.equal( 2 );
+			expect( viewSelection.isBackward ).to.be.true;
+
+			domP.remove();
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/12375
+		// It happens on Safari that current selection doesn't make any sense.
+		it( 'should not throw when selection.focusOffset is greater than the number of elements', () => {
+			const domFoo = document.createTextNode( 'foo' );
+			const domP = createElement( document, 'p', null, [ domFoo ] );
+
+			const viewP = parse( '<p>foo</p>' );
+
+			converter.bindElements( domP, viewP );
+
+			document.body.appendChild( domP );
+
+			const domRange = document.createRange();
+			domRange.setStart( domFoo, 1 );
+			domRange.collapse( true );
+
+			const domSelection = {
+				rangeCount: 1,
+				isCollapsed: false,
+				anchorNode: domFoo,
+				anchorOffset: 1,
+				focusNode: domFoo,
+				focusOffset: 100,
+
+				getRangeAt() { return domRange; }
+			};
+
+			let viewSelection;
+
+			expect( () => {
+				viewSelection = converter.domSelectionToView( domSelection );
+			} ).to.not.throw();
+
+			expect( viewSelection.rangeCount ).to.equal( 1 );
+			expect( viewSelection.isBackward ).to.be.false;
 
 			domP.remove();
 		} );

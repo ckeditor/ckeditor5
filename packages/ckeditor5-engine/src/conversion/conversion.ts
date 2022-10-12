@@ -300,7 +300,7 @@ export default class Conversion {
 		model: string;
 		view: ElementDefinition;
 		upcastAlso?: ArrayOrItem<ElementDefinition | MatcherPattern>;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): void {
 		// Set up downcast converter.
 		this.for( 'downcast' ).elementToElement( definition );
@@ -482,7 +482,7 @@ export default class Conversion {
 			};
 			view: ElementDefinition;
 			upcastAlso?: ArrayOrItem<MatcherPattern>;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		} | {
 			model: {
 				key: string;
@@ -491,7 +491,7 @@ export default class Conversion {
 			};
 			view: Record<TValues, ElementDefinition>;
 			upcastAlso?: Record<TValues, MatcherPattern>;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		}
 	): void {
 		// Set up downcast converter.
@@ -626,7 +626,7 @@ export default class Conversion {
 			};
 			view: string | ( AttributeDescriptor & { name?: string } );
 			upcastAlso?: ArrayOrItem<string | ( AttributeDescriptor & { name?: string } ) | AttributeCreatorFunction>;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		} | {
 			model: {
 				key: string;
@@ -635,7 +635,7 @@ export default class Conversion {
 			};
 			view: Record<TValues, ( AttributeDescriptor & { name?: string } )>;
 			upcastAlso?: Record<TValues, ( AttributeDescriptor & { name?: string } ) | AttributeCreatorFunction>;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		} ): void {
 		// Set up downcast converter.
 		this.for( 'downcast' ).attributeToAttribute( definition );
