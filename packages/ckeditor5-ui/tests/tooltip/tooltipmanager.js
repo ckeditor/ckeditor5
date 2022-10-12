@@ -14,6 +14,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import TooltipManager from '../../src/tooltipmanager';
+import { Editor, EditorUI } from '@ckeditor/ckeditor5-core';
 
 describe( 'TooltipManager', () => {
 	let editor, element, tooltipManager;
@@ -120,6 +121,38 @@ describe( 'TooltipManager', () => {
 
 				destroyElements( elements );
 				clock.restore();
+			} );
+
+			it( 'should not throw if the editor has no ui#view', async () => {
+				class EditorWithoutUIView extends Editor {
+					static create( config ) {
+						return new Promise( resolve => {
+							const editor = new this( config );
+
+							resolve(
+								editor.initPlugins()
+									.then( () => {
+										editor.ui = new EditorUI( editor );
+										editor.fire( 'ready' );
+									} )
+									.then( () => editor )
+							);
+						} );
+					}
+
+					destroy() {
+						this.ui.destroy();
+
+						return super.destroy();
+					}
+				}
+
+				const secondEditor = await EditorWithoutUIView.create();
+
+				await secondEditor.destroy();
+
+				// No error was thrown.
+				expect( secondEditor.state ).to.equal( 'destroyed' );
 			} );
 		} );
 
