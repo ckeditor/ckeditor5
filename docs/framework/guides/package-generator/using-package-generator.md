@@ -28,7 +28,8 @@ As a result of executing the command, a new directory with a package in it will 
 Available modifiers for the command are:
 
 * `--verbose` &ndash; (alias: `-v`) whether to prints additional logs about the current executed task.
-* `--use-npm` &ndash; whether to use `npm` instead of `yarn` when installing dependencies in a newly created package.
+* `--use-npm` &ndash; whether to use `npm` to install dependencies in a newly created package.
+* `--use-yarn` &ndash; whether to use `yarn` to install dependencies in a newly created package. If `yarn` is installed globally it is used by default.
 * `--lang` &ndash; (values: `js` | `ts`) whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
 
 ## Using the package
