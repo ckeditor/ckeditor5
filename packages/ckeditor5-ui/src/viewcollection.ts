@@ -144,7 +144,7 @@ export default class ViewCollection extends Collection<View, 'viewUid'> {
 	 * @returns {Function} return.to A function which accepts the destination of
 	 * {@link module:utils/emittermixin~Emitter#delegate delegated} events.
 	 */
-	public override delegate( ...events: string[] ): EmitterMixinDelegateChain {
+	public override delegate( ...events: Array<string> ): EmitterMixinDelegateChain {
 		if ( !events.length || !isStringArray( events ) ) {
 			/**
 			 * All event names must be strings.
@@ -233,6 +233,6 @@ export default class ViewCollection extends Collection<View, 'viewUid'> {
 // @private
 // @param {Array} arr An array to be checked.
 // @returns {Boolean}
-function isStringArray( arr: unknown[] ): arr is string[] {
+function isStringArray( arr: Array<unknown> ): arr is Array<string> {
 	return arr.every( a => typeof a == 'string' );
 }

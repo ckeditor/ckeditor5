@@ -276,7 +276,7 @@ function checkSelectionOnNonLimitElements( start: Position, end: Position, schem
  * @param {Array.<module:engine/model/range~Range>} Ranges to merge.
  * @returns {Array.<module:engine/model/range~Range>} Array of unique and nonIntersecting ranges.
  */
-export function mergeIntersectingRanges( ranges: Range[] ): Range[] {
+export function mergeIntersectingRanges( ranges: Array<Range> ): Array<Range> {
 	const rangesToMerge = [ ...ranges ];
 	const rangeIndexesToRemove = new Set();
 	let currentRangeIndex = 1;

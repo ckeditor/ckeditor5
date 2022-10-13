@@ -63,7 +63,7 @@ export default abstract class Editor extends Observable {
 	public declare state: 'initializing' | 'ready' | 'destroyed';
 
 	public static defaultConfig?: EditorConfig;
-	public static builtinPlugins?: PluginConstructor<Editor>[];
+	public static builtinPlugins?: Array<PluginConstructor<Editor>>;
 
 	/**
 	 * The editor UI instance.
@@ -443,7 +443,7 @@ export default abstract class Editor extends Observable {
 	 * @param {*} [...commandParams] Command parameters.
 	 * @returns {*} The value returned by the {@link module:core/commandcollection~CommandCollection#execute `commands.execute()`}.
 	 */
-	public execute( ...args: [ commandName: string, ... args: unknown[] ] ): unknown {
+	public execute( ...args: [ commandName: string, ... args: Array<unknown> ] ): unknown {
 		try {
 			return this.commands.execute( ...args );
 		} catch ( err: any ) {

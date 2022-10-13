@@ -431,13 +431,13 @@ import type Editor from './editor';
 
 export interface EditorConfig {
 	context?: Context;
-	extraPlugins?: PluginConstructor<Editor>[];
+	extraPlugins?: Array<PluginConstructor<Editor>>;
 	initialData?: string;
 	language?: string | LanguageConfig;
 	placeholder?: string;
-	plugins?: ( PluginConstructor<Editor> | string )[];
-	removePlugins?: ( PluginConstructor<Editor> | string )[];
-	substitutePlugins?: PluginConstructor<Editor>[];
+	plugins?: Array<PluginConstructor<Editor> | string>;
+	removePlugins?: Array<PluginConstructor<Editor> | string>;
+	substitutePlugins?: Array<PluginConstructor<Editor>>;
 	toolbar?: ToolbarConfig;
 	ui?: UiConfig;
 	updateSourceElementOnDestroy?: boolean;
@@ -448,14 +448,14 @@ export interface LanguageConfig {
 	content?: string;
 }
 
-export type ToolbarConfig = ToolbarConfigItem[] | {
-	items?: ToolbarConfigItem[];
-	removeItems?: string[];
+export type ToolbarConfig = Array<ToolbarConfigItem> | {
+	items?: Array<ToolbarConfigItem>;
+	removeItems?: Array<string>;
 	shouldNotGroupWhenFull?: boolean;
 };
 
 export type ToolbarConfigItem = string | {
-	items: ToolbarConfigItem[];
+	items: Array<ToolbarConfigItem>;
 	label: string;
 	icon?: string | false;
 	withText?: boolean;

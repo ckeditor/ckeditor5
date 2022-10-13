@@ -888,7 +888,7 @@ function shouldMarkerChangeBeConverted(
 	ancestors.shift(); // Remove root element. It cannot be passed to `model.Range#containsItem`.
 	ancestors.reverse();
 
-	const hasCustomHandling = ( ancestors as Element[] ).some( element => {
+	const hasCustomHandling = ( ancestors as Array<Element> ).some( element => {
 		if ( range.containsItem( element ) ) {
 			const viewElement = mapper.toViewElement( element )!;
 

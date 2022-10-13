@@ -15,7 +15,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * `History` keeps the track of all the operations applied to the {@link module:engine/model/document~Document document}.
  */
 export default class History {
-	private _operations: Operation[];
+	private _operations: Array<Operation>;
 	private _undoPairs: Map<Operation, Operation>;
 	private _undoneOperations: Set<Operation>;
 	private _baseVersionToOperationIndex: Map<number, number>;
@@ -153,7 +153,7 @@ export default class History {
 	 * @param {Number} [toBaseVersion] Base version up to which operations should be returned (exclusive).
      * @returns {Array.<module:engine/model/operation/operation~Operation>} History operations for the given range, in chronological order.
 	 */
-	public getOperations( fromBaseVersion: number, toBaseVersion: number = this.version ): Operation[] {
+	public getOperations( fromBaseVersion: number, toBaseVersion: number = this.version ): Array<Operation> {
 		// When there is no operation in the history, return an empty array.
 		// After that we can be sure that `firstOperation`, `lastOperation` are not nullish.
 		if ( !this._operations.length ) {

@@ -384,7 +384,7 @@ export function stringify(
 export function parse(
 	data: string,
 	options: {
-		order?: number[];
+		order?: Array<number>;
 		lastRangeBackward?: boolean;
 		rootElement?: ViewElement | ViewDocumentFragment;
 		sameSelectionCharacters?: boolean;
@@ -451,7 +451,7 @@ export function parse(
  */
 class RangeParser {
 	public sameSelectionCharacters: boolean;
-	private _positions!: { bracket: string; position: Position }[];
+	private _positions!: Array<{ bracket: string; position: Position }>;
 
 	/**
 	 * Creates a range parser instance.
@@ -475,7 +475,7 @@ class RangeParser {
 	 * as the first.
 	 * @returns {Array.<module:engine/view/range~Range>} An array with ranges found.
 	 */
-	public parse( node: ViewNode | ViewDocumentFragment, order: number[] ): Range[] {
+	public parse( node: ViewNode | ViewDocumentFragment, order: Array<number> ): Array<Range> {
 		this._positions = [];
 
 		// Remove all range brackets from view nodes and save their positions.
@@ -608,7 +608,7 @@ class RangeParser {
 	 * @param {Array.<Number>} rangesOrder An array with new range order.
 	 * @returns {Array} Sorted ranges array.
 	 */
-	private _sortRanges( ranges: Range[], rangesOrder: number[] ): Range[] {
+	private _sortRanges( ranges: Array<Range>, rangesOrder: Array<number> ): Array<Range> {
 		const sortedRanges = [];
 		let index = 0;
 
@@ -630,7 +630,7 @@ class RangeParser {
 	 * @private
 	 * @returns {Array.<module:engine/view/range~Range>}
 	 */
-	private _createRanges(): Range[] {
+	private _createRanges(): Array<Range> {
 		const ranges = [];
 		let range = null;
 
@@ -672,7 +672,7 @@ class RangeParser {
 class ViewStringify {
 	public root: ViewNode | ViewDocumentFragment;
 	public selection: DocumentSelection | null;
-	public ranges: Range[];
+	public ranges: Array<Range>;
 	public showType: boolean;
 	public showPriority: boolean;
 	public showAttributeElementId: boolean;

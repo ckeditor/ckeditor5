@@ -165,8 +165,8 @@ export default class TextProxy extends TypeCheckable {
 	public getAncestors( options: {
 		includeSelf?: boolean;
 		parentFirst?: boolean;
-	} = {} ): ( Text | Element | DocumentFragment )[] {
-		const ancestors: ( Text | Element | DocumentFragment )[] = [];
+	} = {} ): Array<Text | Element | DocumentFragment> {
+		const ancestors: Array<Text | Element | DocumentFragment> = [];
 		let parent: Text | Element | DocumentFragment | null = options.includeSelf ? this.textNode : this.parent;
 
 		while ( parent !== null ) {

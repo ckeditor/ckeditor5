@@ -31,7 +31,7 @@ export default class Collection<T extends { [ id in I ]?: string }, I extends st
 	 * @private
 	 * @member {Object[]}
 	 */
-	private readonly _items: T[];
+	private readonly _items: Array<T>;
 
 	/**
 	 * The internal map of items in the collection.
@@ -88,7 +88,7 @@ export default class Collection<T extends { [ id in I ]?: string }, I extends st
 	 * @private
 	 * @member {Array}
 	 */
-	private _skippedIndexesFromExternal: number[];
+	private _skippedIndexesFromExternal: Array<number>;
 
 	constructor( options?: { readonly idProperty?: I } );
 	constructor( initialItems: Iterable<T>, options?: { readonly idProperty?: I } );
@@ -337,7 +337,7 @@ export default class Collection<T extends { [ id in I ]?: string }, I extends st
 	public map<U>(
 		callback: ( item: T, index: number ) => U,
 		ctx?: any
-	): U[] {
+	): Array<U> {
 		return this._items.map( callback, ctx );
 	}
 
@@ -369,7 +369,7 @@ export default class Collection<T extends { [ id in I ]?: string }, I extends st
 	public filter(
 		callback: ( item: T, index: number ) => boolean,
 		ctx?: any
-	): T[] {
+	): Array<T> {
 		return this._items.filter( callback, ctx );
 	}
 
@@ -645,7 +645,7 @@ export default class Collection<T extends { [ id in I ]?: string }, I extends st
 				}
 
 				return result;
-			}, [] as number[] );
+			}, [] as Array<number> );
 		} );
 	}
 

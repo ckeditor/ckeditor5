@@ -44,7 +44,7 @@ import type EventInfo from '../eventinfo';
  * @mixes module:utils/emittermixin~EmitterMixin
  * @implements module:utils/dom/emittermixin~Emitter
  */
-export default function DomEmitterMixin<Base extends abstract new( ...args: any[] ) => BaseEmitter>(
+export default function DomEmitterMixin<Base extends abstract new( ...args: Array<any> ) => BaseEmitter>(
 	base: Base
 ): {
 	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Emitter;
@@ -66,7 +66,7 @@ export default function DomEmitterMixin<Base extends abstract new( ...args: any[
 		public override listenTo(
 			emitter: BaseEmitter | Node | Window,
 			event: string,
-			callback: ( ev: EventInfo, ...args: any[] ) => void,
+			callback: ( ev: EventInfo, ...args: Array<any> ) => void,
 			options: CallbackOptions & { readonly useCapture?: boolean; readonly usePassive?: boolean } = {}
 		): void {
 			// Check if emitter is an instance of DOM Node. If so, use corresponding ProxyEmitter (or create one if not existing).
@@ -129,7 +129,7 @@ export default function DomEmitterMixin<Base extends abstract new( ...args: any[
 		 * @param {Node|Window} node DOM Node of the ProxyEmitter.
 		 * @returns {Array.<module:utils/dom/emittermixin~ProxyEmitter>}
 		 */
-		private _getAllProxyEmitters( node: Node | Window ): ProxyEmitter[] {
+		private _getAllProxyEmitters( node: Node | Window ): Array<ProxyEmitter> {
 			return [
 				{ capture: false, passive: false },
 				{ capture: false, passive: true },

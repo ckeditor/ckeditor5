@@ -198,7 +198,7 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 // @returns {Boolean} True if any changes were made to the view document.
 function updateDocumentPlaceholders( doc: Document, writer: DowncastWriter ): boolean {
 	const placeholders = documentPlaceholders.get( doc )!;
-	const directHostElements: Element[] = [];
+	const directHostElements: Array<Element> = [];
 	let wasViewModified = false;
 
 	// First set placeholders on the direct hosts.

@@ -193,10 +193,10 @@ export function getBoxSidesValues( value: string = '' ): BoxSides {
  * @returns {Function}
  */
 export function getBoxSidesValueReducer( styleShorthand: string ) {
-	return ( value: StyleValue ): PropertyDescriptor[] => {
+	return ( value: StyleValue ): Array<PropertyDescriptor> => {
 		const { top, right, bottom, left } = value as BoxSides;
 
-		const reduced: PropertyDescriptor[] = [];
+		const reduced: Array<PropertyDescriptor> = [];
 
 		if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
 			if ( top ) {
@@ -274,7 +274,7 @@ export function getPositionShorthandNormalizer( shorthand: string ) {
  * @param {String} string
  * @returns {Array.<String>}
  */
-export function getShorthandValues( string: string ): string[] {
+export function getShorthandValues( string: string ): Array<string> {
 	return string
 		.replace( /, /g, ',' ) // Exclude comma from spaces evaluation as values are separated by spaces.
 		.split( ' ' )

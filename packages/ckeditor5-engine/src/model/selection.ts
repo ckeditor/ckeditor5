@@ -37,7 +37,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	protected _attrs: Map<string, unknown>;
 
 	/** @internal */
-	public _ranges: Range[];
+	public _ranges: Array<Range>;
 
 	/**
 	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
@@ -781,7 +781,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	 * @param {Array.<module:engine/model/range~Range>} ranges
 	 * @protected
 	 */
-	protected _replaceAllRanges( ranges: Range[] ): void {
+	protected _replaceAllRanges( ranges: Array<Range> ): void {
 		this._removeAllRanges();
 
 		for ( const range of ranges ) {
@@ -860,7 +860,7 @@ export type ChangeEvent = {
 	name: 'change' | 'change:range' | 'change:attribute';
 	args: [ {
 		directChange: boolean;
-		attributeKeys?: string[];
+		attributeKeys?: Array<string>;
 	} ];
 };
 
@@ -875,7 +875,7 @@ export type ChangeAttributeEvent = {
 	name: 'change:attribute';
 	args: [ {
 		directChange: boolean;
-		attributeKeys: string[];
+		attributeKeys: Array<string>;
 	} ];
 };
 

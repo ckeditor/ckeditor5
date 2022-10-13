@@ -156,7 +156,7 @@ export default abstract class Node extends EmitterMixin( TypeCheckable ) {
 	 *
 	 * @returns {Array.<Number>} The path.
 	 */
-	public getPath(): number[] {
+	public getPath(): Array<number> {
 		const path = [];
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
 		let node: Node | DocumentFragment = this;
@@ -178,8 +178,8 @@ export default abstract class Node extends EmitterMixin( TypeCheckable ) {
 	 * otherwise root element will be the first item in the array.
 	 * @returns {Array} Array with ancestors.
 	 */
-	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): ( Node | DocumentFragment )[] {
-		const ancestors: ( Node | DocumentFragment )[] = [];
+	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<Node | DocumentFragment> {
+		const ancestors: Array<Node | DocumentFragment> = [];
 		let parent = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {

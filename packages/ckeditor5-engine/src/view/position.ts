@@ -189,7 +189,7 @@ export default class Position extends TypeCheckable {
 	 *
 	 * @returns {Array} Array with ancestors.
 	 */
-	public getAncestors(): ( Node | DocumentFragment )[] {
+	public getAncestors(): Array<Node | DocumentFragment> {
 		if ( this.parent.is( 'documentFragment' ) ) {
 			return [ this.parent ];
 		} else {

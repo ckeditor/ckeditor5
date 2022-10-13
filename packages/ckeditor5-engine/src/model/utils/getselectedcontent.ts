@@ -121,7 +121,7 @@ export default function getSelectedContent(
 // After https://github.com/ckeditor/ckeditor5-engine/issues/690 is fixed,
 // this function will, most likely, be able to rewritten using getMinimalFlatRanges().
 function removeRangeContent( range: Range, writer: Writer ) {
-	const parentsToCheck: ( Element | DocumentFragment )[] = [];
+	const parentsToCheck: Array<Element | DocumentFragment> = [];
 
 	Array.from( range.getItems( { direction: 'backward' } ) )
 		// We should better store ranges because text proxies will lose integrity

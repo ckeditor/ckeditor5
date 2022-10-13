@@ -18,7 +18,7 @@ export default class ElementReplacer {
 	 * @private
 	 * @member {Array.<Object>}
 	 */
-	private _replacedElements: { element: HTMLElement; newElement?: HTMLElement }[];
+	private _replacedElements: Array<{ element: HTMLElement; newElement?: HTMLElement }>;
 
 	constructor() {
 		this._replacedElements = [];
