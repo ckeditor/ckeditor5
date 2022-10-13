@@ -12,6 +12,12 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 
 import ChangeBuffer from './utils/changebuffer';
 
+import type Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import type Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Element } from '@ckeditor/ckeditor5-engine';
+import { DocumentSelection } from '@ckeditor/ckeditor5-engine';
+
 /**
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and
  * <kbd>Backspace</kbd> keys.
@@ -19,6 +25,10 @@ import ChangeBuffer from './utils/changebuffer';
  * @extends module:core/command~Command
  */
 export default class DeleteCommand extends Command {
+	public readonly direction: 'forward' | 'backward';
+
+	private readonly _buffer: ChangeBuffer;
+
 	/**
 	 * Creates an instance of the command.
 	 *
@@ -26,7 +36,7 @@ export default class DeleteCommand extends Command {
 	 * @param {'forward'|'backward'} direction The directionality of the delete describing in what direction it
 	 * should consume the content when the selection is collapsed.
 	 */
-	constructor( editor, direction ) {
+	constructor( editor: Editor, direction: 'forward' | 'backward' ) {
 		super( editor );
 
 		/**
@@ -53,7 +63,7 @@ export default class DeleteCommand extends Command {
 	 *
 	 * @type {module:typing/utils/changebuffer~ChangeBuffer}
 	 */
-	get buffer() {
+	public get buffer(): ChangeBuffer {
 		return this._buffer;
 	}
 
@@ -70,7 +80,11 @@ export default class DeleteCommand extends Command {
 	 * @param {module:engine/model/selection~Selection} [options.selection] Selection to remove. If not set, current model selection
 	 * will be used.
 	 */
-	execute( options = {} ) {
+	public override execute( options: {
+		unit?: 'character' | 'codePoint' | 'word';
+		sequence?: number;
+		selection?: Selection | DocumentSelection;
+	} = {} ): void {
 		const model = this.editor.model;
 		const doc = model.document;
 
@@ -118,7 +132,7 @@ export default class DeleteCommand extends Command {
 
 			let changeCount = 0;
 
-			selection.getFirstRange().getMinimalFlatRanges().forEach( range => {
+			selection.getFirstRange()!.getMinimalFlatRanges().forEach( range => {
 				changeCount += count(
 					range.getWalker( { singleCharacters: true, ignoreElementEnd: true, shallow: true } )
 				);
@@ -162,7 +176,7 @@ export default class DeleteCommand extends Command {
 	 * @param {Number} sequence A number describing which subsequent delete event it is without the key being released.
 	 * @returns {Boolean}
 	 */
-	_shouldEntireContentBeReplacedWithParagraph( sequence ) {
+	private _shouldEntireContentBeReplacedWithParagraph( sequence: number ): boolean {
 		// Does nothing if user pressed and held the "Backspace" or "Delete" key.
 		if ( sequence > 1 ) {
 			return false;
@@ -190,7 +204,7 @@ export default class DeleteCommand extends Command {
 		// Does nothing if the limit element already contains only a paragraph.
 		// We ignore the case when paragraph might have some inline elements (<p><inlineWidget>[]</inlineWidget></p>)
 		// because we don't support such cases yet and it's unclear whether inlineWidget shouldn't be a limit itself.
-		if ( limitElementFirstChild && limitElementFirstChild.name === 'paragraph' ) {
+		if ( limitElementFirstChild && limitElementFirstChild.is( 'element', 'paragraph' ) ) {
 			return false;
 		}
 
@@ -203,7 +217,7 @@ export default class DeleteCommand extends Command {
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer The model writer.
 	 */
-	_replaceEntireContentWithParagraph( writer ) {
+	private _replaceEntireContentWithParagraph( writer: Writer ): void {
 		const model = this.editor.model;
 		const doc = model.document;
 		const selection = doc.selection;
@@ -225,7 +239,7 @@ export default class DeleteCommand extends Command {
 	 * @param {Number} sequence A number describing which subsequent delete event it is without the key being released.
 	 * @returns {Boolean}
 	 */
-	_shouldReplaceFirstBlockWithParagraph( selection, sequence ) {
+	private _shouldReplaceFirstBlockWithParagraph( selection: Selection, sequence: number ): boolean {
 		const model = this.editor.model;
 
 		// Does nothing if user pressed and held the "Backspace" key or it was a "Delete" button.
@@ -237,9 +251,9 @@ export default class DeleteCommand extends Command {
 			return false;
 		}
 
-		const position = selection.getFirstPosition();
+		const position = selection.getFirstPosition()!;
 		const limitElement = model.schema.getLimitElement( position );
-		const limitElementFirstChild = limitElement.getChild( 0 );
+		const limitElementFirstChild = limitElement.getChild( 0 ) as Element;
 
 		// Only elements that are direct children of the limit element can be replaced.
 		// Unwrapping from a block quote should be handled in a dedicated feature.

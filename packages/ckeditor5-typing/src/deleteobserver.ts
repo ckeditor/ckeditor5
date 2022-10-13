@@ -12,6 +12,12 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
 
+import type Selection from '@ckeditor/ckeditor5-engine/src/view/selection';
+import type DocumentSelection from '@ckeditor/ckeditor5-engine/src/view/documentselection';
+import type { View } from '@ckeditor/ckeditor5-engine';
+import type { InputObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
+import type { KeyObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
+
 const DELETE_CHARACTER = 'character';
 const DELETE_WORD = 'word';
 const DELETE_CODE_POINT = 'codePoint';
@@ -19,7 +25,12 @@ const DELETE_SELECTION = 'selection';
 const DELETE_BACKWARD = 'backward';
 const DELETE_FORWARD = 'forward';
 
-const DELETE_EVENT_TYPES = {
+type DeleteEventSpec = {
+	unit: 'selection' | 'codePoint' | 'character' | 'word';
+	direction: 'backward' | 'forward';
+};
+
+const DELETE_EVENT_TYPES: Record<string, DeleteEventSpec> = {
 	// --------------------------------------- Backward delete types -----------------------------------------------------
 
 	// This happens in Safari on Mac when some content is selected and Ctrl + K is pressed.
@@ -112,7 +123,7 @@ export default class DeleteObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view ) {
+	constructor( view: View ) {
 		super( view );
 
 		const document = view.document;
@@ -133,7 +144,7 @@ export default class DeleteObserver extends Observer {
 			sequence = 0;
 		} );
 
-		document.on( 'beforeinput', ( evt, data ) => {
+		document.on<InputObserverEvent>( 'beforeinput', ( evt, data ) => {
 			if ( !this.isEnabled ) {
 				return;
 			}
@@ -145,7 +156,7 @@ export default class DeleteObserver extends Observer {
 				return;
 			}
 
-			const deleteData = {
+			const deleteData: Partial<DeleteEventData> = {
 				direction: deleteEventSpec.direction,
 				unit: deleteEventSpec.unit,
 				sequence
@@ -176,7 +187,7 @@ export default class DeleteObserver extends Observer {
 
 			const eventInfo = new BubblingEventInfo( document, 'delete', targetRanges[ 0 ] );
 
-			document.fire( eventInfo, new DomEventData( document, domEvent, deleteData ) );
+			document.fire<DeleteEvent>( eventInfo, new DomEventData( view, domEvent, deleteData ) as DeleteEventData );
 
 			// Stop the beforeinput event if `delete` event was stopped.
 			// https://github.com/ckeditor/ckeditor5/issues/753
@@ -194,7 +205,7 @@ export default class DeleteObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	observe() {}
+	public override observe(): void {}
 }
 
 /**
@@ -213,21 +224,33 @@ export default class DeleteObserver extends Observer {
  * current selection should be used.
  * @param {String} data.inputType The `beforeinput` event type that caused the deletion.
  */
+export type DeleteEvent = {
+	name: 'delete';
+	args: [ data: DeleteEventData ];
+	eventInfo: BubblingEventInfo<'delete'>;
+};
+
+export interface DeleteEventData extends DomEventData<InputEvent> {
+	direction: 'backward' | 'forward';
+	unit: 'selection' | 'codePoint' | 'character' | 'word';
+	sequence: number;
+	selectionToRemove?: Selection | DocumentSelection;
+}
 
 // Enables workaround for the issue https://github.com/ckeditor/ckeditor5/issues/11904.
-function enableChromeWorkaround( observer ) {
+function enableChromeWorkaround( observer: DeleteObserver ) {
 	const view = observer.view;
 	const document = view.document;
 
-	let pressedKeyCode = null;
+	let pressedKeyCode: number | null = null;
 	let beforeInputReceived = false;
 
-	document.on( 'keydown', ( evt, { keyCode } ) => {
+	document.on<KeyObserverEvent>( 'keydown', ( evt, { keyCode } ) => {
 		pressedKeyCode = keyCode;
 		beforeInputReceived = false;
 	} );
 
-	document.on( 'keyup', ( evt, { keyCode, domEvent } ) => {
+	document.on<KeyObserverEvent>( 'keyup', ( evt, { keyCode, domEvent } ) => {
 		const selection = document.selection;
 		const shouldFireDeleteEvent = observer.isEnabled &&
 			keyCode == pressedKeyCode &&
@@ -238,19 +261,19 @@ function enableChromeWorkaround( observer ) {
 		pressedKeyCode = null;
 
 		if ( shouldFireDeleteEvent ) {
-			const targetRange = selection.getFirstRange();
+			const targetRange = selection.getFirstRange()!;
 			const eventInfo = new BubblingEventInfo( document, 'delete', targetRange );
-			const deleteData = {
+			const deleteData: Partial<DeleteEventData> = {
 				unit: DELETE_SELECTION,
 				direction: getDeleteDirection( keyCode ),
 				selectionToRemove: selection
 			};
 
-			document.fire( eventInfo, new DomEventData( document, domEvent, deleteData ) );
+			document.fire<DeleteEvent>( eventInfo, new DomEventData( view, domEvent, deleteData ) as any );
 		}
 	} );
 
-	document.on( 'beforeinput', ( evt, { inputType } ) => {
+	document.on<InputObserverEvent>( 'beforeinput', ( evt, { inputType } ) => {
 		const deleteEventSpec = DELETE_EVENT_TYPES[ inputType ];
 		const isMatchingBeforeInput = isDeleteKeyCode( pressedKeyCode ) &&
 			deleteEventSpec &&
@@ -261,7 +284,7 @@ function enableChromeWorkaround( observer ) {
 		}
 	} );
 
-	document.on( 'beforeinput', ( evt, { inputType, data } ) => {
+	document.on<InputObserverEvent>( 'beforeinput', ( evt, { inputType, data } ) => {
 		const shouldIgnoreBeforeInput = pressedKeyCode == keyCodes.delete &&
 			inputType == 'insertText' &&
 			data == '\x7f'; // Delete character :P
@@ -271,11 +294,11 @@ function enableChromeWorkaround( observer ) {
 		}
 	}, { priority: 'high' } );
 
-	function isDeleteKeyCode( keyCode ) {
+	function isDeleteKeyCode( keyCode: number | null ): boolean {
 		return keyCode == keyCodes.backspace || keyCode == keyCodes.delete;
 	}
 
-	function getDeleteDirection( keyCode ) {
+	function getDeleteDirection( keyCode: number | null ): 'backward' | 'forward' {
 		return keyCode == keyCodes.backspace ? DELETE_BACKWARD : DELETE_FORWARD;
 	}
 }

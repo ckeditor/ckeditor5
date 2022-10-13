@@ -7,9 +7,10 @@
  * @module typing/typing
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
 import Input from './input';
 import Delete from './delete';
+import { Editor } from '@ckeditor/ckeditor5-core';
 
 /**
  * The typing feature. It handles typing.
@@ -20,7 +21,7 @@ import Delete from './delete';
  * @extends module:core/plugin~Plugin
  */
 export default class Typing extends Plugin {
-	static get requires() {
+	public static get requires(): PluginConstructor<Editor> {
 		return [ Input, Delete ];
 	}
 
@@ -54,6 +55,11 @@ export default class Typing extends Plugin {
  *
  * @interface TypingConfig
  */
+declare module '@ckeditor/ckeditor5-core' {
+	interface EditorConfig {
+		typing?: TypingConfig;
+	}
+}
 
 /**
  * The granularity of undo/redo for typing and deleting. The value `20` means (more or less) that a new undo step
@@ -61,3 +67,6 @@ export default class Typing extends Plugin {
  *
  * @member {Number} [module:typing/typing~TypingConfig#undoStep=20]
  */
+export type TypingConfig = {
+	undoStep?: number;
+};

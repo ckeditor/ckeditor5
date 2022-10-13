@@ -10,6 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import DeleteCommand from './deletecommand';
 import DeleteObserver from './deleteobserver';
+// eslint-disable-next-line no-duplicate-imports
+import type { DeleteEvent } from './deleteobserver';
 
 /**
  * The delete and backspace feature. Handles keys such as <kbd>Delete</kbd> and <kbd>Backspace</kbd>, other
@@ -24,18 +26,19 @@ export default class Delete extends Plugin {
 	 * @private
 	 * @member {Boolean} #_undoOnBackspace
 	 */
+	private _undoOnBackspace!: boolean;
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'Delete';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
@@ -53,7 +56,7 @@ export default class Delete extends Plugin {
 
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
-		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+		this.listenTo<DeleteEvent>( viewDocument, 'delete', ( evt, data ) => {
 			// When not in composition, we handle the action, so prevent the default one.
 			// When in composition, it's the browser who modify the DOM (renderer is disabled).
 			if ( !viewDocument.isComposing ) {
@@ -62,14 +65,16 @@ export default class Delete extends Plugin {
 
 			const { direction, sequence, selectionToRemove, unit } = data;
 			const commandName = direction === 'forward' ? 'deleteForward' : 'delete';
-			const commandData = { unit, sequence };
+			const commandData: Parameters<DeleteCommand[ 'execute' ]>[ 0 ] = { sequence };
 
 			if ( unit == 'selection' ) {
-				const modelRanges = Array.from( selectionToRemove.getRanges() ).map( viewRange => {
+				const modelRanges = Array.from( selectionToRemove!.getRanges() ).map( viewRange => {
 					return editor.editing.mapper.toModelRange( viewRange );
 				} );
 
 				commandData.selection = editor.model.createSelection( modelRanges );
+			} else {
+				commandData.unit = unit;
 			}
 
 			editor.execute( commandName, commandData );
@@ -78,7 +83,7 @@ export default class Delete extends Plugin {
 		}, { priority: 'low' } );
 
 		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
-			this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+			this.listenTo<DeleteEvent>( viewDocument, 'delete', ( evt, data ) => {
 				if ( this._undoOnBackspace && data.direction == 'backward' && data.sequence == 1 && data.unit == 'codePoint' ) {
 					this._undoOnBackspace = false;
 
@@ -100,7 +105,7 @@ export default class Delete extends Plugin {
 	 *
 	 * Requires {@link module:undo/undoediting~UndoEditing} plugin. If not loaded, does nothing.
 	 */
-	requestUndoOnBackspace() {
+	public requestUndoOnBackspace(): void {
 		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
 			this._undoOnBackspace = true;
 		}

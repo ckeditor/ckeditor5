@@ -4,6 +4,8 @@
  */
 
 import findAttributeRange from './findattributerange';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * @module typing/utils/inlinehighlight
@@ -34,9 +36,14 @@ import findAttributeRange from './findattributerange';
  * @param {String} tagName The tagName of a view item.
  * @param {String} className The class name to apply in the view.
  */
-export default function inlineHighlight( editor, attributeName, tagName, className ) {
+export default function inlineHighlight(
+	editor: Editor,
+	attributeName: string,
+	tagName: string,
+	className: string
+): void {
 	const view = editor.editing.view;
-	const highlightedElements = new Set();
+	const highlightedElements = new Set<ViewElement>();
 
 	// Adding the class.
 	view.document.registerPostFixer( writer => {
@@ -45,7 +52,7 @@ export default function inlineHighlight( editor, attributeName, tagName, classNa
 
 		if ( selection.hasAttribute( attributeName ) ) {
 			const modelRange = findAttributeRange(
-				selection.getFirstPosition(),
+				selection.getFirstPosition()!,
 				attributeName,
 				selection.getAttribute( attributeName ),
 				editor.model

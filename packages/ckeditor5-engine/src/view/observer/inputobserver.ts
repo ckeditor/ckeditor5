@@ -125,9 +125,9 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		this.fire( domEvent.type, domEvent, {
 			data,
 			dataTransfer,
-			isComposing: domEvent.isComposing,
 			targetRanges,
-			inputType: domEvent.inputType
+			inputType: domEvent.inputType,
+			isComposing: domEvent.isComposing
 		} );
 
 		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
@@ -135,11 +135,6 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		// @if CK_DEBUG_TYPING // }
 	}
 }
-
-export type InputObserverEvent = {
-	name: 'beforeinput';
-	args: [ data: DomEventData<InputEvent> ];
-};
 
 /**
  * Fired before the web browser inputs, deletes, or formats some data.
@@ -151,6 +146,10 @@ export type InputObserverEvent = {
  * @event module:engine/view/document~Document#event:beforeinput
  * @param {module:engine/view/observer/inputobserver~InputEventData} data Event data containing detailed information about the event.
  */
+export type InputObserverEvent = {
+	name: 'beforeinput';
+	args: [ data: InputEventData ];
+};
 
 /**
  * The value of the {@link module:engine/view/document~Document#event:beforeinput} event.
@@ -158,6 +157,13 @@ export type InputObserverEvent = {
  * @class module:engine/view/observer/inputobserver~InputEventData
  * @extends module:engine/view/observer/domeventdata~DomEventData
  */
+export interface InputEventData extends DomEventData<InputEvent> {
+	inputType: string;
+	data: string | null;
+	dataTransfer: DataTransfer;
+	isComposing: boolean;
+	targetRanges: Array<ViewRange>;
+}
 
 /**
  * The data transfer instance of the input event. Corresponds to native `InputEvent#dataTransfer`.

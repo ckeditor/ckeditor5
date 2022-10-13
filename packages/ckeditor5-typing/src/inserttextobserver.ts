@@ -11,6 +11,13 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { View } from '@ckeditor/ckeditor5-engine';
+import { InputObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
+import { CompositionObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/compositionobserver';
+import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
+import { DeleteEventData } from './deleteobserver';
+import Selection from '@ckeditor/ckeditor5-engine/src/view/selection';
+import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 
 const TYPING_INPUT_TYPES = [
 	// For collapsed range:
@@ -35,7 +42,7 @@ export default class InsertTextObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view ) {
+	constructor( view: View ) {
 		super( view );
 
 		// On Android composition events should immediately be applied to the model. Rendering is not disabled.
@@ -47,7 +54,7 @@ export default class InsertTextObserver extends Observer {
 
 		const viewDocument = view.document;
 
-		viewDocument.on( 'beforeinput', ( evt, data ) => {
+		viewDocument.on<InputObserverEvent>( 'beforeinput', ( evt, data ) => {
 			if ( !this.isEnabled ) {
 				return;
 			}
@@ -60,7 +67,7 @@ export default class InsertTextObserver extends Observer {
 
 			const eventInfo = new EventInfo( viewDocument, 'insertText' );
 
-			viewDocument.fire( eventInfo, new DomEventData( viewDocument, domEvent, {
+			viewDocument.fire( eventInfo, new DomEventData( view, domEvent, {
 				text,
 				selection: view.createSelection( targetRanges )
 			} ) );
@@ -73,7 +80,7 @@ export default class InsertTextObserver extends Observer {
 		} );
 
 		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
-		viewDocument.on( 'compositionend', ( evt, { data, domEvent } ) => {
+		viewDocument.on<CompositionObserverEvent>( 'compositionend', ( evt, { data, domEvent } ) => {
 			// On Android composition events are immediately applied to the model.
 			// On non-Android the model is updated only on composition end.
 			// On Android we can't rely on composition start/end to update model.
@@ -108,7 +115,7 @@ export default class InsertTextObserver extends Observer {
 			//   - Try to follow it from the `beforeinput` events. This would be really complex as each
 			//     `beforeinput` would come with just the range it's changing and we'd need to calculate that.
 			// We decided to go with the 2nd option for its simplicity and stability.
-			viewDocument.fire( 'insertText', new DomEventData( viewDocument, domEvent, {
+			viewDocument.fire<InsertTextEvent>( 'insertText', new DomEventData( view, domEvent, {
 				text: data,
 				selection: viewDocument.selection
 			} ) );
@@ -118,7 +125,7 @@ export default class InsertTextObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	observe() {}
+	public observe(): void {}
 }
 
 /**
@@ -138,3 +145,13 @@ export default class InsertTextObserver extends Observer {
  * If not specified, the insertion should occur at the current view selection.
  * @param {module:engine/view/range~Range} [data.resultRange] The range that view selection should be set to after insertion.
  */
+export type InsertTextEvent = {
+	name: 'insertText';
+	args: [ data: InsertTextEventData ];
+};
+
+export interface InsertTextEventData extends DomEventData {
+	text: string;
+	selection?: Selection;
+	resultRange?: Range;
+}

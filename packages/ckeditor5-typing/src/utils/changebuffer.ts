@@ -7,6 +7,12 @@
  * @module typing/utils/changebuffer
  */
 
+import type Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
+import type { ChangeEvent as DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/document';
+import type { ChangeEvent as SelectionChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
+
 /**
  * Change buffer allows to group atomic changes (like characters that have been typed) into
  * {@link module:engine/model/batch~Batch batches}.
@@ -26,13 +32,22 @@
  *
  */
 export default class ChangeBuffer {
+	public readonly model: Model;
+	public readonly limit: number;
+
+	public _isLocked: boolean;
+	private _size: number;
+	private _batch: Batch | null = null;
+	private readonly _changeCallback: ( evt: EventInfo, batch: Batch ) => void;
+	private readonly _selectionChangeCallback: () => void;
+
 	/**
 	 * Creates a new instance of the change buffer.
 	 *
 	 * @param {module:engine/model/model~Model} model
 	 * @param {Number} [limit=20] The maximum number of atomic changes which can be contained in one batch.
 	 */
-	constructor( model, limit = 20 ) {
+	constructor( model: Model, limit: number = 20 ) {
 		/**
 		 * The model instance.
 		 *
@@ -48,7 +63,7 @@ export default class ChangeBuffer {
 		 * @readonly
 		 * @member {Number} #size
 		 */
-		this.size = 0;
+		this._size = 0;
 
 		/**
 		 * The maximum number of atomic changes which can be contained in one batch.
@@ -64,7 +79,7 @@ export default class ChangeBuffer {
 		 * @readonly
 		 * @member {Boolean} #isLocked
 		 */
-		this.isLocked = false;
+		this._isLocked = false;
 
 		// The function to be called in order to notify the buffer about batches which appeared in the document.
 		// The callback will check whether it is a new batch and in that case the buffer will be flushed.
@@ -82,10 +97,10 @@ export default class ChangeBuffer {
 			this._reset();
 		};
 
-		this.model.document.on( 'change', this._changeCallback );
+		this.model.document.on<DocumentChangeEvent>( 'change', this._changeCallback );
 
-		this.model.document.selection.on( 'change:range', this._selectionChangeCallback );
-		this.model.document.selection.on( 'change:attribute', this._selectionChangeCallback );
+		this.model.document.selection.on<SelectionChangeEvent>( 'change:range', this._selectionChangeCallback );
+		this.model.document.selection.on<SelectionChangeEvent>( 'change:attribute', this._selectionChangeCallback );
 
 		/**
 		 * The current batch instance.
@@ -115,7 +130,7 @@ export default class ChangeBuffer {
 	 *
 	 * @type {module:engine/model/batch~Batch}
 	 */
-	get batch() {
+	public get batch(): Batch {
 		if ( !this._batch ) {
 			this._batch = this.model.createBatch( { isTyping: true } );
 		}
@@ -124,37 +139,52 @@ export default class ChangeBuffer {
 	}
 
 	/**
+	 * The number of atomic changes in the buffer. Once it exceeds the {@link #limit},
+	 * the {@link #batch batch} is set to a new one.
+	 */
+	public get size(): number {
+		return this._size;
+	}
+
+	/**
 	 * The input number of changes into the buffer. Once the {@link #size} is
 	 * reached or exceeds the {@link #limit}, the batch is set to a new instance and the size is reset.
 	 *
 	 * @param {Number} changeCount The number of atomic changes to input.
 	 */
-	input( changeCount ) {
-		this.size += changeCount;
+	public input( changeCount: number ): void {
+		this._size += changeCount;
 
-		if ( this.size >= this.limit ) {
+		if ( this._size >= this.limit ) {
 			this._reset( true );
 		}
 	}
 
 	/**
+	 * Whether the buffer is locked. A locked buffer cannot be reset unless it gets unlocked.
+	 */
+	public get isLocked(): boolean {
+		return this._isLocked;
+	}
+
+	/**
 	 * Locks the buffer.
 	 */
-	lock() {
-		this.isLocked = true;
+	public lock(): void {
+		this._isLocked = true;
 	}
 
 	/**
 	 * Unlocks the buffer.
 	 */
-	unlock() {
-		this.isLocked = false;
+	public unlock(): void {
+		this._isLocked = false;
 	}
 
 	/**
 	 * Destroys the buffer.
 	 */
-	destroy() {
+	public destroy(): void {
 		this.model.document.off( 'change', this._changeCallback );
 		this.model.document.selection.off( 'change:range', this._selectionChangeCallback );
 		this.model.document.selection.off( 'change:attribute', this._selectionChangeCallback );
@@ -166,10 +196,10 @@ export default class ChangeBuffer {
 	 * @private
 	 * @param {Boolean} [ignoreLock] Whether internal lock {@link #isLocked} should be ignored.
 	 */
-	_reset( ignoreLock ) {
+	private _reset( ignoreLock: boolean = false ): void {
 		if ( !this.isLocked || ignoreLock ) {
 			this._batch = null;
-			this.size = 0;
+			this._size = 0;
 		}
 	}
 }

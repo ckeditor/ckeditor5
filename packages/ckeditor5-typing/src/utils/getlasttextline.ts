@@ -7,6 +7,8 @@
  * @module typing/utils/getlasttextline
  */
 
+import type { Model, Range } from '@ckeditor/ckeditor5-engine';
+
 /**
  * Returns the last text line from the given range.
  *
@@ -33,7 +35,7 @@
  * @param {module:engine/model/model~Model} model
  * @returns {module:typing/utils/getlasttextline~LastTextLineData}
  */
-export default function getLastTextLine( range, model ) {
+export default function getLastTextLine( range: Range, model: Model ): LastTextLineData {
 	let start = range.start;
 
 	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
@@ -58,3 +60,7 @@ export default function getLastTextLine( range, model ) {
  * @property {String} text The text from the text nodes in the last text line.
  * @property {module:engine/model/range~Range} range The range set on the text nodes in the last text line.
  */
+type LastTextLineData = {
+	text: string;
+	range: Range;
+};
