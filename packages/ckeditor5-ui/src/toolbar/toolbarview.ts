@@ -333,7 +333,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	public fillFromConfig(
 		itemsOrConfig: ToolbarConfig | undefined,
 		factory: ComponentFactory,
-		removeItems?: string[]
+		removeItems?: Array<string>
 	): void {
 		const config = normalizeToolbarConfig( itemsOrConfig );
 		const normalizedRemoveItems = removeItems || config.removeItems;
@@ -365,9 +365,9 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * @returns {Array.<String>}  Items after the clean-up.
 	 */
 	private _cleanItemsConfiguration(
-		items: ToolbarConfigItem[],
+		items: Array<ToolbarConfigItem>,
 		factory: ComponentFactory,
-		removeItems: string[]
+		removeItems: Array<string>
 	) {
 		const filteredItems = items
 			.filter( ( item, idx, items ) => {
@@ -445,7 +445,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * @param {Array.<String>} items
 	 * @returns {Array.<String>} Toolbar items after the separator and line break clean-up.
 	 */
-	private _cleanSeparatorsAndLineBreaks( items: ToolbarConfigItem[] ) {
+	private _cleanSeparatorsAndLineBreaks( items: Array<ToolbarConfigItem> ) {
 		const nonSeparatorPredicate = ( item: ToolbarConfigItem ) => ( item !== '-' && item !== '|' );
 		const count = items.length;
 
@@ -497,7 +497,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	private _createNestedToolbarDropdown(
 		definition: Exclude<ToolbarConfigItem, string>,
 		componentFactory: ComponentFactory,
-		removeItems: string[]
+		removeItems: Array<string>
 	) {
 		let { label, icon, items, tooltip = true, withText = false } = definition;
 

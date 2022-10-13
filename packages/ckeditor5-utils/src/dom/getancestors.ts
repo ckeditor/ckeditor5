@@ -18,8 +18,8 @@
  * @param {Node} node DOM node.
  * @returns {Array.<Node|DocumentFragment>} Array of given `node` parents.
  */
-export default function getAncestors( node: Node ): Node[] {
-	const nodes: Node[] = [];
+export default function getAncestors( node: Node ): Array<Node> {
+	const nodes: Array<Node> = [];
 	let currentNode: Node | null = node;
 
 	// We are interested in `Node`s `DocumentFragment`s only.

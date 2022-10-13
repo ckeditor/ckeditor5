@@ -36,7 +36,7 @@ export default class EventInfo<TName extends string = string, TReturn = unknown>
 	 * @readonly
 	 * @member {Array.<Object>}
 	 */
-	public path: object[];
+	public path: Array<object>;
 
 	/**
 	 * Stops the event emitter to call further callbacks for this event interaction.

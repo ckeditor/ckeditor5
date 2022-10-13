@@ -683,7 +683,7 @@ export default class Renderer extends Observable {
 	 * @param {Array.<ViewNode>|NodeList} expectedDomChildren Expected DOM children.
 	 * @returns {Array.<String>} The list of actions based on the {@link module:utils/diff~diff} function.
 	 */
-	private _diffNodeLists( actualDomChildren: DomNode[] | NodeList, expectedDomChildren: DomNode[] | NodeList ) {
+	private _diffNodeLists( actualDomChildren: Array<DomNode> | NodeList, expectedDomChildren: Array<DomNode> | NodeList ) {
 		actualDomChildren = filterOutFakeSelectionContainer( actualDomChildren, this._fakeSelectionContainer );
 
 		return diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, this.domConverter ) );
@@ -705,16 +705,16 @@ export default class Renderer extends Observable {
 	 * @returns {Array.<String>} Actions array modified with the `replace` actions.
 	 */
 	private _findReplaceActions(
-		actions: DiffResult[],
-		actualDom: DomNode[] | NodeList,
-		expectedDom: DomNode[]
-	): ( DiffResult | 'replace' )[] {
+		actions: Array<DiffResult>,
+		actualDom: Array<DomNode> | NodeList,
+		expectedDom: Array<DomNode>
+	): Array<DiffResult | 'replace'> {
 		// If there is no both 'insert' and 'delete' actions, no need to check for replaced elements.
 		if ( actions.indexOf( 'insert' ) === -1 || actions.indexOf( 'delete' ) === -1 ) {
 			return actions;
 		}
 
-		let newActions: ( DiffResult | 'replace' )[] = [];
+		let newActions: Array<DiffResult | 'replace'> = [];
 		let actualSlice = [];
 		let expectedSlice = [];
 
@@ -993,7 +993,7 @@ function isEditable( element: ViewElement ): boolean {
 // @param {Element|Array.<ViewNode>} domParentOrArray
 // @param {Number} offset
 // @returns {Text} The DOM text node that contains an inline filler.
-function addInlineFiller( domDocument: DomDocument, domParentOrArray: DomNode | DomNode[], offset: number ): DomText {
+function addInlineFiller( domDocument: DomDocument, domParentOrArray: DomNode | Array<DomNode>, offset: number ): DomText {
 	const childNodes = domParentOrArray instanceof Array ? domParentOrArray : domParentOrArray.childNodes;
 	const nodeAfterFiller = childNodes[ offset ];
 
@@ -1005,7 +1005,7 @@ function addInlineFiller( domDocument: DomDocument, domParentOrArray: DomNode | 
 		const fillerNode = domDocument.createTextNode( INLINE_FILLER );
 
 		if ( Array.isArray( domParentOrArray ) ) {
-			( childNodes as DomNode[] ).splice( offset, 0, fillerNode );
+			( childNodes as Array<DomNode> ).splice( offset, 0, fillerNode );
 		} else {
 			insertAt( domParentOrArray as DomElement, offset, fillerNode );
 		}
@@ -1084,7 +1084,7 @@ function fixGeckoSelectionAfterBr( focus: ReturnType<DomConverter[ 'viewPosition
 	}
 }
 
-function filterOutFakeSelectionContainer( domChildList: DomNode[] | NodeList, fakeSelectionContainer: DomElement | null ) {
+function filterOutFakeSelectionContainer( domChildList: Array<DomNode> | NodeList, fakeSelectionContainer: DomElement | null ) {
 	const childList = Array.from( domChildList );
 
 	if ( childList.length == 0 || !fakeSelectionContainer ) {

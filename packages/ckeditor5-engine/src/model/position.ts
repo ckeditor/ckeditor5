@@ -57,7 +57,7 @@ import '@ckeditor/ckeditor5-utils/src/version';
  */
 export default class Position extends TypeCheckable {
 	public readonly root: Element | DocumentFragment;
-	public path: number[];
+	public path: Array<number>;
 	public stickiness: PositionStickiness;
 
 	/**
@@ -70,7 +70,7 @@ export default class Position extends TypeCheckable {
 	 */
 	constructor(
 		root: Element | DocumentFragment,
-		path: number[],
+		path: Array<number>,
 		stickiness: PositionStickiness = 'toNone'
 	) {
 		super();
@@ -359,7 +359,7 @@ export default class Position extends TypeCheckable {
 	 *
 	 * @returns {Array.<Number>} Path to the parent.
 	 */
-	public getParentPath(): number[] {
+	public getParentPath(): Array<number> {
 		return this.path.slice( 0, -1 );
 	}
 
@@ -368,7 +368,7 @@ export default class Position extends TypeCheckable {
 	 *
 	 * @returns {Array.<module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment>} Array with ancestors.
 	 */
-	public getAncestors(): ( Element | DocumentFragment )[] {
+	public getAncestors(): Array<Element | DocumentFragment> {
 		const parent = this.parent;
 
 		if ( parent.is( 'documentFragment' ) ) {
@@ -403,7 +403,7 @@ export default class Position extends TypeCheckable {
 	 * @param {module:engine/model/position~Position} position The second position.
 	 * @returns {Array.<Number>} The common path.
 	 */
-	public getCommonPath( position: Position ): number[] {
+	public getCommonPath( position: Position ): Array<number> {
 		if ( this.root != position.root ) {
 			return [];
 		}

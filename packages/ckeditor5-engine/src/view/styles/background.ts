@@ -43,8 +43,8 @@ export function addBackgroundRules( stylesProcessor: StylesProcessor ): void {
 function getBackgroundNormalizer(): Normalizer {
 	return value => {
 		const background: {
-			repeat?: string[];
-			position?: string[];
+			repeat?: Array<string>;
+			position?: Array<string>;
 			attachment?: string;
 			color?: string;
 			image?: string;
@@ -83,7 +83,7 @@ function getBackgroundColorNormalizer(): Normalizer {
 
 function getBackgroundReducer(): Reducer {
 	return value => {
-		const ret: PropertyDescriptor[] = [];
+		const ret: Array<PropertyDescriptor> = [];
 
 		ret.push( [ 'background-color', ( value as Styles ).color as string ] );
 

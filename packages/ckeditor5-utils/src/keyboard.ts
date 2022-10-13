@@ -102,7 +102,7 @@ export function getCode( key: string | Readonly<KeystrokeInfo> ): number {
  * @param {String|Array.<Number|String>} keystroke The keystroke definition.
  * @returns {Number} Keystroke code.
  */
-export function parseKeystroke( keystroke: string | readonly ( number | string )[] ): number {
+export function parseKeystroke( keystroke: string | ReadonlyArray<number | string> ): number {
 	if ( typeof keystroke == 'string' ) {
 		keystroke = splitKeystrokeText( keystroke );
 	}
@@ -274,7 +274,7 @@ function generateKnownKeyCodes(): { readonly [ keyCode: string ]: number } {
 	return keyCodes;
 }
 
-function splitKeystrokeText( keystroke: string ): string[] {
+function splitKeystrokeText( keystroke: string ): Array<string> {
 	return keystroke.split( '+' ).map( key => key.trim() );
 }
 

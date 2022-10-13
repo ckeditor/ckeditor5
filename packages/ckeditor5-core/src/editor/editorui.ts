@@ -44,7 +44,7 @@ export default abstract class EditorUI extends Observable {
 	};
 
 	private _editableElementsMap: Map<string, HTMLElement>;
-	private _focusableToolbarDefinitions: FocusableToolbarDefinition[];
+	private _focusableToolbarDefinitions: Array<FocusableToolbarDefinition>;
 
 	/**
 	 * Creates an instance of the editor UI class.
@@ -379,7 +379,7 @@ export default abstract class EditorUI extends Observable {
 		const editingView = editor.editing.view;
 
 		let lastFocusedForeignElement: HTMLElement | null;
-		let candidateDefinitions: FocusableToolbarDefinition[];
+		let candidateDefinitions: Array<FocusableToolbarDefinition>;
 
 		// Focus the next focusable toolbar on <kbd>Alt</kbd> + <kbd>F10</kbd>.
 		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {

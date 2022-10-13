@@ -43,7 +43,7 @@ export default class MutationObserver extends Observer {
 	public renderer: Renderer;
 
 	private readonly _config: MutationObserverInit;
-	private readonly _domElements: HTMLElement[];
+	private readonly _domElements: Array<HTMLElement>;
 	private _mutationObserver: InstanceType<typeof global.MutationObserver>;
 
 	constructor( view: View ) {
@@ -147,7 +147,7 @@ export default class MutationObserver extends Observer {
 	 * @private
 	 * @param {Array.<Object>} domMutations Array of native mutations.
 	 */
-	private _onMutations( domMutations: MutationRecord[] ) {
+	private _onMutations( domMutations: Array<MutationRecord> ) {
 		// As a result of this.flush() we can have an empty collection.
 		if ( domMutations.length === 0 ) {
 			return;
@@ -211,7 +211,7 @@ export default class MutationObserver extends Observer {
 		// same node multiple times in case of duplication.
 
 		// List of mutations we will fire.
-		const viewMutations: ( MutatedText | MutatedChildren )[] = [];
+		const viewMutations: Array<MutatedText | MutatedChildren> = [];
 
 		for ( const mutatedText of mutatedTexts.values() ) {
 			this.renderer.markToSync( 'text', mutatedText.node );
@@ -313,7 +313,7 @@ export default class MutationObserver extends Observer {
 
 export type MutationObserverEvent = {
 	name: 'mutations';
-	args: [ viewMutations: ( MutatedChildren | MutatedText )[], viewSelection: ViewSelection | null ];
+	args: [ viewMutations: Array<MutatedChildren | MutatedText>, viewSelection: ViewSelection | null ];
 };
 
 /**
@@ -372,6 +372,6 @@ export interface MutatedText {
 export interface MutatedChildren {
 	type: 'children';
 	node: ViewElement;
-	oldChildren: ViewNode[];
-	newChildren: ViewNode[];
+	oldChildren: Array<ViewNode>;
+	newChildren: Array<ViewNode>;
 }

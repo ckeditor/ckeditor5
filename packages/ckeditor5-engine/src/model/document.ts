@@ -251,7 +251,7 @@ export default class Document extends Emitter {
 	 *
 	 * @returns {Array.<String>} Roots names.
 	 */
-	public getRootNames(): string[] {
+	public getRootNames(): Array<string> {
 		return Array.from( this.roots, root => root.rootName ).filter( name => name != graveyardName );
 	}
 

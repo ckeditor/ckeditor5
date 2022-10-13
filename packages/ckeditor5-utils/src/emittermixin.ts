@@ -245,7 +245,7 @@ export default function EmitterMixin<Base extends abstract new( ...args: any ) =
 			}
 		}
 
-		public delegate( ...events: string[] ): EmitterMixinDelegateChain {
+		public delegate( ...events: Array<string> ): EmitterMixinDelegateChain {
 			return {
 				to: ( emitter, nameOrFunction ) => {
 					if ( !this[ _delegations ] ) {
@@ -328,7 +328,7 @@ export default function EmitterMixin<Base extends abstract new( ...args: any ) =
 		public [ _listeningTo ]?: {
 			[ emitterId: string ]: {
 				emitter: Emitter;
-				callbacks: { [ event: string]: Function[] };
+				callbacks: { [ event: string]: Array<Function> };
 			};
 		};
 
@@ -500,7 +500,7 @@ export interface Emitter {
 	 * @param {...String} events Event names that will be delegated to another emitter.
 	 * @returns {module:utils/emittermixin~EmitterMixinDelegateChain}
 	 */
-	delegate( ...events: string[] ): EmitterMixinDelegateChain;
+	delegate( ...events: Array<string> ): EmitterMixinDelegateChain;
 
 	/**
 	 * Stops delegating events. It can be used at different levels:
@@ -554,7 +554,7 @@ interface EmitterInternal extends Emitter {
 	[ _listeningTo ]?: {
 		[ emitterId: string ]: {
 			emitter: Emitter;
-			callbacks: { [ event: string]: Function[] };
+			callbacks: { [ event: string]: Array<Function> };
 		};
 	};
 
@@ -563,7 +563,7 @@ interface EmitterInternal extends Emitter {
 
 export type BaseEvent = {
 	name: string;
-	args: any[];
+	args: Array<any>;
 };
 
 export type GetEventInfo<TEvent extends BaseEvent> = TEvent extends { eventInfo: EventInfo } ?
@@ -636,8 +636,8 @@ export function _getEmitterId( emitter: Emitter ): string | undefined {
 }
 
 interface EventNode {
-	callbacks: { callback: Function; priority: number }[];
-	childEvents: string[];
+	callbacks: Array<{ callback: Function; priority: number }>;
+	childEvents: Array<string>;
 }
 
 // Gets the internal `_events` property of the given object.
@@ -731,7 +731,7 @@ function createEventNamespace( source: EmitterInternal, eventName: string ): voi
 // Gets an array containing callbacks list for a given event and it's more specific events.
 // I.e. if given event is foo:bar and there is also foo:bar:abc event registered, this will
 // return callback list of foo:bar and foo:bar:abc (but not foo).
-function getCallbacksListsForNamespace( source: EmitterInternal, eventName: string ): EventNode[ 'callbacks' ][] {
+function getCallbacksListsForNamespace( source: EmitterInternal, eventName: string ): Array<EventNode[ 'callbacks' ]> {
 	const eventNode = getEvents( source )[ eventName ];
 
 	if ( !eventNode ) {
@@ -780,7 +780,7 @@ function getCallbacksForEvent( source: EmitterInternal, eventName: string ): Eve
 function fireDelegatedEvents(
 	destinations: Map<Emitter, string | ( ( name: string ) => string ) | undefined>,
 	eventInfo: EventInfo,
-	fireArgs: any[]
+	fireArgs: Array<any>
 ) {
 	for ( let [ emitter, name ] of destinations ) {
 		if ( !name ) {

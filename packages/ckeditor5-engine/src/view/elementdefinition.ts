@@ -59,7 +59,7 @@
  */
 type ElementDefinition = string | {
 	name: string;
-	classes?: string | string[];
+	classes?: string | Array<string>;
 	styles?: Record<string, string>;
 	attributes?: Record<string, string>;
 	priority?: number;

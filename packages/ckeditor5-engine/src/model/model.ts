@@ -48,7 +48,7 @@ export default class Model extends Observable {
 	public readonly document: Document;
 	public readonly schema: Schema;
 
-	private readonly _pendingChanges: { batch: Batch; callback: ( writer: Writer ) => any }[];
+	private readonly _pendingChanges: Array<{ batch: Batch; callback: ( writer: Writer ) => any }>;
 	private _currentWriter: Writer | null;
 
 	constructor() {
@@ -785,7 +785,7 @@ export default class Model extends Observable {
 	 */
 	public createPositionFromPath(
 		root: ModelElement | ModelDocumentFragment,
-		path: number[],
+		path: Array<number>,
 		stickiness?: PositionStickiness
 	): ModelPosition {
 		return new ModelPosition( root, path, stickiness );

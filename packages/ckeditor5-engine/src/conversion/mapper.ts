@@ -285,7 +285,7 @@ export default class Mapper extends Emitter {
 	 *
 	 * @returns {Array.<String>}
 	 */
-	public flushUnboundMarkerNames(): string[] {
+	public flushUnboundMarkerNames(): Array<string> {
 		const markerNames = Array.from( this._unboundMarkerNames );
 
 		this._unboundMarkerNames.clear();

@@ -19,7 +19,7 @@ import type Editor from '../editor';
  * @mixin ElementApiMixin
  * @implements module:core/editor/utils/elementapimixin~ElementApi
  */
-export default function ElementApiMixin<Base extends abstract new( ...args: any[] ) => Editor>(
+export default function ElementApiMixin<Base extends abstract new( ...args: Array<any> ) => Editor>(
 	base: Base
 ) {
 	abstract class Mixin extends base implements ElementApi {
