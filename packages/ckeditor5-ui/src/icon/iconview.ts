@@ -24,7 +24,7 @@ export default class IconView extends View {
 	declare public viewBox: string;
 	declare public fillColor: string;
 	declare public isColorInherited: boolean;
-	declare public static presentationalAttributeNames: string[];
+	declare public static presentationalAttributeNames: Array<string>;
 
 	/**
 	 * @inheritDoc
