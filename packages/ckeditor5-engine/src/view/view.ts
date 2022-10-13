@@ -214,7 +214,6 @@ export default class View extends Observable {
 		this.addObserver( ArrowKeysObserver );
 		this.addObserver( InputObserver );
 		this.addObserver( TabObserver );
-		this.addObserver( InputObserver );
 
 		// Inject quirks handlers.
 		injectQuirksHandling( this );

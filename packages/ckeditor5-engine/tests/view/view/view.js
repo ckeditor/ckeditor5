@@ -92,7 +92,6 @@ describe( 'view', () => {
 		expect( view.getObserver( CompositionObserver ) ).to.be.instanceof( CompositionObserver );
 		expect( view.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
 		expect( view.getObserver( ArrowKeysObserver ) ).to.be.instanceof( ArrowKeysObserver );
-		expect( view.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
 	} );
 
 	describe( 'attachDomRoot()', () => {
