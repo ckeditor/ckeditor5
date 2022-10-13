@@ -192,7 +192,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	public elementToElement( config: {
 		model: string | {
 			name: string;
-			attributes?: string | string[];
+			attributes?: string | Array<string>;
 			children?: boolean;
 		};
 		view: ElementDefinition | ElementCreatorFunction;
@@ -339,7 +339,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	public elementToStructure( config: {
 		model: string | {
 			name: string;
-			attributes?: string | string[];
+			attributes?: string | Array<string>;
 		};
 		view: StructureCreatorFunction;
 		converterPriority?: PriorityString;
@@ -446,7 +446,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 			model: {
 				key: string;
 				name?: string;
-				values: TValues[];
+				values: Array<TValues>;
 			};
 			view: Record<TValues, ElementDefinition | AttributeElementCreatorFunction>;
 			converterPriority?: PriorityString;
@@ -547,7 +547,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 			model: {
 				key: string;
 				name?: string;
-				values: TValues[];
+				values: Array<TValues>;
 			};
 			view: Record<TValues, AttributeDescriptor | AttributeCreatorFunction>;
 			converterPriority?: PriorityString;
@@ -948,7 +948,7 @@ export function convertRangeSelection() {
 			return;
 		}
 
-		const viewRanges: ViewRange[] = [];
+		const viewRanges: Array<ViewRange> = [];
 
 		for ( const range of selection.getRanges() ) {
 			viewRanges.push( conversionApi.mapper.toViewRange( range ) );
@@ -1217,7 +1217,7 @@ export function insertStructure( elementCreator: StructureCreatorFunction, consu
 			return;
 		}
 
-		const slotsMap = new Map<ViewElement, ModelNode[]>();
+		const slotsMap = new Map<ViewElement, Array<ModelNode>>();
 
 		conversionApi.writer._registerSlotFactory( createSlotFactory( data.item, slotsMap, conversionApi ) );
 
@@ -1877,7 +1877,7 @@ function removeHighlight( highlightDescriptor: HighlightDescriptor | HighlightDe
 function downcastElementToElement( config: {
 	model: string | {
 		name: string;
-		attributes?: string | string[];
+		attributes?: string | Array<string>;
 		children?: boolean;
 	};
 	view: ElementDefinition | ElementCreatorFunction;
@@ -1919,7 +1919,7 @@ function downcastElementToStructure(
 	config: {
 		model: string | {
 			name: string;
-			attributes?: string | string[];
+			attributes?: string | Array<string>;
 		};
 		view: StructureCreatorFunction;
 		converterPriority?: PriorityString;
@@ -2003,7 +2003,7 @@ function downcastAttributeToElement( config: {
 	model: string | {
 		key: string;
 		name?: string;
-		values?: string[];
+		values?: Array<string>;
 	};
 	view: ElementDefinition | AttributeElementCreatorFunction | Record<string, ElementDefinition | AttributeElementCreatorFunction>;
 	converterPriority?: PriorityString;
@@ -2060,7 +2060,7 @@ function downcastAttributeToAttribute( config: {
 	model: string | {
 		key: string;
 		name?: string;
-		values?: string[];
+		values?: Array<string>;
 	};
 	view: string | AttributeDescriptor | AttributeCreatorFunction | Record<string, AttributeDescriptor | AttributeCreatorFunction>;
 	converterPriority?: PriorityString;
@@ -2213,7 +2213,7 @@ function downcastMarkerToHighlight( config: {
 // @returns {Object}
 function normalizeModelElementConfig( model: string | {
 	name: string;
-	attributes?: string | string[];
+	attributes?: string | Array<string>;
 	children?: boolean;
 } ): NormalizedModelElementConfig {
 	if ( typeof model == 'string' ) {
@@ -2235,7 +2235,7 @@ function normalizeModelElementConfig( model: string | {
 
 interface NormalizedModelElementConfig {
 	name: string;
-	attributes: string[];
+	attributes: Array<string>;
 	children: boolean;
 }
 
@@ -2425,7 +2425,7 @@ function createChangeReducer( model: NormalizedModelElementConfig ) {
 		evt: unknown,
 		data: { changes: Iterable<DiffItem | DiffItemReinsert>; reconvertedElements?: Set<ModelNode> }
 	) => {
-		const reducedChanges: ( DiffItem | DiffItemReinsert )[] = [];
+		const reducedChanges: Array<DiffItem | DiffItemReinsert> = [];
 
 		if ( !data.reconvertedElements ) {
 			data.reconvertedElements = new Set();
@@ -2502,11 +2502,11 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
 // @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {Function} Exposed by writer as createSlot().
-function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, ModelNode[]>, conversionApi: DowncastConversionApi ) {
+function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
 	return ( writer: DowncastWriter, modeOrFilter: string | SlotFilter = 'children' ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
-		let children: ModelNode[] | null = null;
+		let children: Array<ModelNode> | null = null;
 
 		if ( modeOrFilter === 'children' ) {
 			children = Array.from( element.getChildren() );
@@ -2534,7 +2534,7 @@ function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Mo
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 function validateSlotsChildren(
 	element: ModelElement,
-	slotsMap: Map<ViewElement, ModelNode[]>,
+	slotsMap: Map<ViewElement, Array<ModelNode>>,
 	conversionApi: DowncastConversionApi
 ) {
 	const childrenInSlots = Array.from( slotsMap.values() ).flat();
@@ -2573,7 +2573,7 @@ function validateSlotsChildren(
 // @param {Boolean} [options.reconversion]
 function fillSlots(
 	viewElement: ViewElement,
-	slotsMap: Map<ViewElement, ModelNode[]>,
+	slotsMap: Map<ViewElement, Array<ModelNode>>,
 	conversionApi: DowncastConversionApi,
 	options: { reconversion?: boolean }
 ): void {
@@ -2581,7 +2581,7 @@ function fillSlots(
 	conversionApi.mapper.on<ModelToViewPositionEvent>( 'modelToViewPosition', toViewPositionMapping, { priority: 'highest' } );
 
 	let currentSlot: ViewElement | null = null;
-	let currentSlotNodes: ModelNode[] | null = null;
+	let currentSlotNodes: Array<ModelNode> | null = null;
 
 	// Fill slots with nested view nodes.
 	for ( [ currentSlot, currentSlotNodes ] of slotsMap ) {
@@ -2734,7 +2734,7 @@ function defaultConsumer(
  * this depends on how the element converts the descriptor.
  */
 export interface HighlightDescriptor {
-	classes: string | string[];
+	classes: string | Array<string>;
 	id?: string;
 	priority?: number;
 	attributes?: Record<string, string>;
@@ -2867,7 +2867,7 @@ export type AttributeCreatorFunction = (
 
 export type AttributeDescriptor = {
 	key: 'class';
-	value: string | string[];
+	value: string | Array<string>;
 } | {
 	key: 'style';
 	value: Record<string, string>;

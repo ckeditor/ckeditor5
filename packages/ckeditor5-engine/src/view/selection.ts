@@ -37,7 +37,7 @@ import type EditableElement from './editableelement';
  * the {@link module:engine/view/selection~Selection#setTo `Selection#setTo()`} method.
  */
 export default class Selection extends EmitterMixin( TypeCheckable ) {
-	private _ranges: Range[];
+	private _ranges: Array<Range>;
 	private _lastRangeBackward: boolean;
 	private _isFake: boolean;
 	private _fakeSelectionLabel: string;

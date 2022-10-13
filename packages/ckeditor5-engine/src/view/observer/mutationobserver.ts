@@ -38,7 +38,7 @@ export default class MutationObserver extends Observer {
 	public renderer: Renderer;
 
 	private readonly _config: MutationObserverInit;
-	private readonly _domElements: HTMLElement[];
+	private readonly _domElements: Array<HTMLElement>;
 	private _mutationObserver: InstanceType<typeof global.MutationObserver>;
 
 	constructor( view: View ) {
@@ -141,7 +141,7 @@ export default class MutationObserver extends Observer {
 	 * @private
 	 * @param {Array.<Object>} domMutations Array of native mutations.
 	 */
-	private _onMutations( domMutations: MutationRecord[] ) {
+	private _onMutations( domMutations: Array<MutationRecord> ) {
 		// As a result of this.flush() we can have an empty collection.
 		if ( domMutations.length === 0 ) {
 			return;

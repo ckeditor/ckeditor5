@@ -42,7 +42,7 @@ export default abstract class DomEventObserver<
 	EventType extends keyof HTMLElementEventMap,
 	AdditionalData extends object = object
 > extends Observer {
-	public domEventType!: EventType | ( EventType )[];
+	public domEventType!: EventType | Array<EventType>;
 
 	public useCapture: boolean;
 

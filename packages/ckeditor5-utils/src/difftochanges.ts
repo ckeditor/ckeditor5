@@ -32,8 +32,8 @@ import type { DiffResult } from './diff';
  * @returns {Array.<module:utils/difftochanges~Change>} Set of changes (insert or delete) which need to be applied to the input
  * in order to transform it into the output.
  */
-export default function diffToChanges<T>( diff: readonly DiffResult[], output: ArrayLike<T> ): Change<T>[] {
-	const changes: Change<T>[] = [];
+export default function diffToChanges<T>( diff: ReadonlyArray<DiffResult>, output: ArrayLike<T> ): Array<Change<T>> {
+	const changes: Array<Change<T>> = [];
 	let index = 0;
 	let lastOperation: Change<T> | null = null;
 
@@ -94,7 +94,7 @@ export default function diffToChanges<T>( diff: readonly DiffResult[], output: A
 export interface InsertChange<T> {
 	type: 'insert';
 	index: number;
-	values: T[];
+	values: Array<T>;
 }
 
 /**

@@ -253,7 +253,7 @@ function leaveDOMReferences( value: unknown ): unknown {
 	return isElement( value ) ? value : undefined;
 }
 
-type OnlyObject<T> = Exclude<T, undefined | null | string | number | boolean | any[]>;
+type OnlyObject<T> = Exclude<T, undefined | null | string | number | boolean | Array<any>>;
 
 type GetSubConfig<T, K> = K extends keyof T ?
 	T[ K ] :

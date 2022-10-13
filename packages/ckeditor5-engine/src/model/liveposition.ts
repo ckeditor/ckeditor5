@@ -46,7 +46,7 @@ export default class LivePosition extends EmitterMixin( Position ) {
 	 * @param {Array.<Number>} path
 	 * @param {module:engine/model/position~PositionStickiness} [stickiness]
 	 */
-	constructor( root: RootElement, path: number[], stickiness: PositionStickiness = 'toNone' ) {
+	constructor( root: RootElement, path: Array<number>, stickiness: PositionStickiness = 'toNone' ) {
 		super( root, path, stickiness );
 
 		if ( !this.root.is( 'rootElement' ) ) {

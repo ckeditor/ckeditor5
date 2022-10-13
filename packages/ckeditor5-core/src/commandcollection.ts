@@ -56,7 +56,7 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 	 * @param {*} [...commandParams] Command parameters.
 	 * @returns {*} The value returned by the {@link module:core/command~Command#execute `command.execute()`}.
 	 */
-	public execute( commandName: string, ...args: unknown[] ): unknown {
+	public execute( commandName: string, ...args: Array<unknown> ): unknown {
 		const command = this.get( commandName );
 
 		if ( !command ) {

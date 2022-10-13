@@ -123,7 +123,7 @@ import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 export default class UpcastDispatcher extends Emitter {
 	public conversionApi: UpcastConversionApi;
 
-	private _splitParts: Map<ModelElement, ModelElement[]>;
+	private _splitParts: Map<ModelElement, Array<ModelElement>>;
 	private _cursorParents: Map<ModelElement, ModelElement | ModelDocumentFragment>;
 	private _modelCursor: ModelPosition | null;
 	private _emptyElementsToKeep: Set<ModelElement>;
@@ -454,7 +454,7 @@ export default class UpcastDispatcher extends Emitter {
 		//
 		// With those observations in mind, we will pair the original elements with their split parts by saving "closing tags" and matching
 		// them with "opening tags" in the reverse order. For that we can use a stack.
-		const stack: ModelElement[] = [];
+		const stack: Array<ModelElement> = [];
 
 		for ( const treeWalkerValue of splitResult.range.getWalker() ) {
 			if ( treeWalkerValue.type == 'elementEnd' ) {
@@ -501,8 +501,8 @@ export default class UpcastDispatcher extends Emitter {
 	 * @private
 	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#getSplitParts
 	 */
-	private _getSplitParts( element: ModelElement ): ModelElement[] {
-		let parts: ModelElement[];
+	private _getSplitParts( element: ModelElement ): Array<ModelElement> {
+		let parts: Array<ModelElement>;
 
 		if ( !this._splitParts.has( element ) ) {
 			parts = [ element ];
@@ -692,7 +692,7 @@ export interface UpcastConversionApi {
 		position: ModelPosition;
 		cursorParent?: ModelElement | ModelDocumentFragment;
 	} | null;
-	getSplitParts( modelElement: ModelElement ): ModelElement[];
+	getSplitParts( modelElement: ModelElement ): Array<ModelElement>;
 	keepEmptyElement( modelElement: ModelElement ): void;
 }
 

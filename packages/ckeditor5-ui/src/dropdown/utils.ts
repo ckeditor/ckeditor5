@@ -154,7 +154,7 @@ export function createDropdown(
  */
 export function addToolbarToDropdown(
 	dropdownView: DropdownView,
-	buttons: ButtonView[],
+	buttons: Array<ButtonView>,
 	options: { enableActiveItemFocusOnDropdownOpen?: boolean } = {}
 ): void {
 	const locale = dropdownView.locale;
@@ -246,7 +246,7 @@ export function addListToDropdown<I extends string>(
 			}
 
 			// Bind all model properties to the button view.
-			buttonView.bind( ...Object.keys( def.model ) as ( keyof ButtonView )[] ).to( def.model );
+			buttonView.bind( ...Object.keys( def.model ) as Array<keyof ButtonView> ).to( def.model );
 			buttonView.delegate( 'execute' ).to( listItemView );
 
 			listItemView.children.add( buttonView );
