@@ -13,7 +13,7 @@ type DomDataTransfer = globalThis.DataTransfer;
  * A facade over the native [`DataTransfer`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer) object.
  */
 export default class DataTransfer {
-	public readonly files: File[];
+	public readonly files: Array<File>;
 
 	private _native: DomDataTransfer;
 
@@ -40,7 +40,7 @@ export default class DataTransfer {
 	 *
 	 * @returns {Array.<String>}
 	 */
-	public get types(): readonly string[] {
+	public get types(): ReadonlyArray<string> {
 		return this._native.types;
 	}
 
@@ -102,7 +102,7 @@ export default class DataTransfer {
 	}
 }
 
-function getFiles( nativeDataTransfer: DomDataTransfer ): File[] {
+function getFiles( nativeDataTransfer: DomDataTransfer ): Array<File> {
 	// DataTransfer.files and items are array-like and might not have an iterable interface.
 	const files = Array.from( nativeDataTransfer.files || [] );
 	const items = Array.from( nativeDataTransfer.items || [] );
