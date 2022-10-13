@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import icon from '@ckeditor/ckeditor5-core/theme/icons/paragraph.svg';
+import type ParagraphCommand from './paragraphcommand';
 
 /**
  * This plugin defines the `'paragraph'` button. It can be used together with
@@ -29,13 +30,13 @@ import icon from '@ckeditor/ckeditor5-core/theme/icons/paragraph.svg';
  * @extends module:core/plugin~Plugin
  */
 export default class ParagraphButtonUI extends Plugin {
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'paragraph', locale => {
 			const view = new ButtonView( locale );
-			const command = editor.commands.get( 'paragraph' );
+			const command = editor.commands.get( 'paragraph' ) as ParagraphCommand;
 
 			view.label = t( 'Paragraph' );
 			view.icon = icon;

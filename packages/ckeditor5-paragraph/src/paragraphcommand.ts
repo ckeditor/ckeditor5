@@ -10,6 +10,8 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
+import type { Schema, Selection, DocumentSelection, Element } from '@ckeditor/ckeditor5-engine';
+
 /**
  * The paragraph command.
  *
@@ -23,11 +25,12 @@ export default class ParagraphCommand extends Command {
 	 * @observable
 	 * @member {Boolean} #value
 	 */
+	declare public value: boolean;
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const block = first( document.selection.getSelectedBlocks() );
@@ -46,7 +49,9 @@ export default class ParagraphCommand extends Command {
 	 * The selection that the command should be applied to.
 	 * By default, if not provided, the command is applied to the {@link module:engine/model/document~Document#selection}.
 	 */
-	execute( options = {} ) {
+	public override execute( options: {
+		selection?: Selection | DocumentSelection;
+	} = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 
@@ -68,6 +73,6 @@ export default class ParagraphCommand extends Command {
 // @param {module:engine/model/element~Element} block A block to be tested.
 // @param {module:engine/model/schema~Schema} schema The schema of the document.
 // @returns {Boolean}
-function checkCanBecomeParagraph( block, schema ) {
-	return schema.checkChild( block.parent, 'paragraph' ) && !schema.isObject( block );
+function checkCanBecomeParagraph( block: Element, schema: Schema ) {
+	return schema.checkChild( block.parent as Element, 'paragraph' ) && !schema.isObject( block );
 }

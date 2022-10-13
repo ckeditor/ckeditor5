@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import type { Element, Position } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific
@@ -36,7 +37,10 @@ export default class InsertParagraphCommand extends Command {
 	 * @param {Object} attributes Attributes keys and values to set on a inserted paragraph
 	 * @fires execute
 	 */
-	execute( options ) {
+	public override execute( options: {
+		position: Position;
+		attributes: Record<string, unknown>;
+	} ): void {
 		const model = this.editor.model;
 		const attributes = options.attributes;
 
@@ -49,7 +53,7 @@ export default class InsertParagraphCommand extends Command {
 				model.schema.setAllowedAttributes( paragraph, attributes, writer );
 			}
 
-			if ( !model.schema.checkChild( position.parent, paragraph ) ) {
+			if ( !model.schema.checkChild( position.parent as Element, paragraph ) ) {
 				const allowedParent = model.schema.findAllowedParent( position, paragraph );
 
 				// It could be there's no ancestor limit that would allow paragraph.

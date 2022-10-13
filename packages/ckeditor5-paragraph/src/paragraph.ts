@@ -30,14 +30,14 @@ export default class Paragraph extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'Paragraph';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -67,52 +67,52 @@ export default class Paragraph extends Plugin {
 			converterPriority: 'low'
 		} );
 	}
-}
 
-/**
- * A list of element names which should be treated by the autoparagraphing algorithms as
- * paragraph-like. This means that e.g. the following content:
- *
- *		<h1>Foo</h1>
- *		<table>
- *			<tr>
- *				<td>X</td>
- *				<td>
- *					<ul>
- *						<li>Y</li>
- *						<li>Z</li>
- *					</ul>
- *				</td>
- *			</tr>
- *		</table>
- *
- * contains five paragraph-like elements: `<h1>`, two `<td>`s and two `<li>`s.
- * Hence, if none of the features is going to convert those elements the above content will be automatically handled
- * by the paragraph feature and converted to:
- *
- *		<p>Foo</p>
- *		<p>X</p>
- *		<p>Y</p>
- *		<p>Z</p>
- *
- * Note: The `<td>` containing two `<li>` elements was ignored as the innermost paragraph-like elements
- * have a priority upon conversion.
- *
- * @member {Set.<String>} module:paragraph/paragraph~Paragraph.paragraphLikeElements
- */
-Paragraph.paragraphLikeElements = new Set( [
-	'blockquote',
-	'dd',
-	'div',
-	'dt',
-	'h1',
-	'h2',
-	'h3',
-	'h4',
-	'h5',
-	'h6',
-	'li',
-	'p',
-	'td',
-	'th'
-] );
+	/**
+	 * A list of element names which should be treated by the autoparagraphing algorithms as
+	 * paragraph-like. This means that e.g. the following content:
+	 *
+	 *		<h1>Foo</h1>
+	*		<table>
+	*			<tr>
+	*				<td>X</td>
+	*				<td>
+	*					<ul>
+	*						<li>Y</li>
+	*						<li>Z</li>
+	*					</ul>
+	*				</td>
+	*			</tr>
+	*		</table>
+	*
+	* contains five paragraph-like elements: `<h1>`, two `<td>`s and two `<li>`s.
+	* Hence, if none of the features is going to convert those elements the above content will be automatically handled
+	* by the paragraph feature and converted to:
+	*
+	*		<p>Foo</p>
+	*		<p>X</p>
+	*		<p>Y</p>
+	*		<p>Z</p>
+	*
+	* Note: The `<td>` containing two `<li>` elements was ignored as the innermost paragraph-like elements
+	* have a priority upon conversion.
+	*
+	* @member {Set.<String>} module:paragraph/paragraph~Paragraph.paragraphLikeElements
+	*/
+	public static paragraphLikeElements = new Set( [
+		'blockquote',
+		'dd',
+		'div',
+		'dt',
+		'h1',
+		'h2',
+		'h3',
+		'h4',
+		'h5',
+		'h6',
+		'li',
+		'p',
+		'td',
+		'th'
+	] );
+}
