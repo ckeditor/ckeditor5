@@ -4,14 +4,20 @@
  */
 
 /**
- * @module clipboard/datatransfer
+ * @module engine/view/datatransfer
  */
+
+type DomDataTransfer = globalThis.DataTransfer;
 
 /**
  * A facade over the native [`DataTransfer`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer) object.
  */
 export default class DataTransfer {
-	constructor( nativeDataTransfer ) {
+	public readonly files: Array<File>;
+
+	private _native: DomDataTransfer;
+
+	constructor( nativeDataTransfer: DomDataTransfer ) {
 		/**
 		 * The array of files created from the native `DataTransfer#files` or `DataTransfer#items`.
 		 *
@@ -34,7 +40,7 @@ export default class DataTransfer {
 	 *
 	 * @returns {Array.<String>}
 	 */
-	get types() {
+	public get types(): ReadonlyArray<string> {
 		return this._native.types;
 	}
 
@@ -46,7 +52,7 @@ export default class DataTransfer {
 	 * @param {String} type The MIME type. E.g. `text/html` or `text/plain`.
 	 * @returns {String}
 	 */
-	getData( type ) {
+	public getData( type: string ): string {
 		return this._native.getData( type );
 	}
 
@@ -56,7 +62,7 @@ export default class DataTransfer {
 	 * @param {String} type The MIME type. E.g. `text/html` or `text/plain`.
 	 * @param {String} data
 	 */
-	setData( type, data ) {
+	public setData( type: string, data: string ): void {
 		this._native.setData( type, data );
 	}
 
@@ -65,11 +71,11 @@ export default class DataTransfer {
 	 *
 	 * @param {String} value
 	 */
-	set effectAllowed( value ) {
+	public set effectAllowed( value: DomDataTransfer[ 'effectAllowed' ] ) {
 		this._native.effectAllowed = value;
 	}
 
-	get effectAllowed() {
+	public get effectAllowed(): DomDataTransfer[ 'effectAllowed' ] {
 		return this._native.effectAllowed;
 	}
 
@@ -78,11 +84,11 @@ export default class DataTransfer {
 	 *
 	 * @param {String} value
 	 */
-	set dropEffect( value ) {
+	public set dropEffect( value: DomDataTransfer[ 'dropEffect' ] ) {
 		this._native.dropEffect = value;
 	}
 
-	get dropEffect() {
+	public get dropEffect(): DomDataTransfer[ 'dropEffect' ] {
 		return this._native.dropEffect;
 	}
 
@@ -91,12 +97,12 @@ export default class DataTransfer {
 	 *
 	 * @returns {Boolean}
 	 */
-	get isCanceled() {
-		return this._native.dropEffect == 'none' || !!this._native.mozUserCancelled;
+	public get isCanceled(): boolean {
+		return this._native.dropEffect == 'none' || !!( this._native as any ).mozUserCancelled;
 	}
 }
 
-function getFiles( nativeDataTransfer ) {
+function getFiles( nativeDataTransfer: DomDataTransfer ): Array<File> {
 	// DataTransfer.files and items are array-like and might not have an iterable interface.
 	const files = Array.from( nativeDataTransfer.files || [] );
 	const items = Array.from( nativeDataTransfer.items || [] );
@@ -108,5 +114,5 @@ function getFiles( nativeDataTransfer ) {
 	// Chrome has empty DataTransfer.files, but allows getting files through the items interface.
 	return items
 		.filter( item => item.kind === 'file' )
-		.map( item => item.getAsFile() );
+		.map( item => item.getAsFile()! );
 }

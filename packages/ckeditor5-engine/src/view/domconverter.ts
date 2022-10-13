@@ -908,6 +908,11 @@ export default class DomConverter {
 				}
 			} else {
 				const domBefore = domParent.childNodes[ domOffset - 1 ];
+
+				if ( isText( domBefore ) && isInlineFiller( domBefore ) ) {
+					return this.domPositionToView( domBefore.parentNode!, indexOf( domBefore ) );
+				}
+
 				const viewBefore = isText( domBefore ) ?
 					this.findCorrespondingViewText( domBefore ) :
 					this.mapDomToView( domBefore as DomElement );

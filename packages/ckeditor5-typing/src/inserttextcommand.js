@@ -4,7 +4,7 @@
  */
 
 /**
- * @module typing/inputcommand
+ * @module typing/inserttextcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -12,11 +12,11 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import ChangeBuffer from './utils/changebuffer';
 
 /**
- * The input command. Used by the {@link module:typing/input~Input input feature} to handle typing.
+ * The insert text command. Used by the {@link module:typing/input~Input input feature} to handle typing.
  *
  * @extends module:core/command~Command
  */
-export default class InputCommand extends Command {
+export default class InsertTextCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
@@ -63,6 +63,10 @@ export default class InputCommand extends Command {
 	 * @fires execute
 	 * @param {Object} [options] The command options.
 	 * @param {String} [options.text=''] The text to be inserted.
+	 * @param {module:engine/model/selection~Selection} [options.selection] The selection in which the text is inserted.
+	 * Inserting a text into a selection deletes the current content within selection ranges. If the selection is not specified,
+	 * the current selection in the model will be used instead.
+	 * // TODO note that those 2 options are exclusive (either selection or range)
 	 * @param {module:engine/model/range~Range} [options.range] The range in which the text is inserted. Defaults
 	 * to the first range in the current selection.
 	 * @param {module:engine/model/range~Range} [options.resultRange] The range where the selection
@@ -74,7 +78,15 @@ export default class InputCommand extends Command {
 		const doc = model.document;
 		const text = options.text || '';
 		const textInsertions = text.length;
-		const selection = options.range ? model.createSelection( options.range ) : doc.selection;
+
+		let selection = doc.selection;
+
+		if ( options.selection ) {
+			selection = options.selection;
+		} else if ( options.range ) {
+			selection = model.createSelection( options.range );
+		}
+
 		const resultRange = options.resultRange;
 
 		model.enqueueChange( this._buffer.batch, writer => {

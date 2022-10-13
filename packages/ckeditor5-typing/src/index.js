@@ -18,5 +18,3 @@ export { default as TextTransformation } from './texttransformation';
 export { default as inlineHighlight } from './utils/inlinehighlight';
 export { default as findAttributeRange } from './utils/findattributerange';
 export { default as getLastTextLine } from './utils/getlasttextline';
-
-export * from './utils/injectunsafekeystrokeshandling';

@@ -889,6 +889,40 @@ describe( 'DomConverter', () => {
 			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>foo[]</p>' );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/12575.
+		it( 'should convert position between inline filler and br element', () => {
+			const domFiller = document.createTextNode( INLINE_FILLER );
+			const domBr = createElement( document, 'br' );
+			const domP = createElement( document, 'p', null, [ domFiller, domBr ] );
+
+			const viewP = parse( '<p><br/></p>' );
+
+			converter.bindElements( domP, viewP );
+			converter.bindElements( domBr, viewP.getChild( 0 ) );
+
+			const viewPosition = converter.domPositionToView( domP, 1 );
+
+			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>[]<br></br></p>' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/12575.
+		it( 'should convert position between inline filler and br element (multiple br elements)', () => {
+			const domFiller = document.createTextNode( INLINE_FILLER );
+			const domBr1 = createElement( document, 'br' );
+			const domBr2 = createElement( document, 'br' );
+			const domP = createElement( document, 'p', null, [ domBr1, domFiller, domBr2 ] );
+
+			const viewP = parse( '<p><br/><br/></p>' );
+
+			converter.bindElements( domP, viewP );
+			converter.bindElements( domBr1, viewP.getChild( 0 ) );
+			converter.bindElements( domBr2, viewP.getChild( 1 ) );
+
+			const viewPosition = converter.domPositionToView( domP, 2 );
+
+			expect( stringify( viewP, viewPosition ) ).to.equal( '<p><br></br>[]<br></br></p>' );
+		} );
+
 		it( 'should return null if there is no corresponding parent node', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domText );
