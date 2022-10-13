@@ -42,7 +42,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 		let dataTransfer: DataTransfer | null = null;
 		let data: string | null = null;
-		let targetRanges: ViewRange[] = [];
+		let targetRanges: Array<ViewRange> = [];
 
 		if ( domEvent.dataTransfer ) {
 			dataTransfer = new DataTransfer( domEvent.dataTransfer );
