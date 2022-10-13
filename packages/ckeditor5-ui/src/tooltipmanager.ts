@@ -408,10 +408,6 @@ export default class TooltipManager extends DomEmitter {
 
 		this._currentElementWithTooltip = targetDomElement;
 		this._currentTooltipPosition = position;
-
-		if ( this._resizeObserver ) {
-			this._resizeObserver.destroy();
-		}
 	}
 
 	/**
@@ -430,6 +426,10 @@ export default class TooltipManager extends DomEmitter {
 
 		this._currentElementWithTooltip = null;
 		this._currentTooltipPosition = null;
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+		}
 	}
 
 	/**
