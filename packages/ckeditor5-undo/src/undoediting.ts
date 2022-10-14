@@ -8,8 +8,11 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import UndoCommand from './undocommand';
+import UndoCommand, { type UndoCommandRevertEvent } from './undocommand';
 import RedoCommand from './redocommand';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
+import type { ModelApplyOperationEvent } from '@ckeditor/ckeditor5-engine/src/model/model';
 
 /**
  * The undo engine feature.
@@ -19,17 +22,21 @@ import RedoCommand from './redocommand';
  * @extends module:core/plugin~Plugin
  */
 export default class UndoEditing extends Plugin {
+	private _undoCommand!: UndoCommand;
+	private _redoCommand!: RedoCommand;
+	private _batchRegistry: WeakSet<Batch>;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'UndoEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		/**
@@ -60,7 +67,7 @@ export default class UndoEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Create commands.
@@ -71,7 +78,7 @@ export default class UndoEditing extends Plugin {
 		editor.commands.add( 'undo', this._undoCommand );
 		editor.commands.add( 'redo', this._redoCommand );
 
-		this.listenTo( editor.model, 'applyOperation', ( evt, args ) => {
+		this.listenTo<ModelApplyOperationEvent>( editor.model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 
 			// Do not register batch if the operation is not a document operation.
@@ -83,7 +90,7 @@ export default class UndoEditing extends Plugin {
 				return;
 			}
 
-			const batch = operation.batch;
+			const batch = operation.batch!;
 
 			const isRedoBatch = this._redoCommand._createdBatches.has( batch );
 			const isUndoBatch = this._undoCommand._createdBatches.has( batch );
@@ -112,7 +119,7 @@ export default class UndoEditing extends Plugin {
 			}
 		}, { priority: 'highest' } );
 
-		this.listenTo( this._undoCommand, 'revert', ( evt, undoneBatch, undoingBatch ) => {
+		this.listenTo<UndoCommandRevertEvent>( this._undoCommand, 'revert', ( evt, undoneBatch, undoingBatch ) => {
 			this._redoCommand.addBatch( undoingBatch );
 		} );
 

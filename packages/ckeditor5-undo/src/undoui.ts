@@ -22,14 +22,14 @@ export default class UndoUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'UndoUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const t = editor.t;
@@ -50,11 +50,11 @@ export default class UndoUI extends Plugin {
 	 * @param {String} keystroke Command keystroke.
 	 * @param {String} Icon Source of the icon.
 	 */
-	_addButton( name, label, keystroke, Icon ) {
+	private _addButton( name: string, label: string, keystroke: string, Icon: string ) {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( name, locale => {
-			const command = editor.commands.get( name );
+			const command = editor.commands.get( name )!;
 			const view = new ButtonView( locale );
 
 			view.set( {

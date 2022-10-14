@@ -639,3 +639,21 @@ function _getMarkersRelativeToElement( element: ModelElement ): Map<string, Mode
 
 	return new Map( result );
 }
+
+export type DataControllerInitEvent = {
+	name: 'init';
+	args: [ Parameters<DataController[ 'init' ]> ];
+	return: ReturnType<DataController[ 'init' ]>;
+};
+
+export type DataControllerSetEvent = {
+	name: 'set';
+	args: [ Parameters<DataController[ 'set' ]> ];
+	return: ReturnType<DataController[ 'set' ]>;
+};
+
+export type DataControllerGetEvent = {
+	name: 'get';
+	args: [ Parameters<DataController[ 'get' ]> ];
+	return: ReturnType<DataController[ 'get' ]>;
+};

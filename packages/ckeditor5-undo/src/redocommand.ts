@@ -28,15 +28,15 @@ export default class RedoCommand extends BaseCommand {
 	 *
 	 * @fires execute
 	 */
-	execute() {
-		const item = this._stack.pop();
+	public override execute(): void {
+		const item = this._stack.pop()!;
 		const redoingBatch = this.editor.model.createBatch( { isUndo: true } );
 
 		// All changes have to be done in one `enqueueChange` callback so other listeners will not step between consecutive
 		// operations, or won't do changes to the document before selection is properly restored.
 		this.editor.model.enqueueChange( redoingBatch, () => {
 			const lastOperation = item.batch.operations[ item.batch.operations.length - 1 ];
-			const nextBaseVersion = lastOperation.baseVersion + 1;
+			const nextBaseVersion = lastOperation.baseVersion! + 1;
 			const operations = this.editor.model.document.history.getOperations( nextBaseVersion );
 
 			this._restoreSelection( item.selection.ranges, item.selection.isBackward, operations );

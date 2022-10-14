@@ -9,6 +9,11 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { transformSets } from '@ckeditor/ckeditor5-engine/src/model/operation/transform';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { DataControllerSetEvent } from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
+import type { Range } from '@ckeditor/ckeditor5-engine';
+import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
+import type Operation from '@ckeditor/ckeditor5-engine/src/model/operation/operation';
 
 /**
  * Base class for undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
@@ -17,7 +22,14 @@ import { transformSets } from '@ckeditor/ckeditor5-engine/src/model/operation/tr
  * @extends module:core/command~Command
  */
 export default class BaseCommand extends Command {
-	constructor( editor ) {
+	protected _stack: Array<{ batch: Batch; selection: { ranges: Array<Range>; isBackward: boolean } }>;
+
+	/**
+	 * @internal
+	 */
+	public _createdBatches: WeakSet<Batch>;
+
+	constructor( editor: Editor ) {
 		super( editor );
 
 		/**
@@ -44,7 +56,7 @@ export default class BaseCommand extends Command {
 
 		// Set the transparent batch for the `editor.data.set()` call if the
 		// batch type is not set already.
-		this.listenTo( editor.data, 'set', ( evt, data ) => {
+		this.listenTo<DataControllerSetEvent>( editor.data, 'set', ( evt, data ) => {
 			// Create a shallow copy of the options to not change the original args.
 			// And make sure that an object is assigned to data[ 1 ].
 			data[ 1 ] = { ...data[ 1 ] };
@@ -58,12 +70,12 @@ export default class BaseCommand extends Command {
 		}, { priority: 'high' } );
 
 		// Clear the stack for the `transparent` batches.
-		this.listenTo( editor.data, 'set', ( evt, data ) => {
+		this.listenTo<DataControllerSetEvent>( editor.data, 'set', ( evt, data ) => {
 			// We can assume that the object exists and it has a `batchType` property.
 			// It was ensured with a higher priority listener before.
-			const options = data[ 1 ];
+			const options = data[ 1 ]!;
 
-			if ( !options.batchType.isUndoable ) {
+			if ( !options.batchType!.isUndoable ) {
 				this.clearStack();
 			}
 		} );
@@ -72,7 +84,7 @@ export default class BaseCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.isEnabled = this._stack.length > 0;
 	}
 
@@ -82,7 +94,7 @@ export default class BaseCommand extends Command {
 	 *
 	 * @param {module:engine/model/batch~Batch} batch The batch to add.
 	 */
-	addBatch( batch ) {
+	public addBatch( batch: Batch ): void {
 		const docSelection = this.editor.model.document.selection;
 
 		const selection = {
@@ -97,7 +109,7 @@ export default class BaseCommand extends Command {
 	/**
 	 * Removes all items from the stack.
 	 */
-	clearStack() {
+	public clearStack(): void {
 		this._stack = [];
 		this.refresh();
 	}
@@ -111,12 +123,16 @@ export default class BaseCommand extends Command {
 	 * @param {Array.<module:engine/model/operation/operation~Operation>} operations Operations which has been applied
 	 * since selection has been stored.
 	 */
-	_restoreSelection( ranges, isBackward, operations ) {
+	protected _restoreSelection(
+		ranges: Array<Range>,
+		isBackward: boolean,
+		operations: Array<Operation>
+	): void {
 		const model = this.editor.model;
 		const document = model.document;
 
 		// This will keep the transformed selection ranges.
-		const selectionRanges = [];
+		const selectionRanges: Array<Range> = [];
 
 		// Transform all ranges from the restored selection.
 		const transformedRangeGroups = ranges.map( range => range.getTransformedByOperations( operations ) );
@@ -161,7 +177,7 @@ export default class BaseCommand extends Command {
 	 * @param {module:engine/model/batch~Batch} batchToUndo The batch to be undone.
 	 * @param {module:engine/model/batch~Batch} undoingBatch The batch that will contain undoing changes.
 	 */
-	_undo( batchToUndo, undoingBatch ) {
+	protected _undo( batchToUndo: Batch, undoingBatch: Batch ): void {
 		const model = this.editor.model;
 		const document = model.document;
 
@@ -174,7 +190,7 @@ export default class BaseCommand extends Command {
 		// We will process each operation from `batchToUndo`, in reverse order. If there were operations A, B and C in undone batch,
 		// we need to revert them in reverse order, so first C' (reversed C), then B', then A'.
 		for ( const operationToUndo of operationsToUndo ) {
-			const nextBaseVersion = operationToUndo.baseVersion + 1;
+			const nextBaseVersion = operationToUndo.baseVersion! + 1;
 			const historyOperations = Array.from( document.history.getOperations( nextBaseVersion ) );
 
 			const transformedSets = transformSets(
@@ -206,7 +222,7 @@ export default class BaseCommand extends Command {
 //
 // @param {Array.<module:engine/model/range~Range>} ranges
 //
-function normalizeRanges( ranges ) {
+function normalizeRanges( ranges: Array<Range> ) {
 	ranges.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
 
 	for ( let i = 1; i < ranges.length; i++ ) {
@@ -221,6 +237,6 @@ function normalizeRanges( ranges ) {
 	}
 }
 
-function isRangeContainedByAnyOtherRange( range, ranges ) {
+function isRangeContainedByAnyOtherRange( range: Range, ranges: Array<Range> ) {
 	return ranges.some( otherRange => otherRange !== range && otherRange.containsRange( range, true ) );
 }
