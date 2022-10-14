@@ -15,8 +15,10 @@ import ChangeBuffer from './utils/changebuffer';
 import type Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import type Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { Element } from '@ckeditor/ckeditor5-engine';
-import { DocumentSelection } from '@ckeditor/ckeditor5-engine';
+import type { Element, DocumentSelection } from '@ckeditor/ckeditor5-engine';
+
+// Import config.typing declaration.
+import './typing';
 
 /**
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and
