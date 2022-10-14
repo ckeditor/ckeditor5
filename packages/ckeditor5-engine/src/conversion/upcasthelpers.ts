@@ -562,7 +562,7 @@ export function convertSelectionChange( model: Model, mapper: Mapper ) {
 	): void => {
 		const viewSelection = data.newSelection;
 
-		const ranges: ModelRange[] = [];
+		const ranges: Array<ModelRange> = [];
 
 		for ( const viewRange of viewSelection.getRanges() ) {
 			ranges.push( mapper.toModelRange( viewRange ) );
@@ -829,7 +829,7 @@ function upcastAttributeToMarker( config: {
 			addMarkerElements( data.modelRange!.start, data.viewItem.getAttribute( attrName + '-start-before' )!.split( ',' ) );
 		}
 
-		function addMarkerElements( position: ModelPosition, markerViewNames: string[] ): void {
+		function addMarkerElements( position: ModelPosition, markerViewNames: Array<string> ): void {
 			for ( const markerViewName of markerViewNames ) {
 				const markerName = config.model( markerViewName, conversionApi );
 				const element = conversionApi.writer.createElement( '$marker', { 'data-name': markerName } );

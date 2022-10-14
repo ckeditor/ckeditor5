@@ -242,7 +242,7 @@ export default class TooltipManager extends DomEmitter {
 	 * @param {String} position Name of the position (`s`, `se`, `sw`, `n`, `e`, or `w`).
 	 * @returns {Array.<module:utils/dom/position~PositioningFunction>} Positioning functions to be used by the {@link #balloonPanelView}.
 	 */
-	public static getPositioningFunctions( position: TooltipPosition ): PositioningFunction[] {
+	public static getPositioningFunctions( position: TooltipPosition ): Array<PositioningFunction> {
 		const defaultPositions = TooltipManager.defaultBalloonPositions;
 
 		return {

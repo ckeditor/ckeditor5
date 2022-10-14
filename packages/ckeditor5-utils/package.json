@@ -19,7 +19,7 @@
     "@ckeditor/ckeditor5-core": "^35.2.1",
     "@ckeditor/ckeditor5-engine": "^35.2.1",
     "@types/lodash-es": "^4.17.6",
-    "typescript": "^4.6.4"
+    "typescript": "^4.8.4"
   },
   "depcheckIgnore": [
     "typescript"

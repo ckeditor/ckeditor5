@@ -23,7 +23,7 @@
  * @param {Array} b Array to compare with.
  * @returns {module:utils/comparearrays~ArrayRelation|Number} How array `a` is related to `b`.
  */
-export default function compareArrays( a: readonly unknown[], b: readonly unknown[] ): ArrayRelation | number {
+export default function compareArrays( a: ReadonlyArray<unknown>, b: ReadonlyArray<unknown> ): ArrayRelation | number {
 	const minLen = Math.min( a.length, b.length );
 
 	for ( let i = 0; i < minLen; i++ ) {

@@ -39,7 +39,7 @@ import { type ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin'
  * @extends module:core/command~Command
  */
 export default class MultiCommand extends Command {
-	private _childCommandsDefinitions: { command: Command; priority: PriorityString }[];
+	private _childCommandsDefinitions: Array<{ command: Command; priority: PriorityString }>;
 
 	/**
 	 * @inheritDoc
@@ -68,7 +68,7 @@ export default class MultiCommand extends Command {
 	 *
 	 * @returns {*} The value returned by the {@link module:core/command~Command#execute `command.execute()`}.
 	 */
-	public override execute( ...args: unknown[] ): unknown {
+	public override execute( ...args: Array<unknown> ): unknown {
 		const command = this._getFirstEnabledCommand();
 
 		return !!command && command.execute( args );

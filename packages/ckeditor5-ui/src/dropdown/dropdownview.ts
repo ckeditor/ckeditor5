@@ -353,7 +353,7 @@ export default class DropdownView extends View {
 	 * @type {module:utils/dom/position~Options#positions}
 	 * @private
 	 */
-	private get _panelPositions(): PositioningFunction[] {
+	private get _panelPositions(): Array<PositioningFunction> {
 		const {
 			south, north,
 			southEast, southWest,

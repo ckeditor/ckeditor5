@@ -12,7 +12,7 @@ import isWindow from './iswindow';
 import getBorderWidths from './getborderwidths';
 import isText from './istext';
 
-const rectProperties: ( keyof RectLike )[] = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
+const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
@@ -361,8 +361,8 @@ export default class Rect {
 	 * @param {Range} range A native DOM range.
 	 * @returns {Array.<module:utils/dom/rect~Rect>} DOM Range rects.
 	 */
-	public static getDomRangeRects( range: Range ): Rect[] {
-		const rects: Rect[] = [];
+	public static getDomRangeRects( range: Range ): Array<Rect> {
+		const rects: Array<Rect> = [];
 		// Safari does not iterate over ClientRectList using for...of loop.
 		const clientRects = Array.from( range.getClientRects() );
 

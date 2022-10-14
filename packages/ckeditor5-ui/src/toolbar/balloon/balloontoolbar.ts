@@ -58,7 +58,7 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginConstructor<Editor>[] {
+	public static get requires(): Array<PluginConstructor<Editor>> {
 		return [ ContextualBalloon ];
 	}
 

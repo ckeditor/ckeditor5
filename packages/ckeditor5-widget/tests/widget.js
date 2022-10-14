@@ -1031,15 +1031,15 @@ describe( 'Widget', () => {
 			it( name, () => {
 				setModelData( model, input );
 				const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
-				const domEventDataMock = {
-					keyCode: direction == 'backward' ? keyCodes.backspace : keyCodes.delete
-				};
 
-				viewDocument.fire( 'keydown', new DomEventData(
-					viewDocument,
-					{ target: document.createElement( 'div' ), preventDefault() {} },
-					domEventDataMock
-				) );
+				viewDocument.fire( 'delete', new DomEventData( viewDocument, {
+					preventDefault: () => {}
+				}, {
+					direction,
+					unit: 'selection',
+					selectionToRemove: view.createSelection( view.document.selection ),
+					inputType: direction == 'backward' ? 'deleteContentBackward' : 'deleteContentForward'
+				} ) );
 
 				expect( getModelData( model ) ).to.equal( expected );
 				scrollStub.restore();
@@ -1239,17 +1239,20 @@ describe( 'Widget', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph><widget></widget>' );
 			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 			const deleteSpy = sinon.spy();
+			const preventDefaultSpy = sinon.spy();
 
 			viewDocument.on( 'delete', deleteSpy );
-			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
 
-			viewDocument.fire( 'delete', new DomEventData(
-				viewDocument,
-				domEventDataMock,
-				{ direction: 'forward', unit: 'character', sequence: 0 }
-			) );
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, {
+				preventDefault: preventDefaultSpy
+			}, {
+				direction: 'forward',
+				unit: 'character',
+				selectionToRemove: view.document.selection,
+				inputType: 'deleteContentForward'
+			} ) );
 
-			sinon.assert.calledOnce( domEventDataMock.preventDefault );
+			sinon.assert.calledOnce( preventDefaultSpy );
 			sinon.assert.notCalled( deleteSpy );
 			scrollStub.restore();
 		} );
@@ -1393,13 +1396,15 @@ describe( 'Widget', () => {
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
-
-			viewDocument.fire( 'delete', new DomEventData(
-				viewDocument,
-				domEventDataMock,
-				{ direction: 'backward', unit: 'character', sequence: 0 }
-			) );
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, {
+				preventDefault: sinon.spy()
+			}, {
+				direction: 'backward',
+				unit: 'character',
+				selectionToRemove: view.document.selection,
+				inputType: 'deleteContentBackward',
+				sequence: 0
+			} ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -1421,13 +1426,15 @@ describe( 'Widget', () => {
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
-
-			viewDocument.fire( 'delete', new DomEventData(
-				viewDocument,
-				domEventDataMock,
-				{ direction: 'forward', unit: 'character', sequence: 0 }
-			) );
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, {
+				preventDefault: sinon.spy()
+			}, {
+				direction: 'forward',
+				unit: 'character',
+				selectionToRemove: view.document.selection,
+				inputType: 'deleteContentForward',
+				sequence: 0
+			} ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +

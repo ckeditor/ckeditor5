@@ -49,7 +49,7 @@ describe( 'SpecialCharacters', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					command = editor.commands.get( 'input' );
+					command = editor.commands.get( 'insertText' );
 				} );
 		} );
 
@@ -120,7 +120,7 @@ describe( 'SpecialCharacters', () => {
 
 				sinon.assert.calledOnce( executeSpy );
 				sinon.assert.calledOnce( focusSpy );
-				sinon.assert.calledWithExactly( executeSpy.firstCall, 'input', {
+				sinon.assert.calledWithExactly( executeSpy.firstCall, 'insertText', {
 					text: '≤'
 				} );
 			} );

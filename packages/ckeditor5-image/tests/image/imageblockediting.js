@@ -8,7 +8,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
+import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';

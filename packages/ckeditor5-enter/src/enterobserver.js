@@ -10,7 +10,11 @@
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
+const ENTER_EVENT_TYPES = {
+	insertParagraph: { isSoft: false },
+	insertLineBreak: { isSoft: true }
+};
 
 /**
  * Enter observer introduces the {@link module:engine/view/document~Document#event:enter `Document#enter`} event.
@@ -26,19 +30,28 @@ export default class EnterObserver extends Observer {
 
 		const doc = this.document;
 
-		doc.on( 'keydown', ( evt, data ) => {
-			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
-				const event = new BubblingEventInfo( doc, 'enter', doc.selection.getFirstRange() );
+		doc.on( 'beforeinput', ( evt, data ) => {
+			if ( !this.isEnabled ) {
+				return;
+			}
 
-				doc.fire( event, new DomEventData( doc, data.domEvent, {
-					isSoft: data.shiftKey
-				} ) );
+			const domEvent = data.domEvent;
+			const enterEventSpec = ENTER_EVENT_TYPES[ data.inputType ];
 
-				// Stop `keydown` event if `enter` event was stopped.
-				// https://github.com/ckeditor/ckeditor5/issues/753
-				if ( event.stop.called ) {
-					evt.stop();
-				}
+			if ( !enterEventSpec ) {
+				return;
+			}
+
+			const event = new BubblingEventInfo( doc, 'enter', data.targetRanges[ 0 ] );
+
+			doc.fire( event, new DomEventData( doc, domEvent, {
+				isSoft: enterEventSpec.isSoft
+			} ) );
+
+			// Stop `beforeinput` event if `enter` event was stopped.
+			// https://github.com/ckeditor/ckeditor5/issues/753
+			if ( event.stop.called ) {
+				evt.stop();
 			}
 		} );
 	}

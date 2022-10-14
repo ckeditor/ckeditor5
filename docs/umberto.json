@@ -110,6 +110,7 @@
 		"features/pagination.html": "features/pagination/pagination.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
 		"features/paste-from-office.html": "features/pasting/paste-from-word.html",
+		"features/import-word.html": "features/import-word/import-word.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"features/collaboration/comments/comments-api.html": "api/comments.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
@@ -324,6 +325,12 @@
 							"order": 80
 						}
 					]
+				},
+				{
+					"name": "Import from Word",
+					"id": "import-word",
+					"slug": "import-word",
+					"badges": [ "premium" ]
 				},
 				{
 					"name": "Lists",

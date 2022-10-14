@@ -36,7 +36,7 @@ const contextsSymbol = Symbol( 'bubbling contexts' );
  * @mixin BubblingEmitterMixin
  * @implements module:engine/view/observer/bubblingemittermixin~BubblingEmitter
  */
-export default function BubblingEmitterMixin<Base extends abstract new( ...args: any[] ) => Emitter>(
+export default function BubblingEmitterMixin<Base extends abstract new( ...args: Array<any> ) => Emitter>(
 	base: Base
 ): {
 	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & BubblingEmitter;
@@ -122,7 +122,7 @@ export default function BubblingEmitterMixin<Base extends abstract new( ...args:
 		public _addEventListener(
 			this: Document,
 			event: string,
-			callback: ( ev: EventInfo, ...args: any[] ) => void,
+			callback: ( ev: EventInfo, ...args: Array<any> ) => void,
 			options: BubblingCallbackOptions
 		) {
 			const contexts = toArray( options.context || '$document' );
@@ -189,7 +189,7 @@ function fireListenerFor(
 	eventContexts: BubblingEventContexts,
 	context: string | Node,
 	eventInfo: EventInfo,
-	...eventArgs: unknown[]
+	...eventArgs: Array<unknown>
 ) {
 	const emitter = typeof context == 'string' ? eventContexts.get( context ) : getCustomContext( eventContexts, context );
 
@@ -349,7 +349,7 @@ type BubblingEventContexts = Map<string | BubblingEventContextFunction, Emitter>
 export type BubblingEventContextFunction = ( node: Node ) => boolean;
 
 export type BubblingCallbackOptions = CallbackOptions & {
-	context?: string | string[] | BubblingEventContextFunction;
+	context?: string | Array<string> | BubblingEventContextFunction;
 };
 
 export interface BubblingEmitter extends Emitter {

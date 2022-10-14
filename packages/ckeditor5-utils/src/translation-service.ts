@@ -15,7 +15,7 @@ import global from './dom/global';
 declare global {
 	var CKEDITOR_TRANSLATIONS: {
 		[ language: string ]: {
-			dictionary: { [ messageId: string ]: string | readonly string[] };
+			dictionary: { [ messageId: string ]: string | ReadonlyArray<string> };
 			getPluralForm?: ( n: number ) => number;
 		};
 	};
@@ -103,7 +103,7 @@ if ( !global.window.CKEDITOR_TRANSLATIONS ) {
  */
 export function add(
 	language: string,
-	translations: { readonly [ messageId: string ]: string | readonly string[] },
+	translations: { readonly [ messageId: string ]: string | ReadonlyArray<string> },
 	getPluralForm?: ( n: number ) => number
 ): void {
 	if ( !global.window.CKEDITOR_TRANSLATIONS[ language ] ) {

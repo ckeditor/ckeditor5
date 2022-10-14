@@ -15,13 +15,13 @@ export default function fastDiff<T>(
 	b: ArrayLike<T>,
 	cmp?: ( a: T, b: T ) => boolean,
 	atomicChanges?: false
-): Change<T>[];
+): Array<Change<T>>;
 export default function fastDiff<T>(
 	a: ArrayLike<T>,
 	b: ArrayLike<T>,
 	cmp: ( ( a: T, b: T ) => boolean ) | undefined,
 	atomicChanges: true
-): DiffResult[];
+): Array<DiffResult>;
 
 /**
  * Finds positions of the first and last change in the given string/array and generates a set of changes:
@@ -115,7 +115,7 @@ export default function fastDiff<T>(
 	b: ArrayLike<T>,
 	cmp?: ( a: T, b: T ) => boolean,
 	atomicChanges: boolean = false
-): Change<T>[] | DiffResult[] {
+): Array<Change<T>> | Array<DiffResult> {
 	// Set the comparator function.
 	cmp = cmp || function( a, b ) {
 		return a === b;
@@ -127,8 +127,8 @@ export default function fastDiff<T>(
 	// See ckeditor/ckeditor5#3147.
 	//
 	// We need to make sure here that fastDiff() works identical to diff().
-	const arrayA: T[] = Array.isArray( a ) ? a : Array.prototype.slice.call( a );
-	const arrayB: T[] = Array.isArray( b ) ? b : Array.prototype.slice.call( b );
+	const arrayA: Array<T> = Array.isArray( a ) ? a : Array.prototype.slice.call( a );
+	const arrayB: Array<T> = Array.isArray( b ) ? b : Array.prototype.slice.call( b );
 
 	// Find first and last change.
 	const changeIndexes = findChangeBoundaryIndexes( arrayA, arrayB, cmp );
@@ -153,7 +153,7 @@ export default function fastDiff<T>(
 // @returns {Number} return.firstIndex Index of the first change in both values (always the same for both).
 // @returns {Number} result.lastIndexOld Index of the last common value in `arr1`.
 // @returns {Number} result.lastIndexNew Index of the last common value in `arr2`.
-function findChangeBoundaryIndexes<T>( arr1: readonly T[], arr2: readonly T[], cmp: ( a: T, b: T ) => boolean ): ChangeIndexes {
+function findChangeBoundaryIndexes<T>( arr1: ReadonlyArray<T>, arr2: ReadonlyArray<T>, cmp: ( a: T, b: T ) => boolean ): ChangeIndexes {
 	// Find the first difference between passed values.
 	const firstIndex = findFirstDifferenceIndex( arr1, arr2, cmp );
 
@@ -192,7 +192,7 @@ function findChangeBoundaryIndexes<T>( arr1: readonly T[], arr2: readonly T[], c
 // @param {Array} arr2
 // @param {Function} cmp Comparator function.
 // @returns {Number}
-function findFirstDifferenceIndex<T>( arr1: readonly T[], arr2: readonly T[], cmp: ( a: T, b: T ) => boolean ): number {
+function findFirstDifferenceIndex<T>( arr1: ReadonlyArray<T>, arr2: ReadonlyArray<T>, cmp: ( a: T, b: T ) => boolean ): number {
 	for ( let i = 0; i < Math.max( arr1.length, arr2.length ); i++ ) {
 		if ( arr1[ i ] === undefined || arr2[ i ] === undefined || !cmp( arr1[ i ], arr2[ i ] ) ) {
 			return i;
@@ -207,7 +207,7 @@ function findFirstDifferenceIndex<T>( arr1: readonly T[], arr2: readonly T[], cm
 // @param {Array} arr Array to be processed.
 // @param {Number} howMany How many elements from array beginning to remove.
 // @returns {Array} Shortened and reversed array.
-function cutAndReverse<T>( arr: readonly T[], howMany: number ): T[] {
+function cutAndReverse<T>( arr: ReadonlyArray<T>, howMany: number ): Array<T> {
 	return arr.slice( howMany ).reverse();
 }
 
@@ -218,8 +218,8 @@ function cutAndReverse<T>( arr: readonly T[], howMany: number ): T[] {
 // @param {Object} changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
 // @returns {Array.<module:utils/difftochanges~Change>} Array of changes compatible with
 // {@link module:utils/difftochanges~diffToChanges} format.
-function changeIndexesToChanges<T>( newArray: readonly T[], changeIndexes: ChangeIndexes ): Change<T>[] {
-	const result: Change<T>[] = [];
+function changeIndexesToChanges<T>( newArray: ReadonlyArray<T>, changeIndexes: ChangeIndexes ): Array<Change<T>> {
+	const result: Array<Change<T>> = [];
 	const { firstIndex, lastIndexOld, lastIndexNew } = changeIndexes;
 
 	// Order operations as 'insert', 'delete' array to keep compatibility with {@link module:utils/difftochanges~diffToChanges}
@@ -249,7 +249,7 @@ function changeIndexesToChanges<T>( newArray: readonly T[], changeIndexes: Chang
 // @param {Object} changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
 // @param {Number} newLength Length of the new array on which `findChangeBoundaryIndexes` calculated change indexes.
 // @returns {Array.<module:utils/diff~DiffResult>} Array of changes compatible with {@link module:utils/diff~diff} format.
-function changeIndexesToAtomicChanges( changeIndexes: ChangeIndexes, newLength: number ): DiffResult[] {
+function changeIndexesToAtomicChanges( changeIndexes: ChangeIndexes, newLength: number ): Array<DiffResult> {
 	const { firstIndex, lastIndexOld, lastIndexNew } = changeIndexes;
 
 	// No changes.
@@ -257,7 +257,7 @@ function changeIndexesToAtomicChanges( changeIndexes: ChangeIndexes, newLength: 
 		return Array( newLength ).fill( 'equal' );
 	}
 
-	let result: DiffResult[] = [];
+	let result: Array<DiffResult> = [];
 
 	if ( firstIndex > 0 ) {
 		result = result.concat( Array( firstIndex ).fill( 'equal' ) );

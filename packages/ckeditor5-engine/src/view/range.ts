@@ -248,8 +248,8 @@ export default class Range extends TypeCheckable {
 	 * @param {module:engine/view/range~Range} otherRange Range to differentiate against.
 	 * @returns {Array.<module:engine/view/range~Range>} The difference between ranges.
 	 */
-	public getDifference( otherRange: Range ): Range[] {
-		const ranges: Range[] = [];
+	public getDifference( otherRange: Range ): Array<Range> {
+		const ranges: Array<Range> = [];
 
 		if ( this.isIntersecting( otherRange ) ) {
 			// Ranges intersect.

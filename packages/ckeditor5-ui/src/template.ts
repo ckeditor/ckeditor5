@@ -60,10 +60,10 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 export default class Template extends Emitter {
 	public ns?: string;
 	public tag?: string;
-	public text?: ( TemplateSimpleValue | TemplateBinding )[];
+	public text?: Array<TemplateSimpleValue | TemplateBinding>;
 	public attributes?: Record<string, AttributeValues>;
-	public children?: ( ViewCollection | View | Node | Template )[];
-	public eventListeners?: Record<string, TemplateToBinding[]>;
+	public children?: Array<ViewCollection | View | Node | Template>;
+	public eventListeners?: Record<string, Array<TemplateToBinding>>;
 
 	private _isRendered: boolean;
 	private _revertData: RevertData | null;
@@ -793,7 +793,7 @@ export default class Template extends Emitter {
 	 * @param {module:ui/template~RenderData} options.data Rendering data.
 	 */
 	private _bindToObservable( { schema, updater, data }: {
-		schema: ( TemplateSimpleValue | TemplateBinding )[];
+		schema: Array<TemplateSimpleValue | TemplateBinding>;
 		updater: Updater;
 		data: RenderData;
 	} ) {
@@ -868,8 +868,8 @@ export default class Template extends Emitter {
 	}
 }
 
-type AttributeValues = ( TemplateSimpleValue | TemplateBinding )[] |
-	[ NamespacedValue<( TemplateSimpleValue | TemplateBinding )[]> ];
+type AttributeValues = Array<TemplateSimpleValue | TemplateBinding> |
+	[ NamespacedValue<Array<TemplateSimpleValue | TemplateBinding>> ];
 
 /**
  * Describes a binding created by the {@link module:ui/template~Template.bind} interface.
@@ -956,7 +956,7 @@ export abstract class TemplateBinding {
 	 * @returns {Function} A function to sever the listener binding.
 	 */
 	public activateAttributeListener(
-		schema: ( TemplateSimpleValue | TemplateBinding )[],
+		schema: Array<TemplateSimpleValue | TemplateBinding>,
 		updater: Updater,
 		data: RenderData
 	): () => void {
@@ -1098,7 +1098,7 @@ function hasTemplateBinding( schema: any ) {
 // @param {module:ui/template~TemplateValueSchema} schema
 // @param {Node} node DOM Node updated when {@link module:utils/observablemixin~ObservableMixin} changes.
 // @returns {Array}
-function getValueSchemaValue( schema: ( TemplateSimpleValue | TemplateBinding )[], node: Node ) {
+function getValueSchemaValue( schema: Array<TemplateSimpleValue | TemplateBinding>, node: Node ) {
 	return schema.map( schemaItem => {
 		// Process {@link module:ui/template~TemplateBinding} bindings.
 		if ( schemaItem instanceof TemplateBinding ) {
@@ -1117,7 +1117,7 @@ function getValueSchemaValue( schema: ( TemplateSimpleValue | TemplateBinding )[
 // @param {Function} updater A function which updates the DOM (like attribute or text).
 // @param {Node} node DOM Node updated when {@link module:utils/observablemixin~ObservableMixin} changes.
 function syncValueSchemaValue(
-	schema: ( TemplateSimpleValue | TemplateBinding )[],
+	schema: Array<TemplateSimpleValue | TemplateBinding>,
 	updater: Updater,
 	{ node }: { node: Node }
 ) {
@@ -1515,7 +1515,7 @@ function isViewCollection( item: unknown ): item is ViewCollection {
 // Checks if value array contains the one with namespace.
 function isNamespaced(
 	attrValue: AttributeValues
-): attrValue is [ NamespacedValue<( TemplateSimpleValue | TemplateBinding )[]> ] {
+): attrValue is [ NamespacedValue<Array<TemplateSimpleValue | TemplateBinding>> ] {
 	return isObject( attrValue[ 0 ] ) && ( attrValue[ 0 ] as any ).ns;
 }
 
@@ -1913,8 +1913,8 @@ interface RenderData {
 
 interface RevertData {
 	text?: string | null;
-	children: RevertData[];
-	bindings: ( () => void )[][];
+	children: Array<RevertData>;
+	bindings: Array<Array<() => void>>;
 	attributes: Record<string, string | null>;
 }
 
