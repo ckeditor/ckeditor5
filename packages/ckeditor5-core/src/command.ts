@@ -28,11 +28,11 @@ import type Editor from './editor/editor';
  */
 export default class Command extends Observable {
 	public readonly editor: Editor;
-	public readonly affectsData: boolean;
 
 	declare public value: unknown;
 	declare public isEnabled: boolean;
 
+	private _affectsData: boolean;
 	private readonly _disableStack: Set<string>;
 
 	/**
@@ -121,7 +121,7 @@ export default class Command extends Observable {
 		 * @default true
 		 * @member {Boolean} #affectsData
 		 */
-		this.affectsData = true;
+		this._affectsData = true;
 
 		/**
 		 * Holds identifiers for {@link #forceDisabled} mechanism.
@@ -152,6 +152,14 @@ export default class Command extends Observable {
 				this.clearForceDisabled( 'readOnlyMode' );
 			}
 		} );
+	}
+
+	public get affectsData(): boolean {
+		return this._affectsData;
+	}
+
+	protected set affectsData( affectsData: boolean ) {
+		this._affectsData = affectsData;
 	}
 
 	/**

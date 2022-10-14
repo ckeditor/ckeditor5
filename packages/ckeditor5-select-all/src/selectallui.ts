@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import type SelectAllCommand from './selectallcommand';
 
 import selectAllIcon from '../theme/icons/select-all.svg';
 
@@ -25,18 +26,18 @@ export default class SelectAllUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'SelectAllUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'selectAll', locale => {
-			const command = editor.commands.get( 'selectAll' );
+			const command = editor.commands.get( 'selectAll' ) as SelectAllCommand;
 			const view = new ButtonView( locale );
 			const t = locale.t;
 
@@ -47,7 +48,7 @@ export default class SelectAllUI extends Plugin {
 				tooltip: true
 			} );
 
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 			// Execute the command.
 			this.listenTo( view, 'execute', () => {

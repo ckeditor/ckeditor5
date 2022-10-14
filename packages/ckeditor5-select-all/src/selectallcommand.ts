@@ -8,6 +8,8 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Element, Schema } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The select all command.
@@ -29,7 +31,7 @@ export default class SelectAllCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		// It does not affect data so should be enabled in read-only mode.
@@ -39,16 +41,16 @@ export default class SelectAllCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	public override execute(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		let scopeElement = model.schema.getLimitElement( selection );
+		let scopeElement: Element | null = model.schema.getLimitElement( selection );
 
 		// If an entire scope is selected, or the selection's ancestor is not a scope yet,
 		// browse through ancestors to find the enclosing parent scope.
 		if ( selection.containsEntireContent( scopeElement ) || !isSelectAllScope( model.schema, scopeElement ) ) {
 			do {
-				scopeElement = scopeElement.parent;
+				scopeElement = scopeElement.parent as Element | null;
 
 				// Do nothing, if the entire `root` is already selected.
 				if ( !scopeElement ) {
@@ -70,6 +72,6 @@ export default class SelectAllCommand extends Command {
 // @param {module:engine/model/schema~Schema} schema The schema to check against.
 // @param {module:engine/model/element~Element} element
 // @return {Boolean}
-function isSelectAllScope( schema, element ) {
+function isSelectAllScope( schema: Schema, element: Element ) {
 	return schema.isLimit( element ) && ( schema.checkChild( element, '$text' ) || schema.checkChild( element, 'paragraph' ) );
 }

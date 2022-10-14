@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import SelectAllCommand from './selectallcommand';
+import type { KeyObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
 
 const SELECT_ALL_KEYSTROKE = parseKeystroke( 'Ctrl+A' );
 
@@ -25,21 +26,21 @@ export default class SelectAllEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'SelectAllEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
 		editor.commands.add( 'selectAll', new SelectAllCommand( editor ) );
 
-		this.listenTo( viewDocument, 'keydown', ( eventInfo, domEventData ) => {
+		this.listenTo<KeyObserverEvent>( viewDocument, 'keydown', ( eventInfo, domEventData ) => {
 			if ( getCode( domEventData ) === SELECT_ALL_KEYSTROKE ) {
 				editor.execute( 'selectAll' );
 				domEventData.preventDefault();
