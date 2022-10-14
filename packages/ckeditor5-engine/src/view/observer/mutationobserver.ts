@@ -170,7 +170,7 @@ export default class MutationObserver extends Observer {
 
 			if ( mutation.type === 'childList' && !this._isBogusBrMutation( mutation ) ) {
 				elementsWithMutatedChildren.add( element as ViewElement );
-			} else if ( mutation.type === 'attributes' ) {
+			} else if ( mutation.type === 'attributes' && !element.is( 'rootElement' ) ) {
 				elementsWithMutatedAttributes.add( element as ViewElement );
 			}
 		}

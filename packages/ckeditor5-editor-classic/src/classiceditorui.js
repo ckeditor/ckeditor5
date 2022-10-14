@@ -114,14 +114,14 @@ export default class ClassicEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
+		super.destroy();
+
 		const view = this.view;
 		const editingView = this.editor.editing.view;
 
 		this._elementReplacer.restore();
 		editingView.detachDomRoot( view.editable.name );
 		view.destroy();
-
-		super.destroy();
 	}
 
 	/**

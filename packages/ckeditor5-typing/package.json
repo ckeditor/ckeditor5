@@ -26,7 +26,7 @@
     "@ckeditor/ckeditor5-enter": "^35.2.1",
     "@ckeditor/ckeditor5-essentials": "^35.2.1",
     "@ckeditor/ckeditor5-heading": "^35.2.1",
-    "@ckeditor/ckeditor5-image": "^35.2.0",
+    "@ckeditor/ckeditor5-image": "^35.2.1",
     "@ckeditor/ckeditor5-indent": "^35.2.1",
     "@ckeditor/ckeditor5-link": "^35.2.1",
     "@ckeditor/ckeditor5-list": "^35.2.1",

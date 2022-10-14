@@ -11,7 +11,7 @@ import View from './view';
 import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview';
 
 import { Emitter as DomEmitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import { global, isVisible, first } from '@ckeditor/ckeditor5-utils';
+import { global, isVisible, first, ResizeObserver } from '@ckeditor/ckeditor5-utils';
 import { isElement, debounce, type DebouncedFunc } from 'lodash-es';
 
 import '../theme/components/tooltip/tooltip.css';
@@ -88,6 +88,7 @@ export default class TooltipManager extends DomEmitter {
 
 	private _currentElementWithTooltip!: HTMLElement | null;
 	private _currentTooltipPosition!: TooltipPosition | null;
+	private _resizeObserver!: ResizeObserver | null;
 	private _pinTooltipDebounced!: DebouncedFunc<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
 
 	private readonly _watchdogExcluded!: true;
@@ -162,6 +163,18 @@ export default class TooltipManager extends DomEmitter {
 		this.balloonPanelView.content.add( this.tooltipTextView );
 
 		/**
+		 * An instance of the resize observer that keeps track on target element visibility,
+		 * when it hides the tooltip should also disappear.
+		 *
+		 * {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar configuration}.
+		 *
+		 * @protected
+		 * @member {module:utils/dom/resizeobserver~ResizeObserver|null}
+		 *
+		 */
+		this._resizeObserver = null;
+
+		/**
 		 * Stores the reference to the DOM element the tooltip is attached to. `null` when there's no tooltip
 		 * in the UI.
 		 *
@@ -214,8 +227,16 @@ export default class TooltipManager extends DomEmitter {
 	 * @param {module:core/editor/editor~Editor} editor The editor the manager was created for.
 	 */
 	public destroy( editor: Editor ): void {
+		const editorBodyViewCollection = editor.ui.view && editor.ui.view.body;
+
 		TooltipManager._editors.delete( editor );
 		this.stopListening( editor.ui );
+
+		// Prevent the balloon panel from being destroyed in the EditorUI#destroy() cascade. It should be destroyed along
+		// with the last editor only (https://github.com/ckeditor/ckeditor5/issues/12602).
+		if ( editorBodyViewCollection && editorBodyViewCollection.has( this.balloonPanelView ) ) {
+			editorBodyViewCollection.remove( this.balloonPanelView );
+		}
 
 		if ( !TooltipManager._editors.size ) {
 			this._unpinTooltip();
@@ -374,6 +395,14 @@ export default class TooltipManager extends DomEmitter {
 			positions: TooltipManager.getPositioningFunctions( position )
 		} );
 
+		this._resizeObserver = new ResizeObserver( targetDomElement, () => {
+			// The ResizeObserver will call its callback when the target element hides and the tooltip
+			// should also disappear (https://github.com/ckeditor/ckeditor5/issues/12492).
+			if ( !isVisible( targetDomElement ) ) {
+				this._unpinTooltip();
+			}
+		} );
+
 		this.balloonPanelView.class = [ BALLOON_CLASS, cssClass ]
 			.filter( className => className )
 			.join( ' ' );
@@ -405,6 +434,10 @@ export default class TooltipManager extends DomEmitter {
 
 		this._currentElementWithTooltip = null;
 		this._currentTooltipPosition = null;
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+		}
 	}
 
 	/**
