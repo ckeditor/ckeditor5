@@ -21,6 +21,7 @@ export { default as MarkerOperation } from './model/operation/markeroperation';
 export { default as OperationFactory } from './model/operation/operationfactory';
 export { transformSets } from './model/operation/transform';
 
+export { default as Selection } from './model/selection';
 export { default as DocumentSelection } from './model/documentselection';
 export { default as Range } from './model/range';
 export { default as LiveRange } from './model/liverange';
@@ -32,6 +33,7 @@ export { default as Position } from './model/position';
 export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
+export { default as Schema } from './model/schema';
 
 export { default as DomConverter } from './view/domconverter';
 export { default as Renderer } from './view/renderer';
