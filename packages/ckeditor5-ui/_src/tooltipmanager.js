@@ -11,7 +11,7 @@ import View from './view';
 import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview';
 
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import { global, isVisible, mix, first } from '@ckeditor/ckeditor5-utils';
+import { global, isVisible, mix, first, ResizeObserver } from '@ckeditor/ckeditor5-utils';
 import { isElement, debounce } from 'lodash-es';
 
 import '../theme/components/tooltip/tooltip.css';
@@ -299,6 +299,14 @@ export default class TooltipManager {
 			positions: TooltipManager.getPositioningFunctions( position )
 		} );
 
+		this._resizeObserver = new ResizeObserver( targetDomElement, () => {
+			// The ResizeObserver will call its callback when the target element hides and the tooltip
+			// should also disappear (https://github.com/ckeditor/ckeditor5/issues/12492).
+			if ( !isVisible( targetDomElement ) ) {
+				this._unpinTooltip();
+			}
+		} );
+
 		this.balloonPanelView.class = [ BALLOON_CLASS, cssClass ]
 			.filter( className => className )
 			.join( ' ' );
@@ -330,6 +338,10 @@ export default class TooltipManager {
 
 		this._currentElementWithTooltip = null;
 		this._currentTooltipPosition = null;
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+		}
 	}
 
 	/**
