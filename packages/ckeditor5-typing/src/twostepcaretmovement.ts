@@ -10,6 +10,9 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { ArrowObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/arrowkeysobserver';
+import type { DocumentSelection, DomEventData, Model, Position } from '@ckeditor/ckeditor5-engine';
 
 /**
  * This plugin enables the two-step caret (phantom) movement behavior for
@@ -103,17 +106,21 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  *
  */
 export default class TwoStepCaretMovement extends Plugin {
+	private attributes: Set<string>;
+	private _overrideUid: string | null;
+	private _isNextGravityRestorationSkipped!: boolean;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'TwoStepCaretMovement';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		/**
@@ -137,7 +144,7 @@ export default class TwoStepCaretMovement extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
@@ -146,7 +153,7 @@ export default class TwoStepCaretMovement extends Plugin {
 		const modelSelection = model.document.selection;
 
 		// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
-		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+		this.listenTo<ArrowObserverEvent>( view.document, 'arrowKey', ( evt, data ) => {
 			// This implementation works only for collapsed selection.
 			if ( !modelSelection.isCollapsed ) {
 				return;
@@ -212,7 +219,7 @@ export default class TwoStepCaretMovement extends Plugin {
 			// Skip automatic restore when the change is indirect AND the selection is at the attribute boundary.
 			// It means that e.g. if the change was external (collaboration) and the user had their
 			// selection around the link, its gravity should remain intact in this change:range event.
-			if ( !data.directChange && isBetweenDifferentAttributes( modelSelection.getFirstPosition(), this.attributes ) ) {
+			if ( !data.directChange && isBetweenDifferentAttributes( modelSelection.getFirstPosition()!, this.attributes ) ) {
 				return;
 			}
 
@@ -225,7 +232,7 @@ export default class TwoStepCaretMovement extends Plugin {
 	 *
 	 * @param {String} attribute Name of the attribute to handle.
 	 */
-	registerAttribute( attribute ) {
+	public registerAttribute( attribute: string ): void {
 		this.attributes.add( attribute );
 	}
 
@@ -237,11 +244,12 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Data of the key press.
 	 * @returns {Boolean} `true` when the handler prevented caret movement
 	 */
-	_handleForwardMovement( data ) {
+	private _handleForwardMovement( data: DomEventData ): boolean {
 		const attributes = this.attributes;
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const position = selection.getFirstPosition();
+		const position = selection.getFirstPosition()!;
+
 		// DON'T ENGAGE 2-SCM if gravity is already overridden. It means that we just entered
 		//
 		// 		<paragraph>foo<$text attribute>{}bar</$text>baz</paragraph>
@@ -276,8 +284,11 @@ export default class TwoStepCaretMovement extends Plugin {
 		if ( isBetweenDifferentAttributes( position, attributes ) ) {
 			preventCaretMovement( data );
 			this._overrideGravity();
+
 			return true;
 		}
+
+		return false;
 	}
 
 	/**
@@ -288,11 +299,11 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Data of the key press.
 	 * @returns {Boolean} `true` when the handler prevented caret movement
 	 */
-	_handleBackwardMovement( data ) {
+	private _handleBackwardMovement( data: DomEventData ): boolean {
 		const attributes = this.attributes;
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const position = selection.getFirstPosition();
+		const position = selection.getFirstPosition()!;
 
 		// When the gravity is already overridden (by this plugin), it means we are on the two-step position.
 		// Prevent the movement, restore the gravity and update selection attributes.
@@ -362,6 +373,8 @@ export default class TwoStepCaretMovement extends Plugin {
 				return false;
 			}
 		}
+
+		return false;
 	}
 
 	/**
@@ -371,7 +384,7 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * @private
 	 * @type {Boolean}
 	 */
-	get _isGravityOverridden() {
+	private get _isGravityOverridden(): boolean {
 		return !!this._overrideUid;
 	}
 
@@ -383,7 +396,7 @@ export default class TwoStepCaretMovement extends Plugin {
 	 *
 	 * @private
 	 */
-	_overrideGravity() {
+	private _overrideGravity(): void {
 		this._overrideUid = this.editor.model.change( writer => {
 			return writer.overrideSelectionGravity();
 		} );
@@ -396,9 +409,9 @@ export default class TwoStepCaretMovement extends Plugin {
 	 *
 	 * @private
 	 */
-	_restoreGravity() {
+	private _restoreGravity(): void {
 		this.editor.model.change( writer => {
-			writer.restoreSelectionGravity( this._overrideUid );
+			writer.restoreSelectionGravity( this._overrideUid! );
 			this._overrideUid = null;
 		} );
 	}
@@ -408,7 +421,7 @@ export default class TwoStepCaretMovement extends Plugin {
 //
 // @param {module:engine/model/documentselection~DocumentSelection} selection
 // @param {Iterable.<String>} attributes
-function hasAnyAttribute( selection, attributes ) {
+function hasAnyAttribute( selection: DocumentSelection, attributes: Set<string> ) {
 	for ( const observedAttribute of attributes ) {
 		if ( selection.hasAttribute( observedAttribute ) ) {
 			return true;
@@ -425,7 +438,7 @@ function hasAnyAttribute( selection, attributes ) {
 // @param {module:engine/model/model~Model}
 // @param {Iterable.<String>} attributess
 // @param {module:engine/model/position~Position} position
-function setSelectionAttributesFromTheNodeBefore( model, attributes, position ) {
+function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<string>, position: Position ) {
 	const nodeBefore = position.nodeBefore;
 	model.change( writer => {
 		if ( nodeBefore ) {
@@ -439,7 +452,7 @@ function setSelectionAttributesFromTheNodeBefore( model, attributes, position ) 
 // Prevents the caret movement in the view by calling `preventDefault` on the event data.
 //
 // @alias data.preventDefault
-function preventCaretMovement( data ) {
+function preventCaretMovement( data: DomEventData ) {
 	data.preventDefault();
 }
 
@@ -447,7 +460,7 @@ function preventCaretMovement( data ) {
 //
 // @param {module:engine/model/position~Position} position
 // @param {String} attribute
-function isStepAfterAnyAttributeBoundary( position, attributes ) {
+function isStepAfterAnyAttributeBoundary( position: Position, attributes: Set<string> ) {
 	const positionBefore = position.getShiftedBy( -1 );
 	return isBetweenDifferentAttributes( positionBefore, attributes );
 }
@@ -456,7 +469,7 @@ function isStepAfterAnyAttributeBoundary( position, attributes ) {
 //
 // @param {module:engine/model/position~Position} position
 // @param {Iterable.<String>} attributes
-function isBetweenDifferentAttributes( position, attributes ) {
+function isBetweenDifferentAttributes( position: Position, attributes: Set<string> ) {
 	const { nodeBefore, nodeAfter } = position;
 	for ( const observedAttribute of attributes ) {
 		const attrBefore = nodeBefore ? nodeBefore.getAttribute( observedAttribute ) : undefined;

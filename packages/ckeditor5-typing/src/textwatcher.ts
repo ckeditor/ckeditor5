@@ -7,9 +7,13 @@
  * @module typing/textwatcher
  */
 
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { Observable, type ChangeEvent as ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import getLastTextLine from './utils/getlasttextline';
+
+import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
+import type { Model, Range } from '@ckeditor/ckeditor5-engine';
+import type { ChangeEvent as SelectionChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
+import type { ChangeEvent as DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/document';
 
 /**
  * The text watcher feature.
@@ -21,14 +25,23 @@ import getLastTextLine from './utils/getlasttextline';
  * @private
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class TextWatcher {
+export default class TextWatcher extends Observable {
+	public readonly model: Model;
+	public testCallback: ( text: string ) => unknown;
+
+	private _hasMatch: boolean;
+
+	declare public isEnabled: boolean;
+
 	/**
 	 * Creates a text watcher instance.
 	 *
 	 * @param {module:engine/model/model~Model} model
 	 * @param {Function} testCallback See {@link module:typing/textwatcher~TextWatcher#testCallback}.
 	 */
-	constructor( model, testCallback ) {
+	constructor( model: Model, testCallback: ( text: string ) => unknown ) {
+		super();
+
 		/**
 		 * The editor's model.
 		 *
@@ -57,7 +70,7 @@ export default class TextWatcher {
 		 * @readonly
 		 * @member {Boolean}
 		 */
-		this.hasMatch = false;
+		this._hasMatch = false;
 
 		/**
 		 * Flag indicating whether the `TextWatcher` instance is enabled or disabled.
@@ -76,7 +89,7 @@ export default class TextWatcher {
 		this.set( 'isEnabled', true );
 
 		// Toggle text watching on isEnabled state change.
-		this.on( 'change:isEnabled', () => {
+		this.on<ObservableChangeEvent>( 'change:isEnabled', () => {
 			if ( this.isEnabled ) {
 				this._startListening();
 			} else {
@@ -89,15 +102,22 @@ export default class TextWatcher {
 	}
 
 	/**
+	 * TODO
+	 */
+	public get hasMatch(): boolean {
+		return this._hasMatch;
+	}
+
+	/**
 	 * Starts listening to the editor for typing and selection events.
 	 *
 	 * @private
 	 */
-	_startListening() {
+	private _startListening(): void {
 		const model = this.model;
 		const document = model.document;
 
-		this.listenTo( document.selection, 'change:range', ( evt, { directChange } ) => {
+		this.listenTo<SelectionChangeEvent>( document.selection, 'change:range', ( evt, { directChange } ) => {
 			// Indirect changes (i.e. when the user types or external changes are applied) are handled in the document's change event.
 			if ( !directChange ) {
 				return;
@@ -107,7 +127,7 @@ export default class TextWatcher {
 			if ( !document.selection.isCollapsed ) {
 				if ( this.hasMatch ) {
 					this.fire( 'unmatched' );
-					this.hasMatch = false;
+					this._hasMatch = false;
 				}
 
 				return;
@@ -116,7 +136,7 @@ export default class TextWatcher {
 			this._evaluateTextBeforeSelection( 'selection' );
 		} );
 
-		this.listenTo( document, 'change:data', ( evt, batch ) => {
+		this.listenTo<DocumentChangeEvent>( document, 'change:data', ( evt, batch ) => {
 			if ( batch.isUndo || !batch.isLocal ) {
 				return;
 			}
@@ -136,12 +156,12 @@ export default class TextWatcher {
 	 * @param {'data'|'selection'} suffix A suffix used for generating the event name.
 	 * @param {Object} data Data object for event.
 	 */
-	_evaluateTextBeforeSelection( suffix, data = {} ) {
+	private _evaluateTextBeforeSelection( suffix: 'data' | 'selection', data: { batch?: Batch } = {} ): void {
 		const model = this.model;
 		const document = model.document;
 		const selection = document.selection;
 
-		const rangeBeforeSelection = model.createRange( model.createPositionAt( selection.focus.parent, 0 ), selection.focus );
+		const rangeBeforeSelection = model.createRange( model.createPositionAt( selection.focus!.parent, 0 ), selection.focus! );
 
 		const { text, range } = getLastTextLine( rangeBeforeSelection, model );
 
@@ -151,7 +171,7 @@ export default class TextWatcher {
 			this.fire( 'unmatched' );
 		}
 
-		this.hasMatch = !!testResult;
+		this._hasMatch = !!testResult;
 
 		if ( testResult ) {
 			const eventData = Object.assign( data, { text, range } );
@@ -166,7 +186,14 @@ export default class TextWatcher {
 	}
 }
 
-mix( TextWatcher, ObservableMixin );
+export type TextWatcherMatchedEvent<TCallbackResult extends Record<string, unknown>> = {
+	name: 'matched' | 'matched:data' | 'matched:selection';
+	args: [ {
+		text: string;
+		range: Range;
+		batch?: Batch;
+	} & TCallbackResult ];
+};
 
 /**
  * Fired whenever the text watcher found a match for data changes.
@@ -177,6 +204,14 @@ mix( TextWatcher, ObservableMixin );
  * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
  * @param {Object} [data.testResult] The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
  */
+export type TextWatcherMatchedDataEvent<TCallbackResult extends Record<string, unknown>> = {
+	name: 'matched:data';
+	args: [ {
+		text: string;
+		range: Range;
+		batch: Batch;
+	} & TCallbackResult ];
+};
 
 /**
  * Fired whenever the text watcher found a match for selection changes.
@@ -187,6 +222,13 @@ mix( TextWatcher, ObservableMixin );
  * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
  * @param {Object} [data.testResult] The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
  */
+export type TextWatcherMatchedSelectionEvent<TCallbackResult extends Record<string, unknown>> = {
+	name: 'matched:selection';
+	args: [ {
+		text: string;
+		range: Range;
+	} & TCallbackResult ];
+};
 
 /**
  * Fired whenever the text does not match anymore. Fired only when the text watcher found a match.

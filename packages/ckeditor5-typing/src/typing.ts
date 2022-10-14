@@ -66,6 +66,6 @@ declare module '@ckeditor/ckeditor5-core' {
  *
  * @member {Number} [module:typing/typing~TypingConfig#undoStep=20]
  */
-export type TypingConfig = {
+export interface TypingConfig {
 	undoStep?: number;
-};
+}

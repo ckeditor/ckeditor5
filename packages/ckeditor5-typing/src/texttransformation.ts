@@ -7,12 +7,16 @@
  * @module typing/texttransformation
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import TextWatcher from './textwatcher';
+import Plugin, { PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import TextWatcher, { type TextWatcherMatchedDataEvent } from './textwatcher';
 import { escapeRegExp } from 'lodash-es';
 
+import type Delete from './delete';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Position } from '@ckeditor/ckeditor5-engine';
+
 // All named transformations.
-const TRANSFORMATIONS = {
+const TRANSFORMATIONS: Record<string, TextTransformationDescription> = {
 	// Common symbols:
 	copyright: { from: '(c)', to: '©' },
 	registeredTrademark: { from: '(r)', to: '®' },
@@ -49,7 +53,7 @@ const TRANSFORMATIONS = {
 };
 
 // Transformation groups.
-const TRANSFORMATION_GROUPS = {
+const TRANSFORMATION_GROUPS: Record<string, Array<string>> = {
 	symbols: [ 'copyright', 'registeredTrademark', 'trademark' ],
 	mathematical: [
 		'oneHalf', 'oneThird', 'twoThirds', 'oneForth', 'threeQuarters',
@@ -77,21 +81,21 @@ export default class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): Array<string> {
 		return [ 'Delete', 'Input' ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'TextTransformation';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( 'typing', {
@@ -104,13 +108,13 @@ export default class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const model = this.editor.model;
 		const modelSelection = model.document.selection;
 
 		modelSelection.on( 'change:range', () => {
 			// Disable plugin when selection is inside a code block.
-			this.isEnabled = !modelSelection.anchor.parent.is( 'element', 'codeBlock' );
+			this.isEnabled = !modelSelection.anchor!.parent.is( 'element', 'codeBlock' );
 		} );
 
 		this._enableTransformationWatchers();
@@ -121,13 +125,13 @@ export default class TextTransformation extends Plugin {
 	 *
 	 * @private
 	 */
-	_enableTransformationWatchers() {
+	private _enableTransformationWatchers(): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const deletePlugin = editor.plugins.get( 'Delete' );
-		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' ) );
+		const deletePlugin = editor.plugins.get( 'Delete' ) as Delete;
+		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' )! );
 
-		const testCallback = text => {
+		const testCallback = ( text: string ) => {
 			for ( const normalizedTransformation of normalizedTransformations ) {
 				const from = normalizedTransformation.from;
 				const match = from.test( text );
@@ -138,14 +142,18 @@ export default class TextTransformation extends Plugin {
 			}
 		};
 
-		const watcherCallback = ( evt, data ) => {
+		const watcher = new TextWatcher( editor.model, testCallback );
+
+		watcher.on<TextWatcherMatchedDataEvent<{
+			normalizedTransformation: NormalizedTransformationConfig;
+		}>>( 'matched:data', ( evt, data ) => {
 			if ( !data.batch.isTyping ) {
 				return;
 			}
 
 			const { from, to } = data.normalizedTransformation;
 
-			const matches = from.exec( data.text );
+			const matches = from.exec( data.text )!;
 			const replaces = to( matches.slice( 1 ) );
 
 			const matchedRange = data.range;
@@ -176,11 +184,8 @@ export default class TextTransformation extends Plugin {
 					deletePlugin.requestUndoOnBackspace();
 				} );
 			} );
-		};
+		} );
 
-		const watcher = new TextWatcher( editor.model, testCallback );
-
-		watcher.on( 'matched:data', watcherCallback );
 		watcher.bind( 'isEnabled' ).to( this );
 	}
 }
@@ -191,7 +196,7 @@ export default class TextTransformation extends Plugin {
 //
 // @param {String|RegExp} from
 // @returns {RegExp}
-function normalizeFrom( from ) {
+function normalizeFrom( from: string | RegExp ) {
 	if ( typeof from == 'string' ) {
 		return new RegExp( `(${ escapeRegExp( from ) })$` );
 	}
@@ -206,7 +211,7 @@ function normalizeFrom( from ) {
 //
 // @param {String|Array.<null|String>|Function} to
 // @returns {Function}
-function normalizeTo( to ) {
+function normalizeTo( to: TextTransformationDescription[ 'to' ] ) {
 	if ( typeof to == 'string' ) {
 		return () => [ to ];
 	} else if ( to instanceof Array ) {
@@ -222,17 +227,17 @@ function normalizeTo( to ) {
 //
 // @param {module:engine/model/position~Position} position
 // @returns {Iterable.<*>}
-function getTextAttributesAfterPosition( position ) {
+function getTextAttributesAfterPosition( position: Position ) {
 	const textNode = position.textNode ? position.textNode : position.nodeAfter;
 
-	return textNode.getAttributes();
+	return textNode!.getAttributes();
 }
 
 // Returns a RegExp pattern string that detects a sentence inside a quote.
 //
 // @param {String} quoteCharacter The character to create a pattern for.
 // @returns {String}
-function buildQuotesRegExp( quoteCharacter ) {
+function buildQuotesRegExp( quoteCharacter: string ) {
 	return new RegExp( `(^|\\s)(${ quoteCharacter })([^${ quoteCharacter }]*)(${ quoteCharacter })$` );
 }
 
@@ -240,17 +245,20 @@ function buildQuotesRegExp( quoteCharacter ) {
 //
 // @param {module:typing/texttransformation~TextTransformationDescription} config
 // @returns {Array.<{from:String,to:Function}>}
-function normalizeTransformations( config ) {
+function normalizeTransformations( config: TextTransformationConfig ): Array<NormalizedTransformationConfig> {
 	const extra = config.extra || [];
 	const remove = config.remove || [];
-	const isNotRemoved = transformation => !remove.includes( transformation );
+	const isNotRemoved = ( transformation: TextTransformationDescription | string ) => !remove.includes( transformation );
 
 	const configured = config.include.concat( extra ).filter( isNotRemoved );
 
 	return expandGroupsAndRemoveDuplicates( configured )
 		.filter( isNotRemoved ) // Filter out 'remove' transformations as they might be set in group.
-		.map( transformation => TRANSFORMATIONS[ transformation ] || transformation )
-		.filter( transformation => typeof transformation === 'object' ) // Filter out transformations set as string that has not been found.
+		.map( transformation => (
+			typeof transformation == 'string' && TRANSFORMATIONS[ transformation ] ? TRANSFORMATIONS[ transformation ] : transformation )
+		)
+		// Filter out transformations set as string that has not been found.
+		.filter( ( transformation ): transformation is TextTransformationDescription => typeof transformation === 'object' )
 		.map( transformation => ( {
 			from: normalizeFrom( transformation.from ),
 			to: normalizeTo( transformation.to )
@@ -262,12 +270,14 @@ function normalizeTransformations( config ) {
 //
 // @param {Array.<String|Object>} definitions
 // @returns {Array.<String|Object>}
-function expandGroupsAndRemoveDuplicates( definitions ) {
+function expandGroupsAndRemoveDuplicates(
+	definitions: Array<TextTransformationDescription | string>
+): Array<TextTransformationDescription | string> {
 	// Set is using to make sure that transformation names are not duplicated.
-	const definedTransformations = new Set();
+	const definedTransformations = new Set<TextTransformationDescription | string>();
 
 	for ( const transformationOrGroup of definitions ) {
-		if ( TRANSFORMATION_GROUPS[ transformationOrGroup ] ) {
+		if ( typeof transformationOrGroup == 'string' && TRANSFORMATION_GROUPS[ transformationOrGroup ] ) {
 			for ( const transformation of TRANSFORMATION_GROUPS[ transformationOrGroup ] ) {
 				definedTransformations.add( transformation );
 			}
@@ -322,6 +332,10 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  * @property {String|RegExp} from The string or regular expression to transform.
  * @property {String} to The text to transform compatible with `String.replace()`.
  */
+export type TextTransformationDescription = {
+	from: string | RegExp;
+	to: string | Array<string | null> | ( ( matches: Array<string> ) => Array<string | null> );
+};
 
 /**
  * The configuration of the {@link module:typing/texttransformation~TextTransformation} feature.
@@ -330,6 +344,11 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *
  * @member {module:typing/texttransformation~TextTransformationConfig} module:typing/typing~TypingConfig#transformations
  */
+declare module './typing' {
+	interface TypingConfig {
+		transformations: TextTransformationConfig;
+	}
+}
 
 /**
  * The configuration of the text transformation feature.
@@ -404,6 +423,11 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *
  * @interface TextTransformationConfig
  */
+export type TextTransformationConfig = {
+	include: Array<TextTransformationDescription | string>;
+	extra?: Array<TextTransformationDescription | string>;
+	remove?: Array<TextTransformationDescription | string>;
+};
 
 /* eslint-disable max-len */
 /**
@@ -444,3 +468,8 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#remove
  */
 /* eslint-enable max-len */
+
+type NormalizedTransformationConfig = {
+	from: RegExp;
+	to: ( matches: Array<string> ) => Array<string | null>;
+};
