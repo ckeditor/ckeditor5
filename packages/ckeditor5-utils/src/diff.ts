@@ -32,7 +32,7 @@ export default function diff<T>(
 	a: ArrayLike<T>,
 	b: ArrayLike<T>,
 	cmp?: ( a: T, b: T ) => boolean
-): DiffResult[] {
+): Array<DiffResult> {
 	// Set the comparator function.
 	cmp = cmp || function( a, b ) {
 		return a === b;
@@ -69,7 +69,7 @@ export default function diff<T>(
 	const delta = n - m;
 
 	// Edit scripts, for each diagonal.
-	const es: { [ k: number ]: DiffResult[] } = {};
+	const es: { [ k: number ]: Array<DiffResult> } = {};
 	// Furthest points, the furthest y we can get on each diagonal.
 	const fp: { [ k: number]: number } = {};
 

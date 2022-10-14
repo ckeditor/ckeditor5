@@ -213,7 +213,7 @@ function getErrorMessage( errorName: string, data?: object ): string {
 // @param {String} errorName
 // @param {Object} [data]
 // @returns {Array}
-function formatConsoleArguments( errorName: string, data?: object ): unknown[] {
+function formatConsoleArguments( errorName: string, data?: object ): Array<unknown> {
 	const documentationMessage = getLinkToDocumentationMessage( errorName );
 
 	return data ? [ errorName, data, documentationMessage ] : [ errorName, documentationMessage ];

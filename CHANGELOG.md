@@ -3,9 +3,13 @@ Changelog
 
 ## [35.2.1](https://github.com/ckeditor/ckeditor5/compare/v35.2.0...v35.2.1) (2022-10-10)
 
+This is a hotfix release which addresses problems discovered after publishing code for our previous main release. Please make sure to check the changelog for version `35.2.0` below as well.
+
 ### Bug fixes
 
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Suggestions imported from Word file were not saved in the database.
+
+Read about release highlights in a dedicated blog post: https://ckeditor.com/blog/ckeditor-5-v35.2.0-with-the-import-from-word-plugin-new-toolbar-functionality-and-annotations-performance-improvement/
 
 ### Released packages
 
@@ -114,7 +118,7 @@ There were also bug fixes:
 * [The color pickers in table and table cell properties forms are now accessible for keyboard users](https://github.com/ckeditor/ckeditor5/issues/12193).
 * [The to-do list items should not interrupt the <kbd>tab</kbd> key navigation across the editor content](https://github.com/ckeditor/ckeditor5/issues/6535).
 
-<!-- TODO: Add a link to the blog post. -->
+Read about release highlights in a dedicated blog post: https://ckeditor.com/blog/ckeditor-5-v35.2.0-with-the-import-from-word-plugin-new-toolbar-functionality-and-annotations-performance-improvement/
 
 Please refer to the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/migration-to-35.html#migration-to-ckeditor-5-v3520) to learn more about these changes.
 

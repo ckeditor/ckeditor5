@@ -198,7 +198,7 @@ export interface PluginInterface {
 export interface PluginConstructor<TContext> {
 	new( editor: TContext ): PluginInterface;
 
-	readonly requires?: ( PluginConstructor<TContext> | string )[];
+	readonly requires?: Array<PluginConstructor<TContext> | string>;
 	readonly pluginName?: string;
 	readonly isContextPlugin: boolean;
 }
@@ -308,7 +308,7 @@ export interface PluginConstructor<TContext> {
  * @typedef {Array.<module:core/plugin~PluginInterface>} module:core/plugin~LoadedPlugins
  */
 
-export type LoadedPlugins = PluginInterface[];
+export type LoadedPlugins = Array<PluginInterface>;
 
 // Helper function that forces plugin to be disabled.
 function forceDisable( evt: EventInfo<string, boolean> ) {

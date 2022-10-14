@@ -300,7 +300,7 @@ function getBorderReducer(): Reducer {
 			}
 
 			return reducedStyleTypes;
-		}, [] as PropertyDescriptor[] );
+		}, [] as Array<PropertyDescriptor> );
 
 		// The reduced properties (by type) and all that remains that could not be reduced.
 		return [
@@ -314,7 +314,7 @@ function getBorderReducer(): Reducer {
 
 	// @param {Array.<Object>} styles The array of objects with `style`, `color`, `width` properties.
 	// @param {'width'|'style'|'color'} type
-	function getReducedStyleValueForType( styles: Styles[], type: 'width' | 'style' | 'color' ) {
+	function getReducedStyleValueForType( styles: Array<Styles>, type: 'width' | 'style' | 'color' ) {
 		return styles
 			.map( style => style[ type ] as any )
 			.reduce( ( result, style ) => result == style ? result : null );
@@ -335,7 +335,7 @@ function getBorderPositionReducer( which: keyof BoxSides | 'all' ): Reducer {
 // @param {Object|null} value Styles if defined.
 // @param {'top'|'right'|'bottom'|'left'|'all'} which The border position.
 // @returns {Array}
-function reduceBorderPosition( value: any, which: keyof BoxSides | 'all' ): PropertyDescriptor[] {
+function reduceBorderPosition( value: any, which: keyof BoxSides | 'all' ): Array<PropertyDescriptor> {
 	const borderTypes = [];
 
 	if ( value && ( value.width ) ) {

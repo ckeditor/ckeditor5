@@ -440,7 +440,7 @@ export default class ImageUploadEditing extends Plugin {
 
 // Returns `true` if non-empty `text/html` is included in the data transfer.
 //
-// @param {module:clipboard/datatransfer~DataTransfer} dataTransfer
+// @param {module:engine/view/datatransfer~DataTransfer} dataTransfer
 // @returns {Boolean}
 export function isHtmlIncluded( dataTransfer ) {
 	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';

@@ -240,7 +240,7 @@ export default class Command extends Observable {
 	 *
 	 * @fires execute
 	 */
-	public execute( ...args: unknown[] ): unknown { return undefined; }
+	public execute( ...args: Array<unknown> ): unknown { return undefined; }
 
 	/**
 	 * Destroys the command.

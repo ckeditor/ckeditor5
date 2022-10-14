@@ -13,10 +13,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import {
-	isForwardArrowKeyCode,
-	keyCodes
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { isForwardArrowKeyCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import {
 	isTypeAroundWidget,
@@ -27,14 +24,11 @@ import {
 	TYPE_AROUND_SELECTION_ATTRIBUTE
 } from './utils';
 
-import {
-	isNonTypingKeystroke
-} from '@ckeditor/ckeditor5-typing/src/utils/injectunsafekeystrokeshandling';
-
 import { isWidget } from '../utils';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ];
 
@@ -200,6 +194,12 @@ export default class WidgetTypeAround extends Plugin {
 		if ( !typeAroundFakeCaretPosition ) {
 			return false;
 		}
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[WidgetTypeAround]%c Fake caret -> insert paragraph',
+		// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
 
 		const selectedModelElement = modelSelection.getSelectedElement();
 
@@ -621,38 +621,48 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * Similar to the {@link #_enableInsertingParagraphsOnEnterKeypress}, it allows the user
 	 * to insert a paragraph next to a widget when the fake caret was activated using arrow
-	 * keys but it responds to typing keystrokes instead of <kbd>Enter</kbd>.
+	 * keys but it responds to typing instead of <kbd>Enter</kbd>.
 	 *
-	 * "Typing keystrokes" are keystrokes that insert new content into the document,
-	 * for instance, letters ("a") or numbers ("4"). The "keydown" listener enabled by this method
-	 * will insert a new paragraph according to the `widget-type-around` model selection attribute
-	 * as the user simply starts typing, which creates the impression that the fake caret
+	 * Listener enabled by this method will insert a new paragraph according to the `widget-type-around`
+	 * model selection attribute as the user simply starts typing, which creates the impression that the fake caret
 	 * behaves like a real one rendered by the browser (AKA your text appears where the caret was).
 	 *
 	 * **Note**: At the moment this listener creates 2 undo steps: one for the `insertParagraph` command
 	 * and another one for actual typing. It is not a disaster but this may need to be fixed
 	 * sooner or later.
 	 *
-	 * Learn more in {@link module:typing/utils/injectunsafekeystrokeshandling}.
-	 *
 	 * @private
 	 */
 	_enableInsertingParagraphsOnTypingKeystroke() {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
-		const keyCodesHandledSomewhereElse = [
-			keyCodes.enter,
-			keyCodes.delete,
-			keyCodes.backspace
-		];
+		const viewDocument = editor.editing.view.document;
 
-		// Note: The priority must precede the default observers.
-		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
-			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
-			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {
-				this._insertParagraphAccordingToFakeCaretPosition();
+		// Note: The priority must precede the default Input plugin insertText handler.
+		this._listenToIfEnabled( viewDocument, 'insertText', ( evt, data ) => {
+			if ( this._insertParagraphAccordingToFakeCaretPosition() ) {
+				// The view selection in the event data contains the widget. If the new paragraph
+				// was inserted, modify the view selection passed along with the insertText event
+				// so the default event handler in the Input plugin starts typing inside the paragraph.
+				// Otherwise, the typing would be over the widget.
+				data.selection = viewDocument.selection;
 			}
 		}, { priority: 'high' } );
+
+		if ( env.isAndroid ) {
+			// On Android with English keyboard, the composition starts just by putting caret
+			// at the word end or by selecting a table column. This is not a real composition started.
+			// Trigger delete content on first composition key pressed.
+			this._listenToIfEnabled( viewDocument, 'keydown', ( evt, data ) => {
+				if ( data.keyCode == 229 ) {
+					this._insertParagraphAccordingToFakeCaretPosition();
+				}
+			} );
+		} else {
+			// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
+			this._listenToIfEnabled( viewDocument, 'compositionstart', () => {
+				this._insertParagraphAccordingToFakeCaretPosition();
+			}, { priority: 'high' } );
+		}
 	}
 
 	/**

@@ -23,7 +23,7 @@ describe( 'EditorUI', () => {
 
 	beforeEach( () => {
 		editor = new Editor();
-		ui = new EditorUI( editor );
+		editor.ui = ui = new EditorUI( editor );
 	} );
 
 	afterEach( () => {
@@ -461,7 +461,7 @@ describe( 'EditorUI', () => {
 
 			it( 'should do nothing if no toolbars were registered', () => {
 				const editor = new Editor();
-				const ui = new EditorUI( editor );
+				const ui = editor.ui = new EditorUI( editor );
 				const editingArea = document.createElement( 'div' );
 				document.body.appendChild( editingArea );
 

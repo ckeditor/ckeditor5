@@ -28,7 +28,7 @@ import type Node from './node';
  */
 export default class DocumentFragment extends EmitterMixin( TypeCheckable ) {
 	public readonly document: Document;
-	private readonly _children: Node[];
+	private readonly _children: Array<Node>;
 
 	/**
 	 * Creates new DocumentFragment instance.
@@ -191,7 +191,7 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) {
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
 	 */
-	public _removeChildren( index: number, howMany: number = 1 ): Node[] {
+	public _removeChildren( index: number, howMany: number = 1 ): Array<Node> {
 		this._fireChange( 'children', this );
 
 		for ( let i = index; i < index + howMany; i++ ) {
@@ -257,7 +257,7 @@ DocumentFragment.prototype.is = function( type: string ): boolean {
 //
 // @param {String|module:engine/view/item~Item|Iterable.<String|module:engine/view/item~Item>}
 // @returns {Iterable.<module:engine/view/node~Node>}
-function normalize( document: Document, nodes: Item | Iterable<Item> ): Node[] {
+function normalize( document: Document, nodes: Item | Iterable<Item> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( document, nodes ) ];

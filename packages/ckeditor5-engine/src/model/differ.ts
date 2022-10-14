@@ -33,12 +33,12 @@ import type SplitOperation from './operation/splitoperation';
  */
 export default class Differ {
 	private readonly _markerCollection: MarkerCollection;
-	private readonly _changesInElement: Map<Element | DocumentFragment, ChangeItem[]>;
-	private readonly _elementSnapshots: Map<Element | DocumentFragment, { name: string; attributes: Map<string, unknown> }[]>;
+	private readonly _changesInElement: Map<Element | DocumentFragment, Array<ChangeItem>>;
+	private readonly _elementSnapshots: Map<Element | DocumentFragment, Array<{ name: string; attributes: Map<string, unknown> }>>;
 	private readonly _changedMarkers: Map<string, { newMarkerData: MarkerData; oldMarkerData: MarkerData }>;
 	private _changeCount: number;
-	private _cachedChanges: DiffItem[] | null;
-	private _cachedChangesWithGraveyard: DiffItem[] | null;
+	private _cachedChanges: Array<DiffItem> | null;
+	private _cachedChangesWithGraveyard: Array<DiffItem> | null;
 	private _refreshedItems: Set<Item>;
 
 	/**
@@ -308,7 +308,7 @@ export default class Differ {
 	 *
 	 * @returns {Array.<Object>} Markers to remove. Each array item is an object containing the `name` and `range` properties.
 	 */
-	public getMarkersToRemove(): { name: string; range: Range }[] {
+	public getMarkersToRemove(): Array<{ name: string; range: Range }> {
 		const result = [];
 
 		for ( const [ name, change ] of this._changedMarkers ) {
@@ -325,7 +325,7 @@ export default class Differ {
 	 *
 	 * @returns {Array.<Object>} Markers to add. Each array item is an object containing the `name` and `range` properties.
 	 */
-	public getMarkersToAdd(): { name: string; range: Range }[] {
+	public getMarkersToAdd(): Array<{ name: string; range: Range }> {
 		const result = [];
 
 		for ( const [ name, change ] of this._changedMarkers ) {
@@ -342,13 +342,13 @@ export default class Differ {
 	 *
 	 * @returns {Array.<Object>}
 	 */
-	public getChangedMarkers(): {
+	public getChangedMarkers(): Array<{
 		name: string;
 		data: {
 			oldRange: Range | null;
 			newRange: Range | null;
 		};
-	}[] {
+	}> {
 		return Array.from( this._changedMarkers ).map( ( [ name, change ] ) => (
 			{
 				name,
@@ -414,7 +414,7 @@ export default class Differ {
 	 * in the graveyard root will be returned. By default, changes in the graveyard root are not returned.
 	 * @returns {Array.<module:engine/model/differ~DiffItem>} Diff between the old and the new model tree state.
 	 */
-	public getChanges( options: { includeChangesInGraveyard?: boolean } = {} ): DiffItem[] {
+	public getChanges( options: { includeChangesInGraveyard?: boolean } = {} ): Array<DiffItem> {
 		// If there are cached changes, just return them instead of calculating changes again.
 		if ( this._cachedChanges ) {
 			if ( options.includeChangesInGraveyard ) {
@@ -425,7 +425,7 @@ export default class Differ {
 		}
 
 		// Will contain returned results.
-		let diffSet: ( DiffItem & DiffItemInternal )[] = [];
+		let diffSet: Array<DiffItem & DiffItemInternal> = [];
 
 		// Check all changed elements.
 		for ( const element of this._changesInElement.keys() ) {
@@ -710,8 +710,8 @@ export default class Differ {
 	 * @param {module:engine/model/element~Element} element
 	 * @returns {Array.<Object>}
 	 */
-	private _getChangesForElement( element: Element | DocumentFragment ): ChangeItem[] {
-		let changes: ChangeItem[];
+	private _getChangesForElement( element: Element | DocumentFragment ): Array<ChangeItem> {
+		let changes: Array<ChangeItem>;
 
 		if ( this._changesInElement.has( element ) ) {
 			changes = this._changesInElement.get( element )!;
@@ -744,7 +744,7 @@ export default class Differ {
 	 * @param {Object} inc Incoming (new) change.
 	 * @param {Array.<Object>} changes An array containing all the changes done on that element.
 	 */
-	private _handleChange( inc: ChangeItem, changes: ChangeItem[] ): void {
+	private _handleChange( inc: ChangeItem, changes: Array<ChangeItem> ): void {
 		// We need a helper variable that will store how many nodes are to be still handled for this change item.
 		// `nodesToHandle` (how many nodes still need to be handled) and `howMany` (how many nodes were affected)
 		// needs to be differentiated.
@@ -1022,9 +1022,9 @@ export default class Differ {
 		range: Range,
 		oldAttributes: Map<string, unknown>,
 		newAttributes: Map<string, unknown>
-	): ( DiffItemAttribute & DiffItemInternal )[] {
+	): Array<DiffItemAttribute & DiffItemInternal> {
 		// Results holder.
-		const diffs: ( DiffItemAttribute & DiffItemInternal )[] = [];
+		const diffs: Array<DiffItemAttribute & DiffItemInternal> = [];
 
 		// Clone new attributes as we will be performing changes on this object.
 		newAttributes = new Map( newAttributes );
@@ -1199,8 +1199,8 @@ function _getChildrenSnapshot( children: Iterable<Node> ) {
 //    4.1 fill up with two equal actions
 //
 // The result actions are: equal, remove, equal, insert, insert, attribute, equal, equal.
-function _generateActionsFromChanges( oldChildrenLength: number, changes: ChangeItem[] ) {
-	const actions: string[] = [];
+function _generateActionsFromChanges( oldChildrenLength: number, changes: Array<ChangeItem> ) {
+	const actions: Array<string> = [];
 
 	let offset = 0;
 	let oldChildrenHandled = 0;

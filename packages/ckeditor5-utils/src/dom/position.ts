@@ -162,7 +162,7 @@ function getConstrainedViewportRect( viewportOffsetConfig: Options[ 'viewportOff
 //
 // @returns {module:utils/dom/position~Position|null} An array containing the name of the position and it's rect.
 function getBestPosition(
-	positions: readonly PositioningFunction[],
+	positions: ReadonlyArray<PositioningFunction>,
 	options: ConstructorParameters<typeof PositionObject>[ 1 ]
 ): Position | null {
 	const { elementRect } = options;
@@ -486,7 +486,7 @@ export interface Options {
 	 *
 	 * @member {Array.<module:utils/dom/position~PositioningFunction>}
 	 */
-	readonly positions: readonly PositioningFunction[];
+	readonly positions: ReadonlyArray<PositioningFunction>;
 
 	/**
 	 * When set, the algorithm will chose position which fits the most in the

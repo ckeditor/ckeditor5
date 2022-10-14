@@ -189,7 +189,7 @@ export function setData(
 
 		// Update document selection if specified.
 		if ( selection ) {
-			const ranges: ModelRange[] = [];
+			const ranges: Array<ModelRange> = [];
 
 			for ( const range of selection.getRanges() ) {
 				const start = new ModelPosition( modelRoot, range.start.path );
@@ -417,7 +417,7 @@ export function parse(
 	// Convert view selection to model selection.
 
 	if ( viewSelection ) {
-		const ranges: ModelRange[] = [];
+		const ranges: Array<ModelRange> = [];
 
 		// Convert ranges.
 		for ( const viewRange of viewSelection.getRanges() ) {

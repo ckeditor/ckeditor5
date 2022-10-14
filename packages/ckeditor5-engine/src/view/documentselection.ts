@@ -195,7 +195,7 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 *
 	 * @protected
 	 */
-	public get _ranges(): Range[] {
+	public get _ranges(): Array<Range> {
 		return ( this._selection as any )._ranges;
 	}
 

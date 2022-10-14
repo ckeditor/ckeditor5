@@ -187,7 +187,7 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * @internal
 	 * @protected
 	 */
-	public get _ranges(): Range[] {
+	public get _ranges(): Array<Range> {
 		return ( this._selection as any )._ranges;
 	}
 
@@ -600,7 +600,7 @@ export type ChangeMarkerEvent = {
 	name: 'change:marker';
 	args: [ {
 		directChange: boolean;
-		oldMarkers: Marker[];
+		oldMarkers: Array<Marker>;
 	} ];
 };
 
@@ -608,8 +608,8 @@ export type ChangeEvent = {
 	name: 'change' | 'change:attribute' | 'change:marker' | 'change:range';
 	args: [ {
 		directChange: boolean;
-		attributeKeys?: string[];
-		oldMarkers?: Marker[];
+		attributeKeys?: Array<string>;
+		oldMarkers?: Array<Marker>;
 	} ];
 };
 
@@ -633,7 +633,7 @@ class LiveSelection extends Selection {
 	protected _document: Document;
 
 	/** @internal */
-	public declare _ranges: LiveRange[];
+	public declare _ranges: Array<LiveRange>;
 
 	private _attributePriority: Map<string, 'low' | 'normal'>;
 	private _selectionRestorePosition: Position | null;
@@ -869,7 +869,7 @@ class LiveSelection extends Selection {
 		this.updateMarkers();
 	}
 
-	protected override _replaceAllRanges( ranges: Range[] ): void {
+	protected override _replaceAllRanges( ranges: Array<Range> ): void {
 		this._validateSelectionRanges( ranges );
 
 		super._replaceAllRanges( ranges );
