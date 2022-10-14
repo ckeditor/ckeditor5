@@ -20,9 +20,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 
 import { assertSelectedCells, modelTable } from './_utils/utils';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
-import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'TableSelection - integration', () => {
@@ -112,25 +110,19 @@ describe( 'TableSelection - integration', () => {
 		} );
 
 		it( 'should clear contents of the selected table cells and put selection in last cell on user input', () => {
+			const view = editor.editing.view;
+			const viewCell = editor.editing.mapper.toViewElement( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
-
-			// Mutate at the place where the document selection was put; it's more realistic
-			// than mutating at some arbitrary position.
-			const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
-
-			viewDocument.fire( 'mutations', [
-				{
-					type: 'children',
-					oldChildren: [],
-					newChildren: [ new ViewText( viewDocument, 'x' ) ],
-					node: placeOfMutation
-				}
-			] );
+			viewDocument.fire( 'insertText', {
+				text: 'x',
+				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) ),
+				preventDefault: sinon.spy()
+			} );
 
 			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '', '', '13' ],
@@ -140,20 +132,14 @@ describe( 'TableSelection - integration', () => {
 		} );
 
 		it( 'should not interfere with default key handler if no table selection', () => {
-			viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
+			const view = editor.editing.view;
+			const viewCell = editor.editing.mapper.toViewElement( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 
-			// Mutate at the place where the document selection was put; it's more realistic
-			// than mutating at some arbitrary position.
-			const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
-
-			viewDocument.fire( 'mutations', [
-				{
-					type: 'children',
-					oldChildren: [],
-					newChildren: [ new ViewText( viewDocument, 'x' ) ],
-					node: placeOfMutation
-				}
-			] );
+			viewDocument.fire( 'insertText', {
+				text: 'x',
+				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) ),
+				preventDefault: sinon.spy()
+			} );
 
 			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ 'x[]11', '12', '13' ],

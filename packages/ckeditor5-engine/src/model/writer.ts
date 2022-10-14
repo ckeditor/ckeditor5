@@ -682,7 +682,7 @@ export default class Writer {
 	 */
 	public createPositionFromPath(
 		root: Element | DocumentFragment,
-		path: number[],
+		path: Array<number>,
 		stickiness?: PositionStickiness
 	): Position {
 		return this.model.createPositionFromPath( root, path, stickiness );

@@ -27,7 +27,7 @@ import { type MatcherPattern } from '../view/matcher';
  * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class XmlDataProcessor implements DataProcessor {
-	public namespaces: string[];
+	public namespaces: Array<string>;
 	public domParser: DOMParser;
 	public domConverter: DomConverter;
 	public htmlWriter: HtmlWriter;
@@ -39,7 +39,7 @@ export default class XmlDataProcessor implements DataProcessor {
 	 * @param {Object} options Configuration options.
 	 * @param {Array.<String>} [options.namespaces=[]] A list of namespaces allowed to use in the XML input.
 	 */
-	constructor( document: ViewDocument, options: { namespaces?: string[] } = {} ) {
+	constructor( document: ViewDocument, options: { namespaces?: Array<string> } = {} ) {
 		/**
 		 * A list of namespaces allowed to use in the XML input.
 		 *

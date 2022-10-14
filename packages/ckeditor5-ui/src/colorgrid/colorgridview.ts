@@ -47,7 +47,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 	constructor(
 		locale?: Locale,
 		options?: {
-			colorDefinitions?: ColorDefinition[];
+			colorDefinitions?: Array<ColorDefinition>;
 			columns?: number;
 		}
 	) {

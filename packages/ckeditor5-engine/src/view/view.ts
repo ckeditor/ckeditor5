@@ -21,9 +21,9 @@ import type { StylesProcessor } from './stylesmap';
 import type Element from './element';
 import type Item from './item';
 
-import MutationObserver from './observer/mutationobserver';
 import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
+import MutationObserver from './observer/mutationobserver';
 import SelectionObserver from './observer/selectionobserver';
 import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
@@ -36,7 +36,6 @@ import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/sc
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
@@ -54,12 +53,12 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * on DOM and fire events on the {@link module:engine/view/document~Document Document}.
  * Note that the following observers are added by the class constructor and are always available:
  *
- * * {@link module:engine/view/observer/mutationobserver~MutationObserver},
  * * {@link module:engine/view/observer/selectionobserver~SelectionObserver},
  * * {@link module:engine/view/observer/focusobserver~FocusObserver},
  * * {@link module:engine/view/observer/keyobserver~KeyObserver},
  * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
  * * {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
+ * * {@link module:engine/view/observer/inputobserver~InputObserver}.
  * * {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}.
  * * {@link module:engine/view/observer/tabobserver~TabObserver}.
  *
@@ -76,7 +75,6 @@ export default class View extends Observable {
 	public readonly domRoots: Map<string, HTMLElement>;
 
 	declare public isFocused: boolean;
-	declare public isSelecting: boolean;
 	declare public isRenderingInProgress: boolean;
 	declare public hasDomSelection: boolean;
 
@@ -144,7 +142,7 @@ export default class View extends Observable {
 		 * @type {module:engine/view/renderer~Renderer}
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused', 'isSelecting' ).to( this.document, 'isFocused', 'isSelecting' );
+		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' ).to( this.document, 'isFocused', 'isSelecting', 'isComposing' );
 
 		/**
 		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -214,11 +212,8 @@ export default class View extends Observable {
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
 		this.addObserver( ArrowKeysObserver );
+		this.addObserver( InputObserver );
 		this.addObserver( TabObserver );
-
-		if ( env.isAndroid ) {
-			this.addObserver( InputObserver );
-		}
 
 		// Inject quirks handlers.
 		injectQuirksHandling( this );
@@ -717,7 +712,7 @@ export default class View extends Observable {
 	}
 
 	/**
-	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
+	 * Renders all changes. In order to avoid triggering the observers (e.g. selection) all observers are disabled
 	 * before rendering and re-enabled after that.
 	 *
 	 * @private

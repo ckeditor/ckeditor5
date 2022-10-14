@@ -30,7 +30,7 @@ export interface ObjectWithPriority {
  * @param {Array.<module:utils/inserttopriorityarray~ObjectWithPriority>} objects Array of objects with priority to insert object to.
  * @param {module:utils/inserttopriorityarray~ObjectWithPriority} objectToInsert Object with `priority` property.
  */
-export default function insertToPriorityArray<T extends ObjectWithPriority>( objects: T[], objectToInsert: T ): void {
+export default function insertToPriorityArray<T extends ObjectWithPriority>( objects: Array<T>, objectToInsert: T ): void {
 	const priority = priorities.get( objectToInsert.priority );
 
 	for ( let i = 0; i < objects.length; i++ ) {

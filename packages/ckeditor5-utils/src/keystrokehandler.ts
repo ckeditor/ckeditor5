@@ -94,7 +94,7 @@ export default class KeystrokeHandler {
 	 * are called in the order they were added.
 	 */
 	public set(
-		keystroke: string | readonly ( string | number )[],
+		keystroke: string | ReadonlyArray<string | number>,
 		callback: ( ev: KeyboardEvent, cancel: () => void ) => void,
 		options: { readonly priority?: PriorityString } = {}
 	): void {

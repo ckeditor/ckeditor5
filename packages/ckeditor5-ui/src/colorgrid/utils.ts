@@ -41,8 +41,8 @@ export interface NormalizedColorOption {
  */
 export function getLocalizedColorOptions(
 	locale: Locale,
-	options: NormalizedColorOption[]
-): NormalizedColorOption[] {
+	options: Array<NormalizedColorOption>
+): Array<NormalizedColorOption> {
 	const t = locale.t;
 	const localizedColorNames: Record<string, string | undefined> = {
 		Black: t( 'Black' ),
@@ -80,7 +80,7 @@ export function getLocalizedColorOptions(
  * @param {module:ui/colorgrid/colorgrid~ColorDefinition} options
  * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
  */
-export function normalizeColorOptions( options: ColorOption[] ): NormalizedColorOption[] {
+export function normalizeColorOptions( options: Array<ColorOption> ): Array<NormalizedColorOption> {
 	return options
 		.map( normalizeSingleColorDefinition )
 		.filter( option => !!option );

@@ -153,7 +153,7 @@ export default class UpcastWriter {
 	 * @fires module:engine/view/node~Node#event:change
 	 * @returns {Array.<module:engine/view/node~Node>} The array containing removed nodes.
 	 */
-	public removeChildren( index: number, howMany: number, element: Element | DocumentFragment ): Node[] {
+	public removeChildren( index: number, howMany: number, element: Element | DocumentFragment ): Array<Node> {
 		return element._removeChildren( index, howMany );
 	}
 
@@ -163,7 +163,7 @@ export default class UpcastWriter {
 	 * @param {module:engine/view/element~Element} element Element which will be removed.
 	 * @returns {Array.<module:engine/view/node~Node>} The array containing removed nodes.
 	 */
-	public remove( element: Element ): Node[] {
+	public remove( element: Element ): Array<Node> {
 		const parent = element.parent;
 
 		if ( parent ) {
@@ -266,7 +266,7 @@ export default class UpcastWriter {
 	 * @param {Array.<String>|String} className Single class name or array of class names which will be added.
 	 * @param {module:engine/view/element~Element} element Element for which class will be added.
 	 */
-	public addClass( className: string | string[], element: Element ): void {
+	public addClass( className: string | Array<string>, element: Element ): void {
 		element._addClass( className );
 	}
 
@@ -280,7 +280,7 @@ export default class UpcastWriter {
 	 * @param {Array.<String>|String} className Single class name or array of class names which will be removed.
 	 * @param {module:engine/view/element~Element} element Element from which class will be removed.
 	 */
-	public removeClass( className: string | string[], element: Element ): void {
+	public removeClass( className: string | Array<string>, element: Element ): void {
 		element._removeClass( className );
 	}
 
@@ -326,7 +326,7 @@ export default class UpcastWriter {
 	 * @param {Array.<String>|String} property Style property name or names to be removed.
 	 * @param {module:engine/view/element~Element} element Element from which style will be removed.
 	 */
-	public removeStyle( property: string | string[], element: Element ): void {
+	public removeStyle( property: string | Array<string>, element: Element ): void {
 		element._removeStyle( property );
 	}
 

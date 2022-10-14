@@ -51,7 +51,7 @@ export default class Context {
 	public readonly editors: Collection<Editor>;
 
 	public static defaultConfig: ContextConfig;
-	public static builtinPlugins: PluginConstructor<Context | Editor>[];
+	public static builtinPlugins: Array<PluginConstructor<Context | Editor>>;
 
 	private _contextOwner: Editor | null;
 
@@ -369,6 +369,6 @@ export default class Context {
  */
 
 export type ContextConfig = {
-	plugins?: PluginConstructor<Context | Editor>[];
-	substitutePlugins?: PluginConstructor<Context | Editor>[];
+	plugins?: Array<PluginConstructor<Context | Editor>>;
+	substitutePlugins?: Array<PluginConstructor<Context | Editor>>;
 } & Omit<EditorConfig, 'plugins' | 'substitutePlugins' | 'removePlugins' | 'extraPlugins'>;

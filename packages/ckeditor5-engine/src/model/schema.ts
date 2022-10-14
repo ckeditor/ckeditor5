@@ -39,7 +39,7 @@ import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Schema extends Observable {
-	private readonly _sourceDefinitions: Record<string, SchemaItemDefinition[]>;
+	private readonly _sourceDefinitions: Record<string, Array<SchemaItemDefinition>>;
 	private readonly _attributeProperties: Record<string, AttributeProperties>;
 	private _compiledDefinitions?: Record<string, SchemaCompiledItemDefinition> | null;
 
@@ -716,7 +716,7 @@ export default class Schema extends Observable {
 		if ( selection.isCollapsed ) {
 			const firstPosition = selection.getFirstPosition()!;
 			const context = [
-				...firstPosition.getAncestors() as Element[],
+				...firstPosition.getAncestors() as Array<Element>,
 				new Text( '', selection.getAttributes() )
 			];
 
@@ -784,7 +784,7 @@ export default class Schema extends Observable {
 		let backwardWalker, forwardWalker;
 
 		// Never leave a limit element.
-		const limitElement = ( position.getAncestors() as Element[] ).reverse().find( item => this.isLimit( item ) ) ||
+		const limitElement = ( position.getAncestors() as Array<Element> ).reverse().find( item => this.isLimit( item ) ) ||
 			position.root as Element;
 
 		if ( direction == 'both' || direction == 'backward' ) {
@@ -1392,13 +1392,13 @@ export type CheckAttributeEvent = {
  */
 
 export interface SchemaItemDefinition {
-	allowIn?: string | string[];
-	allowChildren?: string | string[];
-	allowAttributes?: string | string[];
-	allowContentOf?: string | string[];
-	allowWhere?: string | string[];
-	allowAttributesOf?: string | string[];
-	inheritTypesFrom?: string | string[];
+	allowIn?: string | Array<string>;
+	allowChildren?: string | Array<string>;
+	allowAttributes?: string | Array<string>;
+	allowContentOf?: string | Array<string>;
+	allowWhere?: string | Array<string>;
+	allowAttributesOf?: string | Array<string>;
+	inheritTypesFrom?: string | Array<string>;
 	inheritAllFrom?: string;
 	isBlock?: boolean;
 	isInline?: boolean;
@@ -1436,9 +1436,9 @@ export interface SchemaCompiledItemDefinition {
 	isLimit: boolean;
 	isObject: boolean;
 	isSelectable: boolean;
-	allowIn: string[];
-	allowChildren: string[];
-	allowAttributes: string[];
+	allowIn: Array<string>;
+	allowChildren: Array<string>;
+	allowAttributes: Array<string>;
 }
 
 interface SchemaCompiledItemDefinitionInternal {
@@ -1451,17 +1451,17 @@ interface SchemaCompiledItemDefinitionInternal {
 	isObject?: boolean;
 	isSelectable?: boolean;
 
-	allowIn: string[];
-	allowChildren: string[];
-	allowAttributes: string[];
+	allowIn: Array<string>;
+	allowChildren: Array<string>;
+	allowAttributes: Array<string>;
 
-	allowAttributesOf?: string[];
-	allowContentOf?: string[];
-	allowWhere?: string[];
-	inheritTypesFrom?: string[];
+	allowAttributesOf?: Array<string>;
+	allowContentOf?: Array<string>;
+	allowWhere?: Array<string>;
+	inheritTypesFrom?: Array<string>;
 }
 
-type TypeNames = ( 'isBlock' | 'isContent' | 'isInline' | 'isLimit' | 'isObject' | 'isSelectable' )[];
+type TypeNames = Array<'isBlock' | 'isContent' | 'isInline' | 'isLimit' | 'isObject' | 'isSelectable'>;
 
 /**
  * A schema context &mdash; a list of ancestors of a given position in the document.
@@ -1488,7 +1488,7 @@ type TypeNames = ( 'isBlock' | 'isContent' | 'isInline' | 'isLimit' | 'isObject'
  * using these methods you need to use {@link module:engine/model/schema~SchemaContextDefinition}s.
  */
 export class SchemaContext implements Iterable<SchemaContextItem> {
-	private _items!: SchemaContextItem[];
+	private _items!: Array<SchemaContextItem>;
 
 	/**
 	 * Creates an instance of the context.
@@ -1500,7 +1500,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 			return context;
 		}
 
-		let items: ( string | Item | DocumentFragment )[];
+		let items: Array<string | Item | DocumentFragment>;
 
 		if ( typeof context == 'string' ) {
 			items = [ context ];
@@ -1699,7 +1699,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
  * String|Array.<String|module:engine/model/node~Node>} module:engine/model/schema~SchemaContextDefinition
  */
 
-export type SchemaContextDefinition = Item | Position | SchemaContext | string | ( string | Item )[];
+export type SchemaContextDefinition = Item | Position | SchemaContext | string | Array<string | Item>;
 
 /**
  * An item of the {@link module:engine/model/schema~SchemaContext schema context}.
@@ -1750,7 +1750,7 @@ export interface AttributeProperties {
 	[ name: string ]: unknown;
 }
 
-function compileBaseItemRule( sourceItemRules: SchemaItemDefinition[], itemName: string ): SchemaCompiledItemDefinitionInternal {
+function compileBaseItemRule( sourceItemRules: Array<SchemaItemDefinition>, itemName: string ): SchemaCompiledItemDefinitionInternal {
 	const itemRule = {
 		name: itemName,
 
@@ -1917,7 +1917,7 @@ function cleanUpAllowAttributes(
 	itemRule.allowAttributes = Array.from( new Set( itemRule.allowAttributes ) );
 }
 
-function copyTypes( sourceItemRules: SchemaItemDefinition[], itemRule: SchemaCompiledItemDefinitionInternal ) {
+function copyTypes( sourceItemRules: Array<SchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
 	for ( const sourceItemRule of sourceItemRules ) {
 		const typeNames = Object.keys( sourceItemRule ).filter( name => name.startsWith( 'is' ) ) as TypeNames;
 
@@ -1928,7 +1928,7 @@ function copyTypes( sourceItemRules: SchemaItemDefinition[], itemRule: SchemaCom
 }
 
 function copyProperty(
-	sourceItemRules: SchemaItemDefinition[],
+	sourceItemRules: Array<SchemaItemDefinition>,
 	itemRule: SchemaCompiledItemDefinitionInternal,
 	propertyName: 'allowIn' |
 		'allowContentOf' |
@@ -1949,7 +1949,7 @@ function copyProperty(
 	}
 }
 
-function makeInheritAllWork( sourceItemRules: SchemaItemDefinition[], itemRule: SchemaCompiledItemDefinitionInternal ) {
+function makeInheritAllWork( sourceItemRules: Array<SchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
 	for ( const sourceItemRule of sourceItemRules ) {
 		const inheritFrom = sourceItemRule.inheritAllFrom;
 

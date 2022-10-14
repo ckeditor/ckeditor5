@@ -62,7 +62,7 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	 * are called in the order they were added.
 	 */
 	public override set(
-		keystroke: string | ( string | number )[],
+		keystroke: string | Array<string | number>,
 		callback: string | ( ( ev: KeyboardEvent, cancel: () => void ) => void ),
 		options: { readonly priority?: PriorityString } = {}
 	): void {

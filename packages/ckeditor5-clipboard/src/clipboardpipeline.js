@@ -292,7 +292,7 @@ export default class ClipboardPipeline extends Plugin {
  * @param {module:engine/view/documentfragment~DocumentFragment} data.content The event data. The content to be inserted into the editor.
  * It can be modified by event listeners. Read more about the clipboard pipelines in
  * the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
- * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
+ * @param {module:engine/view/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
  * @param {'paste'|'drop'} data.method Whether the event was triggered by a paste or drop operation.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges The target drop ranges.
  */
@@ -318,7 +318,7 @@ export default class ClipboardPipeline extends Plugin {
  * @param {Object} data The event data.
  * @param {module:engine/model/documentfragment~DocumentFragment} data.content The event data. The content to be inserted into the editor.
  * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
- * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
+ * @param {module:engine/view/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
  * @param {'paste'|'drop'} data.method Whether the event was triggered by a paste or drop operation.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges The target drop ranges.
  * @param {module:engine/model/range~Range} data.resultRange The result of the `model.insertContent()` call
@@ -347,7 +347,7 @@ export default class ClipboardPipeline extends Plugin {
  * The data transfer instance.
  *
  * @readonly
- * @member {module:clipboard/datatransfer~DataTransfer} module:clipboard/clipboardpipeline~ClipboardOutputEventData#dataTransfer
+ * @member {module:engine/view/datatransfer~DataTransfer} module:clipboard/clipboardpipeline~ClipboardOutputEventData#dataTransfer
  */
 
 /**

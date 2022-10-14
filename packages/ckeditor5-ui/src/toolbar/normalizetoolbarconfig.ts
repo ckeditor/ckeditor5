@@ -34,8 +34,8 @@ import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core/
 export default function normalizeToolbarConfig(
 	config: ToolbarConfig | undefined
 ): {
-	items: ToolbarConfigItem[];
-	removeItems: string[];
+	items: Array<ToolbarConfigItem>;
+	removeItems: Array<string>;
 	shouldNotGroupWhenFull?: boolean;
 } {
 	if ( Array.isArray( config ) ) {

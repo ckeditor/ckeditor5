@@ -444,7 +444,7 @@ describe( 'AutoLink', () => {
 			viewDocument.fire( 'delete', deleteEvent );
 
 			expect( getData( model ) ).to.equal(
-				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.co[]</$text></paragraph>'
+				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.co</$text>[]</paragraph>'
 			);
 		} );
 	} );
@@ -504,7 +504,7 @@ describe( 'AutoLink', () => {
 		const letters = text.split( '' );
 
 		for ( const letter of letters ) {
-			editor.execute( 'input', { text: letter } );
+			editor.execute( 'insertText', { text: letter } );
 		}
 	}
 } );
