@@ -146,11 +146,11 @@ class ClassicTestEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
+		super.destroy();
+
 		this._elementReplacer.restore();
 
 		this._view.destroy();
-
-		super.destroy();
 	}
 }
 
