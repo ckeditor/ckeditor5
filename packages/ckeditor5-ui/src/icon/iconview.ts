@@ -174,12 +174,12 @@ export default class IconView extends View {
 
 /**
  * A list of presentational attributes that can be set on the `<svg>` element and should be preserved
- * when the icon {@link module:ui/icon~IconView#content content} is loaded.
+ * when the icon {@link module:ui/icon/iconview~IconView#content content} is loaded.
  *
- * See https://www.w3.org/TR/SVG/styling.html#TermPresentationAttribute.
+ * See the [specification](https://www.w3.org/TR/SVG/styling.html#TermPresentationAttribute) to learn more.
  *
  * @protected
- * @member {Array.<String>} module:ui/icon~IconView.presentationalAttributeNames
+ * @member {Array.<String>} module:ui/icon/iconview~IconView.presentationalAttributeNames
  */
 IconView.presentationalAttributeNames = [
 	'alignment-baseline', 'baseline-shift', 'clip-path', 'clip-rule', 'color', 'color-interpolation',
