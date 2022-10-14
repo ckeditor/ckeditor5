@@ -20,7 +20,7 @@ import EditingKeystrokeHandler from '../editingkeystrokehandler';
 import type { LoadedPlugins, PluginConstructor } from '../plugin';
 import type EditorUI from './editorui';
 import type { EditorConfig } from './editorconfig';
-import { type ChangeEvent, Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { type ObservableChangeEvent, Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
@@ -180,8 +180,8 @@ export default abstract class Editor extends Observable {
 		 * @member {'initializing'|'ready'|'destroyed'} #state
 		 */
 		this.set( 'state', 'initializing' );
-		this.once<ReadyEvent>( 'ready', () => ( this.state = 'ready' ), { priority: 'high' } );
-		this.once<DestroyEvent>( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
+		this.once<EditorReadyEvent>( 'ready', () => ( this.state = 'ready' ), { priority: 'high' } );
+		this.once<EditorDestroyEvent>( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
 
 		/**
 		 * The editor's model.
@@ -354,7 +354,7 @@ export default abstract class Editor extends Observable {
 
 		if ( this._readOnlyLocks.size === 1 ) {
 			// Manually fire the `change:isReadOnly` event as only getter is provided.
-			this.fire<ChangeEvent<boolean>>( 'change:isReadOnly', 'isReadOnly', true, false );
+			this.fire<ObservableChangeEvent<boolean>>( 'change:isReadOnly', 'isReadOnly', true, false );
 		}
 	}
 
@@ -378,7 +378,7 @@ export default abstract class Editor extends Observable {
 
 		if ( this._readOnlyLocks.size === 0 ) {
 			// Manually fire the `change:isReadOnly` event as only getter is provided.
-			this.fire<ChangeEvent<boolean>>( 'change:isReadOnly', 'isReadOnly', false, true );
+			this.fire<ObservableChangeEvent<boolean>>( 'change:isReadOnly', 'isReadOnly', false, true );
 		}
 	}
 
@@ -411,12 +411,12 @@ export default abstract class Editor extends Observable {
 		let readyPromise: Promise<unknown> = Promise.resolve();
 
 		if ( this.state == 'initializing' ) {
-			readyPromise = new Promise( resolve => this.once<ReadyEvent>( 'ready', resolve ) );
+			readyPromise = new Promise( resolve => this.once<EditorReadyEvent>( 'ready', resolve ) );
 		}
 
 		return readyPromise
 			.then( () => {
-				this.fire<DestroyEvent>( 'destroy' );
+				this.fire<EditorDestroyEvent>( 'destroy' );
 				this.stopListening();
 				this.commands.destroy();
 			} )
@@ -498,7 +498,7 @@ export default abstract class Editor extends Observable {
  * @event ready
  */
 
-export type ReadyEvent = {
+export type EditorReadyEvent = {
 	name: 'ready';
 	args: [];
 };
@@ -513,7 +513,7 @@ export type ReadyEvent = {
  * @event destroy
  */
 
-export type DestroyEvent = {
+export type EditorDestroyEvent = {
 	name: 'destroy';
 	args: [];
 };

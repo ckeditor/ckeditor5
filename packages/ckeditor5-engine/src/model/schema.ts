@@ -537,7 +537,7 @@ export default class Schema extends Observable {
 	 * a boolean value, the default algorithm (or other callbacks) will define `checkChild()`'s return value.
 	 */
 	public addChildCheck( callback: ( ctx: SchemaContextDefinition, def: SchemaCompiledItemDefinition ) => unknown ): void {
-		this.on<CheckChildEvent>( 'checkChild', ( evt, [ ctx, childDef ] ) => {
+		this.on<SchemaCheckChildEvent>( 'checkChild', ( evt, [ ctx, childDef ] ) => {
 			// checkChild() was called with a non-registered child.
 			// In 99% cases such check should return false, so not to overcomplicate all callbacks
 			// don't even execute them.
@@ -594,7 +594,7 @@ export default class Schema extends Observable {
 	 * a boolean value, the default algorithm (or other callbacks) will define `checkAttribute()`'s return value.
 	 */
 	public addAttributeCheck( callback: ( context: SchemaContextDefinition, attributeName: string ) => unknown ): void {
-		this.on<CheckAttributeEvent>( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
+		this.on<SchemaCheckAttributeEvent>( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
 			const retValue = callback( ctx, attributeName );
 
 			if ( typeof retValue == 'boolean' ) {
@@ -1103,7 +1103,7 @@ export default class Schema extends Observable {
  * @event checkChild
  * @param {Array} args The `checkChild()`'s arguments.
  */
-export type CheckChildEvent = {
+export type SchemaCheckChildEvent = {
 	name: 'checkChild';
 	args: [ [ context: SchemaContext, def: SchemaCompiledItemDefinition ] ];
 };
@@ -1165,7 +1165,7 @@ export type CheckChildEvent = {
  * @event checkAttribute
  * @param {Array} args The `checkAttribute()`'s arguments.
  */
-export type CheckAttributeEvent = {
+export type SchemaCheckAttributeEvent = {
 	name: 'checkAttribute';
 	args: [ [ context: SchemaContext, attributeName: string ] ];
 };

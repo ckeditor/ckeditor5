@@ -7,7 +7,7 @@
  * @module engine/view/view
  */
 
-import Document, { type LayoutChangedEvent } from './document';
+import Document, { type ViewDocumentLayoutChangedEvent } from './document';
 import DowncastWriter from './downcastwriter';
 import Renderer from './renderer';
 import DomConverter from './domconverter';
@@ -16,7 +16,7 @@ import Range from './range';
 import Selection from './selection';
 
 import type { default as Observer, ObserverConstructor } from './observer/observer';
-import type { ChangeEvent as SelectionChangeEvent } from './documentselection';
+import type { ViewDocumentSelectionChangeEvent } from './documentselection';
 import type { StylesProcessor } from './stylesmap';
 import type Element from './element';
 import type Item from './item';
@@ -31,7 +31,7 @@ import InputObserver from './observer/inputobserver';
 import ArrowKeysObserver from './observer/arrowkeysobserver';
 import TabObserver from './observer/tabobserver';
 
-import { Observable, type ChangeEvent as ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { Observable, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
@@ -220,18 +220,18 @@ export default class View extends Observable {
 		injectUiElementHandling( this );
 
 		// Use 'normal' priority so that rendering is performed as first when using that priority.
-		this.on<RenderEvent>( 'render', () => {
+		this.on<ViewRenderEvent>( 'render', () => {
 			this._render();
 
 			// Informs that layout has changed after render.
-			this.document.fire<LayoutChangedEvent>( 'layoutChanged' );
+			this.document.fire<ViewDocumentLayoutChangedEvent>( 'layoutChanged' );
 
 			// Reset the `_hasChangedSinceTheLastRendering` flag after rendering.
 			this._hasChangedSinceTheLastRendering = false;
 		} );
 
 		// Listen to the document selection changes directly.
-		this.listenTo<SelectionChangeEvent>( this.document.selection, 'change', () => {
+		this.listenTo<ViewDocumentSelectionChangeEvent>( this.document.selection, 'change', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
 
@@ -516,7 +516,7 @@ export default class View extends Observable {
 				this.document._callPostFixers( this._writer );
 				this._postFixersInProgress = false;
 
-				this.fire<RenderEvent>( 'render' );
+				this.fire<ViewRenderEvent>( 'render' );
 			}
 
 			return callbackResult;
@@ -743,7 +743,7 @@ export default class View extends Observable {
 	 */
 }
 
-export type RenderEvent = {
+export type ViewRenderEvent = {
 	name: 'render';
 	args: [];
 };

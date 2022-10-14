@@ -182,7 +182,7 @@ export default interface Button {
  * @event execute
  */
 
-export type ExecuteEvent = {
+export type ButtonExecuteEvent = {
 	name: 'execute';
 	args: [];
 };

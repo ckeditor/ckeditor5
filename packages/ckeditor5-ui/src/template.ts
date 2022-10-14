@@ -17,7 +17,7 @@ import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import { isObject, cloneDeepWith } from 'lodash-es';
 import toArray, { type ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
 
-import type { Observable, ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { Observable, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
@@ -962,7 +962,7 @@ export abstract class TemplateBinding {
 	): () => void {
 		const callback = () => syncValueSchemaValue( schema, updater, data );
 
-		this.emitter.listenTo<ChangeEvent>( this.observable, `change:${ this.attribute }`, callback );
+		this.emitter.listenTo<ObservableChangeEvent>( this.observable, `change:${ this.attribute }`, callback );
 
 		// Allows revert of the listener.
 		return () => {

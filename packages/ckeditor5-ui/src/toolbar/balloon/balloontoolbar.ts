@@ -9,7 +9,7 @@
 
 import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
-import ToolbarView, { type GroupedItemsUpdateEvent } from '../toolbarview';
+import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview';
 import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
@@ -21,12 +21,12 @@ import { env, global } from '@ckeditor/ckeditor5-utils';
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ToolbarConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
-import type { ReadyEvent } from '@ckeditor/ckeditor5-core/src/editor/editor';
-import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { EditorReadyEvent } from '@ckeditor/ckeditor5-core/src/editor/editor';
+import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type {
 	default as DocumentSelection,
-	ChangeEvent as SelectionChangeEvent
+	DocumentSelectionChangeRangeEvent
 } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 import type Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
 
@@ -93,7 +93,7 @@ export default class BalloonToolbar extends Plugin {
 		this.focusTracker = new FocusTracker();
 
 		// Wait for the EditorUI#init. EditableElement is not available before.
-		editor.ui.once<ReadyEvent>( 'ready', () => {
+		editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
 			this.focusTracker.add( editor.ui.getEditableElement()! );
 			this.focusTracker.add( this.toolbarView.element! );
 		} );
@@ -151,7 +151,7 @@ export default class BalloonToolbar extends Plugin {
 		const selection = editor.model.document.selection;
 
 		// Show/hide the toolbar on editable focus/blur.
-		this.listenTo<ChangeEvent<boolean>>( this.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
+		this.listenTo<ObservableChangeEvent<boolean>>( this.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
 			const isToolbarVisible = this._balloon.visibleView === this.toolbarView;
 
 			if ( !isFocused && isToolbarVisible ) {
@@ -162,7 +162,7 @@ export default class BalloonToolbar extends Plugin {
 		} );
 
 		// Hide the toolbar when the selection is changed by a direct change or has changed to collapsed.
-		this.listenTo<SelectionChangeEvent>( selection, 'change:range', ( evt, data ) => {
+		this.listenTo<DocumentSelectionChangeRangeEvent>( selection, 'change:range', ( evt, data ) => {
 			if ( data.directChange || selection.isCollapsed ) {
 				this.hide();
 			}
@@ -180,7 +180,7 @@ export default class BalloonToolbar extends Plugin {
 		} );
 
 		if ( !this._balloonConfig.shouldNotGroupWhenFull ) {
-			this.listenTo<ReadyEvent>( editor, 'ready', () => {
+			this.listenTo<EditorReadyEvent>( editor, 'ready', () => {
 				const editableElement = editor.ui.view.editable.element!;
 
 				// Set #toolbarView's max-width on the initialization and update it on the editable resize.
@@ -198,7 +198,7 @@ export default class BalloonToolbar extends Plugin {
 		// means the balloon could be pointing at the wrong place. Once updated, the balloon will point
 		// at the right selection in the content again.
 		// https://github.com/ckeditor/ckeditor5/issues/6444
-		this.listenTo<GroupedItemsUpdateEvent>( this.toolbarView, 'groupedItemsUpdate', () => {
+		this.listenTo<ToolbarViewGroupedItemsUpdateEvent>( this.toolbarView, 'groupedItemsUpdate', () => {
 			this._updatePosition();
 		} );
 	}
@@ -271,7 +271,7 @@ export default class BalloonToolbar extends Plugin {
 		}
 
 		// Update the toolbar position when the editor ui should be refreshed.
-		this.listenTo<UpdateEvent>( this.editor.ui, 'update', () => {
+		this.listenTo<EditorUIUpdateEvent>( this.editor.ui, 'update', () => {
 			this._updatePosition();
 		} );
 
@@ -481,7 +481,7 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 }
 
-export type ShowEvent = {
+export type BaloonToolbarShowEvent = {
 	name: 'show';
 	args: [];
 };

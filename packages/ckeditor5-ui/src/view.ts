@@ -14,7 +14,7 @@ import ViewCollection from './viewcollection';
 import Template, { type BindChain, type TemplateDefinition } from './template';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import { Observable, type DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Collection, { type AddEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+import Collection, { type CollectionAddEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
@@ -189,7 +189,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 		this._unboundChildren = this.createCollection();
 
 		// Pass parent locale to its children.
-		this._viewCollections.on<AddEvent<View>>( 'add', ( evt, collection ) => {
+		this._viewCollections.on<CollectionAddEvent<View>>( 'add', ( evt, collection ) => {
 			collection.locale = locale;
 			collection.t = locale && locale.t;
 		} );
@@ -524,4 +524,4 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 */
 }
 
-export type RenderEvent = DecoratedMethodEvent<View, 'render'>;
+export type UIViewRenderEvent = DecoratedMethodEvent<View, 'render'>;

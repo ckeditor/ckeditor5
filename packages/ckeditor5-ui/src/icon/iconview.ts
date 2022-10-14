@@ -12,7 +12,7 @@
 import View from '../view';
 
 import '../../theme/components/icon/icon.css';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * The icon view class.
@@ -83,12 +83,12 @@ export default class IconView extends View {
 
 		// This is a hack for lack of innerHTML binding.
 		// See: https://github.com/ckeditor/ckeditor5-ui/issues/99.
-		this.on<ChangeEvent>( 'change:content', () => {
+		this.on<ObservableChangeEvent>( 'change:content', () => {
 			this._updateXMLContent();
 			this._colorFillPaths();
 		} );
 
-		this.on<ChangeEvent>( 'change:fillColor', () => {
+		this.on<ObservableChangeEvent>( 'change:fillColor', () => {
 			this._colorFillPaths();
 		} );
 	}

@@ -11,7 +11,7 @@
 
 import Position, { type PositionStickiness } from './position';
 
-import type { ApplyOperationEvent } from './model';
+import type { ModelApplyOperationEvent } from './model';
 import type DocumentFragment from './documentfragment';
 import type Item from './item';
 import type Operation from './operation/operation';
@@ -169,7 +169,7 @@ LivePosition.prototype.is = function( type: string ): boolean {
 //
 // @private
 function bindWithDocument( this: LivePosition ) {
-	this.listenTo<ApplyOperationEvent>(
+	this.listenTo<ModelApplyOperationEvent>(
 		this.root.document!.model,
 		'applyOperation',
 		( event, args ) => {
@@ -198,11 +198,11 @@ function transform( this: LivePosition, operation: Operation ) {
 		this.path = result.path;
 		( this as any ).root = result.root;
 
-		this.fire<ChangeEvent>( 'change', oldPosition );
+		this.fire<LivePositionChangeEvent>( 'change', oldPosition );
 	}
 }
 
-export type ChangeEvent = {
+export type LivePositionChangeEvent = {
 	name: 'change';
 	args: [ oldPosition: Position ];
 };

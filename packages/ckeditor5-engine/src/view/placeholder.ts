@@ -14,7 +14,7 @@ import type DowncastWriter from './downcastwriter';
 import type Element from './element';
 import type View from './view';
 
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 // Each document stores information about its placeholder elements and check functions.
 const documentPlaceholders: WeakMap<Document, Map<Element, PlaceholderConfig>> = new WeakMap();
@@ -57,7 +57,7 @@ export function enablePlaceholder( options: {
 		doc.registerPostFixer( writer => updateDocumentPlaceholders( doc, writer ) );
 
 		// Update placeholders on isComposing state change since rendering is disabled while in composition mode.
-		doc.on<ChangeEvent>( 'change:isComposing', () => {
+		doc.on<ObservableChangeEvent>( 'change:isComposing', () => {
 			view.change( writer => updateDocumentPlaceholders( doc, writer ) );
 		}, { priority: 'high' } );
 	}
