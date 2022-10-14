@@ -9,9 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import DeleteCommand from './deletecommand';
-import DeleteObserver from './deleteobserver';
-// eslint-disable-next-line no-duplicate-imports
-import type { DeleteEvent } from './deleteobserver';
+import DeleteObserver, { type DeleteEvent } from './deleteobserver';
 
 /**
  * The delete and backspace feature. Handles keys such as <kbd>Delete</kbd> and <kbd>Backspace</kbd>, other

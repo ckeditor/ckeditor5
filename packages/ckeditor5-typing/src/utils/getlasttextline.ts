@@ -60,7 +60,7 @@ export default function getLastTextLine( range: Range, model: Model ): LastTextL
  * @property {String} text The text from the text nodes in the last text line.
  * @property {module:engine/model/range~Range} range The range set on the text nodes in the last text line.
  */
-type LastTextLineData = {
+export type LastTextLineData = {
 	text: string;
 	range: Range;
 };

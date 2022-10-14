@@ -11,13 +11,12 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import { View } from '@ckeditor/ckeditor5-engine';
-import { InputObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
-import { CompositionObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/compositionobserver';
-import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
-import { DeleteEventData } from './deleteobserver';
-import Selection from '@ckeditor/ckeditor5-engine/src/view/selection';
-import Range from '@ckeditor/ckeditor5-engine/src/view/range';
+
+import type { View } from '@ckeditor/ckeditor5-engine';
+import type { InputObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
+import type { CompositionObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/compositionobserver';
+import type Selection from '@ckeditor/ckeditor5-engine/src/view/selection';
+import type Range from '@ckeditor/ckeditor5-engine/src/view/range';
 
 const TYPING_INPUT_TYPES = [
 	// For collapsed range:
@@ -115,7 +114,7 @@ export default class InsertTextObserver extends Observer {
 			//   - Try to follow it from the `beforeinput` events. This would be really complex as each
 			//     `beforeinput` would come with just the range it's changing and we'd need to calculate that.
 			// We decided to go with the 2nd option for its simplicity and stability.
-			viewDocument.fire<InsertTextEvent>( 'insertText', new DomEventData( view, domEvent, {
+			viewDocument.fire( 'insertText', new DomEventData( view, domEvent, {
 				text: data,
 				selection: viewDocument.selection
 			} ) );
@@ -152,6 +151,6 @@ export type InsertTextEvent = {
 
 export interface InsertTextEventData extends DomEventData {
 	text: string;
-	selection?: Selection;
+	selection: Selection;
 	resultRange?: Range;
 }

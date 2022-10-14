@@ -35,7 +35,7 @@ export default class ChangeBuffer {
 	public readonly model: Model;
 	public readonly limit: number;
 
-	public _isLocked: boolean;
+	private _isLocked: boolean;
 	private _size: number;
 	private _batch: Batch | null = null;
 	private readonly _changeCallback: ( evt: EventInfo, batch: Batch ) => void;

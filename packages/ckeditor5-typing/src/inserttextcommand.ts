@@ -10,6 +10,9 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import ChangeBuffer from './utils/changebuffer';
+import type Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { DocumentSelection, Range } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert text command. Used by the {@link module:typing/input~Input input feature} to handle typing.
@@ -17,6 +20,8 @@ import ChangeBuffer from './utils/changebuffer';
  * @extends module:core/command~Command
  */
 export default class InsertTextCommand extends Command {
+	private readonly _buffer: ChangeBuffer;
+
 	/**
 	 * Creates an instance of the command.
 	 *
@@ -24,7 +29,7 @@ export default class InsertTextCommand extends Command {
 	 * @param {Number} undoStepSize The maximum number of atomic changes
 	 * which can be contained in one batch in the command buffer.
 	 */
-	constructor( editor, undoStepSize ) {
+	constructor( editor: Editor, undoStepSize: number ) {
 		super( editor );
 
 		/**
@@ -42,14 +47,14 @@ export default class InsertTextCommand extends Command {
 	 *
 	 * @type {module:typing/utils/changebuffer~ChangeBuffer}
 	 */
-	get buffer() {
+	public get buffer(): ChangeBuffer {
 		return this._buffer;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this._buffer.destroy();
@@ -73,13 +78,18 @@ export default class InsertTextCommand extends Command {
 	 * should be placed after the insertion. If not specified, the selection will be placed right after
 	 * the inserted text.
 	 */
-	execute( options = {} ) {
+	public override execute( options: {
+		text?: string;
+		selection?: Selection | DocumentSelection;
+		range?: Range;
+		resultRange?: Range;
+	} = {} ): void {
 		const model = this.editor.model;
 		const doc = model.document;
 		const text = options.text || '';
 		const textInsertions = text.length;
 
-		let selection = doc.selection;
+		let selection: Selection | DocumentSelection = doc.selection;
 
 		if ( options.selection ) {
 			selection = options.selection;

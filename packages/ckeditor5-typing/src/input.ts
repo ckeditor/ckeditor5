@@ -9,8 +9,10 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import InsertTextCommand from './inserttextcommand';
-import InsertTextObserver from './inserttextobserver';
+import InsertTextObserver, { type InsertTextEvent } from './inserttextobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+
+import type { Model } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -43,7 +45,7 @@ export default class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
-		this.listenTo( view.document, 'insertText', ( evt, data ) => {
+		this.listenTo<InsertTextEvent>( view.document, 'insertText', ( evt, data ) => {
 			// Rendering is disabled while composing so prevent events that will be rendered by the engine
 			// and should not be applied by the browser.
 			if ( !view.document.isComposing ) {
@@ -70,19 +72,19 @@ export default class Input extends Plugin {
 					if ( selectedText.length <= insertText.length ) {
 						if ( insertText.startsWith( selectedText ) ) {
 							insertText = insertText.substring( selectedText.length );
-							modelRanges[ 0 ].start = modelRanges[ 0 ].start.getShiftedBy( selectedText.length );
+							( modelRanges[ 0 ] as any ).start = modelRanges[ 0 ].start.getShiftedBy( selectedText.length );
 						}
 					} else {
 						if ( selectedText.startsWith( insertText ) ) {
 							// TODO this should be mapped as delete?
-							modelRanges[ 0 ].start = modelRanges[ 0 ].start.getShiftedBy( insertText.length );
+							( modelRanges[ 0 ] as any ).start = modelRanges[ 0 ].start.getShiftedBy( insertText.length );
 							insertText = '';
 						}
 					}
 				}
 			}
 
-			const insertTextCommandData = {
+			const insertTextCommandData: Parameters<InsertTextCommand[ 'execute' ]>[ 0 ] = {
 				text: insertText,
 				selection: model.createSelection( modelRanges )
 			};
@@ -141,7 +143,7 @@ export default class Input extends Plugin {
 	}
 }
 
-function deleteSelectionContent( model, insertTextCommand ) {
+function deleteSelectionContent( model: Model, insertTextCommand: InsertTextCommand ): void {
 	const buffer = insertTextCommand.buffer;
 
 	buffer.lock();

@@ -7,10 +7,9 @@
  * @module typing/typing
  */
 
-import Plugin, { PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
 import Input from './input';
 import Delete from './delete';
-import { Editor } from '@ckeditor/ckeditor5-core';
 
 /**
  * The typing feature. It handles typing.
@@ -21,14 +20,14 @@ import { Editor } from '@ckeditor/ckeditor5-core';
  * @extends module:core/plugin~Plugin
  */
 export default class Typing extends Plugin {
-	public static get requires(): PluginConstructor<Editor> {
+	public static get requires(): Array<PluginConstructor> {
 		return [ Input, Delete ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'Typing';
 	}
 }

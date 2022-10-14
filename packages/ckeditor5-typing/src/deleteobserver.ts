@@ -188,7 +188,7 @@ export default class DeleteObserver extends Observer {
 
 			const eventInfo = new BubblingEventInfo( document, 'delete', targetRanges[ 0 ] );
 
-			document.fire<DeleteEvent>( eventInfo, new DomEventData( view, domEvent, deleteData ) as DeleteEventData );
+			document.fire( eventInfo, new DomEventData( view, domEvent, deleteData ) );
 
 			// Stop the beforeinput event if `delete` event was stopped.
 			// https://github.com/ckeditor/ckeditor5/issues/753
@@ -206,7 +206,7 @@ export default class DeleteObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	public override observe(): void {}
+	public observe(): void {}
 }
 
 /**
@@ -269,7 +269,7 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 				selectionToRemove: selection
 			};
 
-			document.fire<DeleteEvent>( eventInfo, new DomEventData( view, domEvent, deleteData ) as any );
+			document.fire( eventInfo, new DomEventData( view, domEvent, deleteData ) );
 		}
 	} );
 

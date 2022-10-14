@@ -195,7 +195,7 @@ export interface PluginInterface {
 	destroy(): Promise<unknown> | null | undefined | void;
 }
 
-export interface PluginConstructor<TContext> {
+export interface PluginConstructor<TContext = Editor> {
 	new( editor: TContext ): PluginInterface;
 
 	readonly requires?: Array<PluginConstructor<TContext> | string>;
