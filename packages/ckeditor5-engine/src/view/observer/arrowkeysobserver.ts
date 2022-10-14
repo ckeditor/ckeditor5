@@ -13,6 +13,7 @@ import type View from '../view';
 import type { KeyObserverEvent } from './keyobserver';
 
 import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
+import type { BubblingEvent } from './bubblingemittermixin';
 
 /**
  * Arrow keys observer introduces the {@link module:engine/view/document~Document#event:arrowKey `Document#arrowKey`} event.
@@ -47,11 +48,10 @@ export default class ArrowKeysObserver extends Observer {
 	public override observe(): void {}
 }
 
-export type ArrowObserverEvent = {
+export type ArrowObserverEvent = BubblingEvent<{
 	name: 'arrowKey';
 	args: KeyObserverEvent[ 'args' ];
-	eventInfo: BubblingEventInfo<'arrowKey'>;
-};
+}>;
 
 /**
  * Event fired when the user presses an arrow keys.

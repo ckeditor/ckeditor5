@@ -380,7 +380,7 @@ export interface Emitter {
 	on<TEvent extends BaseEvent>(
 		event: TEvent[ 'name' ],
 		callback: GetCallback<TEvent>,
-		options?: CallbackOptions
+		options?: GetCallbackOptions<TEvent>
 	): void;
 
 	/**
@@ -398,7 +398,7 @@ export interface Emitter {
 	once<TEvent extends BaseEvent>(
 		event: TEvent[ 'name' ],
 		callback: GetCallback<TEvent>,
-		options?: CallbackOptions
+		options?: GetCallbackOptions<TEvent>
 	): void;
 
 	/**
@@ -444,7 +444,7 @@ export interface Emitter {
 		emitter: Emitter,
 		event: TEvent[ 'name' ],
 		callback: GetCallback<TEvent>,
-		options?: CallbackOptions
+		options?: GetCallbackOptions<TEvent>
 	): void;
 
 	/**
@@ -575,6 +575,10 @@ export type GetNameOrEventInfo<TEvent extends BaseEvent> = TEvent extends { even
 	TEvent[ 'name' ] | EventInfo<TEvent[ 'name' ], ( TEvent extends { return: infer TReturn } ? TReturn : unknown )>;
 
 export type GetCallback<TEvent extends BaseEvent> = ( this: Emitter, ev: GetEventInfo<TEvent>, ...args: TEvent[ 'args' ] ) => void;
+
+export type GetCallbackOptions<TEvent extends BaseEvent> = TEvent extends { callbackOptions: infer TOptions } ?
+	TOptions & CallbackOptions :
+	CallbackOptions;
 
 /**
  * Additional options for registering a callback.

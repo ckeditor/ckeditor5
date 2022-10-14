@@ -17,6 +17,7 @@ import type DocumentSelection from '@ckeditor/ckeditor5-engine/src/view/document
 import type { View } from '@ckeditor/ckeditor5-engine';
 import type { InputObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
 import type { KeyObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
+import type { BubblingEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingemittermixin';
 
 const DELETE_CHARACTER = 'character';
 const DELETE_WORD = 'word';
@@ -224,11 +225,10 @@ export default class DeleteObserver extends Observer {
  * current selection should be used.
  * @param {String} data.inputType The `beforeinput` event type that caused the deletion.
  */
-export type DeleteEvent = {
+export type DeleteEvent = BubblingEvent<{
 	name: 'delete';
 	args: [ data: DeleteEventData ];
-	eventInfo: BubblingEventInfo<'delete'>;
-};
+}>;
 
 export interface DeleteEventData extends DomEventData<InputEvent> {
 	direction: 'backward' | 'forward';

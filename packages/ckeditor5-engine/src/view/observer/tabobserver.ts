@@ -13,6 +13,7 @@ import { type KeyObserverEvent } from './keyobserver';
 import type View from '../view';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import type { BubblingEvent } from './bubblingemittermixin';
 
 /**
  * Tab observer introduces the {@link module:engine/view/document~Document#event:tab `Document#tab`} event.
@@ -56,11 +57,10 @@ export default class TabObserver extends Observer {
 	public override observe(): void {}
 }
 
-export type TabObserverEvent = {
+export type TabObserverEvent = BubblingEvent<{
 	name: 'tab';
 	args: KeyObserverEvent[ 'args' ];
-	eventInfo: BubblingEventInfo<'tab'>;
-};
+}>;
 
 /**
  * Event fired when the user presses a tab key.
