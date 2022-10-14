@@ -14,8 +14,6 @@
 	/* Multiplied by the height of the line in "px" should give SVG "viewport" dimensions */
 	font-size: .8333350694em;
 
-	color: inherit;
-
 	/* Inherit cursor style (#5). */
 	cursor: inherit;
 
@@ -25,13 +23,19 @@
 	& * {
 		/* Inherit cursor style (#5). */
 		cursor: inherit;
+	}
 
-		/* Allows dynamic coloring of the icons. */
+	/* Allows dynamic coloring of an icon by inheriting its color from the parent. */
+	&.ck-icon_inherit-color {
 		color: inherit;
 
-		&:not([fill]) {
-			/* Needed by FF. */
-			fill: currentColor;
+		& * {
+			color: inherit;
+
+			&:not([fill]) {
+				/* Needed by FF. */
+				fill: currentColor;
+			}
 		}
 	}
 }

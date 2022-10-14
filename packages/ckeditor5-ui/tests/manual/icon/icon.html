@@ -4,11 +4,25 @@
 			width: 200px;
 			text-align: center;
 		}
+
+		#icons-rich, #icons-rich-reference {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr 1fr;
+			grid-gap: 30px;
+			width: fit-content;
+		}
+
+		#icons-rich .ck-icon,
+		#icons-rich-reference svg {
+			width: 120px;
+			height: 120px;
+		}
 	</style>
 </head>
 
 <div class="test-cases">
-	<h2>Icon sizing</h2>
+	<h2>Monochrome icons</h2>
+	<h3>Icon sizing</h3>
 
 	<ol>
 		<li id="icon20"></li>
@@ -16,22 +30,30 @@
 		<li id="icon60"></li>
 	</ol>
 
-	<h2>Icon colors</h2>
+	<h3>Icon colors</h3>
 
 	<ol>
 		<li>icon <span id="icon-red"></span> has own color</li>
 		<li style="color: blue">icon <span id="icon-blue-inherited"></span> inherits color</li>
 	</ol>
 
-	<h2>Icon with dirty markup</h2>
+	<h3>Icon with dirty markup</h3>
 
 	<ol>
 		<li id="icon-dirty"></li>
 	</ol>
 
-	<h2>Icon with own viewBox</h2>
+	<h3>Icon with own viewBox</h3>
 
 	<ol>
 		<li id="icon-view-box"></li>
 	</ol>
+
+	<h2>Colorful icons with <code>IconView</code> component (attributes on &lt;svg&gt;, in <code>.ck-reset_all</code> parent)</h2>
+
+	<div id="icons-rich" class="ck ck-reset_all"></div>
+
+	<h4>Reference icons (raw)</h4>
+
+	<div id="icons-rich-reference"></div>
 </div>

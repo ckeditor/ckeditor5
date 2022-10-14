@@ -14,3 +14,8 @@
 
 ## ViewBox
 1. First icon should be large and green, same as the previous one.
+
+## Colorful icons
+
+1. There should be seven colorful icon rendered without any distortions.
+1. Check the reference icons to see what they should look like.
