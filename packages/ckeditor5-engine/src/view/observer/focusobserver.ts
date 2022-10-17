@@ -33,7 +33,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		this.useCapture = true;
 		const document = this.document;
 
-		document.on<FocusObserverEvent>( 'focus', () => {
+		document.on<ViewDocumentFocusEvent>( 'focus', () => {
 			document.isFocused = true;
 
 			// Unfortunately native `selectionchange` event is fired asynchronously.
@@ -47,7 +47,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			this._renderTimeoutId = setTimeout( () => view.change( () => {} ), 50 );
 		} );
 
-		document.on<FocusObserverEvent>( 'blur', ( evt, data ) => {
+		document.on<ViewDocumentFocusEvent>( 'blur', ( evt, data ) => {
 			const selectedEditable = document.selection.editableElement;
 
 			if ( selectedEditable === null || selectedEditable === data.target ) {
@@ -83,7 +83,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	}
 }
 
-export type FocusObserverEvent = {
+export type ViewDocumentFocusEvent = {
 	name: 'focus' | 'blur';
 	args: [ data: DomEventData<FocusEvent> ];
 };

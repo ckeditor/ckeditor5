@@ -44,7 +44,7 @@ export default class KeyObserver extends DomEventObserver<'keydown' | 'keyup', K
 	}
 }
 
-export type KeyObserverEvent = {
+export type ViewDocumentKeyEvent = {
 	name: 'keydown' | 'keyup';
 	args: [ data: DomEventData<KeyboardEvent> & KeystrokeInfo & { keystroke: number } ];
 };

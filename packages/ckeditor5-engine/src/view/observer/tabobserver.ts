@@ -9,7 +9,7 @@
 
 import Observer from './observer';
 import BubblingEventInfo from './bubblingeventinfo';
-import { type KeyObserverEvent } from './keyobserver';
+import { type ViewDocumentKeyEvent } from './keyobserver';
 import type View from '../view';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -31,7 +31,7 @@ export default class TabObserver extends Observer {
 
 		const doc = this.document;
 
-		doc.on<KeyObserverEvent>( 'keydown', ( evt, data ) => {
+		doc.on<ViewDocumentKeyEvent>( 'keydown', ( evt, data ) => {
 			if (
 				!this.isEnabled ||
 				data.keyCode != keyCodes.tab ||
@@ -42,7 +42,7 @@ export default class TabObserver extends Observer {
 
 			const event = new BubblingEventInfo( doc, 'tab', doc.selection.getFirstRange()! );
 
-			doc.fire<TabObserverEvent>( event, data );
+			doc.fire<ViewDocumentTabEvent>( event, data );
 
 			if ( event.stop.called ) {
 				evt.stop();
@@ -56,9 +56,9 @@ export default class TabObserver extends Observer {
 	public override observe(): void {}
 }
 
-export type TabObserverEvent = {
+export type ViewDocumentTabEvent = {
 	name: 'tab';
-	args: KeyObserverEvent[ 'args' ];
+	args: ViewDocumentKeyEvent[ 'args' ];
 	eventInfo: BubblingEventInfo<'tab'>;
 };
 
