@@ -5,7 +5,7 @@
 
 // The editor creator to use.
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
@@ -106,6 +106,7 @@ class AssetLink extends Plugin {
 // Plugins to include in the build.
 ClassicEditor.builtinPlugins = [
 	AssetLink,
+	GeneralHtmlSupport,
 	References,
 	SourceEditing,
 	Essentials,
