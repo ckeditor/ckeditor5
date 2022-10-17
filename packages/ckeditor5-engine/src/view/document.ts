@@ -251,7 +251,7 @@ export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
  */
 export type ChangeType = 'children' | 'attributes' | 'text';
 
-export type LayoutChangedEvent = {
+export type ViewDocumentLayoutChangedEvent = {
 	name: 'layoutChanged';
 	args: [];
 };

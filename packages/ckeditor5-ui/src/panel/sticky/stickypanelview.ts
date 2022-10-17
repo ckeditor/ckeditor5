@@ -16,7 +16,7 @@ import '../../../theme/components/panel/stickypanel.css';
 
 import type ViewCollection from '../../viewcollection';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 const toPx = toUnit( 'px' );
 
@@ -259,7 +259,7 @@ export default class StickyPanelView extends View {
 		} );
 
 		// Synchronize with `model.isActive` because sticking an inactive panel is pointless.
-		this.listenTo<ChangeEvent>( this, 'change:isActive', () => {
+		this.listenTo<ObservableChangeEvent>( this, 'change:isActive', () => {
 			this._checkIfShouldBeSticky();
 		} );
 	}

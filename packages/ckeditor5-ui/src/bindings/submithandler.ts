@@ -47,11 +47,11 @@ import type View from '../view';
 export default function submitHandler( { view }: { view: View } ): void {
 	view.listenTo( view.element!, 'submit', ( evt, domEvt ) => {
 		domEvt.preventDefault();
-		view.fire<SubmitEvent>( 'submit' );
+		view.fire<SubmitHandlerEvent>( 'submit' );
 	}, { useCapture: true } );
 }
 
-export type SubmitEvent = {
+export type SubmitHandlerEvent = {
 	name: 'submit';
 	args: [];
 };

@@ -218,7 +218,7 @@ export default class UpcastDispatcher extends Emitter {
 		writer: ModelWriter,
 		context: SchemaContextDefinition = [ '$root' ]
 	): ModelDocumentFragment {
-		this.fire<ViewCleanupEvent>( 'viewCleanup', viewElement );
+		this.fire<UpcastViewCleanupEvent>( 'viewCleanup', viewElement );
 
 		// Create context tree and set position in the top element.
 		// Items will be converted according to this position.
@@ -585,7 +585,7 @@ export default class UpcastDispatcher extends Emitter {
 	 */
 }
 
-export type ViewCleanupEvent = {
+export type UpcastViewCleanupEvent = {
 	name: 'viewCleanup';
 	args: [ ViewElement | ViewDocumentFragment ];
 };

@@ -8,7 +8,7 @@ import type Editor from './editor/editor';
 
 import insertToPriorityArray from '@ckeditor/ckeditor5-utils/src/inserttopriorityarray';
 import { type PriorityString } from '@ckeditor/ckeditor5-utils/src/priorities';
-import { type ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * @module core/multicommand
@@ -88,7 +88,7 @@ export default class MultiCommand extends Command {
 		insertToPriorityArray( this._childCommandsDefinitions, { command, priority: options.priority || 'normal' } );
 
 		// Change multi command enabled state when one of registered commands changes state.
-		command.on<ChangeEvent<boolean>>( 'change:isEnabled', () => this._checkEnabled() );
+		command.on<ObservableChangeEvent<boolean>>( 'change:isEnabled', () => this._checkEnabled() );
 
 		this._checkEnabled();
 	}

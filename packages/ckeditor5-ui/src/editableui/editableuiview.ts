@@ -11,7 +11,7 @@ import View from '../view';
 
 import type { View as EditingView } from '@ckeditor/ckeditor5-engine';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * The editable UI view class.
@@ -116,7 +116,7 @@ export default class EditableUIView extends View {
 			this._editableElement = this.element;
 		}
 
-		this.on<ChangeEvent>( 'change:isFocused', () => this._updateIsFocusedClasses() );
+		this.on<ObservableChangeEvent>( 'change:isFocused', () => this._updateIsFocusedClasses() );
 		this._updateIsFocusedClasses();
 	}
 
@@ -161,7 +161,7 @@ export default class EditableUIView extends View {
 		// We need to be sure that callback is executed only when the value has changed from `true` to `false`.
 		// See https://github.com/ckeditor/ckeditor5/issues/1676.
 		function updateAfterRender( view: EditableUIView ) {
-			editingView.once<ChangeEvent<boolean>>( 'change:isRenderingInProgress', ( evt, name, value ) => {
+			editingView.once<ObservableChangeEvent<boolean>>( 'change:isRenderingInProgress', ( evt, name, value ) => {
 				if ( !value ) {
 					update( view );
 				} else {

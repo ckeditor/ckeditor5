@@ -17,7 +17,7 @@ import { isElement, debounce, type DebouncedFunc } from 'lodash-es';
 import '../theme/components/tooltip/tooltip.css';
 
 import type Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import type { EditorUIUpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import type { PositioningFunction } from '@ckeditor/ckeditor5-utils/src/dom/position';
 
@@ -411,7 +411,7 @@ export default class TooltipManager extends DomEmitter {
 		// and a contextual toolbar attached to a content starts to move (and so should move the tooltip).
 		// Note: Using low priority to let other listeners that position contextual toolbars etc. to react first.
 		for ( const editor of TooltipManager._editors ) {
-			this.listenTo<UpdateEvent>( editor.ui, 'update', this._updateTooltipPosition.bind( this ), { priority: 'low' } );
+			this.listenTo<EditorUIUpdateEvent>( editor.ui, 'update', this._updateTooltipPosition.bind( this ), { priority: 'low' } );
 		}
 
 		this._currentElementWithTooltip = targetDomElement;

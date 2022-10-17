@@ -22,11 +22,11 @@ import nextIcon from '../../../theme/icons/next-arrow.svg';
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
 
-import type { ExecuteEvent } from '../../button/button';
+import type { ButtonExecuteEvent } from '../../button/button';
 import type ViewCollection from '../../viewcollection';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type { Options } from '@ckeditor/ckeditor5-utils/src/dom/position';
 
 const toPx = toUnit( 'px' );
@@ -438,7 +438,7 @@ export default class ContextualBalloon extends Plugin {
 		} );
 
 		// Update balloon position after toggling navigation.
-		view.on<ChangeEvent>( 'change:isNavigationVisible', () => ( this.updatePosition() ), { priority: 'low' } );
+		view.on<ObservableChangeEvent>( 'change:isNavigationVisible', () => ( this.updatePosition() ), { priority: 'low' } );
 
 		// Update stacks counter value.
 		view.bind( 'counter' ).to( this, 'visibleView', this, '_numberOfStacks', ( visibleView, numberOfStacks ) => {
@@ -451,7 +451,7 @@ export default class ContextualBalloon extends Plugin {
 			return t( '%0 of %1', [ current, numberOfStacks ] );
 		} );
 
-		view.buttonNextView.on<ExecuteEvent>( 'execute', () => {
+		view.buttonNextView.on<ButtonExecuteEvent>( 'execute', () => {
 			// When current view has a focus then move focus to the editable before removing it,
 			// otherwise editor will lost focus.
 			if ( view.focusTracker.isFocused ) {
@@ -461,7 +461,7 @@ export default class ContextualBalloon extends Plugin {
 			this._showNextStack();
 		} );
 
-		view.buttonPrevView.on<ExecuteEvent>( 'execute', () => {
+		view.buttonPrevView.on<ButtonExecuteEvent>( 'execute', () => {
 			// When current view has a focus then move focus to the editable before removing it,
 			// otherwise editor will lost focus.
 			if ( view.focusTracker.isFocused ) {
@@ -487,8 +487,8 @@ export default class ContextualBalloon extends Plugin {
 			return showPanels ? Math.min( number - 1, 2 ) : 0;
 		} );
 
-		view.listenTo<ChangeEvent>( this.view, 'change:top', () => view.updatePosition() );
-		view.listenTo<ChangeEvent>( this.view, 'change:left', () => view.updatePosition() );
+		view.listenTo<ObservableChangeEvent>( this.view, 'change:top', () => view.updatePosition() );
+		view.listenTo<ObservableChangeEvent>( this.view, 'change:left', () => view.updatePosition() );
 
 		this.editor.ui.view.body.add( view );
 
@@ -805,7 +805,7 @@ class FakePanelsView extends View {
 			children: this.content
 		} );
 
-		this.on<ChangeEvent<number>>( 'change:numberOfPanels', ( evt, name, next, prev ) => {
+		this.on<ObservableChangeEvent<number>>( 'change:numberOfPanels', ( evt, name, next, prev ) => {
 			if ( next > prev ) {
 				this._addPanels( next - prev );
 			} else {

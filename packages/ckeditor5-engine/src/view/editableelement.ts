@@ -10,9 +10,8 @@
  */
 
 import ContainerElement from './containerelement';
-import { type ChangeEvent as SelectionChangeEvent } from './selection';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import { default as ObservableMixin, type Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { type ViewSelectionChangeEvent } from './selection';
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
@@ -70,7 +69,7 @@ export default class EditableElement extends ObservableMixin( ContainerElement )
 		);
 
 		// Update focus state based on selection changes.
-		this.listenTo<SelectionChangeEvent>( document.selection, 'change', () => {
+		this.listenTo<ViewSelectionChangeEvent>( document.selection, 'change', () => {
 			this.isFocused = document.isFocused && document.selection.editableElement == this;
 		} );
 	}

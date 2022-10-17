@@ -28,7 +28,7 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 
 		const document = this.document;
 
-		document.on<CompositionObserverEvent>( 'compositionstart', () => {
+		document.on<ViewDocumentCompositionEvent>( 'compositionstart', () => {
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
 			// @if CK_DEBUG_TYPING // 		'┌───────────────────────────── isComposing = true ─────────────────────────────┐',
@@ -38,7 +38,7 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 			document.isComposing = true;
 		}, { priority: 'low' } );
 
-		document.on<CompositionObserverEvent>( 'compositionend', () => {
+		document.on<ViewDocumentCompositionEvent>( 'compositionend', () => {
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
 			// @if CK_DEBUG_TYPING // 		'└───────────────────────────── isComposing = false ─────────────────────────────┘',
@@ -64,7 +64,7 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 	}
 }
 
-export type CompositionObserverEvent = {
+export type ViewDocumentCompositionEvent = {
 	name: 'compositionstart' | 'compositionupdate' | 'compositionend';
 	args: [ data: DomEventData<CompositionEvent> ];
 };

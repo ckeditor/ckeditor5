@@ -8,7 +8,12 @@
  */
 
 import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import { Observable, type ChangeEvent, type DecoratedMethodEvent, type SetEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import {
+	Observable,
+	type ObservableChangeEvent,
+	type DecoratedMethodEvent,
+	type ObservableSetEvent
+} from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type Editor from './editor/editor';
 
 /**
@@ -138,14 +143,14 @@ export default class Command extends Observable {
 			this.refresh();
 		} );
 
-		this.on<ExecuteEvent>( 'execute', evt => {
+		this.on<CommandExecuteEvent>( 'execute', evt => {
 			if ( !this.isEnabled ) {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
 
 		// By default commands are disabled when the editor is in read-only mode.
-		this.listenTo<ChangeEvent<boolean>>( editor, 'change:isReadOnly', ( evt, name, value ) => {
+		this.listenTo<ObservableChangeEvent<boolean>>( editor, 'change:isReadOnly', ( evt, name, value ) => {
 			if ( value && this.affectsData ) {
 				this.forceDisabled( 'readOnlyMode' );
 			} else {
@@ -213,7 +218,7 @@ export default class Command extends Observable {
 		this._disableStack.add( id );
 
 		if ( this._disableStack.size == 1 ) {
-			this.on<SetEvent<boolean>>( 'set:isEnabled', forceDisable, { priority: 'highest' } );
+			this.on<ObservableSetEvent<boolean>>( 'set:isEnabled', forceDisable, { priority: 'highest' } );
 			this.isEnabled = false;
 		}
 	}
@@ -276,4 +281,4 @@ function forceDisable( evt: EventInfo<string, boolean> ) {
 	evt.stop();
 }
 
-export type ExecuteEvent = DecoratedMethodEvent<Command, 'execute'>;
+export type CommandExecuteEvent = DecoratedMethodEvent<Command, 'execute'>;

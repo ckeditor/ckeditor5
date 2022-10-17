@@ -13,7 +13,7 @@ import { createDropdown } from '../dropdown/utils';
 
 import type LabeledFieldView from './labeledfieldview';
 import type DropdownView from '../dropdown/dropdownview';
-import type { InputEvent } from '../input/inputview';
+import type { InputViewInputEvent } from '../input/inputview';
 
 /**
  * A helper for creating labeled inputs.
@@ -55,7 +55,7 @@ export function createLabeledInputText(
 	inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
 	inputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
 
-	inputView.on<InputEvent>( 'input', () => {
+	inputView.on<InputViewInputEvent>( 'input', () => {
 		// UX: Make the error text disappear and disable the error indicator as the user
 		// starts fixing the errors.
 		labeledFieldView.errorText = null;
@@ -107,7 +107,7 @@ export function createLabeledInputNumber(
 	inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
 	inputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
 
-	inputView.on<InputEvent>( 'input', () => {
+	inputView.on<InputViewInputEvent>( 'input', () => {
 		// UX: Make the error text disappear and disable the error indicator as the user
 		// starts fixing the errors.
 		labeledFieldView.errorText = null;

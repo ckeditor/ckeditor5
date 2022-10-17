@@ -4,7 +4,7 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import type { default as Editor, DestroyEvent } from '../editor';
+import type { default as Editor, EditorDestroyEvent } from '../editor';
 import type { ElementApi } from './elementapimixin';
 
 /**
@@ -45,7 +45,7 @@ export default function secureSourceElement( editor: Editor & ElementApi ): void
 
 	sourceElement.ckeditorInstance = editor;
 
-	editor.once<DestroyEvent>( 'destroy', () => {
+	editor.once<EditorDestroyEvent>( 'destroy', () => {
 		delete sourceElement.ckeditorInstance;
 	} );
 }

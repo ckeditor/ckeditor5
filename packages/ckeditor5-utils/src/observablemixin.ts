@@ -87,7 +87,7 @@ export default function ObservableMixin<Base extends abstract new( ...args: Arra
 					// Fire `set` event before the new value will be set to make it possible
 					// to override observable property without affecting `change` event.
 					// See https://github.com/ckeditor/ckeditor5-utils/issues/171.
-					let newValue = this.fire<SetEvent>( `set:${ name }`, name, value, oldValue );
+					let newValue = this.fire<ObservableSetEvent>( `set:${ name }`, name, value, oldValue );
 
 					if ( newValue === undefined ) {
 						newValue = value;
@@ -97,7 +97,7 @@ export default function ObservableMixin<Base extends abstract new( ...args: Arra
 					// Note: When properties map has no such own property, then its value is undefined.
 					if ( oldValue !== newValue || !properties!.has( name ) ) {
 						properties!.set( name, newValue );
-						this.fire<ChangeEvent>( `change:${ name }`, name, newValue, oldValue );
+						this.fire<ObservableChangeEvent>( `change:${ name }`, name, newValue, oldValue );
 					}
 				}
 			} );
@@ -720,7 +720,7 @@ function attachBindToListeners( observable: ObservableInternal, toBindings: Bind
 		// If there's already a chain between the observables (`observable` listens to
 		// `to.observable`), there's no need to create another `change` event listener.
 		if ( !boundObservables.get( to.observable ) ) {
-			observable.listenTo<ChangeEvent>( to.observable, 'change', ( evt, propertyName ) => {
+			observable.listenTo<ObservableChangeEvent>( to.observable, 'change', ( evt, propertyName ) => {
 				bindings = boundObservables.get( to.observable )![ propertyName ];
 
 				// Note: to.observable will fire for any property change, react
@@ -979,12 +979,12 @@ interface ObservableInternal extends Observable {
 	[ boundObservablesSymbol]?: Map<Observable, Record<string, Set<Binding>>>;
 }
 
-export type ChangeEvent<TValue = any> = {
+export type ObservableChangeEvent<TValue = any> = {
 	name: 'change' | `change:${ string }`;
 	args: [ name: string, value: TValue, oldValue: TValue ];
 };
 
-export type SetEvent<TValue = any> = {
+export type ObservableSetEvent<TValue = any> = {
 	name: 'set' | `set:${ string }`;
 	args: [ name: string, value: TValue, oldValue: TValue ];
 	return: TValue;

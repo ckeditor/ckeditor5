@@ -5,7 +5,7 @@
 
 import { isFunction } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import type { default as Editor, DestroyEvent } from '../editor';
+import type { default as Editor, EditorDestroyEvent } from '../editor';
 import type { ElementApi } from './elementapimixin';
 
 /**
@@ -58,7 +58,7 @@ export default function attachToForm( editor: Editor & ElementApi ): void {
 
 		// Remove the submit listener and revert the original submit method on
 		// editor#destroy.
-		editor.on<DestroyEvent>( 'destroy', () => {
+		editor.on<EditorDestroyEvent>( 'destroy', () => {
 			form.removeEventListener( 'submit', onSubmit );
 
 			if ( originalSubmit ) {
