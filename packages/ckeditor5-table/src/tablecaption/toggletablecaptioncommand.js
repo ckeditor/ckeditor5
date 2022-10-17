@@ -115,6 +115,5 @@ export default class ToggleTableCaptionCommand extends Command {
 		tableCaptionEditing._saveCaption( tableElement, captionElement );
 
 		model.deleteContent( writer.createSelection( captionElement, 'on' ) );
-		writer.setSelection( writer.createRangeIn( tableElement.getChild( 0 ).getChild( 0 ) ) );
 	}
 }

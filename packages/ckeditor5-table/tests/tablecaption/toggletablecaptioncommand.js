@@ -120,7 +120,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<paragraph>[11]</paragraph>' +
+							'<paragraph>11[]</paragraph>' +
 						'</tableCell>' +
 						'<tableCell>' +
 							'<paragraph>12</paragraph>' +
@@ -178,13 +178,13 @@ describe( 'ToggleTableCaptionCommand', () => {
 			command.execute();
 
 			expect( getData( model ) ).to.equalMarkup(
-				'<table>' +
+				'[<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<paragraph>[]</paragraph>' +
+							'<paragraph></paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
-				'</table>'
+				'</table>]'
 			);
 		} );
 
@@ -218,7 +218,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<paragraph></paragraph>' +
+							'<paragraph>[]</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
 					'<caption>Foo<$text bold="true">bar</$text></caption>' +
@@ -256,7 +256,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<paragraph></paragraph>' +
+							'<paragraph>A[]bc</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
 					'<caption>Foo</caption>' +
@@ -270,7 +270,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<paragraph>[]</paragraph>' +
+							'<paragraph>A[]bc</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
@@ -295,7 +295,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<paragraph>[]</paragraph>' +
+							'<paragraph>A[]bc</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
 
