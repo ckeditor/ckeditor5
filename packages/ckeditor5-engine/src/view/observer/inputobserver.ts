@@ -136,7 +136,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 	}
 }
 
-export type InputObserverEvent = {
+export type ViewDocumentInputEvent = {
 	name: 'beforeinput';
 	args: [ data: DomEventData<InputEvent> ];
 };

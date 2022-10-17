@@ -25,13 +25,13 @@ import { global, priorities, logWarning, type Collection, type Locale } from '@c
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
 
-import type { default as View, RenderEvent } from '../view';
-import type { ExecuteEvent } from '../button/button';
+import type { default as View, UIViewRenderEvent } from '../view';
+import type { ButtonExecuteEvent } from '../button/button';
 import type Model from '../model';
 import type DropdownButton from './button/dropdownbutton';
 import type { FocusableView } from '../focuscycler';
 import type { FalsyValue } from '../template';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
@@ -285,7 +285,7 @@ export function focusChildOnDropdownOpen(
 	dropdownView: DropdownView,
 	childSelectorCallback: () => View | FalsyValue
 ): void {
-	dropdownView.on<ChangeEvent>( 'change:isOpen', () => {
+	dropdownView.on<ObservableChangeEvent>( 'change:isOpen', () => {
 		if ( !dropdownView.isOpen ) {
 			return;
 		}
@@ -334,7 +334,7 @@ function addDefaultBehavior( dropdownView: DropdownView ) {
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
-	dropdownView.on<RenderEvent>( 'render', () => {
+	dropdownView.on<UIViewRenderEvent>( 'render', () => {
 		clickOutsideHandler( {
 			emitter: dropdownView,
 			activator: () => dropdownView.isOpen,
@@ -351,7 +351,7 @@ function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function closeDropdownOnExecute( dropdownView: DropdownView ) {
 	// Close the dropdown when one of the list items has been executed.
-	dropdownView.on<ExecuteEvent>( 'execute', evt => {
+	dropdownView.on<ButtonExecuteEvent>( 'execute', evt => {
 		// Toggling a switch button view should not close the dropdown.
 		if ( evt.source instanceof SwitchButtonView ) {
 			return;
@@ -365,7 +365,7 @@ function closeDropdownOnExecute( dropdownView: DropdownView ) {
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function closeDropdownOnBlur( dropdownView: DropdownView ) {
-	dropdownView.focusTracker.on<ChangeEvent<boolean>>( 'change:isFocused', ( evt, name, isFocused ) => {
+	dropdownView.focusTracker.on<ObservableChangeEvent<boolean>>( 'change:isFocused', ( evt, name, isFocused ) => {
 		if ( dropdownView.isOpen && !isFocused ) {
 			dropdownView.isOpen = false;
 		}
@@ -398,7 +398,7 @@ function focusDropdownContentsOnArrows( dropdownView: DropdownView ) {
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
-	dropdownView.on<ChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
+	dropdownView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
 		if ( isOpen ) {
 			return;
 		}
@@ -416,7 +416,7 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function focusDropdownPanelOnOpen( dropdownView: DropdownView ) {
-	dropdownView.on<ChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
+	dropdownView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
 		if ( !isOpen ) {
 			return;
 		}

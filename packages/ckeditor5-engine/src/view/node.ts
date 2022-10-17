@@ -288,7 +288,7 @@ export default abstract class Node extends EmitterMixin( TypeCheckable ) {
 	 * @fires change
 	 */
 	public _fireChange( type: ChangeType, node: Node ): void {
-		this.fire<ChangeEvent>( `change:${ type }`, node );
+		this.fire<ViewNodeChangeEvent>( `change:${ type }`, node );
 
 		if ( this.parent ) {
 			this.parent._fireChange( type, node );
@@ -406,7 +406,7 @@ Node.prototype.is = function( type: string ): boolean {
  * @event change
  */
 
-export type ChangeEvent = {
+export type ViewNodeChangeEvent = {
 	name: 'change' | `change:${ ChangeType }`;
 	args: [ changedNode: Node ];
 };

@@ -18,7 +18,7 @@ import type ListItemView from './listitemview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import type ViewCollection from '../viewcollection';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { AddEvent, RemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+import type { CollectionAddEvent, CollectionRemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
  * The list view class.
@@ -109,11 +109,11 @@ export default class ListView extends View implements DropdownPanelFocusable {
 			this.focusTracker.add( item.element! );
 		}
 
-		this.items.on<AddEvent<ListItemView>>( 'add', ( evt, item ) => {
+		this.items.on<CollectionAddEvent<ListItemView>>( 'add', ( evt, item ) => {
 			this.focusTracker.add( item.element! );
 		} );
 
-		this.items.on<RemoveEvent<ListItemView>>( 'remove', ( evt, item ) => {
+		this.items.on<CollectionRemoveEvent<ListItemView>>( 'remove', ( evt, item ) => {
 			this.focusTracker.remove( item.element! );
 		} );
 

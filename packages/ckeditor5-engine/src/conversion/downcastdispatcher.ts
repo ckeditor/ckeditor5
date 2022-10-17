@@ -501,7 +501,7 @@ export default class DowncastDispatcher extends Emitter {
 	private _reduceChanges( changes: Iterable<DiffItem> ): Iterable<DiffItem | DiffItemReinsert> {
 		const data: { changes: Iterable<DiffItem | DiffItemReinsert> } = { changes };
 
-		this.fire<ReduceChangesEvent>( 'reduceChanges', data );
+		this.fire<DowncastReduceChangesEvent>( 'reduceChanges', data );
 
 		return data.changes;
 	}
@@ -808,7 +808,7 @@ export default class DowncastDispatcher extends Emitter {
 	 */
 }
 
-export type ReduceChangesEvent = {
+export type DowncastReduceChangesEvent = {
 	name: 'reduceChanges';
 	args: [ data: {
 		changes: Iterable<DiffItem | DiffItemReinsert>;

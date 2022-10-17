@@ -18,7 +18,7 @@ import '../../../theme/components/panel/balloonpanel.css';
 
 import type ViewCollection from '../../viewcollection';
 import type { Locale, Rect } from '@ckeditor/ckeditor5-utils';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
@@ -321,7 +321,7 @@ export default class BalloonPanelView extends View {
 		// Control the state of the listeners depending on whether the panel is visible
 		// or not.
 		// TODO: Use on() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
-		this.listenTo<ChangeEvent>( this, 'change:isVisible', this._pinWhenIsVisibleCallback );
+		this.listenTo<ObservableChangeEvent>( this, 'change:isVisible', this._pinWhenIsVisibleCallback );
 	}
 
 	/**

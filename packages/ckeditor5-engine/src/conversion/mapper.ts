@@ -122,7 +122,7 @@ export default class Mapper extends Emitter {
 		this._unboundMarkerNames = new Set();
 
 		// Default mapper algorithm for mapping model position to view position.
-		this.on<ModelToViewPositionEvent>( 'modelToViewPosition', ( evt, data ) => {
+		this.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', ( evt, data ) => {
 			if ( data.viewPosition ) {
 				return;
 			}
@@ -145,7 +145,7 @@ export default class Mapper extends Emitter {
 		}, { priority: 'low' } );
 
 		// Default mapper algorithm for mapping view position to model position.
-		this.on<ViewToModelPositionEvent>( 'viewToModelPosition', ( evt, data ) => {
+		this.on<MapperViewToModelPositionEvent>( 'viewToModelPosition', ( evt, data ) => {
 			if ( data.modelPosition ) {
 				return;
 			}
@@ -375,12 +375,12 @@ export default class Mapper extends Emitter {
 	 * @returns {module:engine/model/position~Position} Corresponding model position.
 	 */
 	public toModelPosition( viewPosition: ViewPosition ): ModelPosition {
-		const data: ViewToModelPositionEvent[ 'args' ][ 0 ] = {
+		const data: MapperViewToModelPositionEvent[ 'args' ][ 0 ] = {
 			viewPosition,
 			mapper: this
 		};
 
-		this.fire<ViewToModelPositionEvent>( 'viewToModelPosition', data );
+		this.fire<MapperViewToModelPositionEvent>( 'viewToModelPosition', data );
 
 		return data.modelPosition!;
 	}
@@ -399,13 +399,13 @@ export default class Mapper extends Emitter {
 		modelPosition: ModelPosition,
 		options: { isPhantom?: boolean } = {}
 	): ViewPosition {
-		const data: ModelToViewPositionEvent[ 'args' ][ 0 ] = {
+		const data: MapperModelToViewPositionEvent[ 'args' ][ 0 ] = {
 			modelPosition,
 			mapper: this,
 			isPhantom: options.isPhantom
 		};
 
-		this.fire<ModelToViewPositionEvent>( 'modelToViewPosition', data );
+		this.fire<MapperModelToViewPositionEvent>( 'modelToViewPosition', data );
 
 		return data.viewPosition!;
 	}
@@ -773,7 +773,7 @@ export default class Mapper extends Emitter {
 	 */
 }
 
-export type ModelToViewPositionEvent = {
+export type MapperModelToViewPositionEvent = {
 	name: 'modelToViewPosition';
 	args: [ {
 		mapper: Mapper;
@@ -783,7 +783,7 @@ export type ModelToViewPositionEvent = {
 	} ];
 };
 
-export type ViewToModelPositionEvent = {
+export type MapperViewToModelPositionEvent = {
 	name: 'viewToModelPosition';
 	args: [ {
 		mapper: Mapper;

@@ -31,7 +31,7 @@ export default class MouseObserver extends DomEventObserver<'mousedown' | 'mouse
 	}
 }
 
-export type MouseObserverEvent = {
+export type ViewDocumentMouseEvent = {
 	name: 'mousedown' | 'mouseup' | 'mouseover' | 'mouseout';
 	args: [ data: DomEventData<MouseEvent> ];
 };

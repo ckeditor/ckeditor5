@@ -15,12 +15,12 @@ import addKeyboardHandlingForGrid from '../bindings/addkeyboardhandlingforgrid';
 
 import '../../theme/components/colorgrid/colorgrid.css';
 
-import type { ExecuteEvent as ButtonExecuteEvent } from '../button/button';
+import type { ButtonExecuteEvent } from '../button/button';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import type ViewCollection from '../viewcollection';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { AddEvent, RemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { CollectionAddEvent, CollectionRemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * A grid of {@link module:ui/colorgrid/colortile~ColorTileView color tiles}.
@@ -99,7 +99,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 		 */
 		this.keystrokes = new KeystrokeHandler();
 
-		this.items.on<AddEvent<ColorTileView>>( 'add', ( evt, colorTile ) => {
+		this.items.on<CollectionAddEvent<ColorTileView>>( 'add', ( evt, colorTile ) => {
 			colorTile.isOn = colorTile.color === this.selectedColor;
 		} );
 
@@ -114,7 +114,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 			} );
 
 			colorTile.on<ButtonExecuteEvent>( 'execute', () => {
-				this.fire<ExecuteEvent>( 'execute', {
+				this.fire<ColorGridViewExecuteEvent>( 'execute', {
 					value: color.color,
 					hasBorder: color.options.hasBorder,
 					label: color.label
@@ -136,7 +136,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 			}
 		} );
 
-		this.on<ChangeEvent<string | undefined>>( 'change:selectedColor', ( evt, name, selectedColor ) => {
+		this.on<ObservableChangeEvent<string | undefined>>( 'change:selectedColor', ( evt, name, selectedColor ) => {
 			for ( const item of this.items ) {
 				( item as ColorTileView ).isOn = ( item as ColorTileView ).color === selectedColor;
 			}
@@ -172,11 +172,11 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 			this.focusTracker.add( item.element! );
 		}
 
-		this.items.on<AddEvent<ColorTileView>>( 'add', ( evt, item ) => {
+		this.items.on<CollectionAddEvent<ColorTileView>>( 'add', ( evt, item ) => {
 			this.focusTracker.add( item.element! );
 		} );
 
-		this.items.on<RemoveEvent<ColorTileView>>( 'remove', ( evt, item ) => {
+		this.items.on<CollectionRemoveEvent<ColorTileView>>( 'remove', ( evt, item ) => {
 			this.focusTracker.remove( item.element! );
 		} );
 
@@ -244,7 +244,7 @@ export interface ColorDefinition {
 	};
 }
 
-export type ExecuteEvent = {
+export type ColorGridViewExecuteEvent = {
 	name: 'execute';
 	args: [ {
 		value: string;

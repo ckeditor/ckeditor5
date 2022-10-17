@@ -507,7 +507,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 
 		this._lastRangeBackward = !!isLastBackward;
 
-		this.fire<ChangeRangeEvent>( 'change:range', { directChange: true } );
+		this.fire<SelectionChangeRangeEvent>( 'change:range', { directChange: true } );
 	}
 
 	/**
@@ -551,7 +551,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 			this._lastRangeBackward = false;
 		}
 
-		this.fire<ChangeRangeEvent>( 'change:range', { directChange: true } );
+		this.fire<SelectionChangeRangeEvent>( 'change:range', { directChange: true } );
 	}
 
 	/**
@@ -608,7 +608,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 		if ( this.hasAttribute( key ) ) {
 			this._attrs.delete( key );
 
-			this.fire<ChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
+			this.fire<SelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
 		}
 	}
 
@@ -626,7 +626,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 		if ( this.getAttribute( key ) !== value ) {
 			this._attrs.set( key, value );
 
-			this.fire<ChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
+			this.fire<SelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
 		}
 	}
 
@@ -856,7 +856,7 @@ Selection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'model:selection';
 };
 
-export type ChangeEvent = {
+export type SelectionChangeEvent = {
 	name: 'change' | 'change:range' | 'change:attribute';
 	args: [ {
 		directChange: boolean;
@@ -864,14 +864,14 @@ export type ChangeEvent = {
 	} ];
 };
 
-export type ChangeRangeEvent = {
+export type SelectionChangeRangeEvent = {
 	name: 'change:range';
 	args: [ {
 		directChange: boolean;
 	} ];
 };
 
-export type ChangeAttributeEvent = {
+export type SelectionChangeAttributeEvent = {
 	name: 'change:attribute';
 	args: [ {
 		directChange: boolean;

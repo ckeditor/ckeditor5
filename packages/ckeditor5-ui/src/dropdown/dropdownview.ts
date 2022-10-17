@@ -14,12 +14,12 @@ import { getOptimalPosition, type PositioningFunction } from '@ckeditor/ckeditor
 
 import '../../theme/components/dropdown/dropdown.css';
 
-import type { default as DropdownButton, OpenEvent } from './button/dropdownbutton';
+import type { default as DropdownButton, DropdownButtonOpenEvent } from './button/dropdownbutton';
 import type { default as DropdownPanelView, PanelPosition } from './dropdownpanelview';
 import type { FocusableView } from '../focuscycler';
 import type ListView from '../list/listview';
 import type ToolbarView from '../toolbar/toolbarview';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * The dropdown view class. It manages the dropdown button and dropdown panel.
@@ -279,7 +279,7 @@ export default class DropdownView extends View {
 		this.focusTracker.add( this.panelView.element! );
 
 		// Toggle the dropdown when its button has been clicked.
-		this.listenTo<OpenEvent>( this.buttonView, 'open', () => {
+		this.listenTo<DropdownButtonOpenEvent>( this.buttonView, 'open', () => {
 			this.isOpen = !this.isOpen;
 		} );
 
@@ -288,7 +288,7 @@ export default class DropdownView extends View {
 
 		// Let the dropdown control the position of the panel. The position must
 		// be updated every time the dropdown is open.
-		this.on<ChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
+		this.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
 			if ( !isOpen ) {
 				return;
 			}
