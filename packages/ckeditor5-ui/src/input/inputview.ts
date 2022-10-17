@@ -230,7 +230,7 @@ function isInputElementEmpty( domElement: HTMLInputElement ) {
 	return !domElement.value;
 }
 
-export type InputViewEvent = {
+export type InputViewInputEvent = {
 	name: 'input';
 	args: [ InstanceType<typeof global.InputEvent> ];
 };
