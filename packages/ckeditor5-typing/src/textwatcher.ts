@@ -7,13 +7,13 @@
  * @module typing/textwatcher
  */
 
-import { Observable, type ChangeEvent as ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { Observable, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import getLastTextLine from './utils/getlasttextline';
 
 import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import type { Model, Range } from '@ckeditor/ckeditor5-engine';
-import type { ChangeEvent as SelectionChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
-import type { ChangeEvent as DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/document';
+import type { DocumentSelectionChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
+import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/document';
 
 /**
  * The text watcher feature.
@@ -117,7 +117,7 @@ export default class TextWatcher extends Observable {
 		const model = this.model;
 		const document = model.document;
 
-		this.listenTo<SelectionChangeEvent>( document.selection, 'change:range', ( evt, { directChange } ) => {
+		this.listenTo<DocumentSelectionChangeEvent>( document.selection, 'change:range', ( evt, { directChange } ) => {
 			// Indirect changes (i.e. when the user types or external changes are applied) are handled in the document's change event.
 			if ( !directChange ) {
 				return;

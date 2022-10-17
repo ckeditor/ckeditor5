@@ -15,8 +15,8 @@ import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
 import type Selection from '@ckeditor/ckeditor5-engine/src/view/selection';
 import type DocumentSelection from '@ckeditor/ckeditor5-engine/src/view/documentselection';
 import type { View } from '@ckeditor/ckeditor5-engine';
-import type { InputObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
-import type { KeyObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
+import type { ViewDocumentInputEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
+import type { ViewDocumentKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
 import type { BubblingEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingemittermixin';
 
 const DELETE_CHARACTER = 'character';
@@ -145,7 +145,7 @@ export default class DeleteObserver extends Observer {
 			sequence = 0;
 		} );
 
-		document.on<InputObserverEvent>( 'beforeinput', ( evt, data ) => {
+		document.on<ViewDocumentInputEvent>( 'beforeinput', ( evt, data ) => {
 			if ( !this.isEnabled ) {
 				return;
 			}
@@ -225,7 +225,7 @@ export default class DeleteObserver extends Observer {
  * current selection should be used.
  * @param {String} data.inputType The `beforeinput` event type that caused the deletion.
  */
-export type DeleteEvent = BubblingEvent<{
+export type ViewDocumentDeleteEvent = BubblingEvent<{
 	name: 'delete';
 	args: [ data: DeleteEventData ];
 }>;
@@ -245,12 +245,12 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 	let pressedKeyCode: number | null = null;
 	let beforeInputReceived = false;
 
-	document.on<KeyObserverEvent>( 'keydown', ( evt, { keyCode } ) => {
+	document.on<ViewDocumentKeyEvent>( 'keydown', ( evt, { keyCode } ) => {
 		pressedKeyCode = keyCode;
 		beforeInputReceived = false;
 	} );
 
-	document.on<KeyObserverEvent>( 'keyup', ( evt, { keyCode, domEvent } ) => {
+	document.on<ViewDocumentKeyEvent>( 'keyup', ( evt, { keyCode, domEvent } ) => {
 		const selection = document.selection;
 		const shouldFireDeleteEvent = observer.isEnabled &&
 			keyCode == pressedKeyCode &&
@@ -273,7 +273,7 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 		}
 	} );
 
-	document.on<InputObserverEvent>( 'beforeinput', ( evt, { inputType } ) => {
+	document.on<ViewDocumentInputEvent>( 'beforeinput', ( evt, { inputType } ) => {
 		const deleteEventSpec = DELETE_EVENT_TYPES[ inputType ];
 		const isMatchingBeforeInput = isDeleteKeyCode( pressedKeyCode ) &&
 			deleteEventSpec &&
@@ -284,7 +284,7 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 		}
 	} );
 
-	document.on<InputObserverEvent>( 'beforeinput', ( evt, { inputType, data } ) => {
+	document.on<ViewDocumentInputEvent>( 'beforeinput', ( evt, { inputType, data } ) => {
 		const shouldIgnoreBeforeInput = pressedKeyCode == keyCodes.delete &&
 			inputType == 'insertText' &&
 			data == '\x7f'; // Delete character :P

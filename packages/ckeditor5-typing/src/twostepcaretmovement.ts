@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { ArrowObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/arrowkeysobserver';
+import type { ViewDocumentArrowKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/arrowkeysobserver';
 import type { DocumentSelection, DomEventData, Model, Position } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -153,7 +153,7 @@ export default class TwoStepCaretMovement extends Plugin {
 		const modelSelection = model.document.selection;
 
 		// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
-		this.listenTo<ArrowObserverEvent>( view.document, 'arrowKey', ( evt, data ) => {
+		this.listenTo<ViewDocumentArrowKeyEvent>( view.document, 'arrowKey', ( evt, data ) => {
 			// This implementation works only for collapsed selection.
 			if ( !modelSelection.isCollapsed ) {
 				return;

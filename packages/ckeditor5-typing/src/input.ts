@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import InsertTextCommand from './inserttextcommand';
-import InsertTextObserver, { type InsertTextEvent } from './inserttextobserver';
+import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import type { Model } from '@ckeditor/ckeditor5-engine';
@@ -48,7 +48,7 @@ export default class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
-		this.listenTo<InsertTextEvent>( view.document, 'insertText', ( evt, data ) => {
+		this.listenTo<ViewDocumentInsertTextEvent>( view.document, 'insertText', ( evt, data ) => {
 			// Rendering is disabled while composing so prevent events that will be rendered by the engine
 			// and should not be applied by the browser.
 			if ( !view.document.isComposing ) {

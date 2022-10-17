@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import DeleteCommand from './deletecommand';
-import DeleteObserver, { type DeleteEvent } from './deleteobserver';
+import DeleteObserver, { type ViewDocumentDeleteEvent } from './deleteobserver';
 
 /**
  * The delete and backspace feature. Handles keys such as <kbd>Delete</kbd> and <kbd>Backspace</kbd>, other
@@ -54,7 +54,7 @@ export default class Delete extends Plugin {
 
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
-		this.listenTo<DeleteEvent>( viewDocument, 'delete', ( evt, data ) => {
+		this.listenTo<ViewDocumentDeleteEvent>( viewDocument, 'delete', ( evt, data ) => {
 			// When not in composition, we handle the action, so prevent the default one.
 			// When in composition, it's the browser who modify the DOM (renderer is disabled).
 			if ( !viewDocument.isComposing ) {
@@ -81,7 +81,7 @@ export default class Delete extends Plugin {
 		}, { priority: 'low' } );
 
 		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
-			this.listenTo<DeleteEvent>( viewDocument, 'delete', ( evt, data ) => {
+			this.listenTo<ViewDocumentDeleteEvent>( viewDocument, 'delete', ( evt, data ) => {
 				if ( this._undoOnBackspace && data.direction == 'backward' && data.sequence == 1 && data.unit == 'codePoint' ) {
 					this._undoOnBackspace = false;
 

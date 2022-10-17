@@ -10,8 +10,8 @@
 import type Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-import type { ChangeEvent as DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/document';
-import type { ChangeEvent as SelectionChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
+import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/document';
+import type { DocumentSelectionChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 
 /**
  * Change buffer allows to group atomic changes (like characters that have been typed) into
@@ -99,8 +99,8 @@ export default class ChangeBuffer {
 
 		this.model.document.on<DocumentChangeEvent>( 'change', this._changeCallback );
 
-		this.model.document.selection.on<SelectionChangeEvent>( 'change:range', this._selectionChangeCallback );
-		this.model.document.selection.on<SelectionChangeEvent>( 'change:attribute', this._selectionChangeCallback );
+		this.model.document.selection.on<DocumentSelectionChangeEvent>( 'change:range', this._selectionChangeCallback );
+		this.model.document.selection.on<DocumentSelectionChangeEvent>( 'change:attribute', this._selectionChangeCallback );
 
 		/**
 		 * The current batch instance.

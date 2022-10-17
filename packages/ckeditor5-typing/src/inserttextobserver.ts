@@ -13,8 +13,8 @@ import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import type { View } from '@ckeditor/ckeditor5-engine';
-import type { InputObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
-import type { CompositionObserverEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/compositionobserver';
+import type { ViewDocumentInputEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
+import type { ViewDocumentCompositionEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/compositionobserver';
 import type Selection from '@ckeditor/ckeditor5-engine/src/view/selection';
 import type Range from '@ckeditor/ckeditor5-engine/src/view/range';
 
@@ -53,7 +53,7 @@ export default class InsertTextObserver extends Observer {
 
 		const viewDocument = view.document;
 
-		viewDocument.on<InputObserverEvent>( 'beforeinput', ( evt, data ) => {
+		viewDocument.on<ViewDocumentInputEvent>( 'beforeinput', ( evt, data ) => {
 			if ( !this.isEnabled ) {
 				return;
 			}
@@ -79,7 +79,7 @@ export default class InsertTextObserver extends Observer {
 		} );
 
 		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
-		viewDocument.on<CompositionObserverEvent>( 'compositionend', ( evt, { data, domEvent } ) => {
+		viewDocument.on<ViewDocumentCompositionEvent>( 'compositionend', ( evt, { data, domEvent } ) => {
 			// On Android composition events are immediately applied to the model.
 			// On non-Android the model is updated only on composition end.
 			// On Android we can't rely on composition start/end to update model.
@@ -144,7 +144,7 @@ export default class InsertTextObserver extends Observer {
  * If not specified, the insertion should occur at the current view selection.
  * @param {module:engine/view/range~Range} [data.resultRange] The range that view selection should be set to after insertion.
  */
-export type InsertTextEvent = {
+export type ViewDocumentInsertTextEvent = {
 	name: 'insertText';
 	args: [ data: InsertTextEventData ];
 };
