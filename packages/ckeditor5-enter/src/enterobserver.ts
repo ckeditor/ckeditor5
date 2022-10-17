@@ -11,7 +11,10 @@ import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 
-const ENTER_EVENT_TYPES = {
+import type { View } from '@ckeditor/ckeditor5-engine';
+import type { ViewDocumentInputEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
+
+const ENTER_EVENT_TYPES: Record<string, { isSoft: boolean }> = {
 	insertParagraph: { isSoft: false },
 	insertLineBreak: { isSoft: true }
 };
@@ -25,12 +28,12 @@ export default class EnterObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view ) {
+	constructor( view: View ) {
 		super( view );
 
 		const doc = this.document;
 
-		doc.on( 'beforeinput', ( evt, data ) => {
+		doc.on<ViewDocumentInputEvent>( 'beforeinput', ( evt, data ) => {
 			if ( !this.isEnabled ) {
 				return;
 			}
@@ -44,7 +47,7 @@ export default class EnterObserver extends Observer {
 
 			const event = new BubblingEventInfo( doc, 'enter', data.targetRanges[ 0 ] );
 
-			doc.fire( event, new DomEventData( doc, domEvent, {
+			doc.fire( event, new DomEventData( view, domEvent, {
 				isSoft: enterEventSpec.isSoft
 			} ) );
 
@@ -59,7 +62,7 @@ export default class EnterObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	observe() {}
+	public observe(): void {}
 }
 
 /**
@@ -73,3 +76,12 @@ export default class EnterObserver extends Observer {
  * @param {module:engine/view/observer/domeventdata~DomEventData} data
  * @param {Boolean} data.isSoft Whether it's a soft enter (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or hard enter (<kbd>Enter</kbd>).
  */
+
+export type ViewDocumentEnterEvent = {
+	name: 'enter';
+	args: [ EnterEventData ];
+};
+
+export interface EnterEventData extends DomEventData<InputEvent> {
+	isSoft: boolean;
+}

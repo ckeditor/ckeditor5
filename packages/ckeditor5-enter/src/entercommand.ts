@@ -10,6 +10,15 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { getCopyOnEnterAttributes } from './utils';
 
+import type Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
+import type {
+	DocumentSelection,
+	Model,
+	Schema,
+	Element,
+	Position
+} from '@ckeditor/ckeditor5-engine';
+
 /**
  * Enter command. It is used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> key.
  *
@@ -19,16 +28,21 @@ export default class EnterCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	public override execute(): void {
 		const model = this.editor.model;
 		const doc = model.document;
 
 		model.change( writer => {
 			enterBlock( this.editor.model, writer, doc.selection, model.schema );
-			this.fire( 'afterExecute', { writer } );
+			this.fire<EnterCommandAfterExecuteEvent>( 'afterExecute', { writer } );
 		} );
 	}
 }
+
+export type EnterCommandAfterExecuteEvent = {
+	name: 'afterExecute';
+	args: [ { writer: Writer } ];
+};
 
 // Creates a new block in the way that the <kbd>Enter</kbd> key is expected to work.
 //
@@ -37,11 +51,11 @@ export default class EnterCommand extends Command {
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // Selection on which the action should be performed.
 // @param {module:engine/model/schema~Schema} schema
-function enterBlock( model, writer, selection, schema ) {
+function enterBlock( model: Model, writer: Writer, selection: DocumentSelection, schema: Schema ): void {
 	const isSelectionEmpty = selection.isCollapsed;
-	const range = selection.getFirstRange();
-	const startElement = range.start.parent;
-	const endElement = range.end.parent;
+	const range = selection.getFirstRange()!;
+	const startElement = range.start.parent as Element;
+	const endElement = range.end.parent as Element;
 
 	// Don't touch the roots and other limit elements.
 	if ( schema.isLimit( startElement ) || schema.isLimit( endElement ) ) {
@@ -58,6 +72,7 @@ function enterBlock( model, writer, selection, schema ) {
 
 	if ( isSelectionEmpty ) {
 		const attributesToCopy = getCopyOnEnterAttributes( writer.model.schema, selection.getAttributes() );
+
 		splitBlock( writer, range.start );
 		writer.setSelectionAttribute( attributesToCopy );
 	} else {
@@ -71,7 +86,7 @@ function enterBlock( model, writer, selection, schema ) {
 			//
 			// <h>x[xx]x</h>		-> <h>x^x</h>			-> <h>x</h><h>^x</h>
 			if ( isContainedWithinOneElement ) {
-				splitBlock( writer, selection.focus );
+				splitBlock( writer, selection.focus! );
 			}
 			// Selection over multiple elements.
 			//
@@ -83,7 +98,7 @@ function enterBlock( model, writer, selection, schema ) {
 	}
 }
 
-function splitBlock( writer, splitPos ) {
+function splitBlock( writer: Writer, splitPos: Position ): void {
 	writer.split( splitPos );
 	writer.setSelection( splitPos.parent.nextSibling, 0 );
 }

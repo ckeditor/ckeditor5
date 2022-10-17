@@ -7,6 +7,8 @@
  * @module enter/utils
  */
 
+import type { Schema } from '@ckeditor/ckeditor5-engine';
+
 /**
  * Returns attributes that should be preserved on the enter key.
  *
@@ -17,7 +19,10 @@
  * @param {Iterable.<*>} allAttributes attributes to filter.
  * @returns {Iterable.<*>}
  */
-export function* getCopyOnEnterAttributes( schema, allAttributes ) {
+export function* getCopyOnEnterAttributes(
+	schema: Schema,
+	allAttributes: IterableIterator<[ string, unknown ]>
+): IterableIterator<[ string, unknown ]> {
 	for ( const attribute of allAttributes ) {
 		if ( attribute && schema.getAttributeProperties( attribute[ 0 ] ).copyOnEnter ) {
 			yield attribute;

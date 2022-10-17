@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import EnterCommand from './entercommand';
-import EnterObserver from './enterobserver';
+import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver';
 
 /**
  * This plugin handles the <kbd>Enter</kbd> key (hard line break) in the editor.
@@ -24,11 +24,11 @@ export default class Enter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'Enter';
 	}
 
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
@@ -37,7 +37,7 @@ export default class Enter extends Plugin {
 
 		editor.commands.add( 'enter', new EnterCommand( editor ) );
 
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+		this.listenTo<ViewDocumentEnterEvent>( viewDocument, 'enter', ( evt, data ) => {
 			// When not in composition, we handle the action, so prevent the default one.
 			// When in composition, it's the browser who modify the DOM (renderer is disabled).
 			if ( !viewDocument.isComposing ) {
