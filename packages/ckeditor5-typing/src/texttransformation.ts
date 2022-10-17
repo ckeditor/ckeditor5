@@ -344,7 +344,7 @@ export type TextTransformationDescription = {
  *
  * @member {module:typing/texttransformation~TextTransformationConfig} module:typing/typing~TypingConfig#transformations
  */
-declare module './typing' {
+declare module './typingconfig' {
 	interface TypingConfig {
 		transformations: TextTransformationConfig;
 	}

@@ -14,6 +14,9 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import type { Model } from '@ckeditor/ckeditor5-engine';
 
+// Import config.typing declaration.
+import './typingconfig';
+
 /**
  * Handles text input coming from the keyboard or other input methods.
  *

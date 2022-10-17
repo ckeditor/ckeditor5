@@ -18,7 +18,7 @@ import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { Element, DocumentSelection } from '@ckeditor/ckeditor5-engine';
 
 // Import config.typing declaration.
-import './typing';
+import './typingconfig';
 
 /**
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and
