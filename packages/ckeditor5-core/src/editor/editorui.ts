@@ -9,7 +9,7 @@
 
 /* globals console */
 
-import type { LayoutChangedEvent } from '@ckeditor/ckeditor5-engine/src/view/document';
+import type { ViewDocumentLayoutChangedEvent } from '@ckeditor/ckeditor5-engine/src/view/document';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import TooltipManager from '@ckeditor/ckeditor5-ui/src/tooltipmanager';
@@ -19,7 +19,7 @@ import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 import type Editor from './editor';
 import type ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import type { RenderEvent } from '@ckeditor/ckeditor5-ui/src/view';
+import type { UIViewRenderEvent } from '@ckeditor/ckeditor5-ui/src/view';
 import type EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 
 /**
@@ -129,7 +129,7 @@ export default abstract class EditorUI extends Observable {
 		 * @member {Boolean} #isReady
 		 */
 		this.isReady = false;
-		this.once<ReadyEvent>( 'ready', () => {
+		this.once<EditorUIReadyEvent>( 'ready', () => {
 			this.isReady = true;
 		} );
 
@@ -150,7 +150,7 @@ export default abstract class EditorUI extends Observable {
 		this._focusableToolbarDefinitions = [];
 
 		// Informs UI components that should be refreshed after layout change.
-		this.listenTo<LayoutChangedEvent>( editor.editing.view.document, 'layoutChanged', () => this.update() );
+		this.listenTo<ViewDocumentLayoutChangedEvent>( editor.editing.view.document, 'layoutChanged', () => this.update() );
 
 		this._initFocusTracking();
 	}
@@ -181,7 +181,7 @@ export default abstract class EditorUI extends Observable {
 	 * some environmental change which CKEditor 5 is not aware of (e.g. resize of a container in which it is used).
 	 */
 	public update(): void {
-		this.fire<UpdateEvent>( 'update' );
+		this.fire<EditorUIUpdateEvent>( 'update' );
 	}
 
 	/**
@@ -241,7 +241,7 @@ export default abstract class EditorUI extends Observable {
 		}
 		// For editable elements set while the editor is being created (e.g. DOM roots).
 		else {
-			this.once<ReadyEvent>( 'ready', setUpKeystrokeHandler );
+			this.once<EditorUIReadyEvent>( 'ready', setUpKeystrokeHandler );
 		}
 	}
 
@@ -284,7 +284,7 @@ export default abstract class EditorUI extends Observable {
 			this.focusTracker.add( toolbarView.element! );
 			this.editor.keystrokes.listenTo( toolbarView.element! );
 		} else {
-			toolbarView.once<RenderEvent>( 'render', () => {
+			toolbarView.once<UIViewRenderEvent>( 'render', () => {
 				this.focusTracker.add( toolbarView.element! );
 				this.editor.keystrokes.listenTo( toolbarView.element! );
 			} );
@@ -556,12 +556,12 @@ export default abstract class EditorUI extends Observable {
 	 */
 }
 
-export type ReadyEvent = {
+export type EditorUIReadyEvent = {
 	name: 'ready';
 	args: [];
 };
 
-export type UpdateEvent = {
+export type EditorUIUpdateEvent = {
 	name: 'update';
 	args: [];
 };

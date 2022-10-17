@@ -9,7 +9,7 @@
 
 import ContextPlugin from './contextplugin';
 import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Collection, { type AddEvent, type RemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+import Collection, { type CollectionAddEvent, type CollectionRemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -162,5 +162,5 @@ export interface Action extends Observable {
 	message: string;
 }
 
-export type AddActionEvent = AddEvent<Action>;
-export type RemoveActionEvent = RemoveEvent<Action>;
+export type PendingActionsAddEvent = CollectionAddEvent<Action>;
+export type PendingActionsRemoveEvent = CollectionRemoveEvent<Action>;

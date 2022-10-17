@@ -7,13 +7,13 @@
  * @module engine/view/observer/tabobserver
  */
 
+import type View from '../view';
 import Observer from './observer';
 import BubblingEventInfo from './bubblingeventinfo';
-import { type KeyObserverEvent } from './keyobserver';
-import type View from '../view';
+import { type ViewDocumentKeyEvent } from './keyobserver';
+import type { BubblingEvent } from './bubblingemittermixin';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import type { BubblingEvent } from './bubblingemittermixin';
 
 /**
  * Tab observer introduces the {@link module:engine/view/document~Document#event:tab `Document#tab`} event.
@@ -32,7 +32,7 @@ export default class TabObserver extends Observer {
 
 		const doc = this.document;
 
-		doc.on<KeyObserverEvent>( 'keydown', ( evt, data ) => {
+		doc.on<ViewDocumentKeyEvent>( 'keydown', ( evt, data ) => {
 			if (
 				!this.isEnabled ||
 				data.keyCode != keyCodes.tab ||
@@ -43,7 +43,7 @@ export default class TabObserver extends Observer {
 
 			const event = new BubblingEventInfo( doc, 'tab', doc.selection.getFirstRange()! );
 
-			doc.fire<TabObserverEvent>( event, data );
+			doc.fire<ViewDocumentTabEvent>( event, data );
 
 			if ( event.stop.called ) {
 				evt.stop();
@@ -57,9 +57,9 @@ export default class TabObserver extends Observer {
 	public override observe(): void {}
 }
 
-export type TabObserverEvent = BubblingEvent<{
+export type ViewDocumentTabEvent = BubblingEvent<{
 	name: 'tab';
-	args: KeyObserverEvent[ 'args' ];
+	args: ViewDocumentKeyEvent[ 'args' ];
 }>;
 
 /**

@@ -30,8 +30,8 @@ import type ViewCollection from '../viewcollection';
 import type DropdownView from '../dropdown/dropdownview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { AddEvent, ChangeEvent as CollectionChangeEvent, RemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { CollectionAddEvent, CollectionChangeEvent, CollectionRemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 
 import { icons } from '@ckeditor/ckeditor5-core';
@@ -282,11 +282,11 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 			this.focusTracker.add( item.element! );
 		}
 
-		this.items.on<AddEvent<View>>( 'add', ( evt, item ) => {
+		this.items.on<CollectionAddEvent<View>>( 'add', ( evt, item ) => {
 			this.focusTracker.add( item.element! );
 		} );
 
-		this.items.on<RemoveEvent<View>>( 'remove', ( evt, item ) => {
+		this.items.on<CollectionRemoveEvent<View>>( 'remove', ( evt, item ) => {
 			this.focusTracker.remove( item.element! );
 		} );
 
@@ -569,7 +569,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 */
 }
 
-export type GroupedItemsUpdateEvent = {
+export type ToolbarViewGroupedItemsUpdateEvent = {
 	name: 'groupedItemsUpdate';
 	args: [];
 };
@@ -830,12 +830,12 @@ class DynamicGrouping implements ToolbarBehavior {
 		view.itemsView.children.bindTo( this.ungroupedItems ).using( item => item );
 
 		// Make sure all #items visible in the main space of the toolbar are "focuscycleable".
-		this.ungroupedItems.on<AddEvent>( 'add', this._updateFocusCycleableItems.bind( this ) );
-		this.ungroupedItems.on<RemoveEvent>( 'remove', this._updateFocusCycleableItems.bind( this ) );
+		this.ungroupedItems.on<CollectionAddEvent>( 'add', this._updateFocusCycleableItems.bind( this ) );
+		this.ungroupedItems.on<CollectionRemoveEvent>( 'remove', this._updateFocusCycleableItems.bind( this ) );
 
 		// Make sure the #groupedItemsDropdown is also included in cycling when it appears.
-		view.children.on<AddEvent>( 'add', this._updateFocusCycleableItems.bind( this ) );
-		view.children.on<RemoveEvent>( 'remove', this._updateFocusCycleableItems.bind( this ) );
+		view.children.on<CollectionAddEvent>( 'add', this._updateFocusCycleableItems.bind( this ) );
+		view.children.on<CollectionRemoveEvent>( 'remove', this._updateFocusCycleableItems.bind( this ) );
 
 		// ToolbarView#items is dynamic. When an item is added or removed, it should be automatically
 		// represented in either grouped or ungrouped items at the right index.
@@ -970,7 +970,7 @@ class DynamicGrouping implements ToolbarBehavior {
 		}
 
 		if ( this.groupedItems.length !== initialGroupedItemsCount ) {
-			this.view.fire<GroupedItemsUpdateEvent>( 'groupedItemsUpdate' );
+			this.view.fire<ToolbarViewGroupedItemsUpdateEvent>( 'groupedItemsUpdate' );
 		}
 	}
 
@@ -1045,7 +1045,7 @@ class DynamicGrouping implements ToolbarBehavior {
 	 * @private
 	 */
 	private _enableGroupingOnMaxWidthChange( view: View ) {
-		view.on<ChangeEvent>( 'change:maxWidth', () => {
+		view.on<ObservableChangeEvent>( 'change:maxWidth', () => {
 			this._updateGrouping();
 		} );
 	}

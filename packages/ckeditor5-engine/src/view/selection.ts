@@ -575,7 +575,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 			throw new CKEditorError( 'view-selection-setto-not-selectable', this );
 		}
 
-		this.fire<ChangeEvent>( 'change' );
+		this.fire<ViewSelectionChangeEvent>( 'change' );
 	}
 
 	/**
@@ -615,7 +615,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 			this._addRange( new Range( anchor, newFocus ) );
 		}
 
-		this.fire<ChangeEvent>( 'change' );
+		this.fire<ViewSelectionChangeEvent>( 'change' );
 	}
 
 	/**
@@ -750,7 +750,7 @@ Selection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'view:selection';
 };
 
-export type ChangeEvent = {
+export type ViewSelectionChangeEvent = {
 	name: 'change';
 	args: [];
 };

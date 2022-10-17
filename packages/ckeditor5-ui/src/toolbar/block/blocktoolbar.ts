@@ -27,12 +27,12 @@ import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
-import type { ExecuteEvent } from '../../button/button';
-import type { ChangeRangeEvent as SelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
+import type { ButtonExecuteEvent } from '../../button/button';
+import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { UpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import type { EditorUIUpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import type { ToolbarConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
-import type { ChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 const toPx = toUnit( 'px' );
 
@@ -157,19 +157,19 @@ export default class BlockToolbar extends Plugin {
 		const editor = this.editor;
 
 		// Hides panel on a direct selection change.
-		this.listenTo<SelectionChangeRangeEvent>( editor.model.document.selection, 'change:range', ( evt, data ) => {
+		this.listenTo<DocumentSelectionChangeRangeEvent>( editor.model.document.selection, 'change:range', ( evt, data ) => {
 			if ( data.directChange ) {
 				this._hidePanel();
 			}
 		} );
 
-		this.listenTo<UpdateEvent>( editor.ui, 'update', () => this._updateButton() );
+		this.listenTo<EditorUIUpdateEvent>( editor.ui, 'update', () => this._updateButton() );
 		// `low` priority is used because of https://github.com/ckeditor/ckeditor5-core/issues/133.
-		this.listenTo<ChangeEvent>( editor, 'change:isReadOnly', () => this._updateButton(), { priority: 'low' } );
-		this.listenTo<ChangeEvent>( editor.ui.focusTracker, 'change:isFocused', () => this._updateButton() );
+		this.listenTo<ObservableChangeEvent>( editor, 'change:isReadOnly', () => this._updateButton(), { priority: 'low' } );
+		this.listenTo<ObservableChangeEvent>( editor.ui.focusTracker, 'change:isFocused', () => this._updateButton() );
 
 		// Reposition button on resize.
-		this.listenTo<ChangeEvent<boolean>>( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
+		this.listenTo<ObservableChangeEvent<boolean>>( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
 				// Keep correct position of button and panel on window#resize.
 				this.buttonView.listenTo( window, 'resize', () => this._updateButton() );
@@ -204,7 +204,7 @@ export default class BlockToolbar extends Plugin {
 
 		// Hide panel before executing each button in the panel.
 		for ( const item of this.toolbarView.items ) {
-			item.on<ExecuteEvent>( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
+			item.on<ButtonExecuteEvent>( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
 		}
 
 		if ( !config.shouldNotGroupWhenFull ) {
@@ -325,7 +325,7 @@ export default class BlockToolbar extends Plugin {
 		buttonView.bind( 'tooltip' ).to( this.panelView, 'isVisible', isVisible => !isVisible );
 
 		// Toggle the panelView upon buttonView#execute.
-		this.listenTo<ExecuteEvent>( buttonView, 'execute', () => {
+		this.listenTo<ButtonExecuteEvent>( buttonView, 'execute', () => {
 			if ( !this.panelView.isVisible ) {
 				this._showPanel();
 			} else {

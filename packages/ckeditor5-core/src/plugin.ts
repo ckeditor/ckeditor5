@@ -9,7 +9,7 @@
  * @module core/plugin
  */
 
-import { Observable, type SetEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { Observable, type ObservableSetEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import type Editor from './editor/editor';
 
@@ -116,7 +116,7 @@ export default class Plugin extends Observable implements PluginInterface {
 		this._disableStack.add( id );
 
 		if ( this._disableStack.size == 1 ) {
-			this.on<SetEvent<boolean>>( 'set:isEnabled', forceDisable, { priority: 'highest' } );
+			this.on<ObservableSetEvent<boolean>>( 'set:isEnabled', forceDisable, { priority: 'highest' } );
 			this.isEnabled = false;
 		}
 	}

@@ -24,7 +24,7 @@ export default interface DropdownButton extends Button {}
  * @event open
  */
 
-export type OpenEvent = {
+export type DropdownButtonOpenEvent = {
     name: 'open';
     args: [];
 };

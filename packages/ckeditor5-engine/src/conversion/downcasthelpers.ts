@@ -29,7 +29,7 @@ import type {
 	DowncastInsertEvent,
 	DowncastAddMarkerEvent,
 	DowncastAttributeEvent,
-	ReduceChangesEvent,
+	DowncastReduceChangesEvent,
 	DowncastRemoveMarkerEvent
 } from './downcastdispatcher';
 import type ModelConsumable from './modelconsumable';
@@ -49,7 +49,7 @@ import type ViewPosition from '../view/position';
 import type ViewRange from '../view/range';
 import type {
 	default as Mapper,
-	ModelToViewPositionEvent
+	MapperModelToViewPositionEvent
 } from './mapper';
 import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import type { PriorityString } from '@ckeditor/ckeditor5-utils/src/priorities';
@@ -1900,7 +1900,7 @@ function downcastElementToElement( config: {
 		);
 
 		if ( model.children || model.attributes.length ) {
-			dispatcher.on<ReduceChangesEvent>( 'reduceChanges', createChangeReducer( model ), { priority: 'low' } );
+			dispatcher.on<DowncastReduceChangesEvent>( 'reduceChanges', createChangeReducer( model ), { priority: 'low' } );
 		}
 	};
 }
@@ -1981,7 +1981,7 @@ function downcastElementToStructure(
 			{ priority: config.converterPriority || 'normal' }
 		);
 
-		dispatcher.on<ReduceChangesEvent>( 'reduceChanges', createChangeReducer( model ), { priority: 'low' } );
+		dispatcher.on<DowncastReduceChangesEvent>( 'reduceChanges', createChangeReducer( model ), { priority: 'low' } );
 	};
 }
 
@@ -2578,7 +2578,7 @@ function fillSlots(
 	options: { reconversion?: boolean }
 ): void {
 	// Set temporary position mapping to redirect child view elements into a proper slots.
-	conversionApi.mapper.on<ModelToViewPositionEvent>( 'modelToViewPosition', toViewPositionMapping, { priority: 'highest' } );
+	conversionApi.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', toViewPositionMapping, { priority: 'highest' } );
 
 	let currentSlot: ViewElement | null = null;
 	let currentSlotNodes: Array<ModelNode> | null = null;

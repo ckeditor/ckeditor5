@@ -10,10 +10,10 @@
 import Observer from './observer';
 import BubblingEventInfo from './bubblingeventinfo';
 import type View from '../view';
-import type { KeyObserverEvent } from './keyobserver';
+import type { ViewDocumentKeyEvent } from './keyobserver';
+import type { BubblingEvent } from './bubblingemittermixin';
 
 import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
-import type { BubblingEvent } from './bubblingemittermixin';
 
 /**
  * Arrow keys observer introduces the {@link module:engine/view/document~Document#event:arrowKey `Document#arrowKey`} event.
@@ -29,11 +29,11 @@ export default class ArrowKeysObserver extends Observer {
 	constructor( view: View ) {
 		super( view );
 
-		this.document.on<KeyObserverEvent>( 'keydown', ( event, data ) => {
+		this.document.on<ViewDocumentKeyEvent>( 'keydown', ( event, data ) => {
 			if ( this.isEnabled && isArrowKeyCode( data.keyCode ) ) {
 				const eventInfo = new BubblingEventInfo( this.document, 'arrowKey', this.document.selection.getFirstRange()! );
 
-				this.document.fire<ArrowObserverEvent>( eventInfo, data );
+				this.document.fire<ViewDocumentArrowKeyEvent>( eventInfo, data );
 
 				if ( eventInfo.stop.called ) {
 					event.stop();
@@ -48,9 +48,9 @@ export default class ArrowKeysObserver extends Observer {
 	public override observe(): void {}
 }
 
-export type ArrowObserverEvent = BubblingEvent<{
+export type ViewDocumentArrowKeyEvent = BubblingEvent<{
 	name: 'arrowKey';
-	args: KeyObserverEvent[ 'args' ];
+	args: ViewDocumentKeyEvent[ 'args' ];
 }>;
 
 /**

@@ -63,7 +63,7 @@ export default class IframeView extends View {
 	 */
 	public override render(): Promise<unknown> {
 		return new Promise( resolve => {
-			this.on<LoadedEvent>( 'loaded', resolve );
+			this.on<IframeViewLoadedEvent>( 'loaded', resolve );
 
 			return super.render();
 		} );
@@ -76,7 +76,7 @@ export default class IframeView extends View {
  * @event loaded
  */
 
-export type LoadedEvent = {
+export type IframeViewLoadedEvent = {
 	name: 'loaded';
 	args: [];
 };

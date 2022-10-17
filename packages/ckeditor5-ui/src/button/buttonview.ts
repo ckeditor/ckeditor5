@@ -19,7 +19,7 @@ import '../../theme/components/button/button.css';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { TemplateDefinition } from '../template';
 import type ViewCollection from '../viewcollection';
-import type { default as Button, ExecuteEvent } from './button';
+import type { default as Button, ButtonExecuteEvent } from './button';
 
 /**
  * The button view class.
@@ -176,7 +176,7 @@ export default class ButtonView extends View implements Button {
 					// We can't make the button disabled using the disabled attribute, because it won't be focusable.
 					// Though, shouldn't this condition be moved to the button controller?
 					if ( this.isEnabled ) {
-						this.fire<ExecuteEvent>( 'execute' );
+						this.fire<ButtonExecuteEvent>( 'execute' );
 					} else {
 						// Prevent the default when button is disabled, to block e.g.
 						// automatic form submitting. See ckeditor/ckeditor5-link#74.

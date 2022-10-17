@@ -36,7 +36,7 @@ export default class Notification extends ContextPlugin {
 	 */
 	public init(): void {
 		// Each unhandled and not stopped `show:warning` event is displayed as a system alert.
-		this.on<ShowEvent>( 'show:warning', ( evt, data ) => {
+		this.on<NotificationShowEvent>( 'show:warning', ( evt, data ) => {
 			window.alert( data.message ); // eslint-disable-line no-alert
 		}, { priority: 'lowest' } );
 	}
@@ -189,7 +189,7 @@ export default class Notification extends ContextPlugin {
 			`show:${ data.type }:${ data.namespace }` as const :
 			`show:${ data.type }` as const;
 
-		this.fire<ShowEvent>( event, {
+		this.fire<NotificationShowEvent>( event, {
 			message: data.message,
 			type: data.type,
 			title: data.title || ''
@@ -242,7 +242,7 @@ export default class Notification extends ContextPlugin {
 
 export type NotificationEventType = 'success' | 'info' | 'warning';
 
-export type ShowEvent = {
+export type NotificationShowEvent = {
 	name: 'show' | `show:${ NotificationEventType }` | `show:${ NotificationEventType }:${ string }`;
 	args: [ data: {
 		message: string;
