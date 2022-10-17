@@ -4156,6 +4156,17 @@ describe( 'ListEditing', () => {
 			);
 		} );
 
+		it( 'should work if a selectable element is passed to DataController#insertContent()', () => {
+			model.change( writer => {
+				const listItem = writer.createElement( 'listItem', { listType: 'bulleted', listIndent: '0' } );
+				model.insertContent( listItem, modelRoot, 'in' );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">[]</listItem>'
+			);
+		} );
+
 		it( 'should fix indents of pasted list items', () => {
 			setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
