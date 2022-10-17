@@ -10,6 +10,9 @@
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { ButtonExecuteEvent } from '@ckeditor/ckeditor5-ui/src/button/button';
+
 /**
  * The file dialog button view.
  *
@@ -38,10 +41,17 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
  * @extends module:ui/view~View
  */
 export default class FileDialogButtonView extends View {
+	public buttonView: ButtonView;
+
+	private _fileInputView: FileInputView;
+
+	declare public acceptedType: string;
+	declare public allowMultipleFiles: boolean;
+
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		/**
@@ -103,7 +113,7 @@ export default class FileDialogButtonView extends View {
 			]
 		} );
 
-		this.buttonView.on( 'execute', () => {
+		this.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 			this._fileInputView.open();
 		} );
 	}
@@ -111,7 +121,7 @@ export default class FileDialogButtonView extends View {
 	/**
 	 * Focuses the {@link #buttonView}.
 	 */
-	focus() {
+	public focus(): void {
 		this.buttonView.focus();
 	}
 }
@@ -122,11 +132,14 @@ export default class FileDialogButtonView extends View {
  * @private
  * @extends module:ui/view~View
  */
-class FileInputView extends View {
+class FileInputView extends View<HTMLInputElement> {
+	declare public acceptedType?: string;
+	declare public allowMultipleFiles: boolean;
+
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		/**
@@ -138,7 +151,7 @@ class FileInputView extends View {
 		 * @observable
 		 * @member {String} #acceptedType
 		 */
-		this.set( 'acceptedType' );
+		this.set( 'acceptedType', undefined );
 
 		/**
 		 * Indicates if multiple files can be selected. Defaults to `false`.
@@ -170,7 +183,7 @@ class FileInputView extends View {
 						this.fire( 'done', this.element.files );
 					}
 
-					this.element.value = '';
+					this.element!.value = '';
 				} )
 			}
 		} );
@@ -179,7 +192,7 @@ class FileInputView extends View {
 	/**
 	 * Opens file dialog.
 	 */
-	open() {
-		this.element.click();
+	public open(): void {
+		this.element!.click();
 	}
 }

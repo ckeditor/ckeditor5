@@ -9,8 +9,10 @@
 
 /* globals window */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from '../filerepository';
+import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import FileRepository, { type FileLoader, type UploadAdapter } from '../filerepository';
+
+type DomFileReader = globalThis.FileReader;
 
 /**
  * A plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64)
@@ -28,21 +30,21 @@ export default class Base64UploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): Array<PluginConstructor> {
 		return [ FileRepository ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'Base64UploadAdapter';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		this.editor.plugins.get( FileRepository ).createUploadAdapter = loader => new Adapter( loader );
 	}
 }
@@ -53,13 +55,16 @@ export default class Base64UploadAdapter extends Plugin {
  * @private
  * @implements module:upload/filerepository~UploadAdapter
  */
-class Adapter {
+class Adapter implements UploadAdapter {
+	public loader: FileLoader;
+	public reader?: DomFileReader;
+
 	/**
 	 * Creates a new adapter instance.
 	 *
 	 * @param {module:upload/filerepository~FileLoader} loader
 	 */
-	constructor( loader ) {
+	constructor( loader: FileLoader ) {
 		/**
 		 * `FileLoader` instance to use during the upload.
 		 *
@@ -74,7 +79,7 @@ class Adapter {
 	 * @see module:upload/filerepository~UploadAdapter#upload
 	 * @returns {Promise}
 	 */
-	upload() {
+	public upload(): Promise<Record<string, unknown>> {
 		return new Promise( ( resolve, reject ) => {
 			const reader = this.reader = new window.FileReader();
 
@@ -91,7 +96,7 @@ class Adapter {
 			} );
 
 			this.loader.file.then( file => {
-				reader.readAsDataURL( file );
+				reader.readAsDataURL( file! );
 			} );
 		} );
 	}
@@ -102,7 +107,7 @@ class Adapter {
 	 * @see module:upload/filerepository~UploadAdapter#abort
 	 * @returns {Promise}
 	 */
-	abort() {
-		this.reader.abort();
+	public abort(): void {
+		this.reader!.abort();
 	}
 }

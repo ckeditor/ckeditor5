@@ -9,17 +9,27 @@
 
 /* globals window */
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
+type DomFileReader = globalThis.FileReader;
 
 /**
  * Wrapper over the native `FileReader`.
  */
-export default class FileReader {
+export default class FileReader extends Observable {
+	public total!: number;
+
+	private readonly _reader: DomFileReader;
+	private _data?: string;
+
+	declare public loaded: number;
+
 	/**
 	 * Creates an instance of the FileReader.
 	 */
 	constructor() {
+		super();
+
 		const reader = new window.FileReader();
 
 		/**
@@ -51,7 +61,7 @@ export default class FileReader {
 	 *
 	 * @returns {Error}
 	 */
-	get error() {
+	public get error(): DOMException | null {
 		return this._reader.error;
 	}
 
@@ -61,7 +71,7 @@ export default class FileReader {
 	 *
 	 * @type {File|undefined}
 	 */
-	get data() {
+	public get data(): string | undefined {
 		return this._data;
 	}
 
@@ -72,13 +82,13 @@ export default class FileReader {
 	 * @returns {Promise.<String>} Returns a promise that will be resolved with file's content.
 	 * The promise will be rejected in case of an error or when the reading process is aborted.
 	 */
-	read( file ) {
+	public read( file: File ): Promise<string> {
 		const reader = this._reader;
 		this.total = file.size;
 
 		return new Promise( ( resolve, reject ) => {
 			reader.onload = () => {
-				const result = reader.result;
+				const result = reader.result as string;
 
 				this._data = result;
 
@@ -100,9 +110,7 @@ export default class FileReader {
 	/**
 	 * Aborts file reader.
 	 */
-	abort() {
+	public abort(): void {
 		this._reader.abort();
 	}
 }
-
-mix( FileReader, ObservableMixin );

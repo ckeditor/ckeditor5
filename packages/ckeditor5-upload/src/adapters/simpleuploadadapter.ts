@@ -9,8 +9,8 @@
 
 /* globals XMLHttpRequest, FormData */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from '../filerepository';
+import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import FileRepository, { type FileLoader, type UploadAdapter } from '../filerepository';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -42,21 +42,21 @@ export default class SimpleUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): Array<PluginConstructor> {
 		return [ FileRepository ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'SimpleUploadAdapter';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const options = this.editor.config.get( 'simpleUpload' );
 
 		if ( !options ) {
@@ -88,14 +88,19 @@ export default class SimpleUploadAdapter extends Plugin {
  * @private
  * @implements module:upload/filerepository~UploadAdapter
  */
-class Adapter {
+class Adapter implements UploadAdapter {
+	public loader: FileLoader;
+	public options: SimpleUploadConfig;
+
+	private xhr?: XMLHttpRequest;
+
 	/**
 	 * Creates a new adapter instance.
 	 *
 	 * @param {module:upload/filerepository~FileLoader} loader
 	 * @param {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} options
 	 */
-	constructor( loader, options ) {
+	constructor( loader: FileLoader, options: SimpleUploadConfig ) {
 		/**
 		 * FileLoader instance to use during the upload.
 		 *
@@ -117,12 +122,12 @@ class Adapter {
 	 * @see module:upload/filerepository~UploadAdapter#upload
 	 * @returns {Promise}
 	 */
-	upload() {
+	public upload(): Promise<Record<string, unknown>> {
 		return this.loader.file
 			.then( file => new Promise( ( resolve, reject ) => {
 				this._initRequest();
-				this._initListeners( resolve, reject, file );
-				this._sendRequest( file );
+				this._initListeners( resolve, reject, file! );
+				this._sendRequest( file! );
 			} ) );
 	}
 
@@ -132,7 +137,7 @@ class Adapter {
 	 * @see module:upload/filerepository~UploadAdapter#abort
 	 * @returns {Promise}
 	 */
-	abort() {
+	public abort(): void {
 		if ( this.xhr ) {
 			this.xhr.abort();
 		}
@@ -145,7 +150,7 @@ class Adapter {
 	 *
 	 * @private
 	 */
-	_initRequest() {
+	private _initRequest(): void {
 		const xhr = this.xhr = new XMLHttpRequest();
 
 		xhr.open( 'POST', this.options.uploadUrl, true );
@@ -160,8 +165,12 @@ class Adapter {
 	 * @param {Function} reject Callback function to be called when the request cannot be completed.
 	 * @param {File} file Native File object.
 	 */
-	_initListeners( resolve, reject, file ) {
-		const xhr = this.xhr;
+	private _initListeners(
+		resolve: ( result: Record<string, unknown> ) => void,
+		reject: ( message?: string ) => void,
+		file: File
+	): void {
+		const xhr = this.xhr!;
 		const loader = this.loader;
 		const genericErrorText = `Couldn't upload file: ${ file.name }.`;
 
@@ -202,7 +211,7 @@ class Adapter {
 	 * @private
 	 * @param {File} file File instance to be uploaded.
 	 */
-	_sendRequest( file ) {
+	private _sendRequest( file: File ): void {
 		// Set headers if specified.
 		const headers = this.options.headers || {};
 
@@ -210,10 +219,10 @@ class Adapter {
 		const withCredentials = this.options.withCredentials || false;
 
 		for ( const headerName of Object.keys( headers ) ) {
-			this.xhr.setRequestHeader( headerName, headers[ headerName ] );
+			this.xhr!.setRequestHeader( headerName, headers[ headerName ] );
 		}
 
-		this.xhr.withCredentials = withCredentials;
+		this.xhr!.withCredentials = withCredentials;
 
 		// Prepare the form data.
 		const data = new FormData();
@@ -221,7 +230,7 @@ class Adapter {
 		data.append( 'upload', file );
 
 		// Send the request.
-		this.xhr.send( data );
+		this.xhr!.send( data );
 	}
 }
 
@@ -249,6 +258,11 @@ class Adapter {
  *
  * @interface SimpleUploadConfig
  */
+export type SimpleUploadConfig = {
+	uploadUrl: string;
+	headers?: Record<string, string>;
+	withCredentials?: boolean;
+};
 
 /**
  * The configuration of the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter}.
@@ -257,6 +271,11 @@ class Adapter {
  *
  * @member {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} module:core/editor/editorconfig~EditorConfig#simpleUpload
  */
+declare module '@ckeditor/ckeditor5-core' {
+	interface EditorConfig {
+		simpleUpload?: SimpleUploadConfig;
+	}
+}
 
 /**
  * The path (URL) to the server (application) which handles the file upload. When specified, enables the automatic
