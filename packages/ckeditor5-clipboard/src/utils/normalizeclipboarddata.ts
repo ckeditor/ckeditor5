@@ -14,7 +14,7 @@
  * @param {String} data The HTML data to normalize.
  * @returns {String} Normalized HTML.
  */
-export default function normalizeClipboardData( data ) {
+export default function normalizeClipboardData( data: string ): string {
 	return data
 		.replace( /<span(?: class="Apple-converted-space"|)>(\s+)<\/span>/g, ( fullMatch, spaces ) => {
 			// Handle the most popular and problematic case when even a single space becomes an nbsp;.

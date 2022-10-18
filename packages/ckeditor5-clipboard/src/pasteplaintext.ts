@@ -7,10 +7,12 @@
  * @module clipboard/pasteplaintext
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ClipboardObserver from './clipboardobserver';
-import ClipboardPipeline from './clipboardpipeline';
+import ClipboardPipeline, { type ClipboardContentInsertionEvent } from './clipboardpipeline';
+import type { ViewDocumentKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
+import type { DocumentFragment, Schema } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The plugin detects the user's intention to paste plain text.
@@ -23,21 +25,21 @@ export default class PastePlainText extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'PastePlainText';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): Array<PluginConstructor> {
 		return [ ClipboardPipeline ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
@@ -48,11 +50,11 @@ export default class PastePlainText extends Plugin {
 
 		view.addObserver( ClipboardObserver );
 
-		this.listenTo( viewDocument, 'keydown', ( evt, data ) => {
+		this.listenTo<ViewDocumentKeyEvent>( viewDocument, 'keydown', ( evt, data ) => {
 			shiftPressed = data.shiftKey;
 		} );
 
-		editor.plugins.get( ClipboardPipeline ).on( 'contentInsertion', ( evt, data ) => {
+		editor.plugins.get( ClipboardPipeline ).on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
 			// Plain text can be determined based on the event flag (#7799) or auto-detection (#1006). If detected,
 			// preserve selection attributes on pasted items.
 			if ( !shiftPressed && !isPlainTextFragment( data.content, model.schema ) ) {
@@ -90,16 +92,16 @@ export default class PastePlainText extends Plugin {
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
 // @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
-function isPlainTextFragment( documentFragment, schema ) {
+function isPlainTextFragment( documentFragment: DocumentFragment, schema: Schema ) {
 	if ( documentFragment.childCount > 1 ) {
 		return false;
 	}
 
-	const child = documentFragment.getChild( 0 );
+	const child = documentFragment.getChild( 0 )!;
 
 	if ( schema.isObject( child ) ) {
 		return false;
 	}
 
-	return [ ...child.getAttributeKeys() ].length == 0;
+	return Array.from( child.getAttributeKeys() ).length == 0;
 }

@@ -287,8 +287,8 @@ function mergeBranchesLeft(
 	endPosition: Position,
 	commonAncestor: Element | DocumentFragment | null
 ) {
-	const startElement = startPosition.parent;
-	const endElement = endPosition.parent;
+	const startElement = startPosition.parent as Element;
+	const endElement = endPosition.parent as Element;
 
 	// Merging reached the common ancestor element, stop here.
 	if ( startElement == commonAncestor || endElement == commonAncestor ) {
@@ -296,8 +296,8 @@ function mergeBranchesLeft(
 	}
 
 	// Remember next positions to merge in next recursive step (also used as modification points pointers).
-	startPosition = writer.createPositionAfter( startElement as any );
-	endPosition = writer.createPositionBefore( endElement as any );
+	startPosition = writer.createPositionAfter( startElement );
+	endPosition = writer.createPositionBefore( endElement );
 
 	// Move endElement just after startElement if they aren't siblings.
 	if ( !endPosition.isEqual( startPosition ) ) {
@@ -336,9 +336,9 @@ function mergeBranchesLeft(
 	//     </blockBlock>                     ->
 	//
 	while ( endPosition.parent.isEmpty ) {
-		const parentToRemove = endPosition.parent;
+		const parentToRemove = endPosition.parent as Element;
 
-		endPosition = writer.createPositionBefore( parentToRemove as any );
+		endPosition = writer.createPositionBefore( parentToRemove );
 
 		writer.remove( parentToRemove );
 	}
@@ -371,8 +371,8 @@ function mergeBranchesRight(
 	endPosition: Position,
 	commonAncestor: Element | DocumentFragment | null
 ) {
-	const startElement = startPosition.parent;
-	const endElement = endPosition.parent;
+	const startElement = startPosition.parent as Element;
+	const endElement = endPosition.parent as Element;
 
 	// Merging reached the common ancestor element, stop here.
 	if ( startElement == commonAncestor || endElement == commonAncestor ) {
@@ -380,8 +380,8 @@ function mergeBranchesRight(
 	}
 
 	// Remember next positions to merge in next recursive step (also used as modification points pointers).
-	startPosition = writer.createPositionAfter( startElement as any );
-	endPosition = writer.createPositionBefore( endElement as any );
+	startPosition = writer.createPositionAfter( startElement );
+	endPosition = writer.createPositionBefore( endElement );
 
 	// Move startElement just before endElement if they aren't siblings.
 	if ( !endPosition.isEqual( startPosition ) ) {
@@ -406,15 +406,15 @@ function mergeBranchesRight(
 	//     </blockBlock>                                            ->  </blockBlock>
 	//
 	while ( startPosition.parent.isEmpty ) {
-		const parentToRemove = startPosition.parent;
+		const parentToRemove = startPosition.parent as Element;
 
-		startPosition = writer.createPositionBefore( parentToRemove as any );
+		startPosition = writer.createPositionBefore( parentToRemove );
 
 		writer.remove( parentToRemove );
 	}
 
 	// Update endPosition after inserting and removing elements.
-	endPosition = writer.createPositionBefore( endElement as any );
+	endPosition = writer.createPositionBefore( endElement );
 
 	// Merge right two siblings (nodes on sides of endPosition):
 	//                                                              ->

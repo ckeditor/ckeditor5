@@ -11,6 +11,11 @@ import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domev
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 
+import type DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import type Range from '@ckeditor/ckeditor5-engine/src/view/range';
+import type Element from '@ckeditor/ckeditor5-engine/src/view/element';
+import type { View, ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
+
 /**
  * Clipboard events observer.
  *
@@ -35,28 +40,31 @@ import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
-export default class ClipboardObserver extends DomEventObserver {
-	constructor( view ) {
+export default class ClipboardObserver extends DomEventObserver<
+	'paste' | 'copy' | 'cut' | 'drop' | 'dragover' | 'dragstart' | 'dragend' | 'dragenter' | 'dragleave',
+	ClipboardEventData
+> {
+	constructor( view: View ) {
 		super( view );
 
 		const viewDocument = this.document;
 
 		this.domEventType = [ 'paste', 'copy', 'cut', 'drop', 'dragover', 'dragstart', 'dragend', 'dragenter', 'dragleave' ];
 
-		this.listenTo( viewDocument, 'paste', handleInput( 'clipboardInput' ), { priority: 'low' } );
-		this.listenTo( viewDocument, 'drop', handleInput( 'clipboardInput' ), { priority: 'low' } );
-		this.listenTo( viewDocument, 'dragover', handleInput( 'dragging' ), { priority: 'low' } );
+		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'paste', handleInput( 'clipboardInput' ), { priority: 'low' } );
+		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'drop', handleInput( 'clipboardInput' ), { priority: 'low' } );
+		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'dragover', handleInput( 'dragging' ), { priority: 'low' } );
 
-		function handleInput( type ) {
-			return ( evt, data ) => {
+		function handleInput( type: 'clipboardInput' | 'dragging' ) {
+			return ( evt: EventInfo, data: DomEventData<ClipboardEvent | DragEvent> & ClipboardEventData ) => {
 				data.preventDefault();
 
 				const targetRanges = data.dropRange ? [ data.dropRange ] : null;
 				const eventInfo = new EventInfo( viewDocument, type );
 
-				viewDocument.fire( eventInfo, {
+				viewDocument.fire<ViewDocumentClipboardInputEvent>( eventInfo, {
 					dataTransfer: data.dataTransfer,
-					method: evt.name,
+					method: evt.name as 'paste' | 'dragover' | 'drop',
 					targetRanges,
 					target: data.target
 				} );
@@ -71,21 +79,47 @@ export default class ClipboardObserver extends DomEventObserver {
 		}
 	}
 
-	onDomEvent( domEvent ) {
-		const evtData = {
-			dataTransfer: new DataTransfer( domEvent.clipboardData ? domEvent.clipboardData : domEvent.dataTransfer )
+	public onDomEvent( domEvent: ClipboardEvent | DragEvent ): void {
+		const evtData: ClipboardEventData = {
+			dataTransfer: new DataTransfer( 'clipboardData' in domEvent ? domEvent.clipboardData! : domEvent.dataTransfer! )
 		};
 
 		if ( domEvent.type == 'drop' || domEvent.type == 'dragover' ) {
-			evtData.dropRange = getDropViewRange( this.view, domEvent );
+			evtData.dropRange = getDropViewRange( this.view, domEvent as DragEvent );
 		}
 
 		this.fire( domEvent.type, domEvent, evtData );
 	}
 }
 
-function getDropViewRange( view, domEvent ) {
-	const domDoc = domEvent.target.ownerDocument;
+export type ViewDocumentClipboardEvent = {
+	name: 'paste' | 'copy' | 'cut';
+	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
+};
+
+export type ViewDocumentDragEvent = {
+	name: 'drop' | 'dragover' | 'dragstart' | 'dragend' | 'dragenter' | 'dragleave';
+	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+};
+
+export type ClipboardEventData = {
+	dataTransfer: DataTransfer;
+	dropRange?: Range | null;
+};
+
+export type ViewDocumentClipboardInputEvent = {
+	name: 'clipboardInput' | 'dragging';
+	args: [ data: {
+		dataTransfer: DataTransfer;
+		method: 'paste' | 'dragover' | 'drop';
+		targetRanges: Array<Range> | null;
+		target: Element;
+		content?: ViewDocumentFragment;
+	} ];
+};
+
+function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Node; rangeOffset?: number } ) {
+	const domDoc = ( domEvent.target as Node ).ownerDocument!;
 	const x = domEvent.clientX;
 	const y = domEvent.clientY;
 	let domRange;
@@ -97,7 +131,7 @@ function getDropViewRange( view, domEvent ) {
 	// FF.
 	else if ( domEvent.rangeParent ) {
 		domRange = domDoc.createRange();
-		domRange.setStart( domEvent.rangeParent, domEvent.rangeOffset );
+		domRange.setStart( domEvent.rangeParent, domEvent.rangeOffset! );
 		domRange.collapse( true );
 	}
 

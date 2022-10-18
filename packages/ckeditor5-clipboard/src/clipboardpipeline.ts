@@ -10,11 +10,18 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
-import ClipboardObserver from './clipboardobserver';
+import ClipboardObserver, {
+	type ClipboardEventData,
+	type ViewDocumentClipboardEvent,
+	type ViewDocumentClipboardInputEvent
+} from './clipboardobserver';
+import type { DocumentFragment, DomEventData, Range, ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
+import type DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
+import type { default as ViewRange } from '@ckeditor/ckeditor5-engine/src/view/range';
 
 import plainTextToHtml from './utils/plaintexttohtml';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata';
-import viewToPlainText from './utils/viewtoplaintext.js';
+import viewToPlainText from './utils/viewtoplaintext';
 
 // Input pipeline events overview:
 //
@@ -123,14 +130,14 @@ export default class ClipboardPipeline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'ClipboardPipeline';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
 
@@ -145,7 +152,7 @@ export default class ClipboardPipeline extends Plugin {
 	 *
 	 * @private
 	 */
-	_setupPasteDrop() {
+	private _setupPasteDrop(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
@@ -153,34 +160,38 @@ export default class ClipboardPipeline extends Plugin {
 
 		// Pasting and dropping is disabled when editor is in the read-only mode.
 		// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
-		this.listenTo( viewDocument, 'clipboardInput', evt => {
+		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', evt => {
 			if ( editor.isReadOnly ) {
 				evt.stop();
 			}
 		}, { priority: 'highest' } );
 
-		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
+		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', ( evt, data ) => {
 			const dataTransfer = data.dataTransfer;
-			let content = data.content || '';
+			let content: ViewDocumentFragment;
 
 			// Some feature could already inject content in the higher priority event handler (i.e., codeBlock).
-			if ( !content ) {
+			if ( data.content ) {
+				content = data.content;
+			} else {
+				let contentData = '';
+
 				if ( dataTransfer.getData( 'text/html' ) ) {
-					content = normalizeClipboardHtml( dataTransfer.getData( 'text/html' ) );
+					contentData = normalizeClipboardHtml( dataTransfer.getData( 'text/html' ) );
 				} else if ( dataTransfer.getData( 'text/plain' ) ) {
-					content = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
+					contentData = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
 				}
 
-				content = this.editor.data.htmlProcessor.toView( content );
+				content = this.editor.data.htmlProcessor.toView( contentData );
 			}
 
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
 
-			this.fire( eventInfo, {
+			this.fire<ClipboardInputTransformationEvent>( eventInfo, {
 				content,
 				dataTransfer,
 				targetRanges: data.targetRanges,
-				method: data.method
+				method: data.method as 'paste' | 'drop'
 			} );
 
 			// If CKEditor handled the input, do not bubble the original event any further.
@@ -193,7 +204,7 @@ export default class ClipboardPipeline extends Plugin {
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 
-		this.listenTo( this, 'inputTransformation', ( evt, data ) => {
+		this.listenTo<ClipboardInputTransformationEvent>( this, 'inputTransformation', ( evt, data ) => {
 			if ( data.content.isEmpty ) {
 				return;
 			}
@@ -214,7 +225,7 @@ export default class ClipboardPipeline extends Plugin {
 			// Fire content insertion event in a single change block to allow other handlers to run in the same block
 			// without post-fixers called in between (i.e., the selection post-fixer).
 			model.change( () => {
-				this.fire( 'contentInsertion', {
+				this.fire<ClipboardContentInsertionEvent>( 'contentInsertion', {
 					content: modelFragment,
 					method: data.method,
 					dataTransfer: data.dataTransfer,
@@ -223,7 +234,7 @@ export default class ClipboardPipeline extends Plugin {
 			} );
 		}, { priority: 'low' } );
 
-		this.listenTo( this, 'contentInsertion', ( evt, data ) => {
+		this.listenTo<ClipboardContentInsertionEvent>( this, 'contentInsertion', ( evt, data ) => {
 			data.resultRange = model.insertContent( data.content );
 		}, { priority: 'low' } );
 	}
@@ -233,24 +244,28 @@ export default class ClipboardPipeline extends Plugin {
 	 *
 	 * @private
 	 */
-	_setupCopyCut() {
+	private _setupCopyCut(): void {
 		const editor = this.editor;
 		const modelDocument = editor.model.document;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		function onCopyCut( evt, data ) {
+		function onCopyCut( evt: EventInfo, data: DomEventData<ClipboardEvent> & ClipboardEventData ) {
 			const dataTransfer = data.dataTransfer;
 
 			data.preventDefault();
 
 			const content = editor.data.toView( editor.model.getSelectedContent( modelDocument.selection ) );
 
-			viewDocument.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
+			viewDocument.fire<ClipboardOutputEvent>( 'clipboardOutput', {
+				dataTransfer,
+				content,
+				method: evt.name as 'copy' | 'cut'
+			} );
 		}
 
-		this.listenTo( viewDocument, 'copy', onCopyCut, { priority: 'low' } );
-		this.listenTo( viewDocument, 'cut', ( evt, data ) => {
+		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'copy', onCopyCut, { priority: 'low' } );
+		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'cut', ( evt, data ) => {
 			// Cutting is disabled when editor is in the read-only mode.
 			// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
 			if ( editor.isReadOnly ) {
@@ -260,7 +275,7 @@ export default class ClipboardPipeline extends Plugin {
 			}
 		}, { priority: 'low' } );
 
-		this.listenTo( viewDocument, 'clipboardOutput', ( evt, data ) => {
+		this.listenTo<ClipboardOutputEvent>( viewDocument, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( data.content ) );
 				data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
@@ -296,6 +311,15 @@ export default class ClipboardPipeline extends Plugin {
  * @param {'paste'|'drop'} data.method Whether the event was triggered by a paste or drop operation.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges The target drop ranges.
  */
+export type ClipboardInputTransformationEvent = {
+	name: 'inputTransformation';
+	args: [ data: {
+		content: ViewDocumentFragment;
+		dataTransfer: DataTransfer;
+		method: 'paste' | 'drop';
+		targetRanges: Array<ViewRange> | null;
+	} ];
+};
 
 /**
  * Fired with the `content`, `dataTransfer`, `method`, and `targetRanges` properties:
@@ -324,6 +348,16 @@ export default class ClipboardPipeline extends Plugin {
  * @param {module:engine/model/range~Range} data.resultRange The result of the `model.insertContent()` call
  *  (inserted by the event handler at a low priority).
  */
+export type ClipboardContentInsertionEvent = {
+	name: 'contentInsertion';
+	args: [ data: {
+		content: DocumentFragment;
+		method: 'paste' | 'drop';
+		dataTransfer: DataTransfer;
+		targetRanges: Array<ViewRange> | null;
+		resultRange?: Range;
+	} ];
+};
 
 /**
  * Fired on {@link module:engine/view/document~Document#event:copy} and {@link module:engine/view/document~Document#event:cut}
@@ -336,12 +370,21 @@ export default class ClipboardPipeline extends Plugin {
  * @event module:engine/view/document~Document#event:clipboardOutput
  * @param {module:clipboard/clipboardpipeline~ClipboardOutputEventData} data The event data.
  */
+export type ClipboardOutputEvent = {
+	name: 'clipboardOutput';
+	args: [ data: ClipboardOutputEventData ];
+};
 
 /**
  * The value of the {@link module:engine/view/document~Document#event:clipboardOutput} event.
  *
  * @class module:clipboard/clipboardpipeline~ClipboardOutputEventData
  */
+export type ClipboardOutputEventData = {
+	dataTransfer: DataTransfer;
+	content: ViewDocumentFragment;
+	method: 'copy' | 'cut';
+};
 
 /**
  * The data transfer instance.

@@ -7,6 +7,10 @@
  * @module clipboard/utils/viewtoplaintext
  */
 
+import type Item from '@ckeditor/ckeditor5-engine/src/view/item';
+import type Element from '@ckeditor/ckeditor5-engine/src/view/element';
+import type { ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
+
 // Elements which should not have empty-line padding.
 // Most `view.ContainerElement` want to be separate by new-line, but some are creating one structure
 // together (like `<li>`) so it is better to separate them by only one "\n".
@@ -18,7 +22,7 @@ const smallPaddingElements = [ 'figcaption', 'li' ];
  * @param {module:engine/view/item~Item} viewItem View item to convert.
  * @returns {String} Plain text representation of `viewItem`.
  */
-export default function viewToPlainText( viewItem ) {
+export default function viewToPlainText( viewItem: Item | ViewDocumentFragment ): string {
 	let text = '';
 
 	if ( viewItem.is( '$text' ) || viewItem.is( '$textProxy' ) ) {
@@ -26,7 +30,7 @@ export default function viewToPlainText( viewItem ) {
 		text = viewItem.data;
 	} else if ( viewItem.is( 'element', 'img' ) && viewItem.hasAttribute( 'alt' ) ) {
 		// Special case for images - use alt attribute if it is provided.
-		text = viewItem.getAttribute( 'alt' );
+		text = viewItem.getAttribute( 'alt' )!;
 	} else if ( viewItem.is( 'element', 'br' ) ) {
 		// A soft break should be converted into a single line break (#8045).
 		text = '\n';
@@ -35,12 +39,15 @@ export default function viewToPlainText( viewItem ) {
 		// They don't have their own text value, so convert their children.
 		let prev = null;
 
-		for ( const child of viewItem.getChildren() ) {
+		for ( const child of ( viewItem as Element | ViewDocumentFragment ).getChildren() ) {
 			const childText = viewToPlainText( child );
 
 			// Separate container element children with one or more new-line characters.
 			if ( prev && ( prev.is( 'containerElement' ) || child.is( 'containerElement' ) ) ) {
-				if ( smallPaddingElements.includes( prev.name ) || smallPaddingElements.includes( child.name ) ) {
+				if (
+					smallPaddingElements.includes( ( prev as Element ).name ) ||
+					smallPaddingElements.includes( ( child as Element ).name )
+				) {
 					text += '\n';
 				} else {
 					text += '\n\n';
