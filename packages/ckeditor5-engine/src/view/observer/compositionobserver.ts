@@ -66,8 +66,12 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 
 export type ViewDocumentCompositionEvent = {
 	name: 'compositionstart' | 'compositionupdate' | 'compositionend';
-	args: [ data: DomEventData<CompositionEvent> ];
+	args: [ data: CompositionEventData ];
 };
+
+export interface CompositionEventData extends DomEventData<CompositionEvent> {
+	data: string | null;
+}
 
 /**
  * Fired when composition starts inside one of the editables.

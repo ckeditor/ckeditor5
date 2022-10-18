@@ -15,8 +15,7 @@ import {
 	type GetEventInfo,
 	type GetNameOrEventInfo,
 	type BaseEvent,
-	type CallbackOptions,
-	type GetCallback
+	type CallbackOptions
 } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
@@ -348,27 +347,13 @@ type BubblingEventContexts = Map<string | BubblingEventContextFunction, Emitter>
 
 export type BubblingEventContextFunction = ( node: Node ) => boolean;
 
+export type BubblingEvent<TEvent extends BaseEvent> = TEvent & {
+	eventInfo: BubblingEventInfo<TEvent[ 'name' ], ( TEvent extends { return: infer TReturn } ? TReturn : unknown )>;
+	callbackOptions: BubblingCallbackOptions;
+};
+
 export type BubblingCallbackOptions = CallbackOptions & {
 	context?: string | Array<string> | BubblingEventContextFunction;
 };
 
-export interface BubblingEmitter extends Emitter {
-	on<TEvent extends BaseEvent>(
-		event: TEvent[ 'name' ],
-		callback: GetCallback<TEvent>,
-		options?: BubblingCallbackOptions
-	): void;
-
-	once<TEvent extends BaseEvent>(
-		event: TEvent[ 'name' ],
-		callback: GetCallback<TEvent>,
-		options?: BubblingCallbackOptions
-	): void;
-
-	listenTo<TEvent extends BaseEvent>(
-		emitter: Emitter,
-		event: TEvent[ 'name' ],
-		callback: GetCallback<TEvent>,
-		options?: BubblingCallbackOptions
-	): void;
-}
+export type BubblingEmitter = Emitter;

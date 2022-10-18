@@ -206,7 +206,6 @@ describe( 'Delete using the beforeinput event', () => {
 			sinon.assert.calledOnce( executeSpy );
 			sinon.assert.calledWithMatch( executeSpy, 'delete', {
 				sequence: 3,
-				unit: 'selection',
 				selection: sinon.match.object
 			} );
 		} );
