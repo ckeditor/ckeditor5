@@ -30,7 +30,7 @@ msgstr "URLを入力欄にコピー"
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Tip: Paste the URL into the content to embed faster."
-msgstr ""
+msgstr "ヒント：より迅速に埋め込むには、コンテンツへURLを貼り付けてください。"
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
@@ -47,3 +47,7 @@ msgstr "メディアの挿入"
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Media toolbar"
 msgstr "メディア"
+
+msgctxt "A tooltip displayed when the user hovers a non-previewable media URL in the editor content."
+msgid "Open media in new tab"
+msgstr "新しいタブでメディアを開く"

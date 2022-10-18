@@ -25,6 +25,7 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 const toPx = toUnit( 'px' );
 
@@ -166,6 +167,12 @@ export default class BlockToolbar extends Plugin {
 				this._hidePanel();
 			}
 		} );
+
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
+		editor.ui.addToolbar( this.toolbarView, {
+			beforeFocus: () => this._showPanel(),
+			afterBlur: () => this._hidePanel()
+		} );
 	}
 
 	/**
@@ -221,11 +228,14 @@ export default class BlockToolbar extends Plugin {
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	_createToolbarView() {
+		const t = this.editor.locale.t;
 		const shouldGroupWhenFull = !this._blockToolbarConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
 			shouldGroupWhenFull,
 			isFloating: true
 		} );
+
+		toolbarView.ariaLabel = t( 'Editor block content toolbar' );
 
 		// When toolbar lost focus then panel should hide.
 		toolbarView.focusTracker.on( 'change:isFocused', ( evt, name, is ) => {
@@ -271,11 +281,29 @@ export default class BlockToolbar extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const buttonView = new BlockButtonView( editor.locale );
+		const bind = buttonView.bindTemplate;
 
 		buttonView.set( {
 			label: t( 'Edit block' ),
 			icon: pilcrow,
 			withText: false
+		} );
+
+		// Note that this piece over here overrides the default mousedown logic in ButtonView
+		// to make it work with BlockToolbar. See the implementation of the ButtonView class to learn more.
+		buttonView.extendTemplate( {
+			on: {
+				mousedown: bind.to( evt => {
+					// On Safari we have to force the focus on a button on click as it's the only browser
+					// that doesn't do that automatically. See #12115.
+					if ( env.isSafari && this.panelView.isVisible ) {
+						this.toolbarView.focus();
+					}
+
+					// Workaround to #12184, see https://github.com/ckeditor/ckeditor5/issues/12184#issuecomment-1199147964.
+					evt.preventDefault();
+				} )
+			}
 		} );
 
 		// Bind the panelView observable properties to the buttonView.
@@ -363,6 +391,14 @@ export default class BlockToolbar extends Plugin {
 	 * @private
 	 */
 	_showPanel() {
+		// Usually, the only way to show the toolbar is by pressing the block button. It makes it impossible for
+		// the toolbar to show up when the button is invisible (feature does not make sense for the selection then).
+		// The toolbar navigation using Alt+F10 does not access the button but shows the panel directly using this method.
+		// So we need to check whether this is possible first.
+		if ( !this.buttonView.isVisible ) {
+			return;
+		}
+
 		const wasVisible = this.panelView.isVisible;
 
 		// So here's the thing: If there was no initial panelView#show() or these two were in different order, the toolbar

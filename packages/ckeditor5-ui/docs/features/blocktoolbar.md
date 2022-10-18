@@ -4,9 +4,9 @@ category: features-toolbar
 order: 20
 ---
 
-The {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar} plugin provides an additional [configurable](#configuration) toolbar on the left-hand side of the content area (the gutter). The toolbar is represented by a button with a pilcrow (or a paragraph mark &mdash; &#182;). It is positioned next to the block element that the selection is anchored to (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
+The block toolbar plugin provides an additional [configurable](#configuration) toolbar on the left-hand side of the content area (the gutter). The toolbar is represented by a button with a pilcrow (or a paragraph mark &mdash; &#182;). It is positioned next to the block element that the selection is anchored to (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
 
-The block toolbar comes in handy when the main editor toolbar cannot be accessed. It complements the {@link installation/advanced/predefined-builds#balloon-editor Balloon editor} when it falls short, for example when some content must be inserted (like an image) but the selection is collapsed, leaving the user unable to access the toolbar. You can read more about it in the {@link installation/advanced/predefined-builds#balloon-block-editor balloon block editor overview}.
+The block toolbar comes in handy when the main editor toolbar cannot be accessed. It complements the {@link installation/getting-started/predefined-builds#balloon-editor Balloon editor} when it falls short, for example when some content must be inserted (like an image) but the selection is collapsed, leaving the user unable to access the toolbar. You can read more about it in the {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor overview}.
 
 ## Demo
 

@@ -207,7 +207,9 @@ export default class HighlightUI extends Plugin {
 				const buttonView = componentFactory.create( 'highlight:' + option.model );
 
 				// Update lastExecutedHighlight on execute.
-				this.listenTo( buttonView, 'execute', () => dropdownView.buttonView.set( { lastExecuted: option.model } ) );
+				this.listenTo( buttonView, 'execute', () => {
+					dropdownView.buttonView.set( { lastExecuted: option.model } );
+				} );
 
 				return buttonView;
 			} );
@@ -219,7 +221,7 @@ export default class HighlightUI extends Plugin {
 			buttons.push( new ToolbarSeparatorView() );
 			buttons.push( componentFactory.create( 'removeHighlight' ) );
 
-			addToolbarToDropdown( dropdownView, buttons );
+			addToolbarToDropdown( dropdownView, buttons, { enableActiveItemFocusOnDropdownOpen: true } );
 			bindToolbarIconStyleToActiveColor( dropdownView );
 
 			dropdownView.toolbarView.ariaLabel = t( 'Text highlight toolbar' );
@@ -227,6 +229,11 @@ export default class HighlightUI extends Plugin {
 			// Execute current action from dropdown's split button action button.
 			splitButtonView.on( 'execute', () => {
 				editor.execute( 'highlight', { value: splitButtonView.commandValue } );
+			} );
+
+			// Focus the editable after executing the command.
+			// It overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+			this.listenTo( dropdownView, 'execute', () => {
 				editor.editing.view.focus();
 			} );
 

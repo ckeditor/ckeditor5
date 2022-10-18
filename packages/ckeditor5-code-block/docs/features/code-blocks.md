@@ -6,7 +6,7 @@ category: features
 
 {@snippet features/build-code-block-source}
 
-The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and editing blocks of pre–formatted code into the WYSIWYG editor. Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
+The code block feature allows inserting and editing blocks of pre–formatted code into the WYSIWYG editor. Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
 
 Code blocks is a perfect feature to present programming- or software-related issues in an accessible, attractive form that is easily readable. A great tool for education, support documents or training content, it visually presents code listings, snippets or software elements.
 
@@ -14,11 +14,19 @@ Code blocks is a perfect feature to present programming- or software-related iss
 	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
 </info-box>
 
+<info-box info>
+	The code block feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}. To add a paragraph underneath a code block, just press <kbd>Enter</kbd> three times.
 
 {@snippet features/code-block}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 
@@ -111,7 +119,7 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 * To **increase** indentation: Select the line (or lines) you want to indent. Hit the <kbd>Tab</kbd> key or press the "Increase indent" button in the toolbar.
 * To **decrease** indentation: Select the line (or lines) the indent should decrease. Hit the <kbd>Shift</kbd>+<kbd>Tab</kbd> keys or press the "Decrease indent" button in the toolbar.
 
-{@img assets/img/code-blocks-outdent-indent.gif 770 The animation shows changing indention inside code blocks in CKEditor 5 rich text editor.}
+{@img assets/img/code-blocks-outdent-indent.gif 770 The animation shows changing indentation inside code blocks in CKEditor 5 rich text editor.}
 
 <info-box>
 	The indentation created this way can be changed. Use the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration to choose some other character (or characters) of your preference (e.g. four spaces). By default, the indentation changes by a single tab (`\t`) character.
@@ -125,7 +133,7 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 
 To speed up the editing, when typing in a code block, the indentation of the current line is preserved when you hit <kbd>Enter</kbd> and create a new line. If you want to change the indentation of the new line, take a look at [some easy ways to do that](#changing-line-indentation).
 
-{@img assets/img/code-blocks-preserve-indentation.gif 770 The animation shows preserving indention inside code blocks in CKEditor 5 rich text editor.}
+{@img assets/img/code-blocks-preserve-indentation.gif 770 The animation shows preserving indentation inside code blocks in CKEditor 5 rich text editor.}
 
 ## Installation
 

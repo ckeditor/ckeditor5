@@ -6,13 +6,21 @@ modified_at: 2021-06-29
 
 {@snippet features/build-find-and-replace-source}
 
-The {@link module:find-and-replace/findandreplace~FindAndReplace} feature allows for finding and replacing any text in the editor easily. It helps the user find words, word parts or phrases matching the case of the searched text, which is especially helpful in lengthy documents and one that may utilize certain words in different contexts. It also lets the editor replace a chosen one or all instances of the searched phrase with a single click, making tedious, repeated changes fast and easy. This may e.g. help ensuring the cohesion of an edited piece of code, while renaming a variable or a function.
+The find and replace feature allows for finding and replacing any text in the editor easily. It helps the user find words, word parts or phrases matching the case of the searched text, which is especially helpful in lengthy documents and one that may utilize certain words in different contexts. It also lets the editor replace a chosen one or all instances of the searched phrase with a single click, making tedious, repeated changes fast and easy. This may e.g. help ensuring the cohesion of an edited piece of code, while renaming a variable or a function.
+
+<info-box info>
+	The find and replace feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
 
 ## Demo
 
 Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg Find and replace} to invoke the search panel and find and replace desired words or phrases or use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut. For a starter, try replacing "steam" with "diesel" to make the demo content more up to date. Be careful to match the case, for there are different instances of the word present in the document!
 
 {@snippet features/find-and-replace}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 

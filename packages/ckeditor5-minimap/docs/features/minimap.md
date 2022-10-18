@@ -8,7 +8,7 @@ contributeUrl: false
 modified_at: 2021-07-12
 ---
 
-The {@link module:minimap/minimap~Minimap} feature renders a content minimap which, when placed next to the editor, helps the users navigate their content. It enables navigating the content and provides a visual overview when the document is longer than its visible portion on the screen.
+The content minimap feature renders a content minimap which, when placed next to the editor, helps the users navigate their content. It enables navigating the content and provides a visual overview when the document is longer than its visible portion on the screen.
 
 You can try the minimap feature in the demo below.
 
@@ -21,6 +21,10 @@ You can try the minimap feature in the demo below.
 Scroll the content and the minimap in the sidebar will show your current location. Drag the box marking the visible portion of the content to quickly navigate the document. You can also simply click anywhere on the minimap to move around instantly.
 
 {@snippet features/minimap}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ### Demo configuration
 

@@ -1,29 +1,91 @@
+<button id="read-only">Toggle read-only</button>
+
+<h1>LTR editor</h1>
+
 <div id="editor">
-	<h3>Center aligned table</h3>
-	<figure class="table" style="width: 800px;">
+	<h3>Table with colgroup</h3>
+	<figure class="table" style="width:400px;">
 		<table>
+			<colgroup>
+				<col style="width:35.79%;">
+				<col style="width:64.21%;">
+			</colgroup>
+			<thead>
+				<tr>
+					<th colspan="2">Saturday, July 14</th>
+				</tr>
+			</thead>
 			<tbody>
 				<tr>
-					<td>11</td>
-					<td>12</td>
-					<td>13</td>
-					<td>14</td>
+					<td>9:30 AM - 11:30 AM</td>
+					<td>
+						<p><strong>Americano vs. Brewed</strong> - “know your coffee” with:&nbsp;</p>
+						<ul>
+							<li>Giulia Bianchi</li>
+							<li>Stefano Garau</li>
+							<li>Giuseppe Russo</li>
+						</ul>
+					</td>
 				</tr>
 				<tr>
-					<td>21</td>
-					<td>22</td>
-					<td>23</td>
-					<td>24</td>
+					<td>1:00 PM - 3:00 PM</td>
+					<td>
+						<p><strong>Pappardelle al pomodoro</strong> - live cooking</p>
+						<p>Incorporate the freshest ingredients&nbsp;<br>with Rita Fresco</p>
+					</td>
 				</tr>
 				<tr>
-					<td>31</td>
-					<td>32</td>
-					<td>33</td>
-					<td>34</td>
+					<td>5:00 PM - 8:00 PM</td>
+					<td><strong>Tuscan vineyards at a glance</strong> - wine-tasting&nbsp;<br>with Frederico Riscoli</td>
 				</tr>
 			</tbody>
 		</table>
 	</figure>
+
+	<h3>Table with a single cell and a table width style</h3>
+	<figure class="table" style="width:700px;">
+		<table>
+			<tbody>
+				<tr>
+					<td style="text-align:center;" colspan="4"><span class="text-small"><strong>Color coding for
+								missions</strong></span></td>
+				</tr>
+				<tr>
+					<td style="background-color:hsl(0, 0%, 90%);text-align:center;width:300px;"><span
+							class="text-small"><i>Failed</i></span></td>
+					<td style="background-color:hsl(150, 75%, 60%);text-align:center;"><span
+							class="text-small"><i>Successful</i></span></td>
+					<td style="background-color:hsl(180, 75%, 60%);text-align:center;"><span class="text-small"><i>In
+								progress</i></span></td>
+					<td style="background-color:hsl(210, 75%, 60%);text-align:center;"><span
+							class="text-small"><i>Planned</i></span></td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<h3>Table with headers only</h3>
+	<figure class="table">
+		<table>
+			<colgroup>
+				<col style="width:20%;">
+				<col style="width:20%;">
+				<col style="width:20%;">
+				<col style="width:20%;">
+				<col style="width:20%;">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Region</th>
+					<th>Orbital radius (AU)</th>
+					<th>Orbital period (years)</th>
+					<th>Number of moons</th>
+				</tr>
+			</thead>
+		</table>
+	</figure>
+
 	<h3>Left aligned table</h3>
 	<figure class="table" style="width: 800px;float:left;">
 		<table>
@@ -55,32 +117,91 @@
 
 <div id="editor-rtl">
 	<h2>RTL content</h2>
-	<figure class="table" style="width: 800px;">
+	<h3>Table with colgroup</h3>
+	<figure class="table" style="width:400px;">
 		<table>
+			<colgroup>
+				<col style="width:35.79%;">
+				<col style="width:64.21%;">
+			</colgroup>
+			<thead>
+				<tr>
+					<th colspan="2">Saturday, July 14</th>
+				</tr>
+			</thead>
 			<tbody>
 				<tr>
-					<td>11</td>
-					<td>12</td>
-					<td>13</td>
-					<td>14</td>
+					<td>9:30 AM - 11:30 AM</td>
+					<td>
+						<p><strong>Americano vs. Brewed</strong> - “know your coffee” with:&nbsp;</p>
+						<ul>
+							<li>Giulia Bianchi</li>
+							<li>Stefano Garau</li>
+							<li>Giuseppe Russo</li>
+						</ul>
+					</td>
 				</tr>
 				<tr>
-					<td>21</td>
-					<td>22</td>
-					<td>23</td>
-					<td>24</td>
+					<td>1:00 PM - 3:00 PM</td>
+					<td>
+						<p><strong>Pappardelle al pomodoro</strong> - live cooking</p>
+						<p>Incorporate the freshest ingredients&nbsp;<br>with Rita Fresco</p>
+					</td>
 				</tr>
 				<tr>
-					<td>31</td>
-					<td>32</td>
-					<td>33</td>
-					<td>34</td>
+					<td>5:00 PM - 8:00 PM</td>
+					<td><strong>Tuscan vineyards at a glance</strong> - wine-tasting&nbsp;<br>with Frederico Riscoli</td>
 				</tr>
 			</tbody>
 		</table>
 	</figure>
-	<h3>Side table</h3>
-	<figure class="table" style="width: 800px;float:right;">
+
+	<h3>Table with a single cell and a table width style</h3>
+	<figure class="table" style="width:700px;">
+		<table>
+			<tbody>
+				<tr>
+					<td style="text-align:center;" colspan="4"><span class="text-small"><strong>Color coding for
+								missions</strong></span></td>
+				</tr>
+				<tr>
+					<td style="background-color:hsl(0, 0%, 90%);text-align:center;width:300px;"><span
+							class="text-small"><i>Failed</i></span></td>
+					<td style="background-color:hsl(150, 75%, 60%);text-align:center;"><span
+							class="text-small"><i>Successful</i></span></td>
+					<td style="background-color:hsl(180, 75%, 60%);text-align:center;"><span class="text-small"><i>In
+								progress</i></span></td>
+					<td style="background-color:hsl(210, 75%, 60%);text-align:center;"><span
+							class="text-small"><i>Planned</i></span></td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<h3>Table with headers only</h3>
+	<figure class="table">
+		<table>
+			<colgroup>
+				<col style="width:20%;">
+				<col style="width:20%;">
+				<col style="width:20%;">
+				<col style="width:20%;">
+				<col style="width:20%;">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Region</th>
+					<th>Orbital radius (AU)</th>
+					<th>Orbital period (years)</th>
+					<th>Number of moons</th>
+				</tr>
+			</thead>
+		</table>
+	</figure>
+
+	<h3>Left aligned table</h3>
+	<figure class="table" style="width: 800px;float:left;">
 		<table>
 			<tbody>
 				<tr>

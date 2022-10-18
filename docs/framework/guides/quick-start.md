@@ -5,7 +5,7 @@ order: 20
 
 # Quick start
 
-This guide will show you how to initialize CKEditor 5 rich-text editor from source.
+This guide will show you how to initialize the CKEditor 5 rich-text editor from source.
 
 ## How to install the framework?
 
@@ -17,7 +17,7 @@ This guide will show you how to initialize CKEditor 5 rich-text editor from sour
 	npx ckeditor5-package-generator <packageName>
 	```
 
-	More info about this tool can be found in the {@link framework/guides/package-generator dedicated guide}.
+	More info about this tool can be found in the {@link framework/guides/package-generator/using-package-generator dedicated guide}.
 </info-box>
 
 The CKEditor 5 Framework consist of several [npm packages](https://npmjs.com). To install it you need:
@@ -134,7 +134,7 @@ Based on these packages you can create a simple application.
 <info-box warning>
 	Note that in this guide the editor class is used directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
-	No {@link installation/advanced/predefined-builds editor builds} are used because adding new plugins to them requires rebuilding them anyway. This can be done by {@link installation/getting-started/installing-plugins customizing a build} or by including the CKEditor 5 source into your application (like in this guide).
+	No {@link installation/getting-started/predefined-builds editor builds} are used because adding new plugins to them requires rebuilding them anyway. This can be done by {@link installation/getting-started/installing-plugins customizing a build} or by including the CKEditor 5 source into your application (like in this guide).
 </info-box>
 
 ```js
@@ -239,6 +239,6 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 
 ## What's next?
 
-If you finished this guide, you should definitely check out the {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide that will teach you some basics of developing features in the CKEditor 5 ecosystem.
+If you finished this guide, you should definitely check out the {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide that will teach you some basics of developing features in the CKEditor 5 ecosystem.
 
 If you are more into reading about the CKEditor 5 architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture}.

@@ -22,11 +22,11 @@ msgstr "HTML invoegen"
 
 msgctxt "The HTML snippet."
 msgid "HTML snippet"
-msgstr ""
+msgstr "HTML-snippet"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."
-msgstr ""
+msgstr "Plak de ruwe HTML-code hier..."
 
 msgctxt "A label of a button that switches the HTML embed to the source editing mode."
 msgid "Edit source"
@@ -42,4 +42,4 @@ msgstr "Geen voorbeeld beschikbaar"
 
 msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
 msgid "Empty snippet content"
-msgstr ""
+msgstr "Geen content in snippet"

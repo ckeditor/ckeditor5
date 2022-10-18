@@ -1265,6 +1265,9 @@ describe( 'MediaEmbedElementSupport', () => {
 				classes: true
 			} ] );
 
+			// Apply filtering rules added after initial data load.
+			editor.setData( '' );
+
 			editor.conversion.for( 'upcast' ).dataToMarker( {
 				view: 'commented',
 				converterPriority: 100000 // For marker this priority equals to -999

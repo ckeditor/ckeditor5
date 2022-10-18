@@ -8,10 +8,10 @@ modified_at: 2021-10-08
 
 # Media embed
 
-The {@link module:media-embed/mediaembed~MediaEmbed} feature brings support for inserting embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
+The media embed feature brings support for inserting embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo
@@ -23,6 +23,10 @@ You can use the Insert media button in the toolbar {@icon @ckeditor/ckeditor5-me
 * <input class="example-input" type="text" value="https://www.instagram.com/p/BmMZgokAGGQ/?taken-by=nasa">
 
 {@snippet features/media-embed}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Installation
 
@@ -397,7 +401,6 @@ The HTML structure of every non-previewable media in the editor is as follows:
 			</div>
 			<a class="ck-media__placeholder__url" target="new" href="[ URL of the media]">
 				<span class="ck-media__placeholder__url__text">[ URL of the media]</span>
-				<span class="ck ck-tooltip ck-tooltip_s">...</span>
 			</a>
 		</div>
 	</div>

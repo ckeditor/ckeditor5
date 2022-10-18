@@ -233,8 +233,15 @@ describe( 'ImageStyleUI', () => {
 			dropdowns = [ ...defaultDropdowns, ...customDropdowns ].map( dropdown => {
 				const view = factory.create( dropdown.name );
 
+				view.render();
+				global.document.body.appendChild( view.element );
+
 				return { view, buttonView: view.buttonView, config: dropdown };
 			} );
+		} );
+
+		afterEach( () => {
+			dropdowns.forEach( ( { view } ) => view.element.remove() );
 		} );
 
 		it( 'should define the drop-down properties and children properly', () => {
@@ -257,6 +264,17 @@ describe( 'ImageStyleUI', () => {
 				view.toolbarView.items.map( item => {
 					expect( item ).to.be.instanceOf( ButtonView );
 				} );
+			}
+		} );
+
+		it( 'should focus the first active button when dropdown is opened', () => {
+			for ( const { view } of dropdowns ) {
+				const secondButton = view.toolbarView.items.get( 1 );
+				const spy = sinon.spy( secondButton, 'focus' );
+
+				secondButton.isOn = true;
+				view.isOpen = true;
+				sinon.assert.calledOnce( spy );
 			}
 		} );
 

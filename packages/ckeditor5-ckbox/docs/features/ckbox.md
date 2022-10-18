@@ -10,25 +10,32 @@ badges: [ premium ]
 
 # CKBox file manager
 
-This CKBox integration feature allows you to effortlessly and intuitively insert images as well as links to other files into the rich-text editor content. CKBox is a file manager and a file uploader that acts as a convenient interface for the cloud storage service. The CKBox feature provides a simple integration with this service for the CKEditor 5 WYSIWYG editor. To find out more about CKBox, the brand-new file manager, visit the [CKBox website](https://ckeditor.com/ckbox/).
+This CKBox integration feature allows you to effortlessly and intuitively insert images as well as links to other files into the rich-text editor content. CKBox is a file manager and a file uploader that acts as a convenient interface for the cloud storage service. The CKBox feature provides a simple integration with this service for the CKEditor 5 WYSIWYG editor. To find out more about CKBox, the brand-new file manager, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
 
-<info-box info>
-	CKBox is a commercial solution. Please [contact us](https://ckeditor.com/contact/) if you would like to purchase a license. Let us know if you have any feedback or questions!
+<info-box>
+	This is a premium feature and you need a subscription to use it. You can [purchase it here](https://ckeditor.com/pricing/) for your open source CKEditor implementation. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) if:
+	* CKEditor commercial license is needed for your application.
+	* You need on-premises (self-hosted) version of the service.
+	* You have other licensing questions.
 
-	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features).
+	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
 
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds} for convenience, but the editor will still work properly without activating it.
+	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) for convenience, but the editor will still work properly without activating it.
 </info-box>
 
 ## Demo
 
-Use the Open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager} to invoke the CKBox dialog window. After the dialog is opened, find an interesting image and click on the Choose button. The selected image should be inserted into the editor content. You can choose more than one file at once.
+Try CKBox in action. Use the Open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager} to invoke the CKBox dialog window. After the dialog is opened, find an interesting image and click on the Choose button. The selected image should be inserted into the editor content. You can choose more than one file at once. Play around with these, changing the alignment and size.
 
 Non-embeddable files (e.g. PDF files) will be inserted into editor content as links. To test it, open the CKBox dialog again and choose any PDF file. It should be inserted as a link in the editor content. After clicking this link, it is automatically downloaded.
 
 The CKBox feature also supports uploading images. Drag any image into the editor content and it will be uploaded into the CKBox cloud storage. The uploaded file is then automatically inserted in the editor content. If you want to upload a non-image file type (such as a PDF or a text file) to the cloud storage, just open the CKBox dialog and use the Upload button.
 
 {@snippet features/ckbox}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Installation
 
@@ -41,7 +48,7 @@ To use this feature in your application, you must first load the CKBox library a
 The easiest way to load the CKBox library is to include the `<script>` tag loading the `ckbox.js` file first:
 
 ```html
-<script src="https://cdn.ckbox.io/CKBox/1.0.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/1.1.0/ckbox.js"></script>
 ```
 
 Then, install the [`@ckeditor/ckeditor5-ckbox`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox) package:
@@ -153,8 +160,8 @@ ClassicEditor
 Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
-<script src="https://cdn.ckbox.io/CKBox/1.0.0/ckbox.js"></script>
-<script src="https://cdn.ckbox.io/CKBox/1.0.0/translations/es.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/1.1.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/CKBox/1.1.0/translations/es.js"></script>
 ```
 
 ### Providing the token URL

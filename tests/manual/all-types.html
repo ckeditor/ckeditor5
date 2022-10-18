@@ -1,0 +1,65 @@
+<head>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.ck.ck-content.ck-editor__editable_inline {
+			border: 1px solid #ccc;
+		}
+
+		body > h2 {
+			border-bottom: 1px solid #ccc;
+		}
+	</style>
+</head>
+
+<div id="fixtures" style="display: none">
+	<h2>Heading 1</h2>
+	<p>Paragraph</p>
+	<figure class="image image-style-side">
+		<img alt="bar" src="sample.jpg">
+		<figcaption>Caption</figcaption>
+	</figure>
+	<blockquote>
+		<p>Quote</p>
+		<ul>
+			<li>Quoted UL List item 1</li>
+			<li>Quoted UL List item 2</li>
+		</ul>
+		<p>Quote</p>
+	</blockquote>
+	<figure class="table">
+		<table>
+			<tbody>
+				<tr>
+					<td>Some text</td>
+					<td>Some text</td>
+				</tr>
+				<tr>
+					<td>Some text</td>
+					<td>
+						<figure class="image"><img src="sample.jpg" alt="bar">
+							<figcaption>Caption</figcaption>
+						</figure>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+</div>
+
+<h2>Classic</h2>
+<div id="editor-classic"></div>
+<h2>Inline</h2>
+<div id="editor-inline"></div>
+<h2>Balloon</h2>
+<div id="editor-balloon"></div>
+<h2>Balloon block</h2>
+<div id="editor-balloon-block"></div>
+<h2>Document</h2>
+<div id="editor-document-container">
+	<div id="editor-document-toolbar"></div>
+	<div id="editor-document"></div>
+</div>

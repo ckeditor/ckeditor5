@@ -43,3 +43,7 @@ msgstr "%0 z %1"
 msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
 msgstr "Soubor nelze nahrát:"
+
+msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
+msgid "Rich Text Editor. Editing area: %0"
+msgstr "Editační oblast rich text editoru: %0"

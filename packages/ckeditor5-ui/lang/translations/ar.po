@@ -17,89 +17,97 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 msgctxt "Title of the CKEditor5 editor."
-msgid "Rich Text Editor, %0"
-msgstr "معالج نصوص، %0"
-
-msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
 msgstr "معالج نصوص"
 
+msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
+msgid "Editor editing area: %0"
+msgstr "منطقة تحرير المحرر: %0"
+
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
-msgstr ""
+msgstr "كتلة التحرير"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
-msgstr ""
+msgstr "التالي"
 
 msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
 msgid "Previous"
-msgstr ""
+msgstr "السابق"
 
 msgctxt "Label used by assistive technologies describing a generic editor toolbar."
 msgid "Editor toolbar"
-msgstr ""
+msgstr "شريط أدوات المحرر"
 
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
-msgstr ""
+msgstr "شريط أدوات القائمة المنسدلة"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"
-msgstr ""
+msgstr "أسود"
 
 msgctxt "Label of a button that applies a dim grey color in color pickers."
 msgid "Dim grey"
-msgstr ""
+msgstr "رمادي خافت"
 
 msgctxt "Label of a button that applies a grey color in color pickers."
 msgid "Grey"
-msgstr ""
+msgstr "رمادي"
 
 msgctxt "Label of a button that applies a light grey color in color pickers."
 msgid "Light grey"
-msgstr ""
+msgstr "رمادي فاتح"
 
 msgctxt "Label of a button that applies a white color in color pickers."
 msgid "White"
-msgstr ""
+msgstr "أبيض"
 
 msgctxt "Label of a button that applies a red color in color pickers."
 msgid "Red"
-msgstr ""
+msgstr "أحمر"
 
 msgctxt "Label of a button that applies a orange color in color pickers."
 msgid "Orange"
-msgstr ""
+msgstr "برتقالي"
 
 msgctxt "Label of a button that applies a yellow color in color pickers."
 msgid "Yellow"
-msgstr ""
+msgstr "أصفر"
 
 msgctxt "Label of a button that applies a light green color in color pickers."
 msgid "Light green"
-msgstr ""
+msgstr "أخضر فاتح"
 
 msgctxt "Label of a button that applies a green color in color pickers."
 msgid "Green"
-msgstr ""
+msgstr "أخضر"
 
 msgctxt "Label of a button that applies a aquamarine color in color pickers."
 msgid "Aquamarine"
-msgstr ""
+msgstr "أخضر زبرجد"
 
 msgctxt "Label of a button that applies a turquoise color in color pickers."
 msgid "Turquoise"
-msgstr ""
+msgstr "فيروزي"
 
 msgctxt "Label of a button that applies a light blue color in color pickers."
 msgid "Light blue"
-msgstr ""
+msgstr "أزرق فاتح"
 
 msgctxt "Label of a button that applies a blue color in color pickers."
 msgid "Blue"
-msgstr ""
+msgstr "أزرق"
 
 msgctxt "Label of a button that applies a purple color in color pickers."
 msgid "Purple"
-msgstr ""
+msgstr "أرجواني"
+
+msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
+msgid "Editor block content toolbar"
+msgstr "شريط المحرر لأدوات كتلة المحتوى"
+
+msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
+msgid "Editor contextual toolbar"
+msgstr "شريط المحرر للأدوات السياقية"

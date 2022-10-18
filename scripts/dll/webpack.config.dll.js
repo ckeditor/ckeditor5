@@ -14,6 +14,7 @@ const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' 
 
 const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
 const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
+const { CI } = process.env;
 
 if ( ROOT_DIRECTORY !== process.cwd() ) {
 	throw new Error( 'This script should be called from the package root directory.' );
@@ -105,6 +106,9 @@ const webpackConfig = {
 			footer: `( ( fn, root ) => fn( root ) )( ${ loadCKEditor5modules.toString() }, window );`
 		} )
 	],
+	resolve: {
+		extensions: [ '.ts', '.js', '.json' ]
+	},
 	module: {
 		rules: [
 			{
@@ -136,6 +140,10 @@ const webpackConfig = {
 						}
 					}
 				]
+			},
+			{
+				test: /\.ts$/,
+				use: [ 'ts-loader' ]
 			}
 		]
 	}
@@ -155,6 +163,12 @@ if ( !IS_DEVELOPMENT_MODE ) {
 			extractComments: false
 		} )
 	];
+}
+
+if ( CI ) {
+	webpackConfig.cache = {
+		type: 'filesystem'
+	};
 }
 
 module.exports = webpackConfig;

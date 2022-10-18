@@ -11,7 +11,6 @@ import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromele
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
@@ -117,7 +116,6 @@ class MultirootEditorUI extends EditorUI {
 			const editableElement = editable.element;
 
 			this.setEditableElement( editable.name, editableElement );
-			this.focusTracker.add( editableElement );
 
 			editable.bind( 'isFocused' ).to( this.focusTracker, 'isFocused', this.focusTracker, 'focusedElement',
 				( isFocused, focusedElement ) => {
@@ -159,12 +157,8 @@ class MultirootEditorUI extends EditorUI {
 
 		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
 
-		enableToolbarKeyboardFocus( {
-			origin: editor.editing.view,
-			originFocusTracker: this.focusTracker,
-			originKeystrokeHandler: editor.keystrokes,
-			toolbar
-		} );
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
+		this.addToolbar( view.toolbar );
 	}
 }
 
@@ -172,11 +166,17 @@ class MultirootEditorUIView extends EditorUIView {
 	constructor( locale, editingView, editableElements ) {
 		super( locale );
 
+		const t = locale.t;
+
 		this.toolbar = new ToolbarView( locale );
 		this.editables = [];
 
 		for ( const editableName of Object.keys( editableElements ) ) {
-			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ] );
+			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ], {
+				label: editableView => {
+					return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+				}
+			} );
 
 			editable.name = editableName;
 			this.editables.push( editable );

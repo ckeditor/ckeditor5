@@ -26,7 +26,7 @@ msgstr "Remove color"
 
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"
-msgstr ""
+msgstr "डिफ़ॉल्ट रिस्टोर कर दें"
 
 msgctxt "Label for the Save button."
 msgid "Save"
@@ -43,3 +43,7 @@ msgstr "%0 of %1"
 msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
 msgstr "Cannot upload file:"
+
+msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
+msgid "Rich Text Editor. Editing area: %0"
+msgstr "रिच टेक्स्ट एडिटर। संपादन क्षेत्र: %0"

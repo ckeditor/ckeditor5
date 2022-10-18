@@ -47,3 +47,7 @@ msgstr "Indsæt medie"
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Media toolbar"
 msgstr "Medie værktøjslinje"
+
+msgctxt "A tooltip displayed when the user hovers a non-previewable media URL in the editor content."
+msgid "Open media in new tab"
+msgstr "Åbn medie i ny fane"

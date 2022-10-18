@@ -13,7 +13,6 @@ import TableCellBorderColorCommand from '../../src/tablecellproperties/commands/
 import TableCellBorderStyleCommand from '../../src/tablecellproperties/commands/tablecellborderstylecommand';
 import TableCellBorderWidthCommand from '../../src/tablecellproperties/commands/tablecellborderwidthcommand';
 import TableCellHorizontalAlignmentCommand from '../../src/tablecellproperties/commands/tablecellhorizontalalignmentcommand';
-import TableCellWidthCommand from '../../src/tablecellproperties/commands/tablecellwidthcommand';
 import TableCellHeightCommand from '../../src/tablecellproperties/commands/tablecellheightcommand';
 import TableCellVerticalAlignmentCommand from '../../src/tablecellproperties/commands/tablecellverticalalignmentcommand';
 import TableCellPaddingCommand from '../../src/tablecellproperties/commands/tablecellpaddingcommand';
@@ -76,10 +75,6 @@ describe( 'table cell properties', () => {
 
 		it( 'adds tableCellBackgroundColor command', () => {
 			expect( editor.commands.get( 'tableCellBackgroundColor' ) ).to.be.instanceOf( TableCellBackgroundColorCommand );
-		} );
-
-		it( 'adds tableCellWidth command', () => {
-			expect( editor.commands.get( 'tableCellWidth' ) ).to.be.instanceOf( TableCellWidthCommand );
 		} );
 
 		it( 'adds tableCellHeight command', () => {
@@ -1147,87 +1142,6 @@ describe( 'table cell properties', () => {
 			} );
 		} );
 
-		describe( 'cell width', () => {
-			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellWidth' ) ).to.be.true;
-			} );
-
-			describe( 'upcast conversion', () => {
-				it( 'should upcast width attribute on table cell', () => {
-					editor.setData( '<table><tr><td style="width:20px">foo</td></tr></table>' );
-					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-
-					expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '20px' );
-				} );
-			} );
-
-			describe( 'downcast conversion', () => {
-				let tableCell;
-
-				beforeEach( () => {
-					setModelData(
-						model,
-						'<table headingRows="0" headingColumns="0">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<paragraph>foo</paragraph>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>'
-					);
-
-					tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-				} );
-
-				it( 'should consume converted item tableCellWidth attribute', () => {
-					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:tableCellWidth:tableCell', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
-						} ) );
-
-					model.change( writer => writer.setAttribute( 'tableCellWidth', '40px', tableCell ) );
-				} );
-
-				it( 'should be overridable', () => {
-					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:tableCellWidth:tableCell', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, evt.name );
-						}, { priority: 'high' } ) );
-
-					model.change( writer => writer.setAttribute( 'tableCellWidth', '40px', tableCell ) );
-
-					assertTableCellStyle( editor, '' );
-				} );
-
-				it( 'should downcast tableCellWidth attribute', () => {
-					model.change( writer => writer.setAttribute( 'tableCellWidth', '20px', tableCell ) );
-
-					expect(
-						editor.getData() ).to.equalMarkup(
-						'<figure class="table"><table><tbody><tr><td style="width:20px;">foo</td></tr></tbody></table></figure>'
-					);
-				} );
-
-				it( 'should downcast tableCellWidth removal', () => {
-					model.change( writer => writer.setAttribute( 'tableCellWidth', '1337px', tableCell ) );
-
-					model.change( writer => writer.removeAttribute( 'tableCellWidth', tableCell ) );
-
-					assertTableCellStyle( editor );
-				} );
-
-				it( 'should downcast width change', () => {
-					model.change( writer => writer.setAttribute( 'tableCellWidth', '1337px', tableCell ) );
-
-					assertTableCellStyle( editor, 'width:1337px;' );
-
-					model.change( writer => writer.setAttribute( 'tableCellWidth', '1410em', tableCell ) );
-
-					assertTableCellStyle( editor, 'width:1410em;' );
-				} );
-			} );
-		} );
-
 		describe( 'cell height', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellHeight' ) ).to.be.true;
@@ -1326,7 +1240,6 @@ describe( 'table cell properties', () => {
 									borderColor: '#ff0',
 									borderWidth: '2px',
 									backgroundColor: '#00f',
-									width: '250px',
 									height: '150px',
 									padding: '10px'
 								}
@@ -1424,22 +1337,6 @@ describe( 'table cell properties', () => {
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
-				} );
-			} );
-
-			describe( 'width', () => {
-				it( 'should upcast the default `width` value from <td>', () => {
-					editor.setData( '<table><tr><td style="width:250px">foo</td></tr></table>' );
-					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-
-					expect( tableCell.getAttribute( 'width' ) ).to.be.undefined;
-				} );
-
-				it( 'should not upcast the default `width` value from <th>', () => {
-					editor.setData( '<table><tr><th style="width:250px">foo</th></tr></table>' );
-					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-
-					expect( tableCell.getAttribute( 'width' ) ).to.be.undefined;
 				} );
 			} );
 

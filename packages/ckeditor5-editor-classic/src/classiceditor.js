@@ -16,7 +16,7 @@ import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 
 /**
- * The {@glink installation/advanced/alternative-setups/predefined-builds#classic-editor classic editor} implementation.
+ * The {@glink installation/getting-started/predefined-builds#classic-editor classic editor} implementation.
  * It uses an inline editable and a sticky toolbar, all enclosed in a boxed UI.
  * See the {@glink examples/builds/classic-editor demo}.
  *
@@ -27,9 +27,9 @@ import ClassicEditorUIView from './classiceditoruiview';
  *
  * The classic editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic) package)
- * but it is also available in the {@glink installation/advanced/alternative-setups/predefined-builds#classic-editor classic build}.
+ * but it is also available in the {@glink installation/getting-started/predefined-builds#classic-editor classic build}.
  *
- * {@glink installation/advanced/alternative-setups/predefined-builds Builds}
+ * {@glink installation/getting-started/predefined-builds Builds}
  * are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
@@ -89,7 +89,9 @@ export default class ClassicEditor extends Editor {
 	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
-	 * Updates the editor's source element with the data.
+	 * Updates the original editor element with the data if the
+	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
+	 * configuration option is set to `true`.
 	 *
 	 * @returns {Promise}
 	 */
@@ -171,7 +173,7 @@ export default class ClassicEditor extends Editor {
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink installation/advanced/alternative-setups/predefined-builds editor build} (for example – `@ckeditor/ckeditor5-build-classic`).
+	 * {@glink installation/getting-started/predefined-builds editor build} (for example – `@ckeditor/ckeditor5-build-classic`).
 	 *
 	 * If you want to use the classic editor from source (`@ckeditor/ckeditor5-editor-classic/src/classiceditor`),
 	 * you need to define the list of
@@ -186,9 +188,10 @@ export default class ClassicEditor extends Editor {
 	 * and the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element editor element} will replace the passed element
 	 * in the DOM (the original one will be hidden and the editor will be injected next to it).
 	 *
-	 * Moreover, the editor data will be set back to the original element once the editor is destroyed and when a form, in which
-	 * this element is contained, is submitted (if the original element is a `<textarea>`). This ensures seamless integration with native
-	 * web forms.
+	 * If the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy updateSourceElementOnDestroy}
+	 * option is set to `true`, the editor data will be set back to the original element once the editor is destroyed and when a form,
+	 * in which this element is contained, is submitted (if the original element is a `<textarea>`). This ensures seamless integration
+	 * with native web forms.
 	 *
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
 	 * It is available under the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `editor.ui.element`} property.

@@ -26,12 +26,12 @@ msgstr "Ativar edição"
 
 msgctxt "A label of the button that moves selection to the previous editable region in the content."
 msgid "Previous editable region"
-msgstr ""
+msgstr "Região editável anterior"
 
 msgctxt "A label of the button that moves selection to the next editable region in the content."
 msgid "Next editable region"
-msgstr ""
+msgstr "Região editável seguinte"
 
 msgctxt "A label of the dropdown that provides controls to navigate editable regions in the content."
 msgid "Navigate editable regions"
-msgstr ""
+msgstr "Navegar regiões editáveis"

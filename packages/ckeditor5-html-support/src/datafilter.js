@@ -7,6 +7,8 @@
  * @module html-support/datafilter
  */
 
+/* globals document */
+
 import DataSchema from './dataschema';
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -101,6 +103,15 @@ export default class DataFilter extends Plugin {
 		this._allowedElements = new Set();
 
 		/**
+		 * Disallowed element names by {@link module:html-support/datafilter~DataFilter#disallowElement} method.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {Set.<String>} #_disallowedElements
+		 */
+		this._disallowedElements = new Set();
+
+		/**
 		 * Indicates if {@link module:engine/controller/datacontroller~DataController editor's data controller}
 		 * data has been already initialized.
 		 *
@@ -140,21 +151,46 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Load a configuration of one or many elements, where their attributes should be allowed.
 	 *
+	 * **Note**: Rules will be applied just before next data pipeline data init or set.
+	 *
 	 * @param {Array.<module:engine/view/matcher~MatcherPattern>} config Configuration of elements
 	 * that should have their attributes accepted in the editor.
 	 */
 	loadAllowedConfig( config ) {
-		this._loadConfig( config, pattern => this.allowAttributes( pattern ) );
+		for ( const pattern of config ) {
+			// MatcherPattern allows omitting `name` to widen the search of elements.
+			// Let's keep it consistent and match every element if a `name` has not been provided.
+			const elementName = pattern.name || /[\s\S]+/;
+			const rules = splitRules( pattern );
+
+			this.allowElement( elementName );
+
+			rules.forEach( pattern => this.allowAttributes( pattern ) );
+		}
 	}
 
 	/**
 	 * Load a configuration of one or many elements, where their attributes should be disallowed.
 	 *
+	 * **Note**: Rules will be applied just before next data pipeline data init or set.
+	 *
 	 * @param {Array.<module:engine/view/matcher~MatcherPattern>} config Configuration of elements
 	 * that should have their attributes rejected from the editor.
 	 */
 	loadDisallowedConfig( config ) {
-		this._loadConfig( config, pattern => this.disallowAttributes( pattern ) );
+		for ( const pattern of config ) {
+			// MatcherPattern allows omitting `name` to widen the search of elements.
+			// Let's keep it consistent and match every element if a `name` has not been provided.
+			const elementName = pattern.name || /[\s\S]+/;
+			const rules = splitRules( pattern );
+
+			// Disallow element itself if there is no other rules.
+			if ( rules.length == 0 ) {
+				this.disallowElement( elementName );
+			} else {
+				rules.forEach( pattern => this.disallowAttributes( pattern ) );
+			}
+		}
 	}
 
 	/**
@@ -162,6 +198,8 @@ export default class DataFilter extends Plugin {
 	 *
 	 * This method will only allow elements described by the {@link module:html-support/dataschema~DataSchema} used
 	 * to create data filter.
+	 *
+	 * **Note**: Rules will be applied just before next data pipeline data init or set.
 	 *
 	 * @param {String|RegExp} viewName String or regular expression matching view name.
 	 */
@@ -178,11 +216,33 @@ export default class DataFilter extends Plugin {
 			// If the data has not been initialized yet, _registerElementsAfterInit() method will take care of
 			// registering elements.
 			if ( this._dataInitialized ) {
-				this._fireRegisterEvent( definition );
+				// Defer registration to the next data pipeline data set so any disallow rules could be applied
+				// even if added after allow rule (disallowElement).
+				this.editor.data.once( 'set', () => {
+					this._fireRegisterEvent( definition );
+				}, {
+					// With the highest priority listener we are able to register elements right before
+					// running data conversion.
+					priority: priorities.get( 'highest' ) + 1
+				} );
 			}
 
 			// Reset cached map to recalculate it on the next usage.
 			this._coupledAttributes = null;
+		}
+	}
+
+	/**
+	 * Disallow the given element in the editor context.
+	 *
+	 * This method will only disallow elements described by the {@link module:html-support/dataschema~DataSchema} used
+	 * to create data filter.
+	 *
+	 * @param {String|RegExp} viewName String or regular expression matching view name.
+	 */
+	disallowElement( viewName ) {
+		for ( const definition of this._dataSchema.getDefinitionsForView( viewName, false ) ) {
+			this._disallowedElements.add( definition.view );
 		}
 	}
 
@@ -202,25 +262,6 @@ export default class DataFilter extends Plugin {
 	 */
 	disallowAttributes( config ) {
 		this._disallowedAttributes.add( config );
-	}
-
-	/**
-	 * Batch load of the filtering configuration.
-	 *
-	 * @private
-	 * @param {Array.<module:engine/view/matcher~MatcherPattern>} config Filtering configuration.
-	 * @param {Function} handleAttributes Callback handling the way the attributes should be processed.
-	 */
-	_loadConfig( config, handleAttributes ) {
-		for ( const pattern of config ) {
-			// MatcherPattern allows omitting `name` to widen the search of elements.
-			// Let's keep it consistent and match every element if a `name` has not been provided.
-			const elementName = pattern.name || /[\s\S]+/;
-
-			this.allowElement( elementName );
-
-			splitRules( pattern ).forEach( handleAttributes );
-		}
 	}
 
 	/**
@@ -409,6 +450,10 @@ export default class DataFilter extends Plugin {
 	 * @param {module:html-support/dataschema~DataSchemaDefinition} definition
 	 */
 	_fireRegisterEvent( definition ) {
+		if ( definition.view && this._disallowedElements.has( definition.view ) ) {
+			return;
+		}
+
 		this.fire( definition.view ? `register:${ definition.view }` : 'register', definition );
 	}
 
@@ -587,6 +632,15 @@ function consumeAttributes( viewElement, conversionApi, matcher ) {
 	const { attributes, styles, classes } = mergeMatchResults( matches );
 	const viewAttributes = {};
 
+	// Remove invalid DOM element attributes.
+	if ( attributes.size ) {
+		for ( const key of attributes ) {
+			if ( !isValidAttributeName( key ) ) {
+				attributes.delete( key );
+			}
+		}
+	}
+
 	if ( attributes.size ) {
 		viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
 	}
@@ -751,4 +805,15 @@ function splitRules( rules ) {
 	}
 
 	return splittedRules;
+}
+
+// Returns true if name is valid for a DOM attribute name.
+function isValidAttributeName( name ) {
+	try {
+		document.createAttribute( name );
+	} catch ( error ) {
+		return false;
+	}
+
+	return true;
 }

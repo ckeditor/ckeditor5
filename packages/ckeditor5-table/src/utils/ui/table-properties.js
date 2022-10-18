@@ -372,29 +372,29 @@ export const defaultColors = [
  */
 export function getLabeledColorInputCreator( options ) {
 	return ( labeledFieldView, viewUid, statusUid ) => {
-		const inputView = new ColorInputView( labeledFieldView.locale, {
+		const colorInputView = new ColorInputView( labeledFieldView.locale, {
 			colorDefinitions: colorConfigToColorGridDefinitions( options.colorConfig ),
 			columns: options.columns,
 			defaultColorValue: options.defaultColorValue
 		} );
 
-		inputView.set( {
+		colorInputView.inputView.set( {
 			id: viewUid,
 			ariaDescribedById: statusUid
 		} );
 
-		inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
-		inputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
+		colorInputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
+		colorInputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
 
-		inputView.on( 'input', () => {
+		colorInputView.on( 'input', () => {
 			// UX: Make the error text disappear and disable the error indicator as the user
 			// starts fixing the errors.
 			labeledFieldView.errorText = null;
 		} );
 
-		labeledFieldView.bind( 'isEmpty', 'isFocused' ).to( inputView );
+		labeledFieldView.bind( 'isEmpty', 'isFocused' ).to( colorInputView );
 
-		return inputView;
+		return colorInputView;
 	};
 }
 

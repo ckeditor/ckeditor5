@@ -42,7 +42,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Features
 
-* Introduced `Input#isInput()`. Closes [#214](https://github.com/ckeditor/ckeditor5-typing/issues/214). Fixed the `TextTransformation` feature so it willl trigger only for typing changes. Closes [#208](https://github.com/ckeditor/ckeditor5-typing/issues/208). ([0e26850](https://github.com/ckeditor/ckeditor5-typing/commit/0e26850))
+* Introduced `Input#isInput()`. Closes [#214](https://github.com/ckeditor/ckeditor5-typing/issues/214). Fixed the `TextTransformation` feature so it will trigger only for typing changes. Closes [#208](https://github.com/ckeditor/ckeditor5-typing/issues/208). ([0e26850](https://github.com/ckeditor/ckeditor5-typing/commit/0e26850))
 
 ### Bug fixes
 

@@ -9,7 +9,7 @@ In this guide you will learn about developer tools that will help you develop an
 
 ## CKEditor 5 inspector
 
-The official [CKEditor 5 inspector](https://github.com/ckeditor/ckeditor5-inspector) provides rich debugging tools for editor internals like {@link framework/guides/architecture/editing-engine#model model}, {@link framework/guides/architecture/editing-engine#view view}, and {@link framework/guides/architecture/core-editor-architecture#commands commands}.
+The official [CKEditor 5 inspector](https://github.com/ckeditor/ckeditor5-inspector) provides a set of rich debugging tools for editor internals like {@link framework/guides/architecture/editing-engine#model model}, {@link framework/guides/architecture/editing-engine#view view}, and {@link framework/guides/architecture/core-editor-architecture#commands commands}.
 
 It allows you to observe changes to the data structures and the selection live in the editor, which is particularly helpful when developing new rich-text editor features or getting to understand the existing ones.
 
@@ -34,6 +34,20 @@ or as a plain `<script>` tag in the HTML of your application:
 ```html
 <script src="../node_modules/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
 ```
+
+### Inspector as a bookmarklet
+
+If you do not wish to import the inspector, you can create a bookmarklet in your browser instead that will allow you to open it on any page without interference with its source code.
+
+**Important note: this method will not work if the page has Content Security Policy enabled.**
+
+To create such a bookmarklet, paste the following code as the URL of a new bookmark in the browser of your choice:
+
+```js
+javascript:(function(){let script=document.createElement('script');script.src='https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js';script.onload=()=>CKEditorInspector.attachToAll();document.head.appendChild(script);})()
+```
+
+Now you can load CKEditor 5 inspector by using the newly created bookmark.
 
 ### Enabling the inspector
 
@@ -112,4 +126,4 @@ See the helper documentation to learn more about useful options.
 
 For a quick jump start on development of a plugin, use the [CKEditor5 Package Generator](https://www.npmjs.com/package/ckeditor5-package-generator).
 
-See the {@link framework/guides/package-generator documentation} to learn more.
+See the {@link framework/guides/package-generator/using-package-generator documentation} to learn more.

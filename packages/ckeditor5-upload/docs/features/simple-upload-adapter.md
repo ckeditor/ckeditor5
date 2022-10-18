@@ -6,14 +6,14 @@ order: 60
 
 # Simple upload adapter
 
-The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin allows uploading images to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal [editor configuration](#configuration).
+The simple upload adapter allows uploading images to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal [editor configuration](#configuration).
 
 See the [Server–side configuration](#server-side-configuration) section to learn about the requirements your server–side application must meet to support this upload adapter.
 
 ## Installation
 
 <info-box info>
-	The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin is not available out–of–the–box in any of {@link installation/advanced/predefined-builds#available-builds official editor builds}. Check out the {@link installation/getting-started/installing-plugins "Installing plugins" guide} to learn more.
+	The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin is not available out–of–the–box in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}. Check out the {@link installation/getting-started/installing-plugins "Installing plugins" guide} to learn more.
 </info-box>
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:

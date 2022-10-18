@@ -11,9 +11,11 @@
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import TooltipManager from '@ckeditor/ckeditor5-ui/src/tooltipmanager';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -54,6 +56,14 @@ export default class EditorUI {
 		this.focusTracker = new FocusTracker();
 
 		/**
+		 * Manages the tooltips displayed on mouseover and focus across the UI.
+		 *
+		 * @readonly
+		 * @member {module:ui/tooltipmanager~TooltipManager}
+		 */
+		this.tooltipManager = new TooltipManager( editor );
+
+		/**
 		 * Stores viewport offsets from every direction.
 		 *
 		 * Viewport offset can be used to constrain balloons or other UI elements into an element smaller than the viewport.
@@ -87,6 +97,18 @@ export default class EditorUI {
 		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
 
 		/**
+		 * Indicates the UI is ready. Set `true` after {@link #event:ready} event is fired.
+		 *
+		 * @readonly
+		 * @default false
+		 * @member {Boolean} #isReady
+		 */
+		this.isReady = false;
+		this.once( 'ready', () => {
+			this.isReady = true;
+		} );
+
+		/**
 		 * Stores all editable elements used by the editor instance.
 		 *
 		 * @private
@@ -94,8 +116,18 @@ export default class EditorUI {
 		 */
 		this._editableElementsMap = new Map();
 
+		/**
+		 * All available & focusable toolbars.
+		 *
+		 * @private
+		 * @type {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
+		 */
+		this._focusableToolbarDefinitions = [];
+
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
+
+		this._initFocusTracking();
 	}
 
 	/**
@@ -134,6 +166,7 @@ export default class EditorUI {
 		this.stopListening();
 
 		this.focusTracker.destroy();
+		this.tooltipManager.destroy( this.editor );
 
 		// Clean–up the references to the CKEditor instance stored in the native editable DOM elements.
 		for ( const domElement of this._editableElementsMap.values() ) {
@@ -141,11 +174,14 @@ export default class EditorUI {
 		}
 
 		this._editableElementsMap = new Map();
+		this._focusableToolbarDefinitions = [];
 	}
 
 	/**
-	 * Store the native DOM editable element used by the editor under
-	 * a unique name.
+	 * Stores the native DOM editable element used by the editor under a unique name.
+	 *
+	 * Also, registers the element in the editor to maintain the accessibility of the UI. When the user is editing text in a focusable
+	 * editable area, they can use the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke to navigate over editor toolbars. See {@link #addToolbar}.
 	 *
 	 * @param {String} rootName The unique name of the editable element.
 	 * @param {HTMLElement} domElement The native DOM editable element.
@@ -159,6 +195,28 @@ export default class EditorUI {
 		// instance registry).
 		if ( !domElement.ckeditorInstance ) {
 			domElement.ckeditorInstance = this.editor;
+		}
+
+		// Register the element so it becomes available for Alt+F10 and Esc navigation.
+		this.focusTracker.add( domElement );
+
+		const setUpKeystrokeHandler = () => {
+			// The editing view of the editor is already listening to keystrokes from DOM roots (see: KeyObserver).
+			// Do not duplicate listeners.
+			if ( this.editor.editing.view.getDomRoot( rootName ) ) {
+				return;
+			}
+
+			this.editor.keystrokes.listenTo( domElement );
+		};
+
+		// For editable elements set by features after EditorUI is ready (e.g. source editing).
+		if ( this.isReady ) {
+			setUpKeystrokeHandler();
+		}
+		// For editable elements set while the editor is being created (e.g. DOM roots).
+		else {
+			this.once( 'ready', setUpKeystrokeHandler );
 		}
 	}
 
@@ -179,6 +237,35 @@ export default class EditorUI {
 	 */
 	getEditableElementsNames() {
 		return this._editableElementsMap.keys();
+	}
+
+	/**
+	 * Adds a toolbar to the editor UI. Used primarily to maintain the accessibility of the UI.
+	 *
+	 * Focusable toolbars can be accessed (focused) by users by pressing the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke.
+	 * Successive keystroke presses navigate over available toolbars.
+	 *
+	 * @param {module:ui/toolbar/toolbarview~ToolbarView} toolbarView A instance of the toolbar to be registered.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.isContextual] Set `true` if the toolbar is attached to the content of the editor. Such toolbar takes
+	 * a precedence over other toolbars when a user pressed <kbd>Alt</kbd> + <kbd>F10</kbd>.
+	 * @param {Function} [options.beforeFocus] Specify a callback executed before the toolbar instance DOM element gains focus
+	 * upon the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke.
+	 * @param {Function} [options.afterBlur] Specify a callback executed after the toolbar instance DOM element loses focus upon
+	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link #setEditableElement editable element}.
+	 */
+	addToolbar( toolbarView, options = {} ) {
+		if ( toolbarView.isRendered ) {
+			this.focusTracker.add( toolbarView.element );
+			this.editor.keystrokes.listenTo( toolbarView.element );
+		} else {
+			toolbarView.once( 'render', () => {
+				this.focusTracker.add( toolbarView.element );
+				this.editor.keystrokes.listenTo( toolbarView.element );
+			} );
+		}
+
+		this._focusableToolbarDefinitions.push( { toolbarView, options } );
 	}
 
 	/**
@@ -255,6 +342,177 @@ export default class EditorUI {
 	}
 
 	/**
+	 * Starts listening for <kbd>Alt</kbd> + <kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes in the context of focusable
+	 * {@link #setEditableElement editable elements} and {@link #addToolbar toolbars}
+	 * to allow users navigate across the UI.
+	 *
+	 * @private
+	 */
+	_initFocusTracking() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+
+		let lastFocusedForeignElement;
+		let candidateDefinitions;
+
+		// Focus the next focusable toolbar on <kbd>Alt</kbd> + <kbd>F10</kbd>.
+		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
+			const focusedElement = this.focusTracker.focusedElement;
+
+			// Focus moved out of a DOM element that
+			// * is not a toolbar,
+			// * does not belong to the editing view (e.g. source editing).
+			if (
+				Array.from( this._editableElementsMap.values() ).includes( focusedElement ) &&
+				!Array.from( editingView.domRoots.values() ).includes( focusedElement )
+			) {
+				lastFocusedForeignElement = focusedElement;
+			}
+
+			const currentFocusedToolbarDefinition = this._getCurrentFocusedToolbarDefinition();
+
+			// * When focusing a toolbar for the first time, set the array of definitions for successive presses of Alt+F10.
+			// This ensures, the navigation works always the same and no pair of toolbars takes over
+			// (e.g. image and table toolbars when a selected image is inside a cell).
+			// * It could be that the focus went to the toolbar by clicking a toolbar item (e.g. a dropdown). In this case,
+			// there were no candidates so they must be obtained (#12339).
+			if ( !currentFocusedToolbarDefinition || !candidateDefinitions ) {
+				candidateDefinitions = this._getFocusableCandidateToolbarDefinitions( currentFocusedToolbarDefinition );
+			}
+
+			// In a single Alt+F10 press, check all candidates but if none were focused, don't go any further.
+			// This prevents an infinite loop.
+			for ( let i = 0; i < candidateDefinitions.length; i++ ) {
+				const candidateDefinition = candidateDefinitions.shift();
+
+				// Put the first definition to the back of the array. This allows circular navigation over all toolbars
+				// on successive presses of Alt+F10.
+				candidateDefinitions.push( candidateDefinition );
+
+				// Don't focus the same toolbar again. If you did, this would move focus from the nth focused toolbar item back to the
+				// first item as per ToolbarView#focus() if the user navigated inside the toolbar.
+				if (
+					candidateDefinition !== currentFocusedToolbarDefinition &&
+					this._focusFocusableCandidateToolbar( candidateDefinition )
+				) {
+					// Clean up after a current visible toolbar when switching to the next one.
+					if ( currentFocusedToolbarDefinition && currentFocusedToolbarDefinition.options.afterBlur ) {
+						currentFocusedToolbarDefinition.options.afterBlur();
+					}
+
+					break;
+				}
+			}
+
+			cancel();
+		} );
+
+		// Blur the focused toolbar on <kbd>Esc</kbd> and bring the focus back to its origin.
+		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
+			const focusedToolbarDef = this._getCurrentFocusedToolbarDefinition();
+
+			if ( !focusedToolbarDef ) {
+				return;
+			}
+
+			// Bring focus back to where it came from before focusing the toolbar:
+			// 1. If it came from outside the engine view (e.g. source editing), move it there.
+			if ( lastFocusedForeignElement ) {
+				lastFocusedForeignElement.focus();
+				lastFocusedForeignElement = null;
+			}
+			// 2. There are two possibilities left:
+			//   2.1. It could be that the focus went from an editable element in the view (root or nested).
+			//   2.2. It could be the focus went straight to the toolbar before even focusing the editing area.
+			// In either case, just focus the view editing. The focus will land where it belongs.
+			else {
+				editor.editing.view.focus();
+			}
+
+			// Clean up after the toolbar if there is anything to do there.
+			if ( focusedToolbarDef.options.afterBlur ) {
+				focusedToolbarDef.options.afterBlur();
+			}
+
+			cancel();
+		} );
+	}
+
+	/**
+	 * Returns definitions of toolbars that could potentially be focused, sorted by their importance for the user.
+	 *
+	 * Focusable toolbars candidates are either:
+	 * * already visible,
+	 * * have `beforeFocus()` set in their {@link module:core/editor/editorui~FocusableToolbarDefinition definition} that suggests that
+	 * they might show up when called. Keep in mind that determining whether a toolbar will show up (and become focusable) is impossible
+	 * at this stage because it depends on its implementation, that in turn depends on the editing context (selection).
+	 *
+	 * **Note**: Contextual toolbars take precedence over regular toolbars.
+	 *
+	 * @private
+	 * @returns {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
+	 */
+	_getFocusableCandidateToolbarDefinitions() {
+		const definitions = [];
+
+		for ( const toolbarDef of this._focusableToolbarDefinitions ) {
+			const { toolbarView, options } = toolbarDef;
+
+			if ( isVisible( toolbarView.element ) || options.beforeFocus ) {
+				definitions.push( toolbarDef );
+			}
+		}
+
+		// Contextual and already visible toolbars have higher priority. If both are true, the toolbar will always focus first.
+		// For instance, a selected widget toolbar vs inline editor toolbar: both are visible but the widget toolbar is contextual.
+		definitions.sort( ( defA, defB ) => getToolbarDefinitionWeight( defA ) - getToolbarDefinitionWeight( defB ) );
+
+		return definitions;
+	}
+
+	/**
+	 * Returns a definition of the toolbar that is currently visible and focused (one of its children has focus).
+	 *
+	 * `null` is returned when no toolbar is currently focused.
+	 *
+	 * @private
+	 * @returns {module:core/editor/editorui~FocusableToolbarDefinition|null}
+	 */
+	_getCurrentFocusedToolbarDefinition() {
+		for ( const definition of this._focusableToolbarDefinitions ) {
+			if ( definition.toolbarView.element && definition.toolbarView.element.contains( this.focusTracker.focusedElement ) ) {
+				return definition;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Focuses a focusable toolbar candidate using its definition.
+	 *
+	 * @private
+	 * @param {module:core/editor/editorui~FocusableToolbarDefinition} candidateToolbarDefinition A definition of the toolbar to focus.
+	 * @returns {Boolean} `true` when the toolbar candidate was focused. `false` otherwise.
+	 */
+	_focusFocusableCandidateToolbar( candidateToolbarDefinition ) {
+		const { toolbarView, options: { beforeFocus } } = candidateToolbarDefinition;
+
+		if ( beforeFocus ) {
+			beforeFocus();
+		}
+
+		// If it didn't show up after beforeFocus(), it's not focusable at all.
+		if ( !isVisible( toolbarView.element ) ) {
+			return false;
+		}
+
+		toolbarView.focus();
+
+		return true;
+	}
+
+	/**
 	 * Fired when the editor UI is ready.
 	 *
 	 * Fired before {@link module:engine/controller/datacontroller~DataController#event:ready}.
@@ -273,3 +531,52 @@ export default class EditorUI {
 }
 
 mix( EditorUI, ObservableMixin );
+
+/**
+ * A definition of a focusable toolbar. Used by {@link module:core/editor/editorui~EditorUI#addToolbar}.
+ *
+ * @private
+ * @interface module:core/editor/editorui~FocusableToolbarDefinition
+ */
+
+/**
+ * An instance of a focusable toolbar view.
+ *
+ * @member {module:ui/toolbar/toolbarview~ToolbarView} #toolbarView
+ */
+
+/**
+ * Options of a focusable toolbar view:
+ *
+ * * `isContextual`: Marks the higher priority toolbar. For example when there are 2 visible toolbars,
+ * it allows to distinguish which toolbar should be focused first after the `alt+f10` keystroke
+ * * `beforeFocus`: A callback executed before the `ToolbarView` gains focus upon the `Alt+F10` keystroke.
+ * * `afterBlur`: A callback executed after `ToolbarView` loses focus upon `Esc` keystroke but before the focus goes back to the `origin`.
+ *
+ * @member {Object} #options
+ */
+
+// Returns a number (weight) for a toolbar definition. Visible toolbars have a higher priority and so do
+// contextual toolbars (displayed in the context of a content, for instance, an image toolbar).
+//
+// A standard invisible toolbar is the heaviest. A visible contextual toolbar is the lightest.
+//
+// @private
+// @param {module:core/editor/editorui~FocusableToolbarDefinition} toolbarDef A toolbar definition to be weighted.
+// @returns {Number}
+function getToolbarDefinitionWeight( toolbarDef ) {
+	const { toolbarView, options } = toolbarDef;
+	let weight = 10;
+
+	// Prioritize already visible toolbars. They should get focused first.
+	if ( isVisible( toolbarView.element ) ) {
+		weight--;
+	}
+
+	// Prioritize contextual toolbars. They are displayed at the selection.
+	if ( options.isContextual ) {
+		weight--;
+	}
+
+	return weight;
+}

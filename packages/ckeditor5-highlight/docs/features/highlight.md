@@ -6,9 +6,13 @@ category: features
 
 {@snippet features/build-highlight-source}
 
-The {@link module:highlight/highlight~Highlight} feature offers text marking tools that help content authors speed up their work, for example when reviewing content or marking it for future reference. It uses inline `<mark>` elements in the view, supports both markers (background color) and pens (text color), and comes with a flexible configuration.
+The highlight feature offers text marking tools that help content authors speed up their work, for example when reviewing content or marking it for future reference. It uses inline `<mark>` elements in the view, supports both markers (background color) and pens (text color), and comes with a flexible configuration.
 
 The highlight plugin always comes with a predefined and limited number of available colors. It also focuses on the functionality aspect rather than pure aesthetics. For changing the appearance of the text and background color, use the {@link features/font#configuring-the-font-color-and-font-background-color-features font color and background color} plugin.
+
+<info-box info>
+	The highlight feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
 
 ## Demo
 
@@ -16,9 +20,14 @@ Select the text you want to highlight, then use the highlight toolbar button {@i
 
 {@snippet features/highlight}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 There are more CKEditor 5 features that can help you style your content:
+* {@link features/style Styles} &ndash; Apply pre-configured styles like highlight or spoiler to existing content elements.
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic* and others.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.

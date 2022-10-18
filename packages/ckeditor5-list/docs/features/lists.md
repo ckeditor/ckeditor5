@@ -2,24 +2,30 @@
 menu-title: Ordered and unordered lists
 category: features-lists
 order: 10
-modified_at: 2022-01-21
+modified_at: 2022-05-12
 ---
 
 # Lists
 
-The {@link module:list/list~List list} feature lets you create ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
+The list feature lets you create ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
 
 Lists are useful when you want to emphasize selected information, highlight a series of steps, enumerate items of a collection. They draw the reader's attention and, just like {@link features/block-quote block quotes} or {@link features/indent indentation}, give the text a structure and breathing room. They help visually separate passages for a better reading experience and make skimming for information easier.
 
 You may find additional interesting details and examples in the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post after reading this guide.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	There are currently two plugins providing lists support for CKEditor 5: this regular **lists feature** and the new {@link features/document-lists document lists feature}, based on a different approach.
+
+	The lists feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+
+	If you wish to switch to the document list feature, you need to {@link features/document-lists#installation install it} first.
 </info-box>
 
 {@snippet features/lists-source}
 
 ## Ordered and unordered lists
+
+The {@link module:list/list~List list} feature lets you create ordered (numbered) and unordered (bulleted) lists.
 
 An unordered (bulleted) list can represent items where the order is not important, for example, a list of ingredients required for preparing a dish or a drink.
 
@@ -41,7 +47,11 @@ A Markdown code provided by the {@link features/autoformat autoformatting featur
 Beside the basic functionality of creating the ordered and unordered lists, CKEditor 5 offers additional formatting tools that allow controlling the lists. Features such as more styles for list markers, setting the start index or reversing the list order can be enabled separately or all together. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only. See the [installation](#list-properties-2) section to learn how to enable it in your editor.
+	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
+
+	The {@link module:list/documentlistproperties~DocumentListProperties document list properties feature} is not available in any builds by default.
+
+	See the [installation](#list-properties-2) section to learn how to enable these in your editor.
 </info-box>
 
 ### List styles
@@ -62,7 +72,7 @@ When this feature is {@link module:list/listproperties~ListPropertiesConfig#star
 
 #### Demo
 
-In the editor below, notice how the ordering is continued in the second list. You can go to the first item of the last list and use the ordered list dropdown input field to set the start index to achieve continuous numbering of spaceships.
+In the editor below, notice how the ordering is continued in the second list. You can go to the first item of the last list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown input field to set the start index to achieve continuous numbering of spaceships.
 
 {@snippet features/lists-index}
 
@@ -74,7 +84,7 @@ When this feature is {@link module:list/listproperties~ListPropertiesConfig#reve
 
 #### Demo
 
-Click the second list and use the ordered list dropdown switch to choose whether it should be reversed.
+Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown switch to choose whether it should be reversed.
 
 {@snippet features/lists-reversed}
 
@@ -95,8 +105,10 @@ These features also provide similar functionality:
 
 ## Installation
 
+### List feature
+
 <info-box info>
-	The base list feature is enabled by default in all {@link installation/advanced/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
+	The base list feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
@@ -119,10 +131,10 @@ ClassicEditor
 	.catch( ... );
 ```
 
-### List properties
+#### List properties
 
 <info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/advanced/predefined-builds#document-editor document editor build} only.
+	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
 </info-box>
 
 To enable the list properties feature, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
@@ -151,6 +163,8 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+
 
 <info-box info>
 	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
@@ -190,7 +204,7 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 * The {@link module:list/listproperties/listreversedcommand~ListReversedCommand `listReversed`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
-    editor.execute( 'listReversed', { reversed: 'true' } );
+    editor.execute( 'listReversed', { reversed: true } );
     ```
 
 * The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.

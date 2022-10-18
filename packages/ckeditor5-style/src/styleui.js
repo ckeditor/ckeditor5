@@ -85,8 +85,11 @@ export default class StyleUI extends Plugin {
 			panelView.delegate( 'execute' ).to( dropdown );
 
 			// Execute the command when a style is selected in the styles panel.
-			panelView.on( 'execute', evt => {
-				editor.execute( 'style', evt.source.styleDefinition.name );
+			// Also focus the editable after executing the command.
+			// It overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+			dropdown.on( 'execute', evt => {
+				editor.execute( 'style', { styleName: evt.source.styleDefinition.name } );
+				editor.editing.view.focus();
 			} );
 
 			// Bind the state of the styles panel to the command.

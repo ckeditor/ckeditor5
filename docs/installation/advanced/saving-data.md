@@ -13,7 +13,7 @@ CKEditor 5 allows you to retrieve the data from and save it to your server (or t
 
 This is the classic way of integrating the editor. It is typically used in simpler CMSes, forums, comment sections, etc.
 
-This approach is only available in the {@link installation/advanced/predefined-builds#classic-editor Classic editor} and only if the editor was used to replace a `<textarea>` element:
+This approach is only available in the {@link installation/getting-started/predefined-builds#classic-editor Classic editor} and only if the editor was used to replace a `<textarea>` element:
 
 ```html
 <!DOCTYPE html>
@@ -53,7 +53,7 @@ In your HTTP server, you can now read the editor data from the `content` variabl
 ```
 
 <info-box>
-	Please note that the replaced `<textarea>` element is updated automatically by CKEditor straight before the submission. If you need to access the `<textarea>` value programatically with JavaScript (e.g. in the `onsubmit` handler to validate the entered data), there is a chance that the `<textarea>` element would still store the original data. In order to update the value of the replaced `<textarea>`, use the {@link module:editor-classic/classiceditor~ClassicEditor#updateSourceElement `editor.updateSourceElement()`} method.
+	Please note that the replaced `<textarea>` element is updated automatically by CKEditor straight before the submission. If you need to access the `<textarea>` value programmatically with JavaScript (e.g. in the `onsubmit` handler to validate the entered data), there is a chance that the `<textarea>` element would still store the original data. In order to update the value of the replaced `<textarea>`, use the {@link module:editor-classic/classiceditor~ClassicEditor#updateSourceElement `editor.updateSourceElement()`} method.
 
 	If you need to get the actual data from CKEditor at any moment using JavaScript, use the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method as described in the next section.
 </info-box>
@@ -115,6 +115,21 @@ document.querySelector( '#submit' ).addEventListener( 'click', () => {
 	// ...
 } );
 ```
+
+## Updating the source element
+
+If the source element is not `<textarea>`, CKEditor 5 clears its content after the editor is destroyed. However, if you would like to enable updating the source element with the output coming from the data pipeline, you can use the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option.
+
+```js
+ClassicEditor.create( document.querySelector( '#editor' ), {
+    // ...
+    updateSourceElementOnDestroy: true
+} );
+```
+
+<info-box warning>
+Enabling the `updateSourceElementOnDestroy` option in your configuration might have some security implications, depending on plugins you use. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Be especially careful when using the Markdown, General HTML Support and HTML embed features.
+</info-box>
 
 ## Autosave feature
 

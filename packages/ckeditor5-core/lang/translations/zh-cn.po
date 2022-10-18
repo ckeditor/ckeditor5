@@ -43,3 +43,7 @@ msgstr "第 %0 步，共 %1 步"
 msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
 msgstr "无法上传的文件："
+
+msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
+msgid "Rich Text Editor. Editing area: %0"
+msgstr "富文本编辑器。编辑区域：%0"

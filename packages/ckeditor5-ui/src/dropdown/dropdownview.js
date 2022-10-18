@@ -9,6 +9,7 @@
 
 import View from '../view';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/dropdown.css';
 
@@ -106,6 +107,10 @@ export default class DropdownView extends View {
 		/**
 		 * Controls whether the dropdown view is open, i.e. shows or hides the {@link #panelView panel}.
 		 *
+		 * **Note**: When the dropdown gets open, it will attempt to call `focus()` on the first child of its {@link #panelView}.
+		 * See {@link module:ui/dropdown/utils~addToolbarToDropdown}, {@link module:ui/dropdown/utils~addListToDropdown}, and
+		 * {@link module:ui/dropdown/utils~focusChildOnDropdownOpen} to learn more about focus management in dropdowns.
+		 *
 		 * @observable
 		 * @member {Boolean} #isOpen
 		 */
@@ -166,6 +171,14 @@ export default class DropdownView extends View {
 		 */
 		this.keystrokes = new KeystrokeHandler();
 
+		/**
+		 * Tracks information about the DOM focus in the dropdown.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
 		this.setTemplate( {
 			tag: 'div',
 
@@ -190,7 +203,8 @@ export default class DropdownView extends View {
 			attributes: {
 				class: [
 					'ck-dropdown__button'
-				]
+				],
+				'data-cke-tooltip-disabled': bind.to( 'isOpen' )
 			}
 		} );
 
@@ -236,6 +250,9 @@ export default class DropdownView extends View {
 	render() {
 		super.render();
 
+		this.focusTracker.add( this.buttonView.element );
+		this.focusTracker.add( this.panelView.element );
+
 		// Toggle the dropdown when its button has been clicked.
 		this.listenTo( this.buttonView, 'open', () => {
 			this.isOpen = !this.isOpen;
@@ -246,8 +263,8 @@ export default class DropdownView extends View {
 
 		// Let the dropdown control the position of the panel. The position must
 		// be updated every time the dropdown is open.
-		this.on( 'change:isOpen', () => {
-			if ( !this.isOpen ) {
+		this.on( 'change:isOpen', ( evt, name, isOpen ) => {
+			if ( !isOpen ) {
 				return;
 			}
 
@@ -270,7 +287,6 @@ export default class DropdownView extends View {
 
 		const closeDropdown = ( data, cancel ) => {
 			if ( this.isOpen ) {
-				this.buttonView.focus();
 				this.isOpen = false;
 				cancel();
 			}

@@ -51,7 +51,15 @@ describe( 'StyleUI', () => {
 
 			beforeEach( () => {
 				dropdown = editor.ui.componentFactory.create( 'style' );
+				dropdown.render();
+
+				document.body.appendChild( dropdown.element );
+
 				command = editor.commands.get( 'style' );
+			} );
+
+			afterEach( () => {
+				dropdown.element.remove();
 			} );
 
 			it( 'should be registered in the component factory', () => {
@@ -70,8 +78,6 @@ describe( 'StyleUI', () => {
 			} );
 
 			it( 'should have a static CSS class', () => {
-				dropdown.render();
-
 				expect( dropdown.element.classList.contains( 'ck-style-dropdown' ) ).to.be.true;
 			} );
 
@@ -168,7 +174,7 @@ describe( 'StyleUI', () => {
 
 					panel.fire( new EventInfo( buttonMock, 'execute' ) );
 
-					sinon.assert.calledOnceWithExactly( commandExecuteStub, 'style', 'foo' );
+					sinon.assert.calledOnceWithExactly( commandExecuteStub, 'style', { styleName: 'foo' } );
 				} );
 
 				it( 'should bind #activeStyles to the command', () => {

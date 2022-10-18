@@ -139,7 +139,7 @@ See the result below:
 
 </div>
 
-This set of buttons and styles is available by default in the predefined {@link installation/advanced/predefined-builds#document-editor document editor build} and does not require any additional customization:
+This set of buttons and styles is available by default in the predefined {@link installation/getting-started/predefined-builds#document-editor document editor build} and does not require any additional customization:
 
 ```js
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
@@ -417,7 +417,7 @@ The `ImageStyle` plugin provides a set of default styles depending on the loaded
 
 ## Installation
 
-This feature is available in all {@link installation/advanced/predefined-builds ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
+This feature is available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
 
 ## Common API
 

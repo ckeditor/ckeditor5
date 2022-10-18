@@ -247,7 +247,7 @@ export default class TableCellPropertiesView extends View {
 		 * A toolbar with buttons that allow changing the horizontal text alignment in a table cell.
 		 *
 		 * @readonly
-		 * @member {module:ui/toolbar/toolbar~ToolbarView}
+		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.horizontalAlignmentToolbar = horizontalAlignmentToolbar;
 
@@ -255,7 +255,7 @@ export default class TableCellPropertiesView extends View {
 		 * A toolbar with buttons that allow changing the vertical text alignment in a table cell.
 		 *
 		 * @readonly
-		 * @member {module:ui/toolbar/toolbar~ToolbarView}
+		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.verticalAlignmentToolbar = verticalAlignmentToolbar;
 
@@ -409,8 +409,10 @@ export default class TableCellPropertiesView extends View {
 		[
 			this.borderStyleDropdown,
 			this.borderColorInput,
+			this.borderColorInput.fieldView.dropdownView.buttonView,
 			this.borderWidthInput,
 			this.backgroundInput,
+			this.backgroundInput.fieldView.dropdownView.buttonView,
 			this.widthInput,
 			this.heightInput,
 			this.paddingInput,

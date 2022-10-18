@@ -11,6 +11,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { escapeRegExp } from 'lodash-es';
 
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
@@ -236,6 +237,18 @@ describe( 'MediaEmbedEditing', () => {
 							],
 							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
 								'<iframe src="https://www.youtube.com/embed/euqbMkM-QQk" ' +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">' +
+								'</iframe>' +
+							'</div>' );
+						} );
+
+						it( 'upcasts the URL that contains a timestamp', () => {
+							testMediaUpcast( [
+								'https://youtu.be/aEZw6KFTm6s?t=93'
+							],
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+								'<iframe src="https://www.youtube.com/embed/aEZw6KFTm6s?start=93" ' +
 									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
 									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">' +
 								'</iframe>' +
@@ -1244,13 +1257,13 @@ describe( 'MediaEmbedEditing', () => {
 			const viewData = getViewData( view, { withoutSelection: true, renderRawElements: true } );
 			let expectedRegExp;
 
-			const expectedUrl = url.match( /^https?:\/\// ) ? url : 'https://' + url;
+			const expectedUrl = escapeRegExp( url.match( /^https?:\/\// ) ? url : 'https://' + url );
 
 			if ( expected ) {
 				expectedRegExp = new RegExp(
 					'<figure[^>]+>' +
 						'<div[^>]+>' +
-							normalizeHtml( expected ) +
+							normalizeHtml( escapeRegExp( expected ) ) +
 						'</div>' +
 					'</figure>' );
 			} else {
@@ -1259,11 +1272,14 @@ describe( 'MediaEmbedEditing', () => {
 						'<div[^>]+>' +
 							'<div class="ck ck-media__placeholder ck-reset_all">' +
 								'<div class="ck-media__placeholder__icon">.*</div>' +
-								`<a class="ck-media__placeholder__url" href="${ expectedUrl }" rel="noopener noreferrer" target="_blank">` +
-									`<span class="ck-media__placeholder__url__text">${ expectedUrl }</span>` +
-									'<span class="ck ck-tooltip ck-tooltip_s">' +
-										'<span class="ck ck-tooltip__text">Open media in new tab</span>' +
-									'</span>' +
+								'<a ' +
+									'class="ck-media__placeholder__url" ' +
+									'data-cke-tooltip-text="Open media in new tab" ' +
+									`href="${ expectedUrl }" ` +
+									'rel="noopener noreferrer" ' +
+									'target="_blank"' +
+								'>' +
+										`<span class="ck-media__placeholder__url__text">${ expectedUrl }</span>` +
 								'</a>' +
 							'</div>' +
 						'</div>' +

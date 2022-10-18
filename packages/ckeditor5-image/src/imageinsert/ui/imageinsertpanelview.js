@@ -8,7 +8,7 @@
  */
 
 import { icons } from 'ckeditor5/src/core';
-import { ButtonView, View, SplitButtonView, ViewCollection, submitHandler, createDropdown, FocusCycler } from 'ckeditor5/src/ui';
+import { ButtonView, View, ViewCollection, submitHandler, FocusCycler } from 'ckeditor5/src/ui';
 import { Collection, FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import ImageInsertFormRowView from './imageinsertformrowview';
@@ -48,13 +48,6 @@ export default class ImageInsertPanelView extends View {
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.cancelButtonView = cancelButtonView;
-
-		/**
-		 * The dropdown view.
-		 *
-		 * @member {module:ui/dropdown/dropdownview~DropdownView}
-		 */
-		this.dropdownView = this._createDropdownView( locale );
 
 		/**
 		 * The value of the URL input.
@@ -221,35 +214,6 @@ export default class ImageInsertPanelView extends View {
 	 */
 	getIntegration( name ) {
 		return this._integrations.find( integration => integration.name === name );
-	}
-
-	/**
-	 * Creates the dropdown view.
-	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 *
-	 * @private
-	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
-	 */
-	_createDropdownView( locale ) {
-		const t = locale.t;
-		const dropdownView = createDropdown( locale, SplitButtonView );
-		const splitButtonView = dropdownView.buttonView;
-		const panelView = dropdownView.panelView;
-
-		splitButtonView.set( {
-			label: t( 'Insert image' ),
-			icon: icons.image,
-			tooltip: true
-		} );
-
-		panelView.extendTemplate( {
-			attributes: {
-				class: 'ck-image-insert__panel'
-			}
-		} );
-
-		return dropdownView;
 	}
 
 	/**

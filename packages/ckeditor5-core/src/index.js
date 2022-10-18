@@ -58,14 +58,25 @@ import pilcrow from './../theme/icons/pilcrow.svg';
 import quote from './../theme/icons/quote.svg';
 import threeVerticalDots from './../theme/icons/three-vertical-dots.svg';
 
+import bold from './../theme/icons/bold.svg';
+import paragraph from './../theme/icons/paragraph.svg';
+import plus from './../theme/icons/plus.svg';
+import text from './../theme/icons/text.svg';
+import importExport from './../theme/icons/importexport.svg';
+
 export const icons = {
+	bold,
 	cancel,
 	caption,
 	check,
 	cog,
 	eraser,
-	lowVision,
 	image,
+	lowVision,
+	importExport,
+	paragraph,
+	plus,
+	text,
 
 	alignBottom,
 	alignMiddle,

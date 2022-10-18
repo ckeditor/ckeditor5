@@ -9,13 +9,14 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import TableColumnResizeEditing from './tablecolumnresize/tablecolumnresizeediting';
+import TableCellWidthEditing from './tablecellwidth/tablecellwidthediting';
 
 import '../theme/tablecolumnresize.css';
 
 /**
- * The table column resizer feature.
+ * The table column resize feature.
  *
- * It provides the possibility to set the width of each column in a table using a resize handle.
+ * It provides the possibility to set the width of each column in a table using a resize handler.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -24,7 +25,7 @@ export default class TableColumnResize extends Plugin {
 	 * @inheritDoc
  	 */
 	static get requires() {
-		return [ TableColumnResizeEditing ];
+		return [ TableColumnResizeEditing, TableCellWidthEditing ];
 	}
 
 	/**

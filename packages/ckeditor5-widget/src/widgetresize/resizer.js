@@ -68,9 +68,26 @@ export default class Resizer {
 		 */
 
 		/**
+		 * Flag that indicates whether resizer can be used.
+		 *
 		 * @observable
 		 */
 		this.set( 'isEnabled', true );
+
+		/**
+		 * Flag that indicates that resizer is currently focused.
+		 *
+		 * @observable
+		 */
+		this.set( 'isSelected', false );
+
+		/**
+		 * Flag that indicates whether resizer is rendered (visible on the screen).
+		 *
+		 * @readonly
+		 * @observable
+		 */
+		this.bind( 'isVisible' ).to( this, 'isEnabled', this, 'isSelected', ( isEnabled, isSelected ) => isEnabled && isSelected );
 
 		this.decorate( 'begin' );
 		this.decorate( 'cancel' );
@@ -85,13 +102,27 @@ export default class Resizer {
 				event.stop();
 			}
 		}, { priority: 'high' } );
+	}
 
-		this.on( 'change:isEnabled', () => {
-			// We should redraw the resize handles when the plugin is enabled again.
-			// Otherwise they won't show up.
-			if ( this.isEnabled ) {
-				this.redraw();
-			}
+	/**
+	 * Makes resizer visible in the UI.
+	 */
+	show() {
+		const editingView = this._options.editor.editing.view;
+
+		editingView.change( writer => {
+			writer.removeClass( 'ck-hidden', this._viewResizerWrapper );
+		} );
+	}
+
+	/**
+	 * Hides resizer in the UI.
+	 */
+	hide() {
+		const editingView = this._options.editor.editing.view;
+
+		editingView.change( writer => {
+			writer.addClass( 'ck-hidden', this._viewResizerWrapper );
 		} );
 	}
 
@@ -112,12 +143,6 @@ export default class Resizer {
 				that._appendHandles( domElement );
 				that._appendSizeUI( domElement );
 
-				that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
-					domElement.style.display = newValue ? '' : 'none';
-				} );
-
-				domElement.style.display = that.isEnabled ? '' : 'none';
-
 				return domElement;
 			} );
 
@@ -126,6 +151,19 @@ export default class Resizer {
 			writer.addClass( 'ck-widget_with-resizer', widgetElement );
 
 			this._viewResizerWrapper = viewResizerWrapper;
+
+			if ( !this.isVisible ) {
+				this.hide();
+			}
+		} );
+
+		this.on( 'change:isVisible', () => {
+			if ( this.isVisible ) {
+				this.show();
+				this.redraw();
+			} else {
+				this.hide();
+			}
 		} );
 	}
 

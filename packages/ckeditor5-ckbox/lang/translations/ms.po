@@ -1,0 +1,25 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Malay (https://www.transifex.com/ckeditor/teams/11143/ms/)\n"
+"Language: ms\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Toolbar button tooltip for opening a file browser that allows inserting an image or a file to the editor."
+msgid "Open file manager"
+msgstr "Buka pengurus fail"
+
+msgctxt "A message is displayed when CKEditor 5 cannot associate an image with any of the categories defined in CKBox while uploading an asset."
+msgid "Cannot determine a category for the uploaded file."
+msgstr "Gagal menentukan kategori bagi fail yang dimuat naik."

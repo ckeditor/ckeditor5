@@ -12,7 +12,6 @@ import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromele
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
@@ -205,11 +204,6 @@ class MultirootEditorUI extends EditorUI {
 			// editable areas (roots) but the decoupled editor has only one.
 			this.setEditableElement( editable.name, editableElement );
 
-			// Let the global focus tracker know that the editable UI element is focusable and
-			// belongs to the editor. From now on, the focus tracker will sustain the editor focus
-			// as long as the editable is focused (e.g. the user is typing).
-			this.focusTracker.add( editableElement );
-
 			// Let the editable UI element respond to the changes in the global editor focus
 			// tracker. It has been added to the same tracker a few lines above but, in reality, there are
 			// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
@@ -279,12 +273,8 @@ class MultirootEditorUI extends EditorUI {
 
 		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
 
-		enableToolbarKeyboardFocus( {
-			origin: editor.editing.view,
-			originFocusTracker: this.focusTracker,
-			originKeystrokeHandler: editor.keystrokes,
-			toolbar
-		} );
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
+		this.addToolbar( view.toolbar );
 	}
 
 	/**
@@ -334,6 +324,8 @@ class MultirootEditorUIView extends EditorUIView {
 	constructor( locale, editingView, editableElements ) {
 		super( locale );
 
+		const t = locale.t;
+
 		/**
 		 * The main toolbar of the decoupled editor UI.
 		 *
@@ -352,7 +344,11 @@ class MultirootEditorUIView extends EditorUIView {
 
 		// Create InlineEditableUIView instance for each editable.
 		for ( const editableName of Object.keys( editableElements ) ) {
-			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ] );
+			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ], {
+				label: editableView => {
+					return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+				}
+			} );
 
 			editable.name = editableName;
 			this.editables.push( editable );

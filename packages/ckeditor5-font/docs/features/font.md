@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-font-source}
 
-The {@link module:font/font~Font} plugin provides extended text formatting options for the document content.
+The font feature provides extended text formatting options for the document content.
 
 The font styles, just like the {@link features/basic-styles basic text styles} can serve numerous purposes. Font size setting can be applied globally or to a selected part of the text only making it catch the eye of the reader. Using different font families can help differentiate between sections of the content that serve various purposes (e.g. main text and a side quotation or a recap). Different font colors can work as markers and guides just like font background colors, that stand out even more and draw attention.
 
@@ -20,7 +20,7 @@ The plugin enables the following features in the rich-text editor:
 </info-box>
 
 <info-box info>
-	The font styles feature is enabled by default in the {@link installation/advanced/predefined-builds #document-editor document editor build} only. See the [installation](#installation) section to learn how to enable it in your editor.
+	The font styles feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
@@ -29,10 +29,15 @@ Use the toolbar dropdowns in the demo below to control font size {@icon @ckedito
 
 {@snippet features/font}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 Here are some more CKEditor 5 features that can help you format your content:
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/style Styles} &ndash; Apply pre-configured styles to existing elements in the editor content.
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.

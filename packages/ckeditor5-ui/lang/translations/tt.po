@@ -1,0 +1,113 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Tatar (https://www.transifex.com/ckeditor/teams/11143/tt/)\n"
+"Language: tt\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor"
+msgstr ""
+
+msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
+msgid "Editor editing area: %0"
+msgstr ""
+
+msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Edit block"
+msgstr ""
+
+msgctxt "Label for a button showing the next thing (tab, page, etc.)."
+msgid "Next"
+msgstr ""
+
+msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
+msgid "Previous"
+msgstr ""
+
+msgctxt "Label used by assistive technologies describing a generic editor toolbar."
+msgid "Editor toolbar"
+msgstr ""
+
+msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
+msgid "Dropdown toolbar"
+msgstr ""
+
+msgctxt "Label of a button that applies a black color in color pickers."
+msgid "Black"
+msgstr "Кара"
+
+msgctxt "Label of a button that applies a dim grey color in color pickers."
+msgid "Dim grey"
+msgstr ""
+
+msgctxt "Label of a button that applies a grey color in color pickers."
+msgid "Grey"
+msgstr "Соры"
+
+msgctxt "Label of a button that applies a light grey color in color pickers."
+msgid "Light grey"
+msgstr "Ачык соры"
+
+msgctxt "Label of a button that applies a white color in color pickers."
+msgid "White"
+msgstr "Ак"
+
+msgctxt "Label of a button that applies a red color in color pickers."
+msgid "Red"
+msgstr "Кызыл"
+
+msgctxt "Label of a button that applies a orange color in color pickers."
+msgid "Orange"
+msgstr "Кызгылт"
+
+msgctxt "Label of a button that applies a yellow color in color pickers."
+msgid "Yellow"
+msgstr "Сары"
+
+msgctxt "Label of a button that applies a light green color in color pickers."
+msgid "Light green"
+msgstr "Ачык яшел"
+
+msgctxt "Label of a button that applies a green color in color pickers."
+msgid "Green"
+msgstr "Яшел"
+
+msgctxt "Label of a button that applies a aquamarine color in color pickers."
+msgid "Aquamarine"
+msgstr "Аквамарин"
+
+msgctxt "Label of a button that applies a turquoise color in color pickers."
+msgid "Turquoise"
+msgstr "Фервоз"
+
+msgctxt "Label of a button that applies a light blue color in color pickers."
+msgid "Light blue"
+msgstr "Ачык зәңгәр"
+
+msgctxt "Label of a button that applies a blue color in color pickers."
+msgid "Blue"
+msgstr "Зәңгәр"
+
+msgctxt "Label of a button that applies a purple color in color pickers."
+msgid "Purple"
+msgstr "Шәмәхә"
+
+msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
+msgid "Editor block content toolbar"
+msgstr ""
+
+msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
+msgid "Editor contextual toolbar"
+msgstr ""

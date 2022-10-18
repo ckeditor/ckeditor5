@@ -8,7 +8,16 @@
  */
 
 import { icons } from 'ckeditor5/src/core';
-import { ButtonView, ColorGridView, ColorTileView, FocusCycler, LabelView, Template, View } from 'ckeditor5/src/ui';
+import {
+	ButtonView,
+	ColorGridView,
+	ColorTileView,
+	FocusCycler,
+	LabelView,
+	Template,
+	View,
+	ViewCollection
+} from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import DocumentColorCollection from '../documentcolorcollection';
@@ -110,6 +119,15 @@ export default class ColorTableView extends View {
 		this.documentColorsCount = documentColorsCount;
 
 		/**
+		 * A collection of views that can be focused in the view.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this._focusables = new ViewCollection();
+
+		/**
 		 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
 		 * the default (static) color set.
 		 *
@@ -137,15 +155,15 @@ export default class ColorTableView extends View {
 		 * @member {module:ui/focuscycler~FocusCycler}
 		 */
 		this._focusCycler = new FocusCycler( {
-			focusables: this.items,
+			focusables: this._focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate list items backwards using the Arrow Up key.
-				focusPrevious: 'arrowup',
+				// Navigate list items backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
+				focusPrevious: 'shift + tab',
 
-				// Navigate list items forwards using the Arrow Down key.
-				focusNext: 'arrowdown'
+				// Navigate list items forwards using the <kbd>Tab</kbd> key.
+				focusNext: 'tab'
 			}
 		} );
 
@@ -169,7 +187,7 @@ export default class ColorTableView extends View {
 			children: this.items
 		} );
 
-		this.items.add( this._removeColorButton() );
+		this.items.add( this._createRemoveColorButton() );
 	}
 
 	/**
@@ -226,11 +244,6 @@ export default class ColorTableView extends View {
 	render() {
 		super.render();
 
-		// Items added before rendering should be known to the #focusTracker.
-		for ( const item of this.items ) {
-			this.focusTracker.add( item.element );
-		}
-
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 	}
@@ -256,6 +269,8 @@ export default class ColorTableView extends View {
 		this.staticColorsGrid = this._createStaticColorsGrid();
 
 		this.items.add( this.staticColorsGrid );
+		this.focusTracker.add( this.staticColorsGrid.element );
+		this._focusables.add( this.staticColorsGrid );
 
 		if ( this.documentColorsCount ) {
 			// Create a label for document colors.
@@ -273,7 +288,10 @@ export default class ColorTableView extends View {
 			} );
 			this.items.add( label );
 			this.documentColorsGrid = this._createDocumentColorsGrid();
+
 			this.items.add( this.documentColorsGrid );
+			this.focusTracker.add( this.documentColorsGrid.element );
+			this._focusables.add( this.documentColorsGrid );
 		}
 	}
 
@@ -297,13 +315,12 @@ export default class ColorTableView extends View {
 	 * @private
 	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
-	_removeColorButton() {
+	_createRemoveColorButton() {
 		const buttonView = new ButtonView();
 
 		buttonView.set( {
 			withText: true,
 			icon: icons.eraser,
-			tooltip: true,
 			label: this.removeButtonLabel
 		} );
 
@@ -311,6 +328,11 @@ export default class ColorTableView extends View {
 		buttonView.on( 'execute', () => {
 			this.fire( 'execute', { value: null } );
 		} );
+
+		buttonView.render();
+
+		this.focusTracker.add( buttonView.element );
+		this._focusables.add( buttonView );
 
 		return buttonView;
 	}

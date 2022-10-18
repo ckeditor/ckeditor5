@@ -56,13 +56,33 @@ describe( 'TableCaptionUI', () => {
 	} );
 
 	it( 'should scroll the editing view to the caption on the #execute event if the caption showed up', () => {
-		editor.setData( '<figure class="image"><table><tr><td>foo</td></tr></table></figure>' );
+		editor.setData( '<figure class="table"><table><tr><td>foo</td></tr></table></figure>' );
 
 		const executeSpy = testUtils.sinon.spy( editor.editing.view, 'scrollToTheSelection' );
 
 		tableCaption.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
+	} );
+
+	it( 'should focus the editing view on the #execute event if the caption showed up', () => {
+		editor.setData( '<figure class="table"><table><tr><td>foo</td></tr></table></figure>' );
+
+		const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+		tableCaption.fire( 'execute' );
+
+		sinon.assert.calledOnce( focusSpy );
+	} );
+
+	it( 'should focus the editing view on the #execute event if the caption was hidden', () => {
+		editor.setData( '<figure class="table"><table><tr><td>foo</td></tr></table><figcaption>caption</figcaption></figure>' );
+
+		const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+		tableCaption.fire( 'execute' );
+
+		sinon.assert.calledOnce( focusSpy );
 	} );
 
 	it( 'should not scroll the editing view on the #execute event if the caption was hidden', () => {

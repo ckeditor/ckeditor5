@@ -7,8 +7,8 @@
  * @module editor-decoupled/decouplededitor
  */
 
-import { Editor, DataApiMixin, secureSourceElement } from 'ckeditor5/src/core';
-import { CKEditorError, getDataFromElement, setDataInElement, mix } from 'ckeditor5/src/utils';
+import { Editor, ElementApiMixin, DataApiMixin, secureSourceElement } from 'ckeditor5/src/core';
+import { CKEditorError, getDataFromElement, mix } from 'ckeditor5/src/utils';
 
 import { isElement } from 'lodash-es';
 
@@ -16,7 +16,7 @@ import DecoupledEditorUI from './decouplededitorui';
 import DecoupledEditorUIView from './decouplededitoruiview';
 
 /**
- * The {@glink installation/advanced/alternative-setups/predefined-builds#document-editor decoupled editor} implementation.
+ * The {@glink installation/getting-started/predefined-builds#document-editor decoupled editor} implementation.
  * It provides an inline editable and a toolbar. However, unlike other editors,
  * it does not render these components anywhere in the DOM unless configured.
  *
@@ -34,9 +34,9 @@ import DecoupledEditorUIView from './decouplededitoruiview';
  * The decoupled editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-decoupled`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled) package)
  * but it is also available in the
- * {@glink installation/advanced/alternative-setups/predefined-builds#document-editor document editor build}.
+ * {@glink installation/getting-started/predefined-builds#document-editor document editor build}.
  *
- * {@glink installation/advanced/alternative-setups/predefined-builds Builds}
+ * {@glink installation/getting-started/predefined-builds Builds}
  * are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
@@ -46,6 +46,7 @@ import DecoupledEditorUIView from './decouplededitoruiview';
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
  *
  * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
+ * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
@@ -95,6 +96,10 @@ export default class DecoupledEditor extends Editor {
 	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
+	 * Updates the original editor element with the data if the
+	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
+	 * configuration option is set to `true`.
+	 *
 	 * **Note**: The decoupled editor does not remove the toolbar and editable when destroyed. You can
 	 * do that yourself in the destruction chain:
 	 *
@@ -121,7 +126,7 @@ export default class DecoupledEditor extends Editor {
 		return super.destroy()
 			.then( () => {
 				if ( this.sourceElement ) {
-					setDataInElement( this.sourceElement, data );
+					this.updateSourceElement( data );
 				}
 			} );
 	}
@@ -206,7 +211,7 @@ export default class DecoupledEditor extends Editor {
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink installation/advanced/alternative-setups/predefined-builds editor build}
+	 * {@glink installation/getting-started/predefined-builds editor build}
 	 * (for example – `@ckeditor/ckeditor5-build-decoupled`).
 	 *
 	 * If you want to use the decoupled editor from source (`@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor`),
@@ -219,7 +224,9 @@ export default class DecoupledEditor extends Editor {
 	 * or the editor's initial data.
 	 *
 	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization.
-	 * Moreover, the editor data will be set back to the original element once the editor is destroyed.
+	 * The editor data will be set back to the original element once the editor is destroyed only if the
+	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy updateSourceElementOnDestroy}
+	 * option is set to `true`.
 	 *
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
 	 * It is available via
@@ -249,6 +256,7 @@ export default class DecoupledEditor extends Editor {
 	}
 }
 
+mix( DecoupledEditor, ElementApiMixin );
 mix( DecoupledEditor, DataApiMixin );
 
 function getInitialData( sourceElementOrData ) {

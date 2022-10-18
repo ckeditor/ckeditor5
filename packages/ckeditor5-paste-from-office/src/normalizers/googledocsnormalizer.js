@@ -10,6 +10,7 @@
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import removeBoldWrapper from '../filters/removeboldwrapper';
+import transformBlockBrsToParagraphs from '../filters/br';
 import { unwrapParagraphInListItem } from '../filters/list';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
@@ -49,6 +50,7 @@ export default class GoogleDocsNormalizer {
 
 		removeBoldWrapper( documentFragment, writer );
 		unwrapParagraphInListItem( documentFragment, writer );
+		transformBlockBrsToParagraphs( documentFragment, writer );
 
 		data.content = documentFragment;
 	}

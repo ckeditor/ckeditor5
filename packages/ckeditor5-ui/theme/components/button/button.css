@@ -4,12 +4,10 @@
  */
 
 @import "../../mixins/_unselectable.css";
-@import "../tooltip/mixins/_tooltip.css";
 
 .ck.ck-button,
 a.ck.ck-button {
 	@mixin ck-unselectable;
-	@mixin ck-tooltip_enabled;
 
 	position: relative;
 	display: inline-flex;
@@ -29,11 +27,5 @@ a.ck.ck-button {
 	/* Center the icon horizontally in a button without text. */
 	&:not(.ck-button_with-text)  {
 		justify-content: center;
-	}
-
-	&:hover,
-	/* Enable toolbar button tooltips for keyboard users too. See https://github.com/ckeditor/ckeditor5/issues/5581. */
-	&:focus {
-		@mixin ck-tooltip_visible;
 	}
 }

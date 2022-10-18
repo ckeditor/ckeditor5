@@ -6,12 +6,12 @@ category: features
 
 {@snippet features/heading-source}
 
-The {@link module:heading/heading~Heading} feature enables support for headings. These are used by the creators to structure their documents. They also aid both the readers, making the content more organized and easier to read, and the search indexers scanning for crucial information.
+The heading feature enables support for headings. These are used by the creators to structure their documents. They also aid both the readers, making the content more organized and easier to read, and the search indexers scanning for crucial information.
 
 Headings can easily be added with toolbar dropdown, buttons or with {@link features/autoformat Markdown code} as you type. They can also be cleared with the {@link features/remove-format remove format} feature.
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/advanced/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Heading levels
@@ -33,6 +33,10 @@ By default, when your editor build does not include the title plugin, a `<h1>` e
 Use the toolbar dropdown to style a heading, or type one or more `#` characters (depending on the heading level), followed by a space, to start a new heading with the {@link features/autoformat autoformatting feature}.
 
 {@snippet features/default-headings}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Heading buttons
 
