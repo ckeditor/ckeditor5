@@ -21,7 +21,7 @@ import type { Schema } from '@ckeditor/ckeditor5-engine';
  */
 export function* getCopyOnEnterAttributes(
 	schema: Schema,
-	allAttributes: IterableIterator<[ string, unknown ]>
+	allAttributes: Iterable<[ string, unknown ]>
 ): IterableIterator<[ string, unknown ]> {
 	for ( const attribute of allAttributes ) {
 		if ( attribute && schema.getAttributeProperties( attribute[ 0 ] ).copyOnEnter ) {
