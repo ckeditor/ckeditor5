@@ -10,7 +10,7 @@
 /* globals window */
 
 import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository, { type FileLoader, type UploadAdapter } from '../filerepository';
+import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository';
 
 type DomFileReader = globalThis.FileReader;
 
@@ -79,7 +79,7 @@ class Adapter implements UploadAdapter {
 	 * @see module:upload/filerepository~UploadAdapter#upload
 	 * @returns {Promise}
 	 */
-	public upload(): Promise<Record<string, unknown>> {
+	public upload(): Promise<UploadResponse> {
 		return new Promise( ( resolve, reject ) => {
 			const reader = this.reader = new window.FileReader();
 

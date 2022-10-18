@@ -51,7 +51,7 @@ export default class FileDialogButtonView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale?: Locale ) {
 		super( locale );
 
 		/**
@@ -139,7 +139,7 @@ class FileInputView extends View<HTMLInputElement> {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale?: Locale ) {
 		super( locale );
 
 		/**

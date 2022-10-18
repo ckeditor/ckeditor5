@@ -10,7 +10,7 @@
 /* globals XMLHttpRequest, FormData */
 
 import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository, { type FileLoader, type UploadAdapter } from '../filerepository';
+import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -122,7 +122,7 @@ class Adapter implements UploadAdapter {
 	 * @see module:upload/filerepository~UploadAdapter#upload
 	 * @returns {Promise}
 	 */
-	public upload(): Promise<Record<string, unknown>> {
+	public upload(): Promise<UploadResponse> {
 		return this.loader.file
 			.then( file => new Promise( ( resolve, reject ) => {
 				this._initRequest();
@@ -166,7 +166,7 @@ class Adapter implements UploadAdapter {
 	 * @param {File} file Native File object.
 	 */
 	private _initListeners(
-		resolve: ( result: Record<string, unknown> ) => void,
+		resolve: ( result: UploadResponse ) => void,
 		reject: ( message?: string ) => void,
 		file: File
 	): void {

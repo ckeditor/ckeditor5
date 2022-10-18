@@ -9,10 +9,10 @@
 
 import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
 
-import PendingActions, { type Action } from '@ckeditor/ckeditor5-core/src/pendingactions';
+import PendingActions, { type PendingAction } from '@ckeditor/ckeditor5-core/src/pendingactions';
 import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { Observable, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Collection, { type CollectionAddEvent, type CollectionRemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+import Collection, { type CollectionChangeEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 
 import FileReader from './filereader';
 
@@ -34,11 +34,11 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid';
  */
 export default class FileRepository extends Plugin {
 	public loaders!: Collection<FileLoader>;
+	public createUploadAdapter?: ( loader: FileLoader ) => UploadAdapter;
 
 	private _loadersMap!: Map<File | Promise<File>, FileLoader>;
-	private _pendingAction!: Action | null;
+	private _pendingAction!: PendingAction | null;
 
-	declare public createUploadAdapter: ( loader: FileLoader ) => UploadAdapter;
 	declare public uploaded: number;
 	declare public uploadTotal: number | null;
 	declare public uploadedPercent: number;
@@ -69,8 +69,7 @@ export default class FileRepository extends Plugin {
 		this.loaders = new Collection();
 
 		// Keeps upload in a sync with pending actions.
-		this.loaders.on<CollectionAddEvent>( 'add', () => this._updatePendingAction() );
-		this.loaders.on<CollectionRemoveEvent>( 'remove', () => this._updatePendingAction() );
+		this.loaders.on<CollectionChangeEvent>( 'change', () => this._updatePendingAction() );
 
 		/**
 		 * Loaders mappings used to retrieve loaders references.
@@ -234,11 +233,11 @@ export default class FileRepository extends Plugin {
 	 * with that loader or loader itself.
 	 */
 	public destroyLoader( fileOrPromiseOrLoader: File | Promise<File> | FileLoader ): void {
-		const loader = fileOrPromiseOrLoader instanceof FileLoader ? fileOrPromiseOrLoader : this.getLoader( fileOrPromiseOrLoader );
+		const loader = fileOrPromiseOrLoader instanceof FileLoader ? fileOrPromiseOrLoader : this.getLoader( fileOrPromiseOrLoader )!;
 
-		( loader as any )._destroy();
+		loader._destroy();
 
-		this.loaders.remove( loader! );
+		this.loaders.remove( loader );
 
 		this._loadersMap.forEach( ( value, key ) => {
 			if ( value === loader ) {
@@ -275,20 +274,20 @@ export default class FileRepository extends Plugin {
  *
  * It is used to control the process of reading the file and uploading it using the specified upload adapter.
  */
-export class FileLoader extends Observable {
+class FileLoader extends Observable {
 	public readonly id: string;
 
-	private _filePromiseWrapper?: FilePromiseWrapper;
-	private _adapter?: UploadAdapter;
-	private _reader?: FileReader;
+	private _filePromiseWrapper: FilePromiseWrapper;
+	private _adapter: UploadAdapter;
+	private _reader: FileReader;
 
-	declare public status: string;
+	declare public status: 'idle' | 'reading' | 'uploading' | 'aborted' | 'error';
 
 	declare public uploaded: number;
 	declare public uploadTotal: number | null;
 	declare public uploadedPercent: number;
 
-	declare public uploadResponse?: Record<string, unknown> | null;
+	declare public uploadResponse?: UploadResponse | null;
 
 	/**
 	 * Creates a new instance of `FileLoader`.
@@ -426,7 +425,7 @@ export class FileLoader extends Observable {
 	 * @type {File|undefined}
 	 */
 	public get data(): string | undefined {
-		return this._reader!.data;
+		return this._reader.data;
 	}
 
 	/**
@@ -463,7 +462,7 @@ export class FileLoader extends Observable {
 		this.status = 'reading';
 
 		return this.file
-			.then( file => this._reader!.read( file! ) )
+			.then( file => this._reader.read( file! ) )
 			.then( data => {
 				// Edge case: reader was aborted after file was read - double check for proper status.
 				// It can happen when image was deleted during its upload.
@@ -482,7 +481,7 @@ export class FileLoader extends Observable {
 				}
 
 				this.status = 'error';
-				throw this._reader!.error ? this._reader!.error : err;
+				throw this._reader.error ? this._reader.error : err;
 			} );
 	}
 
@@ -506,7 +505,7 @@ export class FileLoader extends Observable {
 	 * @returns {Promise.<Object>} Returns promise that will be resolved with response data. Promise will be rejected if error
 	 * occurs or if read process is aborted.
 	 */
-	public upload(): Promise<Record<string, unknown>> {
+	public upload(): Promise<UploadResponse> {
 		if ( this.status != 'idle' ) {
 			/**
 			 * You cannot call upload if the status is different than idle.
@@ -519,7 +518,7 @@ export class FileLoader extends Observable {
 		this.status = 'uploading';
 
 		return this.file
-			.then( () => this._adapter!.upload() )
+			.then( () => this._adapter.upload() )
 			.then( data => {
 				this.uploadResponse = data;
 				this.status = 'idle';
@@ -543,17 +542,17 @@ export class FileLoader extends Observable {
 		const status = this.status;
 		this.status = 'aborted';
 
-		if ( !this._filePromiseWrapper!.isFulfilled ) {
+		if ( !this._filePromiseWrapper.isFulfilled ) {
 			// Edge case: file loader is aborted before read() is called
 			// so it might happen that no one handled the rejection of this promise.
 			// See https://github.com/ckeditor/ckeditor5-upload/pull/100
-			this._filePromiseWrapper!.promise.catch( () => {} );
+			this._filePromiseWrapper.promise.catch( () => {} );
 
-			this._filePromiseWrapper!.rejecter( 'aborted' );
+			this._filePromiseWrapper.rejecter( 'aborted' );
 		} else if ( status == 'reading' ) {
-			this._reader!.abort();
-		} else if ( status == 'uploading' && this._adapter!.abort ) {
-			this._adapter!.abort();
+			this._reader.abort();
+		} else if ( status == 'uploading' && this._adapter.abort ) {
+			this._adapter.abort();
 		}
 
 		this._destroy();
@@ -562,12 +561,12 @@ export class FileLoader extends Observable {
 	/**
 	 * Performs cleanup.
 	 *
-	 * @private
+	 * @internal
 	 */
-	private _destroy(): void {
-		this._filePromiseWrapper = undefined;
-		this._reader = undefined;
-		this._adapter = undefined;
+	public _destroy(): void {
+		this._filePromiseWrapper = undefined as any;
+		this._reader = undefined as any;
+		this._adapter = undefined as any;
 		this.uploadResponse = undefined;
 	}
 
@@ -601,6 +600,8 @@ export class FileLoader extends Observable {
 	}
 }
 
+export type { FileLoader };
+
 /**
  * Upload adapter interface used by the {@link module:upload/filerepository~FileRepository file repository}
  * to handle file upload. An upload adapter is a bridge between the editor and server that handles file uploads.
@@ -612,9 +613,11 @@ export class FileLoader extends Observable {
  * @interface UploadAdapter
  */
 export interface UploadAdapter {
-	upload(): Promise<Record<string, unknown>>;
+	upload(): Promise<UploadResponse>;
 	abort?(): void;
 }
+
+export type UploadResponse = Record<string, unknown>;
 
 /**
  * Executes the upload process.
@@ -680,7 +683,7 @@ export interface UploadAdapter {
  * @property {Function} rejecter Rejects the promise when called.
  * @property {Boolean} isFulfilled Whether original promise is already fulfilled.
  */
-export type FilePromiseWrapper = {
+type FilePromiseWrapper = {
 	promise: Promise<File>;
 	rejecter: ( reason?: unknown ) => void;
 	isFulfilled: boolean;
