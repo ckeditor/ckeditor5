@@ -1,4 +1,4 @@
-dist: xenial
+dist: jammy
 addons:
   chrome: stable
 language: node_js
@@ -12,7 +12,7 @@ branches:
 services:
 - xvfb
 node_js:
-- "14"
+- node
 cache: false
 before_install:
 - export START_TIME=$( date +%s )
