@@ -146,6 +146,12 @@ export default class Input extends Plugin {
 	}
 }
 
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		insertText: InsertTextCommand;
+	}
+}
+
 function deleteSelectionContent( model: Model, insertTextCommand: InsertTextCommand ): void {
 	const buffer = insertTextCommand.buffer;
 

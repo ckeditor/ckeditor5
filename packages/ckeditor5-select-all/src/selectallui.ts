@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import type SelectAllCommand from './selectallcommand';
 
 import selectAllIcon from '../theme/icons/select-all.svg';
 
@@ -37,7 +36,7 @@ export default class SelectAllUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'selectAll', locale => {
-			const command = editor.commands.get( 'selectAll' ) as SelectAllCommand;
+			const command = editor.commands.get( 'selectAll' )!;
 			const view = new ButtonView( locale );
 			const t = locale.t;
 

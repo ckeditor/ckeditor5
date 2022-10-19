@@ -50,7 +50,7 @@ export default class UndoUI extends Plugin {
 	 * @param {String} keystroke Command keystroke.
 	 * @param {String} Icon Source of the icon.
 	 */
-	private _addButton( name: string, label: string, keystroke: string, Icon: string ) {
+	private _addButton( name: 'undo' | 'redo', label: string, keystroke: string, Icon: string ) {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( name, locale => {
