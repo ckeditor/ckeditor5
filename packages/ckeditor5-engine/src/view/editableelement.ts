@@ -11,7 +11,7 @@
 
 import ContainerElement from './containerelement';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import { type ViewSelectionChangeEvent } from './selection';
+import type { ViewSelectionChangeEvent } from './selection';
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}

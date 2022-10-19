@@ -27,8 +27,8 @@ import ViewDocumentFragment from '../view/documentfragment';
 import ViewDocument from '../view/document';
 import ViewDowncastWriter from '../view/downcastwriter';
 import type ViewElement from '../view/element';
-import { type StylesProcessor } from '../view/stylesmap';
-import { type MatcherPattern } from '../view/matcher';
+import type { StylesProcessor } from '../view/stylesmap';
+import type { MatcherPattern } from '../view/matcher';
 
 import ModelRange from '../model/range';
 import type Model from '../model/model';
@@ -36,8 +36,8 @@ import type ModelText from '../model/text';
 import type ModelElement from '../model/element';
 import type ModelTextProxy from '../model/textproxy';
 import type ModelDocumentFragment from '../model/documentfragment';
-import { type SchemaContextDefinition } from '../model/schema';
-import { type BatchType } from '../model/batch';
+import type { SchemaContextDefinition } from '../model/schema';
+import type { BatchType } from '../model/batch';
 import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing';
 
 import HtmlDataProcessor from '../dataprocessor/htmldataprocessor';

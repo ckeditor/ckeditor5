@@ -14,7 +14,7 @@ import type Element from '../view/element';
 import type Node from '../view/node';
 import type Text from '../view/text';
 import type DocumentFragment from '../view/documentfragment';
-import { type Match } from '../view/matcher';
+import type { Match } from '../view/matcher';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},

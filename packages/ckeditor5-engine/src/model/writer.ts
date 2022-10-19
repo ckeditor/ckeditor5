@@ -25,7 +25,7 @@ import Range from './range';
 import RootElement from './rootelement';
 import Text from './text';
 
-import { type Marker } from './markercollection';
+import type { Marker } from './markercollection';
 import type Selection from './selection';
 import type Batch from './batch';
 import type Item from './item';
