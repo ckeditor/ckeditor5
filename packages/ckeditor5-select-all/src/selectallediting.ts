@@ -48,3 +48,9 @@ export default class SelectAllEditing extends Plugin {
 		} );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		selectAll: SelectAllCommand;
+	}
+}
