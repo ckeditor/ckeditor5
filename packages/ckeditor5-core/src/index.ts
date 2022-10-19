@@ -10,6 +10,7 @@
 export { default as Plugin } from './plugin';
 export { default as Command } from './command';
 export { default as MultiCommand } from './multicommand';
+export { CommandsMap } from './commandcollection';
 
 export { default as Context } from './context';
 export { default as ContextPlugin } from './contextplugin';

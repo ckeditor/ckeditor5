@@ -35,7 +35,10 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 	 * @param {String} commandName The name of the command.
 	 * @param {module:core/command~Command} command
 	 */
-	public add( commandName: string, command: Command ): void {
+	public add<TName extends string>(
+		commandName: TName,
+		command: CommandsMap[ TName ]
+	): void {
 		this._commands.set( commandName, command );
 	}
 
@@ -45,7 +48,7 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 	 * @param {String} commandName The name of the command.
 	 * @returns {module:core/command~Command}
 	 */
-	public get( commandName: string ): Command | undefined {
+	public get<TName extends string>( commandName: TName ): CommandsMap[ TName ] | undefined {
 		return this._commands.get( commandName );
 	}
 
@@ -56,7 +59,10 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 	 * @param {*} [...commandParams] Command parameters.
 	 * @returns {*} The value returned by the {@link module:core/command~Command#execute `command.execute()`}.
 	 */
-	public execute( commandName: string, ...args: Array<unknown> ): unknown {
+	public execute<TName extends string>(
+		commandName: TName,
+		...args: Parameters<CommandsMap[ TName ][ 'execute' ]>
+	): ReturnType<CommandsMap[ TName ][ 'execute' ]> {
 		const command = this.get( commandName );
 
 		if ( !command ) {
@@ -69,7 +75,7 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 			throw new CKEditorError( 'commandcollection-command-not-found', this, { commandName } );
 		}
 
-		return command.execute( ...args );
+		return command.execute( ...args ) as any;
 	}
 
 	/**
@@ -109,4 +115,8 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 			command.destroy();
 		}
 	}
+}
+
+export interface CommandsMap {
+	[ name: string ]: Command;
 }

@@ -390,7 +390,7 @@ export default class DowncastWriter {
 	public createUIElement(
 		name: string,
 		attributes?: ElementAttributes,
-		renderFunction?: ( domDocument: DomDocument, domConverter?: DomConverter ) => DomElement
+		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter?: DomConverter ) => DomElement
 	): UIElement {
 		const uiElement = new UIElement( this.document, name, attributes );
 
