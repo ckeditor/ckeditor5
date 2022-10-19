@@ -13,11 +13,25 @@ import {
 	findOptimalInsertionRange as engineFindOptimalInsertionRange
 } from '@ckeditor/ckeditor5-engine/src/model/utils/findoptimalinsertionrange';
 
-import HighlightStack from './highlightstack';
+import HighlightStack, { type HighlightStackChangeEvent } from './highlightstack';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
 
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import dragHandleIcon from '../theme/icons/drag-handle.svg';
+
+import type Element from '@ckeditor/ckeditor5-engine/src/view/element';
+import type { DocumentSelection, DowncastWriter, Model, Range, Selection } from '@ckeditor/ckeditor5-engine';
+import type ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import type {
+	AddHighlightCallback,
+	HighlightDescriptor,
+	RemoveHighlightCallback
+} from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
+import type EditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import type { MapperViewToModelPositionEvent } from '@ckeditor/ckeditor5-engine/src/conversion/mapper';
+import type TypeCheckable from '@ckeditor/ckeditor5-engine/src/view/typecheckable';
 
 /**
  * CSS class added to each widget element.
@@ -39,7 +53,7 @@ export const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
  * @param {module:engine/view/node~Node} node
  * @returns {Boolean}
  */
-export function isWidget( node ) {
+export function isWidget( node: TypeCheckable ): boolean {
 	if ( !node.is( 'element' ) ) {
 		return false;
 	}
@@ -93,7 +107,14 @@ export function isWidget( node ) {
  * @param {Boolean} [options.hasSelectionHandle=false] If `true`, the widget will have a selection handle added.
  * @returns {module:engine/view/element~Element} Returns the same element.
  */
-export function toWidget( element, writer, options = {} ) {
+export function toWidget(
+	element: Element,
+	writer: DowncastWriter,
+	options: {
+		label?: string | ( () => string );
+		hasSelectionHandle?: boolean;
+	} = {}
+): Element {
 	if ( !element.is( 'containerElement' ) ) {
 		/**
 		 * The element passed to `toWidget()` must be a {@link module:engine/view/containerelement~ContainerElement}
@@ -134,7 +155,7 @@ export function toWidget( element, writer, options = {} ) {
 // @param {module:engine/view/element~Element} element
 // @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-function addHighlight( element, descriptor, writer ) {
+function addHighlight( element: Element, descriptor: HighlightDescriptor, writer: DowncastWriter ) {
 	if ( descriptor.classes ) {
 		writer.addClass( toArray( descriptor.classes ), element );
 	}
@@ -152,7 +173,7 @@ function addHighlight( element, descriptor, writer ) {
 // @param {module:engine/view/element~Element} element
 // @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-function removeHighlight( element, descriptor, writer ) {
+function removeHighlight( element: Element, descriptor: HighlightDescriptor, writer: DowncastWriter ) {
 	if ( descriptor.classes ) {
 		writer.removeClass( toArray( descriptor.classes ), element );
 	}
@@ -173,10 +194,15 @@ function removeHighlight( element, descriptor, writer ) {
  * @param {Function} [add]
  * @param {Function} [remove]
  */
-export function setHighlightHandling( element, writer, add = addHighlight, remove = removeHighlight ) {
+export function setHighlightHandling(
+	element: Element,
+	writer: DowncastWriter,
+	add: ( element: Element, descriptor: HighlightDescriptor, writer: DowncastWriter ) => void = addHighlight,
+	remove: ( element: Element, descriptor: HighlightDescriptor, writer: DowncastWriter ) => void = removeHighlight
+): void {
 	const stack = new HighlightStack();
 
-	stack.on( 'change:top', ( evt, data ) => {
+	stack.on<HighlightStackChangeEvent>( 'change:top', ( evt, data ) => {
 		if ( data.oldDescriptor ) {
 			remove( element, data.oldDescriptor, data.writer );
 		}
@@ -186,8 +212,11 @@ export function setHighlightHandling( element, writer, add = addHighlight, remov
 		}
 	} );
 
-	writer.setCustomProperty( 'addHighlight', ( element, descriptor, writer ) => stack.add( descriptor, writer ), element );
-	writer.setCustomProperty( 'removeHighlight', ( element, id, writer ) => stack.remove( id, writer ), element );
+	const addHighlightCallback: AddHighlightCallback = ( element, descriptor, writer ) => stack.add( descriptor, writer );
+	const removeHighlightCallback: RemoveHighlightCallback = ( element, id, writer ) => stack.remove( id, writer );
+
+	writer.setCustomProperty( 'addHighlight', addHighlightCallback, element );
+	writer.setCustomProperty( 'removeHighlight', removeHighlightCallback, element );
 }
 
 /**
@@ -199,7 +228,7 @@ export function setHighlightHandling( element, writer, add = addHighlight, remov
  * @param {String|Function} labelOrCreator
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  */
-export function setLabel( element, labelOrCreator, writer ) {
+export function setLabel( element: Element, labelOrCreator: string | ( () => string ), writer: DowncastWriter ): void {
 	writer.setCustomProperty( 'widgetLabel', labelOrCreator, element );
 }
 
@@ -209,8 +238,8 @@ export function setLabel( element, labelOrCreator, writer ) {
  * @param {module:engine/view/element~Element} element
  * @returns {String}
  */
-export function getLabel( element ) {
-	const labelCreator = element.getCustomProperty( 'widgetLabel' );
+export function getLabel( element: Element ): string {
+	const labelCreator = element.getCustomProperty( 'widgetLabel' ) as string | ( () => string ) | undefined;
 
 	if ( !labelCreator ) {
 		return '';
@@ -261,7 +290,13 @@ export function getLabel( element ) {
  * @param {String} [options.label] Editable's label used by assistive technologies (e.g. screen readers).
  * @returns {module:engine/view/editableelement~EditableElement} Returns the same element that was provided in the `editable` parameter
  */
-export function toWidgetEditable( editable, writer, options = {} ) {
+export function toWidgetEditable(
+	editable: EditableElement,
+	writer: DowncastWriter,
+	options: {
+		label?: string;
+	} = {}
+): EditableElement {
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
 	writer.setAttribute( 'role', 'textbox', editable );
@@ -274,11 +309,11 @@ export function toWidgetEditable( editable, writer, options = {} ) {
 	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
 
 	// Bind the contenteditable property to element#isReadOnly.
-	editable.on( 'change:isReadOnly', ( evt, property, is ) => {
+	editable.on<ObservableChangeEvent<boolean>>( 'change:isReadOnly', ( evt, property, is ) => {
 		writer.setAttribute( 'contenteditable', is ? 'false' : 'true', editable );
 	} );
 
-	editable.on( 'change:isFocused', ( evt, property, is ) => {
+	editable.on<ObservableChangeEvent<boolean>>( 'change:isFocused', ( evt, property, is ) => {
 		if ( is ) {
 			writer.addClass( 'ck-editor__nested-editable_focused', editable );
 		} else {
@@ -307,7 +342,10 @@ export function toWidgetEditable( editable, writer, options = {} ) {
  * @param {module:engine/model/model~Model} model Model instance.
  * @returns {module:engine/model/range~Range} The optimal range.
  */
-export function findOptimalInsertionRange( selection, model ) {
+export function findOptimalInsertionRange(
+	selection: Selection | DocumentSelection,
+	model: Model
+): Range {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement ) {
@@ -366,7 +404,10 @@ export function findOptimalInsertionRange( selection, model ) {
  * should be applied to the given view element.
  * @return {Function}
  */
-export function viewToModelPositionOutsideModelElement( model, viewElementMatcher ) {
+export function viewToModelPositionOutsideModelElement(
+	model: Model,
+	viewElementMatcher: ( element: Element ) => boolean
+): GetCallback<MapperViewToModelPositionEvent> {
 	return ( evt, data ) => {
 		const { mapper, viewPosition } = data;
 
@@ -378,7 +419,7 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
 
 		const modelParent = mapper.toModelElement( viewParent );
 
-		data.modelPosition = model.createPositionAt( modelParent, viewPosition.isAtStart ? 'before' : 'after' );
+		data.modelPosition = model.createPositionAt( modelParent!, viewPosition.isAtStart ? 'before' : 'after' );
 	};
 }
 
@@ -393,7 +434,7 @@ function getFillerOffset() {
 //
 // @param {module:engine/view/containerelement~ContainerElement}
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-function addSelectionHandle( widgetElement, writer ) {
+function addSelectionHandle( widgetElement: ContainerElement, writer: DowncastWriter ) {
 	const selectionHandle = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handle' }, function( domDocument ) {
 		const domElement = this.toDomElement( domDocument );
 
@@ -404,7 +445,7 @@ function addSelectionHandle( widgetElement, writer ) {
 		// Render the icon view right away to append its #element to the selectionHandle DOM element.
 		icon.render();
 
-		domElement.appendChild( icon.element );
+		domElement.appendChild( icon.element! );
 
 		return domElement;
 	} );

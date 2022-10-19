@@ -7,17 +7,24 @@
  * @module widget/widget
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
+import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import MouseObserver, { type ViewDocumentMouseEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getLocalizedArrowKeyCodeDirection, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import verticalNavigationHandler from './verticalnavigation';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 
 import '../theme/widget.css';
+
+import type { DomEventData, DowncastWriter, ViewDocumentFragment, ViewElement } from '@ckeditor/ckeditor5-engine';
+import type { DowncastSelectionEvent } from '@ckeditor/ckeditor5-engine/src/conversion/downcastdispatcher';
+import type { ViewDocumentArrowKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/arrowkeysobserver';
+import type { ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing/src/deleteobserver';
+import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import type Node from '@ckeditor/ckeditor5-engine/src/model/node';
 
 /**
  * The widget plugin. It enables base support for widgets.
@@ -35,24 +42,26 @@ import '../theme/widget.css';
  * @extends module:core/plugin~Plugin
  */
 export default class Widget extends Plugin {
+	private _previouslySelected!: Set<ViewElement>;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'Widget';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): Array<PluginConstructor> {
 		return [ WidgetTypeAround, Delete ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
@@ -84,7 +93,7 @@ export default class Widget extends Plugin {
 		// * any logic depending on (View)Selection#getSelectedElement() also works OK.
 		//
 		// See https://github.com/ckeditor/ckeditor5/issues/9524.
-		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+		this.editor.editing.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
 			const modelSelection = data.selection;
 
@@ -99,7 +108,7 @@ export default class Widget extends Plugin {
 				return;
 			}
 
-			const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
+			const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement )!;
 
 			if ( !isWidget( selectedViewElement ) ) {
 				return;
@@ -117,7 +126,7 @@ export default class Widget extends Plugin {
 
 		// Mark all widgets inside the selection with the css class.
 		// This handler is registered at the 'low' priority so it's triggered after the real selection conversion.
-		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+		this.editor.editing.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', ( evt, data, conversionApi ) => {
 			// Remove selected class from previously selected widgets.
 			this._clearPreviouslySelectedWidgets( conversionApi.writer );
 
@@ -130,7 +139,7 @@ export default class Widget extends Plugin {
 				// Note: There could be multiple selected widgets in a range but no fake selection.
 				// All of them must be marked as selected, for instance [<widget></widget><widget></widget>]
 				for ( const value of range ) {
-					const node = value.item;
+					const node = value.item as ViewElement;
 					// Do not mark nested widgets in selected one. See: #4594
 					if ( isWidget( node ) && !isChild( node, lastMarked ) ) {
 						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
@@ -143,7 +152,7 @@ export default class Widget extends Plugin {
 
 		// If mouse down is pressed on widget - create selection over whole widget.
 		view.addObserver( MouseObserver );
-		this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
+		this.listenTo<ViewDocumentMouseEvent>( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
 
 		// There are two keydown listeners working on different priorities. This allows other
 		// features such as WidgetTypeAround or TableKeyboard to attach their listeners in between
@@ -156,18 +165,23 @@ export default class Widget extends Plugin {
 		// * The second (late) listener makes sure the default browser action on arrow key press is
 		// prevented when a widget is selected. This prevents the selection from being moved
 		// from a fake selection container.
-		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => {
+		this.listenTo<ViewDocumentArrowKeyEvent>( viewDocument, 'arrowKey', ( ...args ) => {
 			this._handleSelectionChangeOnArrowKeyPress( ...args );
 		}, { context: [ isWidget, '$text' ] } );
 
-		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => {
+		this.listenTo<ViewDocumentArrowKeyEvent>( viewDocument, 'arrowKey', ( ...args ) => {
 			this._preventDefaultOnArrowKeyPress( ...args );
 		}, { context: '$root' } );
 
-		this.listenTo( viewDocument, 'arrowKey', verticalNavigationHandler( this.editor.editing ), { context: '$text' } );
+		this.listenTo<ViewDocumentArrowKeyEvent>(
+			viewDocument,
+			'arrowKey',
+			verticalNavigationHandler( this.editor.editing ),
+			{ context: '$text' }
+		);
 
 		// Handle custom delete behaviour.
-		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+		this.listenTo<ViewDocumentDeleteEvent>( viewDocument, 'delete', ( evt, data ) => {
 			if ( this._handleDelete( data.direction == 'forward' ) ) {
 				data.preventDefault();
 				evt.stop();
@@ -182,11 +196,11 @@ export default class Widget extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_onMousedown( eventInfo, domEventData ) {
+	private _onMousedown( eventInfo: EventInfo, domEventData: DomEventData<MouseEvent> ) {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
-		let element = domEventData.target;
+		let element: ViewElement | null = domEventData.target;
 
 		// Do nothing for single or double click inside nested editable.
 		if ( isInsideNestedEditable( element ) ) {
@@ -196,8 +210,8 @@ export default class Widget extends Plugin {
 			if ( ( env.isSafari || env.isGecko ) && domEventData.domEvent.detail >= 3 ) {
 				const mapper = editor.editing.mapper;
 				const viewElement = element.is( 'attributeElement' ) ?
-					element.findAncestor( element => !element.is( 'attributeElement' ) ) : element;
-				const modelElement = mapper.toModelElement( viewElement );
+					element.findAncestor( element => !element.is( 'attributeElement' ) )! : element;
+				const modelElement = mapper.toModelElement( viewElement )!;
 
 				domEventData.preventDefault();
 
@@ -232,7 +246,7 @@ export default class Widget extends Plugin {
 		// Create model selection over widget.
 		const modelElement = editor.editing.mapper.toModelElement( element );
 
-		this._setSelectionOverElement( modelElement );
+		this._setSelectionOverElement( modelElement! );
 	}
 
 	/**
@@ -248,7 +262,7 @@ export default class Widget extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_handleSelectionChangeOnArrowKeyPress( eventInfo, domEventData ) {
+	private _handleSelectionChangeOnArrowKeyPress( eventInfo: EventInfo, domEventData: DomEventData & KeystrokeInfo ) {
 		const keyCode = domEventData.keyCode;
 
 		const model = this.editor.model;
@@ -262,7 +276,7 @@ export default class Widget extends Plugin {
 		// If object element is selected.
 		if ( objectElement && schema.isObject( objectElement ) ) {
 			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
-			const newRange = schema.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
+			const newRange = schema.getNearestSelectionRange( position!, isForward ? 'forward' : 'backward' );
 
 			if ( newRange ) {
 				model.change( writer => {
@@ -282,8 +296,8 @@ export default class Widget extends Plugin {
 			const firstPosition = modelSelection.getFirstPosition();
 			const lastPosition = modelSelection.getLastPosition();
 
-			const firstSelectedNode = firstPosition.nodeAfter;
-			const lastSelectedNode = lastPosition.nodeBefore;
+			const firstSelectedNode = firstPosition!.nodeAfter;
+			const lastSelectedNode = lastPosition!.nodeBefore;
 
 			if ( firstSelectedNode && schema.isObject( firstSelectedNode ) || lastSelectedNode && schema.isObject( lastSelectedNode ) ) {
 				model.change( writer => {
@@ -330,7 +344,7 @@ export default class Widget extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_preventDefaultOnArrowKeyPress( eventInfo, domEventData ) {
+	private _preventDefaultOnArrowKeyPress( eventInfo: EventInfo, domEventData: DomEventData ) {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const objectElement = model.document.selection.getSelectedElement();
@@ -349,7 +363,7 @@ export default class Widget extends Plugin {
 	 * @param {Boolean} isForward Set to true if delete was performed in forward direction.
 	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
 	 */
-	_handleDelete( isForward ) {
+	private _handleDelete( isForward: boolean ) {
 		// Do nothing when the read only mode is enabled.
 		if ( this.editor.isReadOnly ) {
 			return;
@@ -367,12 +381,12 @@ export default class Widget extends Plugin {
 
 		if ( objectElement ) {
 			this.editor.model.change( writer => {
-				let previousNode = modelSelection.anchor.parent;
+				let previousNode = modelSelection.anchor!.parent;
 
 				// Remove previous element if empty.
 				while ( previousNode.isEmpty ) {
 					const nodeToRemove = previousNode;
-					previousNode = nodeToRemove.parent;
+					previousNode = nodeToRemove.parent!;
 
 					writer.remove( nodeToRemove );
 				}
@@ -387,10 +401,11 @@ export default class Widget extends Plugin {
 	/**
 	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
+	 * @internal
 	 * @protected
 	 * @param {module:engine/model/element~Element} element
 	 */
-	_setSelectionOverElement( element ) {
+	public _setSelectionOverElement( element: Node ): void {
 		this.editor.model.change( writer => {
 			writer.setSelection( writer.createRangeOn( element ) );
 		} );
@@ -401,11 +416,12 @@ export default class Widget extends Plugin {
 	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
 	 * {@link module:engine/model/schema~Schema schema} as `object`.
 	 *
+	 * @internal
 	 * @protected
 	 * @param {Boolean} forward Direction of checking.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
-	_getObjectElementNextToSelection( forward ) {
+	public _getObjectElementNextToSelection( forward: boolean ): Node | null {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const modelSelection = model.document.selection;
@@ -420,7 +436,7 @@ export default class Widget extends Plugin {
 			return null;
 		}
 
-		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
+		const objectElement = forward ? probe.focus!.nodeBefore : probe.focus!.nodeAfter;
 
 		if ( !!objectElement && schema.isObject( objectElement ) ) {
 			return objectElement;
@@ -435,7 +451,7 @@ export default class Widget extends Plugin {
 	 * @private
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 */
-	_clearPreviouslySelectedWidgets( writer ) {
+	private _clearPreviouslySelectedWidgets( writer: DowncastWriter ) {
 		for ( const widget of this._previouslySelected ) {
 			writer.removeClass( WIDGET_SELECTED_CLASS_NAME, widget );
 		}
@@ -448,18 +464,20 @@ export default class Widget extends Plugin {
 //
 // @param {module:engine/view/element~Element}
 // @returns {Boolean}
-function isInsideNestedEditable( element ) {
-	while ( element ) {
-		if ( element.is( 'editableElement' ) && !element.is( 'rootElement' ) ) {
+function isInsideNestedEditable( element: ViewElement ) {
+	let currentElement: ViewElement | ViewDocumentFragment | null = element;
+
+	while ( currentElement ) {
+		if ( currentElement.is( 'editableElement' ) && !currentElement.is( 'rootElement' ) ) {
 			return true;
 		}
 
 		// Click on nested widget should select it.
-		if ( isWidget( element ) ) {
+		if ( isWidget( currentElement ) ) {
 			return false;
 		}
 
-		element = element.parent;
+		currentElement = currentElement.parent;
 	}
 
 	return false;
@@ -470,7 +488,7 @@ function isInsideNestedEditable( element ) {
 // @param {module:engine/view/element~Element} element An element to check.
 // @param {module:engine/view/element~Element|null} parent A parent for the element.
 // @returns {Boolean}
-function isChild( element, parent ) {
+function isChild( element: ViewElement, parent: ViewElement | null ) {
 	if ( !parent ) {
 		return false;
 	}

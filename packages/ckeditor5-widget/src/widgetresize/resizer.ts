@@ -11,22 +11,40 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Observable, type DecoratedMethodEvent, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 import ResizeState from './resizerstate';
 import SizeView from './sizeview';
+
+import type { ResizerOptions } from '../widgetresize';
+import type Element from '@ckeditor/ckeditor5-engine/src/view/element';
 
 /**
  * Represents a resizer for a single resizable object.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Resizer {
+export default class Resizer extends Observable {
+	declare public isEnabled: boolean;
+	declare public isSelected: boolean;
+
+	/**
+	 * @readonly
+	 */
+	declare public isVisible: boolean;
+
+	private _state!: ResizeState;
+	private _sizeView!: SizeView;
+	private _options: ResizerOptions;
+	private _viewResizerWrapper: Element | null;
+	private _initialViewWidth: string | undefined;
+
 	/**
 	 * @param {module:widget/widgetresize~ResizerOptions} options Resizer options.
 	 */
-	constructor( options ) {
+	constructor( options: ResizerOptions ) {
+		super();
+
 		/**
 		 * Stores the state of the resizable host geometry, such as the original width, the currently proposed height, etc.
 		 *
@@ -104,32 +122,37 @@ export default class Resizer {
 		}, { priority: 'high' } );
 	}
 
+	public get state(): ResizeState {
+		return this._state;
+	}
+
 	/**
 	 * Makes resizer visible in the UI.
 	 */
-	show() {
+	public show(): void {
 		const editingView = this._options.editor.editing.view;
 
 		editingView.change( writer => {
-			writer.removeClass( 'ck-hidden', this._viewResizerWrapper );
+			writer.removeClass( 'ck-hidden', this._viewResizerWrapper! );
 		} );
 	}
 
 	/**
 	 * Hides resizer in the UI.
 	 */
-	hide() {
+	public hide(): void {
 		const editingView = this._options.editor.editing.view;
 
 		editingView.change( writer => {
-			writer.addClass( 'ck-hidden', this._viewResizerWrapper );
+			writer.addClass( 'ck-hidden', this._viewResizerWrapper! );
 		} );
 	}
 
 	/**
 	 * Attaches the resizer to the DOM.
 	 */
-	attach() {
+	public attach(): void {
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		const that = this;
 		const widgetElement = this._options.viewElement;
 		const editingView = this._options.editor.editing.view;
@@ -157,7 +180,7 @@ export default class Resizer {
 			}
 		} );
 
-		this.on( 'change:isVisible', () => {
+		this.on<ObservableChangeEvent>( 'change:isVisible', () => {
 			if ( this.isVisible ) {
 				this.show();
 				this.redraw();
@@ -175,8 +198,8 @@ export default class Resizer {
 	 * @fires begin
 	 * @param {HTMLElement} domResizeHandle Clicked handle.
 	 */
-	begin( domResizeHandle ) {
-		this.state = new ResizeState( this._options );
+	public begin( domResizeHandle: HTMLElement ): void {
+		this._state = new ResizeState( this._options );
 
 		this._sizeView._bindToState( this._options, this.state );
 
@@ -191,7 +214,7 @@ export default class Resizer {
 	 * @fires updateSize
 	 * @param {Event} domEventData
 	 */
-	updateSize( domEventData ) {
+	public updateSize( domEventData: MouseEvent ): void {
 		const newSize = this._proposeNewSize( domEventData );
 		const editingView = this._options.editor.editing.view;
 
@@ -208,8 +231,8 @@ export default class Resizer {
 		const domHandleHost = this._getHandleHost();
 		const domHandleHostRect = new Rect( domHandleHost );
 
-		newSize.handleHostWidth = Math.round( domHandleHostRect.width );
-		newSize.handleHostHeight = Math.round( domHandleHostRect.height );
+		const handleHostWidth = Math.round( domHandleHostRect.width );
+		const handleHostHeight = Math.round( domHandleHostRect.height );
 
 		// Handle max-width limitation.
 		const domResizeHostRect = new Rect( domHandleHost );
@@ -219,7 +242,11 @@ export default class Resizer {
 
 		this.redraw( domHandleHostRect );
 
-		this.state.update( newSize );
+		this.state.update( {
+			...newSize,
+			handleHostWidth,
+			handleHostHeight
+		} );
 	}
 
 	/**
@@ -227,7 +254,7 @@ export default class Resizer {
 	 *
 	 * @fires commit
 	 */
-	commit() {
+	public commit(): void {
 		const unit = this._options.unit || '%';
 		const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + unit;
 
@@ -243,14 +270,14 @@ export default class Resizer {
 	 *
 	 * @fires cancel
 	 */
-	cancel() {
+	public cancel(): void {
 		this._cleanup();
 	}
 
 	/**
 	 * Destroys the resizer.
 	 */
-	destroy() {
+	public destroy(): void {
 		this.cancel();
 	}
 
@@ -259,7 +286,7 @@ export default class Resizer {
 	 *
 	 * @param {module:utils/dom/rect~Rect} [handleHostRect] Handle host rectangle might be given to improve performance.
 	 */
-	redraw( handleHostRect ) {
+	public redraw( handleHostRect?: Rect ): void {
 		const domWrapper = this._domResizerWrapper;
 
 		// Refresh only if resizer exists in the DOM.
@@ -267,18 +294,18 @@ export default class Resizer {
 			return;
 		}
 
-		const widgetWrapper = domWrapper.parentElement;
+		const widgetWrapper = domWrapper!.parentElement;
 		const handleHost = this._getHandleHost();
-		const resizerWrapper = this._viewResizerWrapper;
+		const resizerWrapper = this._viewResizerWrapper!;
 		const currentDimensions = [
 			resizerWrapper.getStyle( 'width' ),
 			resizerWrapper.getStyle( 'height' ),
 			resizerWrapper.getStyle( 'left' ),
 			resizerWrapper.getStyle( 'top' )
 		];
-		let newDimensions;
+		let newDimensions: Array<string | undefined>;
 
-		if ( widgetWrapper.isSameNode( handleHost ) ) {
+		if ( widgetWrapper!.isSameNode( handleHost ) ) {
 			const clientRect = handleHostRect || new Rect( handleHost );
 
 			newDimensions = [
@@ -309,20 +336,20 @@ export default class Resizer {
 		if ( compareArrays( currentDimensions, newDimensions ) !== 'same' ) {
 			this._options.editor.editing.view.change( writer => {
 				writer.setStyle( {
-					width: newDimensions[ 0 ],
-					height: newDimensions[ 1 ],
-					left: newDimensions[ 2 ],
-					top: newDimensions[ 3 ]
+					width: newDimensions[ 0 ]!,
+					height: newDimensions[ 1 ]!,
+					left: newDimensions[ 2 ]!,
+					top: newDimensions[ 3 ]!
 				}, resizerWrapper );
 			} );
 		}
 	}
 
-	containsHandle( domElement ) {
-		return this._domResizerWrapper.contains( domElement );
+	public containsHandle( domElement: HTMLElement ): boolean {
+		return this._domResizerWrapper!.contains( domElement );
 	}
 
-	static isResizeHandle( domElement ) {
+	public static isResizeHandle( domElement: HTMLElement ): boolean {
 		return domElement.classList.contains( 'ck-widget__resizer__handle' );
 	}
 
@@ -331,13 +358,13 @@ export default class Resizer {
 	 *
 	 * @protected
 	 */
-	_cleanup() {
+	private _cleanup(): void {
 		this._sizeView._dismiss();
 
 		const editingView = this._options.editor.editing.view;
 
 		editingView.change( writer => {
-			writer.setStyle( 'width', this._initialViewWidth, this._options.viewElement );
+			writer.setStyle( 'width', this._initialViewWidth!, this._options.viewElement );
 		} );
 	}
 
@@ -350,7 +377,7 @@ export default class Resizer {
 	 * @returns {Number} return.width Proposed width.
 	 * @returns {Number} return.height Proposed height.
 	 */
-	_proposeNewSize( domEventData ) {
+	private _proposeNewSize( domEventData: MouseEvent ) {
 		const state = this.state;
 		const currentCoordinates = extractCoordinates( domEventData );
 		const isCentered = this._options.isCentered ? this._options.isCentered( this ) : true;
@@ -368,12 +395,12 @@ export default class Resizer {
 		// 					<-->
 		// 					 enlarge x
 		const enlargement = {
-			x: state._referenceCoordinates.x - ( currentCoordinates.x + state.originalWidth ),
-			y: ( currentCoordinates.y - state.originalHeight ) - state._referenceCoordinates.y
+			x: state._referenceCoordinates!.x - ( currentCoordinates.x + state.originalWidth! ),
+			y: ( currentCoordinates.y - state.originalHeight! ) - state._referenceCoordinates!.y
 		};
 
-		if ( isCentered && state.activeHandlePosition.endsWith( '-right' ) ) {
-			enlargement.x = currentCoordinates.x - ( state._referenceCoordinates.x + state.originalWidth );
+		if ( isCentered && state.activeHandlePosition!.endsWith( '-right' ) ) {
+			enlargement.x = currentCoordinates.x - ( state._referenceCoordinates!.x + state.originalWidth! );
 		}
 
 		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from
@@ -385,31 +412,22 @@ export default class Resizer {
 		// const resizeHost = this._getResizeHost();
 
 		// The size proposed by the user. It does not consider the aspect ratio.
-		const proposedSize = {
-			width: Math.abs( state.originalWidth + enlargement.x ),
-			height: Math.abs( state.originalHeight + enlargement.y )
-		};
+		let width = Math.abs( state.originalWidth! + enlargement.x );
+		let height = Math.abs( state.originalHeight! + enlargement.y );
 
 		// Dominant determination must take the ratio into account.
-		proposedSize.dominant = proposedSize.width / state.aspectRatio > proposedSize.height ? 'width' : 'height';
-		proposedSize.max = proposedSize[ proposedSize.dominant ];
+		const dominant = width / state.aspectRatio! > height ? 'width' : 'height';
 
-		// Proposed size, respecting the aspect ratio.
-		const targetSize = {
-			width: proposedSize.width,
-			height: proposedSize.height
-		};
-
-		if ( proposedSize.dominant == 'width' ) {
-			targetSize.height = targetSize.width / state.aspectRatio;
+		if ( dominant == 'width' ) {
+			height = width / state.aspectRatio!;
 		} else {
-			targetSize.width = targetSize.height * state.aspectRatio;
+			width = height * state.aspectRatio!;
 		}
 
 		return {
-			width: Math.round( targetSize.width ),
-			height: Math.round( targetSize.height ),
-			widthPercents: Math.min( Math.round( state.originalWidthPercents / state.originalWidth * targetSize.width * 100 ) / 100, 100 )
+			width: Math.round( width ),
+			height: Math.round( height ),
+			widthPercents: Math.min( Math.round( state.originalWidthPercents! / state.originalWidth! * width * 100 ) / 100, 100 )
 		};
 	}
 
@@ -421,10 +439,10 @@ export default class Resizer {
 	 * @protected
 	 * @returns {HTMLElement}
 	 */
-	_getResizeHost() {
-		const widgetWrapper = this._domResizerWrapper.parentElement;
+	private _getResizeHost(): HTMLElement {
+		const widgetWrapper = this._domResizerWrapper!.parentElement;
 
-		return this._options.getResizeHost( widgetWrapper );
+		return this._options.getResizeHost( widgetWrapper! );
 	}
 
 	/**
@@ -438,10 +456,10 @@ export default class Resizer {
 	 * @protected
 	 * @returns {HTMLElement}
 	 */
-	_getHandleHost() {
-		const widgetWrapper = this._domResizerWrapper.parentElement;
+	private _getHandleHost(): HTMLElement {
+		const widgetWrapper = this._domResizerWrapper!.parentElement;
 
-		return this._options.getHandleHost( widgetWrapper );
+		return this._options.getHandleHost( widgetWrapper! );
 	}
 
 	/**
@@ -453,8 +471,8 @@ export default class Resizer {
 	 * @private
 	 * @member {HTMLElement|null}
 	 */
-	get _domResizerWrapper() {
-		return this._options.editor.editing.view.domConverter.mapViewToDom( this._viewResizerWrapper );
+	private get _domResizerWrapper(): HTMLElement | null {
+		return this._options.editor.editing.view.domConverter.mapViewToDom( this._viewResizerWrapper! ) as any;
 	}
 
 	/**
@@ -463,7 +481,7 @@ export default class Resizer {
 	 * @private
 	 * @param {HTMLElement} domElement The resizer wrapper.
 	 */
-	_appendHandles( domElement ) {
+	private _appendHandles( domElement: HTMLElement ) {
 		const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
 		for ( const currentPosition of resizerPositions ) {
@@ -482,13 +500,13 @@ export default class Resizer {
 	 * @private
 	 * @param {HTMLElement} domElement
 	 */
-	_appendSizeUI( domElement ) {
+	private _appendSizeUI( domElement: HTMLElement ) {
 		this._sizeView = new SizeView();
 
 		// Make sure icon#element is rendered before passing to appendChild().
 		this._sizeView.render();
 
-		domElement.appendChild( this._sizeView.element );
+		domElement.appendChild( this._sizeView.element! );
 	}
 
 	/**
@@ -508,22 +526,25 @@ export default class Resizer {
 	 */
 }
 
-mix( Resizer, ObservableMixin );
+export type ResizerBeginEvent = DecoratedMethodEvent<Resizer, 'begin'>;
+export type ResizerCancelEvent = DecoratedMethodEvent<Resizer, 'cancel'>;
+export type ResizerCommitEvent = DecoratedMethodEvent<Resizer, 'commit'>;
+export type ResizerUpdateSizeEvent = DecoratedMethodEvent<Resizer, 'updateSize'>;
 
 // @private
 // @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
 // @returns {String} A prefixed HTML class name for the resizer element
-function getResizerClass( resizerPosition ) {
+function getResizerClass( resizerPosition: string ) {
 	return `ck-widget__resizer__handle-${ resizerPosition }`;
 }
 
-function extractCoordinates( event ) {
+function extractCoordinates( event: MouseEvent ) {
 	return {
 		x: event.pageX,
 		y: event.pageY
 	};
 }
 
-function existsInDom( element ) {
+function existsInDom( element: Node | DocumentFragment | undefined | null ) {
 	return element && element.ownerDocument && element.ownerDocument.contains( element );
 }

@@ -5,6 +5,9 @@
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import type { DocumentSelection, EditingController, Model, Position, Range, Schema, Selection } from '@ckeditor/ckeditor5-engine';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import type { ViewDocumentArrowKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/arrowkeysobserver';
 
 /**
  * @module widget/verticalnavigationhandler
@@ -16,7 +19,9 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
  * @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
  * @returns {Function}
  */
-export default function verticalNavigationHandler( editing ) {
+export default function verticalNavigationHandler(
+	editing: EditingController
+): GetCallback<ViewDocumentArrowKeyEvent> {
 	const model = editing.model;
 
 	return ( evt, data ) => {
@@ -93,11 +98,11 @@ export default function verticalNavigationHandler( editing ) {
 // @param {Boolean} isForward The expected navigation direction.
 // @returns {module:engine/model/range~Range|null}
 //
-function findTextRangeFromSelection( editing, selection, isForward ) {
+function findTextRangeFromSelection( editing: EditingController, selection: Selection | DocumentSelection, isForward: boolean ) {
 	const model = editing.model;
 
 	if ( isForward ) {
-		const startPosition = selection.isCollapsed ? selection.focus : selection.getLastPosition();
+		const startPosition = selection.isCollapsed ? selection.focus! : selection.getLastPosition()!;
 		const endPosition = getNearestNonInlineLimit( model, startPosition, 'forward' );
 
 		// There is no limit element, browser should handle this.
@@ -114,7 +119,7 @@ function findTextRangeFromSelection( editing, selection, isForward ) {
 
 		return null;
 	} else {
-		const endPosition = selection.isCollapsed ? selection.focus : selection.getFirstPosition();
+		const endPosition = selection.isCollapsed ? selection.focus! : selection.getFirstPosition()!;
 		const startPosition = getNearestNonInlineLimit( model, endPosition, 'backward' );
 
 		// There is no limit element, browser should handle this.
@@ -140,7 +145,7 @@ function findTextRangeFromSelection( editing, selection, isForward ) {
 // @param {'forward'|'backward'} direction Search direction.
 // @returns {<module:engine/model/position~Position>|null}
 //
-function getNearestNonInlineLimit( model, startPosition, direction ) {
+function getNearestNonInlineLimit( model: Model, startPosition: Position, direction: 'forward' | 'backward' ) {
 	const schema = model.schema;
 	const range = model.createRangeIn( startPosition.root );
 
@@ -168,7 +173,7 @@ function getNearestNonInlineLimit( model, startPosition, direction ) {
 // @param {'forward'|'backward'} direction Search direction.
 // @returns {module:engine/model/position~Position|null} The nearest selection position.
 //
-function getNearestTextPosition( schema, range, direction ) {
+function getNearestTextPosition( schema: Schema, range: Range, direction: 'forward' | 'backward' ) {
 	const position = direction == 'backward' ? range.end : range.start;
 
 	if ( schema.checkChild( position, '$text' ) ) {
@@ -192,7 +197,7 @@ function getNearestTextPosition( schema, range, direction ) {
 // @param {Boolean} isForward The expected navigation direction.
 // @returns {Boolean}
 //
-function isSingleLineRange( editing, modelRange, isForward ) {
+function isSingleLineRange( editing: EditingController, modelRange: Range, isForward: boolean ) {
 	const model = editing.model;
 	const domConverter = editing.view.domConverter;
 
@@ -208,8 +213,8 @@ function isSingleLineRange( editing, modelRange, isForward ) {
 		// If the new position is at the end of the container then we can't use this position
 		// because it would provide incorrect result for eg caption of image and selection
 		// just before end of it. Also in this case there is no "dual" position.
-		if ( !probe.focus.isAtEnd && !modelRange.start.isEqual( probe.focus ) ) {
-			modelRange = model.createRange( probe.focus, modelRange.end );
+		if ( !probe.focus!.isAtEnd && !modelRange.start.isEqual( probe.focus! ) ) {
+			modelRange = model.createRange( probe.focus!, modelRange.end );
 		}
 	}
 
@@ -236,6 +241,6 @@ function isSingleLineRange( editing, modelRange, isForward ) {
 	return true;
 }
 
-function selectionWillShrink( selection, isForward ) {
+function selectionWillShrink( selection: DocumentSelection, isForward: boolean ) {
 	return !selection.isCollapsed && selection.isBackward == isForward;
 }

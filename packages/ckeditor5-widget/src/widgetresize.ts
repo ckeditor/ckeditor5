@@ -8,15 +8,25 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Resizer from './widgetresize/resizer';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import Resizer, {
+	type ResizerBeginEvent,
+	type ResizerCancelEvent,
+	type ResizerCommitEvent
+} from './widgetresize/resizer';
+import { Emitter as DomEmitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import { throttle } from 'lodash-es';
+import MouseObserver, { type ViewDocumentMouseEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
+import { throttle, type DebouncedFunc } from 'lodash-es';
 
 import '../theme/widgetresize.css';
+
+import type { EditorUIUpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/document';
+import type { ViewSelectionChangeEvent } from '@ckeditor/ckeditor5-engine/src/view/selection';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { DomEventData, Element, ViewContainerElement } from '@ckeditor/ckeditor5-engine';
+import type WidgetToolbarRepository from './widgettoolbarrepository';
+import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 /**
  * The widget resize feature plugin.
@@ -27,17 +37,28 @@ import '../theme/widgetresize.css';
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class WidgetResize extends Plugin {
+	declare public selectedResizer: Resizer | null;
+
+	/**
+	 * @internal
+	 */
+	declare public _activeResizer: Resizer | null;
+
+	private _resizers!: Map<ViewContainerElement, Resizer>;
+	private _observer!: DomEmitter;
+	private _redrawSelectedResizerThrottled!: DebouncedFunc<() => void>;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'WidgetResize';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editing = this.editor.editing;
 		const domDocument = global.window.document;
 
@@ -70,9 +91,14 @@ export default class WidgetResize extends Plugin {
 
 		editing.view.addObserver( MouseObserver );
 
-		this._observer = Object.create( DomEmitterMixin );
+		this._observer = new DomEmitter();
 
-		this.listenTo( editing.view.document, 'mousedown', this._mouseDownListener.bind( this ), { priority: 'high' } );
+		this.listenTo<ViewDocumentMouseEvent>(
+			editing.view.document,
+			'mousedown',
+			this._mouseDownListener.bind( this ),
+			{ priority: 'high' }
+		);
 
 		this._observer.listenTo( domDocument, 'mousemove', this._mouseMoveListener.bind( this ) );
 		this._observer.listenTo( domDocument, 'mouseup', this._mouseUpListener.bind( this ) );
@@ -80,12 +106,12 @@ export default class WidgetResize extends Plugin {
 		this._redrawSelectedResizerThrottled = throttle( () => this.redrawSelectedResizer(), 200 );
 
 		// Redrawing on any change of the UI of the editor (including content changes).
-		this.editor.ui.on( 'update', this._redrawSelectedResizerThrottled );
+		this.editor.ui.on<EditorUIUpdateEvent>( 'update', this._redrawSelectedResizerThrottled );
 
 		// Remove view widget-resizer mappings for widgets that have been removed from the document.
 		// https://github.com/ckeditor/ckeditor5/issues/10156
 		// https://github.com/ckeditor/ckeditor5/issues/10266
-		this.editor.model.document.on( 'change', () => {
+		this.editor.model.document.on<DocumentChangeEvent>( 'change', () => {
 			for ( const [ viewElement, resizer ] of this._resizers ) {
 				if ( !viewElement.isAttached() ) {
 					this._resizers.delete( viewElement );
@@ -99,8 +125,8 @@ export default class WidgetResize extends Plugin {
 
 		const viewSelection = this.editor.editing.view.document.selection;
 
-		viewSelection.on( 'change', () => {
-			const selectedElement = viewSelection.getSelectedElement();
+		viewSelection.on<ViewSelectionChangeEvent>( 'change', () => {
+			const selectedElement = viewSelection.getSelectedElement() as ViewContainerElement;
 
 			const resizer = this.getResizerByViewElement( selectedElement ) || null;
 			if ( resizer ) {
@@ -114,7 +140,7 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * Redraws the selected resizer if there is any selected resizer and if it is visible.
 	 */
-	redrawSelectedResizer() {
+	public redrawSelectedResizer(): void {
 		if ( this.selectedResizer && this.selectedResizer.isVisible ) {
 			this.selectedResizer.redraw();
 		}
@@ -123,7 +149,9 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
+		super.destroy();
+
 		this._observer.stopListening();
 
 		for ( const resizer of this._resizers.values() ) {
@@ -138,7 +166,7 @@ export default class WidgetResize extends Plugin {
 	 *
 	 * @param {module:widget/widgetresize/resizer~Resizer} resizer
 	 */
-	select( resizer ) {
+	public select( resizer: Resizer ): void {
 		this.deselect();
 		this.selectedResizer = resizer;
 		this.selectedResizer.isSelected = true;
@@ -147,7 +175,7 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * Deselects currently set resizer.
 	 */
-	deselect() {
+	public deselect(): void {
 		if ( this.selectedResizer ) {
 			this.selectedResizer.isSelected = false;
 		}
@@ -159,7 +187,7 @@ export default class WidgetResize extends Plugin {
 	 * @param {module:widget/widgetresize~ResizerOptions} [options] Resizer options.
 	 * @returns {module:widget/widgetresize/resizer~Resizer}
 	 */
-	attachTo( options ) {
+	public attachTo( options: ResizerOptions ): Resizer {
 		const resizer = new Resizer( options );
 		const plugins = this.editor.plugins;
 
@@ -168,17 +196,17 @@ export default class WidgetResize extends Plugin {
 		if ( plugins.has( 'WidgetToolbarRepository' ) ) {
 			// Hiding widget toolbar to improve the performance
 			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#issuecomment-564528765).
-			const widgetToolbarRepository = plugins.get( 'WidgetToolbarRepository' );
+			const widgetToolbarRepository = plugins.get( 'WidgetToolbarRepository' ) as WidgetToolbarRepository;
 
-			resizer.on( 'begin', () => {
+			resizer.on<ResizerBeginEvent>( 'begin', () => {
 				widgetToolbarRepository.forceDisabled( 'resize' );
 			}, { priority: 'lowest' } );
 
-			resizer.on( 'cancel', () => {
+			resizer.on<ResizerCancelEvent>( 'cancel', () => {
 				widgetToolbarRepository.clearForceDisabled( 'resize' );
 			}, { priority: 'highest' } );
 
-			resizer.on( 'commit', () => {
+			resizer.on<ResizerCommitEvent>( 'commit', () => {
 				widgetToolbarRepository.clearForceDisabled( 'resize' );
 			}, { priority: 'highest' } );
 		}
@@ -186,7 +214,7 @@ export default class WidgetResize extends Plugin {
 		this._resizers.set( options.viewElement, resizer );
 
 		const viewSelection = this.editor.editing.view.document.selection;
-		const selectedElement = viewSelection.getSelectedElement();
+		const selectedElement = viewSelection.getSelectedElement() as ViewContainerElement;
 
 		// If the element the resizer is created for is currently focused, it should become visible.
 		if ( this.getResizerByViewElement( selectedElement ) == resizer ) {
@@ -202,7 +230,7 @@ export default class WidgetResize extends Plugin {
 	 * @param {module:engine/view/containerelement~ContainerElement} viewElement View element associated with the resizer.
 	 * @returns {module:widget/widgetresize/resizer~Resizer|undefined}
 	 */
-	getResizerByViewElement( viewElement ) {
+	public getResizerByViewElement( viewElement: ViewContainerElement ): Resizer | undefined {
 		return this._resizers.get( viewElement );
 	}
 
@@ -213,7 +241,7 @@ export default class WidgetResize extends Plugin {
 	 * @param {HTMLElement} domResizeHandle
 	 * @returns {module:widget/widgetresize/resizer~Resizer}
 	 */
-	_getResizerByHandle( domResizeHandle ) {
+	private _getResizerByHandle( domResizeHandle: HTMLElement ): Resizer | undefined {
 		for ( const resizer of this._resizers.values() ) {
 			if ( resizer.containsHandle( domResizeHandle ) ) {
 				return resizer;
@@ -226,14 +254,14 @@ export default class WidgetResize extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} event
 	 * @param {Event} domEventData Native DOM event.
 	 */
-	_mouseDownListener( event, domEventData ) {
+	private _mouseDownListener( event: EventInfo, domEventData: DomEventData ) {
 		const resizeHandle = domEventData.domTarget;
 
 		if ( !Resizer.isResizeHandle( resizeHandle ) ) {
 			return;
 		}
 
-		this._activeResizer = this._getResizerByHandle( resizeHandle );
+		this._activeResizer = this._getResizerByHandle( resizeHandle ) || null;
 
 		if ( this._activeResizer ) {
 			this._activeResizer.begin( resizeHandle );
@@ -249,7 +277,7 @@ export default class WidgetResize extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} event
 	 * @param {Event} domEventData Native DOM event.
 	 */
-	_mouseMoveListener( event, domEventData ) {
+	private _mouseMoveListener( event: unknown, domEventData: MouseEvent ) {
 		if ( this._activeResizer ) {
 			this._activeResizer.updateSize( domEventData );
 		}
@@ -258,15 +286,13 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * @protected
 	 */
-	_mouseUpListener() {
+	private _mouseUpListener(): void {
 		if ( this._activeResizer ) {
 			this._activeResizer.commit();
 			this._activeResizer = null;
 		}
 	}
 }
-
-mix( WidgetResize, ObservableMixin );
 
 /**
  * Interface describing a resizer. It allows to specify the resizing host, custom logic for calculating aspect ratio, etc.
@@ -321,3 +347,13 @@ mix( WidgetResize, ObservableMixin );
 /**
  * @member {Function} module:widget/widgetresize~ResizerOptions#isCentered
  */
+export interface ResizerOptions {
+	editor: Editor;
+	modelElement: Element;
+	viewElement: ViewContainerElement;
+	unit?: 'px' | '%';
+	onCommit: ( newValue: string ) => void;
+	getResizeHost: ( widgetWrapper: HTMLElement ) => HTMLElement;
+	getHandleHost: ( widgetWrapper: HTMLElement ) => HTMLElement;
+	isCentered?: ( resizer: Resizer ) => boolean;
+}

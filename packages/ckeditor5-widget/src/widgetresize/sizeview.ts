@@ -8,6 +8,8 @@
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
+import type { ResizerOptions } from '../widgetresize';
+import type ResizeState from './resizerstate';
 
 /**
  * A view displaying the proposed new element size during the resizing.
@@ -16,6 +18,24 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
  * @extends {module:ui/view~View}
  */
 export default class SizeView extends View {
+	/**
+	 * @internal
+	 * @readonly
+	 */
+	declare public _isVisible: boolean;
+
+	/**
+	 * @internal
+	 * @readonly
+	 */
+	declare public _label: string;
+
+	/**
+	 * @internal
+	 * @readonly
+	 */
+	declare public _viewPosition: string;
+
 	constructor() {
 		super();
 
@@ -71,12 +91,13 @@ export default class SizeView extends View {
 	 * A method used for binding the `SizeView` instance properties to the `ResizeState` instance observable properties.
 	 *
 	 * @protected
+	 * @internal
 	 * @param {module:widget/widgetresize~ResizerOptions} options
 	 * An object defining the resizer options, used for setting the proper size label.
 	 * @param {module:widget/widgetresize/resizerstate~ResizeState} resizeState
 	 * The `ResizeState` class instance, used for keeping the `SizeView` state up to date.
 	 */
-	_bindToState( options, resizeState ) {
+	public _bindToState( options: ResizerOptions, resizeState: ResizeState ): void {
 		this.bind( '_isVisible' ).to( resizeState, 'proposedWidth', resizeState, 'proposedHeight', ( width, height ) =>
 			width !== null && height !== null );
 
@@ -98,7 +119,7 @@ export default class SizeView extends View {
 			resizeState, 'proposedHandleHostWidth',
 			resizeState, 'proposedHandleHostHeight',
 			// If the widget is too small to contain the size label, display the label above.
-			( position, width, height ) => width < 50 || height < 50 ? 'above-center' : position
+			( position, width, height ) => width! < 50 || height! < 50 ? 'above-center' : position!
 		);
 	}
 
@@ -106,8 +127,9 @@ export default class SizeView extends View {
 	 * A method used for cleaning up. It removes the bindings and hides the view.
 	 *
 	 * @protected
+	 * @internal
 	 */
-	_dismiss() {
+	public _dismiss(): void {
 		this.unbind();
 		this._isVisible = false;
 	}

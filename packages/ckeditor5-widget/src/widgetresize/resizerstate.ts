@@ -9,18 +9,39 @@
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
+import type { ResizerOptions } from '../widgetresize';
 
 /**
  * Stores the internal state of a single resizable object.
  *
  */
-export default class ResizeState {
+export default class ResizeState extends Observable {
+	declare public activeHandlePosition: string | null;
+	declare public proposedWidthPercents: number | null;
+	declare public proposedWidth: number | null;
+	declare public proposedHeight: number | null;
+	declare public proposedHandleHostWidth: number | null;
+	declare public proposedHandleHostHeight: number | null;
+
+	/**
+	 * @internal
+	 */
+	public _referenceCoordinates: { x: number; y: number } | null;
+
+	private readonly _options: ResizerOptions;
+	private _originalWidth?: number;
+	private _originalHeight?: number;
+	private _originalWidthPercents?: number;
+	private _aspectRatio?: number;
+
 	/**
 	 * @param {module:widget/widgetresize~ResizerOptions} options Resizer options.
 	 */
-	constructor( options ) {
+	constructor( options: ResizerOptions ) {
+		super();
+
 		/**
 		 * The original width (pixels) of the resized object when the resize process was started.
 		 *
@@ -106,34 +127,56 @@ export default class ResizeState {
 		this._referenceCoordinates = null;
 	}
 
+	public get originalWidth(): number | undefined {
+		return this._originalWidth;
+	}
+
+	public get originalHeight(): number | undefined {
+		return this._originalHeight;
+	}
+
+	public get originalWidthPercents(): number | undefined {
+		return this._originalWidthPercents;
+	}
+
+	public get aspectRatio(): number | undefined {
+		return this._aspectRatio;
+	}
+
 	/**
 	 *
 	 * @param {HTMLElement} domResizeHandle The handle used to calculate the reference point.
 	 * @param {HTMLElement} domHandleHost
 	 * @param {HTMLElement} domResizeHost
 	 */
-	begin( domResizeHandle, domHandleHost, domResizeHost ) {
+	public begin( domResizeHandle: HTMLElement, domHandleHost: HTMLElement, domResizeHost: HTMLElement ): void {
 		const clientRect = new Rect( domHandleHost );
 
-		this.activeHandlePosition = getHandlePosition( domResizeHandle );
+		this.activeHandlePosition = getHandlePosition( domResizeHandle )!;
 
 		this._referenceCoordinates = getAbsoluteBoundaryPoint( domHandleHost, getOppositePosition( this.activeHandlePosition ) );
 
-		this.originalWidth = clientRect.width;
-		this.originalHeight = clientRect.height;
+		this._originalWidth = clientRect.width;
+		this._originalHeight = clientRect.height;
 
-		this.aspectRatio = clientRect.width / clientRect.height;
+		this._aspectRatio = clientRect.width / clientRect.height;
 
 		const widthStyle = domResizeHost.style.width;
 
 		if ( widthStyle && widthStyle.match( /^\d+(\.\d*)?%$/ ) ) {
-			this.originalWidthPercents = parseFloat( widthStyle );
+			this._originalWidthPercents = parseFloat( widthStyle );
 		} else {
-			this.originalWidthPercents = calculateHostPercentageWidth( domResizeHost, clientRect );
+			this._originalWidthPercents = calculateHostPercentageWidth( domResizeHost, clientRect );
 		}
 	}
 
-	update( newSize ) {
+	public update( newSize: {
+		width: number;
+		height: number;
+		widthPercents: number;
+		handleHostWidth: number;
+		handleHostHeight: number;
+	} ): void {
 		this.proposedWidth = newSize.width;
 		this.proposedHeight = newSize.height;
 		this.proposedWidthPercents = newSize.widthPercents;
@@ -143,18 +186,16 @@ export default class ResizeState {
 	}
 }
 
-mix( ResizeState, ObservableMixin );
-
 // Calculates a relative width of a `domResizeHost` compared to it's parent in percents.
 //
 // @private
 // @param {HTMLElement} domResizeHost
 // @param {module:utils/dom/rect~Rect} resizeHostRect
 // @returns {Number}
-function calculateHostPercentageWidth( domResizeHost, resizeHostRect ) {
+function calculateHostPercentageWidth( domResizeHost: HTMLElement, resizeHostRect: Rect ) {
 	const domResizeHostParent = domResizeHost.parentElement;
 	// Need to use computed style as it properly excludes parent's paddings from the returned value.
-	const parentWidth = parseFloat( domResizeHostParent.ownerDocument.defaultView.getComputedStyle( domResizeHostParent ).width );
+	const parentWidth = parseFloat( domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( domResizeHostParent! ).width );
 
 	return resizeHostRect.width / parentWidth * 100;
 }
@@ -167,7 +208,7 @@ function calculateHostPercentageWidth( domResizeHost, resizeHostRect ) {
 // @returns {Object} return
 // @returns {Number} return.x
 // @returns {Number} return.y
-function getAbsoluteBoundaryPoint( element, resizerPosition ) {
+function getAbsoluteBoundaryPoint( element: HTMLElement, resizerPosition: string ) {
 	const elementRect = new Rect( element );
 	const positionParts = resizerPosition.split( '-' );
 	const ret = {
@@ -175,8 +216,8 @@ function getAbsoluteBoundaryPoint( element, resizerPosition ) {
 		y: positionParts[ 0 ] == 'bottom' ? elementRect.bottom : elementRect.top
 	};
 
-	ret.x += element.ownerDocument.defaultView.scrollX;
-	ret.y += element.ownerDocument.defaultView.scrollY;
+	ret.x += element.ownerDocument.defaultView!.scrollX;
+	ret.y += element.ownerDocument.defaultView!.scrollY;
 
 	return ret;
 }
@@ -184,7 +225,7 @@ function getAbsoluteBoundaryPoint( element, resizerPosition ) {
 // @private
 // @param {String} resizerPosition The expected resizer position, like `"top-left"`, `"bottom-right"`.
 // @returns {String} A prefixed HTML class name for the resizer element.
-function getResizerHandleClass( resizerPosition ) {
+function getResizerHandleClass( resizerPosition: string ) {
 	return `ck-widget__resizer__handle-${ resizerPosition }`;
 }
 
@@ -193,7 +234,7 @@ function getResizerHandleClass( resizerPosition ) {
 // @private
 // @param {HTMLElement} domHandle Handle used to calculate the reference point.
 // @returns {String|undefined} Returns a string like `"top-left"` or `undefined` if not matched.
-function getHandlePosition( domHandle ) {
+function getHandlePosition( domHandle: HTMLElement ) {
 	const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
 	for ( const position of resizerPositions ) {
@@ -206,9 +247,9 @@ function getHandlePosition( domHandle ) {
 // @private
 // @param {String} position Like `"top-left"`.
 // @returns {String} Inverted `position`, e.g. it returns `"bottom-right"` if `"top-left"` was given as `position`.
-function getOppositePosition( position ) {
+function getOppositePosition( position: string ) {
 	const parts = position.split( '-' );
-	const replacements = {
+	const replacements: Record<string, string> = {
 		top: 'bottom',
 		bottom: 'top',
 		left: 'right',

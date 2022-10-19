@@ -17,7 +17,7 @@ import {
 	type BaseEvent,
 	type CallbackOptions
 } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import toArray, { type ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
 
 import BubblingEventInfo from './bubblingeventinfo';
 import type Document from '../document';
@@ -353,7 +353,7 @@ export type BubblingEvent<TEvent extends BaseEvent> = TEvent & {
 };
 
 export type BubblingCallbackOptions = CallbackOptions & {
-	context?: string | Array<string> | BubblingEventContextFunction;
+	context?: ArrayOrItem<string | BubblingEventContextFunction>;
 };
 
 export type BubblingEmitter = Emitter;
