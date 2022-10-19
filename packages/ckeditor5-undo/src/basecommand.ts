@@ -21,7 +21,7 @@ import type Operation from '@ckeditor/ckeditor5-engine/src/model/operation/opera
  * @protected
  * @extends module:core/command~Command
  */
-export default class BaseCommand extends Command {
+export default abstract class BaseCommand extends Command {
 	protected _stack: Array<{ batch: Batch; selection: { ranges: Array<Range>; isBackward: boolean } }>;
 
 	/**
