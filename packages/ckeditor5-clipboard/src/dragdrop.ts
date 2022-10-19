@@ -863,7 +863,7 @@ function delay<T extends ( ...args: Array<any> ) => any>( func: T, wait: number 
 	return delayed;
 }
 
-interface DelayedFunc<T extends ( ...args: any[] ) => any> {
+interface DelayedFunc<T extends ( ...args: Array<any> ) => any> {
 	( ...args: Parameters<T> ): void;
 	cancel(): void;
 }
