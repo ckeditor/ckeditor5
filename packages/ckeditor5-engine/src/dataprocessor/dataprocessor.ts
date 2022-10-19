@@ -8,7 +8,7 @@
  */
 
 import type ViewDocumentFragment from '../view/documentfragment';
-import { type MatcherPattern } from '../view/matcher';
+import type { MatcherPattern } from '../view/matcher';
 
 /**
  * The data processor interface. It should be implemented by actual data processors.

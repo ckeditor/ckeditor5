@@ -8,7 +8,7 @@
  */
 
 import Observer from './observer';
-import { type ViewDocumentArrowKeyEvent } from './arrowkeysobserver';
+import type { ViewDocumentArrowKeyEvent } from './arrowkeysobserver';
 import ViewSelection from '../selection';
 import type View from '../view';
 import type {
