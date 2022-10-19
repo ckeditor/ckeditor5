@@ -31,7 +31,7 @@ import Element from './element';
  * @extends module:engine/view/element~Element
  */
 export default class ContainerElement extends Element {
-	public override readonly getFillerOffset: () => number | null;
+	public override getFillerOffset: () => number | null;
 
 	/**
 	 * Creates a container element.
