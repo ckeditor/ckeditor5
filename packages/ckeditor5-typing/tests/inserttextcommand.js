@@ -27,7 +27,7 @@ describe( 'InsertTextCommand', () => {
 				editor.commands.add( 'insertText', inputCommand );
 
 				buffer = inputCommand.buffer;
-				buffer.size = 0;
+				buffer._size = 0;
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );

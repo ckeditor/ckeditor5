@@ -45,7 +45,7 @@ describe( 'ChangeBuffer', () => {
 		} );
 
 		it( 'is unlocked by unlock method', () => {
-			buffer.isLocked = true;
+			buffer._isLocked = true;
 
 			buffer.unlock();
 
@@ -224,7 +224,7 @@ describe( 'ChangeBuffer', () => {
 
 		it( 'is not reset on selection change:range while locked', () => {
 			const initialBatch = buffer.batch;
-			buffer.size = 1;
+			buffer._size = 1;
 
 			buffer.lock();
 
@@ -238,7 +238,7 @@ describe( 'ChangeBuffer', () => {
 
 		it( 'is not reset on selection change:attribute while locked', () => {
 			const initialBatch = buffer.batch;
-			buffer.size = 1;
+			buffer._size = 1;
 
 			buffer.lock();
 

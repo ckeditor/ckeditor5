@@ -107,4 +107,8 @@
 	--ck-color-link-default:									hsl(240, 100%, 47%);
 	--ck-color-link-selected-background:						hsla(201, 100%, 56%, 0.1);
 	--ck-color-link-fake-selection:								hsla(201, 100%, 56%, 0.3);
+
+	/* -- Search result highlight ---------------------------------------------------------------- */
+
+	--ck-color-highlight-background:							hsl(60, 100%, 50%)
 }
