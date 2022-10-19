@@ -510,7 +510,7 @@ export default class WidgetTypeAround extends Plugin {
 		const widgetPlugin = editor.plugins.get( 'Widget' ) as Widget;
 
 		// This is the widget the selection is about to be set on.
-		const modelElementNextToSelection = widgetPlugin._getObjectElementNextToSelection( isForward ) as Element;
+		const modelElementNextToSelection = widgetPlugin._getObjectElementNextToSelection( isForward )!;
 		const viewElementNextToSelection = editor.editing.mapper.toViewElement( modelElementNextToSelection );
 
 		if ( isTypeAroundWidget( viewElementNextToSelection, modelElementNextToSelection, schema ) ) {

@@ -19,7 +19,7 @@ import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 
 import '../theme/widget.css';
 
-import type { DomEventData, DowncastWriter, ViewDocumentFragment, ViewElement } from '@ckeditor/ckeditor5-engine';
+import type { DomEventData, DowncastWriter, Element, ViewDocumentFragment, ViewElement } from '@ckeditor/ckeditor5-engine';
 import type { DowncastSelectionEvent } from '@ckeditor/ckeditor5-engine/src/conversion/downcastdispatcher';
 import type { ViewDocumentArrowKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/arrowkeysobserver';
 import type { ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing/src/deleteobserver';
@@ -421,7 +421,7 @@ export default class Widget extends Plugin {
 	 * @param {Boolean} forward Direction of checking.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
-	public _getObjectElementNextToSelection( forward: boolean ): Node | null {
+	public _getObjectElementNextToSelection( forward: boolean ): Element | null {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const modelSelection = model.document.selection;
@@ -439,7 +439,7 @@ export default class Widget extends Plugin {
 		const objectElement = forward ? probe.focus!.nodeBefore : probe.focus!.nodeAfter;
 
 		if ( !!objectElement && schema.isObject( objectElement ) ) {
-			return objectElement;
+			return objectElement as Element;
 		}
 
 		return null;
