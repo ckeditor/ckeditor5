@@ -166,7 +166,7 @@
     "release:bump-version": "node ./scripts/release/bump-versions.js",
     "postrelease:bump-version": "npm run dll:build",
     "release:publish": "node ./scripts/release/publish.js",
-    "release:clean": "npx rimraf \"packages/ckeditor5-@(core|engine|enter|paragraph|select-all|typing|ui|undo|upload|utils|widget)/src/**/*.@(js|d.ts)\"",
+    "release:clean": "npx rimraf \"packages/ckeditor5-@(core|engine|enter|paragraph|select-all|typing|ui|undo|upload|utils|widget|clipboard)/src/**/*.@(js|d.ts)\"",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
     "dll:build": "node ./scripts/dll/build-dlls.js --base-dll-config ./scripts/dll/webpack.config.dll.js",
