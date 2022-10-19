@@ -388,7 +388,7 @@ export default class Widget extends Plugin {
 					const nodeToRemove = previousNode;
 					previousNode = nodeToRemove.parent!;
 
-					writer.remove( nodeToRemove );
+					writer.remove( nodeToRemove as Element );
 				}
 
 				this._setSelectionOverElement( objectElement );

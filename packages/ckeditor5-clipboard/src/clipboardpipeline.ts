@@ -11,13 +11,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 import ClipboardObserver, {
-	type ClipboardEventData,
 	type ViewDocumentClipboardEvent,
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver';
-import type { DocumentFragment, DomEventData, Range, ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
+import type { DocumentFragment, Range, ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
 import type DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 import type { default as ViewRange } from '@ckeditor/ckeditor5-engine/src/view/range';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import plainTextToHtml from './utils/plaintexttohtml';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata';
@@ -250,7 +250,7 @@ export default class ClipboardPipeline extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		function onCopyCut( evt: EventInfo, data: DomEventData<ClipboardEvent> & ClipboardEventData ) {
+		const onCopyCut: OmitThisParameter<GetCallback<ViewDocumentClipboardEvent>> = ( evt, data ) => {
 			const dataTransfer = data.dataTransfer;
 
 			data.preventDefault();
@@ -262,7 +262,7 @@ export default class ClipboardPipeline extends Plugin {
 				content,
 				method: evt.name as 'copy' | 'cut'
 			} );
-		}
+		};
 
 		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'copy', onCopyCut, { priority: 'low' } );
 		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'cut', ( evt, data ) => {
@@ -383,7 +383,7 @@ export type ClipboardOutputEvent = {
 export type ClipboardOutputEventData = {
 	dataTransfer: DataTransfer;
 	content: ViewDocumentFragment;
-	method: 'copy' | 'cut';
+	method: 'copy' | 'cut' | 'dragstart';
 };
 
 /**

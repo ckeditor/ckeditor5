@@ -9,18 +9,25 @@
 
 /* globals setTimeout, clearTimeout */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
 import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
-import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
+import MouseObserver, { type ViewDocumentMouseEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
-import ClipboardPipeline from './clipboardpipeline';
-import ClipboardObserver from './clipboardobserver';
+import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ClipboardOutputEvent } from './clipboardpipeline';
+import ClipboardObserver, { type ViewDocumentClipboardInputEvent, type ViewDocumentDragEvent } from './clipboardobserver';
+import type DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
+import type { Element, Position, Range } from '@ckeditor/ckeditor5-engine';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { default as ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element';
+import type { default as ViewRange } from '@ckeditor/ckeditor5-engine/src/view/range';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
-import { throttle } from 'lodash-es';
+import { type DebouncedFunc, throttle } from 'lodash-es';
 
 import '../theme/clipboard.css';
 
@@ -110,24 +117,31 @@ import '../theme/clipboard.css';
  * @extends module:core/plugin~Plugin
  */
 export default class DragDrop extends Plugin {
+	private _draggedRange!: LiveRange | null;
+	private _draggingUid!: string;
+	private _draggableElement!: Element | null;
+	private _updateDropMarkerThrottled!: DebouncedFunc<( targetRange: Range ) => void>;
+	private _removeDropMarkerDelayed!: DelayedFunc<() => void>;
+	private _clearDraggableAttributesDelayed!: DelayedFunc<() => void>;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'DragDrop';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): Array<PluginConstructor> {
 		return [ ClipboardPipeline, Widget ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
 
@@ -190,7 +204,7 @@ export default class DragDrop extends Plugin {
 		this._setupDropMarker();
 		this._setupDraggableAttributeHandling();
 
-		this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => {
+		this.listenTo<ObservableChangeEvent<boolean>>( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => {
 			if ( isReadOnly ) {
 				this.forceDisabled( 'readOnlyMode' );
 			} else {
@@ -198,7 +212,7 @@ export default class DragDrop extends Plugin {
 			}
 		} );
 
-		this.on( 'change:isEnabled', ( evt, name, isEnabled ) => {
+		this.on<ObservableChangeEvent<boolean>>( 'change:isEnabled', ( evt, name, isEnabled ) => {
 			if ( !isEnabled ) {
 				this._finalizeDragging( false );
 			}
@@ -212,7 +226,7 @@ export default class DragDrop extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		if ( this._draggedRange ) {
 			this._draggedRange.detach();
 			this._draggedRange = null;
@@ -230,7 +244,7 @@ export default class DragDrop extends Plugin {
 	 *
 	 * @private
 	 */
-	_setupDragging() {
+	private _setupDragging(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const modelDocument = model.document;
@@ -238,7 +252,7 @@ export default class DragDrop extends Plugin {
 		const viewDocument = view.document;
 
 		// The handler for the drag start; it is responsible for setting data transfer object.
-		this.listenTo( viewDocument, 'dragstart', ( evt, data ) => {
+		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'dragstart', ( evt, data ) => {
 			const selection = modelDocument.selection;
 
 			// Don't drag the editable element itself.
@@ -256,13 +270,13 @@ export default class DragDrop extends Plugin {
 			const draggableWidget = data.target ? findDraggableWidget( data.target ) : null;
 
 			if ( draggableWidget ) {
-				const modelElement = editor.editing.mapper.toModelElement( draggableWidget );
+				const modelElement = editor.editing.mapper.toModelElement( draggableWidget )!;
 
 				this._draggedRange = LiveRange.fromRange( model.createRangeOn( modelElement ) );
 
 				// Disable toolbars so they won't obscure the drop area.
 				if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
-					editor.plugins.get( 'WidgetToolbarRepository' ).forceDisabled( 'dragDrop' );
+					( editor.plugins.get( 'WidgetToolbarRepository' ) as WidgetToolbarRepository ).forceDisabled( 'dragDrop' );
 				}
 			}
 
@@ -271,7 +285,7 @@ export default class DragDrop extends Plugin {
 				const selectedElement = viewDocument.selection.getSelectedElement();
 
 				if ( !selectedElement || !isWidget( selectedElement ) ) {
-					this._draggedRange = LiveRange.fromRange( selection.getFirstRange() );
+					this._draggedRange = LiveRange.fromRange( selection.getFirstRange()! );
 				}
 			}
 
@@ -289,7 +303,11 @@ export default class DragDrop extends Plugin {
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
 			const content = editor.data.toView( model.getSelectedContent( draggedSelection ) );
 
-			viewDocument.fire( 'clipboardOutput', { dataTransfer: data.dataTransfer, content, method: evt.name } );
+			viewDocument.fire<ClipboardOutputEvent>( 'clipboardOutput', {
+				dataTransfer: data.dataTransfer,
+				content,
+				method: 'dragstart'
+			} );
 
 			if ( !this.isEnabled ) {
 				this._draggedRange.detach();
@@ -301,12 +319,12 @@ export default class DragDrop extends Plugin {
 		// The handler for finalizing drag and drop. It should always be triggered after dragging completes
 		// even if it was completed in a different application.
 		// Note: This is not fired if source text node got removed while downcasting a marker.
-		this.listenTo( viewDocument, 'dragend', ( evt, data ) => {
+		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'dragend', ( evt, data ) => {
 			this._finalizeDragging( !data.dataTransfer.isCanceled && data.dataTransfer.dropEffect == 'move' );
 		}, { priority: 'low' } );
 
 		// Dragging over the editable.
-		this.listenTo( viewDocument, 'dragenter', () => {
+		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'dragenter', () => {
 			if ( !this.isEnabled ) {
 				return;
 			}
@@ -315,14 +333,14 @@ export default class DragDrop extends Plugin {
 		} );
 
 		// Dragging out of the editable.
-		this.listenTo( viewDocument, 'dragleave', () => {
+		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'dragleave', () => {
 			// We do not know if the mouse left the editor or just some element in it, so let us wait a few milliseconds
 			// to check if 'dragover' is not fired.
 			this._removeDropMarkerDelayed();
 		} );
 
 		// Handler for moving dragged content over the target area.
-		this.listenTo( viewDocument, 'dragging', ( evt, data ) => {
+		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'dragging', ( evt, data ) => {
 			if ( !this.isEnabled ) {
 				data.dataTransfer.dropEffect = 'none';
 
@@ -360,13 +378,13 @@ export default class DragDrop extends Plugin {
 	 *
 	 * @private
 	 */
-	_setupClipboardInputIntegration() {
+	private _setupClipboardInputIntegration(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
 		// Update the event target ranges and abort dropping if dropping over itself.
-		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
+		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', ( evt, data ) => {
 			if ( data.method != 'drop' ) {
 				return;
 			}
@@ -413,22 +431,22 @@ export default class DragDrop extends Plugin {
 	 *
 	 * @private
 	 */
-	_setupContentInsertionIntegration() {
+	private _setupContentInsertionIntegration(): void {
 		const clipboardPipeline = this.editor.plugins.get( ClipboardPipeline );
 
-		clipboardPipeline.on( 'contentInsertion', ( evt, data ) => {
+		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
 			if ( !this.isEnabled || data.method !== 'drop' ) {
 				return;
 			}
 
 			// Update the selection to the target range in the same change block to avoid selection post-fixing
 			// and to be able to clone text attributes for plain text dropping.
-			const ranges = data.targetRanges.map( viewRange => this.editor.editing.mapper.toModelRange( viewRange ) );
+			const ranges = data.targetRanges!.map( viewRange => this.editor.editing.mapper.toModelRange( viewRange ) );
 
 			this.editor.model.change( writer => writer.setSelection( ranges ) );
 		}, { priority: 'high' } );
 
-		clipboardPipeline.on( 'contentInsertion', ( evt, data ) => {
+		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
 			if ( !this.isEnabled || data.method !== 'drop' ) {
 				return;
 			}
@@ -450,14 +468,14 @@ export default class DragDrop extends Plugin {
 	 *
 	 * @private
 	 */
-	_setupDraggableAttributeHandling() {
+	private _setupDraggableAttributeHandling(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
 		// Add the 'draggable' attribute to the widget while pressing the selection handle.
 		// This is required for widgets to be draggable. In Chrome it will enable dragging text nodes.
-		this.listenTo( viewDocument, 'mousedown', ( evt, data ) => {
+		this.listenTo<ViewDocumentMouseEvent>( viewDocument, 'mousedown', ( evt, data ) => {
 			// The lack of data can be caused by editor tests firing fake mouse events. This should not occur
 			// in real-life scenarios but this greatly simplifies editor tests that would otherwise fail a lot.
 			if ( env.isAndroid || !data ) {
@@ -487,16 +505,16 @@ export default class DragDrop extends Plugin {
 
 			if ( draggableElement ) {
 				view.change( writer => {
-					writer.setAttribute( 'draggable', 'true', draggableElement );
+					writer.setAttribute( 'draggable', 'true', draggableElement! );
 				} );
 
 				// Keep the reference to the model element in case the view element gets removed while dragging.
-				this._draggableElement = editor.editing.mapper.toModelElement( draggableElement );
+				this._draggableElement = editor.editing.mapper.toModelElement( draggableElement )!;
 			}
 		} );
 
 		// Remove the draggable attribute in case no dragging started (only mousedown + mouseup).
-		this.listenTo( viewDocument, 'mouseup', () => {
+		this.listenTo<ViewDocumentMouseEvent>( viewDocument, 'mouseup', () => {
 			if ( !env.isAndroid ) {
 				this._clearDraggableAttributesDelayed();
 			}
@@ -508,13 +526,13 @@ export default class DragDrop extends Plugin {
 	 *
 	 * @private
 	 */
-	_clearDraggableAttributes() {
+	private _clearDraggableAttributes(): void {
 		const editing = this.editor.editing;
 
 		editing.view.change( writer => {
 			// Remove 'draggable' attribute.
 			if ( this._draggableElement && this._draggableElement.root.rootName != '$graveyard' ) {
-				writer.removeAttribute( 'draggable', editing.mapper.toViewElement( this._draggableElement ) );
+				writer.removeAttribute( 'draggable', editing.mapper.toViewElement( this._draggableElement )! );
 			}
 
 			this._draggableElement = null;
@@ -526,7 +544,7 @@ export default class DragDrop extends Plugin {
 	 *
 	 * @private
 	 */
-	_setupDropMarker() {
+	private _setupDropMarker(): void {
 		const editor = this.editor;
 
 		// Drop marker conversion for hovering over widgets.
@@ -565,13 +583,13 @@ export default class DragDrop extends Plugin {
 	 * @private
 	 * @param {module:engine/model/range~Range} targetRange The range to set the marker to.
 	 */
-	_updateDropMarker( targetRange ) {
+	private _updateDropMarker( targetRange: Range ): void {
 		const editor = this.editor;
 		const markers = editor.model.markers;
 
 		editor.model.change( writer => {
 			if ( markers.has( 'drop-target' ) ) {
-				if ( !markers.get( 'drop-target' ).getRange().isEqual( targetRange ) ) {
+				if ( !markers.get( 'drop-target' )!.getRange().isEqual( targetRange ) ) {
 					writer.updateMarker( 'drop-target', { range: targetRange } );
 				}
 			} else {
@@ -589,7 +607,7 @@ export default class DragDrop extends Plugin {
 	 *
 	 * @private
 	 */
-	_removeDropMarker() {
+	private _removeDropMarker(): void {
 		const model = this.editor.model;
 
 		this._removeDropMarkerDelayed.cancel();
@@ -608,7 +626,7 @@ export default class DragDrop extends Plugin {
 	 * @private
 	 * @param {Boolean} moved Whether the move succeeded.
 	 */
-	_finalizeDragging( moved ) {
+	private _finalizeDragging( moved: boolean ): void {
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -616,7 +634,7 @@ export default class DragDrop extends Plugin {
 		this._clearDraggableAttributes();
 
 		if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
-			editor.plugins.get( 'WidgetToolbarRepository' ).clearForceDisabled( 'dragDrop' );
+			( editor.plugins.get( 'WidgetToolbarRepository' ) as WidgetToolbarRepository ).clearForceDisabled( 'dragDrop' );
 		}
 
 		this._draggingUid = '';
@@ -641,17 +659,17 @@ export default class DragDrop extends Plugin {
 // @param {Array.<module:engine/view/range~Range>} targetViewRanges
 // @param {module:engine/view/element~Element} targetViewElement
 // @returns {module:engine/model/range~Range|null}
-function findDropTargetRange( editor, targetViewRanges, targetViewElement ) {
+function findDropTargetRange( editor: Editor, targetViewRanges: Array<ViewRange> | null, targetViewElement: ViewElement ): Range | null {
 	const model = editor.model;
 	const mapper = editor.editing.mapper;
 
-	let range = null;
+	let range: Range | null = null;
 
 	const targetViewPosition = targetViewRanges ? targetViewRanges[ 0 ].start : null;
 
 	// A UIElement is not a valid drop element, use parent (this could be a drop marker or any other UIElement).
 	if ( targetViewElement.is( 'uiElement' ) ) {
-		targetViewElement = targetViewElement.parent;
+		targetViewElement = targetViewElement.parent as ViewElement;
 	}
 
 	// Quick win if the target is a widget (but not a nested editable).
@@ -693,7 +711,7 @@ function findDropTargetRange( editor, targetViewRanges, targetViewElement ) {
 	// There is no valid selection position inside the current limit element so find a closest object ancestor.
 	// This happens if the model position lands directly in the <table> element itself (view target element was a `<td>`
 	// so a nested editable, but view target position was directly in the `<figure>` element).
-	return findDropTargetRangeOnAncestorObject( editor, targetModelPosition.parent );
+	return findDropTargetRangeOnAncestorObject( editor, targetModelPosition.parent as Element );
 }
 
 // Returns fixed selection range for a given position and a target element if it is over the widget but not over its nested editable.
@@ -701,23 +719,23 @@ function findDropTargetRange( editor, targetViewRanges, targetViewElement ) {
 // @param {module:core/editor/editor~Editor} editor
 // @param {module:engine/view/element~Element} targetViewElement
 // @returns {module:engine/model/range~Range|null}
-function findDropTargetRangeOnWidget( editor, targetViewElement ) {
+function findDropTargetRangeOnWidget( editor: Editor, targetViewElement: ViewElement ): Range | null {
 	const model = editor.model;
 	const mapper = editor.editing.mapper;
 
 	// Quick win if the target is a widget.
 	if ( isWidget( targetViewElement ) ) {
-		return model.createRangeOn( mapper.toModelElement( targetViewElement ) );
+		return model.createRangeOn( mapper.toModelElement( targetViewElement )! );
 	}
 
 	// Check if we are deeper over a widget (but not over a nested editable).
 	if ( !targetViewElement.is( 'editableElement' ) ) {
 		// Find a closest ancestor that is either a widget or an editable element...
-		const ancestor = targetViewElement.findAncestor( node => isWidget( node ) || node.is( 'editableElement' ) );
+		const ancestor = targetViewElement.findAncestor( node => isWidget( node ) || node.is( 'editableElement' ) )!;
 
 		// ...and if the widget was closer then it is a drop target.
 		if ( isWidget( ancestor ) ) {
-			return model.createRangeOn( mapper.toModelElement( ancestor ) );
+			return model.createRangeOn( mapper.toModelElement( ancestor! )! );
 		}
 	}
 
@@ -729,7 +747,7 @@ function findDropTargetRangeOnWidget( editor, targetViewElement ) {
 // @param {module:core/editor/editor~Editor} editor
 // @param {module:engine/model/element~Element} targetModelElement
 // @returns {module:engine/model/range~Range}
-function findDropTargetRangeInElement( editor, targetModelElement ) {
+function findDropTargetRangeInElement( editor: Editor, targetModelElement: Element ): Range | null {
 	const model = editor.model;
 	const schema = model.schema;
 
@@ -744,7 +762,7 @@ function findDropTargetRangeInElement( editor, targetModelElement ) {
 // @param {module:engine/model/position~Position} targetModelPosition
 // @param {module:engine/model/element~Element} targetModelElement
 // @returns {module:engine/model/range~Range|null}
-function findDropTargetRangeBetweenBlocks( editor, targetModelPosition, targetModelElement ) {
+function findDropTargetRangeBetweenBlocks( editor: Editor, targetModelPosition: Position, targetModelElement: Element ): Range | null {
 	const model = editor.model;
 
 	// Check if target is between blocks.
@@ -776,16 +794,20 @@ function findDropTargetRangeBetweenBlocks( editor, targetModelPosition, targetMo
 // @param {module:core/editor/editor~Editor} editor
 // @param {module:engine/model/element~Element} element
 // @returns {module:engine/model/range~Range}
-function findDropTargetRangeOnAncestorObject( editor, element ) {
+function findDropTargetRangeOnAncestorObject( editor: Editor, element: Element ): Range | null {
 	const model = editor.model;
+	let currentElement: Element | null = element;
 
-	while ( element ) {
-		if ( model.schema.isObject( element ) ) {
-			return model.createRangeOn( element );
+	while ( currentElement ) {
+		if ( model.schema.isObject( currentElement ) ) {
+			return model.createRangeOn( currentElement );
 		}
 
-		element = element.parent;
+		currentElement = currentElement.parent as Element | null;
 	}
+
+	/* istanbul ignore next */
+	return null;
 }
 
 // Returns the closest model element for the specified view element.
@@ -793,7 +815,7 @@ function findDropTargetRangeOnAncestorObject( editor, element ) {
 // @param {module:core/editor/editor~Editor} editor
 // @param {module:engine/view/element~Element} element
 // @returns {module:engine/model/element~Element}
-function getClosestMappedModelElement( editor, element ) {
+function getClosestMappedModelElement( editor: Editor, element: ViewElement ): Element {
 	const mapper = editor.editing.mapper;
 	const view = editor.editing.view;
 
@@ -807,12 +829,12 @@ function getClosestMappedModelElement( editor, element ) {
 	const viewPosition = view.createPositionBefore( element );
 	const viewElement = mapper.findMappedViewAncestor( viewPosition );
 
-	return mapper.toModelElement( viewElement );
+	return mapper.toModelElement( viewElement )!;
 }
 
 // Returns the drop effect that should be a result of dragging the content.
 // This function is handling a quirk when checking the effect in the 'drop' DOM event.
-function getFinalDropEffect( dataTransfer ) {
+function getFinalDropEffect( dataTransfer: DataTransfer ): DataTransfer[ 'dropEffect' ] {
 	if ( env.isGecko ) {
 		return dataTransfer.dropEffect;
 	}
@@ -826,10 +848,10 @@ function getFinalDropEffect( dataTransfer ) {
 // @param {Function} func The function to wrap.
 // @param {Number} wait The timeout in ms.
 // @returns {Function}
-function delay( func, wait ) {
-	let timer;
+function delay<T extends ( ...args: Array<any> ) => any>( func: T, wait: number ): DelayedFunc<T> {
+	let timer: ReturnType<typeof setTimeout>;
 
-	function delayed( ...args ) {
+	function delayed( ...args: Parameters<T> ) {
 		delayed.cancel();
 		timer = setTimeout( () => func( ...args ), wait );
 	}
@@ -841,11 +863,16 @@ function delay( func, wait ) {
 	return delayed;
 }
 
+interface DelayedFunc<T extends ( ...args: any[] ) => any> {
+	( ...args: Parameters<T> ): void;
+	cancel(): void;
+}
+
 // Returns a widget element that should be dragged.
 //
 // @param {module:engine/view/element~Element} target
 // @returns {module:engine/view/element~Element}
-function findDraggableWidget( target ) {
+function findDraggableWidget( target: ViewElement ): ViewElement | null {
 	// This is directly an editable so not a widget for sure.
 	if ( target.is( 'editableElement' ) ) {
 		return null;
@@ -862,7 +889,7 @@ function findDraggableWidget( target ) {
 	}
 
 	// Find closest ancestor that is either a widget or an editable element...
-	const ancestor = target.findAncestor( node => isWidget( node ) || node.is( 'editableElement' ) );
+	const ancestor = target.findAncestor( node => isWidget( node ) || node.is( 'editableElement' ) )!;
 
 	// ...and if closer was the widget then enable dragging it.
 	if ( isWidget( ancestor ) ) {
