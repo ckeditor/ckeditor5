@@ -7,13 +7,20 @@
  * @module editor-classic/classiceditor
  */
 
-import { Editor, DataApiMixin, ElementApiMixin, attachToForm } from 'ckeditor5/src/core';
-import { mix, getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
-
-import { isElement } from 'lodash-es';
-
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
+
+import {
+	Editor,
+	DataApiMixin,
+	ElementApiMixin,
+	attachToForm,
+	type EditorConfig,
+	type EditorReadyEvent
+} from 'ckeditor5/src/core';
+import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
+
+import { isElement as _isElement } from 'lodash-es';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#classic-editor classic editor} implementation.
@@ -43,7 +50,10 @@ import ClassicEditorUIView from './classiceditoruiview';
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
-export default class ClassicEditor extends Editor {
+// eslint-disable-next-line new-cap
+export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
+	public readonly ui: ClassicEditorUI;
+
 	/**
 	 * Creates an instance of the classic editor.
 	 *
@@ -56,7 +66,7 @@ export default class ClassicEditor extends Editor {
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 */
-	constructor( sourceElementOrData, config = {} ) {
+	constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
 		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
 		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
 			// Documented in core/editor/editorconfig.jsdoc.
@@ -95,7 +105,7 @@ export default class ClassicEditor extends Editor {
 	 *
 	 * @returns {Promise}
 	 */
-	destroy() {
+	public override destroy(): Promise<unknown> {
 		if ( this.sourceElement ) {
 			this.updateSourceElement();
 		}
@@ -199,24 +209,25 @@ export default class ClassicEditor extends Editor {
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	static create( sourceElementOrData, config = {} ) {
+	public static create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<Editor> {
 		return new Promise( resolve => {
 			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
-					.then( () => editor.fire( 'ready' ) )
+					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
 	}
 }
 
-mix( ClassicEditor, DataApiMixin );
-mix( ClassicEditor, ElementApiMixin );
-
-function getInitialData( sourceElementOrData ) {
+function getInitialData( sourceElementOrData: HTMLElement | string ): string {
 	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+}
+
+function isElement( value: any ): value is Element {
+	return _isElement( value );
 }

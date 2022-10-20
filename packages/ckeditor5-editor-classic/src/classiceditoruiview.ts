@@ -8,6 +8,8 @@
  */
 
 import { BoxedEditorUIView, InlineEditableUIView, StickyPanelView, ToolbarView } from 'ckeditor5/src/ui';
+import type { Locale } from 'ckeditor5/src/utils';
+import type { View } from 'ckeditor5/src/engine';
 
 import '../theme/classiceditor.css';
 
@@ -18,6 +20,10 @@ import '../theme/classiceditor.css';
  * @extends module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView
  */
 export default class ClassicEditorUIView extends BoxedEditorUIView {
+	public readonly stickyPanel: StickyPanelView;
+	public readonly toolbar: ToolbarView;
+	public readonly editable: InlineEditableUIView;
+
 	/**
 	 * Creates an instance of the classic editor UI view.
 	 *
@@ -28,7 +34,13 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 * in the main {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
 	 */
-	constructor( locale, editingView, options = {} ) {
+	constructor(
+		locale: Locale,
+		editingView: View,
+		options: {
+			shouldToolbarGroupWhenFull?: boolean;
+		} = {}
+	) {
 		super( locale );
 
 		/**
@@ -62,7 +74,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		// Set toolbar as a child of a stickyPanel and makes toolbar sticky.
