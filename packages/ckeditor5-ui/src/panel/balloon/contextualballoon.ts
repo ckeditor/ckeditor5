@@ -851,3 +851,9 @@ class FakePanelsView extends View {
 		}
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ ContextualBalloon.pluginName ]: ContextualBalloon;
+	}
+}

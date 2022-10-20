@@ -30,7 +30,7 @@ export default class Paragraph extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Paragraph' {
 		return 'Paragraph';
 	}
 
@@ -121,5 +121,11 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		paragraph: ParagraphCommand;
 		insertParagraph: InsertParagraphCommand;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Paragraph.pluginName ]: Paragraph;
 	}
 }

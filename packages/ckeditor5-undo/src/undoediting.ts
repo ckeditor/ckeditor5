@@ -29,7 +29,7 @@ export default class UndoEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'UndoEditing' {
 		return 'UndoEditing';
 	}
 
@@ -133,5 +133,9 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		undo: UndoCommand;
 		redo: RedoCommand;
+	}
+
+	interface PluginsMap {
+		[ UndoEditing.pluginName ]: UndoEditing;
 	}
 }

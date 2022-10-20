@@ -25,7 +25,7 @@ export default class SelectAllUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'SelectAllUI' {
 		return 'SelectAllUI';
 	}
 
@@ -57,5 +57,11 @@ export default class SelectAllUI extends Plugin {
 
 			return view;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ SelectAllUI.pluginName ]: SelectAllUI;
 	}
 }

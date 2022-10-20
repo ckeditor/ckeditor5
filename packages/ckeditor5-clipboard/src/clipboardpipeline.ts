@@ -130,7 +130,7 @@ export default class ClipboardPipeline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'ClipboardPipeline' {
 		return 'ClipboardPipeline';
 	}
 
@@ -405,3 +405,9 @@ export type ClipboardOutputEventData = {
  *
  * @member {'copy'|'cut'} module:clipboard/clipboardpipeline~ClipboardOutputEventData#method
  */
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ ClipboardPipeline.pluginName ]: ClipboardPipeline;
+	}
+}

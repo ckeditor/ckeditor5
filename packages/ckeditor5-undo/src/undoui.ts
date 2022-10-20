@@ -22,7 +22,7 @@ export default class UndoUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'UndoUI' {
 		return 'UndoUI';
 	}
 
@@ -73,5 +73,11 @@ export default class UndoUI extends Plugin {
 
 			return view;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ UndoUI.pluginName ]: UndoUI;
 	}
 }

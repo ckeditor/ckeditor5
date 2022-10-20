@@ -122,7 +122,7 @@ export default class PluginCollection<TContext extends object> extends Emitter {
 	 * @returns {module:core/plugin~PluginInterface}
 	 */
 	public get<TConstructor extends PluginConstructor<TContext>>( key: TConstructor ): InstanceType<TConstructor>;
-	public get( key: string ): PluginInterface;
+	public get<TName extends string>( key: TName ): PluginsMap[ TName ];
 	public get( key: PluginConstructor<TContext> | string ): PluginInterface {
 		const plugin = this._plugins.get( key );
 
@@ -639,4 +639,8 @@ export default class PluginCollection<TContext extends object> extends Emitter {
 
 		this._plugins.set( pluginName, plugin );
 	}
+}
+
+export interface PluginsMap {
+	[ name: string ]: PluginInterface;
 }

@@ -7,7 +7,7 @@
  * @module undo/undo
  */
 
-import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
 import UndoEditing from './undoediting';
 import UndoUI from './undoui';
 
@@ -106,14 +106,20 @@ export default class Undo extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): Array<PluginConstructor> {
+	public static get requires(): PluginDependencies {
 		return [ UndoEditing, UndoUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Undo' {
 		return 'Undo';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Undo.pluginName ]: Undo;
 	}
 }

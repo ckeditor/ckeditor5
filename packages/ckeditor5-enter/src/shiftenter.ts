@@ -24,7 +24,7 @@ export default class ShiftEnter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'ShiftEnter' {
 		return 'ShiftEnter';
 	}
 
@@ -73,5 +73,15 @@ export default class ShiftEnter extends Plugin {
 			editor.execute( 'shiftEnter' );
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		'shiftEnter': ShiftEnterCommand;
+	}
+
+	interface PluginsMap {
+		[ ShiftEnter.pluginName ]: ShiftEnter;
 	}
 }

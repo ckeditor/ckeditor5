@@ -198,10 +198,12 @@ export interface PluginInterface {
 export interface PluginConstructor<TContext = Editor> {
 	new( editor: TContext ): PluginInterface;
 
-	readonly requires?: Array<PluginConstructor<TContext> | string>;
+	readonly requires?: PluginDependencies<TContext>;
 	readonly pluginName?: string;
 	readonly isContextPlugin: boolean;
 }
+
+export type PluginDependencies<TContext = Editor> = Array<PluginConstructor<TContext> | string>;
 
 /**
  * Creates a new plugin instance. This is the first step of the plugin initialization.

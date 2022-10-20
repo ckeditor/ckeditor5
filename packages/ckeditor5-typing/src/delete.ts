@@ -29,7 +29,7 @@ export default class Delete extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Delete' {
 		return 'Delete';
 	}
 
@@ -115,5 +115,9 @@ declare module '@ckeditor/ckeditor5-core' {
 		deleteForward: DeleteCommand;
 		forwardDelete: DeleteCommand;
 		delete: DeleteCommand;
+	}
+
+	interface PluginsMap {
+		[ Delete.pluginName ]: Delete;
 	}
 }

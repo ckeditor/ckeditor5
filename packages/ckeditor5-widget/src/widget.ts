@@ -7,7 +7,7 @@
  * @module widget/widget
  */
 
-import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver, { type ViewDocumentMouseEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
@@ -47,14 +47,14 @@ export default class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Widget' {
 		return 'Widget';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): Array<PluginConstructor> {
+	public static get requires(): PluginDependencies {
 		return [ WidgetTypeAround, Delete ];
 	}
 
@@ -494,4 +494,10 @@ function isChild( element: ViewElement, parent: ViewElement | null ) {
 	}
 
 	return Array.from( element.getAncestors() ).includes( parent );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Widget.pluginName ]: Widget;
+	}
 }

@@ -51,7 +51,7 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'WidgetResize' {
 		return 'WidgetResize';
 	}
 
@@ -196,7 +196,7 @@ export default class WidgetResize extends Plugin {
 		if ( plugins.has( 'WidgetToolbarRepository' ) ) {
 			// Hiding widget toolbar to improve the performance
 			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#issuecomment-564528765).
-			const widgetToolbarRepository = plugins.get( 'WidgetToolbarRepository' ) as WidgetToolbarRepository;
+			const widgetToolbarRepository = plugins.get( 'WidgetToolbarRepository' );
 
 			resizer.on<ResizerBeginEvent>( 'begin', () => {
 				widgetToolbarRepository.forceDisabled( 'resize' );
@@ -356,4 +356,10 @@ export interface ResizerOptions {
 	getResizeHost: ( widgetWrapper: HTMLElement ) => HTMLElement;
 	getHandleHost: ( widgetWrapper: HTMLElement ) => HTMLElement;
 	isCentered?: ( resizer: Resizer ) => boolean;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ WidgetResize.pluginName ]: WidgetResize;
+	}
 }

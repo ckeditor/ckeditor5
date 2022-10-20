@@ -26,7 +26,7 @@ export default class Input extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Input' {
 		return 'Input';
 	}
 
@@ -149,6 +149,10 @@ export default class Input extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		insertText: InsertTextCommand;
+	}
+
+	interface PluginsMap {
+		[ Input.pluginName ]: Input;
 	}
 }
 
