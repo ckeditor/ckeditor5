@@ -333,3 +333,9 @@ declare module '@ckeditor/ckeditor5-core' {
  *
  * @member {Boolean} [module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#withCredentials=false]
  */
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ SimpleUploadAdapter.pluginName ]: SimpleUploadAdapter;
+	}
+}

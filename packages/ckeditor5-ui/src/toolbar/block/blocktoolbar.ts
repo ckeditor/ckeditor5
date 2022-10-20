@@ -556,4 +556,8 @@ export default class BlockToolbar extends Plugin {
 	interface EditorConfig {
 		blockToolbar?: ToolbarConfig;
 	}
+
+	interface PluginsMap {
+		[ BlockToolbar.pluginName ]: BlockToolbar;
+	}
 }

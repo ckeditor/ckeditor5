@@ -150,6 +150,10 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		insertText: InsertTextCommand;
 	}
+
+	interface PluginsMap {
+		[ Input.pluginName ]: Input;
+	}
 }
 
 function deleteSelectionContent( model: Model, insertTextCommand: InsertTextCommand ): void {

@@ -53,4 +53,8 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		selectAll: SelectAllCommand;
 	}
+
+	interface PluginsMap {
+		[ SelectAllEditing.pluginName ]: SelectAllEditing;
+	}
 }

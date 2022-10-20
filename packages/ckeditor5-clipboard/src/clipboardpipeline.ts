@@ -405,3 +405,9 @@ export type ClipboardOutputEventData = {
  *
  * @member {'copy'|'cut'} module:clipboard/clipboardpipeline~ClipboardOutputEventData#method
  */
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ ClipboardPipeline.pluginName ]: ClipboardPipeline;
+	}
+}

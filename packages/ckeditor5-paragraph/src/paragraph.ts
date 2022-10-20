@@ -123,3 +123,9 @@ declare module '@ckeditor/ckeditor5-core' {
 		insertParagraph: InsertParagraphCommand;
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Paragraph.pluginName ]: Paragraph;
+	}
+}

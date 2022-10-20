@@ -481,3 +481,9 @@ function isBetweenDifferentAttributes( position: Position, attributes: Set<strin
 	}
 	return false;
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ TwoStepCaretMovement.pluginName ]: TwoStepCaretMovement;
+	}
+}

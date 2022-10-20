@@ -128,7 +128,7 @@ export default class TextTransformation extends Plugin {
 	private _enableTransformationWatchers(): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const deletePlugin = editor.plugins.get( 'Delete' ) as Delete;
+		const deletePlugin = editor.plugins.get( 'Delete' );
 		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' )! );
 
 		const testCallback = ( text: string ) => {
@@ -473,3 +473,9 @@ type NormalizedTransformationConfig = {
 	from: RegExp;
 	to: ( matches: Array<string> ) => Array<string | null>;
 };
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ TextTransformation.pluginName ]: TextTransformation;
+	}
+}

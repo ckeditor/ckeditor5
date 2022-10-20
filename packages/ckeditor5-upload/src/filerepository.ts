@@ -688,3 +688,9 @@ type FilePromiseWrapper = {
 	rejecter: ( reason?: unknown ) => void;
 	isFulfilled: boolean;
 };
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FileRepository.pluginName ]: FileRepository;
+	}
+}

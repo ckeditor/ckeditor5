@@ -116,4 +116,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		forwardDelete: DeleteCommand;
 		delete: DeleteCommand;
 	}
+
+	interface PluginsMap {
+		[ Delete.pluginName ]: Delete;
+	}
 }

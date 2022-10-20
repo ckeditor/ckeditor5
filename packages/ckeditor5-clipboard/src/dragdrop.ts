@@ -276,7 +276,7 @@ export default class DragDrop extends Plugin {
 
 				// Disable toolbars so they won't obscure the drop area.
 				if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
-					( editor.plugins.get( 'WidgetToolbarRepository' ) as WidgetToolbarRepository ).forceDisabled( 'dragDrop' );
+					editor.plugins.get( 'WidgetToolbarRepository' ).forceDisabled( 'dragDrop' );
 				}
 			}
 
@@ -634,7 +634,7 @@ export default class DragDrop extends Plugin {
 		this._clearDraggableAttributes();
 
 		if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
-			( editor.plugins.get( 'WidgetToolbarRepository' ) as WidgetToolbarRepository ).clearForceDisabled( 'dragDrop' );
+			editor.plugins.get( 'WidgetToolbarRepository' ).clearForceDisabled( 'dragDrop' );
 		}
 
 		this._draggingUid = '';
@@ -897,4 +897,10 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
 	}
 
 	return null;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ DragDrop.pluginName ]: DragDrop;
+	}
 }

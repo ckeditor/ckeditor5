@@ -60,4 +60,8 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		'enter': EnterCommand;
 	}
+
+	interface PluginsMap {
+		[ Enter.pluginName ]: Enter;
+	}
 }

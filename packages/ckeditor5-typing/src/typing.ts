@@ -31,3 +31,9 @@ export default class Typing extends Plugin {
 		return 'Typing';
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Typing.pluginName ]: Typing;
+	}
+}

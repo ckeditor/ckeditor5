@@ -507,7 +507,7 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const schema = model.schema;
-		const widgetPlugin = editor.plugins.get( 'Widget' ) as Widget;
+		const widgetPlugin = editor.plugins.get( 'Widget' );
 
 		// This is the widget the selection is about to be set on.
 		const modelElementNextToSelection = widgetPlugin._getObjectElementNextToSelection( isForward )!;
@@ -970,4 +970,10 @@ function getDeepestEmptyElementAncestor( schema: Schema, element: Element ) {
 	}
 
 	return deepestEmptyAncestor;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ WidgetTypeAround.pluginName ]: WidgetTypeAround;
+	}
 }

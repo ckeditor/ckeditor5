@@ -134,4 +134,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		undo: UndoCommand;
 		redo: RedoCommand;
 	}
+
+	interface PluginsMap {
+		[ UndoEditing.pluginName ]: UndoEditing;
+	}
 }

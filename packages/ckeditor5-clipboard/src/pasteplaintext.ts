@@ -105,3 +105,9 @@ function isPlainTextFragment( documentFragment: DocumentFragment, schema: Schema
 
 	return Array.from( child.getAttributeKeys() ).length == 0;
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ PastePlainText.pluginName ]: PastePlainText;
+	}
+}

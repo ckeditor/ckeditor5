@@ -111,3 +111,9 @@ class Adapter implements UploadAdapter {
 		this.reader!.abort();
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Base64UploadAdapter.pluginName ]: Base64UploadAdapter;
+	}
+}
