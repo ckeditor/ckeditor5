@@ -7,7 +7,7 @@
  * @module editor-classic/classiceditorui
  */
 
-import { EditorUI, type Editor, type ElementApi } from 'ckeditor5/src/core';
+import { EditorUI, type Editor, type ElementApi, type EditorUIReadyEvent } from 'ckeditor5/src/core';
 import { normalizeToolbarConfig } from 'ckeditor5/src/ui';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 import { ElementReplacer } from 'ckeditor5/src/utils';
@@ -19,42 +19,32 @@ import type ClassicEditorUIView from './classiceditoruiview';
  * @extends module:core/editor/editorui~EditorUI
  */
 export default class ClassicEditorUI extends EditorUI {
+	/**
+	 * The main (top–most) view of the editor UI.
+	 */
 	public readonly view: ClassicEditorUIView;
 
+	/**
+	 * A normalized `config.toolbar` object.
+	 */
 	private readonly _toolbarConfig: ReturnType<typeof normalizeToolbarConfig>;
+
+	/**
+	 * The element replacer instance used to hide the editor's source element.
+	 */
 	private readonly _elementReplacer: ElementReplacer;
 
 	/**
 	 * Creates an instance of the classic editor UI class.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
+	 * @param editor The editor instance.
+	 * @param view The view of the UI.
 	 */
 	constructor( editor: Editor, view: ClassicEditorUIView ) {
 		super( editor );
 
-		/**
-		 * The main (top–most) view of the editor UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
-		 */
 		this.view = view;
-
-		/**
-		 * A normalized `config.toolbar` object.
-		 *
-		 * @private
-		 * @member {Object}
-		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
-
-		/**
-		 * The element replacer instance used to hide the editor's source element.
-		 *
-		 * @protected
-		 * @member {module:utils/elementreplacer~ElementReplacer}
-		 */
 		this._elementReplacer = new ElementReplacer();
 	}
 
@@ -68,7 +58,7 @@ export default class ClassicEditorUI extends EditorUI {
 	/**
 	 * Initializes the UI.
 	 *
-	 * @param {HTMLElement|null} replacementElement The DOM element that will be the source for the created editor.
+	 * @param replacementElement The DOM element that will be the source for the created editor.
 	 */
 	public init( replacementElement: HTMLElement | null ): void {
 		const editor = this.editor;
@@ -113,7 +103,7 @@ export default class ClassicEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
-		this.fire( 'ready' );
+		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
 	/**
@@ -132,8 +122,6 @@ export default class ClassicEditorUI extends EditorUI {
 
 	/**
 	 * Initializes the editor toolbar.
-	 *
-	 * @private
 	 */
 	private _initToolbar(): void {
 		const view = this.view;
@@ -151,8 +139,6 @@ export default class ClassicEditorUI extends EditorUI {
 
 	/**
 	 * Enable the placeholder text on the editing root, if any was configured.
-	 *
-	 * @private
 	 */
 	private _initPlaceholder(): void {
 		const editor = this.editor;

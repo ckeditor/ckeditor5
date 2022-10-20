@@ -47,11 +47,13 @@ import { isElement as _isElement } from 'lodash-es';
  *
  * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
  * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
- * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
 // eslint-disable-next-line new-cap
 export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
+	/**
+	 * @inheritDoc
+	 */
 	public readonly ui: ClassicEditorUI;
 
 	/**
@@ -61,12 +63,12 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`} method instead.
 	 *
 	 * @protected
-	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data. For more information see
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
-	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
+	 * @param [config] The editor configuration.
 	 */
-	constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
+	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
 		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
 		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
 			// Documented in core/editor/editorconfig.jsdoc.
@@ -102,8 +104,6 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * Updates the original editor element with the data if the
 	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
 	 * configuration option is set to `true`.
-	 *
-	 * @returns {Promise}
 	 */
 	public override destroy(): Promise<unknown> {
 		if ( this.sourceElement ) {
@@ -191,7 +191,7 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
 	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source dedicated guide}.
 	 *
-	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
 	 *
 	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization
@@ -206,8 +206,8 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
 	 * It is available under the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `editor.ui.element`} property.
 	 *
-	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
-	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
+	 * @param [config] The editor configuration.
+	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
 	public static create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<Editor> {
 		return new Promise( resolve => {

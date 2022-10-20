@@ -20,17 +20,29 @@ import '../theme/classiceditor.css';
  * @extends module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView
  */
 export default class ClassicEditorUIView extends BoxedEditorUIView {
+	/**
+	 * Sticky panel view instance. This is a parent view of a {@link #toolbar}
+	 * that makes toolbar sticky.
+	 */
 	public readonly stickyPanel: StickyPanelView;
+
+	/**
+	 * Toolbar view instance.
+	 */
 	public readonly toolbar: ToolbarView;
+
+	/**
+	 * Editable UI view.
+	 */
 	public readonly editable: InlineEditableUIView;
 
 	/**
 	 * Creates an instance of the classic editor UI view.
 	 *
-	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
-	 * @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
-	 * @param {Object} [options={}] Configuration options for the view instance.
-	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
+	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param editingView The editing view instance this view is related to.
+	 * @param [options={}] Configuration options for the view instance.
+	 * @param [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
 	 * in the main {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
 	 */
@@ -43,31 +55,12 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	) {
 		super( locale );
 
-		/**
-		 * Sticky panel view instance. This is a parent view of a {@link #toolbar}
-		 * that makes toolbar sticky.
-		 *
-		 * @readonly
-		 * @member {module:ui/panel/sticky/stickypanelview~StickyPanelView}
-		 */
 		this.stickyPanel = new StickyPanelView( locale );
 
-		/**
-		 * Toolbar view instance.
-		 *
-		 * @readonly
-		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
-		 */
 		this.toolbar = new ToolbarView( locale, {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
 
-		/**
-		 * Editable UI view.
-		 *
-		 * @readonly
-		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
-		 */
 		this.editable = new InlineEditableUIView( locale, editingView );
 	}
 
