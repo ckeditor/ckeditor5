@@ -113,7 +113,7 @@ export default class TwoStepCaretMovement extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'TwoStepCaretMovement' {
 		return 'TwoStepCaretMovement';
 	}
 
@@ -480,4 +480,10 @@ function isBetweenDifferentAttributes( position: Position, attributes: Set<strin
 		}
 	}
 	return false;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ TwoStepCaretMovement.pluginName ]: TwoStepCaretMovement;
+	}
 }

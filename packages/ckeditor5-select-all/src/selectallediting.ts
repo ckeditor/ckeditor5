@@ -26,7 +26,7 @@ export default class SelectAllEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'SelectAllEditing' {
 		return 'SelectAllEditing';
 	}
 
@@ -46,5 +46,15 @@ export default class SelectAllEditing extends Plugin {
 				domEventData.preventDefault();
 			}
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		selectAll: SelectAllCommand;
+	}
+
+	interface PluginsMap {
+		[ SelectAllEditing.pluginName ]: SelectAllEditing;
 	}
 }

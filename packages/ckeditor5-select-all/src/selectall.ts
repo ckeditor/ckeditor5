@@ -7,7 +7,7 @@
  * @module select-all/selectall
  */
 
-import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
 import SelectAllEditing from './selectallediting';
 import SelectAllUI from './selectallui';
 
@@ -25,14 +25,20 @@ export default class SelectAll extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): Array<PluginConstructor> {
+	public static get requires(): PluginDependencies {
 		return [ SelectAllEditing, SelectAllUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'SelectAll' {
 		return 'SelectAll';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ SelectAll.pluginName ]: SelectAll;
 	}
 }

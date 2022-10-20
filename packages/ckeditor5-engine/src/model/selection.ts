@@ -888,7 +888,7 @@ function isUnvisitedBlock( element: Node | DocumentFragment, visited: WeakSet<No
 
 	visited.add( element );
 
-	return element.root.document!.model.schema.isBlock( element ) && element.parent;
+	return element.root.document!.model.schema.isBlock( element ) && !!element.parent;
 }
 
 // Checks if the given element is a $block was not previously visited and is a top block in a range.
@@ -907,7 +907,7 @@ function getParentBlock( position: Position, visited: WeakSet<Node | DocumentFra
 
 	let hasParentLimit = false;
 
-	const block = ancestors.find( element => {
+	const block = ancestors.find( ( element ): element is Element => {
 		// Stop searching after first parent node that is limit element.
 		if ( hasParentLimit ) {
 			return false;
@@ -929,7 +929,7 @@ function getParentBlock( position: Position, visited: WeakSet<Node | DocumentFra
 //
 // @param {module:engine/model/element~Element} block Block to check.
 // @param {module:engine/model/range~Range} range Range to check.
-function isTopBlockInRange( block: Node | DocumentFragment, range: Range ) {
+function isTopBlockInRange( block: Node, range: Range ) {
 	const parentBlock = findAncestorBlock( block );
 
 	if ( !parentBlock ) {
@@ -953,7 +953,7 @@ function findAncestorBlock( node: Node | DocumentFragment ) {
 
 	while ( parent ) {
 		if ( schema.isBlock( parent ) ) {
-			return parent;
+			return parent as Element;
 		}
 
 		parent = parent.parent;

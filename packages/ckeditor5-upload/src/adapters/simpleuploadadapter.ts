@@ -9,7 +9,7 @@
 
 /* globals XMLHttpRequest, FormData */
 
-import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -42,14 +42,14 @@ export default class SimpleUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): Array<PluginConstructor> {
+	public static get requires(): PluginDependencies {
 		return [ FileRepository ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'SimpleUploadAdapter' {
 		return 'SimpleUploadAdapter';
 	}
 
@@ -333,3 +333,9 @@ declare module '@ckeditor/ckeditor5-core' {
  *
  * @member {Boolean} [module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#withCredentials=false]
  */
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ SimpleUploadAdapter.pluginName ]: SimpleUploadAdapter;
+	}
+}

@@ -26,8 +26,16 @@ yalc.lock
 
 
 # Ignore compiled TypeScript files.
-packages/ckeditor5-utils/src/**/*.js
-packages/ckeditor5-engine/src/**/*.js
+packages/ckeditor5-clipboard/src/**/*.js
 packages/ckeditor5-core/src/**/*.js
+packages/ckeditor5-engine/src/**/*.js
+packages/ckeditor5-enter/src/**/*.js
+packages/ckeditor5-paragraph/src/**/*.js
+packages/ckeditor5-select-all/src/**/*.js
+packages/ckeditor5-typing/src/**/*.js
 packages/ckeditor5-ui/src/**/*.js
+packages/ckeditor5-undo/src/**/*.js
+packages/ckeditor5-upload/src/**/*.js
+packages/ckeditor5-utils/src/**/*.js
+packages/ckeditor5-widget/src/**/*.js
 packages/*/src/**/*.d.ts

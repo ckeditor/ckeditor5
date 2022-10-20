@@ -17,6 +17,7 @@ import type { ViewDocumentInputEvent } from '@ckeditor/ckeditor5-engine/src/view
 import type { ViewDocumentCompositionEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/compositionobserver';
 import type Selection from '@ckeditor/ckeditor5-engine/src/view/selection';
 import type Range from '@ckeditor/ckeditor5-engine/src/view/range';
+import type DocumentSelection from '@ckeditor/ckeditor5-engine/src/view/documentselection';
 
 const TYPING_INPUT_TYPES = [
 	// For collapsed range:
@@ -151,6 +152,6 @@ export type ViewDocumentInsertTextEvent = {
 
 export interface InsertTextEventData extends DomEventData {
 	text: string;
-	selection: Selection;
+	selection: Selection | DocumentSelection;
 	resultRange?: Range;
 }

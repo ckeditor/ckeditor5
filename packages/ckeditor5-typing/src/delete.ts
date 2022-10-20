@@ -29,7 +29,7 @@ export default class Delete extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Delete' {
 		return 'Delete';
 	}
 
@@ -107,5 +107,17 @@ export default class Delete extends Plugin {
 		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
 			this._undoOnBackspace = true;
 		}
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		deleteForward: DeleteCommand;
+		forwardDelete: DeleteCommand;
+		delete: DeleteCommand;
+	}
+
+	interface PluginsMap {
+		[ Delete.pluginName ]: Delete;
 	}
 }

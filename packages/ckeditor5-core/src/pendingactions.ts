@@ -60,7 +60,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'PendingActions' {
 		return 'PendingActions';
 	}
 
@@ -164,3 +164,9 @@ export interface PendingAction extends Observable {
 
 export type PendingActionsAddEvent = CollectionAddEvent<PendingAction>;
 export type PendingActionsRemoveEvent = CollectionRemoveEvent<PendingAction>;
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ PendingActions.pluginName ]: PendingActions;
+	}
+}

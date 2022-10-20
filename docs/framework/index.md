@@ -46,9 +46,7 @@ The framework was designed to be a highly flexible and universal platform for cr
 
 ## Framework structure
 
-The framework is made of several [npm packages](https://npmjs.com). Each package is available in the `/packages` directory of the https://github.com/ckeditor/ckeditor5 repository.
-
-A complete list of official packages that constitute the framework is available in the [CKEditor 5 repository's README](https://github.com/ckeditor/ckeditor5#packages).
+The framework is made of several [npm packages](https://npmjs.com). Each package is available in the `/packages` directory of the [https://github.com/ckeditor/ckeditor5](https://github.com/ckeditor/ckeditor5) repository.
 
 There are a few groups of packages:
 
@@ -64,4 +62,4 @@ To start using the framework refer to:
 
 * The {@link framework/guides/quick-start Quick start} guide.
 * The {@link framework/guides/architecture/intro Introduction to the framework architecture} guide.
-* The {@linkTODO framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide.
+* The {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide.

@@ -10,7 +10,7 @@
 import type View from '../view';
 import Observer from './observer';
 import BubblingEventInfo from './bubblingeventinfo';
-import { type ViewDocumentKeyEvent } from './keyobserver';
+import type { ViewDocumentKeyEvent } from './keyobserver';
 import type { BubblingEvent } from './bubblingemittermixin';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
