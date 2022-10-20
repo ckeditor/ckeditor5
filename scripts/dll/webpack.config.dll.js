@@ -57,22 +57,22 @@ const webpackConfig = {
 	entry: [
 		// This list must be synced with the `loadCKEditor5modules()` function.
 		// The base of the CKEditor 5 framework, in order of appearance:
-		'./src/utils.js',
-		'./src/core.js',
-		'./src/engine.js',
-		'./src/ui.js',
+		'./src/utils.ts',
+		'./src/core.ts',
+		'./src/engine.ts',
+		'./src/ui.ts',
 
 		// The Essentials plugin contents:
-		'./src/clipboard.js',
-		'./src/enter.js',
-		'./src/paragraph.js',
-		'./src/select-all.js',
-		'./src/typing.js',
-		'./src/undo.js',
+		'./src/clipboard.ts',
+		'./src/enter.ts',
+		'./src/paragraph.ts',
+		'./src/select-all.ts',
+		'./src/typing.ts',
+		'./src/undo.ts',
 
 		// Other, common packages:
-		'./src/upload.js',
-		'./src/widget.js'
+		'./src/upload.ts',
+		'./src/widget.ts'
 	],
 	optimization: {
 		minimize: false,
