@@ -24,7 +24,7 @@ export default class Enter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Enter' {
 		return 'Enter';
 	}
 

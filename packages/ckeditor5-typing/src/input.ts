@@ -26,7 +26,7 @@ export default class Input extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Input' {
 		return 'Input';
 	}
 

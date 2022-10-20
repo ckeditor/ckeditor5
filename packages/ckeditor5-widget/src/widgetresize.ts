@@ -51,7 +51,7 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'WidgetResize' {
 		return 'WidgetResize';
 	}
 

@@ -22,7 +22,7 @@ export default class UndoUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'UndoUI' {
 		return 'UndoUI';
 	}
 

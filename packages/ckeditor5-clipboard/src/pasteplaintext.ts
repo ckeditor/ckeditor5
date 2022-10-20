@@ -7,7 +7,7 @@
  * @module clipboard/pasteplaintext
  */
 
-import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ClipboardObserver from './clipboardobserver';
 import ClipboardPipeline, { type ClipboardContentInsertionEvent } from './clipboardpipeline';
@@ -25,14 +25,14 @@ export default class PastePlainText extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'PastePlainText' {
 		return 'PastePlainText';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): Array<PluginConstructor> {
+	public static get requires(): PluginDependencies {
 		return [ ClipboardPipeline ];
 	}
 

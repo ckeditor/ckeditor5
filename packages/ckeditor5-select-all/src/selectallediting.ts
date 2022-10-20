@@ -26,7 +26,7 @@ export default class SelectAllEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'SelectAllEditing' {
 		return 'SelectAllEditing';
 	}
 

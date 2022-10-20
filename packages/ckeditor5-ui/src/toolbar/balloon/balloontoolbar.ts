@@ -7,7 +7,7 @@
  * @module ui/toolbar/balloon/balloontoolbar
  */
 
-import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview';
 import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview';
@@ -58,7 +58,7 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): Array<PluginConstructor<Editor>> {
+	public static get requires(): PluginDependencies {
 		return [ ContextualBalloon ];
 	}
 

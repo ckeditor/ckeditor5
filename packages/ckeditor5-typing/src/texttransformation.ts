@@ -7,7 +7,7 @@
  * @module typing/texttransformation
  */
 
-import Plugin, { PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher, { type TextWatcherMatchedDataEvent } from './textwatcher';
 import { escapeRegExp } from 'lodash-es';
 
@@ -81,14 +81,14 @@ export default class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): Array<string> {
+	public static get requires(): PluginDependencies {
 		return [ 'Delete', 'Input' ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'TextTransformation' {
 		return 'TextTransformation';
 	}
 

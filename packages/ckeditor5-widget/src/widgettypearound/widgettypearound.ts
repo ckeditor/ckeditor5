@@ -9,7 +9,7 @@
  * @module widget/widgettypearound
  */
 
-import Plugin, { type PluginConstructor } from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
@@ -73,14 +73,14 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'WidgetTypeAround' {
 		return 'WidgetTypeAround';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): Array<PluginConstructor> {
+	public static get requires(): PluginDependencies {
 		return [ Enter, Delete ];
 	}
 

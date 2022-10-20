@@ -29,7 +29,7 @@ export default class Delete extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Delete' {
 		return 'Delete';
 	}
 

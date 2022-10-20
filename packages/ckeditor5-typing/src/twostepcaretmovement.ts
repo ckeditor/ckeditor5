@@ -113,7 +113,7 @@ export default class TwoStepCaretMovement extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'TwoStepCaretMovement' {
 		return 'TwoStepCaretMovement';
 	}
 

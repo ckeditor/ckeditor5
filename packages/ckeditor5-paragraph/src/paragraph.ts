@@ -30,7 +30,7 @@ export default class Paragraph extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Paragraph' {
 		return 'Paragraph';
 	}
 
