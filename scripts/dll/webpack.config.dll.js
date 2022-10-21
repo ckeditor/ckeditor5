@@ -47,7 +47,7 @@ function loadCKEditor5modules( window ) {
 
 	for ( const item of dllPackages ) {
 		const windowScope = item.replace( /-([a-z])/g, ( match, p1 ) => p1.toUpperCase() );
-		window.CKEditor5[ windowScope ] = window.CKEditor5.dll( `./src/${ item }.js` );
+		window.CKEditor5[ windowScope ] = window.CKEditor5.dll( `./src/${ item }.ts` );
 	}
 }
 
