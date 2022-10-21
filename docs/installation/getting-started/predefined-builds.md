@@ -1074,7 +1074,7 @@ The table below presents the list of all plugins included in various builds.
 
 **Important notes**
 Plugins denoted with an asterisk (*) are essential for the editor to work and should never be removed.
-The two list plugins (denoted with a plus (+) can only be used separately.
+The two list plugins denoted with a plus (+) can only be used separately.
 The document lists feature is required by the import from Word plugin to run correctly.
 
 
