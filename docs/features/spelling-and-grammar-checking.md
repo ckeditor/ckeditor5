@@ -107,6 +107,62 @@ ClassicEditor
 	.catch( ... );
 ```
 
+Please, be aware that when you try to build CKEditor 5 from source with WProofreader, you need to adjust the example `webpack.config.js` provided in the {@link installation/getting-started/quick-start-other#building-the-editor-from-source building from source guide} to allow including also icons and styling from the WProofreader package. There are two options how for this.
+
+The first configuration is simpler, however, it can affect not CKEdtor5-related packages `.svg` and `.css` files:
+
+```js
+	///[...]
+	module: {
+		rules: [
+			{
+                test: /\.svg$/,
+
+                use: [ 'raw-loader' ]
+            },
+            {
+                test: /\.css$/,
+                
+                use: [
+                    {
+						loader: 'style-loader',
+						///[...]
+					}
+				]
+			}
+			///[...]
+		]
+	}
+```
+
+Therefore, the best option is to use the second config, which will load only `.svg` and `.css` files that are within CKEdtor5-related packages:
+
+```js
+	///[...]
+	module: {
+		rules: [
+			{
+				test: /ckeditor5([^\/\\]+)?[\/\\]theme[\/\\]icons[\/\\][^\/\\]+\.svg$/,
+
+				use: [ 'raw-loader' ]
+			},
+			{
+				test: /ckeditor5([^\/\\]+)?[\/\\]theme[/\\].+\.css$/,
+
+				use: [
+					{
+						loader: 'style-loader',
+						///[...]
+					}
+				]
+			}
+			///[...]
+		]
+	}
+```
+
+With this modification to the `webpack.config.js`, it is possible to build CKEditor 5 from the source with WProofreader included. 
+
 <info-box info>
 	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
