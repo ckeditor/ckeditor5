@@ -65,7 +65,7 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data. For more information see
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
-	 * @param [config] The editor configuration.
+	 * @param config The editor configuration.
 	 */
 	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
 		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
@@ -211,7 +211,7 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
 	 * It is available under the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `editor.ui.element`} property.
 	 *
-	 * @param [config] The editor configuration.
+	 * @param config The editor configuration.
 	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
 	public static create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<ClassicEditor> {
