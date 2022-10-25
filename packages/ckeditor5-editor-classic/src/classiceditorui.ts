@@ -15,8 +15,6 @@ import type ClassicEditorUIView from './classiceditoruiview';
 
 /**
  * The classic editor UI class.
- *
- * @extends module:core/editor/editorui~EditorUI
  */
 export default class ClassicEditorUI extends EditorUI {
 	/**

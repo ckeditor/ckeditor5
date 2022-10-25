@@ -16,8 +16,6 @@ import '../theme/classiceditor.css';
 /**
  * Classic editor UI view. Uses an inline editable and a sticky toolbar, all
  * enclosed in a boxed UI view.
- *
- * @extends module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView
  */
 export default class ClassicEditorUIView extends BoxedEditorUIView {
 	/**

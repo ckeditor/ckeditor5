@@ -44,10 +44,6 @@ import { isElement as _isElement } from 'lodash-es';
  *
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
- *
- * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
- * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
- * @extends module:core/editor/editor~Editor
  */
 // eslint-disable-next-line new-cap
 export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
