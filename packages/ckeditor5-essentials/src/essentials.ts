@@ -7,7 +7,7 @@
  * @module essentials/essentials
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import { Clipboard } from 'ckeditor5/src/clipboard';
 import { Enter, ShiftEnter } from 'ckeditor5/src/enter';
@@ -30,21 +30,26 @@ import { Undo } from 'ckeditor5/src/undo';
  *
  * This plugin set does not define any block-level containers (such as {@link module:paragraph/paragraph~Paragraph}).
  * If your editor is supposed to handle block content, make sure to include it.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Essentials extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Essentials' {
 		return 'Essentials';
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Essentials.pluginName ]: Essentials;
+	}
+}
+
