@@ -5,6 +5,7 @@
 
 // The editor creator to use.
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -43,7 +44,7 @@ class References extends Plugin {
 
 		// The button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
-		editor.ui.componentFactory.add( 'references', () => {
+		editor.ui.componentFactory.add( 'references', ( ) => {
 			// The button will be an instance of ButtonView.
 			const button = new ButtonView();
 
@@ -53,9 +54,10 @@ class References extends Plugin {
 				tooltip: true
 			} );
 
-			button.on( 'execute', () => {
+			button.on( 'execute', editor => {
 				const $referencesModalContainer = $( '#references-modal-container' );
 				$referencesModalContainer.removeClass( 'display-none' );
+				$referencesModalContainer.attr( 'data-references-label-id', editor.source.labelView.element.id );
 				$referencesModalContainer.find( '.modal-title' ).text( 'References' );
 				$referencesModalContainer.modal( {
 					dismissible: false
@@ -83,9 +85,10 @@ class AssetLink extends Plugin {
 				tooltip: true
 			} );
 
-			button.on( 'execute', () => {
+			button.on( 'execute', editor => {
 				const $assetlinkModalContainer = $( '#assetlink-modal-container' );
 				$assetlinkModalContainer.removeClass( 'display-none' );
+				$assetlinkModalContainer.attr( 'data-assetlink-label-id', editor.source.labelView.element.id );
 				$assetlinkModalContainer.find( '.modal-title' ).text( 'Asset Link' );
 				$assetlinkModalContainer.modal( {
 					dismissible: false
@@ -100,6 +103,7 @@ class AssetLink extends Plugin {
 // Plugins to include in the build.
 ClassicEditor.builtinPlugins = [
 	AssetLink,
+	Clipboard,
 	GeneralHtmlSupport,
 	References,
 	SourceEditing,
