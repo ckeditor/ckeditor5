@@ -27,14 +27,6 @@
 					"toolbars": [
 						"image.toolbar"
 					]
-				},
-				{
-					"type": "Button",
-					"name": "toggleImageCaption",
-					"iconPath": "",
-					"toolbars": [
-						"image.toolbar"
-					]
 				}
 			],
 			"htmlOutput": [
@@ -64,14 +56,6 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "",
-					"toolbars": [
-						"image.toolbar"
-					]
-				},
-				{
-					"type": "Button",
-					"name": "toggleImageCaption",
 					"iconPath": "",
 					"toolbars": [
 						"image.toolbar"
@@ -106,6 +90,16 @@
 			"path": "src/imagecaption.js",
 			"requires": [
 				"ImageBlock"
+			],
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "toggleImageCaption",
+					"iconPath": "",
+					"toolbars": [
+						"image.toolbar"
+					]
+				}
 			],
 			"htmlOutput": [
 				{
