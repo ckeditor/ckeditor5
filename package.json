@@ -168,7 +168,7 @@
     "release:bump-version": "node ./scripts/release/bump-versions.js",
     "postrelease:bump-version": "npm run dll:build; npm run build",
     "release:publish": "node ./scripts/release/publish.js",
-    "release:clean": "npx rimraf \"packages/ckeditor5-@(core|engine|enter|paragraph|select-all|typing|ui|undo|upload|utils|widget|clipboard|editor-classic)/src/**/*.@(js|d.ts)\" \"src/**/*.@(js|d.ts)\" ",
+    "release:clean": "npx rimraf \"packages/ckeditor5-@(core|engine|enter|paragraph|select-all|typing|ui|undo|upload|utils|widget|clipboard|editor-classic|editor-inline)/src/**/*.@(js|d.ts)\" \"src/**/*.@(js|d.ts)\" ",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
     "check-dependencies": "ckeditor5-dev-tests-check-dependencies"
