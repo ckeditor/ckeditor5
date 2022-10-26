@@ -157,6 +157,15 @@ declare module '@ckeditor/ckeditor5-core' {
 }
 
 function deleteSelectionContent( model: Model, insertTextCommand: InsertTextCommand ): void {
+	// By relying on the state of the input command we allow disabling the entire input easily
+	// by just disabling the input command. We could’ve used here the delete command but that
+	// would mean requiring the delete feature which would block loading one without the other.
+	// We could also check the editor.isReadOnly property, but that wouldn't allow to block
+	// the input without blocking other features.
+	if ( !insertTextCommand.isEnabled ) {
+		return;
+	}
+
 	const buffer = insertTextCommand.buffer;
 
 	buffer.lock();
