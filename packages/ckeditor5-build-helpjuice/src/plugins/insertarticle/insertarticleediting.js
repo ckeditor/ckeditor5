@@ -37,6 +37,12 @@ export default class InfoEditing extends Plugin {
 			isLimit: true,
 			allowIn: "insertedArticle"
 		});
+
+		schema.register("insertedArticlePreview", {
+			isObject: true,
+			isLimit: true,
+			allowIn: "insertedArticle"
+		});
 	}
 
 	_defineConverters() {
@@ -109,6 +115,28 @@ export default class InfoEditing extends Plugin {
 			view: (modelElement, { writer: viewWriter }) => {
 				const div = viewWriter.createEditableElement("div", { class: "helpjuice-inserted-article-delete" });
 				return toWidget(div, viewWriter);
+			}
+		});
+
+		conversion.for("upcast").elementToElement({
+			model: "insertedArticlePreview",
+			view: {
+				name: "p",
+				classes: "article-insert-fragment"
+			}
+		});
+		conversion.for("dataDowncast").elementToElement({
+			model: "insertedArticlePreview",
+			view: {
+				name: "p",
+				classes: "article-insert-fragment"
+			}
+		});
+		conversion.for("editingDowncast").elementToElement({
+			model: "insertedArticlePreview",
+			view: (modelElement, { writer: viewWriter }) => {
+				const p = viewWriter.createEditableElement("paragraph", { class: "article-insert-fragment" });
+				return toWidget(p, viewWriter);
 			}
 		});
 	}
