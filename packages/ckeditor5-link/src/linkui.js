@@ -171,8 +171,11 @@ export default class LinkUI extends Plugin {
 		this.listenTo( formView, 'submit', () => {
 			const { value } = formView.urlInputView.fieldView.element;
 			const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
-			editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
-			this._closeFormView();
+			try {
+				const _url = new URL(parsedUrl).toString();
+				editor.execute( 'link', _url, formView.getDecoratorSwitchesState() );
+				this._closeFormView();
+			} catch(err) { console.error(err.message); }
 		} );
 
 		// Hide the panel after clicking the "Cancel" button.
