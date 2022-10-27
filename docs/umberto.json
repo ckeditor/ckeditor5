@@ -230,7 +230,7 @@
 	},
 	"groups": [
 		{
-			"name": "Installation",
+			"name": "Getting started",
 			"id": "installation",
 			"slug": "installation",
 			"navigationIncludeIndex": true,
@@ -250,7 +250,7 @@
 					]
 				},
 				{
-					"name": "Advanced",
+					"name": "Advanced concepts",
 					"id": "advanced",
 					"slug": "advanced",
 					"order": 30,

@@ -6,7 +6,7 @@ meta-title: CKEditor 5 installation documentation
 meta-description: Learn how to install, integrate, configure and develop CKEditor 5. Browse through API documentation and online samples.
 ---
 
-# CKEditor 5 installation overview
+# Getting started with CKEditor 5
 
 CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM, written from scratch in ES6 with excellent webpack support. Find out the most convenient way to start using it!
 
@@ -22,7 +22,7 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 
 Start using CKEditor 5 instantly thanks to the power of our CDN. Check out the {@link installation/getting-started/quick-start Quick start guide}.
 
-## Predefined CKEditor 5 builds
+## Easy installation with predefined CKEditor 5 builds
 
 Predefined CKEditor 5 builds are ready-to-use installations aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link installation/getting-started/predefined-builds available predefined builds} and choosing the right one for you. This is the fastest way to kick-off you CKEditor 5 installation.
 
@@ -83,7 +83,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 
 		'quiz-question-usingBuilds': {
 			content: 'Do you need a working, out-of-the box solution?',
-			hint: 'CKEditor 5 comes with ready-to-use <a href="#predefined-ckeditor-5-builds">predefined builds</a> that offer working solutions for different use cases. This is a quick way to start.',
+			hint: 'CKEditor 5 comes with ready-to-use <a href="#easy-installation-with-predefined-ckeditor-5-builds">predefined builds</a> that offer working solutions for different use cases. This is a quick way to start.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingBuilds' ),
 				getDecisionButtonDefinition( false, 'quiz-question-onlineBuilder' ),
