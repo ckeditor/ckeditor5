@@ -37,10 +37,6 @@ class ExternalWidgetCommand extends Command {
 			editor.model.insertContent( externalWidget );
 		} );
 	}
-
-	refresh() {
-		this.isEnabled = true;
-	}
 }
 
 class ExternalWidget extends Plugin {
@@ -56,10 +52,12 @@ class ExternalWidgetUI extends Plugin {
 		editor.ui.componentFactory.add( 'external', locale => {
 			const button = new ButtonView( locale );
 
-			button.isEnabled = true;
-			button.label = 'Insert Bitcoin rate';
-			button.tooltip = true;
-			button.withText = true;
+			button.set( {
+				label: 'Insert Bitcoin rate',
+				tooltip: true,
+				withText: true,
+				isEnabled: true
+			} );
 
 			button.on( 'execute', () => {
 				editor.execute( 'external' );
@@ -114,7 +112,8 @@ class ExternalWidgetEditing extends Plugin {
 				const externalUrl = viewElement.getAttribute( 'data-resource-url' );
 
 				return writer.createElement( 'externalElement', {
-					value: htmlToEmbed( externalUrl )
+					value: htmlToEmbed( externalUrl ),
+					'data-resource-url': viewElement.getAttribute( 'data-resource-url' )
 				} );
 			}
 		} );
