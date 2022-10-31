@@ -1,0 +1,30 @@
+<style>
+	.external-data-embed-bounce {
+		animation: external-data-embed-bounce-animation 0.7s 1;
+		-webkit-animation: external-data-embed-bounce-animation 0.7s 1;
+	}
+
+	@keyframes external-data-embed-bounce-animation {
+		0% {
+			box-shadow: 0px 0px 0px 0px rgba(116, 60, 205, 1);
+		}
+
+		100% {
+			box-shadow: 0px 0px 0px 7px rgba(116, 60, 205, 0);
+		}
+	}
+
+	@-webkit-keyframes external-data-embed-bounce-animation {
+		0% {
+			-webkit-box-shadow: 0px 0px 0px 0px rgba(116, 60, 205, 1);
+		}
+
+		100% {
+			-webkit-box-shadow: 0px 0px 0px 7px rgba(116, 60, 205, 0);
+		}
+	}
+</style>
+
+<div id="snippet-external-widget">
+	<p>This is a simple Bitcoin widget:<span data-resource-url="https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT"></span></p>
+</div>
