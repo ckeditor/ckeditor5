@@ -101,7 +101,7 @@ class ExternalWidgetEditing extends Plugin {
 	_defineConverters() {
 		const editor = this.editor;
 
-		const htmlEmbedConfig = editor.config.get( 'externalDataEmbed' );
+		const externalWidgetConfig = editor.config.get( 'externalWidget' );
 
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: {
@@ -113,7 +113,7 @@ class ExternalWidgetEditing extends Plugin {
 
 				return writer.createElement( 'externalElement', {
 					value: htmlToEmbed( externalUrl ),
-					'data-resource-url': viewElement.getAttribute( 'data-resource-url' )
+					'data-resource-url': externalUrl
 				} );
 			}
 		} );
@@ -133,20 +133,20 @@ class ExternalWidgetEditing extends Plugin {
 				const rawHtmlValue = modelItem.getAttribute( 'value' ) || '';
 
 				const viewContentWrapper = viewWriter.createRawElement( 'span', {
-					class: 'external-data-embed__content-wrapper'
+					class: 'external-widget__content-wrapper'
 				}, function( domElement ) {
 					renderContent( { domElement, editor, rawHtmlValue } );
 				} );
 
 				const viewContainer = viewWriter.createContainerElement( 'span', {
-					class: 'external-data-embed',
+					class: 'external-widget',
 					dir: editor.locale.uiLanguageDirection
 				}, viewContentWrapper );
 
 				viewWriter.setCustomProperty( 'externalElement', true, viewContainer );
 
 				return toWidget( viewContainer, viewWriter, {
-					widgetLabel: 'external data widget',
+					widgetLabel: 'External widget',
 					hasSelectionHandle: true
 				} );
 			}
@@ -158,10 +158,10 @@ class ExternalWidgetEditing extends Plugin {
 
 			const domDocument = domElement.ownerDocument;
 
-			const sanitizedOutput = htmlEmbedConfig.sanitizeHtml( rawHtmlValue );
+			const sanitizedOutput = externalWidgetConfig.sanitizeHtml( rawHtmlValue );
 
 			const domPreviewContent = createElement( domDocument, 'span', {
-				class: 'external-data-embed__preview-content',
+				class: 'external-widget__preview-content',
 				dir: editor.locale.contentLanguageDirection
 			} );
 
@@ -172,7 +172,7 @@ class ExternalWidgetEditing extends Plugin {
 			domPreviewContent.appendChild( domDocumentFragment );
 
 			domElement.append( createElement( domDocument, 'span', {
-				class: 'external-data-embed__preview'
+				class: 'external-widget__preview'
 			}, [ domPreviewContent ] ) );
 		}
 	}
@@ -181,31 +181,30 @@ class ExternalWidgetEditing extends Plugin {
 function htmlToEmbed( resourceUrl ) {
 	const elementID = `external_${ Date.now() }`; // super-simple non-unique ID generator
 
-	return `<span id="${ elementID }"></span>
+	return `<span id="${ elementID }">Fetching data...</span>
 		<script>
+			let intervalId_${ elementID } = null;
 
-		let intervalId_${ elementID } = null;
+			function fetchBtcToUsdPrice() {
+				if (!document.querySelector('#${ elementID }')) {
+					clearInterval( intervalId_${ elementID } );
+					return;
+				}
 
-		function fetchBtcToUsdPrice() {
-			if (!document.querySelector('#${ elementID }')) {
-				clearInterval( intervalId_${ elementID } );
-				return;
+				fetch( '${ resourceUrl }' )
+					.then( ( response ) => response.json() )
+					.then( ( data ) => {
+						const span = document.querySelector( '#${ elementID }' );
+						span.classList.add( 'external-widget-bounce' );
+						const updateTime = new Date( data.closeTime );
+						span.textContent = '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
+						setTimeout(() => span.classList.remove( 'external-widget-bounce' ), 2000);
+					});
 			}
 
-			fetch( '${ resourceUrl }' )
-				.then( ( response ) => response.json() )
-				.then( ( data ) => {
-					const span = document.querySelector( '#${ elementID }' );
-					span.classList.add( 'external-data-embed-bounce' );
-					const updateTime = new Date( data.closeTime );
-					span.textContent = '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
-					setTimeout(() => span.classList.remove( 'external-data-embed-bounce' ), 2000);
-				});
-		}
+			intervalId_${ elementID } = setInterval( fetchBtcToUsdPrice, 20000 ); // every 20s
 
-		intervalId_${ elementID } = setInterval( fetchBtcToUsdPrice, 20000 ); // every 20s
-
-		fetchBtcToUsdPrice() // initial run
+			fetchBtcToUsdPrice() // initial run
 
 		</script>`;
 }
@@ -214,7 +213,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-external-widget' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalWidget ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'external' ],
-		externalDataEmbed: {
+		externalWidget: {
 			sanitizeHtml: html => ( { html, hasChange: false } )
 		}
 	} )
