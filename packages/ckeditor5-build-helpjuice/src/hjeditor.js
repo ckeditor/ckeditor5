@@ -342,13 +342,13 @@ HelpjuiceEditor.defaultConfig = {
 					const getUrl = match.input;
 
 					return (
-						`<video controls="" style="max-width: 100%" src="${getUrl}">Your browser does not support HTML5 video.</video>`
+						`<video controls="" style="max-width: 100%" src="https://${getUrl}">Your browser does not support HTML5 video.</video>`
 					);
 				}
 			},
 			{
 				name: 'localProvider',
-				url: /uploads\/upload\/(\w+)/,
+				url: /.*uploads\/upload\/(\w+)/,
 				html: match => {
 					const getUrl = match.input;
 
