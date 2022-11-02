@@ -9,9 +9,9 @@ We are happy to announce the release of CKEditor 5 v35.3.0.
 
 This release introduces the following new features:
 
-* Typing and text composition (IME) support has been refactored to use beforeInput DOM events instead of DOM mutations and keystrokes.
+* [Typing and text composition (IME) support has been refactored to use `beforeInput` DOM events instead of DOM mutations and keystrokes](https://github.com/ckeditor/ckeditor5/issues/11438).
 * Track changes integration has been added for the document lists and table caption features.
-* Improvements to the `IconView` component now allow rich colorful icons. Several other changes has also been added to improve the way the icons are handled.
+* [Improvements to the `IconView` component now allow rich colorful icons](https://github.com/ckeditor/ckeditor5/issues/12597). Several other changes has also been added to improve the way the icons are handled.
 * External annotations in comments and track changes have gotten additional visual information to emphasize that the author name comes from an external source.
 * Several key packages were rewritten into TypeScript (listed below).
 
@@ -19,7 +19,8 @@ This release introduces the following new features:
 There were also bug fixes:
 
 * External comments are no longer assigned to the user who imported them. Im means these are not editable by them and do not behave like they were created by that user (e.g. they do not join with other suggestions created by them).
-* Tooltips handling has been improved.
+* [Tooltips handling has been improved to better follow user interface events](https://github.com/ckeditor/ckeditor5/issues/12492).
+* Fixed incorrect annotations order in the sidebar when a comment or a suggestion was set on a multi-line text (and in similar cases).
 
 
 <!-- TODO: Add a link to the blog post. -->
