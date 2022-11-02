@@ -944,3 +944,33 @@ import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
+
+### Importing modules in debug comments: `ckeditor5-rules/use-require-for-debug-mode-imports`
+
+In order to run code in debug mode only, create a comment that starts with `@if CK_DEBUG` text.
+
+If any module is imported in debug mode using `import` keyword, an error is thrown to the console.
+
+Modules need to be imported with a `require()` keyword in order to avoid such errors.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```js
+// @if CK_DEBUG // import defaultExport from \'module-name\'
+// @if CK_DEBUG // import * as name from \'module-name\';
+// @if CK_DEBUG // import { testFunction } from \'module-name\';
+// @if CK_DEBUG // import { default as alias } from \'module-name\';
+// @if CK_DEBUG // import { exported as alias } from \'module-name\';
+// @if CK_DEBUG // import \'module-name\';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```js
+// @if CK_DEBUG // const defaultExport = require( \'module-name\' ).default;
+// @if CK_DEBUG // const name = require( \'module-name\' );
+// @if CK_DEBUG // const { testFunction } = require( \'module-name\' );
+// @if CK_DEBUG // const alias = require( \'module-name\' ).default;
+// @if CK_DEBUG // const { exported: alias } = require( \'module-name\' );
+// @if CK_DEBUG // require( \'module-name\' );
+```
