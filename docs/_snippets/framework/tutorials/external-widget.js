@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, fetch, setInterval, setTimeout */
+/* globals console, window, document, fetch, setInterval, setTimeout, clearInterval */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src';
@@ -33,6 +33,8 @@ class ExternalWidgetCommand extends Command {
 			);
 
 			editor.model.insertContent( externalWidget );
+
+			writer.setSelection( externalWidget, 'on' );
 		} );
 	}
 }
@@ -59,6 +61,7 @@ class ExternalWidgetUI extends Plugin {
 
 			button.on( 'execute', () => {
 				editor.execute( 'external' );
+				editor.editing.view.focus();
 			} );
 
 			return button;
@@ -67,8 +70,22 @@ class ExternalWidgetUI extends Plugin {
 }
 
 class ExternalWidgetEditing extends Plugin {
+	constructor( editor ) {
+		super( editor );
+
+		this._updateWidgetDataFn = this._updateWidgetData;
+
+		this._fetchDataFn = this._fetchData;
+
+		this.intervalId = this._intervalFetch();
+	}
+
 	static get requires() {
 		return [ Widget ];
+	}
+
+	destroy() {
+		clearInterval( this.intervalId );
 	}
 
 	init() {
@@ -87,6 +104,34 @@ class ExternalWidgetEditing extends Plugin {
 		this._defineConverters();
 
 		this.editor.commands.add( 'external', new ExternalWidgetCommand( this.editor ) );
+	}
+
+	_intervalFetch() {
+		return setInterval( this._updateWidgetDataFn.bind( this ), 20000 ); // set time interval to 20s
+	}
+
+	async _fetchData() {
+		const response = await fetch( 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT' );
+		const data = await response.json();
+		const updateTime = new Date( data.closeTime );
+
+		return '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
+	}
+
+	async _updateWidgetData() {
+		if ( document.querySelectorAll( '.js-external-data-embed' ).length === 0 ) {
+			return;
+		}
+
+		const data = await this._fetchDataFn();
+		const allItems = document.querySelectorAll( '.js-external-data-embed' );
+
+		allItems.forEach( item => {
+			item.classList.add( 'external-widget-bounce' );
+			item.textContent = data;
+
+			setTimeout( () => item.classList.remove( 'external-widget-bounce' ), 2000 );
+		} );
 	}
 
 	_defineSchema() {
@@ -125,13 +170,14 @@ class ExternalWidgetEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'externalElement',
 			view: ( modelElement, { writer: viewWriter } ) => {
+				const fetchData = this._fetchDataFn;
+
 				const viewContentWrapper = viewWriter.createRawElement( 'span', {
 					class: 'js-external-data-embed'
 				}, async function( domElement ) {
 					domElement.textContent = 'Fetching data...';
 
-					const externalUrl = modelElement.getAttribute( 'data-resource-url' );
-					const data = await initialFetch( externalUrl );
+					const data = await fetchData();
 
 					domElement.textContent = data;
 				} );
@@ -147,38 +193,6 @@ class ExternalWidgetEditing extends Plugin {
 	}
 }
 
-async function initialFetch( resourceUrl ) {
-	const response = await fetch( resourceUrl );
-	const data = await response.json();
-	const updateTime = new Date( data.closeTime );
-	return '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
-}
-
-function intervalFetch() {
-	// let intervalId = null;
-	function fetchBtcToUsdPrice() {
-		if ( document.querySelectorAll( '.js-external-data-embed' ).length === 0 ) {
-			// clearInterval( intervalId );
-			return;
-		}
-
-		fetch( 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT' )
-			.then( response => response.json() )
-			.then( data => {
-				const allItems = document.querySelectorAll( '.js-external-data-embed' );
-
-				allItems.forEach( item => {
-					item.classList.add( 'external-widget-bounce' );
-					const updateTime = new Date( data.closeTime );
-					item.textContent = '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
-					setTimeout( () => item.classList.remove( 'external-widget-bounce' ), 1200 );
-				} );
-			} );
-	}
-	/* const intervalId = */setInterval( fetchBtcToUsdPrice, 20000 ); // every 20s
-	fetchBtcToUsdPrice(); // initial run
-}
-
 ClassicEditor
 	.create( document.querySelector( '#snippet-external-widget' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalWidget ],
@@ -189,8 +203,6 @@ ClassicEditor
 
 		// Expose for playing in the console.
 		window.editor = editor;
-
-		intervalFetch();
 	} )
 	.catch( error => {
 		console.error( error.stack );
