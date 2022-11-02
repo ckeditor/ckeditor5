@@ -11,7 +11,7 @@ import Context from '../context';
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../plugincollection';
-import CommandCollection from '../commandcollection';
+import CommandCollection, { type CommandsMap } from '../commandcollection';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
@@ -443,9 +443,12 @@ export default abstract class Editor extends Observable {
 	 * @param {*} [...commandParams] Command parameters.
 	 * @returns {*} The value returned by the {@link module:core/commandcollection~CommandCollection#execute `commands.execute()`}.
 	 */
-	public execute( ...args: [ commandName: string, ... args: Array<unknown> ] ): unknown {
+	public execute<TName extends string>(
+		commandName: TName,
+		...args: Parameters<CommandsMap[ TName ][ 'execute' ]>
+	): ReturnType<CommandsMap[ TName ][ 'execute' ]> {
 		try {
-			return this.commands.execute( ...args );
+			return this.commands.execute( commandName, ...args );
 		} catch ( err: any ) {
 			// @if CK_DEBUG // throw err;
 			/* istanbul ignore next */

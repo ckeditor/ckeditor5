@@ -250,3 +250,9 @@ export type NotificationShowEvent = {
 		type: NotificationEventType;
 	} ];
 };
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Notification.pluginName ]: Notification;
+	}
+}

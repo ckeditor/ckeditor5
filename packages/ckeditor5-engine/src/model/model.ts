@@ -895,7 +895,7 @@ export default class Model extends Observable {
 	 * @param {module:engine/model/item~Item} item
 	 * @returns {module:engine/model/range~Range}
 	 */
-	public createRangeOn( item: Item | ModelDocumentFragment ): ModelRange {
+	public createRangeOn( item: Item ): ModelRange {
 		return ModelRange._createOn( item );
 	}
 

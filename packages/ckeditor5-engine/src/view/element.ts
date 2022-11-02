@@ -50,7 +50,7 @@ import { isPlainObject } from 'lodash-es';
 export default class Element extends Node {
 	public name: string;
 
-	public readonly getFillerOffset?: () => number | null;
+	public getFillerOffset?: () => number | null;
 
 	private _unsafeAttributesToRender: Array<string>;
 	private readonly _attrs: Map<string, string>;

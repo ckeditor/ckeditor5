@@ -610,7 +610,7 @@ Marker.prototype.is = function( type: string ): boolean {
 	return type === 'marker' || type === 'model:marker';
 };
 
-export { type Marker };
+export type { Marker };
 
 export type MarkerCollectionChangeEvent = LiveRangeChangeEvent;
 

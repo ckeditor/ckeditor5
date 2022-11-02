@@ -24,7 +24,7 @@ export default class Enter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'Enter' {
 		return 'Enter';
 	}
 
@@ -53,5 +53,15 @@ export default class Enter extends Plugin {
 
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		'enter': EnterCommand;
+	}
+
+	interface PluginsMap {
+		[ Enter.pluginName ]: Enter;
 	}
 }

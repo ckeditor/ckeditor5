@@ -52,15 +52,15 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * @extends module:core/contextplugin~ContextPlugin
  */
-export default class PendingActions extends ContextPlugin implements Iterable<Action> {
+export default class PendingActions extends ContextPlugin implements Iterable<PendingAction> {
 	declare public hasAny: boolean;
 
-	private _actions!: Collection<Action & { _id?: string }, '_id'>;
+	private _actions!: Collection<PendingAction & { _id?: string }, '_id'>;
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'PendingActions' {
 		return 'PendingActions';
 	}
 
@@ -96,7 +96,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Ac
 	 * @param {String} message The action message.
 	 * @returns {Object} An observable object that represents a pending action.
 	 */
-	public add( message: string ): Action {
+	public add( message: string ): PendingAction {
 		if ( typeof message !== 'string' ) {
 			/**
 			 * The message must be a string.
@@ -106,7 +106,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Ac
 			throw new CKEditorError( 'pendingactions-add-invalid-message', this );
 		}
 
-		const action = new Observable() as Action;
+		const action = new Observable() as PendingAction;
 
 		action.set( 'message', message );
 		this._actions.add( action );
@@ -120,7 +120,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Ac
 	 *
 	 * @param {Object} action An action object.
 	 */
-	public remove( action: Action ): void {
+	public remove( action: PendingAction ): void {
 		this._actions.remove( action );
 		this.hasAny = !!this._actions.length;
 	}
@@ -130,7 +130,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Ac
 	 *
 	 * returns {Object|null} The pending action object.
 	 */
-	public get first(): Action | null {
+	public get first(): PendingAction | null {
 		return this._actions.get( 0 );
 	}
 
@@ -139,7 +139,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Ac
 	 *
 	 * @returns {Iterable.<*>}
 	 */
-	public [ Symbol.iterator ](): Iterator<Action> {
+	public [ Symbol.iterator ](): Iterator<PendingAction> {
 		return this._actions[ Symbol.iterator ]();
 	}
 
@@ -158,9 +158,15 @@ export default class PendingActions extends ContextPlugin implements Iterable<Ac
 	 */
 }
 
-export interface Action extends Observable {
+export interface PendingAction extends Observable {
 	message: string;
 }
 
-export type PendingActionsAddEvent = CollectionAddEvent<Action>;
-export type PendingActionsRemoveEvent = CollectionRemoveEvent<Action>;
+export type PendingActionsAddEvent = CollectionAddEvent<PendingAction>;
+export type PendingActionsRemoveEvent = CollectionRemoveEvent<PendingAction>;
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ PendingActions.pluginName ]: PendingActions;
+	}
+}

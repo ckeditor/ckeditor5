@@ -40,7 +40,7 @@ type DomElement = globalThis.HTMLElement;
  * @extends module:engine/view/element~Element
  */
 export default class UIElement extends Element {
-	public override readonly getFillerOffset: () => null;
+	public override getFillerOffset: () => null;
 
 	/**
 	 * Creates new instance of UIElement.

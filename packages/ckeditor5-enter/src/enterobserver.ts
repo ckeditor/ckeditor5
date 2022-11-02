@@ -13,6 +13,7 @@ import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubb
 
 import type { View } from '@ckeditor/ckeditor5-engine';
 import type { ViewDocumentInputEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
+import type { BubblingEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingemittermixin';
 
 const ENTER_EVENT_TYPES: Record<string, { isSoft: boolean }> = {
 	insertParagraph: { isSoft: false },
@@ -77,10 +78,10 @@ export default class EnterObserver extends Observer {
  * @param {Boolean} data.isSoft Whether it's a soft enter (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or hard enter (<kbd>Enter</kbd>).
  */
 
-export type ViewDocumentEnterEvent = {
+export type ViewDocumentEnterEvent = BubblingEvent<{
 	name: 'enter';
 	args: [ EnterEventData ];
-};
+}>;
 
 export interface EnterEventData extends DomEventData<InputEvent> {
 	isSoft: boolean;

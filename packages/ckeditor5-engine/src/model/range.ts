@@ -962,8 +962,8 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param {module:engine/model/item~Item} item
 	 * @returns {module:engine/model/range~Range}
 	 */
-	public static _createOn( item: Item | DocumentFragment ): Range {
-		return this._createFromPositionAndShift( Position._createBefore( item ), ( item as any ).offsetSize );
+	public static _createOn( item: Item ): Range {
+		return this._createFromPositionAndShift( Position._createBefore( item ), item.offsetSize );
 	}
 
 	/**
