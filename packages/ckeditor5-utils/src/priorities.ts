@@ -9,23 +9,18 @@
 
 /**
  * String representing a priority value.
- *
- * @typedef {'highest'|'high'|'normal'|'low'|'lowest'} module:utils/priorities~PriorityString
  */
 export type PriorityString = 'highest' | 'high' | 'normal' | 'low' | 'lowest' | number;
 
 /**
  * Provides group of constants to use instead of hardcoding numeric priority values.
- *
- * @namespace
  */
 const priorities = {
 	/**
 	 * Converts a string with priority name to it's numeric value. If `Number` is given, it just returns it.
 	 *
-	 * @static
-	 * @param {module:utils/priorities~PriorityString} [priority] Priority to convert.
-	 * @returns {Number} Converted priority.
+	 * @param priority Priority to convert.
+	 * @returns Converted priority.
 	 */
 	get( priority: PriorityString = 'normal' ): number {
 		if ( typeof priority != 'number' ) {

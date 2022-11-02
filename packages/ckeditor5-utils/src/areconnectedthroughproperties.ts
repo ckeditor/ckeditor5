@@ -11,10 +11,6 @@
 
 /**
  * Traverses both structures to find out whether there is a reference that is shared between both structures.
- *
- * @param {Object|Array} obj1
- * @param {Object|Array} obj2
- * @returns {Boolean}
  */
 export default function areConnectedThroughProperties( obj1: object, obj2: object ): boolean {
 	if ( obj1 === obj2 && isObject( obj1 ) ) {

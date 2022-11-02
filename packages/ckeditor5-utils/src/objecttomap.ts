@@ -10,13 +10,15 @@
 /**
  * Transforms object to map.
  *
- *		const map = objectToMap( { 'foo': 1, 'bar': 2 } );
- *		map.get( 'foo' ); // 1
+ * ```ts
+ * const map = objectToMap( { 'foo': 1, 'bar': 2 } );
+ * map.get( 'foo' ); // 1
+ * ```
  *
  * **Note**: For mixed data (`Object` or `Iterable`) there's a dedicated {@link module:utils/tomap~toMap} function.
  *
- * @param {Object|null} obj Object to transform.
- * @returns {Map} Map created from object.
+ * @param obj Object to transform.
+ * @returns Map created from object.
  */
 export default function objectToMap<T>( obj: { readonly [ key: string ]: T } | null | undefined ): Map<string, T> {
 	const map = new Map<string, T>();

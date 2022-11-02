@@ -26,9 +26,6 @@ import CKEditorError from './ckeditorerror';
  * (have e.g. `tabindex="-1"`).
  *
  * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking "Deep dive into focus tracking" guide} to learn more.
- *
- * @mixes module:utils/dom/emittermixin~EmitterMixin
- * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class FocusTracker extends DomEmitterMixin( Observable ) {
 	/**
@@ -36,7 +33,6 @@ export default class FocusTracker extends DomEmitterMixin( Observable ) {
 	 *
 	 * @readonly
 	 * @observable
-	 * @member {Boolean}
 	 */
 	declare public isFocused: boolean;
 
@@ -49,40 +45,28 @@ export default class FocusTracker extends DomEmitterMixin( Observable ) {
 	 *
 	 * @readonly
 	 * @observable
-	 * @member {Element|null}
 	 */
 	declare public focusedElement: Element | null;
 
 	/**
 	 * List of registered elements.
-	 *
-	 * @private
-	 * @member {Set.<Element>}
 	 */
-	private _elements: Set<Element>;
+	private _elements: Set<Element> = new Set();
 
 	/**
 	 * Event loop timeout.
-	 *
-	 * @private
-	 * @member {Number}
 	 */
-	private _nextEventLoopTimeout: ReturnType<typeof setTimeout> | null;
+	private _nextEventLoopTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	constructor() {
 		super();
 
 		this.set( 'isFocused', false );
 		this.set( 'focusedElement', null );
-
-		this._elements = new Set();
-		this._nextEventLoopTimeout = null;
 	}
 
 	/**
 	 * Starts tracking the specified element.
-	 *
-	 * @param {Element} element
 	 */
 	public add( element: Element ): void {
 		if ( this._elements.has( element ) ) {
@@ -101,8 +85,6 @@ export default class FocusTracker extends DomEmitterMixin( Observable ) {
 
 	/**
 	 * Stops tracking the specified element and stops listening on this element.
-	 *
-	 * @param {Element} element
 	 */
 	public remove( element: Element ): void {
 		if ( element === this.focusedElement ) {
@@ -126,9 +108,6 @@ export default class FocusTracker extends DomEmitterMixin( Observable ) {
 
 	/**
 	 * Stores currently focused element and set {#isFocused} as `true`.
-	 *
-	 * @private
-	 * @param {Element} element Element which has been focused.
 	 */
 	private _focus( element: Element ): void {
 		clearTimeout( this._nextEventLoopTimeout! );
@@ -140,9 +119,6 @@ export default class FocusTracker extends DomEmitterMixin( Observable ) {
 	/**
 	 * Clears currently focused element and set {@link #isFocused} as `false`.
 	 * This method uses `setTimeout` to change order of fires `blur` and `focus` events.
-	 *
-	 * @private
-	 * @fires blur
 	 */
 	private _blur(): void {
 		clearTimeout( this._nextEventLoopTimeout! );

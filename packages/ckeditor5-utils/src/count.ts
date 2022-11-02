@@ -12,8 +12,8 @@
  *
  *		count( [ 1, 2, 3, 4, 5 ] ); // 5;
  *
- * @param {Iterable.<*>} iterable Any iterable.
- * @returns {Number} Number of items returned by that iterable.
+ * @param iterable Any iterable.
+ * @returns Number of items returned by that iterable.
  */
 export default function count( iterable: Iterable<unknown> ): number {
 	let count = 0;

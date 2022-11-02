@@ -12,8 +12,7 @@ import global from './global';
 /**
  * For a given element, returns the nearest ancestor element which CSS position is not "static".
  *
- * @param {HTMLElement} [element] The native DOM element to be checked.
- * @returns {HTMLElement|null}
+ * @param element The native DOM element to be checked.
  */
 export default function getPositionedAncestor( element?: HTMLElement ): HTMLElement | null {
 	if ( !element || !element.parentNode ) {

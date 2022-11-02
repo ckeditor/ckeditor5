@@ -76,8 +76,7 @@ import { isFunction } from 'lodash-es';
  *		element.style.top = top;
  *		element.style.left = left;
  *
- * @param {module:utils/dom/position~Options} options The input data and configuration of the helper.
- * @returns {module:utils/dom/position~Position}
+ * @param options The input data and configuration of the helper.
  */
 export function getOptimalPosition( { element, target, positions, limiter, fitInViewport, viewportOffsetConfig }: Options ): Position {
 	// If the {@link module:utils/dom/position~Options#target} is a function, use what it returns.
@@ -131,8 +130,8 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 // Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
 //
 // @private
-// @param {Object} An object containing viewportOffset config.
-// @returns {module:utils/dom/rect~Rect} A shrunken rect of the viewport.
+// @param viewportOffsetConfig An object containing viewportOffset config.
+// @returns A shrunken rect of the viewport.
 function getConstrainedViewportRect( viewportOffsetConfig: Options[ 'viewportOffsetConfig' ] ): Rect {
 	viewportOffsetConfig = Object.assign( { top: 0, bottom: 0, left: 0, right: 0 }, viewportOffsetConfig );
 
@@ -151,16 +150,16 @@ function getConstrainedViewportRect( viewportOffsetConfig: Options[ 'viewportOff
 //
 // @private
 //
-// @param {module:utils/dom/position~Options#positions} positions Functions returning
+// @param positions Functions returning
 // {@link module:utils/dom/position~Position}to be checked, in the order of preference.
-// @param {Object} options
-// @param {module:utils/dom/rect~Rect} options.elementRect The positioned element rect.
-// @param {module:utils/dom/rect~Rect} options.targetRect The target element rect.
-// @param {module:utils/dom/rect~Rect} options.viewportRect The viewport rect.
-// @param {module:utils/dom/rect~Rect} [options.limiterRect] The limiter rect.
-// @param {HTMLElement|null} [options.positionedElementAncestor] Nearest element ancestor element which CSS position is not "static".
+// @param options
+// @param options.elementRect The positioned element rect.
+// @param options.targetRect The target element rect.
+// @param options.viewportRect The viewport rect.
+// @param options.limiterRect The limiter rect.
+// @param options.positionedElementAncestor Nearest element ancestor element which CSS position is not "static".
 //
-// @returns {module:utils/dom/position~Position|null} An array containing the name of the position and it's rect.
+// @returns An array containing the name of the position and it's rect.
 function getBestPosition(
 	positions: ReadonlyArray<PositioningFunction>,
 	options: ConstructorParameters<typeof PositionObject>[ 1 ]
@@ -209,8 +208,8 @@ function getBestPosition(
 //
 // @private
 //
-// @param {module:utils/dom/rect~Rect} rect A rect with absolute rect coordinates.
-// @param {HTMLElement} positionedElementAncestor An ancestor element that should be considered.
+// @param rect A rect with absolute rect coordinates.
+// @param positionedElementAncestor An ancestor element that should be considered.
 function shiftRectToCompensatePositionedAncestor( rect: Rect, positionedElementAncestor: HTMLElement ): void {
 	const ancestorPosition = getRectForAbsolutePositioning( new Rect( positionedElementAncestor ) );
 	const ancestorBorderWidths = getBorderWidths( positionedElementAncestor );
@@ -248,8 +247,8 @@ function shiftRectToCompensatePositionedAncestor( rect: Rect, positionedElementA
 // This function converts Rect to `position: absolute` coordinates.
 //
 // @private
-// @param {module:utils/dom/rect~Rect} rect A rect to be converted.
-// @returns {module:utils/dom/rect~Rect} Object containing `left` and `top` properties, in absolute coordinates.
+// @param rect A rect to be converted.
+// @returns Object containing `left` and `top` properties, in absolute coordinates.
 function getRectForAbsolutePositioning( rect: Rect ): Rect {
 	const { scrollX, scrollY } = global.window;
 
@@ -262,15 +261,11 @@ function getRectForAbsolutePositioning( rect: Rect ): Rect {
  * {@link module:utils/dom/position~Position#top} and {@link module:utils/dom/position~Position#left} properties of the position instance
  * translate directly to the `top` and `left` properties in CSS "`position: absolute` coordinate system". If set on the positioned element
  * in DOM, they will make it display it in the right place in the viewport.
- * @interface
  */
 export interface Position {
 
 	/**
 	 * Position name.
-	 *
-	 * @readonly
-	 * @member {String}
 	 */
 	readonly name?: string;
 
@@ -279,27 +274,18 @@ export interface Position {
 	 *
 	 * This object can be use, for instance, to pass through presentation options used by the consumer of the
 	 * {@link module:utils/dom/position~getOptimalPosition} helper.
-	 *
-	 * @readonly
-	 * @member {Object|undefined}
 	 */
 	readonly config?: object;
 
 	/**
 	 * The left value in pixels in the CSS `position: absolute` coordinate system.
 	 * Set it on the positioned element in DOM to move it to the position.
-	 *
-	 * @readonly
-	 * @member {Number}
 	 */
 	readonly left: number;
 
 	/**
 	 * The top value in pixels in the CSS `position: absolute` coordinate system.
 	 * Set it on the positioned element in DOM to move it to the position.
-	 *
-	 * @readonly
-	 * @member {Number}
 	 */
 	readonly top: number;
 }
@@ -310,7 +296,6 @@ export interface Position {
 // translate directly to the `top` and `left` properties in CSS "`position: absolute` coordinate system". If set on the positioned element
 // in DOM, they will make it display it in the right place in the viewport.
 // @private
-// @implements {Position}
 class PositionObject implements Position {
 	public name?: string;
 	public config?: object;
@@ -322,14 +307,14 @@ class PositionObject implements Position {
 
 	// Creates an instance of the {@link module:utils/dom/position~PositionObject} class.
 	//
-	// @param {module:utils/dom/position~PositioningFunction} positioningFunction function The function that defines the expected
+	// @param positioningFunction function The function that defines the expected
 	// coordinates the positioned element should move to.
-	// @param {Object} [options] options object.
-	// @param {module:utils/dom/rect~Rect} options.elementRect The positioned element rect.
-	// @param {module:utils/dom/rect~Rect} options.targetRect The target element rect.
-	// @param {module:utils/dom/rect~Rect|null} options.viewportRect The viewport rect.
-	// @param {module:utils/dom/rect~Rect} [options.limiterRect] The limiter rect.
-	// @param {HTMLElement|null} [options.positionedElementAncestor] Nearest element ancestor element which CSS position is not "static".
+	// @param options options object.
+	// @param options.elementRect The positioned element rect.
+	// @param options.targetRect The target element rect.
+	// @param options.viewportRect The viewport rect.
+	// @param options.limiterRect The limiter rect.
+	// @param options.positionedElementAncestor Nearest element ancestor element which CSS position is not "static".
 	constructor(
 		positioningFunction: PositioningFunction,
 		options: {
@@ -358,26 +343,17 @@ class PositionObject implements Position {
 
 	// The left value in pixels in the CSS `position: absolute` coordinate system.
 	// Set it on the positioned element in DOM to move it to the position.
-	//
-	// @readonly
-	// @type {Number}
 	public get left(): number {
 		return this._absoluteRect.left;
 	}
 
 	// The top value in pixels in the CSS `position: absolute` coordinate system.
 	// Set it on the positioned element in DOM to move it to the position.
-	//
-	// @readonly
-	// @type {Number}
 	public get top(): number {
 		return this._absoluteRect.top;
 	}
 
 	// An intersection area between positioned element and limiter within viewport constraints.
-	//
-	// @readonly
-	// @type {Number}
 	public get limiterIntersectionArea(): number {
 		const limiterRect = this._options.limiterRect;
 
@@ -402,9 +378,6 @@ class PositionObject implements Position {
 	}
 
 	// An intersection area between positioned element and viewport.
-	//
-	// @readonly
-	// @type {Number}
 	public get viewportIntersectionArea(): number {
 		const viewportRect = this._options.viewportRect;
 
@@ -417,10 +390,6 @@ class PositionObject implements Position {
 
 	// An already positioned element rect. A clone of the element rect passed to the constructor
 	// but placed in the viewport according to the positioning function.
-	//
-	// @private
-	// @readonly
-	// @type {module:utils/dom/rect~Rect}
 	private get _rect(): Rect {
 		if ( this._cachedRect ) {
 			return this._cachedRect;
@@ -435,10 +404,6 @@ class PositionObject implements Position {
 	}
 
 	// An already absolutely positioned element rect. See ({@link #_rect}).
-	//
-	// @private
-	// @readonly
-	// @type {module:utils/dom/rect~Rect}
 	private get _absoluteRect(): Rect {
 		if ( this._cachedAbsoluteRect ) {
 			return this._cachedAbsoluteRect;
@@ -456,22 +421,16 @@ class PositionObject implements Position {
 
 /**
  * The `getOptimalPosition()` helper options.
- *
- * @interface
  */
 export interface Options {
 
 	/**
 	 * Element that is to be positioned.
-	 *
-	 * @member {HTMLElement}
 	 */
 	readonly element: HTMLElement;
 
 	/**
 	 * Target with respect to which the `element` is to be positioned.
-	 *
-	 * @member {module:utils/dom/rect~RectSource|Function}
 	 */
 	readonly target: RectSource | ( () => RectSource );
 
@@ -483,38 +442,32 @@ export interface Options {
 	 * `getOptimalPosition()`.
 	 *
 	 * **Note**: Any positioning function returning `null` is ignored.
-	 *
-	 * @member {Array.<module:utils/dom/position~PositioningFunction>}
 	 */
 	readonly positions: ReadonlyArray<PositioningFunction>;
 
 	/**
 	 * When set, the algorithm will chose position which fits the most in the
 	 * limiter's bounding rect.
-	 *
-	 * @member {module:utils/dom/rect~RectSource|Function}
 	 */
 	readonly limiter?: RectSource | ( () => ( RectSource | null ) ) | null;
 
 	/**
 	 * When set, the algorithm will chose such a position which fits `element`
 	 * the most inside visible viewport.
-	 *
-	 * @member {Boolean}
 	 */
 	readonly fitInViewport?: boolean;
 
 	/**
 	 * Viewport offset config object. It restricts the visible viewport available to the `getOptimalPosition()` from each side.
 	 *
-	 *		{
-	 *			top: 50,
-	 *			right: 50,
-	 *			bottom: 50,
-	 *			left: 50
-	 *		}
-	 *
-	 * @member {Object}
+	 * ```ts
+	 * {
+	 * 	top: 50,
+	 * 	right: 50,
+	 * 	bottom: 50,
+	 * 	left: 50
+	 * }
+	 * ```
 	 */
 	readonly viewportOffsetConfig?: {
 		readonly top?: number;
@@ -528,43 +481,60 @@ export interface Options {
  * A positioning function which, based on positioned element and target {@link module:utils/dom/rect~Rect Rects}, returns rect coordinates
  * representing the geometrical relation between them. Used by the {@link module:utils/dom/position~getOptimalPosition} helper.
  *
- *		// This simple position will place the element directly under the target, in the middle:
- *		//
- *		//	    [ Target ]
- *		//	+-----------------+
- *		//	|     Element     |
- *		//	+-----------------+
- *		//
- *		const position = ( targetRect, elementRect, [ viewportRect ] ) => ( {
- *			top: targetRect.bottom,
- *			left: targetRect.left + targetRect.width / 2 - elementRect.width / 2,
- *			name: 'bottomMiddle',
+ * ```ts
+ * // This simple position will place the element directly under the target, in the middle:
+ * //
+ * //	    [ Target ]
+ * //	+-----------------+
+ * //	|     Element     |
+ * //	+-----------------+
+ * //
+ * const position = ( targetRect, elementRect, [ viewportRect ] ) => ( {
+ * 	top: targetRect.bottom,
+ * 	left: targetRect.left + targetRect.width / 2 - elementRect.width / 2,
+ * 	name: 'bottomMiddle',
  *
- *			// Note: The config is optional.
- *			config: {
- *				zIndex: '999'
- *			}
- *		} );
+ * 	// Note: The config is optional.
+ * 	config: {
+ * 		zIndex: '999'
+ * 	}
+ * } );
+ * ```
  *
- * @callback module:utils/dom/position~PositioningFunction
- * @param {module:utils/dom/rect~Rect} elementRect The rect of the element to be positioned.
- * @param {module:utils/dom/rect~Rect} targetRect The rect of the target the element (its rect) is relatively positioned to.
- * @param {module:utils/dom/rect~Rect|null} viewportRect The rect of the visual browser viewport.
- * @returns {Object|null} return When the function returns `null`, it will not be considered by
- * {@link module:utils/dom/position~getOptimalPosition}.
- * @returns {Number} return.top The `top` value of the element rect that would represent the position.
- * @returns {Number} return.left The `left` value of the element rect that would represent the position.
- * @returns {String} return.name The name of the position. It helps the user of the {@link module:utils/dom/position~getOptimalPosition}
- * helper to recognize different positioning function results. It will pass through to the {@link module:utils/dom/position~Position}
- * returned by the helper.
- * @returns {Object} [return.config] An optional configuration that will pass-through the
- * {@link module:utils/dom/position~getOptimalPosition} helper to the {@link module:utils/dom/position~Position} returned by this helper.
- * This configuration may, for instance, let the user of {@link module:utils/dom/position~getOptimalPosition} know that this particular
- * position comes with a certain presentation.
+ * @param elementRect The rect of the element to be positioned.
+ * @param targetRect The rect of the target the element (its rect) is relatively positioned to.
+ * @param viewportRect The rect of the visual browser viewport.
+ * @returns When the function returns `null`, it will not be considered by {@link module:utils/dom/position~getOptimalPosition}.
  */
-export type PositioningFunction = ( elementRect: Rect, targetRect: Rect, viewportRect: Rect | null ) => ( {
+export type PositioningFunction = ( elementRect: Rect, targetRect: Rect, viewportRect: Rect | null ) => PositioningFunctionResult | null;
+
+/**
+ * The result of {@link module:utils/dom/position~PositioningFunction}.
+ */
+export interface PositioningFunctionResult {
+
+	/**
+	 * The `top` value of the element rect that would represent the position.
+	 */
 	top: number;
+
+	/**
+	 * The `left` value of the element rect that would represent the position.
+	 */
 	left: number;
+
+	/**
+	 * The name of the position. It helps the user of the {@link module:utils/dom/position~getOptimalPosition}
+	 * helper to recognize different positioning function results. It will pass through to the {@link module:utils/dom/position~Position}
+	 * returned by the helper.
+	 */
 	name?: string;
+
+	/**
+	 * An optional configuration that will pass-through the {@link module:utils/dom/position~getOptimalPosition} helper
+	 * to the {@link module:utils/dom/position~Position} returned by this helper.
+	 * This configuration may, for instance, let the user of {@link module:utils/dom/position~getOptimalPosition} know that this particular
+	 * position comes with a certain presentation.
+	 */
 	config?: object;
-} | null );
+}

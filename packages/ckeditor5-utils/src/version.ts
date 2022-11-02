@@ -37,8 +37,10 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 *
 	 * If you import an existing CKEditor 5 build and a plugin like this:
 	 *
-	 *		import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-	 *		import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+	 * ```ts
+	 * import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+	 * ```
 	 *
 	 * Then your project loads some CKEditor 5 packages twice. How does it happen?
 	 *
@@ -66,32 +68,36 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 *
 	 * The correct way to do so is to import an editor and plugins and run them together like this:
 	 *
-	 *		import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-	 *		import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-	 *		import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-	 *		import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 * ```ts
+	 * import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+	 * import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+	 * import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+	 * import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 	 *
-	 *		ClassicEditor
-	 *			.create( document.querySelector( '#editor' ), {
-	 *				plugins: [ Essentials, Paragraph, Bold, Italic ],
-	 *				toolbar: [ 'bold', 'italic' ]
-	 *			} )
-	 *			.then( editor => {
-	 *				console.log( 'Editor was initialized', editor );
-	 *			} )
-	 *			.catch( error => {
-	 *				console.error( error.stack );
-	 *			} );
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		plugins: [ Essentials, Paragraph, Bold, Italic ],
+	 * 		toolbar: [ 'bold', 'italic' ]
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( error => {
+	 * 		console.error( error.stack );
+	 * 	} );
+	 * ```
 	 *
 	 * However, you might have mistakenly imported a build instead of the source `ClassicEditor`. In this case
 	 * your imports will look like this:
 	 *
-	 *		import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-	 *		import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-	 *		import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-	 *		import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 * ```ts
+	 * import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+	 * import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+	 * import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+	 * import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 * ```
 	 *
 	 * This creates the same situation as in the previous section because you use a build together with source plugins.
 	 *
