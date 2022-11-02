@@ -256,9 +256,19 @@ export default class WidgetTypeAround extends Plugin {
 		editor.editing.downcastDispatcher.on<DowncastInsertEvent<Element>>( 'insert', ( evt, data, conversionApi ) => {
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
+			if ( !viewElement ) {
+				return;
+			}
+
 			// Filter out non-widgets and inline widgets.
 			if ( isTypeAroundWidget( viewElement, data.item, schema ) ) {
 				injectUIIntoWidget( conversionApi.writer, buttonTitles, viewElement! );
+
+				const widgetLabel = viewElement.getCustomProperty( 'widgetLabel' ) as Array<string | Function>;
+
+				widgetLabel.push( () => {
+					return this.isEnabled ? t( 'Press Enter to type after or press Shift + Enter to type before the widget' ) : '';
+				} );
 			}
 		}, { priority: 'low' } );
 	}

@@ -198,8 +198,7 @@ export function setHighlightHandling( element, writer, add = addHighlight, remov
  * {@link ~getLabel `getLabel()`}.
  *
  * @param {module:engine/view/element~Element} element
- * @param {String|Function} labelOrCreator
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {string|Function} labelOrCreator
  */
 export function setLabel( element, labelOrCreator ) {
 	element.getCustomProperty( 'widgetLabel' ).push( labelOrCreator );
