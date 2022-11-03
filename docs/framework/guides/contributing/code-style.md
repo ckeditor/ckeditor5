@@ -986,3 +986,5 @@ To create a code executed only in the debug mode, follow the description of the 
 // @if CK_DEBUG // const { exported: alias } = require( 'module-name' );
 // @if CK_DEBUG // require( 'module-name' );
 ```
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/12479)
