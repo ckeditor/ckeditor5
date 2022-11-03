@@ -947,11 +947,23 @@ import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 ### Importing modules in debug comments: `ckeditor5-rules/use-require-for-debug-mode-imports`
 
-In order to run code in debug mode only, create a comment that starts with `@if CK_DEBUG` text.
+The debug mode allows importing additional modules for testing purposes. Unfortunately, the debug comment is not removed, so webpack reports the following error.
 
-If any module is imported in debug mode using `import` keyword, an error is thrown to the console.
+```
+Module parse failed: 'import' and 'export' may only appear at the top level (15204:20)
+File was processed with these loaders:
+ * ./node_modules/@ckeditor/ckeditor5-dev-tests/lib/utils/ck-debug-loader.js
+You may need an additional loader to handle the result of these loaders.
+|  */
+|
+> /* @if CK_DEBUG */  import { CKEditorError } from 'ckeditor5/src/utils';
+|
+| /**
+```
 
-Modules need to be imported with a `require()` keyword in order to avoid such errors.
+Modules need to be imported with a `require()` function.
+
+To create a code executed only in the debug mode, follow the description of the `--debug` flag in the {@link framework/guides/contributing/testing-environment#running-manual-tests testing environment} guide.
 
 👎&nbsp; Examples of incorrect code for this rule:
 
