@@ -91,6 +91,16 @@
 			"requires": [
 				"ImageBlock"
 			],
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "toggleImageCaption",
+					"iconPath": "",
+					"toolbars": [
+						"image.toolbar"
+					]
+				}
+			],
 			"htmlOutput": [
 				{
 					"elements": "figcaption"
