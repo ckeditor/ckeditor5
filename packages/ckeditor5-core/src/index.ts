@@ -7,7 +7,7 @@
  * @module core
  */
 
-export { default as Plugin } from './plugin';
+export { default as Plugin, type PluginDependencies } from './plugin';
 export { default as Command } from './command';
 export { default as MultiCommand } from './multicommand';
 export { CommandsMap } from './commandcollection';
