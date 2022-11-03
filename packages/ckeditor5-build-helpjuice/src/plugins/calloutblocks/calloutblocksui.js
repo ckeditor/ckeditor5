@@ -12,8 +12,8 @@ export default class CalloutBlocksUI extends Plugin {
 			const items = []
 
 			items.push(editor.ui.componentFactory.create('info'))
-			items.push(editor.ui.componentFactory.create('success'))
 			items.push(editor.ui.componentFactory.create('warning'))
+			items.push(editor.ui.componentFactory.create('success'))
 			items.push(editor.ui.componentFactory.create('danger'))
 			addToolbarToDropdown(dropdownView, items)
 

@@ -1,6 +1,6 @@
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import CircleInfo from './icons/circle-info.svg';
+import CircleInfo from './icons/info.svg';
 
 export default class InfoUI extends Plugin {
 	init() {

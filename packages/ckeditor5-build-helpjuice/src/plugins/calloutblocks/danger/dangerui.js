@@ -1,6 +1,6 @@
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import CircleDanger from './icons/circle-xmark.svg';
+import CircleDanger from './icons/exclamation-circle-regular.svg';
 
 export default class DangerUI extends Plugin {
 	init() {

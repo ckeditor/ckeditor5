@@ -1,6 +1,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import EllipsisIcon from './icons/ellipsis-icon.svg';
+import EllipsisIcon from './icons/layer-plus.svg';
 
 export default class ExtraFormattingUI extends Plugin {
 	init() {

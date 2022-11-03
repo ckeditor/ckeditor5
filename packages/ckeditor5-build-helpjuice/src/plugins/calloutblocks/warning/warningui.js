@@ -1,6 +1,6 @@
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import CircleWarning from './icons/circle-exclamation.svg';
+import CircleWarning from './icons/exclamation-triangle-regular.svg';
 
 export default class WarningUI extends Plugin {
 	init() {
