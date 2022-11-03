@@ -101,6 +101,24 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 			sinon.assert.callCount( deleteSpy, 2 );
 		} );
 
+		it( 'should not fire additional `delete` event on `keyup` if delete event was stopped', () => {
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'backspace' )
+			} ) );
+
+			viewDocument.on( 'delete', evt => evt.stop() );
+
+			fireBeforeInputDomEvent( domRoot, {
+				inputType: 'deleteContentBackward'
+			} );
+
+			viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'backspace' )
+			} ) );
+
+			sinon.assert.callCount( deleteSpy, 1, { unit: 'codePoint', directin: 'backward' } );
+		} );
+
 		it( 'should ignore `beforeinput` inserting single delete (x7f) character', () => {
 			const insertTextSpy = testUtils.sinon.spy();
 			viewDocument.on( 'insertText', insertTextSpy );
