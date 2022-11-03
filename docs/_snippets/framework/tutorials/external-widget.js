@@ -75,8 +75,6 @@ class ExternalWidgetEditing extends Plugin {
 
 		this._updateWidgetDataFn = this._updateWidgetData;
 
-		this._fetchDataFn = this._fetchData;
-
 		this.intervalId = this._intervalFetch();
 	}
 
@@ -110,28 +108,28 @@ class ExternalWidgetEditing extends Plugin {
 		return setInterval( this._updateWidgetDataFn.bind( this ), 20000 ); // set time interval to 20s
 	}
 
-	async _fetchData( externalUrl = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT' ) {
-		const response = await fetch( externalUrl );
-		const data = await response.json();
-		const updateTime = new Date( data.closeTime );
-
-		return '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
-	}
-
-	async _updateWidgetData() {
-		if ( document.querySelectorAll( '.js-external-data-embed' ).length === 0 ) {
+	async _updateWidgetData(
+		insertFetch = false,
+		externalUrl = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'
+	) {
+		if ( document.querySelectorAll( '.js-external-data-embed' ).length === 0 && !insertFetch ) {
 			return;
 		}
 
-		const data = await this._fetchDataFn();
+		const response = await fetch( externalUrl );
+		const data = await response.json();
 		const allItems = document.querySelectorAll( '.js-external-data-embed' );
+		const updateTime = new Date( data.closeTime );
+		const parsedData = '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
 
 		allItems.forEach( item => {
 			item.classList.add( 'external-widget-bounce' );
-			item.textContent = data;
+			item.textContent = parsedData;
 
 			setTimeout( () => item.classList.remove( 'external-widget-bounce' ), 2000 );
 		} );
+
+		return parsedData;
 	}
 
 	_defineSchema() {
@@ -171,14 +169,14 @@ class ExternalWidgetEditing extends Plugin {
 			model: 'externalElement',
 			view: ( modelElement, { writer: viewWriter } ) => {
 				const externalUrl = modelElement.getAttribute( 'data-resource-url' );
-				const fetchData = this._fetchDataFn;
+				const fetchAndUpdateData = this._updateWidgetDataFn;
 
 				const viewContentWrapper = viewWriter.createRawElement( 'span', {
 					class: 'js-external-data-embed'
 				}, async function( domElement ) {
 					domElement.textContent = 'Fetching data...';
 
-					const data = await fetchData( externalUrl );
+					const data = await fetchAndUpdateData( true, externalUrl );
 
 					domElement.textContent = data;
 				} );
@@ -197,7 +195,7 @@ class ExternalWidgetEditing extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#snippet-external-widget' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalWidget ],
-		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'external' ]
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'external', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
