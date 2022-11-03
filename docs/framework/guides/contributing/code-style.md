@@ -956,7 +956,7 @@ Modules need to be imported with a `require()` keyword in order to avoid such er
 👎&nbsp; Examples of incorrect code for this rule:
 
 ```js
-// @if CK_DEBUG // import defaultExport from \'module-name\'
+// @if CK_DEBUG // import defaultExport from \'module-name\';
 // @if CK_DEBUG // import * as name from \'module-name\';
 // @if CK_DEBUG // import { testFunction } from \'module-name\';
 // @if CK_DEBUG // import { default as alias } from \'module-name\';
