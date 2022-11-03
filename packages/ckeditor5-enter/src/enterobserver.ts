@@ -75,7 +75,7 @@ export default class EnterObserver extends Observer {
  *
  * @event module:engine/view/document~Document#event:enter
  * @param {module:engine/view/observer/domeventdata~DomEventData} data
- * @param {Boolean} data.isSoft Whether it's a soft enter (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or hard enter (<kbd>Enter</kbd>).
+ * @param {Boolean} data.isSoft Whether it is a soft enter (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or a hard enter (<kbd>Enter</kbd>).
  */
 
 export type ViewDocumentEnterEvent = BubblingEvent<{

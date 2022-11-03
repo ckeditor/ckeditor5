@@ -16,7 +16,7 @@ import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import type Operation from '@ckeditor/ckeditor5-engine/src/model/operation/operation';
 
 /**
- * Base class for undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
+ * Base class for the undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
  *
  * @protected
  * @extends module:core/command~Command
