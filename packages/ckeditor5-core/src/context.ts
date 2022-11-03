@@ -21,7 +21,7 @@ import type { EditorConfig } from './editor/editorconfig';
  * or plugins that work outside the editor. Use it instead of {@link module:core/editor/editor~Editor.create `Editor.create()`}
  * in advanced application integrations.
  *
- * All configuration options passed to a context will be used as default options for editor instances initialized in that context.
+ * All configuration options passed to a context will be used as default options for the editor instances initialized in that context.
  *
  * {@link module:core/contextplugin~ContextPlugin Context plugins} passed to a context instance will be shared among all
  * editor instances initialized in this context. These will be the same plugin instances for all the editors.
@@ -39,7 +39,7 @@ import type { EditorConfig } from './editor/editorconfig';
  * enable and configure them using the context.
  *
  * If you are using only a single editor on each page, use {@link module:core/editor/editor~Editor.create `Editor.create()`} instead.
- * In such case, a context instance will be created by the editor instance in a transparent way.
+ * In such a case, a context instance will be created by the editor instance in a transparent way.
  *
  * See {@link module:core/context~Context.create `Context.create()`} for usage examples.
  */

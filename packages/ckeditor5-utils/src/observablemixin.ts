@@ -27,7 +27,7 @@ const decoratedOriginal = Symbol( 'decoratedOriginal' );
  * Read more about the concept of observables in the:
  * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
  * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
- * * {@glink framework/guides/deep-dive/observables Observables deep dive} guide.
+ * * {@glink framework/guides/deep-dive/observables Observables deep-dive guide}.
  *
  * @mixin ObservableMixin
  * @mixes module:utils/emittermixin~EmitterMixin
@@ -743,7 +743,7 @@ function attachBindToListeners( observable: ObservableInternal, toBindings: Bind
  * Read more about the usage of this interface in the:
  * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
  * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
- * * {@glink framework/guides/deep-dive/observables Observables deep dive} guide.
+ * * {@glink framework/guides/deep-dive/observables Observables deep-dive guide}.
  *
  * @interface Observable
  * @extends module:utils/emittermixin~Emitter
