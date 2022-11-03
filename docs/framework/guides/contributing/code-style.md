@@ -956,21 +956,21 @@ Modules need to be imported with a `require()` keyword in order to avoid such er
 👎&nbsp; Examples of incorrect code for this rule:
 
 ```js
-// @if CK_DEBUG // import defaultExport from \'module-name\';
-// @if CK_DEBUG // import * as name from \'module-name\';
-// @if CK_DEBUG // import { testFunction } from \'module-name\';
-// @if CK_DEBUG // import { default as alias } from \'module-name\';
-// @if CK_DEBUG // import { exported as alias } from \'module-name\';
-// @if CK_DEBUG // import \'module-name\';
+// @if CK_DEBUG // import defaultExport from 'module-name';
+// @if CK_DEBUG // import * as name from 'module-name';
+// @if CK_DEBUG // import { testFunction } from 'module-name';
+// @if CK_DEBUG // import { default as alias } from 'module-name';
+// @if CK_DEBUG // import { exported as alias } from 'module-name';
+// @if CK_DEBUG // import 'module-name';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
 
 ```js
-// @if CK_DEBUG // const defaultExport = require( \'module-name\' ).default;
-// @if CK_DEBUG // const name = require( \'module-name\' );
-// @if CK_DEBUG // const { testFunction } = require( \'module-name\' );
-// @if CK_DEBUG // const alias = require( \'module-name\' ).default;
-// @if CK_DEBUG // const { exported: alias } = require( \'module-name\' );
-// @if CK_DEBUG // require( \'module-name\' );
+// @if CK_DEBUG // const defaultExport = require( 'module-name' ).default;
+// @if CK_DEBUG // const name = require( 'module-name' );
+// @if CK_DEBUG // const { testFunction } = require( 'module-name' );
+// @if CK_DEBUG // const alias = require( 'module-name' ).default;
+// @if CK_DEBUG // const { exported: alias } = require( 'module-name' );
+// @if CK_DEBUG // require( 'module-name' );
 ```
