@@ -9,9 +9,8 @@
 
 import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
-import type { DowncastWriter } from '@ckeditor/ckeditor5-engine';
-import type { HighlightDescriptor } from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
-import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
+import type { DowncastWriter, HighlightDescriptor } from '@ckeditor/ckeditor5-engine';
+import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Class used to handle correct order of highlights on elements.

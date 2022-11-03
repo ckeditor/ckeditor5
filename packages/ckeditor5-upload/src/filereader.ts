@@ -9,7 +9,7 @@
 
 /* globals window */
 
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { Observable } from '@ckeditor/ckeditor5-utils';
 
 type DomFileReader = globalThis.FileReader;
 

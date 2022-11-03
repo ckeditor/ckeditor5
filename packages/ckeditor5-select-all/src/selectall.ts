@@ -7,7 +7,7 @@
  * @module select-all/selectall
  */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
 import SelectAllEditing from './selectallediting';
 import SelectAllUI from './selectallui';
 

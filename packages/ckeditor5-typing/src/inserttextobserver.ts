@@ -7,17 +7,18 @@
  * @module typing/inserttextobserver
  */
 
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { env, EventInfo } from '@ckeditor/ckeditor5-utils';
 
-import type { View } from '@ckeditor/ckeditor5-engine';
-import type { ViewDocumentInputEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
-import type { ViewDocumentCompositionEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/compositionobserver';
-import type Selection from '@ckeditor/ckeditor5-engine/src/view/selection';
-import type Range from '@ckeditor/ckeditor5-engine/src/view/range';
-import type DocumentSelection from '@ckeditor/ckeditor5-engine/src/view/documentselection';
+import {
+	DomEventData,
+	Observer,
+	type View,
+	type ViewDocumentCompositionEvent,
+	type ViewDocumentInputEvent,
+	type ViewDocumentSelection,
+	type ViewRange,
+	type ViewSelection
+} from '@ckeditor/ckeditor5-engine';
 
 const TYPING_INPUT_TYPES = [
 	// For collapsed range:
@@ -152,6 +153,6 @@ export type ViewDocumentInsertTextEvent = {
 
 export interface InsertTextEventData extends DomEventData {
 	text: string;
-	selection: Selection | DocumentSelection;
-	resultRange?: Range;
+	selection: ViewSelection | ViewDocumentSelection;
+	resultRange?: ViewRange;
 }

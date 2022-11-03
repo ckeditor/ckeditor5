@@ -11,13 +11,32 @@ export { default as env } from './env';
 export { default as diff } from './diff';
 
 export { default as mix } from './mix';
-export { default as EmitterMixin } from './emittermixin';
-export { default as ObservableMixin } from './observablemixin';
+
+export {
+	default as EmitterMixin,
+	Emitter,
+	type BaseEvent,
+	type CallbackOptions,
+	type GetCallback,
+	type GetCallbackOptions
+} from './emittermixin';
+
+export { default as EventInfo } from './eventinfo';
+
+export {
+	default as ObservableMixin,
+	Observable,
+	type DecoratedMethodEvent,
+	type ObservableChangeEvent,
+	type ObservableSetEvent
+} from './observablemixin';
 
 export { default as CKEditorError, logError, logWarning } from './ckeditorerror';
 
 export { default as ElementReplacer } from './elementreplacer';
 
+export { default as count } from './count';
+export { default as compareArrays } from './comparearrays';
 export { default as createElement } from './dom/createelement';
 export { default as DomEmitterMixin } from './dom/emittermixin';
 export { default as global } from './dom/global';
@@ -32,11 +51,16 @@ export * from './dom/scroll';
 export * from './keyboard';
 export * from './language';
 export { default as Locale, LocaleTranslate } from './locale';
-export { default as Collection } from './collection';
+export {
+	default as Collection,
+	type CollectionAddEvent,
+	type CollectionChangeEvent,
+	type CollectionRemoveEvent
+} from './collection';
 export { default as first } from './first';
 export { default as FocusTracker } from './focustracker';
 export { default as KeystrokeHandler } from './keystrokehandler';
-export { default as toArray } from './toarray';
+export { default as toArray, type ArrayOrItem, type ReadonlyArrayOrItem } from './toarray';
 export { default as toMap } from './tomap';
 export { default as priorities } from './priorities';
 export { default as insertToPriorityArray } from './inserttopriorityarray';

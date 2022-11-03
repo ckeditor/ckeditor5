@@ -7,12 +7,21 @@
  * @module upload/filerepository
  */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
+import {
+	Plugin,
+	PendingActions,
+	type PendingAction,
+	type PluginDependencies
+} from '@ckeditor/ckeditor5-core';
 
-import PendingActions, { type PendingAction } from '@ckeditor/ckeditor5-core/src/pendingactions';
-import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { Observable, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Collection, { type CollectionChangeEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+import {
+	CKEditorError,
+	logWarning,
+	Observable,
+	type ObservableChangeEvent,
+	Collection,
+	type CollectionChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 
 import FileReader from './filereader';
 

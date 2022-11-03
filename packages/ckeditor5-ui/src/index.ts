@@ -14,6 +14,7 @@ export { default as addKeyboardHandlingForGrid } from './bindings/addkeyboardhan
 
 export { default as BodyCollection } from './editorui/bodycollection';
 
+export { type ButtonExecuteEvent } from './button/button';
 export { default as ButtonView } from './button/buttonview';
 export { default as SwitchButtonView } from './button/switchbuttonview';
 

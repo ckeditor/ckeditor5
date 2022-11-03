@@ -7,9 +7,7 @@
  * @module widget/widgetresize/resizerstate
  */
 
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { Observable, Rect } from '@ckeditor/ckeditor5-utils';
 
 import type { ResizerOptions } from '../widgetresize';
 

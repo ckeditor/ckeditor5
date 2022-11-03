@@ -7,9 +7,10 @@
  * @module paragraph/paragraphbuttonui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import icon from '@ckeditor/ckeditor5-core/theme/icons/paragraph.svg';
+import { Plugin, icons } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+
+const icon = icons.paragraph;
 
 /**
  * This plugin defines the `'paragraph'` button. It can be used together with

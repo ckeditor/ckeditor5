@@ -9,7 +9,7 @@
 
 /* globals window */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
 import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository';
 
 type DomFileReader = globalThis.FileReader;

@@ -7,7 +7,7 @@
  * @module core
  */
 
-export { default as Plugin } from './plugin';
+export { default as Plugin, type PluginDependencies } from './plugin';
 export { default as Command } from './command';
 export { default as MultiCommand } from './multicommand';
 export { CommandsMap } from './commandcollection';
@@ -25,7 +25,7 @@ export { default as DataApiMixin } from './editor/utils/dataapimixin';
 export { default as ElementApiMixin } from './editor/utils/elementapimixin';
 export { default as secureSourceElement } from './editor/utils/securesourceelement';
 
-export { default as PendingActions } from './pendingactions';
+export { default as PendingActions, type PendingAction } from './pendingactions';
 
 import cancel from './../theme/icons/cancel.svg';
 import caption from './../theme/icons/caption.svg';
