@@ -177,6 +177,19 @@ describe( 'Input', () => {
 
 				sinon.assert.notCalled( spy );
 			} );
+
+			it( 'should not call model.deleteContent() on composition start if insertText command is disabled', () => {
+				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const root = editor.model.document.getRoot();
+
+				editor.commands.get( 'insertText' ).forceDisabled( 'commentsOnly' );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
+
+				viewDocument.fire( 'compositionstart' );
+
+				sinon.assert.notCalled( spy );
+			} );
 		} );
 	} );
 
@@ -379,6 +392,24 @@ describe( 'Input', () => {
 
 			editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
 
+			viewDocument.fire( 'keydown', {
+				keyCode: 229,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should not call model.deleteContent() on 229 keydown if insertText command is disabled', () => {
+			const spy = sinon.spy( editor.model, 'deleteContent' );
+			const root = editor.model.document.getRoot();
+
+			editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
+
+			editor.commands.get( 'insertText' ).forceDisabled( 'commentsOnly' );
+
+			viewDocument.isComposing = true;
 			viewDocument.fire( 'keydown', {
 				keyCode: 229,
 				preventDefault: sinon.spy(),
