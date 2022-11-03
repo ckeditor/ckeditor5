@@ -110,8 +110,8 @@ class ExternalWidgetEditing extends Plugin {
 		return setInterval( this._updateWidgetDataFn.bind( this ), 20000 ); // set time interval to 20s
 	}
 
-	async _fetchData() {
-		const response = await fetch( 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT' );
+	async _fetchData( externalUrl = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT' ) {
+		const response = await fetch( externalUrl );
 		const data = await response.json();
 		const updateTime = new Date( data.closeTime );
 
@@ -170,6 +170,7 @@ class ExternalWidgetEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'externalElement',
 			view: ( modelElement, { writer: viewWriter } ) => {
+				const externalUrl = modelElement.getAttribute( 'data-resource-url' );
 				const fetchData = this._fetchDataFn;
 
 				const viewContentWrapper = viewWriter.createRawElement( 'span', {
@@ -177,7 +178,7 @@ class ExternalWidgetEditing extends Plugin {
 				}, async function( domElement ) {
 					domElement.textContent = 'Fetching data...';
 
-					const data = await fetchData();
+					const data = await fetchData( externalUrl );
 
 					domElement.textContent = data;
 				} );
