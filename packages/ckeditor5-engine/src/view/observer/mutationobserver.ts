@@ -53,7 +53,6 @@ export default class MutationObserver extends Observer {
 		this._config = {
 			childList: true,
 			characterData: true,
-			attributes: true,
 			subtree: true
 		};
 
@@ -152,9 +151,8 @@ export default class MutationObserver extends Observer {
 		// Use map and set for deduplication.
 		const mutatedTextNodes = new Set<ViewText>();
 		const elementsWithMutatedChildren = new Set<ViewElement>();
-		const elementsWithMutatedAttributes = new Set<ViewElement>();
 
-		// Handle `childList` and `attributes` mutations first, so we will be able to check if the `characterData` mutation is in the
+		// Handle `childList` mutations first, so we will be able to check if the `characterData` mutation is in the
 		// element with changed structure anyway.
 		for ( const mutation of domMutations ) {
 			const element = domConverter.mapDomToView( mutation.target as HTMLElement );
@@ -170,8 +168,6 @@ export default class MutationObserver extends Observer {
 
 			if ( mutation.type === 'childList' && !this._isBogusBrMutation( mutation ) ) {
 				elementsWithMutatedChildren.add( element as ViewElement );
-			} else if ( mutation.type === 'attributes' && !element.is( 'rootElement' ) ) {
-				elementsWithMutatedAttributes.add( element as ViewElement );
 			}
 		}
 
@@ -209,11 +205,6 @@ export default class MutationObserver extends Observer {
 		for ( const textNode of mutatedTextNodes ) {
 			hasMutations = true;
 			this.renderer.markToSync( 'text', textNode );
-		}
-
-		for ( const viewElement of elementsWithMutatedAttributes ) {
-			hasMutations = true;
-			this.renderer.markToSync( 'attributes', viewElement );
 		}
 
 		for ( const viewElement of elementsWithMutatedChildren ) {

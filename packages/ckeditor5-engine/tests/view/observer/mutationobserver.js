@@ -113,16 +113,17 @@ describe( 'MutationObserver', () => {
 		sinon.assert.calledOnceWithExactly( spyRenderedMarkToSync, 'text', viewRoot.getChild( 0 ).getChild( 0 ) );
 	} );
 
-	it( 'should handle added attribute mutation', () => {
+	// https://github.com/ckeditor/ckeditor5/issues/12759.
+	it( 'should not handle added attribute mutation', () => {
 		domRoot.childNodes[ 0 ].setAttribute( 'foo', 'bar' );
 
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'attributes', viewRoot.getChild( 0 ) );
+		sinon.assert.notCalled( spyRenderedMarkToSync );
 	} );
 
-	it( 'should handle removed attribute mutation', () => {
+	// https://github.com/ckeditor/ckeditor5/issues/12759.
+	it( 'should not handle removed attribute mutation', () => {
 		view.change( writer => {
 			writer.setAttribute( 'foo', 'bar', viewRoot.getChild( 0 ) );
 		} );
@@ -131,11 +132,11 @@ describe( 'MutationObserver', () => {
 		domRoot.childNodes[ 0 ].removeAttribute( 'foo' );
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'attributes', viewRoot.getChild( 0 ) );
+		sinon.assert.notCalled( spyRenderedMarkToSync );
 	} );
 
-	it( 'should handle attribute value mutation', () => {
+	// https://github.com/ckeditor/ckeditor5/issues/12759.
+	it( 'should not handle attribute value mutation', () => {
 		view.change( writer => {
 			writer.setAttribute( 'foo', 'bar', viewRoot.getChild( 0 ) );
 		} );
@@ -144,8 +145,7 @@ describe( 'MutationObserver', () => {
 		domRoot.childNodes[ 0 ].setAttribute( 'foo', 'abc' );
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'attributes', viewRoot.getChild( 0 ) );
+		sinon.assert.notCalled( spyRenderedMarkToSync );
 	} );
 
 	it( 'should be able to observe multiple roots', () => {
