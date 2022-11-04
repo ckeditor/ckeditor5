@@ -1030,7 +1030,13 @@ describe( 'DataController', () => {
 		it( 'should allow nesting upcast conversion', () => {
 			const dataProcessor = data.processor;
 
+			model.schema.register( 'softBreak', {
+				allowWhere: '$text',
+				isInline: true
+			} );
+
 			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } );
+			upcastHelpers.elementToElement( { model: 'softBreak', view: 'br' } );
 
 			data.upcastDispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
 				const viewItem = data.viewItem;
@@ -1074,10 +1080,10 @@ describe( 'DataController', () => {
 				conversionApi.updateConversionResult( container, data );
 			} );
 
-			data.set( '<div data-caption="foo<strong>baz</strong>">&nbsp;</div>' );
+			data.set( '<div data-caption="foo<br><strong>baz</strong>">&nbsp;</div>' );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal(
-				'<container><caption>foo<$text bold="true">baz</$text></caption></container>'
+				'<container><caption>foo<softBreak></softBreak><$text bold="true">baz</$text></caption></container>'
 			);
 		} );
 
