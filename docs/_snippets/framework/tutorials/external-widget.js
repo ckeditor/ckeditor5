@@ -85,7 +85,7 @@ class ExternalWidgetEditing extends Plugin {
 
 		this.intervalId = this._intervalFetch();
 
-		this.externalDataValue = 'Fetching data...';
+		this.externalDataValue = '';
 	}
 
 	static get requires() {
@@ -119,7 +119,7 @@ class ExternalWidgetEditing extends Plugin {
 		const rootElement = this.editor.model.document.getRoot();
 
 		for ( const { item } of this.editor.model.createRangeIn( rootElement ) ) {
-			if ( item.name === 'externalElement' ) {
+			if ( item.is( 'element', 'externalElement' ) ) {
 				this.editor.editing.reconvertItem( item );
 			}
 		}
@@ -166,9 +166,9 @@ class ExternalWidgetEditing extends Plugin {
 				const externalValueToShow = this.externalDataValue;
 
 				const externalDataPreviewElement = viewWriter.createRawElement( 'span', null, function( domElement ) {
-					domElement.textContent = externalValueToShow;
+					domElement.textContent = externalValueToShow || 'Fetching data...';
 
-					if ( externalValueToShow !== 'Fetching data...' ) {
+					if ( externalValueToShow ) {
 						domElement.classList.add( 'external-widget-bounce' );
 						setTimeout( () => domElement.classList.remove( 'external-widget-bounce' ), 1100 );
 					}
