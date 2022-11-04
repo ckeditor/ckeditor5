@@ -21,21 +21,31 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 class ExternalWidgetCommand extends Command {
 	execute() {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
 		const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
 
 		editor.model.change( writer => {
 			const externalWidget = writer.createElement(
-				'externalElement',
-				{
+				'externalElement', {
+					...Object.fromEntries( selection.getAttributes() ),
 					'data-resource-url': RESOURCE_URL
 				}
 			);
 
-			editor.model.insertContent( externalWidget );
-
-			writer.setSelection( externalWidget, 'on' );
+			editor.model.insertObject( externalWidget, null, null, {
+				setSelection: 'on'
+			} );
 		} );
+	}
+
+	refresh() {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+
+		const isAllowed = model.schema.checkChild( selection.focus.parent, 'externalElement' );
+
+		this.isEnabled = isAllowed;
 	}
 }
 
@@ -73,9 +83,9 @@ class ExternalWidgetEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		this._updateWidgetDataFn = this._updateWidgetData;
-
 		this.intervalId = this._intervalFetch();
+
+		this.externalDataValue = 'Fetching data...';
 	}
 
 	static get requires() {
@@ -87,55 +97,40 @@ class ExternalWidgetEditing extends Plugin {
 	}
 
 	init() {
-		const schema = this.editor.model.schema;
-
-		schema.register( 'externalElement', {
-			allowWhere: '$text',
-			isObject: true,
-			isInline: true,
-			allowChildren: '$text',
-			allowAttributesOf: '$text',
-			allowAttributes: [ 'data-resource-url' ]
-		} );
-
 		this._defineSchema();
 		this._defineConverters();
+		this._updateWidgetData();
 
 		this.editor.commands.add( 'external', new ExternalWidgetCommand( this.editor ) );
 	}
 
 	_intervalFetch() {
-		return setInterval( this._updateWidgetDataFn.bind( this ), 20000 ); // set time interval to 20s
+		return setInterval( () => this._updateWidgetData(), 20000 ); // set time interval to 20s
 	}
 
-	async _updateWidgetData(
-		insertFetch = false,
-		externalUrl = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'
-	) {
-		if ( document.querySelectorAll( '.js-external-data-embed' ).length === 0 && !insertFetch ) {
-			return;
-		}
-
+	async _updateWidgetData( externalUrl = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT' ) {
 		const response = await fetch( externalUrl );
 		const data = await response.json();
-		const allItems = document.querySelectorAll( '.js-external-data-embed' );
 		const updateTime = new Date( data.closeTime );
 		const parsedData = '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
 
-		allItems.forEach( item => {
-			item.classList.add( 'external-widget-bounce' );
-			item.textContent = parsedData;
+		this.externalDataValue = parsedData;
 
-			setTimeout( () => item.classList.remove( 'external-widget-bounce' ), 2000 );
-		} );
+		const rootElement = this.editor.model.document.getRoot();
 
-		return parsedData;
+		for ( const { item } of this.editor.model.createRangeIn( rootElement ) ) {
+			if ( item.name === 'externalElement' ) {
+				this.editor.editing.reconvertItem( item );
+			}
+		}
 	}
 
 	_defineSchema() {
-		this.editor.data.registerRawContentMatcher( {
-			name: 'span',
-			classes: 'externalData'
+		const schema = this.editor.model.schema;
+
+		schema.register( 'externalElement', {
+			inheritAllFrom: '$inlineObject',
+			allowAttributes: [ 'data-resource-url' ]
 		} );
 	}
 
@@ -159,7 +154,7 @@ class ExternalWidgetEditing extends Plugin {
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'externalElement',
 			view: ( modelElement, { writer } ) => {
-				return writer.createRawElement( 'span', {
+				return writer.createEmptyElement( 'span', {
 					'data-resource-url': modelElement.getAttribute( 'data-resource-url' )
 				} );
 			}
@@ -168,24 +163,21 @@ class ExternalWidgetEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'externalElement',
 			view: ( modelElement, { writer: viewWriter } ) => {
-				const externalUrl = modelElement.getAttribute( 'data-resource-url' );
-				const fetchAndUpdateData = this._updateWidgetDataFn;
+				const externalValueToShow = this.externalDataValue;
 
-				const viewContentWrapper = viewWriter.createRawElement( 'span', {
-					class: 'js-external-data-embed'
-				}, async function( domElement ) {
-					domElement.textContent = 'Fetching data...';
+				const externalDataPreviewElement = viewWriter.createRawElement( 'span', null, function( domElement ) {
+					domElement.textContent = externalValueToShow;
 
-					const data = await fetchAndUpdateData( true, externalUrl );
-
-					domElement.textContent = data;
+					if ( externalValueToShow !== 'Fetching data...' ) {
+						domElement.classList.add( 'external-widget-bounce' );
+						setTimeout( () => domElement.classList.remove( 'external-widget-bounce' ), 1100 );
+					}
 				} );
 
-				const viewContainerWrapper = viewWriter.createContainerElement( 'span', null, viewContentWrapper );
+				const externalWidgetContainer = viewWriter.createContainerElement( 'span', null, externalDataPreviewElement );
 
-				return toWidget( viewContainerWrapper, viewWriter, {
-					widgetLabel: 'External widget',
-					hasSelectionHandle: true
+				return toWidget( externalWidgetContainer, viewWriter, {
+					widgetLabel: 'External widget'
 				} );
 			}
 		} );
