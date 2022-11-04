@@ -157,6 +157,10 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				}
 			}
 
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
+
 			return;
 		}
 
