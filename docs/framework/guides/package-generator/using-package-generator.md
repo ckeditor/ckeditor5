@@ -27,11 +27,11 @@ As a result of executing the command, a new directory with a package in it will 
 
 Available modifiers for the command are:
 
-* `--use-npm` &ndash; whether to use `npm` to install dependencies in a newly created package.
-* `--use-yarn` &ndash; whether to use `yarn` to install dependencies in a newly created package.
-* `--name` &ndash; allows defining a class name to be different from the package name.
-* `--lang` &ndash; (values: `js` | `ts`) whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
-* `--verbose` &ndash; (alias: `-v`) whether to prints additional logs about the current executed task.
+* `--use-npm` &ndash; use `npm` to install dependencies in a newly created package.
+* `--use-yarn` &ndash; use `yarn` to install dependencies in a newly created package.
+* `--name` &ndash; define a class name to be different from the package name.
+* `--lang` &ndash; (values: `js` | `ts`) choose whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
+* `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
 
 ## Using the package
 
