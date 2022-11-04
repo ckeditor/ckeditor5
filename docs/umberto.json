@@ -69,6 +69,7 @@
 		"builds/guides/development/installing-plugins.html": "installation/getting-started/installing-plugins.html",
 		"builds/guides/integration/frameworks/vuejs.html": "installation/frameworks/vuejs-v3.html",
 		"builds/guides/integration/advanced-setup.html": "installation/advanced/alternative-setups/integrating-from-source.html",
+		"https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/advanced-setup.html": "installation/advanced/alternative-setups/integrating-from-source.html",
 		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
 		"builds/guides/reporting-issues.html": "support/reporting-issues.html",
 		"builds/guides/whats-new.html": "features/overview.html",

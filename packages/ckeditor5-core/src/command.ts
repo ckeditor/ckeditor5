@@ -17,16 +17,16 @@ import {
 import type Editor from './editor/editor';
 
 /**
- * The base class for CKEditor commands.
+ * Base class for the CKEditor commands.
  *
- * Commands are the main way to manipulate editor contents and state. They are mostly used by UI elements (or by other
- * commands) to make changes in the model. Commands are available in every part of code that has access to
+ * Commands are the main way to manipulate the editor contents and state. They are mostly used by UI elements (or by other
+ * commands) to make changes in the model. Commands are available in every part of the code that has access to
  * the {@link module:core/editor/editor~Editor editor} instance.
  *
  * Instances of registered commands can be retrieved from {@link module:core/editor/editor~Editor#commands `editor.commands`}.
  * The easiest way to execute a command is through {@link module:core/editor/editor~Editor#execute `editor.execute()`}.
  *
- * By default, commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode
+ * By default, commands are disabled when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode
  * but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will not be disabled.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
@@ -43,7 +43,7 @@ export default class Command extends Observable {
 	/**
 	 * Creates a new `Command` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
 	 */
 	constructor( editor: Editor ) {
 		super();
@@ -57,14 +57,14 @@ export default class Command extends Observable {
 		this.editor = editor;
 
 		/**
-		 * The value of the command. A concrete command class should define what it represents for it.
+		 * The value of the command. A given command class should define what it represents for it.
 		 *
 		 * For example, the `'bold'` command's value indicates whether the selection starts in a bolded text.
-		 * And the value of the `'link'` command may be an object with links details.
+		 * And the value of the `'link'` command may be an object with link details.
 		 *
 		 * It is possible for a command to have no value (e.g. for stateless actions such as `'uploadImage'`).
 		 *
-		 * A concrete command class should control this value by overriding the {@link #refresh `refresh()`} method.
+		 * A given command class should control this value by overriding the {@link #refresh `refresh()`} method.
 		 *
 		 * @observable
 		 * @readonly
@@ -76,9 +76,9 @@ export default class Command extends Observable {
 		 * Flag indicating whether a command is enabled or disabled.
 		 * A disabled command will do nothing when executed.
 		 *
-		 * A concrete command class should control this value by overriding the {@link #refresh `refresh()`} method.
+		 * A given command class should control this value by overriding the {@link #refresh `refresh()`} method.
 		 *
-		 * It is possible to disable a command from "outside". For instance, in your integration you may want to disable
+		 * It is possible to disable a command "from outside". For instance, in your integration you may want to disable
 		 * a certain set of commands for the time being. To do that, you can use the fact that `isEnabled` is observable
 		 * and it fires the `set:isEnabled` event every time anyone tries to modify its value:
 		 *
@@ -182,7 +182,7 @@ export default class Command extends Observable {
 	 * Disables the command.
 	 *
 	 * Command may be disabled by multiple features or algorithms (at once). When disabling a command, unique id should be passed
-	 * (e.g. feature name). The same identifier should be used when {@link #clearForceDisabled enabling back} the command.
+	 * (e.g. the feature name). The same identifier should be used when {@link #clearForceDisabled enabling back} the command.
 	 * The command becomes enabled only after all features {@link #clearForceDisabled enabled it back}.
 	 *
 	 * Disabling and enabling a command:
