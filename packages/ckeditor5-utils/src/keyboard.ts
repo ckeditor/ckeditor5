@@ -186,12 +186,14 @@ export function getLocalizedArrowKeyCodeDirection(
 	}
 }
 
-// Converts a key name to the key code with mapping based on the env.
-//
-// See: {@link module:utils/keyboard~getCode}.
-//
-// @param key The key name (see {@link module:utils/keyboard~keyCodes}).
-// @returns Key code.
+/**
+ * Converts a key name to the key code with mapping based on the env.
+ *
+ * See: {@link module:utils/keyboard~getCode}.
+ *
+ * @param key The key name (see {@link module:utils/keyboard~keyCodes}).
+ * @returns Key code.
+ */
 function getEnvKeyCode( key: string ): number {
 	// Don't remap modifier key for forced modifiers.
 	if ( key.endsWith( '!' ) ) {

@@ -341,19 +341,18 @@ class ProxyEmitter extends BaseEmitter {
 	}
 }
 
-// Gets an unique DOM Node identifier. The identifier will be set if not defined.
-//
-// @returns UID for given DOM Node.
+/**
+ * Gets an unique DOM Node identifier. The identifier will be set if not defined.
+ *
+ * @returns UID for given DOM Node.
+ */
 function getNodeUID( node: any ): string {
 	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = uid() );
 }
 
-// Gets id of the ProxyEmitter for the given node.
-//
-// Combines DOM Node identifier and additional options.
-//
-// @param options Additional options.
-// @returns ProxyEmitter id.
+/**
+ * Gets id of the ProxyEmitter for the given node.
+ */
 function getProxyEmitterId( node: Node | Window, options: { [ option: string ]: any } ): string {
 	let id = getNodeUID( node );
 

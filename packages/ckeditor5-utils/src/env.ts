@@ -24,57 +24,85 @@ export function getUserAgent( ): string {
 
 const userAgent = getUserAgent();
 
+// This interface exists to make our API pages more readable.
 /**
  * A namespace containing environment and browser information.
  */
-const env = {
+export interface EnvType {
+
 	/**
 	 * Indicates that the application is running on Macintosh.
 	 */
-	isMac: isMac( userAgent ),
+	readonly isMac: boolean;
 
 	/**
 	 * Indicates that the application is running on Windows.
 	 */
-	isWindows: isWindows( userAgent ),
+	readonly isWindows: boolean;
 
 	/**
 	 * Indicates that the application is running in Firefox (Gecko).
 	 */
-	isGecko: isGecko( userAgent ),
+	readonly isGecko: boolean;
 
 	/**
 	 * Indicates that the application is running in Safari.
 	 */
-	isSafari: isSafari( userAgent ),
+	readonly isSafari: boolean;
 
 	/**
 	 * Indicates the the application is running in iOS.
 	 */
-	isiOS: isiOS( userAgent ),
+	readonly isiOS: boolean;
 
 	/**
 	 * Indicates that the application is running on Android mobile device.
 	 */
-	isAndroid: isAndroid( userAgent ),
+	readonly isAndroid: boolean;
 
 	/**
 	 * Indicates that the application is running in a browser using the Blink engine.
 	 */
-	isBlink: isBlink( userAgent ),
+	readonly isBlink: boolean;
 
 	/**
 	 * Environment features information.
 	 */
+	readonly features: EnvFeaturesType;
+}
+
+export interface EnvFeaturesType {
+
+	/**
+	 * Indicates that the environment supports ES2018 Unicode property escapes — like `\p{P}` or `\p{L}`.
+	 * More information about unicode properties might be found
+	 * [in Unicode Standard Annex #44](https://www.unicode.org/reports/tr44/#GC_Values_Table).
+	 */
+	readonly isRegExpUnicodePropertySupported: boolean;
+}
+
+/**
+ * A namespace containing environment and browser information.
+ */
+const env: EnvType = {
+	isMac: isMac( userAgent ),
+
+	isWindows: isWindows( userAgent ),
+
+	isGecko: isGecko( userAgent ),
+
+	isSafari: isSafari( userAgent ),
+
+	isiOS: isiOS( userAgent ),
+
+	isAndroid: isAndroid( userAgent ),
+
+	isBlink: isBlink( userAgent ),
+
 	features: {
-		/**
-		 * Indicates that the environment supports ES2018 Unicode property escapes — like `\p{P}` or `\p{L}`.
-		 * More information about unicode properties might be found
-		 * [in Unicode Standard Annex #44](https://www.unicode.org/reports/tr44/#GC_Values_Table).
-		 */
 		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported()
-	} as const
-} as const;
+	}
+};
 
 export default env;
 

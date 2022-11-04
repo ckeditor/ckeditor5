@@ -703,9 +703,11 @@ interface EventNode {
 	childEvents: Array<string>;
 }
 
-// Gets the internal `_events` property of the given object.
-// `_events` property store all lists with callbacks for registered event names.
-// If there were no events registered on the object, empty `_events` object is created.
+/**
+ * Gets the internal `_events` property of the given object.
+ * `_events` property store all lists with callbacks for registered event names.
+ * If there were no events registered on the object, empty `_events` object is created.
+ */
 function getEvents( source: EmitterInternal ): { [ eventName: string ]: EventNode } {
 	if ( !source._events ) {
 		Object.defineProperty( source, '_events', {
@@ -716,7 +718,9 @@ function getEvents( source: EmitterInternal ): { [ eventName: string ]: EventNod
 	return source._events!;
 }
 
-// Creates event node for generic-specific events relation architecture.
+/**
+ * Creates event node for generic-specific events relation architecture.
+ */
 function makeEventNode(): EventNode {
 	return {
 		callbacks: [],
@@ -724,11 +728,13 @@ function makeEventNode(): EventNode {
 	};
 }
 
-// Creates an architecture for generic-specific events relation.
-// If needed, creates all events for given eventName, i.e. if the first registered event
-// is foo:bar:abc, it will create foo:bar:abc, foo:bar and foo event and tie them together.
-// It also copies callbacks from more generic events to more specific events when
-// specific events are created.
+/**
+ * Creates an architecture for generic-specific events relation.
+ * If needed, creates all events for given eventName, i.e. if the first registered event
+ * is foo:bar:abc, it will create foo:bar:abc, foo:bar and foo event and tie them together.
+ * It also copies callbacks from more generic events to more specific events when
+ * specific events are created.
+ */
 function createEventNamespace( source: EmitterInternal, eventName: string ): void {
 	const events = getEvents( source );
 
@@ -791,9 +797,11 @@ function createEventNamespace( source: EmitterInternal, eventName: string ): voi
 	}
 }
 
-// Gets an array containing callbacks list for a given event and it's more specific events.
-// I.e. if given event is foo:bar and there is also foo:bar:abc event registered, this will
-// return callback list of foo:bar and foo:bar:abc (but not foo).
+/**
+ * Gets an array containing callbacks list for a given event and it's more specific events.
+ * I.e. if given event is foo:bar and there is also foo:bar:abc event registered, this will
+ * return callback list of foo:bar and foo:bar:abc (but not foo).
+ */
 function getCallbacksListsForNamespace( source: EmitterInternal, eventName: string ): Array<EventNode[ 'callbacks' ]> {
 	const eventNode = getEvents( source )[ eventName ];
 
@@ -812,9 +820,11 @@ function getCallbacksListsForNamespace( source: EmitterInternal, eventName: stri
 	return callbacksLists;
 }
 
-// Get the list of callbacks for a given event, but only if there any callbacks have been registered.
-// If there are no callbacks registered for given event, it checks if this is a specific event and looks
-// for callbacks for it's more generic version.
+/**
+ * Get the list of callbacks for a given event, but only if there any callbacks have been registered.
+ * If there are no callbacks registered for given event, it checks if this is a specific event and looks
+ * for callbacks for it's more generic version.
+ */
 function getCallbacksForEvent( source: EmitterInternal, eventName: string ): EventNode[ 'callbacks' ] | null {
 	let event;
 
@@ -833,12 +843,13 @@ function getCallbacksForEvent( source: EmitterInternal, eventName: string ): Eve
 	return event.callbacks;
 }
 
-// Fires delegated events for given map of destinations.
-//
-// @param destinations A map containing
-// `[ {@link module:utils/emittermixin~Emitter}, "event name" ]` pair destinations.
-// @param eventInfo The original event info object.
-// @param fireArgs Arguments the original event was fired with.
+/**
+ * Fires delegated events for given map of destinations.
+ *
+ * @param destinations A map containing `[ {@link module:utils/emittermixin~Emitter}, "event name" ]` pair destinations.
+ * @param eventInfo The original event info object.
+ * @param fireArgs Arguments the original event was fired with.
+ */
 function fireDelegatedEvents(
 	destinations: Map<Emitter, string | ( ( name: string ) => string ) | undefined>,
 	eventInfo: EventInfo,
@@ -859,7 +870,9 @@ function fireDelegatedEvents(
 	}
 }
 
-// Helper for registering event callback on the emitter.
+/**
+ * Helper for registering event callback on the emitter.
+ */
 function addEventListener<TEvent extends BaseEvent>(
 	listener: EmitterInternal,
 	emitter: EmitterInternal,
@@ -876,7 +889,9 @@ function addEventListener<TEvent extends BaseEvent>(
 	}
 }
 
-// Helper for removing event callback from the emitter.
+/**
+ * Helper for removing event callback from the emitter.
+ */
 function removeEventListener( listener: EmitterInternal, emitter: EmitterInternal, event: string, callback: Function ): void {
 	if ( emitter._removeEventListener ) {
 		emitter._removeEventListener( event, callback );

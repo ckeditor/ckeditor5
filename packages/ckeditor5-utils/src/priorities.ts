@@ -12,16 +12,31 @@
  */
 export type PriorityString = 'highest' | 'high' | 'normal' | 'low' | 'lowest' | number;
 
+// This interface exists to make our API pages more readable.
 /**
  * Provides group of constants to use instead of hardcoding numeric priority values.
  */
-const priorities = {
+export interface PrioritiesType {
+
 	/**
 	 * Converts a string with priority name to it's numeric value. If `Number` is given, it just returns it.
 	 *
 	 * @param priority Priority to convert.
 	 * @returns Converted priority.
 	 */
+	get( priority?: PriorityString ): number;
+
+	readonly highest: number;
+	readonly high: number;
+	readonly normal: number;
+	readonly low: number;
+	readonly lowest: number;
+}
+
+/**
+ * Provides group of constants to use instead of hardcoding numeric priority values.
+ */
+const priorities: PrioritiesType = {
 	get( priority: PriorityString = 'normal' ): number {
 		if ( typeof priority != 'number' ) {
 			return this[ priority ] || this.normal;
@@ -35,6 +50,6 @@ const priorities = {
 	normal: 0,
 	low: -1000,
 	lowest: -100000
-} as const;
+};
 
 export default priorities;

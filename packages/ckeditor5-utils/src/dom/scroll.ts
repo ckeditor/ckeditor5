@@ -97,46 +97,48 @@ export function scrollAncestorsToShowTarget( target: HTMLElement | Range ): void
 	} );
 }
 
-// Makes a given rect visible within its parent window.
-//
-// Note: Avoid the situation where the caret is still in the viewport, but totally
-// at the edge of it. In such situation, if it moved beyond the viewport in the next
-// action e.g. after paste, the scrolling would move it to the viewportOffset level
-// and it all would look like the caret visually moved up/down:
-//
-// 1.
-//		| foo[]
-//		|                                    <--- N px of space below the caret
-//		+---------------------------------...
-//
-// 2. *paste*
-// 3.
-//		|
-//		|
-//		+-foo-----------------------------...
-//		  bar[]                              <--- caret below viewport, scrolling...
-//
-// 4. *scrolling*
-// 5.
-//		|
-//		| foo
-//		| bar[]                              <--- caret precisely at the edge
-//		+---------------------------------...
-//
-// To prevent this, this method checks the rects moved by the viewportOffset to cover
-// the upper/lower edge of the viewport. It makes sure if the action repeats, there's
-// no twitching – it's a purely visual improvement:
-//
-// 5. (after fix)
-//		|
-//		| foo
-//		| bar[]
-//		|                                    <--- N px of space below the caret
-//		+---------------------------------...
-//
-// @param window A window which is scrolled to reveal the rect.
-// @param rect A rect which is to be revealed.
-// @param viewportOffset See scrollViewportToShowTarget.
+/**
+ * Makes a given rect visible within its parent window.
+ *
+ * Note: Avoid the situation where the caret is still in the viewport, but totally
+ * at the edge of it. In such situation, if it moved beyond the viewport in the next
+ * action e.g. after paste, the scrolling would move it to the viewportOffset level
+ * and it all would look like the caret visually moved up/down:
+ *
+ * 1.
+ *		| foo[]
+ *		|                                    <--- N px of space below the caret
+ *		+---------------------------------...
+ *
+ * 2. *paste*
+ * 3.
+ *		|
+ *		|
+ *		+-foo-----------------------------...
+ *		  bar[]                              <--- caret below viewport, scrolling...
+ *
+ * 4. *scrolling*
+ * 5.
+ *		|
+ *		| foo
+ *		| bar[]                              <--- caret precisely at the edge
+ *		+---------------------------------...
+ *
+ * To prevent this, this method checks the rects moved by the viewportOffset to cover
+ * the upper/lower edge of the viewport. It makes sure if the action repeats, there's
+ * no twitching – it's a purely visual improvement:
+ *
+ * 5. (after fix)
+ *		|
+ *		| foo
+ *		| bar[]
+ *		|                                    <--- N px of space below the caret
+ *		+---------------------------------...
+ *
+ * @param window A window which is scrolled to reveal the rect.
+ * @param rect A rect which is to be revealed.
+ * @param viewportOffset See scrollViewportToShowTarget.
+ */
 function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: number ): void {
 	const targetShiftedDownRect = rect.clone().moveBy( 0, viewportOffset );
 	const targetShiftedUpRect = rect.clone().moveBy( 0, -viewportOffset );
@@ -165,10 +167,12 @@ function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: num
 	}
 }
 
-// Recursively scrolls element ancestors to visually reveal a rect.
-//
-// @param parent A parent The first ancestors to start scrolling.
-// @param getRect A function which returns the Rect, which is to be revealed.
+/**
+ * Recursively scrolls element ancestors to visually reveal a rect.
+ *
+ * @param parent A parent The first ancestors to start scrolling.
+ * @param getRect A function which returns the Rect, which is to be revealed.
+ */
 function scrollAncestorsToShowRect( parent: HTMLElement, getRect: () => Rect ): void {
 	const parentWindow = getWindow( parent );
 	let parentRect: Rect, targetRect: Rect;
@@ -195,27 +199,37 @@ function scrollAncestorsToShowRect( parent: HTMLElement, getRect: () => Rect ): 
 	}
 }
 
-// Determines if a given `Rect` extends beyond the bottom edge of the second `Rect`.
+/**
+ * Determines if a given `Rect` extends beyond the bottom edge of the second `Rect`.
+ */
 function isBelow( firstRect: Rect, secondRect: Rect ): boolean {
 	return firstRect.bottom > secondRect.bottom;
 }
 
-// Determines if a given `Rect` extends beyond the top edge of the second `Rect`.
+/**
+ * Determines if a given `Rect` extends beyond the top edge of the second `Rect`.
+ */
 function isAbove( firstRect: Rect, secondRect: Rect ): boolean {
 	return firstRect.top < secondRect.top;
 }
 
-// Determines if a given `Rect` extends beyond the left edge of the second `Rect`.
+/**
+ * Determines if a given `Rect` extends beyond the left edge of the second `Rect`.
+ */
 function isLeftOf( firstRect: Rect, secondRect: Rect ): boolean {
 	return firstRect.left < secondRect.left;
 }
 
-// Determines if a given `Rect` extends beyond the right edge of the second `Rect`.
+/**
+ * Determines if a given `Rect` extends beyond the right edge of the second `Rect`.
+ */
 function isRightOf( firstRect: Rect, secondRect: Rect ): boolean {
 	return firstRect.right > secondRect.right;
 }
 
-// Returns the closest window of an element or range.
+/**
+ * Returns the closest window of an element or range.
+ */
 function getWindow( elementOrRange: HTMLElement | Range ): Window {
 	if ( isRange( elementOrRange ) ) {
 		return elementOrRange.startContainer.ownerDocument!.defaultView!;
@@ -224,7 +238,9 @@ function getWindow( elementOrRange: HTMLElement | Range ): Window {
 	}
 }
 
-// Returns the closest parent of an element or DOM range.
+/**
+ * Returns the closest parent of an element or DOM range.
+ */
 function getParentElement( elementOrRange: HTMLElement | Range ): HTMLElement {
 	if ( isRange( elementOrRange ) ) {
 		let parent = elementOrRange.commonAncestorContainer as HTMLElement;
@@ -240,11 +256,13 @@ function getParentElement( elementOrRange: HTMLElement | Range ): HTMLElement {
 	}
 }
 
-// Returns the rect of an element or range residing in an iframe.
-// The result rect is relative to the geometry of the passed window instance.
-//
-// @param target Element or range which rect should be returned.
-// @param relativeWindow A window the rect should be relative to.
+/**
+ * Returns the rect of an element or range residing in an iframe.
+ * The result rect is relative to the geometry of the passed window instance.
+ *
+ * @param target Element or range which rect should be returned.
+ * @param relativeWindow A window the rect should be relative to.
+ */
 function getRectRelativeToWindow( target: HTMLElement | Range, relativeWindow: Window ): Rect {
 	const targetWindow = getWindow( target );
 	const rect = new Rect( target );

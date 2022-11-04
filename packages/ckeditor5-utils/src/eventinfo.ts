@@ -44,7 +44,7 @@ export default class EventInfo<TName extends string = string, TReturn = unknown>
 	 *
 	 * It's `undefined` by default and can be changed by an event listener:
 	 *
-	 * ```
+	 * ```ts
 	 * dataController.fire( 'getSelectedContent', ( evt ) => {
 	 * 	// This listener will make `dataController.fire( 'getSelectedContent' )`
 	 * 	// always return an empty DocumentFragment.

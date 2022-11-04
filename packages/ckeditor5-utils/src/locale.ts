@@ -166,7 +166,9 @@ export default class Locale {
  */
 export type LocaleTranslate = ( message: string | Message, values?: number | string | ReadonlyArray<number | string> ) => string;
 
-// Fills the `%0, %1, ...` string placeholders with values.
+/**
+ * Fills the `%0, %1, ...` string placeholders with values.
+ */
 function interpolateString( string: string, values: ReadonlyArray<any> ): string {
 	return string.replace( /%(\d+)/g, ( match, index ) => {
 		return ( index < values.length ) ? values[ index ] : match;

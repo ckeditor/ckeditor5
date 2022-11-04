@@ -7,8 +7,10 @@
  * @module utils/uid
  */
 
-// A hash table of hex numbers to avoid using toString() in uid() which is costly.
-// [ '00', '01', '02', ..., 'fe', 'ff' ]
+/**
+ * A hash table of hex numbers to avoid using toString() in uid() which is costly.
+ * [ '00', '01', '02', ..., 'fe', 'ff' ]
+ */
 const HEX_NUMBERS = new Array( 256 ).fill( '' )
 	.map( ( _, index ) => ( '0' + ( index ).toString( 16 ) ).slice( -2 ) );
 

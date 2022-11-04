@@ -264,17 +264,17 @@ export default class Config<Cfg> {
 	}
 }
 
-// Clones configuration object or value.
-// @param source Source configuration
-// @returns Cloned configuration value.
+/**
+ * Clones configuration object or value.
+ */
 function cloneConfig<T>( source: T ): T {
 	return cloneDeepWith( source, leaveDOMReferences );
 }
 
-// A customized function for cloneDeepWith.
-// It will leave references to DOM Elements instead of cloning them.
-//
-// @param value
+/**
+ * A customized function for cloneDeepWith.
+ * It will leave references to DOM Elements instead of cloning them.
+ */
 function leaveDOMReferences( value: unknown ): unknown {
 	return isElement( value ) ? value : undefined;
 }
@@ -282,7 +282,7 @@ function leaveDOMReferences( value: unknown ): unknown {
 /**
  * An utility type excluding primitive values and arrays from the union.
  */
-type OnlyObject<T> = Exclude<T, undefined | null | string | number | boolean | Array<any>>;
+export type OnlyObject<T> = Exclude<T, undefined | null | string | number | boolean | Array<any>>;
 
 /**
  * An utility type extracting configuration value from the given name.
@@ -290,7 +290,7 @@ type OnlyObject<T> = Exclude<T, undefined | null | string | number | boolean | A
  * @typeParam T The type of a configuration dictionary.
  * @typeParam K The literal type of configuration name (dot-separated path).
  */
-type GetSubConfig<T, K> = K extends keyof T ?
+export type GetSubConfig<T, K> = K extends keyof T ?
 	T[ K ] :
 	K extends `${ infer K1 }.${ infer K2 }` ?
 		K1 extends keyof T ?

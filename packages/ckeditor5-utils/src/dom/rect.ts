@@ -25,42 +25,42 @@ export default class Rect {
 	 *
 	 * @readonly
 	 */
-	declare public top: number;
+	public top!: number;
 
 	/**
 	 * The "right" value of the rect.
 	 *
 	 * @readonly
 	 */
-	declare public right: number;
+	public right!: number;
 
 	/**
 	 * The "bottom" value of the rect.
 	 *
 	 * @readonly
 	 */
-	declare public bottom: number;
+	public bottom!: number;
 
 	/**
 	 * The "left" value of the rect.
 	 *
 	 * @readonly
 	 */
-	declare public left: number;
+	public left!: number;
 
 	/**
 	 * The "width" value of the rect.
 	 *
 	 * @readonly
 	 */
-	declare public width: number;
+	public width!: number;
 
 	/**
 	 * The "height" value of the rect.
 	 *
 	 * @readonly
 	 */
-	declare public height: number;
+	public height!: number;
 
 	/**
 	 * The object this rect is for.
@@ -434,14 +434,18 @@ export interface RectLike {
 	readonly height: number;
 }
 
-// Acquires all the rect properties from the passed source.
+/**
+ * Acquires all the rect properties from the passed source.
+ */
 function copyRectProperties( rect: Rect, source: RectLike ): void {
 	for ( const p of rectProperties ) {
 		rect[ p ] = source[ p ];
 	}
 }
 
-// Checks if provided object is a <body> HTML element.
+/**
+ * Checks if provided object is a <body> HTML element.
+ */
 function isBody( value: unknown ): value is HTMLBodyElement {
 	if ( !isDomElement( value ) ) {
 		return false;
@@ -450,7 +454,9 @@ function isBody( value: unknown ): value is HTMLBodyElement {
 	return value === value.ownerDocument.body;
 }
 
-// Checks if provided object "looks like" a DOM Element and has API required by `Rect` class.
+/**
+ * Checks if provided object "looks like" a DOM Element and has API required by `Rect` class.
+ */
 function isDomElement( value: any ): value is Element {
 	// Note: earlier we used `isElement()` from lodash library, however that function is less performant because
 	// it makes complicated checks to make sure that given value is a DOM element.

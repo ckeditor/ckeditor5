@@ -29,9 +29,11 @@ export default function areConnectedThroughProperties( obj1: object, obj2: objec
 	return false;
 }
 
-// Traverses JS structure and stores all sub-nodes, including the head node.
-// It walks into each iterable structures with the `try catch` block to omit errors that might be thrown during
-// tree walking. All primitives, functions and built-ins are skipped.
+/**
+ * Traverses JS structure and stores all sub-nodes, including the head node.
+ * It walks into each iterable structures with the `try catch` block to omit errors that might be thrown during
+ * tree walking. All primitives, functions and built-ins are skipped.
+ */
 function getSubNodes( head: unknown ): Set<unknown> {
 	const nodes = [ head ];
 

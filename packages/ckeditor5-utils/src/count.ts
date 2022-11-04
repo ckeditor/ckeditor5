@@ -10,7 +10,9 @@
 /**
  * Returns the number of items return by the iterator.
  *
- *		count( [ 1, 2, 3, 4, 5 ] ); // 5;
+ * ```ts
+ * count( [ 1, 2, 3, 4, 5 ] ); // 5;
+ * ```
  *
  * @param iterable Any iterable.
  * @returns Number of items returned by that iterable.

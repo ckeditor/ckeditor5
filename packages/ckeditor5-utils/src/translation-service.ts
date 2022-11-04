@@ -219,7 +219,9 @@ export function _clear(): void {
 	global.window.CKEDITOR_TRANSLATIONS = {};
 }
 
-// Checks whether the dictionary exists and translation in that dictionary exists.
+/**
+ * Checks whether the dictionary exists and translation in that dictionary exists.
+ */
 function hasTranslation( language: string, messageId: string ): boolean {
 	return (
 		!!global.window.CKEDITOR_TRANSLATIONS[ language ] &&

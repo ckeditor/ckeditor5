@@ -442,9 +442,11 @@ function initObservable( observable: ObservableInternal ): void {
 	} );
 }
 
-// A chaining for {@link module:utils/observablemixin~Observable#bind} providing `.to()` interface.
-//
-// @param args Arguments of the `.to( args )` binding.
+/**
+ * A chaining for {@link module:utils/observablemixin~Observable#bind} providing `.to()` interface.
+ *
+ * @param args Arguments of the `.to( args )` binding.
+ */
 function bindTo( this: BindChainInternal, ...args: Array<Observable | string | Function> ): void {
 	const parsedArgs = parseBindToArgs( ...args );
 	const bindingsKeys = Array.from( this._bindings.keys() );
@@ -509,7 +511,9 @@ function bindTo( this: BindChainInternal, ...args: Array<Observable | string | F
 	} );
 }
 
-// Binds to an attribute in a set of iterable observables.
+/**
+ * Binds to an attribute in a set of iterable observables.
+ */
 function bindToMany( this: BindChainInternal, observables: Array<Observable>, attribute: string, callback: Function ): void {
 	if ( this._bindings.size > 1 ) {
 		/**
@@ -528,8 +532,10 @@ function bindToMany( this: BindChainInternal, observables: Array<Observable>, at
 	);
 }
 
-// Returns an array of binding components for
-// {@link Observable#bind} from a set of iterable observables.
+/**
+ * Returns an array of binding components for
+ * {@link Observable#bind} from a set of iterable observables.
+ */
 function getBindingTargets( observables: Array<Observable>, attribute: string ): Array<Observable | string> {
 	const observableAndAttributePairs = observables.map( observable => [ observable, attribute ] );
 
@@ -537,27 +543,34 @@ function getBindingTargets( observables: Array<Observable>, attribute: string ):
 	return Array.prototype.concat.apply( [], observableAndAttributePairs );
 }
 
-// Check if all entries of the array are of `String` type.
+/**
+ * Check if all entries of the array are of `String` type.
+ */
 function isStringArray( arr: Array<unknown> ): arr is Array<string> {
 	return arr.every( a => typeof a == 'string' );
 }
 
-// Parses and validates {@link Observable#bind}`.to( args )` arguments and returns
-// an object with a parsed structure. For example
-//
-//		A.bind( 'x' ).to( B, 'a', C, 'b', call );
-//
-// becomes
-//
-//		{
-//			to: [
-//				{ observable: B, properties: [ 'a' ] },
-//				{ observable: C, properties: [ 'b' ] },
-//			],
-//			callback: call
-// 		}
-//
-// @param args Arguments of {@link Observable#bind}`.to( args )`.
+/**
+ * Parses and validates {@link Observable#bind}`.to( args )` arguments and returns
+ * an object with a parsed structure. For example
+ *
+ * ```ts
+ * A.bind( 'x' ).to( B, 'a', C, 'b', call );
+ * ```
+ *
+ * becomes
+ *
+ * ```ts
+ * {
+ * 	to: [
+ * 		{ observable: B, properties: [ 'a' ] },
+ * 		{ observable: C, properties: [ 'b' ] },
+ * 	],
+ * 	callback: call
+ * }
+ *
+ * @param args Arguments of {@link Observable#bind}`.to( args )`.
+ */
 function parseBindToArgs( ...args: Array<Observable | string | Function> ) {
 	// Eliminate A.bind( 'x' ).to()
 	if ( !args.length ) {
@@ -590,11 +603,13 @@ function parseBindToArgs( ...args: Array<Observable | string | Function> ) {
 	return parsed;
 }
 
-// Synchronizes {@link module:utils/observable#_boundObservables} with {@link Binding}.
-//
-// @param binding A binding to store in {@link Observable#_boundObservables}.
-// @param toObservable A observable, which is a new component of `binding`.
-// @param toPropertyName A name of `toObservable`'s property, a new component of the `binding`.
+/**
+ * Synchronizes {@link module:utils/observable#_boundObservables} with {@link Binding}.
+ *
+ * @param binding A binding to store in {@link Observable#_boundObservables}.
+ * @param toObservable A observable, which is a new component of `binding`.
+ * @param toPropertyName A name of `toObservable`'s property, a new component of the `binding`.
+ */
 function updateBoundObservables(
 	observable: ObservableInternal,
 	binding: Binding,
@@ -617,43 +632,53 @@ function updateBoundObservables(
 	}
 }
 
-// Synchronizes {@link Observable#_boundProperties} and {@link Observable#_boundObservables}
-// with {@link BindChain}.
-//
-// Assuming the following binding being created
-//
-// 		A.bind( 'a', 'b' ).to( B, 'x', 'y' );
-//
-// the following bindings were initialized by {@link Observable#bind} in {@link BindChain#_bindings}:
-//
-// 		{
-// 			a: { observable: A, property: 'a', to: [] },
-// 			b: { observable: A, property: 'b', to: [] },
-// 		}
-//
-// Iterate over all bindings in this chain and fill their `to` properties with
-// corresponding to( ... ) arguments (components of the binding), so
-//
-// 		{
-// 			a: { observable: A, property: 'a', to: [ B, 'x' ] },
-// 			b: { observable: A, property: 'b', to: [ B, 'y' ] },
-// 		}
-//
-// Then update the structure of {@link Observable#_boundObservables} with updated
-// binding, so it becomes:
-//
-// 		Map( {
-// 			B: {
-// 				x: Set( [
-// 					{ observable: A, property: 'a', to: [ [ B, 'x' ] ] }
-// 				] ),
-// 				y: Set( [
-// 					{ observable: A, property: 'b', to: [ [ B, 'y' ] ] },
-// 				] )
-//			}
-// 		} )
-//
-// @param chain The binding initialized by {@link Observable#bind}.
+/**
+ * Synchronizes {@link Observable#_boundProperties} and {@link Observable#_boundObservables}
+ * with {@link BindChain}.
+ *
+ * Assuming the following binding being created
+ *
+ * ```ts
+ * A.bind( 'a', 'b' ).to( B, 'x', 'y' );
+ * ```
+ *
+ * the following bindings were initialized by {@link Observable#bind} in {@link BindChain#_bindings}:
+ *
+ * ```ts
+ * {
+ * 	a: { observable: A, property: 'a', to: [] },
+ * 	b: { observable: A, property: 'b', to: [] },
+ * }
+ * ```
+ *
+ * Iterate over all bindings in this chain and fill their `to` properties with
+ * corresponding to( ... ) arguments (components of the binding), so
+ *
+ * ```ts
+ * {
+ * 	a: { observable: A, property: 'a', to: [ B, 'x' ] },
+ * 	b: { observable: A, property: 'b', to: [ B, 'y' ] },
+ * }
+ * ```
+ *
+ * Then update the structure of {@link Observable#_boundObservables} with updated
+ * binding, so it becomes:
+ *
+ * ```ts
+ * Map( {
+ * 	B: {
+ * 		x: Set( [
+ * 			{ observable: A, property: 'a', to: [ [ B, 'x' ] ] }
+ * 		] ),
+ * 		y: Set( [
+ * 			{ observable: A, property: 'b', to: [ [ B, 'y' ] ] },
+ * 		] )
+ * 	}
+ * } )
+ * ```
+ *
+ * @param chain The binding initialized by {@link Observable#bind}.
+ */
 function updateBindToBound( chain: BindChainInternal ): void {
 	let toProperty;
 
@@ -670,11 +695,13 @@ function updateBindToBound( chain: BindChainInternal ): void {
 	} );
 }
 
-// Updates an property of a {@link Observable} with a value
-// determined by an entry in {@link Observable#_boundProperties}.
-//
-// @param observable A observable which property is to be updated.
-// @param propertyName An property to be updated.
+/**
+ * Updates an property of a {@link Observable} with a value
+ * determined by an entry in {@link Observable#_boundProperties}.
+ *
+ * @param observable A observable which property is to be updated.
+ * @param propertyName An property to be updated.
+ */
 function updateBoundObservableProperty( observable: ObservableInternal, propertyName: string ): void {
 	const boundProperties = observable[ boundPropertiesSymbol ]!;
 	const binding = boundProperties.get( propertyName )!;
@@ -699,11 +726,13 @@ function updateBoundObservableProperty( observable: ObservableInternal, property
 	}
 }
 
-// Starts listening to changes in {@link BindChain._to} observables to update
-// {@link BindChain._observable} {@link BindChain._bindProperties}. Also sets the
-// initial state of {@link BindChain._observable}.
-//
-// @param chain The chain initialized by {@link Observable#bind}.
+/**
+ * Starts listening to changes in {@link BindChain._to} observables to update
+ * {@link BindChain._observable} {@link BindChain._bindProperties}. Also sets the
+ * initial state of {@link BindChain._observable}.
+ *
+ * @param chain The chain initialized by {@link Observable#bind}.
+ */
 function attachBindToListeners( observable: ObservableInternal, toBindings: BindChainInternal[ '_to' ] ): void {
 	toBindings.forEach( to => {
 		const boundObservables = observable[ boundObservablesSymbol ]!;

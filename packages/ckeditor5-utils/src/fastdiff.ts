@@ -10,19 +10,6 @@ import type { Change } from './difftochanges';
  * @module utils/fastdiff
  */
 
-export default function fastDiff<T>(
-	a: ArrayLike<T>,
-	b: ArrayLike<T>,
-	cmp?: ( a: T, b: T ) => boolean,
-	atomicChanges?: false
-): Array<Change<T>>;
-export default function fastDiff<T>(
-	a: ArrayLike<T>,
-	b: ArrayLike<T>,
-	cmp: ( ( a: T, b: T ) => boolean ) | undefined,
-	atomicChanges: true
-): Array<DiffResult>;
-
 /**
  * Finds positions of the first and last change in the given string/array and generates a set of changes:
  *
@@ -114,19 +101,23 @@ export default function fastDiff<T>(
  * diff( a, b );
  * ```
  *
+ * @typeParam T The type of array elements.
+ * @typeParam AtomicChanges The type of `atomicChanges` parameter (selects the result type).
  * @param a Input array or string.
  * @param b Input array or string.
  * @param cmp Optional function used to compare array values, by default `===` (strict equal operator) is used.
  * @param atomicChanges Whether an array of `inset|delete|equal` operations should
  * be returned instead of changes set. This makes this function compatible with {@link module:utils/diff~diff `diff()`}.
- * @returns Array of changes.
+ * Defaults to `false`.
+ * @returns Array of changes. The elements are either {@link module:utils/diff~DiffResult} or {@link module:utils/difftochanges~Change},
+ * depending on `atomicChanges` parameter.
  */
-export default function fastDiff<T>(
+export default function fastDiff<T, AtomicChanges extends boolean = false>(
 	a: ArrayLike<T>,
 	b: ArrayLike<T>,
 	cmp?: ( a: T, b: T ) => boolean,
-	atomicChanges: boolean = false
-): Array<Change<T>> | Array<DiffResult> {
+	atomicChanges?: AtomicChanges
+): Array<AtomicChanges extends true ? DiffResult : Change<T>> {
 	// Set the comparator function.
 	cmp = cmp || function( a, b ) {
 		return a === b;
@@ -145,27 +136,25 @@ export default function fastDiff<T>(
 	const changeIndexes = findChangeBoundaryIndexes( arrayA, arrayB, cmp );
 
 	// Transform into changes array.
-	return atomicChanges ? changeIndexesToAtomicChanges( changeIndexes, arrayB.length ) : changeIndexesToChanges( arrayB, changeIndexes );
+	const result = atomicChanges ?
+		changeIndexesToAtomicChanges( changeIndexes, arrayB.length ) :
+		changeIndexesToChanges( arrayB, changeIndexes );
+
+	return result as any;
 }
 
-// Finds position of the first and last change in the given arrays. For example:
-//
-// ```ts
-// const indexes = findChangeBoundaryIndexes( [ '1', '2', '3', '4' ], [ '1', '3', '4', '2', '4' ] );
-// console.log( indexes ); // { firstIndex: 1, lastIndexOld: 3, lastIndexNew: 4 }
-// ```
-//
-// The above indexes means that in the first array the modified part is `1[23]4` and in the second array it is `1[342]4`.
-// Based on such indexes, array with `insert`/`delete` operations which allows transforming first value into the second one
-// can be generated.
-//
-// @param arr1
-// @param arr2
-// @param cmp Comparator function.
-// @returns
-// @returns return.firstIndex Index of the first change in both values (always the same for both).
-// @returns result.lastIndexOld Index of the last common value in `arr1`.
-// @returns result.lastIndexNew Index of the last common value in `arr2`.
+/**
+ * Finds position of the first and last change in the given arrays. For example:
+ *
+ * ```ts
+ * const indexes = findChangeBoundaryIndexes( [ '1', '2', '3', '4' ], [ '1', '3', '4', '2', '4' ] );
+ * console.log( indexes ); // { firstIndex: 1, lastIndexOld: 3, lastIndexNew: 4 }
+ * ```
+ *
+ * The above indexes means that in the first array the modified part is `1[23]4` and in the second array it is `1[342]4`.
+ * Based on such indexes, array with `insert`/`delete` operations which allows transforming first value into the second one
+ * can be generated.
+ */
 function findChangeBoundaryIndexes<T>( arr1: ReadonlyArray<T>, arr2: ReadonlyArray<T>, cmp: ( a: T, b: T ) => boolean ): ChangeIndexes {
 	// Find the first difference between passed values.
 	const firstIndex = findFirstDifferenceIndex( arr1, arr2, cmp );
@@ -199,11 +188,9 @@ function findChangeBoundaryIndexes<T>( arr1: ReadonlyArray<T>, arr2: ReadonlyArr
 	return { firstIndex, lastIndexOld, lastIndexNew };
 }
 
-// Returns a first index on which given arrays differ. If both arrays are the same, -1 is returned.
-//
-// @param arr1
-// @param arr2
-// @param cmp Comparator function.
+/**
+ * Returns a first index on which given arrays differ. If both arrays are the same, -1 is returned.
+ */
 function findFirstDifferenceIndex<T>( arr1: ReadonlyArray<T>, arr2: ReadonlyArray<T>, cmp: ( a: T, b: T ) => boolean ): number {
 	for ( let i = 0; i < Math.max( arr1.length, arr2.length ); i++ ) {
 		if ( arr1[ i ] === undefined || arr2[ i ] === undefined || !cmp( arr1[ i ], arr2[ i ] ) ) {
@@ -214,21 +201,25 @@ function findFirstDifferenceIndex<T>( arr1: ReadonlyArray<T>, arr2: ReadonlyArra
 	return -1; // Return -1 if arrays are equal.
 }
 
-// Returns a copy of the given array with `howMany` elements removed starting from the beginning and in reversed order.
-//
-// @param arr Array to be processed.
-// @param howMany How many elements from array beginning to remove.
-// @returns Shortened and reversed array.
+/**
+ * Returns a copy of the given array with `howMany` elements removed starting from the beginning and in reversed order.
+ *
+ * @param arr Array to be processed.
+ * @param howMany How many elements from array beginning to remove.
+ * @returns Shortened and reversed array.
+ */
 function cutAndReverse<T>( arr: ReadonlyArray<T>, howMany: number ): Array<T> {
 	return arr.slice( howMany ).reverse();
 }
 
-// Generates changes array based on change indexes from `findChangeBoundaryIndexes` function. This function will
-// generate array with 0 (no changes), 1 (deletion or insertion) or 2 records (insertion and deletion).
-//
-// @param newArray New array for which change indexes were calculated.
-// @param changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
-// @returns Array of changes compatible with {@link module:utils/difftochanges~diffToChanges} format.
+/**
+ * Generates changes array based on change indexes from `findChangeBoundaryIndexes` function. This function will
+ * generate array with 0 (no changes), 1 (deletion or insertion) or 2 records (insertion and deletion).
+ *
+ * @param newArray New array for which change indexes were calculated.
+ * @param changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
+ * @returns Array of changes compatible with {@link module:utils/difftochanges~diffToChanges} format.
+ */
 function changeIndexesToChanges<T>( newArray: ReadonlyArray<T>, changeIndexes: ChangeIndexes ): Array<Change<T>> {
 	const result: Array<Change<T>> = [];
 	const { firstIndex, lastIndexOld, lastIndexNew } = changeIndexes;
@@ -255,11 +246,13 @@ function changeIndexesToChanges<T>( newArray: ReadonlyArray<T>, changeIndexes: C
 	return result;
 }
 
-// Generates array with set `equal|insert|delete` operations based on change indexes from `findChangeBoundaryIndexes` function.
-//
-// @param changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
-// @param newLength Length of the new array on which `findChangeBoundaryIndexes` calculated change indexes.
-// @returns Array of changes compatible with {@link module:utils/diff~diff} format.
+/**
+ * Generates array with set `equal|insert|delete` operations based on change indexes from `findChangeBoundaryIndexes` function.
+ *
+ * @param changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
+ * @param newLength Length of the new array on which `findChangeBoundaryIndexes` calculated change indexes.
+ * @returns Array of changes compatible with {@link module:utils/diff~diff} format.
+ */
 function changeIndexesToAtomicChanges( changeIndexes: ChangeIndexes, newLength: number ): Array<DiffResult> {
 	const { firstIndex, lastIndexOld, lastIndexNew } = changeIndexes;
 
@@ -289,9 +282,23 @@ function changeIndexesToAtomicChanges( changeIndexes: ChangeIndexes, newLength: 
 	return result;
 }
 
-// Indexes of the first and the last change in the given arrays.
+/**
+ * Indexes of the first and the last change in the given arrays.
+ */
 interface ChangeIndexes {
+
+	/**
+	 * Index of the first change in both values (always the same for both).
+	 */
 	firstIndex: number;
+
+	/**
+	 * Index of the last common value in `arr1`.
+	 */
 	lastIndexOld: number;
+
+	/**
+	 * Index of the last common value in `arr2`.
+	 */
 	lastIndexNew: number;
 }

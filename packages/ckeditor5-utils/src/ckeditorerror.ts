@@ -166,12 +166,16 @@ export function logError( errorName: string, data?: object ): void {
 	console.error( ...formatConsoleArguments( errorName, data ) );
 }
 
-// Returns formatted link to documentation message.
+/**
+ * Returns formatted link to documentation message.
+ */
 function getLinkToDocumentationMessage( errorName: string ): string {
 	return `\nRead more: ${ DOCUMENTATION_URL }#error-${ errorName }`;
 }
 
-// Returns formatted error message.
+/**
+ * Returns formatted error message.
+ */
 function getErrorMessage( errorName: string, data?: object ): string {
 	const processedObjects = new WeakSet();
 	const circularReferencesReplacer = ( key: string, value: unknown ) => {
@@ -192,7 +196,9 @@ function getErrorMessage( errorName: string, data?: object ): string {
 	return errorName + stringifiedData + documentationLink;
 }
 
-// Returns formatted console error arguments.
+/**
+ * Returns formatted console error arguments.
+ */
 function formatConsoleArguments( errorName: string, data?: object ): Array<unknown> {
 	const documentationMessage = getLinkToDocumentationMessage( errorName );
 
