@@ -47,7 +47,7 @@ function loadCKEditor5modules( window ) {
 
 	for ( const item of dllPackages ) {
 		const windowScope = item.replace( /-([a-z])/g, ( match, p1 ) => p1.toUpperCase() );
-		window.CKEditor5[ windowScope ] = window.CKEditor5.dll( `./src/${ item }.ts` );
+		window.CKEditor5[ windowScope ] = window.CKEditor5.dll( `./src/${ item }.js` );
 	}
 }
 
@@ -57,22 +57,22 @@ const webpackConfig = {
 	entry: [
 		// This list must be synced with the `loadCKEditor5modules()` function.
 		// The base of the CKEditor 5 framework, in order of appearance:
-		'./src/utils.ts',
-		'./src/core.ts',
-		'./src/engine.ts',
-		'./src/ui.ts',
+		'./src/utils.js',
+		'./src/core.js',
+		'./src/engine.js',
+		'./src/ui.js',
 
 		// The Essentials plugin contents:
-		'./src/clipboard.ts',
-		'./src/enter.ts',
-		'./src/paragraph.ts',
-		'./src/select-all.ts',
-		'./src/typing.ts',
-		'./src/undo.ts',
+		'./src/clipboard.js',
+		'./src/enter.js',
+		'./src/paragraph.js',
+		'./src/select-all.js',
+		'./src/typing.js',
+		'./src/undo.js',
 
 		// Other, common packages:
-		'./src/upload.ts',
-		'./src/widget.ts'
+		'./src/upload.js',
+		'./src/widget.js'
 	],
 	optimization: {
 		minimize: false,
