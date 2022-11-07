@@ -181,6 +181,7 @@
 		"updating/updating.html": "updating/index.html",
 		"features/overview.html": "features/index.html",
 		"installation/overview.html": "installation/index.html",
+		"installation/frameworks/vuejs-v3.html": "installation/getting-started/frameworks/vuejs-v3.html",
 		"features/revision-history/revision-history.html": "features/collaboration/revision-history/revision-history.html",
 		"features/revision-history/revision-history-integration.htm": "features/collaboration/revision-history/revision-history-integration.html",
 		"framework/guides/plugins/package-generator.html": "framework/guides/plugins/package-generator/using-package-generator.html"
