@@ -183,7 +183,7 @@ class ExternalWidgetEditing extends Plugin {
 				const externalWidgetContainer = writer.createContainerElement( 'span', null, externalDataPreviewElement );
 
 				return toWidget( externalWidgetContainer, writer, {
-					widgetLabel: 'External widget'
+					label: 'External widget'
 				} );
 			}
 		} );
