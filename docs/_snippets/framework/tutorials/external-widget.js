@@ -18,12 +18,12 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
+const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
+
 class ExternalWidgetCommand extends Command {
 	execute() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
-
-		const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
 
 		editor.model.change( writer => {
 			const externalWidget = writer.createElement(
@@ -58,6 +58,7 @@ class ExternalWidget extends Plugin {
 class ExternalWidgetUI extends Plugin {
 	init() {
 		const editor = this.editor;
+		const externalWidgetCommand = editor.commands.get( 'external' );
 
 		editor.ui.componentFactory.add( 'external', locale => {
 			const button = new ButtonView( locale );
@@ -65,9 +66,10 @@ class ExternalWidgetUI extends Plugin {
 			button.set( {
 				label: 'Insert Bitcoin rate',
 				tooltip: true,
-				withText: true,
-				isEnabled: true
+				withText: true
 			} );
+
+			button.bind( 'isEnabled' ).to( externalWidgetCommand );
 
 			button.on( 'execute', () => {
 				editor.execute( 'external' );
@@ -108,20 +110,24 @@ class ExternalWidgetEditing extends Plugin {
 		return setInterval( () => this._updateWidgetData(), 20000 ); // set time interval to 20s
 	}
 
-	async _updateWidgetData( externalUrl = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT' ) {
-		const response = await fetch( externalUrl );
-		const data = await response.json();
-		const updateTime = new Date( data.closeTime );
-		const parsedData = '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
+	async _updateWidgetData( externalUrl = RESOURCE_URL ) {
+		try {
+			const response = await fetch( externalUrl );
+			const data = await response.json();
+			const updateTime = new Date( data.closeTime );
+			const parsedData = '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
 
-		this.externalDataValue = parsedData;
+			this.externalDataValue = parsedData;
 
-		const rootElement = this.editor.model.document.getRoot();
+			const rootElement = this.editor.model.document.getRoot();
 
-		for ( const { item } of this.editor.model.createRangeIn( rootElement ) ) {
-			if ( item.is( 'element', 'externalElement' ) ) {
-				this.editor.editing.reconvertItem( item );
+			for ( const { item } of this.editor.model.createRangeIn( rootElement ) ) {
+				if ( item.is( 'element', 'externalElement' ) ) {
+					this.editor.editing.reconvertItem( item );
+				}
 			}
+		} catch ( error ) {
+			console.error( error );
 		}
 	}
 
@@ -162,10 +168,10 @@ class ExternalWidgetEditing extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'externalElement',
-			view: ( modelElement, { writer: viewWriter } ) => {
+			view: ( modelElement, { writer } ) => {
 				const externalValueToShow = this.externalDataValue;
 
-				const externalDataPreviewElement = viewWriter.createRawElement( 'span', null, function( domElement ) {
+				const externalDataPreviewElement = writer.createRawElement( 'span', null, function( domElement ) {
 					domElement.textContent = externalValueToShow || 'Fetching data...';
 
 					if ( externalValueToShow ) {
@@ -174,9 +180,9 @@ class ExternalWidgetEditing extends Plugin {
 					}
 				} );
 
-				const externalWidgetContainer = viewWriter.createContainerElement( 'span', null, externalDataPreviewElement );
+				const externalWidgetContainer = writer.createContainerElement( 'span', null, externalDataPreviewElement );
 
-				return toWidget( externalWidgetContainer, viewWriter, {
+				return toWidget( externalWidgetContainer, writer, {
 					widgetLabel: 'External widget'
 				} );
 			}
