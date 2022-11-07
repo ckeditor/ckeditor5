@@ -151,6 +151,12 @@
 		"builds/guides/integration/frameworks/vuejs-v2.html": "installation/getting-started/frameworks/vuejs-v2.html",
 		"builds/guides/integration/frameworks/vuejs-v3.html": "installation/getting-started/frameworks/vuejs-v3.html",
 		"builds/guides/integration/frameworks/css.html": "installation/getting-started/frameworks/css.html",
+		"installation/getting-started/frameworks/overview.html": "installation/frameworks/overview.html",
+		"installation/getting-started/frameworks/angular.html": "installation/frameworks/angular.html",
+		"installation/getting-started/frameworks/react.html": "installation/frameworks/react.html",
+		"installation/getting-started/frameworks/vuejs-v2.html": "installation/frameworks/vuejs-v2.html",
+		"installation/getting-started/frameworks/vuejs-v3.html": "installation/frameworks/vuejs-v3.html",
+		"installation/getting-started/frameworks/css.html": "installation/frameworks/css.html",
 		"builds/guides/integration/content-styles.html": "installation/advanced/content-styles.html",
 		"builds/guides/development/custom-builds.html": "installation/getting-started/quick-start.html#creating-custom-builds",
 		"builds/guides/development/plugins.html": "installation/advanced/plugins.html",
@@ -237,24 +243,22 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Getting started",
+					"name": "Basics",
 					"id": "getting-started",
 					"slug": "getting-started",
-					"order": 20,
-					"categories": [
-						{
-							"name": "Frameworks",
-							"id": "frameworks",
-							"slug": "frameworks",
-							"order": 70
-						}
-					]
+					"order": 20
+				},
+				{
+					"name": "Frameworks",
+					"id": "frameworks",
+					"slug": "frameworks",
+					"order": 30
 				},
 				{
 					"name": "Advanced concepts",
 					"id": "advanced",
 					"slug": "advanced",
-					"order": 30,
+					"order": 50,
 					"categories": [
 						{
 							"name": "Alternative setups",
