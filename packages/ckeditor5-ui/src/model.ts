@@ -7,7 +7,7 @@
  * @module ui/model
  */
 
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import { extend } from 'lodash-es';
 
 /**
@@ -15,7 +15,7 @@ import { extend } from 'lodash-es';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Model extends Observable {
+export default class Model extends ObservableMixin() {
 	[ x: string ]: unknown;
 
 	/**

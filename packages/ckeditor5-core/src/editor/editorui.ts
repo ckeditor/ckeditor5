@@ -14,7 +14,7 @@ import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import TooltipManager from '@ckeditor/ckeditor5-ui/src/tooltipmanager';
 
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 import type Editor from './editor';
@@ -27,7 +27,7 @@ import type EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview'
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default abstract class EditorUI extends Observable {
+export default abstract class EditorUI extends ObservableMixin() {
 	public readonly editor: Editor;
 	public readonly componentFactory: ComponentFactory;
 	public readonly focusTracker: FocusTracker;

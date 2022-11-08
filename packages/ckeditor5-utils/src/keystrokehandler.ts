@@ -7,7 +7,7 @@
  * @module utils/keystrokehandler
  */
 
-import { Emitter as DomEmitter } from './dom/emittermixin';
+import DomEmitterMixin, { type DomEmitter } from './dom/emittermixin';
 import type { Emitter } from './emittermixin';
 import { getCode, parseKeystroke, type KeystrokeInfo } from './keyboard';
 import type { PriorityString } from './priorities';
@@ -57,7 +57,7 @@ export default class KeystrokeHandler {
 	 * Creates an instance of the keystroke handler.
 	 */
 	constructor() {
-		this._listener = new DomEmitter();
+		this._listener = new ( DomEmitterMixin() )();
 	}
 
 	/**

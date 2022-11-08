@@ -9,10 +9,10 @@
  * @module utils/dom/emittermixin
  */
 
-import {
+import EmitterMixin, {
 	_getEmitterListenedTo,
 	_setEmitterId,
-	Emitter as BaseEmitter,
+	type Emitter,
 	type CallbackOptions,
 	type BaseEvent,
 	type GetCallback
@@ -21,6 +21,8 @@ import uid from '../uid';
 import isNode from './isnode';
 import isWindow from './iswindow';
 import type EventInfo from '../eventinfo';
+
+const defaultEmitterClass = DomEmitterMixin( EmitterMixin() );
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
@@ -34,26 +36,54 @@ import type EventInfo from '../eventinfo';
  * ```ts
  * import DomEmitterMixin from '../utils/dom/emittermixin.js';
  *
- * class SomeView extends DomEmitterMixin( OtherBaseClass ) {}
+ * class BaseClass { ... }
+ *
+ * class SomeView extends DomEmitterMixin( BaseClass ) {}
  *
  * const view = new SomeView();
  * view.listenTo( domElement, ( evt, domEvt ) => {
  * 	console.log( evt, domEvt );
  * } );
- *
- * // If no base class is required, derive from `Emitter`.
- * import { Emitter } from '../utils/dom/emittermixin.js';
- *
- * class SomeView extends Emitter {}
  * ```
  */
-export default function DomEmitterMixin<Base extends abstract new( ...args: Array<any> ) => BaseEmitter>(
+export default function DomEmitterMixin<Base extends abstract new ( ...args: Array<any> ) => Emitter>(
 	base: Base
 ): {
-	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Emitter;
-	prototype: InstanceType<Base> & Emitter;
-} {
-	abstract class Mixin extends base implements Emitter {
+	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & DomEmitter;
+	prototype: InstanceType<Base> & DomEmitter;
+};
+
+/**
+ * Mixin that injects the DOM events API into its host. It provides the API
+ * compatible with {@link module:utils/emittermixin~EmitterMixin}.
+ *
+ * This function creates a class that inherits from the provided `base` and implements `Emitter` interface.
+ *
+ * DOM emitter mixin is by default available in the {@link module:ui/view~View} class,
+ * but it can also be mixed into any other class:
+ *
+ * ```ts
+ * import DomEmitterMixin from '../utils/dom/emittermixin.js';
+ *
+ * class SomeView extends DomEmitterMixin() {}
+ *
+ * const view = new SomeView();
+ * view.listenTo( domElement, ( evt, domEvt ) => {
+ * 	console.log( evt, domEvt );
+ * } );
+ * ```
+ */
+export default function DomEmitterMixin(): {
+	new (): DomEmitter;
+	prototype: DomEmitter;
+};
+
+export default function DomEmitterMixin( base?: abstract new ( ...args: Array<any> ) => Emitter ): unknown {
+	if ( !base ) {
+		return defaultEmitterClass;
+	}
+
+	abstract class Mixin extends base implements DomEmitter {
 		public override listenTo<K extends keyof HTMLElementEventMap>(
 			emitter: Node | Window,
 			event: K,
@@ -61,13 +91,13 @@ export default function DomEmitterMixin<Base extends abstract new( ...args: Arra
 			options?: CallbackOptions & { readonly useCapture?: boolean; readonly usePassive?: boolean }
 		): void;
 		public override listenTo<TEvent extends BaseEvent>(
-			emitter: BaseEmitter,
+			emitter: Emitter,
 			event: TEvent[ 'name' ],
 			callback: GetCallback<TEvent>,
 			options?: CallbackOptions
 		): void;
 		public override listenTo(
-			emitter: BaseEmitter | Node | Window,
+			emitter: Emitter | Node | Window,
 			event: string,
 			callback: ( ev: EventInfo, ...args: Array<any> ) => void,
 			options: CallbackOptions & { readonly useCapture?: boolean; readonly usePassive?: boolean } = {}
@@ -84,12 +114,12 @@ export default function DomEmitterMixin<Base extends abstract new( ...args: Arra
 				this.listenTo( proxyEmitter, event, callback, options );
 			} else {
 				// Execute parent class method with Emitter (or ProxyEmitter) instance.
-				BaseEmitter.prototype.listenTo.call( this, emitter, event, callback, options );
+				super.listenTo( emitter, event, callback, options );
 			}
 		}
 
 		public override stopListening(
-			emitter?: BaseEmitter | Node | Window,
+			emitter?: Emitter | Node | Window,
 			event?: string,
 			callback?: Function
 		): void {
@@ -102,7 +132,7 @@ export default function DomEmitterMixin<Base extends abstract new( ...args: Arra
 				}
 			} else {
 				// Execute parent class method with Emitter (or ProxyEmitter) instance.
-				BaseEmitter.prototype.stopListening.call( this, emitter, event, callback );
+				super.stopListening( emitter, event, callback );
 			}
 		}
 
@@ -120,7 +150,7 @@ export default function DomEmitterMixin<Base extends abstract new( ...args: Arra
 		private _getProxyEmitter(
 			node: Node | Window,
 			options: { capture: boolean; passive: boolean }
-		): BaseEmitter | null {
+		): Emitter | null {
 			return _getEmitterListenedTo( this, getProxyEmitterId( node, options ) );
 		}
 
@@ -139,25 +169,8 @@ export default function DomEmitterMixin<Base extends abstract new( ...args: Arra
 		}
 	}
 
-	return Mixin as any;
+	return Mixin;
 }
-
-/**
- * The canonical base class of `Emitter` mixin. Derive from this if your class has no other super-classes.
- *
- * ```ts
- * import { Emitter } from '../utils/dom/emittermixin.js';
- *
- * class SomeView extends Emitter {}
- *
- * // It is equivalent to:
- * import DomEmitterMixin from '../utils/dom/emittermixin.js';
- * import EmitterMixin from '../utils/emittermixin.js';
- *
- * class SomeView extends DomEmitterMixin( EmitterMixin( Object ) ) {}
- * ```
- */
-export const Emitter = DomEmitterMixin( BaseEmitter );
 
 // Backward compatibility with `mix`
 ( [
@@ -166,7 +179,7 @@ export const Emitter = DomEmitterMixin( BaseEmitter );
 	'stopListening', 'fire', 'delegate', 'stopDelegating',
 	'_addEventListener', '_removeEventListener'
 ] ).forEach( key => {
-	( DomEmitterMixin as any )[ key ] = ( Emitter.prototype as any )[ key ];
+	( DomEmitterMixin as any )[ key ] = ( defaultEmitterClass as any )[ key ];
 } );
 
 /**
@@ -197,7 +210,7 @@ export const Emitter = DomEmitterMixin( BaseEmitter );
  *                    +-----------------------------------------+
  *                                fire( click, DOM Event )
  */
-class ProxyEmitter extends BaseEmitter {
+class ProxyEmitter extends EmitterMixin() {
 	private readonly _domNode: Node | Window;
 	private readonly _options: { capture: boolean; passive: boolean };
 
@@ -301,7 +314,7 @@ class ProxyEmitter extends BaseEmitter {
 		options: CallbackOptions
 	): void {
 		this.attach( event );
-		( BaseEmitter.prototype as any )._addEventListener.call( this, event, callback, options );
+		( EmitterMixin().prototype as any )._addEventListener.call( this, event, callback, options );
 	}
 
 	/**
@@ -312,7 +325,7 @@ class ProxyEmitter extends BaseEmitter {
 	 * @param callback The function to stop being called.
 	 */
 	public _removeEventListener( event: string, callback: Function ) {
-		( BaseEmitter.prototype as any )._removeEventListener.call( this, event, callback );
+		( EmitterMixin().prototype as any )._removeEventListener.call( this, event, callback );
 		this.detach( event );
 	}
 
@@ -376,7 +389,7 @@ function getProxyEmitterId( node: Node | Window, options: { [ option: string ]: 
  * }
  * ```
  */
-export interface Emitter extends BaseEmitter {
+export interface DomEmitter extends Emitter {
 
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
@@ -427,7 +440,7 @@ export interface Emitter extends BaseEmitter {
 	 * @param options Additional options.
 	 */
 	listenTo<TEvent extends BaseEvent>(
-		emitter: BaseEmitter,
+		emitter: Emitter,
 		event: TEvent[ 'name' ],
 		callback: GetCallback<TEvent>,
 		options?: CallbackOptions
@@ -449,5 +462,5 @@ export interface Emitter extends BaseEmitter {
 	 * @param callback (Requires the `event`) The function to be removed from the call list for the given
 	 * `event`.
 	 */
-	stopListening( emitter?: BaseEmitter | Node | Window, event?: string, callback?: Function ): void;
+	stopListening( emitter?: Emitter | Node | Window, event?: string, callback?: Function ): void;
 }

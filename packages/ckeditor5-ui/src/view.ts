@@ -13,7 +13,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ViewCollection from './viewcollection';
 import Template, { type BindChain, type TemplateDefinition } from './template';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import { Observable, type DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin, { type DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection, { type CollectionAddEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
@@ -86,7 +86,7 @@ import '../theme/globals/globals.css';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class View<TElement extends HTMLElement = HTMLElement> extends DomEmitterMixin( Observable ) {
+export default class View<TElement extends HTMLElement = HTMLElement> extends DomEmitterMixin( ObservableMixin() ) {
 	public element: TElement | null;
 	public isRendered: boolean;
 	public locale: Locale | undefined;

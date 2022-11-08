@@ -32,7 +32,7 @@ import type ModelElement from './element';
 import type Operation from './operation/operation';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { type DecoratedMethodEvent, Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin, { type DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
 // @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
@@ -43,7 +43,7 @@ import { type DecoratedMethodEvent, Observable } from '@ckeditor/ckeditor5-utils
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Model extends Observable {
+export default class Model extends ObservableMixin() {
 	public readonly markers: MarkerCollection;
 	public readonly document: Document;
 	public readonly schema: Schema;

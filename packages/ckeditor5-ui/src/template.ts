@@ -10,7 +10,7 @@
 /* global document */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import EmitterMixin, { type Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import View from './view';
 import ViewCollection from './viewcollection';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
@@ -57,7 +57,7 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
  *
 * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class Template extends Emitter {
+export default class Template extends EmitterMixin() {
 	public ns?: string;
 	public tag?: string;
 	public text?: Array<TemplateSimpleValue | TemplateBinding>;

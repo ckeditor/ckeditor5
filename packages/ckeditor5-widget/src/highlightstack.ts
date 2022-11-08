@@ -7,7 +7,7 @@
  * @module widget/highlightstack
  */
 
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import type { DowncastWriter } from '@ckeditor/ckeditor5-engine';
 import type { HighlightDescriptor } from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
@@ -24,7 +24,7 @@ import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
  *
  * This way, highlight will be applied with the same rules it is applied on texts.
  */
-export default class HighlightStack extends Emitter {
+export default class HighlightStack extends EmitterMixin() {
 	private readonly _stack: Array<HighlightDescriptor>;
 
 	/**

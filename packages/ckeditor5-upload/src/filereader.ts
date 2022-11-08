@@ -9,14 +9,14 @@
 
 /* globals window */
 
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 type DomFileReader = globalThis.FileReader;
 
 /**
  * Wrapper over the native `FileReader`.
  */
-export default class FileReader extends Observable {
+export default class FileReader extends ObservableMixin() {
 	public total!: number;
 
 	private readonly _reader: DomFileReader;

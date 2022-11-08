@@ -8,10 +8,13 @@
 /* globals document, window, Event, MouseEvent */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import DomEmitterMixin, { Emitter as DomEmitter } from '../../src/dom/emittermixin';
-import EmitterMixin, { Emitter } from '../../src/emittermixin';
+import DomEmitterMixin from '../../src/dom/emittermixin';
+import EmitterMixin from '../../src/emittermixin';
 
 describe( 'DomEmitterMixin', () => {
+	const Emitter = EmitterMixin();
+	const DomEmitter = DomEmitterMixin();
+
 	let emitter, domEmitter, node;
 
 	testUtils.createSinonSandbox();

@@ -22,19 +22,18 @@ const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
 const _delegations = Symbol( 'delegations' );
 
+const defaultEmitterClass = EmitterMixin( Object );
+
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.
  *
  * This function creates a class that inherits from the provided `base` and implements `Emitter` interface.
  *
  * ```ts
- * class MyClass extends EmitterMixin( OtherBaseClasses ) {
- * 	// This class now implements the `Emitter` interface.
- * }
+ * class BaseClass { ... }
  *
- * // If no base class is required, derive from `Emitter`.
- * class MyClass extends Emitter {
- * 	// Implementation.
+ * class MyClass extends EmitterMixin( BaseClass ) {
+ * 	// This class derives from `BaseClass` and implements the `Emitter` interface.
  * }
  * ```
  *
@@ -43,12 +42,39 @@ const _delegations = Symbol( 'delegations' );
  * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
  * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
  */
-export default function EmitterMixin<Base extends abstract new( ...args: any ) => object>(
+export default function EmitterMixin<Base extends abstract new ( ...args: Array<any> ) => object>(
 	base: Base
 ): {
-	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Emitter;
+	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Emitter;
 	prototype: InstanceType<Base> & Emitter;
-} {
+};
+
+/**
+ * Mixin that injects the {@link ~Emitter events API} into its host.
+ *
+ * This function creates a class that inherits from the provided `base` and implements `Emitter` interface.
+ *
+ * ```ts
+ * class MyClass extends EmitterMixin() {
+ * 	// This class implements the `Emitter` interface.
+ * }
+ * ```
+ *
+ * Read more about the concept of emitters in the:
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
+ * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
+ */
+export default function EmitterMixin(): {
+	new (): Emitter;
+	prototype: Emitter;
+};
+
+export default function EmitterMixin( base?: abstract new( ...args: Array<any> ) => object ): unknown {
+	if ( !base ) {
+		return defaultEmitterClass;
+	}
+
 	abstract class Mixin extends base implements EmitterInternal {
 		public on<TEvent extends BaseEvent>(
 			event: TEvent[ 'name' ],
@@ -345,24 +371,8 @@ export default function EmitterMixin<Base extends abstract new( ...args: any ) =
 		public [ _delegations ]?: Map<string, Map<Emitter, string | ( ( name: string ) => string ) | undefined>>;
 	}
 
-	return Mixin as any;
+	return Mixin;
 }
-
-/**
- * The canonical base class of `Emitter` mixin. Derive from this if your class has no other super-classes.
- *
- * ```ts
- * class MyClass extends Emitter {
- * 	// Implementation.
- * }
- *
- * // It is equivalent to:
- * class MyClass extends EmitterMixin( Object ) {
- * 	//Implementation.
- * }
- * ```
- */
-export const Emitter = EmitterMixin( Object );
 
 // Backward compatibility with `mix`
 ( [
@@ -370,7 +380,7 @@ export const Emitter = EmitterMixin( Object );
 	'stopListening', 'fire', 'delegate', 'stopDelegating',
 	'_addEventListener', '_removeEventListener'
 ] ).forEach( key => {
-	( EmitterMixin as any )[ key ] = ( Emitter.prototype as any )[ key ];
+	( EmitterMixin as any )[ key ] = ( defaultEmitterClass.prototype as any )[ key ];
 } );
 
 /**
@@ -379,7 +389,7 @@ export const Emitter = EmitterMixin( Object );
  * Can be easily implemented by a class by mixing the {@link module:utils/emittermixin~EmitterMixin} mixin.
  *
  * ```ts
- * class MyClass extends EmitterMixin( OtherBaseClass ) {
+ * class MyClass extends EmitterMixin() {
  * 	// This class now implements the `Emitter` interface.
  * }
  * ```

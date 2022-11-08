@@ -5,14 +5,12 @@
 
 /* global setTimeout, clearTimeout */
 
-/* eslint-disable new-cap */
-
 /**
  * @module utils/focustracker
  */
 
 import DomEmitterMixin from './dom/emittermixin';
-import { Observable } from './observablemixin';
+import ObservableMixin from './observablemixin';
 import CKEditorError from './ckeditorerror';
 
 /**
@@ -27,7 +25,7 @@ import CKEditorError from './ckeditorerror';
  *
  * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking "Deep dive into focus tracking" guide} to learn more.
  */
-export default class FocusTracker extends DomEmitterMixin( Observable ) {
+export default class FocusTracker extends DomEmitterMixin( ObservableMixin() ) {
 	/**
 	 * True when one of the registered elements is focused.
 	 *

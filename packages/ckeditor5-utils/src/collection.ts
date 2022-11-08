@@ -7,7 +7,7 @@
  * @module utils/collection
  */
 
-import { Emitter } from './emittermixin';
+import EmitterMixin from './emittermixin';
 import CKEditorError from './ckeditorerror';
 import uid from './uid';
 import isIterable from './isiterable';
@@ -25,7 +25,7 @@ import isIterable from './isiterable';
  * @typeParam T The type of the collection element.
  * @typeParam I The name of the identifier.
  */
-export default class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> extends Emitter implements Iterable<T> {
+export default class Collection<T extends { [ id in I ]?: string }, I extends string = 'id'> extends EmitterMixin() implements Iterable<T> {
 	/**
 	 * The internal list of items in the collection.
 	 */

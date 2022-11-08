@@ -9,7 +9,7 @@
  * @module utils/observablemixin
  */
 
-import { Emitter } from './emittermixin';
+import EmitterMixin, { type Emitter } from './emittermixin';
 import CKEditorError from './ckeditorerror';
 import { isObject } from 'lodash-es';
 
@@ -20,6 +20,8 @@ const boundPropertiesSymbol = Symbol( 'boundProperties' );
 const decoratedMethods = Symbol( 'decoratedMethods' );
 const decoratedOriginal = Symbol( 'decoratedOriginal' );
 
+const defaultObservableClass = ObservableMixin( EmitterMixin() );
+
 /**
  * A mixin that injects the "observable properties" and data binding functionality described in the
  * {@link ~Observable} interface.
@@ -27,13 +29,10 @@ const decoratedOriginal = Symbol( 'decoratedOriginal' );
  * This function creates a class that inherits from the provided `base` and implements `Observable` interface.
  *
  * ```ts
- * class MyClass extends ObservableMixin( OtherBaseClasses ) {
- * 	// This class now implements the `Observable` interface.
- * }
+ * class BaseClass { ... }
  *
- * // If no base class is required, derive from `Observable`.
- * class MyClass extends Observable {
- * 	// Implementation.
+ * class MyClass extends ObservableMixin( BaseClass ) {
+ * 	// This class derives from `BaseClass` and implements the `Observable` interface.
  * }
  * ```
  *
@@ -45,9 +44,37 @@ const decoratedOriginal = Symbol( 'decoratedOriginal' );
 export default function ObservableMixin<Base extends abstract new( ...args: Array<any> ) => Emitter>(
 	base: Base
 ): {
-	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Observable;
+	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Observable;
 	prototype: InstanceType<Base> & Observable;
-} {
+};
+
+/**
+ * A mixin that injects the "observable properties" and data binding functionality described in the
+ * {@link ~Observable} interface.
+ *
+ * This function creates a class that inherits from the provided `base` and implements `Observable` interface.
+ *
+ * ```ts
+ * class MyClass extends ObservableMixin() {
+ * 	// This class implements the `Observable` interface.
+ * }
+ * ```
+ *
+ * Read more about the concept of observables in the:
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
+ * * {@glink framework/guides/deep-dive/observables Observables deep dive} guide.
+ */
+export default function ObservableMixin(): {
+	new (): Observable;
+	prototype: Observable;
+};
+
+export default function ObservableMixin( base?: abstract new( ...args: Array<any> ) => Emitter ): unknown {
+	if ( !base ) {
+		return defaultObservableClass;
+	}
+
 	abstract class Mixin extends base implements ObservableInternal {
 		public set( name: string | { [ name: string ]: unknown }, value?: unknown ): void {
 			// If the first parameter is an Object, iterate over its properties.
@@ -282,7 +309,7 @@ export default function ObservableMixin<Base extends abstract new( ...args: Arra
 				delete this[ decoratedMethods ];
 			}
 
-			Emitter.prototype.stopListening.call( this, emitter, event, callback );
+			super.stopListening( emitter, event, callback );
 		}
 
 		public [ observablePropertiesSymbol ]?: Map<string, unknown>;
@@ -294,24 +321,8 @@ export default function ObservableMixin<Base extends abstract new( ...args: Arra
 		public [ boundObservablesSymbol]?: Map<Observable, Record<string, Set<Binding>>>;
 	}
 
-	return Mixin as any;
+	return Mixin;
 }
-
-/**
- * The canonical base class of `Observable` mixin. Derive from this if your class has no other super-classes.
- *
- * ```ts
- * class MyClass extends Observable {
- * 	// Implementation.
- * }
- *
- * // It is equivalent to:
- * class MyClass extends ObservableMixin( EmitterMixin( Object ) ) {
- * 	//Implementation.
- * }
- * ```
- */
-export const Observable = ObservableMixin( Emitter );
 
 // Backward compatibility with `mix`
 ( [
@@ -320,7 +331,7 @@ export const Observable = ObservableMixin( Emitter );
 	'stopListening', 'fire', 'delegate', 'stopDelegating',
 	'_addEventListener', '_removeEventListener'
 ] ).forEach( key => {
-	( ObservableMixin as any )[ key ] = ( Observable.prototype as any )[ key ];
+	( ObservableMixin as any )[ key ] = ( defaultObservableClass.prototype as any )[ key ];
 } );
 
 interface Binding {
@@ -1082,7 +1093,7 @@ export interface Observable extends Emitter {
 	 * For example, to cancel the method execution the event can be {@link module:utils/eventinfo~EventInfo#stop stopped}:
 	 *
 	 * ```ts
-	 * class Foo extends Observable {
+	 * class Foo extends ObservableMixin() {
 	 * 	constructor() {
 	 * 		super();
 	 * 		this.decorate( 'method' );
@@ -1215,7 +1226,7 @@ export type ObservableSetEvent<TValue = any> = {
  * Utility type that creates an event describing type from decorated method.
  *
  * ```ts
- * class Foo extends Observable {
+ * class Foo extends ObservableMixin() {
  * 	constructor() {
  * 		super();
  * 		this.decorate( 'method' );
