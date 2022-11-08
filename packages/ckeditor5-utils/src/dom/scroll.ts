@@ -106,34 +106,42 @@ export function scrollAncestorsToShowTarget( target: HTMLElement | Range ): void
  * and it all would look like the caret visually moved up/down:
  *
  * 1.
- *		| foo[]
- *		|                                    <--- N px of space below the caret
- *		+---------------------------------...
+ * ```
+ * | foo[]
+ * |                                    <--- N px of space below the caret
+ * +---------------------------------...
+ * ```
  *
  * 2. *paste*
  * 3.
- *		|
- *		|
- *		+-foo-----------------------------...
- *		  bar[]                              <--- caret below viewport, scrolling...
+ * ```
+ * |
+ * |
+ * +-foo-----------------------------...
+ *   bar[]                              <--- caret below viewport, scrolling...
+ * ```
  *
  * 4. *scrolling*
  * 5.
- *		|
- *		| foo
- *		| bar[]                              <--- caret precisely at the edge
- *		+---------------------------------...
+ * ```
+ * |
+ * | foo
+ * | bar[]                              <--- caret precisely at the edge
+ * +---------------------------------...
+ * ```
  *
  * To prevent this, this method checks the rects moved by the viewportOffset to cover
  * the upper/lower edge of the viewport. It makes sure if the action repeats, there's
  * no twitching – it's a purely visual improvement:
  *
  * 5. (after fix)
- *		|
- *		| foo
- *		| bar[]
- *		|                                    <--- N px of space below the caret
- *		+---------------------------------...
+ * ```
+ * |
+ * | foo
+ * | bar[]
+ * |                                    <--- N px of space below the caret
+ * +---------------------------------...
+ * ```
  *
  * @param window A window which is scrolled to reveal the rect.
  * @param rect A rect which is to be revealed.
