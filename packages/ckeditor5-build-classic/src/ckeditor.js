@@ -140,8 +140,7 @@ ClassicEditor.defaultConfig = {
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en',
 	table: {
-		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
-		defaultHeadings: { rows: 1, columns: 1 }
+		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 	},
 	toolbar: {
 		items: [
