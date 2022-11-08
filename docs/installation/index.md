@@ -83,7 +83,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 
 		'quiz-question-usingBuilds': {
 			content: 'Do you need a working, out-of-the box solution?',
-			hint: 'CKEditor 5 comes with ready-to-use <a href="#easy-installation-with-predefined-ckeditor-5-builds">predefined builds</a> that offer working solutions for different use cases. This is a quick way to start.',
+			hint: 'CKEditor 5 comes with ready-to-use <a href="#installing-predefined-ckeditor-5-builds">predefined builds</a> that offer working solutions for different use cases. This is a quick way to start.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingBuilds' ),
 				getDecisionButtonDefinition( false, 'quiz-question-onlineBuilder' ),
