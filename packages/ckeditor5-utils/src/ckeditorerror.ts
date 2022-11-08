@@ -35,7 +35,7 @@ export const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/sup
  *  * @error plugin-load
  *  * @param pluginName The name of the plugin that could not be loaded.
  *  * @param moduleName The name of the module which tried to load this plugin.
- *  * /
+ *  *\/
  * throw new CKEditorError( 'plugin-load', {
  * 	pluginName: 'foo',
  * 	moduleName: 'bar'
@@ -126,7 +126,7 @@ export default class CKEditorError extends Error {
  *  *
  *  * @error toolbarview-item-unavailable
  *  * @param {String} name The name of the component.
- *  * /
+ *  *\/
  * logWarning( 'toolbarview-item-unavailable', { name } );
  * ```
  *
@@ -151,7 +151,7 @@ export function logWarning( errorName: string, data?: object ): void {
  *  *
  *  * @error toolbarview-item-unavailable
  *  * @param {String} name The name of the component.
- *  * /
+ *  *\/
  *  logError( 'toolbarview-item-unavailable', { name } );
  * ```
  *
