@@ -27,6 +27,8 @@ import Font from '@ckeditor/ckeditor5-font/src/font';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
@@ -126,6 +128,8 @@ ClassicEditor.builtinPlugins = [
 	Highlight,
 	SpecialCharacters,
 	Table,
+	TableColumnResize,
+	TableToolbar,
 	Link,
 	Paragraph,
 	PasteFromOffice
@@ -133,7 +137,12 @@ ClassicEditor.builtinPlugins = [
 
 // Editor configuration.
 ClassicEditor.defaultConfig = {
-	placeholder: '',
+	// This value must be kept in sync with the language defined in webpack.config.js.
+	language: 'en',
+	table: {
+		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+		defaultHeadings: { rows: 1, columns: 1 }
+	},
 	toolbar: {
 		items: [
 			'assetLink', 'references',
@@ -147,7 +156,5 @@ ClassicEditor.defaultConfig = {
 			'specialCharacters', 'insertTable', '|'
 		],
 		shouldNotGroupWhenFull: true
-	},
-	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
+	}
 };
