@@ -126,7 +126,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 	}
 
 	/**
-	 * Returns the first action from the list or null when list is empty
+	 * Returns the first action from the list or null if the list is empty
 	 *
 	 * returns {Object|null} The pending action object.
 	 */

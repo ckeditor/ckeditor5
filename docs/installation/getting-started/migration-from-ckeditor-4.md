@@ -80,7 +80,7 @@ Unlike [CKEditor 4](https://ckeditor.com/ckeditor-4/), CKEditor 5 implements a c
 
 Each kind of content must be handled by some feature. For instance the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
 
-If you load some content that is unrecognizable to any editor feature, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them. Once you do that and load these plugins into you editor instance, CKEditor 5 will no longer filter anything out. You may also use the {@link features/general-html-support General HTML support} feature in certain cases.
+If you load some content that is not recognizable to any of the editor features, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them. Once you do that and load these plugins into you editor instance, CKEditor 5 will no longer filter anything out. You may also use the {@link features/general-html-support General HTML support} feature in certain cases.
 
 ### What happened to the `contents.css` file? How do I style the content of the editor?
 

@@ -84,7 +84,7 @@ You can read more about the {@link framework/guides/contributing/testing-environ
 
 ## Building DLLs
 
-Some manual tests require DLL builds. To learn more about DLL builds, read {@link installation/advanced/dll-builds the guide}. They do not have to be updated every time, unless you want to check changes in DLL builds specifically. Running `yarn run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
+Some manual tests require DLL builds. To learn more about DLL builds, read the {@link installation/advanced/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `yarn run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
 
 ```
 yarn run dll:build

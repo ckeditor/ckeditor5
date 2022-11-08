@@ -40,7 +40,7 @@ const defaultEmitterClass = EmitterMixin( Object );
  * Read more about the concept of emitters in the:
  * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
  * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
- * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
+ * * {@glink framework/guides/deep-dive/event-system Event system} deep-dive guide.
  */
 export default function EmitterMixin<Base extends abstract new ( ...args: Array<any> ) => object>(
 	base: Base
@@ -397,7 +397,7 @@ export default function EmitterMixin( base?: abstract new( ...args: Array<any> )
  * Read more about the usage of this interface in the:
  * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
  * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
- * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
+ * * {@glink framework/guides/deep-dive/event-system Event system} deep-dive guide.
  */
 export interface Emitter {
 

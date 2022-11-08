@@ -18,7 +18,7 @@ import type View from './view';
  *
  * It allows functions producing specific UI components to be registered under their unique names
  * in the factory. A registered component can be then instantiated by providing its name.
- * Note that names are case insensitive.
+ * Note that the names are case insensitive.
  *
  *		// The editor provides localization tools for the factory.
  *		const factory = new ComponentFactory( editor );

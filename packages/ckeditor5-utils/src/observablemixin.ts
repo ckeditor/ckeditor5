@@ -39,7 +39,7 @@ const defaultObservableClass = ObservableMixin( EmitterMixin() );
  * Read more about the concept of observables in the:
  * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
  * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
- * * {@glink framework/guides/deep-dive/observables Observables deep dive} guide.
+ * * {@glink framework/guides/deep-dive/observables Observables deep-dive guide}.
  */
 export default function ObservableMixin<Base extends abstract new( ...args: Array<any> ) => Emitter>(
 	base: Base
@@ -781,7 +781,7 @@ function attachBindToListeners( observable: ObservableInternal, toBindings: Bind
  * Read more about the usage of this interface in the:
  * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
  * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
- * * {@glink framework/guides/deep-dive/observables Observables deep dive} guide.
+ * * {@glink framework/guides/deep-dive/observables Observables deep-dive guide}.
  */
 export interface Observable extends Emitter {
 
