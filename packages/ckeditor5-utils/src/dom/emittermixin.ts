@@ -179,7 +179,7 @@ export default function DomEmitterMixin( base?: abstract new ( ...args: Array<an
 	'stopListening', 'fire', 'delegate', 'stopDelegating',
 	'_addEventListener', '_removeEventListener'
 ] ).forEach( key => {
-	( DomEmitterMixin as any )[ key ] = ( defaultEmitterClass as any )[ key ];
+	( DomEmitterMixin as any )[ key ] = ( defaultEmitterClass.prototype as any )[ key ];
 } );
 
 /**
