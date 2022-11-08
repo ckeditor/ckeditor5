@@ -14,9 +14,9 @@ import type { HighlightDescriptor } from '@ckeditor/ckeditor5-engine/src/convers
 import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
- * Class used to handle correct order of highlights on elements.
+ * Class used to handle the correct order of highlights on elements.
  *
- * When different highlights are applied to same element correct order should be preserved:
+ * When different highlights are applied to same element the correct order should be preserved:
  *
  * * highlight with highest priority should be applied,
  * * if two highlights have same priority - sort by CSS class provided in
@@ -86,8 +86,8 @@ export default class HighlightStack extends Emitter {
 	}
 
 	/**
-	 * Inserts given descriptor in correct place in the stack. It also takes care about updating information when
-	 * descriptor with same id is already present.
+	 * Inserts a given descriptor in correct place in the stack. It also takes care about updating information
+	 * when descriptor with same id is already present.
 	 *
 	 * @private
 	 * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
@@ -107,7 +107,7 @@ export default class HighlightStack extends Emitter {
 		}
 
 		// Find correct place to insert descriptor in the stack.
-		// It have different information (for example priority) so it must be re-inserted in correct place.
+		// It has different information (for example priority) so it must be re-inserted in correct place.
 		let i = 0;
 
 		while ( stack[ i ] && shouldABeBeforeB( stack[ i ], descriptor ) ) {

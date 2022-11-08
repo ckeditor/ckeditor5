@@ -65,7 +65,7 @@ class MyPlugin extends Plugin {
 }
 ```
 
-You can see how to implement a simple plugin in the {@link framework/guides/quick-start Quick start} guide.
+You can see how to implement a simple plugin in the {@link framework/guides/creating-simple-plugin-timestamp creating a basic plugin} guide.
 
 ## Commands
 
