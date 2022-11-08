@@ -53,7 +53,7 @@ export default class Config<Cfg> {
 	 * ```
 	 *
 	 * It accepts both a name/value pair or an object, which properties and values will be used to set
-	 * configurations. See {@link #set:(2)}.
+	 * configurations. See {@link #set:2}.
 	 *
 	 * @param name The configuration name. Configuration names are case-sensitive.
 	 * @param value The configuration value.
@@ -94,7 +94,7 @@ export default class Config<Cfg> {
 	 * ```
 	 *
 	 * It accepts both a name/value pair or an object, which properties and values will be used to set
-	 * configurations. See {@link #set:(1)}.
+	 * configurations. See {@link #set:1}.
 	 *
 	 * @param config The configuration object from which take properties as
 	 * configuration entries. Configuration names are case-sensitive.
@@ -106,7 +106,7 @@ export default class Config<Cfg> {
 	}
 
 	/**
-	 * Does exactly the same as {@link #set:(1)} with one exception – passed configuration extends
+	 * Does exactly the same as {@link #set:1} with one exception – passed configuration extends
 	 * existing one, but does not overwrite already defined values.
 	 *
 	 * This method is supposed to be called by plugin developers to setup plugin's configurations. It would be
@@ -118,7 +118,7 @@ export default class Config<Cfg> {
 	public define<K extends string>( name: K, value: GetSubConfig<Cfg, K> ): void;
 
 	/**
-	 * Does exactly the same as {@link #set:(2)} with one exception – passed configuration extends
+	 * Does exactly the same as {@link #set:2} with one exception – passed configuration extends
 	 * existing one, but does not overwrite already defined values.
 	 *
 	 * This method is supposed to be called by plugin developers to setup plugin's configurations. It would be

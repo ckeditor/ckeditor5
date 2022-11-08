@@ -314,6 +314,7 @@ export default class Collection<T extends { [ id in I ]?: string }, I extends st
 	/**
 	 * Executes the callback for each item in the collection and composes an array or values returned by this callback.
 	 *
+	 * @typeParam U The result type of the callback.
 	 * @param callback
 	 * @param ctx Context in which the `callback` will be called.
 	 * @returns The result of mapping.
@@ -486,6 +487,7 @@ export default class Collection<T extends { [ id in I ]?: string }, I extends st
 	 *
 	 * **Note**: {@link #clear} can be used to break the binding.
 	 *
+	 * @typeParam S The type of `externalCollection` element.
 	 * @param externalCollection A collection to be bound.
 	 * @returns The binding chain object.
 	 */
