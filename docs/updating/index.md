@@ -10,7 +10,7 @@ meta-description: Learn how to maintain and keep you CKEditor 5 up-to-date at al
 CKEditor 5 is an active, rapidly developing software project. It is, therefore, important to keep in touch with all the new features and APIs, changes and bug fixes that are periodically released. As in the case of every software project, it is always wise and highly advised to keep your copy of CKEditor 5 and all plugins up-to-date to maintain the highest level of security and stability. Updating is an important process that should become your routine. Our team constantly introduces new features, bug fixes and improvements, so keeping the editor up-to-date is a way to make sure that you get the best out of CKEditor 5.
 
 <info-box>
-  This guide covers the topic of keeping your CKEditor 5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor 5, please see the {@link installation/getting-started/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
+  This guide covers the topic of keeping your CKEditor 5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor 5, please see the {@link installation/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
 </info-box>
 
 ## Daily maintenance
