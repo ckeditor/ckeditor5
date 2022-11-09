@@ -69,6 +69,7 @@
 		"builds/guides/development/installing-plugins.html": "installation/getting-started/installing-plugins.html",
 		"builds/guides/integration/frameworks/vuejs.html": "installation/frameworks/vuejs-v3.html",
 		"builds/guides/integration/advanced-setup.html": "installation/advanced/alternative-setups/integrating-from-source.html",
+		"https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/advanced-setup.html": "installation/advanced/alternative-setups/integrating-from-source.html",
 		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
 		"builds/guides/reporting-issues.html": "support/reporting-issues.html",
 		"builds/guides/whats-new.html": "features/overview.html",
@@ -150,6 +151,12 @@
 		"builds/guides/integration/frameworks/vuejs-v2.html": "installation/getting-started/frameworks/vuejs-v2.html",
 		"builds/guides/integration/frameworks/vuejs-v3.html": "installation/getting-started/frameworks/vuejs-v3.html",
 		"builds/guides/integration/frameworks/css.html": "installation/getting-started/frameworks/css.html",
+		"installation/getting-started/frameworks/overview.html": "installation/frameworks/overview.html",
+		"installation/getting-started/frameworks/angular.html": "installation/frameworks/angular.html",
+		"installation/getting-started/frameworks/react.html": "installation/frameworks/react.html",
+		"installation/getting-started/frameworks/vuejs-v2.html": "installation/frameworks/vuejs-v2.html",
+		"installation/getting-started/frameworks/vuejs-v3.html": "installation/frameworks/vuejs-v3.html",
+		"installation/getting-started/frameworks/css.html": "installation/frameworks/css.html",
 		"builds/guides/integration/content-styles.html": "installation/advanced/content-styles.html",
 		"builds/guides/development/custom-builds.html": "installation/getting-started/quick-start.html#creating-custom-builds",
 		"builds/guides/development/plugins.html": "installation/advanced/plugins.html",
@@ -180,6 +187,7 @@
 		"updating/updating.html": "updating/index.html",
 		"features/overview.html": "features/index.html",
 		"installation/overview.html": "installation/index.html",
+		"installation/frameworks/vuejs-v3.html": "installation/getting-started/frameworks/vuejs-v3.html",
 		"features/revision-history/revision-history.html": "features/collaboration/revision-history/revision-history.html",
 		"features/revision-history/revision-history-integration.htm": "features/collaboration/revision-history/revision-history-integration.html",
 		"framework/guides/plugins/package-generator.html": "framework/guides/plugins/package-generator/using-package-generator.html"
@@ -230,30 +238,28 @@
 	},
 	"groups": [
 		{
-			"name": "Installation",
+			"name": "Getting started",
 			"id": "installation",
 			"slug": "installation",
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Getting started",
+					"name": "Basics",
 					"id": "getting-started",
 					"slug": "getting-started",
-					"order": 20,
-					"categories": [
-						{
-							"name": "Frameworks",
-							"id": "frameworks",
-							"slug": "frameworks",
-							"order": 70
-						}
-					]
+					"order": 20
 				},
 				{
-					"name": "Advanced",
+					"name": "Frameworks",
+					"id": "frameworks",
+					"slug": "frameworks",
+					"order": 30
+				},
+				{
+					"name": "Advanced concepts",
 					"id": "advanced",
 					"slug": "advanced",
-					"order": 30,
+					"order": 50,
 					"categories": [
 						{
 							"name": "Alternative setups",

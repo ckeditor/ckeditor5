@@ -15,18 +15,18 @@ import UndoUI from './undoui';
  * The undo feature.
  *
  * This is a "glue" plugin which loads the {@link module:undo/undoediting~UndoEditing undo editing feature}
- * and {@link module:undo/undoui~UndoUI undo UI feature}.
+ * and the {@link module:undo/undoui~UndoUI undo UI feature}.
  *
- * Below is the explanation of the undo mechanism working together with {@link module:engine/model/history~History History}:
+ * Below is an explanation of the undo mechanism working together with {@link module:engine/model/history~History History}:
  *
- * Whenever a {@link module:engine/model/operation/operation~Operation operation} is applied to the
+ * Whenever an {@link module:engine/model/operation/operation~Operation operation} is applied to the
  * {@link module:engine/model/document~Document document}, it is saved to `History` as is.
  * The {@link module:engine/model/batch~Batch batch} that owns that operation is also saved, in
  * {@link module:undo/undocommand~UndoCommand}, together with the selection that was present in the document before the
  * operation was applied. A batch is saved instead of the operation because changes are undone batch-by-batch, not operation-by-operation
  * and a batch is seen as one undo step.
  *
- * After some changes happen to the document, the `History` and `UndoCommand` stack can be represented as follows:
+ * After changes happen to the document, the `History` and `UndoCommand` stack can be represented as follows:
  *
  *		    History                            Undo stack
  *		==============             ==================================
@@ -82,7 +82,7 @@ import UndoUI from './undoui';
  * The same algorithm applies: operations from a batch (i.e. `A1`) are reversed and then transformed by operations stored in history.
  *
  * Redo also is very similar to undo. It has its own stack that is filled with undoing (reversed batches). Operations from
- * batch that is re-done are reversed-back, transformed in proper order and applied to the document.
+ * the batch that is re-done are reversed-back, transformed in proper order and applied to the document.
  *
  *		     History                             Undo stack                                      Redo stack
  *		=================             ==================================             ==================================

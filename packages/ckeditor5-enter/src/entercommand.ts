@@ -20,7 +20,7 @@ import type {
 } from '@ckeditor/ckeditor5-engine';
 
 /**
- * Enter command. It is used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> key.
+ * Enter command. It is used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> keystroke.
  *
  * @extends module:core/command~Command
  */

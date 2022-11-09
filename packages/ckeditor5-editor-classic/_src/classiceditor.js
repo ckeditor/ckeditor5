@@ -7,20 +7,13 @@
  * @module editor-classic/classiceditor
  */
 
+import { Editor, DataApiMixin, ElementApiMixin, attachToForm } from 'ckeditor5/src/core';
+import { mix, getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
+
+import { isElement } from 'lodash-es';
+
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
-
-import {
-	Editor,
-	DataApiMixin,
-	ElementApiMixin,
-	attachToForm,
-	type EditorConfig,
-	type EditorReadyEvent
-} from 'ckeditor5/src/core';
-import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
-
-import { isElement as _isElement } from 'lodash-es';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#classic-editor classic editor} implementation.
@@ -44,25 +37,26 @@ import { isElement as _isElement } from 'lodash-es';
  *
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
+ *
+ * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
+ * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
+ * @implements module:core/editor/editorwithui~EditorWithUI
+ * @extends module:core/editor/editor~Editor
  */
-export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
-	/**
-	 * @inheritDoc
-	 */
-	public readonly ui: ClassicEditorUI;
-
+export default class ClassicEditor extends Editor {
 	/**
 	 * Creates an instance of the classic editor.
 	 *
 	 * **Note:** do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`} method instead.
 	 *
-	 * @param sourceElementOrData The DOM element that will be the source for the created editor
+	 * @protected
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data. For more information see
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
-	 * @param config The editor configuration.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 */
-	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
+	constructor( sourceElementOrData, config = {} ) {
 		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
 		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
 			// Documented in core/editor/editorconfig.jsdoc.
@@ -98,8 +92,10 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * Updates the original editor element with the data if the
 	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
 	 * configuration option is set to `true`.
+	 *
+	 * @returns {Promise}
 	 */
-	public override destroy(): Promise<unknown> {
+	destroy() {
 		if ( this.sourceElement ) {
 			this.updateSourceElement();
 		}
@@ -118,16 +114,14 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 *
 	 * You can initialize the editor using an existing DOM element:
 	 *
-	 * ```ts
-	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ) )
-	 * 	.then( editor => {
-	 * 		console.log( 'Editor was initialized', editor );
-	 * 	} )
-	 * 	.catch( err => {
-	 * 		console.error( err.stack );
-	 * 	} );
-	 * ```
+	 *		ClassicEditor
+	 *			.create( document.querySelector( '#editor' ) )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
 	 *
 	 * The element's content will be used as the editor data and the element will be replaced by the editor UI.
 	 *
@@ -136,19 +130,17 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * Alternatively, you can initialize the editor by passing the initial data directly as a string.
 	 * In this case, the editor will render an element that must be inserted into the DOM:
 	 *
-	 * ```ts
-	 * ClassicEditor
-	 * 	.create( '<p>Hello world!</p>' )
-	 * 	.then( editor => {
-	 * 		console.log( 'Editor was initialized', editor );
+	 *		ClassicEditor
+	 *			.create( '<p>Hello world!</p>' )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
 	 *
-	 * 		// Initial data was provided so the editor UI element needs to be added manually to the DOM.
-	 * 		document.body.appendChild( editor.ui.element );
-	 * 	} )
-	 * 	.catch( err => {
-	 * 		console.error( err.stack );
-	 * 	} );
-	 * ```
+	 *				// Initial data was provided so the editor UI element needs to be added manually to the DOM.
+	 *				document.body.appendChild( editor.ui.element );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
 	 *
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
@@ -157,18 +149,16 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 *
 	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
-	 * ```ts
-	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
-	 * 	} )
-	 * 	.then( editor => {
-	 * 		console.log( 'Editor was initialized', editor );
-	 * 	} )
-	 * 	.catch( err => {
-	 * 		console.error( err.stack );
-	 * 	} );
-	 * ```
+	 *		ClassicEditor
+	 *			.create( document.querySelector( '#editor' ), {
+	 *				initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 *			} )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
 	 *
 	 * This method can be used to initialize the editor on an existing element with the specified content in case if your integration
 	 * makes it difficult to set the content of the source element.
@@ -191,7 +181,7 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
 	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source dedicated guide}.
 	 *
-	 * @param sourceElementOrData The DOM element that will be the source for the created editor
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
 	 *
 	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization
@@ -206,28 +196,27 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
 	 * It is available under the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `editor.ui.element`} property.
 	 *
-	 * @param config The editor configuration.
-	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
+	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	public static create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<ClassicEditor> {
+	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
 			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
-					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
+					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
+					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
 	}
 }
 
-function getInitialData( sourceElementOrData: HTMLElement | string ): string {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
-}
+mix( ClassicEditor, DataApiMixin );
+mix( ClassicEditor, ElementApiMixin );
 
-function isElement( value: any ): value is Element {
-	return _isElement( value );
+function getInitialData( sourceElementOrData ) {
+	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }

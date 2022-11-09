@@ -282,7 +282,7 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 		if ( isMatchingBeforeInput ) {
 			beforeInputReceived = true;
 		}
-	} );
+	}, { priority: 'high' } );
 
 	document.on<ViewDocumentInputEvent>( 'beforeinput', ( evt, { inputType, data } ) => {
 		const shouldIgnoreBeforeInput = pressedKeyCode == keyCodes.delete &&

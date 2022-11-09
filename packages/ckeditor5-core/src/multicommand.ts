@@ -19,7 +19,7 @@ import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observ
  *
  * This command is used to proxy multiple commands. The multi-command is enabled when
  * at least one of its registered child commands is enabled.
- * When executing a multi-command the first enabled command with highest priority will be executed.
+ * When executing a multi-command, the first enabled command with highest priority will be executed.
  *
  *		const multiCommand = new MultiCommand( editor );
  *
@@ -87,7 +87,7 @@ export default class MultiCommand extends Command {
 	): void {
 		insertToPriorityArray( this._childCommandsDefinitions, { command, priority: options.priority || 'normal' } );
 
-		// Change multi command enabled state when one of registered commands changes state.
+		// Change multi-command enabled state when one of registered commands changes state.
 		command.on<ObservableChangeEvent<boolean>>( 'change:isEnabled', () => this._checkEnabled() );
 
 		this._checkEnabled();
