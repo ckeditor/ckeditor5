@@ -230,7 +230,7 @@ export function setHighlightHandling(
  * @param {string|Function} labelOrCreator
  */
 export function setLabel( element: Element, labelOrCreator: string | ( () => string ) ): void {
-	const widgetLabel = element.getCustomProperty( 'widgetLabel' ) as Array<string | Function>;
+	const widgetLabel = element.getCustomProperty( 'widgetLabel' ) as Array<string | ( () => string )>;
 
 	widgetLabel.push( labelOrCreator );
 }
