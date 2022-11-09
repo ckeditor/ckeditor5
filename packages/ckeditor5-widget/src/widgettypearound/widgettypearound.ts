@@ -932,7 +932,8 @@ function injectButtons( wrapperDomElement: HTMLElement, buttonTitles: { before: 
 					'ck-widget__type-around__button',
 					`ck-widget__type-around__button_${ position }`
 				],
-				title: buttonTitles[ position ]
+				title: buttonTitles[ position ],
+				'aria-hidden': 'true'
 			},
 			children: [
 				wrapperDomElement.ownerDocument.importNode( RETURN_ARROW_ICON_ELEMENT, true )
