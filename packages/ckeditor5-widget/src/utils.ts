@@ -242,7 +242,7 @@ export function setLabel( element: Element, labelOrCreator: string | ( () => str
  * @returns {String}
  */
 export function getLabel( element: Element ): string {
-	const widgetLabel = element.getCustomProperty( 'widgetLabel' ) as Array<string | Function>;
+	const widgetLabel = element.getCustomProperty( 'widgetLabel' ) as Array<string | ( () => string )>;
 
 	return widgetLabel.reduce( ( prev: string, current: string | Function ) => {
 		if ( typeof current === 'function' ) {
