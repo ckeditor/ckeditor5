@@ -29,7 +29,7 @@ import type DowncastWriter from './downcastwriter';
  */
 export default class Document extends BubblingEmitterMixin( ObservableMixin() ) {
 	public readonly selection: DocumentSelection;
-	public readonly roots: Collection<RootEditableElement, 'rootName'>;
+	public readonly roots: Collection<RootEditableElement>;
 	public readonly stylesProcessor: StylesProcessor;
 
 	declare public isReadOnly: boolean;

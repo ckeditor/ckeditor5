@@ -55,7 +55,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 export default class PendingActions extends ContextPlugin implements Iterable<PendingAction> {
 	declare public hasAny: boolean;
 
-	private _actions!: Collection<PendingAction & { _id?: string }, '_id'>;
+	private _actions!: Collection<PendingAction>;
 
 	/**
 	 * @inheritDoc
