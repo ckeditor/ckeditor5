@@ -7,9 +7,17 @@
  * @module editor-inline/inlineeditorui
  */
 
-import { EditorUI } from 'ckeditor5/src/core';
+import {
+	EditorUI,
+	type EditorUIReadyEvent,
+	type ElementApi,
+	type Editor,
+	type EditorUIUpdateEvent
+} from 'ckeditor5/src/core';
 import { normalizeToolbarConfig } from 'ckeditor5/src/ui';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
+
+import type InlineEditorUIView from './inlineeditoruiview';
 
 /**
  * The inline editor UI class.
@@ -18,47 +26,44 @@ import { enablePlaceholder } from 'ckeditor5/src/engine';
  */
 export default class InlineEditorUI extends EditorUI {
 	/**
+	 * The main (top–most) view of the editor UI.
+	 */
+	public readonly view: InlineEditorUIView;
+
+	/**
+	 * A normalized `config.toolbar` object.
+	 */
+	private readonly _toolbarConfig: ReturnType<typeof normalizeToolbarConfig>;
+
+	/**
 	 * Creates an instance of the inline editor UI class.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
+	 * @param editor The editor instance.
+	 * @param view The view of the UI.
 	 */
-	constructor( editor, view ) {
+	constructor( editor: Editor, view: InlineEditorUIView ) {
 		super( editor );
 
-		/**
-		 * The main (top–most) view of the editor UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
-		 */
 		this.view = view;
-
-		/**
-		 * A normalized `config.toolbar` object.
-		 *
-		 * @type {Object}
-		 * @private
-		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	get element() {
+	public override get element(): HTMLElement | null {
 		return this.view.editable.element;
 	}
 
 	/**
 	 * Initializes the UI.
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const view = this.view;
 		const editingView = editor.editing.view;
 		const editable = view.editable;
-		const editingRoot = editingView.document.getRoot();
+		const editingRoot = editingView.document.getRoot()!;
 
 		// The editable UI and editing root should share the same name. Then name is used
 		// to recognize the particular editable, for instance in ARIA attributes.
@@ -68,7 +73,7 @@ export default class InlineEditorUI extends EditorUI {
 
 		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
 		// But it can be available earlier if a DOM element has been passed to InlineEditor.create().
-		const editableElement = editable.element;
+		const editableElement = editable.element!;
 
 		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
 		// editable areas (roots) but the inline editor has only one.
@@ -89,40 +94,38 @@ export default class InlineEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
-		this.fire( 'ready' );
+		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		const view = this.view;
 		const editingView = this.editor.editing.view;
 
-		editingView.detachDomRoot( view.editable.name );
+		editingView.detachDomRoot( view.editable.name! );
 		view.destroy();
 	}
 
 	/**
 	 * Initializes the inline editor toolbar and its panel.
-	 *
-	 * @private
 	 */
-	_initToolbar() {
+	private _initToolbar(): void {
 		const editor = this.editor;
 		const view = this.view;
-		const editableElement = view.editable.element;
+		const editableElement = view.editable.element!;
 		const toolbar = view.toolbar;
 
 		// Set–up the view#panel.
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
 
-		view.bind( 'viewportTopOffset' ).to( this, 'viewportOffset', ( { top } ) => top );
+		view.bind( 'viewportTopOffset' ).to( this, 'viewportOffset', ( { top } ) => top || 0 );
 
 		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
-		view.listenTo( editor.ui, 'update', () => {
+		view.listenTo<EditorUIUpdateEvent>( editor.ui, 'update', () => {
 			// Don't pin if the panel is not already visible. It prevents the panel
 			// showing up when there's no focus in the UI.
 			if ( view.panel.isVisible ) {
@@ -141,14 +144,12 @@ export default class InlineEditorUI extends EditorUI {
 
 	/**
 	 * Enable the placeholder text on the editing root, if any was configured.
-	 *
-	 * @private
 	 */
-	_initPlaceholder() {
+	private _initPlaceholder(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		const editingRoot = editingView.document.getRoot();
-		const sourceElement = editor.sourceElement;
+		const editingRoot = editingView.document.getRoot()!;
+		const sourceElement = ( editor as Editor & ElementApi ).sourceElement;
 
 		const placeholderText = editor.config.get( 'placeholder' ) ||
 			sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' );
