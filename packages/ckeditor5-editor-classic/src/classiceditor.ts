@@ -45,7 +45,6 @@ import { isElement as _isElement } from 'lodash-es';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
  */
-// eslint-disable-next-line new-cap
 export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
 	/**
 	 * @inheritDoc
@@ -120,14 +119,14 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * You can initialize the editor using an existing DOM element:
 	 *
 	 * ```ts
-	 *	ClassicEditor
-	 *		.create( document.querySelector( '#editor' ) )
-	 *		.then( editor => {
-	 *			console.log( 'Editor was initialized', editor );
-	 *		} )
-	 *		.catch( err => {
-	 *			console.error( err.stack );
-	 *		} );
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ) )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
 	 * ```
 	 *
 	 * The element's content will be used as the editor data and the element will be replaced by the editor UI.
@@ -138,17 +137,17 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * In this case, the editor will render an element that must be inserted into the DOM:
 	 *
 	 * ```ts
-	 *	ClassicEditor
-	 *		.create( '<p>Hello world!</p>' )
-	 *		.then( editor => {
-	 *			console.log( 'Editor was initialized', editor );
+	 * ClassicEditor
+	 * 	.create( '<p>Hello world!</p>' )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
 	 *
-	 *			// Initial data was provided so the editor UI element needs to be added manually to the DOM.
-	 *			document.body.appendChild( editor.ui.element );
-	 *		} )
-	 *		.catch( err => {
-	 *			console.error( err.stack );
-	 *		} );
+	 * 		// Initial data was provided so the editor UI element needs to be added manually to the DOM.
+	 * 		document.body.appendChild( editor.ui.element );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
 	 * ```
 	 *
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
@@ -159,16 +158,16 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
 	 * ```ts
-	 *	ClassicEditor
-	 *		.create( document.querySelector( '#editor' ), {
-	 *			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
-	 *		} )
-	 *		.then( editor => {
-	 *			console.log( 'Editor was initialized', editor );
-	 *		} )
-	 *		.catch( err => {
-	 *			console.error( err.stack );
-	 *		} );
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
 	 * ```
 	 *
 	 * This method can be used to initialize the editor on an existing element with the specified content in case if your integration
