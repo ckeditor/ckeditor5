@@ -127,14 +127,14 @@ export default class InlineEditor extends DataApiMixin( ElementApiMixin( Editor 
 	 * You can initialize the editor using an existing DOM element:
 	 *
 	 * ```ts
-	 *	InlineEditor
-	 *		.create( document.querySelector( '#editor' ) )
-	 *		.then( editor => {
-	 *			console.log( 'Editor was initialized', editor );
-	 *		} )
-	 *		.catch( err => {
-	 *			console.error( err.stack );
-	 *		} );
+	 * InlineEditor
+	 * 	.create( document.querySelector( '#editor' ) )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
 	 * ```
 	 *
 	 * The element's content will be used as the editor data and the element will become the editable element.
@@ -145,17 +145,17 @@ export default class InlineEditor extends DataApiMixin( ElementApiMixin( Editor 
 	 * In this case, the editor will render an element that must be inserted into the DOM for the editor to work properly:
 	 *
 	 * ```ts
-	 *	InlineEditor
-	 *		.create( '<p>Hello world!</p>' )
-	 *		.then( editor => {
-	 *			console.log( 'Editor was initialized', editor );
+	 * InlineEditor
+	 * 	.create( '<p>Hello world!</p>' )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
 	 *
-	 *			// Initial data was provided so the editor UI element needs to be added manually to the DOM.
-	 *			document.body.appendChild( editor.ui.element );
-	 *		} )
-	 *		.catch( err => {
-	 *			console.error( err.stack );
-	 *		} );
+	 * 		// Initial data was provided so the editor UI element needs to be added manually to the DOM.
+	 * 		document.body.appendChild( editor.ui.element );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
 	 * ```
 	 *
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
@@ -166,16 +166,16 @@ export default class InlineEditor extends DataApiMixin( ElementApiMixin( Editor 
 	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
 	 * ```ts
-	 *	InlineEditor
-	 *		.create( document.querySelector( '#editor' ), {
-	 *			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
-	 *		} )
-	 *		.then( editor => {
-	 *			console.log( 'Editor was initialized', editor );
-	 *		} )
-	 *		.catch( err => {
-	 *			console.error( err.stack );
-	 *		} );
+	 * InlineEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
 	 * ```
 	 *
 	 * This method can be used to initialize the editor on an existing element with the specified content in case if your integration
