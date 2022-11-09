@@ -264,7 +264,7 @@ export default class WidgetTypeAround extends Plugin {
 			if ( isTypeAroundWidget( viewElement, data.item, schema ) ) {
 				injectUIIntoWidget( conversionApi.writer, buttonTitles, viewElement! );
 
-				const widgetLabel = viewElement.getCustomProperty( 'widgetLabel' ) as Array<string | Function>;
+				const widgetLabel = viewElement.getCustomProperty( 'widgetLabel' ) as Array<string | ( () => string )>;
 
 				widgetLabel.push( () => {
 					return this.isEnabled ? t( 'Press Enter to type after or press Shift + Enter to type before the widget' ) : '';
