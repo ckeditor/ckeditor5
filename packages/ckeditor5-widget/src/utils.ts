@@ -244,7 +244,7 @@ export function setLabel( element: Element, labelOrCreator: string | ( () => str
 export function getLabel( element: Element ): string {
 	const widgetLabel = element.getCustomProperty( 'widgetLabel' ) as Array<string | ( () => string )>;
 
-	return widgetLabel.reduce( ( prev: string, current: string | Function ) => {
+	return widgetLabel.reduce( ( prev: string, current: string | ( () => string ) ) => {
 		if ( typeof current === 'function' ) {
 			return prev ? prev + '. ' + current() : current();
 		} else {
