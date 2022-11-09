@@ -70,7 +70,6 @@ export default class ClassicTestEditor extends DataApiMixin( ElementApiMixin( Ed
 					// Simulate EditorUI.init() (e.g. like in ClassicEditorUI). The ui#view
 					// should be rendered after plugins are initialized.
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
 					.then( () => {
 						if ( !isElement( sourceElementOrData ) && config.initialData ) {
 							// Documented in core/editor/editorconfig.jsdoc.
@@ -134,6 +133,8 @@ class ClassicTestEditorUI extends EditorUI {
 		view.main.add( view.editable );
 
 		this.setEditableElement( 'main', view.editable.element );
+
+		editingView.attachDomRoot( view.editable.element );
 
 		if ( replacementElement ) {
 			this._elementReplacer.replace( replacementElement, view.element );
