@@ -68,41 +68,41 @@ export default class InlineEditorUIView extends EditorUIView {
 	 * * West:
 	 *
 	 * ```
-	 *		[ Panel ]
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
+	 * [ Panel ]
+	 * +------------------+
+	 * | #editableElement |
+	 * +------------------+
 	 *
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		|[ Panel ]         |
-	 *		|                  |
-	 *		+------------------+
+	 * +------------------+
+	 * | #editableElement |
+	 * |[ Panel ]         |
+	 * |                  |
+	 * +------------------+
 	 *
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
-	 *		[ Panel ]
+	 * +------------------+
+	 * | #editableElement |
+	 * +------------------+
+	 * [ Panel ]
 	 * ```
 	 *
 	 * * East:
 	 *
-	 *  ```
-	 *		           [ Panel ]
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
+	 * ```
+	 *            [ Panel ]
+	 * +------------------+
+	 * | #editableElement |
+	 * +------------------+
 	 *
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		|         [ Panel ]|
-	 *		|                  |
-	 *		+------------------+
+	 * +------------------+
+	 * | #editableElement |
+	 * |         [ Panel ]|
+	 * |                  |
+	 * +------------------+
 	 *
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
-	 *		           [ Panel ]
+	 * +------------------+
+	 * | #editableElement |
+	 * +------------------+
+	 *            [ Panel ]
 	 * ```
 	 *
 	 * See: {@link module:utils/dom/position~Options#positions}.

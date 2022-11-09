@@ -233,6 +233,7 @@ export default class InlineEditor extends DataApiMixin( ElementApiMixin( Editor 
 		} );
 	}
 }
+
 function getInitialData( sourceElementOrData: HTMLElement | string ): string {
 	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }
