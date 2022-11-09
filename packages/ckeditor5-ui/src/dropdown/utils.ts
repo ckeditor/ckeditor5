@@ -225,9 +225,9 @@ export function addToolbarToDropdown(
  * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} items
  * A collection of the list item definitions to populate the list.
  */
-export function addListToDropdown<I extends string>(
+export function addListToDropdown(
 	dropdownView: DropdownView,
-	items: Collection<ListDropdownItemDefinition & { [ id in I ]?: string }, I>
+	items: Collection<ListDropdownItemDefinition>
 ): void {
 	const locale = dropdownView.locale;
 	const listView = dropdownView.listView = new ListView( locale );
