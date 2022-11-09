@@ -254,10 +254,6 @@ HelpjuiceEditor.defaultConfig = {
 		colors: colorPalette,
 		columns: 7
 	},
-	simpleUpload: {
-		// The URL that the images are uploaded to.
-		uploadUrl: '/uploads'
-	},
 	table: {
 		contentToolbar: [
 			'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
@@ -327,7 +323,7 @@ HelpjuiceEditor.defaultConfig = {
 			'imageTextAlternative',
 		],
 		upload: {
-			types: [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff', 'svg+xml' ]
+			types: [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff', 'svg+xml', 'x-icon' ]
 		}
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
