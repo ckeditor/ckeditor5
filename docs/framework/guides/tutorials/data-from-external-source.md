@@ -596,7 +596,7 @@ class ExternalWidgetEditing extends Plugin {
 		return setInterval( () => this._updateWidgetData(), 15000 ); // set time interval to 15s
 	}
 
-	// fetch data and update all widget instances
+	// Fetch data and update all widget instances
 	async _updateWidgetData( externalUrl = RESOURCE_URL ) {
 		try {
 			const response = await fetch( externalUrl );
