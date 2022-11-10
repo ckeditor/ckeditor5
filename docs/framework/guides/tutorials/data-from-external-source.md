@@ -577,7 +577,7 @@ class ExternalWidgetEditing extends Plugin {
 		return [ Widget ];
 	}
 
-	// this method will help us to clear the interval
+	// This method will help us to clear the interval
 	destroy() {
 		clearInterval( this.intervalId );
 	}
