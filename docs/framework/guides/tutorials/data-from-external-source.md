@@ -606,7 +606,7 @@ class ExternalWidgetEditing extends Plugin {
 			// Example parsed data: $17098.35 - 09/11/2022, 18:04:18
 			const parsedData = '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
 
-			// update property with last fetched and parsed data
+			// Update property with last fetched and parsed data
 			this.externalDataValue = parsedData;
 
 			const rootElement = this.editor.model.document.getRoot();
