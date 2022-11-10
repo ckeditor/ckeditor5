@@ -4,8 +4,8 @@
 # * Underline that migrating is a complex and important task.
 # * List and clarify the things that need attention when migrating.
 
-category: getting-started
-order: 80
+category: installation
+order: 40
 modified_at: 2022-04-15
 ---
 
@@ -52,7 +52,7 @@ The same may apply for third-party plugins which may not have been ported to CKE
 
 Check the {@link installation/advanced/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
 
-When it comes to official plugins compatibility between CKEditor 4 and CKEditor 5, please see the {@link installation/getting-started/migration-from-ckeditor-4#plugins-compatibility-table compatibility table} to learn more.
+When it comes to official plugins compatibility between CKEditor 4 and CKEditor 5, please see the {@link installation/migration-from-ckeditor-4#plugins-compatibility-table compatibility table} to learn more.
 
 ## Themes (skins)
 

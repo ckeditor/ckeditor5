@@ -38,6 +38,8 @@ packages/ckeditor5-undo/src/**/*.js
 packages/ckeditor5-upload/src/**/*.js
 packages/ckeditor5-utils/src/**/*.js
 packages/ckeditor5-widget/src/**/*.js
+packages/ckeditor5-editor-classic/src/**/*.js
+packages/ckeditor5-editor-inline/src/**/*.js
 packages/ckeditor5-essentials/src/**/*.js
 packages/*/src/**/*.d.ts
 src/**/*.js
