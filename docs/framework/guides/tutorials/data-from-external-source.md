@@ -371,7 +371,7 @@ export default class ExternalWidgetEditing extends Plugin {
 
 ### Feature styles
 
-As you could notice, the editing part imports the `./theme/externalwidget.css` CSS file which describes how the widget will be animated when new value arrives:
+As you might have noticed, the editing part imports the `./theme/externalwidget.css` CSS file which describes how the widget will be animated when new value arrives:
 
 ```css
 /* external-widget/theme/externalwidget.css */
