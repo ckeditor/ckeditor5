@@ -806,7 +806,7 @@ export interface CollectionBindToChain<S, T> {
 	/**
 	 * Creates a callback or a property binding.
 	 *
-	 * @param callbackOrProperty  When the function is passed, it should return
+	 * @param callbackOrProperty When the function is passed, it should return
 	 * the collection items. When the string is provided, the property value is used to create the bound collection items.
 	 */
 	using( callbackOrProperty: keyof S | ( ( item: S ) => T | null ) ): void;

@@ -52,7 +52,7 @@ export default function ObservableMixin<Base extends abstract new( ...args: Arra
  * A mixin that injects the "observable properties" and data binding functionality described in the
  * {@link ~Observable} interface.
  *
- * This function creates a class that inherits from the provided `base` and implements `Observable` interface.
+ * This function creates a class that implements `Observable` interface.
  *
  * ```ts
  * class MyClass extends ObservableMixin() {

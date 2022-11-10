@@ -57,7 +57,7 @@ export default function DomEmitterMixin<Base extends abstract new ( ...args: Arr
  * Mixin that injects the DOM events API into its host. It provides the API
  * compatible with {@link module:utils/emittermixin~EmitterMixin}.
  *
- * This function creates a class that inherits from the provided `base` and implements `Emitter` interface.
+ * This function creates a class that implements `Emitter` interface.
  *
  * DOM emitter mixin is by default available in the {@link module:ui/view~View} class,
  * but it can also be mixed into any other class:

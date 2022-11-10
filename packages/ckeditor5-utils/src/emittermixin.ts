@@ -52,7 +52,7 @@ export default function EmitterMixin<Base extends abstract new ( ...args: Array<
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.
  *
- * This function creates a class that inherits from the provided `base` and implements `Emitter` interface.
+ * This function creates a class that implements `Emitter` interface.
  *
  * ```ts
  * class MyClass extends EmitterMixin() {
@@ -589,7 +589,7 @@ interface EmitterInternal extends Emitter {
 /**
  * Default type describing any event.
  *
- * Every custom event have to be compatible with `BaseEvent`.
+ * Every custom event has to be compatible with `BaseEvent`.
  *
  * ```ts
  * type MyEvent = {
@@ -600,7 +600,7 @@ interface EmitterInternal extends Emitter {
  *
  * 	// In `fire<MyEvent>( name, a, b )` call, `a` and `b` parameters will be type-checked against `number` and `string`.
  * 	// In `on<MyEvent>`, `once<MyEvent>` and `listenTo<MyEvent>` calls, the parameters of provided callback function
- * 	// will be automatically inferred to be `EventInfo`, `number` and `string`.
+ * 	// will be automatically inferred as `EventInfo`, `number` and `string`.
  * 	// Required.
  * 	args: [ number, string ];
  *
@@ -609,14 +609,14 @@ interface EmitterInternal extends Emitter {
  * 	return: boolean;
  *
  * 	// `fire<MyEvent>( eventInfo )` will type-check that `eventInfo` is `MyEventInfo`, not a base `EventInfo` or string.
- * 	// In `on<MyEvent>`, `once<MyEvent>` and `listenTo<MyEvent>` calls, the first parameter will be of this type.
+ * 	// In `on<MyEvent>`, `once<MyEvent>` and `listenTo<MyEvent>` calls, the first callback parameter will be of this type.
  * 	// Optional.
- * 	eventInfo: MyEventInfo
+ * 	eventInfo: MyEventInfo;
  *
  * 	// In `on<MyEvent>`, `once<MyEvent>` and `listenTo<MyEvent>` calls, the `options` parameter will be of type
  * 	// `{ myOption?: boolean; priority?: PriorityString }
  * 	// Optional.
- * 	callbackOptions: { myOption?: boolean }
+ * 	callbackOptions: { myOption?: boolean };
  * };
  * ```
  */
