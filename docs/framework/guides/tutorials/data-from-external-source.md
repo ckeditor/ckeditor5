@@ -235,7 +235,7 @@ export default class ExternalWidgetEditing extends Plugin {
 
 At this stage you can build the project and open it in the browser to verify if it is building correctly.
 
-Use this command `./node_modules/.bin/webpack --mode development` in main folder of the widget to build the project.
+Use this command `./node_modules/.bin/webpack --mode development` in root folder of the widget to build the project.
 
 After the build is completed, open `index.html` in your browser to check if all is correct at this stage.
 
