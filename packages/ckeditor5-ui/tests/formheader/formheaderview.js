@@ -43,12 +43,15 @@ describe( 'FormHeaderView', () => {
 			expect( view.element.classList.contains( 'ck-form__header' ) ).to.be.true;
 		} );
 
+		it( 'should has the "h2" tag in header', () => {
+			expect( view.element.getElementsByClassName( 'ck ck-form__header__label' )[ 0 ].tagName ).to.equal( 'H2' );
+		} );
+
 		describe( 'options', () => {
 			it( 'should set view#class when class was passed', () => {
 				const view = new FormHeaderView( locale, {
 					class: 'foo'
 				} );
-
 				expect( view.class ).to.equal( 'foo' );
 
 				view.destroy();
