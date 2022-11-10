@@ -393,7 +393,7 @@ As you might have noticed, the editing part imports the `./theme/externalwidget.
 
 ### Command
 
-The {@link framework/guides/architecture/core-editor-architecture#commands command} for the external widget feature will insert an `<externalElement>` element (if allowed by the schema) at the selection and after insert is completed the selection will be set on inserted widget.
+The {@link framework/guides/architecture/core-editor-architecture#commands command} for the external widget feature will insert an `<externalElement>` element (if allowed by the schema) at the selection and set the selection on the inserted widget.
 
 ```js
 // external-widget/externalwidgetcommand.js
