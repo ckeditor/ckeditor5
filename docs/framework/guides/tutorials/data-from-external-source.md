@@ -611,7 +611,7 @@ class ExternalWidgetEditing extends Plugin {
 
 			const rootElement = this.editor.model.document.getRoot();
 
-			// loop over whole editor content, search for external widget instances
+			// Iterate over whole editor content, search for external widget instances
 			// and trigger `recovertItem` function
 			for ( const { item } of this.editor.model.createRangeIn( rootElement ) ) {
 				if ( item.is( 'element', 'externalElement' ) ) {
