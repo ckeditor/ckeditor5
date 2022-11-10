@@ -507,6 +507,7 @@ class ExternalWidgetUI extends Plugin {
 			// Execute the command when the button is clicked (executed).
 			button.on( 'execute', () => {
 				editor.execute( 'external' );
+				// set focus on the editor content
 				editor.editing.view.focus();
 			} );
 
