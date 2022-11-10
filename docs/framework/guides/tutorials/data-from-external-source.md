@@ -237,6 +237,8 @@ At this stage you can build the project and open it in the browser to verify if 
 
 Use this command `./node_modules/.bin/webpack --mode development` in main folder of the widget to build the project.
 
+After the build is completed, open `index.html` in your browser to check if all is correct at this stage.
+
 ## The model and the view layers
 
 The external widget feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks, like `<paragraph>`, that allow text. The external widget will have a `data-resource-url` attribute. This means that the model containing some text and a external widget will look like this:
