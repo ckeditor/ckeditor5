@@ -567,7 +567,7 @@ class ExternalWidgetEditing extends Plugin {
 	constructor( editor ) {
 		// The default constructor calls the parent constructor
 		super( editor );
-		// property that keep the interval id
+		// Property that keep the interval id
 		this.intervalId = this._intervalFetch();
 		// last fetched value
 		this.externalDataValue = '';
