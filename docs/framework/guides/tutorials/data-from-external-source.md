@@ -354,7 +354,7 @@ export default class ExternalWidgetEditing extends Plugin {
 			model: 'externalElement',
 			view: ( modelElement, { writer } ) => {
 				const externalDataPreviewElement = writer.createRawElement( 'span', null, function( domElement ) {
-					// for now show some static text
+					// For now show some static text
 					domElement.textContent = 'Data placeholder';
 				} );
 
