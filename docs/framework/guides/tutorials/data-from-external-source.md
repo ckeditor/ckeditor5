@@ -642,7 +642,7 @@ class ExternalWidgetEditing extends Plugin {
 					// if new value arrive add a css animation effect to show that data were updated
 					if ( externalValueToShow ) {
 						domElement.classList.add( 'external-widget-bounce' );
-						// remove animation class when it ends
+						// Remove the animation class when it ends
 						setTimeout( () => domElement.classList.remove( 'external-widget-bounce' ), 1100 );
 					}
 				} );
