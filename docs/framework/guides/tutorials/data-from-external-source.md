@@ -565,7 +565,7 @@ Data will be fetched in with time interval set to 15 seconds. Every instance of 
 class ExternalWidgetEditing extends Plugin {
 	//
 	constructor( editor ) {
-		// the default constructor calls the parent constructor
+		// The default constructor calls the parent constructor
 		super( editor );
 		// property that keep the interval id
 		this.intervalId = this._intervalFetch();
