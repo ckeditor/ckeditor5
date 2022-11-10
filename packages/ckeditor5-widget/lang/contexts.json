@@ -1,5 +1,6 @@
 {
 	"Widget toolbar": "The label used by assistive technologies describing a toolbar attached to a widget.",
 	"Insert paragraph before block": "The title displayed when a mouse is over a button that inserts a paragraph before a block.",
-	"Insert paragraph after block": "The title displayed when a mouse is over a button that inserts a paragraph after a block."
+	"Insert paragraph after block": "The title displayed when a mouse is over a button that inserts a paragraph after a block.",
+	"Press Enter to type after or press Shift + Enter to type before the widget": "Information to be read by screen reader about shortcuts to type around a widget"
 }
