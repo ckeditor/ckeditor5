@@ -569,7 +569,7 @@ class ExternalWidgetEditing extends Plugin {
 		super( editor );
 		// Property that keep the interval id
 		this.intervalId = this._intervalFetch();
-		// last fetched value
+		// Last fetched value
 		this.externalDataValue = '';
 	}
 
