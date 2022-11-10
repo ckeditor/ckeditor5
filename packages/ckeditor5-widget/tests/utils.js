@@ -69,6 +69,12 @@ describe( 'widget utils', () => {
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
 		} );
 
+		it( 'should set element\'s custom property \'widgetLabel\' as an array', () => {
+			toWidget( element, writer );
+
+			expect( element.getCustomProperty( 'widgetLabel' ) ).to.be.an( 'array' );
+		} );
+
 		it( 'should set default highlight handling methods - CSS class', () => {
 			toWidget( element, writer );
 
@@ -176,26 +182,34 @@ describe( 'widget utils', () => {
 
 	describe( 'label utils', () => {
 		it( 'should allow to set label for element', () => {
-			const element = new ViewElement( viewDocument, 'p' );
+			toWidget( element, writer );
 			setLabel( element, 'foo bar baz', writer );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz' );
 		} );
 
 		it( 'should return empty string for elements without label', () => {
-			const element = new ViewElement( viewDocument, 'div' );
+			toWidget( element, writer );
 
 			expect( getLabel( element ) ).to.equal( '' );
 		} );
 
 		it( 'should allow to use a function as label creator', () => {
-			const element = new ViewElement( viewDocument, 'p' );
+			toWidget( element, writer );
 			let caption = 'foo';
 			setLabel( element, () => caption, writer );
 
 			expect( getLabel( element ) ).to.equal( 'foo' );
 			caption = 'bar';
 			expect( getLabel( element ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should concatenate a label from a function creator and a string', () => {
+			toWidget( element, writer );
+			setLabel( element, () => 'foo', writer );
+			element.getCustomProperty( 'widgetLabel' ).push( 'bar' );
+
+			expect( getLabel( element ) ).to.equal( 'foo. bar' );
 		} );
 	} );
 

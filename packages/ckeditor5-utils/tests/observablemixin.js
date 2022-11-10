@@ -113,7 +113,7 @@ describe( 'Observable', () => {
 				seats: 5
 			} );
 
-			expect( car ).to.deep.equal( {
+			expect( car ).to.include( {
 				color: 'blue',
 				year: 2015,
 				wheels: 4,
@@ -125,7 +125,7 @@ describe( 'Observable', () => {
 			car.set( 'color', 'blue' );
 			car.set( 'wheels', 4 );
 
-			expect( car ).to.deep.equal( {
+			expect( car ).to.include( {
 				color: 'blue',
 				year: 2015,
 				wheels: 4

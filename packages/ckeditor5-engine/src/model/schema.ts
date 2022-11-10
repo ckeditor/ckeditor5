@@ -34,7 +34,7 @@ import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
  *
  * * The {@glink framework/guides/architecture/editing-engine#schema schema section} of the
  * {@glink framework/guides/architecture/editing-engine Introduction to the Editing engine architecture} guide.
- * * The {@glink framework/guides/deep-dive/schema Schema deep dive} guide.
+ * * The {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -234,7 +234,7 @@ export default class Schema extends Observable {
 	 *		schema.isBlock( paragraphElement ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#block-elements Block elements} section of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 * @returns {Boolean}
@@ -260,7 +260,7 @@ export default class Schema extends Observable {
 	 *		schema.isLimit( 'imageBlock' ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 * @returns {Boolean}
@@ -290,7 +290,7 @@ export default class Schema extends Observable {
 	 *		schema.isObject( imageElement ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 * @returns {Boolean}
@@ -318,7 +318,7 @@ export default class Schema extends Observable {
 	 *		schema.isInline( text ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 * @returns {Boolean}
@@ -342,7 +342,7 @@ export default class Schema extends Observable {
 	 *		schema.isSelectable( text ); // -> false
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements section} of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 * @returns {Boolean}
@@ -370,7 +370,7 @@ export default class Schema extends Observable {
 	 *		schema.isContent( text ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#content-elements Content elements section} of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 * @returns {Boolean}
@@ -1203,7 +1203,7 @@ export type SchemaCheckAttributeEvent = {
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
  * Read more about the meaning of these types in the
- * {@glink framework/guides/deep-dive/schema#defining-additional-semantics dedicated section of the Schema deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#defining-additional-semantics dedicated section of the Schema deep-dive guide}.
  *
  * # Generic items
  *
@@ -1246,7 +1246,7 @@ export type SchemaCheckAttributeEvent = {
  * (paragraphs, lists items, headings, images) which, in turn, may contain text inside.
  *
  * By inheriting from the generic items you can define new items which will get extended by other editor features.
- * Read more about generic types in the {@glink framework/guides/deep-dive/schema Schema deep dive} guide.
+ * Read more about generic types in the {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
  *
  * # Example definitions
  *
@@ -1340,14 +1340,14 @@ export type SchemaCheckAttributeEvent = {
  *
  * Read more about the block elements in the
  * {@glink framework/guides/deep-dive/schema#block-elements Block elements section} of
- * the {@glink framework/guides/deep-dive/schema Schema deep dive}.
+ * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
  *
  * @property {Boolean} isInline
  * Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
  * `$text`, `softBreak` (`<br>`), etc.
  *
  * Read more about the inline elements in the
- * {@glink framework/guides/deep-dive/schema#inline-elements Inline elements section} of the Schema deep dive guide.
+ * {@glink framework/guides/deep-dive/schema#inline-elements Inline elements section} of the Schema deep-dive guide.
  *
  * @property {Boolean} isLimit
  * It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
@@ -1356,7 +1356,7 @@ export type SchemaCheckAttributeEvent = {
  *
  * Read more about the limit elements in the
  * {@glink framework/guides/deep-dive/schema#limit-elements Limit elements section} of
- * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide.
+ * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
  *
  * @property {Boolean} isObject
  * Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
@@ -1366,7 +1366,7 @@ export type SchemaCheckAttributeEvent = {
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
  * Read more about the object elements in the
- * {@glink framework/guides/deep-dive/schema#object-elements Object elements section} of the Schema deep dive guide.
+ * {@glink framework/guides/deep-dive/schema#object-elements Object elements section} of the Schema deep-dive guide.
  *
  * @property {Boolean} isSelectable
  * `true` when an element should be selectable as a whole by the user. Examples of selectable elements: `imageBlock`, `table`, `tableCell`,
@@ -1377,7 +1377,7 @@ export type SchemaCheckAttributeEvent = {
  *
  * Read more about selectable elements in the
  * {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements section} of
- * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide.
+ * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
  *
  * @property {Boolean} isContent
  * An item is a content when it always finds its way to the editor data output regardless of the number and type of its descendants.
@@ -1388,7 +1388,7 @@ export type SchemaCheckAttributeEvent = {
  *
  * Read more about content elements in the
  * {@glink framework/guides/deep-dive/schema#content-elements Content elements section} of
- * the {@glink framework/guides/deep-dive/schema Schema deep dive} guide.
+ * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
  */
 
 export interface SchemaItemDefinition {

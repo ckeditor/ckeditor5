@@ -141,6 +141,8 @@ class App extends Component {
 		);
 	}
 }
+
+export default App;
 ```
 
 ### Context feature properties

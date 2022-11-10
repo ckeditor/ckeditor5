@@ -7,7 +7,7 @@
  * @module core
  */
 
-export { default as Plugin } from './plugin';
+export { default as Plugin, type PluginDependencies } from './plugin';
 export { default as Command } from './command';
 export { default as MultiCommand } from './multicommand';
 export { CommandsMap } from './commandcollection';
@@ -16,13 +16,13 @@ export { PluginsMap } from './plugincollection';
 export { default as Context } from './context';
 export { default as ContextPlugin } from './contextplugin';
 
-export { default as Editor } from './editor/editor';
-export { default as EditorUI } from './editor/editorui';
+export { default as Editor, type EditorReadyEvent } from './editor/editor';
+export { default as EditorUI, type EditorUIReadyEvent, type EditorUIUpdateEvent } from './editor/editorui';
 export { EditorConfig } from './editor/editorconfig';
 
 export { default as attachToForm } from './editor/utils/attachtoform';
 export { default as DataApiMixin } from './editor/utils/dataapimixin';
-export { default as ElementApiMixin } from './editor/utils/elementapimixin';
+export { default as ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin';
 export { default as secureSourceElement } from './editor/utils/securesourceelement';
 
 export { default as PendingActions } from './pendingactions';
