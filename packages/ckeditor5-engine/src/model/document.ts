@@ -51,7 +51,7 @@ export default class Document extends EmitterMixin() {
 	public readonly model: Model;
 	public readonly history: History;
 	public readonly selection: DocumentSelection;
-	public readonly roots: Collection<RootElement, 'rootName'>;
+	public readonly roots: Collection<RootElement>;
 	public readonly differ: Differ;
 
 	private readonly _postFixers: Set<( writer: Writer ) => boolean>;

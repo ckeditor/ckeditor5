@@ -49,7 +49,7 @@ import type View from './view';
  * @extends module:utils/collection~Collection
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class ViewCollection extends Collection<View, 'viewUid'> {
+export default class ViewCollection extends Collection<View> {
 	public id?: string;
 
 	private _parentElement: DocumentFragment | HTMLElement | null;
