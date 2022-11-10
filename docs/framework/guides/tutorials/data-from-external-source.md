@@ -288,7 +288,7 @@ The schema is defined so now you can define the model-view converters.
 
 ### Defining converters
 
-The HTML structure (data output) of the converter will be a `<span>` with a `data-resource-url` attribute with external resource url as a value.
+The HTML structure (data output) of the converter will be a `<span>` with a `data-resource-url` attribute with the external resource url as a value.
 
 ```html
 <span data-resource-url="RESOURCE_URL"></span>
