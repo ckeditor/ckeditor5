@@ -585,7 +585,7 @@ class ExternalWidgetEditing extends Plugin {
 	init() {
 		this._defineSchema();
 		this._defineConverters();
-		// initial execute function to fetch and update the data
+		// Initial execute function to fetch and update the data
 		this._updateWidgetData();
 
 		this.editor.commands.add( 'external', new ExternalWidgetCommand( this.editor ) );
