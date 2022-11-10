@@ -659,7 +659,7 @@ class ExternalWidgetEditing extends Plugin {
 
 ```
 
-Traversing over the whole editor content can be tricky. When there relatively little content this method is sufficient, but if there is a lot of content, we suggest to use `WeakMap`.
+Editor content traversal can be a challenging process. The presented method is sufficient when there is relatively little content. Otherwise, a `WeakMap` will be a better option.
 
 
 ## Demo
