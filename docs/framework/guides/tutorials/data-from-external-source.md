@@ -639,7 +639,7 @@ class ExternalWidgetEditing extends Plugin {
 					// When the value is not present (initial run) show a placeholder
 					domElement.textContent = externalValueToShow || 'Fetching data...';
 
-					// if new value arrive add a css animation effect to show that data were updated
+					// If a new value arrives, add a CSS animation effect to show that data were updated
 					if ( externalValueToShow ) {
 						domElement.classList.add( 'external-widget-bounce' );
 						// Remove the animation class when it ends
