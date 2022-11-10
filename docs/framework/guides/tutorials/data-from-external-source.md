@@ -591,7 +591,7 @@ class ExternalWidgetEditing extends Plugin {
 		this.editor.commands.add( 'external', new ExternalWidgetCommand( this.editor ) );
 	}
 
-	// interval function
+	// Interval function
 	_intervalFetch() {
 		return setInterval( () => this._updateWidgetData(), 15000 ); // set time interval to 15s
 	}
