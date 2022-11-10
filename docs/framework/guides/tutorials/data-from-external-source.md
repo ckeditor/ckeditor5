@@ -558,7 +558,7 @@ In this tutorial we will use an external API that provides a current Bitcoin rat
 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'
 ```
 
-Data will be fetched in with time interval set to 15 seconds. Every instance of the widget will be updated at once in same time. To achieve that we need to modify our `ExternalWidgetEditing` class.
+Data will be fetched every 15 seconds. Every instance of the widget will be updated at the same time. To achieve that, we need to modify our `ExternalWidgetEditing` class.
 
 ```js
 
