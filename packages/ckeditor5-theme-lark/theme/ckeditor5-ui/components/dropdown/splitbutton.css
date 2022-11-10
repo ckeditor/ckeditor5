@@ -33,7 +33,6 @@
 		/* It's a text-less button and since the icon is positioned absolutely in such situation,
 		it must get some arbitrary min-width. */
 		min-width: unset;
-		
 		@nest [dir="ltr"] & {
 			/* Don't round the arrow button on the left side */
 			border-top-left-radius: unset;
