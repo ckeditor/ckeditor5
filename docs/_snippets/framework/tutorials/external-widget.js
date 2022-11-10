@@ -64,7 +64,7 @@ class ExternalWidgetUI extends Plugin {
 			const button = new ButtonView( locale );
 
 			button.set( {
-				label: 'Insert Bitcoin rate',
+				label: 'Bitcoin rate',
 				tooltip: true,
 				withText: true
 			} );
@@ -107,7 +107,7 @@ class ExternalWidgetEditing extends Plugin {
 	}
 
 	_intervalFetch() {
-		return setInterval( () => this._updateWidgetData(), 20000 ); // set time interval to 20s
+		return setInterval( () => this._updateWidgetData(), 15000 ); // set time interval to 15s
 	}
 
 	async _updateWidgetData( externalUrl = RESOURCE_URL ) {
@@ -200,6 +200,12 @@ ClassicEditor
 
 		// Expose for playing in the console.
 		window.editor = editor;
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.label && item.label === 'Bitcoin rate' ),
+			text: 'Click to add Bitcoin rate.',
+			editor
+		} );
 	} )
 	.catch( error => {
 		console.error( error.stack );
