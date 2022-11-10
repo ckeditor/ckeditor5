@@ -5,9 +5,9 @@ order: 10
 
 # Data from external source
 
-In this tutorial, you will learn how to implement a widget that fetch data from an external source.
+In this tutorial, you will learn how to implement a widget that fetch data from an external source and updates all own instances in set interval of time.
 
-You will build an "external" feature that allows the users to insert predefined widget that will show current Bitcoin rate and it will be updated with the set time interval fetching data from predefined external source. You will use widget utilities and conversion in order to define the behavior of this feature. Later on, you will use button utilities to create a button that will allow for inserting new instances of external source widgets. You will also learn how to update the widget data based on the editor API.
+You will build an "external data fetch" feature that allows the users to insert predefined widget that will show current Bitcoin rate and it will be updated with the set time interval fetching data from predefined external source. You will use widget utilities and conversion in order to define the behavior of this feature. Later on, you will use button utilities to create a button that will allow for inserting new instances of external source widgets. You will also learn how to update the widget data based on the editor API.
 
 <info-box>
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
