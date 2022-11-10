@@ -252,7 +252,7 @@ The external widget feature will be {@link module:engine/model/schema~SchemaItem
 ### Defining the schema
 
 The schema definition in this widget is almost the same as in {@link framework/guides/tutorials/implementing-an-inline-widget#defining-the-schema inline widget tutorial}, the only thing that is different is in `allowAttributes`, in our case we want to allow `'data-resource-url'` attribute.
-Instead of passing all the attributes to the config object we can use a {@link framework/guides/deep-dive/schema#generic-items generic items} to inherit already predefined options.
+Instead of passing all the attributes to the config object we can use {@link framework/guides/deep-dive/schema#generic-items generic items} to inherit already predefined options.
 
 You will also use this opportunity to import the theme file (`theme/externalwidget.css`).
 
