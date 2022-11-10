@@ -33,7 +33,6 @@
 		/* It's a text-less button and since the icon is positioned absolutely in such situation,
 		it must get some arbitrary min-width. */
 		min-width: unset;
-		border: none;
 		
 		@nest [dir="ltr"] & {
 			/* Don't round the arrow button on the left side */
@@ -50,6 +49,11 @@
 		& svg {
 			width: var(--ck-dropdown-arrow-size);
 		}
+	}
+	
+	& > .ck-splitbutton__arrow:not(:focus) {
+		border-top-width: 0px;
+		border-bottom-width: 0px;
 	}
 
 	/* When the split button is "open" (the arrow is on) or being hovered, it should get some styling
