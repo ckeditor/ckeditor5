@@ -139,13 +139,13 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import ExternalWidget from './external-widget/externalwidget';
+import ExternalDataWidget from './external-data-widget/externaldatawidget';
 
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalWidget ],
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
@@ -162,7 +162,7 @@ ClassicEditor
 ```
 
 
-Before building the project you still need to define the `ExternalWidget` plugin. The project will have a structure as below:
+Before building the project you still need to define the `ExternalDataWidget` plugin. The project will have a structure as below:
 
 ```
 ├── app.js
@@ -172,13 +172,13 @@ Before building the project you still need to define the `ExternalWidget` plugin
 ├── index.html
 ├── node_modules
 ├── package.json
-├── external-widget
-│   ├── externalwidget.js
-│   ├── externalwidgetcommand.js
-│   ├── externalwidgetediting.js
-│   ├── externalwidgetui.js
+├── external-data-widget
+│   ├── externaldatawidget.js
+│   ├── externaldatawidgetcommand.js
+│   ├── externaldatawidgetediting.js
+│   ├── externaldatawidgetui.js
 │   └── theme
-│       └── externalwidget.css
+│       └── externaldatawidget.css
 │
 │   ... the rest of the plugin files go here as well.
 │
@@ -186,21 +186,21 @@ Before building the project you still need to define the `ExternalWidget` plugin
 ```
 
 
-You can see that the external widget feature has an established plugin structure: the master (glue) plugin (`external-widget/externalwidget.js`), the "editing" (`external-widget/externalwidgetediting.js`) and the "UI" (`external-widget/externalwidgetui.js`) parts.
+You can see that the external widget feature has an established plugin structure: the master (glue) plugin (`external-data-widget/externaldatawidget.js`), the "editing" (`external-data-widget/externaldatawidgetediting.js`) and the "UI" (`external-data-widget/externaldatawidgetui.js`) parts.
 
 The master (glue) plugin:
 
 ```js
-// external-widget/externalwidget.js
+// external-data-widget/externaldatawidget.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import ExternalWidgetEditing from './externalwidgetediting';
-import ExternalWidgetUI from './externalwidgetui';
+import ExternalDataWidgetEditing from './externaldatawidgetediting';
+import ExternalDataWidgetUI from './externaldatawidgetui';
 
-export default class ExternalWidget extends Plugin {
+export default class ExternalDataWidget extends Plugin {
 	static get requires() {
-		return [ ExternalWidgetEditing, ExternalWidgetUI ];
+		return [ ExternalDataWidgetEditing, ExternalDataWidgetUI ];
 	}
 }
 ```
@@ -208,13 +208,13 @@ export default class ExternalWidget extends Plugin {
 The UI part (empty for now):
 
 ```js
-// external-widget/externalwidgetui.js
+// external-data-widget/externaldatawidgetui.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-export default class ExternalWidgetUI extends Plugin {
+export default class ExternalDataWidgetUI extends Plugin {
 	init() {
-		console.log( 'ExternalWidgetUI#init() got called' );
+		console.log( 'ExternalDataWidgetUI#init() got called' );
 	}
 }
 ```
@@ -222,13 +222,13 @@ export default class ExternalWidgetUI extends Plugin {
 And the editing part (empty for now):
 
 ```js
-// external-widget/externalwidgetediting.js
+// external-data-widget/externaldatawidgetediting.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-export default class ExternalWidgetEditing extends Plugin {
+export default class ExternalDataWidgetEditing extends Plugin {
 	init() {
-		console.log( 'ExternalWidgetEditing#init() got called' );
+		console.log( 'ExternalDataWidgetEditing#init() got called' );
 	}
 }
 ```
@@ -254,18 +254,18 @@ The external widget feature will be {@link module:engine/model/schema~SchemaItem
 The schema definition of this widget is almost the same as in {@link framework/guides/tutorials/implementing-an-inline-widget#defining-the-schema inline widget tutorial}, the only thing that is different is in `allowAttributes`, in our case we want to allow the `'data-resource-url'` attribute.
 Instead of passing all the attributes to the config object we can use {@link framework/guides/deep-dive/schema#generic-items generic items} to inherit already predefined options.
 
-You can also use this opportunity to import the theme file (`theme/externalwidget.css`).
+You can also use this opportunity to import the theme file (`theme/externaldatawidget.css`).
 
 ```js
-// external-widget/externalwidgetediting.js
+// external-data-widget/externaldatawidgetediting.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import './theme/externalwidget.css';                                           // ADDED
+import './theme/externaldatawidget.css';                                           // ADDED
 
-export default class ExternalWidgetEditing extends Plugin {
+export default class ExternalDataWidgetEditing extends Plugin {
 	init() {
-		console.log( 'ExternalWidgetEditing#init() got called' );
+		console.log( 'ExternalDataWidgetEditing#init() got called' );
 
 		this._defineSchema();                                                  // ADDED
 	}
@@ -298,7 +298,7 @@ The HTML structure (data output) of the converter will be a `<span>` with a `dat
 * {@link framework/guides/deep-dive/conversion/downcast **Downcast conversion**}. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget-specific behavior in the editing view. In both pipelines, the element will be rendered using the same structure.
 
 ```js
-// external-widget/externalwidgetediting.js
+// external-data-widget/externaldatawidgetediting.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -306,15 +306,15 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
-import './theme/externalwidget.css';
+import './theme/externaldatawidget.css';
 
-export default class ExternalWidgetEditing extends Plugin {
+export default class ExternalDataWidgetEditing extends Plugin {
 	static get requires() {                                                    // ADDED
 		return [ Widget ];
 	}
 
 	init() {
-		console.log( 'ExternalWidgetEditing#init() got called' );
+		console.log( 'ExternalDataWidgetEditing#init() got called' );
 
 		this._defineSchema();
 		this._defineConverters();                                              // ADDED
@@ -371,16 +371,16 @@ export default class ExternalWidgetEditing extends Plugin {
 
 ### Feature styles
 
-As you might have noticed, the editing part imports the `./theme/externalwidget.css` CSS file which describes how the widget will be animated when new value arrives:
+As you might have noticed, the editing part imports the `./theme/externaldatawidget.css` CSS file which describes how the widget will be animated when new value arrives:
 
 ```css
-/* external-widget/theme/externalwidget.css */
+/* external-data-widget/theme/externaldatawidget.css */
 
-.external-widget-bounce {
-	animation: external-widget-bounce-animation 0.7s 1;
+.external-data-widget-bounce {
+	animation: external-data-widget-bounce-animation 0.7s 1;
 }
 
-@keyframes external-widget-bounce-animation {
+@keyframes external-data-widget-bounce-animation {
 	0% {
 		box-shadow: 0px 0px 0px 0px rgba(116, 60, 205, 1);
 	}
@@ -396,14 +396,14 @@ As you might have noticed, the editing part imports the `./theme/externalwidget.
 The {@link framework/guides/architecture/core-editor-architecture#commands command} for the external widget feature will insert an `<externalElement>` element (if allowed by the schema) at the selection and set the selection on the inserted widget.
 
 ```js
-// external-widget/externalwidgetcommand.js
+// external-data-widget/externaldatawidgetcommand.js
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 // example external data source url
 const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
 
-class ExternalWidgetCommand extends Command {
+class ExternalDataWidgetCommand extends Command {
 	execute() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
@@ -439,30 +439,30 @@ class ExternalWidgetCommand extends Command {
 Import the created command and add it to the editor commands:
 
 ```js
-// external-widget/externalwidgetediting.js
+// external-data-widget/externaldatawidgetediting.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
-import ExternalWidgetCommand from './externalwidgetcommand';                   // ADDED
+import ExternalDataWidgetCommand from './externaldatawidgetcommand';                   // ADDED
 
-import './theme/externalwidget.css';
+import './theme/externaldatawidget.css';
 
-export default class ExternalWidgetEditing extends Plugin {
+export default class ExternalDataWidgetEditing extends Plugin {
 	static get requires() {
 		return [ Widget ];
 	}
 
 	init() {
-		console.log( 'ExternalWidgetEditing#init() got called' );
+		console.log( 'ExternalDataWidgetEditing#init() got called' );
 
 		this._defineSchema();
 		this._defineConverters();
 
 		// ADDED
-		this.editor.commands.add( 'external', new ExternalWidgetCommand( this.editor ) );
+		this.editor.commands.add( 'external', new ExternalDataWidgetCommand( this.editor ) );
 	}
 
 	_defineSchema() {
@@ -480,14 +480,14 @@ export default class ExternalWidgetEditing extends Plugin {
 The UI part will provide a {@link module:ui/button/buttonview~ButtonView} that user can click to insert external widget into the editor. As a icon for the button we can use an official logotype from the public domain {@link https://en.bitcoin.it/wiki/Promotional_graphics Bitcoin promotional graphics}. You can import the icon file (`theme/bitcoinLogo.svg`) and use it like it is shown below.
 
 ```js
-// external-widget/externalwidgetui.js
+// external-data-widget/externaldatawidgetui.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src';
 
 import BitcoinLogoIcon from './theme/bitcoinLogo.svg';
 
-class ExternalWidgetUI extends Plugin {
+class ExternalDataWidgetUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const externalWidgetCommand = editor.commands.get( 'external' );
@@ -533,11 +533,11 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import ExternalWidgetCommand from './externalwidgetcommand';
+import ExternalDataWidgetCommand from './externaldatawidgetcommand';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalWidget ],
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 
 		// Insert the "external" button into the editor toolbar.
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'external', '|', 'undo', 'redo' ]
@@ -561,11 +561,11 @@ In this tutorial we will use an external API that provides a current Bitcoin rat
 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'
 ```
 
-Data will be fetched every 15 seconds. Every instance of the widget will be updated at the same time. To achieve that, we need to modify our `ExternalWidgetEditing` class.
+Data will be fetched every 15 seconds. Every instance of the widget will be updated at the same time. To achieve that, we need to modify our `ExternalDataWidgetEditing` class.
 
 ```js
 
-class ExternalWidgetEditing extends Plugin {
+class ExternalDataWidgetEditing extends Plugin {
 	//
 	constructor( editor ) {
 		// The default constructor calls the parent constructor
@@ -591,7 +591,7 @@ class ExternalWidgetEditing extends Plugin {
 		// Initial execute function to fetch and update the data
 		this._updateWidgetData();
 
-		this.editor.commands.add( 'external', new ExternalWidgetCommand( this.editor ) );
+		this.editor.commands.add( 'external', new ExternalDataWidgetCommand( this.editor ) );
 	}
 
 	// Interval function
@@ -644,9 +644,9 @@ class ExternalWidgetEditing extends Plugin {
 
 					// If a new value arrives, add a CSS animation effect to show that data were updated
 					if ( externalValueToShow ) {
-						domElement.classList.add( 'external-widget-bounce' );
+						domElement.classList.add( 'external-data-widget-bounce' );
 						// Remove the animation class when it ends
-						setTimeout( () => domElement.classList.remove( 'external-widget-bounce' ), 1100 );
+						setTimeout( () => domElement.classList.remove( 'external-data-widget-bounce' ), 1100 );
 					}
 				} );
 
@@ -669,11 +669,11 @@ Editor content traversal can be a challenging process. The presented method is s
 
 You can see the external widget implementation in action in the editor below.
 
-{@snippet framework/tutorials/external-widget}
+{@snippet framework/tutorials/external-data-widget}
 
 ## Final solution
 
-The following code snippet contains a complete implementation of the `ExternalWidget` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box (excluded the Bitcoin logo):
+The following code snippet contains a complete implementation of the `ExternalDataWidget` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box (excluded the Bitcoin logo):
 
 ```js
 
@@ -692,7 +692,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
 const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
 
-class ExternalWidgetCommand extends Command {
+class ExternalDataWidgetCommand extends Command {
 	execute() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
@@ -721,13 +721,13 @@ class ExternalWidgetCommand extends Command {
 	}
 }
 
-class ExternalWidget extends Plugin {
+class ExternalDataWidget extends Plugin {
 	static get requires() {
-		return [ ExternalWidgetEditing, ExternalWidgetUI ];
+		return [ ExternalDataWidgetEditing, ExternalDataWidgetUI ];
 	}
 }
 
-class ExternalWidgetUI extends Plugin {
+class ExternalDataWidgetUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const externalWidgetCommand = editor.commands.get( 'external' );
@@ -753,7 +753,7 @@ class ExternalWidgetUI extends Plugin {
 	}
 }
 
-class ExternalWidgetEditing extends Plugin {
+class ExternalDataWidgetEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
@@ -775,7 +775,7 @@ class ExternalWidgetEditing extends Plugin {
 		this._defineConverters();
 		this._updateWidgetData();
 
-		this.editor.commands.add( 'external', new ExternalWidgetCommand( this.editor ) );
+		this.editor.commands.add( 'external', new ExternalDataWidgetCommand( this.editor ) );
 	}
 
 	_intervalFetch() {
@@ -847,8 +847,8 @@ class ExternalWidgetEditing extends Plugin {
 					domElement.textContent = externalValueToShow || 'Fetching data...';
 
 					if ( externalValueToShow ) {
-						domElement.classList.add( 'external-widget-bounce' );
-						setTimeout( () => domElement.classList.remove( 'external-widget-bounce' ), 1100 );
+						domElement.classList.add( 'external-data-widget-bounce' );
+						setTimeout( () => domElement.classList.remove( 'external-data-widget-bounce' ), 1100 );
 					}
 				} );
 
@@ -863,8 +863,8 @@ class ExternalWidgetEditing extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-external-widget' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalWidget ],
+	.create( document.querySelector( '#snippet-external-data-widget' ), {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 		toolbar: [ 'external', '|', 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {

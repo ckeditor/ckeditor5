@@ -22,7 +22,7 @@ import BitcoinLogoIcon from './bitcoinLogo.svg';
 
 const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
 
-class ExternalWidgetCommand extends Command {
+class ExternalDataWidgetCommand extends Command {
 	execute() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
@@ -51,13 +51,13 @@ class ExternalWidgetCommand extends Command {
 	}
 }
 
-class ExternalWidget extends Plugin {
+class ExternalDataWidget extends Plugin {
 	static get requires() {
-		return [ ExternalWidgetEditing, ExternalWidgetUI ];
+		return [ ExternalDataWidgetEditing, ExternalDataWidgetUI ];
 	}
 }
 
-class ExternalWidgetUI extends Plugin {
+class ExternalDataWidgetUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const externalWidgetCommand = editor.commands.get( 'external' );
@@ -84,7 +84,7 @@ class ExternalWidgetUI extends Plugin {
 	}
 }
 
-class ExternalWidgetEditing extends Plugin {
+class ExternalDataWidgetEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
@@ -106,7 +106,7 @@ class ExternalWidgetEditing extends Plugin {
 		this._defineConverters();
 		this._updateWidgetData();
 
-		this.editor.commands.add( 'external', new ExternalWidgetCommand( this.editor ) );
+		this.editor.commands.add( 'external', new ExternalDataWidgetCommand( this.editor ) );
 	}
 
 	_intervalFetch() {
@@ -178,8 +178,8 @@ class ExternalWidgetEditing extends Plugin {
 					domElement.textContent = externalValueToShow || 'Fetching data...';
 
 					if ( externalValueToShow ) {
-						domElement.classList.add( 'external-widget-bounce' );
-						setTimeout( () => domElement.classList.remove( 'external-widget-bounce' ), 1100 );
+						domElement.classList.add( 'external-data-widget-bounce' );
+						setTimeout( () => domElement.classList.remove( 'external-data-widget-bounce' ), 1100 );
 					}
 				} );
 
@@ -194,8 +194,8 @@ class ExternalWidgetEditing extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-external-widget' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalWidget ],
+	.create( document.querySelector( '#snippet-external-data-widget' ), {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 		toolbar: [ 'external', '|', 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
