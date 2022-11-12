@@ -7,7 +7,7 @@ order: 10
 
 In this tutorial, you will learn how to implement a widget that fetches data from an external source and updates all own instances in a set interval of time.
 
-You will build an "external data fetch" feature that allows users to insert a predefined widget that will show the current Bitcoin rate and it will be updated with the set time interval fetching data from a predefined external source. You will use widget utilities and conversion in order to define the behavior of this feature. Later on, you will use button utilities to create a button that will allow for inserting new instances of external source widgets. You will also learn how to update the widget data based on the editor API.
+You will build an "external data fetch" feature that allows users to insert a predefined widget that will show the current Bitcoin rate and it will be updated with the set time interval fetching data from a predefined external source. You will use widget utilities and conversion in order to define the behavior of this feature. Later on, you will use {@link framework/guides/architecture/ui-library UI library} to create a {@link module:ui/button/buttonview~ButtonView} that will allow for inserting new instances of external source widgets. You will also learn how to update the widget data based on the editor API.
 
 <info-box>
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
@@ -477,7 +477,7 @@ export default class ExternalWidgetEditing extends Plugin {
 
 ## Creating the UI
 
-The UI part will provide a button that user can click to insert external widget into the editor.
+The UI part will provide a {@link module:ui/button/buttonview~ButtonView} that user can click to insert external widget into the editor.
 
 ```js
 // external-widget/externalwidgetui.js
@@ -517,7 +517,7 @@ class ExternalWidgetUI extends Plugin {
 }
 ```
 
-Add the button to the toolbar:
+Add the {@link module:ui/button/buttonview~ButtonView} to the toolbar:
 
 ```js
 // app.js
