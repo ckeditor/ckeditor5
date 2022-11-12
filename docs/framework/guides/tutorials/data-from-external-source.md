@@ -249,6 +249,10 @@ The external data widget feature will be {@link module:engine/model/schema~Schem
 </paragraph>
 ```
 
+<info-box>
+	Syntax presented above is used by our debugging tools, like {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector}, which is particularly helpful when developing new rich-text editor features.
+</info-box>
+
 ### Defining the schema
 
 The schema definition of this widget is almost the same as in {@link framework/guides/tutorials/implementing-an-inline-widget#defining-the-schema inline widget tutorial}, the only thing that is different is in `allowAttributes`, in our case we want to allow the `'data-resource-url'` attribute.
