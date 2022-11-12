@@ -477,13 +477,15 @@ export default class ExternalWidgetEditing extends Plugin {
 
 ## Creating the UI
 
-The UI part will provide a {@link module:ui/button/buttonview~ButtonView} that user can click to insert external widget into the editor.
+The UI part will provide a {@link module:ui/button/buttonview~ButtonView} that user can click to insert external widget into the editor. As a icon for the button we can use an official logotype from the public domain {@link https://en.bitcoin.it/wiki/Promotional_graphics Bitcoin promotional graphics}. You can import the icon file (`theme/bitcoinLogo.svg`) and use it like it is shown below.
 
 ```js
 // external-widget/externalwidgetui.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src';
+
+import BitcoinLogoIcon from './theme/bitcoinLogo.svg';
 
 class ExternalWidgetUI extends Plugin {
 	init() {
@@ -498,7 +500,8 @@ class ExternalWidgetUI extends Plugin {
 			button.set( {
 				label: 'Bitcoin rate',
 				tooltip: true,
-				withText: true
+				withText: false,
+				icon: BitcoinLogoIcon
 			} );
 
 			// Disable the external widget button when the command is disabled.
@@ -670,7 +673,7 @@ You can see the external widget implementation in action in the editor below.
 
 ## Final solution
 
-The following code snippet contains a complete implementation of the `ExternalWidget` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box:
+The following code snippet contains a complete implementation of the `ExternalWidget` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box (excluded the Bitcoin logo):
 
 ```js
 
