@@ -186,7 +186,7 @@ Before building the project you still need to define the `ExternalDataWidget` pl
 ```
 
 
-You can see that the external widget feature has an established plugin structure: the master (glue) plugin (`external-data-widget/externaldatawidget.js`), the "editing" (`external-data-widget/externaldatawidgetediting.js`) and the "UI" (`external-data-widget/externaldatawidgetui.js`) parts.
+You can see that the external data widget feature has an established plugin structure: the master (glue) plugin (`external-data-widget/externaldatawidget.js`), the "editing" (`external-data-widget/externaldatawidgetediting.js`) and the "UI" (`external-data-widget/externaldatawidgetui.js`) parts.
 
 The master (glue) plugin:
 
@@ -241,9 +241,9 @@ After the build is completed, open `index.html` in your browser to check if all 
 
 ## The model and the view layers
 
-The external widget feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks that allow text e.g. `<paragraph>`. The external widget will have a `data-resource-url` attribute. This means that the model containing some text and an external widget will look like this:
+The external data widget feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks that allow text e.g. `<paragraph>`. The external data widget will have a `data-resource-url` attribute. This means that the model representation of the external data widget will look like this:
 
-```html
+```
 <paragraph>
 	External value: <externalElement data-resource-url="RESOURCE_URL"></externalElement>.
 </paragraph>
@@ -277,7 +277,7 @@ export default class ExternalDataWidgetEditing extends Plugin {
 			// Inheriting all from the generic item
 			inheritAllFrom: '$inlineObject',
 
-			// The external widget can have many attributes
+			// The external data widget can have many attributes
 			allowAttributes: [ 'data-resource-url' ]
 		} );
 	}
@@ -393,7 +393,7 @@ As you might have noticed, the editing part imports the `./theme/externaldatawid
 
 ### Command
 
-The {@link framework/guides/architecture/core-editor-architecture#commands command} for the external widget feature will insert an `<externalElement>` element (if allowed by the schema) at the selection and set the selection on the inserted widget.
+The {@link framework/guides/architecture/core-editor-architecture#commands command} for the external data widget feature will insert an `<externalElement>` element (if allowed by the schema) at the selection and set the selection on the inserted widget.
 
 ```js
 // external-data-widget/externaldatawidgetcommand.js
@@ -477,7 +477,7 @@ export default class ExternalDataWidgetEditing extends Plugin {
 
 ## Creating the UI
 
-The UI part will provide a {@link module:ui/button/buttonview~ButtonView} that user can click to insert external widget into the editor. As a icon for the button we can use an official logotype from the public domain {@link https://en.bitcoin.it/wiki/Promotional_graphics Bitcoin promotional graphics}. You can import the icon file (`theme/bitcoinLogo.svg`) and use it like it is shown below.
+The UI part will provide a {@link module:ui/button/buttonview~ButtonView} that user can click to insert external data widget into the editor. As a icon for the button we can use an official logotype from the public domain [Bitcoin promotional graphics](https://en.bitcoin.it/wiki/Promotional_graphics). You can import the icon file (`theme/bitcoinLogo.svg`) and use it like it is shown below.
 
 ```js
 // external-data-widget/externaldatawidgetui.js
@@ -504,7 +504,7 @@ class ExternalDataWidgetUI extends Plugin {
 				icon: BitcoinLogoIcon
 			} );
 
-			// Disable the external widget button when the command is disabled.
+			// Disable the external data widget button when the command is disabled.
 			button.bind( 'isEnabled' ).to( externalWidgetCommand );
 
 			// Execute the command when the button is clicked (executed).
@@ -614,7 +614,7 @@ class ExternalDataWidgetEditing extends Plugin {
 
 			const rootElement = this.editor.model.document.getRoot();
 
-			// Iterate over whole editor content, search for external widget instances
+			// Iterate over whole editor content, search for external data widget instances
 			// and trigger `recovertItem` function
 			for ( const { item } of this.editor.model.createRangeIn( rootElement ) ) {
 				if ( item.is( 'element', 'externalElement' ) ) {
@@ -667,7 +667,7 @@ Editor content traversal can be a challenging process. The presented method is s
 
 ## Demo
 
-You can see the external widget implementation in action in the editor below.
+You can see the external data widget implementation in action in the editor below.
 
 {@snippet framework/tutorials/external-data-widget}
 
