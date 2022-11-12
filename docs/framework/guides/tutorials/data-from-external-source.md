@@ -862,7 +862,7 @@ class ExternalWidgetEditing extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#snippet-external-widget' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalWidget ],
-		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'external', '|', 'undo', 'redo' ]
+		toolbar: [ 'external', '|', 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
