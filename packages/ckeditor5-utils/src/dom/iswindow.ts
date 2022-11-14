@@ -9,9 +9,6 @@
 
 /**
  * Checks if the object is a native DOM Window.
- *
- * @param {*} obj
- * @returns {Boolean}
  */
 export default function isWindow( obj: unknown ): obj is Window {
 	const stringifiedObject = Object.prototype.toString.apply( obj );

@@ -13,7 +13,7 @@ import Resizer, {
 	type ResizerCancelEvent,
 	type ResizerCommitEvent
 } from './widgetresize/resizer';
-import { Emitter as DomEmitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import DomEmitterMixin, { type DomEmitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import MouseObserver, { type ViewDocumentMouseEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import { throttle, type DebouncedFunc } from 'lodash-es';
@@ -91,7 +91,7 @@ export default class WidgetResize extends Plugin {
 
 		editing.view.addObserver( MouseObserver );
 
-		this._observer = new DomEmitter();
+		this._observer = new ( DomEmitterMixin() )();
 
 		this.listenTo<ViewDocumentMouseEvent>(
 			editing.view.document,

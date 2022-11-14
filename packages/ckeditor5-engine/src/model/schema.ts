@@ -21,7 +21,7 @@ import type Selection from './selection';
 import type Writer from './writer';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * The model's schema. It defines the allowed and disallowed structures of nodes as well as nodes' attributes.
@@ -38,7 +38,7 @@ import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Schema extends Observable {
+export default class Schema extends ObservableMixin() {
 	private readonly _sourceDefinitions: Record<string, Array<SchemaItemDefinition>>;
 	private readonly _attributeProperties: Record<string, AttributeProperties>;
 	private _compiledDefinitions?: Record<string, SchemaCompiledItemDefinition> | null;

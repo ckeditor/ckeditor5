@@ -10,8 +10,8 @@
 /**
  * Returns an object containing CSS border widths of a specified HTML element.
  *
- * @param {HTMLElement} element An element which has CSS borders.
- * @returns {module:utils/dom/getborderwidths~BorderWidths} An object containing `top`, `left`, `right` and `bottom` properties
+ * @param element An element which has CSS borders.
+ * @returns An object containing `top`, `left`, `right` and `bottom` properties
  * with numerical values of the `border-[top,left,right,bottom]-width` CSS styles.
  */
 export default function getBorderWidths( element: HTMLElement ): BorderWidths {
@@ -28,12 +28,6 @@ export default function getBorderWidths( element: HTMLElement ): BorderWidths {
 
 /**
  * An object describing widths of `HTMLElement` borders.
- *
- * @typedef {Object} module:utils/dom/getborderwidths~BorderWidths
- * @property {Number} top
- * @property {Number} right
- * @property {Number} bottom
- * @property {Number} left
 */
 export interface BorderWidths {
 	top: number;

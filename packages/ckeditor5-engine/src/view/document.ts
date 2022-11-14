@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/view/document
  */
@@ -12,7 +10,7 @@
 import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import BubblingEmitterMixin from './observer/bubblingemittermixin';
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 import type { StylesProcessor } from './stylesmap';
 import type RootEditableElement from './rooteditableelement';
@@ -27,9 +25,9 @@ import type DowncastWriter from './downcastwriter';
  * @mixes module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Document extends BubblingEmitterMixin( Observable ) {
+export default class Document extends BubblingEmitterMixin( ObservableMixin() ) {
 	public readonly selection: DocumentSelection;
-	public readonly roots: Collection<RootEditableElement, 'rootName'>;
+	public readonly roots: Collection<RootEditableElement>;
 	public readonly stylesProcessor: StylesProcessor;
 
 	declare public isReadOnly: boolean;

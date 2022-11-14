@@ -10,9 +10,9 @@
 /**
  * Checks whether given {Map}s are equal, that is has same size and same key-value pairs.
  *
- * @param {Map} mapA The first map to compare.
- * @param {Map} mapB The second map to compare.
- * @returns {Boolean} `true` if given maps are equal, `false` otherwise.
+ * @param mapA The first map to compare.
+ * @param mapB The second map to compare.
+ * @returns `true` if given maps are equal, `false` otherwise.
  */
 export default function mapsEqual<Key>( mapA: Map<Key, unknown>, mapB: Map<Key, unknown> ): boolean {
 	if ( mapA.size != mapB.size ) {

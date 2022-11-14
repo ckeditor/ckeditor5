@@ -14,7 +14,7 @@ import ViewPosition from '../view/position';
 import ViewRange from '../view/range';
 import ViewText from '../view/text';
 
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import type ViewDocumentFragment from '../view/documentfragment';
@@ -43,7 +43,7 @@ import type ViewNode from '../view/node';
  * stop the event.
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class Mapper extends Emitter {
+export default class Mapper extends EmitterMixin() {
 	private _modelToViewMapping: WeakMap<ModelElement | ModelDocumentFragment, ViewElement | ViewDocumentFragment>;
 	private _viewToModelMapping: WeakMap<ViewElement | ViewDocumentFragment, ModelElement | ModelDocumentFragment>;
 	private _viewToModelLengthCallbacks: Map<string, ( element: ViewElement ) => number>;

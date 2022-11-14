@@ -10,7 +10,7 @@
 import View from './view';
 import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview';
 
-import { Emitter as DomEmitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import { global, isVisible, first, ResizeObserver } from '@ckeditor/ckeditor5-utils';
 import { isElement, debounce, type DebouncedFunc } from 'lodash-es';
 
@@ -70,7 +70,7 @@ const BALLOON_CLASS = 'ck-tooltip';
  *
  * @mixes module:utils/domemittermixin~DomEmitterMixin
  */
-export default class TooltipManager extends DomEmitter {
+export default class TooltipManager extends DomEmitterMixin() {
 	public readonly tooltipTextView!: View & { text: string };
 	public readonly balloonPanelView!: BalloonPanelView;
 

@@ -8,7 +8,7 @@
  */
 
 import ContextPlugin from './contextplugin';
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin, { type Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection, { type CollectionAddEvent, type CollectionRemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -55,7 +55,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 export default class PendingActions extends ContextPlugin implements Iterable<PendingAction> {
 	declare public hasAny: boolean;
 
-	private _actions!: Collection<PendingAction & { _id?: string }, '_id'>;
+	private _actions!: Collection<PendingAction>;
 
 	/**
 	 * @inheritDoc
@@ -106,7 +106,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 			throw new CKEditorError( 'pendingactions-add-invalid-message', this );
 		}
 
-		const action = new Observable() as PendingAction;
+		const action = new ( ObservableMixin() )() as PendingAction;
 
 		action.set( 'message', message );
 		this._actions.add( action );

@@ -10,7 +10,7 @@
 /**
  * Removes given node from parent.
  *
- * @param {Node} node Node to remove.
+ * @param node Node to remove.
  */
 export default function remove( node: Node ): void {
 	const parent = node.parentNode;

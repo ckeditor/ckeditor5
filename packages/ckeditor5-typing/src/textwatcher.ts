@@ -7,7 +7,7 @@
  * @module typing/textwatcher
  */
 
-import { Observable, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin, { type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import getLastTextLine from './utils/getlasttextline';
 
 import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
@@ -25,7 +25,7 @@ import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/d
  * @private
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class TextWatcher extends Observable {
+export default class TextWatcher extends ObservableMixin() {
 	public readonly model: Model;
 	public testCallback: ( text: string ) => unknown;
 

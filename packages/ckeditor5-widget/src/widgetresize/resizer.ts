@@ -11,7 +11,7 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
-import { Observable, type DecoratedMethodEvent, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin, { type DecoratedMethodEvent, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 import ResizeState from './resizerstate';
 import SizeView from './sizeview';
@@ -24,7 +24,7 @@ import type Element from '@ckeditor/ckeditor5-engine/src/view/element';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Resizer extends Observable {
+export default class Resizer extends ObservableMixin() {
 	declare public isEnabled: boolean;
 	declare public isSelected: boolean;
 

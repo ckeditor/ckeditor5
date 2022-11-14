@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/model/documentselection
  */
@@ -177,7 +175,7 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * @readonly
 	 * @type {module:utils/collection~Collection}
 	 */
-	public get markers(): Collection<Marker, 'name'> {
+	public get markers(): Collection<Marker> {
 		return this._selection.markers;
 	}
 
@@ -627,7 +625,7 @@ export type DocumentSelectionChangeEvent = {
 // @extends module:engine/model/selection~Selection
 //
 class LiveSelection extends Selection {
-	public markers: Collection<Marker, 'name'>;
+	public markers: Collection<Marker>;
 
 	protected _model: Model;
 	protected _document: Document;

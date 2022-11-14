@@ -10,8 +10,8 @@
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import {
-	Emitter,
+import EmitterMixin, {
+	type Emitter,
 	type GetEventInfo,
 	type GetNameOrEventInfo,
 	type BaseEvent,
@@ -131,7 +131,7 @@ export default function BubblingEmitterMixin<Base extends abstract new( ...args:
 				let emitter = eventContexts.get( context );
 
 				if ( !emitter ) {
-					emitter = new Emitter();
+					emitter = new ( EmitterMixin() )();
 					eventContexts.set( context, emitter! );
 				}
 

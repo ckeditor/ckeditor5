@@ -23,9 +23,7 @@ module.exports = {
 				' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license',
 				' */'
 			]
-		} ],
-		// TODO: Remove after `eslint-config-ckeditor5` update.
-		'new-cap': 'off'
+		} ]
 	},
 	overrides: [
 		{
