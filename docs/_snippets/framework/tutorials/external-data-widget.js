@@ -18,7 +18,7 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import BitcoinLogoIcon from './bitcoinLogo.svg';
+import BitcoinLogoIcon from '../../../assets/img/bitcoin-logo.svg';
 
 const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
 
