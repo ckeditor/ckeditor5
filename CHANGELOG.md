@@ -1,11 +1,16 @@
 Changelog
 =========
 
-## [35.3.1](https://github.com/ckeditor/ckeditor5/compare/v35.3.0...v35.3.1) (2022-11-14)
+## [35.3.1](https://github.com/ckeditor/ckeditor5/compare/v35.3.0...v35.3.1) (2022-11-11)
 
 ### Release highlights
 
-<!-- TODO: Add a link to the blog post. -->
+Due to a vulnerability issue in the `socket.io-parser` package ([CVE-2022-2421](https://github.com/advisories/GHSA-qm95-pgcg-qqfq)) used by packages to offer [real-time collaboration](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) services, we strongly advise updating to the latest CKEditor 5 version if your integration includes one of the following features:
+
+* [Real-time collaborative comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html).
+* [Real-time collaborative editing](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html).
+* [Real-time collaborative revision history](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/revision-history/revision-history.html).
+* [Real-time collaborative track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html).
 
 ### Bug fixes
 
@@ -109,15 +114,13 @@ This release introduces the following new features:
 * External annotations in comments and track changes have gotten additional visual information to emphasize that the author name comes from an external source.
 * Several key packages were rewritten into TypeScript (listed below).
 
-
 There were also bug fixes:
 
 * External comments are no longer assigned to the user who imported them. Im means these are not editable by them and do not behave like they were created by that user (e.g. they do not join with other suggestions created by them).
 * [Tooltips handling has been improved to better follow user interface events](https://github.com/ckeditor/ckeditor5/issues/12492).
 * Fixed incorrect annotations order in the sidebar when a comment or a suggestion was set on a multi-line text (and in similar cases).
 
-
-<!-- TODO: Add a link to the blog post. -->
+Read about release highlights in a dedicated blog post: https://ckeditor.com/blog/ckeditor-5-v35.3.0-with-a-revamped-typing-and-ime-handling-better-external-annotations-handling/
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
