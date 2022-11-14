@@ -481,7 +481,9 @@ export default class ExternalDataWidgetEditing extends Plugin {
 
 ## Creating the UI
 
-The UI part provides a {@link module:ui/button/buttonview~ButtonView} that user can click to insert the external data widget into the editor. As a icon for the button we can use an official logotype from the public domain [Bitcoin promotional graphics](https://en.bitcoin.it/wiki/Promotional_graphics). You can import the icon file (`theme/bitcoinLogo.svg`) and use it as shown below.
+The UI part provides a {@link module:ui/button/buttonview~ButtonView} that user can click to insert the external data widget into the editor.
+
+Register and configure the toolbar button as show below. The icon of the button can be found among official [Bitcoin promotional graphics](https://en.bitcoin.it/wiki/Promotional_graphics). Put the SVG file in the `./theme` directory and import it next to the UI plugin so it can be used by the button.
 
 ```js
 // external-data-widget/externaldatawidgetui.js
@@ -489,7 +491,7 @@ The UI part provides a {@link module:ui/button/buttonview~ButtonView} that user 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src';
 
-import BitcoinLogoIcon from './theme/bitcoinLogo.svg';
+import BitcoinLogoIcon from './theme/bitcoin-logo.svg';
 
 class ExternalDataWidgetUI extends Plugin {
 	init() {
