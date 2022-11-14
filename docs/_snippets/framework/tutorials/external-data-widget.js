@@ -207,6 +207,9 @@ ClassicEditor
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.label && item.label === 'Bitcoin rate' ),
 			text: 'Click to add Bitcoin rate.',
+			tippyOptions: {
+				placement: 'bottom-start'
+			},
 			editor
 		} );
 	} )
