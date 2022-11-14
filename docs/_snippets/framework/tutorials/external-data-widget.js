@@ -110,7 +110,7 @@ class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_intervalFetch() {
-		return setInterval( () => this._updateWidgetData(), 15000 ); // set time interval to 15s
+		return setInterval( () => this._updateWidgetData(), 15000 );
 	}
 
 	async _updateWidgetData( externalUrl = RESOURCE_URL ) {
@@ -203,6 +203,7 @@ ClassicEditor
 
 		// Expose for playing in the console.
 		window.editor = editor;
+
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.label && item.label === 'Bitcoin rate' ),
