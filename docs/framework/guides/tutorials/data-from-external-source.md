@@ -15,13 +15,13 @@ You will build an "external data fetch" feature that allows users to insert a pr
 
 ## Before you start ⚠️
 
-This guide assumes that you are familiar with the widgets concept introduced in the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget implementing an inline widget} tutorials. The tutorial will also reference various concepts from the {@link framework/guides/architecture/intro CKEditor 5 architecture}.
+This guide assumes that you are familiar with the widgets concept introduced in the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget implementing an inline widget} tutorials. The tutorial also references various concepts concerning the {@link framework/guides/architecture/intro CKEditor 5 architecture}.
 
 ## Bootstrapping the project
 
-The overall project structure will be similar to one described in {@link framework/guides/tutorials/implementing-an-inline-widget#bootstrapping-the-project bootstrapping the project} section of the "Implementing an inline widget" tutorial.
+The overall project structure will be similar to one described in the {@link framework/guides/tutorials/implementing-an-inline-widget#bootstrapping-the-project Bootstrapping the project} section of the "Implementing an inline widget" tutorial.
 
-First, install required dependencies:
+First, install the required dependencies:
 
 ```bash
 npm install --save \
@@ -162,7 +162,7 @@ ClassicEditor
 ```
 
 
-Before building the project you still need to define the `ExternalDataWidget` plugin. The project will have a structure as below:
+Before building the project you still need to define the `ExternalDataWidget` plugin. The project structure should be as follows:
 
 ```
 ├── app.js
@@ -235,7 +235,7 @@ export default class ExternalDataWidgetEditing extends Plugin {
 
 At this stage you can build the project and open it in the browser to verify if it is building correctly.
 
-Use this command `./node_modules/.bin/webpack --mode development` in root folder of the widget to build the project.
+Use the `./node_modules/.bin/webpack --mode development` command in the root folder of the widget to build the project.
 
 After the build is completed, open `index.html` in your browser to check if all is correct at this stage.
 
@@ -255,7 +255,7 @@ The external data widget feature will be {@link module:engine/model/schema~Schem
 
 ### Defining the schema
 
-The schema definition of this widget is almost the same as in {@link framework/guides/tutorials/implementing-an-inline-widget#defining-the-schema inline widget tutorial}, the only thing that is different is in `allowAttributes`, in our case we want to allow the `'data-resource-url'` attribute.
+The schema definition of this widget is almost the same as in the {@link framework/guides/tutorials/implementing-an-inline-widget#defining-the-schema inline widget} tutorial, the only thing that is different is the `allowAttributes`. In our case we want to allow the `'data-resource-url'` attribute.
 Instead of passing all the attributes to the config object we can use {@link framework/guides/deep-dive/schema#generic-items generic items} to inherit already predefined options.
 
 You can also use this opportunity to import the theme file (`theme/externaldatawidget.css`).
@@ -288,11 +288,11 @@ export default class ExternalDataWidgetEditing extends Plugin {
 }
 ```
 
-The schema is defined so now you can define the model-view converters.
+The schema is defined, now you can define the model-view converters.
 
 ### Defining converters
 
-The HTML structure (data output) of the converter will be a `<span>` with a `data-resource-url` attribute with the external resource url as a value.
+The HTML structure (data output) of the converter will be a `<span>` with a `data-resource-url` attribute with the external resource url as its value.
 
 ```html
 <span data-resource-url="RESOURCE_URL"></span>
@@ -481,7 +481,7 @@ export default class ExternalDataWidgetEditing extends Plugin {
 
 ## Creating the UI
 
-The UI part will provide a {@link module:ui/button/buttonview~ButtonView} that user can click to insert external data widget into the editor. As a icon for the button we can use an official logotype from the public domain [Bitcoin promotional graphics](https://en.bitcoin.it/wiki/Promotional_graphics). You can import the icon file (`theme/bitcoinLogo.svg`) and use it like it is shown below.
+The UI part provides a {@link module:ui/button/buttonview~ButtonView} that user can click to insert the external data widget into the editor. As a icon for the button we can use an official logotype from the public domain [Bitcoin promotional graphics](https://en.bitcoin.it/wiki/Promotional_graphics). You can import the icon file (`theme/bitcoinLogo.svg`) and use it as shown below.
 
 ```js
 // external-data-widget/externaldatawidgetui.js
@@ -559,13 +559,13 @@ ClassicEditor
 
 ## Handling the external source
 
-In this tutorial we will use an external API that provides a current Bitcoin rate (in USD). Endpoint that we will use do not need any API keys and it's free to use but it has some [limitations](https://binance-docs.github.io/apidocs/spot/en/#limits).
+In this tutorial we will use an external API that provides a current Bitcoin rate (in USD). This endpoint does not need any API keys and it is free to use but it has some [limitations](https://binance-docs.github.io/apidocs/spot/en/#limits).
 
 ```js
 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'
 ```
 
-Data will be fetched every 15 seconds. Every instance of the widget will be updated at the same time. To achieve that, we need to modify our `ExternalDataWidgetEditing` class.
+The data will be fetched every 15 seconds. Eeach instance of the widget will be updated at the same time. To achieve that, we need to modify the `ExternalDataWidgetEditing` class.
 
 ```js
 
@@ -666,7 +666,7 @@ class ExternalDataWidgetEditing extends Plugin {
 
 ```
 
-Editor content traversal can be a challenging process. The presented method is sufficient when there is relatively little content. Otherwise, a `WeakMap` will be a better option.
+The editor content traversal can be a challenging process. The presented method is sufficient when there is relatively little content. Otherwise, a `WeakMap` will be a better option.
 
 
 ## Demo
@@ -677,7 +677,7 @@ You can see the external data widget implementation in action in the editor belo
 
 ## Final solution
 
-The following code snippet contains a complete implementation of the `ExternalDataWidget` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box (excluded the Bitcoin logo):
+The following code snippet contains the complete implementation of the `ExternalDataWidget` plugin (and all of its dependencies) and the code needed to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box (excluded the Bitcoin logo):
 
 ```js
 
