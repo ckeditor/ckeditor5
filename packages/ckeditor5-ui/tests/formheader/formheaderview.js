@@ -43,8 +43,8 @@ describe( 'FormHeaderView', () => {
 			expect( view.element.classList.contains( 'ck-form__header' ) ).to.be.true;
 		} );
 
-		it( 'should has the "h2" tag in header', () => {
-			expect( view.element.getElementsByClassName( 'ck ck-form__header__label' )[ 0 ].tagName ).to.equal( 'H2' );
+		it( 'should set view#tag', () => {
+			expect( view.children.first.template.tag ).to.equal( 'h2' );
 		} );
 
 		describe( 'options', () => {
