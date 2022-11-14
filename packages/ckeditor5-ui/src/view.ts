@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable @typescript-eslint/no-invalid-void-type, new-cap */
+/* eslint-disable @typescript-eslint/no-invalid-void-type */
 
 /**
  * @module ui/view

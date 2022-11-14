@@ -46,7 +46,6 @@ import InlineEditorUIView from './inlineeditoruiview';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
  */
-// eslint-disable-next-line new-cap
 export default class InlineEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
 	/**
 	 * @inheritDoc

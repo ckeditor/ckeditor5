@@ -7,8 +7,6 @@
  * @module utils/emittermixin
  */
 
-/* eslint-disable new-cap */
-
 import EventInfo from './eventinfo';
 import uid from './uid';
 import priorities, { type PriorityString } from './priorities';
