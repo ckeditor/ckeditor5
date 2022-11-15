@@ -128,7 +128,8 @@ export default class Locale {
 	public get language(): string {
 		/**
 		 * The {@link module:utils/locale~Locale#language `Locale#language`} property was deprecated and will
-		 * be removed in the near future. Please use the {@link #uiLanguage} and {@link #contentLanguage} properties instead.
+		 * be removed in the near future. Please use the {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`} and
+		 * {@link module:utils/locale~Locale#contentLanguage `Locale#contentLanguage`} properties instead.
 		 *
 		 * @error locale-deprecated-language-property
 		 */

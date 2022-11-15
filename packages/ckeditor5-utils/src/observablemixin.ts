@@ -94,7 +94,7 @@ export default function ObservableMixin( base?: abstract new( ...args: Array<any
 				/**
 				 * Cannot override an existing property.
 				 *
-				 * This error is thrown when trying to {@link ~Observable#set set} a property with
+				 * This error is thrown when trying to {@link module:utils/observablemixin~Observable#set set} a property with
 				 * a name of an already existing property. For example:
 				 *
 				 * ```ts
