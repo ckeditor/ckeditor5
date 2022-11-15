@@ -20,6 +20,10 @@
 	text-align: center;
 }
 
+.ck[dir=rtl] .ck-insert-table-dropdown__label {
+	text-align: center;
+}
+
 .ck .ck-insert-table-dropdown-grid-box {
 	min-width: var(--ck-insert-table-dropdown-box-width);
 	min-height: var(--ck-insert-table-dropdown-box-height);
