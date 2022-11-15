@@ -331,7 +331,7 @@ HelpjuiceEditor.defaultConfig = {
 		extraProviders: [
 			{
 				name: 'helpjuiceProvider',
-				url: /^static.helpjuice\.com\/(\w+)/,
+				url: /^static.helpjuice\.com\/(\w+)\.(mpg|mp4|wmv|mpeg|webm|mkv|flv|vob|ogv|ogg|avi|rm|rmvb|asf|amv|mp2|mpe|mpv|m4v|svi|3gp|mov)/,
 				html: match => {
 					const getUrl = match.input;
 
@@ -342,7 +342,7 @@ HelpjuiceEditor.defaultConfig = {
 			},
 			{
 				name: 'localProvider',
-				url: /.*uploads\/upload\/(\w+)/,
+				url: /.*uploads\/upload\/(\w+)\.(mpg|mp4|wmv|mpeg|webm|mkv|flv|vob|ogv|ogg|avi|rm|rmvb|asf|amv|mp2|mpe|mpv|m4v|svi|3gp|mov)/,
 				html: match => {
 					const getUrl = match.input;
 
@@ -353,7 +353,7 @@ HelpjuiceEditor.defaultConfig = {
 			},
 			{
 				name: 'externalProvider',
-				url: /.*\.(ogg|mp4|webm)/i,
+				url: /.*\.(mpg|mp4|wmv|mpeg|webm|mkv|flv|vob|ogv|ogg|avi|rm|rmvb|asf|amv|mp2|mpe|mpv|m4v|svi|3gp|mov)/i,
 				html: match => {
 					const getUrl = match.input;
 
