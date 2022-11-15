@@ -21,6 +21,7 @@
 }
 
 .ck[dir=rtl] .ck-insert-table-dropdown__label {
+	/* comment */
 	text-align: center;
 }
 
