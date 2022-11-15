@@ -7,7 +7,8 @@
  * @module core/contextplugin
  */
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
+
 import type Editor from './editor/editor';
 import type Context from './context';
 import type { PluginInterface } from './plugin';

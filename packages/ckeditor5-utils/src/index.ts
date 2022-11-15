@@ -38,6 +38,7 @@ export { default as ElementReplacer } from './elementreplacer';
 export { default as count } from './count';
 export { default as compareArrays } from './comparearrays';
 export { default as createElement } from './dom/createelement';
+export { default as Config } from './config';
 export { default as DomEmitterMixin } from './dom/emittermixin';
 export { default as global } from './dom/global';
 export { default as getDataFromElement } from './dom/getdatafromelement';
@@ -63,7 +64,7 @@ export { default as FocusTracker } from './focustracker';
 export { default as KeystrokeHandler } from './keystrokehandler';
 export { default as toArray, type ArrayOrItem, type ReadonlyArrayOrItem } from './toarray';
 export { default as toMap } from './tomap';
-export { default as priorities } from './priorities';
+export { default as priorities, type PriorityString } from './priorities';
 export { default as insertToPriorityArray } from './inserttopriorityarray';
 
 export { default as uid } from './uid';

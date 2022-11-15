@@ -9,8 +9,8 @@
  * @module core/plugin
  */
 
-import ObservableMixin, { type ObservableSetEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import { ObservableMixin, type ObservableSetEvent, type EventInfo } from '@ckeditor/ckeditor5-utils';
+
 import type Editor from './editor/editor';
 
 /**

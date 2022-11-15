@@ -22,6 +22,8 @@ export * from './colorgrid/utils';
 export { default as ColorGridView } from './colorgrid/colorgridview';
 export { default as ColorTileView } from './colorgrid/colortileview';
 
+export { default as ComponentFactory } from './componentfactory';
+
 export { default as DropdownButtonView } from './dropdown/button/dropdownbuttonview';
 export { default as SplitButtonView } from './dropdown/button/splitbuttonview';
 export * from './dropdown/utils';
@@ -63,5 +65,5 @@ export { default as normalizeToolbarConfig } from './toolbar/normalizetoolbarcon
 export { default as BalloonToolbar } from './toolbar/balloon/balloontoolbar';
 export { default as BlockToolbar } from './toolbar/block/blocktoolbar';
 
-export { default as View } from './view';
+export { default as View, type UIViewRenderEvent } from './view';
 export { default as ViewCollection } from './viewcollection';

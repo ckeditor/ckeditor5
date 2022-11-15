@@ -7,8 +7,8 @@
  * @module core/editingkeystrokehandler
  */
 
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import type { PriorityString } from '@ckeditor/ckeditor5-utils/src/priorities';
+import { KeystrokeHandler, type PriorityString } from '@ckeditor/ckeditor5-utils';
+
 import type Editor from './editor/editor';
 
 /**

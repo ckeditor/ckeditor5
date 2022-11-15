@@ -9,18 +9,26 @@
 
 /* globals console */
 
-import type { ViewDocumentLayoutChangedEvent } from '@ckeditor/ckeditor5-engine/src/view/document';
+import type { ViewDocumentLayoutChangedEvent } from '@ckeditor/ckeditor5-engine';
+
+// TODO: can't import it from `@ckeditor/ckeditor5-ui` because of indirect circular dependency
+// between `@ckeditor/ckeditor5-{ui,core}/src/index.ts`.
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import TooltipManager from '@ckeditor/ckeditor5-ui/src/tooltipmanager';
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
+import type {
+	EditorUIView,
+	ToolbarView,
+	UIViewRenderEvent
+} from '@ckeditor/ckeditor5-ui';
+
+import {
+	ObservableMixin,
+	isVisible,
+	FocusTracker
+} from '@ckeditor/ckeditor5-utils';
 
 import type Editor from './editor';
-import type ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import type { UIViewRenderEvent } from '@ckeditor/ckeditor5-ui/src/view';
-import type EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.

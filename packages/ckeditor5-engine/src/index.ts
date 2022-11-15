@@ -97,6 +97,7 @@ export type { ViewDocumentArrowKeyEvent } from './view/observer/arrowkeysobserve
 export type { ViewDocumentCompositionEvent } from './view/observer/compositionobserver';
 export type { ViewDocumentInputEvent } from './view/observer/inputobserver';
 export type { ViewDocumentKeyEvent } from './view/observer/keyobserver';
+export type { ViewDocumentLayoutChangedEvent } from './view/document';
 export type { ViewDocumentMouseEvent } from './view/observer/mouseobserver';
 
 // View / Styles

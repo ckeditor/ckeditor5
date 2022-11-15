@@ -7,8 +7,7 @@
  * @module core/plugincollection
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 import type { LoadedPlugins, PluginConstructor, PluginInterface } from './plugin';
 
 /**
