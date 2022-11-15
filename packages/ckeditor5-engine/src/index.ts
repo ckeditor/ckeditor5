@@ -56,6 +56,7 @@ export type { ModelDeleteContentEvent, ModelInsertContentEvent, ModelInsertObjec
 export type { SelectionChangeRangeEvent } from './model/selection';
 
 // View
+export { default as DataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 export { default as DomConverter } from './view/domconverter';
 export { default as Renderer } from './view/renderer';
 export { default as View } from './view/view';
@@ -69,6 +70,7 @@ export { default as ViewEmptyElement } from './view/emptyelement';
 export { default as ViewRawElement } from './view/rawelement';
 export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
+export type { default as ViewItem } from './view/item';
 export type { default as ViewDocumentSelection } from './view/documentselection';
 export type { default as ViewRange } from './view/range';
 export type { default as ViewSelection } from './view/selection';

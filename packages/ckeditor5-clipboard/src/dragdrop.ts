@@ -9,23 +9,26 @@
 
 /* globals setTimeout, clearTimeout */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
-import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
-import MouseObserver, { type ViewDocumentMouseEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Plugin, type Editor, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+
+import {
+	LiveRange,
+	MouseObserver,
+	type DataTransfer,
+	type Element,
+	type Position,
+	type Range,
+	type ViewDocumentMouseEvent,
+	type ViewElement,
+	type ViewRange
+} from '@ckeditor/ckeditor5-engine';
+
+import { Widget, isWidget } from '@ckeditor/ckeditor5-widget';
+
+import { env, uid, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ClipboardOutputEvent } from './clipboardpipeline';
 import ClipboardObserver, { type ViewDocumentClipboardInputEvent, type ViewDocumentDragEvent } from './clipboardobserver';
-import type DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
-import type { Element, Position, Range } from '@ckeditor/ckeditor5-engine';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import type { default as ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element';
-import type { default as ViewRange } from '@ckeditor/ckeditor5-engine/src/view/range';
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
 import { type DebouncedFunc, throttle } from 'lodash-es';
 
