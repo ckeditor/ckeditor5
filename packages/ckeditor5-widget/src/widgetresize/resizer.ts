@@ -10,8 +10,8 @@
 import { Template } from '@ckeditor/ckeditor5-ui';
 import {
 	Rect,
+	ObservableMixin,
 	compareArrays,
-	Observable,
 	type ObservableChangeEvent,
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
@@ -27,7 +27,7 @@ import type { ViewElement } from '@ckeditor/ckeditor5-engine';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Resizer extends Observable {
+export default class Resizer extends ObservableMixin() {
 	declare public isEnabled: boolean;
 	declare public isSelected: boolean;
 

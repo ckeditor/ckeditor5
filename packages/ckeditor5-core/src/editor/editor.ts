@@ -20,7 +20,7 @@ import EditingKeystrokeHandler from '../editingkeystrokehandler';
 import type { LoadedPlugins, PluginConstructor } from '../plugin';
 import type EditorUI from './editorui';
 import type { EditorConfig } from './editorconfig';
-import { type ObservableChangeEvent, Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin, { type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
@@ -46,7 +46,7 @@ import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
  * @abstract
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default abstract class Editor extends Observable {
+export default abstract class Editor extends ObservableMixin() {
 	public readonly commands: CommandCollection;
 	public readonly config: Config<EditorConfig>;
 	public readonly conversion: Conversion;

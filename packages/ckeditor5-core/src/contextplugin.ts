@@ -7,7 +7,7 @@
  * @module core/contextplugin
  */
 
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type Editor from './editor/editor';
 import type Context from './context';
 import type { PluginInterface } from './plugin';
@@ -29,7 +29,7 @@ import type { PluginInterface } from './plugin';
  * @implements module:core/plugin~PluginInterface
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class ContextPlugin extends Observable implements PluginInterface {
+export default class ContextPlugin extends ObservableMixin() implements PluginInterface {
 	public readonly context: Context | Editor;
 
 	/**

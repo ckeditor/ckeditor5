@@ -14,7 +14,7 @@
  *
  * * spy.called: property set to `true` if the function has been called at least once.
  *
- * @returns {Function} The spy function.
+ * @returns The spy function.
  */
 function spy(): { (): void; called?: boolean } {
 	return function spy() {

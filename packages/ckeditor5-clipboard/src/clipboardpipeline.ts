@@ -122,7 +122,7 @@ import viewToPlainText from './utils/viewtoplaintext';
  * 3. For the `cut` method, calls {@link module:engine/model/model~Model#deleteContent `model.deleteContent()`}
  *    on the current selection.
  *
- * Read more about the clipboard integration in the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
+ * Read more about the clipboard integration in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive guide}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -306,7 +306,7 @@ export default class ClipboardPipeline extends Plugin {
  * @param {Object} data The event data.
  * @param {module:engine/view/documentfragment~DocumentFragment} data.content The event data. The content to be inserted into the editor.
  * It can be modified by event listeners. Read more about the clipboard pipelines in
- * the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
+ * the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive guide}.
  * @param {module:engine/view/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
  * @param {'paste'|'drop'} data.method Whether the event was triggered by a paste or drop operation.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges The target drop ranges.
@@ -341,7 +341,7 @@ export type ClipboardInputTransformationEvent = {
  * @event module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion
  * @param {Object} data The event data.
  * @param {module:engine/model/documentfragment~DocumentFragment} data.content The event data. The content to be inserted into the editor.
- * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
+ * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive guide}.
  * @param {module:engine/view/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
  * @param {'paste'|'drop'} data.method Whether the event was triggered by a paste or drop operation.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges The target drop ranges.
@@ -395,7 +395,7 @@ export type ClipboardOutputEventData = {
 
 /**
  * Content to be put into the clipboard. It can be modified by the event listeners.
- * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
+ * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive guide}.
  *
  * @member {module:engine/view/documentfragment~DocumentFragment} module:clipboard/clipboardpipeline~ClipboardOutputEventData#content
  */

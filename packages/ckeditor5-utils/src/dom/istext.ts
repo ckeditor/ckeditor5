@@ -9,9 +9,6 @@
 
 /**
  * Checks if the object is a native DOM Text node.
- *
- * @param {*} obj
- * @returns {Boolean}
  */
 export default function isText( obj: unknown ): obj is Text {
 	return Object.prototype.toString.call( obj ) == '[object Text]';

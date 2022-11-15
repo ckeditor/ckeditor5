@@ -16,16 +16,15 @@ import {
 
 import {
 	CKEditorError,
-	logWarning,
-	Observable,
-	type ObservableChangeEvent,
 	Collection,
+	ObservableMixin,
+	logWarning,
+	uid,
+	type ObservableChangeEvent,
 	type CollectionChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import FileReader from './filereader';
-
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * File repository plugin. A central point for managing file upload.
@@ -34,7 +33,7 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid';
  * (sending the file and handling server's response). You can use one of the existing plugins introducing upload adapters
  * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
  * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one – see
- * the {@glink framework/guides/deep-dive/upload-adapter Custom image upload adapter deep dive guide}.
+ * the {@glink framework/guides/deep-dive/upload-adapter Custom image upload adapter deep-dive guide}.
  *
  * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
  * {@link module:upload/filerepository~FileLoader} instance to load and upload files.
@@ -283,7 +282,7 @@ export default class FileRepository extends Plugin {
  *
  * It is used to control the process of reading the file and uploading it using the specified upload adapter.
  */
-class FileLoader extends Observable {
+class FileLoader extends ObservableMixin() {
 	public readonly id: string;
 
 	private _filePromiseWrapper: FilePromiseWrapper;

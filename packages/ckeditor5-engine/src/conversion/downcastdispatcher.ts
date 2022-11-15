@@ -10,7 +10,7 @@
 import Consumable from './modelconsumable';
 import Range from '../model/range';
 
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import type { default as Differ, DiffItem } from '../model/differ';
 import type { default as MarkerCollection, Marker } from '../model/markercollection';
@@ -114,7 +114,7 @@ import type ViewElement from '../view/element';
  *			conversionApi.writer.insert( viewPosition, viewElement );
  *		} );
  */
-export default class DowncastDispatcher extends Emitter {
+export default class DowncastDispatcher extends EmitterMixin() {
 	/** @internal */
 	public readonly _conversionApi: Pick<DowncastConversionApi, 'dispatcher' | 'mapper' | 'schema'>;
 

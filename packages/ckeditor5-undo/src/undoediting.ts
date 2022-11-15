@@ -40,7 +40,7 @@ export default class UndoEditing extends Plugin {
 		super( editor );
 
 		/**
-		 * The command that manages undo {@link module:engine/model/batch~Batch batches} stack (history).
+		 * The command that manages the undo {@link module:engine/model/batch~Batch batches} stack (history).
 		 * Created and registered during the {@link #init feature initialization}.
 		 *
 		 * @private
@@ -48,7 +48,7 @@ export default class UndoEditing extends Plugin {
 		 */
 
 		/**
-		 * The command that manages redo {@link module:engine/model/batch~Batch batches} stack (history).
+		 * The command that manages the redo {@link module:engine/model/batch~Batch batches} stack (history).
 		 * Created and registered during the {@link #init feature initialization}.
 		 *
 		 * @private

@@ -4,11 +4,14 @@
  */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { Observable } from '../../src/observablemixin';
-import { Emitter } from '../../src/emittermixin';
+import ObservableMixin from '../../src/observablemixin';
+import EmitterMixin from '../../src/emittermixin';
 import { createObserver } from '../_utils/utils';
 
 describe( 'utils - testUtils', () => {
+	const Observable = ObservableMixin();
+	const Emitter = EmitterMixin();
+
 	afterEach( () => {
 		sinon.restore();
 	} );

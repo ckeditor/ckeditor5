@@ -9,22 +9,32 @@
  * @module utils/dom/global
  */
 
+// This interface exists to make our API pages more readable.
+/**
+ * A helper (module) giving an access to the global DOM objects such as `window` and `document`.
+ */
+export interface GlobalType {
+	readonly window: Window & typeof globalThis;
+	readonly document: Document;
+}
+
 /**
  * A helper (module) giving an access to the global DOM objects such as `window` and
  * `document`. Accessing these objects using this helper allows easy and bulletproof
  * testing, i.e. stubbing native properties:
  *
- *		import global from 'ckeditor5/utils/dom/global.js';
+ * ```ts
+ * import { global } from 'ckeditor5/utils';
  *
- *		// This stub will work for any code using global module.
- *		testUtils.sinon.stub( global, 'window', {
- *			innerWidth: 10000
- *		} );
+ * // This stub will work for any code using global module.
+ * testUtils.sinon.stub( global, 'window', {
+ * 	innerWidth: 10000
+ * } );
  *
- *		console.log( global.window.innerWidth );
+ * console.log( global.window.innerWidth );
+ * ```
  */
-
-let global: { window: Window & typeof globalThis; document: Document };
+let global: GlobalType;
 
 // In some environments window and document API might not be available.
 try {

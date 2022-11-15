@@ -12,62 +12,47 @@ import global from './global';
 /**
  * A helper class which instances allow performing custom actions when native DOM elements are resized.
  *
- *		const editableElement = editor.editing.view.getDomRoot();
+ * ```ts
+ * const editableElement = editor.editing.view.getDomRoot();
  *
- *		const observer = new ResizeObserver( editableElement, entry => {
- *			console.log( 'The editable element has been resized in DOM.' );
- *			console.log( entry.target ); // -> editableElement
- *			console.log( entry.contentRect.width ); // -> e.g. '423px'
- *		} );
+ * const observer = new ResizeObserver( editableElement, entry => {
+ * 	console.log( 'The editable element has been resized in DOM.' );
+ * 	console.log( entry.target ); // -> editableElement
+ * 	console.log( entry.contentRect.width ); // -> e.g. '423px'
+ * } );
+ * ```
  *
  * It uses the [native DOM resize observer](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
  * under the hood.
  */
 export default class ResizeObserver {
 	/**
-	 * The element observer by this observer.
-	 *
-	 * @readonly
-	 * @private
-	 * @member {Element}
+	 * The element observed by this observer.
 	 */
 	private readonly _element: Element;
 
 	/**
 	 * The callback executed each time {@link #_element} is resized.
-	 *
-	 * @readonly
-	 * @private
-	 * @member {Function}
 	 */
 	private readonly _callback: ( entry: ResizeObserverEntry ) => void;
 
 	/**
 	 * The single native observer instance shared across all {@link module:utils/dom/resizeobserver~ResizeObserver} instances.
-	 *
-	 * @static
-	 * @private
-	 * @readonly
-	 * @property {Object|null}
 	 */
 	private static _observerInstance: InstanceType<typeof global.window.ResizeObserver> | null = null;
 
 	/**
 	 * A mapping of native DOM elements and their callbacks shared across all
 	 * {@link module:utils/dom/resizeobserver~ResizeObserver} instances.
-	 *
-	 * @static
-	 * @private
-	 * @property {Map.<Element,Set>|null}
 	 */
 	private static _elementCallbacks: Map<Element, Set<( entry: ResizeObserverEntry ) => void>> | null = null;
 
 	/**
 	 * Creates an instance of the `ResizeObserver` class.
 	 *
-	 * @param {Element} element A DOM element that is to be observed for resizing. Note that
+	 * @param element A DOM element that is to be observed for resizing. Note that
 	 * the element must be visible (i.e. not detached from DOM) for the observer to work.
-	 * @param {Function} callback A function called when the observed element was resized. It passes
+	 * @param callback A function called when the observed element was resized. It passes
 	 * the [`ResizeObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry)
 	 * object with information about the resize event.
 	 */
@@ -94,11 +79,6 @@ export default class ResizeObserver {
 
 	/**
 	 * Registers a new resize callback for the DOM element.
-	 *
-	 * @private
-	 * @static
-	 * @param {Element} element
-	 * @param {Function} callback
 	 */
 	private static _addElementCallback( element: Element, callback: ( entry: ResizeObserverEntry ) => void ): void {
 		if ( !ResizeObserver._elementCallbacks ) {
@@ -118,11 +98,6 @@ export default class ResizeObserver {
 	/**
 	 * Removes a resize callback from the DOM element. If no callbacks are left
 	 * for the element, it removes the element from the native observer.
-	 *
-	 * @private
-	 * @static
-	 * @param {Element} element
-	 * @param {Function} callback
 	 */
 	private static _deleteElementCallback( element: Element, callback: ( entry: ResizeObserverEntry ) => void ): void {
 		const callbacks = ResizeObserver._getElementCallbacks( element );
@@ -147,11 +122,6 @@ export default class ResizeObserver {
 
 	/**
 	 * Returns are registered resize callbacks for the DOM element.
-	 *
-	 * @private
-	 * @static
-	 * @param {Element} element
-	 * @returns {Set.<Function>|null|undefined}
 	 */
 	private static _getElementCallbacks( element: Element ): Set<( entry: ResizeObserverEntry ) => void> | null | undefined {
 		if ( !ResizeObserver._elementCallbacks ) {
@@ -163,9 +133,6 @@ export default class ResizeObserver {
 
 	/**
 	 * Creates the single native observer shared across all `ResizeObserver` instances.
-	 *
-	 * @private
-	 * @static
 	 */
 	private static _createObserver(): void {
 		ResizeObserver._observerInstance = new global.window.ResizeObserver( entries => {

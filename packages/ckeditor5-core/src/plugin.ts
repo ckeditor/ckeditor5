@@ -9,7 +9,7 @@
  * @module core/plugin
  */
 
-import { Observable, type ObservableSetEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin, { type ObservableSetEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import type Editor from './editor/editor';
 
@@ -19,7 +19,7 @@ import type Editor from './editor/editor';
  * @implements module:core/plugin~PluginInterface
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Plugin extends Observable implements PluginInterface {
+export default class Plugin extends ObservableMixin() implements PluginInterface {
 	public readonly editor: Editor;
 
 	public declare isEnabled: boolean;

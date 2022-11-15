@@ -16,9 +16,6 @@
  *
  * **Note**: This helper does not check whether the element is hidden by cropping, overflow, etc..
  * To check that, use {@link module:utils/dom/rect~Rect} instead.
- *
- * @param {HTMLElement|null|undefined} element
- * @returns {Boolean}
  */
 export default function isVisible( element: HTMLElement | null | undefined ): boolean {
 	return !!( element && element.getClientRects && element.getClientRects().length );

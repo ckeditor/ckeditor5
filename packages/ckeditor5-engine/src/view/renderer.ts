@@ -14,7 +14,7 @@ import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller }
 import { default as diff, type DiffResult } from '@ckeditor/ckeditor5-utils/src/diff';
 import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
 import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
-import { Observable, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ObservableMixin, { type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
@@ -49,7 +49,7 @@ type DomSelection = globalThis.Selection;
  * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform view nodes and positions
  * to and from the DOM.
  */
-export default class Renderer extends Observable {
+export default class Renderer extends ObservableMixin() {
 	public readonly domDocuments: Set<DomDocument>;
 	public readonly domConverter: DomConverter;
 	public readonly markedAttributes: Set<ViewElement>;

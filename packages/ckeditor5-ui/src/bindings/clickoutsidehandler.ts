@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { Emitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import type { DomEmitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
 /**
  * @module ui/bindings/clickoutsidehandler
@@ -28,7 +28,7 @@ import type { Emitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
  */
 export default function clickOutsideHandler(
 	{ emitter, activator, callback, contextElements }: {
-		emitter: Emitter;
+		emitter: DomEmitter;
 		activator: () => boolean;
 		contextElements: Array<HTMLElement>;
 		callback: () => void;
