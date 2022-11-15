@@ -37,7 +37,8 @@ import {
 } from '../conversion/downcasthelpers';
 
 import { isPlainObject } from 'lodash-es';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import { toMap, type EventInfo } from '@ckeditor/ckeditor5-utils';
+
 import { StylesProcessor } from '../view/stylesmap';
 
 import DowncastDispatcher, {
@@ -62,7 +63,6 @@ import type DowncastWriter from '../view/downcastwriter';
 import type { default as Schema, SchemaContextDefinition } from '../model/schema';
 import type { ViewDocumentFragment, ViewElement } from '../index';
 import type ViewNode from '../view/node';
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import type ViewText from '../view/text';
 import type Writer from '../model/writer';
 import type ModelNode from '../model/node';

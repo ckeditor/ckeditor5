@@ -8,9 +8,9 @@
  */
 
 import DocumentSelection from './documentselection';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import BubblingEmitterMixin from './observer/bubblingemittermixin';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
+import { Collection, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 import type { StylesProcessor } from './stylesmap';
 import type RootEditableElement from './rooteditableelement';

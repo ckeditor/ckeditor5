@@ -15,7 +15,7 @@ import { _insert, _move } from './utils';
 
 import type Document from '../document';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Operation to split {@link module:engine/model/element~Element an element} at given

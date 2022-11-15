@@ -14,8 +14,9 @@ import Position from './position';
 import type Item from './item';
 import type DocumentFragment from './documentfragment';
 import type Range from './range';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import type Node from './node';
+
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Position iterator class. It allows to iterate forward and backward over the document.

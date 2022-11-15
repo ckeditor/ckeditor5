@@ -25,11 +25,13 @@ import type Item from './item';
 import type Position from './position';
 import type Range from './range';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
+import {
+	CKEditorError,
+	Collection,
+	EmitterMixin,
+	toMap,
+	uid
+} from '@ckeditor/ckeditor5-utils';
 
 const storePrefix = 'selection:';
 

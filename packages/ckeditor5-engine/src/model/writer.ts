@@ -32,9 +32,7 @@ import type Item from './item';
 import type Model from './model';
 import type { default as Node, NodeAttributes } from './node';
 
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-
-import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The model can only be modified by using the writer. It should be used whenever you want to create a node, modify

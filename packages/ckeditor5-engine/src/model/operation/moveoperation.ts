@@ -10,9 +10,9 @@
 import Operation from './operation';
 import Position from '../position';
 import Range from '../range';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import { _move } from './utils';
+
+import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 import type Document from '../document';
 

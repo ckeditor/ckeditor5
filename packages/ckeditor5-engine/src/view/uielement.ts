@@ -9,8 +9,7 @@
 
 import Element from './element';
 import Node from './node';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import type View from './view';
 import type DomConverter from './domconverter';

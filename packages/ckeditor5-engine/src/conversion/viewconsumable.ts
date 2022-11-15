@@ -8,7 +8,7 @@
  */
 
 import { isArray } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type Element from '../view/element';
 import type Node from '../view/node';

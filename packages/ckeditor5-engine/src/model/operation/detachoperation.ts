@@ -13,7 +13,7 @@ import { _remove } from './utils';
 
 import type Position from '../position';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 

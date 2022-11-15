@@ -22,8 +22,7 @@ import type Operation from './operation/operation';
 import type SplitOperation from './operation/splitoperation';
 import type Text from './text';
 
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 // To check if component is loaded more than once.
 import '@ckeditor/ckeditor5-utils/src/version';

@@ -18,8 +18,7 @@ import type Item from '../item';
 import type NodeList from '../nodelist';
 import type Position from '../position';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Contains functions used for composing model tree by {@link module:engine/model/operation/operation~Operation operations}.

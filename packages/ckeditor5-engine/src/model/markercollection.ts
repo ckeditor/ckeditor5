@@ -13,8 +13,7 @@ import LiveRange, { type LiveRangeChangeEvent } from './liverange';
 import type Position from './position';
 import type Range from './range';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The collection of all {@link module:engine/model/markercollection~Marker markers} attached to the document.

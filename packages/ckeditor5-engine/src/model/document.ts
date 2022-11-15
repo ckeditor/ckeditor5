@@ -20,10 +20,13 @@ import type Position from './position';
 import type Range from './range';
 import type Writer from './writer';
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
+import {
+	CKEditorError,
+	Collection,
+	EmitterMixin,
+	isInsideSurrogatePair,
+	isInsideCombinedSymbol
+} from '@ckeditor/ckeditor5-utils';
 
 import { clone } from 'lodash-es';
 
