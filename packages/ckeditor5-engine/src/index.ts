@@ -11,7 +11,7 @@ export * from './view/placeholder';
 
 // Controller
 export { default as EditingController } from './controller/editingcontroller';
-export { default as DataController } from './controller/datacontroller';
+export { default as DataController, type DataControllerSetEvent } from './controller/datacontroller';
 
 // Conversion
 export { default as Conversion } from './conversion/conversion';
@@ -24,6 +24,7 @@ export type { MapperViewToModelPositionEvent } from './conversion/mapper';
 export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor';
 
 // Model / Operation
+export type { default as Operation } from './model/operation/operation';
 export { default as InsertOperation } from './model/operation/insertoperation';
 export { default as MarkerOperation } from './model/operation/markeroperation';
 export { default as OperationFactory } from './model/operation/operationfactory';
@@ -34,7 +35,7 @@ export { default as DocumentSelection, type DocumentSelectionChangeRangeEvent } 
 export { default as Range } from './model/range';
 export { default as LiveRange } from './model/liverange';
 export { default as LivePosition } from './model/liveposition';
-export { default as Model } from './model/model';
+export { default as Model, type ModelApplyOperationEvent } from './model/model';
 export { default as TreeWalker } from './model/treewalker';
 export { default as Element } from './model/element';
 export { default as Position } from './model/position';
