@@ -36,7 +36,6 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 	// Verifying manual tests.
 	exec( 'yarn', 'run', 'dll:build' );
 	exec( 'sh', './scripts/check-manual-tests.sh', '-r', 'ckeditor5', '-f', 'ckeditor5' );
-	exec( 'sh', './scripts/check-core-backward-compability.sh' );
 
 	exec( 'node', './scripts/ci/check-manual-tests-directory-structure.js' );
 }
