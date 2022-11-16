@@ -221,7 +221,7 @@ export default class SelectionObserver extends Observer {
 		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
-	// @if CK_DEBUG //	reportInfiniteLoop() {
+	// @if CK_DEBUG //	_reportInfiniteLoop() {
 	// @if CK_DEBUG //		throw new Error(
 	// @if CK_DEBUG //			'Selection change observer detected an infinite rendering loop.\n\n' +
 	// @if CK_DEBUG //	 		'⚠️⚠️ Report this error on https://github.com/ckeditor/ckeditor5/issues/11658.'
@@ -278,7 +278,7 @@ export default class SelectionObserver extends Observer {
 			// by the browser and browser fixes it automatically what causes `selectionchange` event on
 			// which a loopback through a model tries to re-render the wrong selection and again.
 			//
-			// @if CK_DEBUG // this.reportInfiniteLoop();
+			// @if CK_DEBUG // this._reportInfiniteLoop();
 
 			return;
 		}

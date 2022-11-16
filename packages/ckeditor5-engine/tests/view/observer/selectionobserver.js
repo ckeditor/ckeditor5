@@ -212,7 +212,7 @@ describe( 'SelectionObserver', () => {
 		} );
 
 		let wasInfiniteLoopDetected = false;
-		sinon.stub( selectionObserver, 'reportInfiniteLoop' ).callsFake( () => {
+		sinon.stub( selectionObserver, '_reportInfiniteLoop' ).callsFake( () => {
 			wasInfiniteLoopDetected = true;
 		} );
 		const selectionChangeSpy = sinon.spy();
@@ -232,6 +232,15 @@ describe( 'SelectionObserver', () => {
 				counter--;
 			}
 		} );
+	} );
+
+	it( 'SelectionObserver#_reportInfiniteLoop() should throw an error', () => {
+		expect( () => {
+			selectionObserver._reportInfiniteLoop();
+		} ).to.throw( Error,
+			'Selection change observer detected an infinite rendering loop.\n\n' +
+			'⚠️⚠️ Report this error on https://github.com/ckeditor/ckeditor5/issues/11658.'
+		);
 	} );
 
 	it( 'should not be treated as an infinite loop if selection is changed only few times', done => {
