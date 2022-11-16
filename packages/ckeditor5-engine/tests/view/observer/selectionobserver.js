@@ -211,15 +211,17 @@ describe( 'SelectionObserver', () => {
 			writer.setSelection( viewFoo, 0 );
 		} );
 
+		let wasInfiniteLoopDetected = false;
+		sinon.stub( selectionObserver, 'reportInfiniteLoop' ).callsFake( () => {
+			wasInfiniteLoopDetected = true;
+		} );
 		const selectionChangeSpy = sinon.spy();
-
-		// Catches the "Selection change observer detected an infinite rendering loop." warning in the CK_DEBUG mode.
-		sinon.stub( console, 'warn' );
 
 		viewDocument.on( 'selectionChange', selectionChangeSpy );
 
 		return new Promise( resolve => {
 			viewDocument.on( 'selectionChangeDone', () => {
+				expect( wasInfiniteLoopDetected ).to.be.true;
 				expect( selectionChangeSpy.callCount ).to.equal( 60 );
 
 				resolve();
