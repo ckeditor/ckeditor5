@@ -43,6 +43,7 @@ export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
 export type { default as Batch } from './model/batch';
+export type { default as Node } from './model/node';
 export type { default as Schema } from './model/schema';
 export type { default as Selection } from './model/selection';
 export type { default as Writer } from './model/writer';
@@ -74,7 +75,7 @@ export { default as ViewDocumentFragment } from './view/documentfragment';
 export type { default as ViewItem } from './view/item';
 export type { default as ViewDocumentSelection } from './view/documentselection';
 export type { default as ViewRange } from './view/range';
-export type { default as ViewSelection } from './view/selection';
+export type { default as ViewSelection, ViewSelectionChangeEvent } from './view/selection';
 export type { default as ViewTypeCheckable } from './view/typecheckable';
 
 export { getFillerOffset } from './view/containerelement';
