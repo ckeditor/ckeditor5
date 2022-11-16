@@ -30,7 +30,7 @@ export { default as OperationFactory } from './model/operation/operationfactory'
 export { transformSets } from './model/operation/transform';
 
 // Model
-export { default as DocumentSelection } from './model/documentselection';
+export { default as DocumentSelection, type DocumentSelectionChangeRangeEvent } from './model/documentselection';
 export { default as Range } from './model/range';
 export { default as LiveRange } from './model/liverange';
 export { default as LivePosition } from './model/liveposition';

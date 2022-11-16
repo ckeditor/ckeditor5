@@ -12,7 +12,7 @@
 import View from '../view';
 
 import '../../theme/components/icon/icon.css';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The icon view class.

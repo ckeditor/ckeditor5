@@ -18,6 +18,7 @@ export {
 	Emitter,
 	type BaseEvent,
 	type CallbackOptions,
+	type EmitterMixinDelegateChain,
 	type GetCallback,
 	type GetCallbackOptions,
 	type GetEventInfo,
@@ -43,7 +44,7 @@ export { default as compareArrays } from './comparearrays';
 export { default as createElement } from './dom/createelement';
 export { default as Config } from './config';
 export { default as isIterable } from './isiterable';
-export { default as DomEmitterMixin } from './dom/emittermixin';
+export { default as DomEmitterMixin, DomEmitter } from './dom/emittermixin';
 export { default as global } from './dom/global';
 export { default as getAncestors } from './dom/getancestors';
 export { default as getDataFromElement } from './dom/getdatafromelement';
@@ -56,9 +57,10 @@ export { default as indexOf } from './dom/indexof';
 export { default as insertAt } from './dom/insertat';
 export { default as isComment } from './dom/iscomment';
 export { default as isNode } from './dom/isnode';
+export { default as isRange } from './dom/isrange';
 export { default as isVisible } from './dom/isvisible';
+export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction } from './dom/position';
 export { default as remove } from './dom/remove';
-export { type PositioningFunction } from './dom/position';
 export * from './dom/scroll';
 
 export * from './keyboard';

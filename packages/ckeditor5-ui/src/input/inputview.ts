@@ -8,12 +8,13 @@
  */
 
 import View from '../view';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import {
+	FocusTracker,
+	type Locale,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/input/input.css';
-
-import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * The base input view class.

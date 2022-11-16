@@ -9,15 +9,20 @@
  * @module ui/view
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ViewCollection from './viewcollection';
 import Template, { type BindChain, type TemplateDefinition } from './template';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import ObservableMixin, { type DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Collection, { type CollectionAddEvent } from '@ckeditor/ckeditor5-utils/src/collection';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
-import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
+import {
+	CKEditorError,
+	Collection,
+	DomEmitterMixin,
+	ObservableMixin,
+	isIterable,
+	type CollectionAddEvent,
+	type DecoratedMethodEvent,
+	type Locale,
+	type LocaleTranslate
+} from '@ckeditor/ckeditor5-utils';
 
 import '../theme/globals/globals.css';
 

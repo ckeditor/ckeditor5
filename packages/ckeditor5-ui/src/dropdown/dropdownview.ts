@@ -8,9 +8,14 @@
  */
 
 import View from '../view';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import { FocusTracker, type Locale } from '@ckeditor/ckeditor5-utils';
-import { getOptimalPosition, type PositioningFunction } from '@ckeditor/ckeditor5-utils/src/dom/position';
+import {
+	KeystrokeHandler,
+	FocusTracker,
+	getOptimalPosition,
+	type Locale,
+	type ObservableChangeEvent,
+	type PositioningFunction
+} from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/dropdown.css';
 
@@ -19,7 +24,6 @@ import type { default as DropdownPanelView, PanelPosition } from './dropdownpane
 import type { FocusableView } from '../focuscycler';
 import type ListView from '../list/listview';
 import type ToolbarView from '../toolbar/toolbarview';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * The dropdown view class. It manages the dropdown button and dropdown panel.

@@ -10,8 +10,7 @@
 import View from '../view';
 
 import type { View as EditingView } from '@ckeditor/ckeditor5-engine';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { Locale, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The editable UI view class.
