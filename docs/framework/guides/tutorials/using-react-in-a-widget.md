@@ -1,7 +1,7 @@
 ---
 menu-title: Using a React component in a widget
 category: framework-tutorials
-order: 13
+order: 25
 ---
 
 # Using a React component in a block widget

@@ -1,6 +1,6 @@
 ---
 category: framework-tutorials
-order: 11
+order: 15
 ---
 
 # Implementing an inline widget
