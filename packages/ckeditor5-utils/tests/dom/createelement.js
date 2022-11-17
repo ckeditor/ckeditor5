@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals HTMLInputElement, document, window */
 
 import createElement from '../../src/dom/createelement';
 
@@ -30,6 +30,17 @@ describe( 'createElement', () => {
 		expect( svg.tagName.toLowerCase() ).to.equal( 'svg' );
 		expect( svg.getAttribute( 'xmlns' ) ).to.equal( namespace );
 		expect( svg.createSVGRect ).to.be.a( 'function' );
+	} );
+
+	it( 'should create custom element when \'is\' attribute is set', () => {
+		class CustomInput extends HTMLInputElement {}
+		window.customElements.define( 'custom-input', CustomInput, {
+			extends: 'input'
+		} );
+		const el = createElement( document, 'input', { is: 'custom-input' } );
+
+		expect( el.tagName.toLowerCase() ).to.equal( 'input' );
+		expect( el ).to.be.instanceof( CustomInput );
 	} );
 
 	it( 'should create element with child text node', () => {

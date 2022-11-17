@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals HTMLElement, Event, document */
+/* globals HTMLElement, HTMLInputElement, Event, document, window */
 
 import { default as Template, TemplateToBinding, TemplateIfBinding } from '../src/template';
 import View from '../src/view';
@@ -384,6 +384,24 @@ describe( 'Template', () => {
 
 						expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p></p>' );
 					} );
+				} );
+			} );
+
+			describe( 'is', () => {
+				it( 'passes attribute as createElementNS option', () => {
+					class CustomInput extends HTMLInputElement {}
+					window.customElements.define( 'custom-input', CustomInput, {
+						extends: 'input'
+					} );
+
+					const el = new Template( {
+						tag: 'input',
+						attributes: {
+							is: 'custom-input'
+						}
+					} ).render();
+
+					expect( el ).to.be.instanceof( CustomInput );
 				} );
 			} );
 		} );

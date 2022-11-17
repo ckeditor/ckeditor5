@@ -460,7 +460,7 @@ export default class Template extends EmitterMixin() {
 		let node = data.node;
 
 		if ( !node ) {
-			const options = this.attributes && this.attributes.is ? { is: this.attributes.is } : undefined;
+			const options = this.attributes && this.attributes.is ? { is: this.attributes.is as any } : undefined;
 			node = data.node = document.createElementNS( this.ns || xhtmlNs, this.tag!, options ) as any;
 		}
 
