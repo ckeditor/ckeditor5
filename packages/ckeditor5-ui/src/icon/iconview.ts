@@ -131,31 +131,31 @@ export default class IconView extends View {
 	 * @private
 	 */
 	private _updateXMLContent() {
-		if ( this.content ) {
-			const parsed = new DOMParser().parseFromString( this.content.trim(), 'image/svg+xml' );
-			const svg = parsed.querySelector( 'svg' )!;
-			const viewBox = svg.getAttribute( 'viewBox' );
-
-			if ( viewBox ) {
-				this.viewBox = viewBox;
-			}
-
-			// Preserve presentational attributes of the <svg> element from the source.
-			// They can affect rendering of the entire icon (https://github.com/ckeditor/ckeditor5/issues/12597).
-			for ( const { name, value } of Array.from( svg.attributes ) ) {
-				if ( IconView.presentationalAttributeNames.includes( name ) ) {
-					this.element!.setAttribute( name, value );
-				}
-			}
-
-			while ( this.element!.firstChild ) {
-				this.element!.removeChild( this.element!.firstChild );
-			}
-
-			while ( svg.childNodes.length > 0 ) {
-				this.element!.appendChild( svg.childNodes[ 0 ] );
-			}
-		}
+		// if ( this.content ) {
+		// 	const parsed = new DOMParser().parseFromString( this.content.trim(), 'image/svg+xml' );
+		// 	const svg = parsed.querySelector( 'svg' )!;
+		// 	const viewBox = svg.getAttribute( 'viewBox' );
+		//
+		// 	if ( viewBox ) {
+		// 		this.viewBox = viewBox;
+		// 	}
+		//
+		// 	// Preserve presentational attributes of the <svg> element from the source.
+		// 	// They can affect rendering of the entire icon (https://github.com/ckeditor/ckeditor5/issues/12597).
+		// 	for ( const { name, value } of Array.from( svg.attributes ) ) {
+		// 		if ( IconView.presentationalAttributeNames.includes( name ) ) {
+		// 			this.element!.setAttribute( name, value );
+		// 		}
+		// 	}
+		//
+		// 	while ( this.element!.firstChild ) {
+		// 		this.element!.removeChild( this.element!.firstChild );
+		// 	}
+		//
+		// 	while ( svg.childNodes.length > 0 ) {
+		// 		this.element!.appendChild( svg.childNodes[ 0 ] );
+		// 	}
+		// }
 	}
 
 	/**
