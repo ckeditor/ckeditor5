@@ -18,11 +18,11 @@ import {
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/list/list.css';
-
 import type ListItemView from './listitemview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import type ViewCollection from '../viewcollection';
+
+import '../../theme/components/list/list.css';
 
 /**
  * The list view class.

@@ -23,9 +23,9 @@ import {
 
 import { isElement } from 'lodash-es';
 
-import '../../../theme/components/panel/balloonpanel.css';
-
 import type ViewCollection from '../../viewcollection';
+
+import '../../../theme/components/panel/balloonpanel.css';
 
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;

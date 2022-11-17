@@ -17,9 +17,9 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import '../../../theme/components/panel/stickypanel.css';
-
 import type ViewCollection from '../../viewcollection';
+
+import '../../../theme/components/panel/stickypanel.css';
 
 const toPx = toUnit( 'px' );
 

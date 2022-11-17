@@ -7,7 +7,8 @@
  * @module ui/panel/balloon/contextualballoon
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+
 import BalloonPanelView from './balloonpanelview';
 import View from '../../view';
 import ButtonView from '../../button/buttonview';
@@ -22,15 +23,14 @@ import {
 	type PositionOptions
 } from '@ckeditor/ckeditor5-utils';
 
+import type { ButtonExecuteEvent } from '../../button/button';
+import type ViewCollection from '../../viewcollection';
+
 import prevIcon from '../../../theme/icons/previous-arrow.svg';
 import nextIcon from '../../../theme/icons/next-arrow.svg';
 
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
-
-import type { ButtonExecuteEvent } from '../../button/button';
-import type ViewCollection from '../../viewcollection';
-import type { Editor } from '@ckeditor/ckeditor5-core';
 
 const toPx = toUnit( 'px' );
 

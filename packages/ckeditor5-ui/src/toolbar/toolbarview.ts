@@ -14,9 +14,6 @@ import ToolbarLineBreakView from './toolbarlinebreakview';
 import preventDefault from '../bindings/preventdefault';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import normalizeToolbarConfig from './normalizetoolbarconfig';
-import { isObject } from 'lodash-es';
-
-import '../../theme/components/toolbar/toolbar.css';
 
 import type ComponentFactory from '../componentfactory';
 import type ViewCollection from '../viewcollection';
@@ -43,6 +40,10 @@ import {
 	type ToolbarConfig,
 	type ToolbarConfigItem
 } from '@ckeditor/ckeditor5-core';
+
+import { isObject } from 'lodash-es';
+
+import '../../theme/components/toolbar/toolbar.css';
 
 const { threeVerticalDots } = icons;
 

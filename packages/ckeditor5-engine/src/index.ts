@@ -9,28 +9,27 @@
 
 export * from './view/placeholder';
 
-// Controller
+// Controller.
 export { default as EditingController } from './controller/editingcontroller';
 export { default as DataController, type DataControllerSetEvent } from './controller/datacontroller';
 
-// Conversion
+// Conversion.
 export { default as Conversion } from './conversion/conversion';
 export type { DowncastInsertEvent, DowncastSelectionEvent } from './conversion/downcastdispatcher';
 export type { AddHighlightCallback, HighlightDescriptor, RemoveHighlightCallback } from './conversion/downcasthelpers';
 export type { MapperViewToModelPositionEvent } from './conversion/mapper';
 
-// DataProcessor
-
+// DataProcessor.
 export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor';
 
-// Model / Operation
+// Model / Operation.
 export type { default as Operation } from './model/operation/operation';
 export { default as InsertOperation } from './model/operation/insertoperation';
 export { default as MarkerOperation } from './model/operation/markeroperation';
 export { default as OperationFactory } from './model/operation/operationfactory';
 export { transformSets } from './model/operation/transform';
 
-// Model
+// Model.
 export { default as DocumentSelection, type DocumentSelectionChangeRangeEvent } from './model/documentselection';
 export { default as Range } from './model/range';
 export { default as LiveRange } from './model/liverange';
@@ -51,14 +50,14 @@ export type { default as TypeCheckable } from './model/typecheckable';
 
 export { findOptimalInsertionRange } from './model/utils/findoptimalinsertionrange';
 
-// Model Events
+// Model Events.
 export type { DocumentChangeEvent } from './model/document';
 export type { DocumentSelectionChangeEvent } from './model/documentselection';
 export type { ModelDeleteContentEvent, ModelInsertContentEvent, ModelInsertObjectEvent } from './model/model';
 export type { SelectionChangeRangeEvent } from './model/selection';
 
-// View
-export { default as DataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
+// View.
+export { default as DataTransfer } from './view/datatransfer';
 export { default as DomConverter } from './view/domconverter';
 export { default as Renderer } from './view/renderer';
 export { default as View } from './view/view';
@@ -80,7 +79,7 @@ export type { default as ViewTypeCheckable } from './view/typecheckable';
 
 export { getFillerOffset } from './view/containerelement';
 
-// View / Observer
+// View / Observer.
 export { default as Observer } from './view/observer/observer';
 export { default as ClickObserver } from './view/observer/clickobserver';
 export { default as DomEventObserver } from './view/observer/domeventobserver';
@@ -93,7 +92,7 @@ export { default as Matcher } from './view/matcher';
 export { default as BubblingEventInfo } from './view/observer/bubblingeventinfo';
 export { default as DomEventData } from './view/observer/domeventdata';
 
-// View / Events
+// View / Events.
 export type { BubblingEvent } from './view/observer/bubblingemittermixin';
 export type { ViewDocumentArrowKeyEvent } from './view/observer/arrowkeysobserver';
 export type { ViewDocumentCompositionEvent } from './view/observer/compositionobserver';
@@ -102,7 +101,7 @@ export type { ViewDocumentKeyEvent } from './view/observer/keyobserver';
 export type { ViewDocumentLayoutChangedEvent } from './view/document';
 export type { ViewDocumentMouseEvent } from './view/observer/mouseobserver';
 
-// View / Styles
+// View / Styles.
 export { StylesProcessor } from './view/stylesmap';
 export * from './view/styles/background';
 export * from './view/styles/border';

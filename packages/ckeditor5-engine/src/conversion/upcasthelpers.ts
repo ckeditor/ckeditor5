@@ -17,9 +17,9 @@ import type ViewSelection from '../view/selection';
 import type ViewDocumentSelection from '../view/documentselection';
 import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
 
-import { cloneDeep } from 'lodash-es';
-
 import { priorities, type EventInfo, type PriorityString } from '@ckeditor/ckeditor5-utils';
+
+import { cloneDeep } from 'lodash-es';
 
 /**
  * Contains the {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for

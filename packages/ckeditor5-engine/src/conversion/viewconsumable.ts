@@ -7,7 +7,6 @@
  * @module engine/conversion/viewconsumable
  */
 
-import { isArray } from 'lodash-es';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type Element from '../view/element';
@@ -15,6 +14,8 @@ import type Node from '../view/node';
 import type Text from '../view/text';
 import type DocumentFragment from '../view/documentfragment';
 import type { Match } from '../view/matcher';
+
+import { isArray } from 'lodash-es';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},

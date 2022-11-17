@@ -10,11 +10,11 @@
 import View from '../view';
 import LabelView from '../label/labelview';
 
+import type { default as InputView, InputViewInputEvent } from '../input/inputview';
+
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/labeledinput/labeledinput.css';
-
-import type { default as InputView, InputViewInputEvent } from '../input/inputview';
 
 /**
  * The labeled input view class.

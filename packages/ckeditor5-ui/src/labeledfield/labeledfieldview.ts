@@ -10,12 +10,12 @@
 import View from '../view';
 import LabelView from '../label/labelview';
 
+import type { FocusableView } from '../focuscycler';
+import type ViewCollection from '../viewcollection';
+
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/labeledfield/labeledfieldview.css';
-
-import type { FocusableView } from '../focuscycler';
-import type ViewCollection from '../viewcollection';
 
 /**
  * The labeled field view class. It can be used to enhance any view with the following features:

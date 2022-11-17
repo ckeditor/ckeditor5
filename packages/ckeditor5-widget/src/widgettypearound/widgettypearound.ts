@@ -53,7 +53,10 @@ import type {
 	ViewDocumentCompositionEvent,
 	ViewDocumentKeyEvent,
 	ViewDocumentMouseEvent,
-	ViewElement
+	ViewElement,
+	ModelDeleteContentEvent,
+	ModelInsertContentEvent,
+	ModelInsertObjectEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import {
@@ -68,9 +71,8 @@ import {
 import { isWidget } from '../utils';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
-import '../../theme/widgettypearound.css';
 
-import type { ModelDeleteContentEvent, ModelInsertContentEvent, ModelInsertObjectEvent } from '@ckeditor/ckeditor5-engine/src/model/model';
+import '../../theme/widgettypearound.css';
 
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ] as const;
 
