@@ -16,6 +16,7 @@ import DocumentListIndentCommand from './documentlistindentcommand';
 import DocumentListCommand from './documentlistcommand';
 import DocumentListMergeCommand from './documentlistmergecommand';
 import DocumentListSplitCommand from './documentlistsplitcommand';
+import DocumentListUtils from '../documentlist/documentlistutils';
 import {
 	bogusParagraphCreator,
 	listItemDowncastConverter,
@@ -41,11 +42,11 @@ import {
 	getViewElementIdForListType,
 	getViewElementNameForListType
 } from './utils/view';
+
 import ListWalker, {
 	iterateSiblingListBlocks,
 	ListBlocksIterable
 } from './utils/listwalker';
-
 import '../../theme/documentlist.css';
 
 /**
@@ -72,7 +73,7 @@ export default class DocumentListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Enter, Delete ];
+		return [ Enter, Delete, DocumentListUtils ];
 	}
 
 	/**
