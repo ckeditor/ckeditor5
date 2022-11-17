@@ -11,7 +11,7 @@
 
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import type View from '../view';

@@ -7,11 +7,9 @@
  * @module widget/highlightstack
  */
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { EmitterMixin, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
-import type { DowncastWriter } from '@ckeditor/ckeditor5-engine';
-import type { HighlightDescriptor } from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
-import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
+import type { DowncastWriter, HighlightDescriptor } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Class used to handle the correct order of highlights on elements.

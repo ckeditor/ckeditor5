@@ -7,14 +7,17 @@
  * @module clipboard/clipboardobserver
  */
 
-import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
+import { EventInfo } from '@ckeditor/ckeditor5-utils';
 
-import type DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import type Range from '@ckeditor/ckeditor5-engine/src/view/range';
-import type Element from '@ckeditor/ckeditor5-engine/src/view/element';
-import type { View, ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
+import {
+	DataTransfer,
+	DomEventObserver,
+	type DomEventData,
+	type View,
+	type ViewDocumentFragment,
+	type ViewElement,
+	type ViewRange
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * Clipboard events observer.
@@ -104,7 +107,7 @@ export type ViewDocumentDragEvent = {
 
 export type ClipboardEventData = {
 	dataTransfer: DataTransfer;
-	dropRange?: Range | null;
+	dropRange?: ViewRange | null;
 };
 
 export type ViewDocumentClipboardInputEvent = {
@@ -112,8 +115,8 @@ export type ViewDocumentClipboardInputEvent = {
 	args: [ data: {
 		dataTransfer: DataTransfer;
 		method: 'paste' | 'dragover' | 'drop';
-		targetRanges: Array<Range> | null;
-		target: Element;
+		targetRanges: Array<ViewRange> | null;
+		target: ViewElement;
 		content?: ViewDocumentFragment;
 	} ];
 };

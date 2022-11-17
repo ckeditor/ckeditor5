@@ -7,21 +7,32 @@
  * @module widget/widgettoolbarrepository
  */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+import {
+	Plugin,
+	type Editor,
+	type EditorUIUpdateEvent,
+	type PluginDependencies,
+	type ToolbarConfigItem
+} from '@ckeditor/ckeditor5-core';
+
+import type { ViewDocumentSelection, ViewElement } from '@ckeditor/ckeditor5-engine';
+
+import {
+	BalloonPanelView,
+	ContextualBalloon,
+	ToolbarView,
+	type BaloonToolbarShowEvent,
+	type View
+} from '@ckeditor/ckeditor5-ui';
+
+import {
+	CKEditorError,
+	logWarning,
+	type ObservableChangeEvent,
+	type RectSource
+} from '@ckeditor/ckeditor5-utils';
+
 import { isWidget } from './utils';
-import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import type { BalloonToolbar, View } from '@ckeditor/ckeditor5-ui';
-import type { BaloonToolbarShowEvent } from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
-import type DocumentSelection from '@ckeditor/ckeditor5-engine/src/view/documentselection';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import type { EditorUIUpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import type Element from '@ckeditor/ckeditor5-engine/src/view/element';
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { RectSource } from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import type { ToolbarConfigItem } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 
 /**
  * Widget toolbar repository plugin. A central point for registering widget toolbars. This plugin handles the whole
@@ -137,7 +148,7 @@ export default class WidgetToolbarRepository extends Plugin {
 		{ ariaLabel, items, getRelatedElement, balloonClassName = 'ck-toolbar-container' }: {
 			ariaLabel?: string;
 			items: Array<ToolbarConfigItem>;
-			getRelatedElement: ( selection: DocumentSelection ) => Element;
+			getRelatedElement: ( selection: ViewDocumentSelection ) => ViewElement;
 			balloonClassName?: string;
 		}
 	): void {
@@ -267,7 +278,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * @param {module:widget/widgettoolbarrepository~WidgetRepositoryToolbarDefinition} toolbarDefinition
 	 * @param {module:engine/view/element~Element} relatedElement
 	 */
-	private _showToolbar( toolbarDefinition: WidgetRepositoryToolbarDefinition, relatedElement: Element ) {
+	private _showToolbar( toolbarDefinition: WidgetRepositoryToolbarDefinition, relatedElement: ViewElement ) {
 		if ( this._isToolbarVisible( toolbarDefinition ) ) {
 			repositionContextualBalloon( this.editor, relatedElement );
 		} else if ( !this._isToolbarInBalloon( toolbarDefinition ) ) {
@@ -311,14 +322,14 @@ export default class WidgetToolbarRepository extends Plugin {
 	}
 }
 
-function repositionContextualBalloon( editor: Editor, relatedElement: Element ) {
+function repositionContextualBalloon( editor: Editor, relatedElement: ViewElement ) {
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
 	const position = getBalloonPositionData( editor, relatedElement );
 
 	balloon.updatePosition( position );
 }
 
-function getBalloonPositionData( editor: Editor, relatedElement: Element ) {
+function getBalloonPositionData( editor: Editor, relatedElement: ViewElement ) {
 	const editingView = editor.editing.view;
 	const defaultPositions = BalloonPanelView.defaultPositions;
 
@@ -336,7 +347,7 @@ function getBalloonPositionData( editor: Editor, relatedElement: Element ) {
 	};
 }
 
-function isWidgetSelected( selection: DocumentSelection ) {
+function isWidgetSelected( selection: ViewDocumentSelection ) {
 	const viewElement = selection.getSelectedElement();
 
 	return !!( viewElement && isWidget( viewElement ) );
@@ -358,7 +369,7 @@ function isWidgetSelected( selection: DocumentSelection ) {
  */
 interface WidgetRepositoryToolbarDefinition {
 	view: View;
-	getRelatedElement: ( selection: DocumentSelection ) => Element | null | undefined;
+	getRelatedElement: ( selection: ViewDocumentSelection ) => ViewElement | null | undefined;
 	balloonClassName: string;
 }
 

@@ -7,11 +7,14 @@
  * @module typing/utils/changebuffer
  */
 
-import type Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/document';
-import type { DocumentSelectionChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
+import type {
+	Model,
+	Batch,
+	DocumentChangeEvent,
+	DocumentSelectionChangeEvent
+} from '@ckeditor/ckeditor5-engine';
+
+import type { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Change buffer allows to group atomic changes (like characters that have been typed) into

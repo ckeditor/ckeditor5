@@ -20,8 +20,7 @@ import type Node from './node';
 import type Selection from './selection';
 import type Writer from './writer';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The model's schema. It defines the allowed and disallowed structures of nodes as well as nodes' attributes.

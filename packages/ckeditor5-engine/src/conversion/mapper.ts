@@ -14,8 +14,7 @@ import ViewPosition from '../view/position';
 import ViewRange from '../view/range';
 import ViewText from '../view/text';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import type ViewDocumentFragment from '../view/documentfragment';
 import type ViewElement from '../view/element';

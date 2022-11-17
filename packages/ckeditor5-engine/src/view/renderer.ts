@@ -11,16 +11,20 @@ import ViewText from './text';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
 
-import { default as diff, type DiffResult } from '@ckeditor/ckeditor5-utils/src/diff';
-import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
-import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
-import ObservableMixin, { type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
-import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
-import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import {
+	CKEditorError,
+	ObservableMixin,
+	diff,
+	env,
+	fastDiff,
+	insertAt,
+	isComment,
+	isNode,
+	isText,
+	remove,
+	type DiffResult,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 
 import type { ChangeType } from './document';
 import type DocumentSelection from './documentselection';

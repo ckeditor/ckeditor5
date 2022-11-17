@@ -15,9 +15,8 @@ import type Document from './document';
 import type DocumentFragment from './documentfragment';
 import type Element from './element';
 
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import { CKEditorError, compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
+
 // To check if component is loaded more than once.
 import '@ckeditor/ckeditor5-utils/src/version';
 

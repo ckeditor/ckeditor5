@@ -7,7 +7,7 @@
  * @module engine/model/utils/findoptimalinsertionrange
  */
 
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 import type DocumentSelection from '../documentselection';
 import type Model from '../model';

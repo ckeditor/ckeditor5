@@ -11,7 +11,7 @@ import type Element from './element';
 
 import { isPlainObject } from 'lodash-es';
 
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
  * View matcher class.

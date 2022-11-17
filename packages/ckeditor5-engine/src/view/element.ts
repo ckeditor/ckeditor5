@@ -10,9 +10,7 @@
 import Node from './node';
 import Text from './text';
 import TextProxy from './textproxy';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { isIterable, toArray, toMap } from '@ckeditor/ckeditor5-utils';
 import { default as Matcher, type MatcherPattern } from './matcher';
 import { default as StylesMap, type StyleValue } from './stylesmap';
 

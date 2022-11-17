@@ -3,11 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import type { DocumentSelection, EditingController, Model, Position, Range, Schema, Selection } from '@ckeditor/ckeditor5-engine';
-import type { GetCallback } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import type { ViewDocumentArrowKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/arrowkeysobserver';
+import {
+	keyCodes,
+	Rect,
+	type GetCallback
+} from '@ckeditor/ckeditor5-utils';
+
+import type {
+	DocumentSelection,
+	EditingController,
+	Model,
+	Position,
+	Range,
+	Schema,
+	Selection,
+	ViewDocumentArrowKeyEvent
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * @module widget/verticalnavigationhandler

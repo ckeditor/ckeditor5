@@ -7,6 +7,8 @@
  * @module engine/controller/editingcontroller
  */
 
+import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
+
 import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
 import Mapper from '../conversion/mapper';
@@ -24,8 +26,6 @@ import {
 	remove
 } from '../conversion/downcasthelpers';
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
 
 import type Model from '../model/model';

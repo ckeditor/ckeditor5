@@ -18,14 +18,14 @@ export { default as ContextPlugin } from './contextplugin';
 
 export { default as Editor, type EditorReadyEvent } from './editor/editor';
 export { default as EditorUI, type EditorUIReadyEvent, type EditorUIUpdateEvent } from './editor/editorui';
-export { EditorConfig } from './editor/editorconfig';
+export type { EditorConfig, ToolbarConfig, ToolbarConfigItem } from './editor/editorconfig';
 
 export { default as attachToForm } from './editor/utils/attachtoform';
 export { default as DataApiMixin } from './editor/utils/dataapimixin';
 export { default as ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin';
 export { default as secureSourceElement } from './editor/utils/securesourceelement';
 
-export { default as PendingActions } from './pendingactions';
+export { default as PendingActions, type PendingAction } from './pendingactions';
 
 import cancel from './../theme/icons/cancel.svg';
 import caption from './../theme/icons/caption.svg';

@@ -9,11 +9,55 @@
  * @module widget/widgettypearound
  */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import { isForwardArrowKeyCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import {
+	Plugin,
+	type PluginDependencies,
+	type Editor
+} from '@ckeditor/ckeditor5-core';
+
+import { Template } from '@ckeditor/ckeditor5-ui';
+
+import {
+	Enter,
+	type ViewDocumentEnterEvent
+} from '@ckeditor/ckeditor5-enter';
+
+import {
+	Delete,
+	type ViewDocumentDeleteEvent,
+	type ViewDocumentInsertTextEvent
+} from '@ckeditor/ckeditor5-typing';
+
+import {
+	env,
+	isForwardArrowKeyCode,
+	type BaseEvent,
+	type Emitter,
+	type GetCallback,
+	type GetCallbackOptions,
+	type ObservableChangeEvent,
+	type KeystrokeInfo
+} from '@ckeditor/ckeditor5-utils';
+
+import type {
+	BubblingEventInfo,
+	DocumentChangeEvent,
+	DomEventData,
+	DowncastInsertEvent,
+	DowncastSelectionEvent,
+	DowncastWriter,
+	Element,
+	Schema,
+	SelectionChangeRangeEvent,
+	ViewDocumentArrowKeyEvent,
+	ViewDocumentCompositionEvent,
+	ViewDocumentKeyEvent,
+	ViewDocumentMouseEvent,
+	ViewElement,
+	ModelDeleteContentEvent,
+	ModelInsertContentEvent,
+	ModelInsertObjectEvent
+} from '@ckeditor/ckeditor5-engine';
 
 import {
 	isTypeAroundWidget,
@@ -27,26 +71,8 @@ import {
 import { isWidget } from '../utils';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
-import '../../theme/widgettypearound.css';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { DomEventData, DowncastWriter, Element, Schema, ViewElement } from '@ckeditor/ckeditor5-engine';
-import type { BaseEvent, Emitter, GetCallback, GetCallbackOptions } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import type { DowncastInsertEvent, DowncastSelectionEvent } from '@ckeditor/ckeditor5-engine/src/conversion/downcastdispatcher';
-import type { ViewDocumentArrowKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/arrowkeysobserver';
-import type { SelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine/src/model/selection';
-import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/document';
-import type BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
-import type Widget from '../widget';
-import type { ViewDocumentMouseEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import type { ViewDocumentEnterEvent } from '@ckeditor/ckeditor5-enter/src/enterobserver';
-import type { ViewDocumentInsertTextEvent } from '@ckeditor/ckeditor5-typing/src/inserttextobserver';
-import type { ViewDocumentKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
-import type { ViewDocumentCompositionEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/compositionobserver';
-import type { ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing/src/deleteobserver';
-import type { ModelDeleteContentEvent, ModelInsertContentEvent, ModelInsertObjectEvent } from '@ckeditor/ckeditor5-engine/src/model/model';
+import '../../theme/widgettypearound.css';
 
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ] as const;
 

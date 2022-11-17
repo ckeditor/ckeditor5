@@ -13,7 +13,7 @@ import Range from '../range';
 
 import type Document from '../document';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { isEqual } from 'lodash-es';
 
 /**

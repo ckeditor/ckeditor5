@@ -7,16 +7,16 @@
  * @module enter/entercommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from '@ckeditor/ckeditor5-core';
 import { getCopyOnEnterAttributes } from './utils';
 
-import type Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
 import type {
 	DocumentSelection,
 	Model,
 	Schema,
 	Element,
-	Position
+	Position,
+	Writer
 } from '@ckeditor/ckeditor5-engine';
 
 /**

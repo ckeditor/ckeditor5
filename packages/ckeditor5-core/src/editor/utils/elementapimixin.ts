@@ -5,8 +5,8 @@
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
+import { CKEditorError, setDataInElement } from '@ckeditor/ckeditor5-utils';
+
 import type Editor from '../editor';
 
 /**

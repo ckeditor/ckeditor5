@@ -10,17 +10,16 @@ import type { default as UpcastDispatcher, UpcastElementEvent, UpcastConversionA
 import type ModelElement from '../model/element';
 import type ModelRange from '../model/range';
 import type ModelPosition from '../model/position';
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import type { ViewDocumentFragment, ViewElement, ViewText } from '../index';
 import type Mapper from './mapper';
 import type Model from '../model/model';
 import type ViewSelection from '../view/selection';
 import type ViewDocumentSelection from '../view/documentselection';
+import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
+
+import { priorities, type EventInfo, type PriorityString } from '@ckeditor/ckeditor5-utils';
 
 import { cloneDeep } from 'lodash-es';
-
-import priorities, { type PriorityString } from '@ckeditor/ckeditor5-utils/src/priorities';
-import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
 
 /**
  * Contains the {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for

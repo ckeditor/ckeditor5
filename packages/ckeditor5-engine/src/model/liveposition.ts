@@ -15,8 +15,7 @@ import type Item from './item';
 import type Operation from './operation/operation';
 import type RootElement from './rootelement';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * `LivePosition` is a type of {@link module:engine/model/position~Position Position}

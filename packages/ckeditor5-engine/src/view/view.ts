@@ -31,11 +31,14 @@ import InputObserver from './observer/inputobserver';
 import ArrowKeysObserver from './observer/arrowkeysobserver';
 import TabObserver from './observer/tabobserver';
 
-import ObservableMixin, { type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import {
+	CKEditorError,
+	ObservableMixin,
+	scrollViewportToShowTarget,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide

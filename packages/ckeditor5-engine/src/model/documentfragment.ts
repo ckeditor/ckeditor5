@@ -17,7 +17,7 @@ import type Item from './item';
 import type Node from './node';
 import type Range from './range';
 
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { isIterable } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_ENGINE // const { stringifyMap } = require( '../dev-utils/utils' );
 

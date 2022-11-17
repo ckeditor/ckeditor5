@@ -8,9 +8,15 @@
  */
 
 import ContextPlugin from './contextplugin';
-import ObservableMixin, { type Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Collection, { type CollectionAddEvent, type CollectionRemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import {
+	CKEditorError,
+	Collection,
+	ObservableMixin,
+	type CollectionAddEvent,
+	type CollectionRemoveEvent,
+	type Observable
+} from '@ckeditor/ckeditor5-utils';
 
 /**
  * The list of pending editor actions.
