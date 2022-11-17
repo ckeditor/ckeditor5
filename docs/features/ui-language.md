@@ -233,16 +233,17 @@ ClassicEditor
 			<p style="text-align:center">Dutch</p>
 			</td>
 			<td style="width:200px">
+			<p style="text-align:center">English</p>
+			</td>
+			<td style="width:200px">
 			<p style="text-align:center">Estonian</p>
 			</td>
 			<td style="width:200px">
 			<p style="text-align:center">Finnish</p>
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>French</p>
-			</td>
 		</tr>
 		<tr>
+			<td style="text-align:center; width:200px">French</td>
 			<td style="text-align:center; width:200px">
 			<p>German</p>
 			</td>
@@ -252,14 +253,9 @@ ClassicEditor
 			<td style="text-align:center; width:200px">
 			<p>Hebrew</p>
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Hindi</p>
-			</td>
 		</tr>
 		<tr>
-			<td style="text-align:center; width:200px">
-			<p>Hebrew</p>
-			</td>
+			<td style="text-align:center; width:200px">Hindi</td>
 			<td style="text-align:center; width:200px">
 			<p>Indonesian</p>
 			</td>
