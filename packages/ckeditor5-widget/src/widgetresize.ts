@@ -13,6 +13,8 @@ import Resizer, {
 	type ResizerCommitEvent
 } from './widgetresize/resizer';
 
+import type WidgetToolbarRepository from './widgettoolbarrepository';
+
 import {
 	Plugin,
 	type Editor,
@@ -208,7 +210,7 @@ export default class WidgetResize extends Plugin {
 		if ( plugins.has( 'WidgetToolbarRepository' ) ) {
 			// Hiding widget toolbar to improve the performance
 			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#issuecomment-564528765).
-			const widgetToolbarRepository = plugins.get( 'WidgetToolbarRepository' );
+			const widgetToolbarRepository: WidgetToolbarRepository = plugins.get( 'WidgetToolbarRepository' );
 
 			resizer.on<ResizerBeginEvent>( 'begin', () => {
 				widgetToolbarRepository.forceDisabled( 'resize' );
