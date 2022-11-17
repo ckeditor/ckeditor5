@@ -163,8 +163,8 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * @event module:engine/view/document~Document#event:clipboardInput
  * @param {Object} data The event data.
  * @param {module:engine/view/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
- * @param {'paste'|'drop'} method Whether the event was triggered by a paste or drop operation.
- * @param {module:engine/view/element~Element} target The tree view element representing the target.
+ * @param {'paste'|'drop'} data.method Whether the event was triggered by a paste or drop operation.
+ * @param {module:engine/view/element~Element} data.target The tree view element representing the target.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
  * (usually – into which the content should be inserted).
  * If the clipboard input was triggered by a paste operation, this property is not set. If by a drop operation,
