@@ -34,7 +34,8 @@ export default function createElement(
 	children: Node | string | Iterable<Node | string> = []
 ): Element {
 	const namespace = attributes && attributes.xmlns;
-	const element = namespace ? doc.createElementNS( namespace, name ) : doc.createElement( name );
+	const options = attributes && attributes.is ? { is: attributes.is } : undefined;
+	const element = namespace ? doc.createElementNS( namespace, name, options ) : doc.createElement( name, options );
 
 	for ( const key in attributes ) {
 		element.setAttribute( key, attributes[ key ] );
