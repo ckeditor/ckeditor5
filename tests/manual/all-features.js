@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
@@ -52,8 +52,10 @@ import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtml
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+document.querySelector( '#init-editor' ).addEventListener( 'click', initEditor );
+
+async function initEditor() {
+	await ClassicEditor.create( document.querySelector( '#editor' ), {
 		plugins: [
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
@@ -227,57 +229,5 @@ ClassicEditor
 				}
 			]
 		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-
-		editor.plugins.get( 'WordCount' ).on( 'update', ( evt, stats ) => {
-			console.log( `Characters: ${ stats.characters }, words: ${ stats.words }.` );
-		} );
-
-		document.getElementById( 'clear-content' ).addEventListener( 'click', () => {
-			editor.setData( '' );
-		} );
-
-		// The "Print editor data" button logic.
-		document.getElementById( 'print-data-action' ).addEventListener( 'click', () => {
-			const iframeElement = document.getElementById( 'print-data-container' );
-
-			/* eslint-disable max-len */
-			iframeElement.srcdoc = '<html>' +
-				'<head>' +
-					`<title>${ document.title }</title>` +
-					'<link rel="stylesheet" href="https://ckeditor.com/docs/ckeditor5/latest/snippets/features/page-break/snippet.css" type="text/css">' +
-				'</head>' +
-				'<body class="ck-content">' +
-					editor.getData() +
-					'<script>' +
-						'window.addEventListener( \'DOMContentLoaded\', () => { window.print(); } );' +
-					'</script>' +
-				'</body>' +
-			'</html>';
-			/* eslint-enable max-len */
-		} );
-
-		const button = document.getElementById( 'read-only' );
-		let isReadOnly = false;
-
-		button.addEventListener( 'click', () => {
-			isReadOnly = !isReadOnly;
-
-			if ( isReadOnly ) {
-				editor.enableReadOnlyMode( 'manual-test' );
-			} else {
-				editor.disableReadOnlyMode( 'manual-test' );
-			}
-
-			button.textContent = isReadOnly ?
-				'Turn off read-only mode' :
-				'Turn on read-only mode';
-
-			editor.editing.view.focus();
-		} );
-	} )
-	.catch( err => {
-		console.error( err.stack );
 	} );
+}
