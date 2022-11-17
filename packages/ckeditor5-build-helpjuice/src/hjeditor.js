@@ -74,6 +74,8 @@ import FontBackgroundColor from './plugins/font/src/fontbackgroundcolor';
 
 const { objectInline, objectLeft, objectRight, objectCenter } = icons;
 
+const VIDEO_EXTENSIONS_REGEX = 'mpg|mp4|wmv|mpeg|webm|mkv|flv|vob|ogv|ogg|avi|rm|rmvb|asf|amv|mp2|mpe|mpv|m4v|svi|3gp|mov'
+
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
 // Plugins to include in the build.
@@ -331,7 +333,7 @@ HelpjuiceEditor.defaultConfig = {
 		extraProviders: [
 			{
 				name: 'helpjuiceProvider',
-				url: /^static.helpjuice\.com\/(\w+)\.(mpg|mp4|wmv|mpeg|webm|mkv|flv|vob|ogv|ogg|avi|rm|rmvb|asf|amv|mp2|mpe|mpv|m4v|svi|3gp|mov)/,
+				url: new RegExp(`^static.helpjuice\\.com\\/(\\w+)\\.(${VIDEO_EXTENSIONS_REGEX})`),
 				html: match => {
 					const getUrl = match.input;
 
@@ -342,7 +344,7 @@ HelpjuiceEditor.defaultConfig = {
 			},
 			{
 				name: 'localProvider',
-				url: /.*uploads\/upload\/(\w+)\.(mpg|mp4|wmv|mpeg|webm|mkv|flv|vob|ogv|ogg|avi|rm|rmvb|asf|amv|mp2|mpe|mpv|m4v|svi|3gp|mov)/,
+				url: new RegExp(`.*uploads\\/upload\\/(\\w+)\\.(${VIDEO_EXTENSIONS_REGEX})`),
 				html: match => {
 					const getUrl = match.input;
 
@@ -353,7 +355,7 @@ HelpjuiceEditor.defaultConfig = {
 			},
 			{
 				name: 'externalProvider',
-				url: /.*\.(mpg|mp4|wmv|mpeg|webm|mkv|flv|vob|ogv|ogg|avi|rm|rmvb|asf|amv|mp2|mpe|mpv|m4v|svi|3gp|mov)/i,
+				url: new RegExp(`.*\\.(${VIDEO_EXTENSIONS_REGEX})`, 'i'),
 				html: match => {
 					const getUrl = match.input;
 
