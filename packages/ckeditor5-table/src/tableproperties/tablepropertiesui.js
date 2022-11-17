@@ -105,7 +105,7 @@ export default class TablePropertiesUI extends Plugin {
 		 *
 		 * @member {module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}
 		 */
-		this.view = this._createPropertiesView();
+		this.view = null;
 
 		/**
 		 * The batch used to undo all changes made by the form (which are live, as the user types)
@@ -146,7 +146,9 @@ export default class TablePropertiesUI extends Plugin {
 
 		// Destroy created UI components as they are not automatically destroyed.
 		// See https://github.com/ckeditor/ckeditor5/issues/1341.
-		this.view.destroy();
+		if ( this.view ) {
+			this.view.destroy();
+		}
 	}
 
 	/**
@@ -304,6 +306,10 @@ export default class TablePropertiesUI extends Plugin {
 	_showView() {
 		const editor = this.editor;
 
+		if ( !this.view ) {
+			this.view = this._createPropertiesView();
+		}
+
 		this.listenTo( editor.ui, 'update', () => {
 			this._updateView();
 		} );
@@ -367,7 +373,7 @@ export default class TablePropertiesUI extends Plugin {
 	 * @type {Boolean}
 	 */
 	get _isViewVisible() {
-		return this._balloon.visibleView === this.view;
+		return !!this.view && this._balloon.visibleView === this.view;
 	}
 
 	/**
@@ -377,7 +383,7 @@ export default class TablePropertiesUI extends Plugin {
 	 * @type {Boolean}
 	 */
 	get _isViewInBalloon() {
-		return this._balloon.hasView( this.view );
+		return !!this.view && this._balloon.hasView( this.view );
 	}
 
 	/**

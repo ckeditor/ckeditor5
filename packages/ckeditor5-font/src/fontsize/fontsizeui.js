@@ -44,7 +44,12 @@ export default class FontSizeUI extends Plugin {
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_SIZE, locale => {
 			const dropdownView = createDropdown( locale );
-			addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
+
+			dropdownView.on( 'change:isOpen', ( evt, name, isOpen ) => {
+				if ( isOpen && !dropdownView.listView ) {
+					addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
+				}
+			} );
 
 			// Create dropdown model.
 			dropdownView.buttonView.set( {

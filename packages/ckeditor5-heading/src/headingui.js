@@ -77,7 +77,13 @@ export default class HeadingUI extends Plugin {
 			}
 
 			const dropdownView = createDropdown( locale );
-			addListToDropdown( dropdownView, itemDefinitions );
+			// addListToDropdown( dropdownView, itemDefinitions );
+
+			dropdownView.on( 'change:isOpen', ( evt, name, isOpen ) => {
+				if ( isOpen && !dropdownView.listView ) {
+					addListToDropdown( dropdownView, itemDefinitions );
+				}
+			} );
 
 			dropdownView.buttonView.set( {
 				isOn: false,
