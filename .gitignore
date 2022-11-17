@@ -15,6 +15,7 @@ coverage/
 # Files associated with external repositories.
 external/
 mrgit.json
+switch-to-dev.json
 
 # Files associated with specific development environments.
 .DS_Store
