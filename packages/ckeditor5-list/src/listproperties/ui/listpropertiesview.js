@@ -368,7 +368,7 @@ export default class ListPropertiesView extends View {
 		} );
 
 		startIndexFieldView.fieldView.set( {
-			min: 1,
+			min: 0,
 			step: 1,
 			value: 1,
 			inputMode: 'numeric'

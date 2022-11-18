@@ -40,7 +40,7 @@ export default class ListStartCommand extends Command {
 
 		model.change( writer => {
 			for ( const item of listItems ) {
-				writer.setAttribute( 'listStart', options.startIndex || 1, item );
+				writer.setAttribute( 'listStart', options.startIndex >= 0 ? options.startIndex : 1, item );
 			}
 		} );
 	}

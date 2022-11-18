@@ -360,7 +360,7 @@ function createAttributeStrategies( enabledProperties ) {
 			},
 
 			setAttributeOnDowncast( writer, listStart, element ) {
-				if ( listStart && listStart > 1 ) {
+				if ( listStart !== null && ( listStart === 0 || listStart > 1 ) ) {
 					writer.setAttribute( 'start', listStart, element );
 				} else {
 					writer.removeAttribute( 'start', element );
@@ -368,7 +368,8 @@ function createAttributeStrategies( enabledProperties ) {
 			},
 
 			getAttributeOnUpcast( listParent ) {
-				return listParent.getAttribute( 'start' ) || 1;
+				const startAttributeValue = listParent.getAttribute( 'start' );
+				return startAttributeValue >= 0 ? startAttributeValue : 1;
 			}
 		} );
 	}

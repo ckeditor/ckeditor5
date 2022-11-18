@@ -382,5 +382,21 @@ describe( 'DocumentListStartCommand', () => {
 
 			expect( getData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {start:1}' ] ) );
 		} );
+
+		it( 'should allow 0 as start index', () => {
+			setData( model, modelList( [ '# 1.[] {start:1}' ] ) );
+
+			listStartCommand.execute( { startIndex: 0 } );
+
+			expect( getData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {start:0}' ] ) );
+		} );
+
+		it( 'should set start index to 1 if attempted to set a negative number', () => {
+			setData( model, modelList( [ '# 1.[] {start:1}' ] ) );
+
+			listStartCommand.execute( { startIndex: -2 } );
+
+			expect( getData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {start:1}' ] ) );
+		} );
 	} );
 } );
