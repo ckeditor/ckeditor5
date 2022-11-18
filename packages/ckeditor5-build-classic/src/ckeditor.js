@@ -5,106 +5,155 @@
 
 // The editor creator to use.
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
+import Font from '@ckeditor/ckeditor5-font/src/font';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { icons } from '@ckeditor/ckeditor5-core';
+
+/* globals $ */
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
+class References extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		// The button must be registered among the UI components of the editor
+		// to be displayed in the toolbar.
+		editor.ui.componentFactory.add( 'references', ( ) => {
+			// The button will be an instance of ButtonView.
+			const button = new ButtonView();
+
+			button.set( {
+				icon: icons.references,
+				label: 'References',
+				tooltip: true
+			} );
+
+			button.on( 'execute', editor => {
+				const $referencesModalContainer = $( '#references-modal-container' );
+				$referencesModalContainer.removeClass( 'display-none' );
+				$referencesModalContainer.attr( 'data-references-label-id', editor.source.labelView.element.id );
+				$referencesModalContainer.find( '.modal-title' ).text( 'References' );
+				$referencesModalContainer.modal( {
+					dismissible: false
+				} );
+			} );
+
+			return button;
+		} );
+	}
+}
+
+class AssetLink extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		// The button must be registered among the UI components of the editor
+		// to be displayed in the toolbar.
+		editor.ui.componentFactory.add( 'assetlink', () => {
+		// The button will be an instance of ButtonView.
+			const button = new ButtonView();
+
+			button.set( {
+				icon: icons.assetlink,
+				label: 'Asset Link',
+				tooltip: true
+			} );
+
+			button.on( 'execute', editor => {
+				const $assetlinkModalContainer = $( '#assetlink-modal-container' );
+				$assetlinkModalContainer.removeClass( 'display-none' );
+				$assetlinkModalContainer.attr( 'data-assetlink-label-id', editor.source.labelView.element.id );
+				$assetlinkModalContainer.find( '.modal-title' ).text( 'Asset Link' );
+				$assetlinkModalContainer.modal( {
+					dismissible: false
+				} );
+			} );
+
+			return button;
+		} );
+	}
+}
+
 // Plugins to include in the build.
 ClassicEditor.builtinPlugins = [
+	AssetLink,
+	Clipboard,
+	GeneralHtmlSupport,
+	References,
+	SourceEditing,
 	Essentials,
-	UploadAdapter,
-	Autoformat,
+	FindAndReplace,
+	SelectAll,
+	List,
+	TodoList,
+	Indent,
+	BlockQuote,
+	Alignment,
 	Bold,
 	Italic,
-	BlockQuote,
-	CKBox,
-	CKFinder,
-	CloudServices,
-	EasyImage,
-	Heading,
-	Image,
-	ImageCaption,
-	ImageStyle,
-	ImageToolbar,
-	ImageUpload,
-	Indent,
-	Link,
-	List,
-	MediaEmbed,
-	Paragraph,
-	PasteFromOffice,
-	PictureEditing,
+	Underline,
+	Strikethrough,
+	Subscript,
+	Superscript,
+	RemoveFormat,
+	Font,
+	Highlight,
+	SpecialCharacters,
 	Table,
+	TableColumnResize,
 	TableToolbar,
-	TextTransformation
+	Link,
+	Paragraph,
+	PasteFromOffice
 ];
 
 // Editor configuration.
 ClassicEditor.defaultConfig = {
+	// This value must be kept in sync with the language defined in webpack.config.js.
+	language: 'en',
+	table: {
+		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+	},
 	toolbar: {
 		items: [
-			'heading',
-			'|',
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'|',
-			'outdent',
-			'indent',
-			'|',
-			'uploadImage',
-			'blockQuote',
-			'insertTable',
-			'mediaEmbed',
-			'undo',
-			'redo'
-		]
-	},
-	image: {
-		toolbar: [
-			'imageStyle:inline',
-			'imageStyle:block',
-			'imageStyle:side',
-			'|',
-			'toggleImageCaption',
-			'imageTextAlternative'
-		]
-	},
-	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
-		]
-	},
-	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
+			'assetLink', 'references',
+			'sourceEditing', '|',
+			'undo', 'redo', '|',
+			'findAndReplace', 'selectAll', '|',
+			'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent', '|', 'blockquote', '|',
+			'alignment', '-',
+			'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+			'specialCharacters', 'insertTable', '|'
+		],
+		shouldNotGroupWhenFull: true
+	}
 };

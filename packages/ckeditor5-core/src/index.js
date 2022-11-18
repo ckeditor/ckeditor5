@@ -58,6 +58,9 @@ import pilcrow from './../theme/icons/pilcrow.svg';
 import quote from './../theme/icons/quote.svg';
 import threeVerticalDots from './../theme/icons/three-vertical-dots.svg';
 
+import assetlink from './../theme/icons/assetlink.svg';
+import references from './../theme/icons/references.svg';
+
 export const icons = {
 	cancel,
 	caption,
@@ -91,5 +94,8 @@ export const icons = {
 	pencil,
 	pilcrow,
 	quote,
-	threeVerticalDots
+	threeVerticalDots,
+
+	assetlink,
+	references
 };
