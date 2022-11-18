@@ -119,6 +119,7 @@
     "raw-loader": "^4.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "rimraf": "^3.0.2",
     "style-loader": "^2.0.0",
     "stylelint": "^13.5.0",
     "stylelint-config-ckeditor5": "^4.0.0",
@@ -169,7 +170,7 @@
     "release:bump-version": "node ./scripts/release/bump-versions.js",
     "postrelease:bump-version": "npm run dll:build",
     "release:publish": "node ./scripts/release/publish.js",
-    "release:clean": "npx rimraf \"packages/ckeditor5-@(core|engine|enter|paragraph|select-all|typing|ui|undo|upload|utils|widget|clipboard|essentials|editor-classic|editor-inline)/src/**/*.@(js|d.ts)\" \"src/**/*.@(js|d.ts)\" ",
+    "release:clean": "node ./scripts/release/clean.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
     "check-dependencies": "ckeditor5-dev-tests-check-dependencies"
