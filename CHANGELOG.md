@@ -3,11 +3,7 @@ Changelog
 
 ## [35.3.2](https://github.com/ckeditor/ckeditor5/compare/v35.3.1...v35.3.2) (2022-11-18)
 
-### Release highlights
-
-<!-- TODO: Add a link to the blog post. -->
-
-### Features
+### Bug fixes
 
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improved support for dictation (via VoiceControl) on iOS and multi-line text replacements on macOS. Closes [#2045](https://github.com/ckeditor/ckeditor5/issues/2045), [#11443](https://github.com/ckeditor/ckeditor5/issues/11443). ([commit](https://github.com/ckeditor/ckeditor5/commit/6f639c7c6327f1852756ba42510f8a0caeaf5ac6))
 
@@ -17,10 +13,6 @@ Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/fra
 
 <details>
 <summary>Released packages (summary)</summary>
-
-Releases containing new features:
-
-* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v35.3.1 => v35.3.2
 
 Other releases:
 
@@ -48,6 +40,7 @@ Other releases:
 * [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic): v35.3.1 => v35.3.2
 * [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled): v35.3.1 => v35.3.2
 * [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline): v35.3.1 => v35.3.2
+* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v35.3.1 => v35.3.2
 * [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter): v35.3.1 => v35.3.2
 * [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials): v35.3.1 => v35.3.2
 * [@ckeditor/ckeditor5-export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf): v35.3.1 => v35.3.2
