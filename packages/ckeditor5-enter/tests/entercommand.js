@@ -57,6 +57,35 @@ describe( 'EnterCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
+		it( 'uses enterBlock()', () => {
+			setData( model, '<p>foo[]bar</p>' );
+
+			sinon.spy( command, 'enterBlock' );
+
+			editor.execute( 'enter' );
+
+			expect( command.enterBlock.called ).to.be.true;
+		} );
+
+		it( 'fires afterExecute() event with the current writer as a parameter', done => {
+			setData( model, '<p>foo[]bar</p>' );
+
+			let currentWriter;
+
+			command.on( 'afterExecute', ( evt, { writer } ) => {
+				expect( writer ).to.equal( currentWriter );
+
+				done();
+			} );
+
+			model.change( writer => {
+				currentWriter = writer;
+				editor.execute( 'enter' );
+			} );
+		} );
+	} );
+
+	describe( 'enterBlock()', () => {
 		describe( 'collapsed selection', () => {
 			test(
 				'does nothing in the root',
@@ -162,7 +191,9 @@ describe( 'EnterCommand', () => {
 				model.change( () => {
 					setData( model, '<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>' );
 
-					command.execute();
+					model.change( writer => {
+						command.enterBlock( writer );
+					} );
 
 					expect( getData( model ) ).to.equal( '<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>' );
 				} );
@@ -179,7 +210,9 @@ describe( 'EnterCommand', () => {
 				// @TODO: Add option for setting selection direction to model utils.
 				doc.selection._lastRangeBackward = true;
 
-				command.execute();
+				model.change( writer => {
+					command.enterBlock( writer );
+				} );
 
 				expect( getData( model ) ).to.equal( '<p>[]</p>' );
 			} );
@@ -191,7 +224,9 @@ describe( 'EnterCommand', () => {
 
 				setData( model, '<p>[x]</p>' );
 
-				command.execute();
+				model.change( writer => {
+					command.enterBlock( writer );
+				} );
 
 				expect( spy.calledOnce ).to.be.true;
 			} );
@@ -201,7 +236,9 @@ describe( 'EnterCommand', () => {
 			it( title, () => {
 				setData( model, input );
 
-				command.execute();
+				model.change( writer => {
+					command.enterBlock( writer );
+				} );
 
 				expect( getData( model ) ).to.equal( output );
 			} );
