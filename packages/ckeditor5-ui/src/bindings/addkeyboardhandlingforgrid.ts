@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import type { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5-utils';
 import type { FocusableView } from '../focuscycler';
 import type ViewCollection from '../viewcollection';
 
@@ -23,28 +23,29 @@ import type ViewCollection from '../viewcollection';
  * the number (e.g. for responsive grids).
  */
 export default function addKeyboardHandlingForGrid(
-	{ keystrokeHandler, focusTracker, gridItems, numberOfColumns }: {
+	{ keystrokeHandler, focusTracker, gridItems, numberOfColumns, locale }: {
 		keystrokeHandler: KeystrokeHandler;
 		focusTracker: FocusTracker;
 		gridItems: ViewCollection;
 		numberOfColumns: number | ( () => number );
+		locale?: Locale;
 	}
 ): void {
 	const getNumberOfColumns = typeof numberOfColumns === 'number' ? () => numberOfColumns : numberOfColumns;
 
 	keystrokeHandler.set( 'arrowright', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
-		if ( focusedElementIndex === gridItems.length - 1 ) {
-			return 0;
+		if ( locale && locale.contentLanguageDirection === 'rtl' ) {
+			return getLeftFocusedElementIndex( focusedElementIndex, gridItems );
 		} else {
-			return focusedElementIndex + 1;
+			return getRightFocusedElementIndex( focusedElementIndex, gridItems );
 		}
 	} ) );
 
 	keystrokeHandler.set( 'arrowleft', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
-		if ( focusedElementIndex === 0 ) {
-			return gridItems.length - 1;
+		if ( locale && locale.contentLanguageDirection === 'rtl' ) {
+			return getRightFocusedElementIndex( focusedElementIndex, gridItems );
 		} else {
-			return focusedElementIndex - 1;
+			return getLeftFocusedElementIndex( focusedElementIndex, gridItems );
 		}
 	} ) );
 
@@ -83,5 +84,21 @@ export default function addKeyboardHandlingForGrid(
 			evt.stopPropagation();
 			evt.preventDefault();
 		};
+	}
+
+	function getRightFocusedElementIndex( focusedElementIndex: number, gridItems: ViewCollection ) {
+		if ( focusedElementIndex === gridItems.length - 1 ) {
+			return 0;
+		} else {
+			return focusedElementIndex + 1;
+		}
+	}
+
+	function getLeftFocusedElementIndex( focusedElementIndex: number, gridItems: ViewCollection ) {
+		if ( focusedElementIndex === 0 ) {
+			return gridItems.length - 1;
+		} else {
+			return focusedElementIndex - 1;
+		}
 	}
 }
