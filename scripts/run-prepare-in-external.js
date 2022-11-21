@@ -13,6 +13,12 @@ const { execSync } = require( 'child_process' );
 
 const EXTERNAL_DIR_PATH = path.resolve( __dirname, '..', 'external' );
 
+// Exit process when "external" directory is not created
+if ( !fs.existsSync( EXTERNAL_DIR_PATH ) ) {
+	process.exit( 0 );
+}
+
+// Go through packages in "external" and run prepare script
 fs.readdirSync( EXTERNAL_DIR_PATH ).forEach( externalPackage => {
 	execSync( 'npm run prepare --if-present', {
 		stdio: 'inherit',
