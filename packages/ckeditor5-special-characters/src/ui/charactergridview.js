@@ -138,7 +138,7 @@ export default class CharacterGridView extends View {
 		} );
 
 		tile.on( 'focus', () => {
-			this.fire( 'focusTile', { name, character } );
+			this.fire( 'tileFocus', { name, character } );
 		} );
 
 		tile.on( 'execute', () => {

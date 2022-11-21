@@ -180,12 +180,12 @@ describe( 'CharacterGridView', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );
 		} );
 
-		it( 'delegates #tileHover from the tile to the grid on keyup event', () => {
+		it( 'delegates #tileFocus from the tile to the grid on keyup event', () => {
 			const tile = view.createTile( 'ε', 'foo bar baz' );
 			const spy = sinon.spy();
 
-			view.on( 'tileHover', spy );
-			tile.fire( 'keyup' );
+			view.on( 'tileFocus', spy );
+			tile.fire( 'focus' );
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );

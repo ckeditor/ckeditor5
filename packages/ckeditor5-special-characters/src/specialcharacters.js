@@ -240,7 +240,7 @@ export default class SpecialCharacters extends Plugin {
 			infoView.set( data );
 		} );
 
-		gridView.on( 'focusTile', ( evt, data ) => {
+		gridView.on( 'tileFocus', ( evt, data ) => {
 			infoView.set( data );
 		} );
 
