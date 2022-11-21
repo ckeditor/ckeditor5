@@ -146,7 +146,7 @@
   },
   "scripts": {
     "husky-pre-commit": "lint-staged",
-    "prepare": "husky install",
+    "prepare": "husky install && node ./scripts/run-prepare-in-external.js",
     "lint": "eslint --quiet \"**/*.{js,ts}\" --format ./scripts/eslint-formatter.js",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test.js",
