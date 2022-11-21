@@ -29,52 +29,37 @@ const { repositoriesToLink } = loadJson( configPath );
 console.log( chalk.blue( '🔹 Finding all packages to link.' ) );
 
 const packagesToLink = repositoriesToLink.flatMap( repoPathFromRoot => {
-	const packagesData = [];
-
 	const repoPath = path.join( __dirname, '..', repoPathFromRoot );
 
 	if ( !fs.existsSync( repoPath ) ) {
 		console.log( chalk.red( `Directory ${ chalk.underline( repoPath ) } is missing.` ) );
+		console.log( chalk.red( 'See the docs: TODO' ) );
 
 		process.exit( 1 );
 	}
 
-	// The root package.
-	const rootPkgJsonContent = loadJson( path.join( repoPath, 'package.json' ) );
-	packagesData.push( {
-		name: rootPkgJsonContent.name,
-		path: repoPath
-	} );
-
-	// the "./packages" directory packages.
-	const packagesPath = path.join( repoPath, 'packages' );
-
-	if ( !fs.existsSync( packagesPath ) ) {
-		return packagesData;
-	}
-
-	packagesData.push(
-		...fs.readdirSync( packagesPath ).map( packageDirectory => {
-			const packagePath = path.join( packagesPath, packageDirectory );
-			const packagePkgJsonContent = loadJson( path.join( packagePath, 'package.json' ) );
+	return glob.sync( path.join( repoPath, '**', 'package.json' ), { ignore: '**/node_modules/**' } )
+		.map( pkgJsonPath => {
+			const pkgJsonContent = loadJson( pkgJsonPath );
 
 			return {
-				name: packagePkgJsonContent.name,
-				path: packagePath
+				name: pkgJsonContent.name,
+				path: pkgJsonPath.replace( /(\\|\/)package\.json$/, '' )
 			};
-		} )
-	);
-
-	return packagesData;
+		} );
 } );
 
 console.log( chalk.blue( '🔹 Finding all package.json files and saving their initial content.' ) );
 
-const cke5pkgJsonArr = glob.sync( '**/package.json', { ignore: '**/node_modules/**' } ).map( pkgJsonPath => {
-	const content = fs.readFileSync( pkgJsonPath, 'utf-8' );
+const cke5pkgJsonArr = glob.sync( '**/package.json', { ignore: '**/node_modules/**' } )
+	.map( pkgJsonPath => {
+		const pkgJsonContent = fs.readFileSync( pkgJsonPath, 'utf-8' );
 
-	return { content, path: pkgJsonPath };
-} );
+		return {
+			content: pkgJsonContent,
+			path: pkgJsonPath
+		};
+	} );
 
 console.log( chalk.blue( '🔹 Updating all package.json files.' ) );
 
@@ -103,7 +88,7 @@ try {
 	} );
 } catch ( err ) {
 	console.log( chalk.red( 'Updating the dependencies failed with a message:' ) );
-	console.log( chalk.red( err.message ) );
+	console.log( chalk.red( err ) );
 }
 
 console.log( chalk.blue( '🔹 Reversing all package.json files to their original content.' ) );
@@ -115,7 +100,7 @@ cke5pkgJsonArr.forEach( pkgJson => fs.writeFileSync( pkgJson.path, pkgJson.conte
  * @returns {JSON}
  */
 function loadJson( path ) {
-	const contents = fs.readFileSync( path, 'utf-8' );
+	const jsonRawContent = fs.readFileSync( path, 'utf-8' );
 
-	return JSON.parse( contents );
+	return JSON.parse( jsonRawContent );
 }
