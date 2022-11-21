@@ -3,7 +3,7 @@
 # Make the migration guide more discoverable 
 
 category: updating
-order: 11
+order: 10
 modified_at: 2022-11-09
 ---
 
