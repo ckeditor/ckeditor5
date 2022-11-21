@@ -8,7 +8,7 @@ meta-description: Learn how to maintain and keep you CKEditor 5 up-to-date at al
 # Updating CKEditor 5
 
 <info-box>
-  This guide covers the topic of keeping your CKEditor 5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor 5, please see the {@link installation/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
+  This guide covers the topic of keeping your CKEditor 5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor 5, please see the {@link updating/migration-from-cke4 Migrating from CKEditor 4} guide instead.
 </info-box>
 
 ## CKEditor 5 release process
