@@ -20,6 +20,7 @@ import {
 	getListStyleTypeFromTypeAttribute,
 	getTypeAttributeFromListStyleType
 } from './utils/style';
+import DocumentListPropertiesUtils from './documentlistpropertiesutils';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -36,7 +37,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ DocumentListEditing ];
+		return [ DocumentListEditing, DocumentListPropertiesUtils ];
 	}
 
 	/**
