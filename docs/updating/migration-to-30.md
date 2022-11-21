@@ -1,6 +1,6 @@
 
 ---
-category: updating
+category: updating-cke5
 menu-title: Migration to v30.x
 order: 94
 ---

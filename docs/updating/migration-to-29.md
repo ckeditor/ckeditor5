@@ -1,6 +1,6 @@
 
 ---
-category: updating
+category: updating-cke5
 menu-title: Migration to v29.x
 order: 95
 modified_at: 2021-07-25

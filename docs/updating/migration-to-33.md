@@ -1,5 +1,5 @@
 ---
-category: updating
+category: updating-cke5
 menu-title: Migration to v33.x
 order: 91
 modified_at: 2022-02-01

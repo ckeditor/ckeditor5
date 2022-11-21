@@ -1,5 +1,5 @@
 ---
-category: updating
+category: updating-cke5
 menu-title: Migration to v35.x
 order: 89
 modified_at: 2022-10-05

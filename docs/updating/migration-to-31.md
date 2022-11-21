@@ -1,6 +1,6 @@
 
 ---
-category: updating
+category: updating-cke5
 menu-title: Migration to v31.x
 order: 93
 modified_at: 2021-11-03

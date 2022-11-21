@@ -1,5 +1,5 @@
 ---
-category: updating
+category: updating-cke5
 menu-title: Migration to v34.x
 order: 90
 modified_at: 2022-04-05

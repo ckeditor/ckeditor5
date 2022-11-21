@@ -388,8 +388,16 @@
 		{
 			"name": "Updating",
 			"id": "updating",
-			"navigationIncludeIndex": true,
-			"slug": "updating"
+			"navigationIncludeIndex": false,
+			"slug": "updating",
+			"categories": [
+				{
+					"name": "Updating CKEditor 5",
+					"id": "updating-cke5",
+					"slug": "updating-cke5",
+					"order": 25
+				}
+			]
 		},
 		{
 			"name": "Support",

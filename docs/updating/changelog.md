@@ -1,6 +1,6 @@
 ---
-category: updating
-order: 20
+category: updating-cke5
+order: 11
 feedback-widget: false
 meta-title: CKEditor 5 changelog
 menu-title: Recent release changelog

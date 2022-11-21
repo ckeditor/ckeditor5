@@ -1,5 +1,5 @@
 ---
-category: updating
+category: updating-cke5
 menu-title: Migration to v26.x
 order: 98
 ---
