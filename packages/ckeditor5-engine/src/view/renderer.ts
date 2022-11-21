@@ -62,6 +62,7 @@ export default class Renderer extends ObservableMixin() {
 	public readonly selection: DocumentSelection;
 
 	declare public readonly isFocused: boolean;
+	declare public readonly isFocusChanging: boolean;
 	declare public readonly isSelecting: boolean;
 	declare public readonly isComposing: boolean;
 
@@ -133,6 +134,14 @@ export default class Renderer extends ObservableMixin() {
 		 * @observable
 		 */
 		this.set( 'isFocused', false );
+
+		/**
+		 * Indicates if the view document is changing the focus and selection can be rendered.
+		 *
+		 * @member {Boolean}
+		 * @observable
+		 */
+		this.set( 'isFocusChanging', false );
 
 		/**
 		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
@@ -898,6 +907,10 @@ export default class Renderer extends ObservableMixin() {
 		// to, may disappear in DOM which would break the selection (e.g. in real-time collaboration scenarios).
 		// https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723
 		if ( env.isBlink && !env.isAndroid && this.isSelecting && !this.markedChildren.size ) {
+			return;
+		}
+
+		if ( this.isFocusChanging ) {
 			return;
 		}
 

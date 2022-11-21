@@ -32,6 +32,7 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 
 	declare public isReadOnly: boolean;
 	declare public isFocused: boolean;
+	declare public isFocusChanging: boolean;
 	declare public isSelecting: boolean;
 	declare public isComposing: boolean;
 
@@ -95,6 +96,15 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 		 * @member {Boolean} module:engine/view/document~Document#isFocused
 		 */
 		this.set( 'isFocused', false );
+
+		/**
+		 * True if document is changing the focus.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} module:engine/view/document~Document#isFocusChanging
+		 */
+		this.set( 'isFocusChanging', false );
 
 		/**
 		 * `true` while the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).

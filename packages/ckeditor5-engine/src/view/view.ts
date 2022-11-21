@@ -77,7 +77,6 @@ export default class View extends ObservableMixin() {
 	public readonly domConverter: DomConverter;
 	public readonly domRoots: Map<string, HTMLElement>;
 
-	declare public isFocused: boolean;
 	declare public isRenderingInProgress: boolean;
 	declare public hasDomSelection: boolean;
 
@@ -145,7 +144,8 @@ export default class View extends ObservableMixin() {
 		 * @type {module:engine/view/renderer~Renderer}
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' ).to( this.document, 'isFocused', 'isSelecting', 'isComposing' );
+		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing', 'isFocusChanging' )
+			.to( this.document, 'isFocused', 'isSelecting', 'isComposing', 'isFocusChanging' );
 
 		/**
 		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -542,6 +542,7 @@ export default class View extends ObservableMixin() {
 	 */
 	public forceRender(): void {
 		this._hasChangedSinceTheLastRendering = true;
+		this.document.isFocusChanging = false;
 		this.change( () => {} );
 	}
 
