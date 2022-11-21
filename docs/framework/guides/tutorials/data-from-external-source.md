@@ -568,7 +568,7 @@ In this tutorial we will use an external API that provides a current Bitcoin rat
 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'
 ```
 
-The data will be fetched every 10 seconds. Eeach instance of the widget will be updated at the same time. To achieve that, we need to modify the `ExternalDataWidgetEditing` class.
+The data will be fetched every 15 seconds. Eeach instance of the widget will be updated at the same time. To achieve that, we need to modify the `ExternalDataWidgetEditing` class.
 
 ```js
 
@@ -603,7 +603,7 @@ class ExternalDataWidgetEditing extends Plugin {
 
 	// Interval function
 	_intervalFetch() {
-		return setInterval( () => this._updateWidgetData(), 10000 ); // set time interval to 10s
+		return setInterval( () => this._updateWidgetData(), 15000 ); // set time interval to 15s
 	}
 
 	// Fetch data and update all widget instances
@@ -789,7 +789,7 @@ class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_intervalFetch() {
-		return setInterval( () => this._updateWidgetData(), 10000 ); // set time interval to 10s
+		return setInterval( () => this._updateWidgetData(), 15000 ); // set time interval to 15s
 	}
 
 	async _updateWidgetData( externalUrl = RESOURCE_URL ) {
