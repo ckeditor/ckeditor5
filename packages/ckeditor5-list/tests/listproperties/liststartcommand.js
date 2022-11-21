@@ -385,7 +385,6 @@ describe( 'ListStartCommand', () => {
 			);
 		} );
 
-		// eslint-disable-next-line mocha/no-exclusive-tests
 		it( 'should set start index to 1 if attempted to set a negative number', () => {
 			setData( model,
 				'<listItem listIndent="0" listStart="3" listType="numbered">1.[]</listItem>'
