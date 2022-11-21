@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5-utils';
+import type { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 import type { FocusableView } from '../focuscycler';
 import type ViewCollection from '../viewcollection';
 
@@ -23,18 +23,18 @@ import type ViewCollection from '../viewcollection';
  * the number (e.g. for responsive grids).
  */
 export default function addKeyboardHandlingForGrid(
-	{ keystrokeHandler, focusTracker, gridItems, numberOfColumns, locale }: {
+	{ keystrokeHandler, focusTracker, gridItems, numberOfColumns, uiLanguageDirection }: {
 		keystrokeHandler: KeystrokeHandler;
 		focusTracker: FocusTracker;
 		gridItems: ViewCollection;
 		numberOfColumns: number | ( () => number );
-		locale?: Locale;
+		uiLanguageDirection?: string;
 	}
 ): void {
 	const getNumberOfColumns = typeof numberOfColumns === 'number' ? () => numberOfColumns : numberOfColumns;
 
 	keystrokeHandler.set( 'arrowright', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
-		if ( locale && locale.contentLanguageDirection === 'rtl' ) {
+		if ( uiLanguageDirection === 'rtl' ) {
 			return getLeftFocusedElementIndex( focusedElementIndex, gridItems );
 		} else {
 			return getRightFocusedElementIndex( focusedElementIndex, gridItems );
@@ -42,7 +42,7 @@ export default function addKeyboardHandlingForGrid(
 	} ) );
 
 	keystrokeHandler.set( 'arrowleft', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
-		if ( locale && locale.contentLanguageDirection === 'rtl' ) {
+		if ( uiLanguageDirection === 'rtl' ) {
 			return getRightFocusedElementIndex( focusedElementIndex, gridItems );
 		} else {
 			return getLeftFocusedElementIndex( focusedElementIndex, gridItems );
