@@ -107,7 +107,7 @@
     "eslint-config-ckeditor5": "^4.1.1",
     "glob": "^7.1.6",
     "http-server": "^14.1.1",
-    "husky": "^4.2.5",
+    "husky": "^8.0.2",
     "is-relative-url": "^3.0.0",
     "lint-staged": "^12.0.0",
     "mini-css-extract-plugin": "^2.4.2",
@@ -145,6 +145,8 @@
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
   "scripts": {
+    "husky-pre-commit": "lint-staged",
+    "prepare": "husky install",
     "lint": "eslint --quiet \"**/*.{js,ts}\" --format ./scripts/eslint-formatter.js",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test.js",
@@ -200,14 +202,6 @@
       "external/*",
       "external/*/packages/*",
       "."
-    ],
-    "nohoist": [
-      "**/husky"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }

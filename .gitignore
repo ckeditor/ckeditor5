@@ -1,6 +1,7 @@
 # All "dot directories".
 .*/**
 !.github/**
+!.husky/**
 
 # Files associated with CKEditor 5 repository.
 **/node_modules
