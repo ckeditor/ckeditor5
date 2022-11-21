@@ -44,11 +44,14 @@ export default class EnterCommand extends Command {
 	 *
 	 * In some cases, the split will not happen:
 	 *
-	 * 1. The selection parent element is a limit element (`<figcaption>A[bc]d</figcaption>` -> `<figcaption>A[]d</figcaption>`).
-	 * 2. The selection spans over multiple elements (`<h>x[x</h><p>y]y<p>` -> `<h>x</h><p>[]y</p>`).
+	 *        // The selection parent is a limit element:
+	 *        <figcaption>A[bc]d</figcaption>   ->   <figcaption>A[]d</figcaption>
 	 *
-	 * @param {module:engine/model/writer~Writer} writer Writer to use when performing the enter action.
-	 * @returns {Boolean} `true` if a block was split, `false` otherwise.
+	 *        // The selection spans over multiple elements:
+	 *        <h>x[x</h><p>y]y<p>   ->   <h>x</h><p>[]y</p>
+	 *
+	 * @param writer Writer to use when performing the enter action.
+	 * @returns `true` if a block was split, `false` otherwise.
 	 */
 	public enterBlock( writer: Writer ): boolean {
 		const model = this.editor.model;
