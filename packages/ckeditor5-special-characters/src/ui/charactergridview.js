@@ -129,7 +129,7 @@ export default class CharacterGridView extends View {
 			},
 			on: {
 				mouseover: tile.bindTemplate.to( 'mouseover' ),
-				keyup: tile.bindTemplate.to( 'keyup' )
+				focus: tile.bindTemplate.to( 'focus' )
 			}
 		} );
 
@@ -137,8 +137,8 @@ export default class CharacterGridView extends View {
 			this.fire( 'tileHover', { name, character } );
 		} );
 
-		tile.on( 'keyup', () => {
-			this.fire( 'tileHover', { name, character } );
+		tile.on( 'focus', () => {
+			this.fire( 'focusTile', { name, character } );
 		} );
 
 		tile.on( 'execute', () => {

@@ -240,6 +240,10 @@ export default class SpecialCharacters extends Plugin {
 			infoView.set( data );
 		} );
 
+		gridView.on( 'focusTile', ( evt, data ) => {
+			infoView.set( data );
+		} );
+
 		// Update the grid of special characters when a user changed the character group.
 		navigationView.on( 'execute', () => {
 			this._updateGrid( navigationView.currentGroupName, gridView );
