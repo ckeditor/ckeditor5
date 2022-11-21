@@ -16,15 +16,23 @@ const chalk = require( 'chalk' );
 const { execSync } = require( 'child_process' );
 
 const configPath = path.join( __dirname, '..', 'switch-to-dev.json' );
+const docsUrl = 'https://ckeditor.com/docs/ckeditor5/latest/framework/guides/development-tools.html#usage-of-local-version-of-dependencies';
 
 if ( !fs.existsSync( configPath ) ) {
 	console.log( chalk.red( `Config file is missing: ${ chalk.underline( configPath ) }` ) );
-	console.log( chalk.red( 'See the docs: TODO' ) );
+	console.log( chalk.red( `See the docs: ${ chalk.underline( docsUrl ) }` ) );
 
 	process.exit( 1 );
 }
 
 const { repositoriesToLink } = loadJson( configPath );
+
+if ( !repositoriesToLink || !Array.isArray( repositoriesToLink ) ) {
+	console.log( chalk.red( `Config file is invalid: ${ chalk.underline( configPath ) }` ) );
+	console.log( chalk.red( `See the docs: ${ chalk.underline( docsUrl ) }` ) );
+
+	process.exit( 1 );
+}
 
 console.log( chalk.blue( '🔹 Finding all packages to link.' ) );
 
@@ -33,7 +41,7 @@ const packagesToLink = repositoriesToLink.flatMap( repoPathFromRoot => {
 
 	if ( !fs.existsSync( repoPath ) ) {
 		console.log( chalk.red( `Directory ${ chalk.underline( repoPath ) } is missing.` ) );
-		console.log( chalk.red( 'See the docs: TODO' ) );
+		console.log( chalk.red( `See the docs: ${ chalk.underline( docsUrl ) }` ) );
 
 		process.exit( 1 );
 	}

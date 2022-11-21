@@ -122,6 +122,24 @@ ClassicEditor
 
 See the helper documentation to learn more about useful options.
 
+## Usage of local version of dependencies
+
+If you'd like to use a local version of a dependency such as `@ckeditor/ckeditor5-dev-utils`, you can use the `switch-to-dev` script. This script requires a configuration file located in the root of the `ckeditor5` repository called `switch-to-dev.json`. It should have defined `repositoriesToLink` field that is an array of relative paths from the `ckeditor5` repository root to the repositories to be linked.
+
+```json
+{
+	"repositoriesToLink": [
+		"../ckeditor5-dev",
+		"../ckeditor5-inspector",
+		"../ckeditor5-linters-config"
+	]
+}
+```
+
+After calling the script with valid configuration file present, it will search for all packages from the requested repositories (including the root package) and link them in every `package.json` file present inside the `ckeditor5` directory, and then update the dependencies. From that moment `ckeditor5` project will be using local versions of the dependencies, and any changes made to them will be immediately reflected inside the project.
+
+Calling `yarn install` will break the links, and return the project to using the npm versions of the dependencies. If you want to call `yarn install` without breaking the links, you can simply call `yarn switch-to-dev` again, as it performs `yarn install` as one of its steps.
+
 ## Package generator
 
 For a quick jump start on development of a plugin, use the [CKEditor5 Package Generator](https://www.npmjs.com/package/ckeditor5-package-generator).
