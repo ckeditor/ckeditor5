@@ -63,7 +63,7 @@ The first step is to identify changes introduced with the 31.0.0 version, so you
 
 {@img assets/img/updating-changelog.png 778 Breaking change in the changelog.}
 
-The change affects the {@link features/html-embed HTML embed feature}, so if you used this feature's API in your project, it should be reviewed. Fortunately, the {@link updating/migration-to-31#migration-to-ckeditor-5-v3100 migration guide for version 31.0.0} explains what should be updated in your code!
+The change affects the {@link features/html-embed HTML embed feature}, so if you used this feature's API in your project, it should be reviewed. Fortunately, the {@link updating/update-to-31#update-to-ckeditor-5-v3100 migration guide for version 31.0.0} explains what should be updated in your code!
 
 <info-box>
 	It is recommended to update regularly. Sometimes, however, it could happen that you skip a few releases and need to update to a non-adjacent version. In such a case, remember to verify the changelog and migration guides for **all** missing versions, not only the one you are updating to.

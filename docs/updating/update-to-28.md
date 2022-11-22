@@ -1,6 +1,6 @@
 ---
 category: updating-cke5
-menu-title: Migration to v28.x
+menu-title: Update to v28.x
 order: 96
 modified_at: 2021-06-01
 ---
@@ -11,7 +11,7 @@ modified_at: 2021-06-01
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-# Migration to CKEditor 5 v28.0.0
+# Update to CKEditor 5 v28.0.0
 
 For the entire list of changes introduced in version 28.0.0, see the [changelog for CKEditor 5 v28.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2800-2021-05-31).
 

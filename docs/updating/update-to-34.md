@@ -1,11 +1,11 @@
 ---
 category: updating-cke5
-menu-title: Migration to v34.x
+menu-title: Update to v34.x
 order: 90
 modified_at: 2022-04-05
 ---
 
-# Migration to CKEditor 5 v34.0.0
+# Update to CKEditor 5 v34.0.0
 
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.

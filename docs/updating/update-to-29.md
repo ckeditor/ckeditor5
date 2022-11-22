@@ -1,7 +1,7 @@
 
 ---
 category: updating-cke5
-menu-title: Migration to v29.x
+menu-title: Update to v29.x
 order: 95
 modified_at: 2021-07-25
 ---
@@ -12,9 +12,9 @@ modified_at: 2021-07-25
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-# Migration to CKEditor 5 v29.x
+# Update to CKEditor 5 v29.x
 
-## Migration to CKEditor 5 v29.1.0
+## Update to CKEditor 5 v29.1.0
 
 For the entire list of changes introduced in version 29.1.0, see the [changelog for CKEditor 5 v29.1.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2910-2021-08-02).
 
@@ -54,7 +54,7 @@ new Matcher( {
 
 ### Link decorators API change
 
-{@link updating/migration-to-29#matcher-pattern-api-change Matcher pattern API change} also improves how the {@link module:link/link~LinkDecoratorDefinition link decorators} should be defined (both {@link module:link/link~LinkDecoratorManualDefinition manual decorator} and {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorator}). Similar to the {@link module:engine/view/matcher~Matcher} feature API, `style` and `class` HTML attributes should be defined using respectively `classes` and `styles` properties.
+{@link updating/update-to-29#matcher-pattern-api-change Matcher pattern API change} also improves how the {@link module:link/link~LinkDecoratorDefinition link decorators} should be defined (both {@link module:link/link~LinkDecoratorManualDefinition manual decorator} and {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorator}). Similar to the {@link module:engine/view/matcher~Matcher} feature API, `style` and `class` HTML attributes should be defined using respectively `classes` and `styles` properties.
 
 Here is an example of changes you may need for proper integration with the {@link module:link/link~LinkDecoratorDefinition link decorators} API change:
 
@@ -93,7 +93,7 @@ ClassicEditor
     } )
 ```
 
-## Migration to CKEditor 5 v29.0.0
+## Update to CKEditor 5 v29.0.0
 
 This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v29.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 

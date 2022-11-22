@@ -1,6 +1,6 @@
 ---
 category: updating-cke5
-menu-title: Migration to v27.x
+menu-title: Update to v27.x
 order: 97
 ---
 
@@ -10,9 +10,9 @@ order: 97
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-# Migration to CKEditor 5 v27.x
+# Update to CKEditor 5 v27.x
 
-## Migration to CKEditor 5 v27.1.0
+## Update to CKEditor 5 v27.1.0
 
 For the entire list of changes introduced in version 27.1.0, see the [changelog for CKEditor 5 v27.1.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2710-2021-04-19).
 
@@ -30,7 +30,7 @@ Prior to version 27.1.0 inserting a block quote into another block quote was not
 
 If you wish to bring back this restriction, see the {@link features/block-quote#disallow-nesting-block-quotes Disallow nesting block quotes} section in the block quote feature guide.
 
-## Migration to CKEditor 5 v27.0.0
+## Update to CKEditor 5 v27.0.0
 
 For the entire list of changes introduced in version 27.0.0, see the [changelog for CKEditor 5 v27.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2700-2021-03-22).
 
