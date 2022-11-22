@@ -264,6 +264,150 @@ describe( 'InputObserver', () => {
 		) ) ).to.be.true;
 	} );
 
+	describe( 'should split single insertText with new-line characters into separate events', () => {
+		it( 'single new-line surrounded by text', () => {
+			const domRange = global.document.createRange();
+
+			domRange.setStart( domEditable.firstChild.firstChild, 0 );
+			domRange.setEnd( domEditable.firstChild.firstChild, 0 );
+
+			// Mocking view selection and offsets since there is no change in the model and view in this tests.
+			let i = 0;
+
+			sinon.stub( viewDocument.selection, 'getFirstRange' ).callsFake( () => {
+				return view.createRange(
+					view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), i++ )
+				);
+			} );
+
+			fireMockNativeBeforeInput( {
+				inputType: 'insertText',
+				data: 'foo\nbar',
+				getTargetRanges: () => [ domRange ]
+			} );
+
+			expect( beforeInputSpy.callCount ).to.equal( 3 );
+
+			const firstCallData = beforeInputSpy.getCall( 0 ).args[ 1 ];
+			const secondCallData = beforeInputSpy.getCall( 1 ).args[ 1 ];
+			const thirdCallData = beforeInputSpy.getCall( 2 ).args[ 1 ];
+
+			expect( firstCallData.inputType ).to.equal( 'insertText' );
+			expect( firstCallData.data ).to.equal( 'foo' );
+			expect( firstCallData.targetRanges[ 0 ].isEqual( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 0 )
+			) ) ).to.be.true;
+
+			expect( secondCallData.inputType ).to.equal( 'insertParagraph' );
+			expect( secondCallData.targetRanges[ 0 ].isEqual( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 1 )
+			) ) ).to.be.true;
+
+			expect( thirdCallData.inputType ).to.equal( 'insertText' );
+			expect( thirdCallData.data ).to.equal( 'bar' );
+			expect( thirdCallData.targetRanges[ 0 ].isEqual( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 )
+			) ) ).to.be.true;
+		} );
+
+		it( 'new-line after a text', () => {
+			const domRange = global.document.createRange();
+
+			domRange.setStart( domEditable.firstChild.firstChild, 0 );
+			domRange.setEnd( domEditable.firstChild.firstChild, 0 );
+
+			sinon.stub( viewDocument.selection, 'getFirstRange' ).callsFake( () => {
+				return view.createRange(
+					view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 0 )
+				);
+			} );
+
+			fireMockNativeBeforeInput( {
+				inputType: 'insertText',
+				data: 'foo\n',
+				getTargetRanges: () => [ domRange ]
+			} );
+
+			expect( beforeInputSpy.callCount ).to.equal( 2 );
+
+			const firstCallData = beforeInputSpy.getCall( 0 ).args[ 1 ];
+			const secondCallData = beforeInputSpy.getCall( 1 ).args[ 1 ];
+
+			expect( firstCallData.inputType ).to.equal( 'insertText' );
+			expect( firstCallData.data ).to.equal( 'foo' );
+
+			expect( secondCallData.inputType ).to.equal( 'insertParagraph' );
+		} );
+
+		it( 'double new-line surrounded by text', () => {
+			const domRange = global.document.createRange();
+
+			domRange.setStart( domEditable.firstChild.firstChild, 0 );
+			domRange.setEnd( domEditable.firstChild.firstChild, 0 );
+
+			sinon.stub( viewDocument.selection, 'getFirstRange' ).callsFake( () => {
+				return view.createRange(
+					view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 0 )
+				);
+			} );
+
+			fireMockNativeBeforeInput( {
+				inputType: 'insertText',
+				data: 'foo\n\nbar',
+				getTargetRanges: () => [ domRange ]
+			} );
+
+			expect( beforeInputSpy.callCount ).to.equal( 3 );
+
+			const firstCallData = beforeInputSpy.getCall( 0 ).args[ 1 ];
+			const secondCallData = beforeInputSpy.getCall( 1 ).args[ 1 ];
+			const thirdCallData = beforeInputSpy.getCall( 2 ).args[ 1 ];
+
+			expect( firstCallData.inputType ).to.equal( 'insertText' );
+			expect( firstCallData.data ).to.equal( 'foo' );
+
+			expect( secondCallData.inputType ).to.equal( 'insertParagraph' );
+
+			expect( thirdCallData.inputType ).to.equal( 'insertText' );
+			expect( thirdCallData.data ).to.equal( 'bar' );
+		} );
+
+		it( 'tripple new-line surrounded by text', () => {
+			const domRange = global.document.createRange();
+
+			domRange.setStart( domEditable.firstChild.firstChild, 0 );
+			domRange.setEnd( domEditable.firstChild.firstChild, 0 );
+
+			sinon.stub( viewDocument.selection, 'getFirstRange' ).callsFake( () => {
+				return view.createRange(
+					view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 0 )
+				);
+			} );
+
+			fireMockNativeBeforeInput( {
+				inputType: 'insertText',
+				data: 'foo\n\n\nbar',
+				getTargetRanges: () => [ domRange ]
+			} );
+
+			expect( beforeInputSpy.callCount ).to.equal( 4 );
+
+			const firstCallData = beforeInputSpy.getCall( 0 ).args[ 1 ];
+			const secondCallData = beforeInputSpy.getCall( 1 ).args[ 1 ];
+			const thirdCallData = beforeInputSpy.getCall( 2 ).args[ 1 ];
+			const fourthCallData = beforeInputSpy.getCall( 3 ).args[ 1 ];
+
+			expect( firstCallData.inputType ).to.equal( 'insertText' );
+			expect( firstCallData.data ).to.equal( 'foo' );
+
+			expect( secondCallData.inputType ).to.equal( 'insertParagraph' );
+			expect( thirdCallData.inputType ).to.equal( 'insertParagraph' );
+
+			expect( fourthCallData.inputType ).to.equal( 'insertText' );
+			expect( fourthCallData.data ).to.equal( 'bar' );
+		} );
+	} );
+
 	function fireMockNativeBeforeInput( domEvtMock ) {
 		observer.onDomEvent( Object.assign( {
 			type: 'beforeinput',
