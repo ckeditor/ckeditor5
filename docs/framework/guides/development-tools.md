@@ -126,6 +126,22 @@ See the helper documentation to learn more about useful options.
 
 If you'd like to use a local version of a dependency such as `@ckeditor/ckeditor5-dev-utils`, you can use the `switch-to-dev` script. This script requires a configuration file located in the root of the `ckeditor5` repository called `switch-to-dev.json`. It should have defined `repositoriesToLink` field that is an array of relative paths from the `ckeditor5` repository root to the repositories to be linked.
 
+An example directory structure with configuration file:
+
+```
+├─ ckeditor5
+│  ├─ switch-to-dev.json
+│  └─ ...
+├─ ckeditor5-dev
+│  └─ ...
+├─ ckeditor5-inspector
+│  └─ ...
+└─ ckeditor5-linters-config
+   └─ ...
+```
+
+And example content of the configuration file for this directory structure:
+
 ```json
 {
 	"repositoriesToLink": [
