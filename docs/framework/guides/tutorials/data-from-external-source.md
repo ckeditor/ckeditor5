@@ -376,22 +376,26 @@ export default class ExternalDataWidgetEditing extends Plugin {
 
 ### Feature styles
 
-As you might have noticed, the editing part imports the `./theme/externaldatawidget.css` CSS file which describes how the widget will be animated when new value arrives:
+As you might have noticed, the editing part imports the `./theme/externaldatawidget.css` CSS file which describes how the widget will look like and how it will be animated when new value arrives:
 
 ```css
 /* external-data-widget/theme/externaldatawidget.css */
 
+.external-data-widget {
+	border: 2px solid rgb(242, 169, 0);
+}
+
 .external-data-widget-bounce {
-	animation: external-data-widget-bounce-animation 0.7s 1;
+	animation: external-data-widget-bounce-animation 1.5s 1;
 }
 
 @keyframes external-data-widget-bounce-animation {
 	0% {
-		box-shadow: 0px 0px 0px 0px rgba(116, 60, 205, 1);
+		box-shadow: 0px 0px 0px 0px rgba(242, 169, 0, 1);
 	}
 
 	100% {
-		box-shadow: 0px 0px 0px 7px rgba(116, 60, 205, 0);
+		box-shadow: 0px 0px 0px 10px rgba(242, 169, 0, 0);
 	}
 }
 ```
@@ -646,6 +650,8 @@ class ExternalDataWidgetEditing extends Plugin {
 				const externalValueToShow = this.externalDataValue;
 
 				const externalDataPreviewElement = writer.createRawElement( 'span', null, function( domElement ) {
+					// CSS class responsible for the appearance of the widget
+					domElement.classList.add( 'external-data-widget' );
 					// When the value is not present (initial run) show a placeholder
 					domElement.textContent = externalValueToShow || 'Fetching data...';
 
@@ -854,6 +860,7 @@ class ExternalDataWidgetEditing extends Plugin {
 				const externalValueToShow = this.externalDataValue;
 
 				const externalDataPreviewElement = writer.createRawElement( 'span', null, function( domElement ) {
+					domElement.classList.add( 'external-data-widget' );
 					domElement.textContent = externalValueToShow || 'Fetching data...';
 
 					if ( externalValueToShow ) {
