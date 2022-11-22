@@ -31,6 +31,8 @@ export default class HtmlComment extends Plugin {
 	init() {
 		const editor = this.editor;
 
+		editor.data.processor.skipComments = false;
+
 		// Allow storing comment's content as the $root attribute with the name `$comment:<unique id>`.
 		editor.model.schema.addAttributeCheck( ( context, attributeName ) => {
 			if ( context.endsWith( '$root' ) && attributeName.startsWith( '$comment' ) ) {
