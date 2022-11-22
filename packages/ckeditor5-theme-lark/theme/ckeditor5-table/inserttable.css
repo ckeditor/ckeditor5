@@ -16,7 +16,8 @@
 	padding: var(--ck-insert-table-dropdown-padding) var(--ck-insert-table-dropdown-padding) 0;
 }
 
-.ck .ck-insert-table-dropdown__label {
+.ck .ck-insert-table-dropdown__label,
+.ck[dir=rtl] .ck-insert-table-dropdown__label {
 	text-align: center;
 }
 
