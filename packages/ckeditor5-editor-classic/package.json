@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-editor-classic",
-  "version": "35.3.1",
+  "version": "35.3.2",
   "description": "Classic editor implementation for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -11,12 +11,12 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "^35.3.1",
+    "ckeditor5": "^35.3.2",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^35.3.1",
-    "@ckeditor/ckeditor5-core": "^35.3.1",
+    "@ckeditor/ckeditor5-basic-styles": "^35.3.2",
+    "@ckeditor/ckeditor5-core": "^35.3.2",
     "@ckeditor/ckeditor5-dev-utils": "^31.0.0",
     "@ckeditor/ckeditor5-engine": "^35.3.2",
     "@ckeditor/ckeditor5-enter": "^35.3.2",
