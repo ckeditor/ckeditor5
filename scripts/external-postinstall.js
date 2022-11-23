@@ -27,10 +27,10 @@ fs.readdirSync( EXTERNAL_DIR_PATH )
 	.filter( externalRepository => {
 		const pkgJson = require( path.join( externalRepository, 'package.json' ) );
 
-		return pkgJson && pkgJson.scripts && pkgJson.scripts.postinstall;
+		return pkgJson && pkgJson.scripts && pkgJson.scripts[ 'husky:install' ];
 	} )
 	.forEach( externalRepository => {
-		execSync( 'yarn run postinstall', {
+		execSync( 'yarn run husky:install', {
 			stdio: 'inherit',
 			cwd: externalRepository
 		} );
