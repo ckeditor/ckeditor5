@@ -11,7 +11,7 @@ CKEditor 5 is an active, rapidly developing software project. It is, therefore, 
 
 ## Migration from CKEditor 4
 
-If you want to switch to CKEditor 5 from our previous product, CKEditor 4, please refer to the dedicated {@link updating/migration-from-cke4 Migration from CKEditor 4} guide that will explain all the differences between these two products and help you make the switch.
+If you want to switch to CKEditor 5 from our previous product, CKEditor 4, please refer to the dedicated {@link updating/migration-from-ckeditor-4 Migration from CKEditor 4} guide that will explain all the differences between these two products and help you make the switch.
 
 ## Daily maintanance of regular operation of CKEditor 5
 
