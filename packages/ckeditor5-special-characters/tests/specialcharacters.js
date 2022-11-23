@@ -181,6 +181,17 @@ describe( 'SpecialCharacters', () => {
 					expect( characterInfo.name ).to.equal( 'Less-than sign' );
 					expect( characterInfo.code ).to.equal( 'U+003c' );
 				} );
+
+				it( 'is updated when the tile fires #focus', () => {
+					const tile = grid.tiles.get( 0 );
+
+					tile.fire( 'focus' );
+
+					expect( tile.label ).to.equal( '<' );
+					expect( characterInfo.character ).to.equal( '<' );
+					expect( characterInfo.name ).to.equal( 'Less-than sign' );
+					expect( characterInfo.code ).to.equal( 'U+003c' );
+				} );
 			} );
 
 			it( 'is not fully initialized when not open', () => {
