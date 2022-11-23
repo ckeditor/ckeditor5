@@ -6,9 +6,11 @@
 import Command from './command';
 import type Editor from './editor/editor';
 
-import insertToPriorityArray from '@ckeditor/ckeditor5-utils/src/inserttopriorityarray';
-import type { PriorityString } from '@ckeditor/ckeditor5-utils/src/priorities';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import {
+	insertToPriorityArray,
+	type PriorityString,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 
 /**
  * @module core/multicommand

@@ -7,9 +7,14 @@
  * @module ui/viewcollection
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Collection, { type CollectionAddEvent, type CollectionRemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
-import type { EmitterMixinDelegateChain } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import {
+	CKEditorError,
+	Collection,
+	type CollectionAddEvent,
+	type CollectionRemoveEvent,
+	type EmitterMixinDelegateChain
+} from '@ckeditor/ckeditor5-utils';
+
 import type View from './view';
 
 /**

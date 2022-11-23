@@ -7,7 +7,7 @@
  * @module typing/typing
  */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
 import Input from './input';
 import Delete from './delete';
 

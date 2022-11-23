@@ -7,7 +7,7 @@
  * @module typing/delete
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import DeleteCommand from './deletecommand';
 import DeleteObserver, { type ViewDocumentDeleteEvent } from './deleteobserver';
 

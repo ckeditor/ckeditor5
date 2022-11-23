@@ -11,7 +11,7 @@ import Observer from './observer';
 import DomEventData from './domeventdata';
 import type View from '../view';
 
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import type { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Base class for DOM event observers. This class handles

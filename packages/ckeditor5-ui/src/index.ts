@@ -14,12 +14,15 @@ export { default as addKeyboardHandlingForGrid } from './bindings/addkeyboardhan
 
 export { default as BodyCollection } from './editorui/bodycollection';
 
+export { type ButtonExecuteEvent } from './button/button';
 export { default as ButtonView } from './button/buttonview';
 export { default as SwitchButtonView } from './button/switchbuttonview';
 
 export * from './colorgrid/utils';
 export { default as ColorGridView } from './colorgrid/colorgridview';
 export { default as ColorTileView } from './colorgrid/colortileview';
+
+export { default as ComponentFactory } from './componentfactory';
 
 export { default as DropdownButtonView } from './dropdown/button/dropdownbuttonview';
 export { default as SplitButtonView } from './dropdown/button/splitbuttonview';
@@ -59,8 +62,8 @@ export { default as Template } from './template';
 export { default as ToolbarView } from './toolbar/toolbarview';
 export { default as ToolbarSeparatorView } from './toolbar/toolbarseparatorview';
 export { default as normalizeToolbarConfig } from './toolbar/normalizetoolbarconfig';
-export { default as BalloonToolbar } from './toolbar/balloon/balloontoolbar';
+export { default as BalloonToolbar, type BaloonToolbarShowEvent } from './toolbar/balloon/balloontoolbar';
 export { default as BlockToolbar } from './toolbar/block/blocktoolbar';
 
-export { default as View } from './view';
+export { default as View, type UIViewRenderEvent } from './view';
 export { default as ViewCollection } from './viewcollection';

@@ -7,10 +7,9 @@
  * @module ui/componentfactory
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, type Locale } from '@ckeditor/ckeditor5-utils';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
-import type Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import type View from './view';
 
 /**

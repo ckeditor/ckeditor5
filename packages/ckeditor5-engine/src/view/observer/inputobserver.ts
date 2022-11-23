@@ -12,7 +12,7 @@ import type DomEventData from './domeventdata';
 import type View from '../view';
 import type ViewRange from '../range';
 import DataTransfer from '../datatransfer';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Observer for events connected with data input.
@@ -113,6 +113,49 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				inputType: 'insertParagraph',
 				targetRanges: [ view.createRange( targetRanges[ 0 ].end ) ]
 			} );
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
+
+			return;
+		}
+
+		// Normalize the insertText data that includes new-line characters.
+		// https://github.com/ckeditor/ckeditor5/issues/2045.
+		if ( domEvent.inputType == 'insertText' && data && data.includes( '\n' ) ) {
+			// There might be a single new-line or double for new paragraph, but we translate
+			// it to paragraphs as it is our default action for enter handling.
+			const parts = data.split( /\n{1,2}/g );
+
+			let partTargetRanges = targetRanges;
+
+			for ( let i = 0; i < parts.length; i++ ) {
+				const dataPart = parts[ i ];
+
+				if ( dataPart != '' ) {
+					this.fire( domEvent.type, domEvent, {
+						data: dataPart,
+						dataTransfer,
+						targetRanges: partTargetRanges,
+						inputType: domEvent.inputType,
+						isComposing: domEvent.isComposing
+					} );
+
+					// Use the result view selection so following events will be added one after another.
+					partTargetRanges = [ viewDocument.selection.getFirstRange()! ];
+				}
+
+				if ( i + 1 < parts.length ) {
+					this.fire( domEvent.type, domEvent, {
+						inputType: 'insertParagraph',
+						targetRanges: partTargetRanges
+					} );
+
+					// Use the result view selection so following events will be added one after another.
+					partTargetRanges = [ viewDocument.selection.getFirstRange()! ];
+				}
+			}
 
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();

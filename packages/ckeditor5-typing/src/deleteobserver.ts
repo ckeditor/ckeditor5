@@ -7,17 +7,18 @@
  * @module typing/deleteobserver
  */
 
-import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
-
-import type Selection from '@ckeditor/ckeditor5-engine/src/view/selection';
-import type DocumentSelection from '@ckeditor/ckeditor5-engine/src/view/documentselection';
-import type { View } from '@ckeditor/ckeditor5-engine';
-import type { ViewDocumentInputEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
-import type { ViewDocumentKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
-import type { BubblingEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingemittermixin';
+import {
+	BubblingEventInfo,
+	DomEventData,
+	Observer,
+	type BubblingEvent,
+	type ViewDocumentInputEvent,
+	type ViewDocumentKeyEvent,
+	type ViewDocumentSelection,
+	type ViewSelection,
+	type View
+} from '@ckeditor/ckeditor5-engine';
 
 const DELETE_CHARACTER = 'character';
 const DELETE_WORD = 'word';
@@ -234,7 +235,7 @@ export interface DeleteEventData extends DomEventData<InputEvent> {
 	direction: 'backward' | 'forward';
 	unit: 'selection' | 'codePoint' | 'character' | 'word';
 	sequence: number;
-	selectionToRemove?: Selection | DocumentSelection;
+	selectionToRemove?: ViewSelection | ViewDocumentSelection;
 }
 
 // Enables workaround for the issue https://github.com/ckeditor/ckeditor5/issues/11904.

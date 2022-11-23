@@ -23,12 +23,14 @@ import {
 	getDataWithoutFiller, isInlineFiller, startsWithFiller
 } from './filler';
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
-import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
-import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
+import {
+	global,
+	logWarning,
+	indexOf,
+	getAncestors,
+	isText,
+	isComment
+} from '@ckeditor/ckeditor5-utils';
 
 import type ViewNode from './node';
 import type Document from './document';

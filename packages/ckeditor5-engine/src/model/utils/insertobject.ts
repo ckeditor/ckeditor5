@@ -16,8 +16,7 @@ import type Model from '../model';
 import type Range from '../range';
 import type Writer from '../writer';
 
-import first from '@ckeditor/ckeditor5-utils/src/first';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Inserts an {@glink framework/guides/deep-dive/schema#object-elements object element} at a specific position in the editor content.

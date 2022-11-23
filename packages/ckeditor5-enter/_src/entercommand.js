@@ -28,6 +28,26 @@ export default class EnterCommand extends Command {
 			this.fire( 'afterExecute', { writer } );
 		} );
 	}
+
+	/**
+	 * Splits a block where the document selection is placed, in the way how the <kbd>Enter</kbd> key is expected to work:
+	 *
+	 *		<p>Foo[]bar</p>   ->   <p>Foo</p><p>[]bar</p>
+	 *		<p>Foobar[]</p>   ->   <p>Foobar</p><p>[]</p>
+	 *		<p>Fo[ob]ar</p>   ->   <p>Fo</p><p>[]ar</p>
+	 *
+	 * In some cases, the split will not happen:
+	 *
+	 *		// The selection parent is a limit element:
+	 *		<figcaption>A[bc]d</figcaption>   ->   <figcaption>A[]d</figcaption>
+	 *
+	 *		// The selection spans over multiple elements:
+	 *		<h>x[x</h><p>y]y<p>   ->   <h>x</h><p>[]y</p>
+	 *
+	 * @method #enterBlock
+	 * @param {module:engine/model/writer~Writer} writer Writer to use when performing the enter action.
+	 * @returns {Boolean} `true` if a block was split, `false` otherwise.
+	 */
 }
 
 // Creates a new block in the way that the <kbd>Enter</kbd> key is expected to work.

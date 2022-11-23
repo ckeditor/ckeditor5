@@ -19,8 +19,13 @@ import ViewAttributeElement from '../view/attributeelement';
 import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+
+import {
+	CKEditorError,
+	toArray,
+	type EventInfo,
+	type PriorityString
+} from '@ckeditor/ckeditor5-utils';
 
 import type {
 	default as DowncastDispatcher,
@@ -51,8 +56,6 @@ import type {
 	default as Mapper,
 	MapperModelToViewPositionEvent
 } from './mapper';
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import type { PriorityString } from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /**
  * Downcast conversion helper functions.

@@ -8,7 +8,7 @@
  */
 
 import BaseCommand from './basecommand';
-import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
+import type { Batch } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The undo command stores {@link module:engine/model/batch~Batch batches} applied to the

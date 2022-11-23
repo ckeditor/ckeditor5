@@ -10,7 +10,7 @@
 import Consumable from './modelconsumable';
 import Range from '../model/range';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import type { default as Differ, DiffItem } from '../model/differ';
 import type { default as MarkerCollection, Marker } from '../model/markercollection';

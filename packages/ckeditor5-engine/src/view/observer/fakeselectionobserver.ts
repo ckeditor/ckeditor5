@@ -15,7 +15,7 @@ import type {
 	ViewDocumentSelectionEvent,
 	ViewDocumentSelectionEventData
 } from './selectionobserver';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 /**

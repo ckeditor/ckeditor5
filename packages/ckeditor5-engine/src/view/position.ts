@@ -9,8 +9,8 @@
 
 import TypeCheckable from './typecheckable';
 
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
+
 import EditableElement from './editableelement';
 
 // To check if component is loaded more than once.

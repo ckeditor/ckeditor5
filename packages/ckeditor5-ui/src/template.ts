@@ -9,15 +9,21 @@
 
 /* global document */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import EmitterMixin, { type Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import View from './view';
 import ViewCollection from './viewcollection';
-import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
-import { isObject, cloneDeepWith } from 'lodash-es';
-import toArray, { type ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
 
-import type { Observable, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import {
+	CKEditorError,
+	EmitterMixin,
+	isNode,
+	toArray,
+	type ArrayOrItem,
+	type Emitter,
+	type Observable,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
+
+import { isObject, cloneDeepWith } from 'lodash-es';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 

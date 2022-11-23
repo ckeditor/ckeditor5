@@ -31,8 +31,11 @@ import type Item from './item';
 import type ModelElement from './element';
 import type Operation from './operation/operation';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import ObservableMixin, { type DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import {
+	CKEditorError,
+	ObservableMixin,
+	type DecoratedMethodEvent
+} from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
 // @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;

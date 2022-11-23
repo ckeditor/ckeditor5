@@ -9,8 +9,7 @@
 
 import Node from './node';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import spliceArray from '@ckeditor/ckeditor5-utils/src/splicearray';
+import { CKEditorError, spliceArray } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Provides an interface to operate on a list of {@link module:engine/model/node~Node nodes}. `NodeList` is used internally

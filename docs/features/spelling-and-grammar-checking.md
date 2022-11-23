@@ -7,7 +7,7 @@ badges: [ premium ]
 
 # Spelling, grammar and punctuation checking
 
-[WProofreader SDK](https://webspellchecker.com/wsc-proofreader) is an AI-driven, multi-language text correction tool. It offers handy as-you-type proofreading options in a modern, distraction-free UI. Spelling, grammar and punctuation suggestions are available on hover as you type or in a separate dialog aggregating all mistakes and replacement suggestions in one place.
+[WProofreader SDK](https://webspellchecker.com/wsc-proofreader) is an AI-driven, multi-language text correction tool. It offers handy as-you-type and in-dialog proofreading options in a modern, distraction-free UI. Spelling, grammar and punctuation suggestions are available on hover as you type or in a separate dialog aggregating all mistakes and replacement suggestions in one place.
 
 You can fine-tune WProofreader via the dedicated settings menu. Choose a primary language from a set of available ones. Create and manage additional custom dictionaries. Words can be added to the user dictionary directly from the suggestion card, too. If needed, the spell checker can be easily disabled and enabled again with just a click.
 
@@ -122,7 +122,7 @@ The first configuration option is simpler:
             },
             {
                 test: /\.css$/,
-                
+
                 use: [
                     {
 						loader: 'style-loader',
@@ -162,7 +162,7 @@ Therefore, the best option is to use the other config solution. This one will on
 	}
 ```
 
-With this modification to the `webpack.config.js`, it is possible to build CKEditor 5 from source with WProofreader included. 
+With this modification to the `webpack.config.js`, it is possible to build CKEditor 5 from source with WProofreader included.
 
 <info-box info>
 	Read more about {@link installation/getting-started/installing-plugins installing plugins}.

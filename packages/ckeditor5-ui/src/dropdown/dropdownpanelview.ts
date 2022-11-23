@@ -8,11 +8,10 @@
  */
 
 import View from '../view';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import type ViewCollection from '../viewcollection';
 import type DropdownPanelFocusable from './dropdownpanelfocusable';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The dropdown panel view class.

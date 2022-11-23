@@ -8,33 +8,42 @@
  */
 
 import View from '../view';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
 import ToolbarLineBreakView from './toolbarlinebreakview';
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import normalizeToolbarConfig from './normalizetoolbarconfig';
-import { isObject } from 'lodash-es';
-
-import '../../theme/components/toolbar/toolbar.css';
 
 import type ComponentFactory from '../componentfactory';
 import type ViewCollection from '../viewcollection';
 import type DropdownView from '../dropdown/dropdownview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { CollectionAddEvent, CollectionChangeEvent, CollectionRemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 
-import { icons } from '@ckeditor/ckeditor5-core';
+import {
+	FocusTracker,
+	KeystrokeHandler,
+	Rect,
+	ResizeObserver,
+	global,
+	isVisible,
+	logWarning,
+	type CollectionAddEvent,
+	type CollectionChangeEvent,
+	type CollectionRemoveEvent,
+	type Locale,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
+
+import {
+	icons,
+	type ToolbarConfig,
+	type ToolbarConfigItem
+} from '@ckeditor/ckeditor5-core';
+
+import { isObject } from 'lodash-es';
+
+import '../../theme/components/toolbar/toolbar.css';
 
 const { threeVerticalDots } = icons;
 
@@ -830,12 +839,10 @@ class DynamicGrouping implements ToolbarBehavior {
 		view.itemsView.children.bindTo( this.ungroupedItems ).using( item => item );
 
 		// Make sure all #items visible in the main space of the toolbar are "focuscycleable".
-		this.ungroupedItems.on<CollectionAddEvent>( 'add', this._updateFocusCycleableItems.bind( this ) );
-		this.ungroupedItems.on<CollectionRemoveEvent>( 'remove', this._updateFocusCycleableItems.bind( this ) );
+		this.ungroupedItems.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
 
 		// Make sure the #groupedItemsDropdown is also included in cycling when it appears.
-		view.children.on<CollectionAddEvent>( 'add', this._updateFocusCycleableItems.bind( this ) );
-		view.children.on<CollectionRemoveEvent>( 'remove', this._updateFocusCycleableItems.bind( this ) );
+		view.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
 
 		// ToolbarView#items is dynamic. When an item is added or removed, it should be automatically
 		// represented in either grouped or ungrouped items at the right index.

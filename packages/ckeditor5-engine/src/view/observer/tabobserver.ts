@@ -13,7 +13,7 @@ import BubblingEventInfo from './bubblingeventinfo';
 import type { ViewDocumentKeyEvent } from './keyobserver';
 import type { BubblingEvent } from './bubblingemittermixin';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Tab observer introduces the {@link module:engine/view/document~Document#event:tab `Document#tab`} event.

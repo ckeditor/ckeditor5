@@ -7,17 +7,20 @@
  * @module widget/widgetresize/resizer
  */
 
-import Template from '@ckeditor/ckeditor5-ui/src/template';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
-
-import ObservableMixin, { type DecoratedMethodEvent, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { Template } from '@ckeditor/ckeditor5-ui';
+import {
+	Rect,
+	ObservableMixin,
+	compareArrays,
+	type ObservableChangeEvent,
+	type DecoratedMethodEvent
+} from '@ckeditor/ckeditor5-utils';
 
 import ResizeState from './resizerstate';
 import SizeView from './sizeview';
 
 import type { ResizerOptions } from '../widgetresize';
-import type Element from '@ckeditor/ckeditor5-engine/src/view/element';
+import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Represents a resizer for a single resizable object.
@@ -36,7 +39,7 @@ export default class Resizer extends ObservableMixin() {
 	private _state!: ResizeState;
 	private _sizeView!: SizeView;
 	private _options: ResizerOptions;
-	private _viewResizerWrapper: Element | null;
+	private _viewResizerWrapper: ViewElement | null;
 	private _initialViewWidth: string | undefined;
 
 	/**

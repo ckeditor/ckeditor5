@@ -7,12 +7,14 @@
  * @module core/command
  */
 
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import ObservableMixin, {
+import {
+	ObservableMixin,
+	type EventInfo,
 	type ObservableChangeEvent,
 	type DecoratedMethodEvent,
 	type ObservableSetEvent
-} from '@ckeditor/ckeditor5-utils/src/observablemixin';
+} from '@ckeditor/ckeditor5-utils';
+
 import type Editor from './editor/editor';
 
 /**

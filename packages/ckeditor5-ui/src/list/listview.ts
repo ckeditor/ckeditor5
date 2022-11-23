@@ -8,17 +8,21 @@
  */
 
 import View from '../view';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
-import '../../theme/components/list/list.css';
+import {
+	FocusTracker,
+	KeystrokeHandler,
+	type CollectionAddEvent,
+	type CollectionRemoveEvent,
+	type Locale
+} from '@ckeditor/ckeditor5-utils';
 
 import type ListItemView from './listitemview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import type ViewCollection from '../viewcollection';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { CollectionAddEvent, CollectionRemoveEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+
+import '../../theme/components/list/list.css';
 
 /**
  * The list view class.

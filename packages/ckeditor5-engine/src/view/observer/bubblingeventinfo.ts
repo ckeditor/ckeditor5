@@ -7,7 +7,7 @@
  * @module engine/view/observer/bubblingeventinfo
  */
 
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import { EventInfo } from '@ckeditor/ckeditor5-utils';
 import type Document from '../document';
 import type Node from '../node';
 import type Range from '../range';

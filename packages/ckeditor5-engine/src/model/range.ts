@@ -21,8 +21,7 @@ import type MoveOperation from './operation/moveoperation';
 import type Operation from './operation/operation';
 import type SplitOperation from './operation/splitoperation';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Represents a range in the model tree.

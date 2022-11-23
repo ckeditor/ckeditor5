@@ -22,8 +22,7 @@ import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphin
 
 import type ViewItem from '../view/item';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Upcast dispatcher is a central point of the view-to-model conversion, which is a process of

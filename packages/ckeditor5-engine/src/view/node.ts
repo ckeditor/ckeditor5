@@ -9,9 +9,12 @@
 
 import TypeCheckable from './typecheckable';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import {
+	CKEditorError,
+	EmitterMixin,
+	compareArrays
+} from '@ckeditor/ckeditor5-utils';
+
 import { clone } from 'lodash-es';
 
 // To check if component is loaded more than once.

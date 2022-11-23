@@ -7,23 +7,31 @@
  * @module core/editor/editor
  */
 
+import {
+	Config,
+	CKEditorError,
+	ObservableMixin,
+	type Locale,
+	type LocaleTranslate,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
+
+import {
+	Conversion,
+	DataController,
+	EditingController,
+	Model,
+	StylesProcessor
+} from '@ckeditor/ckeditor5-engine';
+
 import Context from '../context';
-import Config from '@ckeditor/ckeditor5-utils/src/config';
-import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../plugincollection';
 import CommandCollection, { type CommandsMap } from '../commandcollection';
-import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
-import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
 import type { LoadedPlugins, PluginConstructor } from '../plugin';
 import type EditorUI from './editorui';
 import type { EditorConfig } from './editorconfig';
-import ObservableMixin, { type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The class representing a basic, generic editor.

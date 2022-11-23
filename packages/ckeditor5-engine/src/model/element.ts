@@ -14,7 +14,7 @@ import TextProxy from './textproxy';
 
 import type Item from './item';
 
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { isIterable } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_ENGINE // const { stringifyMap, convertMapToStringifiedObject, convertMapToTags } = require( '../dev-utils/utils' );
 

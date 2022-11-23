@@ -7,7 +7,7 @@
  * @module paragraph/insertparagraphcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from '@ckeditor/ckeditor5-core';
 import type { Element, Position } from '@ckeditor/ckeditor5-engine';
 
 /**

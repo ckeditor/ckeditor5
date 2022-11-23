@@ -13,7 +13,7 @@ import type Element from './element';
 import type Node from './node';
 import type Text from './text';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 

@@ -7,28 +7,38 @@
  * @module ui/toolbar/balloon/balloontoolbar
  */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
+import {
+	Plugin,
+	type Editor,
+	type EditorReadyEvent,
+	type EditorUIReadyEvent,
+	type EditorUIUpdateEvent,
+	type PluginDependencies,
+	type ToolbarConfig
+} from '@ckeditor/ckeditor5-core';
+
+import {
+	FocusTracker,
+	Rect,
+	ResizeObserver,
+	env,
+	global,
+	toUnit,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
+
+import type {
+	DocumentSelection,
+	DocumentSelectionChangeRangeEvent,
+	Schema
+} from '@ckeditor/ckeditor5-engine';
+
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview';
 import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
-import { debounce, type DebouncedFunc } from 'lodash-es';
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-import { env, global } from '@ckeditor/ckeditor5-utils';
 
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { ToolbarConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
-import type { EditorReadyEvent } from '@ckeditor/ckeditor5-core/src/editor/editor';
-import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import type {
-	default as DocumentSelection,
-	DocumentSelectionChangeRangeEvent
-} from '@ckeditor/ckeditor5-engine/src/model/documentselection';
-import type Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
+import { debounce, type DebouncedFunc } from 'lodash-es';
 
 const toPx = toUnit( 'px' );
 

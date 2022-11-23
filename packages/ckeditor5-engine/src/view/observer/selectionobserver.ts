@@ -11,7 +11,7 @@
 
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import type View from '../view';
@@ -221,6 +221,13 @@ export default class SelectionObserver extends Observer {
 		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
+	// @if CK_DEBUG //	_reportInfiniteLoop() {
+	// @if CK_DEBUG //		throw new Error(
+	// @if CK_DEBUG //			'Selection change observer detected an infinite rendering loop.\n\n' +
+	// @if CK_DEBUG //	 		'⚠️⚠️ Report this error on https://github.com/ckeditor/ckeditor5/issues/11658.'
+	// @if CK_DEBUG //		);
+	// @if CK_DEBUG //	}
+
 	/**
 	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
 	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
@@ -271,7 +278,7 @@ export default class SelectionObserver extends Observer {
 			// by the browser and browser fixes it automatically what causes `selectionchange` event on
 			// which a loopback through a model tries to re-render the wrong selection and again.
 			//
-			// @if CK_DEBUG // console.warn( 'Selection change observer detected an infinite rendering loop.' );
+			// @if CK_DEBUG // this._reportInfiniteLoop();
 
 			return;
 		}
