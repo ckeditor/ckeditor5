@@ -105,7 +105,7 @@ export default class CharacterGridView extends View {
 		 */
 
 		/**
-		 * Fired when {@link #tiles grid tile} is focused and arrow key is pressed
+		 * Fired when {@link #tiles grid tile} is focused (e.g. by navigating with arrow keys).
 		 *
 		 * @event tileFocus
 		 * @param {Object} data Additional information about the event.
