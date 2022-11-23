@@ -110,7 +110,7 @@ class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_intervalFetch() {
-		return setInterval( () => this._updateWidgetData(), 15000 );
+		return setInterval( () => this._updateWidgetData(), 10000 );
 	}
 
 	async _updateWidgetData( externalUrl = RESOURCE_URL ) {
@@ -175,6 +175,7 @@ class ExternalDataWidgetEditing extends Plugin {
 				const externalValueToShow = this.externalDataValue;
 
 				const externalDataPreviewElement = writer.createRawElement( 'span', null, function( domElement ) {
+					domElement.classList.add( 'external-data-widget' );
 					domElement.textContent = externalValueToShow || 'Fetching data...';
 
 					if ( externalValueToShow ) {
