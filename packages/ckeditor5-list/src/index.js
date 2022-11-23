@@ -17,6 +17,7 @@ export { default as List } from './list';
 export { default as ListEditing } from './list/listediting';
 export { default as ListUI } from './list/listui';
 export { default as ListProperties } from './listproperties';
+export { default as ListUtils } from './list/listutils';
 export { default as ListPropertiesEditing } from './listproperties/listpropertiesediting';
 export { default as ListPropertiesUI } from './listproperties/listpropertiesui';
 export { default as TodoList } from './todolist';
