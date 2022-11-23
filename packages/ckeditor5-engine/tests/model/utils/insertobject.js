@@ -38,6 +38,7 @@ describe( 'insertObject()', () => {
 
 		schema.register( 'inlineWidget', {
 			isObject: true,
+			inheritAllFrom: '$inlineObject',
 			allowIn: [ '$block' ]
 		} );
 
@@ -303,18 +304,17 @@ describe( 'insertObject()', () => {
 			);
 		} );
 
-		it( 'should create paragraph after inserted inline object and set selection inside if it is not in container', () => {
-			schema.extend( 'inlineWidget', {
-				allowIn: '$root'
-			} );
-
+		it( 'should set selection after inserted inline object when inserted in the middle of some text', () => {
 			const widget = new Element( 'inlineWidget', [], [] );
+
+			setData( model, '<paragraph>Fo[]o</paragraph>' );
 
 			insertObject( model, widget, undefined, undefined, { setSelection: 'after' } );
 
 			expect( getData( model ) ).to.equalMarkup(
-				'<inlineWidget></inlineWidget>' +
-				'<paragraph>[]</paragraph>'
+				'<paragraph>Fo' +
+					'<inlineWidget></inlineWidget>[]' +
+				'o</paragraph>'
 			);
 		} );
 
