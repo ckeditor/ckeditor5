@@ -103,6 +103,15 @@ export default class CharacterGridView extends View {
 		 * @param {String} data.name The name of the tile that caused the event (e.g. "greek small letter epsilon").
 		 * @param {String} data.character A human-readable character displayed as the label (e.g. "ε").
 		 */
+
+		/**
+		 * Fired when {@link #tiles grid tile} is focused and arrow key is pressed
+		 *
+		 * @event tileFocus
+		 * @param {Object} data Additional information about the event.
+		 * @param {String} data.name The name of the tile that caused the event (e.g. "greek small letter epsilon").
+		 * @param {String} data.character A human-readable character displayed as the label (e.g. "ε").
+		 */
 	}
 
 	/**

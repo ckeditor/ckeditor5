@@ -180,7 +180,7 @@ describe( 'CharacterGridView', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );
 		} );
 
-		it( 'delegates #tileFocus from the tile to the grid on keyup event', () => {
+		it( 'delegates #tileFocus from the tile to the grid on focus the tile', () => {
 			const tile = view.createTile( 'ε', 'foo bar baz' );
 			const spy = sinon.spy();
 
