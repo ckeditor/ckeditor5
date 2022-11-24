@@ -109,10 +109,10 @@ export default function addKeyboardHandlingForGrid(
 
 	// Function returning a left index relatively current index.
 	//
-	// before: [ ][x][ ]	after: [ ][ ][ ]
-	//         [ ][ ][ ]	       [x][ ][ ]
+	// before: [ ][x][ ]	after: [x][ ][ ]
+	//         [ ][ ][ ]	       [ ][ ][ ]
 	//         [ ]      	       [ ]
-	// index = 1            index = 2
+	// index = 1            index = 0
 	//
 	// If current index is at the left conner, function return last index of previous row.
 	//
