@@ -11,14 +11,21 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const { execSync } = require( 'child_process' );
 
-const EXTERNAL_DIR_PATH = path.resolve( __dirname, '..', 'external' );
+const ROOT_DIR_PATH = path.resolve( __dirname, '..' );
+const EXTERNAL_DIR_PATH = path.resolve( ROOT_DIR_PATH, 'external' );
+
+// First, install Husky in CKEditor 5.
+execSync( 'husky install', {
+	stdio: 'inherit',
+	cwd: ROOT_DIR_PATH
+} );
 
 // Exit process when "external" directory is not created.
 if ( !fs.existsSync( EXTERNAL_DIR_PATH ) ) {
 	process.exit( 0 );
 }
 
-// Go through packages in "external" and run prepare script.
+// Otherwise, go through packages in "external" and run the `postinstall` script.
 fs.readdirSync( EXTERNAL_DIR_PATH )
 	.map( relativePath => path.join( EXTERNAL_DIR_PATH, relativePath ) )
 	// Filter out OS files, e.g., `.DS_Store`.
@@ -27,10 +34,10 @@ fs.readdirSync( EXTERNAL_DIR_PATH )
 	.filter( externalRepository => {
 		const pkgJson = require( path.join( externalRepository, 'package.json' ) );
 
-		return pkgJson && pkgJson.scripts && pkgJson.scripts[ 'husky:install' ];
+		return pkgJson && pkgJson.scripts && pkgJson.scripts.postinstall;
 	} )
 	.forEach( externalRepository => {
-		execSync( 'yarn run husky:install', {
+		execSync( 'yarn run postinstall', {
 			stdio: 'inherit',
 			cwd: externalRepository
 		} );
