@@ -11,6 +11,10 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const { execSync } = require( 'child_process' );
 
+// CKEditor 5.
+require( 'husky' ).install();
+
+// External repositories.
 const EXTERNAL_DIR_PATH = path.resolve( __dirname, '..', 'external' );
 
 // Exit process when "external" directory is not created.
@@ -18,7 +22,7 @@ if ( !fs.existsSync( EXTERNAL_DIR_PATH ) ) {
 	process.exit( 0 );
 }
 
-// Go through packages in "external" and run prepare script.
+// Otherwise, go through packages in "external" and run the `postinstall` script.
 fs.readdirSync( EXTERNAL_DIR_PATH )
 	.map( relativePath => path.join( EXTERNAL_DIR_PATH, relativePath ) )
 	// Filter out OS files, e.g., `.DS_Store`.
