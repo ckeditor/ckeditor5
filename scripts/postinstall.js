@@ -11,14 +11,11 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const { execSync } = require( 'child_process' );
 
-const ROOT_DIR_PATH = path.resolve( __dirname, '..' );
-const EXTERNAL_DIR_PATH = path.resolve( ROOT_DIR_PATH, 'external' );
+// CKEditor 5.
+require( 'husky' ).install();
 
-// First, install Husky in CKEditor 5.
-execSync( 'husky install', {
-	stdio: 'inherit',
-	cwd: ROOT_DIR_PATH
-} );
+// External repositories.
+const EXTERNAL_DIR_PATH = path.resolve( __dirname, '..', 'external' );
 
 // Exit process when "external" directory is not created.
 if ( !fs.existsSync( EXTERNAL_DIR_PATH ) ) {
