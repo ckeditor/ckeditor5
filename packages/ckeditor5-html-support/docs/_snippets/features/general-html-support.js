@@ -17,6 +17,8 @@ ClassicEditor
 		],
 		toolbar: {
 			items: [
+				'sourceEditing',
+				'|',
 				'heading',
 				'|',
 				'bold',
@@ -34,9 +36,7 @@ ClassicEditor
 				'insertTable',
 				'|',
 				'undo',
-				'redo',
-				'|',
-				'sourceEditing'
+				'redo'
 			]
 		},
 		ui: {
@@ -89,7 +89,7 @@ ClassicEditor
 			text: 'Switch to the source mode to check out the source of the content and play with it.',
 			editor,
 			tippyOptions: {
-				placement: 'bottom-end'
+				placement: 'bottom-start'
 			}
 		} );
 	} )
