@@ -203,7 +203,8 @@ export default class ListPropertiesView extends View {
 					.getComputedStyle( this.stylesView.element )
 					.getPropertyValue( 'grid-template-columns' )
 					.split( ' ' )
-					.length
+					.length,
+				uiLanguageDirection: this.locale.uiLanguageDirection
 			} );
 		}
 
