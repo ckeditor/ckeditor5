@@ -82,9 +82,7 @@ The rest of the import path remained unchanged (`/theme/icons/`).
 
 ## Migration to CKEditor 5 v35.1.0
 
-### Important changes
-
-#### Changes to API providing the accessible navigation between editing roots and toolbars on <kbd>Alt</kbd>+<kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes
+### Changes to API providing the accessible navigation between editing roots and toolbars on <kbd>Alt</kbd>+<kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes
 
 <info-box>
 	This information applies only to integrators who develop their own {@link framework/guides/custom-editor-creator editor creators} from scratch by using the {@link module:core/editor/editor~Editor} and {@link module:core/editor/editorui~EditorUI} classes as building blocks.
@@ -151,7 +149,7 @@ export default class MyEditorUI extends EditorUI {
 }
 ```
 
-#### Removal of the `TooltipView` class and changes to the tooltip system
+### Removal of the `TooltipView` class and changes to the tooltip system
 
 <info-box>
 	Please note, that this change does not affect integrations that configure tooltips of core UI components, for instance {@link module:ui/button/buttonview~ButtonView#tooltip}.
@@ -192,7 +190,7 @@ DOMElementThatNeedsTooltip.dataset.ckeTooltipPosition = 'sw';
 
 Keep in mind that you do not need to worry about showing and hiding your custom tooltips in CSS. The `TooltipManager` will attach a tooltip whenever the user moves the mouse or brings the focus to a DOM element with the `data-cke-tooltip-*` attributes. For more information, please refer to the {@link module:ui/tooltipmanager~TooltipManager} API.
 
-#### Changes to the color palette in the UI
+### Changes to the color palette in the UI
 
 In this release, several changes were made to improve the accessibility and overall contrast of the UI. Since we understand that some integrations may prefer the previous look of the editor, we prepared a CSS snippet you can use to bring it back.
 
@@ -235,6 +233,11 @@ For the best results, make sure the custom properties listed below are set after
 	--ck-color-toolbar-background: 					var(--ck-color-base-foreground);
 }
 ```
+### Renaming the properties of `BalloonPanelView`
+
+The static properties of `BalloonPanelView` have been renamed.
+
+The `BalloonPanelView.arrowVerticalOffset` static property is now `heightOffset` and `BalloonPanelView.arrowHorizontalOffset` is now `sideOffset`.
 
 ## Migration to CKEditor 5 v35.0.0
 
@@ -248,9 +251,7 @@ For the entire list of changes introduced in version 35.0.0, see the [changelog 
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v35.0.0.
 
-### Important changes
-
-#### The source element is not updated automatically after the editor destroy
+### The source element is not updated automatically after the editor destroy
 
 The last version of CKEditor 5 changes the default behavior of the source element after the editor is destroyed (when `editor.destroy()` is called). So far, the source element was updated with the output coming from `editor.getData()`. Now, the source element becomes empty after the editor is destroyed and it is not updated anymore.
 
@@ -267,7 +268,7 @@ ClassicEditor.create( sourceElement, {
 	Enabling the `updateSourceElementOnDestroy` option in your configuration, depending on the plugins you use, might have some security implications. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Be especially careful when using the Markdown, General HTML Support and HTML embed features.
 </info-box>
 
-#### Dropdown focus is moved back to the dropdown button after choosing an option
+### Dropdown focus is moved back to the dropdown button after choosing an option
 
 Due to the ongoing accessibility improvements the default behavior of the {@link module:ui/dropdown/dropdownview~DropdownView dropdown UI component} has been changed. From now on, by default, after choosing an option from a dropdown (either by mouse or keyboard), the focus will be automatically moved to the dropdown button.
 
@@ -295,15 +296,15 @@ dropdownView.on( 'execute', () => {
 } );
 ```
 
-#### There is now a TypeScript code on GitHub (and how it affects your build)
+### There is now a TypeScript code on GitHub (and how it affects your build)
 
 Starting from v35.0.0, the first of CKEditor 5 packages (namely: `@ckeditor/ckeditor5-utils`) is developed in TypeScript. This is the first step of [our migration to TypeScript](https://github.com/ckeditor/ckeditor5/issues/11704).
 
-##### Whom does it affect?
+#### Whom does it affect?
 
 It affects you **only if** you use the [source code directly from git repository (GitHub)](https://github.com/ckeditor/ckeditor5). If you use it via any other channel (npm, CDN, ZIP, etc.) this change is completely transparent for you as we publish only JavaScript code there.
 
-##### How does it affect you?
+#### How does it affect you?
 
 For instance, if you happen to have a custom CKEditor 5 build that, for some reason, installs its dependencies from the git repository, you will need to update your webpack config to support the TypeScript code.
 
