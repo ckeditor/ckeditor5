@@ -143,6 +143,7 @@
 		"updating/migration-to-31.html": "updating/updating-cke5/update-to-31.html",
 		"updating/migration-to-32.html": "updating/updating-cke5/update-to-32.html",
 		"updating/migration-to-33.html": "updating/updating-cke5/update-to-33.html",
+		"updating/migration-from-cke4": "updating/migration-from-ckeditor-4",
 		"builds/guides/predefined-builds/overview.html": "installation/getting-started/predefined-builds.html",
 		"builds/guides/overview.html": "installation/getting-started/predefined-builds.html",
 		"builds/guides/quick-start.html": "installation/getting-started/quick-start.html",
