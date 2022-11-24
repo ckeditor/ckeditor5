@@ -237,7 +237,7 @@ For the best results, make sure the custom properties listed below are set after
 
 The static properties of `BalloonPanelView` have been renamed.
 
-The `BalloonPanelView.arrowVerticalOffset` static property is now `heightOffset` and `BalloonPanelView.arrowHorizontalOffset` is now `sideOffset`.
+The `BalloonPanelView.arrowVerticalOffset` static property is now `arrowHeightOffset` and `BalloonPanelView.arrowHorizontalOffset` is now `arrowSideOffset`.
 
 ## Migration to CKEditor 5 v35.0.0
 
