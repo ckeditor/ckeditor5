@@ -21,6 +21,7 @@ import type ViewCollection from '../viewcollection';
  * @param {module:ui/viewcollection~ViewCollection} options.gridItems A collection of grid items.
  * @param {Number|Function} options.numberOfColumns Number of columns in the grid. Can be specified as a function that returns
  * the number (e.g. for responsive grids).
+ * @param {String|Undefined} options.uiLanguageDirection String of ui language direction.
  */
 export default function addKeyboardHandlingForGrid(
 	{ keystrokeHandler, focusTracker, gridItems, numberOfColumns, uiLanguageDirection }: {
@@ -34,19 +35,15 @@ export default function addKeyboardHandlingForGrid(
 	const getNumberOfColumns = typeof numberOfColumns === 'number' ? () => numberOfColumns : numberOfColumns;
 
 	keystrokeHandler.set( 'arrowright', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
-		if ( uiLanguageDirection === 'rtl' ) {
-			return getLeftFocusedElementIndex( focusedElementIndex, gridItems );
-		} else {
-			return getRightFocusedElementIndex( focusedElementIndex, gridItems );
-		}
+		return uiLanguageDirection === 'rtl' ?
+			getLeftElementIndex( focusedElementIndex, gridItems ) :
+			getRightElementIndex( focusedElementIndex, gridItems );
 	} ) );
 
 	keystrokeHandler.set( 'arrowleft', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
-		if ( uiLanguageDirection === 'rtl' ) {
-			return getRightFocusedElementIndex( focusedElementIndex, gridItems );
-		} else {
-			return getLeftFocusedElementIndex( focusedElementIndex, gridItems );
-		}
+		return uiLanguageDirection === 'rtl' ?
+			getRightElementIndex( focusedElementIndex, gridItems ) :
+			getLeftElementIndex( focusedElementIndex, gridItems );
 	} ) );
 
 	keystrokeHandler.set( 'arrowup', getGridItemFocuser( ( focusedElementIndex, gridItems ) => {
@@ -86,19 +83,51 @@ export default function addKeyboardHandlingForGrid(
 		};
 	}
 
-	function getRightFocusedElementIndex( focusedElementIndex: number, gridItems: ViewCollection ) {
-		if ( focusedElementIndex === gridItems.length - 1 ) {
+	// Function returning a right index relatively current index.
+	//
+	// before: [ ][x][ ]	after: [ ][ ][x]
+	//         [ ][ ][ ]	       [ ][ ][ ]
+	//         [ ]      	       [ ]
+	// index = 1            index = 2
+	//
+	// If current index is at the right conner, function return first index of next row.
+	//
+	// before: [ ][ ][x]	after: [ ][ ][ ]
+	//         [ ][ ][ ]	       [x][ ][ ]
+	//         [ ]      	       [ ]
+	// index = 2            index = 3
+	//
+	// @param {number} [elementIndex] Number of current index.
+	// @param {module:ui/viewcollection~ViewCollection} [gridItems] A collection of grid items.
+	function getRightElementIndex( elementIndex: number, gridItems: ViewCollection ) {
+		if ( elementIndex === gridItems.length - 1 ) {
 			return 0;
 		} else {
-			return focusedElementIndex + 1;
+			return elementIndex + 1;
 		}
 	}
 
-	function getLeftFocusedElementIndex( focusedElementIndex: number, gridItems: ViewCollection ) {
-		if ( focusedElementIndex === 0 ) {
+	// Function returning a left index relatively current index.
+	//
+	// before: [ ][x][ ]	after: [ ][ ][ ]
+	//         [ ][ ][ ]	       [x][ ][ ]
+	//         [ ]      	       [ ]
+	// index = 1            index = 2
+	//
+	// If current index is at the left conner, function return last index of previous row.
+	//
+	// before: [ ][ ][ ]	after: [ ][ ][x]
+	//         [x][ ][ ]	       [ ][ ][ ]
+	//         [ ]      	       [ ]
+	// index = 2            index = 0
+	//
+	// @param {number} [elementIndex] Number of current index.
+	// @param {module:ui/viewcollection~ViewCollection} [gridItems] A collection of grid items.
+	function getLeftElementIndex( elementIndex: number, gridItems: ViewCollection ) {
+		if ( elementIndex === 0 ) {
 			return gridItems.length - 1;
 		} else {
-			return focusedElementIndex - 1;
+			return elementIndex - 1;
 		}
 	}
 }

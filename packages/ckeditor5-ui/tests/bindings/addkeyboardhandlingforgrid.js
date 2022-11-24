@@ -276,8 +276,6 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 	} );
 
 	describe( 'arrows moves in rtl', () => {
-		let view, keystrokes, focusTracker, gridElementsCollection, numberOfColumnsStub, uiLanguageDirection;
-
 		beforeEach( () => {
 			view = new TestView( );
 			keystrokes = new KeystrokeHandler();
@@ -295,15 +293,12 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 				focusTracker.add( button.element );
 			}
 
-			numberOfColumnsStub = 3;
-			uiLanguageDirection = 'rtl';
-
 			addKeyboardHandlingForGrid( {
 				keystrokeHandler: keystrokes,
 				focusTracker,
 				gridItems: gridElementsCollection,
-				numberOfColumns: numberOfColumnsStub,
-				uiLanguageDirection
+				numberOfColumns: 3,
+				uiLanguageDirection: 'rtl'
 			} );
 
 			keystrokes.listenTo( view.element );
