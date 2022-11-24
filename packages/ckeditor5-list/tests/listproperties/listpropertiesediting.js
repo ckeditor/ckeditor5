@@ -3609,6 +3609,24 @@ describe( 'ListPropertiesEditing', () => {
 						'</ol>'
 					);
 				} );
+
+				it( 'should allow 0 as list start index', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listStart="0">Foo</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="0">Bar</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal( '<ol start="0"><li>Foo</li><li>Bar</li></ol>' );
+				} );
+
+				it( 'should not allow a negative start index', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listStart="-3">Foo</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="-3">Bar</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
+				} );
 			} );
 
 			describe( 'view to model', () => {
@@ -3636,6 +3654,24 @@ describe( 'ListPropertiesEditing', () => {
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it( 'should convert single list (type: numbered, start: 0)', () => {
+					editor.setData( '<ol start="0"><li>Foo</li><li>Bar</li></ol>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" listStart="0" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStart="0" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it( 'should convert single list and change negative start index (type: numbered, start: -3)', () => {
+					editor.setData( '<ol start="-3"><li>Foo</li><li>Bar</li></ol>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" listStart="1" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStart="1" listType="numbered">Bar</listItem>'
 					);
 				} );
 

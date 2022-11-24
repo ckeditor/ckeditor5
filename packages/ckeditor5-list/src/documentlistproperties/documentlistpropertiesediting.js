@@ -361,7 +361,7 @@ function createAttributeStrategies( enabledProperties ) {
 			},
 
 			setAttributeOnDowncast( writer, listStart, element ) {
-				if ( listStart === 0 || listStart > 1 ) {
+				if ( listStart == 0 || listStart > 1 ) {
 					writer.setAttribute( 'start', listStart, element );
 				} else {
 					writer.removeAttribute( 'start', element );

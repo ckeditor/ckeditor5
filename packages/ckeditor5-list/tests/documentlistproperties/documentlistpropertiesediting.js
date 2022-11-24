@@ -932,5 +932,68 @@ describe( 'DocumentListPropertiesEditing', () => {
 				` ) );
 			} );
 		} );
+
+		describe( 'upcasting', () => {
+			beforeEach( () => {
+				stubUid( 0 );
+			} );
+
+			it( 'should set positive start index', () => {
+				editor.setData(
+					'<ol start="5">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' );
+
+				expect( editor.getData(), 'output data' ).to.equalMarkup(
+					'<ol start="5">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' );
+				expect( getData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup(
+					modelList( `
+						# Foo {start:5}
+						# Bar
+					` ) );
+			} );
+
+			it( 'should set 0 start index', () => {
+				editor.setData(
+					'<ol start="0">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' );
+
+				expect( editor.getData(), 'output data' ).to.equalMarkup(
+					'<ol start="0">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' );
+				expect( getData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup(
+					modelList( `
+						# Foo {start:0}
+						# Bar
+					` ) );
+			} );
+
+			it( 'should set 1 when DOM has negative start index', () => {
+				editor.setData(
+					'<ol start="-3">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' );
+
+				expect( editor.getData(), 'output data' ).to.equalMarkup(
+					'<ol>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' );
+				expect( getData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup(
+					modelList( `
+						# Foo {start:1}
+						# Bar
+					` ) );
+			} );
+		} );
 	} );
 } );
