@@ -53,10 +53,12 @@ ClassicEditor
 			},
 			toolbar: [ {
 				name: 'imageStyle:icons',
+				title: 'Alignment',
 				items: [ 'imageStyle:margin-left', 'imageStyle:margin-right', 'imageStyle:inline' ],
 				defaultItem: 'imageStyle:margin-left'
 			}, {
 				name: 'imageStyle:pictures',
+				title: 'Style',
 				items: [ 'imageStyle:block', 'imageStyle:side' ],
 				defaultItem: 'imageStyle:block'
 			}, '|', 'toggleImageCaption', 'linkImage'
