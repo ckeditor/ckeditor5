@@ -663,7 +663,7 @@ Please refer to the [migration guide](https://ckeditor.com/docs/ckeditor5/latest
 
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `enableToolbarKeyboardFocus()` helper has been removed. Please use the [`EditorUI#addToolbar()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editorui-EditorUI.html#function-addToolbar) method instead to enable accessible toolbar navigation (and focusing) using the `Alt+F10` and `Esc` keystrokes (see [#10368](https://github.com/ckeditor/ckeditor5/issues/10368)).
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The TooltipView UI component has been removed. Please use the new tooltip API instead. Please note, that this change does not affect the integrations that configure tooltips using the `ButtonView#tooltip` property.
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The static properties of `BalloonPanelView` have been renamed. `BalloonPanelView.arrowVerticalOffset` is now `heightOffset` and `BalloonPanelView.arrowHorizontalOffset` is now `sideOffset`.
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The static properties of `BalloonPanelView` have been renamed. The `BalloonPanelView.arrowVerticalOffset` static property is now `arrowHeightOffset` and `BalloonPanelView.arrowHorizontalOffset` is now `arrowSideOffset`.
 
 ### Features
 
