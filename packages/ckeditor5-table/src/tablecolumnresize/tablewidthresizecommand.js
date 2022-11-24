@@ -51,9 +51,14 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 		model.change( writer => {
 			if ( tableWidth ) {
 				writer.setAttribute( this.attributeName, tableWidth, table );
-				writer.setAttribute( 'columnWidths', columnWidths, table );
 			} else {
 				writer.removeAttribute( this.attributeName, table );
+			}
+
+			if ( columnWidths ) {
+				writer.setAttribute( 'columnWidths', columnWidths, table );
+			} else {
+				writer.removeAttribute( 'columnWidths', table );
 			}
 		} );
 	}

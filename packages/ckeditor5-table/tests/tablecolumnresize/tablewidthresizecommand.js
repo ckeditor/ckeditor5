@@ -71,11 +71,11 @@ describe( 'TableWidthResizeCommand', () => {
 		);
 	} );
 
-	it( 'should remove the attribute if new value was not passed', () => {
+	it( 'should remove the attributes if new value was not passed', () => {
 		setModelData( model, modelTable( [
 			[ '11', '12' ],
 			[ '21', '22' ]
-		], { tableWidth: '40%' } ) );
+		], { tableWidth: '40%', columnWidths: '40%,60%' } ) );
 
 		command.execute();
 
