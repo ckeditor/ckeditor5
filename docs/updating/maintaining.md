@@ -13,7 +13,7 @@ CKEditor 5 is an active, rapidly developing software project. It is, therefore, 
 
 ### Upgrade regularly
 
-CKEditor 5 should be {@link updating/updating-cke5 updated frequently}, as bug fixes and new features are not backported. While installing and using a CKEditor 5 instance, especially when adding new features, always make sure all the packages are of the same (preferably latest) version. If this requirement is not met, errors may occur.
+CKEditor 5 should be {@link updating/updating-ckeditor-5 updated frequently}, as bug fixes and new features are not backported. While installing and using a CKEditor 5 instance, especially when adding new features, always make sure all the packages are of the same (preferably latest) version. If this requirement is not met, errors may occur.
 
 ### Update your custom builds
 

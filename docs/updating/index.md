@@ -19,4 +19,4 @@ For general tips on how to take care of your CKEditor 5 installation, please ref
 
 ## Updating your CKEditor 5
 
-Visit the {@link updating/updating-cke5 Updating CKEditor 5} guide for information of how to update your installation to the newest available stable version of the software. Visit the dedicated update guides for specific CKEditor 5 release versions if you need to catch up with the latest release.
+Visit the {@link updating/updating-ckeditor-5 Updating CKEditor 5} guide for information of how to update your installation to the newest available stable version of the software. Visit the dedicated update guides for specific CKEditor 5 release versions if you need to catch up with the latest release.
