@@ -19,8 +19,6 @@ import type BalloonEditorUIView from './ballooneditoruiview';
 
 /**
  * The balloon editor UI class.
- *
- * @extends module:core/editor/editorui~EditorUI
  */
 export default class BalloonEditorUI extends EditorUI {
 	/**
@@ -31,8 +29,8 @@ export default class BalloonEditorUI extends EditorUI {
 	/**
 	 * Creates an instance of the balloon editor UI class.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
+	 * @param editor The editor instance.
+	 * @param view The view of the UI.
 	 */
 	constructor( editor: Editor, view: BalloonEditorUIView ) {
 		super( editor );

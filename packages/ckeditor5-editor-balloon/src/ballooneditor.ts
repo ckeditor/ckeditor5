@@ -47,11 +47,6 @@ import { isElement as _isElement } from 'lodash-es';
  *
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
- *
- * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
- * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
- * @implements module:core/editor/editorwithui~EditorWithUI
- * @extends module:core/editor/editor~Editor
  */
 export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
 	/**
