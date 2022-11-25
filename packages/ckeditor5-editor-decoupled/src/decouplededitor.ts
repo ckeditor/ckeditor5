@@ -7,13 +7,23 @@
  * @module editor-decoupled/decouplededitor
  */
 
-import { Editor, ElementApiMixin, DataApiMixin, secureSourceElement } from 'ckeditor5/src/core';
-import { CKEditorError, getDataFromElement, mix } from 'ckeditor5/src/utils';
-
-import { isElement } from 'lodash-es';
+import {
+	Editor,
+	ElementApiMixin,
+	DataApiMixin,
+	secureSourceElement,
+	type EditorConfig,
+	type EditorReadyEvent
+} from 'ckeditor5/src/core';
+import {
+	CKEditorError,
+	getDataFromElement
+} from 'ckeditor5/src/utils';
 
 import DecoupledEditorUI from './decouplededitorui';
 import DecoupledEditorUIView from './decouplededitoruiview';
+
+import { isElement as _isElement } from 'lodash-es';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#document-editor decoupled editor} implementation.
@@ -44,26 +54,25 @@ import DecoupledEditorUIView from './decouplededitoruiview';
  *
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
- *
- * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
- * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
- * @implements module:core/editor/editorwithui~EditorWithUI
- * @extends module:core/editor/editor~Editor
  */
-export default class DecoupledEditor extends Editor {
+export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
+	/**
+	 * @inheritDoc
+	 */
+	public readonly ui: DecoupledEditorUI;
+
 	/**
 	 * Creates an instance of the decoupled editor.
 	 *
 	 * **Note:** Do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method instead.
 	 *
-	 * @protected
-	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
-	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
+	 * @param config The editor configuration.
 	 */
-	constructor( sourceElementOrData, config = {} ) {
+	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
 		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
 		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
 			// Documented in core/editor/editorconfig.jsdoc.
@@ -113,10 +122,8 @@ export default class DecoupledEditor extends Editor {
 	 *
 	 *				console.log( 'Editor was destroyed' );
 	 *			} );
-	 *
-	 * @returns {Promise}
 	 */
-	destroy() {
+	public override destroy(): Promise<unknown> {
 		// Cache the data, then destroy.
 		// It's safe to assume that the model->view conversion will not work after super.destroy().
 		const data = this.getData();
@@ -143,17 +150,19 @@ export default class DecoupledEditor extends Editor {
 	 *
 	 * You can initialize the editor using an existing DOM element:
 	 *
-	 *		DecoupledEditor
-	 *			.create( document.querySelector( '#editor' ) )
-	 *			.then( editor => {
-	 *				console.log( 'Editor was initialized', editor );
+	 * ```ts
+	 * DecoupledEditor
+	 * 	.create( document.querySelector( '#editor' ) )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
 	 *
-	 *				// Append the toolbar to the <body> element.
-	 *				document.body.appendChild( editor.ui.view.toolbar.element );
-	 *			} )
-	 *			.catch( err => {
-	 *				console.error( err.stack );
-	 *			} );
+	 * 		// Append the toolbar to the <body> element.
+	 * 		document.body.appendChild( editor.ui.view.toolbar.element );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
 	 *
 	 * The element's content will be used as the editor data and the element will become the editable element.
 	 *
@@ -162,20 +171,22 @@ export default class DecoupledEditor extends Editor {
 	 * Alternatively, you can initialize the editor by passing the initial data directly as a string.
 	 * In this case, you will have to manually append both the toolbar element and the editable element to your web page.
 	 *
-	 *		DecoupledEditor
-	 *			.create( '<p>Hello world!</p>' )
-	 *			.then( editor => {
-	 *				console.log( 'Editor was initialized', editor );
+	 * ```ts
+	 * DecoupledEditor
+	 * 	.create( '<p>Hello world!</p>' )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
 	 *
-	 *				// Append the toolbar to the <body> element.
-	 *				document.body.appendChild( editor.ui.view.toolbar.element );
+	 * 		// Append the toolbar to the <body> element.
+	 * 		document.body.appendChild( editor.ui.view.toolbar.element );
 	 *
-	 *				// Initial data was provided so the editor UI element needs to be added manually to the DOM.
-	 *				document.body.appendChild( editor.ui.getEditableElement() );
-	 *			} )
-	 *			.catch( err => {
-	 *				console.error( err.stack );
-	 *			} );
+	 * 		// Initial data was provided so the editor UI element needs to be added manually to the DOM.
+	 * 		document.body.appendChild( editor.ui.getEditableElement() );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
 	 *
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
@@ -184,19 +195,21 @@ export default class DecoupledEditor extends Editor {
 	 *
 	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
-	 *		DecoupledEditor
-	 *			.create( document.querySelector( '#editor' ), {
-	 *				initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
-	 *			} )
-	 *			.then( editor => {
-	 *				console.log( 'Editor was initialized', editor );
+	 * ```ts
+	 * DecoupledEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
 	 *
-	 *				// Append the toolbar to the <body> element.
-	 *				document.body.appendChild( editor.ui.view.toolbar.element );
-	 *			} )
-	 *			.catch( err => {
-	 *				console.error( err.stack );
-	 *			} );
+	 * 		// Append the toolbar to the <body> element.
+	 * 		document.body.appendChild( editor.ui.view.toolbar.element );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
 	 *
 	 * This method can be used to initialize the editor on an existing element with the specified content in case if your integration
 	 * makes it difficult to set the content of the source element.
@@ -220,7 +233,7 @@ export default class DecoupledEditor extends Editor {
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
 	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source dedicated guide}.
 	 *
-	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
 	 *
 	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization.
@@ -232,10 +245,10 @@ export default class DecoupledEditor extends Editor {
 	 * It is available via
 	 * {@link module:editor-decoupled/decouplededitorui~DecoupledEditorUI#getEditableElement `editor.ui.getEditableElement()`}.
 	 *
-	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
-	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
+	 * @param config The editor configuration.
+	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	static create( sourceElementOrData, config = {} ) {
+	public static create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<DecoupledEditor> {
 		return new Promise( resolve => {
 			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js
@@ -248,17 +261,18 @@ export default class DecoupledEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
-					.then( () => editor.fire( 'ready' ) )
+					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
 	}
 }
 
-mix( DecoupledEditor, ElementApiMixin );
-mix( DecoupledEditor, DataApiMixin );
-
-function getInitialData( sourceElementOrData ) {
+function getInitialData( sourceElementOrData: HTMLElement | string ): string {
 	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+}
+
+function isElement( value: any ): value is Element {
+	return _isElement( value );
 }

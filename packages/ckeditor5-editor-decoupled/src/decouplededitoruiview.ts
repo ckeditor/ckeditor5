@@ -8,6 +8,8 @@
  */
 
 import { EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/ui';
+import type { Locale } from 'ckeditor5/src/utils';
+import type { View } from 'ckeditor5/src/engine';
 
 /**
  * The decoupled editor UI view. It is a virtual view providing an inline
@@ -17,46 +19,49 @@ import { EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/u
  *
  * See {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
  * to learn more about this view.
- *
- * @extends module:ui/editorui/editoruiview~EditorUIView
  */
 export default class DecoupledEditorUIView extends EditorUIView {
 	/**
+	 * The main toolbar of the decoupled editor UI.
+	 */
+	public readonly toolbar: ToolbarView;
+
+	/**
+	 * The editable of the decoupled editor UI.
+	 */
+	public readonly editable: InlineEditableUIView;
+
+	/**
 	 * Creates an instance of the decoupled editor UI view.
 	 *
-	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
-	 * @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
-	 * @param {Object} [options={}] Configuration options for the view instance.
-	 * @param {HTMLElement} [options.editableElement] The editable element. If not specified, it will be automatically created by
+	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param editingView The editing view instance this view is related to.
+	 * @param options Configuration options for the view instance.
+	 * @param options.editableElement The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
-	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
+	 * @param options.shouldToolbarGroupWhenFull When set `true` enables automatic items grouping
 	 * in the main {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
 	 */
-	constructor( locale, editingView, options = {} ) {
+	constructor(
+		locale: Locale,
+		editingView: View,
+		options: {
+			editableElement?: HTMLElement;
+			shouldToolbarGroupWhenFull?: boolean;
+		} = {}
+	) {
 		super( locale );
 
 		const t = locale.t;
 
-		/**
-		 * The main toolbar of the decoupled editor UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
-		 */
 		this.toolbar = new ToolbarView( locale, {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
 
-		/**
-		 * The editable of the decoupled editor UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
-		 */
 		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement, {
 			label: editableView => {
-				return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+				return t( 'Rich Text Editor. Editing area: %0', editableView.name! );
 			}
 		} );
 
@@ -78,7 +83,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		this.registerChild( [ this.toolbar, this.editable ] );
