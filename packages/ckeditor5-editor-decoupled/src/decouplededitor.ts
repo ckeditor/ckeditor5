@@ -112,16 +112,18 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 	 * **Note**: The decoupled editor does not remove the toolbar and editable when destroyed. You can
 	 * do that yourself in the destruction chain:
 	 *
-	 *		editor.destroy()
-	 *			.then( () => {
-	 *				// Remove the toolbar from DOM.
-	 *				editor.ui.view.toolbar.element.remove();
+	 * ```ts
+	 * editor.destroy()
+	 * 	.then( () => {
+	 * 		// Remove the toolbar from DOM.
+	 * 		editor.ui.view.toolbar.element.remove();
 	 *
-	 *				// Remove the editable from DOM.
-	 *				editor.ui.view.editable.element.remove();
+	 * 		// Remove the editable from DOM.
+	 * 		editor.ui.view.editable.element.remove();
 	 *
-	 *				console.log( 'Editor was destroyed' );
-	 *			} );
+	 * 		console.log( 'Editor was destroyed' );
+	 * 	} );
+	 * ```
 	 */
 	public override destroy(): Promise<unknown> {
 		// Cache the data, then destroy.
