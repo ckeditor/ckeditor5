@@ -328,6 +328,24 @@ describe( 'insertObject()', () => {
 			);
 		} );
 
+		it( 'should set selection on block object if paragraph is not allowed', () => {
+			schema.register( 'nonParagraph', {
+				allowIn: '$root',
+				isLimit: true,
+				allowChildren: 'blockWidget'
+			} );
+
+			const widget = new Element( 'blockWidget', [], [] );
+
+			setData( model, '<nonParagraph>[]</nonParagraph>' );
+
+			insertObject( model, widget, undefined, undefined, { setSelection: 'after' } );
+
+			expect( getData( model ) ).to.equalMarkup(
+				'<nonParagraph>[<blockWidget></blockWidget>]</nonParagraph>'
+			);
+		} );
+
 		it( 'should set selection on inserted inline object', () => {
 			const widget = new Element( 'inlineWidget', [], [] );
 
