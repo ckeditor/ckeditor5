@@ -7,14 +7,22 @@
  * @module editor-balloon/ballooneditor
  */
 
-import { Editor, DataApiMixin, ElementApiMixin, attachToForm, secureSourceElement } from 'ckeditor5/src/core';
+import {
+	Editor,
+	DataApiMixin,
+	ElementApiMixin,
+	attachToForm,
+	secureSourceElement,
+	type EditorConfig,
+	type EditorReadyEvent
+} from 'ckeditor5/src/core';
 import { BalloonToolbar } from 'ckeditor5/src/ui';
-import { CKEditorError, getDataFromElement, mix } from 'ckeditor5/src/utils';
-
-import { isElement } from 'lodash-es';
+import { CKEditorError, getDataFromElement } from 'ckeditor5/src/utils';
 
 import BalloonEditorUI from './ballooneditorui';
 import BalloonEditorUIView from './ballooneditoruiview';
+
+import { isElement as _isElement } from 'lodash-es';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#balloon-editor balloon editor}
@@ -45,20 +53,24 @@ import BalloonEditorUIView from './ballooneditoruiview';
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
-export default class BalloonEditor extends Editor {
+export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
+	/**
+	 * @inheritDoc
+	 */
+	public readonly ui: BalloonEditorUI;
+
 	/**
 	 * Creates an instance of the balloon editor.
 	 *
 	 * **Note:** do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`} method instead.
 	 *
-	 * @protected
-	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
-	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
+	 * @param config The editor configuration.
 	 */
-	constructor( sourceElementOrData, config = {} ) {
+	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
 		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
 		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
 			// Documented in core/editor/editorconfig.jsdoc.
@@ -77,7 +89,7 @@ export default class BalloonEditor extends Editor {
 			secureSourceElement( this );
 		}
 
-		const plugins = this.config.get( 'plugins' );
+		const plugins = this.config.get( 'plugins' )!;
 		plugins.push( BalloonToolbar );
 
 		this.config.set( 'plugins', plugins );
@@ -98,10 +110,8 @@ export default class BalloonEditor extends Editor {
 	 * Updates the original editor element with the data if the
 	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
 	 * configuration option is set to `true`.
-	 *
-	 * @returns {Promise}
 	 */
-	destroy() {
+	public override destroy(): Promise<unknown> {
 		// Cache the data, then destroy.
 		// It's safe to assume that the model->view conversion will not work after super.destroy().
 		const data = this.getData();
@@ -125,14 +135,16 @@ export default class BalloonEditor extends Editor {
 	 *
 	 * You can initialize the editor using an existing DOM element:
 	 *
-	 *		BalloonEditor
-	 *			.create( document.querySelector( '#editor' ) )
-	 *			.then( editor => {
-	 *				console.log( 'Editor was initialized', editor );
-	 *			} )
-	 *			.catch( err => {
-	 *				console.error( err.stack );
-	 *			} );
+	 * ```ts
+	 * BalloonEditor
+	 * 	.create( document.querySelector( '#editor' ) )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
 	 *
 	 * The element's content will be used as the editor data and the element will become the editable element.
 	 *
@@ -141,17 +153,19 @@ export default class BalloonEditor extends Editor {
 	 * Alternatively, you can initialize the editor by passing the initial data directly as a string.
 	 * In this case, the editor will render an element that must be inserted into the DOM for the editor to work properly:
 	 *
-	 *		BalloonEditor
-	 *			.create( '<p>Hello world!</p>' )
-	 *			.then( editor => {
-	 *				console.log( 'Editor was initialized', editor );
+	 * ```ts
+	 * BalloonEditor
+	 * 	.create( '<p>Hello world!</p>' )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
 	 *
-	 *				// Initial data was provided so the editor UI element needs to be added manually to the DOM.
-	 *				document.body.appendChild( editor.ui.element );
-	 *			} )
-	 *			.catch( err => {
-	 *				console.error( err.stack );
-	 *			} );
+	 * 		// Initial data was provided so the editor UI element needs to be added manually to the DOM.
+	 * 		document.body.appendChild( editor.ui.element );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
 	 *
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
@@ -160,16 +174,18 @@ export default class BalloonEditor extends Editor {
 	 *
 	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
-	 *		BalloonEditor
-	 *			.create( document.querySelector( '#editor' ), {
-	 *				initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
-	 *			} )
-	 *			.then( editor => {
-	 *				console.log( 'Editor was initialized', editor );
-	 *			} )
-	 *			.catch( err => {
-	 *				console.error( err.stack );
-	 *			} );
+	 * ```ts
+	 * BalloonEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
 	 *
 	 * This method can be used to initialize the editor on an existing element with the specified content in case if your integration
 	 * makes it difficult to set the content of the source element.
@@ -192,7 +208,7 @@ export default class BalloonEditor extends Editor {
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
 	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source dedicated guide}.
 	 *
-	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
 	 *
 	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization.
@@ -203,10 +219,10 @@ export default class BalloonEditor extends Editor {
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
 	 * It is available under the {@link module:editor-balloon/ballooneditorui~BalloonEditorUI#element `editor.ui.element`} property.
 	 *
-	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
-	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
+	 * @param config The editor configuration.
+	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	static create( sourceElementOrData, config = {} ) {
+	public static create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<BalloonEditor> {
 		return new Promise( resolve => {
 			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js
@@ -219,17 +235,18 @@ export default class BalloonEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
-					.then( () => editor.fire( 'ready' ) )
+					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
 	}
 }
 
-mix( BalloonEditor, DataApiMixin );
-mix( BalloonEditor, ElementApiMixin );
-
-function getInitialData( sourceElementOrData ) {
+function getInitialData( sourceElementOrData: HTMLElement | string ): string {
 	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+}
+
+function isElement( value: any ): value is Element {
+	return _isElement( value );
 }

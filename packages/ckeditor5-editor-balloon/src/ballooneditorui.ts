@@ -7,8 +7,15 @@
  * @module editor-balloon/ballooneditorui
  */
 
-import { EditorUI } from 'ckeditor5/src/core';
+import {
+	EditorUI,
+	type Editor,
+	type EditorUIReadyEvent,
+	type ElementApi
+} from 'ckeditor5/src/core';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
+
+import type BalloonEditorUIView from './ballooneditoruiview';
 
 /**
  * The balloon editor UI class.
@@ -17,39 +24,38 @@ import { enablePlaceholder } from 'ckeditor5/src/engine';
  */
 export default class BalloonEditorUI extends EditorUI {
 	/**
+	 * The main (top–most) view of the editor UI.
+	 */
+	public readonly view: BalloonEditorUIView;
+
+	/**
 	 * Creates an instance of the balloon editor UI class.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
-	constructor( editor, view ) {
+	constructor( editor: Editor, view: BalloonEditorUIView ) {
 		super( editor );
 
-		/**
-		 * The main (top–most) view of the editor UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
-		 */
 		this.view = view;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	get element() {
+	public override get element(): HTMLElement | null {
 		return this.view.editable.element;
 	}
 
 	/**
 	 * Initializes the UI.
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const view = this.view;
 		const editingView = editor.editing.view;
 		const editable = view.editable;
-		const editingRoot = editingView.document.getRoot();
+		const editingRoot = editingView.document.getRoot()!;
 
 		// The editable UI and editing root should share the same name. Then name is used
 		// to recognize the particular editable, for instance in ARIA attributes.
@@ -59,7 +65,7 @@ export default class BalloonEditorUI extends EditorUI {
 
 		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
 		// But it can be available earlier if a DOM element has been passed to BalloonEditor.create().
-		const editableElement = editable.element;
+		const editableElement = editable.element!;
 
 		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
 		// editable areas (roots) but the balloon editor has only one.
@@ -79,32 +85,30 @@ export default class BalloonEditorUI extends EditorUI {
 		editingView.attachDomRoot( editableElement );
 
 		this._initPlaceholder();
-		this.fire( 'ready' );
+		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		const view = this.view;
 		const editingView = this.editor.editing.view;
 
-		editingView.detachDomRoot( view.editable.name );
+		editingView.detachDomRoot( view.editable.name! );
 		view.destroy();
 	}
 
 	/**
 	 * Enable the placeholder text on the editing root, if any was configured.
-	 *
-	 * @private
 	 */
-	_initPlaceholder() {
+	private _initPlaceholder(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		const editingRoot = editingView.document.getRoot();
-		const sourceElement = editor.sourceElement;
+		const editingRoot = editingView.document.getRoot()!;
+		const sourceElement = ( editor as Editor & ElementApi ).sourceElement;
 
 		const placeholderText = editor.config.get( 'placeholder' ) ||
 			sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' );
