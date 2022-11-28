@@ -131,7 +131,7 @@ export default class StyleGridView extends View {
 			focusTracker: this.focusTracker,
 			gridItems: this.children,
 			numberOfColumns: 3,
-			uiLanguageDirection: this.locale.uiLanguageDirection
+			uiLanguageDirection: this.locale && this.locale.uiLanguageDirection
 		} );
 
 		// Start listening for the keystrokes coming from the grid view.

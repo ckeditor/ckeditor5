@@ -204,7 +204,7 @@ export default class ListPropertiesView extends View {
 					.getPropertyValue( 'grid-template-columns' )
 					.split( ' ' )
 					.length,
-				uiLanguageDirection: this.locale.uiLanguageDirection
+				uiLanguageDirection: this.locale && this.locale.uiLanguageDirection
 			} );
 		}
 
