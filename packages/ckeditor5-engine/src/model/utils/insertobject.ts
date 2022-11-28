@@ -159,6 +159,7 @@ function updateSelection(
 
 	if ( place == 'on' ) {
 		writer.setSelection( contextElement, 'on' );
+
 		return;
 	}
 
@@ -178,6 +179,7 @@ function updateSelection(
 
 	if ( model.schema.isInline( contextElement ) ) {
 		writer.setSelection( contextElement, 'after' );
+
 		return;
 	}
 
