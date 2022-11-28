@@ -1,5 +1,5 @@
 ---
-category: updating-cke5
+category: update-guides
 menu-title: Update to v25.x
 order: 99
 ---

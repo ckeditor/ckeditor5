@@ -1,8 +1,8 @@
 ---
-category: updating-cke5
+category: update-guides
 order: 10
 meta-title: CKEditor 5 updating documentation
-meta-description: Learn how to maintain and keep you CKEditor 5 up-to-date at all times.
+meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at all times.
 ---
 
 # Updating CKEditor 5
@@ -11,33 +11,12 @@ meta-description: Learn how to maintain and keep you CKEditor 5 up-to-date at al
   This guide covers the topic of keeping your CKEditor 5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor 5, please see the {@link updating/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
 </info-box>
 
-## CKEditor 5 release process
-
-Regular code releases (there are usually 10-12 of these a year) bring different changes and new features. They are often divided into major and minor changes, along the lines of [semantic versioning](https://semver.org/).
-
-### Code release
-
-Each code release is noted in the [changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) and enumerates all changes, additions and bug fixes that took place, also highlighting if there are any breaking changes (i.e. changes that make the latest release incompatible with the previous ones code-wise). The code packages are released on the [CKEditor 5 npm site](https://www.npmjs.com/package/ckeditor5), as well as updated in the {@link installation/getting-started/predefined-builds#download-options predefined builds} and {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} and are ready to download.
-
-It is good to follow npm release messages about new packages being published as well as periodically check the changelog.
-
-### Public release
-
-Soon after the code release, a more user-oriented information is published. In a [release blog post](https://ckeditor.com/blog/?category=releases&tags=CKEditor-5) the latest release version is presented in more details, with examples, screencasts, screenshots and links to the new or updated documentation if it brings important information about the release. The release blog post would also provide additional information and context for the changes if needed and direct the user toward migration guides if these were created for the release.
-
-It is good to follow [CKEditor Ecosystem Blog](https://ckeditor.com/blog/) as it also brings other important articles and news about features, changes and planned development. You can also [sign up to the monthly newsletter](https://ckeditor.com/newsletter/) in order to be notified about the latest releases.
-
-### Update guides
-
-Should there be any breaking or important changes that affect your editor integration and require special attention, these will also be published in the CKEditor 5 documentation in the **Updating CKEditor 5** section. These guides provide a more technical, code-oriented information directed at integrators, administrators and developers and offer solutions and necessary steps to take while updating.
-
-Administrators and developers should always refer to migration guides after each release and make sure to implement all the introduced changes properly to ensure stable and uninterrupted operation. Newly added or guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting.
 
 ## Updating the editor
 
 CKEditor 5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
 
-Before proceeding with an update, it is highly recommended to [read the changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) for the latest version to learn about all changes introduced in the release. You should especially pay attention to any possible {@link support/versioning-policy#major-and-minor-breaking-changes breaking changes}. This step is crucial if you develop your own custom features and modify the editor, as sometimes, changes in our code might affect these custom solutions.
+Before proceeding with an update, it is highly recommended to [read the changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) for the latest version to learn about all changes introduced in the release. You should especially pay attention to any possible {@link updating/versioning-policy#major-and-minor-breaking-changes breaking changes}. This step is crucial if you develop your own custom features and modify the editor, as sometimes, changes in our code might affect these custom solutions.
 
 To help you with a smooth update, we have prepared migration guides that describe adjustments that need to be done before moving to the production environment. You can find them in the sidebar located on the left side of the page.
 
@@ -133,7 +112,7 @@ That's it! Your editor is updated and now you can focus on adjusting your custom
 
 ### Real-time collaboration
 
-While using real-time collaboration it is important to remember about preparing existing documents for the updated editor. Basically, it is not possible to join the document that was created with a CKEditor 5 version different than the one used by the client. For example, imagine a situation when the document has been initialized with the editor version 30.0.0 and after the update, a user connects to this document with the editor version 31.0.0. In such a case, an error about incompatible engine version will be thrown.
+While using real-time collaboration it is important to remember about preparing existing documents for the updated editor. Basically, it is not possible to join the document that was created with a CKEditor 5 version different than the one used by the client. For example, imagine a situation when the document has been initialized with the editor version 30.0.0 and after the update, a user connects to this document with the editor version 31.0.0. In such a case, an error about an incompatible engine version will be thrown.
 
 A collaboration session will be removed 24 hours after the last user disconnects. You can also manually [flush](https://help.cke-cs.com/api/v4/docs#tag/Collaboration/paths/~1collaborations~1{document_id}/delete) any existing collaboration sessions using the {@link @cs guides/apis/overview Cloud Services REST API}. After the collaboration session removal, users will be able to connect to the documents using a new editor.
 

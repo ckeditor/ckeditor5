@@ -1,5 +1,5 @@
 ---
-category: updating-cke5
+category: update-guides
 menu-title: Update to v35.x
 order: 89
 modified_at: 2022-10-05

@@ -1,5 +1,5 @@
 ---
-category: updating-cke5
+category: update-guides
 menu-title: Update to v34.x
 order: 90
 modified_at: 2022-04-05

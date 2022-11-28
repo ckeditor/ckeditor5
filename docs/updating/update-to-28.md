@@ -1,5 +1,5 @@
 ---
-category: updating-cke5
+category: update-guides
 menu-title: Update to v28.x
 order: 96
 modified_at: 2021-06-01

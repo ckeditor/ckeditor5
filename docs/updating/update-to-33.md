@@ -1,5 +1,5 @@
 ---
-category: updating-cke5
+category: update-guides
 menu-title: Update to v33.x
 order: 91
 modified_at: 2022-02-01

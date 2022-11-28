@@ -1,6 +1,6 @@
 
 ---
-category: updating-cke5
+category: update-guides
 menu-title: Update to v29.x
 order: 95
 modified_at: 2021-07-25

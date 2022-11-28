@@ -1,6 +1,6 @@
 ---
-category: support
-order: 50
+category: updating
+order: 12
 ---
 
 # Versioning policy
