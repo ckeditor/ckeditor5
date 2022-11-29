@@ -1,3 +1,4 @@
+
 ---
 category: framework-tutorials
 order: 10
@@ -329,11 +330,9 @@ export default class SimpleBoxEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'simpleBox', {
-			// Behaves like a self-contained object (e.g. an image).
-			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			// Behaves like a self-contained block object (e.g. a block image)
+			// allowed in places where other blocks are allowed (e.g. directly in the root).
+			inheritAllFrom: '$blockObject'
 		} );
 
 		schema.register( 'simpleBoxTitle', {
@@ -745,7 +744,7 @@ In case of the simple box the situation is simple:
 * you need an "insert a new simple box" action,
 * and "can you insert a new simple box here (at the current selection position)".
 
-Create a new file `insertsimpleboxcommand.js` in the `simplebox/` directory. You will use the {@link module:engine/model/model~Model#insertContent `model.insertContent()`} method which will be able to, for example, split a paragraph if you try to insert a simple box in the middle of it (which is not allowed by the schema).
+Create a new file `insertsimpleboxcommand.js` in the `simplebox/` directory. You will use the {@link module:engine/model/model~Model#insertContent `model.insertContent()`} method which will be able to, for example, split a paragraph if you try to insert a simple box in the middle of it (which is not allowed by the schema). You could use {@link module:engine/model/model~Model#insertObject `model.insertObject()`} if you would like to support inserting block widgets into a {@link features/lists/document-lists document list} items.
 
 ```js
 // simplebox/insertsimpleboxcommand.js
@@ -866,11 +865,9 @@ export default class SimpleBoxEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'simpleBox', {
-			// Behaves like a self-contained object (e.g. an image).
-			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			// Behaves like a self-contained block object (e.g. a block image)
+			// allowed in places where other blocks are allowed (e.g. directly in the root).
+			inheritAllFrom: '$blockObject'
 		} );
 
 		schema.register( 'simpleBoxTitle', {
@@ -1065,11 +1062,9 @@ class SimpleBoxEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'simpleBox', {
-			// Behaves like a self-contained object (e.g. an image).
-			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			// Behaves like a self-contained block object (e.g. a block image)
+			// allowed in places where other blocks are allowed (e.g. directly in the root).
+			inheritAllFrom: '$blockObject'
 		} );
 
 		schema.register( 'simpleBoxTitle', {

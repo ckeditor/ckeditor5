@@ -514,6 +514,52 @@ Taking this even further, if anyone registers a `<section>` element (with the `a
 	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
 </info-box>
 
+### Generic items tree
+
+* `$root`
+  * `$block` &mdash; example: `<paragraph>`, `<heading1>`
+    * `$text`
+    * `$inlineObject` &mdash; example: `<imageInline>`
+  * `$blockObject` &mdash; example: `<imageBlock>`, `<table>`
+  * `$container` &mdash; example: `<blockQuote>`
+    * `$container` 
+    * `$block`
+    * `$blockObject`
+
+#### Example structure
+
+// TODO this could be interactive (checkboxes to display structure constraints vs semantics flags):
+```html
+<$root>  <!-- isLimit: true -->
+	<heading1>  <!-- inheritAllFrom: '$block' ( allowIn: [ '$root', '$container' ], isBlock: true ) -->
+		<$text/>  <!-- allowIn: '$block', isInline: true, isContent: true -->
+	</heading1>
+	<paragraph>  <!-- inheritAllFrom: '$block' ( allowIn: [ '$root', '$container' ], isBlock: true ) -->
+		<$text/>  <!-- allowIn: '$block', isInline: true, isContent: true -->
+		<softBreak/>  <!-- allowWhere: '$text', isInline: true -->
+		<$text/>  <!-- allowIn: '$block', isInline: true, isContent: true --> 
+		<imageInline/>  <!-- inheritAllFrom: '$inlineObject' ( allowWhere: '$text', isInline: true, isObject: true ) -->
+	</paragraph>
+	<imageBlock>  <!-- inheritAllFrom: '$blockObject' ( allowWhere: '$block', isBlock: true, isObject: true ) -->
+		<caption>  <!-- allowIn: 'imageBlock', allowContentOf: '$block', isLimit: true -->
+			<$text/>  <!-- allowIn: '$block', isInline: true, isContent: true -->
+		</caption>
+	</imageBlock>
+	<blockQuote>  <!-- inheritAllFrom: '$container' ( allowIn: [ '$root', '$container' ] ) -->
+		<paragraph/>  <!-- inheritAllFrom: '$block' ( allowIn: [ '$root', '$container' ], isBlock: true ) -->
+		<table>  <!-- inheritAllFrom: '$blockObject' ( allowWhere: '$block', isBlock: true, isObject: true ) -->
+			<tableRow>  <!-- allowIn: 'table', isLimit: true -->
+				<tableCell>  <!--allowIn: 'tableRow',  allowContentOf: '$container', isLimit: true -->
+					<paragraph>  <!-- inheritAllFrom: '$block' ( allowIn: [ '$root', '$container' ], isBlock: true ) -->
+						<$text/>  <!-- allowIn: '$block', isInline: true, isContent: true -->
+					</paragraph>
+				</tableCell>
+			</tableRow>
+		</table>
+	</blockQuote>
+</$root>
+```
+
 ## Defining advanced rules in `checkChild()` callbacks
 
 The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} method which is the a base method used to check whether some element is allowed in a given structure is {@link module:utils/observablemixin~ObservableMixin#decorate a decorated method}. It means that you can add listeners to implement your specific rules which are not limited by the {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API}.
