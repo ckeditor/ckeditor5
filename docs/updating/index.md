@@ -18,9 +18,9 @@ If you want to switch to CKEditor 5 from our previous product, CKEditor 4, pleas
 
 For general tips on how to take care of your CKEditor 5 installation, please refer to the {@link updating/maintaining Maintaining your editor} guide for tips on how to provide the daily service and make the editor work efficiently and without interruptions.
 
-## CKEditor 5 Release process
+## CKEditor 5 release process
 
-Regular code releases bring new features and improvements to CKEditor5. Visit {@link updating/release-process Release process} section to check release practices and versioning strategy.
+Regular code releases bring new features and improvements to CKEditor5. Visit the {@link updating/release-process Release process} section to check release practices and versioning strategy.
 
 ## Updating your CKEditor 5
 
