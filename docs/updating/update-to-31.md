@@ -1,6 +1,5 @@
-
 ---
-category: updating-cke5
+category: update-guides
 menu-title: Update to v31.x
 order: 93
 modified_at: 2021-11-03

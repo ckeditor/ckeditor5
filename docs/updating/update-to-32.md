@@ -1,6 +1,5 @@
-
 ---
-category: updating-cke5
+category: update-guides
 menu-title: Update to v32.x
 order: 92
 modified_at: 2021-12-10

@@ -1,9 +1,9 @@
 ---
-category: support
-order: 50
+category: updating
+order: 25
 ---
 
-# Versioning policy
+# CKEditor 5  versioning policy
 
 CKEditor 5 consists of multiple npm packages (over 50, at the moment of writing this guide). When releasing them, we use the following rules:
 

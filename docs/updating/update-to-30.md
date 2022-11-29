@@ -1,6 +1,5 @@
-
 ---
-category: updating-cke5
+category: update-guides
 menu-title: Update to v30.x
 order: 94
 ---
