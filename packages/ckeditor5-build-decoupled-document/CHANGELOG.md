@@ -250,7 +250,7 @@ We are happy to announce the release of CKEditor 5 v15.0.0. This editor version 
 
 Regarding the build itself, we added the [indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html) button to the build's default setup. See [ckeditor/ckeditor5#1844](https://github.com/ckeditor/ckeditor5/issues/1844). ([dc715cd](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/dc715cd))
 
-From other news, we changed the versioning policy. Now, all packages will have the same major version, hence, we needed to release this one as v15.0.0 (we skipped versions 13.0.0 and 14.0.0). Read more about the [new versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html).
+From other news, we changed the versioning policy. Now, all packages will have the same major version, hence, we needed to release this one as v15.0.0 (we skipped versions 13.0.0 and 14.0.0). Read more about the [new versioning policy](https://ckeditor.com/docs/ckeditor5/latest/updating/versioning-policy.html).
 
 Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v15.0.0-with-horizontal-line-page-break-responsive-toolbar-and-SVG-upload-support/
 

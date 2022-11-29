@@ -20,7 +20,7 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 
 ## Migrating from CKEditor 4
 
-This section is dedicated to getting started with CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, please refer to the {@link updating/migration-from-cke4 CKEditor 4 migration guide} for tips about such installation.
+This section is dedicated to getting started with CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, please refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide} for tips about such installation.
 
 ## Start using CKEditor 5 instantly with CDN
 
@@ -44,7 +44,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 
 **Related links**
 
- * {@link updating/index Updating CKEditor 5} &ndash; Find out how to keep you installation up-to-date at all times.
+ * {@link updating/updating-ckeditor-5 Updating CKEditor 5} &ndash; Find out how to keep you installation up-to-date at all times.
  * {@link features/index Features} &ndash; Learn more about the CKEditor 5 features.
  * {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
  * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins or custom editors, how to change the UI or even bring your own UI to the editor.
@@ -167,7 +167,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 		},
 
 		'quiz-resolution-migrateFromV4': {
-			content: 'Based on your answers, you should check out the {@link installation/migration-from-ckeditor-4 CKEditor 4 migration guide}.',
+			content: 'Based on your answers, you should check out the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide}.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 

@@ -1,11 +1,11 @@
 ---
-category: updating
-menu-title: Migration to v33.x
+category: update-guides
+menu-title: Update to v33.x
 order: 91
 modified_at: 2022-02-01
 ---
 
-# Migration to CKEditor 5 v33.0.0
+# Update to CKEditor 5 v33.0.0
 
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.

@@ -1,12 +1,11 @@
-
 ---
-category: updating
-menu-title: Migration to v31.x
+category: update-guides
+menu-title: Update to v31.x
 order: 93
 modified_at: 2021-11-03
 ---
 
-# Migration to CKEditor 5 v31.x
+# Update to CKEditor 5 v31.x
 
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
@@ -14,7 +13,7 @@ modified_at: 2021-11-03
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-## Migration to CKEditor 5 v31.1.0
+## Update to CKEditor 5 v31.1.0
 
 For the entire list of changes introduced in version 31.1.0, see the [changelog for CKEditor 5 v31.1.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3110-2021-12-03).
 
@@ -83,7 +82,7 @@ The affected attributes include: `backgroundColor`, `padding`, `width`, `height`
 These were changed to `tableCellBackgroundColor`, `tableCellPadding`, `tableCellWidth`, `tableCellHeight`, `tableCellBorderStyle`, `tableCellBorderColor`, `tableCellBorderWidth`, `tableCellVerticalAlignment` and `tableCellHorizontalAlignment` respectively.
 
 
-## Migration to CKEditor 5 v31.0.0
+## Update to CKEditor 5 v31.0.0
 
 For the entire list of changes introduced in version 31.0.0, see the [changelog for CKEditor 5 v31.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3100-2021-10-25).
 
