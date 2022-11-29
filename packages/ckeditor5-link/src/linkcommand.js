@@ -83,7 +83,7 @@ export default class LinkCommand extends Command {
 
 		const selectedLinkText = selection.anchor.textNode;
 
-		if ( selectedLinkText !== undefined && this.value !== undefined ) {
+		if ( selectedLinkText !== undefined && selectedLinkText !== null && this.value !== undefined ) {
 			this.text = selectedLinkText._data;
 		}
 
