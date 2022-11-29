@@ -1,13 +1,23 @@
 ---
-category: updating
-menu-title: Migration to v35.x
+category: update-guides
+menu-title: Update to v35.x
 order: 89
 modified_at: 2022-10-05
 ---
 
-# Migration to CKEditor 5 v35.x
+# Update to CKEditor 5 v35.x
 
-## Migration to CKEditor 5 v35.2.0
+<info-box>
+	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
+
+	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
+</info-box>
+
+## Update to CKEditor 5 v35.2.0
+
+For the entire list of changes introduced in version 35.2.0, see the [changelog for CKEditor 5 v34.0.0](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md#3520-2022-10-04).
+
+Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v35.2.0.
 
 ### Introducing external comments
 
@@ -80,7 +90,11 @@ Among other changes, a few icons have been moved around the project. Please obse
 
 The rest of the import path remained unchanged (`/theme/icons/`).
 
-## Migration to CKEditor 5 v35.1.0
+## Update to CKEditor 5 v35.1.0
+
+For the entire list of changes introduced in version 35.1.0, see the [changelog for CKEditor 5 v35.1.0](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md#3510-2022-08-29).
+
+Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v35.1.0.
 
 ### Changes to API providing the accessible navigation between editing roots and toolbars on <kbd>Alt</kbd>+<kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes
 
@@ -233,19 +247,14 @@ For the best results, make sure the custom properties listed below are set after
 	--ck-color-toolbar-background: 					var(--ck-color-base-foreground);
 }
 ```
+
 ### Renaming the properties of `BalloonPanelView`
 
 The static properties of `BalloonPanelView` have been renamed.
 
 The `BalloonPanelView.arrowVerticalOffset` static property is now `arrowHeightOffset` and `BalloonPanelView.arrowHorizontalOffset` is now `arrowSideOffset`.
 
-## Migration to CKEditor 5 v35.0.0
-
-<info-box>
-	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
-
-	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
-</info-box>
+## Update to CKEditor 5 v35.0.0
 
 For the entire list of changes introduced in version 35.0.0, see the [changelog for CKEditor 5 v35.0.0](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md#3500-2022-07-29).
 

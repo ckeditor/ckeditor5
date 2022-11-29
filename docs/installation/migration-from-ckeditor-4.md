@@ -27,4 +27,4 @@ The API for integrating CKEditor with your pages also changed. It is worth check
 
 When it comes to {@link features/index features}, there are two aspects that need to be taken into consideration. CKEditor 5 may still not have the same features available as CKEditor 4 and some existing features may behave differently. Therefore, it is worth spending some time analyzing required features.
 
-To proceed with the upgrade, please refer to the {@link updating/migration-from-cke4 Migration from CKEditor 4} guide for further details and features comparison.
+To proceed with the upgrade, please refer to the {@link updating/migration-from-ckeditor-4 Migration from CKEditor 4} guide for further details and features comparison.

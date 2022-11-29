@@ -49,7 +49,7 @@ Each commit can contain additional notes that will be inserted into the changelo
 
 If any change contains the `MAJOR BREAKING CHANGE` note, the next release will automatically be marked as `major`.
 
-For reference on how to identify minor or major breaking change see the {@link support/versioning-policy versioning policy guide}.
+For reference on how to identify minor or major breaking change see the {@link updating/versioning-policy versioning policy guide}.
 
 Each `MAJOR BREAKING CHANGE` or `MINOR BREAKING CHANGE` note must be followed by the package name.
 
