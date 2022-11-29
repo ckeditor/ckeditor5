@@ -94,7 +94,7 @@ export default function addKeyboardHandlingForGrid(
 	// index = 2            index = 0
 	//
 	// @param {number} [elementIndex] Number of current index.
-	// @param {number} [collectionLength] A count of grid items.
+	// @param {number} [collectionLength] A count of collection items.
 	function getRightElementIndex( elementIndex: number, collectionLength: number ) {
 		if ( elementIndex === collectionLength - 1 ) {
 			return 0;
@@ -114,7 +114,7 @@ export default function addKeyboardHandlingForGrid(
 	// index = 0            index = 2
 	//
 	// @param {number} [elementIndex] Number of current index.
-	// @param {number} [collectionLength] A count of grid items.
+	// @param {number} [collectionLength] A count of collection items.
 	function getLeftElementIndex( elementIndex: number, collectionLength: number ) {
 		if ( elementIndex === 0 ) {
 			return collectionLength - 1;
