@@ -12,7 +12,6 @@ import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockedi
 import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { priorities } from 'ckeditor5/src/utils';
 
 import { getModelDataWithAttributes } from '../_utils/utils';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
@@ -327,8 +326,7 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'commented',
-				converterPriority: priorities.get( 'highest' ) // For marker this priority equals to -999
+				view: 'commented'
 			} );
 
 			editor.setData(
@@ -872,8 +870,7 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'commented',
-				converterPriority: priorities.get( 'highest' ) // For marker this priority equals to -999
+				view: 'commented'
 			} );
 
 			editor.setData(
@@ -1407,8 +1404,7 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'commented',
-				converterPriority: priorities.get( 'highest' ) // For marker this priority equals to -999
+				view: 'commented'
 			} );
 
 			editor.setData(
@@ -1829,8 +1825,7 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'commented',
-				converterPriority: priorities.get( 'highest' ) // For marker this priority equals to -999
+				view: 'commented'
 			} );
 
 			editor.setData(
@@ -2198,8 +2193,7 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'commented',
-				converterPriority: priorities.get( 'highest' ) // For marker this priority equals to -999
+				view: 'commented'
 			} );
 
 			editor.setData(
