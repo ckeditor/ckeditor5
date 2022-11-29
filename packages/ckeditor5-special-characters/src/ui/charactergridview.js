@@ -82,7 +82,8 @@ export default class CharacterGridView extends View {
 				.getComputedStyle( this.element.firstChild ) // Responsive .ck-character-grid__tiles
 				.getPropertyValue( 'grid-template-columns' )
 				.split( ' ' )
-				.length
+				.length,
+			uiLanguageDirection: this.locale && this.locale.uiLanguageDirection
 		} );
 
 		/**

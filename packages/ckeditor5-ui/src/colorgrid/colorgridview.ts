@@ -191,7 +191,8 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 			keystrokeHandler: this.keystrokes,
 			focusTracker: this.focusTracker,
 			gridItems: this.items,
-			numberOfColumns: this.columns
+			numberOfColumns: this.columns,
+			uiLanguageDirection: this.locale && this.locale.uiLanguageDirection
 		} );
 	}
 
