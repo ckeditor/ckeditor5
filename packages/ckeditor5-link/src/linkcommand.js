@@ -26,6 +26,7 @@ export default class LinkCommand extends Command {
 	 * @observable
 	 * @readonly
 	 * @member {Object|undefined} #value
+	 * @member {Object|undefined} #text
 	 */
 
 	constructor( editor ) {
@@ -69,6 +70,7 @@ export default class LinkCommand extends Command {
 		const selection = model.document.selection;
 		const selectedElement = selection.getSelectedElement() || first( selection.getSelectedBlocks() );
 
+		this.text = '';
 		// A check for any integration that allows linking elements (e.g. `LinkImage`).
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
 		if ( isLinkableElement( selectedElement, model.schema ) ) {
@@ -77,6 +79,12 @@ export default class LinkCommand extends Command {
 		} else {
 			this.value = selection.getAttribute( 'linkHref' );
 			this.isEnabled = model.schema.checkAttributeInSelection( selection, 'linkHref' );
+		}
+
+		const selectedLinkText = selection.anchor.textNode;
+
+		if ( selectedLinkText !== undefined && this.value !== undefined ) {
+			this.text = selectedLinkText._data;
 		}
 
 		for ( const manualDecorator of this.manualDecorators ) {
@@ -146,7 +154,7 @@ export default class LinkCommand extends Command {
 	 * @param {String} href Link destination.
 	 * @param {Object} [manualDecoratorIds={}] The information about manual decorator attributes to be applied or removed upon execution.
 	 */
-	execute( href, manualDecoratorIds = {} ) {
+	execute( href, manualDecoratorIds = {}, text = '' ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		// Stores information about manual decorators to turn them on/off when command is applied.
@@ -171,8 +179,6 @@ export default class LinkCommand extends Command {
 					// Then update `linkHref` value.
 					const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
-					writer.setAttribute( 'linkHref', href, linkRange );
-
 					truthyManualDecorators.forEach( item => {
 						writer.setAttribute( item, true, linkRange );
 					} );
@@ -181,8 +187,17 @@ export default class LinkCommand extends Command {
 						writer.removeAttribute( item, linkRange );
 					} );
 
+					if ( text === '' ) {
+						writer.setAttribute( 'linkHref', href, linkRange );
+						return;
+					}
+
+					const { end: positionAfter } = model.insertContent(
+						writer.createText( text, { linkHref: href } ), linkRange
+					);
+
 					// Put the selection at the end of the updated link.
-					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore ) );
+					writer.setSelection( positionAfter );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				// However, since selection is collapsed, attribute value will be used as data for text node.
@@ -190,13 +205,13 @@ export default class LinkCommand extends Command {
 				else if ( href !== '' ) {
 					const attributes = toMap( selection.getAttributes() );
 
-					attributes.set( 'linkHref', href );
-
 					truthyManualDecorators.forEach( item => {
 						attributes.set( item, true );
 					} );
 
-					const { end: positionAfter } = model.insertContent( writer.createText( href, attributes ), position );
+					const { end: positionAfter } = model.insertContent(
+						writer.createText( text, { linkHref: href, attributes } ), position
+					);
 
 					// Put the selection at the end of the inserted link.
 					// Using end of range returned from insertContent in case nodes with the same attributes got merged.

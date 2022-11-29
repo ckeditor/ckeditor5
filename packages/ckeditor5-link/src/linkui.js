@@ -162,16 +162,19 @@ export default class LinkUI extends Plugin {
 		const formView = new LinkFormView( editor.locale, linkCommand );
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
+		formView.linkTextInputView.fieldView.bind( 'value' ).to( linkCommand, 'text' );
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.urlInputView.bind( 'isReadOnly' ).to( linkCommand, 'isEnabled', value => !value );
+		formView.linkTextInputView.bind( 'isReadOnly' ).to( linkCommand, 'isEnabled', value => !value );
 		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand );
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			const { value } = formView.urlInputView.fieldView.element;
-			const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
-			editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
+			const url = formView.urlInputView.fieldView.element.value;
+			const linkText = formView.linkTextInputView.fieldView.element.value;
+			const parsedUrl = addLinkProtocolIfApplicable( url, defaultProtocol );
+			editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState(), linkText );
 			this._closeFormView();
 		} );
 
@@ -312,11 +315,6 @@ export default class LinkUI extends Plugin {
 
 		this.formView.disableCssTransitions();
 
-		this._balloon.add( {
-			view: this.formView,
-			position: this._getBalloonPositionData()
-		} );
-
 		// Select input when form view is currently visible.
 		if ( this._balloon.visibleView === this.formView ) {
 			this.formView.urlInputView.fieldView.select();
@@ -331,6 +329,12 @@ export default class LinkUI extends Plugin {
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
 		this.formView.urlInputView.fieldView.element.value = linkCommand.value || '';
+		this.formView.linkTextInputView.fieldView.element.value = linkCommand.text || '';
+
+		this._balloon.add( {
+			view: this.formView,
+			position: this._getBalloonPositionData()
+		} );
 	}
 
 	/**

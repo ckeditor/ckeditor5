@@ -151,7 +151,7 @@ ClassicEditor.defaultConfig = {
 			'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent', '|', 'blockquote', '|',
 			'alignment', '-',
 			'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
-			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+			'link', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
 			'specialCharacters', 'insertTable', '|'
 		],
 		shouldNotGroupWhenFull: true

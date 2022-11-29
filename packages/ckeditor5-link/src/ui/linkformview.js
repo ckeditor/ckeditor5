@@ -72,6 +72,13 @@ export default class LinkFormView extends View {
 		this.urlInputView = this._createUrlInput();
 
 		/**
+		 * The link text input view.
+		 *
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+		 */
+		this.linkTextInputView = this._createLinkText();
+
+		/**
 		 * The Save button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
@@ -183,6 +190,7 @@ export default class LinkFormView extends View {
 
 		const childViews = [
 			this.urlInputView,
+			this.linkTextInputView,
 			...this._manualDecoratorSwitches,
 			this.saveButtonView,
 			this.cancelButtonView
@@ -228,6 +236,21 @@ export default class LinkFormView extends View {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
 		labeledInput.label = t( 'Link URL' );
+
+		return labeledInput;
+	}
+
+	/**
+	 * Creates a labeled input view.
+	 *
+	 * @private
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled field view instance.
+	 */
+	_createLinkText() {
+		const t = this.locale.t;
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+
+		labeledInput.label = t( 'Link Text' );
 
 		return labeledInput;
 	}
@@ -314,6 +337,7 @@ export default class LinkFormView extends View {
 		const children = this.createCollection();
 
 		children.add( this.urlInputView );
+		children.add( this.linkTextInputView );
 
 		if ( manualDecorators.length ) {
 			const additionalButtonsView = new View();
