@@ -744,7 +744,7 @@ In case of the simple box the situation is simple:
 * you need an "insert a new simple box" action,
 * and "can you insert a new simple box here (at the current selection position)".
 
-Create a new file `insertsimpleboxcommand.js` in the `simplebox/` directory. You will use the {@link module:engine/model/model~Model#insertContent `model.insertContent()`} method which will be able to, for example, split a paragraph if you try to insert a simple box in the middle of it (which is not allowed by the schema). You could use {@link module:engine/model/model~Model#insertObject `model.insertObject()`} if you would like to support inserting block widgets into a {@link features/lists/document-lists document list} items.
+Create a new file `insertsimpleboxcommand.js` in the `simplebox/` directory. You will use the {@link module:engine/model/model~Model#insertObject `model.insertObject()`} method which will be able to, for example, split a paragraph if you try to insert a simple box in the middle of it (which is not allowed by the schema).
 
 ```js
 // simplebox/insertsimpleboxcommand.js
@@ -756,7 +756,7 @@ export default class InsertSimpleBoxCommand extends Command {
 		this.editor.model.change( writer => {
 			// Insert <simpleBox>*</simpleBox> at the current selection position
 			// in a way that will result in creating a valid model structure.
-			this.editor.model.insertContent( createSimpleBox( writer ) );
+			this.editor.model.insertObject( createSimpleBox( writer ) );
 		} );
 	}
 
@@ -1178,7 +1178,7 @@ class InsertSimpleBoxCommand extends Command {
 		this.editor.model.change( writer => {
 			// Insert <simpleBox>*</simpleBox> at the current selection position
 			// in a way that will result in creating a valid model structure.
-			this.editor.model.insertContent( createSimpleBox( writer ) );
+			this.editor.model.insertObject( createSimpleBox( writer ) );
 		} );
 	}
 
