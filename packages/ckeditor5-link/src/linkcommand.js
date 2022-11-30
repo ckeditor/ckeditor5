@@ -172,27 +172,34 @@ export default class LinkCommand extends Command {
 		model.change( writer => {
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
-				const position = selection.getFirstPosition();
+				let position = selection.getFirstPosition();
 
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
 					// Then update `linkHref` value.
-					const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+					position = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
 					if ( text === '' ) {
 						truthyManualDecorators.forEach( item => {
-							writer.setAttribute( item, true, linkRange );
+							writer.setAttribute( item, true, position );
 						} );
 
 						falsyManualDecorators.forEach( item => {
-							writer.removeAttribute( item, linkRange );
+							writer.removeAttribute( item, position );
 						} );
 
-						writer.setAttribute( 'linkHref', href, linkRange );
+						writer.setAttribute( 'linkHref', href, position );
 						return;
 					}
+				}
 
+				// If not then insert text node with `linkHref` attribute in place of caret.
+				// However, since selection is collapsed, attribute value will be used as data for text node.
+				// So, if `href` is empty, do not create text node.
+				if ( selection.hasAttribute( 'linkHref' ) || href !== '' ) {
 					const attributes = toMap( selection.getAttributes() );
+
+					attributes.set( 'linkHref', href );
 
 					truthyManualDecorators.forEach( item => {
 						attributes.set( item, true );
@@ -200,23 +207,6 @@ export default class LinkCommand extends Command {
 
 					falsyManualDecorators.forEach( item => {
 						attributes.set( item, false );
-					} );
-
-					const { end: positionAfter } = model.insertContent(
-						writer.createText( text, attributes ), linkRange
-					);
-
-					// Put the selection at the end of the updated link.
-					writer.setSelection( positionAfter );
-				}
-				// If not then insert text node with `linkHref` attribute in place of caret.
-				// However, since selection is collapsed, attribute value will be used as data for text node.
-				// So, if `href` is empty, do not create text node.
-				else if ( href !== '' ) {
-					const attributes = toMap( selection.getAttributes() );
-
-					truthyManualDecorators.forEach( item => {
-						attributes.set( item, true );
 					} );
 
 					const { end: positionAfter } = model.insertContent(
