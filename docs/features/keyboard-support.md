@@ -166,7 +166,7 @@ Use the following keystrokes for more efficient navigation in the CKEditor 5 use
 		</tr>
 		<tr>
 			<td>Execute the currently focused button</td>
-			<td colspan="2"><kbd>Enter</kbd></td>
+			<td colspan="2"><kbd>Enter</kbd> / <kbd>Space</kbd></td>
 		</tr>
 	</tbody>
 </table>
