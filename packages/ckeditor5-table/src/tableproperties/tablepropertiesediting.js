@@ -93,16 +93,14 @@ export default class TablePropertiesEditing extends Plugin {
 		enableTableToFigureProperty( schema, conversion, {
 			modelAttribute: 'tableWidth',
 			styleName: 'width',
-			defaultValue: defaultTableProperties.width,
-			skipCondition: element => element.name == 'table' && element.parent.name == 'figure'
+			defaultValue: defaultTableProperties.width
 		} );
 		editor.commands.add( 'tableWidth', new TableWidthCommand( editor, defaultTableProperties.width ) );
 
 		enableTableToFigureProperty( schema, conversion, {
 			modelAttribute: 'tableHeight',
 			styleName: 'height',
-			defaultValue: defaultTableProperties.height,
-			skipCondition: element => element.name == 'table' && element.parent.name == 'figure'
+			defaultValue: defaultTableProperties.height
 		} );
 		editor.commands.add( 'tableHeight', new TableHeightCommand( editor, defaultTableProperties.height ) );
 
@@ -244,6 +242,12 @@ function enableTableToFigureProperty( schema, conversion, options ) {
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastStyleToAttribute( conversion, { viewElement: /^(table|figure)$/, ...options } );
+
+	upcastStyleToAttribute( conversion, {
+		viewElement: /^(table|figure)$/,
+		isApplicable: element => element.name != 'table' || element.parent.name != 'figure',
+		...options
+	} );
+
 	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }

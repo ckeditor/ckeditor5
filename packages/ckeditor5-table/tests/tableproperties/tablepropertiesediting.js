@@ -961,16 +961,13 @@ describe( 'table properties', () => {
 				it( 'should upcast width from <figure> if both <figure> and <table> has width style set', () => {
 					editor.setData(
 						'<figure class="table" style="width:75%">' +
-							'<table style="width:95%"><tbody><tr><td>1</td></tr></tbody></table>' +
+							'<table style="width:95%"><tbody><tr><td>foo</td></tr></tbody></table>' +
 						'</figure>'
 					);
-					const expectModel = data => expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
 
-					expectModel(
-						'<table tableWidth="75%">' +
-						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
-						'</table>'
-					);
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '75%' );
 				} );
 
 				it( 'should not upcast width if <table> inside <figure> has width style set', () => {
@@ -979,13 +976,10 @@ describe( 'table properties', () => {
 							'<table style="width:95%"><tbody><tr><td>1</td></tr></tbody></table>' +
 						'</figure>'
 					);
-					const expectModel = data => expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
 
-					expectModel(
-						'<table>' +
-						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
-						'</table>'
-					);
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -1060,6 +1054,30 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast height from <figure> if both <figure> and <table> has height style set', () => {
+					editor.setData(
+						'<figure class="table" style="height:75%">' +
+							'<table style="height:95%"><tbody><tr><td>foo</td></tr></tbody></table>' +
+						'</figure>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '75%' );
+				} );
+
+				it( 'should not upcast height if <table> inside <figure> has height style set', () => {
+					editor.setData(
+						'<figure class="table">' +
+							'<table style="height:95%"><tbody><tr><td>1</td></tr></tbody></table>' +
+						'</figure>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.be.undefined;
 				} );
 			} );
 
