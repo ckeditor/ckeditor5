@@ -30,7 +30,9 @@ export function findAndAddListHeadToMap( position, itemToListHead ) {
 	} else {
 		let listHead = previousNode;
 
-		for ( { node: listHead } of iterateSiblingListBlocks( listHead, 'backward' ) ) {
+		for ( const { node } of iterateSiblingListBlocks( listHead, 'backward' ) ) {
+			listHead = node;
+
 			if ( itemToListHead.has( listHead ) ) {
 				return;
 			}
