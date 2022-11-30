@@ -369,8 +369,11 @@ schema.register( 'myImage', {
 	isObject: true
 } );
 ```
-
 The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can later be used to check this property.
+
+<info-box>
+	There are also the `$blockObject` and the `$inlineObject` generic items which have `isObject` set to `true`. Most object type items will inherit from `$blockObject` or `$inlineObject` (through `inheritAllFrom`).
+</info-box>
 
 <info-box>
 	Every object is automatically also:
@@ -387,16 +390,20 @@ Generally speaking, content is usually made out of blocks like paragraphs, list 
 It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>`, which can contain other block elements, should not be marked as blocks.
 
 <info-box>
-	There is also the `$block` generic item which has `isBlock` set to `true`. Most block type items will inherit from `$block` (through `inheritAllFrom`).
+	There are also the `$block` and the `$blockObject` generic items which have `isBlock` set to `true`. Most block type items will inherit from `$block` or `$blockObject` (through `inheritAllFrom`).
 </info-box>
 
 ### Inline elements
 
 In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not supposed to be used for these scenarios.
 
-Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>` or placeholder elements such as described in the {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
+Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>`, `<imageInline>` or placeholder elements such as described in the {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
 
 The support for inline elements in CKEditor 5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
+
+<info-box>
+	There is also the `$inlineObject` generic item which has `isInline` set to `true`. Most inline object type items will inherit from `$inlineObject` (through `inheritAllFrom`).
+</info-box>
 
 ### Selectable elements
 
@@ -416,7 +423,7 @@ The {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable()
 
 ### Content elements
 
-You can tell content model elements from other elements by looking at their representation in the editor data (you can use {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} or {@link module:engine/model/model~Model#hasContent Model#hasContent()} to check this out).
+You can tell content model elements from other elements by looking at their representation in the editor data (you can use {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} or {@link module:engine/model/model~Model#hasContent `Model#hasContent()`} to check this out).
 
 Elements such as images or media will **always** find their way into the editor data and this is what makes them content elements. They are marked with the {@link module:engine/model/schema~SchemaItemDefinition#isContent `isContent`} property in the schema:
 
@@ -514,17 +521,21 @@ Taking this even further, if anyone registers a `<section>` element (with the `a
 	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
 </info-box>
 
-### Generic items tree
+### Generic items allowed structure
 
-* `$root`
-  * `$block` &mdash; example: `<paragraph>`, `<heading1>`
-    * `$text`
-    * `$inlineObject` &mdash; example: `<imageInline>`
-  * `$blockObject` &mdash; example: `<imageBlock>`, `<table>`
-  * `$container` &mdash; example: `<blockQuote>`
-    * `$container` 
-    * `$block`
-    * `$blockObject`
+```html
+<$root>
+  <$block>            <!-- example: <paragraph>, <heading1> -->
+    <$text/>
+    <$inlineObject/>  <!-- example: <imageInline> -->
+  </$block>
+  <$blockObject/>     <!-- example: <imageBlock>, <table> -->
+  <$container>        <!-- example: <blockQuote> -->
+    <$container/> 
+    <$block/>
+    <$blockObject/>
+</$root>
+```
 
 #### Example structure
 
