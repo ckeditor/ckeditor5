@@ -30,6 +30,12 @@ export function findAndAddListHeadToMap( position, itemToListHead ) {
 	} else {
 		let listHead = previousNode;
 
+		// Previously, the loop below was defined like this:
+		//
+		// 		for ( { node: listHead } of iterateSiblingListBlocks( listHead, 'backward' ) )
+		//
+		// Unfortunately, such a destructuring is incorrectly transpiled by Babel and the loop never ends.
+		// See: https://github.com/ckeditor/ckeditor5-react/issues/345.
 		for ( const { node } of iterateSiblingListBlocks( listHead, 'backward' ) ) {
 			listHead = node;
 
