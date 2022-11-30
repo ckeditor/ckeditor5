@@ -93,14 +93,16 @@ export default class TablePropertiesEditing extends Plugin {
 		enableTableToFigureProperty( schema, conversion, {
 			modelAttribute: 'tableWidth',
 			styleName: 'width',
-			defaultValue: defaultTableProperties.width
+			defaultValue: defaultTableProperties.width,
+			skipCondition: element => element.name == 'table' && element.parent.name == 'figure'
 		} );
 		editor.commands.add( 'tableWidth', new TableWidthCommand( editor, defaultTableProperties.width ) );
 
 		enableTableToFigureProperty( schema, conversion, {
 			modelAttribute: 'tableHeight',
 			styleName: 'height',
-			defaultValue: defaultTableProperties.height
+			defaultValue: defaultTableProperties.height,
+			skipCondition: element => element.name == 'table' && element.parent.name == 'figure'
 		} );
 		editor.commands.add( 'tableHeight', new TableHeightCommand( editor, defaultTableProperties.height ) );
 

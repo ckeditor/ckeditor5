@@ -957,6 +957,36 @@ describe( 'table properties', () => {
 
 					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337px' );
 				} );
+
+				it( 'should upcast width from <figure> if both <figure> and <table> has width style set', () => {
+					editor.setData(
+						'<figure class="table" style="width:75%">' +
+							'<table style="width:95%"><tbody><tr><td>1</td></tr></tbody></table>' +
+						'</figure>'
+					);
+					const expectModel = data => expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
+
+					expectModel(
+						'<table tableWidth="75%">' +
+						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should not upcast width if <table> inside <figure> has width style set', () => {
+					editor.setData(
+						'<figure class="table">' +
+							'<table style="width:95%"><tbody><tr><td>1</td></tr></tbody></table>' +
+						'</figure>'
+					);
+					const expectModel = data => expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
+
+					expectModel(
+						'<table>' +
+						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {

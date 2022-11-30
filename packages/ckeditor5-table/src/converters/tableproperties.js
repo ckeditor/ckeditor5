@@ -19,7 +19,7 @@
  * @param {Boolean} [options.reduceBoxSides=false]
  */
 export function upcastStyleToAttribute( conversion, options ) {
-	const { viewElement, defaultValue, modelAttribute, styleName, reduceBoxSides = false } = options;
+	const { viewElement, defaultValue, modelAttribute, styleName, reduceBoxSides = false, skipCondition = () => false } = options;
 
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {
@@ -31,6 +31,10 @@ export function upcastStyleToAttribute( conversion, options ) {
 		model: {
 			key: modelAttribute,
 			value: viewElement => {
+				if ( skipCondition( viewElement ) ) {
+					return;
+				}
+
 				const normalized = viewElement.getNormalizedStyle( styleName );
 				const value = reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
 
