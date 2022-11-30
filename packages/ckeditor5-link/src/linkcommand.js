@@ -179,21 +179,31 @@ export default class LinkCommand extends Command {
 					// Then update `linkHref` value.
 					const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
-					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, linkRange );
-					} );
-
-					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, linkRange );
-					} );
-
 					if ( text === '' ) {
+						truthyManualDecorators.forEach( item => {
+							writer.setAttribute( item, true, linkRange );
+						} );
+
+						falsyManualDecorators.forEach( item => {
+							writer.removeAttribute( item, linkRange );
+						} );
+
 						writer.setAttribute( 'linkHref', href, linkRange );
 						return;
 					}
 
+					const attributes = toMap( selection.getAttributes() );
+
+					truthyManualDecorators.forEach( item => {
+						attributes.set( item, true );
+					} );
+
+					falsyManualDecorators.forEach( item => {
+						attributes.set( item, false );
+					} );
+
 					const { end: positionAfter } = model.insertContent(
-						writer.createText( text, { linkHref: href } ), linkRange
+						writer.createText( text, attributes ), linkRange
 					);
 
 					// Put the selection at the end of the updated link.
@@ -210,7 +220,7 @@ export default class LinkCommand extends Command {
 					} );
 
 					const { end: positionAfter } = model.insertContent(
-						writer.createText( text, { linkHref: href, attributes } ), position
+						writer.createText( text, attributes ), position
 					);
 
 					// Put the selection at the end of the inserted link.
