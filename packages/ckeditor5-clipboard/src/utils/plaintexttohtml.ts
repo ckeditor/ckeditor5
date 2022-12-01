@@ -22,6 +22,8 @@ export default function plainTextToHtml( text: string ): string {
 		.replace( /\r?\n\r?\n/g, '</p><p>' )
 		// Creates a line break for each single line break.
 		.replace( /\r?\n/g, '<br>' )
+		// Replace tabs with four spaces.
+		.replace( /\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;' )
 		// Preserve trailing spaces (only the first and last one – the rest is handled below).
 		.replace( /^\s/, '&nbsp;' )
 		.replace( /\s$/, '&nbsp;' )
