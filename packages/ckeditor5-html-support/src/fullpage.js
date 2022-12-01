@@ -37,6 +37,7 @@ export default class FullPage extends Plugin {
 			allowAttributes: properties
 		} );
 
+		// Apply custom properties from view document fragment to the model root attributes.
 		editor.data.on( 'toModel', ( evt, [ viewElementOrFragment ] ) => {
 			const root = editor.model.document.getRoot();
 
@@ -51,6 +52,7 @@ export default class FullPage extends Plugin {
 			} );
 		}, { priority: 'low' } );
 
+		// Apply root attributes to the view document fragment.
 		editor.data.on( 'toView', ( evt, [ modelElementOrFragment ] ) => {
 			if ( !modelElementOrFragment.is( 'rootElement' ) ) {
 				return;
@@ -74,6 +76,20 @@ export default class FullPage extends Plugin {
 			}
 		}, { priority: 'low' } );
 
+		// Clear root attributes related to full page editing on editor content reset.
+		editor.data.on( 'set', () => {
+			const root = editor.model.document.getRoot();
+
+			editor.model.change( writer => {
+				for ( const name of properties ) {
+					if ( root.hasAttribute( name ) ) {
+						writer.removeAttribute( name, root );
+					}
+				}
+			} );
+		}, { priority: 'high' } );
+
+		// Make sure that document is returned even if there is no content in the page body.
 		editor.data.on( 'get', ( evt, args ) => {
 			if ( !args[ 0 ] ) {
 				args[ 0 ] = {};

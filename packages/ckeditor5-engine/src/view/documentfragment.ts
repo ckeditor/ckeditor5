@@ -63,7 +63,7 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) {
 
 		/**
 		 * Map of custom properties.
-		 * Custom properties can be added to document fragment instance, will be cloned but not rendered into DOM.
+		 * Custom properties can be added to document fragment instance.
 		 *
 		 * @protected
 		 * @member {Map}
@@ -243,8 +243,7 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) {
 	}
 
 	/**
-	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
-	 * so they can be used to add special data to elements.
+	 * Sets a custom property. They can be used to add special data to elements.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#setCustomProperty
 	 * @protected

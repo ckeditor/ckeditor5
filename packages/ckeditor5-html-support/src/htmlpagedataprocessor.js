@@ -16,12 +16,15 @@ import { HtmlDataProcessor, UpcastWriter } from 'ckeditor5/src/engine';
  */
 export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 	/**
-	 * TODO
-	 *
-	 * @param {String} data TODO
-	 * @returns {module:engine/view/documentfragment~DocumentFragment} The converted view element.
+	 * @inheritDoc
 	 */
 	toView( data ) {
+		// Ignore content that is not a full page source.
+		if ( !data.match( /<(?:html|body|head|meta)(?:\s[^>]*)?>/i ) ) {
+			return super.toView( data );
+		}
+
+		// Store doctype and xml declaration in a separate properties as they can't be stringified later.
 		let docType = '';
 		let xmlDeclaration = '';
 
@@ -45,6 +48,7 @@ export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 
 		const writer = new UpcastWriter( viewFragment.document );
 
+		// Using the DOM document with body content extracted as a skeleton of the page.
 		writer.setCustomProperty( '$fullPageDocument', domFragment.ownerDocument.documentElement.outerHTML, viewFragment );
 
 		if ( docType ) {
@@ -59,10 +63,7 @@ export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 	}
 
 	/**
-	 * TOODO
-	 *
-	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment
-	 * @returns {String} TODO
+	 * @inheritDoc
 	 */
 	toData( viewFragment ) {
 		let data = super.toData( viewFragment );
