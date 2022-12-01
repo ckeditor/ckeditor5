@@ -387,10 +387,14 @@ The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can l
 
 Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc. All these elements should be marked as blocks by using {@link module:engine/model/schema~SchemaItemDefinition#isBlock `isBlock`}.
 
+Schema items with `isBlock` set are (among others) affecting {@link module:engine/model/documentselection~DocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allows setting block level attributes like `alignment` to appropriate elements from the UX point of view. 
+
 It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>`, which can contain other block elements, should not be marked as blocks.
 
 <info-box>
 	There are also the `$block` and the `$blockObject` generic items which have `isBlock` set to `true`. Most block type items will inherit from `$block` or `$blockObject` (through `inheritAllFrom`).
+
+	Note that every item that inherits from `$block` has `isBlock` set, but not every item with `isBlock` set has to be a `$block`.
 </info-box>
 
 ### Inline elements
@@ -523,46 +527,81 @@ Taking this even further, if anyone registers a `<section>` element (with the `a
 
 ### Generic items allowed structure
 
-```html
+Generic items could be visualized by the following structure (based on `allowIn`, `allowWhere`, etc.):
+
+```xml
 <$root>
-  <$block>            <!-- example: <paragraph>, <heading1> -->
-    <$text/>
-    <$inlineObject/>  <!-- example: <imageInline> -->
-  </$block>
-  <$blockObject/>     <!-- example: <imageBlock>, <table> -->
-  <$container>        <!-- example: <blockQuote> -->
-    <$container/> 
-    <$block/>
-    <$blockObject/>
+	<$block>                <!-- example: <paragraph>, <heading1> -->
+		<$text/>
+		<$inlineObject/>    <!-- example: <imageInline> -->
+	</$block>
+	<$blockObject/>         <!-- example: <imageBlock>, <table> -->
+	<$container>            <!-- example: <blockQuote> -->
+		<$container/> 
+		<$block/>
+		<$blockObject/>
+	</$container>
 </$root>
 ```
 
-#### Example structure
+The above abstract structure with some generic items implemented could look like:
 
-// TODO this could be interactive (checkboxes to display structure constraints vs semantics flags):
-```html
-<$root>  <!-- isLimit: true -->
-	<heading1>  <!-- inheritAllFrom: '$block' ( allowIn: [ '$root', '$container' ], isBlock: true ) -->
-		<$text/>  <!-- allowIn: '$block', isInline: true, isContent: true -->
+```xml
+<$root>
+	<heading1>            <!-- inheritAllFrom: $block -->
+		<$text/>          <!-- allowIn: $block -->
 	</heading1>
-	<paragraph>  <!-- inheritAllFrom: '$block' ( allowIn: [ '$root', '$container' ], isBlock: true ) -->
-		<$text/>  <!-- allowIn: '$block', isInline: true, isContent: true -->
-		<softBreak/>  <!-- allowWhere: '$text', isInline: true -->
-		<$text/>  <!-- allowIn: '$block', isInline: true, isContent: true --> 
-		<imageInline/>  <!-- inheritAllFrom: '$inlineObject' ( allowWhere: '$text', isInline: true, isObject: true ) -->
+	<paragraph>           <!-- inheritAllFrom: $block -->
+		<$text/>          <!-- allowIn: $block -->
+		<softBreak/>      <!-- allowWhere: $text -->
+		<$text/>          <!-- allowIn: $block --> 
+		<imageInline/>    <!-- inheritAllFrom: $inlineObject -->
 	</paragraph>
-	<imageBlock>  <!-- inheritAllFrom: '$blockObject' ( allowWhere: '$block', isBlock: true, isObject: true ) -->
-		<caption>  <!-- allowIn: 'imageBlock', allowContentOf: '$block', isLimit: true -->
-			<$text/>  <!-- allowIn: '$block', isInline: true, isContent: true -->
+	<imageBlock>          <!-- inheritAllFrom: $blockObject -->
+		<caption>         <!-- allowIn: imageBlock, allowContentOf: $block -->
+			<$text/>      <!-- allowIn: $block -->
 		</caption>
 	</imageBlock>
-	<blockQuote>  <!-- inheritAllFrom: '$container' ( allowIn: [ '$root', '$container' ] ) -->
-		<paragraph/>  <!-- inheritAllFrom: '$block' ( allowIn: [ '$root', '$container' ], isBlock: true ) -->
-		<table>  <!-- inheritAllFrom: '$blockObject' ( allowWhere: '$block', isBlock: true, isObject: true ) -->
-			<tableRow>  <!-- allowIn: 'table', isLimit: true -->
-				<tableCell>  <!--allowIn: 'tableRow',  allowContentOf: '$container', isLimit: true -->
-					<paragraph>  <!-- inheritAllFrom: '$block' ( allowIn: [ '$root', '$container' ], isBlock: true ) -->
-						<$text/>  <!-- allowIn: '$block', isInline: true, isContent: true -->
+	<blockQuote>                    <!-- inheritAllFrom: $container -->
+		<paragraph/>                <!-- inheritAllFrom: $block -->
+		<table>                     <!-- inheritAllFrom: $blockObject -->
+			<tableRow>              <!-- allowIn: table -->
+				<tableCell>         <!-- allowIn: tableRow, allowContentOf: $container -->
+					<paragraph>     <!-- inheritAllFrom: $block -->
+						<$text/>    <!-- allowIn: $block -->
+					</paragraph>
+				</tableCell>
+			</tableRow>
+		</table>
+	</blockQuote>
+</$root>
+```
+
+The above structure with [additional semantics](#defining-additional-semantics) visualized ( `is*` ):
+
+```xml
+<$root>                   <!-- isLimit: true -->
+	<heading1>            <!-- isBlock: true -->
+		<$text/>          <!-- isInline: true, isContent: true -->
+	</heading1>
+	<paragraph>           <!-- isBlock: true -->
+		<$text/>          <!-- isInline: true, isContent: true -->
+		<softBreak/>      <!-- isInline: true -->
+		<$text/>          <!-- isInline: true, isContent: true --> 
+		<imageInline/>    <!-- isInline: true, isObject: true -->
+	</paragraph>
+	<imageBlock>          <!-- isBlock: true, isObject: true -->
+		<caption>         <!-- isLimit: true -->
+			<$text/>      <!-- isInline: true, isContent: true -->
+		</caption>
+	</imageBlock>
+	<blockQuote>
+		<paragraph/>                <!-- isBlock: true -->
+		<table>                     <!-- isBlock: true, isObject: true -->
+			<tableRow>              <!-- isLimit: true -->
+				<tableCell>         <!-- isLimit: true -->
+					<paragraph>     <!-- isBlock: true -->
+						<$text/>    <!-- isInline: true, isContent: true -->
 					</paragraph>
 				</tableCell>
 			</tableRow>
