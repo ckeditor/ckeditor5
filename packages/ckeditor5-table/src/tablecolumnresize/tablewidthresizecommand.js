@@ -39,8 +39,8 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 	 * Changes the `tableWidth` and `columnWidths` attribute values for the given or currently selected table.
 	 *
 	 * @param {Object} options
-	 * @param {String} [options.tableWidth] The new table width.
-	 * @param {String} [options.columnWidths] The new table column widths.
+	 * @param {String} [options.tableWidth] The new table width. Model attribute gets removed if skipped.
+	 * @param {String} [options.columnWidths] The new table column widths. Model attribute gets removed if skipped.
 	 * @param {module:engine/model/element~Element} [options.table] The table that is affected by the resize.
 	 */
 	execute( options = {} ) {
