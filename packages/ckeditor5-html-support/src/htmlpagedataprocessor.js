@@ -10,7 +10,8 @@
 import { HtmlDataProcessor, UpcastWriter } from 'ckeditor5/src/engine';
 
 /**
- * TODO
+ * The full page HTML data processor class.
+ * This data processor implementation uses HTML as input and output data.
  *
  * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
@@ -75,12 +76,12 @@ export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 		if ( page ) {
 			data = page.replace( /<\/body\s*>/, data + '$&' );
 
-			if ( xmlDeclaration ) {
-				data = xmlDeclaration + '\n' + data;
-			}
-
 			if ( docType ) {
 				data = docType + '\n' + data;
+			}
+
+			if ( xmlDeclaration ) {
+				data = xmlDeclaration + '\n' + data;
 			}
 		}
 

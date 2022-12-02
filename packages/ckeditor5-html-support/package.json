@@ -23,6 +23,7 @@
     "@ckeditor/ckeditor5-alignment": "^35.3.2",
     "@ckeditor/ckeditor5-basic-styles": "^35.3.2",
     "@ckeditor/ckeditor5-block-quote": "^35.3.2",
+    "@ckeditor/ckeditor5-clipboard": "^35.3.2",
     "@ckeditor/ckeditor5-cloud-services": "^35.3.2",
     "@ckeditor/ckeditor5-code-block": "^35.3.2",
     "@ckeditor/ckeditor5-core": "^35.3.2",
