@@ -245,7 +245,7 @@ function enableTableToFigureProperty( schema, conversion, options ) {
 
 	upcastStyleToAttribute( conversion, {
 		viewElement: /^(table|figure)$/,
-		isApplicable: element => !( element.name == 'table' && element.parent.name == 'figure' ),
+		shouldUpcast: element => !( element.name == 'table' && element.parent.name == 'figure' ),
 		...options
 	} );
 
