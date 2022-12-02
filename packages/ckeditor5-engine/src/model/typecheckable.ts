@@ -22,20 +22,80 @@ import type Text from './text';
 import type TextProxy from './textproxy';
 
 export default abstract class TypeCheckable {
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/node~Node} or its subclass.
+	 */
 	public is( type: 'node' | 'model:node' ): this is Node | Element | Text | RootElement;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/element~Element} or its subclass.
+	 */
 	public is( type: 'element' | 'model:element' ): this is Element | RootElement;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/rootelement~RootElement}.
+	 */
 	public is( type: 'rootElement' | 'model:rootElement' ): this is RootElement;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/text~Text}.
+	 */
 	public is( type: '$text' | 'model:$text' ): this is Text;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/position~Position} or its subclass.
+	 */
 	public is( type: 'position' | 'model:position' ): this is Position | LivePosition;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/liveposition~LivePosition}.
+	 */
 	public is( type: 'livePosition' | 'model:livePosition' ): this is LivePosition;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/range~Range} or its subclass.
+	 */
 	public is( type: 'range' | 'model:range' ): this is Range | LiveRange;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/liverange~LiveRange}.
+	 */
 	public is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/documentfragment~DocumentFragment}.
+	 */
 	public is( type: 'documentFragment' | 'model:documentFragment' ): this is DocumentFragment;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/selection~Selection}
+	 * or {@link module:engine/model/documentselection~DocumentSelection}.
+	 */
 	public is( type: 'selection' | 'model:selection' ): this is Selection | DocumentSelection;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/documentselection~DocumentSelection}.
+	 */
 	public is( type: 'documentSelection' | 'model:documentSelection' ): this is DocumentSelection;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/marker~Marker}.
+	 */
 	public is( type: 'marker' | 'model:marker' ): this is Marker;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/textproxy~TextProxy}.
+	 */
 	public is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/element~Element} or its subclass and has the specified `name`.
+	 */
 	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( Element | RootElement ) & { name: N };
+
+	/**
+	 * Checks whether the object is of type {@link module:engine/model/rootelement~RootElement} and has the specified `name`.
+	 */
 	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
 
 	/* istanbul ignore next */
