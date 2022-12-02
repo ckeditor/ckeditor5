@@ -16,7 +16,14 @@ import { keyCodes, env } from 'ckeditor5/src/utils';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import ManualDecorator from './utils/manualdecorator';
-import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators, openLink } from './utils';
+import {
+	createLinkElement,
+	ensureSafeUrl,
+	getLocalizedDecorators,
+	normalizeDecorators,
+	openLink,
+	addLinkProtocolIfApplicable
+} from './utils';
 
 import '../theme/link.css';
 
@@ -121,6 +128,8 @@ export default class LinkEditing extends Plugin {
 
 		// Handle removing the content after the link element.
 		this._handleDeleteContentAfterLink();
+
+		this._enablePastingHandling();
 	}
 
 	/**
@@ -577,6 +586,29 @@ export default class LinkEditing extends Plugin {
 				removeLinkAttributesFromSelection( writer, getLinkAttributesAllowedOnText( model.schema ) );
 			} );
 		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Enables autolinking on pasting.
+	 *
+	 * @private
+	 */
+	_enablePastingHandling() {
+		const editor = this.editor;
+		const model = editor.model;
+
+		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'contentInsertion', ( _, data ) => {
+			const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
+			model.change( writer => {
+				const range = writer.createRangeIn( data.content );
+				for ( const item of range.getItems() ) {
+					if ( item.hasAttribute( 'linkHref' ) ) {
+						const newLink = addLinkProtocolIfApplicable( item.getAttribute( 'linkHref' ), defaultProtocol );
+						writer.setAttribute( 'linkHref', newLink, item );
+					}
+				}
+			} );
+		}, { priority: 'normal' } );
 	}
 }
 
