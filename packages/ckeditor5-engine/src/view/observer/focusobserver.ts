@@ -35,7 +35,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 
 		document.on<ViewDocumentFocusEvent>( 'focus', () => {
 			document.isFocused = true;
-			document.isFocusChanging = true;
+			document._isFocusChanging = true;
 
 			// Unfortunately native `selectionchange` event is fired asynchronously.
 			// We need to wait until `SelectionObserver` handle the event and then render. Otherwise rendering will
@@ -46,7 +46,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			// Using `view.change()` instead of `view.forceRender()` to prevent double rendering
 			// in a situation where `selectionchange` already caused selection change.
 			this._renderTimeoutId = setTimeout( () => {
-				document.isFocusChanging = false;
+				document._isFocusChanging = false;
 				view.change( () => {} );
 			}, 50 );
 		} );

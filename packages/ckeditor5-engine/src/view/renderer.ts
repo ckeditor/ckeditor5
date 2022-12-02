@@ -62,7 +62,7 @@ export default class Renderer extends ObservableMixin() {
 	public readonly selection: DocumentSelection;
 
 	declare public readonly isFocused: boolean;
-	declare public readonly isFocusChanging: boolean;
+	declare public readonly _isFocusChanging: boolean;
 	declare public readonly isSelecting: boolean;
 	declare public readonly isComposing: boolean;
 
@@ -136,12 +136,13 @@ export default class Renderer extends ObservableMixin() {
 		this.set( 'isFocused', false );
 
 		/**
-		 * Indicates if the view document is changing the focus and selection can be rendered.
+         * Indicates if the view document is changing the focus (`true`) and selection rendering should be prevented.
 		 *
-		 * @member {Boolean}
+		 * @internal
 		 * @observable
+		 * @member {Boolean}
 		 */
-		this.set( 'isFocusChanging', false );
+		this.set( '_isFocusChanging', false );
 
 		/**
 		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
@@ -910,7 +911,9 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		if ( this.isFocusChanging ) {
+		// The focus is still in progress and we are waiting for new values from `selectionchange` event.
+		// In that case, we need to prevent update selection since it would be updated using old values.
+		if ( this._isFocusChanging ) {
 			return;
 		}
 

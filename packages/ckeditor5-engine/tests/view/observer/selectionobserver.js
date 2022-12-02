@@ -89,6 +89,18 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
+	it( 'should change document#_isFocusChanging property to false when selection is changed', done => {
+		viewDocument.on( 'selectionChange', () => {
+			expect( viewDocument._isFocusChanging ).to.equal( false );
+
+			done();
+		} );
+
+		viewDocument._isFocusChanging = true;
+
+		changeDomSelection();
+	} );
+
 	it( 'should not fire selectionChange while user is composing', done => {
 		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange fired while composing';
@@ -216,7 +228,6 @@ describe( 'SelectionObserver', () => {
 			wasInfiniteLoopDetected = true;
 		} );
 		const selectionChangeSpy = sinon.spy();
-
 		viewDocument.on( 'selectionChange', selectionChangeSpy );
 
 		return new Promise( resolve => {
