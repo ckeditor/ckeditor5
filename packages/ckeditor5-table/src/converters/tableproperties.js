@@ -17,9 +17,10 @@
  * @param {String} options.viewElement The view element name that should be converted.
  * @param {String} options.defaultValue The default value for the specified `modelAttribute`.
  * @param {Boolean} [options.reduceBoxSides=false]
+ * @param {Function} [options.shouldUpcast] The function which returns `true` if style should be upcasted from this element.
  */
 export function upcastStyleToAttribute( conversion, options ) {
-	const { viewElement, defaultValue, modelAttribute, styleName, reduceBoxSides = false } = options;
+	const { viewElement, defaultValue, modelAttribute, styleName, reduceBoxSides = false, shouldUpcast = () => true } = options;
 
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {
@@ -31,6 +32,10 @@ export function upcastStyleToAttribute( conversion, options ) {
 		model: {
 			key: modelAttribute,
 			value: viewElement => {
+				if ( !shouldUpcast( viewElement ) ) {
+					return;
+				}
+
 				const normalized = viewElement.getNormalizedStyle( styleName );
 				const value = reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
 
