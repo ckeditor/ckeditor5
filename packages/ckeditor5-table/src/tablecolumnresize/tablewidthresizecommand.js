@@ -39,8 +39,8 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 	 * Changes the `tableWidth` and `columnWidths` attribute values for the given or currently selected table.
 	 *
 	 * @param {Object} options
-	 * @param {String} [options.tableWidth] The new table width.
-	 * @param {String} [options.columnWidths] The new table column widths.
+	 * @param {String} [options.tableWidth] The new table width. If skipped, the model attribute will be removed.
+	 * @param {String} [options.columnWidths] The new table column widths. If skipped, the model attribute will be removed.
 	 * @param {module:engine/model/element~Element} [options.table] The table that is affected by the resize.
 	 */
 	execute( options = {} ) {
@@ -51,9 +51,14 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 		model.change( writer => {
 			if ( tableWidth ) {
 				writer.setAttribute( this.attributeName, tableWidth, table );
-				writer.setAttribute( 'columnWidths', columnWidths, table );
 			} else {
 				writer.removeAttribute( this.attributeName, table );
+			}
+
+			if ( columnWidths ) {
+				writer.setAttribute( 'columnWidths', columnWidths, table );
+			} else {
+				writer.removeAttribute( 'columnWidths', table );
 			}
 		} );
 	}
