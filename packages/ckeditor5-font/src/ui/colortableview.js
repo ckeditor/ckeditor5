@@ -16,6 +16,7 @@ import {
 	LabelView,
 	Template,
 	View,
+	InputView,
 	ViewCollection
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
@@ -188,6 +189,7 @@ export default class ColorTableView extends View {
 		} );
 
 		this.items.add( this._createRemoveColorButton() );
+		this.items.add( this._createMoreColorsButton() );
 	}
 
 	/**
@@ -325,13 +327,55 @@ export default class ColorTableView extends View {
 		} );
 
 		buttonView.class = 'ck-color-table__remove-color';
-		buttonView.on( 'execute', () => {
-			this.fire( 'execute', { value: null } );
-		} );
 
 		buttonView.render();
 
 		this.focusTracker.add( buttonView.element );
+		this._focusables.add( buttonView );
+
+		buttonView.on( 'execute', () => {
+			this.fire( 'execute', { value: null } );
+		} );
+
+		return buttonView;
+	}
+
+	_createMoreColorsButton() {
+		const buttonView = new ButtonView();
+
+		buttonView.set( {
+			withText: true,
+			icon: icons.eraser,
+			label: 'More colors'
+		} );
+
+		buttonView.class = 'ck-color-table__remove-color';
+
+		const inputColorView = new InputView();
+
+		inputColorView.extendTemplate( {
+			attributes: {
+				type: 'color',
+				class: [
+					'ck',
+					'ck-color-input'
+				]
+			}
+		} );
+
+		inputColorView.on( 'input', evt => {
+			this.fire( 'update color', {
+				value: evt.source.element.value,
+				isColorInput: true
+			} );
+			// console.log( evt.source.element.value );
+		} );
+
+		buttonView.children.add( inputColorView );
+		buttonView.render();
+
+		this.focusTracker.add( buttonView.element );
+		this.focusTracker.add( inputColorView.element );
 		this._focusables.add( buttonView );
 
 		return buttonView;

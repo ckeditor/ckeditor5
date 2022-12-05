@@ -7,6 +7,7 @@
  * @module font/ui/colorui
  */
 
+import preventDefault from '@ckeditor/ckeditor5-ui/src/bindings/preventdefault';
 import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
 
@@ -127,6 +128,10 @@ export default class ColorUI extends Plugin {
 			dropdownView.on( 'execute', ( evt, data ) => {
 				editor.execute( this.commandName, data );
 				editor.editing.view.focus();
+			} );
+
+			dropdownView.on( 'update color', ( evt, data ) => {
+				editor.execute( this.commandName, data );
 			} );
 
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {

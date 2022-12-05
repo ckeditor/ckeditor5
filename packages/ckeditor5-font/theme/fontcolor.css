@@ -12,3 +12,13 @@
 label.ck.ck-color-grid__label {
 	font-weight: unset;
 }
+
+.ck.ck-color-input {
+	outline: 3px solid red;	
+	width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+	opacity: 0;
+}
