@@ -301,6 +301,8 @@ export default class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
+			this.document._isFocusChanging = false;
+
 			// Prepare data for new selection and fire appropriate events.
 			this.document.fire<ViewDocumentSelectionEvent>( 'selectionChange', data );
 

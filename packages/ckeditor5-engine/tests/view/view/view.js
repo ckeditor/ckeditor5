@@ -650,6 +650,15 @@ describe( 'view', () => {
 			sinon.assert.calledOnce( renderSpy );
 			sinon.assert.calledOnce( layoutChangedSpy );
 		} );
+
+		it( 'should change the document#isFocusChaning property to false', () => {
+			view.document.isFocusChaning = true;
+
+			view.document.selection._setTo( null );
+			view.forceRender();
+
+			expect( view.document._isFocusChanging ).to.equal( false );
+		} );
 	} );
 
 	describe( 'view and DOM integration', () => {

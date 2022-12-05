@@ -106,6 +106,14 @@ export default class Renderer {
 		this.set( 'isFocused', false );
 
 		/**
+		 * Indicates if the view document is changing the focus (`true`) and selection rendering should be prevented.
+		 *
+		 * @protected
+		 * @observable
+		 * @member {Boolean} #_isFocusChanging
+		 */
+
+		/**
 		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
 		 * When they stop selecting, the property goes back to `false`.
 		 *
