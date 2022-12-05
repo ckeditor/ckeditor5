@@ -7,7 +7,6 @@
  * @module font/ui/colorui
  */
 
-import preventDefault from '@ckeditor/ckeditor5-ui/src/bindings/preventdefault';
 import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
 
