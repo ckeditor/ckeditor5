@@ -5405,59 +5405,6 @@ describe( 'Renderer', () => {
 				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
 				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
 			} );
-
-			it( 'should not update when document#isFocusChaning is set to true', () => {
-				testUtils.sinon.stub( env, 'isBlink' ).get( () => true );
-				testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
-				renderer.isSelecting = false;
-
-				const domSelection = document.getSelection();
-
-				const {
-					view: viewParagraph,
-					selection: viewSelection
-				} = parse( '<container:p><attribute:b>f{o}o</attribute:b></container:p>' );
-
-				viewRoot._appendChild( viewParagraph );
-				selection._setTo( viewSelection );
-
-				// -----------------------------------------------------------------------------------------------
-				// STEP #1: The first render() is to set the initial state of the editor.
-				renderer.markToSync( 'children', viewRoot );
-				renderer.render();
-
-				const domParagraph = domRoot.childNodes[ 0 ];
-
-				expect( domSelection.rangeCount ).to.equal( 1 );
-				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
-				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
-				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
-
-				// -----------------------------------------------------------------------------------------------
-				// STEP #2: Now we're moving the selection somewhere else while isSelecting = true.
-				// Then comes the second render().
-				// * In browsers other than Blink, the selection should move despite isSelecting = true: <p><b>fo{o}</b></p>
-				renderer.isSelecting = true;
-
-				// We're also setting the property _isFocusChanging to true, which indicates that the selection is not changed yet.
-				renderer._isFocusChanging = true;
-
-				// <p><b>fo{o}</b></p>.
-				selection._setTo(
-					ViewRange._createFromParentsAndOffsets(
-						viewParagraph.getChild( 0 ).getChild( 0 ), 2,
-						viewParagraph.getChild( 0 ).getChild( 0 ), 3
-					)
-				);
-
-				renderer.render();
-
-				// Should not change the selection
-				expect( domSelection.rangeCount ).to.equal( 1 );
-				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
-				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
-				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
-			} );
 		} );
 	} );
 
@@ -5645,6 +5592,97 @@ describe( 'Renderer', () => {
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
 			} );
+		} );
+	} );
+
+	describe( 'Blocking rendering while focusing', () => {
+		let viewRoot, domRoot;
+
+		beforeEach( () => {
+			viewRoot = new ViewEditableElement( viewDocument, 'div' );
+			domRoot = document.createElement( 'div' );
+			document.body.appendChild( domRoot );
+			domConverter.bindElements( domRoot, viewRoot );
+
+			renderer.markedTexts.clear();
+			renderer.markedAttributes.clear();
+			renderer.markedChildren.clear();
+
+			selection._setTo( null );
+			renderer.isFocused = true;
+		} );
+
+		afterEach( () => {
+			domRoot.remove();
+		} );
+
+		it( 'should not update selection when document#_isFocusChanging is set to true', () => {
+			renderer._isFocusChanging = false;
+
+			const domSelection = document.getSelection();
+
+			const {
+				view: viewParagraph,
+				selection: viewSelection
+			} = parse( '<container:p><attribute:b>f{o}o</attribute:b></container:p>' );
+
+			viewRoot._appendChild( viewParagraph );
+			selection._setTo( viewSelection );
+
+			// -----------------------------------------------------------------------------------------------
+			// STEP #1: The first render() is to set the initial state of the editor.
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domParagraph = domRoot.childNodes[ 0 ];
+
+			expect( domSelection.rangeCount ).to.equal( 1 );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
+			expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
+
+			// -----------------------------------------------------------------------------------------------
+			// STEP #2: Now we're setting the property _isFocusChanging to true, which indicates that the selection is not changed yet.
+			// Then comes the second render().
+			renderer.isFocused = true;
+			renderer._isFocusChanging = true;
+
+			// <p><b>fo{o}</b></p>.
+			selection._setTo(
+				ViewRange._createFromParentsAndOffsets(
+					viewParagraph.getChild( 0 ).getChild( 0 ), 2,
+					viewParagraph.getChild( 0 ).getChild( 0 ), 3
+				)
+			);
+
+			renderer.render();
+
+			// Should not change the selection.
+			expect( domSelection.rangeCount ).to.equal( 1 );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
+			expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
+
+			// -----------------------------------------------------------------------------------------------
+			// STEP #3: In the last step, we set the property _isFocusChanging to false, which means that the focusing is finished.
+			// Then comes the third render().
+			renderer.isFocused = true;
+			renderer._isFocusChanging = false;
+
+			// <p><b>fo{o}</b></p>.
+			selection._setTo(
+				ViewRange._createFromParentsAndOffsets(
+					viewParagraph.getChild( 0 ).getChild( 0 ), 2,
+					viewParagraph.getChild( 0 ).getChild( 0 ), 3
+				)
+			);
+
+			renderer.render();
+
+			// The selection is updated.
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
+			expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
 		} );
 	} );
 
