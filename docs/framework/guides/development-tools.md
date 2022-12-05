@@ -94,6 +94,47 @@ The inspector works with CKEditor 5 [v12.0.0](https://github.com/ckeditor/ckedit
 
 The source code of CKEditor 5 inspector and its issue tracker is available on GitHub in https://github.com/ckeditor/ckeditor5-inspector.
 
+## MrGit
+
+[mrgit](https://github.com/cksource/mrgit) is a Multi-repo manager for git. In CKEditor5 it can used for easy development and testing of various CKEditor5 helper repositories, such as [ckeditor5-dev](https://github.com/ckeditor/ckeditor5-dev) or [ckeditor5-linters-config](https://github.com/ckeditor/ckeditor5-linters-config).
+
+### Setup
+
+In order to use the tool, it should be installed globally from the npm.
+
+```bash
+npm install -g mrgit
+```
+
+Then, in the root of the `ckeditor5` repository, there should be file named `mrgit.json`. This is an example content of the file:
+
+```json
+{
+	"packages": "external/",
+	"dependencies": {
+		"ckeditor5-linters-config": "ckeditor/ckeditor5-linters-config@latest",
+		"ckeditor5-dev": "ckeditor/ckeditor5-dev@latest"
+	},
+	"presets": {
+		"dev": {
+			"ckeditor5-dev": "ckeditor/ckeditor5-dev"
+		},
+		"newFeature": {
+			"ckeditor5-linters-config": "ckeditor/ckeditor5-linters-config#newFeatureBranch",
+			"ckeditor5-dev": "ckeditor/ckeditor5-dev#newFeatureBranch"
+		}
+	}
+}
+```
+
+### Usage
+
+In the example configuration file from the previous section we have defined base dependencies that should be used. They use the `@latest` tag, which means that the latest tag will be used, which generally should coincide with the latest version available on npm. After calling `mrgit sync`, those dependencies will be cloned and available locally in the specified version.
+
+Alternatively, we can use one of the presets, eg. the `dev` preset. To do so, execute `mrgit sync --preset dev` - this will use versions specified in the preset instead. `ckeditor/ckeditor5-dev` does not have any specified tag or branch, so the `master` branch will be used by default. Since in this preset only `ckeditor5-dev` is specified, version for `ckeditor5-linters-config` will be used as specified in the default `dependencies`. Using this mechanism, it is possible to easily switch between production and development versions of the dependencies used by the `ckeditor5` repository.
+
+For all available commands and configuration options, see [the docs](https://github.com/cksource/mrgit#mr-git) of the tool.
+
 ## Testing helpers
 
 The `getData()` and `setData()` functions exposed by {@link module:engine/dev-utils/model model developer utilities} and {@link module:engine/dev-utils/view view developer utilities} are useful development helpers.
