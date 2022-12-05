@@ -48,7 +48,7 @@ import '@ckeditor/ckeditor5-utils/src/version';
  * In case of {@link module:engine/model/element~Element element node}, adding and removing children also counts as changing a node and
  * follows same rules.
  */
-export default class Node extends TypeCheckable {
+export default abstract class Node extends TypeCheckable {
 	/**
 	 * Parent of this node. It could be {@link module:engine/model/element~Element}
 	 * or {@link module:engine/model/documentfragment~DocumentFragment}.
@@ -382,7 +382,7 @@ export default class Node extends TypeCheckable {
 	 * @returns Node with same attributes as this node.
 	 */
 	public _clone( _deep?: boolean ): Node {
-		return new Node( this._attrs );
+		return new ( this.constructor as any )( this._attrs );
 	}
 
 	/**
