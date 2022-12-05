@@ -145,21 +145,13 @@ Once we create a new instance of the `ButtonView`, we will be able to customize 
 We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, in order to be able to add it into the {@link features/toolbar toolbar} array.
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+// Imports from the previous example
+// ...
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 class Timestamp extends Plugin {
 	init() {
 		const editor = this.editor;
-
 		// The button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
 		editor.ui.componentFactory.add( 'timestamp', () => {
@@ -215,12 +207,8 @@ class Timestamp extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'timestamp', () => {
-			const button = new ButtonView();
-
-            button.set( {
-                label: 'Timestamp',
-                withText: true
-            } );
+			// Button-related code from the previous example
+			// ...
 
 			// Execute a callback function when the button is clicked.
 			button.on( 'execute', () => {
