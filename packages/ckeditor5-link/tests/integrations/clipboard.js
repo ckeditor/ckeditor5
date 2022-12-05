@@ -5,22 +5,19 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import LinkEditing from '../../src/linkediting';
-import AutoLink from '../../src/autolink';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'Pasted link', () => {
+describe( 'Link integration: clipboard paste', () => {
 	let editor, model;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ClipboardPipeline, LinkEditing, AutoLink ]
+				plugins: [ Paragraph, ClipboardPipeline, LinkEditing, TableEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -32,7 +29,7 @@ describe( 'Pasted link', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should not change if has protocol and defaultProtocol is not set', () => {
+	it( 'should not change a link if link has protocol and defaultProtocol is not set', () => {
 		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		clipboard.fire( 'inputTransformation', {
@@ -44,7 +41,7 @@ describe( 'Pasted link', () => {
 		);
 	} );
 
-	it( 'should not change if has protocol and defaultProtocol is set', () => {
+	it( 'should not change a link if link has protocol and defaultProtocol is set', () => {
 		editor.config.set( 'link.defaultProtocol', 'http://' );
 
 		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -58,7 +55,7 @@ describe( 'Pasted link', () => {
 		);
 	} );
 
-	it( 'should not change if doesn\'t have protocol and defaultProtocol is not set', () => {
+	it( 'should not change a link if link doesn\'t have protocol and defaultProtocol is not set', () => {
 		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		clipboard.fire( 'inputTransformation', {
@@ -70,7 +67,8 @@ describe( 'Pasted link', () => {
 		);
 	} );
 
-	it( 'should have protocol added doesn\'t have protocol and defaultProtocol is set', () => {
+	it( 'should add protocol to link if link doesn\'t have protocol and defaultProtocol is set', () => {
+		editor.config.set( 'link.defaultProtocol', 'http://' );
 		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		clipboard.fire( 'inputTransformation', {
@@ -78,11 +76,11 @@ describe( 'Pasted link', () => {
 		} );
 
 		expect( getModelData( model ) ).to.equal(
-			'<paragraph><$text linkHref="www.ckedtior.com">foo</$text>[]</paragraph>'
+			'<paragraph><$text linkHref="http://www.ckedtior.com">foo</$text>[]</paragraph>'
 		);
 	} );
 
-	it( 'should have protocol added if multiple links are pasted', () => {
+	it( 'should add protocol to all links where it\'s possible', () => {
 		editor.config.set( 'link.defaultProtocol', 'http://' );
 
 		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -96,6 +94,56 @@ describe( 'Pasted link', () => {
 				'<$text linkHref="http://ckedtior.com">foo</$text>' +
 				'<$text linkHref="http://www.ckedtior.com">bar</$text>[]' +
 			'</paragraph>'
+		);
+	} );
+
+	it( 'should add protocol to link which is nested in table', () => {
+		editor.config.set( 'link.defaultProtocol', 'http://' );
+
+		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
+
+		clipboard.fire( 'inputTransformation', {
+			content: parseView(
+				'<figure><table><tbody><tr><td>' +
+					'<a href="ckedtior.com">foo</a>' +
+				'</td></tr></tbody></table></figure>'
+			)
+		} );
+
+		expect( getModelData( model ) ).to.equal(
+			'[<table><tableRow><tableCell><paragraph>' +
+				'<$text linkHref="http://ckedtior.com">foo</$text>' +
+			'</paragraph></tableCell></tableRow></table>]'
+		);
+	} );
+
+	it( 'should add protocol to multiple links which are nested in table', () => {
+		editor.config.set( 'link.defaultProtocol', 'http://' );
+
+		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
+
+		clipboard.fire( 'inputTransformation', {
+			content: parseView(
+				'<table><tr><td>' +
+					'<a href="ckedtior.com">foo</a>' +
+				'</td>' +
+				'<td>' +
+					'<a href="ckedtior.com">foo</a>' +
+					'<a href="ckedtior2.com">foo</a>' +
+				'</td></tr></table>'
+			)
+		} );
+
+		expect( getModelData( model ) ).to.equal(
+			'[<table><tableRow>' +
+				'<tableCell><paragraph>' +
+					'<$text linkHref="http://ckedtior.com">foo</$text>' +
+				'</paragraph></tableCell>' +
+				'<tableCell><paragraph>' +
+					'<$text linkHref="http://ckedtior.com">foo</$text>' +
+					'<$text linkHref="http://ckedtior2.com">foo</$text>' +
+				'</paragraph></tableCell>' +
+			'</tableRow></table>]'
 		);
 	} );
 } );

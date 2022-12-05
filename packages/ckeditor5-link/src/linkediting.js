@@ -129,7 +129,8 @@ export default class LinkEditing extends Plugin {
 		// Handle removing the content after the link element.
 		this._handleDeleteContentAfterLink();
 
-		this._enablePastingHandling();
+		// Handle adding default protocol to pasted links.
+		this._enableClipboardIntegration();
 	}
 
 	/**
@@ -589,26 +590,29 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Enables autolinking on pasting.
+	 * Enables URL fixing on pasting.
 	 *
 	 * @private
 	 */
-	_enablePastingHandling() {
+	_enableClipboardIntegration() {
 		const editor = this.editor;
 		const model = editor.model;
 
-		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'contentInsertion', ( _, data ) => {
+		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'contentInsertion', ( evt, data ) => {
 			const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
+
 			model.change( writer => {
 				const range = writer.createRangeIn( data.content );
+
 				for ( const item of range.getItems() ) {
 					if ( item.hasAttribute( 'linkHref' ) ) {
 						const newLink = addLinkProtocolIfApplicable( item.getAttribute( 'linkHref' ), defaultProtocol );
+
 						writer.setAttribute( 'linkHref', newLink, item );
 					}
 				}
 			} );
-		}, { priority: 'normal' } );
+		} );
 	}
 }
 
