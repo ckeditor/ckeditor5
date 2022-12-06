@@ -26,6 +26,7 @@ import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import Font from '@ckeditor/ckeditor5-font/src/font';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
@@ -128,6 +129,7 @@ ClassicEditor.builtinPlugins = [
 	Font,
 	Highlight,
 	SpecialCharacters,
+	SpecialCharactersEssentials,
 	Table,
 	TableColumnResize,
 	TableToolbar,
