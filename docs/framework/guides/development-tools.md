@@ -96,7 +96,7 @@ The source code of CKEditor 5 inspector and its issue tracker is available on Gi
 
 ## MrGit
 
-[mrgit](https://github.com/cksource/mrgit) is a Multi-repo manager for git. In CKEditor5 it can used for easy development and testing of various CKEditor5 helper repositories, such as [ckeditor5-dev](https://github.com/ckeditor/ckeditor5-dev) or [ckeditor5-linters-config](https://github.com/ckeditor/ckeditor5-linters-config).
+[mrgit](https://github.com/cksource/mrgit) is a Multi-repo manager for git. In CKEditor 5 it can used for easy development and testing of various CKEditor 5 helper repositories, such as [ckeditor5-dev](https://github.com/ckeditor/ckeditor5-dev) or [ckeditor5-linters-config](https://github.com/ckeditor/ckeditor5-linters-config).
 
 ### Setup
 
@@ -119,9 +119,9 @@ Then, in the root of the `ckeditor5` repository, there should be file named `mrg
 		"dev": {
 			"ckeditor5-dev": "ckeditor/ckeditor5-dev"
 		},
-		"newFeature": {
-			"ckeditor5-linters-config": "ckeditor/ckeditor5-linters-config#newFeatureBranch",
-			"ckeditor5-dev": "ckeditor/ckeditor5-dev#newFeatureBranch"
+		"example-feature": {
+			"ckeditor5-linters-config": "ckeditor/ckeditor5-linters-config#i/1-example-feature",
+			"ckeditor5-dev": "ckeditor/ckeditor5-dev#i/1-example-feature"
 		}
 	}
 }
