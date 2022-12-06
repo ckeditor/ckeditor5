@@ -57,6 +57,19 @@ export default class Command {
 		this.set( 'value', undefined );
 
 		/**
+		 * The text of the command. A concrete command class should define what it represents for it.
+		 *
+		 * This is used specifically for links and extracts the link text value from the link textNode
+		 *
+		 * A concrete command class should control this text by overriding the {@link #refresh `refresh()`} method.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member #text
+		 */
+		this.set( 'text', undefined );
+
+		/**
 		 * Flag indicating whether a command is enabled or disabled.
 		 * A disabled command will do nothing when executed.
 		 *

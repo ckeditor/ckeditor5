@@ -157,9 +157,22 @@ ClassicEditor.defaultConfig = {
 			'blockquote', '|',
 			'alignment', '-',
 			'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
-			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+			'link', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
 			'specialCharacters', 'insertTable', '|'
 		],
 		shouldNotGroupWhenFull: true
+	},
+	link: {
+		decorators: {
+			openInNewTab: {
+				mode: 'manual',
+				label: 'Open in a new tab',
+				defaultValue: true,
+				attributes: {
+					target: '_blank',
+					rel: 'noopener noreferrer'
+				}
+			}
+		}
 	}
 };

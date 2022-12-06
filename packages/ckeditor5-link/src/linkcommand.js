@@ -26,6 +26,7 @@ export default class LinkCommand extends Command {
 	 * @observable
 	 * @readonly
 	 * @member {Object|undefined} #value
+	 * @member {Object|undefined} #text
 	 */
 
 	constructor( editor ) {
@@ -69,6 +70,7 @@ export default class LinkCommand extends Command {
 		const selection = model.document.selection;
 		const selectedElement = selection.getSelectedElement() || first( selection.getSelectedBlocks() );
 
+		this.text = '';
 		// A check for any integration that allows linking elements (e.g. `LinkImage`).
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
 		if ( isLinkableElement( selectedElement, model.schema ) ) {
@@ -77,6 +79,12 @@ export default class LinkCommand extends Command {
 		} else {
 			this.value = selection.getAttribute( 'linkHref' );
 			this.isEnabled = model.schema.checkAttributeInSelection( selection, 'linkHref' );
+		}
+
+		const selectedLinkText = selection.anchor.textNode;
+
+		if ( selectedLinkText !== undefined && selectedLinkText !== null && this.value !== undefined ) {
+			this.text = selectedLinkText._data;
 		}
 
 		for ( const manualDecorator of this.manualDecorators ) {
@@ -146,7 +154,7 @@ export default class LinkCommand extends Command {
 	 * @param {String} href Link destination.
 	 * @param {Object} [manualDecoratorIds={}] The information about manual decorator attributes to be applied or removed upon execution.
 	 */
-	execute( href, manualDecoratorIds = {} ) {
+	execute( href, manualDecoratorIds = {}, text = '' ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		// Stores information about manual decorators to turn them on/off when command is applied.
@@ -164,30 +172,31 @@ export default class LinkCommand extends Command {
 		model.change( writer => {
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
-				const position = selection.getFirstPosition();
+				let position = selection.getFirstPosition();
 
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
 					// Then update `linkHref` value.
-					const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+					position = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
-					writer.setAttribute( 'linkHref', href, linkRange );
+					if ( text === '' ) {
+						truthyManualDecorators.forEach( item => {
+							writer.setAttribute( item, true, position );
+						} );
 
-					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, linkRange );
-					} );
+						falsyManualDecorators.forEach( item => {
+							writer.removeAttribute( item, position );
+						} );
 
-					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, linkRange );
-					} );
-
-					// Put the selection at the end of the updated link.
-					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore ) );
+						writer.setAttribute( 'linkHref', href, position );
+						return;
+					}
 				}
+
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				// However, since selection is collapsed, attribute value will be used as data for text node.
 				// So, if `href` is empty, do not create text node.
-				else if ( href !== '' ) {
+				if ( selection.hasAttribute( 'linkHref' ) || href !== '' ) {
 					const attributes = toMap( selection.getAttributes() );
 
 					attributes.set( 'linkHref', href );
@@ -196,7 +205,13 @@ export default class LinkCommand extends Command {
 						attributes.set( item, true );
 					} );
 
-					const { end: positionAfter } = model.insertContent( writer.createText( href, attributes ), position );
+					falsyManualDecorators.forEach( item => {
+						attributes.set( item, false );
+					} );
+
+					const { end: positionAfter } = model.insertContent(
+						writer.createText( text, attributes ), position
+					);
 
 					// Put the selection at the end of the inserted link.
 					// Using end of range returned from insertContent in case nodes with the same attributes got merged.
