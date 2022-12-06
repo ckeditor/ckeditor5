@@ -318,4 +318,57 @@ describe( 'DocumentFragment', () => {
 			expect( fragment.getChild( 0 ) ).to.equal( node2 );
 		} );
 	} );
+
+	describe( 'custom properties', () => {
+		it( 'should allow to set and get custom properties', () => {
+			const fragment = new DocumentFragment( document );
+
+			fragment._setCustomProperty( 'foo', 'bar' );
+
+			expect( fragment.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should allow to add symbol property', () => {
+			const fragment = new DocumentFragment( document );
+			const symbol = Symbol( 'custom' );
+
+			fragment._setCustomProperty( symbol, 'bar' );
+
+			expect( fragment.getCustomProperty( symbol ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should allow to remove custom property', () => {
+			const fragment = new DocumentFragment( document );
+			const symbol = Symbol( 'quix' );
+
+			fragment._setCustomProperty( 'bar', 'baz' );
+			fragment._setCustomProperty( symbol, 'test' );
+
+			expect( fragment.getCustomProperty( 'bar' ) ).to.equal( 'baz' );
+			expect( fragment.getCustomProperty( symbol ) ).to.equal( 'test' );
+
+			fragment._removeCustomProperty( 'bar' );
+			fragment._removeCustomProperty( symbol );
+
+			expect( fragment.getCustomProperty( 'bar' ) ).to.be.undefined;
+			expect( fragment.getCustomProperty( symbol ) ).to.be.undefined;
+		} );
+
+		it( 'should allow to iterate over custom properties', () => {
+			const fragment = new DocumentFragment( document );
+
+			fragment._setCustomProperty( 'foo', 1 );
+			fragment._setCustomProperty( 'bar', 2 );
+			fragment._setCustomProperty( 'baz', 3 );
+
+			const properties = Array.from( fragment.getCustomProperties() );
+
+			expect( properties[ 0 ][ 0 ] ).to.equal( 'foo' );
+			expect( properties[ 0 ][ 1 ] ).to.equal( 1 );
+			expect( properties[ 1 ][ 0 ] ).to.equal( 'bar' );
+			expect( properties[ 1 ][ 1 ] ).to.equal( 2 );
+			expect( properties[ 2 ][ 0 ] ).to.equal( 'baz' );
+			expect( properties[ 2 ][ 1 ] ).to.equal( 3 );
+		} );
+	} );
 } );
