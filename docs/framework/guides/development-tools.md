@@ -96,7 +96,7 @@ The source code of CKEditor 5 inspector and its issue tracker is available on Gi
 
 ## MrGit
 
-[mrgit](https://github.com/cksource/mrgit) is a Multi-repo manager for git. In CKEditor 5 it can used for easy development and testing of various CKEditor 5 helper repositories, such as [ckeditor5-dev](https://github.com/ckeditor/ckeditor5-dev) or [ckeditor5-linters-config](https://github.com/ckeditor/ckeditor5-linters-config).
+[MrGit](https://github.com/cksource/mrgit) is a Multi-repo manager for git. In CKEditor 5 it can be used for an easy development and testing of various CKEditor 5 helper repositories, such as [ckeditor5-dev](https://github.com/ckeditor/ckeditor5-dev) or [ckeditor5-linters-config](https://github.com/ckeditor/ckeditor5-linters-config).
 
 ### Setup
 
@@ -106,7 +106,7 @@ In order to use the tool, it should be installed globally from the npm.
 npm install -g mrgit
 ```
 
-Then, in the root of the `ckeditor5` repository, there should be file named `mrgit.json`. This is an example content of the file:
+Then, put a file named `mrgit.json` in the root of the `ckeditor5` repository. This is an example content of this file:
 
 ```json
 {
@@ -129,11 +129,13 @@ Then, in the root of the `ckeditor5` repository, there should be file named `mrg
 
 ### Usage
 
-In the example configuration file from the previous section we have defined base dependencies that should be used. They use the `@latest` tag, which means that the latest tag will be used, which generally should coincide with the latest version available on npm. After calling `mrgit sync`, those dependencies will be cloned and available locally in the specified version.
+In the example configuration file listed above we have defined base dependencies that should be used. They use the `@latest` tag, which means that the latest tag will be used, which generally should coincide with the latest version available on npm. After calling `mrgit sync`, these dependencies will be cloned and made available locally in the specified (latest) version.
 
-Alternatively, we can use one of the presets, eg. the `dev` preset. To do so, execute `mrgit sync --preset dev` - this will use versions specified in the preset instead. `ckeditor/ckeditor5-dev` does not have any specified tag or branch, so the `master` branch will be used by default. Since in this preset only `ckeditor5-dev` is specified, version for `ckeditor5-linters-config` will be used as specified in the default `dependencies`. Using this mechanism, it is possible to easily switch between production and development versions of the dependencies used by the `ckeditor5` repository.
+Alternatively, you can use one of the presets defined in the latter section of the file, eg. the `dev` preset. To do so, execute `mrgit sync --preset dev` &ndash; this will use versions specified in the preset instead. `ckeditor/ckeditor5-dev` does not have any tag or branch specified, so the `master` branch will be used by default.
 
-For all available commands and configuration options, see [the docs](https://github.com/cksource/mrgit#mr-git) of the tool.
+Since in this preset only `ckeditor5-dev` is specified, version used for `ckeditor5-linters-config` will be as specified in the default `dependencies` section. Using this mechanism, it is possible to easily switch between production and development versions of the dependencies used by the `ckeditor5` repository.
+
+For all available commands and configuration options, see [the documentation of the tool](https://github.com/cksource/mrgit#mr-git).
 
 ## Testing helpers
 
