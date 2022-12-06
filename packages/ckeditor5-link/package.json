@@ -30,6 +30,7 @@
     "@ckeditor/ckeditor5-enter": "^35.3.2",
     "@ckeditor/ckeditor5-image": "^35.3.2",
     "@ckeditor/ckeditor5-paragraph": "^35.3.2",
+    "@ckeditor/ckeditor5-table": "^35.3.2",
     "@ckeditor/ckeditor5-theme-lark": "^35.3.2",
     "@ckeditor/ckeditor5-typing": "^35.3.2",
     "@ckeditor/ckeditor5-undo": "^35.3.2",
