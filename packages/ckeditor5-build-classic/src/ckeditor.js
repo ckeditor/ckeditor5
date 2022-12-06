@@ -31,6 +31,7 @@ import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -132,6 +133,7 @@ ClassicEditor.builtinPlugins = [
 	TableToolbar,
 	Link,
 	Paragraph,
+	ParagraphButtonUI,
 	PasteFromOffice
 ];
 
@@ -148,7 +150,9 @@ ClassicEditor.defaultConfig = {
 			'sourceEditing', '|',
 			'undo', 'redo', '|',
 			'findAndReplace', 'selectAll', '|',
-			'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent', '|', 'blockquote', '|',
+			'numberedList', 'bulletedList', 'todoList', 'paragraph', '|',
+			'outdent', 'indent', '|',
+			'blockquote', '|',
 			'alignment', '-',
 			'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
 			'link', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
