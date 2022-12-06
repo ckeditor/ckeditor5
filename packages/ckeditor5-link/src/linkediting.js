@@ -597,10 +597,13 @@ export default class LinkEditing extends Plugin {
 	_enableClipboardIntegration() {
 		const editor = this.editor;
 		const model = editor.model;
+		const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
+
+		if ( !defaultProtocol ) {
+			return;
+		}
 
 		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'contentInsertion', ( evt, data ) => {
-			const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
-
 			model.change( writer => {
 				const range = writer.createRangeIn( data.content );
 
