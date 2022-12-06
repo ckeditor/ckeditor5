@@ -387,7 +387,7 @@ The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can l
 
 Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc. All these elements should be marked as blocks by using {@link module:engine/model/schema~SchemaItemDefinition#isBlock `isBlock`}.
 
-Schema items with `isBlock` set are (among others) affecting {@link module:engine/model/documentselection~DocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allows setting block level attributes like `alignment` to appropriate elements from the UX point of view. 
+Schema items with `isBlock` set are (among others) affecting {@link module:engine/model/documentselection~DocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allows setting block level attributes like `alignment` to appropriate elements. 
 
 It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>`, which can contain other block elements, should not be marked as blocks.
 
@@ -525,9 +525,9 @@ Taking this even further, if anyone registers a `<section>` element (with the `a
 	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
 </info-box>
 
-### Generic items allowed structure
+### Relations between generic items
 
-Generic items could be visualized by the following structure (based on `allowIn`, `allowWhere`, etc.):
+Relations between generic items (which one can be used where) can be visualized by the following abstract structure:
 
 ```xml
 <$root>
@@ -544,7 +544,7 @@ Generic items could be visualized by the following structure (based on `allowIn`
 </$root>
 ```
 
-The above abstract structure with some generic items implemented could look like:
+The above rules will be met for instance by such a model content:
 
 ```xml
 <$root>
@@ -577,7 +577,7 @@ The above abstract structure with some generic items implemented could look like
 </$root>
 ```
 
-The above structure with [additional semantics](#defining-additional-semantics) visualized ( `is*` ):
+Which, in turn, has this [semantics](#defining-additional-semantics):
 
 ```xml
 <$root>                   <!-- isLimit: true -->
