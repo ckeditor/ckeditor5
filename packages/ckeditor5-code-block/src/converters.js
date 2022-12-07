@@ -75,6 +75,8 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 
 		const pre = writer.createContainerElement( 'pre', preAttributes, code );
 
+		writer.setCustomProperty( 'codeblock', true, pre);
+
 		writer.insert( targetViewPosition, pre );
 		mapper.bindElements( data.item, code );
 	};

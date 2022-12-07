@@ -75,7 +75,7 @@ export default class CodeblockCaptionUI extends Plugin {
                 // const modelCaptionElement = 
             } );
 
-            console.log(`Einstrasse: ${view}`);
+            console.log(`Einstrasse: ${JSON.stringify(null, 2, view)}`);
 
 
             return view;

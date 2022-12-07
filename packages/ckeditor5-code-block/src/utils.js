@@ -234,3 +234,34 @@ export function canBeCodeBlock( schema, element ) {
 
 	return schema.checkChild( element.parent, 'codeBlock' );
 }
+
+
+export function isCodeblock( viewElement ) {
+	return !!viewElement.getCustomProperty( 'codeblock' );
+}
+
+export function getClosestSelectedCodeblock( selection ) {
+	const selectionPosition = selection.getFirstPosition();
+
+	if ( !selectionPosition ) {
+		return null;
+	}
+
+	const viewElement = selection.getSelectedElement();
+
+	if ( viewElement && isCodeblock ( viewElement ) ) {
+		return viewElement;
+	}
+
+	let parent = selectionPosition.parent;
+
+	while ( parent ) {
+		if ( parent.is( 'element' ) && isCodeblock ( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
+
+	return null;
+}

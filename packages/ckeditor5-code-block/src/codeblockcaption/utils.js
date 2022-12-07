@@ -34,3 +34,4 @@ export function matchCodeblockCaptionViewElement( element ) {
 
     return null;
 }
+
