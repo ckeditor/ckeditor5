@@ -175,7 +175,6 @@
     "postrelease:bump-version": "npm run dll:build",
     "release:publish": "node ./scripts/release/publish.js",
     "release:clean": "node ./scripts/release/clean.js",
-    "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
     "check-dependencies": "ckeditor5-dev-tests-check-dependencies"
   },
