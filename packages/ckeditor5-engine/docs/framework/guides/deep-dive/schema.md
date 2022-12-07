@@ -372,7 +372,7 @@ schema.register( 'myImage', {
 The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can later be used to check this property.
 
 <info-box>
-	There are also the `$blockObject` and the `$inlineObject` generic items which have `isObject` set to `true`. Most object type items will inherit from `$blockObject` or `$inlineObject` (through `inheritAllFrom`).
+	There are also the `$blockObject` and the `$inlineObject` generic items which have the `isObject` property set to `true`. Most object type items will inherit from `$blockObject` or `$inlineObject` (through `inheritAllFrom`).
 </info-box>
 
 <info-box>
@@ -387,12 +387,12 @@ The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can l
 
 Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc. All these elements should be marked as blocks by using {@link module:engine/model/schema~SchemaItemDefinition#isBlock `isBlock`}.
 
-Schema items with `isBlock` set are (among others) affecting {@link module:engine/model/documentselection~DocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allows setting block level attributes like `alignment` to appropriate elements. 
+Schema items with the `isBlock` property set are (among others) affecting the {@link module:engine/model/documentselection~DocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allow setting block level attributes like `alignment` to appropriate elements. 
 
 It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>`, which can contain other block elements, should not be marked as blocks.
 
 <info-box>
-	There are also the `$block` and the `$blockObject` generic items which have `isBlock` set to `true`. Most block type items will inherit from `$block` or `$blockObject` (through `inheritAllFrom`).
+	There are also the `$block` and the `$blockObject` generic items which have the `isBlock` property set to `true`. Most block type items will inherit from `$block` or `$blockObject` (through `inheritAllFrom`).
 
 	Note that every item that inherits from `$block` has `isBlock` set, but not every item with `isBlock` set has to be a `$block`.
 </info-box>
@@ -406,7 +406,7 @@ Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `
 The support for inline elements in CKEditor 5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
 
 <info-box>
-	There is also the `$inlineObject` generic item which has `isInline` set to `true`. Most inline object type items will inherit from `$inlineObject` (through `inheritAllFrom`).
+	There is also the `$inlineObject` generic item which has the `isInline` property set to `true`. Most inline object type items will inherit from `$inlineObject` (through `inheritAllFrom`).
 </info-box>
 
 ### Selectable elements
@@ -577,7 +577,7 @@ The above rules will be met for instance by such a model content:
 </$root>
 ```
 
-Which, in turn, has this [semantics](#defining-additional-semantics):
+Which, in turn, has thess [semantics](#defining-additional-semantics):
 
 ```xml
 <$root>                   <!-- isLimit: true -->
