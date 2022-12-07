@@ -94,9 +94,9 @@ The inspector works with CKEditor 5 [v12.0.0](https://github.com/ckeditor/ckedit
 
 The source code of CKEditor 5 inspector and its issue tracker is available on GitHub in https://github.com/ckeditor/ckeditor5-inspector.
 
-## MrGit
+## Mr. Git
 
-[MrGit](https://github.com/cksource/mrgit) is a Multi-repo manager for git. In CKEditor 5 it can be used for an easy development and testing of various CKEditor 5 helper repositories, such as [ckeditor5-dev](https://github.com/ckeditor/ckeditor5-dev) or [ckeditor5-linters-config](https://github.com/ckeditor/ckeditor5-linters-config).
+[Mr. Git](https://github.com/cksource/mrgit) is a multi-repo manager for git. In CKEditor 5, it can be used for easy development and testing of various CKEditor&nbsp;5-related repositories, such as [ckeditor5-dev](https://github.com/ckeditor/ckeditor5-dev) or [ckeditor5-linters-config](https://github.com/ckeditor/ckeditor5-linters-config).
 
 ### Setup
 
@@ -126,6 +126,10 @@ Then, put a file named `mrgit.json` in the root of the `ckeditor5` repository. T
 	}
 }
 ```
+
+<info-box>
+    Support for tags and presets is available in `mrgit` [`v2.0.0`](https://github.com/cksource/mrgit/releases/tag/v2.0.0)+.
+</info-box>
 
 ### Usage
 
