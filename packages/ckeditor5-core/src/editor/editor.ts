@@ -24,13 +24,14 @@ import {
 	StylesProcessor
 } from '@ckeditor/ckeditor5-engine';
 
+import type { EditorUI } from '@ckeditor/ckeditor5-ui';
+
 import Context from '../context';
 import PluginCollection from '../plugincollection';
 import CommandCollection, { type CommandsMap } from '../commandcollection';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
 import type { LoadedPlugins, PluginConstructor } from '../plugin';
-import type EditorUI from './editorui';
 import type { EditorConfig } from './editorconfig';
 
 /**

@@ -138,7 +138,7 @@ export default class MyEditorUI extends EditorUI {
 **After**:
 
 ```js
-import { EditorUI } from 'ckeditor5/src/core';
+import { EditorUI } from 'ckeditor5/src/ui';
 
 export default class MyEditorUI extends EditorUI {
 	// ...

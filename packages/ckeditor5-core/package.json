@@ -24,7 +24,6 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-engine": "^35.3.2",
-    "@ckeditor/ckeditor5-ui": "^35.3.2",
     "@ckeditor/ckeditor5-utils": "^35.3.2",
     "lodash-es": "^4.17.15"
   },
@@ -42,6 +41,7 @@
     "@ckeditor/ckeditor5-media-embed": "^35.3.2",
     "@ckeditor/ckeditor5-paragraph": "^35.3.2",
     "@ckeditor/ckeditor5-table": "^35.3.2",
+    "@ckeditor/ckeditor5-ui": "^35.3.2",
     "typescript": "^4.8.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"

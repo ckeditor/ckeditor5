@@ -9,6 +9,7 @@
 
 import View from './view';
 import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview';
+import type { EditorUIUpdateEvent } from './editorui/editorui';
 
 import {
 	DomEmitterMixin,
@@ -20,7 +21,7 @@ import {
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
-import type { Editor, EditorUIUpdateEvent } from '@ckeditor/ckeditor5-core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 import { isElement, debounce, type DebouncedFunc } from 'lodash-es';
 
