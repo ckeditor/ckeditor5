@@ -5,64 +5,66 @@ Changelog
 
 ### Release highlights
 
+We are happy to announce the release of CKEditor 5 v35.4.0.
+
+<!-- TODO: Release highlights. -->
+
 <!-- TODO: Add a link to the blog post. -->
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* `HtmlDataProcessor` skips HTML comments by default. Set its `skipComments` property to `false` to retain comments (or use [`HtmlComment`](https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#html-comments) plugin).
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `HtmlDataProcessor` skips HTML comments by default. Set its `skipComments` property to `false` to retain comments (or use [`HtmlComment`](https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#html-comments) plugin).
 
 ### Features
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improved support for dictation (via VoiceControl) on iOS and multi-line text replacements on macOS. Closes [#2045](https://github.com/ckeditor/ckeditor5/issues/2045), [#11443](https://github.com/ckeditor/ckeditor5/issues/11443). ([commit](https://github.com/ckeditor/ckeditor5/commit/1d7def3e876482f0f156dfd8f37e2b5ddbb1aaaa))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Upcasts `<img>` with `display:block` style as a block image. Closes [#12811](https://github.com/ckeditor/ckeditor5/issues/12811). ([commit](https://github.com/ckeditor/ckeditor5/commit/8480de92614cd5c851e4d3c74afc982168491d4c))
-* **[lists](https://www.npmjs.com/package/@ckeditor/ckeditor5-lists)**: Allow list indexing to start from 0. Closes [#12827](https://github.com/ckeditor/ckeditor5/issues/12827). ([commit](https://github.com/ckeditor/ckeditor5/commit/2298735433c16be52642643cd0f5004d80962270))
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added track changes integration for lists.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added track changes integration for table resize feature.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced `trackChanges.trackFormatChanges` configuration property which can be used to disable tracking of format changes.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added track changes integration for document list properties.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Upcast the `<img>` element with `display:block` style as a block image. Closes [#12811](https://github.com/ckeditor/ckeditor5/issues/12811). ([commit](https://github.com/ckeditor/ckeditor5/commit/8480de92614cd5c851e4d3c74afc982168491d4c))
+* **[lists](https://www.npmjs.com/package/@ckeditor/ckeditor5-lists)**: Allow list indexing to start from `0`. Closes [#12827](https://github.com/ckeditor/ckeditor5/issues/12827). ([commit](https://github.com/ckeditor/ckeditor5/commit/2298735433c16be52642643cd0f5004d80962270))
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added track changes integration for lists, document list properties, and table resize features.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced the `trackChanges.trackFormatChanges` configuration property which can be used to disable tracking of format changes.
 
 ### Bug fixes
 
 * **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Replace tab with four spaces when pasting data from clipboard. Closes [#12806](https://github.com/ckeditor/ckeditor5/issues/12806). ([commit](https://github.com/ckeditor/ckeditor5/commit/8aa3b3af0e4a8ffe0af1c7e036fd6cd3b7ab6b67))
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: It is no longer necessary to make two mouse clicks to move the selection if the annotation in a wide sidebar was focused before.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Long user names will no longer break annotations styling in inline and narrow sidebar display modes.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment view should not lose focus or hide after clicking cancel icon in deletion confirmation box.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment view should not lose focus or hide after clicking the cancel icon in the deletion confirmation box.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Removing a comment thread imported from a Word file, which had at least one reply, resulted in an error: only the first comment was removed instead of the whole thread.
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed bug which in some scenarios caused rendering with an outdated selection state when editor was focused (on Chromium browsers). Closes [#12967](https://github.com/ckeditor/ckeditor5/issues/12967). ([commit](https://github.com/ckeditor/ckeditor5/commit/c09f9ab9570b3da098ce556aadf0fc757e7536f6))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `Model#insertObject()` should not crash when attempting to set selection after inserting an inline element. Closes [#12809](https://github.com/ckeditor/ckeditor5/issues/12809). ([commit](https://github.com/ckeditor/ckeditor5/commit/322dbfb1255b3dad3bd0ad278a5b7a5c6a2ee8dc))
-* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Markers should not be lost while upcasting a plain table (without a `<figure>` element). ([commit](https://github.com/ckeditor/ckeditor5/commit/bf78d7e464c20717a72c75e3c140431aeacc06f7))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed a bug which in some scenarios caused rendering with an outdated selection state when editor was focused (on Chromium browsers). Closes [#12967](https://github.com/ckeditor/ckeditor5/issues/12967). ([commit](https://github.com/ckeditor/ckeditor5/commit/c09f9ab9570b3da098ce556aadf0fc757e7536f6))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `Model#insertObject()` method should not crash when attempting to set selection after inserting an inline element. Closes [#12809](https://github.com/ckeditor/ckeditor5/issues/12809). ([commit](https://github.com/ckeditor/ckeditor5/commit/322dbfb1255b3dad3bd0ad278a5b7a5c6a2ee8dc))
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Markers should not be lost while upcasting a plain table (without the `<figure>` element). ([commit](https://github.com/ckeditor/ckeditor5/commit/bf78d7e464c20717a72c75e3c140431aeacc06f7))
 * **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Basic styles formatting now works well with the remove format feature. Closes [#12626](https://github.com/ckeditor/ckeditor5/issues/12626). ([commit](https://github.com/ckeditor/ckeditor5/commit/e4c1f36a530defb598ef177e76c54573d404ce2e))
 * **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Document content was not updated by remote changes until the editor was focused (in some scenarios).
 * **[special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters)**: The special character label in dropdown should be updated when navigating with keyboard. Closes [#12393](https://github.com/ckeditor/ckeditor5/issues/12393). ([commit](https://github.com/ckeditor/ckeditor5/commit/f253c7e8ae163604b644c03865f21b26df5cb3ad))
 * **[special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters)**: Special characters form header should use a heading markup. Closes [#12464](https://github.com/ckeditor/ckeditor5/issues/12464). ([commit](https://github.com/ckeditor/ckeditor5/commit/8e0a3bb229615b7302bee13a93f7a74629895526))
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Table width and height should be upcasted from the figure element if it exists. Closes [#12812](https://github.com/ckeditor/ckeditor5/issues/12812). ([commit](https://github.com/ckeditor/ckeditor5/commit/a6ec6d4e41b828a809e725878e813e066681e05a))
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The table `width` and `height` attributes should be upcasted from the `<figure>` element if it exists. Closes [#12812](https://github.com/ckeditor/ckeditor5/issues/12812). ([commit](https://github.com/ckeditor/ckeditor5/commit/a6ec6d4e41b828a809e725878e813e066681e05a))
 * **[Table](https://www.npmjs.com/package/@ckeditor/ckeditor5-Table)**: Improved the label positioning in RTL editor in the insert table dropdown. Closes [#12833](https://github.com/ckeditor/ckeditor5/issues/12833). ([commit](https://github.com/ckeditor/ckeditor5/commit/5d098d6b072b66aaccc09d682a1f3ab5fe96b34a))
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed editor crash when `TrackChangesData` plugin was used with some editor configurations including real-time collaboration plugins.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed editor crash when `TrackChangesData` plugin was used with pagination plugin.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed various incorrect scenarios related to document list integration with track changes.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Use all ranges in markMultiRangeFormatBlock suggestion accept.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fix editor crash when document list properties config is overwritten.
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Keyboard navigation in grid dropdowns should not be reversed in RTL editor. Closes [#12871](https://github.com/ckeditor/ckeditor5/issues/12871). ([commit](https://github.com/ckeditor/ckeditor5/commit/d5c8363ffb034161f54318de87b679d539f9c6b5))
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Use all ranges in `markMultiRangeFormatBlock` suggestion accept.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fix the editor crash when document list properties config is overwritten.
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The keyboard navigation in grid dropdowns should not be reversed in RTL editor. Closes [#12871](https://github.com/ckeditor/ckeditor5/issues/12871). ([commit](https://github.com/ckeditor/ckeditor5/commit/d5c8363ffb034161f54318de87b679d539f9c6b5))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The split button divider should stretch to the edges of the button. Closes [#10936](https://github.com/ckeditor/ckeditor5/issues/10936). ([commit](https://github.com/ckeditor/ckeditor5/commit/8f00d4a47e34ba2073b8d1ff0e15ce4361597cc1))
 * **[widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: Screen readers should now read the keyboard shortcuts to type around a widget. Closes [#11936](https://github.com/ckeditor/ckeditor5/issues/11936). ([commit](https://github.com/ckeditor/ckeditor5/commit/ccc16115b9d297b25fcbfdb5995c5d786855f231))
 
 ### Other changes
 
-* **[editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon)**: Rewrites `ckeditor5-editor-balloon` package to TypeScript. Closes [#12617](https://github.com/ckeditor/ckeditor5/issues/12617). ([commit](https://github.com/ckeditor/ckeditor5/commit/4a3b268e9d77b90bc198dab2823232ae4def9e20))
-* **[editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic)**: Rewrites `ckeditor5-editor-classic` to TypeScript. Closes [#12618](https://github.com/ckeditor/ckeditor5/issues/12618). ([commit](https://github.com/ckeditor/ckeditor5/commit/4991efdbede74ce5b5bf68c31fbc343eff226b80))
-* **[editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled)**: Rewrites `ckeditor5-editor-decoupled` package to TypeScript. Closes [#12619](https://github.com/ckeditor/ckeditor5/issues/12619). ([commit](https://github.com/ckeditor/ckeditor5/commit/2cb21fcefec03b6cb38381d495a332817cad53bc))
-* **[editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline)**: Rewrites `ckeditor5-editor-inline` package to TypeScript. Closes [#12620](https://github.com/ckeditor/ckeditor5/issues/12620). ([commit](https://github.com/ckeditor/ckeditor5/commit/5faf012e0d381ead0eccc2cbce960112a1bd681a))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `HtmlDataProcessor` exposes an option to `skipComments`. Closes [#12813](https://github.com/ckeditor/ckeditor5/issues/12813). ([commit](https://github.com/ckeditor/ckeditor5/commit/6a7bc0488001176efa860dda8438d21f20c3dfb9))
 * **[enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)**: Made `enterBlock()` helper publicly accessible through `EnterCommand#enterBlock()`. Closes [#12885](https://github.com/ckeditor/ckeditor5/issues/12885). ([commit](https://github.com/ckeditor/ckeditor5/commit/03b105a1e2e674afd0f3f8b61537271b7884e755))
-* **[essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials)**: Rewrites ckeditor5-essentials package to TypeScript. Closes [#12621](https://github.com/ckeditor/ckeditor5/issues/12621). ([commit](https://github.com/ckeditor/ckeditor5/commit/46df564da2616f7374c27d0b957f2bc7f7bbd708))
 * **[export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf)**: Added support for callbacks in the `fileName` configuration option.
 * **[export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**: Added support for callbacks in the `fileName` configuration option.
 * **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Imported comments will keep only basic styling by default. This behavior can be changed using the new `importWord.commentsStyles` config property.
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Added access to list-related utils functions through new `ListUtils` plugin to make it possible to use them in other packages. ([commit](https://github.com/ckeditor/ckeditor5/commit/37dc40c0aecafc08d4f5a3cade6fdc0576d49c39))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Added access to list-related utils functions through new `DocumentListUtils` and `DocumentListPropertiesUtils` to make it possible to use them in other packages. ([commit](https://github.com/ckeditor/ckeditor5/commit/cb1a3195bce9c88919efa8025004afd312647dc8))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Added access to list-related utils functions through the new `ListUtils` plugin to make it possible to use them in other packages. ([commit](https://github.com/ckeditor/ckeditor5/commit/37dc40c0aecafc08d4f5a3cade6fdc0576d49c39))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Added access to list-related utils functions through new `DocumentListUtils` and `DocumentListPropertiesUtils` plugins to make it possible to use them in other packages. ([commit](https://github.com/ckeditor/ckeditor5/commit/cb1a3195bce9c88919efa8025004afd312647dc8))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: `TableWidthResizeCommand` will now reset sizes value if an optional execution parameter is skipped. Closes [#12916](https://github.com/ckeditor/ckeditor5/issues/12916). ([commit](https://github.com/ckeditor/ckeditor5/commit/2d1e16c6cc2a35b70275e8b954ba8804eab680a4))
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Removed I generic parameter from Collection. See [#12763](https://github.com/ckeditor/ckeditor5/issues/12763). ([commit](https://github.com/ckeditor/ckeditor5/commit/b27b23f5bf78039a0c8d2844addbe22239876eab))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Removed the `I` generic parameter from the `Collection` class. See [#12763](https://github.com/ckeditor/ckeditor5/issues/12763). ([commit](https://github.com/ckeditor/ckeditor5/commit/b27b23f5bf78039a0c8d2844addbe22239876eab))
+* Several packages have been rewritten to TypeScript:
+  * [`@ckeditor/ckeditor5-editor-balloon`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon): closes [#12617](https://github.com/ckeditor/ckeditor5/issues/12617). ([commit](https://github.com/ckeditor/ckeditor5/commit/4a3b268e9d77b90bc198dab2823232ae4def9e20))
+  * [`@ckeditor/ckeditor5-editor-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic): closes [#12618](https://github.com/ckeditor/ckeditor5/issues/12618). ([commit](https://github.com/ckeditor/ckeditor5/commit/4991efdbede74ce5b5bf68c31fbc343eff226b80))
+  * [`@ckeditor/ckeditor5-editor-decoupled`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled): closes [#12619](https://github.com/ckeditor/ckeditor5/issues/12619). ([commit](https://github.com/ckeditor/ckeditor5/commit/2cb21fcefec03b6cb38381d495a332817cad53bc))
+  * [`@ckeditor/ckeditor5-editor-inline`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline): closes [#12620](https://github.com/ckeditor/ckeditor5/issues/12620). ([commit](https://github.com/ckeditor/ckeditor5/commit/5faf012e0d381ead0eccc2cbce960112a1bd681a))
+  * [`@ckeditor/ckeditor5-essentials`](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials): closes [#12621](https://github.com/ckeditor/ckeditor5/issues/12621). ([commit](https://github.com/ckeditor/ckeditor5/commit/46df564da2616f7374c27d0b957f2bc7f7bbd708))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/7b606f2c6cccb778ab54d4dfa29de222398e2c20))
-* Removed switch-to-dev-dev script. See [#1531](https://github.com/ckeditor/ckeditor5/issues/1531). ([commit](https://github.com/ckeditor/ckeditor5/commit/e109549ec3402186144d7293b23838c2bf3de2c3))
 
 ### Released packages
 
