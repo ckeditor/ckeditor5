@@ -111,7 +111,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Bold, Italic, Underline, Strikethrough, Code, Subscript, Superscript ],
 		toolbar: {
-			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code','subscript', 'superscript'  ]
+			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript'  ]
 		}
 	} )
 	.then( ... )

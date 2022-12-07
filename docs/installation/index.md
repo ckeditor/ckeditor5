@@ -18,6 +18,10 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 	**Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
 </info-box>
 
+## Migrating from CKEditor 4
+
+This section is dedicated to getting started with CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, please refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide} for tips about such installation.
+
 ## Start using CKEditor 5 instantly with CDN
 
 Start using CKEditor 5 instantly thanks to the power of our CDN. Check out the {@link installation/getting-started/quick-start Quick start guide}.
@@ -34,17 +38,13 @@ Learn how to install a custom CKEditor 5 easily with the use of {@link installat
 
 Get to know the supported {@link installation/frameworks/overview integrations with popular JavaScript frameworks} such as React, Angular or Vue, and learn to utilize them and to integrate CKEditor 5 with your software.
 
-## Migrating from CKEditor 4
-
-Refer to the {@link installation/migration-from-ckeditor-4 CKEditor 4 migration guide} if you are updating your CKEditor 5 installation.
-
 ## Advanced installation concepts
 
 Find out more about the {@link installation/advanced/plugins plugin development}, how to {@link installation/advanced/saving-data handle and save the data} and what the {@link installation/advanced/features-html-output-overview features' HTML output} is for each plugin. Learn about alternative setups such as {@link installation/advanced/dll-builds DLL builds} or {@link installation/advanced/integrating-from-source integrating CKEditor 5 from source}.
 
 **Related links**
 
- * {@link updating/index Updating CKEditor 5} &ndash; Find out how to keep you installation up-to-date at all times.
+ * {@link updating/updating-ckeditor-5 Updating CKEditor 5} &ndash; Find out how to keep you installation up-to-date at all times.
  * {@link features/index Features} &ndash; Learn more about the CKEditor 5 features.
  * {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
  * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins or custom editors, how to change the UI or even bring your own UI to the editor.
@@ -167,7 +167,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 		},
 
 		'quiz-resolution-migrateFromV4': {
-			content: 'Based on your answers, you should check out the {@link installation/migration-from-ckeditor-4 CKEditor 4 migration guide}.',
+			content: 'Based on your answers, you should check out the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide}.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 

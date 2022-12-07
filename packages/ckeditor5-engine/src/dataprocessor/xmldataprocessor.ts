@@ -31,6 +31,7 @@ export default class XmlDataProcessor implements DataProcessor {
 	public domParser: DOMParser;
 	public domConverter: DomConverter;
 	public htmlWriter: HtmlWriter;
+	public skipComments: boolean = true;
 
 	/**
 	 * Creates a new instance of the XML data processor class.
@@ -100,7 +101,13 @@ export default class XmlDataProcessor implements DataProcessor {
 		const domFragment = this._toDom( data );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this.domConverter.domToView( domFragment, { keepOriginalCase: true } ) as ViewDocumentFragment;
+		return this.domConverter.domToView(
+			domFragment,
+			{
+				keepOriginalCase: true,
+				skipComments: this.skipComments
+			}
+		) as ViewDocumentFragment;
 	}
 
 	/**

@@ -29,7 +29,7 @@ export function upcastTableFigure() {
 				return;
 			}
 
-			// Find an table element inside the figure element.
+			// Find a table element inside the figure element.
 			const viewTable = getViewTableFromFigure( data.viewItem );
 
 			// Do not convert if table element is absent or was already converted.

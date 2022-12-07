@@ -169,6 +169,45 @@ describe( 'FocusObserver', () => {
 		} );
 	} );
 
+	describe( 'handle _isFocusChanging property of the document', () => {
+		let domMain, viewMain;
+
+		beforeEach( () => {
+			domMain = document.createElement( 'div' );
+
+			viewMain = createViewRoot( viewDocument );
+			view.attachDomRoot( domMain );
+		} );
+
+		it( 'should set _isFocusChanging to true on focus', () => {
+			view.change( writer => {
+				writer.setSelection( viewMain, 0 );
+			} );
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument._isFocusChanging ).to.equal( true );
+		} );
+
+		it( 'should set _isFocusChanging to false after 50ms', () => {
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
+			const clock = sinon.useFakeTimers();
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			sinon.assert.notCalled( renderSpy );
+			expect( viewDocument._isFocusChanging ).to.equal( true );
+
+			clock.tick( 50 );
+
+			sinon.assert.called( renderSpy );
+			expect( viewDocument._isFocusChanging ).to.equal( false );
+
+			clock.restore();
+		} );
+	} );
+
 	describe( 'integration test', () => {
 		let viewDocument, domRoot, observer;
 
