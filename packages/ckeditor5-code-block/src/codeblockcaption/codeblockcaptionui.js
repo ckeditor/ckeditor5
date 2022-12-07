@@ -30,7 +30,6 @@ export default class CodeblockCaptionUI extends Plugin {
      * @inheritDoc
      */
     init() {
-        console.log(`Einstrasse: codeblock caption ui init function called`);
 
         const editor = this.editor;
         const editingView = editor.editing.view;
@@ -74,8 +73,6 @@ export default class CodeblockCaptionUI extends Plugin {
                 console.log("UI button on click!");
                 // const modelCaptionElement = 
             } );
-
-            console.log(`Einstrasse: ${JSON.stringify(null, 2, view)}`);
 
 
             return view;

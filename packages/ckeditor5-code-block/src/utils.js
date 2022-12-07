@@ -236,11 +236,21 @@ export function canBeCodeBlock( schema, element ) {
 }
 
 
-export function isCodeblock( viewElement ) {
-	return !!viewElement.getCustomProperty( 'codeblock' );
+export function isCodeblockView( viewElement ) {
+	return viewElement.getCustomProperty && !!viewElement.getCustomProperty( 'codeblock' );
 }
 
-export function getClosestSelectedCodeblock( selection ) {
+export function isCodeblockModel( modelElement ) {
+	return !!modelElement && modelElement.is( 'element', 'codeBlock' );
+}
+
+export function getClosestSelectedCodeblockElement( selection ) {
+	const selectedElement = selection.getSelectedElement();
+
+	return isCodeblockModel( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'codeBlock' );
+}
+
+export function getClosestSelectedCodeblockView( selection ) {
 	const selectionPosition = selection.getFirstPosition();
 
 	if ( !selectionPosition ) {
@@ -249,14 +259,14 @@ export function getClosestSelectedCodeblock( selection ) {
 
 	const viewElement = selection.getSelectedElement();
 
-	if ( viewElement && isCodeblock ( viewElement ) ) {
+	if ( viewElement && isCodeblockView ( viewElement ) ) {
 		return viewElement;
 	}
 
 	let parent = selectionPosition.parent;
 
 	while ( parent ) {
-		if ( parent.is( 'element' ) && isCodeblock ( parent ) ) {
+		if ( parent.is( 'element' ) && isCodeblockView ( parent ) ) {
 			return parent;
 		}
 

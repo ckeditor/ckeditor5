@@ -3,6 +3,8 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
+// import { CodeblockCaption } from '../codeblockcaption';
+import { isCodeblockModel, getClosestSelectedCodeblockElement } from '../utils';
 
 /**
  * The toggle codeblock caption command.
@@ -32,6 +34,29 @@ export default class ToggleCodeblockCaptionCommand extends Command {
     refresh() {
         const editor = this.editor;
 
+        // Only codeblock caption plugin is loaded.
+        if ( !editor.plugins.has( 'CodeblockCaption' ) ) {
+            this.isEnabled = false;
+            this.value = false;
+            console.log(`Einstrasse: the codeblock caption plugin is not loaded!`);
+            return;
+        }
+
+        const selection = editor.model.document.selection;
+
+        if ( !selection ) {
+            console.log(`Einstrasse: no selectedElement`);
+
+            this.isEnabled = false;
+            this.value = false;
+
+            return;
+        }
+
+        this.isEnabled = !!getClosestSelectedCodeblockElement( selection );
+        console.log(`Einstrasse this.isEnabled = ${this.isEnabled}`);
+
+
     }
 
     /**
@@ -41,7 +66,7 @@ export default class ToggleCodeblockCaptionCommand extends Command {
      * 
      */
     execute() {
-
+        console.log(`Einstrasse ToggleCodeblockCaptionCommand`);
         this.editor.model.change( writer => {
             if ( this.value ) {
                 this._hideCodeblockCaption( writer );
