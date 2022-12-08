@@ -39,6 +39,8 @@ export default class CodeblockCaptionEditing extends Plugin {
      */
     constructor( editor ) {
         super ( editor );
+
+        this._savedCaptionsMap = new WeakMap();
     }
 
     /**
@@ -48,7 +50,7 @@ export default class CodeblockCaptionEditing extends Plugin {
         const editor = this.editor;
         
         this._defineSchema();
-        this._defineConverter();
+        this._setupConversion();
         
         editor.commands.add( 'toggleCodeblockCaption' , new ToggleCodeblockCaptionCommand( this.editor ) );
         
@@ -73,10 +75,11 @@ export default class CodeblockCaptionEditing extends Plugin {
         
     }
     
-    _defineConverter() {
+    _setupConversion() {
         const editor = this.editor;
         const view = editor.editing.view;
         const t = editor.t;
+
         // View -> model converter for the data pipeline.
         editor.conversion.for( 'upcast' ).elementToElement( {
             view: matchCodeblockCaptionViewElement,
@@ -97,7 +100,7 @@ export default class CodeblockCaptionEditing extends Plugin {
 
         // Model -> view converter for the editing pipeline.
         editor.conversion.for( 'editingDowncast' ).elementToElement( {
-            model: 'cation',
+            model: 'caption',
             view: ( modelElement, { writer } ) => {
                 if ( !isCodeblockWrapper( modelElement.parent ) ) {
                     return null;
@@ -109,7 +112,7 @@ export default class CodeblockCaptionEditing extends Plugin {
                 enablePlaceholder( {
                     view,
                     element: figcaptionElement,
-                    text: t( 'Enter codeblock caption' ),
+                    text: t( 'Enter image caption' ), //TODO: locale text change required
                     keepOnFocus: true
                 } );
 
@@ -117,5 +120,15 @@ export default class CodeblockCaptionEditing extends Plugin {
             }
         } );
     }
+
+    _getSavedCaption( codeblockModelElement ) {
+        const jsonObject = this._savedCaptionsMap.get( codeblockModelElement );
+
+        return jsonObject ? Element.fromJSON( jsonObject ) : null;
+    }
+
+    _saveCaption( codeblockModelElement, caption ) {
+		this._savedCaptionsMap.set( codeblockModelElement, caption.toJSON() );
+	}
 
 }

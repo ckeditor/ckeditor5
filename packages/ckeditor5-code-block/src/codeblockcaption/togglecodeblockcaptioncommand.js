@@ -78,6 +78,17 @@ export default class ToggleCodeblockCaptionCommand extends Command {
 
     _showCodeblockCaption( writer ) {
         console.log(`ToggleCodeblockCaptionCommand - _showCodeblockCaption called!`);
+        const model = this.editor.model;
+        const selection = model.document.selection;
+        const codeblockCaptionEditing = this.editor.plugins.get( 'CodeblockCaptionEditing' );
+
+        let selectedCodeblock = getClosestSelectedCodeblockElement( selection );
+
+        const savedCaption = codeblockCaptionEditing._getSavedCaption( selectedCodeblock );
+
+        const newCaptionElement = savedCaption || writer.createElement( 'caption' );
+
+        writer.append( newCaptionElement, selectedCodeblock );
     }
 
     _hideCodeblockCaption( writer ) {

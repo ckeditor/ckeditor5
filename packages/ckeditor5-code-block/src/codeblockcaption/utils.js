@@ -5,7 +5,7 @@
  * @returns 
  */
 export function isCodeblockWrapper( modelElement ) {
-    return !!modelElement && modelElement.is( 'element', 'pre' );
+    return !!modelElement && modelElement.is( 'element', 'codeBlock' );
 }
 
 /**

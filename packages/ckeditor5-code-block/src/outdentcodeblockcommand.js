@@ -134,7 +134,7 @@ function getLastOutdentableSequenceRange( model, position, sequence ) {
 	// Positions start before each text node (code line). Get the node corresponding to the position.
 	const nodeAtPosition = getCodeLineTextNodeAtPosition( position );
 
-	if ( !nodeAtPosition ) {
+	if ( !nodeAtPosition || !nodeAtPosition.data ) {
 		return null;
 	}
 
