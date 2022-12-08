@@ -45,7 +45,7 @@ There are several options to download predefined CKEditor 5 builds:
 
 Predefined CKEditor 5 builds {@link installation/getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed.  CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
 
-However, CDN only offers ready-to-use, predefined packages (the builds). This limits its customization capabilities.
+However, CDN only offers ready-to-use, predefined packages (CKEditor 5 builds). This limits its customization capabilities.
 
 #### npm
 
