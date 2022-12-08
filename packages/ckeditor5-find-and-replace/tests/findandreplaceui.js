@@ -156,6 +156,27 @@ describe( 'FindAndReplaceUI', () => {
 					expect( dropdown.buttonView.keystroke ).to.equal( 'CTRL+F' );
 				} );
 
+				it( 'should not open the dropdown when command is disabled and CTRL+F was pressed', () => {
+					findCommand.isEnabled = false;
+
+					expect( dropdown.isOpen ).to.be.false;
+
+					const keyEventData = ( {
+						keyCode: keyCodes.f,
+						ctrlKey: !env.isMac,
+						metaKey: env.isMac,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					} );
+
+					const wasHandled = editor.keystrokes.press( keyEventData );
+
+					expect( wasHandled ).to.be.true;
+					expect( keyEventData.preventDefault.calledOnce ).to.be.false;
+
+					expect( dropdown.isOpen ).to.be.false;
+				} );
+
 				it( 'should open the dropdown when CTRL+F was pressed', () => {
 					const spy = sinon.spy( form._findInputView.fieldView, 'select' );
 
