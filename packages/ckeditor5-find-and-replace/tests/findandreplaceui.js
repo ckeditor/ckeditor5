@@ -160,6 +160,7 @@ describe( 'FindAndReplaceUI', () => {
 					findCommand.isEnabled = false;
 
 					expect( dropdown.isOpen ).to.be.false;
+					expect( dropdown.isEnabled ).to.be.false;
 
 					const keyEventData = ( {
 						keyCode: keyCodes.f,
@@ -172,7 +173,7 @@ describe( 'FindAndReplaceUI', () => {
 					const wasHandled = editor.keystrokes.press( keyEventData );
 
 					expect( wasHandled ).to.be.true;
-					expect( keyEventData.preventDefault.calledOnce ).to.be.false;
+					expect( keyEventData.preventDefault.notCalled ).to.be.true;
 
 					expect( dropdown.isOpen ).to.be.false;
 				} );

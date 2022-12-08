@@ -104,9 +104,7 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 
 		editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-			const findCommand = editor.commands.get( 'find' );
-
-			if ( findCommand && findCommand.isEnabled ) {
+			if ( dropdown.isEnabled ) {
 				dropdown.isOpen = true;
 				cancelEvent();
 			}
