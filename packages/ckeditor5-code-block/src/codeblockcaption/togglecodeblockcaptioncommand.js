@@ -3,8 +3,8 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-// import { CodeblockCaption } from '../codeblockcaption';
-import { isCodeblockModel, getClosestSelectedCodeblockElement } from '../utils';
+import { getClosestSelectedCodeblockElement } from '../utils';
+import { getCaptionFromCodeblockModelElement } from './utils';
 
 /**
  * The toggle codeblock caption command.
@@ -45,7 +45,6 @@ export default class ToggleCodeblockCaptionCommand extends Command {
         const selection = editor.model.document.selection;
 
         if ( !selection ) {
-            console.log(`Einstrasse: no selectedElement`);
 
             this.isEnabled = false;
             this.value = false;
@@ -53,8 +52,15 @@ export default class ToggleCodeblockCaptionCommand extends Command {
             return;
         }
 
-        this.isEnabled = !!getClosestSelectedCodeblockElement( selection );
-        console.log(`Einstrasse this.isEnabled = ${this.isEnabled}`);
+        const selectedCodeblockElement = getClosestSelectedCodeblockElement( selection );
+
+        this.isEnabled = !!selectedCodeblockElement
+        
+        if ( !this.isEnabled ) {
+            this.value = false;
+        } else {
+            this.value = !!getCaptionFromCodeblockModelElement( selectedCodeblockElement );
+        }
 
 
     }
@@ -66,7 +72,6 @@ export default class ToggleCodeblockCaptionCommand extends Command {
      * 
      */
     execute() {
-        console.log(`Einstrasse ToggleCodeblockCaptionCommand`);
         this.editor.model.change( writer => {
             if ( this.value ) {
                 this._hideCodeblockCaption( writer );
@@ -77,10 +82,10 @@ export default class ToggleCodeblockCaptionCommand extends Command {
     }
 
     _showCodeblockCaption( writer ) {
-        console.log(`ToggleCodeblockCaptionCommand - _showCodeblockCaption called!`);
-        const model = this.editor.model;
+        const editor = this.editor;
+        const model = editor.model;
         const selection = model.document.selection;
-        const codeblockCaptionEditing = this.editor.plugins.get( 'CodeblockCaptionEditing' );
+        const codeblockCaptionEditing = editor.plugins.get( 'CodeblockCaptionEditing' );
 
         let selectedCodeblock = getClosestSelectedCodeblockElement( selection );
 
@@ -89,9 +94,21 @@ export default class ToggleCodeblockCaptionCommand extends Command {
         const newCaptionElement = savedCaption || writer.createElement( 'caption' );
 
         writer.append( newCaptionElement, selectedCodeblock );
+
+        writer.setSelection( newCaptionElement, 'in' );
     }
 
     _hideCodeblockCaption( writer ) {
-        console.log(`ToggleCodeblockCaptionCommand - _hideCodeblockCaption called!`);
+        const editor = this.editor;
+        const selection = editor.model.document.selection;
+        const codeblockCaptionEditing = this.editor.plugins.get( 'CodeblockCaptionEditing' );
+
+        let selectedCodeblock = getClosestSelectedCodeblockElement( selection );
+        let captionElement = getCaptionFromCodeblockModelElement( selectedCodeblock );
+
+        codeblockCaptionEditing._saveCaption( selectedCodeblock, captionElement );
+
+        writer.setSelection( selectedCodeblock, 'on' );
+        writer.remove( captionElement );
     }
 }

@@ -2,9 +2,8 @@
  * @module code-block/codeblockcaption/codeblockcaptionediting
  */
 
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine';
-import { isIterable } from '@ckeditor/ckeditor5-utils';
-import { toWidgetEditable } from '@ckeditor/ckeditor5-widget';
+import { Element, enablePlaceholder } from 'ckeditor5/src/engine';
+import { toWidgetEditable } from 'ckeditor5/src/widget';
 import { Plugin } from 'ckeditor5/src/core';
 import ToggleCodeblockCaptionCommand from './togglecodeblockcaptioncommand';
 import { matchCodeblockCaptionViewElement, isCodeblockWrapper } from './utils';

@@ -35,3 +35,12 @@ export function matchCodeblockCaptionViewElement( element ) {
     return null;
 }
 
+export function getCaptionFromCodeblockModelElement( codeblockModelElement ) {
+    for (const node of codeblockModelElement.getChildren() ) {
+        if ( !!node && node.is( 'element', 'caption' ) ) {
+            return node;
+        }
+    }
+    
+    return null;
+}
