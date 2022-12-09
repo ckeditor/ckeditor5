@@ -453,7 +453,6 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 		// When cursor is preceed caption, move cursor to end position
 		if ( isAtBeforeCaption ) {
 			let selection = modelDoc.selection;
-			console.log(`isAtBeforeCaption!!!`);
 			writer.setSelection( selection.getFirstPosition().parent, 'end' );
 		}
 

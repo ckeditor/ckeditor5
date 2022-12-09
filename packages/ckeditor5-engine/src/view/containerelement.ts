@@ -113,6 +113,11 @@ export function getFillerOffset( this: ContainerElement ): number | null {
 		return this.childCount;
 	}
 
+	// Block filler is required to codeblock with `<br><figcaption></figcaption>` sequence on the end.
+	if ( lastChild && lastChild.is( 'element', 'figcaption' ) && lastChild.previousSibling && lastChild.previousSibling.is( 'element' , 'br' ) ) {
+		return this.childCount - 1;	
+	}
+
 	for ( const child of children ) {
 		// If there's any non-UI element – don't render the bogus.
 		if ( !child.is( 'uiElement' ) ) {
