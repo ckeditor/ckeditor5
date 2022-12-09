@@ -170,6 +170,8 @@ export default class CodeBlockCommand extends Command {
 					writer.rename( position.nodeAfter, 'paragraph' );
 					writer.removeAttribute( 'language', position.nodeAfter );
 					writer.remove( item );
+				} else if ( item.is( 'element', 'caption' ) && item.parent.is( 'element', 'codeBlock' ) ) {
+					writer.remove( item );
 				}
 			}
 
