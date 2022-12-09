@@ -47,11 +47,19 @@ export default class CodeblockCaptionEditing extends Plugin {
      */
     init() {
         const editor = this.editor;
+        const view = editor.editing.view;
         
         this._defineSchema();
         this._setupConversion();
         
         editor.commands.add( 'toggleCodeblockCaption' , new ToggleCodeblockCaptionCommand( this.editor ) );
+
+        // Disable enter key event inside codeblock caption
+        this.listenTo( view.document, 'enter', ( evt, data ) => {
+            data.stopPropagation();
+            data.preventDefault();
+            evt.stop();
+        } );
         
     }
     
