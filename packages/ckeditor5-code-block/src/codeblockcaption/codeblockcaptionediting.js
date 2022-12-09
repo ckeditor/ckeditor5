@@ -54,11 +54,17 @@ export default class CodeblockCaptionEditing extends Plugin {
         
         editor.commands.add( 'toggleCodeblockCaption' , new ToggleCodeblockCaptionCommand( this.editor ) );
 
-        // Disable enter key event inside codeblock caption
+        // Disable enter key event inside codeblock caption to prevent bug
         this.listenTo( view.document, 'enter', ( evt, data ) => {
-            data.stopPropagation();
-            data.preventDefault();
-            evt.stop();
+            const doc = this.editor.model.document;
+            const positionParent = doc.selection.getLastPosition().parent;
+            
+            if ( positionParent.name == 'caption' ) {
+                data.stopPropagation();
+                data.preventDefault();
+                evt.stop();
+            }
+
         } );
         
     }
