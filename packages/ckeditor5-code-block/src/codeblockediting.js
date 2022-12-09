@@ -367,10 +367,15 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 	const view = editor.editing.view;
 	const lastSelectionPosition = modelDoc.selection.getLastPosition();
 	const nodeBefore = lastSelectionPosition.nodeBefore;
+	const nodeAfter = lastSelectionPosition.nodeAfter;
+	const isAtBeforeCaption = nodeAfter && ( isCaptionNode( nodeAfter ) || isCaptionNode( nodeAfter.nextSibling ) );
+	const isAtEnd = lastSelectionPosition.isAtEnd || isAtBeforeCaption;
 
 	let emptyLineRangeToRemoveOnEnter;
 
-	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
+	
+
+	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
 		return false;
 	}
 
@@ -445,6 +450,13 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 		// Remove the last <softBreak>s and all white space characters that followed them.
 		writer.remove( emptyLineRangeToRemoveOnEnter );
 
+		// When cursor is preceed caption, move cursor to end position
+		if ( isAtBeforeCaption ) {
+			let selection = modelDoc.selection;
+			console.log(`isAtBeforeCaption!!!`);
+			writer.setSelection( selection.getFirstPosition().parent, 'end' );
+		}
+
 		// "Clone" the <codeBlock> in the standard way.
 		editor.execute( 'enter' );
 
@@ -467,4 +479,8 @@ function isEmptyishTextNode( node ) {
 
 function isSoftBreakNode( node ) {
 	return node && node.is( 'element', 'softBreak' );
+}
+
+function isCaptionNode( node ) {
+	return node && node.is( 'element', 'caption' );
 }
