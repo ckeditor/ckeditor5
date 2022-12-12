@@ -95,7 +95,9 @@ export default class ToggleCodeblockCaptionCommand extends Command {
 
         writer.append( newCaptionElement, selectedCodeblock );
 
-        writer.setSelection( newCaptionElement, 'in' );
+        // To enable editable focus, setSelection for selectedCodeblock should be called in advance.
+        writer.setSelection( selectedCodeblock, 'on' );
+        writer.setSelection( newCaptionElement, 'on' );
     }
 
     _hideCodeblockCaption( writer ) {
@@ -108,7 +110,7 @@ export default class ToggleCodeblockCaptionCommand extends Command {
 
         codeblockCaptionEditing._saveCaption( selectedCodeblock, captionElement );
 
-        writer.setSelection( selectedCodeblock, 'on' );
+        writer.setSelection( selectedCodeblock, 'end' );
         writer.remove( captionElement );
     }
 }

@@ -44,3 +44,17 @@ export function getCaptionFromCodeblockModelElement( codeblockModelElement ) {
     
     return null;
 }
+
+export function getCodeblockCaptionFromModelSelection( selection ) {
+    const captionElement = selection.getFirstPosition().findAncestor( 'caption' );
+
+    if ( !captionElement ) {
+        return null;
+    }
+
+    if ( isCodeblockWrapper( captionElement.parent ) ) {
+        return captionElement;
+    }
+
+    return null;
+}

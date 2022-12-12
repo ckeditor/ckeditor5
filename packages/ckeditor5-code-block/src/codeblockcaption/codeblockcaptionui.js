@@ -3,7 +3,8 @@
  */
 
 import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
+import { ButtonView } from 'ckeditor5/src/ui';
+import { getCodeblockCaptionFromModelSelection } from './utils';
 
 /**
  * The codeblock caption UI plugin. It introduces the `'toggleCodeblockCaption'` UI button.
@@ -49,10 +50,21 @@ export default class CodeblockCaptionUI extends Plugin {
 
             this.listenTo( view, 'execute', () => {
                 editor.execute( 'toggleCodeblockCaption' );
-
+                
                 // Scroll to the selection and highlight the caption if the caption showed up.
-                console.log("UI button on click!");
-                // const modelCaptionElement = 
+                const modelCaptionElement = getCodeblockCaptionFromModelSelection( editor.model.document.selection );
+
+                if ( modelCaptionElement ) {
+                    const figcaptionElement = editor.editing.mapper.toViewElement ( modelCaptionElement );
+
+                    editingView.scrollToTheSelection();
+
+                    editingView.change( writer => {
+                        writer.addClass( 'codeblock__caption_highlighted', figcaptionElement );
+                    } );
+                }
+                
+                editor.editing.view.focus();
             } );
 
 
@@ -60,5 +72,5 @@ export default class CodeblockCaptionUI extends Plugin {
         } );
         
     }
-    
+
 }

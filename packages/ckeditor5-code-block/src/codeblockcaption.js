@@ -6,6 +6,8 @@ import { Plugin } from 'ckeditor5/src/core';
 import CodeblockCaptionUI from './codeblockcaption/codeblockcaptionui';
 import CodeblockCaptionEditing from './codeblockcaption/codeblockcaptionediting';
 
+import '../theme/codeblockcaption.css';
+
 /**
  * The codeblock caption plugin.
  * 

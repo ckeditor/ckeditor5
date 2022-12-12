@@ -1,0 +1,32 @@
+:root {
+	--ck-color-codeblock-caption-background: hsl(0, 0%, 97%);
+	--ck-color-codeblock-caption-text: hsl(0, 0%, 20%);
+	--ck-color-codeblock-caption-highligted-background: hsl(52deg 100% 50%);
+}
+
+/* Content styles */
+/* .ck-content .codeblock > figcaption {
+	display: table-caption;
+	caption-side: bottom;
+	word-break: break-word;
+	color: var(--ck-color-codeblock-caption-text);
+	background-color: var(--ck-color-codeblock-caption-background);
+	padding: .6em;
+	font-size: .75em;
+	outline-offset: -1px;
+} */
+
+/* Editing styles */
+code > figcaption.codeblock__caption_highlighted {
+	animation: ck-codeblock-caption-highlight .6s ease-out;
+}
+
+@keyframes ck-codeblock-caption-highlight {
+	0% {
+		background-color: var(--ck-color-codeblock-caption-highligted-background);
+	}
+
+	100% {
+		background-color: var(--ck-color-codeblock-caption-background);
+	}
+}
