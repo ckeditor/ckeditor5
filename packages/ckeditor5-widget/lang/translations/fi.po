@@ -30,4 +30,4 @@ msgstr "Liitä kappale lohkon jälkeen"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Paina enter-näppäintä kirjoittaaksesi tai paina shift + enter kirjoittaaksesi ennen widget-sovellusta"

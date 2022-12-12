@@ -30,4 +30,4 @@ msgstr "ブロックの後にパラグラフを挿入"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Enterを押してウィジェットの後に入力するか、Shift + Enterを押してウィジェットの前に入力してください"

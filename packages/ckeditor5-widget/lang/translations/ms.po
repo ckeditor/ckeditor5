@@ -30,4 +30,4 @@ msgstr "Masukkan perenggan sebelum blok"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Tekan Enter untuk menaip selepas atau tekan Shift + Enter untuk menaip sebelum widget"

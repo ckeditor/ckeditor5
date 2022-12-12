@@ -30,4 +30,4 @@ msgstr "Vložte odstavec za blok"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Stisknutím klávesy Enter můžete psát za widgetem a stisknutím Shift + Enter před ním"
