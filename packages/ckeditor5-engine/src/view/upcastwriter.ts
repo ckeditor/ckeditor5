@@ -339,7 +339,7 @@ export default class UpcastWriter {
 	 * @param {*} value Custom property value to be stored.
 	 * @param {module:engine/view/element~Element} element Element for which custom property will be set.
 	 */
-	public setCustomProperty( key: string | symbol, value: unknown, element: Element ): void {
+	public setCustomProperty( key: string | symbol, value: unknown, element: Element | DocumentFragment ): void {
 		element._setCustomProperty( key, value );
 	}
 
@@ -351,7 +351,7 @@ export default class UpcastWriter {
 	 * @param {module:engine/view/element~Element} element Element from which the custom property will be removed.
 	 * @returns {Boolean} Returns true if property was removed.
 	 */
-	public removeCustomProperty( key: string | symbol, element: Element ): boolean {
+	public removeCustomProperty( key: string | symbol, element: Element | DocumentFragment ): boolean {
 		return element._removeCustomProperty( key );
 	}
 

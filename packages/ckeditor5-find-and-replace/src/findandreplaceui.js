@@ -109,8 +109,10 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 
 		editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-			dropdown.isOpen = true;
-			cancelEvent();
+			if ( dropdown.isEnabled ) {
+				dropdown.isOpen = true;
+				cancelEvent();
+			}
 		} );
 	}
 
