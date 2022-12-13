@@ -1,8 +1,12 @@
 
 /**
+ * @module code-block/codeblockcaption/utils
+ */
+
+/**
  * 
  * @param {module:engine/model/element~Element} modelElement Element to check if it is a codeblock wrapper
- * @returns 
+ * @returns {Boolean}
  */
 export function isCodeblockWrapper( modelElement ) {
     return !!modelElement && modelElement.is( 'element', 'codeBlock' );
@@ -35,6 +39,11 @@ export function matchCodeblockCaptionViewElement( element ) {
     return null;
 }
 
+/**
+ * It returns codeblock-caption node inside codeblockModelElement or `null` if there is no caption node inside modelElement.
+ * @param {module:engine/model/element~Element} codeblockModelElement 
+ * @returns {module:engine/model/node~Node|null}
+ */
 export function getCaptionFromCodeblockModelElement( codeblockModelElement ) {
     for (const node of codeblockModelElement.getChildren() ) {
         if ( !!node && node.is( 'element', 'caption' ) ) {
@@ -45,6 +54,13 @@ export function getCaptionFromCodeblockModelElement( codeblockModelElement ) {
     return null;
 }
 
+/**
+ * It returns codeblock caption inside selected codeblock element or `null` if there is no 
+ * codeblock caption in selection scope.
+ * 
+ * @param {module:engine/model/selection~Selection} selection 
+ * @returns {module:engine/model/element~Element|null}
+ */
 export function getCodeblockCaptionFromModelSelection( selection ) {
     const captionElement = selection.getFirstPosition().findAncestor( 'caption' );
 

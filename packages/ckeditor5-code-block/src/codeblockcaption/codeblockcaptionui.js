@@ -38,7 +38,7 @@ export default class CodeblockCaptionUI extends Plugin {
         editor.ui.componentFactory.add( 'toggleCodeblockCaption', locale => {
             const command = editor.commands.get( 'toggleCodeblockCaption' );
             const view = new ButtonView( locale );
-
+            
             view.set( {
                 icon: icons.caption,
                 tooltip: true,
@@ -69,8 +69,6 @@ export default class CodeblockCaptionUI extends Plugin {
 
 
             return view;
-        } );
-        
+        } );   
     }
-
 }

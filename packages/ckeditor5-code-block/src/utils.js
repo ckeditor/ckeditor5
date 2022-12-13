@@ -235,21 +235,41 @@ export function canBeCodeBlock( schema, element ) {
 	return schema.checkChild( element.parent, 'codeBlock' );
 }
 
-
+/**
+ * Check if viewElement is codeblock view.
+ * @param {module:engine/view/element~Element} viewElement 
+ * @returns {Boolean}
+ */
 export function isCodeblockView( viewElement ) {
 	return viewElement.getCustomProperty && !!viewElement.getCustomProperty( 'codeblock' );
 }
 
+/**
+ * Check if modelElement is codeblock model.
+ * @param {module:engine/model/element~Element} modelElement 
+ * @returns {Boolean}
+ */
 export function isCodeblockModel( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'codeBlock' );
 }
 
+/**
+ * Returns a codeblock model element if one is selected or is among the selection's ancestors.
+ * 
+ * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection 
+ * @returns {module:engine/model/element~Element|null}
+ */
 export function getClosestSelectedCodeblockElement( selection ) {
 	const selectedElement = selection.getSelectedElement();
 
 	return isCodeblockModel( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'codeBlock' );
 }
 
+/**
+ * Returns an code block view element if one is selected or is among the selection's ancestors.
+ * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection 
+ * @returns {module:engine/view/element~Element|null}
+ */
 export function getClosestSelectedCodeblockView( selection ) {
 	const selectionPosition = selection.getFirstPosition();
 

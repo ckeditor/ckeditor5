@@ -32,9 +32,10 @@
         const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
         widgetToolbarRepository.register( 'codeblock', {
-            ariaLabel: t( 'Image toolbar'), //TODO: Einstrasse, rename this value.... for locale setting
+            ariaLabel: t( 'Codeblock toolbar'),
             items: editor.config.get( 'codeblock.toolbar' ),
             getRelatedElement: selection => getClosestSelectedCodeblockView( selection )
         } );
     }
  }
+ 

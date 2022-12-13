@@ -13,7 +13,7 @@ import { matchCodeblockCaptionViewElement, isCodeblockWrapper } from './utils';
  * 
  * * registering converters for the caption element,
  * * registering converters for the caption model attribute,
- * * registering the 
+ * * registering the {@link module:code-block/codeblockcaption/togglecodeblockcaptioncommand~ToggleCodeblockCaptionCommand `toggleCodeblockCaption`} command.
  * 
  * @extends module:core/plugin~Plugin
  */
@@ -39,6 +39,14 @@ export default class CodeblockCaptionEditing extends Plugin {
     constructor( editor ) {
         super ( editor );
 
+        /**
+         * A map that keeps saved JSONified codeblock captions and codeblock model element 
+         * they are associated with.
+         * 
+         * To learn more about this system, see {@link #_saveCaption}.
+         * 
+         * @member {WeakMap.<module:engine/model/element~Element,Object>}
+         */
         this._savedCaptionsMap = new WeakMap();
     }
 
@@ -49,7 +57,20 @@ export default class CodeblockCaptionEditing extends Plugin {
         const editor = this.editor;
         const view = editor.editing.view;
         
-        this._defineSchema();
+        // Schema configuration.
+        const schema = editor.model.schema;
+        if ( !schema.isRegistered( 'caption' ) ) {
+            schema.register( 'caption', {
+                allowIn: 'codeBlock',
+                allowContentOf: '$block',
+                isLimit: true
+            } );
+        } else {
+            schema.extend( 'caption', {
+                allowIn: 'codeBlock'
+            } );
+        }
+
         this._setupConversion();
         
         editor.commands.add( 'toggleCodeblockCaption' , new ToggleCodeblockCaptionCommand( this.editor ) );
@@ -69,25 +90,9 @@ export default class CodeblockCaptionEditing extends Plugin {
         
     }
     
-    _defineSchema() {
-        console.log(`codeblockCaptionEditing define Schema Called!`);
-
-        const editor = this.editor;
-        const schema = editor.model.schema;
-        if ( !schema.isRegistered( 'caption' ) ) {
-            schema.register( 'caption', {
-                allowIn: 'codeBlock',
-                allowContentOf: '$block',
-                isLimit: true
-            } );
-        } else {
-            schema.extend( 'caption', {
-                allowIn: 'codeBlock'
-            } );
-        }
-        
-    }
-    
+    /**
+     * Configures conversion pipelines to support upcasting and downcasting codeblock captions.
+     */
     _setupConversion() {
         const editor = this.editor;
         const view = editor.editing.view;
@@ -120,12 +125,13 @@ export default class CodeblockCaptionEditing extends Plugin {
                 }
 
                 const figcaptionElement = writer.createEditableElement( 'figcaption' );
+
                 writer.setCustomProperty( 'codeblockCaption', true, figcaptionElement );
 
                 enablePlaceholder( {
                     view,
                     element: figcaptionElement,
-                    text: t( 'Enter image caption' ), //TODO: locale text change required
+                    text: t( 'Enter codeblock caption' ),
                     keepOnFocus: true
                 } );
 
@@ -134,12 +140,33 @@ export default class CodeblockCaptionEditing extends Plugin {
         } );
     }
 
+    /**
+     * Returns the saved {@link module:engine/model/element~Element#toJSON JSONified} caption
+     * of an codeblock model element.
+     * 
+     * See {@link #_saveCaption}.
+     * 
+     * @protected
+     * @param {module:engine/model/element~Element} codeblockModelElement The model element the caption should be returned for.
+     * @returns {module:engine/model/element~Element|null} The model caption element or `null` if there is none.
+     */
     _getSavedCaption( codeblockModelElement ) {
         const jsonObject = this._savedCaptionsMap.get( codeblockModelElement );
 
         return jsonObject ? Element.fromJSON( jsonObject ) : null;
     }
 
+    /**
+     * Saves a {@link module:engine/model/element~Element#toJSON JSONified} caption for an codeblock element to allow restoring it in the future.
+     * 
+     * A caption is saved every time it gets hidden and/or the type of an codeblock changes.
+     * The user should be able to restore it on demand.
+     * 
+     * **Note**: The caption cannot be stored in the codeblock model element attribute because, for the instance, when the model state propagates to collaborators, the attribute would get lost (mainly because it does not convert to anything when the caption is hidden) and the states of collaborators' models would de-synchronize causing numerous issues.
+     * See {@link #_getSavedCaption}.
+     * @param {module:engine/model/element~Element} codeblockModelElement The model element the caption is saved for.
+     * @param {module:engine/model/element~Element} caption The caption model element to be saved.
+     */
     _saveCaption( codeblockModelElement, caption ) {
 		this._savedCaptionsMap.set( codeblockModelElement, caption.toJSON() );
 	}

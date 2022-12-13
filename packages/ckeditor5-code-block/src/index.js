@@ -11,3 +11,5 @@ export { default as CodeBlock } from './codeblock';
 export { default as CodeBlockEditing } from './codeblockediting';
 export { default as CodeBlockUI } from './codeblockui';
 export { default as CodeblockToolbar} from './codeblocktoolbar';
+export { default as CodeblockCaption } from './codeblockcaption';
+export { default as CodeblockCaptionEditing } from './codeblockcaption/codeblockcaptionediting';

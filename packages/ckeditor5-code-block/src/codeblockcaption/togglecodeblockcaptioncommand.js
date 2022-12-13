@@ -38,7 +38,6 @@ export default class ToggleCodeblockCaptionCommand extends Command {
         if ( !editor.plugins.has( 'CodeblockCaption' ) ) {
             this.isEnabled = false;
             this.value = false;
-            console.log(`Einstrasse: the codeblock caption plugin is not loaded!`);
             return;
         }
 
@@ -69,7 +68,7 @@ export default class ToggleCodeblockCaptionCommand extends Command {
      * Executes the command
      * 
      *      editor.execute( 'toggleCodeblockCaption' );
-     * 
+     * @fires execute
      */
     execute() {
         this.editor.model.change( writer => {
@@ -81,6 +80,14 @@ export default class ToggleCodeblockCaptionCommand extends Command {
         } );
     }
 
+    /**
+     * Shows the caption of the `<codeBlock>`. Also:
+     * 
+     * * it attempts to restore the caption content from the `CodeblockCaptionEditing` caption registry.
+     * * it shall moves the selection to the captino right away, but with some UI focus bug issue, it is not editable right away.
+     * @private
+     * @param {module:engine/model/writer~Writer} writer 
+     */
     _showCodeblockCaption( writer ) {
         const editor = this.editor;
         const model = editor.model;
@@ -95,11 +102,19 @@ export default class ToggleCodeblockCaptionCommand extends Command {
 
         writer.append( newCaptionElement, selectedCodeblock );
 
-        // To enable editable focus, setSelection for selectedCodeblock should be called in advance.
-        writer.setSelection( selectedCodeblock, 'on' );
-        writer.setSelection( newCaptionElement, 'on' );
+        // TODO: Slight UI Bug -> Even though selection is inside newCaptionElement, it is not editable immediately. Additional click is required to trigger editable status.
+        writer.setSelection( newCaptionElement, 'in' );
     }
 
+    /**
+     * Hides the caption of a selected image (or an image caption the selection is anchored to).
+     * 
+     * The content of the caption is stored in the `CodeblockCaptionEditing` caption registry to make this
+     * a reversible action.
+     * 
+     * @private
+     * @param {module:engine/model/writer~Writer} writer 
+     */
     _hideCodeblockCaption( writer ) {
         const editor = this.editor;
         const selection = editor.model.document.selection;
@@ -108,6 +123,7 @@ export default class ToggleCodeblockCaptionCommand extends Command {
         let selectedCodeblock = getClosestSelectedCodeblockElement( selection );
         let captionElement = getCaptionFromCodeblockModelElement( selectedCodeblock );
 
+        // Store the caption content so it can be restored quickly if the user changes their mind.
         codeblockCaptionEditing._saveCaption( selectedCodeblock, captionElement );
 
         writer.setSelection( selectedCodeblock, 'end' );
