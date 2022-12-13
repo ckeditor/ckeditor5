@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -257,6 +257,29 @@ describe( 'Alignment UI', () => {
 			expect( items.includes( 'Align right' ) ).to.be.true;
 			expect( items.includes( 'Align center' ) ).to.be.true;
 			expect( items.includes( 'Justify' ) ).to.be.true;
+		} );
+
+		it( 'should focus the first active button when dropdown is opened', () => {
+			const buttonAlignLeft = dropdown.toolbarView.items.get( 0 );
+			const buttonAlignRight = dropdown.toolbarView.items.get( 1 );
+			const spy = sinon.spy( buttonAlignRight, 'focus' );
+
+			buttonAlignLeft.isOn = false;
+			buttonAlignRight.isOn = true;
+			dropdown.isOpen = true;
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should return focus to editable after executing a command', () => {
+			const buttonAlignLeft = dropdown.toolbarView.items.get( 0 );
+			const spy = sinon.spy( editor.editing.view, 'focus' );
+			dropdown.render();
+
+			buttonAlignLeft.fire( 'execute' );
+
+			// The focus is called twice - once by the button itself
+			// and once by the dropdown it is in.
+			sinon.assert.calledTwice( spy );
 		} );
 
 		describe( 'config', () => {

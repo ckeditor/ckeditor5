@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,11 +16,12 @@ module.exports = function buildApiDocs() {
 			readmePath: 'README.md',
 			sourceFiles: [
 				'packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
+				'packages/@(ckeditor|ckeditor5)-*/_src/**/*.@(js|jsdoc)',
 				'!packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
 				'!packages/ckeditor5-build-*/src/**/*.js',
-				'external/*/packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
-				'!external/*/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
-				'!external/*/packages/ckeditor5-build-*/src/**/*.js'
+				'external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
+				'!external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
+				'!external/@(ckeditor5-internal|collaboration-features)/packages/ckeditor5-build-*/src/**/*.js'
 			],
 			validateOnly: process.argv.includes( '--validate-only' ),
 			strict: process.argv.includes( '--strict' )

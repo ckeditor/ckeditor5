@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,14 +20,6 @@ describe( 'EmptyElement', () => {
 			alt: 'alternative text',
 			style: 'margin-top: 2em;color: white;',
 			class: 'image big'
-		} );
-	} );
-
-	describe( 'constructor()', () => {
-		it( 'should have the default value for isAllowedInsideAttributeElement set to true', () => {
-			const el = new EmptyElement( document, 'span' );
-
-			expect( el.isAllowedInsideAttributeElement ).to.be.true;
 		} );
 	} );
 

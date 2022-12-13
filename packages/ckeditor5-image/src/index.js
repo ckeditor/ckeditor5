@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,6 +10,7 @@
 export { default as AutoImage } from './autoimage';
 export { default as Image } from './image';
 export { default as ImageEditing } from './image/imageediting';
+export { default as ImageCaptionUtils } from './imagecaption/imagecaptionutils';
 export { default as ImageCaption } from './imagecaption';
 export { default as ImageCaptionEditing } from './imagecaption/imagecaptionediting';
 export { default as ImageInsert } from './imageinsert';
@@ -29,3 +30,4 @@ export { default as ImageUpload } from './imageupload';
 export { default as ImageUploadEditing } from './imageupload/imageuploadediting';
 export { default as ImageUploadProgress } from './imageupload/imageuploadprogress';
 export { default as ImageUploadUI } from './imageupload/imageuploadui';
+export { default as PictureEditing } from './pictureediting';

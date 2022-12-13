@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -190,5 +190,17 @@ describe( 'ImageUploadUI', () => {
 		sinon.assert.calledOnce( executeStub );
 		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );
 		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( [ files[ 0 ] ] );
+	} );
+
+	it( 'should move focus to editable after executing the command', () => {
+		const spy = sinon.spy( editor.editing.view, 'focus' );
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
+		const file = [ createNativeFileMock() ];
+
+		setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+		button.fire( 'done', file );
+
+		expect( spy ).to.be.calledOnce;
 	} );
 } );

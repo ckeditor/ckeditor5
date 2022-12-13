@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,6 @@
 
 import { Command } from 'ckeditor5/src/core';
 import TableWalker from '../tablewalker';
-import { getTableCellsContainingSelection } from '../utils/selection';
 import { isHeadingColumnCell } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';
 
@@ -80,7 +79,8 @@ export default class MergeCellCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableCell = tableUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		const cellToMerge = this.value;
 		const direction = this.direction;
@@ -122,13 +122,12 @@ export default class MergeCellCommand extends Command {
 	_getMergeableCell() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableCell = tableUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		if ( !tableCell ) {
 			return;
 		}
-
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
 		// First get the cell on proper direction.
 		const cellToMerge = this.isHorizontal ?

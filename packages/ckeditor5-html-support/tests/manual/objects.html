@@ -2,7 +2,10 @@
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
 </head>
 
-<div id="editor">
+<button id="init-editor">Create the editor instance</button>
+<br><br>
+
+<textarea id="editor">
 	<p>
 	<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0">
 		<param name="allowFullScreen" value="true" />
@@ -19,7 +22,7 @@
 
 		<p><input name="text field" type="text" value="10" /></p>
 
-		<p><textarea name="textarea">10</textarea></p>
+		<p><textarea name="textarea">10&lt;/textarea></p>
 
 		<p><select name="selection field"><option value="1">a1</option><option selected="selected" value="2">a2</option><option value="3">a3</option></select></p>
 
@@ -60,7 +63,7 @@
 
 	<p><input alt="" src="https://via.placeholder.com/100" type="image" /></p>
 
-	<p><textarea name="textarea">some text in textarea</textarea></p>
+	<p><textarea name="textarea">some text in textarea&lt;/textarea></p>
 
 	<p><select name="selection field"><option value="1">a1</option><option selected="selected" value="2">a2</option><option value="3">a3</option></select></p>
 
@@ -71,4 +74,4 @@
 	<p><label><input> text</label></p>
 
 	<p><xyz data-foo="foo">Hello, world!</xyz></p>
-</div>
+</textarea>

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -952,10 +952,34 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should upcast width from <figure>', () => {
-					editor.setData( '<figure style="width:1337px"><table><tr><td>foo</td></tr></table></figure>' );
+					editor.setData( '<figure class="table" style="width:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast width from <figure> if both <figure> and <table> has width style set', () => {
+					editor.setData(
+						'<figure class="table" style="width:75%">' +
+							'<table style="width:95%"><tbody><tr><td>foo</td></tr></tbody></table>' +
+						'</figure>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '75%' );
+				} );
+
+				it( 'should not upcast width if <table> inside <figure> has width style set', () => {
+					editor.setData(
+						'<figure class="table">' +
+							'<table style="width:95%"><tbody><tr><td>1</td></tr></tbody></table>' +
+						'</figure>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -1026,10 +1050,34 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should upcast height from <figure>', () => {
-					editor.setData( '<figure style="height:1337px"><table><tr><td>foo</td></tr></table></figure>' );
+					editor.setData( '<figure class="table" style="height:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast height from <figure> if both <figure> and <table> has height style set', () => {
+					editor.setData(
+						'<figure class="table" style="height:75%">' +
+							'<table style="height:95%"><tbody><tr><td>foo</td></tr></tbody></table>' +
+						'</figure>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '75%' );
+				} );
+
+				it( 'should not upcast height if <table> inside <figure> has height style set', () => {
+					editor.setData(
+						'<figure class="table">' +
+							'<table style="height:95%"><tbody><tr><td>1</td></tr></tbody></table>' +
+						'</figure>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -1323,7 +1371,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should not upcast the default `width` value from <figure>', () => {
-					editor.setData( '<figure style="width:250px"><table><tr><td>foo</td></tr></table></figure>' );
+					editor.setData( '<figure class="table" style="width:250px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'width' ) ).to.be.undefined;
@@ -1339,7 +1387,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should not upcast the default `height` value from <figure>', () => {
-					editor.setData( '<figure style="height:150px"><table><tr><td>foo</td></tr></table></figure>' );
+					editor.setData( '<figure class="table" style="height:150px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'height' ) ).to.be.undefined;

@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import MarkdownDataProcessor from '../../src/gfmdataprocessor';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 

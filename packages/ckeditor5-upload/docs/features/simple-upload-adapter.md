@@ -1,19 +1,19 @@
 ---
 category: features-image-upload
 menu-title: Simple upload adapter
-order: 50
+order: 60
 ---
 
 # Simple upload adapter
 
-The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin allows uploading images to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal [editor configuration](#configuration).
+The simple upload adapter allows uploading images to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal [editor configuration](#configuration).
 
 See the [Server–side configuration](#server-side-configuration) section to learn about the requirements your server–side application must meet to support this upload adapter.
 
 ## Installation
 
 <info-box info>
-	The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin is not available out–of–the–box in any of {@link builds/guides/overview#available-builds official editor builds}. Check out the {@link builds/guides/integration/installing-plugins "Installing plugins" guide} to learn more.
+	The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin is not available out–of–the–box in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}. Check out the {@link installation/getting-started/installing-plugins "Installing plugins" guide} to learn more.
 </info-box>
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
@@ -40,7 +40,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -133,7 +133,7 @@ If the upload is successful, the server should return:
 The URL(s) in the server response are used:
 
 * To display the image during the editing (as seen by the user in the editor).
-* In the editor content {@link builds/guides/integration/saving-data saved to the database}.
+* In the editor content {@link installation/advanced/saving-data saved to the database}.
 
 ### Error handling
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -47,3 +47,7 @@ msgstr "وارد کردن رسانه"
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Media toolbar"
 msgstr "نوارابزار رسانه"
+
+msgctxt "A tooltip displayed when the user hovers a non-previewable media URL in the editor content."
+msgid "Open media in new tab"
+msgstr ""

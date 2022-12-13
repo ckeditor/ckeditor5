@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -161,6 +161,16 @@ describe( 'NodeList', () => {
 			expectToThrowCKEditorError( () => {
 				nodes._insertNodes( 0, [ 'foo' ] );
 			}, 'nodelist-insertnodes-not-node', nodes );
+		} );
+
+		it( 'should insert large number of nodes (250 000) without throwing an error', () => {
+			const numberOfNodes = 250000;
+			const largeArray = 'a'.repeat( numberOfNodes ).split( '' ).map( el => new Text( el ) );
+			const expectedLength = nodes.length + largeArray.length;
+
+			nodes._insertNodes( 0, largeArray );
+
+			expect( nodes.length ).to.equal( expectedLength );
 		} );
 	} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -87,24 +87,20 @@ export default class MediaEmbedUI extends Plugin {
 			// command.
 			form.url = command.value || '';
 			form.urlInputView.fieldView.select();
-			form.focus();
 			form.enableCssTransitions();
 		}, { priority: 'low' } );
 
 		dropdown.on( 'submit', () => {
 			if ( form.isValid() ) {
 				editor.execute( 'mediaEmbed', form.url );
-				closeUI();
+				editor.editing.view.focus();
 			}
 		} );
 
 		dropdown.on( 'change:isOpen', () => form.resetFormStatus() );
-		dropdown.on( 'cancel', () => closeUI() );
-
-		function closeUI() {
+		dropdown.on( 'cancel', () => {
 			editor.editing.view.focus();
-			dropdown.isOpen = false;
-		}
+		} );
 	}
 
 	/**

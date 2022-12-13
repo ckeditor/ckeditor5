@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -139,6 +139,16 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
+		} );
+
+		it( 'should be decorated', () => {
+			const viewElement = parseView( '<p>foo</p>' );
+			const spy = sinon.spy();
+
+			data.on( 'toModel', spy );
+			data.toModel( viewElement );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [ viewElement ] );
 		} );
 
 		it( 'should convert content of an element #1', () => {
@@ -291,22 +301,26 @@ describe( 'DataController', () => {
 			expect( modelDocument.history.getOperations().length ).to.equal( 1 );
 		} );
 
-		it( 'should create a `default` batch by default', () => {
+		it( 'should create a batch with default type if `batchType` option is not given', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
 			const operation = modelDocument.history.getOperations()[ 0 ];
+			const batch = operation.batch;
 
-			expect( operation.batch.type ).to.equal( 'default' );
+			expect( batch.isUndoable ).to.be.true;
+			expect( batch.isLocal ).to.be.true;
+			expect( batch.isUndo ).to.be.false;
+			expect( batch.isTyping ).to.be.false;
 		} );
 
 		it( 'should create a batch specified by the `options.batch` option when provided', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
-			data.set( 'foo', { batchType: 'transparent' } );
+			data.set( 'foo', { batchType: { isUndoable: true } } );
 
 			const operation = modelDocument.history.getOperations()[ 0 ];
 
-			expect( operation.batch.type ).to.equal( 'transparent' );
+			expect( operation.batch.isUndoable ).to.be.true;
 		} );
 
 		it( 'should cause firing change event', () => {
@@ -616,6 +630,16 @@ describe( 'DataController', () => {
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 			downcastHelpers.elementToElement( { model: 'div', view: 'div' } );
+		} );
+
+		it( 'should be decorated', () => {
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
+			const spy = sinon.spy();
+
+			data.on( 'toView', spy );
+			data.toView( modelElement );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [ modelElement ] );
 		} );
 
 		it( 'should use #viewDocument as a parent for returned document fragments', () => {
@@ -1021,12 +1045,17 @@ describe( 'DataController', () => {
 			model.schema.extend( '$text', {
 				allowAttributes: [ 'bold' ]
 			} );
+			model.schema.register( 'softBreak', {
+				allowWhere: '$text',
+				isInline: true
+			} );
 		} );
 
 		it( 'should allow nesting upcast conversion', () => {
 			const dataProcessor = data.processor;
 
 			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } );
+			upcastHelpers.elementToElement( { view: 'br', model: 'softBreak' } );
 
 			data.upcastDispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
 				const viewItem = data.viewItem;
@@ -1040,20 +1069,17 @@ describe( 'DataController', () => {
 
 				// Create `caption` model element. Thanks to that element the rest of the `ckeditor5-plugin` converters can
 				// recognize this image as a block image with a caption.
+				//
+				// Caption element is also used as a conversion target so Schema can be properly checked for allowed children.
+				// https://github.com/ckeditor/ckeditor5/issues/12797.
 				const caption = conversionApi.writer.createElement( 'caption' );
 
 				// Parse HTML from data-caption attribute and upcast it to model fragment.
 				const viewFragment = dataProcessor.toView( viewItem.getAttribute( 'data-caption' ) );
-				const modelFragment = conversionApi.writer.createDocumentFragment();
 
 				// Consumable must know about those newly parsed view elements.
 				conversionApi.consumable.constructor.createFrom( viewFragment, conversionApi.consumable );
-				conversionApi.convertChildren( viewFragment, modelFragment );
-
-				// Insert caption model nodes into the caption.
-				for ( const child of Array.from( modelFragment.getChildren() ) ) {
-					conversionApi.writer.append( child, caption );
-				}
+				conversionApi.convertChildren( viewFragment, caption );
 
 				// Insert the caption element into image, as a last child.
 				conversionApi.writer.append( caption, container );
@@ -1070,10 +1096,10 @@ describe( 'DataController', () => {
 				conversionApi.updateConversionResult( container, data );
 			} );
 
-			data.set( '<div data-caption="foo<strong>baz</strong>">&nbsp;</div>' );
+			data.set( '<div data-caption="foo<br><strong>baz</strong>">&nbsp;</div>' );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal(
-				'<container><caption>foo<$text bold="true">baz</$text></caption></container>'
+				'<container><caption>foo<softBreak></softBreak><$text bold="true">baz</$text></caption></container>'
 			);
 		} );
 
@@ -1081,8 +1107,16 @@ describe( 'DataController', () => {
 			const downcastDispatcher = data.downcastDispatcher;
 			const dataProcessor = data.processor;
 
+			// Test whether list modelViewSplitOnInsert is not breaking conversion (see #11490).
+			downcastDispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+				if ( conversionApi.consumable.test( data.item, evt.name ) ) {
+					conversionApi.mapper.toViewPosition( data.range.start );
+				}
+			}, { priority: 'high' } );
+
 			downcastHelpers.elementToElement( { model: 'container', view: 'div' } );
 			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
+			downcastHelpers.elementToElement( { model: 'softBreak', view: ( element, { writer } ) => writer.createEmptyElement( 'br' ) } );
 
 			data.downcastDispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
@@ -1136,9 +1170,9 @@ describe( 'DataController', () => {
 				}
 			} );
 
-			setData( model, '<container><caption>foo<$text bold="true">baz</$text></caption></container>' );
+			setData( model, '<container><caption>foo<softBreak></softBreak><$text bold="true">baz</$text></caption></container>' );
 
-			expect( data.get() ).to.equal( '<div data-caption="foo<strong>baz</strong>">&nbsp;</div>' );
+			expect( data.get() ).to.equal( '<div data-caption="foo<br><strong>baz</strong>">&nbsp;</div>' );
 		} );
 	} );
 } );

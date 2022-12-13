@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,8 +23,19 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		document.getElementById( 'readonly-toggle' ).addEventListener( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
+		const button = document.getElementById( 'readonly-toggle' );
+		let isReadOnly = false;
+
+		button.addEventListener( 'click', () => {
+			isReadOnly = !isReadOnly;
+
+			if ( isReadOnly ) {
+				editor.enableReadOnlyMode( 'manual-test' );
+			} else {
+				editor.disableReadOnlyMode( 'manual-test' );
+			}
+
+			editor.editing.view.focus();
 		} );
 	} )
 	.catch( err => {

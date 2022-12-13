@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -80,17 +80,18 @@ export default class MediaEmbedEditing extends Plugin {
 				{
 					name: 'youtube',
 					url: [
-						/^(?:m\.)?youtube\.com\/watch\?v=([\w-]+)/,
-						/^(?:m\.)?youtube\.com\/v\/([\w-]+)/,
-						/^youtube\.com\/embed\/([\w-]+)/,
-						/^youtu\.be\/([\w-]+)/
+						/^(?:m\.)?youtube\.com\/watch\?v=([\w-]+)(?:&t=(\d+))?/,
+						/^(?:m\.)?youtube\.com\/v\/([\w-]+)(?:\?t=(\d+))?/,
+						/^youtube\.com\/embed\/([\w-]+)(?:\?start=(\d+))?/,
+						/^youtu\.be\/([\w-]+)(?:\?t=(\d+))?/
 					],
 					html: match => {
 						const id = match[ 1 ];
+						const time = match[ 2 ];
 
 						return (
 							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
-								`<iframe src="https://www.youtube.com/embed/${ id }" ` +
+								`<iframe src="https://www.youtube.com/embed/${ id }${ time ? `?start=${ time }` : '' }" ` +
 									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
 									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
 								'</iframe>' +
@@ -177,14 +178,12 @@ export default class MediaEmbedEditing extends Plugin {
 
 		// Configure the schema.
 		schema.register( 'media', {
-			isObject: true,
-			isBlock: true,
-			allowWhere: '$block',
+			inheritAllFrom: '$blockObject',
 			allowAttributes: [ 'url' ]
 		} );
 
 		// Model -> Data
-		conversion.for( 'dataDowncast' ).elementToElement( {
+		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'media',
 			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );
@@ -204,7 +203,7 @@ export default class MediaEmbedEditing extends Plugin {
 			} ) );
 
 		// Model -> View (element)
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: 'media',
 			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );

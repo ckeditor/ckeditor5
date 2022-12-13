@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -299,6 +299,20 @@ describe( 'PasteFromOffice - filters', () => {
 							`<ol style="list-style-type:decimal-leading-zero"><li ${ level1 }>Foo</li></ol>`
 						);
 					} );
+
+					it( 'converts "arabic-leading-zero2" style to proper CSS attribute', () => {
+						const styles = '@list l0:level1\n' +
+							'{mso-level-number-format:arabic-leading-zero2;}';
+
+						const html = `<p ${ level1 }>Foo</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							`<ol style="list-style-type:decimal-leading-zero"><li ${ level1 }>Foo</li></ol>`
+						);
+					} );
 				} );
 
 				describe( 'unordered list', () => {
@@ -390,6 +404,56 @@ describe( 'PasteFromOffice - filters', () => {
 						);
 					} );
 				} );
+			} );
+
+			describe( 'start index', () => {
+				const testData = [
+					{
+						style: 'roman-upper',
+						cssStyle: 'upper-roman',
+						marker: 'IV.',
+						start: 4
+					},
+					{
+						style: 'alpha-lower',
+						cssStyle: 'lower-alpha',
+						marker: 'e)',
+						start: 5
+					},
+					{
+						style: 'arabic-leading-zero3',
+						cssStyle: 'decimal-leading-zero',
+						marker: '0042.',
+						start: 42
+					}
+				];
+
+				for ( const { style, cssStyle, marker, start } of testData ) {
+					it( `should handle start index in "${ style }" ordered list`, () => {
+						const styles = '@list l0:level1\n{' +
+							`mso-level-start-at:${ start };` +
+							`mso-level-number-format:${ style };` +
+							'}';
+
+						const html =
+							'<p class="MsoListParagraphCxSpFirst" style="mso-list:l0 level1 lfo0">' +
+								`<span><span style='mso-list:Ignore'>${ marker }</span>` +
+								'Foo' +
+							'</p>';
+
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							`<ol start="${ start }" style="list-style-type:${ cssStyle }">` +
+								'<li class="MsoListParagraphCxSpFirst" style="mso-list:l0 level1 lfo0">' +
+									'<span>Foo</span>' +
+								'</li>' +
+							'</ol>'
+						);
+					} );
+				}
 			} );
 		} );
 	} );

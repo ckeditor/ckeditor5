@@ -1,3 +1,4 @@
+
 ---
 category: framework-tutorials
 order: 10
@@ -33,11 +34,12 @@ First, install packages needed to build and set up a basic CKEditor 5 instance.
 
 ```bash
 npm install --save \
-	postcss-loader@3 \
-	raw-loader@3 \
-	style-loader@1 \
-	webpack@4 \
-	webpack-cli@3 \
+	css-loader@5 \
+	postcss-loader@4 \
+	raw-loader@4 \
+	style-loader@2 \
+	webpack@5 \
+	webpack-cli@4 \
 	@ckeditor/ckeditor5-dev-utils \
 	@ckeditor/ckeditor5-editor-classic \
 	@ckeditor/ckeditor5-essentials \
@@ -84,15 +86,18 @@ module.exports = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
-					},
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
+					}
 				]
 			}
 		]
@@ -325,11 +330,9 @@ export default class SimpleBoxEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'simpleBox', {
-			// Behaves like a self-contained object (e.g. an image).
-			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			// Behaves like a self-contained block object (e.g. a block image)
+			// allowed in places where other blocks are allowed (e.g. directly in the root).
+			inheritAllFrom: '$blockObject'
 		} );
 
 		schema.register( 'simpleBoxTitle', {
@@ -364,7 +367,7 @@ For the simple box plugin to start doing anything you need to define model-view 
 Converters tell the editor how to convert the view to the model (e.g. when loading the data to the editor or handling pasted content) and how to render the model to the view (for editing purposes, or when retrieving the editor data).
 
 <info-box>
-	Read more about the {@link framework/guides/architecture/editing-engine#conversion model-view conversion}.
+	Read more about the {@link framework/guides/deep-dive/conversion/downcast conversion in the editor}.
 </info-box>
 
 This is the moment when you need to think about how you want to render the `<simpleBox>` element and its children to the DOM (what the user will see) and to the data. CKEditor 5 allows converting the model to a different structure for editing purposes and a different one to be stored as "data" or exchanged with other applications when copy-pasting the content. However, for simplicity, use the same representation in both pipelines for now.
@@ -734,14 +737,14 @@ This is all that you need from the model and the view layers for now. In terms o
 
 ## Creating a command
 
-A {@link framework/guides/architecture/core-editor-architecture#commands command} is a combination of an action and a state. You can interact with most of the editor features by commands that they expose. This allows not only executing these features (e.g. bolding a fragment of text) but also checking if this action can be executed in the selection's current location as well as observing other state properties (such as whether the currently selected text is bolded).
+A {@link framework/guides/architecture/core-editor-architecture#commands command} is a combination of an action and a state. You can interact with most of the editor features by the commands they expose. This allows not only for executing these features (e.g. bolding a fragment of text) but also checking if this action can be executed in the selection's current location as well as observing other state properties (such as whether the currently selected text is bolded).
 
-In case of the simple box the situation is simple:
+In the case of the simple box the situation is simple:
 
 * you need an "insert a new simple box" action,
-* and "can you insert a new simple box here (at the current selection position)".
+* and a "can you insert a new simple box here (at the current selection position)" check.
 
-Create a new file `insertsimpleboxcommand.js` in the `simplebox/` directory. You will use the {@link module:engine/model/model~Model#insertContent `model.insertContent()`} method which will be able to, for example, split a paragraph if you try to insert a simple box in the middle of it (which is not allowed by the schema).
+Create a new file `insertsimpleboxcommand.js` in the `simplebox/` directory. You will use the {@link module:engine/model/model~Model#insertObject `model.insertObject()`} method which will be able to, for example, split a paragraph if you try to insert a simple box in the middle of it (which is not allowed by the schema).
 
 ```js
 // simplebox/insertsimpleboxcommand.js
@@ -753,7 +756,7 @@ export default class InsertSimpleBoxCommand extends Command {
 		this.editor.model.change( writer => {
 			// Insert <simpleBox>*</simpleBox> at the current selection position
 			// in a way that will result in creating a valid model structure.
-			this.editor.model.insertContent( createSimpleBox( writer ) );
+			this.editor.model.insertObject( createSimpleBox( writer ) );
 		} );
 	}
 
@@ -862,11 +865,9 @@ export default class SimpleBoxEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'simpleBox', {
-			// Behaves like a self-contained object (e.g. an image).
-			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			// Behaves like a self-contained block object (e.g. a block image)
+			// allowed in places where other blocks are allowed (e.g. directly in the root).
+			inheritAllFrom: '$blockObject'
 		} );
 
 		schema.register( 'simpleBoxTitle', {
@@ -979,11 +980,11 @@ Refresh the web page and try it yourself:
 
 ## Demo
 
-You can see the block widget implementation in action in the editor below. You can also check out the full [source code](#full-source-code) of this tutorial if you want to develop your own block widgets.
+You can see the block widget implementation in action in the editor below. You can also check out the full [source code](#final-solution) of this tutorial if you want to develop your own block widgets.
 
 {@snippet framework/tutorials/block-widget}
 
-## Full source code
+## Final solution
 
 The following code contains a complete implementation of the `SimpleBox` plugin (and all its dependencies) and the code to run the editor. You can paste it into the [`app.js`](#plugin-structure) file and it will run out–of–the–box:
 
@@ -1061,11 +1062,9 @@ class SimpleBoxEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'simpleBox', {
-			// Behaves like a self-contained object (e.g. an image).
-			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			// Behaves like a self-contained block object (e.g. a block image)
+			// allowed in places where other blocks are allowed (e.g. directly in the root).
+			inheritAllFrom: '$blockObject'
 		} );
 
 		schema.register( 'simpleBoxTitle', {
@@ -1179,7 +1178,7 @@ class InsertSimpleBoxCommand extends Command {
 		this.editor.model.change( writer => {
 			// Insert <simpleBox>*</simpleBox> at the current selection position
 			// in a way that will result in creating a valid model structure.
-			this.editor.model.insertContent( createSimpleBox( writer ) );
+			this.editor.model.insertObject( createSimpleBox( writer ) );
 		} );
 	}
 

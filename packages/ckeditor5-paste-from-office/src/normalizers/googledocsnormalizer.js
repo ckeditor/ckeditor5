@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,6 +10,7 @@
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import removeBoldWrapper from '../filters/removeboldwrapper';
+import transformBlockBrsToParagraphs from '../filters/br';
 import { unwrapParagraphInListItem } from '../filters/list';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
@@ -49,6 +50,7 @@ export default class GoogleDocsNormalizer {
 
 		removeBoldWrapper( documentFragment, writer );
 		unwrapParagraphInListItem( documentFragment, writer );
+		transformBlockBrsToParagraphs( documentFragment, writer );
 
 		data.content = documentFragment;
 	}

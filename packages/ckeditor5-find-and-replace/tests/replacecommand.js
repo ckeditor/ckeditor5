@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -46,7 +46,7 @@ describe( 'ReplaceCommand', () => {
 		} );
 
 		it( 'should be disabled in readonly editor', () => {
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -115,7 +115,7 @@ describe( 'ReplaceCommand', () => {
 				}
 			}
 
-			expect( getData( editor.model, { convertMarkers: true } ) ).to.equal(
+			expect( getData( editor.model, { convertMarkers: true, withoutSelection: true } ) ).to.equal(
 				'<paragraph>bar <findResult:1:start></findResult:1:start>' +
 					'<findResultHighlighted:x:start></findResultHighlighted:x:start>foo<findResult:1:end></findResult:1:end>' +
 					'<findResultHighlighted:x:end></findResultHighlighted:x:end> ' +
@@ -188,7 +188,7 @@ describe( 'ReplaceCommand', () => {
 			// Wrap this call in the transparent batch to make it easier to undo the above deletion only.
 			// In real life scenario the above deletion would be a transparent batch from the remote user,
 			// and undo would also be triggered by the remote user.
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				editor.execute( 'replaceAll', 'aa', results );
 			} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -40,7 +40,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be true when the selection directly in the root', () => {
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setModelData( model, '[]' );
 
 				command.refresh();
@@ -251,6 +251,69 @@ describe( 'HtmlEmbedCommand', () => {
 
 				// It's the same element but with a new value.
 				expect( model.document.getRoot().getChild( 0 ) ).to.equal( initialEmbedElement );
+			} );
+		} );
+
+		describe( 'inheriting attributes', () => {
+			beforeEach( () => {
+				const attributes = [ 'smart', 'pretty' ];
+
+				model.schema.extend( '$block', {
+					allowAttributes: attributes
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: attributes
+				} );
+
+				for ( const attribute of attributes ) {
+					model.schema.setAttributeProperties( attribute, {
+						copyOnReplace: true
+					} );
+				}
+			} );
+
+			it( 'should copy $block attributes on a html embed element when inserting it in $block', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true">[]</paragraph>' );
+
+				command.execute( '<b>Foo.</b>' );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<rawHtml pretty="true" smart="true" value="<b>Foo.</b>"></rawHtml>]'
+				);
+			} );
+
+			it( 'should copy attributes from first selected element', () => {
+				setModelData( model, '<paragraph pretty="true">[foo</paragraph><paragraph smart="true">bar]</paragraph>' );
+
+				command.execute( '<b>Foo.</b>' );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<rawHtml pretty="true" value="<b>Foo.</b>"></rawHtml>]'
+				);
+			} );
+
+			it( 'should only copy $block attributes marked with copyOnReplace', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true" nice="true">[]</paragraph>' );
+
+				command.execute( '<b>Foo.</b>' );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<rawHtml pretty="true" smart="true" value="<b>Foo.</b>"></rawHtml>]'
+				);
+			} );
+
+			it( 'should copy attributes from object when it is selected during insertion', () => {
+				model.schema.register( 'object', { isObject: true, inheritAllFrom: '$blockObject' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setModelData( model, '[<object pretty="true" smart="true"></object>]' );
+
+				command.execute( '<b>Foo.</b>' );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<rawHtml pretty="true" smart="true" value="<b>Foo.</b>"></rawHtml>]'
+				);
 			} );
 		} );
 	} );

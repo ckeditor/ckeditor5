@@ -1,0 +1,61 @@
+<head>
+	<meta http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+</head>
+
+<div id="editor">
+
+	<h2>SVG as Base64</h2>
+	Image:
+	<img
+		src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KCSAgPGNpcmNsZSByPSIxMCIgY3g9IjEwIiBjeT0iMTAiIGZpbGw9ImdyZWVuIi8+CgkgIDxpbWFnZSBocmVmPSJ4IiBvbmVycm9yPSJ0aGlzLnByZXZpb3VzRWxlbWVudFNpYmxpbmcuc2V0QXR0cmlidXRlKCdmaWxsJywgJ3JlZCcpIiAvPgoJPC9zdmc+" />
+	Iframe:
+	<iframe
+		src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KCSAgPGNpcmNsZSByPSIxMCIgY3g9IjEwIiBjeT0iMTAiIGZpbGw9ImdyZWVuIi8+CgkgIDxpbWFnZSBocmVmPSJ4IiBvbmVycm9yPSJ0aGlzLnByZXZpb3VzRWxlbWVudFNpYmxpbmcuc2V0QXR0cmlidXRlKCdmaWxsJywgJ3JlZCcpIiAvPgoJPC9zdmc+"></iframe>
+	Embed:
+	<embed
+		src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KCSAgPGNpcmNsZSByPSIxMCIgY3g9IjEwIiBjeT0iMTAiIGZpbGw9ImdyZWVuIi8+CgkgIDxpbWFnZSBocmVmPSJ4IiBvbmVycm9yPSJ0aGlzLnByZXZpb3VzRWxlbWVudFNpYmxpbmcuc2V0QXR0cmlidXRlKCdmaWxsJywgJ3JlZCcpIiAvPgoJPC9zdmc+"
+		type="image/svg+xml"></embed>
+	Object:
+	<object type="image/svg+xml"
+		data="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KCSAgPGNpcmNsZSByPSIxMCIgY3g9IjEwIiBjeT0iMTAiIGZpbGw9ImdyZWVuIi8+CgkgIDxpbWFnZSBocmVmPSJ4IiBvbmVycm9yPSJ0aGlzLnByZXZpb3VzRWxlbWVudFNpYmxpbmcuc2V0QXR0cmlidXRlKCdmaWxsJywgJ3JlZCcpIiAvPgoJPC9zdmc+"></object>
+
+	<h2>SVG encoded by encodeURIComponent</h2>
+	Image:
+	<img
+		src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%09%20%20%3Ccircle%20r%3D%2210%22%20cx%3D%2210%22%20cy%3D%2210%22%20fill%3D%22green%22%2F%3E%0A%09%20%20%3Cimage%20href%3D%22x%22%20onerror%3D%22this.previousElementSibling.setAttribute('fill'%2C%20'red')%22%20%2F%3E%0A%09%3C%2Fsvg%3E" />
+	Iframe:
+	<iframe
+		src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%09%20%20%3Ccircle%20r%3D%2210%22%20cx%3D%2210%22%20cy%3D%2210%22%20fill%3D%22green%22%2F%3E%0A%09%20%20%3Cimage%20href%3D%22x%22%20onerror%3D%22this.previousElementSibling.setAttribute('fill'%2C%20'red')%22%20%2F%3E%0A%09%3C%2Fsvg%3E"></iframe>
+	Embed:
+	<embed
+		src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%09%20%20%3Ccircle%20r%3D%2210%22%20cx%3D%2210%22%20cy%3D%2210%22%20fill%3D%22green%22%2F%3E%0A%09%20%20%3Cimage%20href%3D%22x%22%20onerror%3D%22this.previousElementSibling.setAttribute('fill'%2C%20'red')%22%20%2F%3E%0A%09%3C%2Fsvg%3E"
+		type="image/svg+xml"></embed>
+	Object:
+	<object type="image/svg+xml"
+		data="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%09%20%20%3Ccircle%20r%3D%2210%22%20cx%3D%2210%22%20cy%3D%2210%22%20fill%3D%22green%22%2F%3E%0A%09%20%20%3Cimage%20href%3D%22x%22%20onerror%3D%22this.previousElementSibling.setAttribute('fill'%2C%20'red')%22%20%2F%3E%0A%09%3C%2Fsvg%3E"></object>
+
+	<h2>Picture element - test source</h2>
+	<picture>
+		<source
+			srcset="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KCSAgPGNpcmNsZSByPSIxMCIgY3g9IjEwIiBjeT0iMTAiIGZpbGw9ImJsdWUiLz4KCSAgPGltYWdlIGhyZWY9IngiIG9uZXJyb3I9InRoaXMucHJldmlvdXNFbGVtZW50U2libGluZy5zZXRBdHRyaWJ1dGUoJ2ZpbGwnLCAncmVkJykiIC8+Cgk8L3N2Zz4="
+			media="(min-width: 10px)">
+		<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KCSAgPGNpcmNsZSByPSIxMCIgY3g9IjEwIiBjeT0iMTAiIGZpbGw9ImdyZWVuIi8+CgkgIDxpbWFnZSBocmVmPSJ4IiBvbmVycm9yPSJ0aGlzLnByZXZpb3VzRWxlbWVudFNpYmxpbmcuc2V0QXR0cmlidXRlKCdmaWxsJywgJ3JlZCcpIiAvPgoJPC9zdmc+"
+			alt="" />
+	</picture>
+
+	<h2>Image with 'srcset' attribute set</h2>
+	<img
+		srcset="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KCSAgPGNpcmNsZSByPSIxMCIgY3g9IjEwIiBjeT0iMTAiIGZpbGw9ImJsdWUiLz4KCSAgPGltYWdlIGhyZWY9IngiIG9uZXJyb3I9InRoaXMucHJldmlvdXNFbGVtZW50U2libGluZy5zZXRBdHRyaWJ1dGUoJ2ZpbGwnLCAncmVkJykiIC8+Cgk8L3N2Zz4=" />
+
+	<h2>Script execution in embeded HTML</h2>
+	Iframe:
+	<iframe
+		src="data:text/html;utf8,%0A%3Chtml%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cdiv%20style%3D%22height%3A40px%3Bwidth%3A40px%3Bbackground-color%3A%20green%3B%22%3E%0A%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%3Cimg%20src%3D%22x%22%20onerror%3D%22this.previousElementSibling.style.backgroundColor%20%3D%20'red'%3B%22%3E%0A%3C%2Fbody%3E%0A%0A%3C%2Fhtml%3E%0A"></iframe>
+	Embed:
+	<embed
+		src="data:text/html;utf8,%0A%3Chtml%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cdiv%20style%3D%22height%3A40px%3Bwidth%3A40px%3Bbackground-color%3A%20green%3B%22%3E%0A%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%3Cimg%20src%3D%22x%22%20onerror%3D%22this.previousElementSibling.style.backgroundColor%20%3D%20'red'%3B%22%3E%0A%3C%2Fbody%3E%0A%0A%3C%2Fhtml%3E%0A"></embed>
+	Object:
+	<object type="text/html"
+		data="data:text/html;utf8,%0A%3Chtml%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cdiv%20style%3D%22height%3A40px%3Bwidth%3A40px%3Bbackground-color%3A%20green%3B%22%3E%0A%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%3Cimg%20src%3D%22x%22%20onerror%3D%22this.previousElementSibling.style.backgroundColor%20%3D%20'red'%3B%22%3E%0A%3C%2Fbody%3E%0A%0A%3C%2Fhtml%3E%0A"></object>
+</div>

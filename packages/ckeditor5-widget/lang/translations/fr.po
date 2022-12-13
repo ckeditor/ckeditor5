@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Language-Team: French (https://www.transifex.com/ckeditor/teams/11143/fr/)\n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
 msgid "Widget toolbar"
@@ -27,3 +27,7 @@ msgstr "Insérer du texte avant ce bloc"
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
 msgstr "Insérer du texte après ce bloc"
+
+msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
+msgid "Press Enter to type after or press Shift + Enter to type before the widget"
+msgstr "Appuyez sur la touche Entrée pour taper après ou sur Maj + Entrée pour taper avant le widget."

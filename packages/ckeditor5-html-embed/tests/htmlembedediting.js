@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -58,6 +58,14 @@ describe( 'HtmlEmbedEditing', () => {
 
 		expect( model.schema.checkChild( [ '$root', 'rawHtml' ], '$text' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'rawHtml' ) ).to.be.false;
+	} );
+
+	it( 'inherits attributes from $blockObject', () => {
+		model.schema.extend( '$blockObject', {
+			allowAttributes: 'foo'
+		} );
+
+		expect( model.schema.checkAttribute( 'rawHtml', 'foo' ) ).to.be.true;
 	} );
 
 	it( 'should register the htmlEmbed command', () => {
@@ -842,10 +850,10 @@ describe( 'HtmlEmbedEditing', () => {
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 				const editButton = domContentWrapper.querySelector( '.raw-html-embed__edit-button' );
 
-				editor.isReadOnly = true;
+				editor.enableReadOnlyMode( 'unit-test' );
 				expect( editButton.classList.contains( 'ck-disabled' ) ).to.be.true;
 
-				editor.isReadOnly = false;
+				editor.disableReadOnlyMode( 'unit-test' );
 				expect( editButton.classList.contains( 'ck-disabled' ) ).to.be.false;
 			} );
 
@@ -878,11 +886,11 @@ describe( 'HtmlEmbedEditing', () => {
 				const saveButton = domContentWrapper.querySelector( '.raw-html-embed__save-button' );
 				const cancelButton = domContentWrapper.querySelector( '.raw-html-embed__cancel-button' );
 
-				editor.isReadOnly = true;
+				editor.enableReadOnlyMode( 'unit-test' );
 				expect( saveButton.classList.contains( 'ck-disabled' ) ).to.be.true;
 				expect( cancelButton.classList.contains( 'ck-disabled' ) ).to.be.false;
 
-				editor.isReadOnly = false;
+				editor.disableReadOnlyMode( 'unit-test' );
 				expect( saveButton.classList.contains( 'ck-disabled' ) ).to.be.false;
 				expect( cancelButton.classList.contains( 'ck-disabled' ) ).to.be.false;
 			} );

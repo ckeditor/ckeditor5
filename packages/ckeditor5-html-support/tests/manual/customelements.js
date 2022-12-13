@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -54,7 +54,7 @@ class ExtendHTMLSupport extends Plugin {
 			model: 'myObjectInline',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		} );
 
@@ -66,7 +66,7 @@ class ExtendHTMLSupport extends Plugin {
 			model: 'myObjectBlock',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectBlock'
+				inheritAllFrom: '$blockObject'
 			}
 		} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,7 @@
 
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import ImageUtils from '../imageutils';
-
-import { getCaptionFromModelSelection } from './utils';
+import ImageCaptionUtils from './imagecaptionutils';
 
 /**
  * The image caption UI plugin. It introduces the `'toggleImageCaption'` UI button.
@@ -23,7 +21,7 @@ export default class ImageCaptionUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageUtils ];
+		return [ ImageCaptionUtils ];
 	}
 
 	/**
@@ -39,7 +37,7 @@ export default class ImageCaptionUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'toggleImageCaption', locale => {
@@ -59,7 +57,7 @@ export default class ImageCaptionUI extends Plugin {
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 
 				// Scroll to the selection and highlight the caption if the caption showed up.
-				const modelCaptionElement = getCaptionFromModelSelection( imageUtils, editor.model.document.selection );
+				const modelCaptionElement = imageCaptionUtils.getCaptionFromModelSelection( editor.model.document.selection );
 
 				if ( modelCaptionElement ) {
 					const figcaptionElement = editor.editing.mapper.toViewElement( modelCaptionElement );
@@ -70,6 +68,8 @@ export default class ImageCaptionUI extends Plugin {
 						writer.addClass( 'image__caption_highlighted', figcaptionElement );
 					} );
 				}
+
+				editor.editing.view.focus();
 			} );
 
 			return view;

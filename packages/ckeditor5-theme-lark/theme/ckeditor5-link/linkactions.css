@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/components/tooltip/mixins/_tooltip.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 @import "../mixins/_focus.css";
@@ -23,7 +22,7 @@
 
 			/* Match the box model of the link editor form's input so the balloon
 			does not change width when moving between actions and the form. */
-			max-width: var(--ck-input-text-width);
+			max-width: var(--ck-input-width);
 			min-width: 3em;
 			text-align: center;
 

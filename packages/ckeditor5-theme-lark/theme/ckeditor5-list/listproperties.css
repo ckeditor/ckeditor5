@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-list-properties {
+	/* When there are no list styles and there is no collapsible. */
+	&.ck-list-properties_without-styles {
+		padding: var(--ck-spacing-large);
+
+		& > * {
+			min-width: 14em;
+
+			& + * {
+				margin-top: var(--ck-spacing-standard);
+			}
+		}
+	}
+
+	/*
+	 * When the numbered list property fields (start at, reversed) should be displayed,
+	 * more horizontal space is needed. Reconfigure the style grid to create that space.
+	 */
+	&.ck-list-properties_with-numbered-properties {
+		& > .ck-list-styles-list {
+			grid-template-columns: repeat( 4, auto );
+		}
+
+		/* When list styles are rendered and property fields are in a collapsible. */
+		& > .ck-collapsible {
+			border-top: 1px solid var(--ck-color-base-border);
+
+			& > .ck-collapsible__children {
+				& > * {
+					width: 100%;
+
+					& + * {
+						margin-top: var(--ck-spacing-standard);
+					}
+				}
+			}
+		}
+	}
+
+	& .ck.ck-numbered-list-properties__start-index .ck-input {
+		min-width: auto;
+		width: 100%;
+	}
+
+	& .ck.ck-numbered-list-properties__reversed-order {
+		background: transparent;
+		padding-left: 0;
+		padding-right: 0;
+		margin-bottom: calc(-1 * var(--ck-spacing-tiny));
+
+		&:active, &:hover {
+			box-shadow: none;
+			border-color: transparent;
+			background: none;
+		}
+	}
+}

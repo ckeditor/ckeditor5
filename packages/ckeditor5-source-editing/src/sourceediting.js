@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -225,7 +225,10 @@ export default class SourceEditing extends Plugin {
 		for ( const [ rootName, domRootElement ] of editingView.domRoots ) {
 			const data = formatSource( editor.data.get( { rootName } ) );
 
-			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', { rows: '1' } );
+			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', {
+				rows: '1',
+				'aria-label': 'Source code editing area'
+			} );
 
 			const domSourceEditingElementWrapper = createElement( domRootElement.ownerDocument, 'div', {
 				class: 'ck-source-editing-area',
@@ -248,6 +251,9 @@ export default class SourceEditing extends Plugin {
 
 				writer.addClass( 'ck-hidden', viewRoot );
 			} );
+
+			// Register the element so it becomes available for Alt+F10 and Esc navigation.
+			editor.ui.setEditableElement( 'sourceEditing:' + rootName, domSourceEditingElementTextarea );
 
 			this._replacedRoots.set( rootName, domSourceEditingElementWrapper );
 
@@ -305,7 +311,7 @@ export default class SourceEditing extends Plugin {
 		}
 
 		if ( Object.keys( data ).length ) {
-			editor.data.set( data, { batchType: 'default' } );
+			editor.data.set( data, { batchType: { isUndoable: true } } );
 		}
 	}
 
@@ -315,9 +321,15 @@ export default class SourceEditing extends Plugin {
 	 * @private
 	 */
 	_focusSourceEditing() {
+		const editor = this.editor;
 		const [ domSourceEditingElementWrapper ] = this._replacedRoots.values();
-
 		const textarea = domSourceEditingElementWrapper.querySelector( 'textarea' );
+
+		// The FocusObserver was disabled by View.render() while the DOM root was getting hidden and the replacer
+		// revealed the textarea. So it couldn't notice that the DOM root got blurred in the process.
+		// Let's sync this state manually here because otherwise Renderer will attempt to render selection
+		// in an invisible DOM root.
+		editor.editing.view.document.isFocused = false;
 
 		textarea.focus();
 	}

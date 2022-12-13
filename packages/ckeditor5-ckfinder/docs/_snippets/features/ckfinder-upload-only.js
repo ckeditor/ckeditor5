@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,6 +11,38 @@ ClassicEditor
 			items: [
 				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', '|', 'uploadImage'
 			]
+		},
+		image: {
+			toolbar: [
+				'toggleImageCaption',
+				'imageTextAlternative',
+				'|',
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'resizeImage:100',
+				'resizeImage:200',
+				'resizeImage:original'
+			],
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					value: null,
+					icon: 'original'
+				},
+				{
+					name: 'resizeImage:100',
+					value: '100',
+					icon: 'medium'
+				},
+				{
+					name: 'resizeImage:200',
+					value: '200',
+					icon: 'large'
+				}
+			],
+			resizeUnit: 'px'
 		},
 		ui: {
 			viewportOffset: {

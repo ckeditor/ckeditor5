@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -218,4 +218,19 @@ export function isModelSelectionInCodeBlock( selection ) {
 	const firstBlock = first( selection.getSelectedBlocks() );
 
 	return firstBlock && firstBlock.is( 'element', 'codeBlock' );
+}
+
+/**
+ * Checks if an {@link module:engine/model/element~Element Element} can become a code block.
+ *
+ * @param {module:engine/model/schema~Schema} schema Model's schema.
+ * @param {module:engine/model/element~Element} element The element to be checked.
+ * @returns {Boolean} Check result.
+ */
+export function canBeCodeBlock( schema, element ) {
+	if ( element.is( 'rootElement' ) || schema.isLimit( element ) ) {
+		return false;
+	}
+
+	return schema.checkChild( element.parent, 'codeBlock' );
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -94,6 +94,14 @@ describe( 'DecoupledEditorUIView', () => {
 				expect( testView.editable.element ).to.equal( editableElement );
 
 				testView.destroy();
+			} );
+
+			it( 'is given an accessible aria label', () => {
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+
+				view.destroy();
 			} );
 		} );
 	} );

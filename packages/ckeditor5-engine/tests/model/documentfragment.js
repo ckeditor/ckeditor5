@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,10 +35,20 @@ describe( 'DocumentFragment', () => {
 			expect( frag ).to.have.property( 'markers' ).to.instanceof( Map );
 		} );
 
-		it( 'should have root property, equal to itself', () => {
+		it( 'should have artificial properties', () => {
 			const frag = new DocumentFragment();
 
 			expect( frag ).to.have.property( 'root' ).that.equals( frag );
+			expect( frag ).to.have.property( 'parent' ).that.is.null;
+			expect( frag ).to.have.property( 'nextSibling' ).that.is.null;
+			expect( frag ).to.have.property( 'previousSibling' ).that.is.null;
+			expect( frag ).to.have.property( 'document' ).that.is.null;
+		} );
+
+		it( 'should have `getAncestor` method that returns empty array', () => {
+			const frag = new DocumentFragment();
+
+			expect( frag.getAncestors() ).to.be.an( 'array' ).that.is.empty;
 		} );
 	} );
 

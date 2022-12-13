@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,6 +17,8 @@ ClassicEditor
 		],
 		toolbar: {
 			items: [
+				'sourceEditing',
+				'|',
 				'heading',
 				'|',
 				'bold',
@@ -34,9 +36,7 @@ ClassicEditor
 				'insertTable',
 				'|',
 				'undo',
-				'redo',
-				'|',
-				'sourceEditing'
+				'redo'
 			]
 		},
 		ui: {
@@ -89,7 +89,7 @@ ClassicEditor
 			text: 'Switch to the source mode to check out the source of the content and play with it.',
 			editor,
 			tippyOptions: {
-				placement: 'bottom-end'
+				placement: 'bottom-start'
 			}
 		} );
 	} )

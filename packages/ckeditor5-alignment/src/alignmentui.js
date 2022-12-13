@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -79,7 +79,7 @@ export default class AlignmentUI extends Plugin {
 
 			// Add existing alignment buttons to dropdown's toolbar.
 			const buttons = options.map( option => componentFactory.create( `alignment:${ option.name }` ) );
-			addToolbarToDropdown( dropdownView, buttons );
+			addToolbarToDropdown( dropdownView, buttons, { enableActiveItemFocusOnDropdownOpen: true } );
 
 			// Configure dropdown properties an behavior.
 			dropdownView.buttonView.set( {
@@ -115,6 +115,12 @@ export default class AlignmentUI extends Plugin {
 
 			// Enable button if any of the buttons is enabled.
 			dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled', ( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled ) );
+
+			// Focus the editable after executing the command.
+			// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+			this.listenTo( dropdownView, 'execute', () => {
+				editor.editing.view.focus();
+			} );
 
 			return dropdownView;
 		} );

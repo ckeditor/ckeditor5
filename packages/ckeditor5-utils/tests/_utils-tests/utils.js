@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,9 @@ import EmitterMixin from '../../src/emittermixin';
 import { createObserver } from '../_utils/utils';
 
 describe( 'utils - testUtils', () => {
+	const Observable = ObservableMixin();
+	const Emitter = EmitterMixin();
+
 	afterEach( () => {
 		sinon.restore();
 	} );
@@ -21,17 +24,14 @@ describe( 'utils - testUtils', () => {
 		beforeEach( () => {
 			observer = createObserver();
 
-			observable = Object.create( ObservableMixin );
+			observable = new Observable();
 			observable.set( { foo: 0, bar: 0 } );
 
-			observable2 = Object.create( ObservableMixin );
+			observable2 = new Observable();
 			observable2.set( { foo: 0, bar: 0 } );
 		} );
 
 		it( 'should create an observer', () => {
-			function Emitter() {}
-			Emitter.prototype = EmitterMixin;
-
 			expect( observer ).to.be.instanceof( Emitter );
 			expect( observer.observe ).is.a( 'function' );
 			expect( observer.stopListening ).is.a( 'function' );

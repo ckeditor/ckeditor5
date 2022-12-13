@@ -1,11 +1,12 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable new-cap */
+
 import Editor from '../../src/editor/editor';
 import DataApiMixin from '../../src/editor/utils/dataapimixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * A simple editor implementation useful for testing the engine part of the features.
@@ -15,7 +16,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * @memberOf tests.core._utils
  */
-export default class VirtualTestEditor extends Editor {
+export default class VirtualTestEditor extends DataApiMixin( Editor ) {
 	constructor( config ) {
 		super( config );
 
@@ -38,5 +39,3 @@ export default class VirtualTestEditor extends Editor {
 		} );
 	}
 }
-
-mix( VirtualTestEditor, DataApiMixin );

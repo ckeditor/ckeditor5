@@ -8,7 +8,11 @@ modified_at: 2021-10-08
 
 # Media embed
 
-The {@link module:media-embed/mediaembed~MediaEmbed} feature brings support for inserting embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
+The media embed feature brings support for inserting embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
+
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
 
 ## Demo
 
@@ -20,10 +24,14 @@ You can use the Insert media button in the toolbar {@icon @ckeditor/ckeditor5-me
 
 {@snippet features/media-embed}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-media-embed`](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed) package:
@@ -51,6 +59,10 @@ ClassicEditor
 
 <info-box>
 	Depending on how you will configure this feature, you may need to use services like [Iframely](https://iframely.com/) or [Embedly](https://embed.ly/) to display content of embedded media on your target website. Read more about [displaying embedded media](#displaying-embedded-media-on-your-website).
+</info-box>
+
+<info-box info>
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Previewable and non-previewable media
@@ -389,7 +401,6 @@ The HTML structure of every non-previewable media in the editor is as follows:
 			</div>
 			<a class="ck-media__placeholder__url" target="new" href="[ URL of the media]">
 				<span class="ck-media__placeholder__url__text">[ URL of the media]</span>
-				<span class="ck ck-tooltip ck-tooltip_s">...</span>
 			</a>
 		</div>
 	</div>

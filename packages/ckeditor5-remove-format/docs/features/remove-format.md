@@ -6,15 +6,23 @@ category: features
 
 {@snippet features/build-remove-format-source}
 
-The {@link module:remove-format/removeformat~RemoveFormat `Remove format`} feature allows you to quickly remove any text formatting applied using inline HTML elements and CSS styles, like {@link features/basic-styles basic text styles} (bold, italic, etc.), {@link features/font font family, size, and color} and similar.
+The remove format feature allows you to quickly remove any text formatting applied using inline HTML elements and CSS styles, like {@link features/basic-styles basic text styles} (bold, italic, etc.), {@link features/font font family, size, and color} and similar.
 
 Note that block-level formatting ({@link features/headings headings}, {@link features/images-overview images}) and semantic data ({@link features/link links}) will not be removed by this feature.
+
+<info-box info>
+	The Remove formatting feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
 
 ## Demo
 
 Select the content you want to clean up and press the remove format button {@icon @ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg remove format} in the toolbar:
 
 {@snippet features/remove-format}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 
@@ -29,7 +37,7 @@ This feature has no integration–level configuration. Once enabled, it works ou
 
 ## A short note about content types in the editor
 
-The remove format feature is intended to help users tidy up chunks of content from unnecessary formatting. Each editor feature brings its own content types to the WYSIWYG editor. If you do not want the unnecessary formatting to be enabled in the first place, you may want to consider {@link builds/guides/integration/configuration#removing-features reducing the number of features} enabled in the editor.
+The remove format feature is intended to help users tidy up chunks of content from unnecessary formatting. Each editor feature brings its own content types to the WYSIWYG editor. If you do not want the unnecessary formatting to be enabled in the first place, you may want to consider {@link installation/getting-started/configuration#removing-features reducing the number of features} enabled in the editor.
 
 Doing that will spare the users the pain of manually removing formatting every time they paste content from other programs and make the editing experience smoother. The narrower set of editor features also gives you more control over the content saved to the database and prevents the accidental use of the types of content you would rather not store in your application.
 
@@ -37,7 +45,7 @@ Doing that will spare the users the pain of manually removing formatting every t
 
 To make it possible for the remove formatting feature to work with your custom content, you must first mark it in the {@link framework/guides/architecture/editing-engine#schema schema}. All you need to do is set the `isFormatting` property on your custom {@link framework/guides/architecture/editing-engine#text-attributes text attribute}.
 
-For instance, if you want the feature to remove {@link features/link links} as well (not supported by default), you need to create a {@link builds/guides/integration/configuration#adding-simple-standalone-features simple plugin} that will extend the schema and tell the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
+For instance, if you want the feature to remove {@link features/link links} as well (not supported by default), you need to create a {@link installation/getting-started/configuration#adding-simple-standalone-features simple plugin} that will extend the schema and tell the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
 
 ```js
 // A simple plugin that extends the remove format feature to consider links.
@@ -49,7 +57,7 @@ function RemoveFormatLinks( editor ) {
 }
 ```
 
-Enable the `RemoveFormatLinks` plugin in the {@link builds/guides/integration/configuration#adding-features configuration} and run the editor:
+Enable the `RemoveFormatLinks` plugin in the {@link installation/getting-started/configuration#adding-features configuration} and run the editor:
 
 ```js
 ClassicEditor
@@ -91,7 +99,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

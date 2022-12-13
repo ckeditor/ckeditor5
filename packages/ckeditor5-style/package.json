@@ -1,0 +1,78 @@
+{
+  "name": "@ckeditor/ckeditor5-style",
+  "version": "35.4.0",
+  "description": "Style feature for CKEditor 5.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
+  ],
+  "main": "src/index.js",
+  "dependencies": {
+    "ckeditor5": "^35.4.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-alignment": "^35.4.0",
+    "@ckeditor/ckeditor5-basic-styles": "^35.4.0",
+    "@ckeditor/ckeditor5-block-quote": "^35.4.0",
+    "@ckeditor/ckeditor5-cloud-services": "^35.4.0",
+    "@ckeditor/ckeditor5-code-block": "^35.4.0",
+    "@ckeditor/ckeditor5-core": "^35.4.0",
+    "@ckeditor/ckeditor5-dev-utils": "^31.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^35.4.0",
+    "@ckeditor/ckeditor5-editor-classic": "^35.4.0",
+    "@ckeditor/ckeditor5-engine": "^35.4.0",
+    "@ckeditor/ckeditor5-font": "^35.4.0",
+    "@ckeditor/ckeditor5-heading": "^35.4.0",
+    "@ckeditor/ckeditor5-highlight": "^35.4.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^35.4.0",
+    "@ckeditor/ckeditor5-html-embed": "^35.4.0",
+    "@ckeditor/ckeditor5-html-support": "^35.4.0",
+    "@ckeditor/ckeditor5-image": "^35.4.0",
+    "@ckeditor/ckeditor5-indent": "^35.4.0",
+    "@ckeditor/ckeditor5-language": "^35.4.0",
+    "@ckeditor/ckeditor5-link": "^35.4.0",
+    "@ckeditor/ckeditor5-list": "^35.4.0",
+    "@ckeditor/ckeditor5-mention": "^35.4.0",
+    "@ckeditor/ckeditor5-page-break": "^35.4.0",
+    "@ckeditor/ckeditor5-paragraph": "^35.4.0",
+    "@ckeditor/ckeditor5-paste-from-office": "^35.4.0",
+    "@ckeditor/ckeditor5-remove-format": "^35.4.0",
+    "@ckeditor/ckeditor5-source-editing": "^35.4.0",
+    "@ckeditor/ckeditor5-table": "^35.4.0",
+    "@ckeditor/ckeditor5-theme-lark": "^35.4.0",
+    "@ckeditor/ckeditor5-typing": "^35.4.0",
+    "@ckeditor/ckeditor5-ui": "^35.4.0",
+    "@ckeditor/ckeditor5-utils": "^35.4.0",
+    "@ckeditor/ckeditor5-word-count": "^35.4.0",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-style"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme",
+    "build",
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "dll:build": "webpack"
+  }
+}

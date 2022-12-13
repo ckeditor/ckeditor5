@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1105,7 +1105,7 @@ describe( 'Schema', () => {
 			schema.extend( 'article', { isLimit: true } );
 			schema.extend( 'section', { isLimit: true } );
 
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
 
 				const section = root.getNodeByPath( [ 0, 0 ] );
@@ -1794,7 +1794,7 @@ describe( 'Schema', () => {
 			it( testName, () => {
 				let range;
 
-				model.enqueueChange( 'transparent', () => {
+				model.enqueueChange( { isUndoable: false }, () => {
 					setData( model, data );
 					range = schema.getNearestSelectionRange( selection.anchor, direction );
 				} );
@@ -2052,6 +2052,157 @@ describe( 'Schema', () => {
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal( '<div><$text a="1">foo</$text>bar<$text a="1">biz</$text></div>' );
 			} );
+		} );
+	} );
+
+	describe( 'getAttributesWithProperty()', () => {
+		let model, doc, root;
+
+		beforeEach( () => {
+			model = new Model();
+			doc = model.document;
+			root = doc.createRoot();
+			schema = model.schema;
+
+			schema.register( 'paragraph', {
+				inheritAllFrom: '$block'
+			} );
+		} );
+
+		it( 'should get an attribute with given property', () => {
+			schema.extend( '$text', { allowAttributes: 'a' } );
+
+			schema.setAttributeProperties( 'a', {
+				isFooable: true
+			} );
+
+			const text = new Text( 'foo', { a: 1 } );
+
+			root._appendChild( text );
+
+			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isFooable' );
+
+			expect( attributesWithProperty ).to.deep.equal( { a: 1 } );
+		} );
+
+		it( 'should get attributes with given property', () => {
+			schema.extend( '$text', { allowAttributes: [ 'a', 'b' ] } );
+
+			schema.setAttributeProperties( 'a', {
+				isFooable: true
+			} );
+
+			schema.setAttributeProperties( 'b', {
+				isFooable: true
+			} );
+
+			const text = new Text( 'foo', { a: 1, b: 2 } );
+
+			root._appendChild( text );
+
+			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isFooable' );
+
+			expect( attributesWithProperty ).to.deep.equal( { a: 1, b: 2 } );
+		} );
+
+		it( 'should get an attribute with given property that matches desired value', () => {
+			schema.extend( '$text', { allowAttributes: [ 'a' ] } );
+
+			schema.setAttributeProperties( 'a', {
+				isFooable: 'yes'
+			} );
+
+			const text = new Text( 'foo', { a: 1 } );
+
+			root._appendChild( text );
+
+			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isFooable', 'yes' );
+
+			expect( attributesWithProperty ).to.deep.equal( { a: 1 } );
+		} );
+
+		it( 'should get attributes with given property that match desired value', () => {
+			schema.extend( '$text', { allowAttributes: [ 'a', 'b' ] } );
+
+			schema.setAttributeProperties( 'a', {
+				isFooable: 'yes'
+			} );
+
+			schema.setAttributeProperties( 'b', {
+				isFooable: 'yes'
+			} );
+
+			const text = new Text( 'foo', { a: 1, b: 2 } );
+
+			root._appendChild( text );
+
+			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isFooable', 'yes' );
+
+			expect( attributesWithProperty ).to.deep.equal( { a: 1, b: 2 } );
+		} );
+
+		it( 'should not return an attribute if it has properties but not the one being lookied for', () => {
+			schema.extend( '$text', { allowAttributes: [ 'a' ] } );
+
+			schema.setAttributeProperties( 'a', {
+				isFooable: true
+			} );
+
+			const text = new Text( 'foo', { a: 1 } );
+
+			root._appendChild( text );
+
+			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isBarable' );
+
+			expect( attributesWithProperty ).to.deep.equal( { } );
+		} );
+
+		it( 'should not return an attribute if it does not have given property', () => {
+			schema.extend( '$text', { allowAttributes: [ 'a' ] } );
+
+			const text = new Text( 'foo', { a: 1 } );
+
+			root._appendChild( text );
+
+			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isFooable' );
+
+			expect( attributesWithProperty ).to.deep.equal( { } );
+		} );
+
+		it( 'should not return an attribute if value does not match', () => {
+			schema.extend( '$text', { allowAttributes: [ 'a' ] } );
+
+			schema.setAttributeProperties( 'a', {
+				isFooable: 'no'
+			} );
+
+			const text = new Text( 'foo', { a: 1 } );
+
+			root._appendChild( text );
+
+			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isFooable', 'yes' );
+
+			expect( attributesWithProperty ).to.deep.equal( { } );
+		} );
+
+		it( 'should return only an attribute that matches value', () => {
+			schema.extend( '$text', { allowAttributes: [ 'a', 'b' ] } );
+
+			schema.setAttributeProperties( 'a', {
+				isFooable: 'no'
+			} );
+
+			schema.setAttributeProperties( 'b', {
+				isFooable: 'yes'
+			} );
+
+			const text = new Text( 'foo', { a: 1, b: 2 } );
+
+			root._appendChild( text );
+
+			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isFooable', 'yes' );
+
+			expect( attributesWithProperty ).to.deep.equal( { b: 2 } );
 		} );
 	} );
 

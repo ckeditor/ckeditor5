@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event */
+/* globals document, Event */
 
 import TableCellPropertiesView from '../../../src/tablecellproperties/ui/tablecellpropertiesview';
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
@@ -61,9 +61,11 @@ describe( 'table cell properties', () => {
 			locale = { t: val => val };
 			view = new TableCellPropertiesView( locale, VIEW_OPTIONS );
 			view.render();
+			document.body.appendChild( view.element );
 		} );
 
 		afterEach( () => {
+			view.element.remove();
 			view.destroy();
 		} );
 
@@ -679,8 +681,10 @@ describe( 'table cell properties', () => {
 				expect( view._focusables.map( f => f ) ).to.have.members( [
 					view.borderStyleDropdown,
 					view.borderColorInput,
+					view.borderColorInput.fieldView.dropdownView.buttonView,
 					view.borderWidthInput,
 					view.backgroundInput,
+					view.backgroundInput.fieldView.dropdownView.buttonView,
 					view.widthInput,
 					view.heightInput,
 					view.paddingInput,

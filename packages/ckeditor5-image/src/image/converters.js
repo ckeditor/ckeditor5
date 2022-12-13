@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -82,7 +82,7 @@ export function upcastImageFigure( imageUtils ) {
  * @returns {Function}
  */
 export function upcastPicture( imageUtils ) {
-	const sourceAttributeNames = [ 'srcset', 'media', 'type' ];
+	const sourceAttributeNames = [ 'srcset', 'media', 'type', 'sizes' ];
 
 	return dispatcher => {
 		dispatcher.on( 'element:picture', converter );
@@ -235,13 +235,11 @@ export function downcastSourcesAttribute( imageUtils ) {
 
 		if ( data.attributeNewValue && data.attributeNewValue.length ) {
 			// Make sure <picture> does not break attribute elements, for instance <a> in linked images.
-			const pictureElement = viewWriter.createContainerElement( 'picture', {}, { isAllowedInsideAttributeElement: true } );
-
-			for ( const sourceAttributes of data.attributeNewValue ) {
-				const sourceElement = viewWriter.createEmptyElement( 'source', sourceAttributes );
-
-				viewWriter.insert( viewWriter.createPositionAt( pictureElement, 'end' ), sourceElement );
-			}
+			const pictureElement = viewWriter.createContainerElement( 'picture', null,
+				data.attributeNewValue.map( sourceAttributes => {
+					return viewWriter.createEmptyElement( 'source', sourceAttributes );
+				} )
+			);
 
 			// Collect all wrapping attribute elements.
 			const attributeElements = [];

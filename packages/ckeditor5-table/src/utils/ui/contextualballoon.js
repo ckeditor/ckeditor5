@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -63,7 +63,7 @@ export function getBalloonTablePositionData( editor ) {
 	const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
 	return {
-		target: editor.editing.view.domConverter.viewToDom( viewTable ),
+		target: editor.editing.view.domConverter.mapViewToDom( viewTable ),
 		positions: BALLOON_POSITIONS
 	};
 }
@@ -92,7 +92,7 @@ export function getBalloonCellPositionData( editor ) {
 	const viewTableCell = mapper.toViewElement( modelTableCell );
 
 	return {
-		target: domConverter.viewToDom( viewTableCell ),
+		target: domConverter.mapViewToDom( viewTableCell ),
 		positions: BALLOON_POSITIONS
 	};
 }
@@ -118,7 +118,7 @@ function createBoundingRect( ranges, editor ) {
 	const rects = Array.from( ranges ).map( range => {
 		const modelTableCell = getTableCellAtPosition( range.start );
 		const viewTableCell = mapper.toViewElement( modelTableCell );
-		return new Rect( domConverter.viewToDom( viewTableCell ) );
+		return new Rect( domConverter.mapViewToDom( viewTableCell ) );
 	} );
 
 	return Rect.getBoundingRect( rects );

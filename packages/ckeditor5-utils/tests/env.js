@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import env, {
-	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink
+	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent
 } from '../src/env';
 
 import global from '../src/dom/global';
@@ -284,6 +284,28 @@ describe( 'Env', () => {
 			} else {
 				expect( testFn ).to.throw();
 			}
+		} );
+	} );
+
+	describe( 'getUserAgent()', () => {
+		it( 'should return user agent in lower case', () => {
+			sinon.stub( global.window.navigator, 'userAgent' ).value( 'CKBrowser' );
+
+			expect( getUserAgent() ).to.equal( 'ckbrowser' );
+		} );
+
+		it( 'should return empty string if navigator API is unavailable', () => {
+			sinon.stub( global.window, 'navigator' ).value( undefined );
+
+			expect( getUserAgent() ).to.equal( '' );
+		} );
+
+		it( 'should not throw an error if navigator API is unavailable', () => {
+			sinon.stub( global.window, 'navigator' ).value( undefined );
+
+			expect( () => {
+				getUserAgent();
+			} ).to.not.throw();
 		} );
 	} );
 } );

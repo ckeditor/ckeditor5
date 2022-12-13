@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
 import ClipboardObserver from '../src/clipboardobserver';
-import DataTransfer from '../src/datatransfer';
 
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
+import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 
@@ -24,7 +24,7 @@ describe( 'ClipboardObserver', () => {
 		// Create view and DOM structures.
 		el = writer.createContainerElement( 'p' );
 		writer.insert( writer.createPositionAt( root, 0 ), el );
-		view.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
+		view.domConverter.viewToDom( root, { withChildren: true, bind: true } );
 
 		doc.selection._setTo( el, 0 );
 		range = writer.createRange( writer.createPositionAt( root, 1 ) );

@@ -1,9 +1,7 @@
 /*
- * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
-
-@import "@ckeditor/ckeditor5-ui/theme/components/tooltip/mixins/_tooltip.css";
 
 .ck-media__wrapper {
 	& .ck-media__placeholder {
@@ -12,16 +10,10 @@
 		align-items: center;
 
 		& .ck-media__placeholder__url {
-			@mixin ck-tooltip_enabled;
-
 			/* Otherwise the URL will overflow when the content is very narrow. */
 			max-width: 100%;
 
 			position: relative;
-
-			&:hover {
-				@mixin ck-tooltip_visible;
-			}
 
 			& .ck-media__placeholder__url__text {
 				overflow: hidden;

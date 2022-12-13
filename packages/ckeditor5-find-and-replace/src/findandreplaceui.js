@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -72,12 +72,9 @@ export default class FindAndReplaceUI extends Plugin {
 
 					formView.reset();
 					formView._findInputView.fieldView.select();
-					formView.focus();
 
 					formView.enableCssTransitions();
 				} else {
-					formView.focus();
-
 					this.fire( 'searchReseted' );
 				}
 			}, { priority: 'low' } );
@@ -107,8 +104,10 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 
 		editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-			dropdown.isOpen = true;
-			cancelEvent();
+			if ( dropdown.isEnabled ) {
+				dropdown.isOpen = true;
+				cancelEvent();
+			}
 		} );
 	}
 

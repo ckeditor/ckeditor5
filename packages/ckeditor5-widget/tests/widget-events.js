@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -57,7 +57,7 @@ describe( 'Widget - Events', () => {
 			.from( editor.editing.view.document.getRoot().getChildren() )
 			.find( element => element.hasClass( 'simple-widget-container' ) );
 
-		const domFragment = editor.editing.view.domConverter.viewToDom( container );
+		const domFragment = editor.editing.view.domConverter.mapViewToDom( container );
 
 		buttonIgnored = domFragment.querySelector( '#ignored-button' );
 		buttonRegular = domFragment.querySelector( '#regular-button' );
@@ -72,14 +72,14 @@ describe( 'Widget - Events', () => {
 
 		function defineSchema( editor ) {
 			editor.model.schema.register( 'simpleWidgetElement', {
-				inheritAllFrom: '$block',
+				allowIn: '$root',
 				isObject: true
 			} );
 		}
 
 		function defineConverters( editor ) {
 			editor.conversion.for( 'editingDowncast' )
-				.elementToElement( {
+				.elementToStructure( {
 					model: 'simpleWidgetElement',
 					view: ( modelElement, { writer } ) => {
 						const widgetElement = createWidgetView( modelElement, { writer } );
@@ -89,7 +89,7 @@ describe( 'Widget - Events', () => {
 				} );
 
 			editor.conversion.for( 'dataDowncast' )
-				.elementToElement( {
+				.elementToStructure( {
 					model: 'simpleWidgetElement',
 					view: createWidgetView
 				} );

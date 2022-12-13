@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -31,7 +31,7 @@ import areConnectedThroughProperties from '../../src/areconnectedthroughproperti
  * @returns {Emitter} The observer.
  */
 export function createObserver() {
-	const observer = Object.create( EmitterMixin, {
+	const observer = Object.create( EmitterMixin().prototype, {
 		observe: {
 			value: function observe( observableName, observable, filterNames ) {
 				observer.listenTo( observable, 'change', ( evt, propertyName, value, oldValue ) => {

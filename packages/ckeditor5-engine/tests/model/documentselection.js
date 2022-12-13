@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1252,13 +1252,11 @@ describe( 'DocumentSelection', () => {
 
 		describe( 'parent element\'s attributes', () => {
 			it( 'are set using a normal batch', () => {
-				const batchTypes = [];
+				let batch;
 
-				model.on( 'applyOperation', ( event, args ) => {
+				model.once( 'applyOperation', ( event, args ) => {
 					const operation = args[ 0 ];
-					const batch = operation.batch;
-
-					batchTypes.push( batch.type );
+					batch = operation.batch;
 				} );
 
 				selection._setTo( [ rangeInEmptyP ] );
@@ -1267,13 +1265,13 @@ describe( 'DocumentSelection', () => {
 					writer.setSelectionAttribute( 'foo', 'bar' );
 				} );
 
-				expect( batchTypes ).to.deep.equal( [ 'default' ] );
+				expect( batch.isUndoable ).to.be.true;
+
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 
 			it( 'are removed when any content is inserted (reuses the same batch)', () => {
-				// Dedupe batches by using a map (multiple change events will be fired).
-				const batchTypes = new Map();
+				const batches = new Set();
 
 				selection._setTo( rangeInEmptyP );
 				selection._setAttribute( 'foo', 'bar' );
@@ -1283,7 +1281,7 @@ describe( 'DocumentSelection', () => {
 					const operation = args[ 0 ];
 					const batch = operation.batch;
 
-					batchTypes.set( batch, batch.type );
+					batches.add( batch );
 				} );
 
 				model.change( writer => {
@@ -1293,7 +1291,11 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
 
-				expect( Array.from( batchTypes.values() ) ).to.deep.equal( [ 'default' ] );
+				expect( batches.size ).to.equal( 1 );
+
+				const batch = Array.from( batches )[ 0 ];
+
+				expect( batch.isUndoable ).to.be.true;
 			} );
 
 			it( 'are removed when any content is moved into', () => {

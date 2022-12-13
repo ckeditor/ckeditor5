@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -164,25 +164,6 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should break attribute on UIElement insertion (isAllowedInsideAttributeElement = false)', () => {
-			const { view, selection } = parse(
-				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>'
-			);
-
-			const element = new UIElement( document, 'span' );
-			element._isAllowedInsideAttributeElement = false;
-
-			const newRange = writer.insert( selection.getFirstPosition(), element );
-
-			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
-				'<container:p>' +
-				'<attribute:b view-priority="1">foo</attribute:b>' +
-				'[<ui:span></ui:span>]' +
-				'<attribute:b view-priority="1">bar</attribute:b>' +
-				'</container:p>'
-			);
-		} );
-
 		it( 'should break attribute on multiple different nodes insertion', () => {
 			testInsert(
 				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
@@ -200,8 +181,6 @@ describe( 'DowncastWriter', () => {
 			);
 
 			const element = new ContainerElement( document, 'span', {}, 'baz' );
-			element._isAllowedInsideAttributeElement = true;
-
 			const newRange = writer.insert( selection.getFirstPosition(), element );
 
 			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
@@ -219,25 +198,6 @@ describe( 'DowncastWriter', () => {
 
 			expect( stringify( view.root, finalRange, { showType: true, showPriority: true } ) ).to.equal(
 				'<container:p><attribute:b view-priority="1">foo[<container:span>baz</container:span>]bar</attribute:b></container:p>'
-			);
-		} );
-
-		it( 'should break attribute on non inline ContainerElement insertion', () => {
-			const { view, selection } = parse(
-				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>'
-			);
-
-			const element = new ContainerElement( document, 'span', {}, 'baz' );
-			element._isAllowedInsideAttributeElement = false;
-
-			const newRange = writer.insert( selection.getFirstPosition(), element );
-
-			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
-				'<container:p>' +
-					'<attribute:b view-priority="1">foo</attribute:b>' +
-					'[<container:span>baz</container:span>]' +
-					'<attribute:b view-priority="1">bar</attribute:b>' +
-				'</container:p>'
 			);
 		} );
 

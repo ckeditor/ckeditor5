@@ -1,17 +1,49 @@
-node_modules/
-coverage/
-packages/*/node_modules/
+# All "dot directories".
+.*/**
+!.github/**
+!.husky/**
+
+# Files associated with CKEditor 5 repository.
+**/node_modules
+build/
+!packages/ckeditor5-build-*/build
 docs/api/output.json
+yarn.lock
+package-lock.json
+coverage/
+
+# Files associated with external repositories.
 external/
-lerna-debug.log
+mrgit.json
+
+# Files associated with specific development environments.
+.DS_Store
 .idea
 .vscode
 
-# Ignore `yarn.lock` - this file might contain info from external repositories.
-yarn.lock
+# Ignore yalc
+.yalc
+yalc.lock
 
-# Ignore `mrgit.json` this file contains info about external repositories.
-mrgit.json
 
-build/
-!packages/ckeditor5-build-*/build
+# Ignore compiled TypeScript files.
+packages/ckeditor5-clipboard/src/**/*.js
+packages/ckeditor5-core/src/**/*.js
+packages/ckeditor5-engine/src/**/*.js
+packages/ckeditor5-enter/src/**/*.js
+packages/ckeditor5-paragraph/src/**/*.js
+packages/ckeditor5-select-all/src/**/*.js
+packages/ckeditor5-typing/src/**/*.js
+packages/ckeditor5-ui/src/**/*.js
+packages/ckeditor5-undo/src/**/*.js
+packages/ckeditor5-upload/src/**/*.js
+packages/ckeditor5-utils/src/**/*.js
+packages/ckeditor5-widget/src/**/*.js
+packages/ckeditor5-editor-classic/src/**/*.js
+packages/ckeditor5-editor-inline/src/**/*.js
+packages/ckeditor5-editor-balloon/src/**/*.js
+packages/ckeditor5-editor-decoupled/src/**/*.js
+packages/ckeditor5-essentials/src/**/*.js
+packages/*/src/**/*.d.ts
+src/**/*.js
+src/**/*.d.ts

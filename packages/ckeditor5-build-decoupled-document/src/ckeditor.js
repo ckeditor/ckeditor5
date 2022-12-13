@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,6 +19,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
@@ -32,10 +33,11 @@ import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
@@ -58,6 +60,7 @@ DecoupledEditor.builtinPlugins = [
 	Strikethrough,
 	Underline,
 	BlockQuote,
+	CKBox,
 	CKFinder,
 	CloudServices,
 	EasyImage,
@@ -72,10 +75,11 @@ DecoupledEditor.builtinPlugins = [
 	IndentBlock,
 	Link,
 	List,
-	ListStyle,
+	ListProperties,
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
+	PictureEditing,
 	Table,
 	TableToolbar,
 	TextTransformation
@@ -132,6 +136,13 @@ DecoupledEditor.defaultConfig = {
 			'tableRow',
 			'mergeTableCells'
 		]
+	},
+	list: {
+		properties: {
+			styles: true,
+			startIndex: true,
+			reversed: true
+		}
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'

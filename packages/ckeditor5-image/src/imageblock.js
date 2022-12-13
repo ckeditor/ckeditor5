@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,7 +16,7 @@ import ImageBlockEditing from './image/imageblockediting';
 import '../theme/image.css';
 
 /**
- * The image inline plugin.
+ * The image block plugin.
  *
  * This is a "glue" plugin which loads the following plugins:
  *

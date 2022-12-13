@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1050,9 +1050,7 @@ describe( 'LinkUI', () => {
 					.elementToElement( {
 						model: 'inlineWidget',
 						view: ( modelItem, { writer } ) => toWidget(
-							writer.createContainerElement( 'inlineWidget', {}, {
-								isAllowedInsideAttributeElement: true
-							} ),
+							writer.createContainerElement( 'inlineWidget' ),
 							writer,
 							{ label: 'inline widget' }
 						)
@@ -1115,12 +1113,10 @@ describe( 'LinkUI', () => {
 					allowAttributesOf: '$text'
 				} );
 
-				editor.conversion.for( 'downcast' ).elementToElement( {
+				editor.conversion.for( 'downcast' ).elementToStructure( {
 					model: 'inlineWidget',
 					view: ( modelItem, { writer } ) => {
-						const spanView = writer.createContainerElement( 'span', {}, {
-							isAllowedInsideAttributeElement: true
-						} );
+						const spanView = writer.createContainerElement( 'span' );
 
 						const innerText = writer.createText( '{' + modelItem.name + '}' );
 						writer.insert( writer.createPositionAt( spanView, 0 ), innerText );

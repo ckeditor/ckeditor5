@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,8 +35,8 @@ ClassicEditor
 		window.editor = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem(
-				editor.ui.view.toolbar, item => item.buttonView && item.buttonView.tooltip && item.buttonView.tooltip === 'Highlight'
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Highlight'
 			),
 			text: 'Click to add highlight.',
 			editor

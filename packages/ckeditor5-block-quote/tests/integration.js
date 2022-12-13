@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -223,6 +223,7 @@ describe( 'BlockQuote integration', () => {
 			return {
 				preventDefault: sinon.spy(),
 				direction: 'backward',
+				inputType: 'deleteContentBackward',
 				unit: 'character'
 			};
 		}
@@ -364,7 +365,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			// Only enter command should be executed.
+			// Only delete command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
@@ -378,7 +379,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			// Only enter command should be executed.
+			// Only delete command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
@@ -392,7 +393,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			// Only enter command should be executed.
+			// Only delete command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
@@ -406,7 +407,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			// Only enter command should be executed.
+			// Only delete command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );

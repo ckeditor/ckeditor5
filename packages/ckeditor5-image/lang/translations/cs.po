@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -22,15 +22,15 @@ msgstr "ovládací prvek obrázku"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "Text nahoře a dole"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "Obtékání textu"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "Rovnoběžně s textem"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"
@@ -111,3 +111,11 @@ msgstr "Vložit obrázek pomocí URL"
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
 msgstr "Aktualizovat URL obrázku"
+
+msgctxt "Text used by screen readers do describe an image when the image has no text alternative."
+msgid "Caption for the image"
+msgstr "Popisek k obrázku"
+
+msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
+msgid "Caption for image: %0"
+msgstr "Popisek k obrázku: %0"

@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 :root {
@@ -280,7 +281,6 @@ https://github.com/ckeditor/ckeditor5/issues/1545 */
 
 #snippet-inline-editor header.ck-content h3 {
 	color: hsla(212, 79%, 9%, 0.59);
-	font-weight: 600;
 	font-size: 1.6rem;
 }
 

@@ -1,0 +1,93 @@
+<head>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.items {
+			padding: 5px 15px;
+			border: 2px solid #000;
+		}
+
+		.items[data-amount=single] {
+			background-color: aquamarine;
+		}
+
+		.items[data-amount=little] {
+			background-color: cadetblue;
+		}
+
+		.items[data-amount=few] {
+			background-color: darkkhaki;
+		}
+
+		.items[data-amount=reasonable] {
+			background-color: darksalmon;
+		}
+
+		.items[data-amount=high] {
+			background-color: deeppink;
+		}
+
+		.items[data-amount=huge] {
+			background-color: mediumvioletred;
+		}
+
+		.item {
+			margin: 10px 0;
+			padding: 5px;
+			border: 2px solid black;
+		}
+
+		#items-mode {
+			margin-bottom: 20px;
+		}
+
+		#items-mode label {
+			display: inline-flex;
+			align-items: center;
+			margin-right: 5px;
+			padding: 5px;
+			border: 1px solid black;
+		}
+
+		.ck.ck-content [data-insert-count] {
+			position: relative;
+		}
+
+		.ck.ck-content [data-insert-count]:after {
+			content: attr(data-insert-count);
+			position: absolute;
+			font-size: 10px;
+			top: 2px;
+			right: 2px;
+			border: 1px solid hsl(219, 86%, 31%);
+			background: hsl(219, 100%, 91%);
+			padding: 0 2px;
+			opacity: 0.8;
+		}
+	</style>
+</head>
+
+<div id="items-mode">
+	Mode:
+	<label>
+		threshold
+		<input type="radio" name="mode" value="threshold" checked="checked" />
+	</label>
+	<label>
+		hsl
+		<input type="radio" name="mode" value="hsl" />
+	</label>
+	<label>
+		none
+		<input type="radio" name="mode" value="none" />
+	</label>
+</div>
+
+<div id="editor">
+	<div class="items" data-mode="threshold">
+		<div class="item"></div>
+	</div>
+</div>

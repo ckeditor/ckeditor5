@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -76,7 +76,13 @@ export default class IndentCodeBlockCommand extends Command {
 			//		</codeBlock>
 			//
 			for ( const position of positions ) {
-				writer.insertText( this._indentSequence, position );
+				const indentSequenceTextElement = writer.createText( this._indentSequence );
+
+				// Previously insertion was done by writer.insertText(). It was changed to insertContent() to enable
+				// integration of code block with track changes. It's the easiest way of integration because insertContent()
+				// is already integrated with track changes, but if it ever cause any troubles it can be reverted, however
+				// some additional work will be required in track changes integration of code block.
+				model.insertContent( indentSequenceTextElement, position );
 			}
 		} );
 	}

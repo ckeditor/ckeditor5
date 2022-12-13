@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,7 +25,7 @@ import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
 import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
@@ -39,6 +39,7 @@ import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
@@ -56,8 +57,8 @@ function initEditor() {
 			plugins: [
 				ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 				FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
-				CodeBlock, TodoList, ListStyle, TableProperties, TableCellProperties, TableCaption,
-				EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
+				CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption,
+				TableColumnResize, EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
 				AutoLink, Mention, TextTransformation,
 				Alignment, IndentBlock,
 				PasteFromOffice, PageBreak, HorizontalLine,

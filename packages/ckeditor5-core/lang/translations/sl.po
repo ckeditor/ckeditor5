@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -38,4 +38,12 @@ msgstr ""
 
 msgctxt "Label for an ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or 'Search result 5 of 20'."
 msgid "%0 of %1"
+msgstr ""
+
+msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
+msgid "Cannot upload file:"
+msgstr "Ni možno naložiti datoteke:"
+
+msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
+msgid "Rich Text Editor. Editing area: %0"
 msgstr ""

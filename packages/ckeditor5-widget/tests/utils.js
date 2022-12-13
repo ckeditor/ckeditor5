@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -67,6 +67,12 @@ describe( 'widget utils', () => {
 			toWidget( element, writer, { label: () => 'foo bar baz label' } );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
+		} );
+
+		it( 'should set element\'s custom property \'widgetLabel\' as an array', () => {
+			toWidget( element, writer );
+
+			expect( element.getCustomProperty( 'widgetLabel' ) ).to.be.an( 'array' );
 		} );
 
 		it( 'should set default highlight handling methods - CSS class', () => {
@@ -176,26 +182,34 @@ describe( 'widget utils', () => {
 
 	describe( 'label utils', () => {
 		it( 'should allow to set label for element', () => {
-			const element = new ViewElement( viewDocument, 'p' );
+			toWidget( element, writer );
 			setLabel( element, 'foo bar baz', writer );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz' );
 		} );
 
 		it( 'should return empty string for elements without label', () => {
-			const element = new ViewElement( viewDocument, 'div' );
+			toWidget( element, writer );
 
 			expect( getLabel( element ) ).to.equal( '' );
 		} );
 
 		it( 'should allow to use a function as label creator', () => {
-			const element = new ViewElement( viewDocument, 'p' );
+			toWidget( element, writer );
 			let caption = 'foo';
 			setLabel( element, () => caption, writer );
 
 			expect( getLabel( element ) ).to.equal( 'foo' );
 			caption = 'bar';
 			expect( getLabel( element ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should concatenate a label from a function creator and a string', () => {
+			toWidget( element, writer );
+			setLabel( element, () => 'foo', writer );
+			element.getCustomProperty( 'widgetLabel' ).push( 'bar' );
+
+			expect( getLabel( element ) ).to.equal( 'foo. bar' );
 		} );
 	} );
 
@@ -214,6 +228,20 @@ describe( 'widget utils', () => {
 
 		it( 'should add proper class', () => {
 			expect( element.hasClass( 'ck-editor__editable', 'ck-editor__nested-editable' ) ).to.be.true;
+		} );
+
+		it( 'should add proper role', () => {
+			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
+		} );
+
+		it( 'should add label if it was passed through options', () => {
+			toWidgetEditable( element, writer, { label: 'foo' } );
+			expect( element.getAttribute( 'aria-label' ) ).to.equal( 'foo' );
+		} );
+
+		it( 'should not add label if it was not passed through options', () => {
+			toWidgetEditable( element, writer );
+			expect( element.hasAttribute( 'aria-label' ) ).to.be.false;
 		} );
 
 		it( 'should add proper contenteditable value when element is read-only - initialization', () => {

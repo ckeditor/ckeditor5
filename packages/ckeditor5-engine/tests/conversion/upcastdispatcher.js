@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -289,6 +289,36 @@ describe( 'UpcastDispatcher', () => {
 			// After splits `div` and `p` are empty so they should be removed.
 			expect( result.childCount ).to.equal( 1 );
 			expect( result.getChild( 0 ).name ).to.equal( 'imageBlock' );
+		} );
+
+		it( 'should not remove empty element that was created as a result of split (if marked as to keep)', () => {
+			const viewElement = new ViewElement( viewDocument, 'li', { id: 'foo' }, [
+				new ViewElement( viewDocument, 'li', { id: 'bar' } )
+			] );
+
+			model.schema.register( 'li', { allowIn: '$root', allowAttributes: 'id' } );
+
+			dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
+				const writer = conversionApi.writer;
+
+				const modelElement = writer.createElement( 'li', { id: data.viewItem.getAttribute( 'id' ) } );
+
+				if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
+					return;
+				}
+
+				conversionApi.convertChildren( data.viewItem, modelElement );
+				conversionApi.updateConversionResult( modelElement, data );
+				conversionApi.keepEmptyElement( modelElement );
+			} );
+
+			const result = model.change( writer => dispatcher.convert( viewElement, writer ) );
+
+			expect( result.childCount ).to.equal( 2 );
+			expect( result.getChild( 0 ).name ).to.equal( 'li' );
+			expect( result.getChild( 0 ).getAttribute( 'id' ) ).to.equal( 'foo' );
+			expect( result.getChild( 1 ).name ).to.equal( 'li' );
+			expect( result.getChild( 1 ).getAttribute( 'id' ) ).to.equal( 'bar' );
 		} );
 
 		it( 'should extract temporary markers elements from converter element and create static markers list', () => {

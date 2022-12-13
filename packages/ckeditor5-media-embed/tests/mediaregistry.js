@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -71,10 +71,10 @@ describe( 'MediaRegistry', () => {
 					{
 						name: 'youtube',
 						url: [
-							/^youtube\.com\/watch\?v=([\w-]+)/,
-							/^youtube\.com\/v\/([\w-]+)/,
-							/^youtube\.com\/embed\/([\w-]+)/,
-							/^youtu\.be\/([\w-]+)/
+							/^(?:m\.)?youtube\.com\/watch\?v=([\w-]+)(?:&t=(\d+))?/,
+							/^(?:m\.)?youtube\.com\/v\/([\w-]+)(?:\?t=(\d+))?/,
+							/^youtube\.com\/embed\/([\w-]+)(?:\?start=(\d+))?/,
+							/^youtu\.be\/([\w-]+)(?:\?t=(\d+))?/
 						],
 						html: htmlSpy
 					}
@@ -111,14 +111,15 @@ describe( 'MediaRegistry', () => {
 		} );
 
 		it( 'passes the entire match array to render function', () => {
-			const media = mediaRegistry._getMedia( 'https://www.youtube.com/watch?v=euqbMkM-QQk' );
+			const media = mediaRegistry._getMedia( 'https://www.youtube.com/watch?v=euqbMkM-QQk&t=93' );
 
 			media._getPreviewHtml();
 
 			expect( htmlSpy.calledOnce ).to.equal( true );
 			expect( htmlSpy.firstCall.args[ 0 ] ).to.deep.equal( [
-				'youtube.com/watch?v=euqbMkM-QQk',
-				'euqbMkM-QQk'
+				'youtube.com/watch?v=euqbMkM-QQk&t=93',
+				'euqbMkM-QQk',
+				'93'
 			] );
 		} );
 	} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -57,6 +57,13 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	 */
 	get currentGroupName() {
 		return this.groupDropdownView.value;
+	}
+
+	/**
+	 * Focuses the character categories dropdown.
+	 */
+	focus() {
+		this.groupDropdownView.focus();
 	}
 
 	/**

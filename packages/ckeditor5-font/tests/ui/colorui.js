@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -161,6 +161,20 @@ describe( 'ColorUI', () => {
 			for ( const item of localDropdown.colorTableView.items ) {
 				expect( item ).not.to.be.instanceOf( ColorGridView );
 			}
+		} );
+
+		it( 'should focus the first active button when dropdown is opened', () => {
+			global.document.body.appendChild( dropdown.element );
+
+			const secondButton = dropdown.colorTableView.staticColorsGrid.items.get( 1 );
+			const spy = sinon.spy( secondButton, 'focus' );
+
+			secondButton.isOn = true;
+			dropdown.isOpen = false;
+			dropdown.isOpen = true;
+			sinon.assert.calledOnce( spy );
+
+			dropdown.element.remove();
 		} );
 
 		describe( 'model to command binding', () => {

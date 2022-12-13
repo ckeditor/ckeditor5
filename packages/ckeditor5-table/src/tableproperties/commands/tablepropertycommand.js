@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -77,7 +77,7 @@ export default class TablePropertyCommand extends Command {
 		const table = selection.getFirstPosition().findAncestor( 'table' );
 		const valueToSet = this._getValueToSet( value );
 
-		model.enqueueChange( batch || 'default', writer => {
+		model.enqueueChange( batch, writer => {
 			if ( valueToSet ) {
 				writer.setAttribute( this.attributeName, valueToSet, table );
 			} else {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,8 @@ const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 
 const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
-const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
+const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
+const { CI } = process.env;
 
 if ( ROOT_DIRECTORY !== process.cwd() ) {
 	throw new Error( 'This script should be called from the package root directory.' );
@@ -105,6 +106,9 @@ const webpackConfig = {
 			footer: `( ( fn, root ) => fn( root ) )( ${ loadCKEditor5modules.toString() }, window );`
 		} )
 	],
+	resolve: {
+		extensions: [ '.ts', '.js', '.json' ]
+	},
 	module: {
 		rules: [
 			{
@@ -123,16 +127,23 @@ const webpackConfig = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
 					}
 				]
+			},
+			{
+				test: /\.ts$/,
+				use: [ 'ts-loader' ]
 			}
 		]
 	}
@@ -152,6 +163,12 @@ if ( !IS_DEVELOPMENT_MODE ) {
 			extractComments: false
 		} )
 	];
+}
+
+if ( CI ) {
+	webpackConfig.cache = {
+		type: 'filesystem'
+	};
 }
 
 module.exports = webpackConfig;

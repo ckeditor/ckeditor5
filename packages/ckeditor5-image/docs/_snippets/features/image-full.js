@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -80,7 +80,7 @@ ClassicEditor
 		window.editor = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.constructor.name === 'FileDialogButtonView' ),
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.buttonView && item.buttonView.label === 'Insert image' ),
 			text: 'Click here to insert an image.',
 			tippyOptions: {
 				placement: 'top'

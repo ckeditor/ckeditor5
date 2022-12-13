@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,7 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
@@ -20,9 +20,10 @@ import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
 
 import TableEditing from '../src/tableediting';
 import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
+import TableCellWidthEditing from '../src/tablecellwidth/tablecellwidthediting';
 import TableWalker from '../src/tablewalker';
 
-import TableClipboard, { getTableIfOnlyTableInContent } from '../src/tableclipboard';
+import TableClipboard from '../src/tableclipboard';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element;
@@ -53,7 +54,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should be disabled in a readonly mode', () => {
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
@@ -65,7 +66,7 @@ describe( 'table clipboard', () => {
 				[ 'ba', 'bb' ]
 			] );
 
-			editor.isReadOnly = false;
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02', '03' ],
@@ -85,8 +86,6 @@ describe( 'table clipboard', () => {
 			};
 			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
 			viewDocument.fire( 'paste', data );
-
-			editor.isReadOnly = false;
 
 			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00foo[]', '01', '02', '03' ],
@@ -143,8 +142,6 @@ describe( 'table clipboard', () => {
 			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
 			viewDocument.fire( 'paste', data );
 
-			editor.isReadOnly = false;
-
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo[]</paragraph>' + modelTable( [
 				[ '00', '01', '02', '03' ],
 				[ '10', '11', '12', '13' ],
@@ -171,8 +168,6 @@ describe( 'table clipboard', () => {
 			};
 			data.dataTransfer.setData( 'text/html', table );
 			viewDocument.fire( 'paste', data );
-
-			editor.isReadOnly = false;
 
 			expect( getModelData( model ) ).to.equalMarkup(
 				'[' + modelTable( [
@@ -216,7 +211,7 @@ describe( 'table clipboard', () => {
 
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-			editor.execute( 'input', { text: 'bar' } );
+			editor.execute( 'insertText', { text: 'bar' } );
 
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foobar[]</paragraph>' );
 		} );
@@ -3870,7 +3865,7 @@ describe( 'table clipboard', () => {
 			);
 
 			pasteTable( [
-				[ { contents: 'aa', style: 'border:1px solid #f00;background:#ba7;width:1337px' }, 'ab' ],
+				[ { contents: 'aa', style: 'border:1px solid #f00;background:#ba7' }, 'ab' ],
 				[ 'ba', 'bb' ]
 			] );
 
@@ -3880,6 +3875,29 @@ describe( 'table clipboard', () => {
 			expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'solid' );
 			expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
 			expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( '#ba7' );
+		} );
+
+		it( 'handles table cell width property', async () => {
+			await createEditor( [ TableCellWidthEditing ] );
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '01', '11', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			pasteTable( [
+				[ { contents: 'aa', style: 'width:1337px' }, 'ab' ],
+				[ 'ba', 'bb' ]
+			] );
+
+			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
 			expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '1337px' );
 		} );
 
@@ -3984,9 +4002,13 @@ describe( 'table clipboard', () => {
 		} );
 	} );
 
-	describe( 'getTableIfOnlyTableInContent helper', () => {
+	describe( 'getTableIfOnlyTableInContent()', () => {
+		let tableClipboard;
+
 		beforeEach( async () => {
 			await createEditor();
+
+			tableClipboard = editor.plugins.get( 'TableClipboard' );
 		} );
 
 		it( 'should return null for no table provided', () => {
@@ -3994,7 +4016,7 @@ describe( 'table clipboard', () => {
 
 			const content = modelRoot.getChild( 0 );
 
-			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return null for a text node provided', async () => {
@@ -4002,7 +4024,7 @@ describe( 'table clipboard', () => {
 
 			const content = modelRoot.getNodeByPath( [ 0, 0 ] );
 
-			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return null for mixed content provided (table + paragraph)', () => {
@@ -4013,7 +4035,7 @@ describe( 'table clipboard', () => {
 
 			const content = documentFragmentFromChildren( modelRoot );
 
-			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return null for mixed content provided (paragraph + table)', () => {
@@ -4024,7 +4046,7 @@ describe( 'table clipboard', () => {
 
 			const content = documentFragmentFromChildren( modelRoot );
 
-			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return table element for mixed content provided (table + empty paragraph)', () => {
@@ -4034,20 +4056,20 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
 		} );
 
-		it( 'should return table element for mixed content provided (table + empty paragraph)', () => {
+		it( 'should return table element for mixed content provided (empty paragraph + table)', () => {
 			setModelData( model,
 				'<paragraph></paragraph>' +
 				'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>'
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
@@ -4062,7 +4084,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
@@ -4074,7 +4096,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
@@ -4086,7 +4108,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = modelRoot.getChild( 0 );
-			const result = getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;

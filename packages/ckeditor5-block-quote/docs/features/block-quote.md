@@ -6,15 +6,23 @@ menu-title: Block quote
 
 # Block quote
 
-The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easily include block quotations or pull quotes in the rich-text content. A block quote may be used to refer to what other authors said, support your idea or present different points of view that may not necessarily be in line with the document you write, but should be included.
+The block quote feature allows you to easily include block quotations or pull quotes in the rich-text content. A block quote may be used to refer to what other authors said, support your idea or present different points of view that may not necessarily be in line with the document you write, but should be included.
 
 The block quote feature provides an attractive way to draw the readers' attention to selected parts of text and enriches the reading experience with additional data. It also helps organize the content in a structured, elegant way to manage the flow better.
+
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
 
 ## Demo
 
 Use the block quote toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/quote.svg Insert block quote} in the editor below to see the feature in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
 
 {@snippet features/block-quote}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Nested block quotes
 
@@ -39,6 +47,10 @@ Here are some other CKEditor 5 features that you can use similarly to the block 
 
 ## Installation
 
+<info-box info>
+	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
+
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-block-quote`](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote) package:
 
 ```plaintext
@@ -60,7 +72,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -93,7 +105,7 @@ ClassicEditor
 ```
 
 <info-box>
-	Check the {@link framework/guides/creating-simple-plugin plugin development guide} if you need more information about the technical side of this solution.
+	Check the {@link framework/guides/creating-simple-plugin-timestamp plugin development guide} if you need more information about the technical side of this solution.
 </info-box>
 
 ## Common API

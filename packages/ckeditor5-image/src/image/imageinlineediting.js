@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,7 +21,7 @@ import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
 	getImgViewElementMatcher,
-	createImageViewElement,
+	createInlineImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../image/utils';
 
@@ -61,10 +61,7 @@ export default class ImageInlineEditing extends Plugin {
 
 		// Converters 'alt' and 'srcset' are added in 'ImageEditing' plugin.
 		schema.register( 'imageInline', {
-			isObject: true,
-			isInline: true,
-			allowWhere: '$text',
-			allowAttributesOf: '$text',
+			inheritAllFrom: '$inlineObject',
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
@@ -105,10 +102,10 @@ export default class ImageInlineEditing extends Plugin {
 			} );
 
 		conversion.for( 'editingDowncast' )
-			.elementToElement( {
+			.elementToStructure( {
 				model: 'imageInline',
 				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
-					createImageViewElement( writer, 'imageInline' ), writer, t( 'image widget' )
+					createInlineImageViewElement( writer ), writer, t( 'image widget' )
 				)
 			} );
 

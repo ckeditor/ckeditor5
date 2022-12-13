@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import BlockQuoteEditing from '../src/blockquoteediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -54,6 +54,14 @@ describe( 'BlockQuoteEditing', () => {
 
 	it( 'does not break when checking an unregisterd item', () => {
 		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'foo' ) ).to.be.false;
+	} );
+
+	it( 'inherits attributes from $container', () => {
+		model.schema.extend( '$container', {
+			allowAttributes: 'foo'
+		} );
+
+		expect( model.schema.checkAttribute( 'blockQuote', 'foo' ) ).to.be.true;
 	} );
 
 	it( 'adds converters to the data pipeline', () => {

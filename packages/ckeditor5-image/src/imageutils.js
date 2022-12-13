@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -103,18 +103,15 @@ export default class ImageUtils extends Plugin {
 		return model.change( writer => {
 			const imageElement = writer.createElement( imageType, attributes );
 
-			// If we want to insert a block image (for whatever reason) then we don't want to split text blocks.
-			// This applies only when we don't have the selectable specified (i.e., we insert multiple block images at once).
-			if ( !selectable && imageType != 'imageInline' ) {
-				selectable = findOptimalInsertionRange( selection, model );
-			}
-
-			model.insertContent( imageElement, selectable );
+			model.insertObject( imageElement, selectable, null, {
+				setSelection: 'on',
+				// If we want to insert a block image (for whatever reason) then we don't want to split text blocks.
+				// This applies only when we don't have the selectable specified (i.e., we insert multiple block images at once).
+				findOptimalPosition: !selectable && imageType != 'imageInline'
+			} );
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
-				writer.setSelection( imageElement, 'on' );
-
 				return imageElement;
 			}
 
@@ -130,13 +127,19 @@ export default class ImageUtils extends Plugin {
 	 * @returns {module:engine/view/element~Element|null}
 	 */
 	getClosestSelectedImageWidget( selection ) {
+		const selectionPosition = selection.getFirstPosition();
+
+		if ( !selectionPosition ) {
+			return null;
+		}
+
 		const viewElement = selection.getSelectedElement();
 
 		if ( viewElement && this.isImageWidget( viewElement ) ) {
 			return viewElement;
 		}
 
-		let parent = selection.getFirstPosition().parent;
+		let parent = selectionPosition.parent;
 
 		while ( parent ) {
 			if ( parent.is( 'element' ) && this.isImageWidget( parent ) ) {

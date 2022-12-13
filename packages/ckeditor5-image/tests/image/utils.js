@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,7 +25,8 @@ import ImageUtils from '../../src/imageutils';
 
 import {
 	getImgViewElementMatcher,
-	createImageViewElement,
+	createBlockImageViewElement,
+	createInlineImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../../src/image/utils';
 
@@ -127,42 +128,75 @@ describe( 'image utils', () => {
 	} );
 
 	describe( 'getImgViewElementMatcher()', () => {
-		let editor;
+		describe( 'when one of the image editing plugins is not loaded', () => {
+			let editor;
 
-		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( {
-				plugins: [ ImageUtils, ImageEditing ]
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( {
+					plugins: [ ImageUtils, ImageEditing ]
+				} );
+
+				imageUtils = editor.plugins.get( 'ImageUtils' );
+
+				writer = new UpcastWriter( editor.editing.view.document );
 			} );
 
-			imageUtils = editor.plugins.get( 'ImageUtils' );
-		} );
-
-		afterEach( async () => {
-			editor.destroy();
-		} );
-
-		describe( 'when one of the image editing plugins is not loaded', () => {
-			const returnValue = {
-				name: 'img'
-			};
+			afterEach( async () => {
+				editor.destroy();
+			} );
 
 			it( 'should return a matcher pattern for an img element if ImageBlockEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
 
-				expect( getImgViewElementMatcher( editor, 'imageBlock' ) ).to.eql( returnValue );
-				expect( getImgViewElementMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
+				element = writer.createElement( 'img', { src: 'sample.jpg' } );
+				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
+
+				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
+					name: true,
+					attributes: [ 'src' ]
+				} );
+
+				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).to.deep.equal( {
+					name: true,
+					attributes: [ 'src' ]
+				} );
 			} );
 
-			it( 'should return a matcher patter for an img element if ImageInlineEditing plugin is not loaded', () => {
+			it( 'should return a matcher pattern for an img element if ImageInlineEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
 
-				expect( getImgViewElementMatcher( editor, 'imageBlock', editor ) ).to.eql( returnValue );
-				expect( getImgViewElementMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
+				element = writer.createElement( 'img', { src: 'sample.jpg' } );
+				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
+
+				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
+					name: true,
+					attributes: [ 'src' ]
+				} );
+
+				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).to.deep.equal( {
+					name: true,
+					attributes: [ 'src' ]
+				} );
+			} );
+
+			it( 'should not include "src" in the matcher pattern if the image has no "src"', () => {
+				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
+
+				element = writer.createElement( 'img' );
+				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
+
+				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
+					name: true
+				} );
+
+				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).to.deep.equal( {
+					name: true
+				} );
 			} );
 		} );
 
 		describe( 'when both image editing plugins are loaded', () => {
-			let matcherPattern, editorElement;
+			let editor, matcherPattern, editorElement;
 
 			beforeEach( async () => {
 				editorElement = document.createElement( 'div' );
@@ -183,7 +217,7 @@ describe( 'image utils', () => {
 			} );
 
 			describe( 'the returned matcherPattern function', () => {
-				describe( 'for the "image" type requested', () => {
+				describe( 'for the "imageBlock" type requested', () => {
 					beforeEach( () => {
 						matcherPattern = getImgViewElementMatcher( editor, 'imageBlock' );
 					} );
@@ -225,6 +259,25 @@ describe( 'image utils', () => {
 						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
+							name: true,
+							attributes: [ 'src' ]
+						} );
+					} );
+
+					it( 'should return a matcherPattern object if the element has `display:block` style', () => {
+						element = writer.createElement( 'img', { src: 'sample.jpg', style: 'display:block' } );
+
+						expect( matcherPattern( element ) ).to.deep.equal( {
+							name: true,
+							attributes: [ 'src' ]
+						} );
+					} );
+
+					it( 'should not include "src" in the matcher pattern if the image has no "src"', () => {
+						element = writer.createElement( 'img' );
+						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
+
+						expect( matcherPattern( element ) ).to.deep.equal( {
 							name: true
 						} );
 					} );
@@ -260,7 +313,8 @@ describe( 'image utils', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
-							name: true
+							name: true,
+							attributes: [ 'src' ]
 						} );
 					} );
 
@@ -272,6 +326,15 @@ describe( 'image utils', () => {
 						);
 
 						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.deep.equal( {
+							name: true,
+							attributes: [ 'src' ]
+						} );
+					} );
+
+					it( 'should not include "src" in the matcher pattern if the image has no "src"', () => {
+						element = writer.createElement( 'img' );
+
+						expect( matcherPattern( element ) ).to.deep.equal( {
 							name: true
 						} );
 					} );
@@ -280,7 +343,7 @@ describe( 'image utils', () => {
 		} );
 	} );
 
-	describe( 'createImageViewElement()', () => {
+	describe( 'createBlockImageViewElement()', () => {
 		let writer;
 
 		beforeEach( () => {
@@ -289,16 +352,30 @@ describe( 'image utils', () => {
 		} );
 
 		it( 'should create a figure element for "image" type', () => {
-			const element = createImageViewElement( writer, 'imageBlock' );
+			sinon.stub( writer, 'createSlot' ).callsFake( function createSlot() {
+				return writer.createEmptyElement( '$slot' );
+			} );
+
+			const element = createBlockImageViewElement( writer );
 
 			expect( element.is( 'element', 'figure' ) ).to.be.true;
 			expect( element.hasClass( 'image' ) ).to.be.true;
-			expect( element.childCount ).to.equal( 1 );
+			expect( element.childCount ).to.equal( 2 );
 			expect( element.getChild( 0 ).is( 'emptyElement', 'img' ) ).to.be.true;
+			expect( element.getChild( 1 ).is( 'emptyElement', '$slot' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'createInlineImageViewElement()', () => {
+		let writer;
+
+		beforeEach( () => {
+			const document = new ViewDocument( new StylesProcessor() );
+			writer = new ViewDowncastWriter( document );
 		} );
 
 		it( 'should create a span element for "imageInline" type', () => {
-			const element = createImageViewElement( writer, 'imageInline' );
+			const element = createInlineImageViewElement( writer );
 
 			expect( element.is( 'element', 'span' ) ).to.be.true;
 			expect( element.hasClass( 'image-inline' ) ).to.be.true;
@@ -308,7 +385,7 @@ describe( 'image utils', () => {
 
 		it( 'should create a span element for "imageInline" type that does not break the parent attribute element', () => {
 			const paragraph = writer.createContainerElement( 'p' );
-			const imageElement = createImageViewElement( writer, 'imageInline' );
+			const imageElement = createInlineImageViewElement( writer );
 			const attributeElement = writer.createAttributeElement( 'a', { foo: 'bar' } );
 
 			writer.insert( writer.createPositionAt( paragraph, 0 ), imageElement );

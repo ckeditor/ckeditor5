@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -57,9 +57,9 @@ const { Bold, Italic, Strikethrough, Subscript, Superscript, Underline, Code } =
 const { FindAndReplace } = window.CKEditor5.findAndReplace;
 const { FontColor, FontFamily, FontSize, FontBackgroundColor } = window.CKEditor5.font;
 const { Indent, IndentBlock } = window.CKEditor5.indent;
-const { List, ListStyle, TodoList } = window.CKEditor5.list;
+const { List, ListProperties, TodoList } = window.CKEditor5.list;
 const { SpecialCharacters, SpecialCharactersEssentials } = window.CKEditor5.specialCharacters;
-const { Table, TableToolbar, TableCellProperties, TableProperties, TableCaption } = window.CKEditor5.table;
+const { Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize } = window.CKEditor5.table;
 const { Alignment } = window.CKEditor5.alignment;
 const { Autoformat } = window.CKEditor5.autoformat;
 const { BlockQuote } = window.CKEditor5.blockQuote;
@@ -128,14 +128,14 @@ const config = {
 		HtmlEmbed,
 		HtmlComment,
 		Indent, IndentBlock,
-		List, ListStyle, TodoList,
+		List, ListProperties, TodoList,
 		MediaEmbed,
 		Mention,
 		PageBreak,
 		PasteFromOffice,
 		RemoveFormat,
 		SpecialCharacters, SpecialCharactersEssentials,
-		Table, TableToolbar, TableCellProperties, TableProperties, TableCaption,
+		Table, TableToolbar, TableCellProperties, TableProperties, TableCaption, TableColumnResize,
 		TextPartLanguage,
 		WordCount,
 		SourceEditing
@@ -294,7 +294,8 @@ const decoupledEditorData = '<h2>Sample</h2>' +
 		'<img src="./sample.jpg" alt="Autumn fields" />' +
 	'</figure>' +
 	'<p>You can use this sample to validate whether your ' +
-		'<a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html">custom build</a> works fine.' +
+		'<a href="https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/custom-builds.html">' +
+		'custom build</a> works fine.' +
 	'</p>';
 
 const decoupledEditorPromise = DecoupledEditor.create( decoupledEditorData, config )

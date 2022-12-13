@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -436,7 +436,7 @@ describe( 'AutoImage - integration', () => {
 				const rootEl = editor.model.document.getRoot();
 
 				setTimeout( () => {
-					editor.model.enqueueChange( 'transparent', writer => {
+					editor.model.enqueueChange( { isUndoable: false }, writer => {
 						writer.insertText( characters[ i ], writer.createPositionFromPath( rootEl, [ 0, i ] ) );
 					} );
 				}, i * 5 );
@@ -458,7 +458,7 @@ describe( 'AutoImage - integration', () => {
 
 			for ( let i = 0; i < 10; ++i ) {
 				setTimeout( () => {
-					editor.model.enqueueChange( 'transparent', writer => {
+					editor.model.enqueueChange( { isUndoable: false }, writer => {
 						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
 					} );
 				}, i * 5 );
@@ -478,7 +478,7 @@ describe( 'AutoImage - integration', () => {
 
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			editor.model.enqueueChange( 'transparent', writer => {
+			editor.model.enqueueChange( { isUndoable: false }, writer => {
 				writer.remove( writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ) );
 			} );
 
@@ -496,7 +496,7 @@ describe( 'AutoImage - integration', () => {
 
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			editor.model.enqueueChange( 'transparent', writer => {
+			editor.model.enqueueChange( { isUndoable: false }, writer => {
 				const paragraph = writer.createElement( 'paragraph' );
 				writer.insert( paragraph, writer.createPositionAfter( editor.model.document.getRoot().getChild( 0 ) ) );
 				writer.setSelection( paragraph, 'in' );
@@ -504,7 +504,7 @@ describe( 'AutoImage - integration', () => {
 
 			for ( let i = 0; i < 10; ++i ) {
 				setTimeout( () => {
-					editor.model.enqueueChange( 'transparent', writer => {
+					editor.model.enqueueChange( { isUndoable: false }, writer => {
 						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
 					} );
 				}, i * 5 );
@@ -528,7 +528,7 @@ describe( 'AutoImage - integration', () => {
 
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			editor.model.enqueueChange( 'transparent', writer => {
+			editor.model.enqueueChange( { isUndoable: false }, writer => {
 				const paragraph = writer.createElement( 'paragraph' );
 				writer.insert( paragraph, writer.createPositionAfter( editor.model.document.getRoot().getChild( 1 ) ) );
 				writer.setSelection( paragraph, 'in' );
@@ -536,7 +536,7 @@ describe( 'AutoImage - integration', () => {
 
 			for ( let i = 0; i < 10; ++i ) {
 				setTimeout( () => {
-					editor.model.enqueueChange( 'transparent', writer => {
+					editor.model.enqueueChange( { isUndoable: false }, writer => {
 						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
 					} );
 				}, i * 5 );

@@ -1,0 +1,25 @@
+<style>
+	.external-data-widget {
+		border: 2px solid rgb(242, 169, 0);
+		padding: 0 2px;
+	}
+
+	.external-data-widget-bounce {
+		animation: external-data-widget-bounce-animation 1.5s 1;
+	}
+
+	@keyframes external-data-widget-bounce-animation {
+		0% {
+			box-shadow: 0px 0px 0px 0px rgba(242, 169, 0, 1);
+		}
+
+		100% {
+			box-shadow: 0px 0px 0px 10px rgba(242, 169, 0, 0);
+		}
+	}
+</style>
+
+<div id="snippet-external-data-widget">
+	<h1>This is a simple widget for fetching data from an external source:</h1>
+	<p>Bitcoin rate:&nbsp;<span data-resource-url="https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT"></span></p>
+</div>

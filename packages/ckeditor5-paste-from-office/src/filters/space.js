@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -41,7 +41,7 @@ export function normalizeSpacerunSpans( htmlDocument ) {
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
 		const innerTextLength = el.innerText.length || 0;
 
-		el.innerHTML = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
+		el.innerText = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
 	} );
 }
 

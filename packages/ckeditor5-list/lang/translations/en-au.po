@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -107,3 +107,19 @@ msgstr "Lower-latin"
 msgctxt "The tooltip text of the button that toggles the \"upper–latin\" list style."
 msgid "Upper-latin"
 msgstr "Upper-latin"
+
+msgctxt "The label of the button that toggles the visibility of additional numbered list property UI fields."
+msgid "List properties"
+msgstr "List properties"
+
+msgctxt "The label of the input allowing to change the start index of a numbered list."
+msgid "Start at"
+msgstr "Start at"
+
+msgctxt "The error message displayed when the numbered list start index input value is invalid."
+msgid "Start index must be greater than 0."
+msgstr "Start index must be greater than 0."
+
+msgctxt "The label of the switch button that reverses the order of the numbered list."
+msgid "Reversed order"
+msgstr "Reversed order"

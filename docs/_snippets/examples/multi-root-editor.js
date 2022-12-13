@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,6 @@ import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromele
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
@@ -67,6 +66,17 @@ class MultirootEditor extends Editor {
 	constructor( sourceElements, config ) {
 		super( config );
 
+		if ( this.config.get( 'initialData' ) === undefined ) {
+			// Create initial data object containing data from all roots.
+			const initialData = {};
+
+			for ( const rootName of Object.keys( sourceElements ) ) {
+				initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
+			}
+
+			this.config.set( 'initialData', initialData );
+		}
+
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
 			this.model.document.createRoot( '$root', rootName );
@@ -116,16 +126,7 @@ class MultirootEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => {
-						const initialData = {};
-
-						// Create initial data object containing data from all roots.
-						for ( const rootName of Object.keys( sourceElements ) ) {
-							initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
-						}
-
-						return editor.data.init( initialData );
-					} )
+					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
@@ -203,11 +204,6 @@ class MultirootEditorUI extends EditorUI {
 			// editable areas (roots) but the decoupled editor has only one.
 			this.setEditableElement( editable.name, editableElement );
 
-			// Let the global focus tracker know that the editable UI element is focusable and
-			// belongs to the editor. From now on, the focus tracker will sustain the editor focus
-			// as long as the editable is focused (e.g. the user is typing).
-			this.focusTracker.add( editableElement );
-
 			// Let the editable UI element respond to the changes in the global editor focus
 			// tracker. It has been added to the same tracker a few lines above but, in reality, there are
 			// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
@@ -253,6 +249,8 @@ class MultirootEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
+		super.destroy();
+
 		const view = this.view;
 		const editingView = this.editor.editing.view;
 
@@ -261,8 +259,6 @@ class MultirootEditorUI extends EditorUI {
 		}
 
 		view.destroy();
-
-		super.destroy();
 	}
 
 	/**
@@ -277,12 +273,8 @@ class MultirootEditorUI extends EditorUI {
 
 		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
 
-		enableToolbarKeyboardFocus( {
-			origin: editor.editing.view,
-			originFocusTracker: this.focusTracker,
-			originKeystrokeHandler: editor.keystrokes,
-			toolbar
-		} );
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
+		this.addToolbar( view.toolbar );
 	}
 
 	/**
@@ -332,6 +324,8 @@ class MultirootEditorUIView extends EditorUIView {
 	constructor( locale, editingView, editableElements ) {
 		super( locale );
 
+		const t = locale.t;
+
 		/**
 		 * The main toolbar of the decoupled editor UI.
 		 *
@@ -350,7 +344,11 @@ class MultirootEditorUIView extends EditorUIView {
 
 		// Create InlineEditableUIView instance for each editable.
 		for ( const editableName of Object.keys( editableElements ) ) {
-			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ] );
+			const editable = new InlineEditableUIView( locale, editingView, editableElements[ editableName ], {
+				label: editableView => {
+					return t( 'Rich Text Editor. Editing area: %0', editableView.name );
+				}
+			} );
 
 			editable.name = editableName;
 			this.editables.push( editable );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -132,7 +132,7 @@ describe( 'model test utils', () => {
 
 		it( 'should use model#enqueueChange method if the batchType option was provided', () => {
 			const changeSpy = sinon.spy( model, 'enqueueChange' );
-			const batchType = 'default';
+			const batchType = { isUndoable: true };
 			setData( model, 'text', { batchType } );
 
 			sinon.assert.calledTwice( changeSpy );

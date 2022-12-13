@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -89,6 +89,7 @@ describe( 'ImageToolbar', () => {
 
 		it( 'should convert the declarative dropdown definition to the component factory item name', () => {
 			expect( toolbar.items.get( 1 ).buttonView.label ).to.equal( 'Fake dropdown: Centered image' );
+			expect( toolbar.items.get( 1 ).buttonView.arrowView.label ).to.equal( 'Fake dropdown' );
 		} );
 
 		it( 'should set proper CSS classes', () => {

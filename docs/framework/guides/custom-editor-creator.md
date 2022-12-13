@@ -47,6 +47,17 @@ class MultirootEditor extends Editor {
 	constructor( sourceElements, config ) {
 		super( config );
 
+		if ( this.config.get( 'initialData' ) === undefined ) {
+			// Create initial data object containing data from all roots.
+			const initialData = {};
+
+			for ( const rootName of Object.keys( sourceElements ) ) {
+				initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
+			}
+
+			this.config.set( 'initialData', initialData );
+		}
+
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
 			this.model.document.createRoot( '$root', rootName );
@@ -96,16 +107,7 @@ class MultirootEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => {
-						const initialData = {};
-
-						// Create initial data object containing data from all roots.
-						for ( const rootName of Object.keys( sourceElements ) ) {
-							initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
-						}
-
-						return editor.data.init( initialData );
-					} )
+					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
@@ -122,7 +124,6 @@ The `*EditorUI` class is the main UI class which initializes UI components (the 
 
 ```js
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
 /**
@@ -177,7 +178,7 @@ class MultirootEditorUI extends EditorUI {
 		// If the focus tracker loses focus, stop tracking the last focused editable element.
 		// Wherever the focus is restored, it will no longer be in the context of that editable
 		// because the focus "came from the outside", as opposed to the focus moving from one element
-		// to another withing the editor UI.
+		// to another within the editor UI.
 		this.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
 			if ( !isFocused ) {
 				lastFocusedEditableElement = null;
@@ -191,11 +192,6 @@ class MultirootEditorUI extends EditorUI {
 
 			// Register each editable UI view in the editor.
 			this.setEditableElement( editable.name, editableElement );
-
-			// Let the global focus tracker know that the editable UI element is focusable and
-			// belongs to the editor. From now on, the focus tracker will sustain the editor focus
-			// as long as the editable is focused (e.g. the user is typing).
-			this.focusTracker.add( editableElement );
 
 			// Let the editable UI element respond to the changes in the global editor focus
 			// tracker. It has been added to the same tracker a few lines above but, in reality, there are
@@ -242,6 +238,8 @@ class MultirootEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
+		super.destroy();
+
 		const view = this.view;
 		const editingView = this.editor.editing.view;
 
@@ -250,8 +248,6 @@ class MultirootEditorUI extends EditorUI {
 		}
 
 		view.destroy();
-
-		super.destroy();
 	}
 
 	/**
@@ -266,12 +262,8 @@ class MultirootEditorUI extends EditorUI {
 
 		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
 
-		enableToolbarKeyboardFocus( {
-			origin: editor.editing.view,
-			originFocusTracker: this.focusTracker,
-			originKeystrokeHandler: editor.keystrokes,
-			toolbar
-		} );
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
+		this.addToolbar( view.toolbar );
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -30,6 +30,8 @@ export default class HtmlComment extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+
+		editor.data.processor.skipComments = false;
 
 		// Allow storing comment's content as the $root attribute with the name `$comment:<unique id>`.
 		editor.model.schema.addAttributeCheck( ( context, attributeName ) => {

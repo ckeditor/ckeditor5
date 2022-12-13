@@ -8,18 +8,24 @@ modified_at: 2021-10-20
 
 # Mentions (autocompletion)
 
-The {@link module:mention/mention~Mention} feature brings support for smart autocompletion based on user input. When a user types a pre-configured marker, such as `@` or `#`, they get autocomplete suggestions in a panel displayed next to the caret. The selected suggestion is then inserted into the content.
+The mention feature brings support for smart autocompletion based on user input. When a user types a pre-configured marker, such as `@` or `#`, they get autocomplete suggestions in a panel displayed next to the caret. The selected suggestion is then inserted into the content.
 
 You can read more about possible implementations of the mention feature in a [dedicated blog post](https://ckeditor.com/blog/mentions-in-ckeditor-5-feature-of-the-month/).
 
+<info-box info>
+	The Mentions feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
-You can type the "@" character to invoke the mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marshall", "Robin", and "Ted").
+You can type the "@" character to invoke the mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marry Ann", "Marshall", "Robin", and "Ted").
 
 {@snippet features/mention}
 
-<info-box>
-	Check out the {@link examples/chat-with-mentions more advanced example} of the mention feature used in a chat application.
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+
+	You can also check out the {@link examples/chat-with-mentions more advanced example} of the mention feature used in a chat application.
 </info-box>
 
 ## Related productivity features
@@ -32,7 +38,7 @@ In addition to enabling mentions, you may want to check the following productivi
 
 ## Configuration
 
-The minimal configuration of the mention feature requires defining a {@link module:mention/mention~MentionFeed `feed`} and a {@link module:mention/mention~MentionFeed `marker`}. You can also define `minimumCharacters` after which the autocomplete panel will show up.
+The minimal configuration of the mention feature requires defining a {@link module:mention/mention~MentionFeed `feed`} and a {@link module:mention/mention~MentionFeed `marker`}. You can also define the `minimumCharacters` parameter, setting the number of letters after which the autocomplete panel will show up. Moreover, feed items' IDs may include whitespaces.
 
 The code snippet below was used to configure the demo above. It defines the list of names that will be autocompleted after the user types the "@" character.
 
@@ -47,7 +53,7 @@ ClassicEditor
 			feeds: [
 				{
 					marker: '@',
-					feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ],
+					feed: [ '@Barney', '@Lily', '@Marry Ann', '@Marshall', '@Robin', '@Ted' ],
 					minimumCharacters: 1
 				}
 			]
@@ -61,7 +67,7 @@ Additionally, you can configure:
 
 * How the item is rendered in the autocomplete panel (via setting {@link module:mention/mention~MentionFeed `itemRenderer`}). See ["Customizing the autocomplete list"](#customizing-the-autocomplete-list).
 * How the item is converted during the {@link framework/guides/architecture/editing-engine#conversion conversion}. See ["Customizing the output"](#customizing-the-output).
-* Multiple feeds. Te demo above uses only one feed, which is triggered by the `'@'` character. You can define multiple feeds but they must use different markers. For example, you can use `'@'` for people and `'#'` for tags.
+* Multiple feeds. The demo above uses only one feed, which is triggered by the `'@'` character. You can define multiple feeds but they must use different markers. For example, you can use `'@'` for people and `'#'` for tags.
 
 ### Providing the feed
 
@@ -102,9 +108,10 @@ ClassicEditor
 const items = [
 	{ id: '@swarley', userId: '1', name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
 	{ id: '@lilypad', userId: '2', name: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
-	{ id: '@marshmallow', userId: '3', name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
-	{ id: '@rsparkles', userId: '4', name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
-	{ id: '@tdog', userId: '5', name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
+	{ id: '@marry', userId: '3', name: 'Marry Ann Lewis', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+	{ id: '@marshmallow', userId: '4', name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
+	{ id: '@rsparkles', userId: '5', name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+	{ id: '@tdog', userId: '6', name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
 ];
 
 function getFeedItems( queryText ) {
@@ -193,12 +200,11 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Mention, ... ],
 		mention: {
+			// Define the custom number of visible mentions.
+			dropdownLimit: 4
 			feeds: [
-				{
-					// Define the custom number of visible mentions.
-					dropdownLimit: 4
-					feed: [ ... ]
-				}
+				{ ... }
+				...
 			]
 		}
 	} )
@@ -396,9 +402,10 @@ function MentionCustomization( editor ) {
 const items = [
 	{ id: '@swarley', userId: '1', name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
 	{ id: '@lilypad', userId: '2', name: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
-	{ id: '@marshmallow', userId: '3', name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
-	{ id: '@rsparkles', userId: '4', name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
-	{ id: '@tdog', userId: '5', name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
+	{ id: '@marry', userId: '3', name: 'Marry Ann Lewis', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+	{ id: '@marshmallow', userId: '4', name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
+	{ id: '@rsparkles', userId: '5', name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+	{ id: '@tdog', userId: '6', name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
 ];
 
 function getFeedItems( queryText ) {
@@ -466,6 +473,10 @@ The mention feature is using the power of [CSS variables](https://developer.mozi
 
 {@snippet features/custom-mention-colors-variables}
 
+### Comments with mentions
+
+It is possible to configure the Mentions feature to work with the {@link features/comments Comments feature}. Here you can find {@link features/annotations-custom-configuration#comment-editor-configuration detailed guidance on that matter}.
+
 ## Installation
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-mention`](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention) package:
@@ -491,7 +502,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API
@@ -502,7 +513,7 @@ The {@link module:mention/mention~Mention} plugin registers:
 	You can insert a mention element by executing the following code:
 
 	```js
-	editor.execute( 'mention', { marker: '@', mention: 'John' } );
+	editor.execute( 'mention', { marker: '@', mention: '@John' } );
 	```
 
 <info-box>

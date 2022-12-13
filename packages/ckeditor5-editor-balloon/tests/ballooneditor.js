@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -24,7 +24,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'BalloonEditor', () => {
 	let editor, editorElement;
@@ -101,6 +101,39 @@ describe( 'BalloonEditor', () => {
 				)
 				.then( done )
 				.catch( done );
+		} );
+
+		describe( 'config.initialData', () => {
+			it( 'if not set, is set using DOM element data', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				const editor = new BalloonEditor( editorElement );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+			} );
+
+			it( 'if not set, is set using data passed in constructor', () => {
+				const editor = new BalloonEditor( '<p>Foo</p>' );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+			} );
+
+			it( 'if set, is not overwritten with DOM element data', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				const editor = new BalloonEditor( editorElement, { initialData: '<p>Bar</p>' } );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Bar</p>' );
+			} );
+
+			it( 'it should throw if config.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new BalloonEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
 		} );
 	} );
 
@@ -202,26 +235,6 @@ describe( 'BalloonEditor', () => {
 			} ).then( () => {
 				editorElement.remove();
 			} );
-		} );
-
-		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
-			BalloonEditor.create( '<p>Hello world!</p>', {
-				initialData: '<p>I am evil!</p>',
-				plugins: [ Paragraph ]
-			} )
-				.then(
-					() => {
-						expect.fail( 'Balloon editor should throw an error when both initial data are passed' );
-					},
-					err => {
-						assertCKEditorError( err, 'editor-create-initial-data', null );
-					}
-				)
-				.then( () => {
-					removeEditorBodyOrphans();
-				} )
-				.then( done )
-				.catch( done );
 		} );
 
 		// ckeditor/ckeditor5-editor-classic#53
@@ -344,7 +357,21 @@ describe( 'BalloonEditor', () => {
 				} );
 		} );
 
+		// We don't update the source element by default, so after destroy, it should contain the data
+		// from the editing pipeline.
+		it( 'don\'t set the data back to the editor element', () => {
+			editor.setData( '<p>a</p><heading>b</heading>' );
+
+			return editor.destroy()
+				.then( () => {
+					expect( editorElement.innerHTML ).to.equal( '' );
+				} );
+		} );
+
+		// Adding `updateSourceElementOnDestroy` config to the editor allows setting the data
+		// back to the source element after destroy.
 		it( 'sets the data back to the editor element', () => {
+			editor.config.set( 'updateSourceElementOnDestroy', true );
 			editor.setData( '<p>a</p><heading>b</heading>' );
 
 			return editor.destroy()

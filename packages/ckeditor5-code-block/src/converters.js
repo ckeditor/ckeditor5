@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -69,12 +69,12 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 			preAttributes.spellcheck = 'false';
 		}
 
-		const pre = writer.createContainerElement( 'pre', preAttributes );
 		const code = writer.createContainerElement( 'code', {
 			class: languagesToClasses[ codeBlockLanguage ] || null
 		} );
 
-		writer.insert( writer.createPositionAt( pre, 0 ), code );
+		const pre = writer.createContainerElement( 'pre', preAttributes, code );
+
 		writer.insert( targetViewPosition, pre );
 		mapper.bindElements( data.item, code );
 	};
@@ -248,5 +248,64 @@ export function dataViewToModelTextNewlinesInsertion() {
 			position
 		);
 		data.modelCursor = position;
+	};
+}
+
+/**
+ * A view-to-model converter that handles orphan text nodes (white spaces, new lines, etc.)
+ * that surround `<code>` inside `<pre>`.
+ *
+ * Sample input:
+ *
+ *		// White spaces
+ *		<pre> <code>foo()</code> </pre>
+ *
+ *		// White spaces
+ *		<pre>      <code>foo()</code>      </pre>
+ *
+ *		// White spaces
+ *		<pre>			<code>foo()</code>			</pre>
+ *
+ *		// New lines
+ *		<pre>
+ *			<code>foo()</code>
+ *		</pre>
+ *
+ *		// Redundant text
+ *		<pre>ABC<code>foo()</code>DEF</pre>
+ *
+ * Unified output for each case:
+ *
+ *		<codeBlock language="plaintext">foo()</codeBlock>
+ *
+ * @returns {Function} Returns a conversion callback.
+ */
+export function dataViewToModelOrphanNodeConsumer() {
+	return ( evt, data, { consumable } ) => {
+		const preElement = data.viewItem;
+
+		// Don't clean up nested pre elements. Their content should stay as it is, they are not upcasted
+		// to code blocks.
+		if ( preElement.findAncestor( 'pre' ) ) {
+			return;
+		}
+
+		const preChildren = Array.from( preElement.getChildren() );
+		const childCodeElement = preChildren.find( node => node.is( 'element', 'code' ) );
+
+		// <code>-less <pre>. It will not upcast to code block in the model, skipping.
+		if ( !childCodeElement ) {
+			return;
+		}
+
+		for ( const child of preChildren ) {
+			if ( child === childCodeElement || !child.is( '$text' ) ) {
+				continue;
+			}
+
+			// Consuming the orphan to remove it from the input data.
+			// Second argument in `consumable.consume` is discarded for text nodes.
+			consumable.consume( child, { name: true } );
+		}
 	};
 }

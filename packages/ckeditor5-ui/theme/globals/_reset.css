@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 .ck.ck-reset,
 .ck.ck-reset_all,
-.ck.ck-reset_all * {
+.ck-reset_all *:not(.ck-reset_all-excluded *) {
 	box-sizing: border-box;
 	width: auto;
 	height: auto;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -55,7 +55,7 @@ describe( 'Document', () => {
 			model.applyOperation( operation );
 
 			expect( doc.version ).to.equal( 1 );
-			expect( doc.history._operations.length ).to.equal( 1 );
+			expect( doc.history.getOperations().length ).to.equal( 1 );
 			sinon.assert.calledOnce( operation._execute );
 		} );
 
@@ -65,7 +65,7 @@ describe( 'Document', () => {
 			model.applyOperation( operation );
 
 			expect( doc.version ).to.equal( 0 );
-			expect( doc.history._operations.length ).to.equal( 0 );
+			expect( doc.history.getOperations().length ).to.equal( 0 );
 			sinon.assert.calledOnce( operation._execute );
 		} );
 
@@ -80,14 +80,33 @@ describe( 'Document', () => {
 
 		it( 'should throw an error on the operation base version and the document version is different', () => {
 			const operation = {
+				type: 't',
 				baseVersion: 1,
 				isDocumentOperation: true,
-				_execute: () => {}
+				_execute: sinon.stub().returns( data ),
+				_validate: () => {}
 			};
 
 			expectToThrowCKEditorError( () => {
 				model.applyOperation( operation );
-			}, 'model-document-applyoperation-wrong-version', model );
+			}, 'model-document-history-addoperation-incorrect-version', model, {
+				operation,
+				historyVersion: 0
+			} );
+		} );
+	} );
+
+	describe( '#version', () => {
+		it( 'should equal to document.history.version', () => {
+			model.document.history.version = 20;
+
+			expect( model.document.version ).to.equal( 20 );
+		} );
+
+		it( 'should set document.history.version', () => {
+			model.document.version = 20;
+
+			expect( model.document.history.version ).to.equal( 20 );
 		} );
 	} );
 
@@ -454,7 +473,7 @@ describe( 'Document', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
-		it( 'should be fired when updated marker affects data', () => {
+		it( 'should be fired when marker changes affecting data', () => {
 			const root = doc.createRoot();
 			root._appendChild( new Text( 'foo' ) );
 
@@ -462,21 +481,17 @@ describe( 'Document', () => {
 			const changeDataSpy = sandbox.spy();
 			const changeSpy = sandbox.spy();
 
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: true } );
+			} );
+
 			doc.on( 'change:data', changeDataSpy );
 			doc.on( 'change', changeSpy );
 
 			model.change( writer => {
-				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
-				writer.addMarker( 'name', { range, usingOperation: false } );
-			} );
-
-			sinon.assert.calledOnce( changeSpy );
-			sinon.assert.notCalled( changeDataSpy );
-
-			sandbox.resetHistory();
-
-			model.change( writer => {
-				writer.updateMarker( 'name', { affectsData: true } );
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 3 ) );
+				writer.updateMarker( 'name', { range, affectsData: true } );
 			} );
 
 			sinon.assert.calledOnce( changeSpy );
@@ -485,10 +500,130 @@ describe( 'Document', () => {
 			sandbox.resetHistory();
 
 			model.change( writer => {
-				writer.updateMarker( 'name', { affectsData: false } );
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.updateMarker( 'name', { affectsData: false, range } );
 			} );
 
 			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.calledOnce( changeDataSpy );
+		} );
+
+		it( 'should not be fired when marker does not affect data', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const sandbox = sinon.createSandbox();
+			const changeDataSpy = sandbox.spy();
+			const changeSpy = sandbox.spy();
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: false, affectsData: false } );
+			} );
+
+			doc.on( 'change:data', changeDataSpy );
+			doc.on( 'change', changeSpy );
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 3 ) );
+				writer.updateMarker( 'name', { range } );
+			} );
+
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.notCalled( changeDataSpy );
+		} );
+
+		it( 'should not be fired when the marker range does not change', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const changeDataSpy = sinon.spy();
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
+			} );
+
+			doc.on( 'change:data', changeDataSpy );
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.updateMarker( 'name', { range } );
+			} );
+
+			sinon.assert.notCalled( changeDataSpy );
+		} );
+
+		// There are no strong preferences here.
+		// This case is a bit artificial so perhaps it's better to stay on the safe side and fire the change:data event
+		// even when the marker is empty. But if there is a problem with it, this behavior can be easily changed.
+		it( 'should be fired when the marker updates range from null to null', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const changeDataSpy = sinon.spy();
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
+			} );
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { range: null, usingOperation: true } );
+			} );
+
+			doc.on( 'change:data', changeDataSpy );
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { range: null, usingOperation: true } );
+			} );
+
+			sinon.assert.notCalled( changeDataSpy );
+		} );
+
+		it( 'should be fired when the marker updates range from non-null range to null', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const changeDataSpy = sinon.spy();
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
+			} );
+
+			doc.on( 'change:data', changeDataSpy );
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { range: null, usingOperation: true } );
+			} );
+
+			sinon.assert.notCalled( changeDataSpy );
+		} );
+
+		it( 'should be fired when the marker updates range from null to a non-null range', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const changeDataSpy = sinon.spy();
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
+			} );
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { range: null, usingOperation: true } );
+			} );
+
+			doc.on( 'change:data', changeDataSpy );
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+
+				writer.updateMarker( 'name', { range, usingOperation: true } );
+			} );
+
 			sinon.assert.notCalled( changeDataSpy );
 		} );
 	} );

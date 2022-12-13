@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -206,10 +206,20 @@ ClassicEditor
 		window.editor = editor;
 
 		const button = document.getElementById( 'read-only' );
+		let isReadOnly = false;
 
 		button.addEventListener( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
-			button.textContent = editor.isReadOnly ? 'Turn off read-only mode' : 'Turn on read-only mode';
+			isReadOnly = !isReadOnly;
+
+			if ( isReadOnly ) {
+				editor.enableReadOnlyMode( 'manual-test' );
+			} else {
+				editor.disableReadOnlyMode( 'manual-test' );
+			}
+
+			button.textContent = isReadOnly ?
+				'Turn off read-only mode' :
+				'Turn on read-only mode';
 
 			editor.editing.view.focus();
 		} );

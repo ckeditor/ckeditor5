@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -59,13 +59,13 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		/**
 		 * Commands allowed in non-restricted areas.
 		 *
-		 * Commands always enabled combine typing feature commands: `'typing'`, `'delete'` and `'deleteForward'` with commands defined
-		 * in the feature configuration.
+		 * Commands always enabled combine typing feature commands: `'input'`, `'insertText'`, `'delete'`, and `'deleteForward'` with
+		 * commands defined in the feature configuration.
 		 *
 		 * @type {Set<string>}
 		 * @private
 		 */
-		this._allowedInException = new Set( [ 'input', 'delete', 'deleteForward' ] );
+		this._allowedInException = new Set( [ 'input', 'insertText', 'delete', 'deleteForward' ] );
 	}
 
 	/**
@@ -180,7 +180,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
 		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
-		model.markers.on( 'update:restrictedEditingException', ensureNewMarkerIsFlat( editor ) );
+		doc.registerPostFixer( ensureNewMarkerIsFlatPostFixer( editor ) );
 
 		setupExceptionHighlighting( editor );
 	}
@@ -205,11 +205,18 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
 		const inputCommand = editor.commands.get( 'input' );
+		const insertTextCommand = editor.commands.get( 'insertText' );
 
 		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.
 		if ( inputCommand ) {
 			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
+		}
+
+		// The restricted editing might be configured without insert text support - ie allow only bolding or removing text.
+		// This check is bit synthetic since only tests are used this way.
+		if ( insertTextCommand ) {
+			this.listenTo( insertTextCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
 
 		// Block clipboard outside exception marker on paste and drop.
@@ -447,12 +454,18 @@ function isRangeInsideSingleMarker( editor, range ) {
 // Markers created by developer in the data might break in many other ways.
 //
 // See #6003.
-function ensureNewMarkerIsFlat( editor ) {
-	const model = editor.model;
+function ensureNewMarkerIsFlatPostFixer( editor ) {
+	return writer => {
+		let changeApplied = false;
 
-	return ( evt, marker, oldRange, newRange ) => {
-		if ( !oldRange && !newRange.isFlat ) {
-			model.change( writer => {
+		const changedMarkers = editor.model.document.differ.getChangedMarkers();
+
+		for ( const { data: { newRange, oldRange }, name } of changedMarkers ) {
+			if ( !name.startsWith( 'restrictedEditingException' ) ) {
+				continue;
+			}
+
+			if ( !oldRange && !newRange.isFlat ) {
 				const start = newRange.start;
 				const end = newRange.end;
 
@@ -461,11 +474,15 @@ function ensureNewMarkerIsFlat( editor ) {
 				const fixedStart = startIsHigherInTree ? newRange.start : writer.createPositionAt( end.parent, 0 );
 				const fixedEnd = startIsHigherInTree ? writer.createPositionAt( start.parent, 'end' ) : newRange.end;
 
-				writer.updateMarker( marker, {
+				writer.updateMarker( name, {
 					range: writer.createRange( fixedStart, fixedEnd )
 				} );
-			} );
+
+				changeApplied = true;
+			}
 		}
+
+		return changeApplied;
 	};
 }
 

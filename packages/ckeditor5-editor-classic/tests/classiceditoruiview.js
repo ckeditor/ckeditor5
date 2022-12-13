@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -93,6 +93,12 @@ describe( 'ClassicEditorUIView', () => {
 
 			it( 'is put into the "main" collection', () => {
 				expect( view.main.get( 0 ) ).to.equal( view.editable );
+			} );
+
+			it( 'is given an accessible aria label', () => {
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Editor editing area: main' );
+
+				view.destroy();
 			} );
 		} );
 	} );

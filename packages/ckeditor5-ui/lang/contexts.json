@@ -1,6 +1,6 @@
 {
-	"Rich Text Editor, %0": "Title of the CKEditor5 editor.",
 	"Rich Text Editor": "Title of the CKEditor5 editor.",
+	"Editor editing area: %0": "Accessible label of the specific editing area belonging to a container with an ARIA application role.",
 	"Edit block": "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)",
 	"Next": "Label for a button showing the next thing (tab, page, etc.).",
 	"Previous": "Label for a button showing the previous thing (tab, page, etc.).",
@@ -20,5 +20,7 @@
 	"Turquoise": "Label of a button that applies a turquoise color in color pickers.",
 	"Light blue": "Label of a button that applies a light blue color in color pickers.",
 	"Blue": "Label of a button that applies a blue color in color pickers.",
-	"Purple": "Label of a button that applies a purple color in color pickers."
+	"Purple": "Label of a button that applies a purple color in color pickers.",
+	"Editor block content toolbar": "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).",
+	"Editor contextual toolbar": "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 }

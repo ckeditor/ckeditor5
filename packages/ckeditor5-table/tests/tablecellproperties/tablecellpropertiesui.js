@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,6 +18,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 
 import Table from '../../src/table';
 import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting';
 import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview';
 import { defaultColors } from '../../src/utils/ui/table-properties';
@@ -38,7 +39,7 @@ describe( 'table cell properties', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, Paragraph, Undo ],
+					plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo ],
 					initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>'
 				} )
 				.then( newEditor => {
@@ -129,7 +130,6 @@ describe( 'table cell properties', () => {
 						'tableCellBorderStyle',
 						'tableCellBorderColor',
 						'tableCellBorderWidth',
-						'tableCellWidth',
 						'tableCellHeight',
 						'tableCellPadding',
 						'tableCellBackgroundColor',
@@ -280,8 +280,12 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'property changes', () => {
+				let batch;
+
 				beforeEach( () => {
-					tableCellPropertiesUI._undoStepBatch = 'foo';
+					batch = editor.model.createBatch();
+
+					tableCellPropertiesUI._undoStepBatch = batch;
 				} );
 
 				describe( '#borderStyle', () => {
@@ -291,7 +295,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.borderStyle = 'dotted';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch } );
 					} );
 				} );
 
@@ -302,7 +306,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.borderColor = '#FFAAFF';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#FFAAFF', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#FFAAFF', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -322,7 +326,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.borderColorInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#AAA', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#AAA', batch } );
 					} );
 				} );
 
@@ -333,7 +337,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.borderWidth = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '12px', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -353,7 +357,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '3em', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '3em', batch } );
 					} );
 				} );
 
@@ -364,7 +368,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.width = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '12px', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -384,7 +388,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '3em', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '3em', batch } );
 					} );
 				} );
 
@@ -395,7 +399,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.height = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '12px', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -415,7 +419,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '3em', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '3em', batch } );
 					} );
 				} );
 
@@ -426,7 +430,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.padding = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '12px', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -446,7 +450,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '3em', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '3em', batch } );
 					} );
 				} );
 
@@ -457,7 +461,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.backgroundColor = '#FFAAFF';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#FFAAFF', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#FFAAFF', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -477,7 +481,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#AAA', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#AAA', batch } );
 					} );
 				} );
 
@@ -488,7 +492,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.horizontalAlignment = 'right';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellHorizontalAlignment', { value: 'right', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellHorizontalAlignment', { value: 'right', batch } );
 					} );
 				} );
 
@@ -499,7 +503,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.verticalAlignment = 'right';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellVerticalAlignment', { value: 'right', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellVerticalAlignment', { value: 'right', batch } );
 					} );
 				} );
 
@@ -586,12 +590,11 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellBorderStyle' ).value = 'a';
 					editor.commands.get( 'tableCellBorderColor' ).value = 'b';
 					editor.commands.get( 'tableCellBorderWidth' ).value = 'c';
-					editor.commands.get( 'tableCellWidth' ).value = 'd';
-					editor.commands.get( 'tableCellHeight' ).value = 'e';
-					editor.commands.get( 'tableCellPadding' ).value = 'f';
-					editor.commands.get( 'tableCellBackgroundColor' ).value = 'g';
-					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'h';
-					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'i';
+					editor.commands.get( 'tableCellHeight' ).value = 'd';
+					editor.commands.get( 'tableCellPadding' ).value = 'e';
+					editor.commands.get( 'tableCellBackgroundColor' ).value = 'f';
+					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'g';
+					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'h';
 
 					tableCellPropertiesButton.fire( 'execute' );
 
@@ -600,12 +603,11 @@ describe( 'table cell properties', () => {
 						borderStyle: 'a',
 						borderColor: 'b',
 						borderWidth: 'c',
-						width: 'd',
-						height: 'e',
-						padding: 'f',
-						backgroundColor: 'g',
-						horizontalAlignment: 'h',
-						verticalAlignment: 'i'
+						height: 'd',
+						padding: 'e',
+						backgroundColor: 'f',
+						horizontalAlignment: 'g',
+						verticalAlignment: 'h'
 					} );
 				} );
 
@@ -613,7 +615,6 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellBorderStyle' ).value = null;
 					editor.commands.get( 'tableCellBorderColor' ).value = null;
 					editor.commands.get( 'tableCellBorderWidth' ).value = null;
-					editor.commands.get( 'tableCellWidth' ).value = null;
 					editor.commands.get( 'tableCellHeight' ).value = null;
 					editor.commands.get( 'tableCellPadding' ).value = null;
 					editor.commands.get( 'tableCellBackgroundColor' ).value = null;
@@ -627,7 +628,6 @@ describe( 'table cell properties', () => {
 						borderStyle: 'none',
 						borderColor: '',
 						borderWidth: '',
-						width: '',
 						height: '',
 						padding: '',
 						backgroundColor: '',
@@ -690,7 +690,7 @@ describe( 'table cell properties', () => {
 
 				return ClassicTestEditor
 					.create( editorElement, {
-						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, Paragraph, Undo ],
+						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo ],
 						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
 						table: {
 							tableCellProperties: {
@@ -792,7 +792,6 @@ describe( 'table cell properties', () => {
 							borderColor: '',
 							borderWidth: '',
 							backgroundColor: '#00f',
-							width: '250px',
 							height: '150px',
 							padding: '10px',
 							horizontalAlignment: 'center',

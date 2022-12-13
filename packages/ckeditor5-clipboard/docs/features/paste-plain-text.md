@@ -8,11 +8,15 @@ order: 30
 
 # Pasting plain text
 
-The plain text pasting feature is implemented by the {@link module:clipboard/pasteplaintext~PastePlainText} plugin which is a part of the {@link module:clipboard/clipboard~Clipboard} plugin.
+The plain text pasting feature is implemented by the `PastePlainText` plugin which is a part of the `Clipboard` plugin.
 
 It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke during the paste and causes the pasted text to inherit the styles of the content it was pasted into. In this sense, the feature can also be described as "pasting without formatting" &mdash; the source formatting of the pasted text gets replaced with the target formatting of the text it was pasted into.
 
 Pasting plain text with a double line break will turn the break into a paragraph. A single line break will instead be turned into a soft break upon pasting.
+
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
 
 ## Demo
 
@@ -20,16 +24,21 @@ Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<
 
 {@snippet features/paste-plain-text}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Related features
 
 CKEditor 5 supports a wider range of paste features, including:
 * {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
+* {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
 
 ## Installation
 
 <info-box info>
-	This feature is required by the clipboard plugin and is enabled by default in all official builds. The installation instructions are for developers interested in building their own custom rich-text editor.
+	This feature is required by the clipboard plugin and is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own custom rich-text editor.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-clipboard`](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard) package:

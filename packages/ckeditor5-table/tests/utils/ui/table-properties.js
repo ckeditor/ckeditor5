@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -461,11 +461,11 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should set ColorInputView#id', () => {
-				expect( labeledField.fieldView.id ).to.match( /^ck-labeled-field-view-.+/ );
+				expect( labeledField.fieldView.inputView.id ).to.match( /^ck-labeled-field-view-.+/ );
 			} );
 
 			it( 'should set ColorInputView#ariaDescribedById', () => {
-				expect( labeledField.fieldView.ariaDescribedById ).to.match( /^ck-labeled-field-view-status-.+/ );
+				expect( labeledField.fieldView.inputView.ariaDescribedById ).to.match( /^ck-labeled-field-view-status-.+/ );
 			} );
 
 			it( 'should bind ColorInputView#isReadOnly to LabeledFieldView#isEnabled', () => {

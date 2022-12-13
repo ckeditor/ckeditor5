@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -109,6 +109,14 @@ describe( 'ImageTextAlternativeUI', () => {
 			button.fire( 'execute' );
 
 			sinon.assert.callOrder( disableCssTransitionsSpy, addSpy, selectSpy, enableCssTransitionsSpy );
+		} );
+
+		it( 'has isOn bound to command\'s value', () => {
+			command.value = '';
+			expect( button ).to.have.property( 'isOn', false );
+
+			command.value = 'alternative text';
+			expect( button ).to.have.property( 'isOn', true );
 		} );
 	} );
 
@@ -247,7 +255,7 @@ describe( 'ImageTextAlternativeUI', () => {
 				const removeSpy = sinon.spy( balloon, 'remove' );
 				const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
-				model.enqueueChange( 'transparent', writer => {
+				model.enqueueChange( { isUndoable: false }, writer => {
 					writer.remove( doc.selection.getFirstRange() );
 				} );
 

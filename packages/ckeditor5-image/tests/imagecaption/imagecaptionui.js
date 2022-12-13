@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -72,6 +72,26 @@ describe( 'ImageCaptionUI', () => {
 			buttonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
+		} );
+
+		it( 'should focus the editing view on the #execute event if the caption showed up', () => {
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+			buttonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( focusSpy );
+		} );
+
+		it( 'should focus the editing view on the #execute event if the caption was hidden', () => {
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /><figcaption>caption</figcaption></figure>' );
+
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+			buttonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( focusSpy );
 		} );
 
 		it( 'should not scroll the editing view on the #execute event if the caption was hidden', () => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -76,6 +76,51 @@ describe( 'InsertParagraphCommand', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<heading1>foo[]</heading1>' );
+		} );
+
+		it( 'should insert a paragraph with given attribute', () => {
+			model.schema.extend( 'paragraph', {
+				allowAttributes: 'foo'
+			} );
+
+			setData( model, '<heading1>foo[]</heading1>' );
+
+			command.execute( {
+				position: model.createPositionAfter( root.getChild( 0 ) ),
+				attributes: { foo: true }
+			} );
+
+			expect( getData( model ) ).to.equal( '<heading1>foo</heading1><paragraph foo="true">[]</paragraph>' );
+		} );
+
+		it( 'should insert a paragraph with given attributes', () => {
+			model.schema.extend( 'paragraph', {
+				allowAttributes: [ 'foo', 'bar' ]
+			} );
+
+			setData( model, '<heading1>foo[]</heading1>' );
+
+			command.execute( {
+				position: model.createPositionAfter( root.getChild( 0 ) ),
+				attributes: { foo: true, bar: true }
+			} );
+
+			expect( getData( model ) ).to.equal( '<heading1>foo</heading1><paragraph bar="true" foo="true">[]</paragraph>' );
+		} );
+
+		it( 'should insert a paragraph with given attributes but discard disallowed ones', () => {
+			model.schema.extend( 'paragraph', {
+				allowAttributes: [ 'foo', 'bar' ]
+			} );
+
+			setData( model, '<heading1>foo[]</heading1>' );
+
+			command.execute( {
+				position: model.createPositionAfter( root.getChild( 0 ) ),
+				attributes: { foo: true, bar: true, yar: true }
+			} );
+
+			expect( getData( model ) ).to.equal( '<heading1>foo</heading1><paragraph bar="true" foo="true">[]</paragraph>' );
 		} );
 
 		describe( 'interation with existing paragraphs in the content', () => {

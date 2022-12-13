@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -46,7 +46,6 @@
 //
 // Skipped hidden elements:
 // noscript
-// script
 
 export default {
 	block: [
@@ -110,14 +109,6 @@ export default {
 
 		// Compatibility features
 		{
-			model: '$htmlSection',
-			modelSchema: {
-				allowChildren: '$block',
-				allowIn: [ '$root', '$htmlSection' ],
-				isBlock: true
-			}
-		},
-		{
 			model: 'htmlP',
 			view: 'p',
 			modelSchema: {
@@ -128,14 +119,14 @@ export default {
 			model: 'htmlBlockquote',
 			view: 'blockquote',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container'
 			}
 		},
 		{
 			model: 'htmlTable',
 			view: 'table',
 			modelSchema: {
-				allowIn: [ '$htmlSection', '$root' ],
+				allowWhere: '$block',
 				isBlock: true
 			}
 		},
@@ -144,7 +135,7 @@ export default {
 			view: 'tbody',
 			modelSchema: {
 				allowIn: 'htmlTable',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -152,7 +143,7 @@ export default {
 			view: 'thead',
 			modelSchema: {
 				allowIn: 'htmlTable',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -160,7 +151,7 @@ export default {
 			view: 'tfoot',
 			modelSchema: {
 				allowIn: 'htmlTable',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -169,7 +160,24 @@ export default {
 			modelSchema: {
 				allowIn: 'htmlTable',
 				allowChildren: '$text',
-				isBlock: true
+				isBlock: false
+			}
+		},
+		{
+			model: 'htmlColgroup',
+			view: 'colgroup',
+			modelSchema: {
+				allowIn: 'htmlTable',
+				allowChildren: 'col',
+				isBlock: false
+			}
+		},
+		{
+			model: 'htmlCol',
+			view: 'col',
+			modelSchema: {
+				allowIn: 'htmlColgroup',
+				isBlock: false
 			}
 		},
 		{
@@ -177,7 +185,7 @@ export default {
 			view: 'tr',
 			modelSchema: {
 				allowIn: [ 'htmlTable', 'htmlThead', 'htmlTbody' ],
-				isBlock: true
+				isLimit: true
 			}
 		},
 		// TODO can also include text.
@@ -186,8 +194,9 @@ export default {
 			view: 'td',
 			modelSchema: {
 				allowIn: 'htmlTr',
-				allowChildren: [ '$block', '$htmlSection' ],
-				isBlock: true
+				allowContentOf: '$container',
+				isLimit: true,
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -196,8 +205,9 @@ export default {
 			view: 'th',
 			modelSchema: {
 				allowIn: 'htmlTr',
-				allowChildren: [ '$block', '$htmlSection' ],
-				isBlock: true
+				allowContentOf: '$container',
+				isLimit: true,
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -205,8 +215,8 @@ export default {
 			model: 'htmlFigure',
 			view: 'figure',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection',
-				isBlock: true
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		// TODO can also include other block elements.
@@ -216,7 +226,7 @@ export default {
 			modelSchema: {
 				allowIn: 'htmlFigure',
 				allowChildren: '$text',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -224,7 +234,8 @@ export default {
 			model: 'htmlAddress',
 			view: 'address',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -232,7 +243,8 @@ export default {
 			model: 'htmlAside',
 			view: 'aside',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -240,7 +252,8 @@ export default {
 			model: 'htmlMain',
 			view: 'main',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -248,7 +261,8 @@ export default {
 			model: 'htmlDetails',
 			view: 'details',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		{
@@ -257,7 +271,7 @@ export default {
 			modelSchema: {
 				allowChildren: '$text',
 				allowIn: 'htmlDetails',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -265,7 +279,7 @@ export default {
 			view: 'div',
 			paragraphLikeModel: 'htmlDivParagraph',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container'
 			}
 		},
 		// TODO can also include text.
@@ -273,7 +287,8 @@ export default {
 			model: 'htmlFieldset',
 			view: 'fieldset',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		// TODO can also include h1-h6.
@@ -290,7 +305,8 @@ export default {
 			model: 'htmlHeader',
 			view: 'header',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -298,7 +314,8 @@ export default {
 			model: 'htmlFooter',
 			view: 'footer',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -306,7 +323,8 @@ export default {
 			model: 'htmlForm',
 			view: 'form',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: true
 			}
 		},
 		{
@@ -321,7 +339,7 @@ export default {
 					'htmlH5',
 					'htmlH6'
 				],
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -369,9 +387,9 @@ export default {
 		{
 			model: '$htmlList',
 			modelSchema: {
-				allowWhere: '$htmlSection',
+				allowWhere: '$container',
 				allowChildren: [ '$htmlList', 'htmlLi' ],
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -409,7 +427,7 @@ export default {
 			modelSchema: {
 				allowIn: '$htmlList',
 				allowChildren: '$text',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -423,14 +441,16 @@ export default {
 			model: 'htmlArticle',
 			view: 'article',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		{
 			model: 'htmlSection',
 			view: 'section',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		// TODO can also include text.
@@ -438,16 +458,17 @@ export default {
 			model: 'htmlNav',
 			view: 'nav',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		},
 		{
 			model: 'htmlDl',
 			view: 'dl',
 			modelSchema: {
-				allowIn: [ '$htmlSection', '$root' ],
+				allowWhere: '$container',
 				allowChildren: [ 'htmlDt', 'htmlDd' ],
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -455,7 +476,7 @@ export default {
 			view: 'dt',
 			modelSchema: {
 				allowChildren: '$block',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
@@ -463,24 +484,15 @@ export default {
 			view: 'dd',
 			modelSchema: {
 				allowChildren: '$block',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
 			model: 'htmlCenter',
 			view: 'center',
 			modelSchema: {
-				inheritAllFrom: '$htmlSection'
-			}
-		},
-		// Objects
-		{
-			model: '$htmlObjectBlock',
-			isObject: true,
-			modelSchema: {
-				isObject: true,
-				isBlock: true,
-				allowWhere: '$block'
+				inheritAllFrom: '$container',
+				isBlock: false
 			}
 		}
 	],
@@ -587,6 +599,7 @@ export default {
 			model: 'htmlA',
 			view: 'a',
 			priority: 5,
+			coupledAttribute: 'linkHref',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -594,42 +607,53 @@ export default {
 		{
 			model: 'htmlStrong',
 			view: 'strong',
+			coupledAttribute: 'bold',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlB',
 			view: 'b',
+			coupledAttribute: 'bold',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlI',
 			view: 'i',
+			coupledAttribute: 'italic',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlEm',
 			view: 'em',
+			coupledAttribute: 'italic',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlS',
 			view: 's',
+			coupledAttribute: 'strikethrough',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		// TODO According to HTML-spec can behave as div-like element, although CKE4 only handles it as an inline element.
 		{
 			model: 'htmlDel',
 			view: 'del',
+			coupledAttribute: 'strikethrough',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -645,29 +669,37 @@ export default {
 		{
 			model: 'htmlU',
 			view: 'u',
+			coupledAttribute: 'underline',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlSub',
 			view: 'sub',
+			coupledAttribute: 'subscript',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlSup',
 			view: 'sup',
+			coupledAttribute: 'superscript',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlCode',
 			view: 'code',
+			coupledAttribute: 'code',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
@@ -708,21 +740,11 @@ export default {
 
 		// Objects
 		{
-			model: '$htmlObjectInline',
-			isObject: true,
-			modelSchema: {
-				isObject: true,
-				isInline: true,
-				allowWhere: '$text',
-				allowAttributesOf: '$text'
-			}
-		},
-		{
 			model: 'htmlObject',
 			view: 'object',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -730,7 +752,7 @@ export default {
 			view: 'iframe',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -738,7 +760,7 @@ export default {
 			view: 'input',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -746,7 +768,7 @@ export default {
 			view: 'button',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -754,7 +776,7 @@ export default {
 			view: 'textarea',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -762,7 +784,7 @@ export default {
 			view: 'select',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -770,7 +792,7 @@ export default {
 			view: 'video',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -778,7 +800,7 @@ export default {
 			view: 'embed',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -786,7 +808,7 @@ export default {
 			view: 'oembed',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -794,7 +816,7 @@ export default {
 			view: 'audio',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -802,7 +824,7 @@ export default {
 			view: 'img',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		{
@@ -810,7 +832,7 @@ export default {
 			view: 'canvas',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
 		// TODO it could be probably represented as non-object element, although it has graphical representation,
@@ -820,17 +842,41 @@ export default {
 			view: 'meter',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
 			}
 		},
-		// TODO it could be probably represented as non-object element, although it has grafical representation,
+		// TODO it could be probably represented as non-object element, although it has graphical representation,
 		// so probably makes more sense to keep it as an object.
 		{
 			model: 'htmlProgress',
 			view: 'progress',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
+				inheritAllFrom: '$inlineObject'
+			}
+		},
+		{
+			model: 'htmlScript',
+			view: 'script',
+			modelSchema: {
+				allowWhere: [ '$text', '$block' ],
+				isInline: true
+			}
+		},
+		{
+			model: 'htmlStyle',
+			view: 'style',
+			modelSchema: {
+				allowWhere: [ '$text', '$block' ],
+				isInline: true
+			}
+		},
+		{
+			model: 'htmlCustomElement',
+			view: '$customElement',
+			modelSchema: {
+				allowWhere: [ '$text', '$block' ],
+				isInline: true
 			}
 		}
 	]

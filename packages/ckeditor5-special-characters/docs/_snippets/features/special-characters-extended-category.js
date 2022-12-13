@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,18 +7,17 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-function SpecialCharactersArrowsExtended( editor ) {
-	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
-		{ title: 'simple arrow left', character: '←' },
-		{ title: 'simple arrow up', character: '↑' },
-		{ title: 'simple arrow right', character: '→' },
-		{ title: 'simple arrow down', character: '↓' }
+function SpecialCharactersExtended( editor ) {
+	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
+		{ title: 'alpha', character: 'α' },
+		{ title: 'beta', character: 'β' },
+		{ title: 'gamma', character: 'γ' }
 	] );
 }
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-special-characters-extended-category' ), {
-		extraPlugins: [ SpecialCharactersEssentials, SpecialCharactersArrowsExtended ],
+		extraPlugins: [ SpecialCharactersEssentials, SpecialCharactersExtended ],
 		toolbar: {
 			items: [
 				'heading',

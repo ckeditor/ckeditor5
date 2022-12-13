@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -36,7 +36,7 @@ describe( 'InsertImageCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be true when the selection directly in the root', () => {
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setModelData( model, '[]' );
 
 				command.refresh();
@@ -321,6 +321,105 @@ describe( 'InsertImageCommand', () => {
 					`[<imageInline bar="bar-value" src="${ imgSrc2 }"></imageInline>]` +
 				'o</paragraph>'
 			);
+		} );
+
+		describe( 'inheriting attributes', () => {
+			const imgSrc = '/foo.jpg';
+
+			beforeEach( () => {
+				const attributes = [ 'smart', 'pretty' ];
+
+				model.schema.extend( '$block', {
+					allowAttributes: attributes
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: attributes
+				} );
+
+				for ( const attribute of attributes ) {
+					model.schema.setAttributeProperties( attribute, {
+						copyOnReplace: true
+					} );
+				}
+			} );
+
+			it( 'should copy $block attributes on a block image element when inserting it in $block', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true">[]</paragraph>' );
+
+				command.execute( {
+					source: {
+						src: imgSrc
+					}
+				} );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
+				);
+			} );
+
+			it( 'should not copy $block attributes on an inline image element when inserting it in $block', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true">Foo []</paragraph>' );
+
+				command.execute( {
+					source: {
+						src: imgSrc
+					}
+				} );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph pretty="true" smart="true">' +
+						'Foo [<imageInline src="/foo.jpg"></imageInline>]' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should not copy attributes when inserting inline image (non-collapsed selection)', () => {
+				setModelData( model, '<paragraph pretty="true">[foo</paragraph><paragraph smart="true">bar]</paragraph>' );
+
+				command.execute( {
+					source: {
+						src: imgSrc
+					}
+				} );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph>' +
+						'[<imageInline src="/foo.jpg"></imageInline>]' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should only copy $block attributes marked with copyOnReplace', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true" nice="true">[]</paragraph>' );
+
+				command.execute( {
+					source: {
+						src: imgSrc
+					}
+				} );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
+				);
+			} );
+
+			it( 'should copy attributes from object when it is selected during insertion', () => {
+				model.schema.register( 'object', { isObject: true, inheritAllFrom: '$blockObject' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setModelData( model, '[<object pretty="true" smart="true"></object>]' );
+
+				command.execute( {
+					source: {
+						src: imgSrc
+					}
+				} );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
+				);
+			} );
 		} );
 	} );
 } );

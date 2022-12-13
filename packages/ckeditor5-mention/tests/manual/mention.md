@@ -8,11 +8,11 @@ The feeds:
 
 1. Static list with `@` marker:
 
-    - Barney
-    - Lily
-    - Marshall
-    - Robin
-    - Ted
+    - Barney Stinson
+    - Lily Aldrin
+    - Marshall Eriksen
+    - Robin Sherbatsky
+    - Ted Mosby
 
 2. Static list of 20 items (`#` marker)
 

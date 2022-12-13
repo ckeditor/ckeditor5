@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -22,8 +22,12 @@ msgstr "위젯 툴바"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
 msgid "Insert paragraph before block"
-msgstr ""
+msgstr "블록 앞에 단락 삽입"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
-msgstr ""
+msgstr "블록 뒤에 단락 삽입"
+
+msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
+msgid "Press Enter to type after or press Shift + Enter to type before the widget"
+msgstr "엔터를 눌러서 위젯 뒤에 입력하거나 시프트 + 엔터를 눌러서 위젯 앞에 입력하세요"

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,19 @@
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import DecoupledEditor from '../src/decouplededitor';
 import DecoupledEditorUI from '../src/decouplededitorui';
+import DecoupledEditorUIView from '../src/decouplededitoruiview';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import DecoupledEditorUIView from '../src/decouplededitoruiview';
+import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { isElement } from 'lodash-es';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DecoupledEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -194,29 +197,6 @@ describe( 'DecoupledEditorUI', () => {
 				} );
 			} );
 		} );
-
-		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			return VirtualDecoupledTestEditor.create( '' )
-				.then( editor => {
-					const ui = editor.ui;
-					const view = ui.view;
-					const spy = testUtils.sinon.spy( view.toolbar, 'focus' );
-
-					ui.focusTracker.isFocused = true;
-					ui.view.toolbar.focusTracker.isFocused = false;
-
-					editor.keystrokes.press( {
-						keyCode: keyCodes.f10,
-						altKey: true,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
-					} );
-
-					sinon.assert.calledOnce( spy );
-
-					return editor.destroy();
-				} );
-		} );
 	} );
 
 	describe( 'destroy()', () => {
@@ -258,6 +238,18 @@ describe( 'DecoupledEditorUI', () => {
 						} );
 				} );
 		} );
+
+		it( 'should call parent EditorUI#destroy() first before destroying the view', async () => {
+			const newEditor = await VirtualDecoupledTestEditor.create( '' );
+			const parentEditorUIPrototype = Object.getPrototypeOf( newEditor.ui.constructor.prototype );
+
+			const parentDestroySpy = testUtils.sinon.spy( parentEditorUIPrototype, 'destroy' );
+			const viewDestroySpy = testUtils.sinon.spy( newEditor.ui.view, 'destroy' );
+
+			await newEditor.destroy();
+
+			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
+		} );
 	} );
 
 	describe( 'element()', () => {
@@ -279,6 +271,147 @@ describe( 'DecoupledEditorUI', () => {
 			expect( ui.getEditableElement( 'absent' ) ).to.be.undefined;
 		} );
 	} );
+} );
+
+describe( 'Focus handling and navigation between editing root and editor toolbar', () => {
+	let editorElement, editor, ui, toolbarView, domRoot;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( async () => {
+		editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+		editor = await DecoupledEditor.create( editorElement, {
+			plugins: [ Paragraph, Image, ImageToolbar, ImageCaption ],
+			toolbar: [ 'imageTextAlternative' ],
+			image: {
+				toolbar: [ 'toggleImageCaption' ]
+			}
+		} );
+
+		domRoot = editor.editing.view.domRoots.get( 'main' );
+
+		ui = editor.ui;
+		toolbarView = ui.view.toolbar;
+
+		document.body.appendChild( toolbarView.element );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+		toolbarView.element.remove();
+
+		return editor.destroy();
+	} );
+
+	describe( 'Focusing toolbars on Alt+F10 key press', () => {
+		beforeEach( () => {
+			ui.focusTracker.isFocused = true;
+			ui.focusTracker.focusedElement = domRoot;
+		} );
+
+		it( 'should focus the main toolbar when the focus is in the editing root', () => {
+			const spy = testUtils.sinon.spy( toolbarView, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			ui.focusTracker.isFocused = true;
+			ui.focusTracker.focusedElement = domRoot;
+
+			pressAltF10();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should do nothing if the toolbar is already focused', () => {
+			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			// Focus the toolbar.
+			pressAltF10();
+			ui.focusTracker.focusedElement = toolbarView.element;
+
+			// Try Alt+F10 again.
+			pressAltF10();
+
+			sinon.assert.calledOnce( toolbarFocusSpy );
+			sinon.assert.notCalled( domRootFocusSpy );
+		} );
+
+		it( 'should prioritize widget toolbar over the global toolbar', () => {
+			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
+
+			const toolbarSpy = testUtils.sinon.spy( toolbarView, 'focus' );
+			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
+
+			setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'[<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>bar</caption></imageBlock>]' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			// Focus the image balloon toolbar.
+			pressAltF10();
+			ui.focusTracker.focusedElement = imageToolbar.element;
+
+			sinon.assert.calledOnce( imageToolbarSpy );
+			sinon.assert.notCalled( toolbarSpy );
+		} );
+	} );
+
+	describe( 'Restoring focus on Esc key press', () => {
+		beforeEach( () => {
+			ui.focusTracker.isFocused = true;
+			ui.focusTracker.focusedElement = domRoot;
+		} );
+
+		it( 'should move the focus back from the main toolbar to the editing root', () => {
+			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			// Focus the toolbar.
+			pressAltF10();
+			ui.focusTracker.focusedElement = toolbarView.element;
+
+			pressEsc();
+
+			sinon.assert.callOrder( toolbarFocusSpy, domRootFocusSpy );
+		} );
+
+		it( 'should do nothing if it was pressed when no toolbar was focused', () => {
+			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			pressEsc();
+
+			sinon.assert.notCalled( domRootFocusSpy );
+			sinon.assert.notCalled( toolbarFocusSpy );
+		} );
+	} );
+
+	function pressAltF10() {
+		editor.keystrokes.press( {
+			keyCode: keyCodes.f10,
+			altKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
+	}
+
+	function pressEsc() {
+		editor.keystrokes.press( {
+			keyCode: keyCodes.esc,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
+	}
 } );
 
 function viewCreator( name ) {

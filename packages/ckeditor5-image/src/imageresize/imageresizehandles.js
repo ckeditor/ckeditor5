@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -104,7 +104,7 @@ export default class ImageResizeHandles extends Plugin {
 					},
 					getResizeHost() {
 						// Return the model image element parent to avoid setting an inline element (<a>/<span>) as a resize host.
-						return domConverter.viewToDom( mapper.toViewElement( imageModel.parent ) );
+						return domConverter.mapViewToDom( mapper.toViewElement( imageModel.parent ) );
 					},
 					// TODO consider other positions.
 					isCentered() {

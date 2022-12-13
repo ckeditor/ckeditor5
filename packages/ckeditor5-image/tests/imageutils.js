@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -157,6 +157,13 @@ describe( 'ImageUtils plugin', () => {
 			frag = writer.createDocumentFragment( element );
 
 			const selection = writer.createSelection( innerContainer, 'in' );
+
+			expect( imageUtils.getClosestSelectedImageWidget( selection ) ).to.be.null;
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/11972.
+		it( 'should return null if view selection is empty', () => {
+			const selection = writer.createSelection();
 
 			expect( imageUtils.getClosestSelectedImageWidget( selection ) ).to.be.null;
 		} );
@@ -381,7 +388,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return true when the selection directly in the root', () => {
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setModelData( model, '[]' );
 
 				expect( imageUtils.isImageAllowed() ).to.be.true;

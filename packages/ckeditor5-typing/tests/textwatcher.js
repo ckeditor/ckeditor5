@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -102,8 +102,16 @@ describe( 'TextWatcher', () => {
 			sinon.assert.calledWithExactly( testCallbackStub, '@' );
 		} );
 
-		it( 'should not evaluate text for transparent batches', () => {
-			model.enqueueChange( 'transparent', writer => {
+		it( 'should not evaluate text for undo batches', () => {
+			model.enqueueChange( { isUndo: true }, writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.notCalled( testCallbackStub );
+		} );
+
+		it( 'should not evaluate text for non-local batches', () => {
+			model.enqueueChange( { isLocal: false }, writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
 			} );
 
@@ -192,7 +200,7 @@ describe( 'TextWatcher', () => {
 		it( 'should fire "matched:selection" event when test callback returns true for model data changes', () => {
 			testCallbackStub.returns( true );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isLocal: false }, writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
 			} );
 
@@ -212,7 +220,7 @@ describe( 'TextWatcher', () => {
 
 			testCallbackStub.returns( true );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
 			} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -84,8 +84,12 @@ export default class TextPartLanguageEditing extends Plugin {
 
 		conversion.for( 'downcast' ).attributeToElement( {
 			model: 'language',
-			view: ( attributeValue, { writer } ) => {
+			view: ( attributeValue, { writer }, data ) => {
 				if ( !attributeValue ) {
+					return;
+				}
+
+				if ( !data.item.is( '$textProxy' ) && !data.item.is( 'documentSelection' ) ) {
 					return;
 				}
 

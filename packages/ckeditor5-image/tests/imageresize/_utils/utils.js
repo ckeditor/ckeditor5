@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,7 +19,7 @@ export async function waitForAllImagesLoaded( editor ) {
 	for ( const curModel of root.getChildren() ) {
 		if ( curModel.is( 'element', 'imageBlock' ) ) {
 			const imageView = editor.editing.mapper.toViewElement( curModel );
-			images.add( editingView.domConverter.viewToDom( imageView ).querySelector( 'img' ) );
+			images.add( editingView.domConverter.mapViewToDom( imageView ).querySelector( 'img' ) );
 		}
 	}
 

@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 order: 10
+modified_at: 2022-09-29
 ---
 
 # Development environment
@@ -25,7 +26,7 @@ You can find all the official packages listed in the [CKEditor 5 repository's RE
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 12.0.0+
+* [Node.js](https://nodejs.org/en/) 14.0.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment
@@ -80,6 +81,19 @@ yarn run manual
 To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and in most scenarios you do not need to change it. The latter brings more languages to manual tests, which is helpful e.g. when working with {@link features/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
 
 You can read more about the {@link framework/guides/contributing/testing-environment Testing environment}.
+
+## Building DLLs
+
+Some manual tests require DLL builds. To learn more about DLL builds, read the {@link installation/advanced/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `yarn run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
+
+```
+yarn run dll:build
+```
+
+This task accepts the following arguments:
+
+* `--verbose` &ndash; Displays the full output of the scripts, including the Webpack output. *Errors are displayed even if this argument is not used.*
+* `--dev` &ndash; Enables `development` mode in Webpack and disables the code minimization which makes it easier to read the output.
 
 ## Generating documentation
 
@@ -176,7 +190,7 @@ The following error types are supported: `uncaught-exception`, `request-failure`
 * `navigation-error` &ndash; The navigation error may happen, when:
 	* there's an SSL error (e.g. in case of self-signed certificate or expired one),
 	* target URL is invalid,
-	* the timeout is exceeded during navigation to a page, so the `load` event is not emmited (e.g. due to an infinite loop in the JavaScript code).
+	* the timeout is exceeded during navigation to a page, so the `load` event is not emitted (e.g. due to an infinite loop in the JavaScript code).
 * `page-crash` &ndash; The general page malfunction, that does not fit to other categories (e.g. running out of a RAM).
 
 | Error&nbsp;type      | Example              |
@@ -230,7 +244,7 @@ yarn docs:content-styles
 
 The stylesheet will be saved in the `build/content-styles` folder.
 
-To learn more, refer to the {@link builds/guides/integration/content-styles Content styles} guide.
+To learn more, refer to the {@link installation/advanced/content-styles Content styles} guide.
 
 ## Additional information for contributors
 

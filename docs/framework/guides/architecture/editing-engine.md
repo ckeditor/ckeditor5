@@ -17,7 +17,7 @@ The editing engine implements an MVC architecture. The shape of it is not enforc
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
-What you can see are three layers: **model**, **controller** and **view**. There is one **model document** which is **converted** into separate views &mdash; the **editing view** and the **data view**. These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format that the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
+What you can see, are three layers: **model**, **controller** and **view**. There is one **model document** which is {@link framework/guides/deep-dive/conversion/intro **converted**} into separate views &mdash; the [**editing view**](#editing-pipeline) and the [**data view**](#data-pipeline). These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format that the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
 
 The green blocks are the code introduced by editor features (plugins). These features control what changes are made to the model, how they are converted to the view and how the model needs to be changed based on fired events (the view's and model's ones).
 
@@ -175,7 +175,7 @@ The {@link module:engine/model/schema~Schema model's schema} defines several asp
 
 This information is then used by the features and the engine to make decisions on how to process the model. For instance, the information from the schema will affect:
 
-* What happens with the pasted content and what is filtered out (note: in case of pasting the other important mechanism is the conversion. HTML elements and attributes which are not upcasted by any of the registered converters are filtered out before they even become model nodes, so the schema is not applied to them; the conversion will be covered later in this guide).
+* What happens with the pasted content and what is filtered out (note: in case of pasting the other important mechanism is the {@link framework/guides/deep-dive/conversion/upcast conversion}. HTML elements and attributes which are not upcasted by any of the registered converters are filtered out before they even become model nodes, so the schema is not applied to them; the conversion will be covered later in this guide).
 * To which elements the heading feature can be applied (which blocks can be turned to headings and which elements are blocks in the first place).
 * Which elements can be wrapped with a block quote.
 * Whether the bold button is enabled when the selection is in a heading (and whether the text in this heading can be bolded).
@@ -204,7 +204,7 @@ What this means is that:
 
 * The view is yet another custom structure.
 * It resembles the DOM. While the model's tree structure only slightly resembled the DOM (e.g. by introducing text attributes), the view is much closer to the DOM. In other words, it is a **virtual DOM**.
-* There are two "pipelines": the **editing pipeline** (also called the "editing view") and the **data pipeline** (the "data view"). Treat them as two separate views of one model. The editing pipeline renders and handles the DOM that the user sees and can edit. The data pipeline is used when you call `editor.getData()`, `editor.setData()` or paste content into the editor.
+* There are two "pipelines": the [**editing pipeline**](#editing-pipeline) (also called the "editing view") and the [**data pipeline**](#data-pipeline) (the "data view"). Treat them as two separate views of one model. The editing pipeline renders and handles the DOM that the user sees and can edit. The data pipeline is used when you call `editor.getData()`, `editor.setData()` or paste content into the editor.
 * The views are rendered to the DOM by the {@link module:engine/view/renderer~Renderer} which handles all the quirks required to tame the `contentEditable` used in the editing pipeline.
 
 The fact that there are two views is visible in the API:
@@ -345,9 +345,9 @@ So far, we talked about the model and the view as about two completely independe
 
 | Conversion&nbsp;name | Description |
 |-----------------|-------------|
-| Data&nbsp;upcasting  | **Loading the data to the editor.**<br> First, the data (e.g. an HTML string) is processed by a {@link module:engine/dataprocessor/dataprocessor~DataProcessor} to a view {@link module:engine/view/documentfragment~DocumentFragment}. Then, this view document fragment is converted to a model {@link module:engine/model/documentfragment~DocumentFragment document fragment}. Finally, the model document's {@link module:engine/model/document~Document#roots root} is filled with this content. |
-| Data&nbsp;downcasting | **Retrieving the data from the editor.**<br> First, the content of the model's root is converted to a view document fragment. Then this view document fragment is processed by a data processor to the target data format. |
-| Editing&nbsp;downcasting | **Rendering the editor content to the user for editing.**<br> This process takes place for the entire time when the editor is initialized. First, the model's root is converted to the view's root once *data upcasting* finishes. After that this view root is rendered to the user in the editor's `contentEditable` DOM element (also called "the editable element"). Then, every time the model changes, those changes are converted to changes in the view. Finally, the view can be re-rendered to the DOM if needed (if the DOM differs from the view). |
+| {@link framework/guides/deep-dive/conversion/upcast Data&nbsp;upcasting}  | **Loading the data to the editor.**<br> First, the data (e.g. an HTML string) is processed by a {@link module:engine/dataprocessor/dataprocessor~DataProcessor} to a view {@link module:engine/view/documentfragment~DocumentFragment}. Then, this view document fragment is converted to a model {@link module:engine/model/documentfragment~DocumentFragment document fragment}. Finally, the model document's {@link module:engine/model/document~Document#roots root} is filled with this content. |
+| {@link framework/guides/deep-dive/conversion/downcast#downcast-pipelines Data&nbsp;downcasting} | **Retrieving the data from the editor.**<br> First, the content of the model's root is converted to a view document fragment. Then this view document fragment is processed by a data processor to the target data format. |
+| {@link framework/guides/deep-dive/conversion/downcast#downcast-pipelines Editing&nbsp;downcasting} | **Rendering the editor content to the user for editing.**<br> This process takes place for the entire time when the editor is initialized. First, the model's root is converted to the view's root once *data upcasting* finishes. After that this view root is rendered to the user in the editor's `contentEditable` DOM element (also called "the editable element"). Then, every time the model changes, those changes are converted to changes in the view. Finally, the view can be re-rendered to the DOM if needed (if the DOM differs from the view). |
 
 Let's take a look at the diagram of the engine's MVC architecture and see where each of the conversion processes happen in it:
 
@@ -355,13 +355,13 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 
 ### Data pipeline
 
-*Data upcasting* is a process which starts in the bottom right corner of the diagram (in the view layer), passes from the data view, through a converter (green box) in the controller layer to the model document in the top right-hand corner. As you can see, it goes from the bottom to the top, hence "upcasting". Also, it is handled by the *data pipeline* (the right branch of the diagram), hence "data upcasting". Note: Data upcasting is also used to process pasted content (which is similar to loading data).
+{@link framework/guides/deep-dive/conversion/upcast **Data upcasting**} is a process which starts in the bottom right corner of the diagram (in the view layer), passes from the data view, through a converter (green box) in the controller layer to the model document in the top right-hand corner. As you can see, it goes from the bottom to the top, hence "upcasting". Also, it is handled by the *data pipeline* (the right branch of the diagram), hence "data upcasting". Note: Data upcasting is also used to process pasted content (which is similar to loading data).
 
-*Data downcasting* is the opposite process to *data upcasting*. It starts in the top right-hand corner and goes down to the bottom right-hand corner. Again, the name of the conversion process matches the direction and the pipeline.
+{@link framework/guides/deep-dive/conversion/downcast#downcast-pipelines **Data downcasting**} is the opposite process to *data upcasting*. It starts in the top right-hand corner and goes down to the bottom right-hand corner. Again, the name of the conversion process matches the direction and the pipeline.
 
 ### Editing pipeline
 
-*Editing downcasting* is a bit different process than the other two.
+{@link framework/guides/deep-dive/conversion/downcast#downcast-pipelines **Editing downcasting**} is a bit different process than the other two.
 
 * It takes place in the "editing pipeline" (the left branch of the diagram).
 * It does not have its counterpart &mdash; there is no *editing upcasting* because all user actions are handled by editor features by listening to [view events](#observers), analyzing what happened and applying necessary changes to the model. Hence, this process does not involve conversion.
@@ -369,7 +369,9 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 
 ### More information
 
-A more in-depth introduction with examples could be found in the {@link framework/guides/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
+A more in-depth introduction with examples can be found in the {@link framework/guides/deep-dive/conversion/intro dedicated conversion guide}.
+
+For additional information, you can also check out the {@link framework/guides/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
 
 <!--TODO: upcasting, downcasting, mapping nodes and positions, API.
 
