@@ -7,4 +7,4 @@
  * @module word-count
  */
 
-export { default as WordCount } from './wordcount';
+export { default as WordCount, type WordCountUpdateEvent } from './wordcount';
