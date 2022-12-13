@@ -344,6 +344,18 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		factory: ComponentFactory,
 		removeItems?: Array<string>
 	): void {
+		this.items.addMany( this._buildItemsFromConfig( itemsOrConfig, factory, removeItems ) );
+	}
+
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public _buildItemsFromConfig(
+		itemsOrConfig: ToolbarConfig | undefined,
+		factory: ComponentFactory,
+		removeItems?: Array<string>
+	): Array<View> {
 		const config = normalizeToolbarConfig( itemsOrConfig );
 		const normalizedRemoveItems = removeItems || config.removeItems;
 		const itemsToAdd = this._cleanItemsConfiguration( config.items, factory, normalizedRemoveItems )
@@ -360,7 +372,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 			} )
 			.filter( ( item ): item is View => !!item );
 
-		this.items.addMany( itemsToAdd );
+		return itemsToAdd;
 	}
 
 	/**
@@ -557,9 +569,9 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 			dropdownView.buttonView.withText = true;
 		}
 
-		addToolbarToDropdown( dropdownView, [] );
-
-		dropdownView.toolbarView!.fillFromConfig( items, componentFactory, removeItems );
+		addToolbarToDropdown( dropdownView, () => (
+			dropdownView.toolbarView!._buildItemsFromConfig( items, componentFactory, removeItems )
+		) );
 
 		return dropdownView;
 	}
@@ -1111,7 +1123,7 @@ class DynamicGrouping implements ToolbarBehavior {
 		// (https://github.com/ckeditor/ckeditor5/issues/5608)
 		dropdown.panelPosition = locale.uiLanguageDirection === 'ltr' ? 'sw' : 'se';
 
-		addToolbarToDropdown( dropdown, [] );
+		addToolbarToDropdown( dropdown, this.groupedItems, { bindToCollection: true } );
 
 		dropdown.buttonView.set( {
 			label: t( 'Show more items' ),
@@ -1119,9 +1131,6 @@ class DynamicGrouping implements ToolbarBehavior {
 			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
 			icon: threeVerticalDots
 		} );
-
-		// 1:1 pass–through binding.
-		dropdown.toolbarView!.items.bindTo( this.groupedItems ).using( item => item );
 
 		return dropdown;
 	}

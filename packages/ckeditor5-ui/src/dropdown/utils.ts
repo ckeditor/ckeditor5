@@ -17,10 +17,18 @@ import ListSeparatorView from '../list/listseparatorview';
 import ButtonView from '../button/buttonview';
 import SplitButtonView from './button/splitbuttonview';
 import SwitchButtonView from '../button/switchbuttonview';
+import ViewCollection from '../viewcollection';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
 
-import { global, priorities, logWarning, type Collection, type Locale } from '@ckeditor/ckeditor5-utils';
+import {
+	global,
+	priorities,
+	logWarning,
+	CKEditorError,
+	type Collection,
+	type Locale
+} from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
@@ -154,11 +162,12 @@ export function createDropdown(
  */
 export function addToolbarToDropdown(
 	dropdownView: DropdownView,
-	buttonsOrCallback: Array<ButtonView> | ( () => Array<ButtonView> ),
+	buttonsOrCallback: Array<View> | ViewCollection | ( () => Array<View> | ViewCollection ),
 	options: {
 		enableActiveItemFocusOnDropdownOpen?: boolean;
 		isVertical?: boolean;
 		ariaLabel?: string;
+		bindToCollection?: boolean;
 	} = {}
 ): void {
 	dropdownView.extendTemplate( {
@@ -179,11 +188,12 @@ export function addToolbarToDropdown(
  */
 function addToolbarToOpenDropdown(
 	dropdownView: DropdownView,
-	buttonsOrCallback: Array<ButtonView> | ( () => Array<ButtonView> ),
+	buttonsOrCallback: Array<View> | ViewCollection | ( () => Array<View> | ViewCollection ),
 	options: {
 		enableActiveItemFocusOnDropdownOpen?: boolean;
 		isVertical?: boolean;
 		ariaLabel?: string;
+		bindToCollection?: boolean;
 	} = {}
 ): void {
 	const locale = dropdownView.locale;
@@ -198,7 +208,19 @@ function addToolbarToOpenDropdown(
 		toolbarView.isVertical = true;
 	}
 
-	buttons.map( view => toolbarView.items.add( view ) );
+	if ( options.bindToCollection ) {
+		if ( !( buttons instanceof ViewCollection ) ) {
+			/**
+			 * TODO
+			 * @error toolbar-error-todo
+			 */
+			throw new CKEditorError( 'toolbar-error-todo', null );
+		}
+
+		toolbarView.items.bindTo( buttons ).using( item => item );
+	} else {
+		toolbarView.items.addMany( buttons );
+	}
 
 	if ( options.enableActiveItemFocusOnDropdownOpen ) {
 		// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.

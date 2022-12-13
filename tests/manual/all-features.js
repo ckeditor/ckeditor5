@@ -68,7 +68,7 @@ async function initEditor() {
 			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport
 		],
 		toolbar: {
-			shouldNotGroupWhenFull: true,
+			// shouldNotGroupWhenFull: true,
 			items: [
 				'heading', 'style',
 				'|',
@@ -90,7 +90,13 @@ async function initEditor() {
 				'|',
 				'sourceEditing',
 				'|',
-				'undo', 'redo', 'findAndReplace'
+				'undo', 'redo', 'findAndReplace',
+				'|',
+				{
+					label: 'Others',
+					tooltip: 'Additional editing features',
+					items: [ 'bold', 'italic' ]
+				}
 			]
 		},
 		cloudServices: CS_CONFIG,
