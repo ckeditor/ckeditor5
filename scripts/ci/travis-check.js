@@ -34,14 +34,17 @@ if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 	const repository = 'ckeditor/ckeditor5';
 	const lastCommit = childProcess.execSync( 'git rev-parse HEAD' ).toString();
 
-	triggerCkeditor5ContinuousIntegration( repository, lastCommit )
-		.then( status => {
+	const promise = triggerCkeditor5ContinuousIntegration( repository, lastCommit );
+
+	if ( promise ) {
+		promise.then( status => {
 			if ( status !== 200 ) {
 				throw new Error( `CI trigger failed with status "${ status }".` );
 			}
 
 			console.log( 'CI triggered successfully.' );
 		} );
+	}
 }
 
 // Verifying the code style.

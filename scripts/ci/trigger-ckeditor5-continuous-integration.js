@@ -29,12 +29,12 @@ const {
 module.exports = function triggerCkeditor5ContinuousIntegration( repository, lastCommit ) {
 	// We want to trigger the integration build when current build was triggered by push commit or API call.
 	if ( TRAVIS_EVENT_TYPE !== 'push' && TRAVIS_EVENT_TYPE !== 'api' ) {
-		process.exit();
+		return;
 	}
 
 	// Trigger the integration build only when checking the "master" branch in the repository.
 	if ( TRAVIS_BRANCH !== 'master' ) {
-		process.exit();
+		return;
 	}
 
 	const requestUrl = `https://api.travis-ci.com/repo/${ INTEGRATION_CI_ORGANIZATION }/${ INTEGRATION_CI_REPOSITORY }/requests`;
