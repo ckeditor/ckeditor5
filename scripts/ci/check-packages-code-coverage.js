@@ -101,8 +101,10 @@ module.exports = function checkPackagesCodeCoverage() {
 
 		console.log( '\n---\n' );
 
-		process.exit( 1 ); // Exit code 1 will break the CI build.
+		return 1;
 	}
+
+	return 0;
 };
 
 /**

@@ -10,6 +10,7 @@
 'use strict';
 
 const checkPackagesCodeCoverage = require( './check-packages-code-coverage' );
+const triggerCkeditor5ContinuousIntegration = require( './trigger-ckeditor5-continuous-integration' );
 const childProcess = require( 'child_process' );
 const path = require( 'path' );
 const TravisFolder = require( './travis-folder' );
@@ -24,7 +25,23 @@ console.log( cyan( `\nRunning the "${ TRAVIS_JOB_TYPE }" build.\n` ) );
 
 // Tests + Code coverage.
 if ( TRAVIS_JOB_TYPE === 'Tests' ) {
-	checkPackagesCodeCoverage();
+	const coverageExitCode = checkPackagesCodeCoverage();
+
+	if ( coverageExitCode ) {
+		process.exit( coverageExitCode );
+	}
+
+	const repository = 'ckeditor/ckeditor5';
+	const lastCommit = childProcess.execSync( 'git rev-parse HEAD' );
+
+	triggerCkeditor5ContinuousIntegration( repository, lastCommit )
+		.then( status => {
+			if ( status !== 200 ) {
+				throw new Error( `CI trigger failed with status "${ status }".` );
+			}
+
+			console.log( 'CI triggered successfully.' );
+		} );
 }
 
 // Verifying the code style.

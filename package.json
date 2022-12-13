@@ -114,6 +114,7 @@
     "minimatch": "^5.1.0",
     "minimist": "^1.2.5",
     "mkdirp": "^1.0.4",
+    "node-fetch": "^2.6.7",
     "nyc": "^15.0.1",
     "postcss-loader": "^4.3.0",
     "raw-loader": "^4.0.1",
