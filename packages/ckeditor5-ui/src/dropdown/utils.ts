@@ -143,7 +143,7 @@ export function createDropdown(
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ToolbarView` will be added.
- * @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttons
+ * @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttonsOrCallback
  * @param {Object} [options]
  * @param {Boolean} [options.enableActiveItemFocusOnDropdownOpen=false] When set `true`, the focus will automatically move to the first
  * active {@link module:ui/toolbar/toolbarview~ToolbarView#items item} of the toolbar upon
@@ -154,14 +154,15 @@ export function createDropdown(
  */
 export function addToolbarToDropdown(
 	dropdownView: DropdownView,
-	buttons: Array<ButtonView>,
-	options: { enableActiveItemFocusOnDropdownOpen?: boolean } = {}
+	buttonsOrCallback: Array<ButtonView> | ( () => Array<ButtonView> ),
+	options: {
+		enableActiveItemFocusOnDropdownOpen?: boolean;
+		isVertical?: boolean;
+		ariaLabel?: string;
+	} = {}
 ): void {
 	const locale = dropdownView.locale;
 	const t = locale.t;
-	const toolbarView = dropdownView.toolbarView = new ToolbarView( locale );
-
-	toolbarView.set( 'ariaLabel', t( 'Dropdown toolbar' ) );
 
 	dropdownView.extendTemplate( {
 		attributes: {
@@ -169,15 +170,26 @@ export function addToolbarToDropdown(
 		}
 	} );
 
-	buttons.map( view => toolbarView.items.add( view ) );
+	dropdownView.once( 'change:isOpen', () => {
+		const toolbarView = dropdownView.toolbarView = new ToolbarView( locale );
+		const buttons = typeof buttonsOrCallback == 'function' ? buttonsOrCallback() : buttonsOrCallback;
 
-	if ( options.enableActiveItemFocusOnDropdownOpen ) {
-		// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.
-		focusChildOnDropdownOpen( dropdownView, () => toolbarView.items.find( ( item: any ) => item.isOn ) );
-	}
+		toolbarView.ariaLabel = options.ariaLabel || t( 'Dropdown toolbar' );
 
-	dropdownView.panelView.children.add( toolbarView );
-	toolbarView.items.delegate( 'execute' ).to( dropdownView );
+		if ( options.isVertical ) {
+			toolbarView.isVertical = true;
+		}
+
+		buttons.map( view => toolbarView.items.add( view ) );
+
+		if ( options.enableActiveItemFocusOnDropdownOpen ) {
+			// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.
+			focusChildOnDropdownOpen( dropdownView, () => toolbarView.items.find( ( item: any ) => item.isOn ) );
+		}
+
+		dropdownView.panelView.children.add( toolbarView );
+		toolbarView.items.delegate( 'execute' ).to( dropdownView );
+	} );
 }
 
 /**

@@ -202,29 +202,34 @@ export default class HighlightUI extends Plugin {
 			splitButtonView.delegate( 'execute' ).to( dropdownView );
 
 			// Create buttons array.
-			const buttons = options.map( option => {
-				// Get existing highlighter button.
-				const buttonView = componentFactory.create( 'highlight:' + option.model );
+			const buttonsCreator = () => {
+				const buttons = options.map( option => {
+					// Get existing highlighter button.
+					const buttonView = componentFactory.create( 'highlight:' + option.model );
 
-				// Update lastExecutedHighlight on execute.
-				this.listenTo( buttonView, 'execute', () => {
-					dropdownView.buttonView.set( { lastExecuted: option.model } );
+					// Update lastExecutedHighlight on execute.
+					this.listenTo( buttonView, 'execute', () => {
+						dropdownView.buttonView.set( { lastExecuted: option.model } );
+					} );
+
+					return buttonView;
 				} );
 
-				return buttonView;
-			} );
+				// Add separator and eraser buttons to dropdown.
+				buttons.push( new ToolbarSeparatorView() );
+				buttons.push( componentFactory.create( 'removeHighlight' ) );
+
+				return buttons;
+			};
 
 			// Make toolbar button enabled when any button in dropdown is enabled before adding separator and eraser.
-			dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled', ( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled ) );
+			dropdownView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
-			// Add separator and eraser buttons to dropdown.
-			buttons.push( new ToolbarSeparatorView() );
-			buttons.push( componentFactory.create( 'removeHighlight' ) );
-
-			addToolbarToDropdown( dropdownView, buttons, { enableActiveItemFocusOnDropdownOpen: true } );
+			addToolbarToDropdown( dropdownView, buttonsCreator, {
+				enableActiveItemFocusOnDropdownOpen: true,
+				ariaLabel: t( 'Text highlight toolbar' )
+			} );
 			bindToolbarIconStyleToActiveColor( dropdownView );
-
-			dropdownView.toolbarView.ariaLabel = t( 'Text highlight toolbar' );
 
 			// Execute current action from dropdown's split button action button.
 			splitButtonView.on( 'execute', () => {
