@@ -3,39 +3,63 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable @typescript-eslint/unified-signatures */
+
 /**
  * @module list/documentlist/utils/model
  */
 
-import { uid, toArray } from 'ckeditor5/src/utils';
+import type {
+	DocumentFragment,
+	Element,
+	Model,
+	Node,
+	Writer,
+	Item
+} from 'ckeditor5/src/engine';
+
+import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
+
 import ListWalker, { iterateSiblingListBlocks } from './listwalker';
 
 /**
  * The list item ID generator.
  *
- * @protected
+ * @internal
  */
 export class ListItemUid {
 	/**
 	 * Returns the next ID.
 	 *
-	 * @protected
-	 * @returns {String}
+	 * @internal
 	 */
 	/* istanbul ignore next: static function definition */
-	static next() {
+	public static next(): string {
 		return uid();
 	}
 }
 
 /**
+ * An {@link module:engine/model/element~Element} that is known to be a list element;
+ *
+ * @internal
+ */
+export type ListElement = Element & {
+	getAttribute( key: 'listItemId' ): string;
+	getAttribute( key: 'listIndent' ): number;
+	getAttribute( key: 'listType' ): 'numbered' | 'bulleted';
+	getAttribute( key: 'listReversed' ): boolean;
+	getAttribute( key: 'listStart' ): number;
+	getAttribute( key: 'listStyle' ): string;
+	getAttribute( key: string ): unknown;
+};
+
+/**
  * Returns true if the given model node is a list item block.
  *
- * @protected
- * @param {module:engine/model/node~Node} node A model node.
- * @returns {Boolean}
+ * @internal
  */
-export function isListItemBlock( node ) {
+export function isListItemBlock( node: Item | DocumentFragment | null ): node is ListElement {
 	return !!node && node.is( 'element' ) && node.hasAttribute( 'listItemId' );
 }
 
@@ -44,14 +68,19 @@ export function isListItemBlock( node ) {
  *
  * It means that values for `listIndent`, and `listItemId` for all items are equal.
  *
- * @protected
- * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @param {Object} [options]
- * @param {Boolean} [options.higherIndent=false] Whether blocks with a higher indent level than the start block should be included
+ * @internal
+ * @param listItem Starting list item element.
+ * @param options.lowerIndent Whether blocks with a lower indent level than the start block should be included in the result.
+ * @param options.higherIndent Whether blocks with a higher indent level than the start block should be included
  * in the result.
- * @return {Array.<module:engine/model/element~Element>}
  */
-export function getAllListItemBlocks( listItem, options = {} ) {
+export function getAllListItemBlocks(
+	listItem: Node,
+	options: {
+		lowerIndent?: boolean;
+		higherIndent?: boolean;
+	} = {}
+): Array<ListElement> {
 	return [
 		...getListItemBlocks( listItem, { ...options, direction: 'backward' } ),
 		...getListItemBlocks( listItem, { ...options, direction: 'forward' } )
@@ -65,15 +94,20 @@ export function getAllListItemBlocks( listItem, options = {} ) {
  *
  * **Note**: For backward search the provided item is not included, but for forward search it is included in the result.
  *
- * @protected
- * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @param {Object} [options]
- * @param {'forward'|'backward'} [options.direction='backward'] Walking direction.
- * @param {Boolean} [options.higherIndent=false] Whether blocks with a higher indent level than the start block should be included
- * in the result.
- * @returns {Array.<module:engine/model/element~Element>}
+ * @internal
+ * @param listItem Starting list item element.
+ * @param options.direction Walking direction.
+ * @param options.lowerIndent Whether blocks with a lower indent level than the start block should be included in the result.
+ * @param options.higherIndent Whether blocks with a higher indent level than the start block should be included in the result.
  */
-export function getListItemBlocks( listItem, options = {} ) {
+export function getListItemBlocks(
+	listItem: Node,
+	options: {
+		direction?: 'forward' | 'backward';
+		lowerIndent?: boolean;
+		higherIndent?: boolean;
+	} = {}
+): Array<ListElement> {
 	const isForward = options.direction == 'forward';
 
 	const items = Array.from( new ListWalker( listItem, {
@@ -89,11 +123,9 @@ export function getListItemBlocks( listItem, options = {} ) {
 /**
  * Returns a list items nested inside the given list item.
  *
- * @protected
- * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @returns {Array.<module:engine/model/element~Element>}
+ * @internal
  */
-export function getNestedListBlocks( listItem ) {
+export function getNestedListBlocks( listItem: Element ): Array<ListElement> {
 	return Array.from( new ListWalker( listItem, {
 		direction: 'forward',
 		higherIndent: true
@@ -103,11 +135,10 @@ export function getNestedListBlocks( listItem ) {
 /**
  * Returns array of all blocks/items of the same list as given block (same indent, same type and properties).
  *
- * @protected
- * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @returns {Array.<module:engine/model/element~Element>}
+ * @internal
+ * @param listItem Starting list item element.
  */
-export function getListItems( listItem ) {
+export function getListItems( listItem: Element ): Array<ListElement> {
 	const backwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
 		sameAttributes: 'listType'
@@ -129,11 +160,10 @@ export function getListItems( listItem ) {
 /**
  * Check if the given block is the first in the list item.
  *
- * @protected
- * @param {module:engine/model/element~Element} listBlock The list block element.
- * @returns {Boolean}
+ * @internal
+ * @param listBlock The list block element.
  */
-export function isFirstBlockOfListItem( listBlock ) {
+export function isFirstBlockOfListItem( listBlock: Node ): boolean {
 	const previousSibling = ListWalker.first( listBlock, {
 		sameIndent: true,
 		sameAttributes: 'listItemId'
@@ -149,11 +179,9 @@ export function isFirstBlockOfListItem( listBlock ) {
 /**
  * Check if the given block is the last in the list item.
  *
- * @protected
- * @param {module:engine/model/element~Element} listBlock The list block element.
- * @returns {Boolean}
+ * @internal
  */
-export function isLastBlockOfListItem( listBlock ) {
+export function isLastBlockOfListItem( listBlock: Element ): boolean {
 	const nextSibling = ListWalker.first( listBlock, {
 		direction: 'forward',
 		sameIndent: true,
@@ -170,17 +198,18 @@ export function isLastBlockOfListItem( listBlock ) {
 /**
  * Expands the given list of selected blocks to include the leading and tailing blocks of partially selected list items.
  *
- * @protected
- * @param {module:engine/model/element~Element|Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
- * @param {Object} [options]
- * @param {Boolean} [options.withNested=true] Whether should include nested list items.
- * @returns {Array.<module:engine/model/element~Element>}
+ * @internal
+ * @param blocks The list of selected blocks.
+ * @param options.withNested Whether should include nested list items.
  */
-export function expandListBlocksToCompleteItems( blocks, options = {} ) {
+export function expandListBlocksToCompleteItems(
+	blocks: ArrayOrItem<Element>,
+	options: { withNested?: boolean } = {}
+): Array<ListElement> {
 	blocks = toArray( blocks );
 
 	const higherIndent = options.withNested !== false;
-	const allBlocks = new Set();
+	const allBlocks = new Set<ListElement>();
 
 	for ( const block of blocks ) {
 		for ( const itemBlock of getAllListItemBlocks( block, { higherIndent } ) ) {
@@ -194,14 +223,13 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
 /**
  * Expands the given list of selected blocks to include all the items of the lists they're in.
  *
- * @protected
- * @param {module:engine/model/element~Element|Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
- * @returns {Array.<module:engine/model/element~Element>}
+ * @internal
+ * @param blocks The list of selected blocks.
  */
-export function expandListBlocksToCompleteList( blocks ) {
+export function expandListBlocksToCompleteList( blocks: ArrayOrItem<Element> ): Array<ListElement> {
 	blocks = toArray( blocks );
 
-	const allBlocks = new Set();
+	const allBlocks = new Set<ListElement>();
 
 	for ( const block of blocks ) {
 		for ( const itemBlock of getListItems( block ) ) {
@@ -215,12 +243,15 @@ export function expandListBlocksToCompleteList( blocks ) {
 /**
  * Splits the list item just before the provided list block.
  *
- * @protected
- * @param {module:engine/model/element~Element} listBlock The list block element.
- * @param {module:engine/model/writer~Writer} writer The model writer.
- * @returns {Array.<module:engine/model/element~Element>} The array of updated blocks.
+ * @internal
+ * @param listBlock The list block element.
+ * @param writer The model writer.
+ * @returns The array of updated blocks.
  */
-export function splitListItemBefore( listBlock, writer ) {
+export function splitListItemBefore(
+	listBlock: Element,
+	writer: Writer
+): Array<ListElement> {
 	const blocks = getListItemBlocks( listBlock, { direction: 'forward' } );
 	const id = ListItemUid.next();
 
@@ -234,14 +265,18 @@ export function splitListItemBefore( listBlock, writer ) {
 /**
  * Merges the list item with the parent list item.
  *
- * @protected
- * @param {module:engine/model/element~Element} listBlock The list block element.
- * @param {module:engine/model/element~Element} parentBlock The list block element to merge with.
- * @param {module:engine/model/writer~Writer} writer The model writer.
- * @returns {Array.<module:engine/model/element~Element>} The array of updated blocks.
+ * @internal
+ * @param listBlock The list block element.
+ * @param parentBlock The list block element to merge with.
+ * @param writer The model writer.
+ * @returns The array of updated blocks.
  */
-export function mergeListItemBefore( listBlock, parentBlock, writer ) {
-	const attributes = {};
+export function mergeListItemBefore(
+	listBlock: Node,
+	parentBlock: Element,
+	writer: Writer
+): Array<ListElement> {
+	const attributes: Record<string, unknown> = {};
 
 	for ( const [ key, value ] of parentBlock.getAttributes() ) {
 		if ( key.startsWith( 'list' ) ) {
@@ -261,14 +296,17 @@ export function mergeListItemBefore( listBlock, parentBlock, writer ) {
 /**
  * Increases indentation of given list blocks.
  *
- * @protected
- * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
- * @param {module:engine/model/writer~Writer} writer The model writer.
- * @param {Object} [options]
- * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items.
- * @param {Number} [options.indentBy=1] The number of levels the indentation should change (could be negative).
+ * @internal
+ * @param blocks The block or iterable of blocks.
+ * @param writer The model writer.
+ * @param options.expand Whether should expand the list of blocks to include complete list items.
+ * @param options.indentBy The number of levels the indentation should change (could be negative).
  */
-export function indentBlocks( blocks, writer, { expand, indentBy = 1 } = {} ) {
+export function indentBlocks(
+	blocks: ArrayOrItem<ListElement>,
+	writer: Writer,
+	{ expand, indentBy = 1 }: { expand?: boolean; indentBy?: number } = {}
+): Array<ListElement> {
 	blocks = toArray( blocks );
 
 	// Expand the selected blocks to contain the whole list items.
@@ -291,16 +329,19 @@ export function indentBlocks( blocks, writer, { expand, indentBy = 1 } = {} ) {
  * Decreases indentation of given list of blocks. If the indentation of some blocks matches the indentation
  * of surrounding blocks, they get merged together.
  *
- * @protected
- * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
- * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @internal
+ * @param blocks The block or iterable of blocks.
+ * @param writer The model writer.
  */
-export function outdentBlocksWithMerge( blocks, writer ) {
+export function outdentBlocksWithMerge(
+	blocks: ArrayOrItem<ListElement>,
+	writer: Writer
+): Array<ListElement> {
 	blocks = toArray( blocks );
 
 	// Expand the selected blocks to contain the whole list items.
 	const allBlocks = expandListBlocksToCompleteItems( blocks );
-	const visited = new Set();
+	const visited = new Set<ListElement>();
 
 	const referenceIndent = Math.min( ...allBlocks.map( block => block.getAttribute( 'listIndent' ) ) );
 	const parentBlocks = new Map();
@@ -349,12 +390,15 @@ export function outdentBlocksWithMerge( blocks, writer ) {
 /**
  * Removes all list attributes from the given blocks.
  *
- * @protected
- * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
- * @param {module:engine/model/writer~Writer} writer The model writer.
- * @returns {Array.<module:engine/model/element~Element>} Array of altered blocks.
+ * @internal
+ * @param blocks The block or iterable of blocks.
+ * @param writer The model writer.
+ * @returns Array of altered blocks.
  */
-export function removeListAttributes( blocks, writer ) {
+export function removeListAttributes(
+	blocks: ArrayOrItem<Element>,
+	writer: Writer
+): Array<Element> {
 	blocks = toArray( blocks );
 
 	for ( const block of blocks ) {
@@ -371,11 +415,10 @@ export function removeListAttributes( blocks, writer ) {
 /**
  * Checks whether the given blocks are related to a single list item.
  *
- * @protected
- * @param {Array.<module:engine/model/element~Element>} blocks The list block elements.
- * @returns {Boolean}
+ * @internal
+ * @param blocks The list block elements.
  */
-export function isSingleListItem( blocks ) {
+export function isSingleListItem( blocks: Array<Node> ): boolean {
 	if ( !blocks.length ) {
 		return false;
 	}
@@ -393,12 +436,12 @@ export function isSingleListItem( blocks ) {
  * Modifies the indents of list blocks following the given list block so the indentation is valid after
  * the given block is no longer a list item.
  *
- * @protected
- * @param {module:engine/model/element~Element} lastBlock The last list block that has become a non-list element.
- * @param {module:engine/model/writer~Writer} writer The model writer.
- * @returns {Array.<module:engine/model/element~Element>} Array of altered blocks.
+ * @internal
+ * @param lastBlock The last list block that has become a non-list element.
+ * @param writer The model writer.
+ * @returns Array of altered blocks.
  */
-export function outdentFollowingItems( lastBlock, writer ) {
+export function outdentFollowingItems( lastBlock: Element, writer: Writer ): Array<ListElement> {
 	const changedBlocks = [];
 
 	// Start from the model item that is just after the last turned-off item.
@@ -481,25 +524,23 @@ export function outdentFollowingItems( lastBlock, writer ) {
 /**
  * Returns the array of given blocks sorted by model indexes (document order).
  *
- * @protected
- * @param {Iterable.<module:engine/model/element~Element>} blocks The array of blocks.
- * @returns {Array.<module:engine/model/element~Element>} The sorted array of blocks.
+ * @internal
  */
-export function sortBlocks( blocks ) {
+export function sortBlocks<T extends Element>( blocks: Iterable<T> ): Array<T> {
 	return Array.from( blocks )
 		.filter( block => block.root.rootName !== '$graveyard' )
-		.sort( ( a, b ) => a.index - b.index );
+		.sort( ( a, b ) => a.index! - b.index! );
 }
 
 /**
  * Returns a selected block object. If a selected object is inline or when there is no selected
  * object, `null` is returned.
  *
- * @protected
+ * @internal
  * @param {module:engine/model/model~Model} model The instance of editor model.
  * @returns {module:engine/model/element~Element|null} Selected block object or `null`.
  */
-export function getSelectedBlockObject( model ) {
+export function getSelectedBlockObject( model: Model ): Element | null {
 	const selectedElement = model.document.selection.getSelectedElement();
 
 	if ( !selectedElement ) {
@@ -514,7 +555,11 @@ export function getSelectedBlockObject( model ) {
 }
 
 // Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
-function mergeListItemIfNotLast( block, parentBlock, writer ) {
+function mergeListItemIfNotLast(
+	block: ListElement,
+	parentBlock: ListElement,
+	writer: Writer
+) {
 	const parentItemBlocks = getListItemBlocks( parentBlock, { direction: 'forward' } );
 
 	// Merge with parent only if outdented item wasn't the last one in its parent.
@@ -526,7 +571,7 @@ function mergeListItemIfNotLast( block, parentBlock, writer ) {
 	// * a			->		* a
 	//   * [b]		-> 		* b
 	// * c			->		* c
-	if ( parentItemBlocks.pop().index > block.index ) {
+	if ( parentItemBlocks.pop()!.index! > block.index! ) {
 		return mergeListItemBefore( block, parentBlock, writer );
 	}
 

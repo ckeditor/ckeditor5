@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/documentlistproperties/documentliststartcommand
+ * @module list/documentlistproperties/documentlistreversedcommand
  */
 
 import { Command } from 'ckeditor5/src/core';
@@ -15,17 +15,22 @@ import {
 } from '../documentlist/utils/model';
 
 /**
- * The list start index command. It changes the `listStart` attribute of the selected list items,
- * letting the user to choose the starting point of an ordered list.
+ * The list reversed command. It changes the `listReversed` attribute of the selected list items,
+ * letting the user to choose the order of an ordered list.
  * It is used by the {@link module:list/documentlistproperties~DocumentListProperties list properties feature}.
  *
  * @extends module:core/command~Command
  */
-export default class DocumentListStartCommand extends Command {
+export default class DocumentListReversedCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	declare public value: boolean | null;
+
+	/**
+	 * @inheritDoc
+	 */
+	public override refresh(): void {
 		const value = this._getValue();
 
 		this.value = value;
@@ -36,10 +41,9 @@ export default class DocumentListStartCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @fires execute
-	 * @param {Object} [options]
-	 * @param {Number} [options.startIndex=1] The list start index.
+	 * @param options.reversed Whether the list should be reversed.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { reversed?: boolean } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 
@@ -50,25 +54,22 @@ export default class DocumentListStartCommand extends Command {
 
 		model.change( writer => {
 			for ( const block of blocks ) {
-				writer.setAttribute( 'listStart', options.startIndex >= 0 ? options.startIndex : 1, block );
+				writer.setAttribute( 'listReversed', !!options.reversed, block );
 			}
 		} );
 	}
 
 	/**
 	 * Checks the command's {@link #value}.
-	 *
-	 * @private
-	 * @returns {Number|null} The current value.
 	 */
-	_getValue() {
+	private _getValue() {
 		const model = this.editor.model;
 		const document = model.document;
 
 		const block = first( document.selection.getSelectedBlocks() );
 
-		if ( block && isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
-			return block.getAttribute( 'listStart' );
+		if ( isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
+			return block.getAttribute( 'listReversed' );
 		}
 
 		return null;

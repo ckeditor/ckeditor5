@@ -8,11 +8,32 @@
  */
 
 import {
+	UpcastWriter,
+	type DowncastAttributeEvent,
+	type DowncastWriter,
+	type EditingController,
+	type Element,
+	type ElementCreatorFunction,
+	type Mapper,
+	type Model,
+	type ModelConsumable,
+	type Node,
+	type UpcastElementEvent,
+	type ViewDocumentFragment,
+	type ViewElement,
+	type ViewRange
+} from 'ckeditor5/src/engine';
+
+import type { GetCallback } from 'ckeditor5/src/utils';
+
+import {
 	getAllListItemBlocks,
 	getListItemBlocks,
 	isListItemBlock,
-	ListItemUid
+	ListItemUid,
+	type ListElement
 } from './utils/model';
+
 import {
 	createListElement,
 	createListItemElement,
@@ -20,18 +41,22 @@ import {
 	isListView,
 	isListItemView
 } from './utils/view';
+
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 import { findAndAddListHeadToMap } from './utils/postfixers';
 
-import { UpcastWriter } from 'ckeditor5/src/engine';
+import type {
+	default as DocumentListEditing,
+	DocumentListEditingCheckAttributesEvent,
+	DowncastStrategy
+} from './documentlistediting';
 
 /**
  * Returns the upcast converter for list items. It's supposed to work after the block converters (content inside list items) is converted.
  *
- * @protected
- * @returns {Function}
+ * @internal
  */
-export function listItemUpcastConverter() {
+export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
 		const { writer, schema } = conversionApi;
 
@@ -49,7 +74,7 @@ export function listItemUpcastConverter() {
 		const attributes = {
 			listItemId: ListItemUid.next(),
 			listIndent: getIndent( data.viewItem ),
-			listType: data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted'
+			listType: data.viewItem.parent && ( data.viewItem.parent as ViewElement ).name == 'ol' ? 'numbered' : 'bulleted'
 		};
 
 		for ( const item of items ) {
@@ -81,10 +106,9 @@ export function listItemUpcastConverter() {
  * This is mostly to clean whitespaces from between the `<li>` view elements inside the view list element, however, also
  * incorrect data can be cleared if the view was incorrect.
  *
- * @protected
- * @returns {Function}
+ * @internal
  */
-export function listUpcastCleanList() {
+export function listUpcastCleanList(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
 			return;
@@ -103,19 +127,23 @@ export function listUpcastCleanList() {
 /**
  * Returns a model document change:data event listener that triggers conversion of related items if needed.
  *
- * @protected
- * @param {module:engine/model/model~Model} model The editor model.
- * @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
- * @param {Array.<String>} attributeNames The list of all model list attributes (including registered strategies).
- * @param {module:list/documentlist/documentlistediting~DocumentListEditing} documentListEditing The document list editing plugin.
- * @return {Function}
+ * @internal
+ * @param model The editor model.
+ * @param editing The editing controller.
+ * @param attributeNames The list of all model list attributes (including registered strategies).
+ * @param documentListEditing The document list editing plugin.
  */
-export function reconvertItemsOnDataChange( model, editing, attributeNames, documentListEditing ) {
+export function reconvertItemsOnDataChange(
+	model: Model,
+	editing: EditingController,
+	attributeNames: Array<string>,
+	documentListEditing: DocumentListEditing
+): () => void {
 	return () => {
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
-		const itemToListHead = new Map();
-		const changedItems = new Set();
+		const itemToListHead = new Map<ListElement, ListElement>();
+		const changedItems = new Set<Node | null>();
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
@@ -134,7 +162,7 @@ export function reconvertItemsOnDataChange( model, editing, attributeNames, docu
 			}
 			// Changed list attribute.
 			else if ( entry.type == 'attribute' ) {
-				const item = entry.range.start.nodeAfter;
+				const item = entry.range.start.nodeAfter!;
 
 				if ( attributeNames.includes( entry.attributeKey ) ) {
 					findAndAddListHeadToMap( entry.range.start, itemToListHead );
@@ -168,10 +196,10 @@ export function reconvertItemsOnDataChange( model, editing, attributeNames, docu
 		}
 	};
 
-	function collectListItemsToRefresh( listHead, changedItems ) {
+	function collectListItemsToRefresh( listHead: ListElement, changedItems: Set<Node | null> ) {
 		const itemsToRefresh = [];
 		const visited = new Set();
-		const stack = [];
+		const stack: Array<Record<string, any>> = [];
 
 		for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
 			if ( visited.has( node ) ) {
@@ -211,7 +239,7 @@ export function reconvertItemsOnDataChange( model, editing, attributeNames, docu
 		return itemsToRefresh;
 	}
 
-	function doesItemParagraphRequiresRefresh( item, blocks ) {
+	function doesItemParagraphRequiresRefresh( item: Node, blocks?: Array<Node> ) {
 		if ( !item.is( 'element', 'paragraph' ) ) {
 			return false;
 		}
@@ -233,20 +261,24 @@ export function reconvertItemsOnDataChange( model, editing, attributeNames, docu
 		return false;
 	}
 
-	function doesItemWrappingRequiresRefresh( item, stack, changedItems ) {
+	function doesItemWrappingRequiresRefresh(
+		item: Element,
+		stack: Array<Record<string, any>>,
+		changedItems: Set<Node | null>
+	) {
 		// Items directly affected by some "change" don't need a refresh, they will be converted by their own changes.
 		if ( changedItems.has( item ) ) {
 			return false;
 		}
 
-		const viewElement = editing.mapper.toViewElement( item );
+		const viewElement = editing.mapper.toViewElement( item )!;
 		let indent = stack.length - 1;
 
 		// Traverse down the stack to the root to verify if all ULs, OLs, and LIs are as expected.
 		for (
-			let element = viewElement.parent;
+			let element = viewElement.parent!;
 			!element.is( 'editableElement' );
-			element = element.parent
+			element = element.parent!
 		) {
 			const isListItemElement = isListItemView( element );
 			const isListElement = isListView( element );
@@ -268,9 +300,9 @@ export function reconvertItemsOnDataChange( model, editing, attributeNames, docu
 			 * @param {module:engine/view/element~Element} viewElement
 			 * @param {Object} modelAttributes
 			 */
-			const eventName = `checkAttributes:${ isListItemElement ? 'item' : 'list' }`;
-			const needsRefresh = documentListEditing.fire( eventName, {
-				viewElement: element,
+			const eventName = `checkAttributes:${ isListItemElement ? 'item' : 'list' }` as const;
+			const needsRefresh = documentListEditing.fire<DocumentListEditingCheckAttributesEvent>( eventName, {
+				viewElement: element as ViewElement,
 				modelAttributes: stack[ indent ]
 			} );
 
@@ -295,13 +327,16 @@ export function reconvertItemsOnDataChange( model, editing, attributeNames, docu
 /**
  * Returns the list item downcast converter.
  *
- * @protected
- * @param {Array.<String>} attributeNames A list of attribute names that should be converted if are set.
- * @param {Array.<module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy>} strategies The strategies.
- * @param {module:engine/model/model~Model} model The model.
- * @returns {Function}
+ * @internal
+ * @param attributeNames A list of attribute names that should be converted if are set.
+ * @param strategies The strategies.
+ * @param model The model.
  */
-export function listItemDowncastConverter( attributeNames, strategies, model ) {
+export function listItemDowncastConverter(
+	attributeNames: Array<string>,
+	strategies: Array<DowncastStrategy>,
+	model: Model
+): GetCallback<DowncastAttributeEvent<ListElement>> {
 	const consumer = createAttributesConsumer( attributeNames );
 
 	return ( evt, data, conversionApi ) => {
@@ -320,7 +355,7 @@ export function listItemDowncastConverter( attributeNames, strategies, model ) {
 
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-		const viewElement = findMappedViewElement( listItem, mapper, model );
+		const viewElement = findMappedViewElement( listItem, mapper, model )!;
 
 		// Unwrap element from current list wrappers.
 		unwrapListItemBlock( viewElement, writer );
@@ -333,17 +368,17 @@ export function listItemDowncastConverter( attributeNames, strategies, model ) {
 /**
  * Returns the bogus paragraph view element creator. A bogus paragraph is used if a list item contains only a single block or nested list.
  *
- * @protected
- * @param {Array.<String>} attributeNames The list of all model list attributes (including registered strategies).
- * @param {Object} [options]
- * @param {Boolean} [options.dataPipeline=false]
- * @returns {Function}
+ * @internal
+ * @param attributeNames The list of all model list attributes (including registered strategies).
  */
-export function bogusParagraphCreator( attributeNames, { dataPipeline } = {} ) {
+export function bogusParagraphCreator(
+	attributeNames: Array<string>,
+	{ dataPipeline }: { dataPipeline?: boolean } = {}
+): ElementCreatorFunction {
 	return ( modelElement, { writer } ) => {
 		// Convert only if a bogus paragraph should be used.
 		if ( !shouldUseBogusParagraph( modelElement, attributeNames ) ) {
-			return;
+			return null;
 		}
 
 		const viewElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
@@ -360,13 +395,12 @@ export function bogusParagraphCreator( attributeNames, { dataPipeline } = {} ) {
  * Helper for mapping mode to view elements. It's using positions mapping instead of mapper.toViewElement( element )
  * to find outermost view element. This is for cases when mapping is using inner view element like in the code blocks (pre > code).
  *
- * @protected
- * @param {module:engine/model/element~Element} element The model element.
- * @param {module:engine/conversion/mapper~Mapper} mapper The mapper instance.
- * @param {module:engine/model/model~Model} model The model.
- * @returns {module:engine/view/element~Element|null}
+ * @internal
+ * @param element The model element.
+ * @param mapper The mapper instance.
+ * @param model The model.
  */
-export function findMappedViewElement( element, mapper, model ) {
+export function findMappedViewElement( element: Element, mapper: Mapper, model: Model ): ViewElement | null {
 	const modelRange = model.createRangeOn( element );
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
 
@@ -374,26 +408,31 @@ export function findMappedViewElement( element, mapper, model ) {
 }
 
 // Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.
-function unwrapListItemBlock( viewElement, viewWriter ) {
-	let attributeElement = viewElement.parent;
+function unwrapListItemBlock( viewElement: ViewElement, viewWriter: DowncastWriter ) {
+	let attributeElement: ViewElement | ViewDocumentFragment = viewElement.parent!;
 
 	while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
 		const parentElement = attributeElement.parent;
 
 		viewWriter.unwrap( viewWriter.createRangeOn( viewElement ), attributeElement );
 
-		attributeElement = parentElement;
+		attributeElement = parentElement!;
 	}
 }
 
 // Wraps the given list item with appropriate attribute elements for ul, ol, and li.
-function wrapListItemBlock( listItem, viewRange, strategies, writer ) {
+function wrapListItemBlock(
+	listItem: ListElement,
+	viewRange: ViewRange,
+	strategies: Array<DowncastStrategy>,
+	writer: DowncastWriter
+) {
 	if ( !listItem.hasAttribute( 'listIndent' ) ) {
 		return;
 	}
 
 	const listItemIndent = listItem.getAttribute( 'listIndent' );
-	let currentListItem = listItem;
+	let currentListItem: ListElement | null = listItem;
 
 	for ( let indent = listItemIndent; indent >= 0; indent-- ) {
 		const listItemViewElement = createListItemElement( writer, indent, currentListItem.getAttribute( 'listItemId' ) );
@@ -427,8 +466,8 @@ function wrapListItemBlock( listItem, viewRange, strategies, writer ) {
 }
 
 // Returns the function that is responsible for consuming attributes that are set on the model node.
-function createAttributesConsumer( attributeNames ) {
-	return ( node, consumable ) => {
+function createAttributesConsumer( attributeNames: Array<string> ) {
+	return ( node: Node, consumable: ModelConsumable ) => {
 		const events = [];
 
 		// Collect all set attributes that are triggering conversion.
@@ -449,7 +488,11 @@ function createAttributesConsumer( attributeNames ) {
 }
 
 // Whether the given item should be rendered as a bogus paragraph.
-function shouldUseBogusParagraph( item, attributeNames, blocks = getAllListItemBlocks( item ) ) {
+function shouldUseBogusParagraph(
+	item: Node,
+	attributeNames: Array<string>,
+	blocks: Array<Node> = getAllListItemBlocks( item )
+) {
 	if ( !isListItemBlock( item ) ) {
 		return false;
 	}

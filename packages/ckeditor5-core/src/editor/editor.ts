@@ -66,7 +66,7 @@ export default abstract class Editor extends ObservableMixin() {
 	public readonly keystrokes: EditingKeystrokeHandler;
 	public readonly t: LocaleTranslate;
 
-	public readonly id!: string;
+	public declare readonly id: string;
 
 	public declare state: 'initializing' | 'ready' | 'destroyed';
 

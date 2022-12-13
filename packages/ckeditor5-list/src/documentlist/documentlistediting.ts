@@ -7,16 +7,35 @@
  * @module list/documentlist/documentlistediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Enter } from 'ckeditor5/src/enter';
-import { Delete } from 'ckeditor5/src/typing';
-import { CKEditorError } from 'ckeditor5/src/utils';
+import {
+	Plugin,
+	type MultiCommand,
+	type PluginDependencies
+} from 'ckeditor5/src/core';
+
+import type {
+	DowncastAttributeEvent,
+	DocumentChangeEvent,
+	DowncastWriter,
+	Element,
+	Model,
+	ModelGetSelectedContentEvent,
+	ModelInsertContentEvent,
+	UpcastElementEvent,
+	ViewDocumentTabEvent,
+	ViewElement,
+	Writer
+} from 'ckeditor5/src/engine';
+
+import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
+import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
+import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
 import DocumentListCommand from './documentlistcommand';
 import DocumentListMergeCommand from './documentlistmergecommand';
 import DocumentListSplitCommand from './documentlistsplitcommand';
-import DocumentListUtils from '../documentlist/documentlistutils';
+import DocumentListUtils from './documentlistutils';
 import {
 	bogusParagraphCreator,
 	listItemDowncastConverter,
@@ -36,7 +55,8 @@ import {
 	isSingleListItem,
 	getSelectedBlockObject,
 	isListItemBlock,
-	removeListAttributes
+	removeListAttributes,
+	type ListElement
 } from './utils/model';
 import {
 	getViewElementIdForListType,
@@ -51,50 +71,36 @@ import '../../theme/documentlist.css';
 
 /**
  * A list of base list model attributes.
- *
- * @private
  */
 const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
 
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class DocumentListEditing extends Plugin {
 	/**
+	 * The list of registered downcast strategies.
+	 */
+	private readonly _downcastStrategies: Array<DowncastStrategy> = [];
+
+	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'DocumentListEditing' {
 		return 'DocumentListEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ Enter, Delete, DocumentListUtils ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * The list of registered downcast strategies.
-		 *
-		 * @private
-		 * @type {Array.<module:list/documentlist/documentlistediting~DowncastStrategy>}
-		 */
-		this._downcastStrategies = [];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -140,22 +146,22 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const editor = this.editor;
 		const commands = editor.commands;
-		const indent = commands.get( 'indent' );
-		const outdent = commands.get( 'outdent' );
+		const indent = commands.get( 'indent' ) as MultiCommand;
+		const outdent = commands.get( 'outdent' ) as MultiCommand;
 
 		if ( indent ) {
 			// Priority is high due to integration with `IndentBlock` plugin. We want to indent list first and if it's not possible
 			// user can indent content with `IndentBlock` plugin.
-			indent.registerChildCommand( commands.get( 'indentList' ), { priority: 'high' } );
+			indent.registerChildCommand( commands.get( 'indentList' )!, { priority: 'high' } );
 		}
 
 		if ( outdent ) {
 			// Priority is lowest due to integration with `IndentBlock` and `IndentCode` plugins.
 			// First we want to allow user to outdent all indendations from other features then he can oudent list item.
-			outdent.registerChildCommand( commands.get( 'outdentList' ), { priority: 'lowest' } );
+			outdent.registerChildCommand( commands.get( 'outdentList' )!, { priority: 'lowest' } );
 		}
 
 		// Register conversion and model post-fixer after other plugins had a chance to register their attribute strategies.
@@ -169,18 +175,16 @@ export default class DocumentListEditing extends Plugin {
 	 * **Note**: Strategies must be registered in the `Plugin#init()` phase so that it can be applied
 	 * in the `DocumentListEditing#afterInit()`.
 	 *
-	 * @param {module:list/documentlist/documentlistediting~DowncastStrategy} strategy The downcast strategy to register.
+	 * @param strategy The downcast strategy to register.
 	 */
-	registerDowncastStrategy( strategy ) {
+	public registerDowncastStrategy( strategy: DowncastStrategy ): void {
 		this._downcastStrategies.push( strategy );
 	}
 
 	/**
 	 * Returns list of model attribute names that should affect downcast conversion.
-	 *
-	 * @private
 	 */
-	_getListAttributeNames() {
+	private _getListAttributeNames() {
 		return [
 			...LIST_BASE_ATTRIBUTES,
 			...this._downcastStrategies.map( strategy => strategy.attributeName )
@@ -190,15 +194,13 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * Attaches the listener to the {@link module:engine/view/document~Document#event:delete} event and handles backspace/delete
 	 * keys in and around document lists.
-	 *
-	 * @private
 	 */
-	_setupDeleteIntegration() {
+	private _setupDeleteIntegration() {
 		const editor = this.editor;
-		const mergeBackwardCommand = editor.commands.get( 'mergeListItemBackward' );
-		const mergeForwardCommand = editor.commands.get( 'mergeListItemForward' );
+		const mergeBackwardCommand = editor.commands.get( 'mergeListItemBackward' )!;
+		const mergeForwardCommand = editor.commands.get( 'mergeListItemForward' )!;
 
-		this.listenTo( editor.editing.view.document, 'delete', ( evt, data ) => {
+		this.listenTo<ViewDocumentDeleteEvent>( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
 
 			// Let the Widget plugin take care of block widgets while deleting (https://github.com/ckeditor/ckeditor5/issues/11346).
@@ -207,7 +209,7 @@ export default class DocumentListEditing extends Plugin {
 			}
 
 			editor.model.change( () => {
-				const firstPosition = selection.getFirstPosition();
+				const firstPosition = selection.getFirstPosition()!;
 
 				if ( selection.isCollapsed && data.direction == 'backward' ) {
 					if ( !firstPosition.isAtStart ) {
@@ -250,7 +252,7 @@ export default class DocumentListEditing extends Plugin {
 				// Non-collapsed selection or forward delete.
 				else {
 					// Collapsed selection should trigger forward merging only if at the end of a block.
-					if ( selection.isCollapsed && !selection.getLastPosition().isAtEnd ) {
+					if ( selection.isCollapsed && !selection.getLastPosition()!.isAtEnd ) {
 						return;
 					}
 
@@ -272,19 +274,17 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * Attaches a listener to the {@link module:engine/view/document~Document#event:enter} event and handles enter key press
 	 * in document lists.
-	 *
-	 * @private
 	 */
-	_setupEnterIntegration() {
+	private _setupEnterIntegration() {
 		const editor = this.editor;
 		const model = editor.model;
 		const commands = editor.commands;
-		const enterCommand = commands.get( 'enter' );
+		const enterCommand = commands.get( 'enter' )!;
 
 		// Overwrite the default Enter key behavior: outdent or split the list in certain cases.
-		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
+		this.listenTo<ViewDocumentEnterEvent>( editor.editing.view.document, 'enter', ( evt, data ) => {
 			const doc = model.document;
-			const positionParent = doc.selection.getFirstPosition().parent;
+			const positionParent = doc.selection.getFirstPosition()!.parent;
 
 			if (
 				doc.selection.isCollapsed &&
@@ -325,7 +325,7 @@ export default class DocumentListEditing extends Plugin {
 		// In some cases, after the default block splitting, we want to modify the new block to become a new list item
 		// instead of an additional block in the same list item.
 		this.listenTo( enterCommand, 'afterExecute', () => {
-			const splitCommand = commands.get( 'splitListItemBefore' );
+			const splitCommand = commands.get( 'splitListItemBefore' )!;
 
 			// The command has not refreshed because the change block related to EnterCommand#execute() is not over yet.
 			// Let's keep it up to date and take advantage of DocumentListSplitCommand#isEnabled.
@@ -336,8 +336,8 @@ export default class DocumentListEditing extends Plugin {
 			}
 
 			const doc = editor.model.document;
-			const positionParent = doc.selection.getLastPosition().parent;
-			const listItemBlocks = getAllListItemBlocks( positionParent );
+			const positionParent = doc.selection.getLastPosition()!.parent;
+			const listItemBlocks = getAllListItemBlocks( positionParent as any );
 
 			// Keep in mind this split happens after the default enter handler was executed. For instance:
 			//
@@ -354,15 +354,13 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * Attaches a listener to the {@link module:engine/view/document~Document#event:tab} event and handles tab key and tab+shift keys
 	 * presses in document lists.
-	 *
-	 * @private
 	 */
-	_setupTabIntegration() {
+	private _setupTabIntegration() {
 		const editor = this.editor;
 
-		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
+		this.listenTo<ViewDocumentTabEvent>( editor.editing.view.document, 'tab', ( evt, data ) => {
 			const commandName = data.shiftKey ? 'outdentList' : 'indentList';
-			const command = this.editor.commands.get( commandName );
+			const command = this.editor.commands.get( commandName )!;
 
 			if ( command.isEnabled ) {
 				editor.execute( commandName );
@@ -376,9 +374,8 @@ export default class DocumentListEditing extends Plugin {
 
 	/**
 	 * Registers the conversion helpers for the document-list feature.
-	 * @private
 	 */
-	_setupConversion() {
+	private _setupConversion() {
 		const editor = this.editor;
 		const model = editor.model;
 		const attributeNames = this._getListAttributeNames();
@@ -386,9 +383,9 @@ export default class DocumentListEditing extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.elementToElement( { view: 'li', model: 'paragraph' } )
 			.add( dispatcher => {
-				dispatcher.on( 'element:li', listItemUpcastConverter() );
-				dispatcher.on( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
-				dispatcher.on( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
+				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
+				dispatcher.on<UpcastElementEvent>( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
+				dispatcher.on<UpcastElementEvent>( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
 			} );
 
 		editor.conversion.for( 'editingDowncast' )
@@ -407,13 +404,20 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' )
 			.add( dispatcher => {
-				dispatcher.on( 'attribute', listItemDowncastConverter( attributeNames, this._downcastStrategies, model ) );
+				dispatcher.on<DowncastAttributeEvent<ListElement>>(
+					'attribute',
+					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
+				);
 			} );
 
-		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, attributeNames, this ) );
+		this.listenTo<DocumentChangeEvent>(
+			model.document,
+			'change:data',
+			reconvertItemsOnDataChange( model, editor.editing, attributeNames, this )
+		);
 
 		// For LI verify if an ID of the attribute element is correct.
-		this.on( 'checkAttributes:item', ( evt, { viewElement, modelAttributes } ) => {
+		this.on<DocumentListEditingCheckAttributesEvent>( 'checkAttributes:item', ( evt, { viewElement, modelAttributes } ) => {
 			if ( viewElement.id != modelAttributes.listItemId ) {
 				evt.return = true;
 				evt.stop();
@@ -421,7 +425,7 @@ export default class DocumentListEditing extends Plugin {
 		} );
 
 		// For UL and OL check if the name and ID of element is correct.
-		this.on( 'checkAttributes:list', ( evt, { viewElement, modelAttributes } ) => {
+		this.on<DocumentListEditingCheckAttributesEvent>( 'checkAttributes:list', ( evt, { viewElement, modelAttributes } ) => {
 			if (
 				viewElement.name != getViewElementNameForListType( modelAttributes.listType ) ||
 				viewElement.id != getViewElementIdForListType( modelAttributes.listType, modelAttributes.listIndent )
@@ -434,10 +438,8 @@ export default class DocumentListEditing extends Plugin {
 
 	/**
 	 * Registers model post-fixers.
-	 *
-	 * @private
 	 */
-	_setupModelPostFixing() {
+	private _setupModelPostFixing() {
 		const model = this.editor.model;
 		const attributeNames = this._getListAttributeNames();
 
@@ -447,12 +449,12 @@ export default class DocumentListEditing extends Plugin {
 
 		// Then the callbacks for the specific lists.
 		// The indentation fixing must be the first one...
-		this.on( 'postFixer', ( evt, { listNodes, writer } ) => {
+		this.on<DocumentListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
 			evt.return = fixListIndents( listNodes, writer ) || evt.return;
 		}, { priority: 'high' } );
 
 		// ...then the item ids... and after that other fixers that rely on the correct indentation and ids.
-		this.on( 'postFixer', ( evt, { listNodes, writer, seenIds } ) => {
+		this.on<DocumentListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer, seenIds } ) => {
 			evt.return = fixListItemIds( listNodes, seenIds, writer ) || evt.return;
 		}, { priority: 'high' } );
 	}
@@ -460,13 +462,11 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * Integrates the feature with the clipboard via {@link module:engine/model/model~Model#insertContent} and
 	 * {@link module:engine/model/model~Model#getSelectedContent}.
-	 *
-	 * @private
 	 */
-	_setupClipboardIntegration() {
+	private _setupClipboardIntegration() {
 		const model = this.editor.model;
 
-		this.listenTo( model, 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
+		this.listenTo<ModelInsertContentEvent>( model, 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
 		// To enhance the UX, the editor should not copy list attributes to the clipboard if the selection
 		// started and ended in the same list item.
@@ -496,56 +496,93 @@ export default class DocumentListEditing extends Plugin {
 		//	                       └─────────────────────┴───────────────────┘
 		//
 		// See https://github.com/ckeditor/ckeditor5/issues/11608.
-		this.listenTo( model, 'getSelectedContent', ( evt, [ selection ] ) => {
+		this.listenTo<ModelGetSelectedContentEvent>( model, 'getSelectedContent', ( evt, [ selection ] ) => {
 			const isSingleListItemSelected = isSingleListItem( Array.from( selection.getSelectedBlocks() ) );
 
 			if ( isSingleListItemSelected ) {
-				model.change( writer => removeListAttributes( Array.from( evt.return.getChildren() ), writer ) );
+				model.change( writer => removeListAttributes( Array.from( evt.return!.getChildren() as any ), writer ) );
 			}
 		} );
 	}
 }
 
-/**
- * @typedef {Object} module:list/documentlist/documentlistediting~DowncastStrategy
- * @property {'list'|'item'} scope The scope of the downcast (whether it applies to LI or OL/UL).
- * @property {String} attributeName The model attribute name.
- * @property {Function} setAttributeOnDowncast Sets the property on the view element.
- */
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		numberedList: DocumentListCommand;
+		bulletedList: DocumentListCommand;
+		indentList: DocumentListIndentCommand;
+		outdentList: DocumentListIndentCommand;
+		mergeListItemBackward: DocumentListMergeCommand;
+		mergeListItemForward: DocumentListMergeCommand;
+		splitListItemBefore: DocumentListSplitCommand;
+		splitListItemAfter: DocumentListSplitCommand;
+	}
+}
 
-// Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
-//
-// In the example below, there is a correct list structure.
-// Then the middle element is removed so the list structure will become incorrect:
-//
-//		<paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
-//		<paragraph listType="bulleted" listItemId="b" listIndent=1>Item 2</paragraph>   <--- this is removed.
-//		<paragraph listType="bulleted" listItemId="c" listIndent=2>Item 3</paragraph>
-//
-// The list structure after the middle element is removed:
-//
-// 		<paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
-//		<paragraph listType="bulleted" listItemId="c" listIndent=2>Item 3</paragraph>
-//
-// Should become:
-//
-//		<paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
-//		<paragraph listType="bulleted" listItemId="c" listIndent=1>Item 3</paragraph>   <--- note that indent got post-fixed.
-//
-// @param {module:engine/model/model~Model} model The data model.
-// @param {module:engine/model/writer~Writer} writer The writer to do changes with.
-// @param {Array.<String>} attributeNames The list of all model list attributes (including registered strategies).
-// @param {module:list/documentlist/documentlistediting~DocumentListEditing} documentListEditing The document list editing plugin.
-// @returns {Boolean} `true` if any change has been applied, `false` otherwise.
-function modelChangePostFixer( model, writer, attributeNames, documentListEditing ) {
+export interface DowncastStrategy {
+
+	/**
+	 * The scope of the downcast (whether it applies to LI or OL/UL).
+	 */
+	scope: 'list' | 'item';
+
+	/**
+	 * The model attribute name.
+	 */
+	attributeName: string;
+
+	/**
+	 * Sets the property on the view element.
+	 */
+	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
+}
+
+/**
+ * Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
+ *
+ * In the example below, there is a correct list structure.
+ * Then the middle element is removed so the list structure will become incorrect:
+ *
+ * ```xml
+ * <paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
+ * <paragraph listType="bulleted" listItemId="b" listIndent=1>Item 2</paragraph>   <--- this is removed.
+ * <paragraph listType="bulleted" listItemId="c" listIndent=2>Item 3</paragraph>
+ * ```
+ *
+ * The list structure after the middle element is removed:
+ *
+ * ```xml
+ * <paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
+ * <paragraph listType="bulleted" listItemId="c" listIndent=2>Item 3</paragraph>
+ * ```
+ *
+ * Should become:
+ *
+ * ```xml
+ * <paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
+ * <paragraph listType="bulleted" listItemId="c" listIndent=1>Item 3</paragraph>   <--- note that indent got post-fixed.
+ * ```
+ *
+ * @param model The data model.
+ * @param writer The writer to do changes with.
+ * @param attributeNames The list of all model list attributes (including registered strategies).
+ * @param documentListEditing The document list editing plugin.
+ * @returns `true` if any change has been applied, `false` otherwise.
+ */
+function modelChangePostFixer(
+	model: Model,
+	writer: Writer,
+	attributeNames: Array<string>,
+	documentListEditing: DocumentListEditing
+) {
 	const changes = model.document.differ.getChanges();
-	const itemToListHead = new Map();
+	const itemToListHead = new Map<ListElement, ListElement>();
 
 	let applied = false;
 
 	for ( const entry of changes ) {
 		if ( entry.type == 'insert' && entry.name != '$text' ) {
-			const item = entry.position.nodeAfter;
+			const item = entry.position.nodeAfter!;
 
 			// Remove attributes in case of renamed element.
 			if ( !model.schema.checkAttribute( item, 'listItemId' ) ) {
@@ -566,7 +603,7 @@ function modelChangePostFixer( model, writer, attributeNames, documentListEditin
 			}
 
 			// Check if there is no nested list.
-			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item ) ) {
+			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item as Element ) ) {
 				if ( isListItemBlock( innerItem ) ) {
 					findAndAddListHeadToMap( previousPosition, itemToListHead );
 				}
@@ -587,26 +624,10 @@ function modelChangePostFixer( model, writer, attributeNames, documentListEditin
 	}
 
 	// Make sure that IDs are not shared by split list.
-	const seenIds = new Set();
+	const seenIds = new Set<string>();
 
 	for ( const listHead of itemToListHead.values() ) {
-		/**
-		 * Event fired on changes detected on the model list element to verify if the view representation of a list element
-		 * is representing those attributes.
-		 *
-		 * It allows triggering a re-wrapping of a list item.
-		 *
-		 * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
-		 *
-		 * @protected
-		 * @event module:list/documentlist/documentlistediting~DocumentListEditing#event:postFixer
-		 * @param {module:engine/model/element~Element} listHead The head element of a list.
-		 * @param {module:engine/model/writer~Writer} writer The writer to do changes with.
-		 * @param {Set.<String>} seenIds The set of already known IDs.
-		 * @param {Object} modelAttributes
-		 * @returns {Boolean} If a post-fixer made a change of the model tree, it should return `true`.
-		 */
-		applied = documentListEditing.fire( 'postFixer', {
+		applied = documentListEditing.fire<DocumentListEditingPostFixerEvent>( 'postFixer', {
 			listNodes: new ListBlocksIterable( listHead ),
 			listHead,
 			writer,
@@ -617,26 +638,31 @@ function modelChangePostFixer( model, writer, attributeNames, documentListEditin
 	return applied;
 }
 
-// A fixer for pasted content that includes list items.
-//
-// It fixes indentation of pasted list items so the pasted items match correctly to the context they are pasted into.
-//
-// Example:
-//
-//		<paragraph listType="bulleted" listItemId="a" listIndent=0>A</paragraph>
-//		<paragraph listType="bulleted" listItemId="b" listIndent=1>B^</paragraph>
-//		// At ^ paste:  <paragraph listType="bulleted" listItemId="x" listIndent=4>X</paragraph>
-//		//              <paragraph listType="bulleted" listItemId="y" listIndent=5>Y</paragraph>
-//		<paragraph listType="bulleted" listItemId="c" listIndent=2>C</paragraph>
-//
-// Should become:
-//
-//		<paragraph listType="bulleted" listItemId="a" listIndent=0>A</paragraph>
-//		<paragraph listType="bulleted" listItemId="b" listIndent=1>BX</paragraph>
-//		<paragraph listType="bulleted" listItemId="y" listIndent=2>Y/paragraph>
-//		<paragraph listType="bulleted" listItemId="c" listIndent=2>C</paragraph>
-//
-function createModelIndentPasteFixer( model ) {
+/**
+ * A fixer for pasted content that includes list items.
+ *
+ * It fixes indentation of pasted list items so the pasted items match correctly to the context they are pasted into.
+ *
+ * Example:
+ *
+ * ```xml
+ * <paragraph listType="bulleted" listItemId="a" listIndent=0>A</paragraph>
+ * <paragraph listType="bulleted" listItemId="b" listIndent=1>B^</paragraph>
+ * // At ^ paste:  <paragraph listType="bulleted" listItemId="x" listIndent=4>X</paragraph>
+ * //              <paragraph listType="bulleted" listItemId="y" listIndent=5>Y</paragraph>
+ * <paragraph listType="bulleted" listItemId="c" listIndent=2>C</paragraph>
+ * ```
+ *
+ * Should become:
+ *
+ * ```xml
+ * <paragraph listType="bulleted" listItemId="a" listIndent=0>A</paragraph>
+ * <paragraph listType="bulleted" listItemId="b" listIndent=1>BX</paragraph>
+ * <paragraph listType="bulleted" listItemId="y" listIndent=2>Y/paragraph>
+ * <paragraph listType="bulleted" listItemId="c" listIndent=2>C</paragraph>
+ * ```
+ */
+function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertContentEvent> {
 	return ( evt, [ content, selectable ] ) => {
 		// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
 		// elements before it and there is no need to fix indents, because even if we insert that content into a list,
@@ -658,7 +684,7 @@ function createModelIndentPasteFixer( model ) {
 		}
 
 		// Get a reference list item. Inserted list items will be fixed according to that item.
-		const pos = selection.getFirstPosition();
+		const pos = selection.getFirstPosition()!;
 		let refItem = null;
 
 		if ( isListItemBlock( pos.parent ) ) {
@@ -691,14 +717,12 @@ function createModelIndentPasteFixer( model ) {
 	};
 }
 
-// Decides whether the merge should be accompanied by the model's `deleteContent()`, for instance, to get rid of the inline
-// content in the selection or take advantage of the heuristics in `deleteContent()` that helps convert lists into paragraphs
-// in certain cases.
-//
-// @param {module:engine/model/model~Model} model
-// @param {'backward'|'forward'} direction
-// @returns {Boolean}
-function shouldMergeOnBlocksContentLevel( model, direction ) {
+/**
+ * Decides whether the merge should be accompanied by the model's `deleteContent()`, for instance, to get rid of the inline
+ * content in the selection or take advantage of the heuristics in `deleteContent()` that helps convert lists into paragraphs
+ * in certain cases.
+ */
+function shouldMergeOnBlocksContentLevel( model: Model, direction: 'backward' | 'forward' ) {
 	const selection = model.document.selection;
 
 	if ( !selection.isCollapsed ) {
@@ -709,17 +733,65 @@ function shouldMergeOnBlocksContentLevel( model, direction ) {
 		return true;
 	}
 
-	const firstPosition = selection.getFirstPosition();
+	const firstPosition = selection.getFirstPosition()!;
 	const positionParent = firstPosition.parent;
-	const previousSibling = positionParent.previousSibling;
+	const previousSibling = positionParent.previousSibling!;
 
 	if ( model.schema.isObject( previousSibling ) ) {
 		return false;
 	}
 
-	if ( previousSibling.isEmpty ) {
+	if ( ( previousSibling as any ).isEmpty ) {
 		return true;
 	}
 
-	return isSingleListItem( [ positionParent, previousSibling ] );
+	return isSingleListItem( [ positionParent as any, previousSibling ] );
 }
+
+/**
+ * Event fired on changes detected on the model list element to verify if the view representation of a list element
+ * is representing those attributes.
+ *
+ * It allows triggering a re-wrapping of a list item.
+ *
+ * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
+ *
+ * @internal
+ * @eventName postFixer
+ * @param listHead The head element of a list.
+ * @param writer The writer to do changes with.
+ * @param seenIds The set of already known IDs.
+ * @returns If a post-fixer made a change of the model tree, it should return `true`.
+ */
+export type DocumentListEditingPostFixerEvent = {
+	name: 'postFixer';
+	args: [ {
+		listNodes: ListBlocksIterable;
+		listHead: Element;
+		writer: Writer;
+		seenIds: Set<string>;
+	} ];
+	return: boolean;
+};
+
+/**
+ * Event fired on changes detected on the model list element to verify if the view representation of a list element
+ * is representing those attributes.
+ *
+ * It allows triggering a re-wrapping of a list item.
+ *
+ * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
+ *
+ * @internal
+ * @eventName checkAttributes
+ * @param {module:engine/view/element~Element} viewElement
+ * @param {Object} modelAttributes
+ */
+export type DocumentListEditingCheckAttributesEvent = {
+	name: 'checkAttributes' | 'checkAttributes:list' | 'checkAttributes:item';
+	args: [ {
+		viewElement: ViewElement & { id?: string };
+		modelAttributes: Record<string, any>;
+	} ];
+	return: boolean;
+};

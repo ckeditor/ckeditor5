@@ -10,6 +10,7 @@
 import ViewConsumable from './viewconsumable';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
+import type ModelItem from '../model/item';
 import type ModelElement from '../model/element';
 import type ViewElement from '../view/element';
 import type ViewText from '../view/text';
@@ -125,7 +126,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 	private _splitParts: Map<ModelElement, Array<ModelElement>>;
 	private _cursorParents: Map<ModelElement, ModelElement | ModelDocumentFragment>;
 	private _modelCursor: ModelPosition | null;
-	private _emptyElementsToKeep: Set<ModelElement>;
+	private _emptyElementsToKeep: Set<ModelItem>;
 
 	/**
 	 * Creates an upcast dispatcher that operates using the passed API.
@@ -517,7 +518,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 	 *
 	 * @private
 	 */
-	private _keepEmptyElement( element: ModelElement ): void {
+	private _keepEmptyElement( element: ModelItem ): void {
 		this._emptyElementsToKeep.add( element );
 	}
 
@@ -692,7 +693,7 @@ export interface UpcastConversionApi {
 		cursorParent?: ModelElement | ModelDocumentFragment;
 	} | null;
 	getSplitParts( modelElement: ModelElement ): Array<ModelElement>;
-	keepEmptyElement( modelElement: ModelElement ): void;
+	keepEmptyElement( modelElement: ModelItem ): void;
 }
 
 /**

@@ -3,6 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type { UpcastElementEvent } from 'ckeditor5/src/engine';
+import type { GetCallback } from 'ckeditor5/src/utils';
+
+import type { AttributeStrategy } from './documentlistpropertiesediting';
+
 /**
  * @module list/documentlistproperties/converters
  */
@@ -12,11 +17,10 @@
  * In `style`, it searches for the `list-style-type` definition.
  * If not found, the `"default"` value will be used.
  *
- * @protected
- * @param {module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy} strategy
- * @returns {Function}
+ * @internal
+ * @param strategy
  */
-export function listPropertiesUpcastConverter( strategy ) {
+export function listPropertiesUpcastConverter( strategy: AttributeStrategy ): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
 		const { writer, schema, consumable } = conversionApi;
 
@@ -32,7 +36,7 @@ export function listPropertiesUpcastConverter( strategy ) {
 
 		let applied = false;
 
-		for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
+		for ( const item of data.modelRange!.getItems( { shallow: true } ) ) {
 			if ( !schema.checkAttribute( item, strategy.attributeName ) ) {
 				continue;
 			}

@@ -677,17 +677,17 @@ export default class Element extends Node {
 	 * @param {String} value Attribute value.
 	 * @fires module:engine/view/node~Node#change
 	 */
-	public _setAttribute( key: string, value: string ): void {
-		value = String( value );
+	public _setAttribute( key: string, value: unknown ): void {
+		const stringValue = String( value );
 
 		this._fireChange( 'attributes', this );
 
 		if ( key == 'class' ) {
-			parseClasses( this._classes, value );
+			parseClasses( this._classes, stringValue );
 		} else if ( key == 'style' ) {
-			this._styles.setTo( value );
+			this._styles.setTo( stringValue );
 		} else {
-			this._attrs.set( key, value );
+			this._attrs.set( key, stringValue );
 		}
 	}
 

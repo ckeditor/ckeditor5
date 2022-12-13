@@ -7,7 +7,7 @@
  * @module list/documentlistproperties/documentliststylecommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 import {
 	expandListBlocksToCompleteList,
@@ -24,37 +24,39 @@ import { getListTypeFromListStyleType } from './utils/style';
  */
 export default class DocumentListStyleCommand extends Command {
 	/**
+	 * @inheritdoc
+	 */
+	declare public value: string | null;
+
+	/**
+	 * The default type of the list style.
+	 */
+	private _defaultType: string;
+
+	/**
+	 * The list of supported style types by this command.
+	 */
+	private _supportedTypes: Array<string> | undefined;
+
+	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {String} defaultType The list type that will be used by default if the value was not specified during
+	 * @param editor The editor instance.
+	 * @param defaultType The list type that will be used by default if the value was not specified during
 	 * the command execution.
-	 * @param {Array.<String>} [supportedTypes] The list of supported style types by this command.
+	 * @param supportedTypes The list of supported style types by this command.
 	 */
-	constructor( editor, defaultType, supportedTypes ) {
+	constructor( editor: Editor, defaultType: string, supportedTypes?: Array<string> ) {
 		super( editor );
 
-		/**
-		 * The default type of the list style.
-		 *
-		 * @protected
-		 * @member {String}
-		 */
 		this._defaultType = defaultType;
-
-		/**
-		 * The list of supported style types by this command.
-		 *
-		 * @private
-		 * @member {Array.<String>|undefined}
-		 */
 		this._supportedTypes = supportedTypes;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.value = this._getValue();
 		this.isEnabled = this._checkEnabled();
 	}
@@ -63,11 +65,10 @@ export default class DocumentListStyleCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @fires execute
-	 * @param {Object} options
-	 * @param {String|null} [options.type] The type of the list style, e.g. `'disc'` or `'square'`. If `null` is specified, the default
+	 * @param options.type The type of the list style, e.g. `'disc'` or `'square'`. If `null` is specified, the default
 	 * style will be applied.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { type?: string | null } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 
@@ -91,11 +92,8 @@ export default class DocumentListStyleCommand extends Command {
 
 	/**
 	 * Checks if the given style type is supported by this plugin.
-	 *
-	 * @param {String} value
-	 * @returns {Boolean}
 	 */
-	isStyleTypeSupported( value ) {
+	public isStyleTypeSupported( value: string ): boolean {
 		if ( !this._supportedTypes ) {
 			return true;
 		}
@@ -106,10 +104,9 @@ export default class DocumentListStyleCommand extends Command {
 	/**
 	 * Checks the command's {@link #value}.
 	 *
-	 * @private
-	 * @returns {String|null} The current value.
+	 * @returns The current value.
 	 */
-	_getValue() {
+	private _getValue() {
 		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		if ( isListItemBlock( listItem ) ) {
@@ -122,14 +119,13 @@ export default class DocumentListStyleCommand extends Command {
 	/**
 	 * Checks whether the command can be enabled in the current context.
 	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
+	 * @returns Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled() {
 		const editor = this.editor;
 
-		const numberedList = editor.commands.get( 'numberedList' );
-		const bulletedList = editor.commands.get( 'bulletedList' );
+		const numberedList = editor.commands.get( 'numberedList' )!;
+		const bulletedList = editor.commands.get( 'bulletedList' )!;
 
 		return numberedList.isEnabled || bulletedList.isEnabled;
 	}
@@ -137,11 +133,9 @@ export default class DocumentListStyleCommand extends Command {
 	/**
 	 * Check if the provided list style is valid. Also change the selection to a list if it's not set yet.
 	 *
-	 * @private
-	 * @param {Object} options
-	 * @param {String|null} [options.type] The type of the list style. If `null` is specified, the function does nothing.
+	 * @param options.type The type of the list style. If `null` is specified, the function does nothing.
 	*/
-	_tryToConvertItemsToList( options ) {
+	private _tryToConvertItemsToList( options: { type?: string | null } ) {
 		if ( !options.type ) {
 			return;
 		}
@@ -153,8 +147,8 @@ export default class DocumentListStyleCommand extends Command {
 		}
 
 		const editor = this.editor;
-		const commandName = listType + 'List';
-		const command = editor.commands.get( commandName );
+		const commandName = `${ listType }List` as const;
+		const command = editor.commands.get( commandName )!;
 
 		if ( !command.value ) {
 			editor.execute( commandName );

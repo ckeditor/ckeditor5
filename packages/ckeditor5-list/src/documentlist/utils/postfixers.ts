@@ -7,18 +7,22 @@
  * @module list/documentlist/utils/postfixers
  */
 
-import { iterateSiblingListBlocks } from './listwalker';
-import { getListItemBlocks, isListItemBlock, ListItemUid } from './model';
+import type { Position, Writer } from 'ckeditor5/src/engine';
+import { iterateSiblingListBlocks, type ListIteratorValue } from './listwalker';
+import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } from './model';
 
 /**
  * Based on the provided positions looks for the list head and stores it in the provided map.
  *
- * @protected
- * @param {module:engine/model/position~Position} position The search starting position.
- * @param {Map.<module:engine/model/element~Element,module:engine/model/element~Element>} itemToListHead The map from list item element
+ * @internal
+ * @param position The search starting position.
+ * @param itemToListHead The map from list item element
  * to the list head element.
  */
-export function findAndAddListHeadToMap( position, itemToListHead ) {
+export function findAndAddListHeadToMap(
+	position: Position,
+	itemToListHead: Map<ListElement, ListElement>
+): void {
 	const previousNode = position.nodeBefore;
 
 	if ( !isListItemBlock( previousNode ) ) {
@@ -51,12 +55,15 @@ export function findAndAddListHeadToMap( position, itemToListHead ) {
 /**
  * Scans the list starting from the given list head element and fixes items' indentation.
  *
- * @protected
- * @param {Iterable.<module:list/documentlist/utils/listwalker~ListIteratorValue>} listNodes The iterable of list nodes.
- * @param {module:engine/model/writer~Writer} writer The model writer.
- * @returns {Boolean} Whether the model was modified.
+ * @internal
+ * @param listNodes The iterable of list nodes.
+ * @param writer The model writer.
+ * @returns Whether the model was modified.
  */
-export function fixListIndents( listNodes, writer ) {
+export function fixListIndents(
+	listNodes: Iterable<ListIteratorValue>,
+	writer: Writer
+): boolean {
 	let maxIndent = 0; // Guards local sublist max indents that need fixing.
 	let prevIndent = -1; // Previous item indent.
 	let fixBy = null;
@@ -100,13 +107,17 @@ export function fixListIndents( listNodes, writer ) {
 /**
  * Scans the list starting from the given list head element and fixes items' types.
  *
- * @protected
- * @param {Iterable.<module:list/documentlist/utils/listwalker~ListIteratorValue>} listNodes The iterable of list nodes.
- * @param {Set.<String>} seenIds The set of already known IDs.
- * @param {module:engine/model/writer~Writer} writer The model writer.
- * @returns {Boolean} Whether the model was modified.
+ * @internal
+ * @param listNodes The iterable of list nodes.
+ * @param seenIds The set of already known IDs.
+ * @param writer The model writer.
+ * @returns Whether the model was modified.
  */
-export function fixListItemIds( listNodes, seenIds, writer ) {
+export function fixListItemIds(
+	listNodes: Iterable<ListIteratorValue>,
+	seenIds: Set<string>,
+	writer: Writer
+): boolean {
 	const visited = new Set();
 	let applied = false;
 

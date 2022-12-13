@@ -7,7 +7,9 @@
  * @module list/documentlist/documentlistmergecommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
+import type { DocumentSelection, Element, Node, Selection } from 'ckeditor5/src/engine';
+
 import {
 	getNestedListBlocks,
 	indentBlocks,
@@ -16,7 +18,8 @@ import {
 	mergeListItemBefore,
 	isSingleListItem,
 	getSelectedBlockObject,
-	isListItemBlock
+	isListItemBlock,
+	type ListElement
 } from './utils/model';
 import ListWalker from './utils/listwalker';
 
@@ -27,28 +30,26 @@ import ListWalker from './utils/listwalker';
  */
 export default class DocumentListMergeCommand extends Command {
 	/**
+	 * Whether list item should be merged before or after the selected block.
+	 */
+	private readonly _direction: 'forward' | 'backward';
+
+	/**
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {'backward'|'forward'} direction Whether list item should be merged before or after the selected block.
 	 */
-	constructor( editor, direction ) {
+	constructor( editor: Editor, direction: 'forward' | 'backward' ) {
 		super( editor );
 
-		/**
-		 * Whether list item should be merged before or after the selected block.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {'backward'|'forward'}
-		 */
 		this._direction = direction;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.isEnabled = this._checkEnabled();
 	}
 
@@ -57,15 +58,17 @@ export default class DocumentListMergeCommand extends Command {
 	 *
 	 * @fires execute
 	 * @fires afterExecute
-	 * @param {Object} [options] Command options.
-	 * @param {String|Boolean} [options.shouldMergeOnBlocksContentLevel=false] When set `true`, merging will be performed together
+	 * @param options Command options.
+	 * @param options.shouldMergeOnBlocksContentLevel When set `true`, merging will be performed together
 	 * with {@link module:engine/model/model~Model#deleteContent} to get rid of the inline content in the selection or take advantage
 	 * of the heuristics in `deleteContent()` that helps convert lists into paragraphs in certain cases.
 	 */
-	execute( { shouldMergeOnBlocksContentLevel = false } = {} ) {
+	public override execute(
+		{ shouldMergeOnBlocksContentLevel = false }: { shouldMergeOnBlocksContentLevel?: boolean } = {}
+	): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const changedBlocks = [];
+		const changedBlocks: Array<Element> = [];
 
 		model.change( writer => {
 			const { firstElement, lastElement } = this._getMergeSubjectElements( selection, shouldMergeOnBlocksContentLevel );
@@ -86,7 +89,7 @@ export default class DocumentListMergeCommand extends Command {
 			}
 
 			if ( shouldMergeOnBlocksContentLevel ) {
-				let sel = selection;
+				let sel: Selection | DocumentSelection = selection;
 
 				if ( selection.isCollapsed ) {
 					sel = writer.createSelection( writer.createRange(
@@ -100,12 +103,12 @@ export default class DocumentListMergeCommand extends Command {
 
 				// Get the last "touched" element after deleteContent call (can't use the lastElement because
 				// it could get merged into the firstElement while deleting content).
-				const lastElementAfterDelete = sel.getLastPosition().parent;
+				const lastElementAfterDelete = sel.getLastPosition()!.parent;
 
 				// Check if the element after it was in the same list item and adjust it if needed.
 				const nextSibling = lastElementAfterDelete.nextSibling;
 
-				changedBlocks.push( lastElementAfterDelete );
+				changedBlocks.push( lastElementAfterDelete as any );
 
 				if ( nextSibling && nextSibling !== lastElement && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
 					changedBlocks.push( ...mergeListItemBefore( nextSibling, lastElementAfterDelete, writer ) );
@@ -121,35 +124,24 @@ export default class DocumentListMergeCommand extends Command {
 	/**
 	 * Fires the `afterExecute` event.
 	 *
-	 * @private
-	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
+	 * @param changedBlocks The changed list elements.
 	 */
-	_fireAfterExecute( changedBlocks ) {
-		/**
-		 * Event fired by the {@link #execute} method.
-		 *
-		 * It allows to execute an action after executing the {@link ~DocumentListMergeCommand#execute} method,
-		 * for example adjusting attributes of changed list items.
-		 *
-		 * @protected
-		 * @event afterExecute
-		 */
-		this.fire( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
+	private _fireAfterExecute( changedBlocks: Array<Element> ) {
+		this.fire<DocumentListMergeCommandAfterExecuteEvent>( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
 	/**
 	 * Checks whether the command can be enabled in the current context.
 	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
+	 * @returns Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled(): boolean {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const selectedBlockObject = getSelectedBlockObject( model );
 
 		if ( selection.isCollapsed || selectedBlockObject ) {
-			const positionParent = selectedBlockObject || selection.getFirstPosition().parent;
+			const positionParent = selectedBlockObject || selection.getFirstPosition()!.parent;
 
 			if ( !isListItemBlock( positionParent ) ) {
 				return false;
@@ -167,8 +159,8 @@ export default class DocumentListMergeCommand extends Command {
 				return false;
 			}
 		} else {
-			const lastPosition = selection.getLastPosition();
-			const firstPosition = selection.getFirstPosition();
+			const lastPosition = selection.getLastPosition()!;
+			const firstPosition = selection.getFirstPosition()!;
 
 			// If deleting within a single block of a list item, there's no need to merge anything.
 			// The default delete should be executed instead.
@@ -195,13 +187,16 @@ export default class DocumentListMergeCommand extends Command {
 	 * @returns {module:engine/model/element~Element} elements.firstElement
 	 * @returns {module:engine/model/element~Element} elements.lastElement
 	 */
-	_getMergeSubjectElements( selection, shouldMergeOnBlocksContentLevel ) {
+	private _getMergeSubjectElements(
+		selection: Selection | DocumentSelection,
+		shouldMergeOnBlocksContentLevel: boolean
+	) {
 		const model = this.editor.model;
 		const selectedBlockObject = getSelectedBlockObject( model );
 		let firstElement, lastElement;
 
 		if ( selection.isCollapsed || selectedBlockObject ) {
-			const positionParent = selectedBlockObject || selection.getFirstPosition().parent;
+			const positionParent = selectedBlockObject || selection.getFirstPosition()!.parent as Node;
 			const isFirstBlock = isFirstBlockOfListItem( positionParent );
 
 			if ( this._direction == 'backward' ) {
@@ -226,10 +221,27 @@ export default class DocumentListMergeCommand extends Command {
 				lastElement = positionParent.nextSibling;
 			}
 		} else {
-			firstElement = selection.getFirstPosition().parent;
-			lastElement = selection.getLastPosition().parent;
+			firstElement = selection.getFirstPosition()!.parent;
+			lastElement = selection.getLastPosition()!.parent;
 		}
 
-		return { firstElement, lastElement };
+		return {
+			firstElement: firstElement as ListElement,
+			lastElement: lastElement as ListElement
+		};
 	}
 }
+
+/**
+ * Event fired by the {@link #execute} method.
+ *
+ * It allows to execute an action after executing the {@link ~DocumentListCommand#execute} method,
+ * for example adjusting attributes of changed list items.
+ *
+ * @internal
+ * @eventName afterExecute
+ */
+export type DocumentListMergeCommandAfterExecuteEvent = {
+	name: 'afterExecute';
+	args: [ changedBlocks: Array<Element> ];
+};

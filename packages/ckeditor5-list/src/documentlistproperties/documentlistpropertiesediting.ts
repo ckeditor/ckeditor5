@@ -7,9 +7,22 @@
  * @module list/documentlistproperties/documentlistpropertiesediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
 
-import DocumentListEditing from '../documentlist/documentlistediting';
+import type {
+	Consumables,
+	DowncastWriter,
+	Element,
+	Item,
+	UpcastElementEvent,
+	ViewElement
+} from 'ckeditor5/src/engine';
+
+import DocumentListEditing, {
+	type DocumentListEditingCheckAttributesEvent,
+	type DocumentListEditingPostFixerEvent
+} from '../documentlist/documentlistediting';
+
 import DocumentListStartCommand from './documentliststartcommand';
 import DocumentListStyleCommand from './documentliststylecommand';
 import DocumentListReversedCommand from './documentlistreversedcommand';
@@ -22,13 +35,16 @@ import {
 } from './utils/style';
 import DocumentListPropertiesUtils from './documentlistpropertiesutils';
 
+import type { DocumentListIndentCommandAfterExecuteEvent } from '../documentlist/documentlistindentcommand';
+import type { ListPropertiesConfig } from '../listconfig';
+
 const DEFAULT_LIST_TYPE = 'default';
 
 /**
  * The document list properties engine feature.
  *
  * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they are enabled in the configuration.
- * Read more in {@link module:list/listproperties~ListPropertiesConfig}.
+ * Read more in {@link module:list/listconfig~ListPropertiesConfig}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -36,21 +52,21 @@ export default class DocumentListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ DocumentListEditing, DocumentListPropertiesUtils ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'DocumentListPropertiesEditing' {
 		return 'DocumentListPropertiesEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( 'list', {
@@ -65,12 +81,12 @@ export default class DocumentListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const documentListEditing = editor.plugins.get( DocumentListEditing );
 
-		const enabledProperties = editor.config.get( 'list.properties' );
+		const enabledProperties = editor.config.get( 'list.properties' )!;
 		const strategies = createAttributeStrategies( enabledProperties );
 
 		for ( const strategy of strategies ) {
@@ -94,39 +110,46 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		// Set up conversion.
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			for ( const strategy of strategies ) {
-				dispatcher.on( 'element:ol', listPropertiesUpcastConverter( strategy ) );
-				dispatcher.on( 'element:ul', listPropertiesUpcastConverter( strategy ) );
+				dispatcher.on<UpcastElementEvent>( 'element:ol', listPropertiesUpcastConverter( strategy ) );
+				dispatcher.on<UpcastElementEvent>( 'element:ul', listPropertiesUpcastConverter( strategy ) );
 			}
 		} );
 
 		// Verify if the list view element (ul or ol) requires refreshing.
-		documentListEditing.on( 'checkAttributes:list', ( evt, { viewElement, modelAttributes } ) => {
-			for ( const strategy of strategies ) {
-				if ( strategy.getAttributeOnUpcast( viewElement ) != modelAttributes[ strategy.attributeName ] ) {
-					evt.return = true;
-					evt.stop();
-				}
-			}
-		} );
-
-		// Reset list properties after indenting list items.
-		this.listenTo( editor.commands.get( 'indentList' ), 'afterExecute', ( evt, changedBlocks ) => {
-			model.change( writer => {
-				for ( const node of changedBlocks ) {
-					for ( const strategy of strategies ) {
-						if ( strategy.appliesToListItem( node ) ) {
-							// Just reset the attribute.
-							// If there is a previous indented list that this node should be merged into,
-							// the postfixer will unify all the attributes of both sub-lists.
-							writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
-						}
+		documentListEditing.on<DocumentListEditingCheckAttributesEvent>(
+			'checkAttributes:list',
+			( evt, { viewElement, modelAttributes } ) => {
+				for ( const strategy of strategies ) {
+					if ( strategy.getAttributeOnUpcast( viewElement ) != modelAttributes[ strategy.attributeName ] ) {
+						evt.return = true;
+						evt.stop();
 					}
 				}
-			} );
-		} );
+			}
+		);
+
+		// Reset list properties after indenting list items.
+		this.listenTo<DocumentListIndentCommandAfterExecuteEvent>(
+			editor.commands.get( 'indentList' )!,
+			'afterExecute',
+			( evt, changedBlocks ) => {
+				model.change( writer => {
+					for ( const node of changedBlocks ) {
+						for ( const strategy of strategies ) {
+							if ( strategy.appliesToListItem( node ) ) {
+								// Just reset the attribute.
+								// If there is a previous indented list that this node should be merged into,
+								// the postfixer will unify all the attributes of both sub-lists.
+								writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
+							}
+						}
+					}
+				} );
+			}
+		);
 
 		// Add or remove list properties attributes depending on the list type.
-		documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
+		documentListEditing.on<DocumentListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
 			for ( const { node } of listNodes ) {
 				for ( const strategy of strategies ) {
 					// Check if attribute is valid.
@@ -211,29 +234,56 @@ export default class DocumentListPropertiesEditing extends Plugin {
 /**
  * Strategy for dealing with `listItem` attributes supported by this plugin.
  *
- * @typedef {Object} module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy
- * @protected
- * @property {String} attributeName The model attribute name.
- * @property {*} defaultValue The model attribute default value.
- * @property {Object} viewConsumables The view consumable as expected by
- * {@link module:engine/conversion/viewconsumable~ViewConsumable#consume `ViewConsumable`}.
- * @property {Function} addCommand Registers an editor command.
- * @property {Function} appliesToListItem Verifies whether the strategy is applicable for the specified model element.
- * @property {Function} hasValidAttribute Verifies whether the model attribute value is valid.
- * @property {Function} setAttributeOnDowncast Sets the property on the view element.
- * @property {Function} getAttributeOnUpcast Retrieves the property value from the view element.
+ * @internal
  */
+export interface AttributeStrategy {
 
-// Creates an array of strategies for dealing with enabled listItem attributes.
-//
-// @param {Object} enabledProperties
-// @param {Boolean|Object} enabledProperties.styles
-// @param {Boolean} [enabledProperties.styles.useAttribute]
-// @param {Boolean} enabledProperties.reversed
-// @param {Boolean} enabledProperties.startIndex
-// @returns {Array.<module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy>}
-function createAttributeStrategies( enabledProperties ) {
-	const strategies = [];
+	/**
+	 * The model attribute name.
+	 */
+	attributeName: string;
+
+	/**
+	 * The model attribute default value.
+	 */
+	defaultValue: unknown;
+
+	/**
+	 * The view consumable as expected by {@link module:engine/conversion/viewconsumable~ViewConsumable#consume `ViewConsumable`}.
+	 */
+	viewConsumables: Consumables;
+
+	/**
+	 * Registers an editor command.
+	 */
+	addCommand( editor: Editor ): void;
+
+	/**
+	 * Verifies whether the strategy is applicable for the specified model element.
+	 */
+	appliesToListItem( element: Item ): boolean;
+
+	/**
+	 * Verifies whether the model attribute value is valid.
+	 */
+	hasValidAttribute( element: Element ): boolean;
+
+	/**
+	 * Sets the property on the view element.
+	 */
+	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
+
+	/**
+	 * Retrieves the property value from the view element.
+	 */
+	getAttributeOnUpcast( element: ViewElement ): unknown;
+}
+
+/**
+ * Creates an array of strategies for dealing with enabled listItem attributes.
+ */
+function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
+	const strategies: Array<AttributeStrategy> = [];
 
 	if ( enabledProperties.styles ) {
 		const useAttribute = typeof enabledProperties.styles == 'object' && enabledProperties.styles.useAttribute;
@@ -268,13 +318,13 @@ function createAttributeStrategies( enabledProperties ) {
 					return true;
 				}
 
-				return getListTypeFromListStyleType( value ) == item.getAttribute( 'listType' );
+				return getListTypeFromListStyleType( value as string ) == item.getAttribute( 'listType' );
 			},
 
 			setAttributeOnDowncast( writer, listStyle, element ) {
 				if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
 					if ( useAttribute ) {
-						const value = getTypeAttributeFromListStyleType( listStyle );
+						const value = getTypeAttributeFromListStyleType( listStyle as string );
 
 						if ( value ) {
 							writer.setAttribute( 'type', value, element );
@@ -282,7 +332,7 @@ function createAttributeStrategies( enabledProperties ) {
 							return;
 						}
 					} else {
-						writer.setStyle( 'list-style-type', listStyle, element );
+						writer.setStyle( 'list-style-type', listStyle as string, element );
 
 						return;
 					}
@@ -361,7 +411,7 @@ function createAttributeStrategies( enabledProperties ) {
 			},
 
 			setAttributeOnDowncast( writer, listStart, element ) {
-				if ( listStart == 0 || listStart > 1 ) {
+				if ( listStart == 0 || ( listStart as number ) > 1 ) {
 					writer.setAttribute( 'start', listStart, element );
 				} else {
 					writer.removeAttribute( 'start', element );
@@ -369,7 +419,7 @@ function createAttributeStrategies( enabledProperties ) {
 			},
 
 			getAttributeOnUpcast( listParent ) {
-				const startAttributeValue = listParent.getAttribute( 'start' );
+				const startAttributeValue: any = listParent.getAttribute( 'start' );
 
 				return startAttributeValue >= 0 ? startAttributeValue : 1;
 			}

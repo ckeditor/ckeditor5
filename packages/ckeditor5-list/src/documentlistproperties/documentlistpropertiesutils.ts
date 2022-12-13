@@ -24,36 +24,28 @@ export default class DocumentListPropertiesUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'DocumentListPropertiesUtils' {
 		return 'DocumentListPropertiesUtils';
 	}
 
 	/**
 	 * Gets all the style types supported by given list type.
-	 *
-	 * @returns {Array.<String>}
 	 */
-	getAllSupportedStyleTypes() {
+	public getAllSupportedStyleTypes(): Array<string> {
 		return getAllSupportedStyleTypes();
 	}
 
 	/**
 	 * Checks whether the given list-style-type is supported by numbered or bulleted list.
-	 *
-	 * @param {String} listStyleType
-	 * @returns {'bulleted'|'numbered'|null}
 	 */
-	getListTypeFromListStyleType( listStyleType ) {
+	public getListTypeFromListStyleType( listStyleType: string ): 'bulleted' | 'numbered' | null {
 		return getListTypeFromListStyleType( listStyleType );
 	}
 
 	/**
 	 * Converts `type` attribute of `<ul>` or `<ol>` elements to `list-style-type` equivalent.
-	 *
-	 * @param {String} value
-	 * @returns {String|null}
 	 */
-	getListStyleTypeFromTypeAttribute( value ) {
+	public getListStyleTypeFromTypeAttribute( value: string ): string | null {
 		return getListStyleTypeFromTypeAttribute( value );
 	}
 
@@ -63,7 +55,7 @@ export default class DocumentListPropertiesUtils extends Plugin {
 	 * @param {String} value
 	 * @returns {String|null}
 	 */
-	getTypeAttributeFromListStyleType( value ) {
+	public getTypeAttributeFromListStyleType( value: string ): string | null {
 		return getTypeAttributeFromListStyleType( value );
 	}
 }

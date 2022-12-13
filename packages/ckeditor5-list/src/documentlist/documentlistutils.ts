@@ -7,6 +7,9 @@
  * @module list/documentlist/documentlistutils
  */
 
+import type { Element, Node } from 'ckeditor5/src/engine';
+import type { ArrayOrItem } from 'ckeditor5/src/utils';
+
 import { Plugin } from 'ckeditor5/src/core';
 import { expandListBlocksToCompleteList, isFirstBlockOfListItem, isListItemBlock } from './utils/model';
 
@@ -19,7 +22,7 @@ export default class DocumentListUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'DocumentListUtils' {
 		return 'DocumentListUtils';
 	}
 
@@ -29,7 +32,7 @@ export default class DocumentListUtils extends Plugin {
 	 * @param {module:engine/model/element~Element|Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
 	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
-	expandListBlocksToCompleteList( blocks ) {
+	public expandListBlocksToCompleteList( blocks: ArrayOrItem<Element> ): Array<Element> {
 		return expandListBlocksToCompleteList( blocks );
 	}
 
@@ -39,7 +42,7 @@ export default class DocumentListUtils extends Plugin {
 	 * @param {module:engine/model/element~Element} listBlock The list block element.
 	 * @returns {Boolean}
 	 */
-	isFirstBlockOfListItem( listBlock ) {
+	public isFirstBlockOfListItem( listBlock: Element ): boolean {
 		return isFirstBlockOfListItem( listBlock );
 	}
 
@@ -49,7 +52,7 @@ export default class DocumentListUtils extends Plugin {
 	 * @param {module:engine/model/node~Node} node A model node.
 	 * @returns {Boolean}
 	 */
-	isListItemBlock( node ) {
+	public isListItemBlock( node: Node ): boolean {
 		return isListItemBlock( node );
 	}
 }

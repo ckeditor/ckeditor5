@@ -7,7 +7,9 @@
  * @module list/documentlist/documentlistindentcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
+import type { DocumentSelection, Element } from 'ckeditor5/src/engine';
+
 import {
 	expandListBlocksToCompleteItems,
 	indentBlocks,
@@ -16,40 +18,37 @@ import {
 	isSingleListItem,
 	outdentBlocksWithMerge,
 	sortBlocks,
-	splitListItemBefore
+	splitListItemBefore,
+	type ListElement
 } from './utils/model';
 import ListWalker from './utils/listwalker';
 
 /**
  * The document list indent command. It is used by the {@link module:list/documentlist~DocumentList list feature}.
- *
- * @extends module:core/command~Command
  */
 export default class DocumentListIndentCommand extends Command {
 	/**
+	 * Determines by how much the command will change the list item's indent attribute.
+	 */
+	private readonly _direction: 'forward' | 'backward';
+
+	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {'forward'|'backward'} indentDirection The direction of indent. If it is equal to `backward`, the command
+	 * @param editor The editor instance.
+	 * @param indentDirection The direction of indent. If it is equal to `backward`, the command
 	 * will outdent a list item.
 	 */
-	constructor( editor, indentDirection ) {
+	constructor( editor: Editor, indentDirection: 'forward' | 'backward' ) {
 		super( editor );
 
-		/**
-		 * Determines by how much the command will change the list item's indent attribute.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {'forward'|'backward'}
-		 */
 		this._direction = indentDirection;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.isEnabled = this._checkEnabled();
 	}
 
@@ -59,7 +58,7 @@ export default class DocumentListIndentCommand extends Command {
 	 * @fires execute
 	 * @fires afterExecute
 	 */
-	execute() {
+	public override execute(): void {
 		const model = this.editor.model;
 		const blocks = getSelectedListBlocks( model.document.selection );
 
@@ -108,29 +107,18 @@ export default class DocumentListIndentCommand extends Command {
 	/**
 	 * Fires the `afterExecute` event.
 	 *
-	 * @private
-	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
+	 * @param changedBlocks The changed list elements.
 	 */
-	_fireAfterExecute( changedBlocks ) {
-		/**
-		 * Event fired by the {@link #execute} method.
-		 *
-		 * It allows to execute an action after executing the {@link ~DocumentListIndentCommand#execute} method,
-		 * for example adjusting attributes of changed list items.
-		 *
-		 * @protected
-		 * @event afterExecute
-		 */
-		this.fire( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
+	private _fireAfterExecute( changedBlocks: Array<Element> ) {
+		this.fire<DocumentListIndentCommandAfterExecuteEvent>( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
 	/**
 	 * Checks whether the command can be enabled in the current context.
 	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
+	 * @returns Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled(): boolean {
 		// Check whether any of position's ancestor is a list item.
 		let blocks = getSelectedListBlocks( this.editor.model.document.selection );
 		let firstBlock = blocks[ 0 ];
@@ -168,8 +156,10 @@ export default class DocumentListIndentCommand extends Command {
 	}
 }
 
-// Returns an array of selected blocks truncated to the first non list block element.
-function getSelectedListBlocks( selection ) {
+/**
+ * Returns an array of selected blocks truncated to the first non list block element.
+ */
+function getSelectedListBlocks( selection: DocumentSelection ) {
 	const blocks = Array.from( selection.getSelectedBlocks() );
 	const firstNonListBlockIndex = blocks.findIndex( block => !isListItemBlock( block ) );
 
@@ -177,6 +167,19 @@ function getSelectedListBlocks( selection ) {
 		blocks.length = firstNonListBlockIndex;
 	}
 
-	return blocks;
+	return blocks as Array<ListElement>;
 }
 
+/**
+ * Event fired by the {@link #execute} method.
+ *
+ * It allows to execute an action after executing the {@link ~DocumentListCommand#execute} method,
+ * for example adjusting attributes of changed list items.
+ *
+ * @internal
+ * @eventName afterExecute
+ */
+export type DocumentListIndentCommandAfterExecuteEvent = {
+	name: 'afterExecute';
+	args: [ changedBlocks: Array<Element> ];
+};

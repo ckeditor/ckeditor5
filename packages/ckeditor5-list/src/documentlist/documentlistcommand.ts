@@ -7,7 +7,8 @@
  * @module list/documentlist/documentlistcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core';
 import {
 	splitListItemBefore,
 	expandListBlocksToCompleteItems,
@@ -23,40 +24,37 @@ import {
 
 /**
  * The list command. It is used by the {@link module:list/documentlist~DocumentList document list feature}.
- *
- * @extends module:core/command~Command
  */
 export default class DocumentListCommand extends Command {
 	/**
+	 * The type of the list created by the command.
+	 */
+	public readonly type: 'numbered' | 'bulleted';
+
+	/**
+	 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	public declare value: boolean;
+
+	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {'numbered'|'bulleted'} type List type that will be handled by this command.
+	 * @param editor The editor instance.
+	 * @param type List type that will be handled by this command.
 	 */
-	constructor( editor, type ) {
+	constructor( editor: Editor, type: 'numbered' | 'bulleted' ) {
 		super( editor );
 
-		/**
-		 * The type of the list created by the command.
-		 *
-		 * @readonly
-		 * @member {'numbered'|'bulleted'}
-		 */
 		this.type = type;
-
-		/**
-		 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #value
-		 */
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.value = this._getValue();
 		this.isEnabled = this._checkEnabled();
 	}
@@ -66,12 +64,12 @@ export default class DocumentListCommand extends Command {
 	 *
 	 * @fires execute
 	 * @fires afterExecute
-	 * @param {Object} [options] Command options.
-	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will try to convert the
+	 * @param options Command options.
+	 * @param options.forceValue If set, it will force the command behavior. If `true`, the command will try to convert the
 	 * selected items and potentially the neighbor elements to the proper list items. If set to `false` it will convert selected elements
 	 * to paragraphs. If not set, the command will toggle selected elements to list items or paragraphs, depending on the selection.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { forceValue?: boolean } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const selectedBlockObject = getSelectedBlockObject( model );
@@ -146,29 +144,18 @@ export default class DocumentListCommand extends Command {
 	/**
 	 * Fires the `afterExecute` event.
 	 *
-	 * @private
-	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
+	 * @param changedBlocks The changed list elements.
 	 */
-	_fireAfterExecute( changedBlocks ) {
-		/**
-		 * Event fired by the {@link #execute} method.
-		 *
-		 * It allows to execute an action after executing the {@link ~DocumentListCommand#execute} method,
-		 * for example adjusting attributes of changed list items.
-		 *
-		 * @protected
-		 * @event afterExecute
-		 */
-		this.fire( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
+	private _fireAfterExecute( changedBlocks: Array<Element> ) {
+		this.fire<DocumentListCommandAfterExecuteEvent>( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
 	/**
 	 * Checks the command's {@link #value}.
 	 *
-	 * @private
-	 * @returns {Boolean} The current value.
+	 * @returns The current value.
 	 */
-	_getValue() {
+	private _getValue(): boolean {
 		const selection = this.editor.model.document.selection;
 		const blocks = Array.from( selection.getSelectedBlocks() );
 
@@ -188,10 +175,9 @@ export default class DocumentListCommand extends Command {
 	/**
 	 * Checks whether the command can be enabled in the current context.
 	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
+	 * @returns Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled(): boolean {
 		const selection = this.editor.model.document.selection;
 		const schema = this.editor.model.schema;
 		const blocks = Array.from( selection.getSelectedBlocks() );
@@ -214,3 +200,17 @@ export default class DocumentListCommand extends Command {
 		return false;
 	}
 }
+
+/**
+ * Event fired by the {@link #execute} method.
+ *
+ * It allows to execute an action after executing the {@link ~DocumentListCommand#execute} method,
+ * for example adjusting attributes of changed list items.
+ *
+ * @internal
+ * @eventName afterExecute
+ */
+export type DocumentListCommandAfterExecuteEvent = {
+	name: 'afterExecute';
+	args: [ changedBlocks: Array<Element> ];
+};

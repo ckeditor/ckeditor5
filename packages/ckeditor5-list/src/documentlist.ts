@@ -7,7 +7,7 @@
  * @module list/documentlist
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import DocumentListEditing from './documentlist/documentlistediting';
 import ListUI from './list/listui';
 
@@ -23,14 +23,14 @@ export default class DocumentList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ DocumentListEditing, ListUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'DocumentList' {
 		return 'DocumentList';
 	}
 }
