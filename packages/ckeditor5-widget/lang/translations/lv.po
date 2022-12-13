@@ -30,4 +30,4 @@ msgstr "Ievietot paragrāfu aiz bloka"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Nospiediet taustiņu Enter, lai rakstītu aiz logrīka, vai nospiediet taustiņu Shift + Enter, lai rakstītu pirms logrīka"
