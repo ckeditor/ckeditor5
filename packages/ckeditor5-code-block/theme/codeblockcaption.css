@@ -5,16 +5,16 @@
 }
 
 /* Content styles */
-/* .ck-content .codeblock > figcaption {
-	display: table-caption;
-	caption-side: bottom;
-	word-break: break-word;
+.ck-content code > figcaption {
 	color: var(--ck-color-codeblock-caption-text);
 	background-color: var(--ck-color-codeblock-caption-background);
-	padding: .6em;
-	font-size: .75em;
+	padding: .5em;
+	margin: .3em;
+	font-size: .85em;
 	outline-offset: -1px;
-} */
+	border-radius: 2px;
+	text-align: center;
+}
 
 /* Editing styles */
 code > figcaption.codeblock__caption_highlighted {
