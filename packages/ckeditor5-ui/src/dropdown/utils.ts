@@ -161,35 +161,52 @@ export function addToolbarToDropdown(
 		ariaLabel?: string;
 	} = {}
 ): void {
-	const locale = dropdownView.locale;
-	const t = locale.t;
-
 	dropdownView.extendTemplate( {
 		attributes: {
 			class: [ 'ck-toolbar-dropdown' ]
 		}
 	} );
 
-	dropdownView.once( 'change:isOpen', () => {
-		const toolbarView = dropdownView.toolbarView = new ToolbarView( locale );
-		const buttons = typeof buttonsOrCallback == 'function' ? buttonsOrCallback() : buttonsOrCallback;
+	if ( dropdownView.isOpen ) {
+		addToolbarToOpenDropdown( dropdownView, buttonsOrCallback, options );
+	} else {
+		dropdownView.once( 'change:isOpen', () => addToolbarToOpenDropdown( dropdownView, buttonsOrCallback, options ) );
+	}
+}
 
-		toolbarView.ariaLabel = options.ariaLabel || t( 'Dropdown toolbar' );
+/**
+ * TODO
+ */
+function addToolbarToOpenDropdown(
+	dropdownView: DropdownView,
+	buttonsOrCallback: Array<ButtonView> | ( () => Array<ButtonView> ),
+	options: {
+		enableActiveItemFocusOnDropdownOpen?: boolean;
+		isVertical?: boolean;
+		ariaLabel?: string;
+	} = {}
+): void {
+	const locale = dropdownView.locale;
+	const t = locale.t;
 
-		if ( options.isVertical ) {
-			toolbarView.isVertical = true;
-		}
+	const toolbarView = dropdownView.toolbarView = new ToolbarView( locale );
+	const buttons = typeof buttonsOrCallback == 'function' ? buttonsOrCallback() : buttonsOrCallback;
 
-		buttons.map( view => toolbarView.items.add( view ) );
+	toolbarView.ariaLabel = options.ariaLabel || t( 'Dropdown toolbar' );
 
-		if ( options.enableActiveItemFocusOnDropdownOpen ) {
-			// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.
-			focusChildOnDropdownOpen( dropdownView, () => toolbarView.items.find( ( item: any ) => item.isOn ) );
-		}
+	if ( options.isVertical ) {
+		toolbarView.isVertical = true;
+	}
 
-		dropdownView.panelView.children.add( toolbarView );
-		toolbarView.items.delegate( 'execute' ).to( dropdownView );
-	} );
+	buttons.map( view => toolbarView.items.add( view ) );
+
+	if ( options.enableActiveItemFocusOnDropdownOpen ) {
+		// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.
+		focusChildOnDropdownOpen( dropdownView, () => toolbarView.items.find( ( item: any ) => item.isOn ) );
+	}
+
+	dropdownView.panelView.children.add( toolbarView );
+	toolbarView.items.delegate( 'execute' ).to( dropdownView );
 }
 
 /**
@@ -234,15 +251,31 @@ export function addToolbarToDropdown(
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:list/list~List}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ListVIew` will be added.
- * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} items
+ * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} itemsOrCallback
  * A collection of the list item definitions to populate the list.
  */
 export function addListToDropdown(
 	dropdownView: DropdownView,
-	items: Collection<ListDropdownItemDefinition>
+	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> )
+): void {
+	if ( dropdownView.isOpen ) {
+		addListToOpenDropdown( dropdownView, itemsOrCallback );
+	} else {
+		dropdownView.once( 'change:isOpen', () => addListToOpenDropdown( dropdownView, itemsOrCallback ) );
+	}
+}
+
+/**
+ * TODO
+ */
+function addListToOpenDropdown(
+	dropdownView: DropdownView,
+	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> )
 ): void {
 	const locale = dropdownView.locale;
+
 	const listView = dropdownView.listView = new ListView( locale );
+	const items = typeof itemsOrCallback == 'function' ? itemsOrCallback() : itemsOrCallback;
 
 	listView.items.bindTo( items ).using( def => {
 		if ( def.type === 'separator' ) {
