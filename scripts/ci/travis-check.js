@@ -32,7 +32,7 @@ if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 	}
 
 	const repository = 'ckeditor/ckeditor5';
-	const lastCommit = childProcess.execSync( 'git rev-parse HEAD' );
+	const lastCommit = childProcess.execSync( 'git rev-parse HEAD' ).toString();
 
 	triggerCkeditor5ContinuousIntegration( repository, lastCommit )
 		.then( status => {
