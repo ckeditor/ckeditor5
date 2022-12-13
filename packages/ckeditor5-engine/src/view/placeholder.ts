@@ -14,7 +14,7 @@ import type DowncastWriter from './downcastwriter';
 import type Element from './element';
 import type View from './view';
 
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 // Each document stores information about its placeholder elements and check functions.
 const documentPlaceholders: WeakMap<Document, Map<Element, PlaceholderConfig>> = new WeakMap();

@@ -158,7 +158,8 @@ export default class InsertTableView extends View {
 			keystrokeHandler: this.keystrokes,
 			focusTracker: this.focusTracker,
 			gridItems: this.items,
-			numberOfColumns: 10
+			numberOfColumns: 10,
+			uiLanguageDirection: this.locale && this.locale.uiLanguageDirection
 		} );
 
 		for ( const item of this.items ) {

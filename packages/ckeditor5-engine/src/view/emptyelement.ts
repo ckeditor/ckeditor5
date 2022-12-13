@@ -9,7 +9,7 @@
 
 import Element, { type ElementAttributes } from './element';
 import Node from './node';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type Document from './document';
 import type Item from './item';

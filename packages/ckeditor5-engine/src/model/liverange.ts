@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/model/liverange
  */
@@ -20,7 +18,7 @@ import type MoveOperation from './operation/moveoperation';
 import type Operation from './operation/operation';
 import type Position from './position';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * `LiveRange` is a type of {@link module:engine/model/range~Range Range}

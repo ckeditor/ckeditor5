@@ -7,8 +7,8 @@
  * @module paragraph/paragraphcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { Command } from '@ckeditor/ckeditor5-core';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 import type { Schema, Selection, DocumentSelection, Element } from '@ckeditor/ckeditor5-engine';
 

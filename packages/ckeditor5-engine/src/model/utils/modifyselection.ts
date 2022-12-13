@@ -18,7 +18,7 @@ import type Selection from '../selection';
 import type Text from '../text';
 import type Node from '../node';
 
-import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils/src/unicode';
+import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils';
 
 const wordBoundaryCharacters = ' ,.?!:;"-()';
 

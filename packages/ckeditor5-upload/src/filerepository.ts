@@ -7,16 +7,24 @@
  * @module upload/filerepository
  */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
+import {
+	Plugin,
+	PendingActions,
+	type PendingAction,
+	type PluginDependencies
+} from '@ckeditor/ckeditor5-core';
 
-import PendingActions, { type PendingAction } from '@ckeditor/ckeditor5-core/src/pendingactions';
-import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { Observable, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Collection, { type CollectionChangeEvent } from '@ckeditor/ckeditor5-utils/src/collection';
+import {
+	CKEditorError,
+	Collection,
+	ObservableMixin,
+	logWarning,
+	uid,
+	type ObservableChangeEvent,
+	type CollectionChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 
 import FileReader from './filereader';
-
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * File repository plugin. A central point for managing file upload.
@@ -274,7 +282,7 @@ export default class FileRepository extends Plugin {
  *
  * It is used to control the process of reading the file and uploading it using the specified upload adapter.
  */
-class FileLoader extends Observable {
+class FileLoader extends ObservableMixin() {
 	public readonly id: string;
 
 	private _filePromiseWrapper: FilePromiseWrapper;

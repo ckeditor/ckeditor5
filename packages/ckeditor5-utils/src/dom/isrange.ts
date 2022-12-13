@@ -9,9 +9,6 @@
 
 /**
  * Checks if the object is a native DOM Range.
- *
- * @param {*} obj
- * @returns {Boolean}
  */
 export default function isRange( obj: unknown ): obj is Range {
 	return Object.prototype.toString.apply( obj ) == '[object Range]';

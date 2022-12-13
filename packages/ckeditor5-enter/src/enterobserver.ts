@@ -7,13 +7,14 @@
  * @module enter/enterobserver
  */
 
-import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
-
-import type { View } from '@ckeditor/ckeditor5-engine';
-import type { ViewDocumentInputEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
-import type { BubblingEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingemittermixin';
+import {
+	Observer,
+	DomEventData,
+	BubblingEventInfo,
+	type View,
+	type ViewDocumentInputEvent,
+	type BubblingEvent
+} from '@ckeditor/ckeditor5-engine';
 
 const ENTER_EVENT_TYPES: Record<string, { isSoft: boolean }> = {
 	insertParagraph: { isSoft: false },

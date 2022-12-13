@@ -115,6 +115,8 @@ export function toWidget( element, writer, options = {} ) {
 	writer.setCustomProperty( 'widget', true, element );
 	element.getFillerOffset = getFillerOffset;
 
+	writer.setCustomProperty( 'widgetLabel', [], element );
+
 	if ( options.label ) {
 		setLabel( element, options.label, writer );
 	}
@@ -197,10 +199,9 @@ export function setHighlightHandling( element, writer, add = addHighlight, remov
  *
  * @param {module:engine/view/element~Element} element
  * @param {String|Function} labelOrCreator
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  */
-export function setLabel( element, labelOrCreator, writer ) {
-	writer.setCustomProperty( 'widgetLabel', labelOrCreator, element );
+export function setLabel( element, labelOrCreator ) {
+	element.getCustomProperty( 'widgetLabel' ).push( labelOrCreator );
 }
 
 /**
@@ -210,13 +211,13 @@ export function setLabel( element, labelOrCreator, writer ) {
  * @returns {String}
  */
 export function getLabel( element ) {
-	const labelCreator = element.getCustomProperty( 'widgetLabel' );
-
-	if ( !labelCreator ) {
-		return '';
-	}
-
-	return typeof labelCreator == 'function' ? labelCreator() : labelCreator;
+	return element.getCustomProperty( 'widgetLabel' ).reduce( ( prev, current ) => {
+		if ( typeof current === 'function' ) {
+			return prev ? prev + '. ' + current() : current();
+		} else {
+			return prev ? prev + '. ' + current : current;
+		}
+	}, '' );
 }
 
 /**

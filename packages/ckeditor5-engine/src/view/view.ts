@@ -31,11 +31,14 @@ import InputObserver from './observer/inputobserver';
 import ArrowKeysObserver from './observer/arrowkeysobserver';
 import TabObserver from './observer/tabobserver';
 
-import { Observable, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import {
+	CKEditorError,
+	ObservableMixin,
+	scrollViewportToShowTarget,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
@@ -69,12 +72,11 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class View extends Observable {
+export default class View extends ObservableMixin() {
 	public readonly document: Document;
 	public readonly domConverter: DomConverter;
 	public readonly domRoots: Map<string, HTMLElement>;
 
-	declare public isFocused: boolean;
 	declare public isRenderingInProgress: boolean;
 	declare public hasDomSelection: boolean;
 
@@ -142,7 +144,8 @@ export default class View extends Observable {
 		 * @type {module:engine/view/renderer~Renderer}
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' ).to( this.document, 'isFocused', 'isSelecting', 'isComposing' );
+		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing', '_isFocusChanging' )
+			.to( this.document, 'isFocused', 'isSelecting', 'isComposing', '_isFocusChanging' );
 
 		/**
 		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -539,6 +542,7 @@ export default class View extends Observable {
 	 */
 	public forceRender(): void {
 		this._hasChangedSinceTheLastRendering = true;
+		this.document._isFocusChanging = false;
 		this.change( () => {} );
 	}
 

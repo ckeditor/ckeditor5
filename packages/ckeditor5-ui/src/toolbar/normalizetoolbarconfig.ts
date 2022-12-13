@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
+import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
 
 /**
  * @module ui/toolbar/normalizetoolbarconfig

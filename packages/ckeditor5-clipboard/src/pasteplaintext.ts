@@ -7,12 +7,12 @@
  * @module clipboard/pasteplaintext
  */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+
+import type { DocumentFragment, Schema, ViewDocumentKeyEvent } from '@ckeditor/ckeditor5-engine';
 
 import ClipboardObserver from './clipboardobserver';
 import ClipboardPipeline, { type ClipboardContentInsertionEvent } from './clipboardpipeline';
-import type { ViewDocumentKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
-import type { DocumentFragment, Schema } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The plugin detects the user's intention to paste plain text.

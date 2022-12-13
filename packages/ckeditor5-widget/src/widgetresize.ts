@@ -7,26 +7,40 @@
  * @module widget/widgetresize
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Resizer, {
 	type ResizerBeginEvent,
 	type ResizerCancelEvent,
 	type ResizerCommitEvent
 } from './widgetresize/resizer';
-import { Emitter as DomEmitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import MouseObserver, { type ViewDocumentMouseEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
+
+import type WidgetToolbarRepository from './widgettoolbarrepository';
+
+import {
+	Plugin,
+	type Editor,
+	type EditorUIUpdateEvent
+} from '@ckeditor/ckeditor5-core';
+
+import {
+	MouseObserver,
+	type DocumentChangeEvent,
+	type DomEventData,
+	type Element,
+	type ViewContainerElement,
+	type ViewDocumentMouseEvent,
+	type ViewSelectionChangeEvent
+} from '@ckeditor/ckeditor5-engine';
+
+import {
+	DomEmitterMixin,
+	global,
+	type DomEmitter,
+	type EventInfo
+} from '@ckeditor/ckeditor5-utils';
+
 import { throttle, type DebouncedFunc } from 'lodash-es';
 
 import '../theme/widgetresize.css';
-
-import type { EditorUIUpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine/src/model/document';
-import type { ViewSelectionChangeEvent } from '@ckeditor/ckeditor5-engine/src/view/selection';
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { DomEventData, Element, ViewContainerElement } from '@ckeditor/ckeditor5-engine';
-import type WidgetToolbarRepository from './widgettoolbarrepository';
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 /**
  * The widget resize feature plugin.
@@ -91,7 +105,7 @@ export default class WidgetResize extends Plugin {
 
 		editing.view.addObserver( MouseObserver );
 
-		this._observer = new DomEmitter();
+		this._observer = new ( DomEmitterMixin() )();
 
 		this.listenTo<ViewDocumentMouseEvent>(
 			editing.view.document,
@@ -196,7 +210,7 @@ export default class WidgetResize extends Plugin {
 		if ( plugins.has( 'WidgetToolbarRepository' ) ) {
 			// Hiding widget toolbar to improve the performance
 			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#issuecomment-564528765).
-			const widgetToolbarRepository = plugins.get( 'WidgetToolbarRepository' );
+			const widgetToolbarRepository: WidgetToolbarRepository = plugins.get( 'WidgetToolbarRepository' );
 
 			resizer.on<ResizerBeginEvent>( 'begin', () => {
 				widgetToolbarRepository.forceDisabled( 'resize' );

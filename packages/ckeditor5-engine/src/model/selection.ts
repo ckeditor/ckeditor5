@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/model/selection
  */
@@ -19,9 +17,7 @@ import type DocumentSelection from './documentselection';
 import type Element from './element';
 import type Item from './item';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Selection is a set of {@link module:engine/model/range~Range ranges}. It has a direction specified by its

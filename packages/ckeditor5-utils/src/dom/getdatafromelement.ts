@@ -12,8 +12,8 @@
 /**
  * Gets data from a given source element.
  *
- * @param {HTMLElement} el The element from which the data will be retrieved.
- * @returns {String} The data string.
+ * @param el The element from which the data will be retrieved.
+ * @returns The data string.
  */
 export default function getDataFromElement( el: HTMLElement ): string {
 	if ( el instanceof HTMLTextAreaElement ) {

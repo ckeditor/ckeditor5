@@ -7,9 +7,11 @@
  * @module engine/controller/datacontroller
  */
 
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import {
+	CKEditorError,
+	EmitterMixin,
+	ObservableMixin
+} from '@ckeditor/ckeditor5-utils';
 
 import Mapper from '../conversion/mapper';
 
@@ -60,7 +62,7 @@ import type DataProcessor from '../dataprocessor/dataprocessor';
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class DataController extends Emitter {
+export default class DataController extends EmitterMixin() {
 	public readonly model: Model;
 	public readonly mapper: Mapper;
 	public readonly downcastDispatcher: DowncastDispatcher;
@@ -173,9 +175,9 @@ export default class DataController extends Emitter {
 		this.upcastDispatcher.on<UpcastElementEvent>( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.upcastDispatcher.on<UpcastDocumentFragmentEvent>( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		Observable.prototype.decorate.call( this, 'init' as any );
-		Observable.prototype.decorate.call( this, 'set' as any );
-		Observable.prototype.decorate.call( this, 'get' as any );
+		ObservableMixin().prototype.decorate.call( this, 'init' as any );
+		ObservableMixin().prototype.decorate.call( this, 'set' as any );
+		ObservableMixin().prototype.decorate.call( this, 'get' as any );
 
 		// Fire the `ready` event when the initialization has completed. Such low-level listener offers the possibility
 		// to plug into the initialization pipeline without interrupting the initialization flow.

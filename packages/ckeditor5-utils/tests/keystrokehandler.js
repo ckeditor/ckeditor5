@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { Emitter } from '../src/emittermixin';
+import EmitterMixin from '../src/emittermixin';
 import KeystrokeHandler from '../src/keystrokehandler';
 import { keyCodes } from '../src/keyboard';
 import env from '../src/env';
 
 describe( 'KeystrokeHandler', () => {
+	const Emitter = EmitterMixin();
+
 	const initialEnvMac = env.isMac;
 	let emitter, keystrokes;
 

@@ -7,11 +7,15 @@
  * @module core/context
  */
 
-import Config from '@ckeditor/ckeditor5-utils/src/config';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import {
+	Config,
+	Collection,
+	CKEditorError,
+	Locale,
+	type LocaleTranslate
+} from '@ckeditor/ckeditor5-utils';
+
 import PluginCollection from './plugincollection';
-import Locale, { type LocaleTranslate } from '@ckeditor/ckeditor5-utils/src/locale';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import type Editor from './editor/editor';
 import type { LoadedPlugins, PluginConstructor } from './plugin';
 import type { EditorConfig } from './editor/editorconfig';

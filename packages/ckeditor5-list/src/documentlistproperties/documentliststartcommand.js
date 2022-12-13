@@ -50,7 +50,7 @@ export default class DocumentListStartCommand extends Command {
 
 		model.change( writer => {
 			for ( const block of blocks ) {
-				writer.setAttribute( 'listStart', options.startIndex || 1, block );
+				writer.setAttribute( 'listStart', options.startIndex >= 0 ? options.startIndex : 1, block );
 			}
 		} );
 	}

@@ -12,10 +12,9 @@
 import Template from '../template';
 import ViewCollection from '../viewcollection';
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import { createElement, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import type View from '../view';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * This is a special {@link module:ui/viewcollection~ViewCollection} dedicated to elements that are detached

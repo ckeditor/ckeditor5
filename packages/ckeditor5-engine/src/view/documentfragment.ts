@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/view/documentfragment
  */
@@ -12,8 +10,9 @@
 import TypeCheckable from './typecheckable';
 import Text from './text';
 import TextProxy from './textproxy';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+
+import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
+
 import type { default as Document, ChangeType } from './document';
 
 import type Item from './item';

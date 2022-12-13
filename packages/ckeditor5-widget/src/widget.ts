@@ -7,24 +7,35 @@
  * @module widget/widget
  */
 
-import Plugin, { type PluginDependencies } from '@ckeditor/ckeditor5-core/src/plugin';
-import MouseObserver, { type ViewDocumentMouseEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import WidgetTypeAround from './widgettypearound/widgettypearound';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import { getLocalizedArrowKeyCodeDirection, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
 
+import {
+	MouseObserver,
+	type DomEventData,
+	type DowncastSelectionEvent,
+	type DowncastWriter,
+	type Element,
+	type Node,
+	type ViewDocumentArrowKeyEvent,
+	type ViewDocumentFragment,
+	type ViewDocumentMouseEvent,
+	type ViewElement
+} from '@ckeditor/ckeditor5-engine';
+
+import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
+
+import {
+	env,
+	getLocalizedArrowKeyCodeDirection,
+	type EventInfo,
+	type KeystrokeInfo
+} from '@ckeditor/ckeditor5-utils';
+
+import WidgetTypeAround from './widgettypearound/widgettypearound';
 import verticalNavigationHandler from './verticalnavigation';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 
 import '../theme/widget.css';
-
-import type { DomEventData, DowncastWriter, Element, ViewDocumentFragment, ViewElement } from '@ckeditor/ckeditor5-engine';
-import type { DowncastSelectionEvent } from '@ckeditor/ckeditor5-engine/src/conversion/downcastdispatcher';
-import type { ViewDocumentArrowKeyEvent } from '@ckeditor/ckeditor5-engine/src/view/observer/arrowkeysobserver';
-import type { ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing/src/deleteobserver';
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import type Node from '@ckeditor/ckeditor5-engine/src/model/node';
 
 /**
  * The widget plugin. It enables base support for widgets.

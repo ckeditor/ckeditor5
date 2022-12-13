@@ -90,7 +90,7 @@ export default class FormHeaderView extends View {
 		const label = new View( locale );
 
 		label.setTemplate( {
-			tag: 'span',
+			tag: 'h2',
 			attributes: {
 				class: [
 					'ck',

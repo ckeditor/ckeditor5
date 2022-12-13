@@ -7,8 +7,7 @@
  * @module core/plugincollection
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 import type { LoadedPlugins, PluginConstructor, PluginInterface } from './plugin';
 
 /**
@@ -16,7 +15,7 @@ import type { LoadedPlugins, PluginConstructor, PluginInterface } from './plugin
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class PluginCollection<TContext extends object> extends Emitter {
+export default class PluginCollection<TContext extends object> extends EmitterMixin() {
 	private _context: TContext;
 	private _plugins: Map<PluginConstructor<TContext> | string, PluginInterface>;
 	private _availablePlugins: Map<string, PluginConstructor<TContext>>;

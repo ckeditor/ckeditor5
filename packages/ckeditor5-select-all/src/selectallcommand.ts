@@ -7,8 +7,7 @@
  * @module select-all/selectallcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import type { Editor } from '@ckeditor/ckeditor5-core';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import type { Element, Schema } from '@ckeditor/ckeditor5-engine';
 
 /**

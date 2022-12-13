@@ -20,10 +20,13 @@ import type Position from './position';
 import type Range from './range';
 import type Writer from './writer';
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
+import {
+	CKEditorError,
+	Collection,
+	EmitterMixin,
+	isInsideSurrogatePair,
+	isInsideCombinedSymbol
+} from '@ckeditor/ckeditor5-utils';
 
 import { clone } from 'lodash-es';
 
@@ -47,11 +50,11 @@ const graveyardName = '$graveyard';
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class Document extends Emitter {
+export default class Document extends EmitterMixin() {
 	public readonly model: Model;
 	public readonly history: History;
 	public readonly selection: DocumentSelection;
-	public readonly roots: Collection<RootElement, 'rootName'>;
+	public readonly roots: Collection<RootElement>;
 	public readonly differ: Differ;
 
 	private readonly _postFixers: Set<( writer: Writer ) => boolean>;

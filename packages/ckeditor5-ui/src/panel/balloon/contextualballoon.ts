@@ -7,27 +7,30 @@
  * @module ui/panel/balloon/contextualballoon
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+
 import BalloonPanelView from './balloonpanelview';
 import View from '../../view';
 import ButtonView from '../../button/buttonview';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+
+import {
+	CKEditorError,
+	FocusTracker,
+	Rect,
+	toUnit,
+	type Locale,
+	type ObservableChangeEvent,
+	type PositionOptions
+} from '@ckeditor/ckeditor5-utils';
+
+import type { ButtonExecuteEvent } from '../../button/button';
+import type ViewCollection from '../../viewcollection';
 
 import prevIcon from '../../../theme/icons/previous-arrow.svg';
 import nextIcon from '../../../theme/icons/next-arrow.svg';
 
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
-
-import type { ButtonExecuteEvent } from '../../button/button';
-import type ViewCollection from '../../viewcollection';
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import type { Options } from '@ckeditor/ckeditor5-utils/src/dom/position';
 
 const toPx = toUnit( 'px' );
 
@@ -69,7 +72,7 @@ const toPx = toUnit( 'px' );
  */
 export default class ContextualBalloon extends Plugin {
 	public readonly view: BalloonPanelView;
-	public positionLimiter: Options[ 'limiter' ];
+	public positionLimiter: PositionOptions[ 'limiter' ];
 	public visibleStack?: string;
 
 	declare public visibleView: View | null;
@@ -326,7 +329,7 @@ export default class ContextualBalloon extends Plugin {
 	 *
 	 * @param {module:utils/dom/position~Options} [position] position options.
 	 */
-	public updatePosition( position?: Partial<Options> ): void {
+	public updatePosition( position?: Partial<PositionOptions> ): void {
 		if ( position ) {
 			this._visibleStack.get( this.visibleView! )!.position = position;
 		}
@@ -551,7 +554,7 @@ export default class ContextualBalloon extends Plugin {
 export interface ViewConfiguration {
 	stackId?: string;
 	view: View;
-	position?: Partial<Options>;
+	position?: Partial<PositionOptions>;
 	balloonClassName?: string;
 	withArrow?: boolean;
 	singleViewMode?: boolean;

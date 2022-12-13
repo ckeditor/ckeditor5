@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/model/documentselection
  */
@@ -27,11 +25,13 @@ import type Item from './item';
 import type Position from './position';
 import type Range from './range';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
+import {
+	CKEditorError,
+	Collection,
+	EmitterMixin,
+	toMap,
+	uid
+} from '@ckeditor/ckeditor5-utils';
 
 const storePrefix = 'selection:';
 
@@ -177,7 +177,7 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * @readonly
 	 * @type {module:utils/collection~Collection}
 	 */
-	public get markers(): Collection<Marker, 'name'> {
+	public get markers(): Collection<Marker> {
 		return this._selection.markers;
 	}
 
@@ -627,7 +627,7 @@ export type DocumentSelectionChangeEvent = {
 // @extends module:engine/model/selection~Selection
 //
 class LiveSelection extends Selection {
-	public markers: Collection<Marker, 'name'>;
+	public markers: Collection<Marker>;
 
 	protected _model: Model;
 	protected _document: Document;

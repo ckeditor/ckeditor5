@@ -7,15 +7,11 @@
  * @module typing/deletecommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import count from '@ckeditor/ckeditor5-utils/src/count';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import { count } from '@ckeditor/ckeditor5-utils';
+import type { DocumentSelection, Element, Selection, Writer } from '@ckeditor/ckeditor5-engine';
 
 import ChangeBuffer from './utils/changebuffer';
-
-import type Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
-import type Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { Element, DocumentSelection } from '@ckeditor/ckeditor5-engine';
 
 // Import config.typing declaration.
 import './typingconfig';

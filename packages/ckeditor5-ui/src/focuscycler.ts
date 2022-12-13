@@ -7,10 +7,12 @@
  * @module ui/focuscycler
  */
 
-import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
-
-import type { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
-import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
+import {
+	isVisible,
+	type ArrayOrItem,
+	type FocusTracker,
+	type KeystrokeHandler
+} from '@ckeditor/ckeditor5-utils';
 
 import type View from './view';
 import type ViewCollection from './viewcollection';

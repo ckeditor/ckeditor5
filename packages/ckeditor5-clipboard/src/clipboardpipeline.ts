@@ -7,17 +7,22 @@
  * @module clipboard/clipboardpipeline
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+
+import { EventInfo, type GetCallback } from '@ckeditor/ckeditor5-utils';
+
+import type {
+	DataTransfer,
+	DocumentFragment,
+	Range,
+	ViewDocumentFragment,
+	ViewRange
+} from '@ckeditor/ckeditor5-engine';
 
 import ClipboardObserver, {
 	type ViewDocumentClipboardEvent,
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver';
-import type { DocumentFragment, Range, ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
-import type DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
-import type { default as ViewRange } from '@ckeditor/ckeditor5-engine/src/view/range';
-import type { GetCallback } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import plainTextToHtml from './utils/plaintexttohtml';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata';

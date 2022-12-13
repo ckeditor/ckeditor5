@@ -22,8 +22,7 @@ import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphin
 
 import type ViewItem from '../view/item';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Upcast dispatcher is a central point of the view-to-model conversion, which is a process of
@@ -120,7 +119,7 @@ import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
  * @fires text
  * @fires documentFragment
  */
-export default class UpcastDispatcher extends Emitter {
+export default class UpcastDispatcher extends EmitterMixin() {
 	public conversionApi: UpcastConversionApi;
 
 	private _splitParts: Map<ModelElement, Array<ModelElement>>;

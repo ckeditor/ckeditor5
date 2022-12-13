@@ -19,7 +19,7 @@ import type Operation from './operation';
 import type Document from '../document';
 import type History from '../history';
 
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import { compareArrays } from '@ckeditor/ckeditor5-utils';
 
 type TransformationFunction = ( a: Operation, b: Operation, context: TransformationContext ) => Array<Operation>;
 

@@ -12,7 +12,7 @@ import type DomEventData from './domeventdata';
 import type View from '../view';
 import type ViewRange from '../range';
 import DataTransfer from '../datatransfer';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Observer for events connected with data input.

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/model/markercollection
  */
@@ -15,8 +13,7 @@ import LiveRange, { type LiveRangeChangeEvent } from './liverange';
 import type Position from './position';
 import type Range from './range';
 
-import EmitterMixin, { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The collection of all {@link module:engine/model/markercollection~Marker markers} attached to the document.
@@ -32,7 +29,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * @see module:engine/model/markercollection~Marker
  */
-export default class MarkerCollection extends Emitter implements Iterable<Marker> {
+export default class MarkerCollection extends EmitterMixin() implements Iterable<Marker> {
 	private _markers: Map<string, Marker>;
 
 	/**

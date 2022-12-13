@@ -232,6 +232,10 @@ export default class WidgetTypeAround extends Plugin {
 			// Filter out non-widgets and inline widgets.
 			if ( isTypeAroundWidget( viewElement, data.item, schema ) ) {
 				injectUIIntoWidget( conversionApi.writer, buttonTitles, viewElement );
+
+				viewElement.getCustomProperty( 'widgetLabel' ).push( () => {
+					return this.isEnabled ? t( 'Press Enter to type after or press Shift + Enter to type before the widget' ) : '';
+				} );
 			}
 		}, { priority: 'low' } );
 	}

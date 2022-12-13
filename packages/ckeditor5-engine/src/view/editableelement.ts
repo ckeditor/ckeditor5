@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/view/editableelement
  */
 
 import ContainerElement from './containerelement';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 import type { ViewSelectionChangeEvent } from './selection';
 
 /**

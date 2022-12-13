@@ -9,6 +9,7 @@
 
 import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
+import ListUtils from './listutils';
 
 import { Plugin } from 'ckeditor5/src/core';
 import { Enter } from 'ckeditor5/src/enter';
@@ -50,7 +51,7 @@ export default class ListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Enter, Delete ];
+		return [ Enter, Delete, ListUtils ];
 	}
 
 	/**

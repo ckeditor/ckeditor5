@@ -9,32 +9,35 @@
 
 /* global window */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import pilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
+import {
+	Plugin,
+	icons,
+	type Editor,
+	type EditorUIUpdateEvent,
+	type ToolbarConfig
+} from '@ckeditor/ckeditor5-core';
+
+import {
+	Rect,
+	ResizeObserver,
+	getOptimalPosition,
+	env,
+	toUnit,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
+
+import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine';
 
 import BlockButtonView from './blockbuttonview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview';
 import ToolbarView from '../toolbarview';
-
 import clickOutsideHandler from '../../bindings/clickoutsidehandler';
-
-import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
 
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
-
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-
 import type { ButtonExecuteEvent } from '../../button/button';
-import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine/src/model/documentselection';
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { EditorUIUpdateEvent } from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import type { ToolbarConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 const toPx = toUnit( 'px' );
+const { pilcrow } = icons;
 
 /**
  * The block toolbar plugin.

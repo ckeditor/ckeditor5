@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/view/selection
  */
@@ -15,10 +13,12 @@ import Position from './position';
 import Node from './node';
 import DocumentSelection from './documentselection';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import {
+	CKEditorError,
+	EmitterMixin,
+	count,
+	isIterable
+} from '@ckeditor/ckeditor5-utils';
 
 import type Element from './element';
 import type Item from './item';

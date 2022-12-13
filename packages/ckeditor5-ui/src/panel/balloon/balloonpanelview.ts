@@ -8,17 +8,24 @@
  */
 
 import View from '../../view';
-import { getOptimalPosition, type Options, type PositioningFunction } from '@ckeditor/ckeditor5-utils/src/dom/position';
-import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+
+import {
+	getOptimalPosition,
+	global,
+	isRange,
+	toUnit,
+	type Locale,
+	type ObservableChangeEvent,
+	type PositionOptions,
+	type PositioningFunction,
+	type Rect
+} from '@ckeditor/ckeditor5-utils';
+
 import { isElement } from 'lodash-es';
 
-import '../../../theme/components/panel/balloonpanel.css';
-
 import type ViewCollection from '../../viewcollection';
-import type { Locale, Rect } from '@ckeditor/ckeditor5-utils';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
+import '../../../theme/components/panel/balloonpanel.css';
 
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
@@ -232,7 +239,7 @@ export default class BalloonPanelView extends View {
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
 	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
-	public attachTo( options: Partial<Options> ): void {
+	public attachTo( options: Partial<PositionOptions> ): void {
 		this.show();
 
 		const defaultPositions = BalloonPanelView.defaultPositions;
@@ -253,7 +260,7 @@ export default class BalloonPanelView extends View {
 			],
 			limiter: defaultLimiterElement,
 			fitInViewport: true
-		}, options ) as Options;
+		}, options ) as PositionOptions;
 
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
 
@@ -305,7 +312,7 @@ export default class BalloonPanelView extends View {
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
 	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
-	public pin( options: Partial<Options> ): void {
+	public pin( options: Partial<PositionOptions> ): void {
 		this.unpin();
 
 		this._pinWhenIsVisibleCallback = () => {
@@ -349,7 +356,7 @@ export default class BalloonPanelView extends View {
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}.
 	 */
-	private _startPinning( options: Partial<Options> ) {
+	private _startPinning( options: Partial<PositionOptions> ) {
 		this.attachTo( options );
 
 		const targetElement = getDomElement( options.target );

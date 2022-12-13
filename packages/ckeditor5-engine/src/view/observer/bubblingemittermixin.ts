@@ -7,17 +7,18 @@
  * @module engine/view/observer/bubblingemittermixin
  */
 
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
 import {
-	Emitter,
+	CKEditorError,
+	EmitterMixin,
+	EventInfo,
+	toArray,
+	type ArrayOrItem,
+	type Emitter,
 	type GetEventInfo,
 	type GetNameOrEventInfo,
 	type BaseEvent,
 	type CallbackOptions
-} from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import toArray, { type ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
+} from '@ckeditor/ckeditor5-utils';
 
 import BubblingEventInfo from './bubblingeventinfo';
 import type Document from '../document';
@@ -131,7 +132,7 @@ export default function BubblingEmitterMixin<Base extends abstract new( ...args:
 				let emitter = eventContexts.get( context );
 
 				if ( !emitter ) {
-					emitter = new Emitter();
+					emitter = new ( EmitterMixin() )();
 					eventContexts.set( context, emitter! );
 				}
 

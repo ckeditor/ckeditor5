@@ -74,7 +74,9 @@ describe( 'Image', () => {
 				);
 
 				expect( viewDocument.selection.isFake ).to.be.true;
-				expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'alt text image widget' );
+				expect( viewDocument.selection.fakeSelectionLabel ).to.equal(
+					'alt text image widget. Press Enter to type after or press Shift + Enter to type before the widget'
+				);
 			} );
 
 			it( 'should create proper fake selection label when alt attribute is empty', () => {
@@ -91,7 +93,9 @@ describe( 'Image', () => {
 				);
 
 				expect( viewDocument.selection.isFake ).to.be.true;
-				expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'image widget' );
+				expect( viewDocument.selection.fakeSelectionLabel ).to.equal(
+					'image widget. Press Enter to type after or press Shift + Enter to type before the widget'
+				);
 			} );
 
 			it( 'should remove selected class from previously selected element', () => {

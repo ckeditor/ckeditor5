@@ -8,11 +8,10 @@
  */
 
 import View from '../view';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
+
+import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/label/label.css';
-
-import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The label view class.

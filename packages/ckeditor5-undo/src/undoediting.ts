@@ -7,12 +7,15 @@
  * @module undo/undoediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+
 import UndoCommand, { type UndoCommandRevertEvent } from './undocommand';
 import RedoCommand from './redocommand';
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-import type { ModelApplyOperationEvent } from '@ckeditor/ckeditor5-engine/src/model/model';
+
+import type {
+	Batch,
+	ModelApplyOperationEvent
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * The undo engine feature.

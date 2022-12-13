@@ -11,16 +11,20 @@ import ViewText from './text';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
 
-import { default as diff, type DiffResult } from '@ckeditor/ckeditor5-utils/src/diff';
-import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
-import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
-import { Observable, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
-import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
-import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import {
+	CKEditorError,
+	ObservableMixin,
+	diff,
+	env,
+	fastDiff,
+	insertAt,
+	isComment,
+	isNode,
+	isText,
+	remove,
+	type DiffResult,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 
 import type { ChangeType } from './document';
 import type DocumentSelection from './documentselection';
@@ -49,7 +53,7 @@ type DomSelection = globalThis.Selection;
  * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform view nodes and positions
  * to and from the DOM.
  */
-export default class Renderer extends Observable {
+export default class Renderer extends ObservableMixin() {
 	public readonly domDocuments: Set<DomDocument>;
 	public readonly domConverter: DomConverter;
 	public readonly markedAttributes: Set<ViewElement>;
@@ -58,6 +62,7 @@ export default class Renderer extends Observable {
 	public readonly selection: DocumentSelection;
 
 	declare public readonly isFocused: boolean;
+	declare public readonly _isFocusChanging: boolean;
 	declare public readonly isSelecting: boolean;
 	declare public readonly isComposing: boolean;
 
@@ -129,6 +134,15 @@ export default class Renderer extends Observable {
 		 * @observable
 		 */
 		this.set( 'isFocused', false );
+
+		/**
+         * Indicates if the view document is changing the focus (`true`) and selection rendering should be prevented.
+		 *
+		 * @internal
+		 * @observable
+		 * @member {Boolean}
+		 */
+		this.set( '_isFocusChanging', false );
 
 		/**
 		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
@@ -894,6 +908,12 @@ export default class Renderer extends Observable {
 		// to, may disappear in DOM which would break the selection (e.g. in real-time collaboration scenarios).
 		// https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723
 		if ( env.isBlink && !env.isAndroid && this.isSelecting && !this.markedChildren.size ) {
+			return;
+		}
+
+		// The focus is still in progress and we are waiting for new values from `selectionchange` event.
+		// In that case, we need to prevent update selection since it would be updated using old values.
+		if ( this._isFocusChanging ) {
 			return;
 		}
 
