@@ -133,7 +133,7 @@ export default class MentionUI extends Plugin {
 		clickOutsideHandler( {
 			emitter: this._mentionsView,
 			activator: () => this._isUIVisible,
-			contextElements: [ this._balloon.view.element ],
+			contextElements: () => [ this._balloon.view.element ],
 			callback: () => this._hideUIAndRemoveMarker()
 		} );
 

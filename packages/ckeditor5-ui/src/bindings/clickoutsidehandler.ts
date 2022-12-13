@@ -30,7 +30,7 @@ export default function clickOutsideHandler(
 	{ emitter, activator, callback, contextElements }: {
 		emitter: DomEmitter;
 		activator: () => boolean;
-		contextElements: Array<HTMLElement>;
+		contextElements: Array<HTMLElement> | ( () => Array<HTMLElement> );
 		callback: () => void;
 	}
 ): void {
@@ -43,7 +43,9 @@ export default function clickOutsideHandler(
 		// Can be removed when all supported browsers support native shadow DOM.
 		const path = typeof domEvt.composedPath == 'function' ? domEvt.composedPath() : [];
 
-		for ( const contextElement of contextElements ) {
+		const contextElementsList = typeof contextElements == 'function' ? contextElements() : contextElements;
+
+		for ( const contextElement of contextElementsList ) {
 			if ( contextElement.contains( domEvt.target as Node ) || path.includes( contextElement ) ) {
 				return;
 			}
