@@ -30,4 +30,4 @@ msgstr "Вставить параграф после блока"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Нажмите Enter для ввода текста после виджета или нажмите Shift + Enter для ввода текста перед виджетом"

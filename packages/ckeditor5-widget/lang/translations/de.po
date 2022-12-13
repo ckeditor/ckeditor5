@@ -30,4 +30,4 @@ msgstr "Absatz nach Block einfügen"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Drücken Sie die Eingabetaste, um nach dem Widget zu tippen oder Shift + Eingabetaste, um vor dem Widget zu tippen."
