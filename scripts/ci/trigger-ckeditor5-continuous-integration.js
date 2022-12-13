@@ -37,7 +37,7 @@ module.exports = function triggerCkeditor5ContinuousIntegration( repository, las
 		process.exit();
 	}
 
-	const requestUrl = `https://api.travis-ci.com/repo/${ INTEGRATION_CI_ORGANIZATION }%2F${ INTEGRATION_CI_REPOSITORY }/requests`;
+	const requestUrl = `https://api.travis-ci.com/repo/${ INTEGRATION_CI_ORGANIZATION }/${ INTEGRATION_CI_REPOSITORY }/requests`;
 	const requestOptions = {
 		method: 'post',
 		headers: {
