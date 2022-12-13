@@ -327,10 +327,8 @@ export default class TableUI extends Plugin {
 			addListOption( option, editor, commands, itemDefinitions );
 		}
 
-		dropdownView.on( 'change:isOpen', ( evt, name, isOpen ) => {
-			if ( isOpen && !dropdownView.listView ) {
-				addListToDropdown( dropdownView, itemDefinitions, editor.ui.componentFactory );
-			}
+		dropdownView.once( 'change:isOpen', () => {
+			addListToDropdown( dropdownView, itemDefinitions, editor.ui.componentFactory );
 		} );
 
 		return commands;

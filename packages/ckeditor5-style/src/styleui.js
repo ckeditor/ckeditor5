@@ -45,20 +45,18 @@ export default class StyleUI extends Plugin {
 			const dropdown = createDropdown( locale );
 			const styleCommand = editor.commands.get( 'style' );
 
-			dropdown.on( 'change:isOpen', ( event, name, isOpen ) => {
-				if ( isOpen && !this.panelView ) {
-					const panelView = this.panelView = new StylePanelView( locale, normalizedStyleDefinitions );
+			dropdown.once( 'change:isOpen', () => {
+				const panelView = this.panelView = new StylePanelView( locale, normalizedStyleDefinitions );
 
-					// Put the styles panel is the dropdown.
-					dropdown.panelView.children.add( panelView );
+				// Put the styles panel is the dropdown.
+				dropdown.panelView.children.add( panelView );
 
-					// Close the dropdown when a style is selected in the styles panel.
-					panelView.delegate( 'execute' ).to( dropdown );
+				// Close the dropdown when a style is selected in the styles panel.
+				panelView.delegate( 'execute' ).to( dropdown );
 
-					// Bind the state of the styles panel to the command.
-					panelView.bind( 'activeStyles' ).to( styleCommand, 'value' );
-					panelView.bind( 'enabledStyles' ).to( styleCommand, 'enabledStyles' );
-				}
+				// Bind the state of the styles panel to the command.
+				panelView.bind( 'activeStyles' ).to( styleCommand, 'value' );
+				panelView.bind( 'enabledStyles' ).to( styleCommand, 'enabledStyles' );
 			} );
 
 			// The entire dropdown will be disabled together with the command (e.g. when the editor goes read-only).

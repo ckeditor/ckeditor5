@@ -61,46 +61,44 @@ export default class MediaEmbedUI extends Plugin {
 		const button = dropdown.buttonView;
 		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
-		dropdown.on( 'change:isOpen', ( evt, name, isOpen ) => {
-			if ( isOpen && !dropdown.formView ) {
-				const form = dropdown.formView = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
+		dropdown.once( 'change:isOpen', () => {
+			const form = dropdown.formView = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
 
-				dropdown.panelView.children.add( form );
+			dropdown.panelView.children.add( form );
 
-				// Note: Use the low priority to make sure the following listener starts working after the
-				// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
-				// invisible form/input cannot be focused/selected.
-				button.on( 'open', () => {
-					form.disableCssTransitions();
+			// Note: Use the low priority to make sure the following listener starts working after the
+			// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
+			// invisible form/input cannot be focused/selected.
+			button.on( 'open', () => {
+				form.disableCssTransitions();
 
-					// Make sure that each time the panel shows up, the URL field remains in sync with the value of
-					// the command. If the user typed in the input, then canceled (`urlInputView#fieldView#value` stays
-					// unaltered) and re-opened it without changing the value of the media command (e.g. because they
-					// didn't change the selection), they would see the old value instead of the actual value of the
-					// command.
-					form.url = command.value || '';
-					form.urlInputView.fieldView.select();
-					form.enableCssTransitions();
-				}, { priority: 'low' } );
+				// Make sure that each time the panel shows up, the URL field remains in sync with the value of
+				// the command. If the user typed in the input, then canceled (`urlInputView#fieldView#value` stays
+				// unaltered) and re-opened it without changing the value of the media command (e.g. because they
+				// didn't change the selection), they would see the old value instead of the actual value of the
+				// command.
+				form.url = command.value || '';
+				form.urlInputView.fieldView.select();
+				form.enableCssTransitions();
+			}, { priority: 'low' } );
 
-				dropdown.on( 'submit', () => {
-					if ( form.isValid() ) {
-						editor.execute( 'mediaEmbed', form.url );
-						editor.editing.view.focus();
-					}
-				} );
-
-				dropdown.on( 'change:isOpen', () => form.resetFormStatus() );
-				dropdown.on( 'cancel', () => {
+			dropdown.on( 'submit', () => {
+				if ( form.isValid() ) {
+					editor.execute( 'mediaEmbed', form.url );
 					editor.editing.view.focus();
-				} );
+				}
+			} );
 
-				form.delegate( 'submit', 'cancel' ).to( dropdown );
-				form.urlInputView.bind( 'value' ).to( command, 'value' );
+			dropdown.on( 'change:isOpen', () => form.resetFormStatus() );
+			dropdown.on( 'cancel', () => {
+				editor.editing.view.focus();
+			} );
 
-				// Form elements should be read-only when corresponding commands are disabled.
-				form.urlInputView.bind( 'isReadOnly' ).to( command, 'isEnabled', value => !value );
-			}
+			form.delegate( 'submit', 'cancel' ).to( dropdown );
+			form.urlInputView.bind( 'value' ).to( command, 'value' );
+
+			// Form elements should be read-only when corresponding commands are disabled.
+			form.urlInputView.bind( 'isReadOnly' ).to( command, 'isEnabled', value => !value );
 		} );
 
 		dropdown.bind( 'isEnabled' ).to( command );

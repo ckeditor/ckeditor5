@@ -174,19 +174,17 @@ function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, butto
 
 		mainButtonView.bind( 'isOn' ).to( parentCommand, 'value', value => !!value );
 
-		dropdownView.on( 'change:isOpen', ( evt, name, isOpen ) => {
-			if ( isOpen && !dropdownView.listPropertiesView ) {
-				const listPropertiesView = createListPropertiesView( {
-					editor,
-					dropdownView,
-					parentCommandName,
-					styleGridAriaLabel,
-					styleDefinitions
-				} );
+		dropdownView.once( 'change:isOpen', () => {
+			const listPropertiesView = createListPropertiesView( {
+				editor,
+				dropdownView,
+				parentCommandName,
+				styleGridAriaLabel,
+				styleDefinitions
+			} );
 
-				dropdownView.panelView.children.add( listPropertiesView );
-				dropdownView.listPropertiesView = listPropertiesView;
-			}
+			dropdownView.panelView.children.add( listPropertiesView );
+			dropdownView.listPropertiesView = listPropertiesView;
 		} );
 
 		// Focus the editable after executing the command.

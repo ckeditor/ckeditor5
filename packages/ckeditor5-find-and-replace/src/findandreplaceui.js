@@ -56,6 +56,14 @@ export default class FindAndReplaceUI extends Plugin {
 			// Dropdown should be disabled when in source editing mode. See #10001.
 			dropdown.bind( 'isEnabled' ).to( editor.commands.get( 'find' ) );
 
+			dropdown.once( 'change:isOpen', () => {
+				this.formView = new FindAndReplaceFormView( editor.locale );
+
+				dropdown.panelView.children.add( this.formView );
+
+				this._setupFormView( this.formView );
+			} );
+
 			// Every time a dropdown is opened, the search text field should get focused and selected for better UX.
 			// Note: Using the low priority here to make sure the following listener starts working after
 			// the default action of the drop-down is executed (i.e. the panel showed up). Otherwise,
@@ -66,14 +74,6 @@ export default class FindAndReplaceUI extends Plugin {
 			// and no longer should be marked in the content.
 			dropdown.on( 'change:isOpen', ( event, name, isOpen ) => {
 				if ( isOpen ) {
-					if ( !this.formView ) {
-						this.formView = new FindAndReplaceFormView( editor.locale );
-
-						dropdown.panelView.children.add( this.formView );
-
-						this._setupFormView( this.formView );
-					}
-
 					this.formView.disableCssTransitions();
 
 					this.formView.reset();

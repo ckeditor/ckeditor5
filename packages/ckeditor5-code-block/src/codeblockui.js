@@ -74,10 +74,8 @@ export default class CodeBlockUI extends Plugin {
 			dropdownView.class = 'ck-code-block-dropdown';
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			dropdownView.on( 'change:isOpen', ( evt, name, isOpen ) => {
-				if ( isOpen && !dropdownView.listView ) {
-					addListToDropdown( dropdownView, this._getLanguageListItemDefinitions( normalizedLanguageDefs ) );
-				}
+			dropdownView.once( 'change:isOpen', () => {
+				addListToDropdown( dropdownView, this._getLanguageListItemDefinitions( normalizedLanguageDefs ) );
 			} );
 
 			return dropdownView;

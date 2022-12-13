@@ -44,10 +44,8 @@ export default class FontFamilyUI extends Plugin {
 		editor.ui.componentFactory.add( FONT_FAMILY, locale => {
 			const dropdownView = createDropdown( locale );
 
-			dropdownView.on( 'change:isOpen', ( evt, name, isOpen ) => {
-				if ( isOpen && !dropdownView.listView ) {
-					addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
-				}
+			dropdownView.once( 'change:isOpen', () => {
+				addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
 			} );
 
 			dropdownView.buttonView.set( {
