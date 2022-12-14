@@ -114,7 +114,7 @@ function selectionPostFixer( writer: Writer, model: Model ): boolean {
 /**
  * Tries fixing a range if it's incorrect.
  *
- * @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
+ * @returns Returns fixed range or null if range is valid.
  */
 function tryFixingRange( range: Range, schema: Schema ) {
 	if ( range.isCollapsed ) {

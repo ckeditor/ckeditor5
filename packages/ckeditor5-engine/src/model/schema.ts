@@ -36,11 +36,11 @@ import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
  * * The {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
  */
 export default class Schema extends ObservableMixin() {
+	private readonly _sourceDefinitions: Record<string, Array<SchemaItemDefinition>> = {};
+
 	/**
 	 * A dictionary containing attribute properties.
 	 */
-	private readonly _sourceDefinitions: Record<string, Array<SchemaItemDefinition>> = {};
-
 	private readonly _attributeProperties: Record<string, AttributeProperties> = {};
 	private _compiledDefinitions?: Record<string, SchemaCompiledItemDefinition> | null;
 
