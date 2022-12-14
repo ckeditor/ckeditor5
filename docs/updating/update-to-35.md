@@ -138,7 +138,8 @@ export default class MyEditorUI extends EditorUI {
 **After**:
 
 ```js
-import { EditorUI } from 'ckeditor5/src/ui';
+import { EditorUI } from 'ckeditor5/src/core';
+// Or `import { EditorUI } from 'ckeditor5/src/ui';` if you update to v36.x;
 
 export default class MyEditorUI extends EditorUI {
 	// ...
