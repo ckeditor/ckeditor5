@@ -22,37 +22,33 @@ import { Command, type Editor } from 'ckeditor5/src/core';
  * @extends module:core/command~Command
  */
 export default class AttributeCommand extends Command {
+	/**
+	 * Flag indicating whether the command is active. The command is active when the
+	 * {@link module:engine/model/selection~Selection#hasAttribute selection has the attribute} which means that:
+	 *
+	 * * If the selection is not empty &ndash; That the attribute is set on the first node in the selection that allows this attribute.
+	 * * If the selection is empty &ndash; That the selection has the attribute itself (which means that newly typed
+	 * text will have this attribute, too).
+	 *
+	 * @observable
+	 * @readonly
+	 */
 	declare public value: boolean;
 
+	/**
+	 * The attribute that will be set by the command.
+	 *
+	 * @readonly
+	 */
 	public attributeKey: string;
 
 	/**
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {String} attributeKey Attribute that will be set by the command.
+	 * @param attributeKey Attribute that will be set by the command.
 	 */
 	constructor( editor: Editor, attributeKey: string ) {
 		super( editor );
 
-		/**
-		 * The attribute that will be set by the command.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
 		this.attributeKey = attributeKey;
-
-		/**
-		 * Flag indicating whether the command is active. The command is active when the
-		 * {@link module:engine/model/selection~Selection#hasAttribute selection has the attribute} which means that:
-		 *
-		 * * If the selection is not empty &ndash; That the attribute is set on the first node in the selection that allows this attribute.
-		 * * If the selection is empty &ndash; That the selection has the attribute itself (which means that newly typed
-		 * text will have this attribute, too).
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #value
-		 */
 	}
 
 	/**
@@ -81,9 +77,9 @@ export default class AttributeCommand extends Command {
 	 * that the selection inherits all attributes from a node if it is in an empty node).
 	 *
 	 * @fires execute
-	 * @param {Object} [options] Command options.
-	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply the attribute,
-	 * otherwise the command will remove the attribute.
+	 * @param options Command options.
+	 * @param options.forceValue If set, it will force the command behavior. If `true`,
+	 * the command will apply the attribute, otherwise the command will remove the attribute.
 	 * If not set, the command will look for its current value to decide what it should do.
 	 */
 	public override execute( options: { forceValue?: boolean } = {} ): void {
@@ -117,10 +113,9 @@ export default class AttributeCommand extends Command {
 	 * Checks the attribute value of the first node in the selection that allows the attribute.
 	 * For the collapsed selection returns the selection attribute.
 	 *
-	 * @private
-	 * @returns {Boolean} The attribute value.
+	 * @returns The attribute value.
 	 */
-	private _getValueFromFirstAllowedNode() {
+	private _getValueFromFirstAllowedNode(): boolean {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const selection = model.document.selection;
