@@ -103,6 +103,16 @@ class AssetLink extends Plugin {
 	}
 }
 
+class SpecialCharactersAdditional extends Plugin {
+	init() {
+		const editor = this.editor;
+		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
+			{ title: 'arrow right', character: '►' },
+			{ title: 'arrow left', character: '◄' }
+		] );
+	}
+}
+
 // Plugins to include in the build.
 ClassicEditor.builtinPlugins = [
 	AssetLink,
@@ -127,6 +137,7 @@ ClassicEditor.builtinPlugins = [
 	RemoveFormat,
 	Font,
 	SpecialCharacters,
+	SpecialCharactersAdditional,
 	SpecialCharactersEssentials,
 	Table,
 	TableColumnResize,
