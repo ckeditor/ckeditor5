@@ -7,7 +7,7 @@
  * @module basic-styles/attributecommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 
 /**
  * An extension of the base {@link module:core/command~Command} class, which provides utilities for a command
@@ -22,11 +22,15 @@ import { Command } from 'ckeditor5/src/core';
  * @extends module:core/command~Command
  */
 export default class AttributeCommand extends Command {
+	declare public value: boolean;
+
+	public attributeKey: string;
+
 	/**
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {String} attributeKey Attribute that will be set by the command.
 	 */
-	constructor( editor, attributeKey ) {
+	constructor( editor: Editor, attributeKey: string ) {
 		super( editor );
 
 		/**
@@ -54,7 +58,7 @@ export default class AttributeCommand extends Command {
 	/**
 	 * Updates the command's {@link #value} and {@link #isEnabled} based on the current selection.
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const doc = model.document;
 
@@ -82,7 +86,7 @@ export default class AttributeCommand extends Command {
 	 * otherwise the command will remove the attribute.
 	 * If not set, the command will look for its current value to decide what it should do.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { forceValue?: boolean } = {} ): void {
 		const model = this.editor.model;
 		const doc = model.document;
 		const selection = doc.selection;
@@ -116,7 +120,7 @@ export default class AttributeCommand extends Command {
 	 * @private
 	 * @returns {Boolean} The attribute value.
 	 */
-	_getValueFromFirstAllowedNode() {
+	private _getValueFromFirstAllowedNode() {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const selection = model.document.selection;

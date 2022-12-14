@@ -24,14 +24,14 @@ export default class BoldEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'BoldEditing' {
 		return 'BoldEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		// Allow bold attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: BOLD } );
@@ -60,6 +60,8 @@ export default class BoldEditing extends Plugin {
 							styles: [ 'font-weight' ]
 						};
 					}
+
+					return null;
 				}
 			]
 		} );

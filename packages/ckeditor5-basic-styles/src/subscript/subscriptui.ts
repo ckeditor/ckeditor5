@@ -4,45 +4,46 @@
  */
 
 /**
- * @module basic-styles/underline/underlineui
+ * @module basic-styles/subscript/subscriptui
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
-import underlineIcon from '../../theme/icons/underline.svg';
+import subscriptIcon from '../../theme/icons/subscript.svg';
 
-const UNDERLINE = 'underline';
+import type AttributeCommand from '../attributecommand';
+
+const SUBSCRIPT = 'subscript';
 
 /**
- * The underline UI feature. It introduces the Underline button.
+ * The subscript UI feature. It introduces the Subscript button.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class UnderlineUI extends Plugin {
+export default class SubscriptUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
-		return 'UnderlineUI';
+	public static get pluginName(): 'SubscriptUI' {
+		return 'SubscriptUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
-		// Add bold button to feature components.
-		editor.ui.componentFactory.add( UNDERLINE, locale => {
-			const command = editor.commands.get( UNDERLINE );
+		// Add subscript button to feature components.
+		editor.ui.componentFactory.add( SUBSCRIPT, locale => {
+			const command: AttributeCommand = editor.commands.get( SUBSCRIPT )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Underline' ),
-				icon: underlineIcon,
-				keystroke: 'CTRL+U',
+				label: t( 'Subscript' ),
+				icon: subscriptIcon,
 				tooltip: true,
 				isToggleable: true
 			} );
@@ -51,7 +52,7 @@ export default class UnderlineUI extends Plugin {
 
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
-				editor.execute( UNDERLINE );
+				editor.execute( SUBSCRIPT );
 				editor.editing.view.focus();
 			} );
 

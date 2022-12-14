@@ -7,9 +7,11 @@
  * @module basic-styles/underline
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import UnderlineEditing from './underline/underlineediting';
 import UnderlineUI from './underline/underlineui';
+
+import type AttributeCommand from './attributecommand';
 
 /**
  * The underline feature.
@@ -26,14 +28,20 @@ export default class Underline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ UnderlineEditing, UnderlineUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Underline' {
 		return 'Underline';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		underline: AttributeCommand;
 	}
 }

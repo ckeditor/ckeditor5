@@ -4,46 +4,47 @@
  */
 
 /**
- * @module basic-styles/code/codeui
+ * @module basic-styles/underline/underlineui
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
-import codeIcon from '../../theme/icons/code.svg';
+import underlineIcon from '../../theme/icons/underline.svg';
 
-import '../../theme/code.css';
+import type AttributeCommand from '../attributecommand';
 
-const CODE = 'code';
+const UNDERLINE = 'underline';
 
 /**
- * The code UI feature. It introduces the Code button.
+ * The underline UI feature. It introduces the Underline button.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class CodeUI extends Plugin {
+export default class UnderlineUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
-		return 'CodeUI';
+	public static get pluginName(): 'UnderlineUI' {
+		return 'UnderlineUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
-		// Add code button to feature components.
-		editor.ui.componentFactory.add( CODE, locale => {
-			const command = editor.commands.get( CODE );
+		// Add bold button to feature components.
+		editor.ui.componentFactory.add( UNDERLINE, locale => {
+			const command: AttributeCommand = editor.commands.get( UNDERLINE )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Code' ),
-				icon: codeIcon,
+				label: t( 'Underline' ),
+				icon: underlineIcon,
+				keystroke: 'CTRL+U',
 				tooltip: true,
 				isToggleable: true
 			} );
@@ -52,7 +53,7 @@ export default class CodeUI extends Plugin {
 
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
-				editor.execute( CODE );
+				editor.execute( UNDERLINE );
 				editor.editing.view.focus();
 			} );
 

@@ -4,45 +4,45 @@
  */
 
 /**
- * @module basic-styles/italic/italicui
+ * @module basic-styles/bold/boldui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
-import italicIcon from '../../theme/icons/italic.svg';
+import type AttributeCommand from '../attributecommand';
 
-const ITALIC = 'italic';
+const BOLD = 'bold';
 
 /**
- * The italic UI feature. It introduces the Italic button.
+ * The bold UI feature. It introduces the Bold button.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ItalicUI extends Plugin {
+export default class BoldUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
-		return 'ItalicUI';
+	public static get pluginName(): 'BoldUI' {
+		return 'BoldUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( ITALIC, locale => {
-			const command = editor.commands.get( ITALIC );
+		editor.ui.componentFactory.add( BOLD, locale => {
+			const command: AttributeCommand = editor.commands.get( BOLD )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Italic' ),
-				icon: italicIcon,
-				keystroke: 'CTRL+I',
+				label: t( 'Bold' ),
+				icon: icons.bold,
+				keystroke: 'CTRL+B',
 				tooltip: true,
 				isToggleable: true
 			} );
@@ -51,7 +51,7 @@ export default class ItalicUI extends Plugin {
 
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
-				editor.execute( ITALIC );
+				editor.execute( BOLD );
 				editor.editing.view.focus();
 			} );
 

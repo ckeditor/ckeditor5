@@ -4,44 +4,46 @@
  */
 
 /**
- * @module basic-styles/subscript/subscriptui
+ * @module basic-styles/superscript/superscriptui
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
-import subscriptIcon from '../../theme/icons/subscript.svg';
+import superscriptIcon from '../../theme/icons/superscript.svg';
 
-const SUBSCRIPT = 'subscript';
+import type AttributeCommand from '../attributecommand';
+
+const SUPERSCRIPT = 'superscript';
 
 /**
- * The subscript UI feature. It introduces the Subscript button.
+ * The superscript UI feature. It introduces the Superscript button.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class SubscriptUI extends Plugin {
+export default class SuperscriptUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
-		return 'SubscriptUI';
+	public static get pluginName(): 'SuperscriptUI' {
+		return 'SuperscriptUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
-		// Add subscript button to feature components.
-		editor.ui.componentFactory.add( SUBSCRIPT, locale => {
-			const command = editor.commands.get( SUBSCRIPT );
+		// Add superscript button to feature components.
+		editor.ui.componentFactory.add( SUPERSCRIPT, locale => {
+			const command: AttributeCommand = editor.commands.get( SUPERSCRIPT )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Subscript' ),
-				icon: subscriptIcon,
+				label: t( 'Superscript' ),
+				icon: superscriptIcon,
 				tooltip: true,
 				isToggleable: true
 			} );
@@ -50,7 +52,7 @@ export default class SubscriptUI extends Plugin {
 
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
-				editor.execute( SUBSCRIPT );
+				editor.execute( SUPERSCRIPT );
 				editor.editing.view.focus();
 			} );
 

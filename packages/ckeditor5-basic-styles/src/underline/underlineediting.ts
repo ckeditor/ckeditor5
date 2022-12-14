@@ -24,14 +24,14 @@ export default class UnderlineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'UnderlineEditing' {
 		return 'UnderlineEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Allow strikethrough attribute on text nodes.

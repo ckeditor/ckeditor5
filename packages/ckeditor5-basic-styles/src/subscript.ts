@@ -7,9 +7,11 @@
  * @module basic-styles/subscript
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import SubscriptEditing from './subscript/subscriptediting';
 import SubscriptUI from './subscript/subscriptui';
+
+import type AttributeCommand from './attributecommand';
 
 /**
  * The subscript feature.
@@ -23,14 +25,20 @@ export default class Subscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ SubscriptEditing, SubscriptUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Subscript' {
 		return 'Subscript';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		subscript: AttributeCommand;
 	}
 }

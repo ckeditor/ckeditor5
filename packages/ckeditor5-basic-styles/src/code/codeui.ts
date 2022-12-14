@@ -4,45 +4,48 @@
  */
 
 /**
- * @module basic-styles/strikethrough/strikethroughui
+ * @module basic-styles/code/codeui
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
-import strikethroughIcon from '../../theme/icons/strikethrough.svg';
+import type AttributeCommand from '../attributecommand';
 
-const STRIKETHROUGH = 'strikethrough';
+import codeIcon from '../../theme/icons/code.svg';
+
+import '../../theme/code.css';
+
+const CODE = 'code';
 
 /**
- * The strikethrough UI feature. It introduces the Strikethrough button.
+ * The code UI feature. It introduces the Code button.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class StrikethroughUI extends Plugin {
+export default class CodeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
-		return 'StrikethroughUI';
+	public static get pluginName(): 'CodeUI' {
+		return 'CodeUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
-		// Add strikethrough button to feature components.
-		editor.ui.componentFactory.add( STRIKETHROUGH, locale => {
-			const command = editor.commands.get( STRIKETHROUGH );
+		// Add code button to feature components.
+		editor.ui.componentFactory.add( CODE, locale => {
+			const command: AttributeCommand = editor.commands.get( CODE )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Strikethrough' ),
-				icon: strikethroughIcon,
-				keystroke: 'CTRL+SHIFT+X',
+				label: t( 'Code' ),
+				icon: codeIcon,
 				tooltip: true,
 				isToggleable: true
 			} );
@@ -51,7 +54,7 @@ export default class StrikethroughUI extends Plugin {
 
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
-				editor.execute( STRIKETHROUGH );
+				editor.execute( CODE );
 				editor.editing.view.focus();
 			} );
 

@@ -4,44 +4,47 @@
  */
 
 /**
- * @module basic-styles/superscript/superscriptui
+ * @module basic-styles/italic/italicui
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
-import superscriptIcon from '../../theme/icons/superscript.svg';
+import italicIcon from '../../theme/icons/italic.svg';
 
-const SUPERSCRIPT = 'superscript';
+import type AttributeCommand from '../attributecommand';
+
+const ITALIC = 'italic';
 
 /**
- * The superscript UI feature. It introduces the Superscript button.
+ * The italic UI feature. It introduces the Italic button.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class SuperscriptUI extends Plugin {
+export default class ItalicUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
-		return 'SuperscriptUI';
+	public static get pluginName(): 'ItalicUI' {
+		return 'ItalicUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
-		// Add superscript button to feature components.
-		editor.ui.componentFactory.add( SUPERSCRIPT, locale => {
-			const command = editor.commands.get( SUPERSCRIPT );
+		// Add bold button to feature components.
+		editor.ui.componentFactory.add( ITALIC, locale => {
+			const command: AttributeCommand = editor.commands.get( ITALIC )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Superscript' ),
-				icon: superscriptIcon,
+				label: t( 'Italic' ),
+				icon: italicIcon,
+				keystroke: 'CTRL+I',
 				tooltip: true,
 				isToggleable: true
 			} );
@@ -50,7 +53,7 @@ export default class SuperscriptUI extends Plugin {
 
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
-				editor.execute( SUPERSCRIPT );
+				editor.execute( ITALIC );
 				editor.editing.view.focus();
 			} );
 

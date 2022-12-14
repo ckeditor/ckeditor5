@@ -25,14 +25,14 @@ export default class StrikethroughEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'StrikethroughEditing' {
 		return 'StrikethroughEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Allow strikethrough attribute on text nodes.

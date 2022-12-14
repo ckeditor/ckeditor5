@@ -24,14 +24,14 @@ export default class ItalicEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'ItalicEditing' {
 		return 'ItalicEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Allow italic attribute on text nodes.

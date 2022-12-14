@@ -7,9 +7,11 @@
  * @module basic-styles/superscript
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import SuperscriptEditing from './superscript/superscriptediting';
 import SuperscriptUI from './superscript/superscriptui';
+
+import type AttributeCommand from './attributecommand';
 
 /**
  * The superscript feature.
@@ -23,14 +25,20 @@ export default class Superscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ SuperscriptEditing, SuperscriptUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Superscript' {
 		return 'Superscript';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		superscript: AttributeCommand;
 	}
 }

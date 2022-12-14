@@ -7,9 +7,11 @@
  * @module basic-styles/code
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import CodeEditing from './code/codeediting';
 import CodeUI from './code/codeui';
+
+import type AttributeCommand from './attributecommand';
 
 import '../theme/code.css';
 
@@ -28,14 +30,20 @@ export default class Code extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ CodeEditing, CodeUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Code' {
 		return 'Code';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		code: AttributeCommand;
 	}
 }

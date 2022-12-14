@@ -7,7 +7,7 @@
  * @module basic-styles/code/codeediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { TwoStepCaretMovement, inlineHighlight } from 'ckeditor5/src/typing';
 
 import AttributeCommand from '../attributecommand';
@@ -27,21 +27,21 @@ export default class CodeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CodeEditing' {
 		return 'CodeEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TwoStepCaretMovement ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Allow code attribute on text nodes.

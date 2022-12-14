@@ -24,14 +24,14 @@ export default class SuperscriptEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'SuperscriptEditing' {
 		return 'SuperscriptEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		// Allow super attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: SUPERSCRIPT } );

@@ -7,9 +7,11 @@
  * @module basic-styles/italic
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import ItalicEditing from './italic/italicediting';
 import ItalicUI from './italic/italicui';
+
+import type AttributeCommand from './attributecommand';
 
 /**
  * The italic feature.
@@ -26,14 +28,20 @@ export default class Italic extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ ItalicEditing, ItalicUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Italic' {
 		return 'Italic';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		italic: AttributeCommand;
 	}
 }
