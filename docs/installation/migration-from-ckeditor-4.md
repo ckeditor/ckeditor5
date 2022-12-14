@@ -14,7 +14,7 @@ modified_at: 2022-04-15
 <info-box hint>
 **Quick recap**
 
-In previous tutorials you have learned about installing, configuring and extending your editor. This guide assumes that you know a bit about CKEditor 5, so if you are completely new to CKEditor 5, check the previous articles!
+In previous tutorials of this section you could learn about installing, configuring and extending your editor. This guide assumes that you know a bit about CKEditor 5, so if you are completely new to CKEditor 5, check the previous articles!
 
 Before starting, be sure that migrating is your best choice.
 </info-box>
@@ -25,6 +25,6 @@ The very first aspect that changed with CKEditor 5 is its installation procedure
 
 The API for integrating CKEditor with your pages also changed. It is worth checking {@link installation/getting-started/basic-api Basic API} for an introduction.
 
-When it comes to {@link features/index features}, there are two aspects that need to be taken into consideration. CKEditor 5 may still not have the same features available as CKEditor 4 and some existing features may behave differently. Therefore, it is worth spending some time analyzing required features.
+When it comes to {@link features/index features}, there are two aspects that need to be taken into consideration. CKEditor 5 may still not have all the same features available as CKEditor 4 yet and some existing features may behave differently. Therefore, it is worth spending some time analyzing the features you need in your implementation.
 
 To proceed with the upgrade, please refer to the {@link updating/migration-from-ckeditor-4 Migration from CKEditor 4} guide for further details and features comparison.
