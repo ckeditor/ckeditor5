@@ -7,17 +7,19 @@
  * @module word-count/utils
  */
 
+import type { Element, Item } from 'ckeditor5/src/engine';
+
 /**
  * Returns a plain text representation of an element and its children.
  *
- * @param {module:engine/model/element~Element} element
- * @returns {String} Plain text representing the model's data.
+ * @returns Plain text representing the model's data.
  */
-export function modelElementToPlainText( element ) {
-	if ( element.is( '$text' ) || element.is( '$textProxy' ) ) {
-		return element.data;
+export function modelElementToPlainText( item: Item ): string {
+	if ( item.is( '$text' ) || item.is( '$textProxy' ) ) {
+		return item.data;
 	}
 
+	const element = item as Element;
 	let text = '';
 	let prev = null;
 
