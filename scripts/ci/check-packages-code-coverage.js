@@ -30,6 +30,8 @@ const EXCLUDED_PACKAGES = [ 'ckeditor5-minimap' ];
  * This script should be used on Travis CI. It executes tests and prepares the code coverage report
  * for each package found in the `packages/` directory. Then, all reports are merged into a single
  * file that will be sent to Coveralls.
+ *
+ * @returns {Number} A bash exit code. When returns `0`, everything is fine (no errors).
  */
 module.exports = function checkPackagesCodeCoverage() {
 	childProcess.execSync( 'rm -r -f .nyc_output', { stdio: 'inherit' } );
@@ -101,8 +103,10 @@ module.exports = function checkPackagesCodeCoverage() {
 
 		console.log( '\n---\n' );
 
-		process.exit( 1 ); // Exit code 1 will break the CI build.
+		return 1;
 	}
+
+	return 0;
 };
 
 /**

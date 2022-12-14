@@ -120,11 +120,10 @@ export default class HtmlDataProcessor implements DataProcessor {
 	 * Converts an HTML string to its DOM representation. Returns a document fragment containing nodes parsed from
 	 * the provided data.
 	 *
-	 * @private
 	 * @param {String} data
 	 * @returns {DocumentFragment}
 	 */
-	private _toDom( data: string ): DocumentFragment {
+	protected _toDom( data: string ): DocumentFragment {
 		// Wrap data with a <body> tag so leading non-layout nodes (like <script>, <style>, HTML comment)
 		// will be preserved in the body collection.
 		// Do it only for data that is not a full HTML document.
