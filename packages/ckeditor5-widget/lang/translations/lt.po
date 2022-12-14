@@ -30,4 +30,4 @@ msgstr "Įkelti pastraipą po bloko"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Paspauskite Enter, jei norite rašyti po valdiklio, arba paspauskite Shift + Enter, jei norite rašyti prieš valdiklį."

@@ -23,7 +23,6 @@ install:
 - yarn install
 script:
 - ./scripts/ci/travis-check.js
-- if [[ $TRAVIS_JOB_TYPE == "Tests" && $TRAVIS_TEST_RESULT -eq 0 ]]; then ./scripts/ci/trigger-ckeditor5-continuous-integration.sh; fi
 after_script:
 - export END_TIME=$( date +%s )
 - ckeditor5-dev-tests-notify-travis-status

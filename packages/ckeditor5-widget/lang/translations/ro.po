@@ -30,4 +30,4 @@ msgstr "Inserează un paragraf după bloc"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Apăsați Enter pentru a scrie după widget sau Shift+Enter pentru a scrie înaintea acestuia"
