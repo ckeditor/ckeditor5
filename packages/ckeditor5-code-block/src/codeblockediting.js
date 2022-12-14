@@ -148,10 +148,50 @@ export default class CodeBlockEditing extends Plugin {
 		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true ) );
 		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs ) );
 		editor.data.downcastDispatcher.on( 'insert:softBreak', modelToDataViewSoftBreakInsertion( model ), { priority: 'high' } );
+		editor.data.downcastDispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+
+			// caption is available only inside codeBlock
+			if ( data.item.parent.name !== 'codeBlock' ) {
+				return;
+			}
+			
+		} );
 
 		editor.data.upcastDispatcher.on( 'element:code', dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs ) );
-		editor.data.upcastDispatcher.on( 'text', dataViewToModelTextNewlinesInsertion() );
+		editor.data.upcastDispatcher.on( 'element:figcaption', ( evt, data, conversionApi ) => {
+			const viewCaptionElement = data.viewItem;
+			const viewCodeElement = viewCaptionElement.parent;
+			const { 
+				consumable, writer, safeInsert, convertChildren, updateConversionResult
+			 } = conversionApi;
 
+			if ( !viewCodeElement || !viewCodeElement.is( 'element', 'code' ) ) {
+				return;
+			}
+
+			// In case of nested caption we don't want to convert to another caption.
+			if ( data.modelCursor.findAncestor( 'caption' ) ) {
+				return;
+			}
+
+			if ( !consumable.test( viewCaptionElement, { name: true } ) ) {
+				return;
+			}
+
+			const captionModelElement = writer.createElement( 'caption' );
+
+			convertChildren( viewCaptionElement, captionModelElement );
+
+			if ( !safeInsert( captionModelElement, data.modelCursor ) ) {
+				return;
+			}
+
+			consumable.consume( viewCaptionElement, captionModelElement );
+			
+			updateConversionResult( captionModelElement, data );
+
+		} );
+		editor.data.upcastDispatcher.on( 'text', dataViewToModelTextNewlinesInsertion() );
 		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelOrphanNodeConsumer(), { priority: 'high' } );
 
 		// Intercept the clipboard input (paste) when the selection is anchored in the code block and force the clipboard
