@@ -61,7 +61,7 @@ export default class UpcastWriter {
 	 * A list of nodes to be inserted into the created document fragment.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
 	 */
-	public createDocumentFragment( children: Node | Iterable<Node> ): DocumentFragment {
+	public createDocumentFragment( children?: Node | Iterable<Node> ): DocumentFragment {
 		return new DocumentFragment( this.document, children );
 	}
 
@@ -82,8 +82,8 @@ export default class UpcastWriter {
 	 */
 	public createElement(
 		name: string,
-		attrs: ElementAttributes,
-		children: Node | Iterable<Node>
+		attrs?: ElementAttributes,
+		children?: Node | Iterable<Node>
 	): Element {
 		return new Element( this.document, name, attrs, children );
 	}
@@ -122,7 +122,7 @@ export default class UpcastWriter {
 	 * @fires module:engine/view/node~Node#event:change
 	 * @returns {Number} Number of appended nodes.
 	 */
-	public appendChild( items: Item | Iterable<Item>, element: Element | DocumentFragment ): number {
+	public appendChild( items: Item | string | Iterable<Item | string>, element: Element | DocumentFragment ): number {
 		return element._appendChild( items );
 	}
 

@@ -6,8 +6,7 @@
 /**
  * @module code-block/indentcodeblockcommand
  */
-
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 
 import {
 	getIndentOutdentPositions,
@@ -16,27 +15,23 @@ import {
 
 /**
  * The code block indentation increase command plugin.
- *
- * @extends module:core/command~Command
  */
 export default class IndentCodeBlockCommand extends Command {
-	constructor( editor ) {
+	/**
+	 * A sequence of characters added to the line when the command is executed.
+	 */
+	private _indentSequence: string;
+
+	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * A sequence of characters added to the line when the command is executed.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {String}
-		 */
-		this._indentSequence = editor.config.get( 'codeBlock.indentSequence' );
+		this._indentSequence = editor.config.get( 'codeBlock.indentSequence' ) as string;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.isEnabled = this._checkEnabled();
 	}
 
@@ -46,7 +41,7 @@ export default class IndentCodeBlockCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	execute() {
+	public override execute(): void {
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -89,11 +84,8 @@ export default class IndentCodeBlockCommand extends Command {
 
 	/**
 	 * Checks whether the command can be enabled in the current context.
-	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled(): boolean {
 		if ( !this._indentSequence ) {
 			return false;
 		}

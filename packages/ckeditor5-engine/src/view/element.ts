@@ -609,7 +609,7 @@ export default class Element extends Node {
 	 * @fires module:engine/view/node~Node#change
 	 * @returns {Number} Number of appended nodes.
 	 */
-	public _appendChild( items: Item | Iterable<Item> ): number {
+	public _appendChild( items: Item | string | Iterable<Item | string> ): number {
 		return this._insertChild( this.childCount, items );
 	}
 
@@ -625,7 +625,7 @@ export default class Element extends Node {
 	 * @fires module:engine/view/node~Node#change
 	 * @returns {Number} Number of inserted nodes.
 	 */
-	public _insertChild( index: number, items: Item | Iterable<Item> ): number {
+	public _insertChild( index: number, items: Item | string | Iterable<Item | string> ): number {
 		this._fireChange( 'children', this );
 		let count = 0;
 

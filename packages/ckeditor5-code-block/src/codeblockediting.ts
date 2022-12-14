@@ -7,9 +7,19 @@
  * @module code-block/codeblockediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ShiftEnter } from 'ckeditor5/src/enter';
-import { UpcastWriter } from 'ckeditor5/src/engine';
+import { Plugin, type PluginDependencies, type Editor, type MultiCommand } from 'ckeditor5/src/core';
+import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
+
+import { UpcastWriter,
+	type Range,
+	type Node,
+	type ModelGetSelectedContentEvent,
+	type ViewDocumentTabEvent,
+	type DowncastInsertEvent,
+	type UpcastElementEvent,
+	type UpcastTextEvent,
+	type Element
+} from 'ckeditor5/src/engine';
 
 import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';
@@ -40,21 +50,21 @@ export default class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): string {
 		return 'CodeBlockEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ ShiftEnter ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( 'codeBlock', {
@@ -83,7 +93,7 @@ export default class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const model = editor.model;
@@ -99,11 +109,11 @@ export default class CodeBlockEditing extends Plugin {
 		editor.commands.add( 'indentCodeBlock', new IndentCodeBlockCommand( editor ) );
 		editor.commands.add( 'outdentCodeBlock', new OutdentCodeBlockCommand( editor ) );
 
-		this.listenTo( view.document, 'tab', ( evt, data ) => {
+		this.listenTo<ViewDocumentTabEvent>( view.document, 'tab', ( evt, data ) => {
 			const commandName = data.shiftKey ? 'outdentCodeBlock' : 'indentCodeBlock';
 			const command = editor.commands.get( commandName );
 
-			if ( !command.isEnabled ) {
+			if ( !command || !command.isEnabled ) {
 				return;
 			}
 
@@ -123,8 +133,9 @@ export default class CodeBlockEditing extends Plugin {
 
 		// Allow all list* attributes on `codeBlock` (integration with DocumentList).
 		// Disallow all attributes on $text inside `codeBlock`.
-		schema.addAttributeCheck( ( context, attributeName ) => {
-			const isDocumentListAttributeOnCodeBlock = context.endsWith( 'codeBlock' ) &&
+		schema.addAttributeCheck( ( context: any, attributeName ) => {
+			const isDocumentListAttributeOnCodeBlock = context.endsWith &&
+				context.endsWith( 'codeBlock' ) &&
 				attributeName.startsWith( 'list' ) &&
 				attributeName !== 'list';
 
@@ -132,33 +143,44 @@ export default class CodeBlockEditing extends Plugin {
 				return true;
 			}
 
-			if ( context.endsWith( 'codeBlock $text' ) ) {
+			if ( context.endsWith && context.endsWith( 'codeBlock $text' ) ) {
 				return false;
 			}
 		} );
 
 		// Disallow object elements inside `codeBlock`. See #9567.
-		editor.model.schema.addChildCheck( ( context, childDefinition ) => {
-			if ( context.endsWith( 'codeBlock' ) && childDefinition.isObject ) {
+		editor.model.schema.addChildCheck( ( context: any, childDefinition ) => {
+			if ( context.endsWith && context.endsWith( 'codeBlock' ) && childDefinition.isObject ) {
 				return false;
 			}
 		} );
 
 		// Conversion.
-		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true ) );
-		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs ) );
-		editor.data.downcastDispatcher.on( 'insert:softBreak', modelToDataViewSoftBreakInsertion( model ), { priority: 'high' } );
-
-		editor.data.upcastDispatcher.on( 'element:code', dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs ) );
-		editor.data.upcastDispatcher.on( 'text', dataViewToModelTextNewlinesInsertion() );
-
-		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelOrphanNodeConsumer(), { priority: 'high' } );
+		editor.editing.downcastDispatcher.on<DowncastInsertEvent>(
+			'insert:codeBlock',
+			modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true )
+		);
+		editor.data.downcastDispatcher.on<DowncastInsertEvent>(
+			'insert:codeBlock',
+			modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs )
+		);
+		editor.data.downcastDispatcher.on<DowncastInsertEvent>(
+			'insert:softBreak',
+			modelToDataViewSoftBreakInsertion( model ),
+			{ priority: 'high' }
+		);
+		editor.data.upcastDispatcher.on<UpcastElementEvent>(
+			'element:code',
+			dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs )
+		);
+		editor.data.upcastDispatcher.on<UpcastTextEvent>( 'text', dataViewToModelTextNewlinesInsertion() );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:pre', dataViewToModelOrphanNodeConsumer(), { priority: 'high' } );
 
 		// Intercept the clipboard input (paste) when the selection is anchored in the code block and force the clipboard
 		// data to be pasted as a single plain text. Otherwise, the code lines will split the code block and
 		// "spill out" as separate paragraphs.
 		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
-			let insertionRange = model.createRange( model.document.selection.anchor );
+			let insertionRange = model.createRange( model.document.selection.anchor! );
 
 			// Use target ranges in case this is a drop.
 			if ( data.targetRanges ) {
@@ -181,18 +203,26 @@ export default class CodeBlockEditing extends Plugin {
 		// upon next paste, this bare text will not be inserted as a code block, which is not the best UX.
 		// Similarly, when the selection in a single line, the selected content should be an inline code
 		// so it can be pasted later on and retain it's preformatted nature.
-		this.listenTo( model, 'getSelectedContent', ( evt, [ selection ] ) => {
+		this.listenTo<ModelGetSelectedContentEvent>( model, 'getSelectedContent', ( evt, [ selection ] ) => {
 			const anchor = selection.anchor;
 
-			if ( selection.isCollapsed || !anchor.parent.is( 'element', 'codeBlock' ) || !anchor.hasSameParentAs( selection.focus ) ) {
+			if (
+				!anchor ||
+				selection.isCollapsed ||
+				!anchor.parent.is( 'element', 'codeBlock' ) ||
+				!anchor.hasSameParentAs( selection.focus! )
+			) {
 				return;
 			}
 
 			model.change( writer => {
-				const docFragment = evt.return;
+				const docFragment = evt.return!;
 
 				// fo[o<softBreak></softBreak>b]ar  ->   <codeBlock language="...">[o<softBreak></softBreak>b]<codeBlock>
-				if ( docFragment.childCount > 1 || selection.containsEntireContent( anchor.parent ) ) {
+				if (
+					anchor.parent.is( 'element' ) &&
+					( docFragment.childCount > 1 || selection.containsEntireContent( anchor.parent ) )
+				) {
 					const codeBlock = writer.createElement( 'codeBlock', anchor.parent.getAttributes() );
 					writer.append( docFragment, codeBlock );
 
@@ -200,15 +230,14 @@ export default class CodeBlockEditing extends Plugin {
 					writer.append( codeBlock, newDocumentFragment );
 
 					evt.return = newDocumentFragment;
+					return;
 				}
 
 				// "f[oo]"                          ->   <$text code="true">oo</text>
-				else {
-					const textNode = docFragment.getChild( 0 );
+				const textNode = docFragment.getChild( 0 )!;
 
-					if ( schema.checkAttribute( textNode, 'code' ) ) {
-						writer.setAttribute( 'code', true, textNode );
-					}
+				if ( schema.checkAttribute( textNode, 'code' ) ) {
+					writer.setAttribute( 'code', true, textNode );
 				}
 			} );
 		} );
@@ -217,7 +246,7 @@ export default class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const editor = this.editor;
 		const commands = editor.commands;
 		const indent = commands.get( 'indent' );
@@ -228,19 +257,19 @@ export default class CodeBlockEditing extends Plugin {
 			// If selection is in a code block we give priority to it. This way list item cannot be indented
 			// but if we would give priority to indenting list item then user would have to indent list item
 			// as much as possible and only then he could indent code block.
-			indent.registerChildCommand( commands.get( 'indentCodeBlock' ), { priority: 'highest' } );
+			( indent as MultiCommand ).registerChildCommand( commands.get( 'indentCodeBlock' )!, { priority: 'highest' } );
 		}
 
 		if ( outdent ) {
-			outdent.registerChildCommand( commands.get( 'outdentCodeBlock' ) );
+			( outdent as MultiCommand ).registerChildCommand( commands.get( 'outdentCodeBlock' )! );
 		}
 
 		// Customize the response to the <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd>
 		// key press when the selection is in the code block. Upon enter key press we can either
 		// leave the block if it's "two or three enters" in a row or create a new code block line, preserving
 		// previous line's indentation.
-		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
-			const positionParent = editor.model.document.selection.getLastPosition().parent;
+		this.listenTo<ViewDocumentEnterEvent>( editor.editing.view.document, 'enter', ( evt, data ) => {
+			const positionParent = editor.model.document.selection.getLastPosition()!.parent;
 
 			if ( !positionParent.is( 'element', 'codeBlock' ) ) {
 				return;
@@ -256,28 +285,31 @@ export default class CodeBlockEditing extends Plugin {
 	}
 }
 
-// Normally, when the Enter (or Shift+Enter) key is pressed, a soft line break is to be added to the
-// code block. Let's try to follow the indentation of the previous line when possible, for instance:
-//
-//		// Before pressing enter (or shift enter)
-//		<codeBlock>
-//		"    foo()"[]                   // Indent of 4 spaces.
-//		</codeBlock>
-//
-//		// After pressing:
-//		<codeBlock>
-//		"    foo()"                 // Indent of 4 spaces.
-//		<softBreak></softBreak>     // A new soft break created by pressing enter.
-//		"    "[]                    // Retain the indent of 4 spaces.
-//		</codeBlock>
-//
-// @param {module:core/editor/editor~Editor} editor
-function breakLineOnEnter( editor ) {
+/**
+ * Normally, when the Enter (or Shift+Enter) key is pressed, a soft line break is to be added to the
+ * code block. Let's try to follow the indentation of the previous line when possible, for instance:
+ *
+ * ```html
+ * // Before pressing enter (or shift enter)
+ * <codeBlock>
+ * "    foo()"[]                   // Indent of 4 spaces.
+ * </codeBlock>
+ *
+ * // After pressing:
+ * <codeBlock>
+ * "    foo()"                 // Indent of 4 spaces.
+ * <softBreak></softBreak>     // A new soft break created by pressing enter.
+ * "    "[]                    // Retain the indent of 4 spaces.
+ * </codeBlock>
+ * ```
+ */
+
+function breakLineOnEnter( editor: Editor ): void {
 	const model = editor.model;
 	const modelDoc = model.document;
-	const lastSelectionPosition = modelDoc.selection.getLastPosition();
+	const lastSelectionPosition = modelDoc.selection.getLastPosition()!;
 	const node = lastSelectionPosition.nodeBefore || lastSelectionPosition.textNode;
-	let leadingWhiteSpaces;
+	let leadingWhiteSpaces: string | undefined;
 
 	// Figure out the indentation (white space chars) at the beginning of the line.
 	if ( node && node.is( '$text' ) ) {
@@ -290,29 +322,33 @@ function breakLineOnEnter( editor ) {
 
 		// If the line before being broken in two had some indentation, let's retain it
 		// in the new line.
-		if ( leadingWhiteSpaces ) {
+		if ( leadingWhiteSpaces && modelDoc.selection.anchor ) {
 			writer.insertText( leadingWhiteSpaces, modelDoc.selection.anchor );
 		}
 	} );
 }
 
-// Leave the code block when Enter (but NOT Shift+Enter) has been pressed twice at the beginning
-// of the code block:
-//
-//		// Before:
-//		<codeBlock>[]<softBreak></softBreak>foo</codeBlock>
-//
-//		// After pressing:
-//		<paragraph>[]</paragraph><codeBlock>foo</codeBlock>
-//
-// @param {module:core/editor/editor~Editor} editor
-// @param {Boolean} isSoftEnter When `true`, enter was pressed along with <kbd>Shift</kbd>.
-// @returns {Boolean} `true` when selection left the block. `false` if stayed.
-function leaveBlockStartOnEnter( editor, isSoftEnter ) {
+/**
+ * Leave the code block when Enter (but NOT Shift+Enter) has been pressed twice at the beginning
+ * of the code block:
+ *
+ * ```html
+ * // Before:
+ * <codeBlock>[]<softBreak></softBreak>foo</codeBlock>
+ *
+ * // After pressing:
+ * <paragraph>[]</paragraph><codeBlock>foo</codeBlock>
+ * ```
+ *
+ * @param isSoftEnter When `true`, enter was pressed along with <kbd>Shift</kbd>.
+ * @returns `true` when selection left the block. `false` if stayed.
+ */
+
+function leaveBlockStartOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 	const model = editor.model;
 	const modelDoc = model.document;
 	const view = editor.editing.view;
-	const lastSelectionPosition = modelDoc.selection.getLastPosition();
+	const lastSelectionPosition = modelDoc.selection.getLastPosition()!;
 	const nodeAfter = lastSelectionPosition.nodeAfter;
 
 	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtStart ) {
@@ -329,7 +365,7 @@ function leaveBlockStartOnEnter( editor, isSoftEnter ) {
 		editor.execute( 'enter' );
 
 		// The cloned block exists now before the original code block.
-		const newBlock = modelDoc.selection.anchor.parent.previousSibling;
+		const newBlock = modelDoc.selection.anchor!.parent.previousSibling! as Element;
 
 		// Make the cloned <codeBlock> a regular <paragraph> (with clean attributes, so no language).
 		writer.rename( newBlock, DEFAULT_ELEMENT );
@@ -337,7 +373,7 @@ function leaveBlockStartOnEnter( editor, isSoftEnter ) {
 		editor.model.schema.removeDisallowedAttributes( [ newBlock ], writer );
 
 		// Remove the <softBreak> that originally followed the selection position.
-		writer.remove( nodeAfter );
+		writer.remove( nodeAfter! );
 	} );
 
 	// Eye candy.
@@ -346,29 +382,34 @@ function leaveBlockStartOnEnter( editor, isSoftEnter ) {
 	return true;
 }
 
-// Leave the code block when Enter (but NOT Shift+Enter) has been pressed twice at the end
-// of the code block:
-//
-//		// Before:
-//		<codeBlock>foo[]</codeBlock>
-//
-//		// After first press:
-//		<codeBlock>foo<softBreak></softBreak>[]</codeBlock>
-//
-//		// After second press:
-//		<codeBlock>foo</codeBlock><paragraph>[]</paragraph>
-//
-// @param {module:core/editor/editor~Editor} editor
-// @param {Boolean} isSoftEnter When `true`, enter was pressed along with <kbd>Shift</kbd>.
-// @returns {Boolean} `true` when selection left the block. `false` if stayed.
-function leaveBlockEndOnEnter( editor, isSoftEnter ) {
+/**
+ * Leave the code block when Enter (but NOT Shift+Enter) has been pressed twice at the end
+ * of the code block:
+ *
+ * ```html
+ * // Before:
+ * <codeBlock>foo[]</codeBlock>
+ *
+ * // After first press:
+ * <codeBlock>foo<softBreak></softBreak>[]</codeBlock>
+ *
+ * // After second press:
+ * <codeBlock>foo</codeBlock><paragraph>[]</paragraph>
+ * ```
+ *
+ * @param editor
+ * @param isSoftEnter When `true`, enter was pressed along with <kbd>Shift</kbd>.
+ * @returns `true` when selection left the block. `false` if stayed.
+ */
+
+function leaveBlockEndOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 	const model = editor.model;
 	const modelDoc = model.document;
 	const view = editor.editing.view;
-	const lastSelectionPosition = modelDoc.selection.getLastPosition();
+	const lastSelectionPosition = modelDoc.selection.getLastPosition()!;
 	const nodeBefore = lastSelectionPosition.nodeBefore;
 
-	let emptyLineRangeToRemoveOnEnter;
+	let emptyLineRangeToRemoveOnEnter: Range;
 
 	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
 		return false;
@@ -403,7 +444,7 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 		isSoftBreakNode( nodeBefore.previousSibling.previousSibling )
 	) {
 		emptyLineRangeToRemoveOnEnter = model.createRange(
-			model.createPositionBefore( nodeBefore.previousSibling.previousSibling ), model.createPositionAfter( nodeBefore )
+			model.createPositionBefore( nodeBefore.previousSibling.previousSibling! ), model.createPositionAfter( nodeBefore )
 		);
 	}
 
@@ -420,10 +461,11 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 		isEmptyishTextNode( nodeBefore ) &&
 		isSoftBreakNode( nodeBefore.previousSibling ) &&
 		isEmptyishTextNode( nodeBefore.previousSibling.previousSibling ) &&
+		nodeBefore.previousSibling.previousSibling &&
 		isSoftBreakNode( nodeBefore.previousSibling.previousSibling.previousSibling )
 	) {
 		emptyLineRangeToRemoveOnEnter = model.createRange(
-			model.createPositionBefore( nodeBefore.previousSibling.previousSibling.previousSibling ),
+			model.createPositionBefore( nodeBefore.previousSibling.previousSibling.previousSibling! ),
 			model.createPositionAfter( nodeBefore )
 		);
 	}
@@ -448,7 +490,7 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 		// "Clone" the <codeBlock> in the standard way.
 		editor.execute( 'enter' );
 
-		const newBlock = modelDoc.selection.anchor.parent;
+		const newBlock = modelDoc.selection.anchor!.parent as Element;
 
 		// Make the cloned <codeBlock> a regular <paragraph> (with clean attributes, so no language).
 		writer.rename( newBlock, DEFAULT_ELEMENT );
@@ -461,10 +503,10 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 	return true;
 }
 
-function isEmptyishTextNode( node ) {
+function isEmptyishTextNode( node: Node | null ) {
 	return node && node.is( '$text' ) && !node.data.match( /\S/ );
 }
 
-function isSoftBreakNode( node ) {
+function isSoftBreakNode( node: Node | null ) {
 	return node && node.is( 'element', 'softBreak' );
 }

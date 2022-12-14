@@ -7,7 +7,8 @@
  * @module code-block/outdentcodeblockcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import type { Model, Position, Range, Text } from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core';
 
 import {
 	getLeadingWhiteSpaces,
@@ -21,7 +22,9 @@ import {
  * @extends module:core/command~Command
  */
 export default class OutdentCodeBlockCommand extends Command {
-	constructor( editor ) {
+	private readonly _indentSequence: string;
+
+	constructor( editor: Editor ) {
 		super( editor );
 
 		/**
@@ -31,13 +34,13 @@ export default class OutdentCodeBlockCommand extends Command {
 		 * @private
 		 * @member {String}
 		 */
-		this._indentSequence = editor.config.get( 'codeBlock.indentSequence' );
+		this._indentSequence = editor.config.get( 'codeBlock.indentSequence' ) as string;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.isEnabled = this._checkEnabled();
 	}
 
@@ -47,7 +50,7 @@ export default class OutdentCodeBlockCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	execute() {
+	public override execute(): void {
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -95,7 +98,7 @@ export default class OutdentCodeBlockCommand extends Command {
 	 * @private
 	 * @returns {Boolean} Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled(): boolean {
 		if ( !this._indentSequence ) {
 			return false;
 		}
@@ -130,7 +133,7 @@ export default class OutdentCodeBlockCommand extends Command {
 // @param {<module:engine/model/position~Position>} position
 // @param {String} sequence
 // @returns {<module:engine/model/range~Range>|null}
-function getLastOutdentableSequenceRange( model, position, sequence ) {
+function getLastOutdentableSequenceRange( model: Model, position: Position, sequence: string ): Range | null {
 	// Positions start before each text node (code line). Get the node corresponding to the position.
 	const nodeAtPosition = getCodeLineTextNodeAtPosition( position );
 
@@ -167,12 +170,12 @@ function getLastOutdentableSequenceRange( model, position, sequence ) {
 	//		<codeBlock>        ^foo</codeBlock>      ->     <codeBlock>    [    ]foo</codeBlock>
 	//
 	return model.createRange(
-		model.createPositionAt( parent, startOffset + lastIndexOfSequence ),
-		model.createPositionAt( parent, startOffset + lastIndexOfSequence + sequence.length )
+		model.createPositionAt( parent!, startOffset! + lastIndexOfSequence ),
+		model.createPositionAt( parent!, startOffset! + lastIndexOfSequence + sequence.length )
 	);
 }
 
-function getCodeLineTextNodeAtPosition( position ) {
+function getCodeLineTextNodeAtPosition( position: Position ): Text | null {
 	// Positions start before each text node (code line). Get the node corresponding to the position.
 	let nodeAtPosition = position.parent.getChild( position.index );
 
@@ -188,5 +191,5 @@ function getCodeLineTextNodeAtPosition( position ) {
 		return null;
 	}
 
-	return nodeAtPosition;
+	return nodeAtPosition as Text;
 }

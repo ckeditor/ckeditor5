@@ -7,7 +7,8 @@
  * @module code-block/codeblockcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import type { Element, Writer } from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 
 import { getNormalizedAndLocalizedLanguageDefinitions, canBeCodeBlock } from './utils';
@@ -19,32 +20,30 @@ import { getNormalizedAndLocalizedLanguageDefinitions, canBeCodeBlock } from './
  */
 export default class CodeBlockCommand extends Command {
 	/**
+	 * Contains the last used language.
+	 */
+	private _lastLanguage: string | null;
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * Contains the last used language.
-
-		 * @protected
-		 * @type {String|null}
-		 */
 		this._lastLanguage = null;
 	}
 
 	/**
 	 * Whether the selection starts in a code block.
-	 *
 	 * @observable
 	 * @readonly
-	 * @member {Boolean} #value
 	 */
+	declare public value: string | false;
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.value = this._getValue();
 		this.isEnabled = this._checkEnabled();
 	}
@@ -55,14 +54,14 @@ export default class CodeBlockCommand extends Command {
 	 * wrapped by a code block.
 	 *
 	 * @fires execute
-	 * @param {Object} [options] Command options.
-	 * @param {String} [options.language] The code block language.
-	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply a code block,
+	 * @param [options] Command options.
+	 * @param [options.language] The code block language.
+	 * @param [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply a code block,
 	 * otherwise the command will remove the code block. If not set, the command will act basing on its current value.
-	 * @param {Boolean} [options.usePreviousLanguageChoice] If set on `true` and the `options.language` is not specified, the command
+	 * @param [options.usePreviousLanguageChoice] If set on `true` and the `options.language` is not specified, the command
 	 * will apply the previous language (if the command was already executed) when inserting the `codeBlock` element.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { language?: string; forceValue?: boolean; usePreviousLanguageChoice?: boolean } = {} ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -70,7 +69,7 @@ export default class CodeBlockCommand extends Command {
 		const firstLanguageInConfig = normalizedLanguagesDefs[ 0 ];
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
-		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
+		const value = options.forceValue == undefined ? !this.value : options.forceValue;
 		const language = getLanguage( options, this._lastLanguage, firstLanguageInConfig.language );
 
 		model.change( writer => {
@@ -85,24 +84,22 @@ export default class CodeBlockCommand extends Command {
 	/**
 	 * Checks the command's {@link #value}.
 	 *
-	 * @private
-	 * @returns {Boolean} The current value.
+	 * @returns The current value.
 	 */
-	_getValue() {
+	private _getValue(): string | false {
 		const selection = this.editor.model.document.selection;
 		const firstBlock = first( selection.getSelectedBlocks() );
 		const isCodeBlock = !!( firstBlock && firstBlock.is( 'element', 'codeBlock' ) );
 
-		return isCodeBlock ? firstBlock.getAttribute( 'language' ) : false;
+		return isCodeBlock ? firstBlock.getAttribute( 'language' ) as string : false;
 	}
 
 	/**
 	 * Checks whether the command can be enabled in the current context.
 	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
+	 * @returns Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled(): boolean {
 		if ( this.value ) {
 			return true;
 		}
@@ -119,13 +116,7 @@ export default class CodeBlockCommand extends Command {
 		return canBeCodeBlock( schema, firstBlock );
 	}
 
-	/**
-	 * @private
-	 * @param {module:engine/model/writer~Writer} writer
-	 * @param {Array.<module:engine/model/element~Element>} blocks
-	 * @param {String} [language]
-	 */
-	_applyCodeBlock( writer, blocks, language ) {
+	private _applyCodeBlock( writer: Writer, blocks: Array<Element>, language: string ): void {
 		this._lastLanguage = language;
 
 		const schema = this.editor.model.schema;
@@ -152,23 +143,19 @@ export default class CodeBlockCommand extends Command {
 		} );
 	}
 
-	/**
-	 * @private
-	 * @param {module:engine/model/writer~Writer} writer
-	 * @param {Array.<module:engine/model/element~Element>} blocks
-	 */
-	_removeCodeBlock( writer, blocks ) {
+	private _removeCodeBlock( writer: Writer, blocks: Array<Element> ): void {
 		const codeBlocks = blocks.filter( block => block.is( 'element', 'codeBlock' ) );
 
 		for ( const block of codeBlocks ) {
 			const range = writer.createRangeOn( block );
 
 			for ( const item of Array.from( range.getItems() ).reverse() ) {
-				if ( item.is( 'element', 'softBreak' ) && item.parent.is( 'element', 'codeBlock' ) ) {
+				if ( item.is( 'element', 'softBreak' ) && item.parent!.is( 'element', 'codeBlock' ) ) {
 					const { position } = writer.split( writer.createPositionBefore( item ) );
+					const elementAfter = position.nodeAfter as Element;
 
-					writer.rename( position.nodeAfter, 'paragraph' );
-					writer.removeAttribute( 'language', position.nodeAfter );
+					writer.rename( elementAfter, 'paragraph' );
+					writer.removeAttribute( 'language', elementAfter );
 					writer.remove( item );
 				}
 			}
@@ -179,18 +166,17 @@ export default class CodeBlockCommand extends Command {
 	}
 }
 
-// Picks the language for the new code block. If any language is passed as an option,
-// it will be returned. Else, if option usePreviousLanguageChoice is true and some
-// code block was already created (lastLanguage is not null) then previously used
-// language will be returned. If not, it will return default language.
-//
-// @param {Object} options
-// @param {Boolean} [options.usePreviousLanguageChoice]
-// @param {String} [options.language]
-// @param {String|null} lastLanguage
-// @param {String} defaultLanguage
-// @return {String}
-function getLanguage( options, lastLanguage, defaultLanguage ) {
+/**
+ * Picks the language for the new code block. If any language is passed as an option,
+ * it will be returned. Else, if option usePreviousLanguageChoice is true and some
+ * code block was already created (lastLanguage is not null) then previously used
+ * language will be returned. If not, it will return default language.
+ */
+function getLanguage(
+	options: { usePreviousLanguageChoice?: boolean; language?: string },
+	lastLanguage: string | null,
+	defaultLanguage: string
+): string {
 	if ( options.language ) {
 		return options.language;
 	}

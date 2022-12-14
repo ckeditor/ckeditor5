@@ -7,6 +7,9 @@
  * @module code-block/converters
  */
 
+import type { GetCallback } from 'ckeditor5/src/utils';
+import type { DowncastInsertEvent, Element, Model, UpcastElementEvent, UpcastTextEvent, View } from 'ckeditor5/src/engine';
+import type { CodeBlockLanguageDefinition } from './codeblock';
 import { getPropertyAssociation } from './utils';
 
 /**
@@ -14,24 +17,32 @@ import { getPropertyAssociation } from './utils';
  *
  * Sample input:
  *
- *		<codeBlock language="javascript">foo();<softBreak></softBreak>bar();</codeBlock>
+ * ```html
+ * <codeBlock language="javascript">foo();<softBreak></softBreak>bar();</codeBlock>
+ * ```
  *
  * Sample output (editing):
  *
- *		<pre data-language="JavaScript"><code class="language-javascript">foo();<br />bar();</code></pre>
+ * ```html
+ * <pre data-language="JavaScript"><code class="language-javascript">foo();<br />bar();</code></pre>
+ * ```
  *
  * Sample output (data, see {@link module:code-block/converters~modelToDataViewSoftBreakInsertion}):
  *
- *		<pre><code class="language-javascript">foo();\nbar();</code></pre>
+ * ```html
+ * <pre><code class="language-javascript">foo();\nbar();</code></pre>
+ * ```
  *
- * @param {module:engine/model/model~Model} model
- * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} languageDefs The normalized language
- * configuration passed to the feature.
- * @param {Boolean} [useLabels=false] When `true`, the `<pre>` element will get a `data-language` attribute with a
+ * @param languageDefs The normalized language configuration passed to the feature.
+ * @param [useLabels=false] When `true`, the `<pre>` element will get a `data-language` attribute with a
  * human–readable label of the language. Used only in the editing.
- * @returns {Function} Returns a conversion callback.
+ * @returns Returns a conversion callback.
  */
-export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = false ) {
+export function modelToViewCodeBlockInsertion(
+	model: Model,
+	languageDefs: Array<CodeBlockLanguageDefinition>,
+	useLabels: boolean = false
+): GetCallback<DowncastInsertEvent> {
 	// Language CSS classes:
 	//
 	//		{
@@ -52,16 +63,16 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 	//		}
 	const languagesToLabels = getPropertyAssociation( languageDefs, 'language', 'label' );
 
-	return ( evt, data, conversionApi ) => {
+	return ( evt, data, conversionApi ): void => {
 		const { writer, mapper, consumable } = conversionApi;
 
 		if ( !consumable.consume( data.item, 'insert' ) ) {
 			return;
 		}
 
-		const codeBlockLanguage = data.item.getAttribute( 'language' );
+		const codeBlockLanguage = data.item.getAttribute( 'language' ) as string;
 		const targetViewPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-		const preAttributes = {};
+		const preAttributes: any = {};
 
 		// Attributes added only in the editing view.
 		if ( useLabels ) {
@@ -69,14 +80,16 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 			preAttributes.spellcheck = 'false';
 		}
 
-		const code = writer.createContainerElement( 'code', {
-			class: languagesToClasses[ codeBlockLanguage ] || null
-		} );
+		const codeAttributes = languagesToClasses[ codeBlockLanguage ] ? {
+			class: languagesToClasses[ codeBlockLanguage ]
+		} : undefined;
+		const code = writer.createContainerElement( 'code', codeAttributes );
 
 		const pre = writer.createContainerElement( 'pre', preAttributes, code );
 
 		writer.insert( targetViewPosition, pre );
-		mapper.bindElements( data.item, code );
+
+		mapper.bindElements( data.item as Element, code );
 	};
 }
 
@@ -85,18 +98,21 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
  *
  * Sample input:
  *
- *		<codeBlock ...>foo();<softBreak></softBreak>bar();</codeBlock>
+ * ```html
+ * <codeBlock ...>foo();<softBreak></softBreak>bar();</codeBlock>
+ * ```
  *
  * Sample output:
  *
- *		<pre><code ...>foo();\nbar();</code></pre>
+ * ```html
+ * <pre><code ...>foo();\nbar();</code></pre>
+ * ```
  *
- * @param {module:engine/model/model~Model} model
- * @returns {Function} Returns a conversion callback.
+ * @returns Returns a conversion callback.
  */
-export function modelToDataViewSoftBreakInsertion( model ) {
+export function modelToDataViewSoftBreakInsertion( model: Model ): GetCallback<DowncastInsertEvent> {
 	return ( evt, data, conversionApi ) => {
-		if ( data.item.parent.name !== 'codeBlock' ) {
+		if ( data.item.parent!.name !== 'codeBlock' ) {
 			return;
 		}
 
@@ -117,18 +133,23 @@ export function modelToDataViewSoftBreakInsertion( model ) {
  *
  * Sample input:
  *
- *		<pre><code class="language-javascript">foo();bar();</code></pre>
+ * ```html
+ * <pre><code class="language-javascript">foo();bar();</code></pre>
+ * ```
  *
  * Sample output:
  *
- *		<codeBlock language="javascript">foo();bar();</codeBlock>
+ * ```html
+ * <codeBlock language="javascript">foo();bar();</codeBlock>
+ * ```
  *
- * @param {module:engine/view/view~View} editingView
- * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} languageDefs The normalized language
- * configuration passed to the feature.
- * @returns {Function} Returns a conversion callback.
+ * @param languageDefs The normalized language configuration passed to the feature.
+ * @returns Returns a conversion callback.
  */
-export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
+export function dataViewToModelCodeBlockInsertion(
+	editingView: View,
+	languageDefs: Array<CodeBlockLanguageDefinition>
+): GetCallback<UpcastElementEvent> {
 	// Language names associated with CSS classes:
 	//
 	//		{
@@ -174,10 +195,8 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 		for ( const className of viewChildClasses ) {
 			const language = classesToLanguages[ className ];
 
-			if ( language ) {
-				writer.setAttribute( 'language', language, codeBlock );
-				break;
-			}
+			writer.setAttribute( 'language', language, codeBlock );
+			break;
 		}
 
 		// If no language value was set, use the default language from the config.
@@ -203,15 +222,19 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
  *
  * Sample input:
  *
- *		<pre><code class="language-javascript">foo();\nbar();</code></pre>
+ * ```html
+ * <pre><code class="language-javascript">foo();\nbar();</code></pre>
+ * ```
  *
  * Sample output:
  *
- *		<codeBlock language="javascript">foo();<softBreak></softBreak>bar();</codeBlock>
+ * ```html
+ * <codeBlock language="javascript">foo();<softBreak></softBreak>bar();</codeBlock>
+ * ```
  *
  * @returns {Function} Returns a conversion callback.
  */
-export function dataViewToModelTextNewlinesInsertion() {
+export function dataViewToModelTextNewlinesInsertion(): GetCallback<UpcastTextEvent> {
 	return ( evt, data, { consumable, writer } ) => {
 		let position = data.modelCursor;
 
@@ -228,7 +251,7 @@ export function dataViewToModelTextNewlinesInsertion() {
 		consumable.consume( data.viewItem );
 
 		const text = data.viewItem.data;
-		const textLines = text.split( '\n' ).map( data => writer.createText( data ) );
+		const textLines = text.split( '\n' ).map( ( data: any ) => writer.createText( data ) );
 		const lastLine = textLines[ textLines.length - 1 ];
 
 		for ( const node of textLines ) {
@@ -257,30 +280,34 @@ export function dataViewToModelTextNewlinesInsertion() {
  *
  * Sample input:
  *
- *		// White spaces
- *		<pre> <code>foo()</code> </pre>
+ * ```html
+ * // White spaces
+ * <pre> <code>foo()</code> </pre>
  *
- *		// White spaces
- *		<pre>      <code>foo()</code>      </pre>
+ * // White spaces
+ * <pre>      <code>foo()</code>      </pre>
  *
- *		// White spaces
- *		<pre>			<code>foo()</code>			</pre>
+ * // White spaces
+ * <pre>			<code>foo()</code>			</pre>
  *
- *		// New lines
- *		<pre>
- *			<code>foo()</code>
- *		</pre>
+ * // New lines
+ * <pre>
+ * 	<code>foo()</code>
+ * </pre>
  *
- *		// Redundant text
- *		<pre>ABC<code>foo()</code>DEF</pre>
+ * // Redundant text
+ * <pre>ABC<code>foo()</code>DEF</pre>
+ * ```
  *
  * Unified output for each case:
  *
- *		<codeBlock language="plaintext">foo()</codeBlock>
+ * ```html
+ * <codeBlock language="plaintext">foo()</codeBlock>
+ * ```
  *
- * @returns {Function} Returns a conversion callback.
+ * @returns Returns a conversion callback.
  */
-export function dataViewToModelOrphanNodeConsumer() {
+export function dataViewToModelOrphanNodeConsumer(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, { consumable } ) => {
 		const preElement = data.viewItem;
 
