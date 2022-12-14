@@ -10,9 +10,9 @@ modified_at: 2022-11-09
 # Migration from CKEditor 4
 
 <info-box hint>
-This is a guide for users who would like to switch from CKEditor 4 to CKEditor 5. It assumes you already have some basic knowledge about CKEditor 5, as this is necessary to follow this guide. If that is not the case, please roam around the documentation to make youself familiar with concepts and ideas behing this new, modern installment of our WYSIWYG editor. For example, feel free to explore our {@link features/index features page} to compare the available plugins to your needs.
+This is a guide for users who would like to switch from CKEditor 4 to CKEditor 5. It assumes you already have some basic knowledge about CKEditor 5, as this is necessary to follow this guide. If that is not the case, please roam around the {@link installation/index Getting started} section to make youself familiar with the concepts and ideas behing this new, modern installment of our WYSIWYG editor. For example, feel free to explore our {@link features/index features page} to compare the available plugins to your needs.
 
-Before starting, be sure that migrating is your best choice. Also, decide what kind of installation to use for you new editor. Refer to the {@link installation/getting-started/predefined-builds#when-not-to-use-predefined-builds When NOT to use predefined CKEditor 5 builds?} guide for more information on that.
+Before starting, be sure that migrating is your best choice. Also, decide what kind of installation to use for you new editor. Refer to the {@link installation/getting-started/predefined-builds#when-not-to-use-predefined-builds When NOT to use predefined CKEditor 5 builds?} guide for more information on that.<!-- This should be rephrased -->
 </info-box>
 
 When compared to its predecessor, CKEditor 5 should be considered **a totally new editor**. Every single aspect of it was redesigned &mdash; from installation, to integration, to features, to its data model, and finally to its API. Therefore, moving applications using a previous CKEditor version to version 5 cannot be simply called an "upgrade". It is something bigger, so the "migration" term fits better.
