@@ -30,4 +30,4 @@ msgstr "Chèn đoạn sau khối"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Nhấn Enter để nhập vào sau hoặc nhấn Shift + Enter để nhập vào trước tiện ích"

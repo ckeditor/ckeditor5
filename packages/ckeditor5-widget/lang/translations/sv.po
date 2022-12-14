@@ -30,4 +30,4 @@ msgstr "Infoga stycke efter block"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Tryck på retur för att skriva efter eller på skift + retur för att skriva före widgeten."
