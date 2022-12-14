@@ -651,8 +651,8 @@ describe( 'view', () => {
 			sinon.assert.calledOnce( layoutChangedSpy );
 		} );
 
-		it( 'should change the document#isFocusChaning property to false', () => {
-			view.document.isFocusChaning = true;
+		it( 'should change the document#isFocusChanging property to false', () => {
+			view.document.isFocusChanging = true;
 
 			view.document.selection._setTo( null );
 			view.forceRender();
