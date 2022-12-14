@@ -11,8 +11,10 @@ import { type DocumentChangeEvent } from 'ckeditor5/src/engine';
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { Template, View } from 'ckeditor5/src/ui';
 import { env } from 'ckeditor5/src/utils';
-import { throttle, isElement } from 'lodash-es';
+
 import { modelElementToPlainText } from './utils';
+
+import { throttle, isElement } from 'lodash-es';
 
 /**
  * The word count plugin.
