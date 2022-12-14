@@ -37,9 +37,9 @@ if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 	const promise = triggerCkeditor5ContinuousIntegration( repository, lastCommit );
 
 	if ( promise ) {
-		promise.then( status => {
-			if ( status !== 200 ) {
-				throw new Error( `CI trigger failed with status "${ status }".` );
+		promise.then( response => {
+			if ( response.error_message ) {
+				throw new Error( `CI trigger failed: "${ response.error_message }".` );
 			}
 
 			console.log( 'CI triggered successfully.' );
