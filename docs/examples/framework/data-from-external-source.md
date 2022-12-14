@@ -3,6 +3,7 @@ category: examples-framework
 order: 120
 toc: false
 classes: main__content--no-toc
+modified_at: 2022-11-15
 ---
 
 # Data from an external source
