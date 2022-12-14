@@ -329,6 +329,7 @@ export interface MarkerData {
  *
  * 	writer.removeMarker( marker );
  * } );
+ * ```
  *
  * See {@link module:engine/model/writer~Writer} to find more examples.
  *

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable @typescript-eslint/unified-signatures */
-
 /**
  * @module engine/model/model
  */
@@ -723,8 +721,8 @@ export default class Model extends ObservableMixin() {
 	 * ```html
 	 * <paragraph>x</paragraph>
 	 * <blockQuote>
-	 * 	<heading1>fir[st</heading1>
 	 * 	<paragraph>y</paragraph>
+	 * 	<heading1>fir[st</heading1>
 	 * </blockQuote>
 	 * <paragraph>se]cond</paragraph>
 	 * <paragraph>z</paragraph>
@@ -935,6 +933,7 @@ export default class Model extends ObservableMixin() {
 	// The three overloads below where added,
 	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
 	public createSelection(): ModelSelection;
+	// eslint-disable-next-line @typescript-eslint/unified-signatures
 	public createSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
 	public createSelection( selectable: Selectable, options: { backward?: boolean } ): ModelSelection;
 

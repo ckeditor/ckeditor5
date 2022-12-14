@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable @typescript-eslint/unified-signatures */
-
 /**
  * @module engine/model/writer
  */
@@ -820,6 +818,7 @@ export default class Writer {
 	// The three overloads below where added,
 	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
 	public createSelection(): Selection;
+	// eslint-disable-next-line @typescript-eslint/unified-signatures
 	public createSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: { backward?: boolean } ): Selection;
 	public createSelection( selectable: Selectable, options: { backward?: boolean } ): Selection;
 

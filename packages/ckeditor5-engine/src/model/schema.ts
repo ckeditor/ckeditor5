@@ -71,9 +71,6 @@ export default class Schema extends ObservableMixin() {
 	 * 	inheritAllFrom: '$block'
 	 * } );
 	 * ```
-	 *
-	 * @param itemName
-	 * @param definition
 	 */
 	public register( itemName: string, definition?: SchemaItemDefinition ): void {
 		if ( this._sourceDefinitions[ itemName ] ) {
@@ -134,9 +131,6 @@ export default class Schema extends ObservableMixin() {
 	 * // 		isBlock: false
 	 * //	}
 	 * ```
-	 *
-	 * @param itemName
-	 * @param definition
 	 */
 	public extend( itemName: string, definition: SchemaItemDefinition ): void {
 		if ( !this._sourceDefinitions[ itemName ] ) {

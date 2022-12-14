@@ -59,7 +59,7 @@ export default abstract class Node extends TypeCheckable {
 	/**
 	 * Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
 	 */
-	public readonly rootName: string | undefined;
+	declare public readonly rootName: string | undefined;
 
 	/**
 	 * Attributes set on this node.

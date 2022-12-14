@@ -49,8 +49,6 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 export default class TextProxy extends TypeCheckable {
 	/**
 	 * Text node which part is represented by this text proxy.
-	 *
-	 * @readonly
 	 */
 	public readonly textNode: Text;
 
