@@ -20,7 +20,7 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 
 ## Migrating from CKEditor 4
 
-This section is dedicated to getting started with CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, please refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide} for tips about such installation.
+If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, please refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide} for tips about such installation. The "Getting started" section is an introduction to CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. You may want to get familiar with these guides before the migration.
 
 ## Start using CKEditor 5 instantly with CDN
 

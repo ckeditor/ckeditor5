@@ -2,11 +2,10 @@
 category: updating
 order: 20
 meta-title: CKEditor 5 updating documentation
-menu-title: CKEditor 5 release process
 meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at all times.
 ---
 
-# CKEditor 5 release process
+# Release process
 
 Regular code releases (there are usually 10-12 of these a year) bring different changes and new features. They are often divided into major and minor changes, along the lines of {@link updating/versioning-policy Versioning policy}.
 

@@ -49,7 +49,10 @@ describe( 'SelectionObserver', () => {
 			domDocument.getSelection().removeAllRanges();
 
 			viewDocument.isFocused = true;
+
 			domMain.focus();
+
+			viewDocument._isFocusChanging = false;
 		} );
 
 		selectionObserver.enable();
@@ -85,6 +88,18 @@ describe( 'SelectionObserver', () => {
 
 			done();
 		} );
+
+		changeDomSelection();
+	} );
+
+	it( 'should change document#_isFocusChanging property to false when selection is changed', done => {
+		viewDocument.on( 'selectionChange', () => {
+			expect( viewDocument._isFocusChanging ).to.equal( false );
+
+			done();
+		} );
+
+		viewDocument._isFocusChanging = true;
 
 		changeDomSelection();
 	} );
@@ -217,6 +232,7 @@ describe( 'SelectionObserver', () => {
 		} );
 		const selectionChangeSpy = sinon.spy();
 
+		selectionObserver._clearInfiniteLoop();
 		viewDocument.on( 'selectionChange', selectionChangeSpy );
 
 		return new Promise( resolve => {
