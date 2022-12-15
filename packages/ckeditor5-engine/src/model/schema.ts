@@ -535,7 +535,7 @@ export default class Schema extends ObservableMixin() {
 	 * The callback may return `true/false` to override `checkChild()`'s return value. If it does not return
 	 * a boolean value, the default algorithm (or other callbacks) will define `checkChild()`'s return value.
 	 */
-	public addChildCheck( callback: ( ctx: SchemaContextDefinition, def: SchemaCompiledItemDefinition ) => unknown ): void {
+	public addChildCheck( callback: ( ctx: SchemaContext, def: SchemaCompiledItemDefinition ) => unknown ): void {
 		this.on<SchemaCheckChildEvent>( 'checkChild', ( evt, [ ctx, childDef ] ) => {
 			// checkChild() was called with a non-registered child.
 			// In 99% cases such check should return false, so not to overcomplicate all callbacks
@@ -592,7 +592,7 @@ export default class Schema extends ObservableMixin() {
 	 * The callback may return `true/false` to override `checkAttribute()`'s return value. If it does not return
 	 * a boolean value, the default algorithm (or other callbacks) will define `checkAttribute()`'s return value.
 	 */
-	public addAttributeCheck( callback: ( context: SchemaContextDefinition, attributeName: string ) => unknown ): void {
+	public addAttributeCheck( callback: ( context: SchemaContext, attributeName: string ) => unknown ): void {
 		this.on<SchemaCheckAttributeEvent>( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
 			const retValue = callback( ctx, attributeName );
 

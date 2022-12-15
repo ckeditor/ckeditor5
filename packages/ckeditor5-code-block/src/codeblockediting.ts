@@ -133,9 +133,8 @@ export default class CodeBlockEditing extends Plugin {
 
 		// Allow all list* attributes on `codeBlock` (integration with DocumentList).
 		// Disallow all attributes on $text inside `codeBlock`.
-		schema.addAttributeCheck( ( context: any, attributeName ) => {
-			const isDocumentListAttributeOnCodeBlock = context.endsWith &&
-				context.endsWith( 'codeBlock' ) &&
+		schema.addAttributeCheck( ( context, attributeName ) => {
+			const isDocumentListAttributeOnCodeBlock = context.endsWith( 'codeBlock' ) &&
 				attributeName.startsWith( 'list' ) &&
 				attributeName !== 'list';
 
@@ -143,14 +142,14 @@ export default class CodeBlockEditing extends Plugin {
 				return true;
 			}
 
-			if ( context.endsWith && context.endsWith( 'codeBlock $text' ) ) {
+			if ( context.endsWith( 'codeBlock $text' ) ) {
 				return false;
 			}
 		} );
 
 		// Disallow object elements inside `codeBlock`. See #9567.
-		editor.model.schema.addChildCheck( ( context: any, childDefinition ) => {
-			if ( context.endsWith && context.endsWith( 'codeBlock' ) && childDefinition.isObject ) {
+		editor.model.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( context.endsWith( 'codeBlock' ) && childDefinition.isObject ) {
 				return false;
 			}
 		} );
