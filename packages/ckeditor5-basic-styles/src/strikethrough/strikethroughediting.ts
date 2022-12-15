@@ -70,6 +70,6 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 
 	interface PluginsMap {
-		[StrikethroughEditing.pluginName ]: StrikethroughEditing;
+		[ StrikethroughEditing.pluginName ]: StrikethroughEditing;
 	}
 }
