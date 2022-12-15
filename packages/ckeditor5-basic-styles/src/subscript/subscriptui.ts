@@ -58,3 +58,9 @@ export default class SubscriptUI extends Plugin {
 		} );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ SubscriptUI.pluginName ]: SubscriptUI;
+	}
+}

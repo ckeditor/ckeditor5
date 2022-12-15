@@ -59,3 +59,9 @@ export default class UnderlineUI extends Plugin {
 		} );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ UnderlineUI.pluginName ]: UnderlineUI;
+	}
+}

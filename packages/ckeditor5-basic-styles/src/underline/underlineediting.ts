@@ -63,4 +63,8 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		underline: AttributeCommand;
 	}
+
+	interface PluginsMap {
+		[ UnderlineEditing.pluginName ]: UnderlineEditing;
+	}
 }

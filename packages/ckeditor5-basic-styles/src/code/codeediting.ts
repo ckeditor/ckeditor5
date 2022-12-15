@@ -76,4 +76,8 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		code: AttributeCommand;
 	}
+
+	interface PluginsMap {
+		[ CodeEditing.pluginName ]: CodeEditing;
+	}
 }

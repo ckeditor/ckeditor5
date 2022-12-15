@@ -60,3 +60,9 @@ export default class CodeUI extends Plugin {
 		} );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ CodeUI.pluginName ]: CodeUI;
+	}
+}
