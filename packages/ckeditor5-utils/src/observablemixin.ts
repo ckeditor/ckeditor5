@@ -1173,7 +1173,7 @@ interface ObservableInternal extends Observable {
  * observable.prop = 2; // -> 'prop has changed from 1 to 2'
  * ```
  *
- * @eventName change:{property}
+ * @eventName change:\{property\}
  * @param {String} name The property name.
  * @param {*} value The new property value.
  * @param {*} oldValue The previous property value.
@@ -1211,7 +1211,7 @@ export type ObservableChangeEvent<TValue = any> = {
  *
  * **Note:** The event is fired even when the new value is the same as the old value.
  *
- * @eventName set:{property}
+ * @eventName set:\{property\}
  * @param {String} name The property name.
  * @param {*} value The new property value.
  * @param {*} oldValue The previous property value.

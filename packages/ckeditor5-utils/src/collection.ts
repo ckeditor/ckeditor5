@@ -523,7 +523,7 @@ export default class Collection<T extends Record<string, any>> extends EmitterMi
 	}
 
 	/**
-	 * Finalizes and activates a binding initiated by {#bindTo}.
+	 * Finalizes and activates a binding initiated by {@link #bindTo}.
 	 *
 	 * @param factory A function which produces collection items.
 	 */
@@ -764,17 +764,32 @@ export type CollectionAddEvent<T = any> = {
  * Fired when the collection was changed due to adding or removing items.
  *
  * @eventName change
- * @param added A list of added items.
- * @param removed A list of removed items.
- * @param index An index where the addition or removal occurred.
+ * @param data Changed items.
  */
 export type CollectionChangeEvent<T = any> = {
 	name: 'change';
-	args: [ {
-		added: Iterable<T>;
-		removed: Iterable<T>;
-		index: number;
-	} ];
+	args: [ data: CollectionChangeEventData<T> ];
+};
+
+/**
+ * A structure describing the {@link ~Collection#event:change `Collection#change`} event.
+ */
+export type CollectionChangeEventData<T = any> = {
+
+	/**
+	 * A list of added items.
+	 */
+	added: Iterable<T>;
+
+	/**
+	 * A list of removed items.
+	 */
+	removed: Iterable<T>;
+
+	/**
+	 * An index where the addition or removal occurred.
+	 */
+	index: number;
 };
 
 /**
