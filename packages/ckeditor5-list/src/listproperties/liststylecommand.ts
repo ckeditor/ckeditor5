@@ -7,7 +7,7 @@
  * @module list/listproperties/liststylecommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 import { getListTypeFromListStyleType, getSelectedListItems } from '../list/utils';
 
 /**
@@ -16,33 +16,38 @@ import { getListTypeFromListStyleType, getSelectedListItems } from '../list/util
  * If the list type (numbered or bulleted) can be inferred from the passed style type,
  * the command tries to convert selected items to a list of that type.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
- *
- * @extends module:core/command~Command
  */
 export default class ListStyleCommand extends Command {
+	declare public isStyleTypeSupported: undefined;
+
+	/**
+	 * @inheritdoc
+	 * @readonly
+	 */
+	declare public value: string | null;
+
+	/**
+	 * The default type of the list style.
+	 */
+	public readonly defaultType: string;
+
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {String} defaultType The list type that will be used by default if the value was not specified during
+	 * @param editor The editor instance.
+	 * @param defaultType The list type that will be used by default if the value was not specified during
 	 * the command execution.
 	 */
-	constructor( editor, defaultType ) {
+	constructor( editor: Editor, defaultType: string ) {
 		super( editor );
 
-		/**
-		 * The default type of the list style.
-		 *
-		 * @protected
-		 * @member {String}
-		 */
-		this._defaultType = defaultType;
+		this.defaultType = defaultType;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.value = this._getValue();
 		this.isEnabled = this._checkEnabled();
 	}
@@ -51,11 +56,10 @@ export default class ListStyleCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @fires execute
-	 * @param {Object} options
-	 * @param {String|null} [options.type] The type of the list style, e.g. `'disc'` or `'square'`. If `null` is specified, the default
+	 * @param options.type The type of the list style, e.g. `'disc'` or `'square'`. If `null` is specified, the default
 	 * style will be applied.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { type?: string | null } = {} ): void {
 		this._tryToConvertItemsToList( options );
 
 		const model = this.editor.model;
@@ -67,7 +71,7 @@ export default class ListStyleCommand extends Command {
 
 		model.change( writer => {
 			for ( const item of listItems ) {
-				writer.setAttribute( 'listStyle', options.type || this._defaultType, item );
+				writer.setAttribute( 'listStyle', options.type || this.defaultType, item );
 			}
 		} );
 	}
@@ -75,14 +79,13 @@ export default class ListStyleCommand extends Command {
 	/**
 	 * Checks the command's {@link #value}.
 	 *
-	 * @private
-	 * @returns {String|null} The current value.
+	 * @returns The current value.
 	 */
-	_getValue() {
-		const listItem = this.editor.model.document.selection.getFirstPosition().parent;
+	private _getValue() {
+		const listItem = this.editor.model.document.selection.getFirstPosition()!.parent;
 
 		if ( listItem && listItem.is( 'element', 'listItem' ) ) {
-			return listItem.getAttribute( 'listStyle' );
+			return listItem.getAttribute( 'listStyle' ) as string;
 		}
 
 		return null;
@@ -91,14 +94,13 @@ export default class ListStyleCommand extends Command {
 	/**
 	 * Checks whether the command can be enabled in the current context.
 	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
+	 * @returns Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled() {
 		const editor = this.editor;
 
-		const numberedList = editor.commands.get( 'numberedList' );
-		const bulletedList = editor.commands.get( 'bulletedList' );
+		const numberedList = editor.commands.get( 'numberedList' )!;
+		const bulletedList = editor.commands.get( 'bulletedList' )!;
 
 		return numberedList.isEnabled || bulletedList.isEnabled;
 	}
@@ -106,11 +108,9 @@ export default class ListStyleCommand extends Command {
 	/**
 	 * Check if the provided list style is valid. Also change the selection to a list if it's not set yet.
 	 *
-	 * @param {Object} options
-	 * @param {String|null} [options.type] The type of the list style. If `null` is specified, the function does nothing.
-	 * @private
+	 * @param The type of the list style. If `null` is specified, the function does nothing.
 	*/
-	_tryToConvertItemsToList( options ) {
+	private _tryToConvertItemsToList( options: { type?: string | null } ) {
 		if ( !options.type ) {
 			return;
 		}
@@ -122,8 +122,8 @@ export default class ListStyleCommand extends Command {
 		}
 
 		const editor = this.editor;
-		const commandName = listType + 'List';
-		const command = editor.commands.get( commandName );
+		const commandName = `${ listType }List` as const;
+		const command = editor.commands.get( commandName )!;
 
 		if ( !command.value ) {
 			editor.execute( commandName );

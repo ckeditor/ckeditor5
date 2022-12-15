@@ -18,8 +18,6 @@ import {
  * The list reversed command. It changes the `listReversed` attribute of the selected list items,
  * letting the user to choose the order of an ordered list.
  * It is used by the {@link module:list/documentlistproperties~DocumentListProperties list properties feature}.
- *
- * @extends module:core/command~Command
  */
 export default class DocumentListReversedCommand extends Command {
 	/**

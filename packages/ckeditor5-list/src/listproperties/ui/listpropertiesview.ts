@@ -14,15 +14,21 @@ import {
 	SwitchButtonView,
 	LabeledFieldView,
 	createLabeledInputNumber,
-	addKeyboardHandlingForGrid
+	addKeyboardHandlingForGrid,
+	type ButtonView,
+	type InputNumberView
 } from 'ckeditor5/src/ui';
+
 import {
 	FocusTracker,
 	KeystrokeHandler,
-	global
+	global,
+	type Locale
 } from 'ckeditor5/src/utils';
 
 import CollapsibleView from './collapsibleview';
+
+import type { ListPropertiesConfig } from '../../listconfig';
 
 import '../../../theme/listproperties.css';
 
@@ -31,21 +37,94 @@ import '../../../theme/listproperties.css';
  *
  * Contains a grid of available list styles and, for numbered list, also the list start index and reversed fields.
  *
- * @extends module:ui/view~View
+ * @internal
  */
 export default class ListPropertiesView extends View {
 	/**
+	 * @inheritdoc
+	 */
+	declare public locale: Locale;
+
+	/**
+	 * A collection of the child views.
+	 */
+	public readonly children: ViewCollection;
+
+	/**
+	 * A view that renders the grid of list styles.
+	 */
+	public readonly stylesView: StylesView | null = null;
+
+	/**
+	 * A collapsible view that hosts additional list property fields ({@link #startIndexFieldView} and
+	 * {@link #reversedSwitchButtonView}) to visually separate them from the {@link #stylesView grid of styles}.
+	 *
+	 * **Note**: Only present when:
+	 * * the view represents **numbered** list properties,
+	 * * and the {@link #stylesView} is rendered,
+	 * * and either {@link #startIndexFieldView} or {@link #reversedSwitchButtonView} is rendered.
+	 *
+	 * @readonly
+	 */
+	public additionalPropertiesCollapsibleView: CollapsibleView | null = null;
+
+	/**
+	 * A labeled number field allowing the user to set the start index of the list.
+	 *
+	 * **Note**: Only present when the view represents **numbered** list properties.
+	 *
+	 * @readonly
+	 */
+	public startIndexFieldView: LabeledFieldView<InputNumberView> | null = null;
+
+	/**
+	 * A switch button allowing the user to make the edited list reversed.
+	 *
+	 * **Note**: Only present when the view represents **numbered** list properties.
+	 *
+	 * @readonly
+	 */
+	public reversedSwitchButtonView: SwitchButtonView | null = null;
+
+	/**
+	 * Tracks information about the DOM focus in the view.
+	 */
+	public readonly focusTracker: FocusTracker = new FocusTracker();
+
+	/**
+	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 */
+	public readonly keystrokes: KeystrokeHandler = new KeystrokeHandler();
+
+	/**
+	 * A collection of views that can be focused in the properties view.
+	 */
+	public readonly focusables: ViewCollection = new ViewCollection();
+
+	/**
+	 * Helps cycling over {@link #focusables} in the view.
+	 */
+	public readonly focusCycler: FocusCycler;
+
+	/**
 	 * Creates an instance of the list properties view.
 	 *
-	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
-	 * @param {Object} options Options of the view.
-	 * @param {Object.<String,Boolean>} options.enabledProperties An object containing the configuration of enabled list property names.
+	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param options Options of the view.
+	 * @param options.enabledProperties An object containing the configuration of enabled list property names.
 	 * Allows conditional rendering the sub-components of the properties view.
-	 * @param {Array.<module:ui/button/buttonview~ButtonView>|null} options.styleButtonViews A list of style buttons to be rendered
+	 * @param options.styleButtonViews A list of style buttons to be rendered
 	 * inside the styles grid. The grid will not be rendered when `enabledProperties` does not include the `'styles'` key.
-	 * @param {String} options.styleGridAriaLabel An assistive technologies label set on the grid of styles (if the grid is rendered).
+	 * @param options.styleGridAriaLabel An assistive technologies label set on the grid of styles (if the grid is rendered).
 	 */
-	constructor( locale, { enabledProperties, styleButtonViews, styleGridAriaLabel } ) {
+	constructor(
+		locale: Locale,
+		{ enabledProperties, styleButtonViews, styleGridAriaLabel }: {
+			enabledProperties: ListPropertiesConfig;
+			styleButtonViews: Array<ButtonView> | null;
+			styleGridAriaLabel: string;
+		}
+	) {
 		super( locale );
 
 		const elementCssClasses = [
@@ -53,87 +132,8 @@ export default class ListPropertiesView extends View {
 			'ck-list-properties'
 		];
 
-		/**
-		 * A collection of the child views.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.children = this.createCollection();
 
-		/**
-		 * A view that renders the grid of list styles.
-		 *
-		 * @readonly
-		 * @member {module:ui/view~View|null}
-		 */
-		this.stylesView = null;
-
-		/**
-		 * A collapsible view that hosts additional list property fields ({@link #startIndexFieldView} and
-		 * {@link #reversedSwitchButtonView}) to visually separate them from the {@link #stylesView grid of styles}.
-		 *
-		 * **Note**: Only present when:
-		 * * the view represents **numbered** list properties,
-		 * * and the {@link #stylesView} is rendered,
-		 * * and either {@link #startIndexFieldView} or {@link #reversedSwitchButtonView} is rendered.
-		 *
-		 * @readonly
-		 * @member {module:list/ui/collapsibleview~CollapsibleView|null}
-		 */
-		this.additionalPropertiesCollapsibleView = null;
-
-		/**
-		 * A labeled number field allowing the user to set the start index of the list.
-		 *
-		 * **Note**: Only present when the view represents **numbered** list properties.
-		 *
-		 * @readonly
-		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView|null}
-		 */
-		this.startIndexFieldView = null;
-
-		/**
-		 * A switch button allowing the user to make the edited list reversed.
-		 *
-		 * **Note**: Only present when the view represents **numbered** list properties.
-		 *
-		 * @readonly
-		 * @member {module:ui/button/switchbuttonview~SwitchButtonView|null}
-		 */
-		this.reversedSwitchButtonView = null;
-
-		/**
-		 * Tracks information about the DOM focus in the view.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
-		this.focusTracker = new FocusTracker();
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
-		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * A collection of views that can be focused in the properties view.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
-		this.focusables = new ViewCollection();
-
-		/**
-		 * Helps cycling over {@link #focusables} in the view.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/focuscycler~FocusCycler}
-		 */
 		this.focusCycler = new FocusCycler( {
 			focusables: this.focusables,
 			focusTracker: this.focusTracker,
@@ -150,7 +150,7 @@ export default class ListPropertiesView extends View {
 		// The rendering of the styles grid is conditional. When there is no styles grid, the view will render without collapsible
 		// for numbered list properties, hence simplifying the layout.
 		if ( enabledProperties.styles ) {
-			this.stylesView = this._createStylesView( styleButtonViews, styleGridAriaLabel );
+			this.stylesView = this._createStylesView( styleButtonViews!, styleGridAriaLabel );
 			this.children.add( this.stylesView );
 		} else {
 			elementCssClasses.push( 'ck-list-properties_without-styles' );
@@ -159,7 +159,7 @@ export default class ListPropertiesView extends View {
 		// The rendering of the numbered list property views is also conditional. It only makes sense for the numbered list
 		// dropdown. The unordered list does not have such properties.
 		if ( enabledProperties.startIndex || enabledProperties.reversed ) {
-			this._addNumberedListPropertyViews( enabledProperties, styleButtonViews );
+			this._addNumberedListPropertyViews( enabledProperties );
 
 			elementCssClasses.push( 'ck-list-properties_with-numbered-properties' );
 		}
@@ -176,21 +176,21 @@ export default class ListPropertiesView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		if ( this.stylesView ) {
 			this.focusables.add( this.stylesView );
-			this.focusTracker.add( this.stylesView.element );
+			this.focusTracker.add( this.stylesView.element! );
 
 			// Register the collapsible toggle button to the focus system.
 			if ( this.startIndexFieldView || this.reversedSwitchButtonView ) {
-				this.focusables.add( this.children.last.buttonView );
-				this.focusTracker.add( this.children.last.buttonView.element );
+				this.focusables.add( ( this.children.last as any ).buttonView );
+				this.focusTracker.add( ( this.children.last as any ).buttonView.element );
 			}
 
 			for ( const item of this.stylesView.children ) {
-				this.stylesView.focusTracker.add( item.element );
+				this.stylesView.focusTracker.add( item.element! );
 			}
 
 			addKeyboardHandlingForGrid( {
@@ -200,7 +200,7 @@ export default class ListPropertiesView extends View {
 				// Note: The styles view has a different number of columns depending on whether the other properties
 				// are enabled in the dropdown or not (https://github.com/ckeditor/ckeditor5/issues/12340)
 				numberOfColumns: () => global.window
-					.getComputedStyle( this.stylesView.element )
+					.getComputedStyle( this.stylesView!.element! )
 					.getPropertyValue( 'grid-template-columns' )
 					.split( ' ' )
 					.length,
@@ -210,16 +210,16 @@ export default class ListPropertiesView extends View {
 
 		if ( this.startIndexFieldView ) {
 			this.focusables.add( this.startIndexFieldView );
-			this.focusTracker.add( this.startIndexFieldView.element );
+			this.focusTracker.add( this.startIndexFieldView.element! );
 
 			// Intercept the `selectstart` event, which is blocked by default because of the default behavior
 			// of the DropdownView#panelView.
 			// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
-			this.listenTo( this.startIndexFieldView.element, 'selectstart', ( evt, domEvt ) => {
+			this.listenTo( this.startIndexFieldView.element!, 'selectstart', ( evt, domEvt ) => {
 				domEvt.stopPropagation();
 			}, { priority: 'high' } );
 
-			const stopPropagation = data => data.stopPropagation();
+			const stopPropagation = ( data: Event ) => data.stopPropagation();
 
 			// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
 			// keystroke handler would take over the key management in the input. We need to prevent
@@ -232,31 +232,31 @@ export default class ListPropertiesView extends View {
 
 		if ( this.reversedSwitchButtonView ) {
 			this.focusables.add( this.reversedSwitchButtonView );
-			this.focusTracker.add( this.reversedSwitchButtonView.element );
+			this.focusTracker.add( this.reversedSwitchButtonView.element! );
 		}
 
 		// Start listening for the keystrokes coming from #element.
-		this.keystrokes.listenTo( this.element );
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	focus() {
+	public focus(): void {
 		this.focusCycler.focusFirst();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	focusLast() {
+	public focusLast(): void {
 		this.focusCycler.focusLast();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.focusTracker.destroy();
@@ -266,15 +266,13 @@ export default class ListPropertiesView extends View {
 	/**
 	 * Creates the list styles grid.
 	 *
-	 * @protected
-	 * @param {Array.<module:ui/button/buttonview~ButtonView>} styleButtons Buttons to be placed in the grid.
-	 * @param {String} styleGridAriaLabel The assistive technology label of the grid.
-	 * @returns {module:ui/view~View}
+	 * @param styleButtons Buttons to be placed in the grid.
+	 * @param styleGridAriaLabel The assistive technology label of the grid.
 	 */
-	_createStylesView( styleButtons, styleGridAriaLabel ) {
-		const stylesView = new View( this.locale );
+	private _createStylesView( styleButtons: Array<ButtonView>, styleGridAriaLabel: string ) {
+		const stylesView = new View( this.locale ) as StylesView;
 
-		stylesView.children = stylesView.createCollection( this.locale );
+		stylesView.children = stylesView.createCollection();
 		stylesView.children.addMany( styleButtons );
 
 		stylesView.setTemplate( {
@@ -291,7 +289,7 @@ export default class ListPropertiesView extends View {
 
 		stylesView.children.delegate( 'execute' ).to( this );
 
-		stylesView.focus = function() {
+		stylesView.focus = function( this: any ) {
 			this.children.first.focus();
 		};
 
@@ -300,7 +298,7 @@ export default class ListPropertiesView extends View {
 
 		stylesView.render();
 
-		stylesView.keystrokes.listenTo( stylesView.element );
+		stylesView.keystrokes.listenTo( stylesView.element! );
 
 		return stylesView;
 	}
@@ -308,11 +306,10 @@ export default class ListPropertiesView extends View {
 	/**
 	 * Renders {@link #startIndexFieldView} and/or {@link #reversedSwitchButtonView} depending on the configuration of the properties view.
 	 *
-	 * @private
-	 * @param {Object.<String,Boolean>} options.enabledProperties An object containing the configuration of enabled list property names
+	 * @param enabledProperties An object containing the configuration of enabled list property names
 	 * (see {@link #constructor}).
 	 */
-	_addNumberedListPropertyViews( enabledProperties ) {
+	private _addNumberedListPropertyViews( enabledProperties: ListPropertiesConfig ) {
 		const t = this.locale.t;
 		const numberedPropertyViews = [];
 
@@ -342,7 +339,7 @@ export default class ListPropertiesView extends View {
 			// Automatically collapse the additional properties collapsible when either start index or reversed field gets disabled.
 			this.additionalPropertiesCollapsibleView.buttonView.on( 'change:isEnabled', ( evt, data, isEnabled ) => {
 				if ( !isEnabled ) {
-					this.additionalPropertiesCollapsibleView.isCollapsed = true;
+					this.additionalPropertiesCollapsibleView!.isCollapsed = true;
 				}
 			} );
 
@@ -354,12 +351,8 @@ export default class ListPropertiesView extends View {
 
 	/**
 	 * Creates the list start index labeled field.
-	 *
-	 * @private
-	 * @protected
-	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 	 */
-	_createStartIndexField() {
+	private _createStartIndexField() {
 		const t = this.locale.t;
 		const startIndexFieldView = new LabeledFieldView( this.locale, createLabeledInputNumber );
 
@@ -376,7 +369,7 @@ export default class ListPropertiesView extends View {
 		} );
 
 		startIndexFieldView.fieldView.on( 'input', () => {
-			const inputElement = startIndexFieldView.fieldView.element;
+			const inputElement = startIndexFieldView.fieldView.element!;
 			const startIndex = inputElement.valueAsNumber;
 
 			if ( Number.isNaN( startIndex ) ) {
@@ -386,7 +379,7 @@ export default class ListPropertiesView extends View {
 			if ( !inputElement.checkValidity() ) {
 				startIndexFieldView.errorText = t( 'Start index must be greater than 0.' );
 			} else {
-				this.fire( 'listStart', { startIndex } );
+				this.fire<ListPropertiesViewListStartEvent>( 'listStart', { startIndex } );
 			}
 		} );
 
@@ -395,12 +388,8 @@ export default class ListPropertiesView extends View {
 
 	/**
 	 * Creates the reversed list switch button.
-	 *
-	 * @private
-	 * @protected
-	 * @returns {module:ui/button/switchbuttonview~SwitchButtonView}
 	 */
-	_createReversedSwitchButton() {
+	private _createReversedSwitchButton() {
 		const t = this.locale.t;
 		const reversedButtonView = new SwitchButtonView( this.locale );
 
@@ -414,18 +403,31 @@ export default class ListPropertiesView extends View {
 
 		return reversedButtonView;
 	}
-
-	/**
-	 * Fired when the list start index value has changed via {@link #startIndexFieldView}.
-	 *
-	 * @event listStart
-	 * @param {Object} data
-	 * @param {Number} data.startIndex The new start index of the list.
-	 */
-
-	/**
-	 * Fired when the list order has changed (reversed) via {@link #reversedSwitchButtonView}.
-	 *
-	 * @event listReversed
-	 */
 }
+
+export type StylesView = View & {
+	children: ViewCollection;
+	focusTracker: FocusTracker;
+	keystrokes: KeystrokeHandler;
+	focus(): void;
+};
+
+/**
+ * Fired when the list start index value has changed via {@link #startIndexFieldView}.
+ *
+ * @eventName listStart
+ */
+export type ListPropertiesViewListStartEvent = {
+	name: 'listStart';
+	args: [ data: { startIndex: number } ];
+};
+
+/**
+ * Fired when the list order has changed (reversed) via {@link #reversedSwitchButtonView}.
+ *
+ * @eventName listReversed
+ */
+export type ListPropertiesViewListReversedEvent = {
+	name: 'listReversed';
+	args: [];
+};

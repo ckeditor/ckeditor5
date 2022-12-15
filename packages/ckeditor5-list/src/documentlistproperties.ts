@@ -17,8 +17,6 @@ import ListPropertiesUI from './listproperties/listpropertiesui';
  * This is a "glue" plugin that loads the
  * {@link module:list/documentlistproperties/documentlistpropertiesediting~DocumentListPropertiesEditing document list properties
  * editing feature} and the {@link module:list/listproperties/listpropertiesui~ListPropertiesUI list properties UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class DocumentListProperties extends Plugin {
 	/**

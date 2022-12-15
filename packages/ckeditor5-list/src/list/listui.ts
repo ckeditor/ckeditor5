@@ -17,21 +17,19 @@ import { Plugin } from 'ckeditor5/src/core';
 /**
  * The list UI feature. It introduces the `'numberedList'` and `'bulletedList'` buttons that
  * allow to convert paragraphs to and from list items and indent or outdent them.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ListUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'ListUI' {
 		return 'ListUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const t = this.editor.t;
 
 		// Create two buttons and link them with numberedList and bulletedList commands.

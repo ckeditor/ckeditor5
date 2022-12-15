@@ -17,8 +17,6 @@ import {
 
 /**
  * A set of helpers related to document lists.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class DocumentListPropertiesUtils extends Plugin {
 	/**
@@ -51,9 +49,6 @@ export default class DocumentListPropertiesUtils extends Plugin {
 
 	/**
 	 * Converts `list-style-type` style to `type` attribute of `<ul>` or `<ol>` elements.
-	 *
-	 * @param {String} value
-	 * @returns {String|null}
 	 */
 	public getTypeAttributeFromListStyleType( value: string ): string | null {
 		return getTypeAttributeFromListStyleType( value );

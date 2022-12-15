@@ -7,10 +7,22 @@
  * @module list/listproperties/listpropertiesui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView, SplitButtonView, createDropdown, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
+
+import {
+	ButtonView,
+	SplitButtonView,
+	createDropdown,
+	focusChildOnDropdownOpen,
+	type DropdownView
+} from 'ckeditor5/src/ui';
+
+import type { Locale } from 'ckeditor5/src/utils';
 
 import ListPropertiesView from './ui/listpropertiesview';
+
+import type ListStyleCommand from './liststylecommand';
+import type DocumentListStyleCommand from '../documentlistproperties/documentliststylecommand';
 
 import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
 import numberedListIcon from '../../theme/icons/numberedlist.svg';
@@ -33,21 +45,19 @@ import '../../theme/liststyles.css';
  *
  * **Note**: Buttons introduced by this plugin override implementations from the {@link module:list/list/listui~ListUI}
  * (because they share the same names).
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ListPropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'ListPropertiesUI' {
 		return 'ListPropertiesUI';
 	}
 
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;
-		const enabledProperties = editor.config.get( 'list.properties' );
+		const enabledProperties = editor.config.get( 'list.properties' )!;
 
 		// Note: When this plugin does not register the "bulletedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
@@ -135,24 +145,37 @@ export default class ListPropertiesUI extends Plugin {
 	}
 }
 
-// A helper that returns a function that creates a split button with a toolbar in the dropdown,
-// which in turn contains buttons allowing users to change list styles in the context of the current selection.
-//
-// @param {Object} options
-// @param {module:core/editor/editor~Editor} options.editor
-// @param {'bulletedList'|'numberedList'} options.parentCommandName The name of the higher-order editor command associated with
-// the set of particular list styles (e.g. "bulletedList" for "disc", "circle", and "square" styles).
-// @param {String} options.buttonLabel Label of the main part of the split button.
-// @param {String} options.buttonIcon The SVG string of an icon for the main part of the split button.
-// @param {String} options.styleGridAriaLabel The ARIA label for the styles grid in the split button dropdown.
-// @param {Object} options.styleDefinitions Definitions of the style buttons.
-// @returns {Function} A function that can be passed straight into {@link module:ui/componentfactory~ComponentFactory#add}.
-function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, buttonIcon, styleGridAriaLabel, styleDefinitions } ) {
-	const parentCommand = editor.commands.get( parentCommandName );
+/**
+ * A helper that returns a function that creates a split button with a toolbar in the dropdown,
+ * which in turn contains buttons allowing users to change list styles in the context of the current selection.
+ *
+ * @param options.editor
+ * @param options.parentCommandName The name of the higher-order editor command associated with
+ * the set of particular list styles (e.g. "bulletedList" for "disc", "circle", and "square" styles).
+ * @param options.buttonLabel Label of the main part of the split button.
+ * @param options.buttonIcon The SVG string of an icon for the main part of the split button.
+ * @param options.styleGridAriaLabel The ARIA label for the styles grid in the split button dropdown.
+ * @param options.styleDefinitions Definitions of the style buttons.
+ * @returns A function that can be passed straight into {@link module:ui/componentfactory~ComponentFactory#add}.
+ */
+function getDropdownViewCreator( {
+	editor,
+	parentCommandName,
+	buttonLabel,
+	buttonIcon,
+	styleGridAriaLabel,
+	styleDefinitions
+}: {
+	editor: Editor;
+	parentCommandName: string;
+	buttonLabel: string;
+	buttonIcon: string;
+	styleGridAriaLabel: string;
+	styleDefinitions: Array<StyleDefinition>;
+} ) {
+	const parentCommand = editor.commands.get( parentCommandName )!;
 
-	// @param {module:utils/locale~Locale} locale
-	// @returns {module:ui/dropdown/dropdownview~DropdownView}
-	return locale => {
+	return ( locale: Locale ) => {
 		const dropdownView = createDropdown( locale, SplitButtonView );
 		const mainButtonView = dropdownView.buttonView;
 
@@ -194,25 +217,29 @@ function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, butto
 	};
 }
 
-// A helper that returns a function (factory) that creates individual buttons used by users to change styles
-// of lists.
-//
-// @param {Object} options
-// @param {module:core/editor/editor~Editor} options.editor
-// @param {module:list/liststylecommand~ListStylesCommand} options.listStyleCommand The instance of the `ListStylesCommand` class.
-// @param {'bulletedList'|'numberedList'} options.parentCommandName The name of the higher-order command associated with a
-// particular list style (e.g. "bulletedList" is associated with "square" and "numberedList" is associated with "roman").
-// @returns {Function} A function that can be passed straight into {@link module:ui/componentfactory~ComponentFactory#add}.
-function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } ) {
+/**
+ * A helper that returns a function (factory) that creates individual buttons used by users to change styles
+ * of lists.
+ *
+ * @param options.editor
+ * @param options.listStyleCommand The instance of the `ListStylesCommand` class.
+ * @param options.parentCommandName The name of the higher-order command associated with a
+ * particular list style (e.g. "bulletedList" is associated with "square" and "numberedList" is associated with "roman").
+ * @returns A function that can be passed straight into {@link module:ui/componentfactory~ComponentFactory#add}.
+ */
+function getStyleButtonCreator( {
+	editor,
+	listStyleCommand,
+	parentCommandName
+}: {
+	editor: Editor;
+	listStyleCommand: ListStyleCommand | DocumentListStyleCommand;
+	parentCommandName: string;
+} ) {
 	const locale = editor.locale;
-	const parentCommand = editor.commands.get( parentCommandName );
+	const parentCommand = editor.commands.get( parentCommandName )!;
 
-	// @param {String} label The label of the style button.
-	// @param {String} type The type of the style button (e.g. "roman" or "circle").
-	// @param {String} icon The SVG string of an icon of the style button.
-	// @param {String} tooltip The tooltip text of the button (shorter than verbose label).
-	// @returns {module:ui/button/buttonview~ButtonView}
-	return ( { label, type, icon, tooltip } ) => {
+	return ( { label, type, icon, tooltip }: StyleDefinition ) => {
 		const button = new ButtonView( locale );
 
 		button.set( { label, icon, tooltip } );
@@ -231,7 +258,7 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 				}
 				// If the style was the same, remove it (the button works as an off toggle).
 				else {
-					editor.execute( 'listStyle', { type: listStyleCommand._defaultType } );
+					editor.execute( 'listStyle', { type: listStyleCommand.defaultType } );
 				}
 			}
 			// Otherwise, leave the creation of the styled list to the `ListStyleCommand`.
@@ -246,26 +273,32 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 	};
 }
 
-// A helper that creates the properties view for the individual style dropdown.
-//
-// @param {Object} options
-// @param {module:core/editor/editor~Editor} options.editor Editor instance.
-// @param {module:ui/dropdown/dropdownview~DropdownView} options.dropdownView Styles dropdown view that hosts the properties view.
-// @param {'bulletedList'|'numberedList'} options.parentCommandName The name of the higher-order editor command associated with
-// the set of particular list styles (e.g. "bulletedList" for "disc", "circle", and "square" styles).
-// @param {Object} options.styleDefinitions Definitions of the style buttons.
-// @param {String} options.styleGridAriaLabel An assistive technologies label set on the grid of styles (if the grid is rendered).
-// @returns {module:list/ui/listpropertiesview~ListPropertiesView}
+/**
+ * A helper that creates the properties view for the individual style dropdown.
+ *
+ * @param options.editor Editor instance.
+ * @param options.dropdownView Styles dropdown view that hosts the properties view.
+ * @param options.parentCommandName The name of the higher-order editor command associated with
+ * the set of particular list styles (e.g. "bulletedList" for "disc", "circle", and "square" styles).
+ * @param options.styleDefinitions Definitions of the style buttons.
+ * @param options.styleGridAriaLabel An assistive technologies label set on the grid of styles (if the grid is rendered).
+ */
 function createListPropertiesView( {
 	editor,
 	dropdownView,
 	parentCommandName,
 	styleDefinitions,
 	styleGridAriaLabel
+}: {
+	editor: Editor;
+	dropdownView: DropdownView;
+	parentCommandName: string;
+	styleDefinitions: Array<StyleDefinition>;
+	styleGridAriaLabel: string;
 } ) {
 	const locale = editor.locale;
-	const enabledProperties = editor.config.get( 'list.properties' );
-	let styleButtonViews;
+	const enabledProperties = editor.config.get( 'list.properties' )!;
+	let styleButtonViews = null;
 
 	if ( parentCommandName != 'numberedList' ) {
 		enabledProperties.startIndex = false;
@@ -273,7 +306,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.styles ) {
-		const listStyleCommand = editor.commands.get( 'listStyle' );
+		const listStyleCommand = editor.commands.get( 'listStyle' )!;
 
 		const styleButtonCreator = getStyleButtonCreator( {
 			editor,
@@ -283,7 +316,7 @@ function createListPropertiesView( {
 
 		// The command can be ListStyleCommand or DocumentListStyleCommand.
 		const isStyleTypeSupported = typeof listStyleCommand.isStyleTypeSupported == 'function' ?
-			styleDefinition => listStyleCommand.isStyleTypeSupported( styleDefinition.type ) :
+			( styleDefinition: StyleDefinition ) => listStyleCommand.isStyleTypeSupported( styleDefinition.type ) :
 			() => true;
 
 		styleButtonViews = styleDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
@@ -298,23 +331,23 @@ function createListPropertiesView( {
 	if ( enabledProperties.styles ) {
 		// Accessibility: focus the first active style when opening the dropdown.
 		focusChildOnDropdownOpen( dropdownView, () => {
-			return listPropertiesView.stylesView.children.find( child => child.isOn );
+			return listPropertiesView.stylesView!.children.find( ( child: any ) => child.isOn );
 		} );
 	}
 
 	if ( enabledProperties.startIndex ) {
-		const listStartCommand = editor.commands.get( 'listStart' );
+		const listStartCommand = editor.commands.get( 'listStart' )!;
 
-		listPropertiesView.startIndexFieldView.bind( 'isEnabled' ).to( listStartCommand );
-		listPropertiesView.startIndexFieldView.fieldView.bind( 'value' ).to( listStartCommand );
+		listPropertiesView.startIndexFieldView!.bind( 'isEnabled' ).to( listStartCommand );
+		listPropertiesView.startIndexFieldView!.fieldView.bind( 'value' ).to( listStartCommand as any );
 		listPropertiesView.on( 'listStart', ( evt, data ) => editor.execute( 'listStart', data ) );
 	}
 
 	if ( enabledProperties.reversed ) {
-		const listReversedCommand = editor.commands.get( 'listReversed' );
+		const listReversedCommand = editor.commands.get( 'listReversed' )!;
 
-		listPropertiesView.reversedSwitchButtonView.bind( 'isEnabled' ).to( listReversedCommand );
-		listPropertiesView.reversedSwitchButtonView.bind( 'isOn' ).to( listReversedCommand, 'value' );
+		listPropertiesView.reversedSwitchButtonView!.bind( 'isEnabled' ).to( listReversedCommand );
+		listPropertiesView.reversedSwitchButtonView!.bind( 'isOn' ).to( listReversedCommand, 'value', value => !!value );
 		listPropertiesView.on( 'listReversed', () => {
 			const isReversed = listReversedCommand.value;
 
@@ -326,4 +359,27 @@ function createListPropertiesView( {
 	listPropertiesView.delegate( 'execute' ).to( dropdownView );
 
 	return listPropertiesView;
+}
+
+interface StyleDefinition {
+
+	/**
+	 * The label of the style button.
+	 */
+	label: string;
+
+	/**
+	 * The type of the style button (e.g. "roman" or "circle").
+	 */
+	type: string;
+
+	/**
+	 * The SVG string of an icon of the style button.
+	 */
+	icon: string;
+
+	/**
+	 * The tooltip text of the button (shorter than verbose label).
+	 */
+	tooltip: string;
 }

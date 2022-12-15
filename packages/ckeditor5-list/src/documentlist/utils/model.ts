@@ -537,8 +537,8 @@ export function sortBlocks<T extends Element>( blocks: Iterable<T> ): Array<T> {
  * object, `null` is returned.
  *
  * @internal
- * @param {module:engine/model/model~Model} model The instance of editor model.
- * @returns {module:engine/model/element~Element|null} Selected block object or `null`.
+ * @param model The instance of editor model.
+ * @returns Selected block object or `null`.
  */
 export function getSelectedBlockObject( model: Model ): Element | null {
 	const selectedElement = model.document.selection.getSelectedElement();

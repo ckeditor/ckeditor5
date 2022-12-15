@@ -19,8 +19,6 @@ import { getListTypeFromListStyleType } from './utils/style';
  * The list style command. It changes `listStyle` attribute of the selected list items,
  * letting the user choose styles for the list item markers.
  * It is used by the {@link module:list/documentlistproperties~DocumentListProperties list properties feature}.
- *
- * @extends module:core/command~Command
  */
 export default class DocumentListStyleCommand extends Command {
 	/**
@@ -31,7 +29,7 @@ export default class DocumentListStyleCommand extends Command {
 	/**
 	 * The default type of the list style.
 	 */
-	private _defaultType: string;
+	public readonly defaultType: string;
 
 	/**
 	 * The list of supported style types by this command.
@@ -49,7 +47,7 @@ export default class DocumentListStyleCommand extends Command {
 	constructor( editor: Editor, defaultType: string, supportedTypes?: Array<string> ) {
 		super( editor );
 
-		this._defaultType = defaultType;
+		this.defaultType = defaultType;
 		this._supportedTypes = supportedTypes;
 	}
 
@@ -85,7 +83,7 @@ export default class DocumentListStyleCommand extends Command {
 			blocks = expandListBlocksToCompleteList( blocks );
 
 			for ( const block of blocks ) {
-				writer.setAttribute( 'listStyle', options.type || this._defaultType, block );
+				writer.setAttribute( 'listStyle', options.type || this.defaultType, block );
 			}
 		} );
 	}

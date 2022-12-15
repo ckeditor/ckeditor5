@@ -15,8 +15,6 @@ import { expandListBlocksToCompleteList, isFirstBlockOfListItem, isListItemBlock
 
 /**
  * A set of helpers related to document lists.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class DocumentListUtils extends Plugin {
 	/**
@@ -29,8 +27,7 @@ export default class DocumentListUtils extends Plugin {
 	/**
 	 * Expands the given list of selected blocks to include all the items of the lists they're in.
 	 *
-	 * @param {module:engine/model/element~Element|Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
-	 * @returns {Array.<module:engine/model/element~Element>}
+	 * @param blocks The list of selected blocks.
 	 */
 	public expandListBlocksToCompleteList( blocks: ArrayOrItem<Element> ): Array<Element> {
 		return expandListBlocksToCompleteList( blocks );
@@ -39,8 +36,7 @@ export default class DocumentListUtils extends Plugin {
 	/**
 	 * Check if the given block is the first in the list item.
 	 *
-	 * @param {module:engine/model/element~Element} listBlock The list block element.
-	 * @returns {Boolean}
+	 * @param listBlock The list block element.
 	 */
 	public isFirstBlockOfListItem( listBlock: Element ): boolean {
 		return isFirstBlockOfListItem( listBlock );
@@ -49,8 +45,7 @@ export default class DocumentListUtils extends Plugin {
 	/**
 	 * Returns true if the given model node is a list item block.
 	 *
-	 * @param {module:engine/model/node~Node} node A model node.
-	 * @returns {Boolean}
+	 * @param node A model node.
 	 */
 	public isListItemBlock( node: Node ): boolean {
 		return isListItemBlock( node );

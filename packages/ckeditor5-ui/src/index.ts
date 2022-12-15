@@ -24,6 +24,7 @@ export { default as ColorTileView } from './colorgrid/colortileview';
 
 export { default as ComponentFactory } from './componentfactory';
 
+export { default as DropdownView } from './dropdown/dropdownview';
 export { default as DropdownButtonView } from './dropdown/button/dropdownbuttonview';
 export { default as SplitButtonView } from './dropdown/button/splitbuttonview';
 export * from './dropdown/utils';

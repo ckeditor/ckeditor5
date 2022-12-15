@@ -7,7 +7,31 @@
  * @module list/list/converters
  */
 
-import { TreeWalker } from 'ckeditor5/src/engine';
+import {
+	TreeWalker,
+	type DowncastAttributeEvent,
+	type DowncastConversionApi,
+	type DowncastInsertEvent,
+	type DowncastRemoveEvent,
+	type Element,
+	type MapperModelToViewPositionEvent,
+	type MapperViewToModelPositionEvent,
+	type Model,
+	type ModelInsertContentEvent,
+	type Node,
+	type Position,
+	type UpcastConversionApi,
+	type UpcastElementEvent,
+	type View,
+	type ViewContainerElement,
+	type ViewElement,
+	type ViewNode,
+	type ViewPosition,
+	type ViewTypeCheckable,
+	type Writer
+} from 'ckeditor5/src/engine';
+
+import type { GetCallback } from 'ckeditor5/src/utils';
 
 import {
 	generateLiInUl,
@@ -24,10 +48,9 @@ import {
  * position, and merges the list with surrounding lists (if available).
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
- * @param {module:engine/model/model~Model} model Model instance.
- * @returns {Function} Returns a conversion callback.
+ * @param model Model instance.
  */
-export function modelViewInsertion( model ) {
+export function modelViewInsertion( model: Model ): GetCallback<DowncastInsertEvent<Element>> {
 	return ( evt, data, conversionApi ) => {
 		const consumable = conversionApi.consumable;
 
@@ -53,14 +76,14 @@ export function modelViewInsertion( model ) {
  * A model-to-view converter for the `listItem` model element removal.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove
- * @param {module:engine/model/model~Model} model Model instance.
- * @returns {Function} Returns a conversion callback.
+ * @param model Model instance.
+ * @returns Returns a conversion callback.
  */
-export function modelViewRemove( model ) {
+export function modelViewRemove( model: Model ): GetCallback<DowncastRemoveEvent> {
 	return ( evt, data, conversionApi ) => {
 		const viewPosition = conversionApi.mapper.toViewPosition( data.position );
 		const viewStart = viewPosition.getLastMatchingPosition( value => !value.item.is( 'element', 'li' ) );
-		const viewItem = viewStart.nodeAfter;
+		const viewItem = viewStart.nodeAfter as ViewElement;
 		const viewWriter = conversionApi.writer;
 
 		// 1. Break the container after and before the list item.
@@ -69,7 +92,7 @@ export function modelViewRemove( model ) {
 		viewWriter.breakContainer( viewWriter.createPositionAfter( viewItem ) );
 
 		// 2. Remove the list with the item to remove.
-		const viewList = viewItem.parent;
+		const viewList = viewItem.parent as ViewElement;
 		const viewListPrev = viewList.previousSibling;
 		const removeRange = viewWriter.createRangeOn( viewList );
 		const removed = viewWriter.remove( removeRange );
@@ -80,13 +103,20 @@ export function modelViewRemove( model ) {
 		}
 
 		// 4. Bring back nested list that was in the removed <li>.
-		const modelItem = conversionApi.mapper.toModelElement( viewItem );
+		const modelItem = conversionApi.mapper.toModelElement( viewItem )!;
 
-		hoistNestedLists( modelItem.getAttribute( 'listIndent' ) + 1, data.position, removeRange.start, viewItem, conversionApi, model );
+		hoistNestedLists(
+			modelItem.getAttribute( 'listIndent' ) as number + 1,
+			data.position,
+			removeRange.start,
+			viewItem,
+			conversionApi,
+			model
+		);
 
 		// 5. Unbind removed view item and all children.
 		for ( const child of viewWriter.createRangeIn( removed ).getItems() ) {
-			conversionApi.mapper.unbindViewElement( child );
+			conversionApi.mapper.unbindViewElement( child as ViewElement );
 		}
 
 		evt.stop();
@@ -104,16 +134,13 @@ export function modelViewRemove( model ) {
  * Check {@link module:list/todolist/todolistconverters~modelViewChangeType} to see an example of it.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
-export function modelViewChangeType( evt, data, conversionApi ) {
+export const modelViewChangeType: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi ) => {
 	if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 		return;
 	}
 
-	const viewItem = conversionApi.mapper.toViewElement( data.item );
+	const viewItem = conversionApi.mapper.toViewElement( data.item )!;
 	const viewWriter = conversionApi.writer;
 
 	// Break the container after and before the list item.
@@ -123,46 +150,43 @@ export function modelViewChangeType( evt, data, conversionApi ) {
 
 	// Change name of the view list that holds the changed view item.
 	// We cannot just change name property, because that would not render properly.
-	const viewList = viewItem.parent;
+	const viewList = viewItem.parent as ViewContainerElement;
 	const listName = data.attributeNewValue == 'numbered' ? 'ol' : 'ul';
 
 	viewWriter.rename( listName, viewList );
-}
+};
 
 /**
  * A model-to-view converter that attempts to merge nodes split by {@link module:list/list/converters~modelViewChangeType}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
-export function modelViewMergeAfterChangeType( evt, data, conversionApi ) {
+export const modelViewMergeAfterChangeType: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi ) => {
 	conversionApi.consumable.consume( data.item, evt.name );
 
-	const viewItem = conversionApi.mapper.toViewElement( data.item );
-	const viewList = viewItem.parent;
+	const viewItem = conversionApi.mapper.toViewElement( data.item )!;
+	const viewList = viewItem.parent as ViewContainerElement;
 	const viewWriter = conversionApi.writer;
 
 	// Merge the changed view list with other lists, if possible.
-	mergeViewLists( viewWriter, viewList, viewList.nextSibling );
-	mergeViewLists( viewWriter, viewList.previousSibling, viewList );
-}
+	mergeViewLists( viewWriter, viewList, viewList.nextSibling! );
+	mergeViewLists( viewWriter, viewList.previousSibling!, viewList );
+};
 
 /**
  * A model-to-view converter for the `listIndent` attribute change on the `listItem` model element.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {module:engine/model/model~Model} model Model instance.
- * @returns {Function} Returns a conversion callback.
+ * @param model Model instance.
+ * @returns Returns a conversion callback.
  */
-export function modelViewChangeIndent( model ) {
+export function modelViewChangeIndent( model: Model ): GetCallback<DowncastAttributeEvent<Element>> {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, 'attribute:listIndent' ) ) {
 			return;
 		}
 
-		const viewItem = conversionApi.mapper.toViewElement( data.item );
+		const viewItem = conversionApi.mapper.toViewElement( data.item ) as ViewContainerElement;
 		const viewWriter = conversionApi.writer;
 
 		// 1. Break the container after and before the list item.
@@ -171,7 +195,7 @@ export function modelViewChangeIndent( model ) {
 		viewWriter.breakContainer( viewWriter.createPositionAfter( viewItem ) );
 
 		// 2. Extract view list with changed view list item and merge "hole" possibly created by breaking and removing elements.
-		const viewList = viewItem.parent;
+		const viewList = viewItem.parent as ViewElement;
 		const viewListPrev = viewList.previousSibling;
 		const removeRange = viewWriter.createRangeOn( viewList );
 		viewWriter.remove( removeRange );
@@ -181,7 +205,14 @@ export function modelViewChangeIndent( model ) {
 		}
 
 		// 3. Bring back nested list that was in the removed <li>.
-		hoistNestedLists( data.attributeOldValue + 1, data.range.start, removeRange.start, viewItem, conversionApi, model );
+		hoistNestedLists(
+			data.attributeOldValue as number + 1,
+			data.range.start,
+			removeRange.start,
+			viewItem,
+			conversionApi,
+			model
+		);
 
 		// 4. Inject view list like it is newly inserted.
 		injectViewList( data.item, viewItem, conversionApi, model );
@@ -201,23 +232,22 @@ export function modelViewChangeIndent( model ) {
  *
  * The converter prevents such situations:
  *
- *		// Model:                        // View:
- *		<listItem>foo</listItem>         <ul>
- *		<listItem>bar</listItem>             <li>foo</li>
- *		                                     <li>bar</li>
- *		                                 </ul>
+ * ```xml
+ * // Model:                        // View:
+ * <listItem>foo</listItem>         <ul>
+ * <listItem>bar</listItem>             <li>foo</li>
+ *                                      <li>bar</li>
+ *                                  </ul>
  *
- *		// After change:                 // Correct view guaranteed by this converter:
- *		<listItem>foo</listItem>         <ul><li>foo</li></ul><p>xxx</p><ul><li>bar</li></ul>
- *		<paragraph>xxx</paragraph>       // Instead of this wrong view state:
- *		<listItem>bar</listItem>         <ul><li>foo</li><p>xxx</p><li>bar</li></ul>
+ * // After change:                 // Correct view guaranteed by this converter:
+ * <listItem>foo</listItem>         <ul><li>foo</li></ul><p>xxx</p><ul><li>bar</li></ul>
+ * <paragraph>xxx</paragraph>       // Instead of this wrong view state:
+ * <listItem>bar</listItem>         <ul><li>foo</li><p>xxx</p><li>bar</li></ul>
+ * ```
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
-export function modelViewSplitOnInsert( evt, data, conversionApi ) {
+export const modelViewSplitOnInsert: GetCallback<DowncastInsertEvent<Element>> = ( evt, data, conversionApi ) => {
 	if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 		return;
 	}
@@ -274,17 +304,17 @@ export function modelViewSplitOnInsert( evt, data, conversionApi ) {
 		//   1.2.1 --------
 		// 2 --------
 		//
-		while ( viewPosition.parent.name == 'ul' || viewPosition.parent.name == 'ol' ) {
+		while ( ( viewPosition.parent as any ).name == 'ul' || ( viewPosition.parent as any ).name == 'ol' ) {
 			viewPosition = viewWriter.breakContainer( viewPosition );
 
-			if ( viewPosition.parent.name != 'li' ) {
+			if ( ( viewPosition.parent as any ).name != 'li' ) {
 				break;
 			}
 
 			// Remove lists that are after inserted element.
 			// They will be brought back later, below the inserted element.
 			const removeStart = viewPosition;
-			const removeEnd = viewWriter.createPositionAt( viewPosition.parent, 'end' );
+			const removeEnd = viewWriter.createPositionAt( viewPosition.parent as any, 'end' );
 
 			// Don't remove if there is nothing to remove.
 			if ( !removeStart.isEqual( removeEnd ) ) {
@@ -292,7 +322,7 @@ export function modelViewSplitOnInsert( evt, data, conversionApi ) {
 				lists.push( removed );
 			}
 
-			viewPosition = viewWriter.createPositionAfter( viewPosition.parent );
+			viewPosition = viewWriter.createPositionAfter( viewPosition.parent as any );
 		}
 
 		// Bring back removed lists.
@@ -304,7 +334,7 @@ export function modelViewSplitOnInsert( evt, data, conversionApi ) {
 
 				// Don't merge first list! We want a split in that place (this is why this converter is introduced).
 				if ( i > 0 ) {
-					const mergePos = mergeViewLists( viewWriter, previousList, previousList.nextSibling );
+					const mergePos = mergeViewLists( viewWriter, previousList!, previousList!.nextSibling! );
 
 					// If `mergePos` is in `previousList` it means that the lists got merged.
 					// In this case, we need to fix insert position.
@@ -315,10 +345,10 @@ export function modelViewSplitOnInsert( evt, data, conversionApi ) {
 			}
 
 			// Merge last inserted list with element after it.
-			mergeViewLists( viewWriter, viewPosition.nodeBefore, viewPosition.nodeAfter );
+			mergeViewLists( viewWriter, viewPosition.nodeBefore!, viewPosition.nodeAfter! );
 		}
 	}
-}
+};
 
 /**
  * A special model-to-view converter introduced by the {@link module:list/list~List list feature}. This converter takes care of
@@ -326,23 +356,22 @@ export function modelViewSplitOnInsert( evt, data, conversionApi ) {
  *
  * Example:
  *
- *		// Model:                        // View:
- *		<listItem>foo</listItem>         <ul><li>foo</li></ul>
- *		<paragraph>xxx</paragraph>       <p>xxx</p>
- *		<listItem>bar</listItem>         <ul><li>bar</li></ul>
+ * ```xml
+ * // Model:                        // View:
+ * <listItem>foo</listItem>         <ul><li>foo</li></ul>
+ * <paragraph>xxx</paragraph>       <p>xxx</p>
+ * <listItem>bar</listItem>         <ul><li>bar</li></ul>
  *
- *		// After change:                 // Correct view guaranteed by this converter:
- *		<listItem>foo</listItem>         <ul>
- *		<listItem>bar</listItem>             <li>foo</li>
- *		                                     <li>bar</li>
- *		                                 </ul>
+ * // After change:                 // Correct view guaranteed by this converter:
+ * <listItem>foo</listItem>         <ul>
+ * <listItem>bar</listItem>             <li>foo</li>
+ *                                      <li>bar</li>
+ *                                  </ul>
+ * ```
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
-export function modelViewMergeAfter( evt, data, conversionApi ) {
+export const modelViewMergeAfter: GetCallback<DowncastRemoveEvent> = ( evt, data, conversionApi ) => {
 	const viewPosition = conversionApi.mapper.toViewPosition( data.position );
 	const viewItemPrev = viewPosition.nodeBefore;
 	const viewItemNext = viewPosition.nodeAfter;
@@ -350,8 +379,8 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
 	// Merge lists if something (remove, move) was done from inside of list.
 	// Merging will be done only if both items are view lists of the same type.
 	// The check is done inside the helper function.
-	mergeViewLists( conversionApi.writer, viewItemPrev, viewItemNext );
-}
+	mergeViewLists( conversionApi.writer, viewItemPrev!, viewItemNext! );
+};
 
 /**
  * A view-to-model converter that converts the `<li>` view elements into the `listItem` model elements.
@@ -361,11 +390,8 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
  * * stores and increases the `conversionApi.store.indent` value when `<li>`'s sub-items are converted.
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
  */
-export function viewModelConverter( evt, data, conversionApi ) {
+export const viewModelConverter: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 	if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
 		const writer = conversionApi.writer;
 
@@ -378,7 +404,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		writer.setAttribute( 'listIndent', indent, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
-		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
+		const type = data.viewItem.parent && ( data.viewItem.parent as any ).name == 'ol' ? 'numbered' : 'bulleted';
 		writer.setAttribute( 'listType', type, listItem );
 
 		if ( !conversionApi.safeInsert( listItem, data.modelCursor ) ) {
@@ -392,7 +418,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 
 		conversionApi.updateConversionResult( listItem, data );
 	}
-}
+};
 
 /**
  * A view-to-model converter for the `<ul>` and `<ol>` view elements that cleans the input view of garbage.
@@ -400,11 +426,8 @@ export function viewModelConverter( evt, data, conversionApi ) {
  * incorrect data can be cleared if the view was incorrect.
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
  */
-export function cleanList( evt, data, conversionApi ) {
+export const cleanList: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 	if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
 		// Caching children because when we start removing them iterating fails.
 		const children = Array.from( data.viewItem.getChildren() );
@@ -417,17 +440,14 @@ export function cleanList( evt, data, conversionApi ) {
 			}
 		}
 	}
-}
+};
 
 /**
  * A view-to-model converter for the `<li>` elements that cleans whitespace formatting from the input view.
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
  */
-export function cleanListItem( evt, data, conversionApi ) {
+export const cleanListItem: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 	if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
 		if ( data.viewItem.childCount === 0 ) {
 			return;
@@ -448,18 +468,14 @@ export function cleanListItem( evt, data, conversionApi ) {
 			}
 		}
 	}
-}
+};
 
 /**
  * Returns a callback for model position to view position mapping for {@link module:engine/conversion/mapper~Mapper}. The callback fixes
  * positions between the `listItem` elements that would be incorrectly mapped because of how list items are represented in the model
  * and in the view.
- *
- * @see module:engine/conversion/mapper~Mapper#event:modelToViewPosition
- * @param {module:engine/view/view~View} view A view instance.
- * @returns {Function}
  */
-export function modelToViewPosition( view ) {
+export function modelToViewPosition( view: View ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
 		if ( data.isPhantom ) {
 			return;
@@ -468,7 +484,7 @@ export function modelToViewPosition( view ) {
 		const modelItem = data.modelPosition.nodeBefore;
 
 		if ( modelItem && modelItem.is( 'element', 'listItem' ) ) {
-			const viewItem = data.mapper.toViewElement( modelItem );
+			const viewItem = data.mapper.toViewElement( modelItem )!;
 			const topmostViewList = viewItem.getAncestors().find( isList );
 			const walker = view.createPositionAt( viewItem, 0 ).getWalker();
 
@@ -493,13 +509,13 @@ export function modelToViewPosition( view ) {
  * and in the view.
  *
  * @see module:engine/conversion/mapper~Mapper#event:viewToModelPosition
- * @param {module:engine/model/model~Model} model Model instance.
- * @returns {Function} Returns a conversion callback.
+ * @param model Model instance.
+ * @returns Returns a conversion callback.
  */
-export function viewToModelPosition( model ) {
+export function viewToModelPosition( model: Model ): GetCallback<MapperViewToModelPositionEvent> {
 	return ( evt, data ) => {
 		const viewPos = data.viewPosition;
-		const viewParent = viewPos.parent;
+		const viewParent = viewPos.parent as ViewElement;
 		const mapper = data.mapper;
 
 		if ( viewParent.name == 'ul' || viewParent.name == 'ol' ) {
@@ -507,7 +523,7 @@ export function viewToModelPosition( model ) {
 			if ( !viewPos.isAtEnd ) {
 				// If position is not at the end, it must be before <li>.
 				// Get that <li>, map it to `listItem` and set model position before that `listItem`.
-				const modelNode = mapper.toModelElement( viewPos.nodeAfter );
+				const modelNode = mapper.toModelElement( viewPos.nodeAfter as any )!;
 
 				data.modelPosition = model.createPositionBefore( modelNode );
 			} else {
@@ -515,18 +531,18 @@ export function viewToModelPosition( model ) {
 				// There is <li> before the position, but we cannot just map it to `listItem` and set model position after it,
 				// because that <li> may contain nested items.
 				// We will check "model length" of that <li>, in other words - how many `listItem`s are in that <li>.
-				const modelNode = mapper.toModelElement( viewPos.nodeBefore );
-				const modelLength = mapper.getModelLength( viewPos.nodeBefore );
+				const modelNode = mapper.toModelElement( viewPos.nodeBefore as any );
+				const modelLength = mapper.getModelLength( viewPos.nodeBefore! );
 
 				// Then we get model position before mapped `listItem` and shift it accordingly.
-				data.modelPosition = model.createPositionBefore( modelNode ).getShiftedBy( modelLength );
+				data.modelPosition = model.createPositionBefore( modelNode! ).getShiftedBy( modelLength );
 			}
 
 			evt.stop();
 		} else if (
 			viewParent.name == 'li' &&
 			viewPos.nodeBefore &&
-			( viewPos.nodeBefore.name == 'ul' || viewPos.nodeBefore.name == 'ol' )
+			( ( viewPos.nodeBefore as any ).name == 'ul' || ( viewPos.nodeBefore as any ).name == 'ol' )
 		) {
 			// In most cases when view position is in <li> it is in text and this is a correct position.
 			// However, if position is after <ul> or <ol> we have to fix it -- because in model <ul>/<ol> are not in the `listItem`.
@@ -535,7 +551,7 @@ export function viewToModelPosition( model ) {
 			// Check all <ul>s and <ol>s that are in the <li> but before mapped position.
 			// Get model length of those elements and then add it to the offset of `listItem` mapped to the original <li>.
 			let modelLength = 1; // Starts from 1 because the original <li> has to be counted in too.
-			let viewList = viewPos.nodeBefore;
+			let viewList: ViewNode | null = viewPos.nodeBefore;
 
 			while ( viewList && isList( viewList ) ) {
 				modelLength += mapper.getModelLength( viewList );
@@ -543,7 +559,7 @@ export function viewToModelPosition( model ) {
 				viewList = viewList.previousSibling;
 			}
 
-			data.modelPosition = model.createPositionBefore( modelNode ).getShiftedBy( modelLength );
+			data.modelPosition = model.createPositionBefore( modelNode! ).getShiftedBy( modelLength );
 
 			evt.stop();
 		}
@@ -556,27 +572,33 @@ export function viewToModelPosition( model ) {
  * In the example below, there is a correct list structure.
  * Then the middle element is removed so the list structure will become incorrect:
  *
- *		<listItem listType="bulleted" listIndent=0>Item 1</listItem>
- *		<listItem listType="bulleted" listIndent=1>Item 2</listItem>   <--- this is removed.
- *		<listItem listType="bulleted" listIndent=2>Item 3</listItem>
+ * ```xml
+ * <listItem listType="bulleted" listIndent=0>Item 1</listItem>
+ * <listItem listType="bulleted" listIndent=1>Item 2</listItem>   <--- this is removed.
+ * <listItem listType="bulleted" listIndent=2>Item 3</listItem>
+ * ```
  *
  * The list structure after the middle element is removed:
  *
- * 		<listItem listType="bulleted" listIndent=0>Item 1</listItem>
- *		<listItem listType="bulleted" listIndent=2>Item 3</listItem>
+ * ```xml
+ * <listItem listType="bulleted" listIndent=0>Item 1</listItem>
+ * <listItem listType="bulleted" listIndent=2>Item 3</listItem>
+ * ```
  *
  * Should become:
  *
- *		<listItem listType="bulleted" listIndent=0>Item 1</listItem>
- *		<listItem listType="bulleted" listIndent=1>Item 3</listItem>   <--- note that indent got post-fixed.
+ * ```xml
+ * <listItem listType="bulleted" listIndent=0>Item 1</listItem>
+ * <listItem listType="bulleted" listIndent=1>Item 3</listItem>   <--- note that indent got post-fixed.
+ * ```
  *
- * @param {module:engine/model/model~Model} model The data model.
- * @param {module:engine/model/writer~Writer} writer The writer to do changes with.
- * @returns {Boolean} `true` if any change has been applied, `false` otherwise.
+ * @param model The data model.
+ * @param writer The writer to do changes with.
+ * @returns `true` if any change has been applied, `false` otherwise.
  */
-export function modelChangePostFixer( model, writer ) {
+export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
 	const changes = model.document.differ.getChanges();
-	const itemToListHead = new Map();
+	const itemToListHead = new Map<Element, Element>();
 
 	let applied = false;
 
@@ -586,7 +608,7 @@ export function modelChangePostFixer( model, writer ) {
 		} else if ( entry.type == 'insert' && entry.name != 'listItem' ) {
 			if ( entry.name != '$text' ) {
 				// In case of renamed element.
-				const item = entry.position.nodeAfter;
+				const item = entry.position.nodeAfter as Element;
 
 				if ( item.hasAttribute( 'listIndent' ) ) {
 					writer.removeAttribute( 'listIndent', item );
@@ -642,7 +664,7 @@ export function modelChangePostFixer( model, writer ) {
 
 	return applied;
 
-	function _addListToFix( position ) {
+	function _addListToFix( position: Position ) {
 		const previousNode = position.nodeBefore;
 
 		if ( !previousNode || !previousNode.is( 'element', 'listItem' ) ) {
@@ -675,12 +697,12 @@ export function modelChangePostFixer( model, writer ) {
 		}
 	}
 
-	function _fixListIndents( item ) {
+	function _fixListIndents( item: Node | null ) {
 		let maxIndent = 0;
 		let fixBy = null;
 
 		while ( item && item.is( 'element', 'listItem' ) ) {
-			const itemIndent = item.getAttribute( 'listIndent' );
+			const itemIndent = item.getAttribute( 'listIndent' ) as number;
 
 			if ( itemIndent > maxIndent ) {
 				let newIndent;
@@ -701,21 +723,21 @@ export function modelChangePostFixer( model, writer ) {
 				applied = true;
 			} else {
 				fixBy = null;
-				maxIndent = item.getAttribute( 'listIndent' ) + 1;
+				maxIndent = item.getAttribute( 'listIndent' ) as number + 1;
 			}
 
 			item = item.nextSibling;
 		}
 	}
 
-	function _fixListTypes( item ) {
-		let typesStack = [];
+	function _fixListTypes( item: Node | null ) {
+		let typesStack: Array<string> = [];
 		let prev = null;
 
 		while ( item && item.is( 'element', 'listItem' ) ) {
-			const itemIndent = item.getAttribute( 'listIndent' );
+			const itemIndent = item.getAttribute( 'listIndent' ) as number;
 
-			if ( prev && prev.getAttribute( 'listIndent' ) > itemIndent ) {
+			if ( prev && prev.getAttribute( 'listIndent' ) as number > itemIndent ) {
 				typesStack = typesStack.slice( 0, itemIndent + 1 );
 			}
 
@@ -729,7 +751,7 @@ export function modelChangePostFixer( model, writer ) {
 						applied = true;
 					}
 				} else {
-					typesStack[ itemIndent ] = item.getAttribute( 'listType' );
+					typesStack[ itemIndent ] = item.getAttribute( 'listType' ) as string;
 				}
 			}
 
@@ -746,23 +768,26 @@ export function modelChangePostFixer( model, writer ) {
  *
  * Example:
  *
- *		<listItem listType="bulleted" listIndent=0>A</listItem>
- *		<listItem listType="bulleted" listIndent=1>B^</listItem>
- *		// At ^ paste:  <listItem listType="bulleted" listIndent=4>X</listItem>
- *		//              <listItem listType="bulleted" listIndent=5>Y</listItem>
- *		<listItem listType="bulleted" listIndent=2>C</listItem>
+ * ```xml
+ * <listItem listType="bulleted" listIndent=0>A</listItem>
+ * <listItem listType="bulleted" listIndent=1>B^</listItem>
+ * // At ^ paste:  <listItem listType="bulleted" listIndent=4>X</listItem>
+ * //              <listItem listType="bulleted" listIndent=5>Y</listItem>
+ * <listItem listType="bulleted" listIndent=2>C</listItem>
+ * ```
  *
  * Should become:
  *
- *		<listItem listType="bulleted" listIndent=0>A</listItem>
- *		<listItem listType="bulleted" listIndent=1>BX</listItem>
- *		<listItem listType="bulleted" listIndent=2>Y/listItem>
- *		<listItem listType="bulleted" listIndent=2>C</listItem>
- *
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Array} args Arguments of {@link module:engine/model/model~Model#insertContent}.
+ * ```xml
+ * <listItem listType="bulleted" listIndent=0>A</listItem>
+ * <listItem listType="bulleted" listIndent=1>BX</listItem>
+ * <listItem listType="bulleted" listIndent=2>Y/listItem>
+ * <listItem listType="bulleted" listIndent=2>C</listItem>
+ * ```
  */
-export function modelIndentPasteFixer( evt, [ content, selectable, placeOrOffset ] ) {
+export const modelIndentPasteFixer: GetCallback<ModelInsertContentEvent> = function( evt, [ content, selectable, placeOrOffset ] ) {
+	const model = this as Model;
+
 	// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
 	// elements before it and there is no need to fix indents, because even if we insert that content into a list,
 	// that list will be broken.
@@ -773,14 +798,14 @@ export function modelIndentPasteFixer( evt, [ content, selectable, placeOrOffset
 	let selection;
 
 	if ( !selectable ) {
-		selection = this.document.selection;
+		selection = model.document.selection;
 	} else {
-		selection = this.createSelection( selectable, placeOrOffset );
+		selection = model.createSelection( selectable, placeOrOffset );
 	}
 
 	if ( item && item.is( 'element', 'listItem' ) ) {
 		// Get a reference list item. Inserted list items will be fixed according to that item.
-		const pos = selection.getFirstPosition();
+		const pos = selection.getFirstPosition()!;
 		let refItem = null;
 
 		if ( pos.parent.is( 'element', 'listItem' ) ) {
@@ -794,30 +819,36 @@ export function modelIndentPasteFixer( evt, [ content, selectable, placeOrOffset
 			// First list item in `data` has indent equal to 0 (it is a first list item). It should have indent equal
 			// to the indent of reference item. We have to fix the first item and all of it's children and following siblings.
 			// Indent of all those items has to be adjusted to reference item.
-			const indentChange = refItem.getAttribute( 'listIndent' );
+			const indentChange = refItem.getAttribute( 'listIndent' ) as number;
 
 			// Fix only if there is anything to fix.
 			if ( indentChange > 0 ) {
 				// Adjust indent of all "first" list items in inserted data.
 				while ( item && item.is( 'element', 'listItem' ) ) {
-					item._setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + indentChange );
+					item._setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) as number + indentChange );
 
 					item = item.nextSibling;
 				}
 			}
 		}
 	}
-}
+};
 
-// Helper function that converts children of a given `<li>` view element into corresponding model elements.
-// The function maintains proper order of elements if model `listItem` is split during the conversion
-// due to block children conversion.
-//
-// @param {module:engine/model/element~Element} listItemModel List item model element to which converted children will be inserted.
-// @param {Iterable.<module:engine/view/node~Node>} viewChildren View elements which will be converted.
-// @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
-// @returns {module:engine/model/position~Position} Position on which next elements should be inserted after children conversion.
-function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conversionApi ) {
+/**
+ * Helper function that converts children of a given `<li>` view element into corresponding model elements.
+ * The function maintains proper order of elements if model `listItem` is split during the conversion
+ * due to block children conversion.
+ *
+ * @param listItemModel List item model element to which converted children will be inserted.
+ * @param viewChildren View elements which will be converted.
+ * @param conversionApi Conversion interface to be used by the callback.
+ * @returns Position on which next elements should be inserted after children conversion.
+ */
+function viewToModelListItemChildrenConverter(
+	listItemModel: Element,
+	viewChildren: Iterable<ViewNode>,
+	conversionApi: UpcastConversionApi
+) {
 	const { writer, schema } = conversionApi;
 
 	// A position after the last inserted `listItem`.
@@ -826,7 +857,7 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 	// Check all children of the converted `<li>`. At this point we assume there are no "whitespace" view text nodes
 	// in view list, between view list items. This should be handled by `<ul>` and `<ol>` converters.
 	for ( const child of viewChildren ) {
-		if ( child.name == 'ul' || child.name == 'ol' ) {
+		if ( ( child as any ).name == 'ul' || ( child as any ).name == 'ol' ) {
 			// If the children is a list, we will insert its conversion result after currently handled `listItem`.
 			// Then, next insertion position will be set after all the new list items (and maybe other elements if
 			// something split list item).
@@ -846,7 +877,7 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 			//
 			// <listItem></listItem><paragraph>Foo</paragraph><listItem></listItem>
 			//
-			const convertedChild = result.modelRange.start.nodeAfter;
+			const convertedChild = result.modelRange!.start.nodeAfter;
 			const wasSplit = convertedChild && convertedChild.is( 'element' ) && !schema.checkChild( listItemModel, convertedChild.name );
 
 			if ( wasSplit ) {
@@ -883,8 +914,10 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 	return nextPosition;
 }
 
-// Helper function that seeks for a next list item starting from given `startPosition`.
-function findNextListItem( startPosition ) {
+/**
+ * Helper function that seeks for a next list item starting from given `startPosition`.
+ */
+function findNextListItem( startPosition: Position ) {
 	const treeWalker = new TreeWalker( { startPosition } );
 
 	let value;
@@ -896,9 +929,18 @@ function findNextListItem( startPosition ) {
 	return value.value.item;
 }
 
-// Helper function that takes all children of given `viewRemovedItem` and moves them in a correct place, according
-// to other given parameters.
-function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStartPosition, viewRemovedItem, conversionApi, model ) {
+/**
+ * Helper function that takes all children of given `viewRemovedItem` and moves them in a correct place, according
+ * to other given parameters.
+ */
+function hoistNestedLists(
+	nextIndent: number,
+	modelRemoveStartPosition: Position,
+	viewRemoveStartPosition: ViewPosition,
+	viewRemovedItem: ViewElement,
+	conversionApi: DowncastConversionApi,
+	model: Model
+) {
 	// Find correct previous model list item element.
 	// The element has to have either same or smaller indent than given reference indent.
 	// This will be the model element which will get nested items (if it has smaller indent) or sibling items (if it has same indent).
@@ -906,8 +948,7 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 	const prevModelItem = getSiblingListItem( modelRemoveStartPosition.nodeBefore, {
 		sameIndent: true,
 		smallerIndent: true,
-		listIndent: nextIndent,
-		foo: 'b'
+		listIndent: nextIndent
 	} );
 
 	const mapper = conversionApi.mapper;
@@ -954,7 +995,7 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 		//   1.2 --------
 		//   2.1 --------
 		//   2.2 --------
-		const prevViewList = mapper.toViewElement( prevModelItem ).parent;
+		const prevViewList = mapper.toViewElement( prevModelItem )!.parent as ViewElement;
 		insertPosition = viewWriter.createPositionAfter( prevViewList );
 	} else {
 		// If element has been found and has smaller indent as reference indent it means that nested items
@@ -987,54 +1028,53 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 		if ( isList( child ) ) {
 			insertPosition = viewWriter.move( viewWriter.createRangeOn( child ), insertPosition ).end;
 
-			mergeViewLists( viewWriter, child, child.nextSibling );
-			mergeViewLists( viewWriter, child.previousSibling, child );
+			mergeViewLists( viewWriter, child, child.nextSibling! );
+			mergeViewLists( viewWriter, child.previousSibling!, child );
 		}
 	}
 }
 
-// Checks if view element is a list type (ul or ol).
-//
-// @param {module:engine/view/element~Element} viewElement
-// @returns {Boolean}
-function isList( viewElement ) {
+/**
+ * Checks if view element is a list type (ul or ol).
+ */
+function isList( viewElement: ViewTypeCheckable ): viewElement is ViewElement & { name: 'ol' | 'ul' } {
 	return viewElement.is( 'element', 'ol' ) || viewElement.is( 'element', 'ul' );
 }
 
-// Calculates the indent value for a list item. Handles HTML compliant and non-compliant lists.
-//
-// Also, fixes non HTML compliant lists indents:
-//
-//		before:                                     fixed list:
-//		OL                                          OL
-//		|-> LI (parent LIs: 0)                      |-> LI     (indent: 0)
-//		    |-> OL                                  |-> OL
-//		        |-> OL                                  |
-//		        |   |-> OL                              |
-//		        |       |-> OL                          |
-//		        |           |-> LI (parent LIs: 1)      |-> LI (indent: 1)
-//		        |-> LI (parent LIs: 1)                  |-> LI (indent: 1)
-//
-//		before:                                     fixed list:
-//		OL                                          OL
-//		|-> OL                                      |
-//		    |-> OL                                  |
-//		         |-> OL                             |
-//		             |-> LI (parent LIs: 0)         |-> LI        (indent: 0)
-//
-//		before:                                     fixed list:
-//		OL                                          OL
-//		|-> LI (parent LIs: 0)                      |-> LI         (indent: 0)
-//		|-> OL                                          |-> OL
-//		    |-> LI (parent LIs: 0)                          |-> LI (indent: 1)
-//
-// @param {module:engine/view/element~Element} listItem
-// @param {Object} conversionStore
-// @returns {Number}
-function getIndent( listItem ) {
+/**
+ * Calculates the indent value for a list item. Handles HTML compliant and non-compliant lists.
+ *
+ * Also, fixes non HTML compliant lists indents:
+ *
+ * ```
+ * before:                                     fixed list:
+ * OL                                          OL
+ * |-> LI (parent LIs: 0)                      |-> LI     (indent: 0)
+ *     |-> OL                                  |-> OL
+ *         |-> OL                                  |
+ *         |   |-> OL                              |
+ *         |       |-> OL                          |
+ *         |           |-> LI (parent LIs: 1)      |-> LI (indent: 1)
+ *         |-> LI (parent LIs: 1)                  |-> LI (indent: 1)
+ *
+ * before:                                     fixed list:
+ * OL                                          OL
+ * |-> OL                                      |
+ *     |-> OL                                  |
+ *          |-> OL                             |
+ *              |-> LI (parent LIs: 0)         |-> LI        (indent: 0)
+ *
+ * before:                                     fixed list:
+ * OL                                          OL
+ * |-> LI (parent LIs: 0)                      |-> LI         (indent: 0)
+ * |-> OL                                          |-> OL
+ *     |-> LI (parent LIs: 0)                          |-> LI (indent: 1)
+ * ```
+ */
+function getIndent( listItem: ViewElement ) {
 	let indent = 0;
 
-	let parent = listItem.parent;
+	let parent = listItem.parent as ViewElement;
 
 	while ( parent ) {
 		// Each LI in the tree will result in an increased indent for HTML compliant lists.
@@ -1055,7 +1095,7 @@ function getIndent( listItem ) {
 			}
 		}
 
-		parent = parent.parent;
+		parent = parent.parent as ViewElement;
 	}
 
 	return indent;

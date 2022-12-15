@@ -21,8 +21,6 @@ import {
  * The document list split command that splits the list item at the selection.
  *
  * It is used by the {@link module:list/documentlist~DocumentList document list feature}.
- *
- * @extends module:core/command~Command
  */
 export default class DocumentListSplitCommand extends Command {
 	/**
@@ -68,8 +66,7 @@ export default class DocumentListSplitCommand extends Command {
 	/**
 	 * Fires the `afterExecute` event.
 	 *
-	 * @private
-	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
+	 * @param changedBlocks The changed list elements.
 	 */
 	private _fireAfterExecute( changedBlocks: Array<Element> ) {
 		this.fire<DocumentListSplitCommandAfterExecuteEvent>( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );

@@ -45,8 +45,6 @@ const DEFAULT_LIST_TYPE = 'default';
  *
  * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they are enabled in the configuration.
  * Read more in {@link module:list/listconfig~ListPropertiesConfig}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class DocumentListPropertiesEditing extends Plugin {
 	/**

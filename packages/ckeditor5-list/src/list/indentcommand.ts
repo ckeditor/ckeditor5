@@ -7,39 +7,35 @@
  * @module list/list/indentcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 
 /**
  * The list indent command. It is used by the {@link module:list/list~List list feature}.
- *
- * @extends module:core/command~Command
  */
 export default class IndentCommand extends Command {
 	/**
+	 * Determines by how much the command will change the list item's indent attribute.
+	 */
+	private readonly _indentBy: 1 | -1;
+
+	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {'forward'|'backward'} indentDirection The direction of indent. If it is equal to `backward`, the command
-	 * will outdent a list item.
+	 * @param editor The editor instance.
+	 * @param indentDirection The direction of indent. If it is equal to `backward`, the command will outdent a list item.
 	 */
-	constructor( editor, indentDirection ) {
+	constructor( editor: Editor, indentDirection: 'forward' | 'backward' ) {
 		super( editor );
 
-		/**
-		 * Determines by how much the command will change the list item's indent attribute.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {Number}
-		 */
 		this._indentBy = indentDirection == 'forward' ? 1 : -1;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.isEnabled = this._checkEnabled();
 	}
 
@@ -49,7 +45,7 @@ export default class IndentCommand extends Command {
 	 * @fires execute
 	 * @fires _executeCleanup
 	 */
-	execute() {
+	public override execute(): void {
 		const model = this.editor.model;
 		const doc = model.document;
 		let itemsToChange = Array.from( doc.selection.getSelectedBlocks() );
@@ -58,13 +54,16 @@ export default class IndentCommand extends Command {
 			const lastItem = itemsToChange[ itemsToChange.length - 1 ];
 
 			// Indenting a list item should also indent all the items that are already sub-items of indented item.
-			let next = lastItem.nextSibling;
+			let next = lastItem.nextSibling as Element | null;
 
 			// Check all items after last indented item, as long as their indent is bigger than indent of that item.
-			while ( next && next.name == 'listItem' && next.getAttribute( 'listIndent' ) > lastItem.getAttribute( 'listIndent' ) ) {
+			while (
+				next && next.name == 'listItem' &&
+				( next.getAttribute( 'listIndent' ) as number ) > ( lastItem.getAttribute( 'listIndent' ) as number )
+			) {
 				itemsToChange.push( next );
 
-				next = next.nextSibling;
+				next = next.nextSibling as Element | null;
 			}
 
 			// We need to be sure to keep model in correct state after each small change, because converters
@@ -76,7 +75,7 @@ export default class IndentCommand extends Command {
 			}
 
 			for ( const item of itemsToChange ) {
-				const indent = item.getAttribute( 'listIndent' ) + this._indentBy;
+				const indent = ( item.getAttribute( 'listIndent' ) as number ) + this._indentBy;
 
 				// If indent is lower than 0, it means that the item got outdented when it was not indented.
 				// This means that we need to convert that list item to paragraph.
@@ -108,10 +107,9 @@ export default class IndentCommand extends Command {
 	/**
 	 * Checks whether the command can be enabled in the current context.
 	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
+	 * @returns Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled() {
 		// Check whether any of position's ancestor is a list item.
 		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
@@ -123,12 +121,12 @@ export default class IndentCommand extends Command {
 		if ( this._indentBy > 0 ) {
 			// Cannot indent first item in it's list. Check if before `listItem` is a list item that is in same list.
 			// To be in the same list, the item has to have same attributes and cannot be "split" by an item with lower indent.
-			const indent = listItem.getAttribute( 'listIndent' );
-			const type = listItem.getAttribute( 'listType' );
+			const indent = listItem.getAttribute( 'listIndent' ) as number;
+			const type = listItem.getAttribute( 'listType' ) as string;
 
 			let prev = listItem.previousSibling;
 
-			while ( prev && prev.is( 'element', 'listItem' ) && prev.getAttribute( 'listIndent' ) >= indent ) {
+			while ( prev && prev.is( 'element', 'listItem' ) && ( prev.getAttribute( 'listIndent' ) as number ) >= indent ) {
 				if ( prev.getAttribute( 'listIndent' ) == indent ) {
 					// The item is on the same level.
 					// If it has same type, it means that we found a preceding sibling from the same list.

@@ -109,7 +109,7 @@ export default class DocumentListEditing extends Plugin {
 			 * The `DocumentList` feature can not be loaded together with the `List` plugin.
 			 *
 			 * @error document-list-feature-conflict
-			 * @param {String} conflictPlugin Name of the plugin.
+			 * @param conflictPlugin Name of the plugin.
 			 */
 			throw new CKEditorError( 'document-list-feature-conflict', this, { conflictPlugin: 'ListEditing' } );
 		}
@@ -506,19 +506,6 @@ export default class DocumentListEditing extends Plugin {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		numberedList: DocumentListCommand;
-		bulletedList: DocumentListCommand;
-		indentList: DocumentListIndentCommand;
-		outdentList: DocumentListIndentCommand;
-		mergeListItemBackward: DocumentListMergeCommand;
-		mergeListItemForward: DocumentListMergeCommand;
-		splitListItemBefore: DocumentListSplitCommand;
-		splitListItemAfter: DocumentListSplitCommand;
-	}
-}
-
 export interface DowncastStrategy {
 
 	/**
@@ -784,8 +771,6 @@ export type DocumentListEditingPostFixerEvent = {
  *
  * @internal
  * @eventName checkAttributes
- * @param {module:engine/view/element~Element} viewElement
- * @param {Object} modelAttributes
  */
 export type DocumentListEditingCheckAttributesEvent = {
 	name: 'checkAttributes' | 'checkAttributes:list' | 'checkAttributes:item';

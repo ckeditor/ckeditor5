@@ -16,8 +16,11 @@ export { default as DataController, type DataControllerSetEvent } from './contro
 // Conversion.
 export { default as Conversion } from './conversion/conversion';
 export type {
+	default as DowncastDispatcher,
 	DowncastAttributeEvent,
+	DowncastConversionApi,
 	DowncastInsertEvent,
+	DowncastRemoveEvent,
 	DowncastSelectionEvent
 } from './conversion/downcastdispatcher';
 export type {
@@ -26,8 +29,16 @@ export type {
 	HighlightDescriptor,
 	RemoveHighlightCallback
 } from './conversion/downcasthelpers';
-export type { default as Mapper, MapperViewToModelPositionEvent } from './conversion/mapper';
-export type { UpcastElementEvent } from './conversion/upcastdispatcher';
+export type {
+	default as Mapper,
+	MapperModelToViewPositionEvent,
+	MapperViewToModelPositionEvent
+} from './conversion/mapper';
+export type {
+	default as UpcastDispatcher,
+	UpcastElementEvent,
+	UpcastConversionApi
+} from './conversion/upcastdispatcher';
 export type { default as ModelConsumable } from './conversion/modelconsumable';
 export type { Consumables } from './conversion/viewconsumable';
 
@@ -39,6 +50,8 @@ export type { default as Operation } from './model/operation/operation';
 export { default as InsertOperation } from './model/operation/insertoperation';
 export { default as MarkerOperation } from './model/operation/markeroperation';
 export { default as OperationFactory } from './model/operation/operationfactory';
+export type { default as AttributeOperation } from './model/operation/attributeoperation';
+export type { default as RenameOperation } from './model/operation/renameoperation';
 export { transformSets } from './model/operation/transform';
 
 // Model.
@@ -54,6 +67,7 @@ export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
 export type { default as Batch } from './model/batch';
+export type { DiffItem } from './model/differ';
 export type { default as Item } from './model/item';
 export type { default as Node } from './model/node';
 export type { default as Schema } from './model/schema';
@@ -93,6 +107,7 @@ export { default as ViewDocumentFragment } from './view/documentfragment';
 export type { default as ViewItem } from './view/item';
 export type { default as ViewNode } from './view/node';
 export type { default as ViewDocumentSelection } from './view/documentselection';
+export type { default as ViewPosition } from './view/position';
 export type { default as ViewRange } from './view/range';
 export type { default as ViewSelection, ViewSelectionChangeEvent } from './view/selection';
 export type { default as ViewTypeCheckable } from './view/typecheckable';

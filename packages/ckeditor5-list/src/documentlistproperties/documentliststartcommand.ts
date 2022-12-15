@@ -18,8 +18,6 @@ import {
  * The list start index command. It changes the `listStart` attribute of the selected list items,
  * letting the user to choose the starting point of an ordered list.
  * It is used by the {@link module:list/documentlistproperties~DocumentListProperties list properties feature}.
- *
- * @extends module:core/command~Command
  */
 export default class DocumentListStartCommand extends Command {
 	/**

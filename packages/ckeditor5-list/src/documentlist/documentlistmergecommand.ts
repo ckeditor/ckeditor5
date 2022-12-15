@@ -25,8 +25,6 @@ import ListWalker from './utils/listwalker';
 
 /**
  * The document list merge command. It is used by the {@link module:list/documentlist~DocumentList list feature}.
- *
- * @extends module:core/command~Command
  */
 export default class DocumentListMergeCommand extends Command {
 	/**
@@ -37,8 +35,8 @@ export default class DocumentListMergeCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {'backward'|'forward'} direction Whether list item should be merged before or after the selected block.
+	 * @param editor The editor instance.
+	 * @param direction Whether list item should be merged before or after the selected block.
 	 */
 	constructor( editor: Editor, direction: 'forward' | 'backward' ) {
 		super( editor );
@@ -180,12 +178,9 @@ export default class DocumentListMergeCommand extends Command {
 	 * Returns the boundary elements the merge should be executed for. These are not necessarily selection's first
 	 * and last position parents but sometimes sibling or even further blocks depending on the context.
 	 *
-	 * @param {module:engine/model/selection~Selection} selection The selection the merge is executed for.
-	 * @param {Boolean} shouldMergeOnBlocksContentLevel When `true`, merge is performed together with
+	 * @param selection The selection the merge is executed for.
+	 * @param shouldMergeOnBlocksContentLevel When `true`, merge is performed together with
 	 * {@link module:engine/model/model~Model#deleteContent} to remove the inline content within the selection.
-	 * @returns {Object} elements
-	 * @returns {module:engine/model/element~Element} elements.firstElement
-	 * @returns {module:engine/model/element~Element} elements.lastElement
 	 */
 	private _getMergeSubjectElements(
 		selection: Selection | DocumentSelection,

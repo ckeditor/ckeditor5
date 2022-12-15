@@ -7,12 +7,28 @@
  * @module list/listproperties/listpropertiesediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+
+import type {
+	DiffItem,
+	DowncastAttributeEvent,
+	DowncastDispatcher,
+	DowncastWriter,
+	Element,
+	ModelDeleteContentEvent,
+	Node,
+	UpcastDispatcher,
+	UpcastElementEvent,
+	ViewElement,
+	Writer
+} from 'ckeditor5/src/engine';
+
 import ListEditing from '../list/listediting';
 import ListStyleCommand from './liststylecommand';
 import ListReversedCommand from './listreversedcommand';
 import ListStartCommand from './liststartcommand';
 import { getSiblingListItem, getSiblingNodes } from '../list/utils';
+import type { ListPropertiesConfig } from '../listconfig';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -24,28 +40,26 @@ const DEFAULT_LIST_TYPE = 'default';
  *
  * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they are enabled in the configuration.
  * Read more in {@link module:list/listconfig~ListPropertiesConfig}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ ListEditing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'ListPropertiesEditing' {
 		return 'ListPropertiesEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( 'list', {
@@ -60,11 +74,11 @@ export default class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
 
-		const enabledProperties = editor.config.get( 'list.properties' );
+		const enabledProperties = editor.config.get( 'list.properties' )!;
 		const strategies = createAttributeStrategies( enabledProperties );
 
 		// Extend schema.
@@ -77,11 +91,11 @@ export default class ListPropertiesEditing extends Plugin {
 		}
 
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
-		this.listenTo( editor.commands.get( 'indentList' ), '_executeCleanup', fixListAfterIndentListCommand( editor, strategies ) );
-		this.listenTo( editor.commands.get( 'outdentList' ), '_executeCleanup', fixListAfterOutdentListCommand( editor, strategies ) );
+		this.listenTo( editor.commands.get( 'indentList' )!, '_executeCleanup', fixListAfterIndentListCommand( editor, strategies ) );
+		this.listenTo( editor.commands.get( 'outdentList' )!, '_executeCleanup', fixListAfterOutdentListCommand( editor, strategies ) );
 
-		this.listenTo( editor.commands.get( 'bulletedList' ), '_executeCleanup', restoreDefaultListStyle( editor ) );
-		this.listenTo( editor.commands.get( 'numberedList' ), '_executeCleanup', restoreDefaultListStyle( editor ) );
+		this.listenTo( editor.commands.get( 'bulletedList' )!, '_executeCleanup', restoreDefaultListStyle( editor ) );
+		this.listenTo( editor.commands.get( 'numberedList' )!, '_executeCleanup', restoreDefaultListStyle( editor ) );
 
 		// Register a post-fixer that ensures that the attributes is specified in each `listItem` element.
 		model.document.registerPostFixer( fixListAttributesOnListItemElements( editor, strategies ) );
@@ -97,7 +111,7 @@ export default class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const editor = this.editor;
 
 		// Enable post-fixer that removes the attributes from to-do list items only if the "TodoList" plugin is on.
@@ -116,39 +130,41 @@ export default class ListPropertiesEditing extends Plugin {
 	 *
 	 * Consider the following model's content:
 	 *
-	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
-	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
-	 *     <paragraph>[A paragraph.]</paragraph>
-	 *     <listItem listIndent="0" listType="bulleted" listStyle="circle">UL List item 1</listItem>
-	 *     <listItem listIndent="0" listType="bulleted" listStyle="circle">UL List item 2</listItem>
+	 * ```xml
+	 * <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
+	 * <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
+	 * <paragraph>[A paragraph.]</paragraph>
+	 * <listItem listIndent="0" listType="bulleted" listStyle="circle">UL List item 1</listItem>
+	 * <listItem listIndent="0" listType="bulleted" listStyle="circle">UL List item 2</listItem>
+	 * ```
 	 *
 	 * After removing the paragraph element, the second list will be merged into the first one.
 	 * We want to inherit the `listStyle` attribute for the second list from the first one.
 	 *
-	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
-	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
-	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
-	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
+	 * ```xml
+	 * <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
+	 * <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
+	 * <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
+	 * <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
+	 * ```
 	 *
 	 * See https://github.com/ckeditor/ckeditor5/issues/7879.
 	 *
-	 * @private
-	 * @param {Array.<module:list/listproperties/listpropertiesediting~AttributeStrategy>} attributeStrategies Strategies for the
-	 * enabled attributes.
+	 * @param attributeStrategies Strategies for the enabled attributes.
 	 */
-	_mergeListAttributesWhileMergingLists( attributeStrategies ) {
+	private _mergeListAttributesWhileMergingLists( attributeStrategies: Array<AttributeStrategy> ) {
 		const editor = this.editor;
 		const model = editor.model;
 
 		// First the outer-most`listItem` in the first list reference.
 		// If found, the lists should be merged and this `listItem` provides the attributes
 		// and it is also a starting point when searching for items in the second list.
-		let firstMostOuterItem;
+		let firstMostOuterItem: Element | null;
 
 		// Check whether the removed content is between two lists.
-		this.listenTo( model, 'deleteContent', ( evt, [ selection ] ) => {
-			const firstPosition = selection.getFirstPosition();
-			const lastPosition = selection.getLastPosition();
+		this.listenTo<ModelDeleteContentEvent>( model, 'deleteContent', ( evt, [ selection ] ) => {
+			const firstPosition = selection.getFirstPosition()!;
+			const lastPosition = selection.getLastPosition()!;
 
 			// Typing or removing content in a single item. Aborting.
 			if ( firstPosition.parent === lastPosition.parent ) {
@@ -181,7 +197,7 @@ export default class ListPropertiesEditing extends Plugin {
 			// <listItem listIndent="1" listType="bulleted" listStyle="square">UL List []item 1.1</listItem>
 			const mostOuterItemList = getSiblingListItem( firstPosition.parent, {
 				sameIndent: true,
-				listIndent: nextSibling.getAttribute( 'listIndent' )
+				listIndent: nextSibling.getAttribute( 'listIndent' ) as number
 			} );
 
 			// The outermost list item may not exist while removing elements between lists with different value
@@ -196,7 +212,7 @@ export default class ListPropertiesEditing extends Plugin {
 		}, { priority: 'high' } );
 
 		// If so, update the `listStyle` attribute for the second list.
-		this.listenTo( model, 'deleteContent', () => {
+		this.listenTo<ModelDeleteContentEvent>( model, 'deleteContent', () => {
 			if ( !firstMostOuterItem ) {
 				return;
 			}
@@ -209,9 +225,9 @@ export default class ListPropertiesEditing extends Plugin {
 				// <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
 				// <listItem listIndent="0" listType="bulleted" listStyle="circle">[]UL List item 1</listItem>
 				// <listItem listIndent="0" listType="bulleted" listStyle="circle">UL List item 2</listItem>
-				const secondListMostOuterItem = getSiblingListItem( firstMostOuterItem.nextSibling, {
+				const secondListMostOuterItem = getSiblingListItem( firstMostOuterItem!.nextSibling, {
 					sameIndent: true,
-					listIndent: firstMostOuterItem.getAttribute( 'listIndent' ),
+					listIndent: firstMostOuterItem!.getAttribute( 'listIndent' ) as number,
 					direction: 'forward'
 				} );
 
@@ -231,7 +247,7 @@ export default class ListPropertiesEditing extends Plugin {
 					for ( const strategy of attributeStrategies ) {
 						if ( strategy.appliesToListItem( listItem ) ) {
 							const attributeName = strategy.attributeName;
-							const value = firstMostOuterItem.getAttribute( attributeName );
+							const value = firstMostOuterItem!.getAttribute( attributeName );
 
 							writer.setAttribute( attributeName, value, listItem );
 						}
@@ -246,26 +262,21 @@ export default class ListPropertiesEditing extends Plugin {
 
 /**
  * Strategy for dealing with `listItem` attributes supported by this plugin.
- *
- * @typedef {Object} AttributeStrategy
- * @private
- * @property {String} #attributeName
- * @property {*} #defaultValue
- * @property {Function} #addCommand
- * @property {Function} #appliesToListItem
- * @property {Function} #setAttributeOnDowncast
- * @property {Function} #getAttributeOnUpcast
-*/
+ */
+interface AttributeStrategy {
+	attributeName: string;
+	defaultValue: unknown;
+	addCommand: ( editor: Editor ) => void;
+	appliesToListItem: ( element: Node ) => boolean;
+	setAttributeOnDowncast: ( writer: DowncastWriter, value: any, element: ViewElement ) => void;
+	getAttributeOnUpcast: ( element: ViewElement ) => unknown;
+}
 
-// Creates an array of strategies for dealing with enabled listItem attributes.
-//
-// @param {Object} enabledProperties
-// @param {Boolean} enabledProperties.styles
-// @param {Boolean} enabledProperties.reversed
-// @param {Boolean} enabledProperties.startIndex
-// @returns {Array.<module:list/listpropertiesediting~AttributeStrategy>}
-function createAttributeStrategies( enabledProperties ) {
-	const strategies = [];
+/**
+ * Creates an array of strategies for dealing with enabled listItem attributes.
+ */
+function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
+	const strategies: Array<AttributeStrategy> = [];
 
 	if ( enabledProperties.styles ) {
 		strategies.push( {
@@ -343,7 +354,7 @@ function createAttributeStrategies( enabledProperties ) {
 			},
 
 			getAttributeOnUpcast( listParent ) {
-				const startAttributeValue = listParent.getAttribute( 'start' );
+				const startAttributeValue: any = listParent.getAttribute( 'start' );
 
 				return startAttributeValue >= 0 ? startAttributeValue : 1;
 			}
@@ -353,63 +364,59 @@ function createAttributeStrategies( enabledProperties ) {
 	return strategies;
 }
 
-// Returns a converter consumes the `style`, `reversed` and `start` attribute.
-// In `style` it searches for the `list-style-type` definition.
-// If not found, the `"default"` value will be used.
-//
-// @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies
-// @returns {Function}
-function upcastListItemAttributes( attributeStrategies ) {
-	return dispatcher => {
-		dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
-			const listParent = data.viewItem.parent;
-			const listItem = data.modelRange.start.nodeAfter || data.modelRange.end.nodeBefore;
+/**
+ * Returns a converter consumes the `style`, `reversed` and `start` attribute.
+ * In `style` it searches for the `list-style-type` definition.
+ * If not found, the `"default"` value will be used.
+ */
+function upcastListItemAttributes( attributeStrategies: Array<AttributeStrategy> ) {
+	return ( dispatcher: UpcastDispatcher ) => {
+		dispatcher.on<UpcastElementEvent>( 'element:li', ( evt, data, conversionApi ) => {
+			const listParent = data.viewItem.parent as ViewElement;
+			const listItem = data.modelRange!.start.nodeAfter || data.modelRange!.end.nodeBefore;
 
 			for ( const strategy of attributeStrategies ) {
-				if ( strategy.appliesToListItem( listItem ) ) {
+				if ( strategy.appliesToListItem( listItem! ) ) {
 					const listStyle = strategy.getAttributeOnUpcast( listParent );
-					conversionApi.writer.setAttribute( strategy.attributeName, listStyle, listItem );
+					conversionApi.writer.setAttribute( strategy.attributeName, listStyle, listItem! );
 				}
 			}
 		}, { priority: 'low' } );
 	};
 }
 
-// Returns a converter that adds `reversed`, `start` attributes and adds `list-style-type` definition as a value for the `style` attribute.
-// The `"default"` values are removed and not present in the view/data.
-//
-// @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies
-// @returns {Function}
-function downcastListItemAttributes( attributeStrategies ) {
-	return dispatcher => {
+/**
+ * Returns a converter that adds `reversed`, `start` attributes and adds `list-style-type` definition as a value for the `style` attribute.
+ * The `"default"` values are removed and not present in the view/data.
+ */
+function downcastListItemAttributes( attributeStrategies: Array<AttributeStrategy> ) {
+	return ( dispatcher: DowncastDispatcher ) => {
 		for ( const strategy of attributeStrategies ) {
-			dispatcher.on( `attribute:${ strategy.attributeName }:listItem`, ( evt, data, conversionApi ) => {
+			dispatcher.on<DowncastAttributeEvent>( `attribute:${ strategy.attributeName }:listItem`, ( evt, data, conversionApi ) => {
 				const viewWriter = conversionApi.writer;
-				const currentElement = data.item;
+				const currentElement = data.item as Element;
 
 				const previousElement = getSiblingListItem( currentElement.previousSibling, {
 					sameIndent: true,
-					listIndent: currentElement.getAttribute( 'listIndent' ),
+					listIndent: currentElement.getAttribute( 'listIndent' ) as number,
 					direction: 'backward'
 				} );
 
-				const viewItem = conversionApi.mapper.toViewElement( currentElement );
+				const viewItem = conversionApi.mapper.toViewElement( currentElement )!;
 
 				// A case when elements represent different lists. We need to separate their container.
 				if ( !areRepresentingSameList( currentElement, previousElement ) ) {
 					viewWriter.breakContainer( viewWriter.createPositionBefore( viewItem ) );
 				}
-				strategy.setAttributeOnDowncast( viewWriter, data.attributeNewValue, viewItem.parent );
+				strategy.setAttributeOnDowncast( viewWriter, data.attributeNewValue, viewItem.parent as ViewElement );
 			}, { priority: 'low' } );
 		}
 	};
 
-	// Checks whether specified list items belong to the same list.
-	//
-	// @param {module:engine/model/element~Element} `listItem1` The first list item to check.
-	// @param {module:engine/model/element~Element|null} `listItem2` The second list item to check.
-	// @returns {Boolean}
-	function areRepresentingSameList( listItem1, listItem2 ) {
+	/**
+	 * Checks whether specified list items belong to the same list.
+	 */
+	function areRepresentingSameList( listItem1: Element, listItem2: Element | null ) {
 		return listItem2 &&
 			listItem1.getAttribute( 'listType' ) === listItem2.getAttribute( 'listType' ) &&
 			listItem1.getAttribute( 'listIndent' ) === listItem2.getAttribute( 'listIndent' ) &&
@@ -419,24 +426,22 @@ function downcastListItemAttributes( attributeStrategies ) {
 	}
 }
 
-// When indenting list, nested list should clear its value for the attributes or inherit from nested lists.
-//
-// ■ List item 1.
-// ■ List item 2.[]
-// ■ List item 3.
-// editor.execute( 'indentList' );
-//
-// ■ List item 1.
-//     ○ List item 2.[]
-// ■ List item 3.
-//
-// @param {module:core/editor/editor~Editor} editor
-// @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies
-// @returns {Function}
-function fixListAfterIndentListCommand( editor, attributeStrategies ) {
-	return ( evt, changedItems ) => {
+/**
+ * When indenting list, nested list should clear its value for the attributes or inherit from nested lists.
+ *
+ * ■ List item 1.
+ * ■ List item 2.[]
+ * ■ List item 3.
+ * editor.execute( 'indentList' );
+ *
+ * ■ List item 1.
+ *     ○ List item 2.[]
+ * ■ List item 3.
+ */
+function fixListAfterIndentListCommand( editor: Editor, attributeStrategies: Array<AttributeStrategy> ) {
+	return ( evt: unknown, changedItems: Array<Element> ) => {
 		const root = changedItems[ 0 ];
-		const rootIndent = root.getAttribute( 'listIndent' );
+		const rootIndent = root.getAttribute( 'listIndent' ) as number;
 
 		const itemsToUpdate = changedItems.filter( item => item.getAttribute( 'listIndent' ) === rootIndent );
 
@@ -448,9 +453,9 @@ function fixListAfterIndentListCommand( editor, attributeStrategies ) {
 		// ■ List item 4.
 		//
 		// List items: `2` and `3` should be adjusted.
-		let previousSibling = null;
+		let previousSibling: Element | null = null;
 
-		if ( root.previousSibling.getAttribute( 'listIndent' ) + 1 !== rootIndent ) {
+		if ( root.previousSibling!.getAttribute( 'listIndent' ) as number + 1 !== rootIndent ) {
 			previousSibling = getSiblingListItem( root.previousSibling, {
 				sameIndent: true, direction: 'backward', listIndent: rootIndent
 			} );
@@ -472,24 +477,22 @@ function fixListAfterIndentListCommand( editor, attributeStrategies ) {
 	};
 }
 
-// When outdenting a list, a nested list should copy attribute values
-// from the previous sibling list item including the same value for the `listIndent` value.
-//
-// ■ List item 1.
-//     ○ List item 2.[]
-// ■ List item 3.
-//
-// editor.execute( 'outdentList' );
-//
-// ■ List item 1.
-// ■ List item 2.[]
-// ■ List item 3.
-//
-// @param {module:core/editor/editor~Editor} editor
-// @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies
-// @returns {Function}
-function fixListAfterOutdentListCommand( editor, attributeStrategies ) {
-	return ( evt, changedItems ) => {
+/**
+ * When outdenting a list, a nested list should copy attribute values
+ * from the previous sibling list item including the same value for the `listIndent` value.
+ *
+ * ■ List item 1.
+ *     ○ List item 2.[]
+ * ■ List item 3.
+ *
+ * editor.execute( 'outdentList' );
+ *
+ * ■ List item 1.
+ * ■ List item 2.[]
+ * ■ List item 3.
+ */
+function fixListAfterOutdentListCommand( editor: Editor, attributeStrategies: Array<AttributeStrategy> ) {
+	return ( evt: unknown, changedItems: Array<Element> ) => {
 		changedItems = changedItems.reverse().filter( item => item.is( 'element', 'listItem' ) );
 
 		if ( !changedItems.length ) {
@@ -498,7 +501,7 @@ function fixListAfterOutdentListCommand( editor, attributeStrategies ) {
 
 		const indent = changedItems[ 0 ].getAttribute( 'listIndent' );
 		const listType = changedItems[ 0 ].getAttribute( 'listType' );
-		let listItem = changedItems[ 0 ].previousSibling;
+		let listItem: Node | null = changedItems[ 0 ].previousSibling!;
 
 		// ■ List item 1.
 		//     ○ List item 2.
@@ -512,8 +515,8 @@ function fixListAfterOutdentListCommand( editor, attributeStrategies ) {
 		// ■ List item 3.[]
 		// ■ List item 4.
 		if ( listItem.is( 'element', 'listItem' ) ) {
-			while ( listItem.getAttribute( 'listIndent' ) !== indent ) {
-				listItem = listItem.previousSibling;
+			while ( listItem!.getAttribute( 'listIndent' ) !== indent ) {
+				listItem = listItem!.previousSibling;
 			}
 		} else {
 			listItem = null;
@@ -550,7 +553,7 @@ function fixListAfterOutdentListCommand( editor, attributeStrategies ) {
 				for ( const strategy of attributeStrategies ) {
 					if ( strategy.appliesToListItem( item ) ) {
 						const attributeName = strategy.attributeName;
-						const valueToSet = listItem.getAttribute( attributeName );
+						const valueToSet = listItem!.getAttribute( attributeName );
 
 						writer.setAttribute( attributeName, valueToSet, item );
 					}
@@ -560,44 +563,42 @@ function fixListAfterOutdentListCommand( editor, attributeStrategies ) {
 	};
 }
 
-// Each `listItem` element must have specified the `listStyle`, `listReversed` and `listStart` attributes
-// if they are enabled and supported by its `listType`.
-// This post-fixer checks whether inserted elements `listItem` elements should inherit the attribute values from
-// their sibling nodes or should use the default values.
-//
-// Paragraph[]
-// ■ List item 1. // [listStyle="square", listType="bulleted"]
-// ■ List item 2. // ...
-// ■ List item 3. // ...
-//
-// editor.execute( 'bulletedList' )
-//
-// ■ Paragraph[]  // [listStyle="square", listType="bulleted"]
-// ■ List item 1. // [listStyle="square", listType="bulleted"]
-// ■ List item 2.
-// ■ List item 3.
-//
-// It also covers a such change:
-//
-// [Paragraph 1
-// Paragraph 2]
-// ■ List item 1. // [listStyle="square", listType="bulleted"]
-// ■ List item 2. // ...
-// ■ List item 3. // ...
-//
-// editor.execute( 'numberedList' )
-//
-// 1. [Paragraph 1 // [listStyle="default", listType="numbered"]
-// 2. Paragraph 2] // [listStyle="default", listType="numbered"]
-// ■ List item 1.  // [listStyle="square", listType="bulleted"]
-// ■ List item 2.  // ...
-// ■ List item 3.  // ...
-//
-// @param {module:core/editor/editor~Editor} editor
-// @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies
-// @returns {Function}
-function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
-	return writer => {
+/**
+ * Each `listItem` element must have specified the `listStyle`, `listReversed` and `listStart` attributes
+ * if they are enabled and supported by its `listType`.
+ * This post-fixer checks whether inserted elements `listItem` elements should inherit the attribute values from
+ * their sibling nodes or should use the default values.
+ *
+ * Paragraph[]
+ * ■ List item 1. // [listStyle="square", listType="bulleted"]
+ * ■ List item 2. // ...
+ * ■ List item 3. // ...
+ *
+ * editor.execute( 'bulletedList' )
+ *
+ * ■ Paragraph[]  // [listStyle="square", listType="bulleted"]
+ * ■ List item 1. // [listStyle="square", listType="bulleted"]
+ * ■ List item 2.
+ * ■ List item 3.
+ *
+ * It also covers a such change:
+ *
+ * [Paragraph 1
+ * Paragraph 2]
+ * ■ List item 1. // [listStyle="square", listType="bulleted"]
+ * ■ List item 2. // ...
+ * ■ List item 3. // ...
+ *
+ * editor.execute( 'numberedList' )
+ *
+ * 1. [Paragraph 1 // [listStyle="default", listType="numbered"]
+ * 2. Paragraph 2] // [listStyle="default", listType="numbered"]
+ * ■ List item 1.  // [listStyle="square", listType="bulleted"]
+ * ■ List item 2.  // ...
+ * ■ List item 3.  // ...
+ */
+function fixListAttributesOnListItemElements( editor: Editor, attributeStrategies: Array<AttributeStrategy> ) {
+	return ( writer: Writer ) => {
 		let wasFixed = false;
 
 		const insertedListItems = getChangedListItems( editor.model.document.differ.getChanges() )
@@ -655,7 +656,7 @@ function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
 
 				if ( !item.hasAttribute( attributeName ) ) {
 					if ( shouldInheritListType( existingListItem, item, strategy ) ) {
-						writer.setAttribute( attributeName, existingListItem.getAttribute( attributeName ), item );
+						writer.setAttribute( attributeName, existingListItem!.getAttribute( attributeName ), item );
 					} else {
 						writer.setAttribute( attributeName, strategy.defaultValue, item );
 					}
@@ -683,7 +684,7 @@ function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
 					const previousSibling = item.previousSibling;
 
 					if ( shouldInheritListTypeFromPreviousItem( previousSibling, item, strategy.attributeName ) ) {
-						writer.setAttribute( attributeName, previousSibling.getAttribute( attributeName ), item );
+						writer.setAttribute( attributeName, previousSibling!.getAttribute( attributeName ), item );
 
 						wasFixed = true;
 					}
@@ -695,17 +696,14 @@ function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
 	};
 }
 
-// Checks whether the `listStyle`, `listReversed` and `listStart` attributes
-// should be copied from the `baseItem` element.
-//
-// The attribute should be copied if the inserted element does not have defined it and
-// the value for the element is other than default in the base element.
-//
-// @param {module:engine/model/element~Element|null} baseItem
-// @param {module:engine/model/element~Element} itemToChange
-// @param {module:list/listpropertiesediting~AttributeStrategy} attributeStrategy
-// @returns {Boolean}
-function shouldInheritListType( baseItem, itemToChange, attributeStrategy ) {
+/**
+ * Checks whether the `listStyle`, `listReversed` and `listStart` attributes
+ * should be copied from the `baseItem` element.
+ *
+ * The attribute should be copied if the inserted element does not have defined it and
+ * the value for the element is other than default in the base element.
+ */
+function shouldInheritListType( baseItem: Node | null, itemToChange: Element, attributeStrategy: AttributeStrategy ) {
 	if ( !baseItem ) {
 		return false;
 	}
@@ -727,16 +725,14 @@ function shouldInheritListType( baseItem, itemToChange, attributeStrategy ) {
 	return true;
 }
 
-// Checks whether the `listStyle`, `listReversed` and `listStart` attributes
-// should be copied from previous list item.
-//
-// The attribute should be copied if there's a mismatch of styles of the pasted list into a nested list.
-// Top-level lists are not normalized as we allow side-by-side list of different types.
-//
-// @param {module:engine/model/element~Element|null} previousItem
-// @param {module:engine/model/element~Element} itemToChange
-// @returns {Boolean}
-function shouldInheritListTypeFromPreviousItem( previousItem, itemToChange, attributeName ) {
+/**
+ * Checks whether the `listStyle`, `listReversed` and `listStart` attributes
+ * should be copied from previous list item.
+ *
+ * The attribute should be copied if there's a mismatch of styles of the pasted list into a nested list.
+ * Top-level lists are not normalized as we allow side-by-side list of different types.
+ */
+function shouldInheritListTypeFromPreviousItem( previousItem: Node | null, itemToChange: Element, attributeName: string ) {
 	if ( !previousItem || !previousItem.is( 'element', 'listItem' ) ) {
 		return false;
 	}
@@ -745,7 +741,7 @@ function shouldInheritListTypeFromPreviousItem( previousItem, itemToChange, attr
 		return false;
 	}
 
-	const previousItemIndent = previousItem.getAttribute( 'listIndent' );
+	const previousItemIndent = previousItem.getAttribute( 'listIndent' ) as number;
 
 	if ( previousItemIndent < 1 || previousItemIndent !== itemToChange.getAttribute( 'listIndent' ) ) {
 		return false;
@@ -760,12 +756,11 @@ function shouldInheritListTypeFromPreviousItem( previousItem, itemToChange, attr
 	return true;
 }
 
-// Removes the `listStyle`, `listReversed` and `listStart` attributes from "todo" list items.
-//
-// @param {module:core/editor/editor~Editor} editor
-// @returns {Function}
-function removeListItemAttributesFromTodoList( editor ) {
-	return writer => {
+/**
+ * Removes the `listStyle`, `listReversed` and `listStart` attributes from "todo" list items.
+ */
+function removeListItemAttributesFromTodoList( editor: Editor ) {
+	return ( writer: Writer ) => {
 		const todoListItems = getChangedListItems( editor.model.document.differ.getChanges() )
 			.filter( item => {
 				// Handle the todo lists only. The rest is handled in another post-fixer.
@@ -790,12 +785,11 @@ function removeListItemAttributesFromTodoList( editor ) {
 	};
 }
 
-// Restores the `listStyle` attribute after changing the list type.
-//
-// @param {module:core/editor/editor~Editor} editor
-// @returns {Function}
-function restoreDefaultListStyle( editor ) {
-	return ( evt, changedItems ) => {
+/**
+ * Restores the `listStyle` attribute after changing the list type.
+ */
+function restoreDefaultListStyle( editor: Editor ) {
+	return ( evt: unknown, changedItems: Array<Element> ) => {
 		changedItems = changedItems.filter( item => item.is( 'element', 'listItem' ) );
 
 		editor.model.change( writer => {
@@ -807,12 +801,13 @@ function restoreDefaultListStyle( editor ) {
 	};
 }
 
-// Returns the `listItem` that was inserted or changed.
-//
-// @param {Array.<Object>} changes The changes list returned by the differ.
-// @returns {Array.<module:engine/model/element~Element>}
-function getChangedListItems( changes ) {
-	const items = [];
+/**
+ * Returns the `listItem` that was inserted or changed.
+ *
+ * @param changes The changes list returned by the differ.
+ */
+function getChangedListItems( changes: Array<DiffItem> ) {
+	const items: Array<Element> = [];
 
 	for ( const change of changes ) {
 		const item = getItemFromChange( change );
@@ -825,7 +820,7 @@ function getChangedListItems( changes ) {
 	return items;
 }
 
-function getItemFromChange( change ) {
+function getItemFromChange( change: DiffItem ) {
 	if ( change.type === 'attribute' ) {
 		return change.range.start.nodeAfter;
 	}

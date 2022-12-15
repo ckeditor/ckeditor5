@@ -9,7 +9,19 @@
 
 /* global document */
 
-import { createElement } from 'ckeditor5/src/utils';
+import type {
+	DowncastAttributeEvent,
+	DowncastInsertEvent,
+	DowncastWriter,
+	Element,
+	MapperModelToViewPositionEvent,
+	Model,
+	UpcastElementEvent,
+	View,
+	ViewElement
+} from 'ckeditor5/src/engine';
+
+import { createElement, type GetCallback } from 'ckeditor5/src/utils';
 
 import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from '../list/utils';
 
@@ -22,11 +34,14 @@ import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
- * @param {module:engine/model/model~Model} model Model instance.
- * @param {Function} onCheckboxChecked Callback function.
- * @returns {Function} Returns a conversion callback.
+ * @param model Model instance.
+ * @param onCheckboxChecked Callback function.
+ * @returns Returns a conversion callback.
  */
-export function modelViewInsertion( model, onCheckboxChecked ) {
+export function modelViewInsertion(
+	model: Model,
+	onCheckboxChecked: ( element: Element ) => void
+): GetCallback<DowncastInsertEvent<Element>> {
 	return ( evt, data, conversionApi ) => {
 		const consumable = conversionApi.consumable;
 
@@ -58,7 +73,7 @@ export function modelViewInsertion( model, onCheckboxChecked ) {
 			class: 'todo-list__label__description'
 		} );
 
-		viewWriter.addClass( 'todo-list', viewItem.parent );
+		viewWriter.addClass( 'todo-list', viewItem.parent as any );
 		viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
 		viewWriter.insert( viewWriter.createPositionAfter( checkmarkElement ), span );
 
@@ -72,10 +87,10 @@ export function modelViewInsertion( model, onCheckboxChecked ) {
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
- * @param {module:engine/model/model~Model} model Model instance.
- * @returns {Function} Returns a conversion callback.
+ * @param model Model instance.
+ * @returns Returns a conversion callback.
  */
-export function dataModelViewInsertion( model ) {
+export function dataModelViewInsertion( model: Model ): GetCallback<DowncastInsertEvent<Element>> {
 	return ( evt, data, conversionApi ) => {
 		const consumable = conversionApi.consumable;
 
@@ -100,7 +115,7 @@ export function dataModelViewInsertion( model ) {
 		const viewWriter = conversionApi.writer;
 		const viewItem = generateLiInUl( modelItem, conversionApi );
 
-		viewWriter.addClass( 'todo-list', viewItem.parent );
+		viewWriter.addClass( 'todo-list', viewItem.parent as any );
 
 		const label = viewWriter.createContainerElement( 'label', {
 			class: 'todo-list__label'
@@ -136,11 +151,8 @@ export function dataModelViewInsertion( model ) {
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data An object containing conversion input, a placeholder for conversion output and possibly other values.
- * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
  */
-export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
+export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 	const modelCursor = data.modelCursor;
 	const modelItem = modelCursor.parent;
 	const viewItem = data.viewItem;
@@ -162,7 +174,7 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
 	}
 
 	data.modelRange = writer.createRange( modelCursor );
-}
+};
 
 /**
  * A model-to-view converter for the `listType` attribute change on the `listItem` model element.
@@ -177,20 +189,23 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {Function} onCheckedChange Callback fired after clicking the checkbox UI element.
- * @param {module:engine/view/view~View} view Editing view controller.
- * @returns {Function} Returns a conversion callback.
+ * @param onCheckedChange Callback fired after clicking the checkbox UI element.
+ * @param view Editing view controller.
+ * @returns Returns a conversion callback.
  */
-export function modelViewChangeType( onCheckedChange, view ) {
+export function modelViewChangeType(
+	onCheckedChange: ( element: Element ) => void,
+	view: View
+): GetCallback<DowncastAttributeEvent<Element>> {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
-		const viewItem = conversionApi.mapper.toViewElement( data.item );
+		const viewItem = conversionApi.mapper.toViewElement( data.item )!;
 		const viewWriter = conversionApi.writer;
 
-		const labelElement = findLabel( viewItem, view );
+		const labelElement = findLabel( viewItem, view )!;
 
 		if ( data.attributeNewValue == 'todo' ) {
 			const isChecked = !!data.item.getAttribute( 'todoListChecked' );
@@ -207,14 +222,14 @@ export function modelViewChangeType( onCheckedChange, view ) {
 			const descriptionEnd = nestedList ? viewWriter.createPositionBefore( nestedList ) : itemRange.end;
 			const descriptionRange = viewWriter.createRange( descriptionStart, descriptionEnd );
 
-			viewWriter.addClass( 'todo-list', viewItem.parent );
+			viewWriter.addClass( 'todo-list', viewItem.parent as any );
 			viewWriter.move( descriptionRange, viewWriter.createPositionAt( span, 0 ) );
 			viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
 			viewWriter.insert( viewWriter.createPositionAfter( checkmarkElement ), span );
 		} else if ( data.attributeOldValue == 'todo' ) {
-			const descriptionSpan = findDescription( viewItem, view );
+			const descriptionSpan = findDescription( viewItem, view )!;
 
-			viewWriter.removeClass( 'todo-list', viewItem.parent );
+			viewWriter.removeClass( 'todo-list', viewItem.parent as any );
 			viewWriter.remove( labelElement );
 			viewWriter.move( viewWriter.createRangeIn( descriptionSpan ), viewWriter.createPositionBefore( descriptionSpan ) );
 			viewWriter.remove( descriptionSpan );
@@ -230,10 +245,12 @@ export function modelViewChangeType( onCheckedChange, view ) {
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {Function} onCheckedChange Callback fired after clicking the checkbox UI element.
- * @returns {Function} Returns a conversion callback.
+ * @param onCheckedChange Callback fired after clicking the checkbox UI element.
+ * @returns Returns a conversion callback.
  */
-export function modelViewChangeChecked( onCheckedChange ) {
+export function modelViewChangeChecked(
+	onCheckedChange: ( element: Element ) => void
+): GetCallback<DowncastAttributeEvent<Element>> {
 	return ( evt, data, conversionApi ) => {
 		// Do not convert `todoListChecked` attribute when to-do list item has changed to other list item.
 		// This attribute will be removed by the model post fixer.
@@ -247,9 +264,9 @@ export function modelViewChangeChecked( onCheckedChange ) {
 
 		const { mapper, writer: viewWriter } = conversionApi;
 		const isChecked = !!data.item.getAttribute( 'todoListChecked' );
-		const viewItem = mapper.toViewElement( data.item );
+		const viewItem = mapper.toViewElement( data.item )!;
 		// Because of m -> v position mapper we can be sure checkbox is always at the beginning.
-		const oldCheckmarkElement = viewItem.getChild( 0 );
+		const oldCheckmarkElement = viewItem.getChild( 0 )!;
 		const newCheckmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, onCheckedChange );
 
 		viewWriter.insert( viewWriter.createPositionAfter( oldCheckmarkElement ), newCheckmarkElement );
@@ -263,11 +280,8 @@ export function modelViewChangeChecked( onCheckedChange ) {
  * This helper ensures that position inside todo-list in the view is mapped after the checkbox.
  *
  * It only handles the position at the beginning of a list item as other positions are properly mapped be the default mapper.
- *
- * @param {module:engine/view/view~View} view
- * @return {Function}
  */
-export function mapModelToViewPosition( view ) {
+export function mapModelToViewPosition( view: View ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
 		const modelPosition = data.modelPosition;
 		const parent = modelPosition.parent;
@@ -276,7 +290,7 @@ export function mapModelToViewPosition( view ) {
 			return;
 		}
 
-		const viewLi = data.mapper.toViewElement( parent );
+		const viewLi = data.mapper.toViewElement( parent )!;
 		const descSpan = findDescription( viewLi, view );
 
 		if ( descSpan ) {
@@ -285,15 +299,15 @@ export function mapModelToViewPosition( view ) {
 	};
 }
 
-// Creates a checkbox UI element.
-//
-// @private
-// @param {module:engine/model/item~Item} modelItem
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
-// @param {Boolean} isChecked
-// @param {Function} onChange
-// @returns {module:view/uielement~UIElement}
-function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
+/**
+ * Creates a checkbox UI element.
+ */
+function createCheckmarkElement(
+	modelItem: Element,
+	viewWriter: DowncastWriter,
+	isChecked: boolean,
+	onChange: ( element: Element ) => void
+) {
 	const uiElement = viewWriter.createUIElement(
 		'label',
 		{
@@ -301,7 +315,7 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 			contenteditable: false
 		},
 		function( domDocument ) {
-			const checkbox = createElement( document, 'input', { type: 'checkbox', tabindex: -1 } );
+			const checkbox = createElement( document, 'input', { type: 'checkbox', tabindex: '-1' } );
 
 			if ( isChecked ) {
 				checkbox.setAttribute( 'checked', 'checked' );
@@ -321,7 +335,7 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 }
 
 // Helper method to find label element inside li.
-function findLabel( viewItem, view ) {
+function findLabel( viewItem: ViewElement, view: View ) {
 	const range = view.createRangeIn( viewItem );
 
 	for ( const value of range ) {
@@ -331,7 +345,7 @@ function findLabel( viewItem, view ) {
 	}
 }
 
-function findDescription( viewItem, view ) {
+function findDescription( viewItem: ViewElement, view: View ) {
 	const range = view.createRangeIn( viewItem );
 
 	for ( const value of range ) {

@@ -16,8 +16,6 @@ import ListUI from './list/listui';
  *
  * This is a "glue" plugin that loads the {@link module:list/documentlist/documentlistediting~DocumentListEditing document list
  * editing feature} and {@link module:list/list/listui~ListUI list UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class DocumentList extends Plugin {
 	/**

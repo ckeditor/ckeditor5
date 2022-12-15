@@ -11,9 +11,23 @@ import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 import ListUtils from './listutils';
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Enter } from 'ckeditor5/src/enter';
-import { Delete } from 'ckeditor5/src/typing';
+import { Plugin, type MultiCommand, type PluginDependencies } from 'ckeditor5/src/core';
+
+import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
+import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
+
+import type {
+	DowncastAttributeEvent,
+	DowncastInsertEvent,
+	DowncastRemoveEvent,
+	Element,
+	MapperModelToViewPositionEvent,
+	MapperViewToModelPositionEvent,
+	ModelInsertContentEvent,
+	UpcastElementEvent,
+	ViewDocumentTabEvent,
+	ViewElement
+} from 'ckeditor5/src/engine';
 
 import {
 	cleanList,
@@ -36,28 +50,26 @@ import {
  * The engine of the list feature. It handles creating, editing and removing lists and list items.
  *
  * It registers the `'numberedList'`, `'bulletedList'`, `'indentList'` and `'outdentList'` commands.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'ListEditing' {
 		return 'ListEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ Enter, Delete, ListUtils ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Schema.
@@ -78,37 +90,38 @@ export default class ListEditing extends Plugin {
 		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 
-		editing.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
-		editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
-		data.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
+		editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPosition( editing.view ) );
+		editing.mapper.on<MapperViewToModelPositionEvent>( 'viewToModelPosition', viewToModelPosition( editor.model ) );
+		data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 
 		editor.conversion.for( 'editingDowncast' )
 			.add( dispatcher => {
-				dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-				dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
-				dispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
-				dispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
-				dispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
-				dispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
-				dispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
+				dispatcher.on<DowncastInsertEvent<Element>>( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+				dispatcher.on<DowncastInsertEvent<Element>>( 'insert:listItem', modelViewInsertion( editor.model ) );
+				dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
+				dispatcher.on<DowncastAttributeEvent<Element>>(
+					'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
+				dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
+				dispatcher.on<DowncastRemoveEvent>( 'remove:listItem', modelViewRemove( editor.model ) );
+				dispatcher.on<DowncastRemoveEvent>( 'remove', modelViewMergeAfter, { priority: 'low' } );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
 			.add( dispatcher => {
-				dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-				dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
+				dispatcher.on<DowncastInsertEvent<Element>>( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+				dispatcher.on<DowncastInsertEvent<Element>>( 'insert:listItem', modelViewInsertion( editor.model ) );
 			} );
 
 		editor.conversion.for( 'upcast' )
 			.add( dispatcher => {
-				dispatcher.on( 'element:ul', cleanList, { priority: 'high' } );
-				dispatcher.on( 'element:ol', cleanList, { priority: 'high' } );
-				dispatcher.on( 'element:li', cleanListItem, { priority: 'high' } );
-				dispatcher.on( 'element:li', viewModelConverter );
+				dispatcher.on<UpcastElementEvent>( 'element:ul', cleanList, { priority: 'high' } );
+				dispatcher.on<UpcastElementEvent>( 'element:ol', cleanList, { priority: 'high' } );
+				dispatcher.on<UpcastElementEvent>( 'element:li', cleanListItem, { priority: 'high' } );
+				dispatcher.on<UpcastElementEvent>( 'element:li', viewModelConverter );
 			} );
 
 		// Fix indentation of pasted items.
-		editor.model.on( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
+		editor.model.on<ModelInsertContentEvent>( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
 
 		// Register commands for numbered and bulleted list.
 		editor.commands.add( 'numberedList', new ListCommand( editor, 'numbered' ) );
@@ -122,9 +135,9 @@ export default class ListEditing extends Plugin {
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+		this.listenTo<ViewDocumentEnterEvent>( viewDocument, 'enter', ( evt, data ) => {
 			const doc = this.editor.model.document;
-			const positionParent = doc.selection.getLastPosition().parent;
+			const positionParent = doc.selection.getLastPosition()!.parent;
 
 			if ( doc.selection.isCollapsed && positionParent.name == 'listItem' && positionParent.isEmpty ) {
 				this.editor.execute( 'outdentList' );
@@ -136,7 +149,7 @@ export default class ListEditing extends Plugin {
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
-		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+		this.listenTo<ViewDocumentDeleteEvent>( viewDocument, 'delete', ( evt, data ) => {
 			// Check conditions from those that require less computations like those immediately available.
 			if ( data.direction !== 'backward' ) {
 				return;
@@ -148,7 +161,7 @@ export default class ListEditing extends Plugin {
 				return;
 			}
 
-			const firstPosition = selection.getFirstPosition();
+			const firstPosition = selection.getFirstPosition()!;
 
 			if ( !firstPosition.isAtStart ) {
 				return;
@@ -160,7 +173,7 @@ export default class ListEditing extends Plugin {
 				return;
 			}
 
-			const previousIsAListItem = positionParent.previousSibling && positionParent.previousSibling.name === 'listItem';
+			const previousIsAListItem = positionParent.previousSibling && ( positionParent.previousSibling as any ).name === 'listItem';
 
 			if ( previousIsAListItem ) {
 				return;
@@ -172,9 +185,9 @@ export default class ListEditing extends Plugin {
 			evt.stop();
 		}, { context: 'li' } );
 
-		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
+		this.listenTo<ViewDocumentTabEvent>( editor.editing.view.document, 'tab', ( evt, data ) => {
 			const commandName = data.shiftKey ? 'outdentList' : 'indentList';
-			const command = this.editor.commands.get( commandName );
+			const command = this.editor.commands.get( commandName )!;
 
 			if ( command.isEnabled ) {
 				editor.execute( commandName );
@@ -189,29 +202,29 @@ export default class ListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const commands = this.editor.commands;
 
-		const indent = commands.get( 'indent' );
-		const outdent = commands.get( 'outdent' );
+		const indent = commands.get( 'indent' ) as MultiCommand;
+		const outdent = commands.get( 'outdent' ) as MultiCommand;
 
 		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentList' ) );
+			indent.registerChildCommand( commands.get( 'indentList' )! );
 		}
 
 		if ( outdent ) {
-			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+			outdent.registerChildCommand( commands.get( 'outdentList' )! );
 		}
 	}
 }
 
-function getViewListItemLength( element ) {
+function getViewListItemLength( element: ViewElement ) {
 	let length = 1;
 
-	for ( const child of element.getChildren() ) {
+	for ( const child of element.getChildren() as Iterable<ViewElement> ) {
 		if ( child.name == 'ul' || child.name == 'ol' ) {
 			for ( const item of child.getChildren() ) {
-				length += getViewListItemLength( item );
+				length += getViewListItemLength( item as ViewElement );
 			}
 		}
 	}

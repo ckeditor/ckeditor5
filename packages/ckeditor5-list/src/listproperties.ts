@@ -7,7 +7,7 @@
  * @module list/listproperties
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import ListPropertiesEditing from './listproperties/listpropertiesediting';
 import ListPropertiesUI from './listproperties/listpropertiesui';
 
@@ -16,21 +16,19 @@ import ListPropertiesUI from './listproperties/listpropertiesui';
  *
  * This is a "glue" plugin that loads the {@link module:list/listproperties/listpropertiesediting~ListPropertiesEditing list properties
  * editing feature} and the {@link module:list/listproperties/listpropertiesui~ListPropertiesUI list properties UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ListProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ ListPropertiesEditing, ListPropertiesUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'ListProperties' {
 		return 'ListProperties';
 	}
 }

@@ -7,7 +7,8 @@
  * @module list/todolist/checktodolistcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine';
 
 const attributeKey = 'todoListChecked';
 
@@ -16,39 +17,27 @@ const attributeKey = 'todoListChecked';
  *
  * The command is registered by the {@link module:list/todolist/todolistediting~TodoListEditing} as
  * the `checkTodoList` editor command and it is also available via aliased `todoListCheck` name.
- *
- * @extends module:core/command~Command
  */
 export default class CheckTodoListCommand extends Command {
 	/**
+	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public value: boolean;
+
+	/**
+	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
+	 */
+	private _selectedElements: Array<Element>;
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * A flag indicating whether the command is active. The command is active when at least one of
-		 * {@link module:engine/model/selection~Selection selected} elements is a to-do list item.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #isEnabled
-		 */
-
-		/**
-		 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Array.<module:engine/model/element~Element>} #value
-		 */
-
-		/**
-		 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
-		 *
-		 * @protected
-		 * @type {Array.<module:engine/model/element~Element>}
-		 */
 		this._selectedElements = [];
 
 		// Refresh command before executing to be sure all values are up to date.
@@ -61,31 +50,28 @@ export default class CheckTodoListCommand extends Command {
 	/**
 	 * Updates the command's {@link #value} and {@link #isEnabled} properties based on the current selection.
 	 */
-	refresh() {
+	public override refresh(): void {
 		this._selectedElements = this._getSelectedItems();
-		this.value = this._selectedElements.every( element => !!element.getAttribute( 'todoListChecked' ) );
+		this.value = this._selectedElements.every( element => !!element.getAttribute( attributeKey ) );
 		this.isEnabled = !!this._selectedElements.length;
 	}
 
 	/**
 	 * Gets all to-do list items selected by the {@link module:engine/model/selection~Selection}.
-	 *
-	 * @private
-	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
-	_getSelectedItems() {
+	private _getSelectedItems() {
 		const model = this.editor.model;
 		const schema = model.schema;
 
-		const selectionRange = model.document.selection.getFirstRange();
-		const startElement = selectionRange.start.parent;
-		const elements = [];
+		const selectionRange = model.document.selection.getFirstRange()!;
+		const startElement = selectionRange.start.parent as Element;
+		const elements: Array<Element> = [];
 
 		if ( schema.checkAttribute( startElement, attributeKey ) ) {
 			elements.push( startElement );
 		}
 
-		for ( const item of selectionRange.getItems() ) {
+		for ( const item of selectionRange.getItems() as Iterable<Element> ) {
 			if ( schema.checkAttribute( item, attributeKey ) && !elements.includes( item ) ) {
 				elements.push( item );
 			}
@@ -97,12 +83,11 @@ export default class CheckTodoListCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply
+	 * @param options.forceValue If set, it will force the command behavior. If `true`, the command will apply
 	 * the attribute. Otherwise, the command will remove the attribute. If not set, the command will look for its current
 	 * value to decide what it should do.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { forceValue?: boolean } = {} ): void {
 		this.editor.model.change( writer => {
 			for ( const element of this._selectedElements ) {
 				const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;

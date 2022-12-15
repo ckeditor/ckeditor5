@@ -9,7 +9,7 @@
 
 import TodoListEditing from './todolist/todolistediting';
 import TodoListUI from './todolist/todolistui';
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import '../theme/todolist.css';
 
 /**
@@ -17,21 +17,19 @@ import '../theme/todolist.css';
  *
  * This is a "glue" plugin that loads the {@link module:list/todolist/todolistediting~TodoListEditing to-do list editing feature}
  * and the {@link module:list/todolist/todolistui~TodoListUI to-do list UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TodoList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TodoListEditing, TodoListUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TodoList' {
 		return 'TodoList';
 	}
 }

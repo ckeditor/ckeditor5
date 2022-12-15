@@ -7,45 +7,43 @@
  * @module list/list/listcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import type { Element, Node, Schema } from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core';
+
 import { first } from 'ckeditor5/src/utils';
 
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.
- *
- * @extends module:core/command~Command
  */
 export default class ListCommand extends Command {
 	/**
+	 * The type of the list created by the command.
+	 */
+	public readonly type: 'numbered' | 'bulleted' | 'todo';
+
+	/**
+	 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
+	 *
+	 * @readonly
+	 */
+	declare public value: boolean;
+
+	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {'numbered'|'bulleted'} type List type that will be handled by this command.
+	 * @param editor The editor instance.
+	 * @param type List type that will be handled by this command.
 	 */
-	constructor( editor, type ) {
+	constructor( editor: Editor, type: 'numbered' | 'bulleted' | 'todo' ) {
 		super( editor );
 
-		/**
-		 * The type of the list created by the command.
-		 *
-		 * @readonly
-		 * @member {'numbered'|'bulleted'|'todo'}
-		 */
 		this.type = type;
-
-		/**
-		 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #value
-		 */
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.value = this._getValue();
 		this.isEnabled = this._checkEnabled();
 	}
@@ -54,12 +52,12 @@ export default class ListCommand extends Command {
 	 * Executes the list command.
 	 *
 	 * @fires execute
-	 * @param {Object} [options] Command options.
-	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will try to convert the
+	 * @param options Command options.
+	 * @param options.forceValue If set, it will force the command behavior. If `true`, the command will try to convert the
 	 * selected items and potentially the neighbor elements to the proper list items. If set to `false`, it will convert selected elements
 	 * to paragraphs. If not set, the command will toggle selected elements to list items or paragraphs, depending on the selection.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { forceValue?: boolean } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
@@ -75,7 +73,7 @@ export default class ListCommand extends Command {
 			// To be sure that model is all the time in a good state, we first fix items below turned-off item.
 			if ( turnOff ) {
 				// Start from the model item that is just after the last turned-off item.
-				let next = blocks[ blocks.length - 1 ].nextSibling;
+				let next = blocks[ blocks.length - 1 ].nextSibling as Element;
 				let currentIndent = Number.POSITIVE_INFINITY;
 				let changes = [];
 
@@ -130,7 +128,7 @@ export default class ListCommand extends Command {
 				while ( next && next.name == 'listItem' && next.getAttribute( 'listIndent' ) !== 0 ) {
 					// Check each next list item, as long as its indent is bigger than 0.
 					// If the indent is 0 we are not going to change anything anyway.
-					const indent = next.getAttribute( 'listIndent' );
+					const indent = next.getAttribute( 'listIndent' ) as number;
 
 					// We check if that's item indent is lower as current relative indent.
 					if ( indent < currentIndent ) {
@@ -148,7 +146,7 @@ export default class ListCommand extends Command {
 					changes.push( { element: next, listIndent: newIndent } );
 
 					// Find next item.
-					next = next.nextSibling;
+					next = next.nextSibling as Element;
 				}
 
 				changes = changes.reverse();
@@ -181,8 +179,8 @@ export default class ListCommand extends Command {
 				let lowestIndent = Number.POSITIVE_INFINITY;
 
 				for ( const item of blocks ) {
-					if ( item.is( 'element', 'listItem' ) && item.getAttribute( 'listIndent' ) < lowestIndent ) {
-						lowestIndent = item.getAttribute( 'listIndent' );
+					if ( item.is( 'element', 'listItem' ) && ( item.getAttribute( 'listIndent' ) as number ) < lowestIndent ) {
+						lowestIndent = item.getAttribute( 'listIndent' ) as number;
 					}
 				}
 
@@ -233,10 +231,9 @@ export default class ListCommand extends Command {
 	/**
 	 * Checks the command's {@link #value}.
 	 *
-	 * @private
-	 * @returns {Boolean} The current value.
+	 * @returns The current value.
 	 */
-	_getValue() {
+	private _getValue(): boolean {
 		// Check whether closest `listItem` ancestor of the position has a correct type.
 		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
@@ -246,10 +243,9 @@ export default class ListCommand extends Command {
 	/**
 	 * Checks whether the command can be enabled in the current context.
 	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
+	 * @returns Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled() {
 		// If command value is true it means that we are in list item, so the command should be enabled.
 		if ( this.value ) {
 			return true;
@@ -269,15 +265,21 @@ export default class ListCommand extends Command {
 	}
 }
 
-// Helper function used when one or more list item have their type changed. Fixes type of other list items
-// that are affected by the change (are in same lists) but are not directly in selection. The function got extracted
-// not to duplicated code, as same fix has to be performed before and after selection.
-//
-// @param {Array.<module:engine/model/node~Node>} blocks Blocks that are in selection.
-// @param {Boolean} isBackward Specified whether fix will be applied for blocks before first selected block (`true`)
-// or blocks after last selected block (`false`).
-// @param {Number} lowestIndent Lowest indent among selected blocks.
-function _fixType( blocks, isBackward, lowestIndent ) {
+/**
+ * Helper function used when one or more list item have their type changed. Fixes type of other list items
+ * that are affected by the change (are in same lists) but are not directly in selection. The function got extracted
+ * not to duplicated code, as same fix has to be performed before and after selection.
+ *
+ * @param blocks Blocks that are in selection.
+ * @param isBackward Specified whether fix will be applied for blocks before first selected block (`true`)
+ * or blocks after last selected block (`false`).
+ * @param lowestIndent Lowest indent among selected blocks.
+ */
+function _fixType(
+	blocks: Array<Node>,
+	isBackward: boolean,
+	lowestIndent: number
+) {
 	// We need to check previous sibling of first changed item and next siblings of last changed item.
 	const startingItem = isBackward ? blocks[ 0 ] : blocks[ blocks.length - 1 ];
 
@@ -296,13 +298,13 @@ function _fixType( blocks, isBackward, lowestIndent ) {
 		//     * ------		<-- should not be fixed, item is in different list, `indent` = 2, `indent` != `currentIndent`
 		//   * ------		<-- should be fixed, `indent` == 1 == `currentIndent`
 		// * ------			<-- break loop (`indent` < `lowestIndent`)
-		let currentIndent = startingItem.getAttribute( 'listIndent' );
+		let currentIndent = startingItem.getAttribute( 'listIndent' ) as number;
 
 		// Look back until a list item with indent lower than reference `lowestIndent`.
 		// That would be the parent of nested sublist which contains item having `lowestIndent`.
-		while ( item && item.is( 'element', 'listItem' ) && item.getAttribute( 'listIndent' ) >= lowestIndent ) {
-			if ( currentIndent > item.getAttribute( 'listIndent' ) ) {
-				currentIndent = item.getAttribute( 'listIndent' );
+		while ( item && item.is( 'element', 'listItem' ) && ( item.getAttribute( 'listIndent' ) as number ) >= lowestIndent ) {
+			if ( currentIndent > ( item.getAttribute( 'listIndent' ) as number ) ) {
+				currentIndent = item.getAttribute( 'listIndent' ) as number;
 			}
 
 			// Found an item that is in the same nested sublist.
@@ -316,12 +318,12 @@ function _fixType( blocks, isBackward, lowestIndent ) {
 	}
 }
 
-// Checks whether the given block can be replaced by a listItem.
-//
-// @private
-// @param {module:engine/model/element~Element} block A block to be tested.
-// @param {module:engine/model/schema~Schema} schema The schema of the document.
-// @returns {Boolean}
-function checkCanBecomeListItem( block, schema ) {
-	return schema.checkChild( block.parent, 'listItem' ) && !schema.isObject( block );
+/**
+ * Checks whether the given block can be replaced by a listItem.
+ *
+ * @param block A block to be tested.
+ * @param schema The schema of the document.
+ */
+function checkCanBecomeListItem( block: Element, schema: Schema ) {
+	return schema.checkChild( block.parent as any, 'listItem' ) && !schema.isObject( block );
 }

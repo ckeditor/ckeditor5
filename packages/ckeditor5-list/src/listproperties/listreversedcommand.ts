@@ -4,23 +4,27 @@
  */
 
 /**
- * @module list/listproperties/liststartcommand
+ * @module list/listproperties/listreversedcommand
  */
 
 import { Command } from 'ckeditor5/src/core';
 import { getSelectedListItems } from '../list/utils';
 
 /**
- * The list start index command. It changes the `listStart` attribute of the selected list items.
+ * The reversed list command. It changes the `listReversed` attribute of the selected list items. As a result, the list order will be
+ * reversed.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
- *
- * @extends module:core/command~Command
  */
-export default class ListStartCommand extends Command {
+export default class ListReversedCommand extends Command {
+	/**
+	 * @inheritdoc
+	 */
+	declare public value: boolean | null;
+
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const value = this._getValue();
 		this.value = value;
 		this.isEnabled = value != null;
@@ -30,17 +34,16 @@ export default class ListStartCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @fires execute
-	 * @param {Object} options
-	 * @param {Number} [options.startIndex=1] The list start index.
+	 * @param options.reversed Whether the list should be reversed.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { reversed?: boolean } = {} ): void {
 		const model = this.editor.model;
 		const listItems = getSelectedListItems( model )
 			.filter( item => item.getAttribute( 'listType' ) == 'numbered' );
 
 		model.change( writer => {
 			for ( const item of listItems ) {
-				writer.setAttribute( 'listStart', options.startIndex >= 0 ? options.startIndex : 1, item );
+				writer.setAttribute( 'listReversed', !!options.reversed, item );
 			}
 		} );
 	}
@@ -48,14 +51,13 @@ export default class ListStartCommand extends Command {
 	/**
 	 * Checks the command's {@link #value}.
 	 *
-	 * @private
-	 * @returns {Boolean|null} The current value.
+	 * @returns The current value.
 	 */
-	_getValue() {
-		const listItem = this.editor.model.document.selection.getFirstPosition().parent;
+	private _getValue() {
+		const listItem = this.editor.model.document.selection.getFirstPosition()!.parent;
 
 		if ( listItem && listItem.is( 'element', 'listItem' ) && listItem.getAttribute( 'listType' ) == 'numbered' ) {
-			return listItem.getAttribute( 'listStart' );
+			return listItem.getAttribute( 'listReversed' ) as boolean;
 		}
 
 		return null;

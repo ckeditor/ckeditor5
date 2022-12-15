@@ -14,21 +14,19 @@ import { Plugin } from 'ckeditor5/src/core';
 /**
  * The to-do list UI feature. It introduces the `'todoList'` button that
  * allows to convert elements to and from to-do list items and to indent or outdent them.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TodoListUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TodoListUI' {
 		return 'TodoListUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const t = this.editor.t;
 
 		createUIComponent( this.editor, 'todoList', t( 'To-do List' ), todoListIcon );

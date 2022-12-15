@@ -1725,7 +1725,7 @@ export type SchemaContextDefinition = Item | Position | SchemaContext | string |
  * @typedef {Object} module:engine/model/schema~SchemaContextItem
  */
 
-interface SchemaContextItem {
+export interface SchemaContextItem {
 	name: string;
 	getAttributeKeys(): Generator<string>;
 	getAttribute( keyName: string ): unknown;
