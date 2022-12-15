@@ -33,7 +33,7 @@
 
         widgetToolbarRepository.register( 'codeblock', {
             ariaLabel: t( 'Codeblock toolbar'),
-            items: editor.config.get( 'codeblock.toolbar' ),
+            items: editor.config.get( 'codeblock.toolbar' ) || [],
             getRelatedElement: selection => getClosestSelectedCodeblockView( selection )
         } );
     }
