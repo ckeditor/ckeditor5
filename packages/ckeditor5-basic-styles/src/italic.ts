@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import ItalicEditing from './italic/italicediting';
 import ItalicUI from './italic/italicui';
 
-import type AttributeCommand from './attributecommand';
-
 /**
  * The italic feature.
  *
@@ -41,7 +39,7 @@ export default class Italic extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		italic: AttributeCommand;
+	interface PluginsMap {
+		[ Italic.pluginName ]: Italic;
 	}
 }

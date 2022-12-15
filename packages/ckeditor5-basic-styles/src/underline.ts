@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import UnderlineEditing from './underline/underlineediting';
 import UnderlineUI from './underline/underlineui';
 
-import type AttributeCommand from './attributecommand';
-
 /**
  * The underline feature.
  *
@@ -41,7 +39,7 @@ export default class Underline extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		underline: AttributeCommand;
+	interface PluginsMap {
+		[ Underline.pluginName ]: Underline;
 	}
 }

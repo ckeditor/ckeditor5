@@ -61,3 +61,9 @@ export default class ItalicEditing extends Plugin {
 		editor.keystrokes.set( 'CTRL+I', ITALIC );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		italic: AttributeCommand;
+	}
+}

@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import SubscriptEditing from './subscript/subscriptediting';
 import SubscriptUI from './subscript/subscriptui';
 
-import type AttributeCommand from './attributecommand';
-
 /**
  * The subscript feature.
  *
@@ -38,7 +36,7 @@ export default class Subscript extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		subscript: AttributeCommand;
+	interface PluginsMap {
+		[ Subscript.pluginName ]: Subscript;
 	}
 }

@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import StrikethroughEditing from './strikethrough/strikethroughediting';
 import StrikethroughUI from './strikethrough/strikethroughui';
 
-import type AttributeCommand from './attributecommand';
-
 /**
  * The strikethrough feature.
  *
@@ -41,7 +39,7 @@ export default class Strikethrough extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		strikethrough: AttributeCommand;
+	interface PluginsMap {
+		[ Strikethrough.pluginName ]: Strikethrough;
 	}
 }

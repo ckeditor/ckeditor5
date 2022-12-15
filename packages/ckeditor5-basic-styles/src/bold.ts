@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import BoldEditing from './bold/boldediting';
 import BoldUI from './bold/boldui';
 
-import type AttributeCommand from './attributecommand';
-
 /**
  * The bold feature.
  *
@@ -41,7 +39,7 @@ export default class Bold extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		bold: AttributeCommand;
+	interface PluginsMap {
+		[ Bold.pluginName ]: Bold;
 	}
 }

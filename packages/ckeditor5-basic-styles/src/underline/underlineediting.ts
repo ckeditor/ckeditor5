@@ -58,3 +58,9 @@ export default class UnderlineEditing extends Plugin {
 		editor.keystrokes.set( 'CTRL+U', 'underline' );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		underline: AttributeCommand;
+	}
+}

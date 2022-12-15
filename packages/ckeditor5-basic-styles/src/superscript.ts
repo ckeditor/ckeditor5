@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import SuperscriptEditing from './superscript/superscriptediting';
 import SuperscriptUI from './superscript/superscriptui';
 
-import type AttributeCommand from './attributecommand';
-
 /**
  * The superscript feature.
  *
@@ -38,7 +36,7 @@ export default class Superscript extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		superscript: AttributeCommand;
+	interface PluginsMap {
+		[ Superscript.pluginName ]: Superscript;
 	}
 }

@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import CodeEditing from './code/codeediting';
 import CodeUI from './code/codeui';
 
-import type AttributeCommand from './attributecommand';
-
 import '../theme/code.css';
 
 /**
@@ -43,7 +41,7 @@ export default class Code extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		code: AttributeCommand;
+	interface PluginsMap {
+		[ Code.pluginName ]: Code;
 	}
 }

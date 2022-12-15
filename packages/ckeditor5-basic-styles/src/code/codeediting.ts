@@ -71,3 +71,9 @@ export default class CodeEditing extends Plugin {
 		inlineHighlight( editor, CODE, 'code', HIGHLIGHT_CLASS );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		code: AttributeCommand;
+	}
+}

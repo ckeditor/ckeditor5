@@ -10,8 +10,6 @@
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
-import type AttributeCommand from '../attributecommand';
-
 const BOLD = 'bold';
 
 /**
@@ -36,7 +34,7 @@ export default class BoldUI extends Plugin {
 
 		// Add bold button to feature components.
 		editor.ui.componentFactory.add( BOLD, locale => {
-			const command: AttributeCommand = editor.commands.get( BOLD )!;
+			const command = editor.commands.get( BOLD )!;
 			const view = new ButtonView( locale );
 
 			view.set( {

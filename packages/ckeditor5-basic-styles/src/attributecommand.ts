@@ -37,10 +37,8 @@ export default class AttributeCommand extends Command {
 
 	/**
 	 * The attribute that will be set by the command.
-	 *
-	 * @readonly
 	 */
-	public attributeKey: string;
+	public readonly attributeKey: string;
 
 	/**
 	 * @param attributeKey Attribute that will be set by the command.

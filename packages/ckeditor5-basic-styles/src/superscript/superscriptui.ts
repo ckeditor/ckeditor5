@@ -12,8 +12,6 @@ import { ButtonView } from 'ckeditor5/src/ui';
 
 import superscriptIcon from '../../theme/icons/superscript.svg';
 
-import type AttributeCommand from '../attributecommand';
-
 const SUPERSCRIPT = 'superscript';
 
 /**
@@ -38,7 +36,7 @@ export default class SuperscriptUI extends Plugin {
 
 		// Add superscript button to feature components.
 		editor.ui.componentFactory.add( SUPERSCRIPT, locale => {
-			const command: AttributeCommand = editor.commands.get( SUPERSCRIPT )!;
+			const command = editor.commands.get( SUPERSCRIPT )!;
 			const view = new ButtonView( locale );
 
 			view.set( {

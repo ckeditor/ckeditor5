@@ -73,3 +73,9 @@ export default class BoldEditing extends Plugin {
 		editor.keystrokes.set( 'CTRL+B', BOLD );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		bold: AttributeCommand;
+	}
+}
