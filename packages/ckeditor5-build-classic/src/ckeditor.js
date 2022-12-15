@@ -24,7 +24,6 @@ import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import Font from '@ckeditor/ckeditor5-font/src/font';
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -137,7 +136,6 @@ ClassicEditor.builtinPlugins = [
 	Superscript,
 	RemoveFormat,
 	Font,
-	Highlight,
 	SpecialCharacters,
 	SpecialCharactersAdditional,
 	SpecialCharactersEssentials,
@@ -168,7 +166,7 @@ ClassicEditor.defaultConfig = {
 			'blockquote', '|',
 			'alignment', '-',
 			'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
-			'link', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+			'link', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
 			'specialCharacters', 'insertTable', '|'
 		],
 		shouldNotGroupWhenFull: true
