@@ -15,29 +15,49 @@ fi
 
 echo "Linking packages from ckeditor5-dev..."
 
+echo "Linking ckeditor5-dev-bump-year..."
+rm -rf node_modules/@ckeditor/ckeditor5-dev-bump-year
+ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-bump-year node_modules/@ckeditor
+
+echo "Linking ckeditor5-dev-ci..."
+rm -rf node_modules/@ckeditor/ckeditor5-dev-ci
+ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-ci node_modules/@ckeditor
+
+echo "Linking ckeditor5-dev-dependency-checker..."
+rm -rf node_modules/@ckeditor/ckeditor5-dev-dependency-checker
+ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-dependency-checker node_modules/@ckeditor
+
 echo "Linking ckeditor5-dev-docs..."
 rm -rf node_modules/@ckeditor/ckeditor5-dev-docs
 ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-docs node_modules/@ckeditor
 
-echo "Linking ckeditor5-dev-env..."
-rm -rf node_modules/@ckeditor/ckeditor5-dev-env
-ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-env node_modules/@ckeditor
+echo "Linking ckeditor5-dev-release-tools..."
+rm -rf node_modules/@ckeditor/ckeditor5-dev-release-tools
+ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-release-tools node_modules/@ckeditor
 
 echo "Linking ckeditor5-dev-tests..."
 rm -rf node_modules/@ckeditor/ckeditor5-dev-tests
 ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-tests node_modules/@ckeditor
 
+echo "Linking ckeditor5-dev-transifex..."
+rm -rf node_modules/@ckeditor/ckeditor5-dev-transifex
+ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-transifex node_modules/@ckeditor
+
+echo "Linking ckeditor5-dev-translations..."
+rm -rf node_modules/@ckeditor/ckeditor5-dev-translations
+ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-translations node_modules/@ckeditor
+
 echo "Linking ckeditor5-dev-utils..."
 rm -rf node_modules/@ckeditor/ckeditor5-dev-utils
 ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-utils node_modules/@ckeditor
 
+echo "Linking ckeditor5-dev-web-crawler..."
+rm -rf node_modules/@ckeditor/ckeditor5-dev-web-crawler
+ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-web-crawler node_modules/@ckeditor
+
 echo "Linking jsdoc-plugins..."
 rm -rf node_modules/@ckeditor/jsdoc-plugins
 ln -s ../../../ckeditor5-dev/packages/jsdoc-plugins node_modules/@ckeditor
-
-echo "Linking ckeditor5-dev-webpack-plugin..."
-rm -rf node_modules/@ckeditor/ckeditor5-dev-webpack-plugin
-ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-webpack-plugin node_modules/@ckeditor
 
 echo "Linking linters packages..."
 

@@ -119,11 +119,11 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 	Note: The language code is defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
 
 	```js
-	const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+	const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 
 	// Define webpack plugins...
 		plugins: [
-			new CKEditorWebpackPlugin( {
+			new CKEditorTranslationsPlugin( {
 				// The main language that will be built into the main bundle.
 				language: 'en',
 
