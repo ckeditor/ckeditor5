@@ -5,6 +5,7 @@ import CodeBlock from '../src/codeblock';
 import CodeblockToolbar from '../src/codeblocktoolbar';
 import CodeblockCaption from '../src/codeblockcaption';
 import CodeBlockEditing from '../src/codeblockediting';
+import CodeblockCaptionEditing from '../src/codeblockcaption/codeblockcaptionediting';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -56,7 +57,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 			const editor = await VirtualTestEditor.create( {
 				plugins: [
 					CodeBlock,
-					CodeBlockEditing,
+					CodeblockCaptionEditing,
 					Paragraph
 				]
 			} );
@@ -108,7 +109,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 			const editor = await VirtualTestEditor.create( {
 				plugins: [
 					CodeBlock,
-					CodeBlockEditing,
+					CodeblockCaptionEditing,
 					Paragraph
 				]
 			} );

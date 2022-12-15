@@ -1,6 +1,9 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+
 import CodeBlock from '../src/codeblock';
 import CodeblockToolbar from '../src/codeblocktoolbar';
 import CodeblockCaption from '../src/codeblockcaption';
@@ -49,14 +52,14 @@ describe( 'CodeblockToolbar', () => {
 		return ClassicEditor.create( editorElement, {
 			plugins: [ CodeblockToolbar ]
 		} )
-			.then( editor => {
-				expect( editor.plugins.get( CodeblockToolbar )._toolbar ).to.be.undefined;
-				expect( consoleWarnStub.calledOnce ).to.equal( true );
-				expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /widget-toolbar-no-items/ );
+		.then( editor => {
+			expect( editor.plugins.get( CodeblockToolbar )._toolbar ).to.be.undefined;
+			expect( consoleWarnStub.calledOnce ).to.equal( true );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /widget-toolbar-no-items/ );
 
-				editorElement.remove();
-				return editor.destroy();
-			} );
+			editorElement.remove();
+			return editor.destroy();
+		} );
 	} );
 
     describe( 'integration with the editor focus', () => {
