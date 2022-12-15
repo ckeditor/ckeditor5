@@ -27,9 +27,9 @@ As a result of executing the command, a new directory with a package in it will 
 
 Available modifiers for the command are:
 
-* `--use-npm` &ndash; use `npm` to install dependencies in a newly created package.
-* `--use-yarn` &ndash; use `yarn` to install dependencies in a newly created package.
-* `--plugin-name` &ndash; define a plugin name to be different from the package name.
+* `--use-npm` &ndash; use `npm` to install dependencies in the newly created package.
+* `--use-yarn` &ndash; use `yarn` to install dependencies in the newly created package.
+* `--plugin-name` &ndash; define the plugin name to be different from the package name.
 * `--lang` &ndash; (values: `js` | `ts`) choose whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
 * `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
 

@@ -100,7 +100,7 @@ The source code of CKEditor 5 inspector and its issue tracker is available on Gi
 
 ### Setup
 
-In order to use the tool, it should be installed globally from the npm.
+In order to use the tool, install it globally from the npm.
 
 ```bash
 npm install -g mrgit
@@ -128,18 +128,18 @@ Then, put a file named `mrgit.json` in the root of the `ckeditor5` repository. T
 ```
 
 <info-box>
-    Support for tags and presets is available in `mrgit` [`v2.0.0`](https://github.com/cksource/mrgit/releases/tag/v2.0.0)+.
+    Support for tags and presets is available since `mrgit` [`v2.0.0`](https://github.com/cksource/mrgit/releases/tag/v2.0.0)+.
 </info-box>
 
 ### Usage
 
-In the example configuration file listed above we have defined base dependencies that should be used. They use the `@latest` tag, which means that the latest tag will be used, which generally should coincide with the latest version available on npm. After calling `mrgit sync`, these dependencies will be cloned and made available locally in the specified (latest) version.
+In the example configuration file listed above we have defined base dependencies that should be used. These use the `@latest` tag, which means that the latest release tag will be used, which generally should coincide with the latest version available on npm. After calling `mrgit sync`, these dependencies will be cloned and made available locally in the specified (latest) version.
 
 Alternatively, you can use one of the presets defined in the latter section of the file, eg. the `dev` preset. To do so, execute `mrgit sync --preset dev` &ndash; this will use versions specified in the preset instead. `ckeditor/ckeditor5-dev` does not have any tag or branch specified, so the `master` branch will be used by default.
 
-Since in this preset only `ckeditor5-dev` is specified, version used for `ckeditor5-linters-config` will be as specified in the default `dependencies` section. Using this mechanism, it is possible to easily switch between production and development versions of the dependencies used by the `ckeditor5` repository.
+Since only `ckeditor5-dev` is specified in this preset, version used for `ckeditor5-linters-config` will be the same as specified in the default `dependencies` section. Using this mechanism, it is possible to easily switch between production and development versions of the dependencies used by the `ckeditor5` repository.
 
-For all available commands and configuration options, see [the documentation of the tool](https://github.com/cksource/mrgit#mr-git).
+For all available commands and configuration options, see the [Mr. Git documentation](https://github.com/cksource/mrgit#mr-git).
 
 ## Testing helpers
 
