@@ -12,7 +12,7 @@
     /**
      * @inheritDoc
      */
-    static get require() {
+    static get requires() {
         return [ WidgetToolbarRepository ];
     }
 
