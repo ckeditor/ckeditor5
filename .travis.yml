@@ -12,7 +12,7 @@ branches:
 services:
 - xvfb
 node_js:
-- node
+- lts/*
 cache: false
 before_install:
 - export START_TIME=$( date +%s )

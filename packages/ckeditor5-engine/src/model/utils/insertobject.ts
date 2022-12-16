@@ -9,7 +9,7 @@
 
 import { findOptimalInsertionRange } from './findoptimalinsertionrange';
 import DocumentSelection from '../documentselection';
-import Selection, { type Selectable } from '../selection';
+import Selection, { type PlaceOrOffset, type Selectable } from '../selection';
 
 import type Element from '../element';
 import type Model from '../model';
@@ -27,28 +27,25 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
  *
  * **Note**: For more documentation and examples, see {@link module:engine/model/model~Model#insertObject}.
  *
- * @param {module:engine/model/model~Model} model The model in context of which the insertion
- * should be performed.
- * @param {module:engine/model/element~Element} object An object to be inserted into the model document.
- * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
- * A selectable where the content should be inserted. If not specified, the current
+ * @param model The model in context of which the insertion should be performed.
+ * @param object An object to be inserted into the model document.
+ * @param selectable A selectable where the content should be inserted. If not specified, the current
  * {@link module:engine/model/document~Document#selection document selection} will be used instead.
- * @param {Number|'before'|'end'|'after'|'on'|'in'} placeOrOffset Specifies the exact place or offset for the insertion to take place,
- * relative to `selectable`.
- * @param {Object} [options] Additional options.
- * @param {'auto'|'before'|'after'} [options.findOptimalPosition] An option that, when set, adjusts the insertion position (relative to
+ * @param placeOrOffset Specifies the exact place or offset for the insertion to take place, relative to `selectable`.
+ * @param options Additional options.
+ * @param options.findOptimalPosition An option that, when set, adjusts the insertion position (relative to
  * `selectable` and `placeOrOffset`) so that the content of `selectable` is not split upon insertion (a.k.a. non-destructive insertion).
  * * When `'auto'`, the algorithm will decide whether to insert the object before or after `selectable` to avoid content splitting.
  * * When `'before'`, the closest position before `selectable` will be used that will not result in content splitting.
  * * When `'after'`, the closest position after `selectable` will be used that will not result in content splitting.
  *
  * Note that this option works only for block objects. Inline objects are inserted into text and do not split blocks.
- * @param {'on'|'after'} [options.setSelection] An option that, when set, moves the
+ * @param options.setSelection An option that, when set, moves the
  * {@link module:engine/model/document~Document#selection document selection} after inserting the object.
  * * When `'on'`, the document selection will be set on the inserted object.
  * * When `'after'`, the document selection will move to the closest text node after the inserted object. If there is no
  * such text node, a paragraph will be created and the document selection will be moved inside it.
- * @returns {module:engine/model/range~Range} A range which contains all the performed changes. This is a range that, if removed,
+ * @returns A range which contains all the performed changes. This is a range that, if removed,
  * would return the model to the state before the insertion. If no changes were preformed by `insertObject()`, returns a range collapsed
  * at the insertion position.
  */
@@ -56,7 +53,7 @@ export default function insertObject(
 	model: Model,
 	object: Element,
 	selectable?: Selectable,
-	placeOrOffset?: number | 'before' | 'end' | 'after' | 'on' | 'in' | null,
+	placeOrOffset?: PlaceOrOffset | null,
 	options: {
 		findOptimalPosition?: 'auto' | 'before' | 'after';
 		setSelection?: 'on' | 'after';
@@ -140,15 +137,16 @@ export default function insertObject(
 	} );
 }
 
-// Updates document selection based on given `place` parameter in relation to `contextElement` element.
-//
-// @private
-// @param {module:engine/model/writer~Writer} writer An instance of the model writer.
-// @param {module:engine/model/element~Element} contextElement An element to set the attributes on.
-// @param {'on'|'after'} place The place where selection should be set in relation to the `contextElement` element.
-// Value `on` will set selection on the passed `contextElement`. Value `after` will set selection after `contextElement`.
-// @param {Object} attributes Attributes keys and values to set on a paragraph that this function can create when
-// `place` parameter is equal to `after` but there is no element with `$text` node to set selection in.
+/**
+ * Updates document selection based on given `place` parameter in relation to `contextElement` element.
+ *
+ * @param writer An instance of the model writer.
+ * @param contextElement An element to set the attributes on.
+ * @param place The place where selection should be set in relation to the `contextElement` element.
+ * Value `on` will set selection on the passed `contextElement`. Value `after` will set selection after `contextElement`.
+ * @param attributes Attributes keys and values to set on a paragraph that this function can create when
+ * `place` parameter is equal to `after` but there is no element with `$text` node to set selection in.
+ */
 function updateSelection(
 	writer: Writer,
 	contextElement: Element,
