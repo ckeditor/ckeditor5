@@ -102,16 +102,16 @@ See the {@link installation/getting-started/predefined-builds#zip-download zip i
 
 ## Building the editor using a specific language
 
-Currently, it is possible to change the UI language at the build stage and after the build. A single build of the editor supports the language which was defined in the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin)'s configuration. Check the whole translation process to see how you can change the language later.
+Currently, it is possible to change the UI language at the build stage and after the build. A single build of the editor supports the language which was defined in the [CKEditor 5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations)'s configuration. Check the whole translation process to see how you can change the language later.
 
 If you use one of the {@link installation/index predefined editor builds}, refer to {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds} to learn how to change the language of your build.
 
 If you build CKEditor 5 from scratch or integrate it directly into your application, then all you need to do is to:
 
-1. Install the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) package:
+1. Install the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) package:
 
 	```
-	npm install --save @ckeditor/ckeditor5-dev-webpack-plugin
+	npm install --save @ckeditor/ckeditor5-dev-translations
 	```
 
 2. Add it to your webpack configuration:
@@ -132,7 +132,7 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 				// The bundle is optimized for one language when this option is omitted.
 				additionalLanguages: 'all',
 
-				// For more advanced options see https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-webpack-plugin.
+				// For more advanced options see https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations.
 			} ),
 
 			// Other webpack plugins...
