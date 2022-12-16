@@ -34,7 +34,7 @@ import { getPropertyAssociation } from './utils';
  * ```
  *
  * @param languageDefs The normalized language configuration passed to the feature.
- * @param [useLabels=false] When `true`, the `<pre>` element will get a `data-language` attribute with a
+ * @param useLabels When `true`, the `<pre>` element will get a `data-language` attribute with a
  * human–readable label of the language. Used only in the editing.
  * @returns Returns a conversion callback.
  */
@@ -72,7 +72,7 @@ export function modelToViewCodeBlockInsertion(
 
 		const codeBlockLanguage = data.item.getAttribute( 'language' ) as string;
 		const targetViewPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-		const preAttributes: any = {};
+		const preAttributes: Record<string, string> = {};
 
 		// Attributes added only in the editing view.
 		if ( useLabels ) {
@@ -195,8 +195,10 @@ export function dataViewToModelCodeBlockInsertion(
 		for ( const className of viewChildClasses ) {
 			const language = classesToLanguages[ className ];
 
-			writer.setAttribute( 'language', language, codeBlock );
-			break;
+			if ( language ) {
+				writer.setAttribute( 'language', language, codeBlock );
+				break;
+			}
 		}
 
 		// If no language value was set, use the default language from the config.
@@ -251,7 +253,7 @@ export function dataViewToModelTextNewlinesInsertion(): GetCallback<UpcastTextEv
 		consumable.consume( data.viewItem );
 
 		const text = data.viewItem.data;
-		const textLines = text.split( '\n' ).map( ( data: any ) => writer.createText( data ) );
+		const textLines = text.split( '\n' ).map( data => writer.createText( data ) );
 		const lastLine = textLines[ textLines.length - 1 ];
 
 		for ( const node of textLines ) {

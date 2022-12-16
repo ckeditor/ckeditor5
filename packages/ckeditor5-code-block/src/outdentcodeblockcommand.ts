@@ -18,23 +18,17 @@ import {
 
 /**
  * The code block indentation decrease command plugin.
- *
- * @extends module:core/command~Command
  */
 export default class OutdentCodeBlockCommand extends Command {
+	/**
+	 * A sequence of characters removed from the line when the command is executed.
+	 */
 	private readonly _indentSequence: string;
 
 	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * A sequence of characters removed from the line when the command is executed.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {String}
-		 */
-		this._indentSequence = editor.config.get( 'codeBlock.indentSequence' ) as string;
+		this._indentSequence = editor.config.get( 'codeBlock.indentSequence' )!;
 	}
 
 	/**

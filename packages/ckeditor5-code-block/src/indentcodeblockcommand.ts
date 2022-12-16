@@ -25,7 +25,7 @@ export default class IndentCodeBlockCommand extends Command {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this._indentSequence = editor.config.get( 'codeBlock.indentSequence' ) as string;
+		this._indentSequence = editor.config.get( 'codeBlock.indentSequence' )!;
 	}
 
 	/**

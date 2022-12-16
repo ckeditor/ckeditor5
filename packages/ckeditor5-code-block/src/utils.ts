@@ -198,8 +198,7 @@ export function getIndentOutdentPositions( model: Model ): Array<Position> {
 
 	// When the selection is collapsed, there's only one position we can indent or outdent.
 	if ( selection.isCollapsed ) {
-		positions.push( selection.anchor! );
-		return positions;
+		return [ selection.anchor! ];
 	}
 
 	// When the selection is NOT collapsed, collect all positions starting before text nodes

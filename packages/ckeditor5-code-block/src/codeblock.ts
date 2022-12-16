@@ -35,12 +35,15 @@ export default class CodeBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'CodeBlock' {
 		return 'CodeBlock';
 	}
 }
 
  declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ CodeBlock.pluginName ]: CodeBlock;
+	}
 	interface EditorConfig {
 
 		/**
@@ -50,12 +53,6 @@ export default class CodeBlock extends Plugin {
 		 *
 		 */
 		codeBlock?: CodeBlockConfig;
-	}
-
-	interface CommandsMap {
-		indentCodeBlock: IndentCodeBlockCommand;
-		outdentCodeBlock: OutdentCodeBlockCommand;
-		codeBlock: CodeBlockCommand;
 	}
  }
 
@@ -187,7 +184,8 @@ export interface CodeBlockConfig {
  */
 export interface CodeBlockLanguageDefinition {
 
-	/** The name of the language that will be stored in the model attribute. Also, when `class`
+	/**
+	 * The name of the language that will be stored in the model attribute. Also, when `class`
 	 * is not specified, it will be used to create the CSS class associated with the language (prefixed by "language-").
 	 */
 	language: string;

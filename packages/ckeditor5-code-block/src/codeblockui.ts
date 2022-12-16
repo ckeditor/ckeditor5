@@ -21,14 +21,12 @@ import type { CodeBlockLanguageDefinition } from './codeblock';
  * The code block UI plugin.
  *
  * Introduces the `'codeBlock'` dropdown.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class CodeBlockUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'CodeBlockUI' {
 		return 'CodeBlockUI';
 	}
 
@@ -112,3 +110,9 @@ export default class CodeBlockUI extends Plugin {
 		return itemDefinitions;
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ CodeBlockUI.pluginName ]: CodeBlockUI;
+	}
+ }

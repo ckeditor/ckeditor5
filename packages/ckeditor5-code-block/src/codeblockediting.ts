@@ -10,7 +10,8 @@
 import { Plugin, type PluginDependencies, type Editor, type MultiCommand } from 'ckeditor5/src/core';
 import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
 
-import { UpcastWriter,
+import {
+	UpcastWriter,
 	type Range,
 	type Node,
 	type ModelGetSelectedContentEvent,
@@ -43,14 +44,12 @@ const DEFAULT_ELEMENT = 'paragraph';
  * The editing part of the code block feature.
  *
  * Introduces the `'codeBlock'` command and the `'codeBlock'` model element.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): string {
+	public static get pluginName(): 'CodeBlockEditing' {
 		return 'CodeBlockEditing';
 	}
 
@@ -111,9 +110,9 @@ export default class CodeBlockEditing extends Plugin {
 
 		this.listenTo<ViewDocumentTabEvent>( view.document, 'tab', ( evt, data ) => {
 			const commandName = data.shiftKey ? 'outdentCodeBlock' : 'indentCodeBlock';
-			const command = editor.commands.get( commandName );
+			const command = editor.commands.get( commandName )!;
 
-			if ( !command || !command.isEnabled ) {
+			if ( !command.isEnabled ) {
 				return;
 			}
 
@@ -203,14 +202,9 @@ export default class CodeBlockEditing extends Plugin {
 		// Similarly, when the selection in a single line, the selected content should be an inline code
 		// so it can be pasted later on and retain it's preformatted nature.
 		this.listenTo<ModelGetSelectedContentEvent>( model, 'getSelectedContent', ( evt, [ selection ] ) => {
-			const anchor = selection.anchor;
+			const anchor = selection.anchor!;
 
-			if (
-				!anchor ||
-				selection.isCollapsed ||
-				!anchor.parent.is( 'element', 'codeBlock' ) ||
-				!anchor.hasSameParentAs( selection.focus! )
-			) {
+			if ( selection.isCollapsed || !anchor.parent.is( 'element', 'codeBlock' ) || !anchor.hasSameParentAs( selection.focus! ) ) {
 				return;
 			}
 
@@ -302,7 +296,6 @@ export default class CodeBlockEditing extends Plugin {
  * </codeBlock>
  * ```
  */
-
 function breakLineOnEnter( editor: Editor ): void {
 	const model = editor.model;
 	const modelDoc = model.document;
@@ -321,8 +314,8 @@ function breakLineOnEnter( editor: Editor ): void {
 
 		// If the line before being broken in two had some indentation, let's retain it
 		// in the new line.
-		if ( leadingWhiteSpaces && modelDoc.selection.anchor ) {
-			writer.insertText( leadingWhiteSpaces, modelDoc.selection.anchor );
+		if ( leadingWhiteSpaces ) {
+			writer.insertText( leadingWhiteSpaces, modelDoc.selection.anchor! );
 		}
 	} );
 }
@@ -342,7 +335,6 @@ function breakLineOnEnter( editor: Editor ): void {
  * @param isSoftEnter When `true`, enter was pressed along with <kbd>Shift</kbd>.
  * @returns `true` when selection left the block. `false` if stayed.
  */
-
 function leaveBlockStartOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 	const model = editor.model;
 	const modelDoc = model.document;
@@ -396,11 +388,9 @@ function leaveBlockStartOnEnter( editor: Editor, isSoftEnter: boolean ): boolean
  * <codeBlock>foo</codeBlock><paragraph>[]</paragraph>
  * ```
  *
- * @param editor
  * @param isSoftEnter When `true`, enter was pressed along with <kbd>Shift</kbd>.
  * @returns `true` when selection left the block. `false` if stayed.
  */
-
 function leaveBlockEndOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 	const model = editor.model;
 	const modelDoc = model.document;
@@ -509,3 +499,15 @@ function isEmptyishTextNode( node: Node | null ) {
 function isSoftBreakNode( node: Node | null ) {
 	return node && node.is( 'element', 'softBreak' );
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ CodeBlockEditing.pluginName ]: CodeBlockEditing;
+	}
+
+	interface CommandsMap {
+		indentCodeBlock: IndentCodeBlockCommand;
+		outdentCodeBlock: OutdentCodeBlockCommand;
+		codeBlock: CodeBlockCommand;
+	}
+ }

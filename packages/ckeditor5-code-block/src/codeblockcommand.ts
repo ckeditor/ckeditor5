@@ -15,14 +15,19 @@ import { getNormalizedAndLocalizedLanguageDefinitions, canBeCodeBlock } from './
 
 /**
  * The code block command plugin.
- *
- * @extends module:core/command~Command
  */
 export default class CodeBlockCommand extends Command {
 	/**
 	 * Contains the last used language.
 	 */
 	private _lastLanguage: string | null;
+
+	/**
+	 * Contains language if any is selected, false otherwise.
+	 * @observable
+	 * @readonly
+	 */
+	declare public value: string | false;
 
 	/**
 	 * @inheritDoc
@@ -32,13 +37,6 @@ export default class CodeBlockCommand extends Command {
 
 		this._lastLanguage = null;
 	}
-
-	/**
-	 * Whether the selection starts in a code block.
-	 * @observable
-	 * @readonly
-	 */
-	declare public value: string | false;
 
 	/**
 	 * @inheritDoc
@@ -54,14 +52,18 @@ export default class CodeBlockCommand extends Command {
 	 * wrapped by a code block.
 	 *
 	 * @fires execute
-	 * @param [options] Command options.
-	 * @param [options.language] The code block language.
-	 * @param [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply a code block,
+	 * @param options Command options.
+	 * @param options.language The code block language.
+	 * @param options.forceValue If set, it will force the command behavior. If `true`, the command will apply a code block,
 	 * otherwise the command will remove the code block. If not set, the command will act basing on its current value.
-	 * @param [options.usePreviousLanguageChoice] If set on `true` and the `options.language` is not specified, the command
+	 * @param options.usePreviousLanguageChoice If set on `true` and the `options.language` is not specified, the command
 	 * will apply the previous language (if the command was already executed) when inserting the `codeBlock` element.
 	 */
-	public override execute( options: { language?: string; forceValue?: boolean; usePreviousLanguageChoice?: boolean } = {} ): void {
+	public override execute( options: {
+		language?: string;
+		forceValue?: boolean;
+		usePreviousLanguageChoice?: boolean;
+	} = {} ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
