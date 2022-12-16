@@ -232,7 +232,7 @@ import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-// Add the remaining imports here.
+// Rest of the imports.
 // ...
 
 export default class ClassicEditor extends ClassicEditorBase {}
