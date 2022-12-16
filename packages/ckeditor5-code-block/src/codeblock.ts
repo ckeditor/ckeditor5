@@ -50,7 +50,6 @@ export default class CodeBlock extends Plugin {
 		 * The configuration of the {@link module:code-block/codeblock~CodeBlock} feature.
 		 *
 		 * Read more in {@link module:code-block/codeblock~CodeBlockConfig}.
-		 *
 		 */
 		codeBlock?: CodeBlockConfig;
 	}
