@@ -244,7 +244,7 @@ ClassicEditor.builtinPlugins = [
 	Bold,
 	Italic,
 	BlockQuote,
-	// Here you should add all the other plugins you want to include in the build.
+	// Rest of plugins to include in the build.
 	// ...
 ];
 
