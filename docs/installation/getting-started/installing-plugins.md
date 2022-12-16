@@ -257,7 +257,7 @@ ClassicEditor.defaultConfig = {
 			// ...
 		]
 	},
-	// Specify additional configuration here.
+	// Rest of classic editor configuration. 
 	// ...
 };
 ```
