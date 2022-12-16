@@ -253,7 +253,7 @@ ClassicEditor.defaultConfig = {
 		items: [
 			'heading',
 			'bold',
-			// Add the remaining toolbar items here.
+			// Remaining toolbar items.
 			// ...
 		]
 	},
