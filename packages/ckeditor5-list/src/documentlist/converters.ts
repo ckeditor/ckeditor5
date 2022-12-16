@@ -48,7 +48,8 @@ import { findAndAddListHeadToMap } from './utils/postfixers';
 import type {
 	default as DocumentListEditing,
 	DocumentListEditingCheckAttributesEvent,
-	DowncastStrategy
+	DowncastStrategy,
+	ListItemAttributesMap
 } from './documentlistediting';
 
 /**
@@ -65,7 +66,7 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 		}
 
 		const items = Array.from( data.modelRange.getItems( { shallow: true } ) )
-			.filter( item => schema.checkAttribute( item, 'listItemId' ) );
+			.filter( ( item ): item is Element => schema.checkAttribute( item, 'listItemId' ) );
 
 		if ( !items.length ) {
 			return;
@@ -74,7 +75,7 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 		const attributes = {
 			listItemId: ListItemUid.next(),
 			listIndent: getIndent( data.viewItem ),
-			listType: data.viewItem.parent && ( data.viewItem.parent as ViewElement ).name == 'ol' ? 'numbered' : 'bulleted'
+			listType: data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted'
 		};
 
 		for ( const item of items ) {
@@ -143,7 +144,7 @@ export function reconvertItemsOnDataChange(
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
 		const itemToListHead = new Map<ListElement, ListElement>();
-		const changedItems = new Set<Node | null>();
+		const changedItems = new Set<Node>();
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
@@ -153,7 +154,7 @@ export function reconvertItemsOnDataChange(
 				if ( !entry.attributes.has( 'listItemId' ) ) {
 					findAndAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead );
 				} else {
-					changedItems.add( entry.position.nodeAfter );
+					changedItems.add( entry.position.nodeAfter! );
 				}
 			}
 			// Removed list item.
@@ -196,10 +197,10 @@ export function reconvertItemsOnDataChange(
 		}
 	};
 
-	function collectListItemsToRefresh( listHead: ListElement, changedItems: Set<Node | null> ) {
+	function collectListItemsToRefresh( listHead: ListElement, changedItems: Set<Node> ) {
 		const itemsToRefresh = [];
 		const visited = new Set();
-		const stack: Array<Record<string, any>> = [];
+		const stack: Array<ListItemAttributesMap> = [];
 
 		for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
 			if ( visited.has( node ) ) {
@@ -263,8 +264,8 @@ export function reconvertItemsOnDataChange(
 
 	function doesItemWrappingRequiresRefresh(
 		item: Element,
-		stack: Array<Record<string, any>>,
-		changedItems: Set<Node | null>
+		stack: Array<ListItemAttributesMap>,
+		changedItems: Set<Node>
 	) {
 		// Items directly affected by some "change" don't need a refresh, they will be converted by their own changes.
 		if ( changedItems.has( item ) ) {

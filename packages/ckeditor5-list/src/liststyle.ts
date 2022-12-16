@@ -40,3 +40,9 @@ export default class ListStyle extends Plugin {
 		logWarning( 'The `ListStyle` plugin is obsolete. Use `ListProperties` instead.' );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ ListStyle.pluginName ]: ListStyle;
+	}
+}

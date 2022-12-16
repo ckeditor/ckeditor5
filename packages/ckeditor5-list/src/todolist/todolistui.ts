@@ -32,3 +32,9 @@ export default class TodoListUI extends Plugin {
 		createUIComponent( this.editor, 'todoList', t( 'To-do List' ), todoListIcon );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ TodoListUI.pluginName ]: TodoListUI;
+	}
+}

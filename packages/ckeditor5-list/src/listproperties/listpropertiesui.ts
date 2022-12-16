@@ -383,3 +383,9 @@ interface StyleDefinition {
 	 */
 	tooltip: string;
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ ListPropertiesUI.pluginName ]: ListPropertiesUI;
+	}
+}

@@ -231,3 +231,9 @@ function getViewListItemLength( element: ViewElement ) {
 
 	return length;
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ ListEditing.pluginName ]: ListEditing;
+	}
+}

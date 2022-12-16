@@ -75,6 +75,15 @@ import '../../theme/documentlist.css';
 const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
 
 /**
+ * Map of model attributes applicable to list blocks.
+ */
+export interface ListItemAttributesMap {
+	listType?: 'numbered' | 'bulleted';
+	listIndent?: number;
+	listItemId?: string;
+}
+
+/**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
  */
 export default class DocumentListEditing extends Plugin {
@@ -728,11 +737,11 @@ function shouldMergeOnBlocksContentLevel( model: Model, direction: 'backward' | 
 		return false;
 	}
 
-	if ( ( previousSibling as any ).isEmpty ) {
+	if ( ( previousSibling as Element ).isEmpty ) {
 		return true;
 	}
 
-	return isSingleListItem( [ positionParent as any, previousSibling ] );
+	return isSingleListItem( [ positionParent as Element, previousSibling ] );
 }
 
 /**
@@ -740,8 +749,6 @@ function shouldMergeOnBlocksContentLevel( model: Model, direction: 'backward' | 
  * is representing those attributes.
  *
  * It allows triggering a re-wrapping of a list item.
- *
- * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
  *
  * @internal
  * @eventName postFixer
@@ -776,7 +783,13 @@ export type DocumentListEditingCheckAttributesEvent = {
 	name: 'checkAttributes' | 'checkAttributes:list' | 'checkAttributes:item';
 	args: [ {
 		viewElement: ViewElement & { id?: string };
-		modelAttributes: Record<string, any>;
+		modelAttributes: ListItemAttributesMap;
 	} ];
 	return: boolean;
 };
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ DocumentListEditing.pluginName ]: DocumentListEditing;
+	}
+}

@@ -128,7 +128,7 @@ export function createListItemElement(
  *
  * @internal
  */
-export function getViewElementNameForListType( type: 'bulleted' | 'numbered' ): 'ol' | 'ul' {
+export function getViewElementNameForListType( type?: 'bulleted' | 'numbered' ): 'ol' | 'ul' {
 	return type == 'numbered' ? 'ol' : 'ul';
 }
 
@@ -137,6 +137,6 @@ export function getViewElementNameForListType( type: 'bulleted' | 'numbered' ): 
  *
  * @internal
  */
-export function getViewElementIdForListType( type: 'bulleted' | 'numbered', indent: number ): string {
+export function getViewElementIdForListType( type?: 'bulleted' | 'numbered', indent?: number ): string {
 	return `list-${ type }-${ indent }`;
 }

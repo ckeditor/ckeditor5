@@ -40,19 +40,16 @@ export class ListItemUid {
 }
 
 /**
- * An {@link module:engine/model/element~Element} that is known to be a list element;
+ * An {@link module:engine/model/element~Element} that is known to be a list element.
  *
  * @internal
  */
-export type ListElement = Element & {
+export interface ListElement extends Element {
 	getAttribute( key: 'listItemId' ): string;
 	getAttribute( key: 'listIndent' ): number;
 	getAttribute( key: 'listType' ): 'numbered' | 'bulleted';
-	getAttribute( key: 'listReversed' ): boolean;
-	getAttribute( key: 'listStart' ): number;
-	getAttribute( key: 'listStyle' ): string;
 	getAttribute( key: string ): unknown;
-};
+}
 
 /**
  * Returns true if the given model node is a list item block.

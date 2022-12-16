@@ -249,3 +249,9 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
 		}
 	};
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ TodoListEditing.pluginName ]: TodoListEditing;
+	}
+}

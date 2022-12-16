@@ -54,3 +54,9 @@ export default class DocumentListPropertiesUtils extends Plugin {
 		return getTypeAttributeFromListStyleType( value );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ DocumentListPropertiesUtils.pluginName ]: DocumentListPropertiesUtils;
+	}
+}

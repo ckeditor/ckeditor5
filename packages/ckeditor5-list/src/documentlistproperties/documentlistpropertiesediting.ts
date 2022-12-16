@@ -20,7 +20,8 @@ import type {
 
 import DocumentListEditing, {
 	type DocumentListEditingCheckAttributesEvent,
-	type DocumentListEditingPostFixerEvent
+	type DocumentListEditingPostFixerEvent,
+	type ListItemAttributesMap
 } from '../documentlist/documentlistediting';
 
 import DocumentListStartCommand from './documentliststartcommand';
@@ -239,7 +240,7 @@ export interface AttributeStrategy {
 	/**
 	 * The model attribute name.
 	 */
-	attributeName: string;
+	attributeName: keyof ListItemAttributesMap;
 
 	/**
 	 * The model attribute default value.
@@ -425,4 +426,26 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 	}
 
 	return strategies;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ DocumentListPropertiesEditing.pluginName ]: DocumentListPropertiesEditing;
+	}
+}
+
+declare module '../documentlist/documentlistediting' {
+	interface ListItemAttributesMap {
+		listStyle?: string;
+		listStart?: number;
+		listReversed?: boolean;
+	}
+}
+
+declare module '../documentlist/utils/model' {
+	interface ListElement extends Element {
+		getAttribute( key: 'listStyle' ): string;
+		getAttribute( key: 'listStart' ): number;
+		getAttribute( key: 'listReversed' ): boolean;
+	}
 }

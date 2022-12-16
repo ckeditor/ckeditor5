@@ -51,3 +51,9 @@ export default class DocumentListUtils extends Plugin {
 		return isListItemBlock( node );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ DocumentListUtils.pluginName ]: DocumentListUtils;
+	}
+}

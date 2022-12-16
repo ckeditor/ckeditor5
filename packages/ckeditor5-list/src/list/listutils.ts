@@ -59,3 +59,9 @@ export default class ListUtils extends Plugin {
 		return getSiblingNodes( position, direction );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ ListUtils.pluginName ]: ListUtils;
+	}
+}
