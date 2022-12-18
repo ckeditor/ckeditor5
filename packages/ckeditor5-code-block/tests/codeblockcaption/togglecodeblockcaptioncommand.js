@@ -1,66 +1,95 @@
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+/**
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
 
-import CodeBlock from '../src/codeblock';
-import CodeblockToolbar from '../src/codeblocktoolbar';
-import CodeblockCaption from '../src/codeblockcaption';
-import CodeBlockEditing from '../src/codeblockediting';
-import CodeblockCaptionEditing from '../src/codeblockcaption/codeblockcaptionediting';
+/* globals document */
+
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+import CodeBlock from '../../src/codeblock';
+import CodeblockCaption from '../../src/codeblockcaption';
+import CodeBlockEditing from '../../src/codeblockediting';
+import CodeblockCaptionEditing from '../../src/codeblockcaption/codeblockcaptionediting';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ToggleCodeblockCaptionCommand', () => {
-    let editor, model, command;
+	let editor, model, command, element;
 
-    testUtils.createSinonSandbox();
+	testUtils.createSinonSandbox();
 
-    beforeEach( async () => {
-		editor = await VirtualTestEditor.create( {
-			plugins: [ CodeBlock, CodeblockToolbar, CodeblockCaption, ]
-		} );
+	beforeEach( async () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+		return ClassicTestEditor
+			.create( element, {
+				language: 'en',
+				plugins: [
+					CodeBlock,
+					CodeBlockEditing,
+					CodeblockCaption,
+					Paragraph
+				]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
 
-		model = editor.model;
+				model.schema.register( 'nonCodeblock', {
+					inheritAllFrom: '$block',
+					isObject: true,
+					allowIn: '$root'
+				} );
 
-		model.schema.register( 'nonCodeblock', {
-			inheritAllFrom: '$block',
-			isObject: true,
-			allowIn: '$root'
-		} );
+				model.schema.extend( 'caption', { allowIn: 'nonCodeblock' } );
 
-		model.schema.extend( 'caption', { allowIn: 'nonCodeblock' } );
+				editor.conversion.elementToElement( {
+					model: 'nonCodeblock',
+					view: 'nonCodeblock'
+				} );
 
-		editor.conversion.elementToElement( {
-			model: 'nonCodeblock',
-			view: 'nonCodeblock'
-		} );
+				editor.conversion.elementToElement( {
+					model: 'caption',
+					view: ( modelItem, { writer } ) => {
+						if ( !modelItem.parent.is( 'element', 'nonCodeblock' ) ) {
+							return null;
+						}
 
-		editor.conversion.elementToElement( {
-			model: 'caption',
-			view: ( modelItem, { writer } ) => {
-				if ( !modelItem.parent.is( 'element', 'nonCodeblock' ) ) {
-					return null;
-				}
+						return writer.createContainerElement( 'figcaption' );
+					}
+				} );
 
-				return writer.createContainerElement( 'figcaption' );
-			}
-		} );
-
-		command = editor.commands.get( 'toggleCodeblockCaption' );
+				command = editor.commands.get( 'toggleCodeblockCaption' );
+			} );
 	} );
 
 	afterEach( async () => {
 		return editor.destroy();
 	} );
 
-    describe( '#isEnabled', () => {
+	describe( '#isEnabled', () => {
 		it( 'should be false if the CodeblockCaption is not loaded', async () => {
-			const editor = await VirtualTestEditor.create( {
-				plugins: [
-					CodeBlock,
-					CodeblockCaptionEditing,
-					Paragraph
-				]
-			} );
+			// const editor = await VirtualTestEditor.create( {
+			// 	plugins: [
+			// 		CodeBlock,
+			// 		CodeblockCaptionEditing,
+			// 		Paragraph
+			// 	]
+			// } );
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			const editor = await ClassicTestEditor
+				.create( element, {
+					plugins: [
+						CodeBlock,
+						CodeblockCaptionEditing,
+						Paragraph
+					]
+				} );
 
 			expect( editor.commands.get( 'toggleCodeblockCaption' ).isEnabled ).to.be.false;
 
@@ -104,15 +133,26 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 		} );
 	} );
 
-    describe( '#value', () => {
+	describe( '#value', () => {
 		it( 'should be false if the CodeblockCaption is not loaded', async () => {
-			const editor = await VirtualTestEditor.create( {
-				plugins: [
-					CodeBlock,
-					CodeblockCaptionEditing,
-					Paragraph
-				]
-			} );
+			// const editor = await VirtualTestEditor.create( {
+			// 	plugins: [
+			// 		CodeBlock,
+			// 		CodeblockCaptionEditing,
+			// 		Paragraph
+			// 	]
+			// } );
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			const editor = await ClassicTestEditor
+				.create( element, {
+					plugins: [
+						CodeBlock,
+						CodeblockCaptionEditing,
+						Paragraph
+					]
+				} );
 
 			expect( editor.commands.get( 'toggleCodeblockCaption' ).value ).to.be.false;
 
@@ -137,10 +177,8 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 			expect( command.value ).to.be.false;
 		} );
 
-
 		it( 'should be true when code with an empty caption is selected', () => {
 			setModelData( model, '[<codeBlock><caption></caption></codeBlock>]' );
-
 			expect( command.value ).to.be.true;
 		} );
 
@@ -163,7 +201,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 		} );
 	} );
 
-    describe( 'execute()', () => {
+	describe( 'execute()', () => {
 		describe( 'for a block codeblock without a caption being selected', () => {
 			it( 'should add an empty caption element to the codeblock', () => {
 				setModelData( model, '[<codeBlock></codeBlock>]' );
@@ -226,8 +264,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 			} );
 
 			it( 'should save the empty caption content', () => {
-
-				setModelData( model, `[<codeBlock><caption>foo</caption></codeBlock>]` );
+				setModelData( model, '[<codeBlock><caption>foo</caption></codeBlock>]' );
 
 				editor.execute( 'toggleCodeblockCaption' );
 				editor.execute( 'toggleCodeblockCaption' );
@@ -241,7 +278,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 				editor.execute( 'toggleCodeblockCaption' );
 				editor.execute( 'toggleCodeblockCaption' );
 
-				expect( getModelData( model ) ).to.equal( `[<codeBlock><caption></caption></codeBlock>]` );
+				expect( getModelData( model ) ).to.equal( '[<codeBlock><caption></caption></codeBlock>]' );
 			} );
 		} );
 
@@ -283,5 +320,4 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 			} );
 		} );
 	} );
-
 } );
