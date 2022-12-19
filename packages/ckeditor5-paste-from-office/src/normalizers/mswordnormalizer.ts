@@ -9,40 +9,39 @@
 
 import { transformListItemLikeElementsIntoLists } from '../filters/list';
 import { replaceImagesSourceWithBase64 } from '../filters/image';
+import type { Normalizer, NormalizerData } from '../normalizer';
+
+import type { ViewDocument } from 'ckeditor5/src/engine';
 
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
 const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
 
 /**
  * Normalizer for the content pasted from Microsoft Word.
- *
- * @implements module:paste-from-office/normalizer~Normalizer
  */
-export default class MSWordNormalizer {
+export default class MSWordNormalizer implements Normalizer {
+	public readonly document: ViewDocument;
+
 	/**
 	 * Creates a new `MSWordNormalizer` instance.
 	 *
-	 * @param {module:engine/view/document~Document} document View document.
+	 * @param document View document.
 	 */
-	constructor( document ) {
-		/**
-		 * @readonly
-		 * @type {module:engine/view/document~Document}
-		 */
+	constructor( document: ViewDocument ) {
 		this.document = document;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	isActive( htmlString ) {
+	public isActive( htmlString: string ): boolean {
 		return msWordMatch1.test( htmlString ) || msWordMatch2.test( htmlString );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	execute( data ) {
+	public execute( data: NormalizerData ): void {
 		const { body: documentFragment, stylesString } = data._parsedData;
 
 		transformListItemLikeElementsIntoLists( documentFragment, stylesString );

@@ -73,6 +73,7 @@ export { default as ViewRawElement } from './view/rawelement';
 export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
 export type { default as ViewItem } from './view/item';
+export type { default as ViewNode } from './view/node';
 export type { default as ViewDocumentSelection } from './view/documentselection';
 export type { default as ViewRange } from './view/range';
 export type { default as ViewSelection, ViewSelectionChangeEvent } from './view/selection';

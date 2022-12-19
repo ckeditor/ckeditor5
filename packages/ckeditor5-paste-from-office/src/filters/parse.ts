@@ -9,24 +9,21 @@
 
 /* globals DOMParser */
 
-import { DomConverter, ViewDocument } from 'ckeditor5/src/engine';
+import {
+	DomConverter,
+	ViewDocument,
+	type StylesProcessor,
+	type ViewDocumentFragment
+} from 'ckeditor5/src/engine';
 
 import { normalizeSpacing, normalizeSpacerunSpans } from './space';
 
 /**
  * Parses provided HTML extracting contents of `<body>` and `<style>` tags.
  *
- * @param {String} htmlString HTML string to be parsed.
- * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
- * @returns {Object} result
- * @returns {module:engine/view/documentfragment~DocumentFragment} result.body Parsed body
- * content as a traversable structure.
- * @returns {String} result.bodyString Entire body content as a string.
- * @returns {Array.<CSSStyleSheet>} result.styles Array of native `CSSStyleSheet` objects, each representing
- * separate `style` tag from the source HTML.
- * @returns {String} result.stylesString All `style` tags contents combined in the order of occurrence into one string.
+ * @param htmlString HTML string to be parsed.
  */
-export function parseHtml( htmlString, stylesProcessor ) {
+export function parseHtml( htmlString: string, stylesProcessor: StylesProcessor ): ParseHtmlResult {
 	const domParser = new DOMParser();
 
 	// Remove Word specific "if comments" so content inside is not omitted by the parser.
@@ -56,12 +53,38 @@ export function parseHtml( htmlString, stylesProcessor ) {
 	};
 }
 
-// Transforms native `Document` object into {@link module:engine/view/documentfragment~DocumentFragment}. Comments are skipped.
-//
-// @param {Document} htmlDocument Native `Document` object to be transformed.
-// @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
-// @returns {module:engine/view/documentfragment~DocumentFragment}
-function documentToView( htmlDocument, stylesProcessor ) {
+/**
+ * The result of {@link #parseHtml}.
+ */
+export interface ParseHtmlResult {
+
+	/**
+	 * Parsed body content as a traversable structure.
+	 */
+	body: ViewDocumentFragment;
+
+	/**
+	 * Entire body content as a string.
+	 */
+	bodyString: string;
+
+	/**
+	 * Array of native `CSSStyleSheet` objects, each representing separate `style` tag from the source HTML.
+	 */
+	styles: Array<CSSStyleSheet>;
+
+	/**
+	 * All `style` tags contents combined in the order of occurrence into one string.
+	 */
+	stylesString: string;
+}
+
+/**
+ * Transforms native `Document` object into {@link module:engine/view/documentfragment~DocumentFragment}. Comments are skipped.
+ *
+ * @param htmlDocument Native `Document` object to be transformed.
+ */
+function documentToView( htmlDocument: Document, stylesProcessor: StylesProcessor ) {
 	const viewDocument = new ViewDocument( stylesProcessor );
 	const domConverter = new DomConverter( viewDocument, { renderingMode: 'data' } );
 	const fragment = htmlDocument.createDocumentFragment();
@@ -71,17 +94,15 @@ function documentToView( htmlDocument, stylesProcessor ) {
 		fragment.appendChild( nodes[ 0 ] );
 	}
 
-	return domConverter.domToView( fragment, { skipComments: true } );
+	return domConverter.domToView( fragment, { skipComments: true } ) as ViewDocumentFragment;
 }
 
-// Extracts both `CSSStyleSheet` and string representation from all `style` elements available in a provided `htmlDocument`.
-//
-// @param {Document} htmlDocument Native `Document` object from which styles will be extracted.
-// @returns {Object} result
-// @returns {Array.<CSSStyleSheet>} result.styles Array of native `CSSStyleSheet` object, each representing
-// separate `style` tag from the source object.
-// @returns {String} result.stylesString All `style` tags contents combined in the order of occurrence as one string.
-function extractStyles( htmlDocument ) {
+/**
+ * Extracts both `CSSStyleSheet` and string representation from all `style` elements available in a provided `htmlDocument`.
+ *
+ * @param htmlDocument Native `Document` object from which styles will be extracted.
+ */
+function extractStyles( htmlDocument: Document ): { styles: Array<CSSStyleSheet>; stylesString: string } {
 	const styles = [];
 	const stylesString = [];
 	const styleTags = Array.from( htmlDocument.getElementsByTagName( 'style' ) );
@@ -99,14 +120,18 @@ function extractStyles( htmlDocument ) {
 	};
 }
 
-// Removes leftover content from between closing </body> and closing </html> tag:
-//
-// 		<html><body><p>Foo Bar</p></body><span>Fo</span></html> -> <html><body><p>Foo Bar</p></body></html>
-//
-// This function is used as specific browsers (Edge) add some random content after `body` tag when pasting from Word.
-// @param {String} htmlString The HTML string to be cleaned.
-// @returns {String} The HTML string with leftover content removed.
-function cleanContentAfterBody( htmlString ) {
+/**
+ * Removes leftover content from between closing </body> and closing </html> tag:
+ *
+ * ```html
+ * <html><body><p>Foo Bar</p></body><span>Fo</span></html> -> <html><body><p>Foo Bar</p></body></html>
+ * ```
+ *
+ * This function is used as specific browsers (Edge) add some random content after `body` tag when pasting from Word.
+ * @param htmlString The HTML string to be cleaned.
+ * @returns The HTML string with leftover content removed.
+ */
+function cleanContentAfterBody( htmlString: string ) {
 	const bodyCloseTag = '</body>';
 	const htmlCloseTag = '</html>';
 

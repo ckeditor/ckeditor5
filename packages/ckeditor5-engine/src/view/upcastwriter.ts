@@ -61,7 +61,7 @@ export default class UpcastWriter {
 	 * A list of nodes to be inserted into the created document fragment.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
 	 */
-	public createDocumentFragment( children: Node | Iterable<Node> ): DocumentFragment {
+	public createDocumentFragment( children?: Node | Iterable<Node> ): DocumentFragment {
 		return new DocumentFragment( this.document, children );
 	}
 
@@ -82,8 +82,8 @@ export default class UpcastWriter {
 	 */
 	public createElement(
 		name: string,
-		attrs: ElementAttributes,
-		children: Node | Iterable<Node>
+		attrs?: ElementAttributes,
+		children?: Node | Iterable<Node>
 	): Element {
 		return new Element( this.document, name, attrs, children );
 	}
@@ -239,7 +239,7 @@ export default class UpcastWriter {
 	 * @param {String} value Attribute value.
 	 * @param {module:engine/view/element~Element} element Element for which attribute will be set.
 	 */
-	public setAttribute( key: string, value: string, element: Element ): void {
+	public setAttribute( key: string, value: unknown, element: Element ): void {
 		element._setAttribute( key, value );
 	}
 
@@ -427,7 +427,7 @@ export default class UpcastWriter {
 	 * @param {module:engine/view/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/view/range~Range}
 	 */
-	public createRangeIn( element: Element ): Range {
+	public createRangeIn( element: Element | DocumentFragment ): Range {
 		return Range._createIn( element );
 	}
 

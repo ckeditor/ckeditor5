@@ -7,13 +7,15 @@
  * @module paste-from-office/pastefromoffice
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 
 import GoogleDocsNormalizer from './normalizers/googledocsnormalizer';
 import MSWordNormalizer from './normalizers/mswordnormalizer';
 
 import { parseHtml } from './filters/parse';
+import type { Normalizer, NormalizerData } from './normalizer';
 
 /**
  * The Paste from Office plugin.
@@ -23,47 +25,45 @@ import { parseHtml } from './filters/parse';
  *
  * Transformation is made by a set of predefined {@link module:paste-from-office/normalizer~Normalizer normalizers}.
  * This plugin includes following normalizers:
- *   * {@link module:paste-from-office/normalizers/mswordnormalizer~MSWordNormalizer Microsoft Word normalizer}
- *   * {@link module:paste-from-office/normalizers/googledocsnormalizer~GoogleDocsNormalizer Google Docs normalizer}
+ * * {@link module:paste-from-office/normalizers/mswordnormalizer~MSWordNormalizer Microsoft Word normalizer}
+ * * {@link module:paste-from-office/normalizers/googledocsnormalizer~GoogleDocsNormalizer Google Docs normalizer}
  *
  * For more information about this feature check the {@glink api/paste-from-office package page}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class PasteFromOffice extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'PasteFromOffice' {
 		return 'PasteFromOffice';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ ClipboardPipeline ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
-		const normalizers = [];
+		const normalizers: Array<Normalizer> = [];
 
 		normalizers.push( new MSWordNormalizer( viewDocument ) );
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 
 		editor.plugins.get( 'ClipboardPipeline' ).on(
 			'inputTransformation',
-			( evt, data ) => {
+			( evt, data: NormalizerData ) => {
 				if ( data._isTransformedWithPasteFromOffice ) {
 					return;
 				}
 
-				const codeBlock = editor.model.document.selection.getFirstPosition().parent;
+				const codeBlock = editor.model.document.selection.getFirstPosition()!.parent;
 
 				if ( codeBlock.is( 'element', 'codeBlock' ) ) {
 					return;

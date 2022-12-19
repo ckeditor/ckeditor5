@@ -7,15 +7,24 @@
  * @module paste-from-office/filters/br
  */
 
-import { DomConverter, ViewDocument } from 'ckeditor5/src/engine';
+import {
+	DomConverter,
+	ViewDocument,
+	type UpcastWriter,
+	type ViewDocumentFragment,
+	type ViewElement,
+	type ViewNode
+} from 'ckeditor5/src/engine';
 
 /**
  * Transforms `<br>` elements that are siblings to some block element into a paragraphs.
  *
- * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment The view structure to be transformed.
- * @param {module:engine/view/upcastwriter~UpcastWriter} writer
+ * @param documentFragment The view structure to be transformed.
  */
-export default function transformBlockBrsToParagraphs( documentFragment, writer ) {
+export default function transformBlockBrsToParagraphs(
+	documentFragment: ViewDocumentFragment,
+	writer: UpcastWriter
+): void {
 	const viewDocument = new ViewDocument( writer.document.stylesProcessor );
 	const domConverter = new DomConverter( viewDocument, { renderingMode: 'data' } );
 
@@ -53,8 +62,15 @@ export default function transformBlockBrsToParagraphs( documentFragment, writer 
 	}
 }
 
-// Returns sibling node, threats inline elements as transparent (but should stop on an inline objects).
-function findSibling( viewElement, direction, writer, { blockElements, inlineObjectElements } ) {
+/**
+ * Returns sibling node, threats inline elements as transparent (but should stop on an inline objects).
+ */
+function findSibling(
+	viewElement: ViewElement,
+	direction: 'forward' | 'backward',
+	writer: UpcastWriter,
+	{ blockElements, inlineObjectElements }: { blockElements: Array<string>; inlineObjectElements: Array<string> }
+) {
 	let position = writer.createPositionAt( viewElement, direction == 'forward' ? 'after' : 'before' );
 
 	// Find first position that is just before a first:
@@ -71,7 +87,9 @@ function findSibling( viewElement, direction, writer, { blockElements, inlineObj
 	return direction == 'forward' ? position.nodeAfter : position.nodeBefore;
 }
 
-// Returns true for view elements that are listed as block view elements.
-function isBlockViewElement( node, blockElements ) {
+/**
+ * Returns true for view elements that are listed as block view elements.
+ */
+function isBlockViewElement( node: ViewNode | null, blockElements: Array<string> ) {
 	return !!node && node.is( 'element' ) && blockElements.includes( node.name );
 }
