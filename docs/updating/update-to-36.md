@@ -15,7 +15,8 @@ modified_at: 2022-12-14
 
 ## Update to CKEditor 5 v36.0.0
 
-For the entire list of changes introduced in version 36.0.0, see the [changelog for CKEditor 5 v36.0.0](TODO).
+For the entire list of changes introduced in version 36.0.0.
+<!-- Add "see the [changelog for CKEditor 5 v36.0.0](...)." after we have a page with changelog-->
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v36.0.0.
 
