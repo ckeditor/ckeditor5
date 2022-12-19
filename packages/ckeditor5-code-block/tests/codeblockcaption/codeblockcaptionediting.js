@@ -1,4 +1,3 @@
-
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -117,7 +116,7 @@ describe( 'CodeblockCaptionEditing', () => {
     it( 'should extend caption if schema for it is already registered', async () => {
 		const { model } = await VirtualTestEditor
 			.create( {
-				plugins: [ FakePlugin, CodeblockCaptionEditing, UndoEditing, Paragraph ]
+				plugins: [ FakePlugin, CodeblockCaptionEditing, UndoEditing, Paragraph, CodeBlockEditing ]
 			} );
 
 		expect( model.schema.isRegistered( 'caption' ) ).to.be.true;
@@ -138,7 +137,7 @@ describe( 'CodeblockCaptionEditing', () => {
 				editor.setData( '<pre><code>Test</code></pre>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<codeBlock langauge="plaintext">Test</codeBlock>' );
+					.to.equal( '<codeBlock language="plaintext">Test</codeBlock>' );
 			} );
 
 			it( 'should not convert figcaption inside other elements than codeBlock', () => {
