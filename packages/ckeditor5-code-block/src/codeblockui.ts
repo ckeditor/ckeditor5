@@ -63,7 +63,7 @@ export default class CodeBlockUI extends Plugin {
 
 			dropdownView.on( 'execute', evt => {
 				editor.execute( 'codeBlock', {
-					language: ( evt.source as { _codeBlockLanguage: string } )._codeBlockLanguage,
+					language: ( evt.source as any )._codeBlockLanguage,
 					forceValue: true
 				} );
 
