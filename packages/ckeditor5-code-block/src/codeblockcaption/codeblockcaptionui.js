@@ -8,7 +8,7 @@ import { getCodeblockCaptionFromModelSelection } from './utils';
 
 /**
  * The codeblock caption UI plugin. It introduces the `'toggleCodeblockCaption'` UI button.
- * 
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class CodeblockCaptionUI extends Plugin {
@@ -38,7 +38,7 @@ export default class CodeblockCaptionUI extends Plugin {
         editor.ui.componentFactory.add( 'toggleCodeblockCaption', locale => {
             const command = editor.commands.get( 'toggleCodeblockCaption' );
             const view = new ButtonView( locale );
-            
+
             view.set( {
                 icon: icons.caption,
                 tooltip: true,
@@ -49,8 +49,8 @@ export default class CodeblockCaptionUI extends Plugin {
             view.bind( 'label' ).to( command, 'value', value => value ? t( 'Toggle caption off' ) : t( 'Toggle caption on' ) );
 
             this.listenTo( view, 'execute', () => {
-                editor.execute( 'toggleCodeblockCaption' );
-                
+                editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
+
                 // Scroll to the selection and highlight the caption if the caption showed up.
                 const modelCaptionElement = getCodeblockCaptionFromModelSelection( editor.model.document.selection );
 
@@ -63,12 +63,12 @@ export default class CodeblockCaptionUI extends Plugin {
                         writer.addClass( 'codeblock__caption_highlighted', figcaptionElement );
                     } );
                 }
-                
+
                 editor.editing.view.focus();
             } );
 
 
             return view;
-        } );   
+        } );
     }
 }

@@ -208,7 +208,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 
 				editor.execute( 'toggleCodeblockCaption' );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock><caption>[]</caption></codeBlock>' );
+				expect( getModelData( model ) ).to.equal( '<codeBlock>[]<caption></caption></codeBlock>' );
 			} );
 
 			it( 'should add the caption element to the codeblock and attempt to restore its content', () => {
@@ -220,7 +220,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 
 				editor.execute( 'toggleCodeblockCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<codeBlock><caption>foo</caption></codeBlock>]' );
+				expect( getModelData( model ) ).to.equal( '<codeBlock>[]<caption>foo</caption></codeBlock>' );
 			} );
 		} );
 
@@ -234,7 +234,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 
 				editor.execute( 'toggleCodeblockCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<codeBlock><caption>foo</caption></codeBlock>]' );
+				expect( getModelData( model ) ).to.equal( '<codeBlock>[]<caption>foo</caption></codeBlock>' );
 			} );
 
 			it( 'should remove the caption from the codeblock and select the codeblock if the selection was in the caption element', () => {
@@ -246,7 +246,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 
 				editor.execute( 'toggleCodeblockCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<codeBlock><caption>foo</caption></codeBlock>]' );
+				expect( getModelData( model ) ).to.equal( '<codeBlock>[]<caption>foo</caption></codeBlock>' );
 			} );
 
 			it( 'should save complex caption content and allow to restore it', () => {
@@ -259,7 +259,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 				editor.execute( 'toggleCodeblockCaption' );
 
 				expect( getModelData( model ) ).to.equal(
-					'[<codeBlock><caption>foo<$text bold="true">bar</$text></caption></codeBlock>]'
+					'<codeBlock>[]<caption>foo<$text bold="true">bar</$text></caption></codeBlock>'
 				);
 			} );
 
@@ -278,47 +278,46 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 				editor.execute( 'toggleCodeblockCaption' );
 				editor.execute( 'toggleCodeblockCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<codeBlock><caption></caption></codeBlock>]' );
+				expect( getModelData( model ) ).to.equal( '<codeBlock>[]<caption></caption></codeBlock>' );
 			} );
 		} );
 
-		// focusCaptionOnShow option is not implemented
-		// describe( 'the focusCaptionOnShow option', () => {
-		// 	it( 'should move the selection to the caption when adding a caption (new empty caption)', () => {
-		// 		setModelData( model, '[<codeBlock></codeBlock>]' );
+		describe( 'the focusCaptionOnShow option', () => {
+			it( 'should move the selection to the caption when adding a caption (new empty caption)', () => {
+				setModelData( model, '[<codeBlock></codeBlock>]' );
 
-		// 		editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
+				editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
 
-		// 		expect( getModelData( model ) ).to.equal( '<codeBlock><caption>[]</caption></codeBlock>' );
-		// 	} );
+				expect( getModelData( model ) ).to.equal( '<codeBlock><caption>[]</caption></codeBlock>' );
+			} );
 
-		// 	it( 'should move the selection to the caption when restoring a caption', () => {
-		// 		setModelData( model, '[<codeBlock><caption>foo</caption></codeBlock>]' );
+			it( 'should move the selection to the caption when restoring a caption', () => {
+				setModelData( model, '[<codeBlock><caption>foo</caption></codeBlock>]' );
 
-		// 		editor.execute( 'toggleCodeblockCaption' );
+				editor.execute( 'toggleCodeblockCaption' );
 
-		// 		expect( getModelData( model ) ).to.equal( '<codeBlock>[]</codeBlock>' );
+				expect( getModelData( model ) ).to.equal( '<codeBlock>[]</codeBlock>' );
 
-		// 		editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
+				editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
 
-		// 		expect( getModelData( model ) ).to.equal( '<codeBlock><caption>[foo]</caption></codeBlock>' );
-		// 	} );
+				expect( getModelData( model ) ).to.equal( '<codeBlock><caption>[foo]</caption></codeBlock>' );
+			} );
 
-		// 	it( 'should not affect removal of the caption (selection in the caption)', () => {
-		// 		setModelData( model, '<codeBlock><caption>foo[]</caption></codeBlock>' );
+			it( 'should not affect removal of the caption (selection in the caption)', () => {
+				setModelData( model, '<codeBlock><caption>foo[]</caption></codeBlock>' );
 
-		// 		editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
+				editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
 
-		// 		expect( getModelData( model ) ).to.equal( '[<codeBlock></codeBlock>]' );
-		// 	} );
+				expect( getModelData( model ) ).to.equal( '<codeBlock>[]</codeBlock>' );
+			} );
 
-		// 	it( 'should not affect removal of the caption (selection on the codeblock)', () => {
-		// 		setModelData( model, '[<codeBlock><caption>foo</caption></codeBlock>]' );
+			it( 'should not affect removal of the caption (selection on the codeblock)', () => {
+				setModelData( model, '[<codeBlock><caption>foo</caption></codeBlock>]' );
 
-		// 		editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
+				editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
 
-		// 		expect( getModelData( model ) ).to.equal( '[<codeBlock></codeBlock>]' );
-		// 	} );
-		// } );
+				expect( getModelData( model ) ).to.equal( '<codeBlock>[]</codeBlock>' );
+			} );
+		} );
 	} );
 } );

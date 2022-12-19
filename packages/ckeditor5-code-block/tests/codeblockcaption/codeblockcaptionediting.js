@@ -7,6 +7,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import CodeBlockEditing from '../../src/codeblockediting';
 import CodeBlock from '../../src/codeblock';
 import CodeblockCaptionEditing from '../../src/codeblockcaption/codeblockcaptionediting';
+import CodeblockCaption from '../../src/codeblockcaption/codeblockcaption';
 import ToggleCodeblockCaptionCommand from '../../src/codeblockcaption/togglecodeblockcaptioncommand';
 
 
@@ -50,6 +51,7 @@ describe( 'CodeblockCaptionEditing', () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [
 				CodeBlockEditing,
+				CodeblockCaption,
 				CodeblockCaptionEditing,
 				UndoEditing,
 				Paragraph
@@ -527,5 +529,164 @@ describe( 'CodeblockCaptionEditing', () => {
 				'<codeBlock language="plaintext"><caption>foo bar</caption></codeBlock><paragraph>foo</paragraph>'
 			);
 		} );
+	} );
+
+	describe( 'editing view', () => {
+		it( 'code should have empty figcaption element when is selected', () => {
+			setModelData( model, '<paragraph>foo</paragraph>[<codeBlock language="plaintext"><caption></caption></codeBlock>]' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">[<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
+			);
+		} );
+
+		it( 'code should have empty figcaption element when not selected', () => {
+			setModelData( model, '<paragraph>[]foo</paragraph><codeBlock language="plaintext"><caption></caption></codeBlock>' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>{}foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
+			);
+		} );
+
+		it( 'should keep the placeholder visible when the figcaption is focused', () => {
+			setModelData( model, '<paragraph>foo</paragraph>[<codeBlock language="plaintext"></codeBlock>]' );
+
+			editor.execute( 'toggleCodeblockCaption' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">[]<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
+			);
+
+			const caption = doc.getRoot().getNodeByPath( [ 1, 0 ] );
+
+			editor.editing.view.document.isFocused = true;
+			editor.focus();
+
+			model.change( writer => {
+				writer.setSelection( writer.createRangeIn( caption ) );
+			} );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable ck-editor__nested-editable_focused ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">[]</figcaption></code></pre>'
+			);
+		} );
+
+		it( 'should not add additional figcaption if one is already present', () => {
+			setModelData( model, '<paragraph>foo</paragraph>[<codeBlock language="plaintext"><caption>foo bar</caption></codeBlock>]' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">[<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">foo bar</figcaption>]</code></pre>'
+			);
+		} );
+
+		it( 'should not alter the figcaption when the caption is empty and the code is no longer selected', () => {
+			setModelData( model, '<paragraph>foo</paragraph>[<codeBlock language="plaintext"><caption></caption></codeBlock>]' );
+
+			model.change( writer => {
+				writer.setSelection( null );
+			} );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>{}foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
+			);
+		} );
+
+		it( 'should not remove figcaption when selection is inside it even when it is empty', () => {
+			setModelData( model, '<codeBlock language="plaintext"><caption>[foo bar]</caption></codeBlock>' );
+
+			model.change( writer => {
+				writer.remove( doc.selection.getFirstRange() );
+			} );
+
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">[]</figcaption></code></pre>'
+			);
+		} );
+
+		it( 'should not remove figcaption when selection is moved from it to its code', () => {
+			setModelData( model, '<codeBlock language="plaintext">baz<caption>[foo bar]</caption></codeBlock>' );
+			const code = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.remove( doc.selection.getFirstRange() );
+				writer.setSelection( writer.createRangeOn( code ) );
+			} );
+
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">{baz<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
+			);
+		} );
+
+		it( 'should not remove figcaption when selection is moved from it to other code', () => {
+			setModelData( model, '<codeBlock language="plaintext">' +
+				'<caption>[foo bar]</caption></codeBlock><codeBlock language="plaintext"><caption></caption>' +
+			'</codeBlock>' );
+			const code = doc.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRangeOn( code ) );
+			} );
+
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">foo bar</figcaption></code></pre><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">[<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
+			);
+		} );
+
+		it( 'should show empty figcaption when code is selected but editor is in the readOnly mode', () => {
+			editor.enableReadOnlyMode( 'unit-test' );
+
+			setModelData( model, '[<codeBlock language="plaintext"><caption></caption></codeBlock>]' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">[<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="false" data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
+			);
+		} );
+
+		describe( 'undo/redo integration', () => {
+			it( 'should create view element after redo', () => {
+				setModelData( model, '<paragraph>foo</paragraph><codeBlock language="plaintext"><caption>[foo bar baz]</caption></codeBlock>' );
+
+				const modelRoot = doc.getRoot();
+				const modelcode = modelRoot.getChild( 1 );
+				const modelCaption = modelcode.getChild( 0 );
+
+				// Remove text and selection from caption.
+				model.change( writer => {
+					writer.remove( writer.createRangeIn( modelCaption ) );
+					writer.setSelection( null );
+				} );
+
+				// Check if there is no figcaption in the view.
+				expect( getViewData( view ) ).to.equal(
+					'<p>{}foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
+				);
+
+				editor.execute( 'undo' );
+
+				// Check if figcaption is back with contents.
+				expect( getViewData( view ) ).to.equal(
+					'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">{foo bar baz}</figcaption></code></pre>'
+				);
+			} );
+
+			it( 'undo should work after inserting the code', () => {
+				setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+				model.change( writer => {
+					const code = writer.createElement( 'codeBlock', { language: 'plaintext' } );
+
+					writer.insert( code, doc.getRoot() );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<codeBlock language="plaintext"></codeBlock><paragraph>foo[]</paragraph>'
+				);
+
+				editor.execute( 'undo' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+			} );
+		} );
+
 	} );
 } );
