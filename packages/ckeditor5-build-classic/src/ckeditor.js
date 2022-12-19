@@ -27,7 +27,10 @@ import Font from '@ckeditor/ckeditor5-font/src/font';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -140,7 +143,10 @@ ClassicEditor.builtinPlugins = [
 	SpecialCharactersAdditional,
 	SpecialCharactersEssentials,
 	Table,
+	TableCaption,
+	TableCellProperties,
 	TableColumnResize,
+	TableProperties,
 	TableToolbar,
 	Link,
 	Paragraph,
@@ -153,7 +159,14 @@ ClassicEditor.defaultConfig = {
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en',
 	table: {
-		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+		contentToolbar: [
+			'tableCellProperties',
+			'tableColumn',
+			'tableRow',
+			'tableProperties',
+			'toggleTableCaption',
+			'mergeTableCells'
+		]
 	},
 	toolbar: {
 		items: [
