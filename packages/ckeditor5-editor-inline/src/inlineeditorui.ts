@@ -8,13 +8,17 @@
  */
 
 import {
-	EditorUI,
-	type EditorUIReadyEvent,
 	type ElementApi,
-	type Editor,
-	type EditorUIUpdateEvent
+	type Editor
 } from 'ckeditor5/src/core';
-import { normalizeToolbarConfig } from 'ckeditor5/src/ui';
+
+import {
+	EditorUI,
+	normalizeToolbarConfig,
+	type EditorUIReadyEvent,
+	type EditorUIUpdateEvent
+} from 'ckeditor5/src/ui';
+
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 
 import type InlineEditorUIView from './inlineeditoruiview';
