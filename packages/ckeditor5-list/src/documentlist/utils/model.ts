@@ -67,14 +67,12 @@ export function isListItemBlock( node: Item | DocumentFragment | null ): node is
  *
  * @internal
  * @param listItem Starting list item element.
- * @param options.lowerIndent Whether blocks with a lower indent level than the start block should be included in the result.
  * @param options.higherIndent Whether blocks with a higher indent level than the start block should be included
  * in the result.
  */
 export function getAllListItemBlocks(
 	listItem: Node,
 	options: {
-		lowerIndent?: boolean;
 		higherIndent?: boolean;
 	} = {}
 ): Array<ListElement> {
@@ -94,14 +92,12 @@ export function getAllListItemBlocks(
  * @internal
  * @param listItem Starting list item element.
  * @param options.direction Walking direction.
- * @param options.lowerIndent Whether blocks with a lower indent level than the start block should be included in the result.
  * @param options.higherIndent Whether blocks with a higher indent level than the start block should be included in the result.
  */
 export function getListItemBlocks(
 	listItem: Node,
 	options: {
 		direction?: 'forward' | 'backward';
-		lowerIndent?: boolean;
 		higherIndent?: boolean;
 	} = {}
 ): Array<ListElement> {

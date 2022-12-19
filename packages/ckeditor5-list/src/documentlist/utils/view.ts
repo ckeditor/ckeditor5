@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { DowncastWriter, ViewAttributeElement, ViewDocumentFragment, ViewElement, ViewNode } from 'ckeditor5/src/engine';
-
 /**
  * @module list/documentlist/utils/view
  */
+
+import type { DowncastWriter, ViewAttributeElement, ViewDocumentFragment, ViewElement, ViewNode } from 'ckeditor5/src/engine';
 
 /**
  * Checks if view element is a list type (ul or ol).

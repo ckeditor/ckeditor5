@@ -16,8 +16,7 @@ import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } fro
  *
  * @internal
  * @param position The search starting position.
- * @param itemToListHead The map from list item element
- * to the list head element.
+ * @param itemToListHead The map from list item element to the list head element.
  */
 export function findAndAddListHeadToMap(
 	position: Position,

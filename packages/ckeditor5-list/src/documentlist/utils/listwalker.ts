@@ -212,7 +212,7 @@ export default class ListWalker {
  * @returns The object with `node` and `previous` {@link module:engine/model/element~Element blocks}.
  */
 export function* iterateSiblingListBlocks(
-	node: Node | DocumentFragment | null,
+	node: Node | null,
 	direction: 'forward' | 'backward' = 'forward'
 ): IterableIterator<ListIteratorValue> {
 	const isForward = direction == 'forward';

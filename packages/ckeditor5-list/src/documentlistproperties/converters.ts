@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module list/documentlistproperties/converters
+ */
+
 import type { UpcastElementEvent } from 'ckeditor5/src/engine';
 import type { GetCallback } from 'ckeditor5/src/utils';
 
 import type { AttributeStrategy } from './documentlistpropertiesediting';
-
-/**
- * @module list/documentlistproperties/converters
- */
 
 /**
  * Returns a converter that consumes the `style`, `reversed`, and `start` attributes.
