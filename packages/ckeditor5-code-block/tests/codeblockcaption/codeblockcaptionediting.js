@@ -154,10 +154,10 @@ describe( 'CodeblockCaptionEditing', () => {
 				setModelData( model, '<codeBlock language="plaintext"><caption>Foo bar baz.</caption></codeBlock>' );
 
 				expect( editor.getData() ).to.equal(
-                    '<pre>' + 
-                        '<code class="language-plaintext">' + 
-                            '<figcaption>Foo bar baz.</figcaption>' + 
-                        '</code>' + 
+                    '<pre>' +
+                        '<code class="language-plaintext">' +
+                            '<figcaption>Foo bar baz.</figcaption>' +
+                        '</code>' +
                     '</pre>'
 				);
 			} );
@@ -166,9 +166,9 @@ describe( 'CodeblockCaptionEditing', () => {
 				setModelData( model, '<codeBlock language="plaintext"><caption></caption></codeBlock>' );
 
 				expect( editor.getData() ).to.equal(
-                    '<pre data-language="Plain text" spellcheck="false">' + 
-                        '<code class="language-plaintext">' + 
-                            '<figcaption>&nbsp;</figcaption>' + 
+                    '<pre data-language="Plain text" spellcheck="false">' +
+                        '<code class="language-plaintext">' +
+                            '<figcaption>&nbsp;</figcaption>' +
                         '</code>' +
                     '</pre>' );
 			} );
@@ -193,12 +193,12 @@ describe( 'CodeblockCaptionEditing', () => {
 				setModelData( model, '<codeBlock language="plaintext"><caption>Foo bar baz.</caption></codeBlock>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<pre data-language="Plain text" spellcheck="false">' + 
-                        '<code class="language-plaintext">' + 
-                            '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' + 'contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">' + 
-                                'Foo bar baz.' + 
-                            '</figcaption>' + 
-                        '</code>' + 
+					'<pre data-language="Plain text" spellcheck="false">' +
+                        '<code class="language-plaintext">' +
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' + 'contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">' +
+                                'Foo bar baz.' +
+                            '</figcaption>' +
+                        '</code>' +
                     '</pre>'
 				);
 			} );
@@ -248,15 +248,15 @@ describe( 'CodeblockCaptionEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-                    '<p>{}foo</p>' + 
-                    '<pre data-language="Plain text" spellcheck="false">' + 
-                        '<code class="language-plaintext">' + 
-                            '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' + 
-                            'contenteditable="true" data-placeholder="Enter codeblock caption" ' + 
-                            'role="textbox">' + 
-                            'foo bar' + 
-                            '</figcaption>' + 
-                        '</code>' + 
+                    '<p>{}foo</p>' +
+                    '<pre data-language="Plain text" spellcheck="false">' +
+                        '<code class="language-plaintext">' +
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
+                            'contenteditable="true" data-placeholder="Enter codeblock caption" ' +
+                            'role="textbox">' +
+                            'foo bar' +
+                            '</figcaption>' +
+                        '</code>' +
                     '</pre>'
 				);
 			} );
@@ -272,12 +272,12 @@ describe( 'CodeblockCaptionEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-                    '<p>{}foo</p>' + 
-                    '<pre data-language="Plain text" spellcheck="false">' + 
-                        '<code class="language-plaintext">' + 
-                            '<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">' + 
-                            '</figcaption>' + 
-                        '</code>' + 
+                    '<p>{}foo</p>' +
+                    '<pre data-language="Plain text" spellcheck="false">' +
+                        '<code class="language-plaintext">' +
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">' +
+                            '</figcaption>' +
+                        '</code>' +
                     '</pre>'
 				);
 			} );
@@ -293,14 +293,14 @@ describe( 'CodeblockCaptionEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>{}foo</p>' + 
-                    '<pre data-language="Plain text" spellcheck="false">' + 
-                        '<code class="language-plaintext">' + 
-                            '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' + 
-                            'contenteditable="true" data-placeholder="Enter codeblock caption" ' + 'role="textbox">' + 
-                                'baz' + 
-                            '</figcaption>' + 
-                        '</code>' + 
+					'<p>{}foo</p>' +
+                    '<pre data-language="Plain text" spellcheck="false">' +
+                        '<code class="language-plaintext">' +
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
+                            'contenteditable="true" data-placeholder="Enter codeblock caption" ' + 'role="textbox">' +
+                                'baz' +
+                            '</figcaption>' +
+                        '</code>' +
                     '</pre>'
 				);
 			} );
@@ -334,13 +334,13 @@ describe( 'CodeblockCaptionEditing', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
                     '<pre data-language="Plain text" spellcheck="false">' +
-                        '<code class="language-plaintext">' + 
-                            '<figcaption class="ck-editor__editable ck-editor__nested-editable ' + 
+                        '<code class="language-plaintext">' +
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable ' +
                             'highlight-yellow" contenteditable="true" data-foo="yellow" ' +
-                            'data-placeholder="Enter codeblock caption" role="textbox">' + 
-                                'Foo bar baz.' + 
-                            '</figcaption>' + 
-                        '</code>' + 
+                            'data-placeholder="Enter codeblock caption" role="textbox">' +
+                                'Foo bar baz.' +
+                            '</figcaption>' +
+                        '</code>' +
                     '</pre>'
 				);
 
@@ -349,18 +349,183 @@ describe( 'CodeblockCaptionEditing', () => {
 				} );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<pre data-language="Plain text" spellcheck="false">' + 
-                        '<code class="language-plaintext">' + 
+					'<pre data-language="Plain text" spellcheck="false">' +
+                        '<code class="language-plaintext">' +
                             '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-                            'contenteditable="true" data-placeholder="Enter codeblock caption" ' + 
-                            'role="textbox">' + 
-                                'Foo bar baz.' + 
-                            '</figcaption>' + 
-                        '</code>' + 
+                            'contenteditable="true" data-placeholder="Enter codeblock caption" ' +
+                            'role="textbox">' +
+                                'Foo bar baz.' +
+                            '</figcaption>' +
+                        '</code>' +
                     '</pre>'
 				);
 			} );
 		} );
 	} );
 
+    describe( 'inserting code to the document', () => {
+		it( 'should not add a caption element if code does not have it', () => {
+			model.change( writer => {
+				writer.insertElement( 'codeBlock', { language: 'plaintext' }, doc.getRoot() );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="plaintext">[]</codeBlock><paragraph></paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false">' +
+				'<code class="language-plaintext">[]</code>' +
+				'</pre><p></p>'
+			);
+		} );
+
+		it( 'should not add a caption element if an code does not have it (code is nested in inserted element)', () => {
+			model.change( writer => {
+				model.schema.register( 'table', { allowWhere: '$block', isLimit: true, isObject: true, isBlock: true } );
+				model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+				model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
+				model.schema.extend( '$block', { allowIn: 'tableCell' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'table', view: 'table' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
+
+				const table = writer.createElement( 'table' );
+				const tableRow = writer.createElement( 'tableRow' );
+				const tableCell1 = writer.createElement( 'tableCell' );
+				const tableCell2 = writer.createElement( 'tableCell' );
+				const code1 = writer.createElement( 'codeBlock', { language: 'plaintext' } );
+				const code2 = writer.createElement( 'codeBlock', { language: 'plaintext' } );
+
+				writer.insert( tableRow, table );
+				writer.insert( tableCell1, tableRow );
+				writer.insert( tableCell2, tableRow );
+				writer.insert( code1, tableCell1 );
+				writer.insert( code2, tableCell2 );
+				writer.insert( table, doc.getRoot() );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'[<table>' +
+					'<tableRow>' +
+						'<tableCell><codeBlock language="plaintext"></codeBlock></tableCell>' +
+						'<tableCell><codeBlock language="plaintext"></codeBlock></tableCell>'  +
+					'</tableRow>' +
+				'</table>]' +
+				'<paragraph></paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'[<table>' +
+					'<tr>' +
+					'<td>' +
+						'<pre data-language="Plain text" spellcheck="false">' +
+							'<code class="language-plaintext">' +
+							'</code>' +
+						'</pre>' +
+					'</td>' +
+					'<td>' +
+						'<pre data-language="Plain text" spellcheck="false">' +
+							'<code class="language-plaintext">' +
+							'</code>' +
+						'</pre>' +
+					'</td>' +
+					'</tr>' +
+				'</table>]' +
+				'<p></p>'
+			);
+		} );
+
+		it( 'should not add caption element if code already have it', () => {
+			model.change( writer => {
+				const caption = writer.createElement( 'caption' );
+				const code = writer.createElement( 'codeBlock', { language: 'plaintext' } );
+
+				writer.insertText( 'foo bar', caption );
+				writer.insert( caption, code );
+				writer.insert( code, doc.getRoot() );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="plaintext">[]<caption>foo bar</caption></codeBlock><paragraph></paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false">' +
+					'<code class="language-plaintext">[]' +
+						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
+						'contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">' +
+							'foo bar' +
+						'</figcaption>' +
+					'</code>' +
+				'</pre>' +
+				'<p></p>'
+			);
+		} );
+
+		it( 'should not add caption element twice', () => {
+			model.change( writer => {
+				const code = writer.createElement( 'codeBlock', { language: 'plaintext' } );
+				const caption = writer.createElement( 'caption' );
+
+				// Since we are adding an empty code, this should trigger caption fixer.
+				writer.insert( code, doc.getRoot() );
+
+				// Add caption just after the code is inserted, in same batch.
+				writer.insert( caption, code );
+			} );
+
+			// Check whether caption fixer added redundant caption.
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="plaintext">[]<caption></caption></codeBlock><paragraph></paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false">' +
+					'<code class="language-plaintext">[]' +
+						'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+						'contenteditable="true" data-placeholder="Enter codeblock caption" ' +
+						'role="textbox">' +
+						'</figcaption>' +
+					'</code>' +
+				'</pre>' +
+				'<p></p>'
+			);
+		} );
+
+		it( 'should do nothing for other changes than insert', () => {
+			setModelData( model, '<codeBlock language="plaintext"><caption>foo bar</caption></codeBlock>' );
+
+			const code = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'language', 'css', code );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<codeBlock language="css"><caption>foo bar</caption></codeBlock>'
+			);
+		} );
+
+		it( 'should do nothing on $text insert', () => {
+			setModelData( model, '<codeBlock language="plaintext"><caption>foo bar</caption></codeBlock><paragraph>[]</paragraph>' );
+
+			const paragraph = doc.getRoot().getChild( 1 );
+
+			// Simulate typing behavior - second input will generate input change without entry.item in change entry.
+			const batch = model.createBatch();
+
+			model.enqueueChange( batch, writer => {
+				writer.insertText( 'f', paragraph, 0 );
+			} );
+
+			model.enqueueChange( batch, writer => {
+				writer.insertText( 'oo', paragraph, 1 );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<codeBlock language="plaintext"><caption>foo bar</caption></codeBlock><paragraph>foo</paragraph>'
+			);
+		} );
+	} );
 } );
