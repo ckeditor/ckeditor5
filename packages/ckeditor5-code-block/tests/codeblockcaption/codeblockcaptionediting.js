@@ -2,6 +2,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import CodeBlockEditing from '../../src/codeblockediting';
 import CodeBlock from '../../src/codeblock';
@@ -182,6 +183,182 @@ describe( 'CodeblockCaptionEditing', () => {
 				setModelData( model, '<widget>foo bar<caption></caption></widget>' );
 
 				expect( editor.getData() ).to.equal( '<widget>foo bar</widget>' );
+			} );
+		} );
+	} );
+
+    describe( 'editing pipeline', () => {
+		describe( 'model to view', () => {
+			it( 'should convert caption element to figcaption contenteditable', () => {
+				setModelData( model, '<codeBlock language="plaintext"><caption>Foo bar baz.</caption></codeBlock>' );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<pre data-language="Plain text" spellcheck="false">' + 
+                        '<code class="language-plaintext">' + 
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' + 'contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">' + 
+                                'Foo bar baz.' + 
+                            '</figcaption>' + 
+                        '</code>' + 
+                    '</pre>'
+				);
+			} );
+
+			it( 'should not convert caption from other elements', () => {
+				editor.conversion.for( 'downcast' ).add(
+					dispatcher => dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'lowest' } )
+				);
+
+				setModelData( model, '<widget>foo bar<caption></caption></widget>' );
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal( '<widget>foo bar</widget>' );
+			} );
+
+			it( 'should not convert when element is already consumed', () => {
+				editor.editing.downcastDispatcher.on(
+					'insert:caption',
+					( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'insert' );
+
+						const codeFigure = conversionApi.mapper.toViewElement( data.range.start.parent );
+						const viewElement = conversionApi.writer.createAttributeElement( 'span' );
+
+						const viewPosition = conversionApi.writer.createPositionAt( codeFigure, 'end' );
+						conversionApi.mapper.bindElements( data.item, viewElement );
+						conversionApi.writer.insert( viewPosition, viewElement );
+					},
+					{ priority: 'high' }
+				);
+
+				setModelData( model, '<codeBlock language="plaintext"><caption>Foo bar baz.</caption></codeBlock>' );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><span></span>Foo bar baz.</code></pre>'
+				);
+			} );
+
+			it( 'should show caption when something is inserted inside', () => {
+				setModelData( model, '<paragraph>foo</paragraph><codeBlock language="plaintext"><caption></caption></codeBlock>' );
+
+				const code = doc.getRoot().getChild( 1 );
+				const caption = code.getChild( 0 );
+
+				model.change( writer => {
+					writer.insertText( 'foo bar', caption );
+				} );
+
+				expect( getViewData( view ) ).to.equal(
+                    '<p>{}foo</p>' + 
+                    '<pre data-language="Plain text" spellcheck="false">' + 
+                        '<code class="language-plaintext">' + 
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' + 
+                            'contenteditable="true" data-placeholder="Enter codeblock caption" ' + 
+                            'role="textbox">' + 
+                            'foo bar' + 
+                            '</figcaption>' + 
+                        '</code>' + 
+                    '</pre>'
+				);
+			} );
+
+			it( 'should not hide when everything is removed from caption', () => {
+				setModelData( model, '<paragraph>foo</paragraph><codeBlock language="plaintext"><caption>foo bar baz</caption></codeBlock>' );
+
+				const code = doc.getRoot().getChild( 1 );
+				const caption = code.getChild( 0 );
+
+				model.change( writer => {
+					writer.remove( writer.createRangeIn( caption ) );
+				} );
+
+				expect( getViewData( view ) ).to.equal(
+                    '<p>{}foo</p>' + 
+                    '<pre data-language="Plain text" spellcheck="false">' + 
+                        '<code class="language-plaintext">' + 
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">' + 
+                            '</figcaption>' + 
+                        '</code>' + 
+                    '</pre>'
+				);
+			} );
+
+			it( 'should show when not everything is removed from caption', () => {
+				setModelData( model, '<paragraph>foo</paragraph><codeBlock language="plaintext"><caption>foo bar baz</caption></codeBlock>' );
+
+				const code = doc.getRoot().getChild( 1 );
+				const caption = code.getChild( 0 );
+
+				model.change( writer => {
+					writer.remove( writer.createRange( writer.createPositionAt( caption, 0 ), writer.createPositionAt( caption, 8 ) ) );
+				} );
+
+				expect( getViewData( view ) ).to.equal(
+					'<p>{}foo</p>' + 
+                    '<pre data-language="Plain text" spellcheck="false">' + 
+                        '<code class="language-plaintext">' + 
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' + 
+                            'contenteditable="true" data-placeholder="Enter codeblock caption" ' + 'role="textbox">' + 
+                                'baz' + 
+                            '</figcaption>' + 
+                        '</code>' + 
+                    '</pre>'
+				);
+			} );
+
+			it( 'should apply highlighting on figcaption', () => {
+				editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
+					model: 'marker',
+					view: data => ( {
+						classes: 'highlight-' + data.markerName.split( ':' )[ 1 ],
+						attributes: {
+							'data-foo': data.markerName.split( ':' )[ 1 ]
+						}
+					} )
+				} );
+
+				setModelData( model, '<codeBlock language="plaintext"><caption>Foo bar baz.</caption></codeBlock>' );
+
+				const caption = doc.getRoot().getNodeByPath( [ 0, 0 ] );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( caption ),
+						usingOperation: false
+					} );
+				} );
+
+				const viewElement = editor.editing.mapper.toViewElement( caption );
+
+				expect( viewElement.getCustomProperty( 'addHighlight' ) ).to.be.a( 'function' );
+				expect( viewElement.getCustomProperty( 'removeHighlight' ) ).to.be.a( 'function' );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+                    '<pre data-language="Plain text" spellcheck="false">' +
+                        '<code class="language-plaintext">' + 
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable ' + 
+                            'highlight-yellow" contenteditable="true" data-foo="yellow" ' +
+                            'data-placeholder="Enter codeblock caption" role="textbox">' + 
+                                'Foo bar baz.' + 
+                            '</figcaption>' + 
+                        '</code>' + 
+                    '</pre>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<pre data-language="Plain text" spellcheck="false">' + 
+                        '<code class="language-plaintext">' + 
+                            '<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
+                            'contenteditable="true" data-placeholder="Enter codeblock caption" ' + 
+                            'role="textbox">' + 
+                                'Foo bar baz.' + 
+                            '</figcaption>' + 
+                        '</code>' + 
+                    '</pre>'
+				);
 			} );
 		} );
 	} );
