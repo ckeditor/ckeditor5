@@ -105,7 +105,7 @@ export default class FocusTracker extends DomEmitterMixin( ObservableMixin() ) {
 	}
 
 	/**
-	 * Stores currently focused element and set {#isFocused} as `true`.
+	 * Stores currently focused element and set {@link #isFocused} as `true`.
 	 */
 	private _focus( element: Element ): void {
 		clearTimeout( this._nextEventLoopTimeout! );
