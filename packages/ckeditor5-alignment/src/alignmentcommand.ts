@@ -9,8 +9,10 @@
 
 import { Command } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
+import { type Element, type Writer } from 'ckeditor5/src/engine';
 
 import { isDefault } from './utils';
+import { type SupportedOptions } from './alignment';
 
 const ALIGNMENT = 'alignment';
 
@@ -21,25 +23,26 @@ const ALIGNMENT = 'alignment';
  */
 export default class AlignmentCommand extends Command {
 	/**
+	 * A value of the current block's alignment.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public value: SupportedOptions;
+
+	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const editor = this.editor;
 		const locale = editor.locale;
-		const firstBlock = first( this.editor.model.document.selection.getSelectedBlocks() );
+		const firstBlock = first( this.editor.model.document.selection.getSelectedBlocks() )!;
 
 		// As first check whether to enable or disable the command as the value will always be false if the command cannot be enabled.
-		this.isEnabled = !!firstBlock && this._canBeAligned( firstBlock );
+		this.isEnabled = Boolean( firstBlock ) && this._canBeAligned( firstBlock );
 
-		/**
-		 * A value of the current block's alignment.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {String} #value
-		 */
 		if ( this.isEnabled && firstBlock.hasAttribute( 'alignment' ) ) {
-			this.value = firstBlock.getAttribute( 'alignment' );
+			this.value = firstBlock.getAttribute( 'alignment' ) as SupportedOptions;
 		} else {
 			this.value = locale.contentLanguageDirection === 'rtl' ? 'right' : 'left';
 		}
@@ -50,17 +53,17 @@ export default class AlignmentCommand extends Command {
 	 * If no `value` is passed, the `value` is the default one or it is equal to the currently selected block's alignment attribute,
 	 * the command will remove the attribute from the selected blocks.
 	 *
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.value] The value to apply.
+	 * @param options Options for the executed command.
+	 * @param options.value The value to apply.
 	 * @fires execute
 	 */
-	execute( options = {} ) {
+	public override execute( options: { value?: string } = {} ): void {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const model = editor.model;
 		const doc = model.document;
 
-		const value = options.value;
+		const value = options.value!;
 
 		model.change( writer => {
 			// Get only those blocks from selected that can have alignment set
@@ -84,26 +87,26 @@ export default class AlignmentCommand extends Command {
 	/**
 	 * Checks whether a block can have alignment set.
 	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} block The block to be checked.
-	 * @returns {Boolean}
+	 * @param block The block to be checked.
 	 */
-	_canBeAligned( block ) {
+	private _canBeAligned( block: Element ) {
 		return this.editor.model.schema.checkAttribute( block, ALIGNMENT );
 	}
 }
 
-// Removes the alignment attribute from blocks.
-// @private
-function removeAlignmentFromSelection( blocks, writer ) {
+/**
+ * Removes the alignment attribute from blocks.
+ */
+function removeAlignmentFromSelection( blocks: Array<Element>, writer: Writer ) {
 	for ( const block of blocks ) {
 		writer.removeAttribute( ALIGNMENT, block );
 	}
 }
 
-// Sets the alignment attribute on blocks.
-// @private
-function setAlignmentOnSelection( blocks, writer, alignment ) {
+/**
+ * Sets the alignment attribute on blocks.
+ */
+function setAlignmentOnSelection( blocks: Array<Element>, writer: Writer, alignment: string ) {
 	for ( const block of blocks ) {
 		writer.setAttribute( ALIGNMENT, alignment, block );
 	}

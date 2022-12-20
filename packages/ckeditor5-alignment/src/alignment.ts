@@ -7,7 +7,7 @@
  * @module alignment/alignment
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import AlignmentEditing from './alignmentediting';
 import AlignmentUI from './alignmentui';
@@ -27,14 +27,14 @@ export default class Alignment extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ AlignmentEditing, AlignmentUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Alignment' {
 		return 'Alignment';
 	}
 }
@@ -43,8 +43,6 @@ export default class Alignment extends Plugin {
  * The configuration of the {@link module:alignment/alignment~Alignment alignment feature}.
  *
  * Read more in {@link module:alignment/alignment~AlignmentConfig}.
- *
- * @member {module:alignment/alignment~AlignmentConfig} module:core/editor/editorconfig~EditorConfig#alignment
  */
 
 /**
@@ -63,6 +61,7 @@ export default class Alignment extends Plugin {
  *
  * @interface AlignmentConfig
  */
+export type AlignmentConfig = Array< string | AlignmentFormat >;
 
 /**
  * Available alignment options.
@@ -100,6 +99,16 @@ export default class Alignment extends Plugin {
  *			.catch( ... );
  *
  * See the demo of {@glink features/text-alignment#configuring-alignment-options custom alignment options}.
- *
- * @member {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} module:alignment/alignment~AlignmentConfig#options
  */
+export type AlignmentFormat = {
+	name: SupportedOptions;
+	className?: string;
+};
+
+export type SupportedOptions = 'left' | 'right' | 'center' | 'justify';
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Alignment.pluginName ]: Alignment;
+	}
+}

@@ -7,10 +7,11 @@
  * @module alignment/alignmentui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
+import { Plugin, icons, type Editor } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
 import { isSupported, normalizeAlignmentOptions } from './utils';
+import { type AlignmentConfig, type SupportedOptions } from './alignment';
 
 const iconsMap = new Map( [
 	[ 'left', icons.alignLeft ],
@@ -28,6 +29,8 @@ const iconsMap = new Map( [
  * @extends module:core/plugin~Plugin
  */
 export default class AlignmentUI extends Plugin {
+	declare public editor: Editor;
+
 	/**
 	 * Returns the localized option titles provided by the plugin.
 	 *
@@ -40,9 +43,8 @@ export default class AlignmentUI extends Plugin {
 	 * * `'justify'`.
 	 *
 	 * @readonly
-	 * @type {Object.<String,String>}
 	 */
-	get localizedOptionTitles() {
+	public get localizedOptionTitles(): Record< SupportedOptions, string > {
 		const t = this.editor.t;
 
 		return {
@@ -56,18 +58,18 @@ export default class AlignmentUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'AlignmentUI' {
 		return 'AlignmentUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
-		const options = normalizeAlignmentOptions( editor.config.get( 'alignment.options' ) );
+		const options = normalizeAlignmentOptions( editor.config.get( 'alignment.options' ) as AlignmentConfig );
 
 		options
 			.map( option => option.name )
@@ -78,7 +80,7 @@ export default class AlignmentUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 
 			// Add existing alignment buttons to dropdown's toolbar.
-			const buttons = options.map( option => componentFactory.create( `alignment:${ option.name }` ) );
+			const buttons = options.map( option => componentFactory.create( `alignment:${ option.name }` ) ) as Array<ButtonView>;
 			addToolbarToDropdown( dropdownView, buttons, { enableActiveItemFocusOnDropdownOpen: true } );
 
 			// Configure dropdown properties an behavior.
@@ -87,8 +89,8 @@ export default class AlignmentUI extends Plugin {
 				tooltip: true
 			} );
 
-			dropdownView.toolbarView.isVertical = true;
-			dropdownView.toolbarView.ariaLabel = t( 'Text alignment toolbar' );
+			dropdownView.toolbarView!.isVertical = true;
+			dropdownView.toolbarView!.ariaLabel = t( 'Text alignment toolbar' );
 
 			dropdownView.extendTemplate( {
 				attributes: {
@@ -129,14 +131,13 @@ export default class AlignmentUI extends Plugin {
 	/**
 	 * Helper method for initializing the button and linking it with an appropriate command.
 	 *
-	 * @private
-	 * @param {String} option The name of the alignment option for which the button is added.
+	 * @param option The name of the alignment option for which the button is added.
 	 */
-	_addButton( option ) {
+	private _addButton( option: SupportedOptions ): void {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( `alignment:${ option }`, locale => {
-			const command = editor.commands.get( 'alignment' );
+			const command = editor.commands.get( 'alignment' )!;
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
@@ -158,5 +159,11 @@ export default class AlignmentUI extends Plugin {
 
 			return buttonView;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ AlignmentUI.pluginName ]: AlignmentUI;
 	}
 }

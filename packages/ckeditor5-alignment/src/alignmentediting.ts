@@ -7,10 +7,11 @@
  * @module alignment/alignmentediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 
 import AlignmentCommand from './alignmentcommand';
 import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils';
+import { type AlignmentConfig, type AlignmentFormat, type SupportedOptions } from './alignment';
 
 /**
  * The alignment editing feature. It introduces the {@link module:alignment/alignmentcommand~AlignmentCommand command} and adds
@@ -21,14 +22,14 @@ export default class AlignmentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'AlignmentEditing' {
 		return 'AlignmentEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( 'alignment', {
@@ -39,12 +40,12 @@ export default class AlignmentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const schema = editor.model.schema;
 
-		const options = normalizeAlignmentOptions( editor.config.get( 'alignment.options' ) );
+		const options: Array<AlignmentFormat> = normalizeAlignmentOptions( editor.config.get( 'alignment.options' ) as AlignmentConfig );
 
 		// Filter out unsupported options and those that are redundant, e.g. `left` in LTR / `right` in RTL mode.
 		const optionsToConvert = options.filter(
@@ -83,19 +84,14 @@ export default class AlignmentEditing extends Plugin {
 	}
 }
 
-// Prepare downcast conversion definition for inline alignment styling.
-// @private
-function buildDowncastInlineDefinition( options ) {
-	const definition = {
-		model: {
-			key: 'alignment',
-			values: options.map( option => option.name )
-		},
-		view: {}
-	};
+/**
+ * Prepare downcast conversion definition for inline alignment styling.
+ */
+function buildDowncastInlineDefinition( options: Array<AlignmentFormat> ) {
+	const view: Record<string, { key: 'style'; value: { 'text-align': SupportedOptions } }> = {};
 
 	for ( const { name } of options ) {
-		definition.view[ name ] = {
+		view[ name ] = {
 			key: 'style',
 			value: {
 				'text-align': name
@@ -103,12 +99,21 @@ function buildDowncastInlineDefinition( options ) {
 		};
 	}
 
+	const definition = {
+		model: {
+			key: 'alignment',
+			values: options.map( option => option.name )
+		},
+		view
+	};
+
 	return definition;
 }
 
-// Prepare upcast definitions for inline alignment styles.
-// @private
-function buildUpcastInlineDefinitions( options ) {
+/**
+ * Prepare upcast definitions for inline alignment styles.
+ */
+function buildUpcastInlineDefinitions( options: Array<AlignmentFormat> ) {
 	const definitions = [];
 
 	for ( const { name } of options ) {
@@ -129,9 +134,10 @@ function buildUpcastInlineDefinitions( options ) {
 	return definitions;
 }
 
-// Prepare upcast definitions for deprecated `align` attribute.
-// @private
-function buildUpcastCompatibilityDefinitions( options ) {
+/**
+ * Prepare upcast definitions for deprecated `align` attribute.
+ */
+function buildUpcastCompatibilityDefinitions( options: Array<AlignmentFormat> ) {
 	const definitions = [];
 
 	for ( const { name } of options ) {
@@ -150,39 +156,36 @@ function buildUpcastCompatibilityDefinitions( options ) {
 	return definitions;
 }
 
-// Prepare conversion definitions for upcast and downcast alignment with classes.
-// @private
-function buildClassDefinition( options ) {
-	const definition = {
-		model: {
-			key: 'alignment',
-			values: options.map( option => option.name )
-		},
-		view: {}
-	};
+/**
+ * Prepare conversion definitions for upcast and downcast alignment with classes.
+ */
+function buildClassDefinition( options: Array<AlignmentFormat> ) {
+	const view: Record< string, { key: 'class'; value?: string } > = {};
 
 	for ( const option of options ) {
-		definition.view[ option.name ] = {
+		view[ option.name ] = {
 			key: 'class',
 			value: option.className
 		};
 	}
 
+	const definition = {
+		model: {
+			key: 'alignment',
+			values: options.map( option => option.name )
+		},
+		view
+	};
+
 	return definition;
 }
 
-/**
- * The alignment configuration format descriptor.
- *
- *		const alignmentFormat = {
- *			name: 'right',
- *			className: 'my-align-right-class'
- *		}
- *
- * @typedef {Object} module:alignment/alignmentediting~AlignmentFormat
- *
- * @property {'left'|'right'|'center'|'justify'} name One of the alignment names options.
- *
- * @property {String} className The CSS class used to represent the style in the view.
- * Used to override default, inline styling for alignment.
- */
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		alignment: AlignmentCommand;
+	}
+
+	interface PluginsMap {
+		[ AlignmentEditing.pluginName ]: AlignmentEditing;
+	}
+}
