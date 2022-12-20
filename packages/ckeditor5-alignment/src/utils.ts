@@ -4,7 +4,7 @@
  */
 
 import { CKEditorError, logWarning, type Locale } from 'ckeditor5/src/utils';
-import { type AlignmentConfig, type AlignmentFormat } from './alignment';
+import type { AlignmentFormat } from './alignmentediting';
 
 /**
  * @module alignment/utils
@@ -18,7 +18,9 @@ import { type AlignmentConfig, type AlignmentFormat } from './alignment';
  * * `'center'`,
  * * `'justify'`
  */
-export const supportedOptions = [ 'left', 'right', 'center', 'justify' ];
+export const supportedOptions: Array<SupportedOptions> = [ 'left', 'right', 'center', 'justify' ];
+
+export type SupportedOptions = 'left' | 'right' | 'center' | 'justify';
 
 /**
  * Checks whether the passed option is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
@@ -26,7 +28,7 @@ export const supportedOptions = [ 'left', 'right', 'center', 'justify' ];
  * @param option The option value to check.
  */
 export function isSupported( option: string ): boolean {
-	return supportedOptions.includes( option );
+	return ( supportedOptions as Array<string> ).includes( option );
 }
 
 /**
@@ -52,7 +54,7 @@ export function isDefault( alignment: string, locale: Locale ): boolean {
  * @param configuredOptions Alignment plugin configuration.
  * @returns Normalized object holding the configuration.
  */
-export function normalizeAlignmentOptions( configuredOptions: AlignmentConfig ): Array<AlignmentFormat> {
+export function normalizeAlignmentOptions( configuredOptions: Array<string | AlignmentFormat> ): Array<AlignmentFormat> {
 	const normalizedOptions = configuredOptions
 		.map( option => {
 			let result;

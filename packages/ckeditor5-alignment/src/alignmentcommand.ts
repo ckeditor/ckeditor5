@@ -9,10 +9,9 @@
 
 import { Command } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
-import { type Element, type Writer } from 'ckeditor5/src/engine';
+import type { Element, Writer } from 'ckeditor5/src/engine';
 
-import { isDefault } from './utils';
-import { type SupportedOptions } from './alignment';
+import { isDefault, type SupportedOptions } from './utils';
 
 const ALIGNMENT = 'alignment';
 

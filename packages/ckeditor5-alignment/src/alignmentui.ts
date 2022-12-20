@@ -10,8 +10,7 @@
 import { Plugin, icons, type Editor } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
-import { isSupported, normalizeAlignmentOptions } from './utils';
-import { type AlignmentConfig, type SupportedOptions } from './alignment';
+import { isSupported, normalizeAlignmentOptions, type SupportedOptions } from './utils';
 
 const iconsMap = new Map( [
 	[ 'left', icons.alignLeft ],
@@ -69,7 +68,7 @@ export default class AlignmentUI extends Plugin {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
-		const options = normalizeAlignmentOptions( editor.config.get( 'alignment.options' ) as AlignmentConfig );
+		const options = normalizeAlignmentOptions( editor.config.get( 'alignment.options' )! );
 
 		options
 			.map( option => option.name )
