@@ -56,7 +56,7 @@ export default class AlignmentCommand extends Command {
 	 * @param options.value The value to apply.
 	 * @fires execute
 	 */
-	public override execute( options: { value?: string } = {} ): void {
+	public override execute( options: { value?: SupportedOptions } = {} ): void {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const model = editor.model;

@@ -43,7 +43,7 @@ export default class AlignmentUI extends Plugin {
 	 *
 	 * @readonly
 	 */
-	public get localizedOptionTitles(): Record< SupportedOptions, string > {
+	public get localizedOptionTitles(): Record<SupportedOptions, string> {
 		const t = this.editor.t;
 
 		return {

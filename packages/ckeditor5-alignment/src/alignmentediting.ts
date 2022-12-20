@@ -160,7 +160,7 @@ function buildUpcastCompatibilityDefinitions( options: Array<AlignmentFormat> ) 
  * Prepare conversion definitions for upcast and downcast alignment with classes.
  */
 function buildClassDefinition( options: Array<AlignmentFormat> ) {
-	const view: Record< string, AttributeDescriptor > = {};
+	const view: Record<string, AttributeDescriptor> = {};
 
 	for ( const option of options ) {
 		view[ option.name ] = {
@@ -193,8 +193,6 @@ function buildClassDefinition( options: Array<AlignmentFormat> ) {
  *			.catch( ... );
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
- *
- * @interface AlignmentConfig
  */
 export type AlignmentConfig = {
 	options?: Array<string | AlignmentFormat>;
@@ -209,31 +207,35 @@ export type AlignmentConfig = {
  * normally be able to choose depending on the
  * {@glink features/ui-language#setting-the-language-of-the-content language of the editor content}.
  *
- *		ClassicEditor
- *			.create( editorElement, {
- *				alignment: {
- *					options: [ 'left', 'right' ]
- *				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ```js
+ * ClassicEditor
+ *   .create( editorElement, {
+ *     alignment: {
+ *       options: [ 'left', 'right' ]
+ *     }
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  *
  * By default the alignment is set inline using the `text-align` CSS property. To further customize the alignment,
  * you can provide names of classes for each alignment option using the `className` property.
  *
  * **Note:** Once you define the `className` property for one option, you need to specify it for all other options.
  *
- *		ClassicEditor
- *			.create( editorElement, {
- *				alignment: {
- *					options: [
- *						{ name: 'left', className: 'my-align-left' },
- *						{ name: 'right', className: 'my-align-right' }
- *					]
- *				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ```js
+ * ClassicEditor
+ *   .create( editorElement, {
+ *     alignment: {
+ *       options: [
+ *         { name: 'left', className: 'my-align-left' },
+ *         { name: 'right', className: 'my-align-right' }
+ *       ]
+ *     }
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  *
  * See the demo of {@glink features/text-alignment#configuring-alignment-options custom alignment options}.
  */
