@@ -16,7 +16,7 @@ export { default as DataController, type DataControllerSetEvent } from './contro
 // Conversion.
 export { default as Conversion } from './conversion/conversion';
 export type { DowncastInsertEvent, DowncastSelectionEvent } from './conversion/downcastdispatcher';
-export type { AddHighlightCallback, HighlightDescriptor, RemoveHighlightCallback } from './conversion/downcasthelpers';
+export type { AddHighlightCallback, HighlightDescriptor, RemoveHighlightCallback, AttributeDescriptor } from './conversion/downcasthelpers';
 export type { MapperViewToModelPositionEvent } from './conversion/mapper';
 
 // DataProcessor.

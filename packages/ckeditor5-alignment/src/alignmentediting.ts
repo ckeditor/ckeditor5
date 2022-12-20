@@ -8,6 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
+import type { AttributeDescriptor } from 'ckeditor5/src/engine';
 
 import AlignmentCommand from './alignmentcommand';
 import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils';
@@ -160,12 +161,12 @@ function buildUpcastCompatibilityDefinitions( options: Array<AlignmentFormat> ) 
  * Prepare conversion definitions for upcast and downcast alignment with classes.
  */
 function buildClassDefinition( options: Array<AlignmentFormat> ) {
-	const view: Record< string, { key: 'class'; value?: string } > = {};
+	const view: Record< string, AttributeDescriptor > = {};
 
 	for ( const option of options ) {
 		view[ option.name ] = {
 			key: 'class',
-			value: option.className
+			value: option.className!
 		};
 	}
 
