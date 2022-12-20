@@ -45,6 +45,7 @@ packages/ckeditor5-editor-inline/src/**/*.js
 packages/ckeditor5-editor-balloon/src/**/*.js
 packages/ckeditor5-editor-decoupled/src/**/*.js
 packages/ckeditor5-essentials/src/**/*.js
+packages/ckeditor5-word-count/src/**/*.js
 packages/*/src/**/*.d.ts
 src/**/*.js
 src/**/*.d.ts

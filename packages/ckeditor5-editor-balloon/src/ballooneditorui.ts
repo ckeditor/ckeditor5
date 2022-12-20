@@ -8,11 +8,15 @@
  */
 
 import {
-	EditorUI,
 	type Editor,
-	type EditorUIReadyEvent,
 	type ElementApi
 } from 'ckeditor5/src/core';
+
+import {
+	EditorUI,
+	type EditorUIReadyEvent
+} from 'ckeditor5/src/ui';
+
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 
 import type BalloonEditorUIView from './ballooneditoruiview';

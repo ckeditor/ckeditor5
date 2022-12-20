@@ -3,16 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EditorUI from '../../src/editor/editorui';
-import Editor from '../../src/editor/editor';
+import EditorUI from '../../src/editorui/editorui';
+
+import ComponentFactory from '../../src/componentfactory';
+import ToolbarView from '../../src/toolbar/toolbarview';
+import TooltipManager from '../../src/tooltipmanager';
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import TooltipManager from '@ckeditor/ckeditor5-ui/src/tooltipmanager';
 
-import testUtils from '../_utils/utils';
+import { Editor } from '@ckeditor/ckeditor5-core';
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 /* global document, console */
 
