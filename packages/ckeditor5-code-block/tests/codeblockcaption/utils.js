@@ -177,6 +177,11 @@ describe( 'codeblock caption utils', () => {
 				view: 'widget'
 			} );
 
+			editor.conversion.elementToElement( {
+				model: 'caption',
+				view: 'figcaption'
+			} );
+
 			setModelData( model,
 				'<widget>[]<caption>foo</caption></widget>'
 			);
