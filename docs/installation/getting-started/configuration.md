@@ -8,7 +8,7 @@ category: getting-started
 order: 40
 ---
 
-# Configuration
+# Configuration II
 
 <info-box hint>
 **Quick recap**
