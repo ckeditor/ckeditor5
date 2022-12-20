@@ -9,7 +9,7 @@ modified_at: 2022-11-15
 # Data from an external source
 
 The editor below contains a widget that fetches data from an external source and updates all own instances in a set interval of time. In this particular example, the widget shows the current Bitcoin rate.
-///
+////////
 {@snippet framework/tutorials/external-data-widget}
 
 ## Detailed guide
