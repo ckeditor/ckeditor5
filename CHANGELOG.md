@@ -24,7 +24,7 @@ We are happy to announce the release of CKEditor 5 v35.4.0.
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Upcast the `<img>` element with the `display:block` style as a block image. Closes [#12811](https://github.com/ckeditor/ckeditor5/issues/12811). ([commit](https://github.com/ckeditor/ckeditor5/commit/8480de92614cd5c851e4d3c74afc982168491d4c))
 * **[lists](https://www.npmjs.com/package/@ckeditor/ckeditor5-lists)**: Allow list indexing to start from `0`. Closes [#12827](https://github.com/ckeditor/ckeditor5/issues/12827). ([commit](https://github.com/ckeditor/ckeditor5/commit/2298735433c16be52642643cd0f5004d80962270))
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added track changes integration for lists, document list properties, and table resize features.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced the `trackChanges.trackFormatChanges` configuration property which can be used to disable tracking of format changes.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced the `trackChanges.trackFormatChanges` configuration property which can be used to disable tracking of formatting changes.
 
 ### Bug fixes
 
