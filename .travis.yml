@@ -22,7 +22,6 @@ before_install:
 install:
 - yarn install
 script:
-- mkdir "external/"
 - ./scripts/ci/travis-check.js
 - if [[ $TRAVIS_JOB_TYPE == "Tests" && $TRAVIS_TEST_RESULT -eq 0 ]]; then ./scripts/ci/trigger-ckeditor5-continuous-integration.sh; fi
 after_script:
