@@ -16,6 +16,7 @@ export { default as DataController, type DataControllerSetEvent } from './contro
 // Conversion.
 export { default as Conversion } from './conversion/conversion';
 export type { DowncastInsertEvent, DowncastSelectionEvent } from './conversion/downcastdispatcher';
+export type { UpcastElementEvent, UpcastTextEvent } from './conversion/upcastdispatcher';
 export type { AddHighlightCallback, HighlightDescriptor, RemoveHighlightCallback } from './conversion/downcasthelpers';
 export type { MapperViewToModelPositionEvent } from './conversion/mapper';
 
@@ -34,7 +35,7 @@ export { default as DocumentSelection, type DocumentSelectionChangeRangeEvent } 
 export { default as Range } from './model/range';
 export { default as LiveRange } from './model/liverange';
 export { default as LivePosition } from './model/liveposition';
-export { default as Model, type ModelApplyOperationEvent } from './model/model';
+export { default as Model } from './model/model';
 export { default as TreeWalker } from './model/treewalker';
 export { default as Element } from './model/element';
 export { default as Position } from './model/position';
@@ -54,7 +55,14 @@ export { findOptimalInsertionRange } from './model/utils/findoptimalinsertionran
 // Model Events.
 export type { DocumentChangeEvent } from './model/document';
 export type { DocumentSelectionChangeEvent } from './model/documentselection';
-export type { ModelDeleteContentEvent, ModelInsertContentEvent, ModelInsertObjectEvent } from './model/model';
+export type {
+	ModelApplyOperationEvent,
+	ModelDeleteContentEvent,
+	ModelGetSelectedContentEvent,
+	ModelInsertContentEvent,
+	ModelInsertObjectEvent,
+	ModelModifySelectionEvent
+} from './model/model';
 export type { SelectionChangeRangeEvent } from './model/selection';
 
 // View.
@@ -98,6 +106,7 @@ export type { BubblingEvent } from './view/observer/bubblingemittermixin';
 export type { ViewDocumentArrowKeyEvent } from './view/observer/arrowkeysobserver';
 export type { ViewDocumentCompositionEvent } from './view/observer/compositionobserver';
 export type { ViewDocumentInputEvent } from './view/observer/inputobserver';
+export type { ViewDocumentTabEvent } from './view/observer/tabobserver';
 export type { ViewDocumentKeyEvent } from './view/observer/keyobserver';
 export type { ViewDocumentLayoutChangedEvent } from './view/document';
 export type { ViewDocumentMouseEvent } from './view/observer/mouseobserver';
