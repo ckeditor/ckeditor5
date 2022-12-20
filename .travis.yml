@@ -12,7 +12,7 @@ branches:
 services:
 - xvfb
 node_js:
-- node
+- lts/*
 cache: false
 before_install:
 - export START_TIME=$( date +%s )
@@ -25,7 +25,7 @@ script:
 - ./scripts/ci/travis-check.js
 after_script:
 - export END_TIME=$( date +%s )
-- ckeditor5-dev-tests-notify-travis-status
+- ckeditor5-dev-ci-notify-travis-status
 env:
   jobs:
   - TRAVIS_JOB_TYPE=Tests

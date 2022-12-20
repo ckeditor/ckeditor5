@@ -30,11 +30,8 @@ import type Writer from '../writer';
  * <quote><h>st</h></quote><p>se</p>
  * ```
  *
- * @param {module:engine/model/model~Model} model The model in context of which
- * the selection modification should be performed.
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
- * The selection of which content will be returned.
- * @returns {module:engine/model/documentfragment~DocumentFragment}
+ * @param model The model in context of which the selection modification should be performed.
+ * @param selection The selection of which content will be returned.
  */
 export default function getSelectedContent(
 	model: Model,

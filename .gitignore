@@ -25,9 +25,11 @@ mrgit.json
 .yalc
 yalc.lock
 
-
 # Ignore compiled TypeScript files.
+packages/ckeditor5-alignment/src/**/*.js
+packages/ckeditor5-basic-styles/src/**/*.js
 packages/ckeditor5-clipboard/src/**/*.js
+packages/ckeditor5-code-block/src/**/*.js
 packages/ckeditor5-core/src/**/*.js
 packages/ckeditor5-editor-balloon/src/**/*.js
 packages/ckeditor5-editor-classic/src/**/*.js

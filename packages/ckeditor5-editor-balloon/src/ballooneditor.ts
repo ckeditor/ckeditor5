@@ -16,6 +16,7 @@ import {
 	type EditorConfig,
 	type EditorReadyEvent
 } from 'ckeditor5/src/core';
+
 import { BalloonToolbar } from 'ckeditor5/src/ui';
 import { CKEditorError, getDataFromElement } from 'ckeditor5/src/utils';
 

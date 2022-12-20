@@ -10,7 +10,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import DecoupledEditor from '../src/decouplededitor';
 import DecoupledEditorUI from '../src/decouplededitorui';
 import DecoupledEditorUIView from '../src/decouplededitoruiview';
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 
