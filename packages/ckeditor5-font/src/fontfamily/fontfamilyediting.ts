@@ -7,11 +7,12 @@
  * @module font/fontfamily/fontfamilyediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { type Editor, Plugin } from 'ckeditor5/src/core';
 
 import FontFamilyCommand from './fontfamilycommand';
 import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_FAMILY } from '../utils';
+import type { ViewElement } from 'ckeditor5/src/engine';
 
 /**
  * The font family editing feature.
@@ -20,21 +21,19 @@ import { buildDefinition, FONT_FAMILY } from '../utils';
  * the `fontFamily` attribute in the {@link module:engine/model/model~Model model} which renders
  * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="font-family: Arial">`),
  * depending on the {@link module:font/fontfamily~FontFamilyConfig configuration}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FontFamilyEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FontFamilyEditing' {
 		return 'FontFamilyEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		// Define default configuration using font families shortcuts.
@@ -57,7 +56,7 @@ export default class FontFamilyEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Allow fontFamily attribute on text nodes.
@@ -68,7 +67,9 @@ export default class FontFamilyEditing extends Plugin {
 		} );
 
 		// Get configured font family options without "default" option.
-		const options = normalizeOptions( editor.config.get( 'fontFamily.options' ) ).filter( item => item.model );
+		const options = normalizeOptions(
+			editor.config.get( 'fontFamily.options' )!
+		).filter( item => item.model );
 		const definition = buildDefinition( FONT_FAMILY, options );
 
 		// Set-up the two-way conversion.
@@ -76,7 +77,7 @@ export default class FontFamilyEditing extends Plugin {
 			this._prepareAnyValueConverters();
 			this._prepareCompatibilityConverter();
 		} else {
-			editor.conversion.attributeToElement( definition );
+			editor.conversion.attributeToElement( definition as any );
 		}
 
 		editor.commands.add( FONT_FAMILY, new FontFamilyCommand( editor ) );
@@ -85,10 +86,8 @@ export default class FontFamilyEditing extends Plugin {
 	/**
 	 * These converters enable keeping any value found as `style="font-family: *"` as a value of an attribute on a text even
 	 * if it is not defined in the plugin configuration.
-	 *
-	 * @private
 	 */
-	_prepareAnyValueConverters() {
+	private _prepareAnyValueConverters(): void {
 		const editor = this.editor;
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
@@ -101,7 +100,7 @@ export default class FontFamilyEditing extends Plugin {
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
 				key: FONT_FAMILY,
-				value: viewElement => viewElement.getStyle( 'font-family' )
+				value: ( viewElement: ViewElement ) => viewElement.getStyle( 'font-family' )
 			},
 			view: {
 				name: 'span',
@@ -114,10 +113,8 @@ export default class FontFamilyEditing extends Plugin {
 
 	/**
 	 * Adds support for legacy `<font face="..">` formatting.
-	 *
-	 * @private
 	 */
-	_prepareCompatibilityConverter() {
+	private _prepareCompatibilityConverter(): void {
 		const editor = this.editor;
 
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
@@ -129,8 +126,18 @@ export default class FontFamilyEditing extends Plugin {
 			},
 			model: {
 				key: FONT_FAMILY,
-				value: viewElement => viewElement.getAttribute( 'face' )
+				value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'face' )
 			}
 		} );
 	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FontFamilyEditing.pluginName ]: FontFamilyEditing;
+	}
+
+  interface CommandConfig {
+	[FONT_FAMILY]: FontFamilyCommand;
+  }
 }

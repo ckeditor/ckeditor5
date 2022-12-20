@@ -16,13 +16,15 @@ import {
 	LabelView,
 	Template,
 	View,
-	ViewCollection
+	ViewCollection,
+	type ColorDefinition
 } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import DocumentColorCollection from '../documentcolorcollection';
 
 import '../../theme/fontcolor.css';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+import type { Model } from 'ckeditor5/src/engine';
 
 /**
  * A class which represents a view with the following sub–components:
@@ -35,125 +37,130 @@ import '../../theme/fontcolor.css';
  */
 export default class ColorTableView extends View {
 	/**
+	 * A collection of the children of the table.
+	 */
+	public readonly items: ViewCollection;
+
+	/**
+	 * An array with objects representing colors to be displayed in the grid.
+	 */
+	public colorDefinitions: Array<ColorDefinition>;
+
+	/**
+	 * Tracks information about the DOM focus in the list.
+	 */
+	public readonly focusTracker: FocusTracker;
+
+	/**
+	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 */
+	public readonly keystrokes: KeystrokeHandler;
+
+	/**
+	 * The label of the button responsible for removing color attributes.
+	 */
+	public removeButtonLabel: string;
+
+	/**
+	 * The number of columns in the color grid.
+	 */
+	public columns: number;
+
+	/**
+	 * A collection of definitions that store the document colors.
+	 *
+	 * @readonly
+	 */
+	public documentColors: DocumentColorCollection;
+
+	/**
+	 * The maximum number of colors in the document colors section.
+	 * If it equals 0, the document colors section is not added.
+	 *
+	 * @readonly
+	 */
+	public documentColorsCount?: number;
+
+	/**
+	 * A collection of views that can be focused in the view.
+	 *
+	 * @readonly
+	 */
+	protected _focusables: ViewCollection;
+
+	/**
+	 * Helps cycling over focusable {@link #items} in the list.
+	 *
+	 * @readonly
+	 */
+	protected _focusCycler: FocusCycler;
+
+	/**
+	 * Document color section's label.
+	 *
+	 * @readonly
+	 */
+	private _documentColorsLabel?: string;
+
+	/**
+	 * Keeps the value of the command associated with the table for the current selection.
+	 */
+	declare public selectedColor?: string;
+
+	/**
+	 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
+	 * the default (static) color set.
+	 *
+	 * The property is loaded once the the parent dropdown is opened the first time.
+	 *
+	 * @readonly
+	 */
+	public staticColorsGrid: ColorGridView | undefined;
+
+	/**
+	 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
+	 * the document colors. It remains undefined if the document colors feature is disabled.
+	 *
+	 * The property is loaded once the the parent dropdown is opened the first time.
+	 *
+	 * @readonly
+	 */
+	public documentColorsGrid: ColorGridView | undefined;
+
+	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 *
-	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {Object} config The configuration object.
-	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} config.colors An array with definitions of colors to
-	 * be displayed in the table.
-	 * @param {Number} config.columns The number of columns in the color grid.
-	 * @param {String} config.removeButtonLabel The label of the button responsible for removing the color.
-	 * @param {String} config.documentColorsLabel The label for the section with the document colors.
-	 * @param {Number} config.documentColorsCount The number of colors in the document colors section inside the color dropdown.
+	 * @param locale The localization services instance.
+	 * @param colors An array with definitions of colors to be displayed in the table.
+	 * @param columns The number of columns in the color grid.
+	 * @param removeButtonLabel The label of the button responsible for removing the color.
+	 * @param documentColorsLabel The label for the section with the document colors.
+	 * @param documentColorsCount The number of colors in the document colors section inside the color dropdown.
 	 */
-	constructor( locale, { colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } ) {
+	constructor(
+		locale: Locale,
+		colors: Array<ColorDefinition>,
+		columns: number,
+		removeButtonLabel: string,
+		documentColorsLabel?: string,
+		documentColorsCount?: number
+	) {
 		super( locale );
 
-		/**
-		 * A collection of the children of the table.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.items = this.createCollection();
-
-		/**
-		 * An array with objects representing colors to be displayed in the grid.
-		 *
-		 * @type {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
-		 */
 		this.colorDefinitions = colors;
-
-		/**
-		 * Tracks information about the DOM focus in the list.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
 		this.keystrokes = new KeystrokeHandler();
 
-		/**
-		 * Keeps the value of the command associated with the table for the current selection.
-		 *
-		 * @type {String}
-		 */
-		this.set( 'selectedColor' );
+		this.set( 'selectedColor', undefined );
 
-		/**
-		 * The label of the button responsible for removing color attributes.
-		 *
-		 * @type {String}
-		 */
 		this.removeButtonLabel = removeButtonLabel;
-
-		/**
-		 * The number of columns in the color grid.
-		 *
-		 * @type {Number}
-		 */
 		this.columns = columns;
-
-		/**
-		 * A collection of definitions that store the document colors.
-		 *
-		 * @readonly
-		 * @member {module:font/documentcolorcollection~DocumentColorCollection}
-		 */
 		this.documentColors = new DocumentColorCollection();
-
-		/**
-		 * The maximum number of colors in the document colors section.
-		 * If it equals 0, the document colors section is not added.
-		 *
-		 * @readonly
-		 * @type {Number}
-		 */
 		this.documentColorsCount = documentColorsCount;
 
-		/**
-		 * A collection of views that can be focused in the view.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this._focusables = new ViewCollection();
 
-		/**
-		 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
-		 * the default (static) color set.
-		 *
-		 * The property is loaded once the the parent dropdown is opened the first time.
-		 *
-		 * @readonly
-		 * @member {module:ui/colorgrid/colorgrid~ColorGridView|undefined} #staticColorsGrid
-		 */
-
-		/**
-		 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
-		 * the document colors. It remains undefined if the document colors feature is disabled.
-		 *
-		 * The property is loaded once the the parent dropdown is opened the first time.
-		 *
-		 * @readonly
-		 * @member {module:ui/colorgrid/colorgrid~ColorGridView|undefined} #documentColorsGrid
-		 */
-
-		/**
-		 * Helps cycling over focusable {@link #items} in the list.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/focuscycler~FocusCycler}
-		 */
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -167,13 +174,6 @@ export default class ColorTableView extends View {
 			}
 		} );
 
-		/**
-		 * Document color section's label.
-		 *
-		 * @private
-		 * @readonly
-		 * @type {String}
-		 */
 		this._documentColorsLabel = documentColorsLabel;
 
 		this.setTemplate( {
@@ -196,22 +196,22 @@ export default class ColorTableView extends View {
 	 *
 	 * All the previously stored document colors will be lost in the process.
 	 *
-	 * @param {module:engine/model/model~Model} model The model used as a source to obtain the document colors.
-	 * @param {String} attributeName Determines the name of the related model's attribute for a given dropdown.
+	 * @param model The model used as a source to obtain the document colors.
+	 * @param attributeName Determines the name of the related model's attribute for a given dropdown.
 	 */
-	updateDocumentColors( model, attributeName ) {
+	public updateDocumentColors( model: Model, attributeName: string ): void {
 		const document = model.document;
-		const maxCount = this.documentColorsCount;
+		const maxCount = this.documentColorsCount || 0;
 
 		this.documentColors.clear();
 
 		for ( const rootName of document.getRootNames() ) {
 			const root = document.getRoot( rootName );
-			const range = model.createRangeIn( root );
+			const range = model.createRangeIn( root! );
 
 			for ( const node of range.getItems() ) {
 				if ( node.is( '$textProxy' ) && node.hasAttribute( attributeName ) ) {
-					this._addColorToDocumentColors( node.getAttribute( attributeName ) );
+					this._addColorToDocumentColors( node.getAttribute( attributeName ) as string );
 
 					if ( this.documentColors.length >= maxCount ) {
 						return;
@@ -226,9 +226,9 @@ export default class ColorTableView extends View {
 	 * available in the {@link module:font/ui/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
 	 * of them.
 	 */
-	updateSelectedColors() {
+	public updateSelectedColors(): void {
 		const documentColorsGrid = this.documentColorsGrid;
-		const staticColorsGrid = this.staticColorsGrid;
+		const staticColorsGrid = this.staticColorsGrid!;
 		const selectedColor = this.selectedColor;
 
 		staticColorsGrid.selectedColor = selectedColor;
@@ -241,17 +241,17 @@ export default class ColorTableView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		// Start listening for the keystrokes coming from #element.
-		this.keystrokes.listenTo( this.element );
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.focusTracker.destroy();
@@ -261,7 +261,7 @@ export default class ColorTableView extends View {
 	/**
 	 * Appends {@link #staticColorsGrid} and {@link #documentColorsGrid} views.
 	 */
-	appendGrids() {
+	public appendGrids(): void {
 		if ( this.staticColorsGrid ) {
 			return;
 		}
@@ -269,7 +269,7 @@ export default class ColorTableView extends View {
 		this.staticColorsGrid = this._createStaticColorsGrid();
 
 		this.items.add( this.staticColorsGrid );
-		this.focusTracker.add( this.staticColorsGrid.element );
+		this.focusTracker.add( this.staticColorsGrid.element! );
 		this._focusables.add( this.staticColorsGrid );
 
 		if ( this.documentColorsCount ) {
@@ -290,7 +290,7 @@ export default class ColorTableView extends View {
 			this.documentColorsGrid = this._createDocumentColorsGrid();
 
 			this.items.add( this.documentColorsGrid );
-			this.focusTracker.add( this.documentColorsGrid.element );
+			this.focusTracker.add( this.documentColorsGrid.element! );
 			this._focusables.add( this.documentColorsGrid );
 		}
 	}
@@ -298,24 +298,21 @@ export default class ColorTableView extends View {
 	/**
 	 * Focuses the first focusable element in {@link #items}.
 	 */
-	focus() {
+	public focus(): void {
 		this._focusCycler.focusFirst();
 	}
 
 	/**
 	 * Focuses the last focusable element in {@link #items}.
 	 */
-	focusLast() {
+	public focusLast(): void {
 		this._focusCycler.focusLast();
 	}
 
 	/**
 	 * Adds the remove color button as a child of the current view.
-	 *
-	 * @private
-	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
-	_createRemoveColorButton() {
+	private _createRemoveColorButton(): ButtonView {
 		const buttonView = new ButtonView();
 
 		buttonView.set( {
@@ -331,7 +328,7 @@ export default class ColorTableView extends View {
 
 		buttonView.render();
 
-		this.focusTracker.add( buttonView.element );
+		this.focusTracker.add( buttonView.element! );
 		this._focusables.add( buttonView );
 
 		return buttonView;
@@ -339,11 +336,8 @@ export default class ColorTableView extends View {
 
 	/**
 	 * Creates a static color table grid based on the editor configuration.
-	 *
-	 * @private
-	 * @returns {module:ui/colorgrid/colorgrid~ColorGridView}
 	 */
-	_createStaticColorsGrid() {
+	private _createStaticColorsGrid(): ColorGridView {
 		const colorGrid = new ColorGridView( this.locale, {
 			colorDefinitions: this.colorDefinitions,
 			columns: this.columns
@@ -356,11 +350,8 @@ export default class ColorTableView extends View {
 
 	/**
 	 * Creates the document colors section view and binds it to {@link #documentColors}.
-	 *
-	 * @private
-	 * @returns {module:ui/colorgrid/colorgrid~ColorGridView}
 	 */
-	_createDocumentColorsGrid() {
+	private _createDocumentColorsGrid(): ColorGridView {
 		const bind = Template.bind( this.documentColors, this.documentColors );
 		const documentColorsGrid = new ColorGridView( this.locale, {
 			columns: this.columns
@@ -414,10 +405,9 @@ export default class ColorTableView extends View {
 	 * Adds a given color to the document colors list. If possible, the method will attempt to use
 	 * data from the {@link #colorDefinitions} (label, color options).
 	 *
-	 * @private
-	 * @param {String} color A string that stores the value of the recently applied color.
+	 * @param color A string that stores the value of the recently applied color.
 	 */
-	_addColorToDocumentColors( color ) {
+	private _addColorToDocumentColors( color: string ): void {
 		const predefinedColor = this.colorDefinitions
 			.find( definition => definition.color === color );
 

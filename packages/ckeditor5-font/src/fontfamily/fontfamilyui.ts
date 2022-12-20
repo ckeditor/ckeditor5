@@ -9,12 +9,14 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { Collection } from 'ckeditor5/src/utils';
-import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
 
 import { normalizeOptions } from './utils';
 import { FONT_FAMILY } from '../utils';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
+import type { FontFamilyOption } from '../fontfamily';
+import type FontFamilyCommand from './fontfamilycommand';
 
 /**
  * The font family UI plugin. It introduces the `'fontFamily'` dropdown.
@@ -25,20 +27,20 @@ export default class FontFamilyUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FontFamilyUI' {
 		return 'FontFamilyUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		const options = this._getLocalizedOptions();
 
-		const command = editor.commands.get( FONT_FAMILY );
+		const command = editor.commands.get( FONT_FAMILY )! as FontFamilyCommand;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_FAMILY, locale => {
@@ -61,7 +63,7 @@ export default class FontFamilyUI extends Plugin {
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
-				editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
+				editor.execute( ( evt.source as any ).commandName, { value: ( evt.source as any ).commandParam } );
 				editor.editing.view.focus();
 			} );
 
@@ -76,15 +78,12 @@ export default class FontFamilyUI extends Plugin {
 	 *
 	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
 	 * when the user configuration is defined because the editor does not exist yet.
-	 *
-	 * @private
-	 * @returns {Array.<module:font/fontfamily~FontFamilyOption>}.
 	 */
-	_getLocalizedOptions() {
+	private _getLocalizedOptions(): Array<FontFamilyOption> {
 		const editor = this.editor;
 		const t = editor.t;
 
-		const options = normalizeOptions( editor.config.get( FONT_FAMILY ).options );
+		const options = normalizeOptions( ( editor.config.get( FONT_FAMILY ) as any ).options );
 
 		return options.map( option => {
 			// The only title to localize is "Default" others are font names.
@@ -97,17 +96,18 @@ export default class FontFamilyUI extends Plugin {
 	}
 }
 
-// Prepares FontFamily dropdown items.
-// @private
-// @param {Array.<module:font/fontsize~FontSizeOption>} options
-// @param {module:font/fontsize/fontsizecommand~FontSizeCommand} command
-function _prepareListOptions( options, command ) {
-	const itemDefinitions = new Collection();
+/**
+ * Prepares FontFamily dropdown items.
+ *
+ * @private
+ */
+function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFamilyCommand ): Collection<ListDropdownItemDefinition> {
+	const itemDefinitions = new Collection<ListDropdownItemDefinition>();
 
 	// Create dropdown items.
 	for ( const option of options ) {
 		const def = {
-			type: 'button',
+			type: 'button' as const,
 			model: new Model( {
 				commandName: FONT_FAMILY,
 				commandParam: option.model,
@@ -126,15 +126,21 @@ function _prepareListOptions( options, command ) {
 				return false;
 			}
 
-			return value.split( ',' )[ 0 ].replace( /'/g, '' ).toLowerCase() === option.model.toLowerCase();
+			return ( value as string ).split( ',' )[ 0 ].replace( /'/g, '' ).toLowerCase() === option.model.toLowerCase();
 		} );
 
 		// Try to set a dropdown list item style.
-		if ( option.view && option.view.styles ) {
+		if ( option.view && typeof option.view !== 'string' && option.view.styles ) {
 			def.model.set( 'labelStyle', `font-family: ${ option.view.styles[ 'font-family' ] }` );
 		}
 
 		itemDefinitions.add( def );
 	}
 	return itemDefinitions;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FontFamilyUI.pluginName ]: FontFamilyUI;
+	}
 }

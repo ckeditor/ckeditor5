@@ -7,6 +7,7 @@
  * @module font/fontfamily/fontfamilycommand
  */
 
+import type { Editor } from 'ckeditor5/src/core';
 import FontCommand from '../fontcommand';
 import { FONT_FAMILY } from '../utils';
 
@@ -14,17 +15,17 @@ import { FONT_FAMILY } from '../utils';
  * The font family command. It is used by {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing}
  * to apply the font family.
  *
- *		editor.execute( 'fontFamily', { value: 'Arial' } );
+ * ```ts
+ * editor.execute( 'fontFamily', { value: 'Arial' } );
+ * ```
  *
  * **Note**: Executing the command without the value removes the attribute from the model.
- *
- * @extends module:font/fontcommand~FontCommand
  */
 export default class FontFamilyCommand extends FontCommand {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor, FONT_FAMILY );
 	}
 }

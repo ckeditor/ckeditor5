@@ -7,6 +7,10 @@
  * @module font/utils
  */
 
+import type { ColorDefinition, DropdownView } from 'ckeditor5/src/ui';
+import type { ConverterDefinition, DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
+import type { FontFamilyOption } from './fontfamily';
+import type { FontSizeOption } from './fontsize';
 import ColorTableView from './ui/colortableview';
 
 /**
@@ -31,27 +35,26 @@ export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
 
 /**
  * Builds a proper {@link module:engine/conversion/conversion~ConverterDefinition converter definition} out of input data.
- *
- * @param {String} modelAttributeKey Key
- * @param {Array.<module:font/fontfamily~FontFamilyOption>|Array.<module:font/fontsize~FontSizeOption>} options
- * @returns {module:engine/conversion/conversion~ConverterDefinition}
  */
-export function buildDefinition( modelAttributeKey, options ) {
+export function buildDefinition(
+	modelAttributeKey: string,
+	options: Array<FontFamilyOption> | Array<FontSizeOption>
+): ConverterDefinition {
 	const definition = {
 		model: {
 			key: modelAttributeKey,
-			values: []
+			values: [] as Array<any>
 		},
-		view: {},
-		upcastAlso: {}
+		view: {} as any,
+		upcastAlso: {} as any
 	};
 
 	for ( const option of options ) {
 		definition.model.values.push( option.model );
-		definition.view[ option.model ] = option.view;
+		definition.view[ option.model! ] = option.view;
 
 		if ( option.upcastAlso ) {
-			definition.upcastAlso[ option.model ] = option.upcastAlso;
+			definition.upcastAlso[ option.model! ] = option.upcastAlso;
 		}
 	}
 
@@ -64,12 +67,9 @@ export function buildDefinition( modelAttributeKey, options ) {
  * responsible for upcasting data to the model.
  *
  * **Note**: The `styleAttr` parameter should be either `'color'` or `'background-color'`.
- *
- * @param {String} styleAttr
- * @return {String}
  */
-export function renderUpcastAttribute( styleAttr ) {
-	return viewElement => normalizeColorCode( viewElement.getStyle( styleAttr ) );
+export function renderUpcastAttribute( styleAttr: string ): Function {
+	return ( viewElement: ViewElement ) => normalizeColorCode( viewElement.getStyle( styleAttr )! );
 }
 
 /**
@@ -78,11 +78,9 @@ export function renderUpcastAttribute( styleAttr ) {
  * responsible for downcasting a color attribute to a `<span>` element.
  *
  * **Note**: The `styleAttr` parameter should be either `'color'` or `'background-color'`.
- *
- * @param {String} styleAttr
  */
-export function renderDowncastElement( styleAttr ) {
-	return ( modelAttributeValue, { writer } ) => writer.createAttributeElement( 'span', {
+export function renderDowncastElement( styleAttr: string ): Function {
+	return ( modelAttributeValue: string, { writer }: { writer: DowncastWriter } ) => writer.createAttributeElement( 'span', {
 		style: `${ styleAttr }:${ modelAttributeValue }`
 	}, { priority: 7 } );
 }
@@ -90,19 +88,23 @@ export function renderDowncastElement( styleAttr ) {
 /**
  * A helper that adds {@link module:font/ui/colortableview~ColorTableView} to the color dropdown with proper initial values.
  *
- * @param {Object} config The configuration object.
- * @param {module:ui/dropdown/dropdownview~DropdownView} config.dropdownView The dropdown view to which
- * a {@link module:font/ui/colortableview~ColorTableView} will be added.
- * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} config.colors An array with definitions
- * representing colors to be displayed in the color table.
- * @param {String} config.removeButtonLabel The label for the button responsible for removing the color.
- * @param {String} config.documentColorsLabel The label for the section with document colors.
- * @param {String} config.documentColorsCount The number of document colors inside the dropdown.
- * @returns {module:font/ui/colortableview~ColorTableView} The new color table view.
+ * @param dropdownView The dropdown view to which a {@link module:font/ui/colortableview~ColorTableView} will be added.
+ * @param colors An array with definitions representing colors to be displayed in the color table.
+ * @param removeButtonLabel The label for the button responsible for removing the color.
+ * @param documentColorsLabel The label for the section with document colors.
+ * @param documentColorsCount The number of document colors inside the dropdown.
+ * @returns The new color table view.
  */
-export function addColorTableToDropdown( { dropdownView, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } ) {
+export function addColorTableToDropdown(
+	dropdownView: ColorTableDropdownView,
+	colors: Array<ColorDefinition>,
+	columns: number,
+	removeButtonLabel: string,
+	documentColorsLabel?: string,
+	documentColorsCount?: number
+): ColorTableView {
 	const locale = dropdownView.locale;
-	const colorTableView = new ColorTableView( locale, { colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } );
+	const colorTableView = new ColorTableView( locale, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount );
 
 	dropdownView.colorTableView = colorTableView;
 	dropdownView.panelView.children.add( colorTableView );
@@ -112,10 +114,13 @@ export function addColorTableToDropdown( { dropdownView, colors, columns, remove
 	return colorTableView;
 }
 
-// Fixes the color value string.
-//
-// @param {String} value
-// @returns {String}
-function normalizeColorCode( value ) {
+/**
+ * Fixes the color value string.
+ */
+function normalizeColorCode( value: string ): string {
 	return value.replace( /\s/g, '' );
 }
+
+export type ColorTableDropdownView = DropdownView & {
+	colorTableView?: ColorTableView;
+};

@@ -76,13 +76,13 @@ describe( 'ColorTableView', () => {
 
 	beforeEach( () => {
 		locale = { t() {} };
-		colorTableView = new ColorTableView( locale, {
-			colors: colorDefinitions,
-			columns: 5,
-			removeButtonLabel: 'Remove color',
-			documentColorsLabel: 'Document colors',
-			documentColorsCount: 4
-		} );
+		colorTableView = new ColorTableView( locale,
+			colorDefinitions,
+			5,
+			'Remove color',
+			'Document colors',
+			4
+		);
 		// Grids rendering is deferred (#6192) therefore render happens before appending grids.
 		colorTableView.render();
 		colorTableView.appendGrids();
@@ -435,12 +435,13 @@ describe( 'ColorTableView', () => {
 			let colorTableView;
 			beforeEach( () => {
 				locale = { t() {} };
-				colorTableView = new ColorTableView( locale, {
-					colors: colorDefinitions,
-					columns: 5,
-					removeButtonLabel: 'Remove color',
-					documentColorsCount: 0
-				} );
+				colorTableView = new ColorTableView( locale,
+					colorDefinitions,
+					5,
+					'Remove color',
+					undefined,
+					0
+				);
 				// Grids rendering is deferred (#6192) therefore render happens before appending grids.
 				colorTableView.render();
 				colorTableView.appendGrids();

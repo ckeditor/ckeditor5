@@ -8,25 +8,25 @@
  */
 
 import { CKEditorError } from 'ckeditor5/src/utils';
+import { type FontSizeOption } from '../fontsize';
 
 /**
  * Normalizes and translates the {@link module:font/fontsize~FontSizeConfig#options configuration options}
  * to the {@link module:font/fontsize~FontSizeOption} format.
  *
- * @param {Array.<String|Number|Object>} configuredOptions An array of options taken from the configuration.
- * @returns {Array.<module:font/fontsize~FontSizeOption>}
+ * @param configuredOptions An array of options taken from the configuration.
  */
-export function normalizeOptions( configuredOptions ) {
+export function normalizeOptions( configuredOptions: Array<string | number | FontSizeOption> ): Array<FontSizeOption> {
 	// Convert options to objects.
 	return configuredOptions
 		.map( item => getOptionDefinition( item ) )
 		// Filter out undefined values that `getOptionDefinition` might return.
-		.filter( option => !!option );
+		.filter( option => option !== undefined ) as Array<FontSizeOption>;
 }
 
 // Default named presets map. Always create a new instance of the preset object in order to avoid modifying references.
 const namedPresets = {
-	get tiny() {
+	get tiny(): FontSizeOption {
 		return {
 			title: 'Tiny',
 			model: 'tiny',
@@ -37,7 +37,7 @@ const namedPresets = {
 			}
 		};
 	},
-	get small() {
+	get small(): FontSizeOption {
 		return {
 			title: 'Small',
 			model: 'small',
@@ -48,7 +48,7 @@ const namedPresets = {
 			}
 		};
 	},
-	get big() {
+	get big(): FontSizeOption {
 		return {
 			title: 'Big',
 			model: 'big',
@@ -59,7 +59,7 @@ const namedPresets = {
 			}
 		};
 	},
-	get huge() {
+	get huge(): FontSizeOption {
 		return {
 			title: 'Huge',
 			model: 'huge',
@@ -72,14 +72,17 @@ const namedPresets = {
 	}
 };
 
-// Returns an option definition either from preset or creates one from number shortcut.
-// If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
-//
-// @param {String|Number|Object} item
-// @returns {undefined|module:font/fontsize~FontSizeOption}
-function getOptionDefinition( option ) {
+/**
+ * Returns an option definition either from preset or creates one from number shortcut.
+ * If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
+ */
+
+function getOptionDefinition( option: string | number | FontSizeOption ): FontSizeOption | undefined {
+	if ( typeof option === 'number' ) {
+		option = String( option );
+	}
 	// Check whether passed option is a full item definition provided by user in configuration.
-	if ( isFullItemDefinition( option ) ) {
+	if ( typeof option === 'object' && isFullItemDefinition( option ) ) {
 		return attachPriority( option );
 	}
 
@@ -101,22 +104,23 @@ function getOptionDefinition( option ) {
 	// At this stage we probably have numerical value to generate a preset so parse it's value.
 	// Discard any faulty values.
 	if ( isNumericalDefinition( option ) ) {
-		return;
+		return undefined;
 	}
 
 	// Return font size definition from size value.
 	return generatePixelPreset( option );
 }
 
-// Creates a predefined preset for pixel size.
-//
-// @param {Number} definition Font size in pixels.
-// @returns {module:font/fontsize~FontSizeOption}
-function generatePixelPreset( definition ) {
+/**
+ * Creates a predefined preset for pixel size.
+ * @param definition Font size in pixels.
+ * @returns
+ */
+function generatePixelPreset( definition: string | FontSizeOption ): FontSizeOption {
 	// Extend a short (numeric value) definition.
-	if ( typeof definition === 'number' || typeof definition === 'string' ) {
+	if ( typeof definition === 'string' ) {
 		definition = {
-			title: String( definition ),
+			title: definition,
 			model: `${ parseFloat( definition ) }px`
 		};
 	}
@@ -124,54 +128,50 @@ function generatePixelPreset( definition ) {
 	definition.view = {
 		name: 'span',
 		styles: {
-			'font-size': definition.model
+			'font-size': definition.model!
 		}
 	};
 
 	return attachPriority( definition );
 }
 
-// Adds the priority to the view element definition if missing. It's required due to ckeditor/ckeditor5#2291
-//
-// @param {Object} definition
-// @param {Object} definition.title
-// @param {Object} definition.model
-// @param {Object} definition.view
-// @returns {Object}
-function attachPriority( definition ) {
-	if ( !definition.view.priority ) {
-		definition.view.priority = 7;
+/**
+ * Adds the priority to the view element definition if missing. It's required due to ckeditor/ckeditor5#2291
+ */
+function attachPriority( definition: FontSizeOption ): FontSizeOption {
+	if ( definition.view && typeof definition.view !== 'string' && !definition.view.priority ) {
+		definition.view!.priority = 7;
 	}
 
 	return definition;
 }
 
-// Returns a prepared preset definition. If passed an object, a name of preset should be defined as `model` value.
-//
-// @param {String|Object} definition
-// @param {String} definition.model A preset name.
-// @returns {Object|undefined}
-function findPreset( definition ) {
-	return namedPresets[ definition ] || namedPresets[ definition.model ];
+/**
+ * Returns a prepared preset definition. If passed an object, a name of preset should be defined as `model` value.
+ * @param {String|Object} definition
+ * @param {String} definition.model A preset name.
+ * @returns
+ */
+function findPreset( definition: string | { model?: string } ): FontSizeOption | undefined {
+	if ( typeof definition === 'string' ) {
+		return ( namedPresets as any )[ definition ];
+	}
+	return ( namedPresets as any )[ definition.model! ];
 }
 
-// We treat `definition` as completed if it is an object that contains `title`, `model` and `view` values.
-//
-// @param {Object} definition
-// @param {String} definition.title
-// @param {String} definition.model
-// @param {Object} definition.view
-// @returns {Boolean}
-function isFullItemDefinition( definition ) {
+/**
+ * We treat `definition` as completed if it is an object that contains `title`, `model` and `view` values.
+ */
+function isFullItemDefinition( definition: Record<string, any> ): boolean {
 	return typeof definition === 'object' && definition.title && definition.model && definition.view;
 }
 
-// We treat `definition` as numerical if it is a number, number-like (string) or an object with the `title` key.
-//
+/**
+ * We treat `definition` as numerical if it is a number, number-like (string) or an object with the `title` key.
+ */
 // @param {Object|Number|String} definition
 // @param {Object} definition.title
-// @returns {Boolean}
-function isNumericalDefinition( definition ) {
+function isNumericalDefinition( definition: string | number | any ): boolean {
 	let numberValue;
 
 	if ( typeof definition === 'object' ) {

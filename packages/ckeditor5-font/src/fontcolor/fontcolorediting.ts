@@ -7,9 +7,10 @@
  * @module font/fontcolor/fontcolorediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import FontColorCommand from './fontcolorcommand';
 import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
+import type { ViewElement } from 'ckeditor5/src/engine';
 
 /**
  * The font color editing feature.
@@ -18,21 +19,19 @@ import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../uti
  * the `fontColor` attribute in the {@link module:engine/model/model~Model model} which renders
  * in the {@link module:engine/view/view view} as a `<span>` element (`<span style="color: ...">`),
  * depending on the {@link module:font/fontcolor~FontColorConfig configuration}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FontColorEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FontColorEditing' {
 		return 'FontColorEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( FONT_COLOR, {
@@ -125,7 +124,7 @@ export default class FontColorEditing extends Plugin {
 			},
 			model: {
 				key: FONT_COLOR,
-				value: viewElement => viewElement.getAttribute( 'color' )
+				value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'color' )
 			}
 		} );
 
@@ -144,4 +143,14 @@ export default class FontColorEditing extends Plugin {
 			copyOnEnter: true
 		} );
 	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FontColorEditing.pluginName ]: FontColorEditing;
+	}
+
+  interface CommandConfig {
+	[FONT_COLOR]: FontColorCommand;
+  }
 }

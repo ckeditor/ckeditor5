@@ -14,7 +14,7 @@ export { default as EditingController } from './controller/editingcontroller';
 export { default as DataController, type DataControllerSetEvent } from './controller/datacontroller';
 
 // Conversion.
-export { default as Conversion } from './conversion/conversion';
+export { default as Conversion, ConverterDefinition } from './conversion/conversion';
 export type { DowncastInsertEvent, DowncastSelectionEvent } from './conversion/downcastdispatcher';
 export type { AddHighlightCallback, HighlightDescriptor, RemoveHighlightCallback } from './conversion/downcasthelpers';
 export type { MapperViewToModelPositionEvent } from './conversion/mapper';
@@ -72,8 +72,9 @@ export { default as ViewEmptyElement } from './view/emptyelement';
 export { default as ViewRawElement } from './view/rawelement';
 export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
-export type { default as ViewItem } from './view/item';
 export type { default as ViewDocumentSelection } from './view/documentselection';
+export type { default as ViewElementDefinition } from './view/elementdefinition';
+export type { default as ViewItem } from './view/item';
 export type { default as ViewRange } from './view/range';
 export type { default as ViewSelection, ViewSelectionChangeEvent } from './view/selection';
 export type { default as ViewTypeCheckable } from './view/typecheckable';

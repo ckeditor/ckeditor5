@@ -10,6 +10,7 @@
 import ColorUI from '../ui/colorui';
 import { FONT_COLOR } from '../utils';
 import fontColorIcon from '../../theme/icons/font-color.svg';
+import type { Editor } from 'ckeditor5/src/core';
 
 /**
  * The font color UI plugin. It introduces the `'fontColor'` dropdown.
@@ -20,7 +21,7 @@ export default class FontColorUI extends ColorUI {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		const t = editor.locale.t;
 
 		super( editor, {
@@ -34,7 +35,13 @@ export default class FontColorUI extends ColorUI {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FontColorUI' {
 		return 'FontColorUI';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FontColorUI.pluginName ]: FontColorUI;
 	}
 }

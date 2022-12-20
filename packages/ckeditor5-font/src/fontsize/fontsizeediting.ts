@@ -7,9 +7,9 @@
  * @module font/fontsize/fontsizeediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { CKEditorError } from 'ckeditor5/src/utils';
-import { isLength, isPercentage } from 'ckeditor5/src/engine';
+import { isLength, isPercentage, type ViewElement, type ConverterDefinition } from 'ckeditor5/src/engine';
 
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
@@ -37,21 +37,19 @@ const styleFontSize = [
  * * or a class attribute (`<span class="text-small">...</span>`)
  *
  * depending on the {@link module:font/fontsize~FontSizeConfig configuration}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FontSizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FontSizeEditing' {
 		return 'FontSizeEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		// Define default configuration using named presets.
@@ -70,7 +68,7 @@ export default class FontSizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Allow fontSize attribute on text nodes.
@@ -83,7 +81,7 @@ export default class FontSizeEditing extends Plugin {
 		const supportAllValues = editor.config.get( 'fontSize.supportAllValues' );
 
 		// Define view to model conversion.
-		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ) )
+		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' )! )
 			.filter( item => item.model );
 		const definition = buildDefinition( FONT_SIZE, options );
 
@@ -92,7 +90,7 @@ export default class FontSizeEditing extends Plugin {
 			this._prepareAnyValueConverters( definition );
 			this._prepareCompatibilityConverter();
 		} else {
-			editor.conversion.attributeToElement( definition );
+			editor.conversion.attributeToElement( definition as any );
 		}
 
 		// Add FontSize command.
@@ -103,14 +101,13 @@ export default class FontSizeEditing extends Plugin {
 	 * These converters enable keeping any value found as `style="font-size: *"` as a value of an attribute on a text even
 	 * if it is not defined in the plugin configuration.
 	 *
-	 * @param {Object} definition {@link module:engine/conversion/conversion~ConverterDefinition Converter definition} out of input data.
-	 * @private
+	 * @param definition {@link module:engine/conversion/conversion~ConverterDefinition Converter definition} out of input data.
 	 */
-	_prepareAnyValueConverters( definition ) {
+	private _prepareAnyValueConverters( definition: ConverterDefinition ): void {
 		const editor = this.editor;
 
 		// If `fontSize.supportAllValues=true`, we do not allow to use named presets in the plugin's configuration.
-		const presets = definition.model.values.filter( value => {
+		const presets = definition.model!.values.filter( ( value: any ) => {
 			return !isLength( String( value ) ) && !isPercentage( String( value ) );
 		} );
 
@@ -144,7 +141,7 @@ export default class FontSizeEditing extends Plugin {
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
 				key: FONT_SIZE,
-				value: viewElement => viewElement.getStyle( 'font-size' )
+				value: ( viewElement: ViewElement ) => viewElement.getStyle( 'font-size' )
 			},
 			view: {
 				name: 'span',
@@ -157,10 +154,8 @@ export default class FontSizeEditing extends Plugin {
 
 	/**
 	 * Adds support for legacy `<font size="..">` formatting.
-	 *
-	 * @private
 	 */
-	_prepareCompatibilityConverter() {
+	private _prepareCompatibilityConverter(): void {
 		const editor = this.editor;
 
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
@@ -175,8 +170,8 @@ export default class FontSizeEditing extends Plugin {
 			},
 			model: {
 				key: FONT_SIZE,
-				value: viewElement => {
-					const value = viewElement.getAttribute( 'size' );
+				value: ( viewElement: ViewElement ) => {
+					const value = viewElement.getAttribute( 'size' )!;
 					const isRelative = value[ 0 ] === '-' || value[ 0 ] === '+';
 
 					let size = parseInt( value, 10 );
@@ -194,4 +189,14 @@ export default class FontSizeEditing extends Plugin {
 			}
 		} );
 	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FontSizeEditing.pluginName ]: FontSizeEditing;
+	}
+
+  interface CommandConfig {
+	[FONT_SIZE]: FontSizeCommand;
+  }
 }

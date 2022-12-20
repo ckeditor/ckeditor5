@@ -7,7 +7,7 @@
  * @module font/fontbackgroundcolor/fontbackgroundcolorediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { addBackgroundRules } from 'ckeditor5/src/engine';
 
 import FontBackgroundColorCommand from './fontbackgroundcolorcommand';
@@ -20,21 +20,19 @@ import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } f
  * the `fontBackgroundColor` attribute in the {@link module:engine/model/model~Model model} which renders
  * in the {@link module:engine/view/view view} as a `<span>` element (`<span style="background-color: ...">`),
  * depending on the {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig configuration}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FontBackgroundColorEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FontBackgroundColorEditing' {
 		return 'FontBackgroundColorEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( FONT_BACKGROUND_COLOR, {
@@ -133,4 +131,14 @@ export default class FontBackgroundColorEditing extends Plugin {
 			copyOnEnter: true
 		} );
 	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FontBackgroundColorEditing.pluginName ]: FontBackgroundColorEditing;
+	}
+
+  interface CommandConfig {
+	[FONT_BACKGROUND_COLOR]: FontBackgroundColorCommand;
+  }
 }

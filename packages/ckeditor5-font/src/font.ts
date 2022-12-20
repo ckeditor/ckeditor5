@@ -7,12 +7,13 @@
  * @module font/font
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import FontFamily from './fontfamily';
 import FontSize from './fontsize';
 import FontColor from './fontcolor';
 import FontBackgroundColor from './fontbackgroundcolor';
+import type FontCommand from './fontcommand';
 
 /**
  * A plugin that enables a set of text styling features:
@@ -24,21 +25,29 @@ import FontBackgroundColor from './fontbackgroundcolor';
  *
  * For a detailed overview, check the {@glink features/font Font feature} documentation
  * and the {@glink api/font package page}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Font extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ FontFamily, FontSize, FontColor, FontBackgroundColor ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Font' {
 		return 'Font';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Font.pluginName ]: Font;
+	}
+
+	interface CommandsMap {
+		font: FontCommand;
 	}
 }

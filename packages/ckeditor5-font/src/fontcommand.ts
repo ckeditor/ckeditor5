@@ -7,48 +7,45 @@
  * @module font/fontcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 
 /**
  * The base font command.
- *
- * @extends module:core/command~Command
  */
 export default class FontCommand extends Command {
 	/**
+	 * When set, it reflects the {@link #attributeKey} value of the selection.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public value: string;
+
+	/**
+	 * A model attribute on which this command operates.
+	 */
+	public readonly attributeKey: string;
+
+	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {String} attributeKey The name of a model attribute on which this command operates.
+	 * @param editor Editor instance.
+	 * @param attributeKey The name of a model attribute on which this command operates.
 	 */
-	constructor( editor, attributeKey ) {
+	constructor( editor: Editor, attributeKey: string ) {
 		super( editor );
 
-		/**
-		 * When set, it reflects the {@link #attributeKey} value of the selection.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {String} module:font/fontcommand~FontCommand#value
-		 */
-
-		/**
-		 * A model attribute on which this command operates.
-		 *
-		 * @readonly
-		 * @member {Boolean} module:font/fontcommand~FontCommand#attributeKey
-		 */
 		this.attributeKey = attributeKey;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		this.value = doc.selection.getAttribute( this.attributeKey );
+		this.value = doc.selection.getAttribute( this.attributeKey ) as string;
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, this.attributeKey );
 	}
 
@@ -57,11 +54,11 @@ export default class FontCommand extends Command {
 	 * If no `value` is passed, it removes the attribute from the selection.
 	 *
 	 * @protected
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.value] The value to apply.
+	 * @param options Options for the executed command.
+	 * @param options.value The value to apply.
 	 * @fires execute
 	 */
-	execute( options = {} ) {
+	public override execute( options: { value?: string } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;

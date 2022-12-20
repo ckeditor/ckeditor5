@@ -7,10 +7,12 @@
  * @module font/ui/colorui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
+import type FontCommand from '../fontcommand';
 
-import { addColorTableToDropdown } from '../utils';
+import { type ColorTableDropdownView, addColorTableToDropdown } from '../utils';
+import type ColorTableView from './colortableview';
 
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
@@ -22,9 +24,39 @@ import { addColorTableToDropdown } from '../utils';
  */
 export default class ColorUI extends Plugin {
 	/**
+	 * The name of the command which will be executed when a color tile is clicked.
+	 */
+	public commandName: string;
+
+	/**
+	 * The name of this component in the {@link module:ui/componentfactory~ComponentFactory}.
+	 * Also the configuration scope name in `editor.config`.
+	 */
+	public componentName: string;
+
+	/**
+	 * The SVG icon used by the dropdown.
+	 */
+	public icon: string;
+
+	/**
+	 * The label used by the dropdown.
+	 */
+	public dropdownLabel: string;
+
+	/**
+	 * The number of columns in the color grid.
+	 */
+	public columns: number;
+
+	/**
+	 * Keeps a reference to {@link module:font/ui/colortableview~ColorTableView}.
+	 */
+	public colorTableView: ColorTableView | undefined;
+
+	/**
 	 * Creates a plugin which introduces a dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {Object} config The configuration object.
 	 * @param {String} config.commandName The name of the command which will be executed when a color tile is clicked.
 	 * @param {String} config.componentName The name of the dropdown in the {@link module:ui/componentfactory~ComponentFactory}
@@ -32,81 +64,46 @@ export default class ColorUI extends Plugin {
 	 * @param {String} config.icon The SVG icon used by the dropdown.
 	 * @param {String} config.dropdownLabel The label used by the dropdown.
 	 */
-	constructor( editor, { commandName, icon, componentName, dropdownLabel } ) {
+	constructor( editor: Editor, { commandName, icon, componentName, dropdownLabel }: any ) {
 		super( editor );
 
-		/**
-		 * The name of the command which will be executed when a color tile is clicked.
-		 *
-		 * @type {String}
-		 */
 		this.commandName = commandName;
-
-		/**
-		 * The name of this component in the {@link module:ui/componentfactory~ComponentFactory}.
-		 * Also the configuration scope name in `editor.config`.
-		 *
-		 * @type {String}
-		 */
 		this.componentName = componentName;
-
-		/**
-		 * The SVG icon used by the dropdown.
-		 * @type {String}
-		 */
 		this.icon = icon;
-
-		/**
-		 * The label used by the dropdown.
-		 *
-		 * @type {String}
-		 */
 		this.dropdownLabel = dropdownLabel;
-
-		/**
-		 * The number of columns in the color grid.
-		 *
-		 * @type {Number}
-		 */
-		this.columns = editor.config.get( `${ this.componentName }.columns` );
-
-		/**
-		 * Keeps a reference to {@link module:font/ui/colortableview~ColorTableView}.
-		 *
-		 * @member {module:font/ui/colortableview~ColorTableView}
-		 */
+		this.columns = editor.config.get( `${ this.componentName }.columns` ) as number;
 		this.colorTableView = undefined;
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	init() {
+	* @inheritDoc
+	*/
+	public init(): void {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const t = locale.t;
-		const command = editor.commands.get( this.commandName );
-		const colorsConfig = normalizeColorOptions( editor.config.get( this.componentName ).colors );
+		const command = editor.commands.get( this.commandName ) as FontCommand;
+		const colorsConfig = normalizeColorOptions( ( editor.config.get( this.componentName ) as any ).colors );
 		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
-		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` );
+		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` ) as number | undefined;
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
-			const dropdownView = createDropdown( locale );
-			this.colorTableView = addColorTableToDropdown( {
+			const dropdownView: ColorTableDropdownView = createDropdown( locale );
+			this.colorTableView = addColorTableToDropdown(
 				dropdownView,
-				colors: localizedColors.map( option => ( {
+				localizedColors.map( option => ( {
 					label: option.label,
 					color: option.model,
 					options: {
 						hasBorder: option.hasBorder
 					}
 				} ) ),
-				columns: this.columns,
-				removeButtonLabel: t( 'Remove color' ),
-				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : undefined,
-				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount
-			} );
+				this.columns,
+				t( 'Remove color' ),
+				documentColorsCount !== 0 ? t( 'Document colors' ) : '',
+				documentColorsCount === undefined ? this.columns : documentColorsCount
+			);
 
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
 
@@ -131,20 +128,24 @@ export default class ColorUI extends Plugin {
 
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
 				// Grids rendering is deferred (#6192).
-				dropdownView.colorTableView.appendGrids();
+				dropdownView.colorTableView!.appendGrids();
 
 				if ( isVisible ) {
 					if ( documentColorsCount !== 0 ) {
-						this.colorTableView.updateDocumentColors( editor.model, this.componentName );
+						this.colorTableView!.updateDocumentColors( editor.model, this.componentName );
 					}
-					this.colorTableView.updateSelectedColors();
+					this.colorTableView!.updateSelectedColors();
 				}
 			} );
 
 			// Accessibility: focus the first active color when opening the dropdown.
-			focusChildOnDropdownOpen( dropdownView, () => dropdownView.colorTableView.staticColorsGrid.items.find( item => item.isOn ) );
+			focusChildOnDropdownOpen(
+				dropdownView,
+				() => dropdownView.colorTableView!.staticColorsGrid!.items.find( ( item: any ) => item.isOn )
+			);
 
 			return dropdownView;
 		} );
 	}
 }
+

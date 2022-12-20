@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
 import { Collection } from 'ckeditor5/src/utils';
 
 import { normalizeOptions } from './utils';
@@ -16,30 +16,30 @@ import { FONT_SIZE } from '../utils';
 
 import fontSizeIcon from '../../theme/icons/font-size.svg';
 import '../../theme/fontsize.css';
+import type { FontSizeOption } from '../fontsize';
+import type FontSizeCommand from './fontsizecommand';
 
 /**
  * The font size UI plugin. It introduces the `'fontSize'` dropdown.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FontSizeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FontSizeUI' {
 		return 'FontSizeUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		const options = this._getLocalizedOptions();
 
-		const command = editor.commands.get( FONT_SIZE );
+		const command = editor.commands.get( FONT_SIZE )! as FontSizeCommand;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_SIZE, locale => {
@@ -65,7 +65,7 @@ export default class FontSizeUI extends Plugin {
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
-				editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
+				editor.execute( ( evt.source as any ).commandName, { value: ( evt.source as any ).commandParam } );
 				editor.editing.view.focus();
 			} );
 
@@ -80,11 +80,8 @@ export default class FontSizeUI extends Plugin {
 	 *
 	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
 	 * when the user configuration is defined because the editor does not exist yet.
-	 *
-	 * @private
-	 * @returns {Array.<module:font/fontsize~FontSizeOption>}.
 	 */
-	_getLocalizedOptions() {
+	private _getLocalizedOptions(): Array<FontSizeOption> {
 		const editor = this.editor;
 		const t = editor.t;
 
@@ -96,10 +93,10 @@ export default class FontSizeUI extends Plugin {
 			Huge: t( 'Huge' )
 		};
 
-		const options = normalizeOptions( editor.config.get( FONT_SIZE ).options );
+		const options = normalizeOptions( ( editor.config.get( FONT_SIZE ) as any ).options );
 
 		return options.map( option => {
-			const title = localizedTitles[ option.title ];
+			const title = ( localizedTitles as any )[ option.title ];
 
 			if ( title && title != option.title ) {
 				// Clone the option to avoid altering the original `namedPresets` from `./utils.js`.
@@ -111,16 +108,15 @@ export default class FontSizeUI extends Plugin {
 	}
 }
 
-// Prepares FontSize dropdown items.
-// @private
-// @param {Array.<module:font/fontsize~FontSizeOption>} options
-// @param {module:font/fontsize/fontsizecommand~FontSizeCommand} command
-function _prepareListOptions( options, command ) {
-	const itemDefinitions = new Collection();
+/**
+ * Prepares FontSize dropdown items.
+ */
+function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeCommand ): Collection<ListDropdownItemDefinition> {
+	const itemDefinitions = new Collection<ListDropdownItemDefinition>();
 
 	for ( const option of options ) {
 		const def = {
-			type: 'button',
+			type: 'button' as const,
 			model: new Model( {
 				commandName: FONT_SIZE,
 				commandParam: option.model,
@@ -130,12 +126,13 @@ function _prepareListOptions( options, command ) {
 			} )
 		};
 
-		if ( option.view && option.view.styles ) {
-			def.model.set( 'labelStyle', `font-size:${ option.view.styles[ 'font-size' ] }` );
-		}
-
-		if ( option.view && option.view.classes ) {
-			def.model.set( 'class', `${ def.model.class } ${ option.view.classes }` );
+		if ( option.view && typeof option.view !== 'string' ) {
+			if ( option.view.styles ) {
+				def.model.set( 'labelStyle', `font-size:${ option.view.styles[ 'font-size' ] }` );
+			}
+			if ( option.view.classes ) {
+				def.model.set( 'class', `${ def.model.class } ${ option.view.classes }` );
+			}
 		}
 
 		def.model.bind( 'isOn' ).to( command, 'value', value => value === option.model );
@@ -145,4 +142,10 @@ function _prepareListOptions( options, command ) {
 	}
 
 	return itemDefinitions;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FontSizeUI.pluginName ]: FontSizeUI;
+	}
 }

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type { FontFamilyOption } from '../fontfamily';
+
 /**
  * @module font/fontfamily/utils
  */
@@ -11,23 +13,22 @@
  * Normalizes the {@link module:font/fontfamily~FontFamilyConfig#options configuration options}
  * to the {@link module:font/fontfamily~FontFamilyOption} format.
  *
- * @param {Array.<String|Object>} configuredOptions An array of options taken from the configuration.
- * @returns {Array.<module:font/fontfamily~FontFamilyOption>}
+ * @param configuredOptions An array of options taken from the configuration.
  */
-export function normalizeOptions( configuredOptions ) {
+export function normalizeOptions( configuredOptions: Array<string | object> ): Array<FontFamilyOption> {
 	// Convert options to objects.
 	return configuredOptions
 		.map( getOptionDefinition )
 		// Filter out undefined values that `getOptionDefinition` might return.
-		.filter( option => !!option );
+		.filter( option => option !== undefined ) as Array<FontFamilyOption>;
 }
 
-// Returns an option definition either created from string shortcut.
-// If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
-//
-// @param {String|Object} option
-// @returns {undefined|module:font/fontfamily~FontFamilyOption}
-function getOptionDefinition( option ) {
+/**
+ * Returns an option definition either created from string shortcut.
+ * If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
+ *
+ */
+function getOptionDefinition( option: string | object ): object | undefined {
 	// Treat any object as full item definition provided by user in configuration.
 	if ( typeof option === 'object' ) {
 		return option;
@@ -43,18 +44,20 @@ function getOptionDefinition( option ) {
 
 	// Ignore values that we cannot parse to a definition.
 	if ( typeof option !== 'string' ) {
-		return;
+		return undefined;
 	}
 
 	// Return font family definition from font string.
 	return generateFontPreset( option );
 }
 
-// Creates a predefined preset for pixel size. It deconstructs font-family like string into full configuration option.
-// A font definition is passed as coma delimited set of font family names. Font names might be quoted.
-//
-// @param {String} A font definition form configuration.
-function generateFontPreset( fontDefinition ) {
+/**
+ * Creates a predefined preset for pixel size. It deconstructs font-family like string into full configuration option.
+ * A font definition is passed as coma delimited set of font family names. Font names might be quoted.
+ *
+ * @param fontDefinition A font definition form configuration.
+ */
+function generateFontPreset( fontDefinition: string ): FontFamilyOption {
 	// Remove quotes from font names. They will be normalized later.
 	const fontNames = fontDefinition.replace( /"|'/g, '' ).split( ',' );
 
@@ -77,11 +80,10 @@ function generateFontPreset( fontDefinition ) {
 	};
 }
 
-// Normalizes font name for the style attribute. It adds braces (') if font name contains spaces.
-//
-// @param {String} fontName
-// @returns {String}
-function normalizeFontNameForCSS( fontName ) {
+/**
+ * Normalizes font name for the style attribute. It adds braces (') if font name contains spaces.
+ */
+function normalizeFontNameForCSS( fontName: string ): string {
 	fontName = fontName.trim();
 
 	// Compound font names should be quoted.

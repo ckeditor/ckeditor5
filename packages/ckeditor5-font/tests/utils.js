@@ -26,9 +26,9 @@ describe( 'utils', () => {
 			const dropdown = createDropdown();
 			dropdown.render();
 
-			addColorTableToDropdown( {
-				dropdownView: dropdown,
-				colors: [
+			addColorTableToDropdown(
+				dropdown,
+				[
 					{
 						label: 'Black',
 						color: '#000',
@@ -44,9 +44,9 @@ describe( 'utils', () => {
 						}
 					}
 				],
-				columns: 2,
-				removeButtonTooltip: 'Remove Color'
-			} );
+				2,
+				'Remove Color'
+			);
 
 			expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );
 			expect( dropdown.panelView.children.length ).to.equal( 1 );

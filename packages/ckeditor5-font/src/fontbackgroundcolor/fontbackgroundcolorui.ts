@@ -10,17 +10,16 @@
 import ColorUI from '../ui/colorui';
 import { FONT_BACKGROUND_COLOR } from '../utils';
 import fontBackgroundColorIcon from '../../theme/icons/font-background.svg';
+import type { Editor } from 'ckeditor5/src/core';
 
 /**
  * The font background color UI plugin. It introduces the `'fontBackgroundColor'` dropdown.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FontBackgroundColorUI extends ColorUI {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		const t = editor.locale.t;
 
 		super( editor, {
@@ -34,7 +33,13 @@ export default class FontBackgroundColorUI extends ColorUI {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FontBackgroundColorUI' {
 		return 'FontBackgroundColorUI';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FontBackgroundColorUI.pluginName ]: FontBackgroundColorUI;
 	}
 }

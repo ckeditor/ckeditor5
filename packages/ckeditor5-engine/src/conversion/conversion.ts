@@ -688,23 +688,6 @@ export default class Conversion {
 	}
 }
 
-/**
- * Defines how the model should be converted from and to the view.
- *
- * @typedef {Object} module:engine/conversion/conversion~ConverterDefinition
- *
- * @property {*} [model] The model conversion definition. Describes the model element or model attribute to convert. This parameter differs
- * for different functions that accept `ConverterDefinition`. See the description of the function to learn how to set it.
- * @property {module:engine/view/elementdefinition~ElementDefinition|Object} view The definition of the view element to convert from and
- * to. If `model` describes multiple values, `view` is an object that assigns these values (`view` object keys) to view element definitions
- * (`view` object values).
- * @property {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [upcastAlso]
- * Any view element matching `upcastAlso` will also be converted to the model. If `model` describes multiple values, `upcastAlso`
- * is an object that assigns these values (`upcastAlso` object keys) to {@link module:engine/view/matcher~MatcherPattern}s
- * (`upcastAlso` object values).
- * @property {module:utils/priorities~PriorityString} [converterPriority] The converter priority.
- */
-
 // Helper function that creates a joint array out of an item passed in `definition.view` and items passed in
 // `definition.upcastAlso`.
 //
@@ -732,4 +715,39 @@ function* _getUpcastDefinition( model: unknown, view: unknown, upcastAlso?: unkn
 			yield { model, view: upcastAlsoItem };
 		}
 	}
+}
+
+/**
+ * Defines how the model should be converted from and to the view.
+ */
+export interface ConverterDefinition {
+
+	/**
+	 *
+	 * @property {*} [model] The model conversion definition. Describes the model element or model attribute to convert.
+	 * This parameter differs for different functions that accept `ConverterDefinition`. See the description of the function to
+	 * learn how to set it.
+	 *
+	 */
+	model?: any;
+
+	/**
+	 * @property {module:engine/view/elementdefinition~ElementDefinition|Object} view The definition of the view element to convert from and
+	 * to. If `model` describes multiple values, `view` is an object that assigns these values (`view` object keys) to view element
+	 * definitions (`view` object values).
+	 */
+	view: ElementDefinition | object;
+
+	/**
+	 * @property {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [upcastAlso]
+	 * Any view element matching `upcastAlso` will also be converted to the model. If `model` describes multiple values, `upcastAlso`
+	 * is an object that assigns these values (`upcastAlso` object keys) to {@link module:engine/view/matcher~MatcherPattern}s
+	 * (`upcastAlso` object values).
+	 */
+	upcastAlso?: MatcherPattern | Array<MatcherPattern>;
+
+	/**
+	 * @property [converterPriority] The converter priority.
+	 */
+	converterPriority?: PriorityString;
 }

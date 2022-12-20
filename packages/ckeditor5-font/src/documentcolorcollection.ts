@@ -7,25 +7,23 @@
  * @module font/documentcolorcollection
  */
 
-import { Collection, ObservableMixin, mix } from 'ckeditor5/src/utils';
+import type { ColorDefinition } from 'ckeditor5/src/ui';
+import { Collection, ObservableMixin } from 'ckeditor5/src/utils';
 
 /**
  * A collection to store document colors. It enforces colors to be unique.
- *
- * @mixes module:utils/observablemixin~ObservableMixin
- * @extends module:utils/collection~Collection
  */
-export default class DocumentColorCollection extends Collection {
-	constructor( options ) {
+export default class DocumentColorCollection extends ObservableMixin( Collection<ColorDefinition> ) {
+	/**
+	 * Indicates whether the document color collection is empty.
+	 *
+	 * @observable
+	 */
+	declare public readonly isEmpty: boolean;
+
+	constructor( options?: any ) {
 		super( options );
 
-		/**
-		 * Indicates whether the document color collection is empty.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #isEmpty
-		 */
 		this.set( 'isEmpty', true );
 
 		this.on( 'change', () => {
@@ -41,31 +39,24 @@ export default class DocumentColorCollection extends Collection {
 	 *
 	 * If the item does not have an ID, it will be automatically generated and set on the item.
 	 *
-	 * @chainable
-	 * @param {module:ui/colorgrid/colorgrid~ColorDefinition} item
-	 * @param {Number} [index] The position of the item in the collection. The item
-	 * is pushed to the collection when `index` is not specified.
+	 * @param index The position of the item in the collection. The item is pushed to the collection when `index` is not specified.
 	 * @fires add
 	 * @fires change
 	 */
-	add( item, index ) {
+	public override add( item: ColorDefinition, index?: number ): this {
 		if ( this.find( element => element.color === item.color ) ) {
 			// No duplicates are allowed.
-			return;
+			return this;
 		}
 
 		super.add( item, index );
+		return this;
 	}
 
 	/**
 	 * Checks if an object with given colors is present in the document color collection.
-	 *
-	 * @param {String} color
-	 * @returns {Boolean}
 	 */
-	hasColor( color ) {
+	public hasColor( color: string ): boolean {
 		return !!this.find( item => item.color === color );
 	}
 }
-
-mix( DocumentColorCollection, ObservableMixin );
