@@ -229,7 +229,7 @@ msgstr "Alinear a la izquierda"
 ```
 
 <info-box warning>
-	Note that by default, the [CKEditor 5 webpack plugin](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-webpack-plugin) is configured to parse only the CKEditor 5 source code when looking for *localizable messages* and generating *translation assets*.
+	Note that by default, the [CKEditor 5 translations plugin](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations) is configured to parse only the CKEditor 5 source code when looking for *localizable messages* and generating *translation assets*.
 
 	If you develop your own plugin outside the CKEditor 5 ecosystem and localize it by creating *PO files*, you should override both the `sourceFilesPattern` and the `packageNamePattern` options to allow the CKEditor 5 webpack plugin to analyze the code and find *messages* with corresponding translations. You should also mention these webpack plugin changes in your package README to make other users build the localized CKEditor 5 editor with your plugin correctly. This obstacle may be simplified in the future when the localization feature gets more popular.
 </info-box>

@@ -117,7 +117,7 @@ function checkPackage( fullPackageName, testArgs = [] ) {
 
 	runSubprocess( {
 		binaryName: 'npx',
-		cliArguments: [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ],
+		cliArguments: [ 'ckeditor5-dev-dependency-checker', `packages/${ fullPackageName }` ],
 		packageName: simplePackageName,
 		checkName: 'dependency',
 		failMessage: 'have a dependency problem'

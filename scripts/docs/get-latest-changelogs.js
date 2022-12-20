@@ -8,7 +8,7 @@
 'use strict';
 
 const path = require( 'path' );
-const { getChangesForVersion, getChangelog } = require( '@ckeditor/ckeditor5-dev-env/lib/release-tools/utils/changelog' );
+const { getChangesForVersion, getChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 const VERSIONS_TO_PRINT = 3;
