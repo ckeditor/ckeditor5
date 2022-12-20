@@ -16,7 +16,6 @@ import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions, ty
 /**
  * The alignment editing feature. It introduces the {@link module:alignment/alignmentcommand~AlignmentCommand command} and adds
  * the `alignment` attribute for block elements in the {@link module:engine/model/model~Model model}.
- * @extends module:core/plugin~Plugin
  */
 export default class AlignmentEditing extends Plugin {
 	/**

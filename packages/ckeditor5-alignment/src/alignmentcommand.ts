@@ -17,8 +17,6 @@ const ALIGNMENT = 'alignment';
 
 /**
  * The alignment command plugin.
- *
- * @extends module:core/command~Command
  */
 export default class AlignmentCommand extends Command {
 	/**

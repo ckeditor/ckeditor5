@@ -20,8 +20,6 @@ import AlignmentUI from './alignmentui';
  *
  * This is a "glue" plugin which loads the {@link module:alignment/alignmentediting~AlignmentEditing} and
  * {@link module:alignment/alignmentui~AlignmentUI} plugins.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Alignment extends Plugin {
 	/**

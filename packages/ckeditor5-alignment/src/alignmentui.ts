@@ -24,8 +24,6 @@ const iconsMap = new Map( [
  *
  * It introduces the `'alignment:left'`, `'alignment:right'`, `'alignment:center'` and `'alignment:justify'` buttons
  * and the `'alignment'` dropdown.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class AlignmentUI extends Plugin {
 	declare public editor: Editor;
