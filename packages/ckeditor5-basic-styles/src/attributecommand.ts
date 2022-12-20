@@ -18,8 +18,6 @@ import { Command, type Editor } from 'ckeditor5/src/core';
  *
  * The command checks the {@link module:engine/model/model~Model#schema} to decide if it can be enabled
  * for the current selection and to which nodes the attribute can be applied.
- *
- * @extends module:core/command~Command
  */
 export default class AttributeCommand extends Command {
 	/**

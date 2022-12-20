@@ -17,8 +17,6 @@ const SUBSCRIPT = 'subscript';
  *
  * It registers the `sub` command and introduces the `sub` attribute in the model which renders to the view
  * as a `<sub>` element.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SubscriptEditing extends Plugin {
 	/**

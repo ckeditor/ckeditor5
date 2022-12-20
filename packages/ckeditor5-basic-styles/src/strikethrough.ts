@@ -19,8 +19,6 @@ import StrikethroughUI from './strikethrough/strikethroughui';
  *
  * This is a "glue" plugin which loads the {@link module:basic-styles/strikethrough/strikethroughediting~StrikethroughEditing} and
  * {@link module:basic-styles/strikethrough/strikethroughui~StrikethroughUI} plugins.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Strikethrough extends Plugin {
 	/**

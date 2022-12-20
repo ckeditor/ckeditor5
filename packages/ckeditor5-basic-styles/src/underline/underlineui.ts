@@ -16,8 +16,6 @@ const UNDERLINE = 'underline';
 
 /**
  * The underline UI feature. It introduces the Underline button.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class UnderlineUI extends Plugin {
 	/**

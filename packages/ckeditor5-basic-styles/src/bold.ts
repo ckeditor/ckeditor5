@@ -19,8 +19,6 @@ import BoldUI from './bold/boldui';
  *
  * This is a "glue" plugin which loads the {@link module:basic-styles/bold/boldediting~BoldEditing bold editing feature}
  * and {@link module:basic-styles/bold/boldui~BoldUI bold UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Bold extends Plugin {
 	/**

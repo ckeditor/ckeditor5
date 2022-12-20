@@ -14,8 +14,6 @@ const BOLD = 'bold';
 
 /**
  * The bold UI feature. It introduces the Bold button.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class BoldUI extends Plugin {
 	/**

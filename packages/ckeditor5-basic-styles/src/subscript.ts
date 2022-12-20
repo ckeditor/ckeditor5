@@ -16,8 +16,6 @@ import SubscriptUI from './subscript/subscriptui';
  *
  * It loads the {@link module:basic-styles/subscript/subscriptediting~SubscriptEditing} and
  * {@link module:basic-styles/subscript/subscriptui~SubscriptUI} plugins.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Subscript extends Plugin {
 	/**

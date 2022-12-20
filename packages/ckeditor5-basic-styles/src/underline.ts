@@ -19,8 +19,6 @@ import UnderlineUI from './underline/underlineui';
  *
  * This is a "glue" plugin which loads the {@link module:basic-styles/underline/underlineediting~UnderlineEditing} and
  * {@link module:basic-styles/underline/underlineui~UnderlineUI} plugins.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Underline extends Plugin {
 	/**

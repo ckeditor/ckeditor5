@@ -17,8 +17,6 @@ const UNDERLINE = 'underline';
  *
  * It registers the `'underline'` command, the <kbd>Ctrl+U</kbd> keystroke
  * and introduces the `underline` attribute in the model which renders to the view as an `<u>` element.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class UnderlineEditing extends Plugin {
 	/**

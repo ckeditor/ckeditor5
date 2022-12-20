@@ -16,8 +16,6 @@ const SUPERSCRIPT = 'superscript';
 
 /**
  * The superscript UI feature. It introduces the Superscript button.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SuperscriptUI extends Plugin {
 	/**

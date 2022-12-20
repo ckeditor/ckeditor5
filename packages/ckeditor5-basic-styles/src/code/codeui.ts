@@ -18,8 +18,6 @@ const CODE = 'code';
 
 /**
  * The code UI feature. It introduces the Code button.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class CodeUI extends Plugin {
 	/**

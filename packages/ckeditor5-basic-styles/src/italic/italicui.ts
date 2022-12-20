@@ -16,8 +16,6 @@ const ITALIC = 'italic';
 
 /**
  * The italic UI feature. It introduces the Italic button.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ItalicUI extends Plugin {
 	/**

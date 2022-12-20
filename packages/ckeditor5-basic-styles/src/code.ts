@@ -21,8 +21,6 @@ import '../theme/code.css';
  *
  * This is a "glue" plugin which loads the {@link module:basic-styles/code/codeediting~CodeEditing code editing feature}
  * and {@link module:basic-styles/code/codeui~CodeUI code UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Code extends Plugin {
 	/**

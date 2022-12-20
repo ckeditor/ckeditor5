@@ -19,8 +19,6 @@ import ItalicUI from './italic/italicui';
  *
  * This is a "glue" plugin which loads the {@link module:basic-styles/italic/italicediting~ItalicEditing} and
  * {@link module:basic-styles/italic/italicui~ItalicUI} plugins.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Italic extends Plugin {
 	/**

@@ -16,8 +16,6 @@ const STRIKETHROUGH = 'strikethrough';
 
 /**
  * The strikethrough UI feature. It introduces the Strikethrough button.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class StrikethroughUI extends Plugin {
 	/**

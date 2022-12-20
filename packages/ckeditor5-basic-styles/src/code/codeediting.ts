@@ -20,8 +20,6 @@ const HIGHLIGHT_CLASS = 'ck-code_selected';
  *
  * It registers the `'code'` command and introduces the `code` attribute in the model which renders to the view
  * as a `<code>` element.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class CodeEditing extends Plugin {
 	/**

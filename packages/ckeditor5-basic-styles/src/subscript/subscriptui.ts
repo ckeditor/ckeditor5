@@ -16,8 +16,6 @@ const SUBSCRIPT = 'subscript';
 
 /**
  * The subscript UI feature. It introduces the Subscript button.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SubscriptUI extends Plugin {
 	/**

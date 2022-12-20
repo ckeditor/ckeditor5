@@ -17,8 +17,6 @@ const SUPERSCRIPT = 'superscript';
  *
  * It registers the `super` command and introduces the `super` attribute in the model which renders to the view
  * as a `<super>` element.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SuperscriptEditing extends Plugin {
 	/**

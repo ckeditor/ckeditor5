@@ -16,8 +16,6 @@ import SuperscriptUI from './superscript/superscriptui';
  *
  * It loads the {@link module:basic-styles/superscript/superscriptediting~SuperscriptEditing} and
  * {@link module:basic-styles/superscript/superscriptui~SuperscriptUI} plugins.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Superscript extends Plugin {
 	/**
