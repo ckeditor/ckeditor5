@@ -10,7 +10,7 @@ We are happy to announce the release of CKEditor 5 v35.4.0.
 * Allow list indexing to start from `0`.
 * Added track changes integration for lists, document list properties, and table resize features.
 * Introduced the `trackChanges.trackFormatChanges` configuration property which can be used to disable tracking of format changes.
-* Added an option for dynamic filenames in the editor’s configuration for PDF/Word export.
+* Added an option for dynamic filenames in the editor’s configuration for PDF and Word export.
 * More editor packages migrated to TypeScript.
 
 <!-- TODO: Add a link to the blog post. -->
