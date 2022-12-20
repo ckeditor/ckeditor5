@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals document */
+
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import CodeBlock from '../../src/codeblock';
@@ -20,28 +21,54 @@ import {
 
 describe( 'codeblock caption utils', () => {
 	let editor, model, modelRoot;
-	let view, document;
+	let element;
 
 	beforeEach( async () => {
-		view = new View();
-		document = view.document;
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
 
-		editor = await VirtualTestEditor.create( {
-			plugins: [ CodeBlock, CodeblockCaption, Paragraph ]
-		} );
+		return ClassicTestEditor
+			.create( element, {
+				language: 'en',
+				plugins: [
+					CodeBlock,
+					CodeblockCaption,
+					Paragraph
+				]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				modelRoot = model.document.getRoot();
+				setModelData( model,
+					'<codeBlock language="plaintext">' +
+						'Code snippet goes here[]' +
+						'<caption>codeblock caption</caption>' +
+					'</codeBlock>' +
+					'<paragraph>' +
+						'Paragraph data is here' +
+					'</paragraph>'
+				);
+			} );
+		// view = new View();
+		// document = view.document;
 
-		model = editor.model;
-		modelRoot = model.document.getRoot();
+		// editor = await VirtualTestEditor.create( {
+		// 	plugins: [ CodeBlock, CodeblockCaption, Paragraph ]
+		// } );
 
-		setModelData( model,
-			'<codeBlock language="plaintext">' +
-				'Code snippet goes here[]' +
-				'<caption>codeblock caption</caption>' +
-			'</codeBlock>' +
-			'<paragraph>' +
-				'Paragraph data is here' +
-			'</paragraph>'
-		);
+		// model = editor.model;
+		// modelRoot = model.document.getRoot();
+
+		// setModelData( model,
+		// 	'<codeBlock language="plaintext">' +
+		// 		'Code snippet goes here[]' +
+		// 		'<caption>codeblock caption</caption>' +
+		// 	'</codeBlock>' +
+		// 	'<paragraph>' +
+		// 		'Paragraph data is here' +
+		// 	'</paragraph>'
+		// );
 	} );
 
 	afterEach( async () => {
