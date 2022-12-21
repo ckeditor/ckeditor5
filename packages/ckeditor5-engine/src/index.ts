@@ -15,10 +15,33 @@ export { default as DataController, type DataControllerSetEvent } from './contro
 
 // Conversion.
 export { default as Conversion } from './conversion/conversion';
-export type { DowncastInsertEvent, DowncastSelectionEvent } from './conversion/downcastdispatcher';
-export type { UpcastElementEvent, UpcastTextEvent } from './conversion/upcastdispatcher';
-export type { AddHighlightCallback, HighlightDescriptor, RemoveHighlightCallback } from './conversion/downcasthelpers';
-export type { MapperViewToModelPositionEvent } from './conversion/mapper';
+export type {
+	default as DowncastDispatcher,
+	DowncastAttributeEvent,
+	DowncastConversionApi,
+	DowncastInsertEvent,
+	DowncastRemoveEvent,
+	DowncastSelectionEvent
+} from './conversion/downcastdispatcher';
+export type {
+	default as UpcastDispatcher,
+	UpcastElementEvent,
+	UpcastTextEvent,
+	UpcastConversionApi
+} from './conversion/upcastdispatcher';
+export type {
+	AddHighlightCallback,
+	ElementCreatorFunction,
+	HighlightDescriptor,
+	RemoveHighlightCallback
+} from './conversion/downcasthelpers';
+export type {
+	default as Mapper,
+	MapperModelToViewPositionEvent,
+	MapperViewToModelPositionEvent
+} from './conversion/mapper';
+export type { default as ModelConsumable } from './conversion/modelconsumable';
+export type { Consumables } from './conversion/viewconsumable';
 
 // DataProcessor.
 export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor';
@@ -28,6 +51,8 @@ export type { default as Operation } from './model/operation/operation';
 export { default as InsertOperation } from './model/operation/insertoperation';
 export { default as MarkerOperation } from './model/operation/markeroperation';
 export { default as OperationFactory } from './model/operation/operationfactory';
+export type { default as AttributeOperation } from './model/operation/attributeoperation';
+export type { default as RenameOperation } from './model/operation/renameoperation';
 export { transformSets } from './model/operation/transform';
 
 // Model.
@@ -43,6 +68,7 @@ export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
 export type { default as Batch } from './model/batch';
+export type { DiffItem } from './model/differ';
 export type { default as Item } from './model/item';
 export type { default as Node } from './model/node';
 export type { default as Schema } from './model/schema';
@@ -83,6 +109,7 @@ export { default as ViewDocumentFragment } from './view/documentfragment';
 export type { default as ViewItem } from './view/item';
 export type { default as ViewNode } from './view/node';
 export type { default as ViewDocumentSelection } from './view/documentselection';
+export type { default as ViewPosition } from './view/position';
 export type { default as ViewRange } from './view/range';
 export type { default as ViewSelection, ViewSelectionChangeEvent } from './view/selection';
 export type { default as ViewTypeCheckable } from './view/typecheckable';
@@ -94,6 +121,7 @@ export { default as Observer } from './view/observer/observer';
 export { default as ClickObserver } from './view/observer/clickobserver';
 export { default as DomEventObserver } from './view/observer/domeventobserver';
 export { default as MouseObserver } from './view/observer/mouseobserver';
+export { default as TabObserver } from './view/observer/tabobserver';
 
 export { default as DowncastWriter } from './view/downcastwriter';
 export { default as UpcastWriter } from './view/upcastwriter';
@@ -107,10 +135,10 @@ export type { BubblingEvent } from './view/observer/bubblingemittermixin';
 export type { ViewDocumentArrowKeyEvent } from './view/observer/arrowkeysobserver';
 export type { ViewDocumentCompositionEvent } from './view/observer/compositionobserver';
 export type { ViewDocumentInputEvent } from './view/observer/inputobserver';
-export type { ViewDocumentTabEvent } from './view/observer/tabobserver';
 export type { ViewDocumentKeyEvent } from './view/observer/keyobserver';
 export type { ViewDocumentLayoutChangedEvent } from './view/document';
 export type { ViewDocumentMouseEvent } from './view/observer/mouseobserver';
+export type { ViewDocumentTabEvent } from './view/observer/tabobserver';
 
 // View / Styles.
 export { StylesProcessor } from './view/stylesmap';

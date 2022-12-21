@@ -163,7 +163,7 @@ export default class UpcastWriter {
 	 * @param {module:engine/view/element~Element} element Element which will be removed.
 	 * @returns {Array.<module:engine/view/node~Node>} The array containing removed nodes.
 	 */
-	public remove( element: Element ): Array<Node> {
+	public remove( element: Node ): Array<Node> {
 		const parent = element.parent;
 
 		if ( parent ) {
