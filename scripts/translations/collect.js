@@ -5,7 +5,7 @@
 
 /* eslint-env node */
 
-const { createPotFiles } = require( '@ckeditor/ckeditor5-dev-env' );
+const { createPotFiles } = require( '@ckeditor/ckeditor5-dev-transifex' );
 const {
 	TRANSLATION_DIRECTORY_PATH,
 	parseArguments,
