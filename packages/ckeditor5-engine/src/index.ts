@@ -24,8 +24,9 @@ export type {
 	DowncastSelectionEvent
 } from './conversion/downcastdispatcher';
 export type {
+	default as UpcastDispatcher,
 	UpcastElementEvent,
-	UpcastTextEvent
+	UpcastConversionApi
 } from './conversion/upcastdispatcher';
 export type {
 	AddHighlightCallback,
@@ -38,11 +39,6 @@ export type {
 	MapperModelToViewPositionEvent,
 	MapperViewToModelPositionEvent
 } from './conversion/mapper';
-export type {
-	default as UpcastDispatcher,
-	UpcastElementEvent,
-	UpcastConversionApi
-} from './conversion/upcastdispatcher';
 export type { default as ModelConsumable } from './conversion/modelconsumable';
 export type { Consumables } from './conversion/viewconsumable';
 
@@ -138,7 +134,6 @@ export type { BubblingEvent } from './view/observer/bubblingemittermixin';
 export type { ViewDocumentArrowKeyEvent } from './view/observer/arrowkeysobserver';
 export type { ViewDocumentCompositionEvent } from './view/observer/compositionobserver';
 export type { ViewDocumentInputEvent } from './view/observer/inputobserver';
-export type { ViewDocumentTabEvent } from './view/observer/tabobserver';
 export type { ViewDocumentKeyEvent } from './view/observer/keyobserver';
 export type { ViewDocumentLayoutChangedEvent } from './view/document';
 export type { ViewDocumentMouseEvent } from './view/observer/mouseobserver';
