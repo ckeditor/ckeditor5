@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard';
-import type { ParseHtmlResult } from './filters/parse';
-
 /**
  * @module paste-from-office/normalizer
  */
+ 
+import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard';
+import type { ParseHtmlResult } from './filters/parse';
 
 /**
  * Interface defining a content transformation pasted from an external editor.
