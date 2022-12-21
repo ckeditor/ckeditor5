@@ -7,7 +7,7 @@
  * @module horizontal-line/horizontalline
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { Widget } from 'ckeditor5/src/widget';
 import HorizontalLineEditing from './horizontallineediting';
 import HorizontalLineUI from './horizontallineui';
@@ -18,21 +18,26 @@ import HorizontalLineUI from './horizontallineui';
  * It provides the possibility to insert a horizontal line into the rich-text editor.
  *
  * For a detailed overview, check the {@glink features/horizontal-line Horizontal line feature} documentation.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HorizontalLine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ HorizontalLineEditing, HorizontalLineUI, Widget ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'HorizontalLine' {
 		return 'HorizontalLine';
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ HorizontalLine.pluginName ]: HorizontalLine;
+	}
+}
+

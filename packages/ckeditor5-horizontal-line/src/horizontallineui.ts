@@ -14,27 +14,25 @@ import horizontalLineIcon from '../theme/icons/horizontalline.svg';
 
 /**
  * The horizontal line UI plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HorizontalLineUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'HorizontalLineUI' {
 		return 'HorizontalLineUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		// Add the `horizontalLine` button to feature components.
 		editor.ui.componentFactory.add( 'horizontalLine', locale => {
-			const command = editor.commands.get( 'horizontalLine' );
+			const command = editor.commands.get( 'horizontalLine' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -53,5 +51,11 @@ export default class HorizontalLineUI extends Plugin {
 
 			return view;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ HorizontalLineUI.pluginName ]: HorizontalLineUI;
 	}
 }

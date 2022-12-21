@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { toWidget } from 'ckeditor5/src/widget';
+import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
 
 import HorizontalLineCommand from './horizontallinecommand';
 
@@ -16,21 +17,19 @@ import '../theme/horizontalline.css';
 
 /**
  * The horizontal line editing feature.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HorizontalLineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'HorizontalLineEditing' {
 		return 'HorizontalLineEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const t = editor.t;
@@ -69,17 +68,25 @@ export default class HorizontalLineEditing extends Plugin {
 	}
 }
 
-// Converts a given {@link module:engine/view/element~Element} to a horizontal line widget:
-// * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to
-//   recognize the horizontal line widget element.
-// * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
-//
-//  @param {module:engine/view/element~Element} viewElement
-//  @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
-//  @param {String} label The element's label.
-//  @returns {module:engine/view/element~Element}
-function toHorizontalLineWidget( viewElement, writer, label ) {
+/**
+ * Converts a given {@link module:engine/view/element~Element} to a horizontal line widget:
+ * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to
+ *   recognize the horizontal line widget element.
+ * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
+ *
+ * @param writer An instance of the view writer.
+ */
+function toHorizontalLineWidget( viewElement: ViewElement, writer: DowncastWriter, label: string ): ViewElement {
 	writer.setCustomProperty( 'horizontalLine', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ HorizontalLineEditing.pluginName ]: HorizontalLineEditing;
+	}
+	interface CommandsMap {
+		horizontalLine: HorizontalLineCommand;
+	}
 }
