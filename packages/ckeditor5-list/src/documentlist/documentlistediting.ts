@@ -515,6 +515,9 @@ export default class DocumentListEditing extends Plugin {
 	}
 }
 
+/**
+ * The downcast strategy.
+ */
 export interface DowncastStrategy {
 
 	/**
