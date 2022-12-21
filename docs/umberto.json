@@ -124,6 +124,9 @@
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
 		"framework/guides/plugins/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin-timestamp.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1.html": "framework/guides/plugins/abbreviation-plugin/abbreviation-plugin-level-1.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-2.html": "framework/guides/plugins/abbreviation-plugin/abbreviation-plugin-level-2.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-3.html": "framework/guides/plugins/abbreviation-plugin/abbreviation-plugin-level-3.html",
 		"builds/index.html": "installation/index.html",
 		"builds/guides/migrate.html": "updating/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-to-25.0.0.html": "updating/guides/update-to-25.html",
@@ -449,9 +452,9 @@
 							"order": 200,
 							"categories": [
 								{
-									"name": "Creating a simple plugin",
-									"id": "simple-plugin",
-									"slug": "simple-plugin",
+									"name": "Creating an abbreviation plugin",
+									"id": "abbreviation-plugin",
+									"slug": "abbreviation-plugin",
 									"order": 20
 								},
 								{
