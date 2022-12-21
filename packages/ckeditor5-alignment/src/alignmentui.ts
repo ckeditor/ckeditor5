@@ -7,10 +7,11 @@
  * @module alignment/alignmentui
  */
 
-import { Plugin, icons, type Editor } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
-import { isSupported, normalizeAlignmentOptions, type SupportedOptions } from './utils';
+import { isSupported, normalizeAlignmentOptions } from './utils';
+import type { SupportedOption } from './alignmentediting';
 
 const iconsMap = new Map( [
 	[ 'left', icons.alignLeft ],
@@ -26,8 +27,6 @@ const iconsMap = new Map( [
  * and the `'alignment'` dropdown.
  */
 export default class AlignmentUI extends Plugin {
-	declare public editor: Editor;
-
 	/**
 	 * Returns the localized option titles provided by the plugin.
 	 *
@@ -41,7 +40,7 @@ export default class AlignmentUI extends Plugin {
 	 *
 	 * @readonly
 	 */
-	public get localizedOptionTitles(): Record<SupportedOptions, string> {
+	public get localizedOptionTitles(): Record<SupportedOption, string> {
 		const t = this.editor.t;
 
 		return {
@@ -130,7 +129,7 @@ export default class AlignmentUI extends Plugin {
 	 *
 	 * @param option The name of the alignment option for which the button is added.
 	 */
-	private _addButton( option: SupportedOptions ): void {
+	private _addButton( option: SupportedOption ): void {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( `alignment:${ option }`, locale => {

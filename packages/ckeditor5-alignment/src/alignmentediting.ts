@@ -11,7 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { AttributeDescriptor } from 'ckeditor5/src/engine';
 
 import AlignmentCommand from './alignmentcommand';
-import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions, type SupportedOptions } from './utils';
+import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils';
 
 /**
  * The alignment editing feature. It introduces the {@link module:alignment/alignmentcommand~AlignmentCommand command} and adds
@@ -87,7 +87,7 @@ export default class AlignmentEditing extends Plugin {
  * Prepare downcast conversion definition for inline alignment styling.
  */
 function buildDowncastInlineDefinition( options: Array<AlignmentFormat> ) {
-	const view: Record<string, { key: 'style'; value: { 'text-align': SupportedOptions } }> = {};
+	const view: Record<string, { key: 'style'; value: { 'text-align': SupportedOption } }> = {};
 
 	for ( const { name } of options ) {
 		view[ name ] = {
@@ -182,19 +182,21 @@ function buildClassDefinition( options: Array<AlignmentFormat> ) {
 /**
  * The configuration of the {@link module:alignment/alignment~Alignment alignment feature}.
  *
- *		ClassicEditor
- *			.create( editorElement, {
- *				alignment: {
- *					options: [ 'left', 'right' ]
- *				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ```ts
+ * ClassicEditor
+ *   .create( editorElement, {
+ *     alignment: {
+ *       options: [ 'left', 'right' ]
+ *     }
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  */
 export type AlignmentConfig = {
-	options?: Array<string | AlignmentFormat>;
+	options?: Array<SupportedOption | AlignmentFormat>;
 };
 
 /**
@@ -206,7 +208,7 @@ export type AlignmentConfig = {
  * normally be able to choose depending on the
  * {@glink features/ui-language#setting-the-language-of-the-content language of the editor content}.
  *
- * ```js
+ * ```ts
  * ClassicEditor
  *   .create( editorElement, {
  *     alignment: {
@@ -222,7 +224,7 @@ export type AlignmentConfig = {
  *
  * **Note:** Once you define the `className` property for one option, you need to specify it for all other options.
  *
- * ```js
+ * ```ts
  * ClassicEditor
  *   .create( editorElement, {
  *     alignment: {
@@ -239,9 +241,11 @@ export type AlignmentConfig = {
  * See the demo of {@glink features/text-alignment#configuring-alignment-options custom alignment options}.
  */
 export type AlignmentFormat = {
-	name: SupportedOptions;
+	name: SupportedOption;
 	className?: string;
 };
+
+export type SupportedOption = 'left' | 'right' | 'center' | 'justify';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {

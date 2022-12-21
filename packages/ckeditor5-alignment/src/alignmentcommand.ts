@@ -11,7 +11,8 @@ import { Command } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 import type { Element, Writer } from 'ckeditor5/src/engine';
 
-import { isDefault, type SupportedOptions } from './utils';
+import { isDefault } from './utils';
+import type { SupportedOption } from './alignmentediting';
 
 const ALIGNMENT = 'alignment';
 
@@ -25,7 +26,7 @@ export default class AlignmentCommand extends Command {
 	 * @observable
 	 * @readonly
 	 */
-	declare public value: SupportedOptions;
+	declare public value: SupportedOption;
 
 	/**
 	 * @inheritDoc
@@ -39,7 +40,7 @@ export default class AlignmentCommand extends Command {
 		this.isEnabled = Boolean( firstBlock ) && this._canBeAligned( firstBlock );
 
 		if ( this.isEnabled && firstBlock.hasAttribute( 'alignment' ) ) {
-			this.value = firstBlock.getAttribute( 'alignment' ) as SupportedOptions;
+			this.value = firstBlock.getAttribute( 'alignment' ) as SupportedOption;
 		} else {
 			this.value = locale.contentLanguageDirection === 'rtl' ? 'right' : 'left';
 		}
@@ -54,7 +55,7 @@ export default class AlignmentCommand extends Command {
 	 * @param options.value The value to apply.
 	 * @fires execute
 	 */
-	public override execute( options: { value?: SupportedOptions } = {} ): void {
+	public override execute( options: { value?: SupportedOption } = {} ): void {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const model = editor.model;

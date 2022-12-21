@@ -4,7 +4,7 @@
  */
 
 import { CKEditorError, logWarning, type Locale } from 'ckeditor5/src/utils';
-import type { AlignmentFormat } from './alignmentediting';
+import type { AlignmentFormat, SupportedOption } from './alignmentediting';
 
 /**
  * @module alignment/utils
@@ -18,9 +18,7 @@ import type { AlignmentFormat } from './alignmentediting';
  * * `'center'`,
  * * `'justify'`
  */
-export const supportedOptions: Array<SupportedOptions> = [ 'left', 'right', 'center', 'justify' ];
-
-export type SupportedOptions = 'left' | 'right' | 'center' | 'justify';
+export const supportedOptions: ReadonlyArray<SupportedOption> = [ 'left', 'right', 'center', 'justify' ];
 
 /**
  * Checks whether the passed option is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
