@@ -13,7 +13,7 @@ We are happy to announce the release of CKEditor 5 v35.4.0.
 * Added an option for dynamic filenames in the editor’s configuration for PDF/Word export.
 * More editor packages migrated to TypeScript.
 
-<!-- TODO: Add a link to the blog post. -->
+Read about release highlights in a dedicated blog post: https://ckeditor.com/blog/ckeditor-5-v35.4.0-with-track-changes-expansions--and-better-control-over-the-pdf-and-word-converters/
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
