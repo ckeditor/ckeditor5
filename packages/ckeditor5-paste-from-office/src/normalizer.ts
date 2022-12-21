@@ -6,7 +6,7 @@
 /**
  * @module paste-from-office/normalizer
  */
- 
+
 import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard';
 import type { ParseHtmlResult } from './filters/parse';
 
