@@ -26,6 +26,7 @@ export type {
 export type {
 	default as UpcastDispatcher,
 	UpcastElementEvent,
+	UpcastTextEvent,
 	UpcastConversionApi
 } from './conversion/upcastdispatcher';
 export type {
