@@ -163,7 +163,7 @@ export default class UpcastWriter {
 	 * @param {module:engine/view/element~Element} element Element which will be removed.
 	 * @returns {Array.<module:engine/view/node~Node>} The array containing removed nodes.
 	 */
-	public remove( element: Element ): Array<Node> {
+	public remove( element: Node ): Array<Node> {
 		const parent = element.parent;
 
 		if ( parent ) {
@@ -239,7 +239,7 @@ export default class UpcastWriter {
 	 * @param {String} value Attribute value.
 	 * @param {module:engine/view/element~Element} element Element for which attribute will be set.
 	 */
-	public setAttribute( key: string, value: string, element: Element ): void {
+	public setAttribute( key: string, value: unknown, element: Element ): void {
 		element._setAttribute( key, value );
 	}
 
@@ -427,7 +427,7 @@ export default class UpcastWriter {
 	 * @param {module:engine/view/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/view/range~Range}
 	 */
-	public createRangeIn( element: Element ): Range {
+	public createRangeIn( element: Element | DocumentFragment ): Range {
 		return Range._createIn( element );
 	}
 
