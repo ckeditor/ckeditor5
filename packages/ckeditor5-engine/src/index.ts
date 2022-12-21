@@ -25,12 +25,13 @@ export type {
 } from './conversion/downcastdispatcher';
 export type {
 	default as UpcastDispatcher,
+	UpcastConversionApi,
 	UpcastElementEvent,
-	UpcastTextEvent,
-	UpcastConversionApi
+	UpcastTextEvent
 } from './conversion/upcastdispatcher';
 export type {
 	AddHighlightCallback,
+	AttributeDescriptor,
 	ElementCreatorFunction,
 	HighlightDescriptor,
 	RemoveHighlightCallback
