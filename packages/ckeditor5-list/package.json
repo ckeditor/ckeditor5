@@ -10,7 +10,7 @@
     "ckeditor5-plugin",
     "ckeditor5-dll"
   ],
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "dependencies": {
     "ckeditor5": "^35.4.0",
     "@ckeditor/ckeditor5-ui": "^35.4.0"
@@ -50,6 +50,7 @@
     "@ckeditor/ckeditor5-undo": "^35.4.0",
     "@ckeditor/ckeditor5-utils": "^35.4.0",
     "@ckeditor/ckeditor5-widget": "^35.4.0",
+    "typescript": "^4.8.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },
@@ -68,13 +69,16 @@
   },
   "files": [
     "lang",
-    "src",
+    "src/**/*.js",
+    "src/**/*.d.ts",
     "theme",
     "build",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
   "scripts": {
-    "dll:build": "webpack"
+    "dll:build": "webpack",
+    "build": "tsc -p ./tsconfig.release.json",
+    "postversion": "npm run build"
   }
 }
