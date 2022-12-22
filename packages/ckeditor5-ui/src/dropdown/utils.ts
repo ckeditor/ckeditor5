@@ -278,12 +278,15 @@ function addToolbarToOpenDropdown(
  */
 export function addListToDropdown(
 	dropdownView: DropdownView,
-	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> )
+	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> ),
+	options: {
+		ariaLabel?: string;
+	} = {}
 ): void {
 	if ( dropdownView.isOpen ) {
-		addListToOpenDropdown( dropdownView, itemsOrCallback );
+		addListToOpenDropdown( dropdownView, itemsOrCallback, options );
 	} else {
-		dropdownView.once( 'change:isOpen', () => addListToOpenDropdown( dropdownView, itemsOrCallback ) );
+		dropdownView.once( 'change:isOpen', () => addListToOpenDropdown( dropdownView, itemsOrCallback, options ) );
 	}
 }
 
@@ -292,12 +295,17 @@ export function addListToDropdown(
  */
 function addListToOpenDropdown(
 	dropdownView: DropdownView,
-	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> )
+	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> ),
+	options: {
+		ariaLabel?: string;
+	} = {}
 ): void {
 	const locale = dropdownView.locale;
 
 	const listView = dropdownView.listView = new ListView( locale );
 	const items = typeof itemsOrCallback == 'function' ? itemsOrCallback() : itemsOrCallback;
+
+	listView.ariaLabel = options.ariaLabel;
 
 	listView.items.bindTo( items ).using( def => {
 		if ( def.type === 'separator' ) {

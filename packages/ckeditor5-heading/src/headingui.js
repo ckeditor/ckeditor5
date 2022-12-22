@@ -77,7 +77,6 @@ export default class HeadingUI extends Plugin {
 			}
 
 			const dropdownView = createDropdown( locale );
-
 			addListToDropdown( dropdownView, itemDefinitions );
 
 			dropdownView.buttonView.set( {

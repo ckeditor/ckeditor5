@@ -62,7 +62,7 @@ export default class MediaEmbedUI extends Plugin {
 		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
 		dropdown.once( 'change:isOpen', () => {
-			const form = dropdown.formView = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
+			const form = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
 
 			dropdown.panelView.children.add( form );
 

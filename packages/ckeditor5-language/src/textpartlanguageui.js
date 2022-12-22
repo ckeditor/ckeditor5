@@ -82,7 +82,6 @@ export default class TextPartLanguageUI extends Plugin {
 			}
 
 			const dropdownView = createDropdown( locale );
-
 			addListToDropdown( dropdownView, itemDefinitions );
 
 			dropdownView.buttonView.set( {

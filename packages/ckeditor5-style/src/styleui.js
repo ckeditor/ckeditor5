@@ -46,7 +46,7 @@ export default class StyleUI extends Plugin {
 			const styleCommand = editor.commands.get( 'style' );
 
 			dropdown.once( 'change:isOpen', () => {
-				const panelView = this.panelView = new StylePanelView( locale, normalizedStyleDefinitions );
+				const panelView = new StylePanelView( locale, normalizedStyleDefinitions );
 
 				// Put the styles panel is the dropdown.
 				dropdown.panelView.children.add( panelView );
