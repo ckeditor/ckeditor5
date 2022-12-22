@@ -81,11 +81,16 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-comments": ">=28.0.0",
-    "@ckeditor/ckeditor5-dev-docs": "^31.0.0",
-    "@ckeditor/ckeditor5-dev-env": "^31.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "^31.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^31.0.0",
-    "@ckeditor/ckeditor5-dev-webpack-plugin": "^31.0.0",
+    "@ckeditor/ckeditor5-dev-bump-year": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-ci": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-dependency-checker": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-docs": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-release-tools": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-transifex": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-translations": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-web-crawler": "^32.0.0",
     "@ckeditor/ckeditor5-export-pdf": ">=1.0.0",
     "@ckeditor/ckeditor5-export-word": ">=1.0.0",
     "@ckeditor/ckeditor5-import-word": ">=1.0.0",
@@ -127,7 +132,7 @@
     "svgo": "^2.2.2",
     "terser-webpack-plugin": "^4.2.3",
     "ts-loader": "^9.3.0",
-    "umberto": "^2.1.8",
+    "umberto": "^2.2.0",
     "upath": "^2.0.0",
     "wait-on": "^6.0.1",
     "webpack": "^5.58.1",
@@ -152,8 +157,8 @@
     "postinstall": "node ./scripts/postinstall.js",
     "lint": "eslint --quiet \"**/*.{js,ts}\" --format ./scripts/eslint-formatter.js",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
-    "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test.js",
-    "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test-manual.js",
+    "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testautomated.js",
+    "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js",
     "manual:verify": "node ./scripts/web-crawler/index.js --manual",
     "bootstrap": "yarn install",
     "clean": "npx rimraf package-lock.json yarn.lock ./**/node_modules",
@@ -177,7 +182,7 @@
     "release:publish": "node ./scripts/release/publish.js",
     "release:clean": "node ./scripts/release/clean.js",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
-    "check-dependencies": "ckeditor5-dev-tests-check-dependencies"
+    "check-dependencies": "ckeditor5-dev-dependency-checker"
   },
   "lint-staged": {
     "**/*.{js,ts}": [
@@ -187,7 +192,7 @@
       "stylelint --quiet --allow-empty-input"
     ],
     "**/(*.{js,ts,css}|package.json)": [
-      "ckeditor5-dev-tests-check-dependencies --quiet"
+      "ckeditor5-dev-dependency-checker --quiet"
     ]
   },
   "eslintIgnore": [

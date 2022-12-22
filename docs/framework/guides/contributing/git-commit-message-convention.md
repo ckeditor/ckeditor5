@@ -226,7 +226,7 @@ As a reviewer, remember that the message will end up in the changelog and must b
 
 When closing a PR, remember to copy the source of the message to the textarea with the merge commit message:
 
-{@img assets/img/closing-a-pr.gif Screencast how to copy a source version of the suggested commit message when closing a PR.}
+{@img assets/img/closing-a-pr.gif 998 Screencast how to copy a source version of the suggested commit message when closing a PR.}
 
 ### Giving credit
 

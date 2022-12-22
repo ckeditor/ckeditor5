@@ -318,13 +318,15 @@ export default class ClipboardPipeline extends Plugin {
  */
 export type ClipboardInputTransformationEvent = {
 	name: 'inputTransformation';
-	args: [ data: {
-		content: ViewDocumentFragment;
-		dataTransfer: DataTransfer;
-		method: 'paste' | 'drop';
-		targetRanges: Array<ViewRange> | null;
-	} ];
+	args: [ data: ClipboardInputTransformationData ];
 };
+
+export interface ClipboardInputTransformationData {
+	content: ViewDocumentFragment;
+	dataTransfer: DataTransfer;
+	method: 'paste' | 'drop';
+	targetRanges: Array<ViewRange> | null;
+}
 
 /**
  * Fired with the `content`, `dataTransfer`, `method`, and `targetRanges` properties:

@@ -10,7 +10,6 @@
 import {
 	Plugin,
 	type Editor,
-	type EditorUIUpdateEvent,
 	type PluginDependencies,
 	type ToolbarConfigItem
 } from '@ckeditor/ckeditor5-core';
@@ -22,6 +21,7 @@ import {
 	ContextualBalloon,
 	ToolbarView,
 	type BaloonToolbarShowEvent,
+	type EditorUIUpdateEvent,
 	type View
 } from '@ckeditor/ckeditor5-ui';
 
