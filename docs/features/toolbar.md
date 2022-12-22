@@ -84,17 +84,16 @@ To save space in your toolbar or arrange the features thematically, you can grou
 
 ```js
 toolbar: [
-	{
-		label: 'Basic styles',
-		icon: 'text',
-		items: [ 'bold', 'italic' ]
-	},
-	'|',
-	'undo', 'redo'
+			{
+				label: 'Basic styles',
+				icon: 'bold',
+				items: [ 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript' ]
+			},
+(...)
 ]
 ```
 
-It will create a "Basic styles" dropdown with a "text" icon containing the "bold" and "italic" buttons. You can test it in the demo below.
+It will create a "Basic styles" dropdown with a "bold" icon containing the basic text styles buttons set. You can test it in the demo below along with a few more toolbar dropdowns.
 
 {@snippet features/toolbar-nested-simple}
 

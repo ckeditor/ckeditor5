@@ -27,10 +27,12 @@ describe( 'HtmlDataProcessor', () => {
 			expect( dataProcessor ).to.have.property( 'domParser' );
 			expect( dataProcessor ).to.have.property( 'domConverter' );
 			expect( dataProcessor ).to.have.property( 'htmlWriter' );
+			expect( dataProcessor ).to.have.property( 'skipComments' );
 
 			expect( dataProcessor.domParser ).to.be.an.instanceOf( DOMParser );
 			expect( dataProcessor.domConverter ).to.be.an.instanceOf( DomConverter );
 			expect( dataProcessor.htmlWriter ).to.be.an.instanceOf( BasicHtmlWriter );
+			expect( dataProcessor.skipComments ).to.be.true;
 		} );
 	} );
 
@@ -413,6 +415,48 @@ describe( 'HtmlDataProcessor', () => {
 			dataProcessor.useFillerType( 'default' );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
+		} );
+	} );
+
+	describe( 'skipComments', () => {
+		it( 'should skip comments when `true`', () => {
+			const fragment = dataProcessor.toView(
+				'<html>' +
+					'<head></head>' +
+					'<body>' +
+						'<!-- Comment 1 -->' +
+						'<p>' +
+							'foo' +
+							'<!-- Comment 2 -->' +
+							'bar' +
+						'</p>' +
+						'<!-- Comment 3 -->' +
+					'</body>' +
+				'</html>'
+			);
+
+			expect( stringify( fragment ) ).to.equal( '<p>foobar</p>' );
+		} );
+
+		it( 'should preserve comments when `false`', () => {
+			dataProcessor.skipComments = false;
+
+			const fragment = dataProcessor.toView(
+				'<html>' +
+					'<head></head>' +
+					'<body>' +
+						'<!-- Comment 1 -->' +
+						'<p>' +
+							'foo' +
+							'<!-- Comment 2 -->' +
+							'bar' +
+						'</p>' +
+						'<!-- Comment 3 -->' +
+					'</body>' +
+				'</html>'
+			);
+
+			expect( stringify( fragment ) ).to.equal( '<$comment></$comment><p>foo<$comment></$comment>bar</p><$comment></$comment>' );
 		} );
 	} );
 } );

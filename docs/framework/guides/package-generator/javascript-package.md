@@ -21,12 +21,12 @@ An overview of the project's directory structure:
 │  ├─ index.html           # The sample file.
 │  └─ ckeditor.js          # The editor initialization script.
 ├─ src
+│  ├─ pluginname.js        # The plugin with example functionality.
 │  ├─ index.js             # The modules exported by the package when using the DLL builds.
-│  ├─ myplugin.js          # Very basic plugin that utilizes the CKEditor 5 framework.
 │  └─ **/*.js              # All JavaScript source files should be saved here.
 ├─ tests
+│  ├─ pluginname.js
 │  ├─ index.js             # Tests for the plugin.
-│  ├─ myplugin.js
 │  └─ **/*.js              # All tests should be saved here.
 ├─ theme
 │  ├─ icons

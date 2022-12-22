@@ -141,6 +141,16 @@ describe( 'DataController', () => {
 			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 		} );
 
+		it( 'should be decorated', () => {
+			const viewElement = parseView( '<p>foo</p>' );
+			const spy = sinon.spy();
+
+			data.on( 'toModel', spy );
+			data.toModel( viewElement );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [ viewElement ] );
+		} );
+
 		it( 'should convert content of an element #1', () => {
 			const viewElement = parseView( '<p>foo</p>' );
 			const output = data.toModel( viewElement );
@@ -620,6 +630,16 @@ describe( 'DataController', () => {
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 			downcastHelpers.elementToElement( { model: 'div', view: 'div' } );
+		} );
+
+		it( 'should be decorated', () => {
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
+			const spy = sinon.spy();
+
+			data.on( 'toView', spy );
+			data.toView( modelElement );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [ modelElement ] );
 		} );
 
 		it( 'should use #viewDocument as a parent for returned document fragments', () => {

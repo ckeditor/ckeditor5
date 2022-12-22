@@ -11,7 +11,7 @@
 
 const path = require( 'path' );
 const fs = require( 'fs' );
-const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
+const { generateChangelogForMonoRepository } = require( '@ckeditor/ckeditor5-dev-release-tools' );
 
 const CKEDITOR5_INTERNAL_PATH = path.resolve( __dirname, '..', '..', 'external', 'ckeditor5-internal' );
 const COLLABORATION_FEATURES_PATH = path.resolve( __dirname, '..', '..', 'external', 'collaboration-features' );
@@ -25,7 +25,7 @@ if ( !fs.existsSync( COLLABORATION_FEATURES_PATH ) ) {
 }
 
 Promise.resolve()
-	.then( () => devEnv.generateChangelogForMonoRepository( {
+	.then( () => generateChangelogForMonoRepository( {
 		cwd: process.cwd(),
 		packages: 'packages',
 		releaseBranch: 'release',

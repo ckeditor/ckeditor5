@@ -609,10 +609,10 @@ For more information, please refer to the {@link features/ui-language Setting th
 
 ### CKEditor 5 built from source
 
-Using the editor [built from source](#integrating-ckeditor-5-built-from-source) requires you to modify the webpack configuration. First, install the [official webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows localizing editor builds:
+Using the editor [built from source](#integrating-ckeditor-5-built-from-source) requires you to modify the webpack configuration. First, install the [official translations webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows localizing editor builds:
 
 ```
-yarn add @ckeditor/ckeditor5-dev-webpack-plugin --dev
+yarn add @ckeditor/ckeditor5-dev-translations --dev
 ```
 
 Then, add the installed plugin to the webpack configuration:
@@ -622,7 +622,7 @@ Then, add the installed plugin to the webpack configuration:
 'use strict';
 
 // ...
-const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 
 module.exports = {
 	// ...
@@ -630,7 +630,7 @@ module.exports = {
 	plugins: [
 		// ....
 
-		new CKEditorWebpackPlugin( {
+		new CKEditorTranslationsPlugin( {
 			// The UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
 			language: 'de',
 			addMainLanguageTranslationsToAllAssets: true

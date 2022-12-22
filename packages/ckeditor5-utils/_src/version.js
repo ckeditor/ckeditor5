@@ -128,7 +128,7 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * **Note:** All official CKEditor 5 packages (excluding integrations and `ckeditor5-dev-*` packages) are released in the
 	 * same major version. This is &mdash; in the `x.y.z`, the `x` is the same for all packages. This is the simplest way to check
 	 * whether you use packages coming from the same CKEditor 5 version. You can read more about versioning in the
-	 * {@glink support/versioning-policy Versioning policy} guide.
+	 * {@glink updating/versioning-policy Versioning policy} guide.
 	 *
 	 * # Packages were duplicated in `node_modules`
 	 *

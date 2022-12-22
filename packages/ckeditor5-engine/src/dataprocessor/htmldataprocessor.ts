@@ -28,6 +28,7 @@ export default class HtmlDataProcessor implements DataProcessor {
 	public domParser: DOMParser;
 	public domConverter: DomConverter;
 	public htmlWriter: HtmlWriter;
+	public skipComments: boolean = true;
 
 	/**
 	 * Creates a new instance of the HTML data processor class.
@@ -83,7 +84,7 @@ export default class HtmlDataProcessor implements DataProcessor {
 		const domFragment = this._toDom( data );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this.domConverter.domToView( domFragment ) as ViewDocumentFragment;
+		return this.domConverter.domToView( domFragment, { skipComments: this.skipComments } ) as ViewDocumentFragment;
 	}
 
 	/**
@@ -119,11 +120,10 @@ export default class HtmlDataProcessor implements DataProcessor {
 	 * Converts an HTML string to its DOM representation. Returns a document fragment containing nodes parsed from
 	 * the provided data.
 	 *
-	 * @private
 	 * @param {String} data
 	 * @returns {DocumentFragment}
 	 */
-	private _toDom( data: string ): DocumentFragment {
+	protected _toDom( data: string ): DocumentFragment {
 		// Wrap data with a <body> tag so leading non-layout nodes (like <script>, <style>, HTML comment)
 		// will be preserved in the body collection.
 		// Do it only for data that is not a full HTML document.

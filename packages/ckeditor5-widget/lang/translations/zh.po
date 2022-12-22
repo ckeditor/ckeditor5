@@ -27,3 +27,7 @@ msgstr "在這個區塊前面插入一個段落"
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
 msgstr "在這個區塊後面插入一個段落"
+
+msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
+msgid "Press Enter to type after or press Shift + Enter to type before the widget"
+msgstr "按下 Enter 在小工具後輸入，或按下 Shift + Enter 在小工具前輸入"

@@ -8,7 +8,7 @@
  */
 
 /**
- * Checks whether given {Map}s are equal, that is has same size and same key-value pairs.
+ * Checks whether given `Map`s are equal, that is has same size and same key-value pairs.
  *
  * @param mapA The first map to compare.
  * @param mapB The second map to compare.

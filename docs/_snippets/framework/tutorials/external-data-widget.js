@@ -110,7 +110,7 @@ class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_intervalFetch() {
-		return setInterval( () => this._updateWidgetData(), 15000 );
+		return setInterval( () => this._updateWidgetData(), 10000 );
 	}
 
 	async _updateWidgetData( externalUrl = RESOURCE_URL ) {
@@ -175,6 +175,7 @@ class ExternalDataWidgetEditing extends Plugin {
 				const externalValueToShow = this.externalDataValue;
 
 				const externalDataPreviewElement = writer.createRawElement( 'span', null, function( domElement ) {
+					domElement.classList.add( 'external-data-widget' );
 					domElement.textContent = externalValueToShow || 'Fetching data...';
 
 					if ( externalValueToShow ) {
@@ -217,3 +218,14 @@ ClassicEditor
 	.catch( error => {
 		console.error( error.stack );
 	} );
+
+// For a totally unknown reason, Travis and Binance do not like each other and the test fail on CI.
+const metaElement = document.createElement( 'meta' );
+
+metaElement.name = 'x-cke-crawler-ignore-patterns';
+metaElement.content = JSON.stringify( {
+	'request-failure': 'binance.com',
+	'console-error': [ 'Access to fetch at', 'Failed to fetch' ]
+} );
+
+document.head.appendChild( metaElement );

@@ -16,7 +16,7 @@ You will build an "external data fetch" feature that allows users to insert a pr
 
 ## Before you start ⚠️
 
-This guide assumes that you are familiar with the widgets concept introduced in the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget implementing an inline widget} tutorials. The tutorial also references various concepts concerning the {@link framework/guides/architecture/intro CKEditor 5 architecture}.
+This guide assumes that you are familiar with the widgets concept introduced in the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorials. The tutorial also references various concepts concerning the {@link framework/guides/architecture/intro CKEditor 5 architecture}.
 
 ## Bootstrapping the project
 
@@ -181,13 +181,13 @@ Before building the project you still need to define the `ExternalDataWidget` pl
 │   └── theme
 │       └── externaldatawidget.css
 │
-│   ... the rest of the plugin files go here as well.
+│   ... the rest of the plugin files goes here as well.
 │
 └── webpack.config.js
 ```
 
 
-You can see that the external data widget feature has an established plugin structure: the master (glue) plugin (`external-data-widget/externaldatawidget.js`), the "editing" (`external-data-widget/externaldatawidgetediting.js`) and the "UI" (`external-data-widget/externaldatawidgetui.js`) parts.
+You can see that the external data widget feature follows an established plugin structure: the master (glue) plugin (`external-data-widget/externaldatawidget.js`), the "editing" (`external-data-widget/externaldatawidgetediting.js`) and the "UI" (`external-data-widget/externaldatawidgetui.js`) parts.
 
 The master (glue) plugin:
 
@@ -242,7 +242,7 @@ After the build is completed, open `index.html` in your browser to check if all 
 
 ## The model and the view layers
 
-The external data widget feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks that allow text e.g. `<paragraph>`. The external data widget will have a `data-resource-url` attribute. This means that the model representation of the external data widget will look like this:
+The external data widget feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks that allow text e.g. `<paragraph>`. The external data widget will also have a `data-resource-url` attribute. This means that the model representation of the external data widget will look like this:
 
 ```
 <paragraph>
@@ -251,7 +251,7 @@ The external data widget feature will be {@link module:engine/model/schema~Schem
 ```
 
 <info-box>
-	Syntax presented above is used by our debugging tools, like {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector}, which is particularly helpful when developing new rich-text editor features.
+	The syntax presented above is used by our debugging tools, such as {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector}, which is particularly helpful when developing new rich-text editor features.
 </info-box>
 
 ### Defining the schema
@@ -289,7 +289,7 @@ export default class ExternalDataWidgetEditing extends Plugin {
 }
 ```
 
-The schema is defined, now you can define the model-view converters.
+Once the schema is defined, you can now define the model-view converters.
 
 ### Defining converters
 
@@ -376,27 +376,31 @@ export default class ExternalDataWidgetEditing extends Plugin {
 
 ### Feature styles
 
-As you might have noticed, the editing part imports the `./theme/externaldatawidget.css` CSS file which describes how the widget will be animated when new value arrives:
+As you might have noticed, the editing part imports the `./theme/externaldatawidget.css` CSS file which describes how the widget will look like and how it will be animated when new value arrives:
 
 ```css
 /* external-data-widget/theme/externaldatawidget.css */
 
+.external-data-widget {
+	border: 2px solid rgb(242, 169, 0);
+}
+
 .external-data-widget-bounce {
-	animation: external-data-widget-bounce-animation 0.7s 1;
+	animation: external-data-widget-bounce-animation 1.5s 1;
 }
 
 @keyframes external-data-widget-bounce-animation {
 	0% {
-		box-shadow: 0px 0px 0px 0px rgba(116, 60, 205, 1);
+		box-shadow: 0px 0px 0px 0px rgba(242, 169, 0, 1);
 	}
 
 	100% {
-		box-shadow: 0px 0px 0px 7px rgba(116, 60, 205, 0);
+		box-shadow: 0px 0px 0px 10px rgba(242, 169, 0, 0);
 	}
 }
 ```
 
-### Command
+### The command
 
 The {@link framework/guides/architecture/core-editor-architecture#commands command} for the external data widget feature will insert an `<externalElement>` element (if allowed by the schema) at the selection and set the selection on the inserted widget.
 
@@ -441,7 +445,7 @@ class ExternalDataWidgetCommand extends Command {
 }
 ```
 
-Import the created command and add it to the editor commands:
+Import the newly created command and add it to the editor commands:
 
 ```js
 // external-data-widget/externaldatawidgetediting.js
@@ -568,7 +572,7 @@ In this tutorial we will use an external API that provides a current Bitcoin rat
 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'
 ```
 
-The data will be fetched every 15 seconds. Eeach instance of the widget will be updated at the same time. To achieve that, we need to modify the `ExternalDataWidgetEditing` class.
+The data will be fetched every 10 seconds. Eeach instance of the widget will be updated at the same time. To achieve that, we need to modify the `ExternalDataWidgetEditing` class.
 
 ```js
 
@@ -603,7 +607,7 @@ class ExternalDataWidgetEditing extends Plugin {
 
 	// Interval function
 	_intervalFetch() {
-		return setInterval( () => this._updateWidgetData(), 15000 ); // set time interval to 15s
+		return setInterval( () => this._updateWidgetData(), 10000 ); // set time interval to 10s
 	}
 
 	// Fetch data and update all widget instances
@@ -646,6 +650,8 @@ class ExternalDataWidgetEditing extends Plugin {
 				const externalValueToShow = this.externalDataValue;
 
 				const externalDataPreviewElement = writer.createRawElement( 'span', null, function( domElement ) {
+					// CSS class responsible for the appearance of the widget
+					domElement.classList.add( 'external-data-widget' );
 					// When the value is not present (initial run) show a placeholder
 					domElement.textContent = externalValueToShow || 'Fetching data...';
 
@@ -789,7 +795,7 @@ class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_intervalFetch() {
-		return setInterval( () => this._updateWidgetData(), 15000 ); // set time interval to 15s
+		return setInterval( () => this._updateWidgetData(), 10000 ); // set time interval to 10s
 	}
 
 	async _updateWidgetData( externalUrl = RESOURCE_URL ) {
@@ -854,6 +860,7 @@ class ExternalDataWidgetEditing extends Plugin {
 				const externalValueToShow = this.externalDataValue;
 
 				const externalDataPreviewElement = writer.createRawElement( 'span', null, function( domElement ) {
+					domElement.classList.add( 'external-data-widget' );
 					domElement.textContent = externalValueToShow || 'Fetching data...';
 
 					if ( externalValueToShow ) {
