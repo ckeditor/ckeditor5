@@ -69,7 +69,7 @@ export default class DocumentListStartCommand extends Command {
 		const block = first( document.selection.getSelectedBlocks() );
 
 		if ( block && isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
-			return block.getAttribute( 'listStart' );
+			return block.getAttribute( 'listStart' ) as number;
 		}
 
 		return null;

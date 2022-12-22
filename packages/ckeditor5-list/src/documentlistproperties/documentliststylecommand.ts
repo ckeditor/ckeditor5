@@ -108,7 +108,7 @@ export default class DocumentListStyleCommand extends Command {
 		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		if ( isListItemBlock( listItem ) ) {
-			return listItem.getAttribute( 'listStyle' );
+			return listItem.getAttribute( 'listStyle' ) as string;
 		}
 
 		return null;

@@ -67,7 +67,7 @@ export default class DocumentListReversedCommand extends Command {
 		const block = first( document.selection.getSelectedBlocks() );
 
 		if ( isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
-			return block.getAttribute( 'listReversed' );
+			return block.getAttribute( 'listReversed' ) as boolean;
 		}
 
 		return null;
