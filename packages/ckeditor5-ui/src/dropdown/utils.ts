@@ -128,30 +128,33 @@ export function createDropdown(
 /**
  * Adds an instance of {@link module:ui/toolbar/toolbarview~ToolbarView} to a dropdown.
  *
- *		const buttons = [];
+ *		const buttonsCreator = () => {
+ *			const buttons = [];
  *
- *		// Either create a new ButtonView instance or create existing.
- *		buttons.push( new ButtonView() );
- *		buttons.push( editor.ui.componentFactory.create( 'someButton' ) );
+ *			// Either create a new ButtonView instance or create existing.
+ *			buttons.push( new ButtonView() );
+ *			buttons.push( editor.ui.componentFactory.create( 'someButton' ) );
+ *		};
  *
  *		const dropdown = createDropdown( locale );
  *
- *		addToolbarToDropdown( dropdown, buttons );
- *
- *		dropdown.toolbarView.isVertical = true;
+ *		addToolbarToDropdown( dropdown, buttonsCreator, { isVertical: true } );
  *
  *		// Will render a vertical button dropdown labeled "A button dropdown"
  *		// with a button group in the panel containing two buttons.
+ *		// Buttons inside the dropdown will be created on first dropdown panel open.
  *		dropdown.render()
  *		document.body.appendChild( dropdown.element );
  *
  * **Note:** To improve the accessibility, you can tell the dropdown to focus the first active button of the toolbar when the dropdown
  * {@link module:ui/dropdown/dropdownview~DropdownView#isOpen gets open}. See the documentation of `options` to learn more.
  *
+ * **Note:** Toolbar view will be created on first open of the dropdown.
+ *
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ToolbarView` will be added.
- * @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttonsOrCallback
+ * @param {Iterable.<module:ui/button/buttonview~ButtonView>|Function} buttonsOrCallback
  * @param {Object} [options]
  * @param {Boolean} [options.enableActiveItemFocusOnDropdownOpen=false] When set `true`, the focus will automatically move to the first
  * active {@link module:ui/toolbar/toolbarview~ToolbarView#items item} of the toolbar upon
@@ -159,6 +162,9 @@ export function createDropdown(
  * `true` (for instance {@link module:ui/button/buttonview~ButtonView buttons}). If no active items is found, the toolbar will be focused
  * as a whole resulting in the focus moving to its first focusable item (default behavior of
  * {@link module:ui/dropdown/dropdownview~DropdownView}).
+ * @param {Boolean} [options.isVertical] Controls the orientation of toolbar items.
+ * @param {String} [options.ariaLabel] Label used by assistive technologies to describe toolbar element.
+ * @param {Boolean} [options.bindToCollection] Whether given `ViewCollection` should be bound to the toolbar items.
  */
 export function addToolbarToDropdown(
 	dropdownView: DropdownView,
@@ -184,7 +190,7 @@ export function addToolbarToDropdown(
 }
 
 /**
- * TODO
+ * Adds an instance of {@link module:ui/toolbar/toolbarview~ToolbarView} to a dropdown.
  */
 function addToolbarToOpenDropdown(
 	dropdownView: DropdownView,
@@ -270,11 +276,15 @@ function addToolbarToOpenDropdown(
  * to focus the first active item (a host to a {@link module:ui/button/buttonview~ButtonView} with
  * {@link module:ui/button/buttonview~ButtonView#isOn} set `true`) or the very first item when none are active.
  *
+ * **Note:** List view will be created on first open of the dropdown.
+ *
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:list/list~List}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ListVIew` will be added.
- * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} itemsOrCallback
- * A collection of the list item definitions to populate the list.
+ * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>|Function} itemsOrCallback A collection of the list item
+ * definitions or a callback returning a list item definitions to populate the list.
+ * @param {Object} [options]
+ * @param {String} [options.ariaLabel] Label used by assistive technologies to describe list element.
  */
 export function addListToDropdown(
 	dropdownView: DropdownView,
@@ -291,7 +301,7 @@ export function addListToDropdown(
 }
 
 /**
- * TODO
+ * Adds an instance of {@link module:ui/list/listview~ListView} to a dropdown.
  */
 function addListToOpenDropdown(
 	dropdownView: DropdownView,

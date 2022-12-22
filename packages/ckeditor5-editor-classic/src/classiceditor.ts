@@ -215,21 +215,9 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 
 			resolve(
 				editor.initPlugins()
-					.then( () => {
-						const start = performance.now();
-						editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null );
-						console.log( 'UI init time:', performance.now() - start );
-					} )
-					.then( () => {
-						const start = performance.now();
-						editor.data.init( editor.config.get( 'initialData' )! );
-						console.log( 'Data init time:', performance.now() - start );
-					} )
-					.then( () => {
-						const start = performance.now();
-						editor.fire<EditorReadyEvent>( 'ready' );
-						console.log( 'Ready event time:', performance.now() - start );
-					} )
+					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
+					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
 		} );

@@ -348,8 +348,13 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	}
 
 	/**
-	 * TODO
+	 * A utility that expands the plain toolbar configuration into a list of view items using a given component factory.
+	 *
 	 * @internal
+	 * @param {Array.<String>|Object} itemsOrConfig The toolbar items or the entire toolbar configuration object.
+	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
+	 * @param {Array.<String>} [removeItems] An array of items names to be removed from the configuration. When present, applies
+	 * to this toolbar and all nested ones as well.
 	 */
 	public _buildItemsFromConfig(
 		itemsOrConfig: ToolbarConfig | undefined,
