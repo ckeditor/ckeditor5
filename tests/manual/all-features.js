@@ -68,7 +68,7 @@ async function initEditor() {
 			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport
 		],
 		toolbar: {
-			// shouldNotGroupWhenFull: true,
+			shouldNotGroupWhenFull: true,
 			items: [
 				'heading', 'style',
 				'|',
