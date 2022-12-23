@@ -9,6 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core';
 import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
+import type { DocumentSelection, Element, Model, Schema } from 'ckeditor5/src/engine';
 
 /**
  * The page break command.
@@ -25,7 +26,7 @@ export default class PageBreakCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const selection = model.document.selection;
@@ -38,7 +39,7 @@ export default class PageBreakCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	execute() {
+	public override execute(): void {
 		const model = this.editor.model;
 
 		model.change( writer => {
@@ -57,7 +58,7 @@ export default class PageBreakCommand extends Command {
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/model/model~Model} model Model instance.
 // @returns {Boolean}
-function isPageBreakAllowedInParent( selection, schema, model ) {
+function isPageBreakAllowedInParent( selection: DocumentSelection, schema: Schema, model: Model ) {
 	const parent = getInsertPageBreakParent( selection, model );
 
 	return schema.checkChild( parent, 'pageBreak' );
@@ -68,13 +69,13 @@ function isPageBreakAllowedInParent( selection, schema, model ) {
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/model~Model} model Model instance.
 // @returns {module:engine/model/element~Element}
-function getInsertPageBreakParent( selection, model ) {
+function getInsertPageBreakParent( selection: DocumentSelection, model: Model ) {
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
 
 	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
-		return parent.parent;
+		return parent.parent as Element;
 	}
 
-	return parent;
+	return parent as Element;
 }

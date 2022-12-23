@@ -21,20 +21,20 @@ export default class PageBreakUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'PageBreakUI' {
 		return 'PageBreakUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		// Add pageBreak button to feature components.
 		editor.ui.componentFactory.add( 'pageBreak', locale => {
-			const command = editor.commands.get( 'pageBreak' );
+			const command = editor.commands.get( 'pageBreak' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -53,5 +53,11 @@ export default class PageBreakUI extends Plugin {
 
 			return view;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ PageBreakUI.pluginName ]: PageBreakUI;
 	}
 }

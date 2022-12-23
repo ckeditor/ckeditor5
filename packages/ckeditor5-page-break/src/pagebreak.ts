@@ -7,8 +7,9 @@
  * @module page-break/pagebreak
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { Widget } from 'ckeditor5/src/widget';
+
 import PageBreakEditing from './pagebreakediting';
 import PageBreakUI from './pagebreakui';
 
@@ -25,14 +26,20 @@ export default class PageBreak extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ PageBreakEditing, PageBreakUI, Widget ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'PageBreak' {
 		return 'PageBreak';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ PageBreak.pluginName ]: PageBreak;
 	}
 }

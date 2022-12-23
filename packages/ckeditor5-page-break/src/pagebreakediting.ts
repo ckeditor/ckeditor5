@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { toWidget } from 'ckeditor5/src/widget';
+import type { DowncastWriter, ViewContainerElement } from 'ckeditor5/src/engine';
 
 import PageBreakCommand from './pagebreakcommand';
 
@@ -23,14 +24,14 @@ export default class PageBreakEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'PageBreakEditing' {
 		return 'PageBreakEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const t = editor.t;
@@ -90,7 +91,7 @@ export default class PageBreakEditing extends Plugin {
 					const hasPageBreakAfter = element.getStyle( 'page-break-after' ) == 'always';
 
 					if ( !hasPageBreakBefore && !hasPageBreakAfter ) {
-						return;
+						return null;
 					}
 
 					// The "page break" div accepts only single child or no child at all.
@@ -98,11 +99,11 @@ export default class PageBreakEditing extends Plugin {
 						const viewSpan = element.getChild( 0 );
 
 						// The child must be the "span" element that is not displayed.
-						if ( !viewSpan.is( 'element', 'span' ) || viewSpan.getStyle( 'display' ) != 'none' ) {
-							return;
+						if ( !viewSpan!.is( 'element', 'span' ) || viewSpan.getStyle( 'display' ) != 'none' ) {
+							return null;
 						}
 					} else if ( element.childCount > 1 ) {
-						return;
+						return null;
 					}
 
 					return { name: true };
@@ -127,8 +128,18 @@ export default class PageBreakEditing extends Plugin {
 //  @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
 //  @param {String} label The element's label.
 //  @returns {module:engine/view/element~Element}
-function toPageBreakWidget( viewElement, writer, label ) {
+function toPageBreakWidget( viewElement: ViewContainerElement, writer: DowncastWriter, label: string ) {
 	writer.setCustomProperty( 'pageBreak', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		pageBreak: PageBreakCommand;
+	}
+
+	interface PluginsMap {
+		[ PageBreakEditing.pluginName ]: PageBreakEditing;
+	}
 }
