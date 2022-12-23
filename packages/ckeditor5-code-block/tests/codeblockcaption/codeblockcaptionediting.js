@@ -84,28 +84,6 @@ describe( 'CodeblockCaptionEditing', () => {
 					view: 'widget'
 				} );
 			} );
-		// editor = await VirtualTestEditor.create( {
-		// 	plugins: [
-		// 		CodeBlockEditing,
-		// 		CodeblockCaption,
-		// 		CodeblockCaptionEditing,
-		// 		UndoEditing,
-		// 		Paragraph
-		// 	]
-		// } );
-
-		// model = editor.model;
-		// doc = model.document;
-		// view = editor.editing.view;
-		// model.schema.register( 'widget' );
-		// model.schema.extend( 'widget', { allowIn: '$root' } );
-		// model.schema.extend( 'caption', { allowIn: 'widget' } );
-		// model.schema.extend( '$text', { allowIn: 'widget' } );
-
-		// editor.conversion.elementToElement( {
-		// 	model: 'widget',
-		// 	view: 'widget'
-		// } );
 	} );
 
 	afterEach( async () => {
@@ -202,12 +180,16 @@ describe( 'CodeblockCaptionEditing', () => {
 			it( 'should not convert caption to figcaption if it\'s empty', () => {
 				setModelData( model, '<codeBlock language="plaintext"><caption></caption></codeBlock>' );
 
-				expect( editor.getData() ).to.equal(
-					'<pre data-language="Plain text" spellcheck="false">' +
-						'<code class="language-plaintext">' +
-							'<figcaption>&nbsp;</figcaption>' +
-						'</code>' +
-					'</pre>' );
+				expect( editor.getData() ).to.equal( '' );
+			} );
+
+			it( 'should convert empty codeblock with empty caption to empty pre and figcaption tag', () => {
+				setModelData( model, '<codeBlock language="plaintext"><caption></caption></codeBlock>' );
+
+				expect( editor.getData( { trim: 'none' } ) ).to.equal(
+					'<pre><code class="language-plaintext">' +
+					'<figcaption>&nbsp;</figcaption></code></pre>'
+				);
 			} );
 
 			it( 'should not convert caption from other elements', () => {
@@ -578,7 +560,9 @@ describe( 'CodeblockCaptionEditing', () => {
 			setModelData( model, '<paragraph>foo</paragraph>[<codeBlock language="plaintext"><caption></caption></codeBlock>]' );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">[<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
+				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+				'[<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" ' +
+				'data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
 			);
 		} );
 
@@ -586,7 +570,9 @@ describe( 'CodeblockCaptionEditing', () => {
 			setModelData( model, '<paragraph>[]foo</paragraph><codeBlock language="plaintext"><caption></caption></codeBlock>' );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>{}foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
+				'<p>{}foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+				'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" ' +
+				'data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
 			);
 		} );
 
@@ -596,7 +582,9 @@ describe( 'CodeblockCaptionEditing', () => {
 			editor.execute( 'toggleCodeblockCaption' );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">[]<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
+				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+				'[]<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" ' +
+				'data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
 			);
 
 			const caption = doc.getRoot().getNodeByPath( [ 1, 0 ] );
@@ -609,7 +597,9 @@ describe( 'CodeblockCaptionEditing', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable ck-editor__nested-editable_focused ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">[]</figcaption></code></pre>'
+				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+				'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-editor__nested-editable_focused ck-placeholder" ' +
+				'contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">[]</figcaption></code></pre>'
 			);
 		} );
 
@@ -617,7 +607,10 @@ describe( 'CodeblockCaptionEditing', () => {
 			setModelData( model, '<paragraph>foo</paragraph>[<codeBlock language="plaintext"><caption>foo bar</caption></codeBlock>]' );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">[<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">foo bar</figcaption>]</code></pre>'
+				'<p>foo</p><pre data-language="Plain text" spellcheck="false">' +
+				'<code class="language-plaintext">[<figcaption class="ck-editor__editable ' +
+				'ck-editor__nested-editable" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">' +
+				'foo bar</figcaption>]</code></pre>'
 			);
 		} );
 
@@ -629,7 +622,9 @@ describe( 'CodeblockCaptionEditing', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>{}foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
+				'<p>{}foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+				'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" ' +
+				'data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
 			);
 		} );
 
@@ -641,7 +636,9 @@ describe( 'CodeblockCaptionEditing', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">[]</figcaption></code></pre>'
+				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+				'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" ' +
+				'data-placeholder="Enter codeblock caption" role="textbox">[]</figcaption></code></pre>'
 			);
 		} );
 
@@ -655,7 +652,9 @@ describe( 'CodeblockCaptionEditing', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">{baz<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
+				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+				'{baz<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+				'contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
 			);
 		} );
 
@@ -670,7 +669,12 @@ describe( 'CodeblockCaptionEditing', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">foo bar</figcaption></code></pre><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">[<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
+				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+				'<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+				'data-placeholder="Enter codeblock caption" role="textbox">foo bar</figcaption></code></pre>' +
+				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+				'[<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" ' +
+				'data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
 			);
 		} );
 
@@ -680,13 +684,18 @@ describe( 'CodeblockCaptionEditing', () => {
 			setModelData( model, '[<codeBlock language="plaintext"><caption></caption></codeBlock>]' );
 
 			expect( getViewData( view ) ).to.equal(
-				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">[<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="false" data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
+				'<pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+				'[<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="false" ' +
+				'data-placeholder="Enter codeblock caption" role="textbox"></figcaption>]</code></pre>'
 			);
 		} );
 
 		describe( 'undo/redo integration', () => {
 			it( 'should create view element after redo', () => {
-				setModelData( model, '<paragraph>foo</paragraph><codeBlock language="plaintext"><caption>[foo bar baz]</caption></codeBlock>' );
+				setModelData( model,
+					'<paragraph>foo</paragraph><codeBlock language="plaintext">' +
+					'<caption>[foo bar baz]</caption></codeBlock>'
+				);
 
 				const modelRoot = doc.getRoot();
 				const modelcode = modelRoot.getChild( 1 );
@@ -700,14 +709,19 @@ describe( 'CodeblockCaptionEditing', () => {
 
 				// Check if there is no figcaption in the view.
 				expect( getViewData( view ) ).to.equal(
-					'<p>{}foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
+					'<p>{}foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext">' +
+					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-placeholder" contenteditable="true" ' +
+					'data-placeholder="Enter codeblock caption" role="textbox"></figcaption></code></pre>'
 				);
 
 				editor.execute( 'undo' );
 
 				// Check if figcaption is back with contents.
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo</p><pre data-language="Plain text" spellcheck="false"><code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">{foo bar baz}</figcaption></code></pre>'
+					'<p>foo</p><pre data-language="Plain text" spellcheck="false">' +
+					'<code class="language-plaintext"><figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
+					'contenteditable="true" data-placeholder="Enter codeblock caption" role="textbox">' +
+					'{foo bar baz}</figcaption></code></pre>'
 				);
 			} );
 

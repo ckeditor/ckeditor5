@@ -16,7 +16,8 @@ import {
 	isCodeblockWrapper,
 	matchCodeblockCaptionViewElement,
 	getCaptionFromCodeblockModelElement,
-	getCodeblockCaptionFromModelSelection
+	getCodeblockCaptionFromModelSelection,
+	isInsideCodeblockCaptionFromSelection
 } from '../../src/codeblockcaption/utils';
 
 describe( 'codeblock caption utils', () => {
@@ -50,25 +51,6 @@ describe( 'codeblock caption utils', () => {
 					'</paragraph>'
 				);
 			} );
-		// view = new View();
-		// document = view.document;
-
-		// editor = await VirtualTestEditor.create( {
-		// 	plugins: [ CodeBlock, CodeblockCaption, Paragraph ]
-		// } );
-
-		// model = editor.model;
-		// modelRoot = model.document.getRoot();
-
-		// setModelData( model,
-		// 	'<codeBlock language="plaintext">' +
-		// 		'Code snippet goes here[]' +
-		// 		'<caption>codeblock caption</caption>' +
-		// 	'</codeBlock>' +
-		// 	'<paragraph>' +
-		// 		'Paragraph data is here' +
-		// 	'</paragraph>'
-		// );
 	} );
 
 	afterEach( async () => {
@@ -188,5 +170,71 @@ describe( 'codeblock caption utils', () => {
 
 			expect( getCodeblockCaptionFromModelSelection( model.document.selection ) ).to.be.null;
 		} );
+	} );
+
+	describe( 'isInsideCodeblockCaptionFromSelection', () => {
+		it( 'should return false when given codeblock has no caption - selection in a codeblock', () => {
+			setModelData( model,
+				'<codeBlock language="plaintext">' +
+					'[]' +
+				'</codeBlock>'
+			);
+
+			expect( isInsideCodeblockCaptionFromSelection( model.document.selection ) ).to.be.false;
+		} );
+	} );
+
+	it( 'should return false when given codeblock has no caption - selection on codeblock', () => {
+		setModelData( model,
+			'[<codeBlock language="plaintext">' +
+			'</codeBlock>]'
+		);
+
+		expect( isInsideCodeblockCaptionFromSelection( model.document.selection ) ).to.be.false;
+	} );
+
+	it( 'should return false when given codeblock  caption - selection in a codeblock', () => {
+		expect( isInsideCodeblockCaptionFromSelection( model.document.selection ) ).to.be.false;
+	} );
+
+	it( 'should return true when selection is in codeblock empty caption', () => {
+		setModelData( model,
+			'<codeBlock language="plaintext">' +
+				'<caption>[]</caption>' +
+			'</codeBlock>'
+		);
+		expect( isInsideCodeblockCaptionFromSelection( model.document.selection ) ).to.be.true;
+	} );
+
+	it( 'should return true when selection is in codeblock non caption', () => {
+		setModelData( model,
+			'<codeBlock language="plaintext">' +
+				'<caption>f[]oo</caption>' +
+			'</codeBlock>'
+		);
+		expect( isInsideCodeblockCaptionFromSelection( model.document.selection ) ).to.be.true;
+	} );
+
+	it( 'should return false when selection inside caption of widget', () => {
+		model.schema.register( 'widget' );
+		model.schema.extend( 'widget', { allowIn: '$root' } );
+		model.schema.extend( 'caption', { allowIn: 'widget' } );
+		model.schema.extend( '$text', { allowIn: 'widget' } );
+
+		editor.conversion.elementToElement( {
+			model: 'widget',
+			view: 'widget'
+		} );
+
+		editor.conversion.elementToElement( {
+			model: 'caption',
+			view: 'figcaption'
+		} );
+
+		setModelData( model,
+			'<widget><caption>foo[]</caption></widget>'
+		);
+
+		expect( isInsideCodeblockCaptionFromSelection( model.document.selection ) ).to.be.false;
 	} );
 } );
