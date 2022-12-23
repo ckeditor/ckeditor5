@@ -16,6 +16,8 @@ export { default as DataController, type DataControllerSetEvent } from './contro
 // Conversion.
 export {
 	default as Conversion,
+	type AttributeToElementBasicConverterDefinition,
+	type AttributeToElementComplexConverterDefinition,
 	type AttributeToElementConverterDefinition,
 	type ElementToElementConverterDefinition
 } from './conversion/conversion';

@@ -9,7 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { CKEditorError } from 'ckeditor5/src/utils';
-import { isLength, isPercentage, type ViewElement, type ConverterDefinition } from 'ckeditor5/src/engine';
+import { isLength, isPercentage, type ViewElement, type AttributeToElementComplexConverterDefinition } from 'ckeditor5/src/engine';
 
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
@@ -103,7 +103,7 @@ export default class FontSizeEditing extends Plugin {
 	 *
 	 * @param definition {@link module:engine/conversion/conversion~ConverterDefinition Converter definition} out of input data.
 	 */
-	private _prepareAnyValueConverters( definition: ConverterDefinition ): void {
+	private _prepareAnyValueConverters( definition: AttributeToElementComplexConverterDefinition<string> ): void {
 		const editor = this.editor;
 
 		// If `fontSize.supportAllValues=true`, we do not allow to use named presets in the plugin's configuration.

@@ -732,22 +732,31 @@ export interface ConverterDefinition<TModel, TView, TUpcastAlso> {
 /**
  * Defines how the model should be converted from and to the view.
  */
+export type AttributeToElementComplexConverterDefinition<TValues extends string> = ConverterDefinition<
+	{
+		key: string;
+		name?: string;
+		values: Array<TValues>;
+	},
+	Record<TValues, ElementDefinition>,
+	Record<TValues, ArrayOrItem<ElementDefinition | MatcherPattern>> >;
+
+/**
+ * Defines how the model should be converted from and to the view.
+ */
+export type AttributeToElementBasicConverterDefinition = ConverterDefinition<
+	string | {
+		key: string;
+		name?: string;
+	},
+	ElementDefinition,
+	ArrayOrItem<ElementDefinition | MatcherPattern> >;
+
+/**
+ * Defines how the model should be converted from and to the view.
+ */
 export type AttributeToElementConverterDefinition<TValues extends string> =
-	ConverterDefinition<{
-			key: string;
-			name?: string;
-			values: Array<TValues>;
-		},
-		Record<TValues, ElementDefinition>,
-		Record<TValues, ArrayOrItem<ElementDefinition | MatcherPattern>> > |
-	ConverterDefinition<
-		string | {
-			key: string;
-			name?: string;
-		},
-		ElementDefinition,
-		ArrayOrItem<ElementDefinition | MatcherPattern>
-	>;
+	AttributeToElementComplexConverterDefinition<TValues> | AttributeToElementBasicConverterDefinition;
 
 /**
  * Defines how the model should be converted from and to the view.
