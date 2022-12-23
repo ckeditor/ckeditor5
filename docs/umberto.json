@@ -195,6 +195,7 @@
 		"framework/guides/support/browser-compatibility.html": "support/browser-compatibility.html",
 		"framework/guides/support/error-codes.html": "support/error-codes.html",
 		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
+		"examples/framework/inline-widget.html": "examples/framework/content-placeholder.html",
 		"framework/guides/deep-dive/conversion/conversion-introduction.html": "framework/guides/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/conversion-extending-output.html": "framework/guides/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/conversion-preserving-custom-content.html": "framework/guides/deep-dive/conversion/intro.html",
