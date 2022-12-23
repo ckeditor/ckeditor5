@@ -1,5 +1,5 @@
 ---
-category: simple-plugin
+category: abbreviation-plugin
 order: 25
 ---
 
@@ -7,7 +7,7 @@ order: 25
 
 In this part of the tutorial we will focus on creating a dialog box, which will get user's input.
 
-We will pick up where we left off in the first part, so make sure you {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our starter files for this part.
+We will pick up where we left off in the first part, so make sure you {@link framework/guides/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our starter files for this part.
 
 <info-box>
 As we will mostly work on the UI, we recommend reading up on our {@link framework/guides/architecture/ui-library UI library} before you start coding.
@@ -523,7 +523,7 @@ class AbbreviationUI extends Plugin {
 	}
 }
 ```
-That's it for this part of the tutorial! We have a working UI, and our plugin does what we want it to do. We can improve it according to our best practices, adding {@link framework/guides/architecture/core-editor-architecture#commands a command}, focus tracking, and more. We will do it in {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-3 the third part of the tutorial}, so head there.
+That's it for this part of the tutorial! We have a working UI, and our plugin does what we want it to do. We can improve it according to our best practices, adding {@link framework/guides/architecture/core-editor-architecture#commands a command}, focus tracking, and more. We will do it in {@link framework/guides/abbreviation-plugin-tutorial/abbreviation-plugin-level-3 the third part of the tutorial}, so head there.
 
 ## Demo
 
