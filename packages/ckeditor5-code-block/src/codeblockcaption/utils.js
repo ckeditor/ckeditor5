@@ -36,7 +36,7 @@ export function isCodeblockWrapper( modelElement ) {
 export function matchCodeblockCaptionViewElement( element ) {
 	const parent = element.parent;
 
-	if ( element.name == 'figcaption' && parent && parent.name == 'pre' ) {
+	if ( element.name == 'figcaption' && parent && parent.name == 'code' ) {
 		return { name: true };
 	}
 

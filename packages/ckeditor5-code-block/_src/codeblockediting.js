@@ -148,22 +148,18 @@ export default class CodeBlockEditing extends Plugin {
 		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true ) );
 		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs ) );
 		editor.data.downcastDispatcher.on( 'insert:softBreak', modelToDataViewSoftBreakInsertion( model ), { priority: 'high' } );
-		editor.data.downcastDispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
-
+		editor.data.downcastDispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => { // eslint-disable-line no-unused-vars
 			// caption is available only inside codeBlock
-			if ( data.item.parent.name !== 'codeBlock' ) {
-				return;
-			}
-			
+			// dummy functions
 		} );
 
 		editor.data.upcastDispatcher.on( 'element:code', dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs ) );
 		editor.data.upcastDispatcher.on( 'element:figcaption', ( evt, data, conversionApi ) => {
 			const viewCaptionElement = data.viewItem;
 			const viewCodeElement = viewCaptionElement.parent;
-			const { 
+			const {
 				consumable, writer, safeInsert, convertChildren, updateConversionResult
-			 } = conversionApi;
+			} = conversionApi;
 
 			if ( !viewCodeElement || !viewCodeElement.is( 'element', 'code' ) ) {
 				return;
@@ -186,10 +182,9 @@ export default class CodeBlockEditing extends Plugin {
 				return;
 			}
 
-			consumable.consume( viewCaptionElement, captionModelElement );
-			
-			updateConversionResult( captionModelElement, data );
+			consumable.consume( viewCaptionElement, { name: true } );
 
+			updateConversionResult( captionModelElement, data );
 		} );
 		editor.data.upcastDispatcher.on( 'text', dataViewToModelTextNewlinesInsertion() );
 		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelOrphanNodeConsumer(), { priority: 'high' } );
@@ -413,8 +408,6 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 
 	let emptyLineRangeToRemoveOnEnter;
 
-	
-
 	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
 		return false;
 	}
@@ -492,7 +485,7 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 
 		// When cursor is preceed caption, move cursor to end position
 		if ( isAtBeforeCaption ) {
-			let selection = modelDoc.selection;
+			const selection = modelDoc.selection;
 			writer.setSelection( selection.getFirstPosition().parent, 'end' );
 		}
 

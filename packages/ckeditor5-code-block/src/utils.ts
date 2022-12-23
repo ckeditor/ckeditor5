@@ -12,6 +12,7 @@ import type { CodeBlockLanguageDefinition } from './codeblock';
 import { first } from 'ckeditor5/src/utils';
 import type {
 	DocumentSelection,
+	ViewDocumentSelection,
 	Element,
 	Model,
 	Position,
@@ -255,4 +256,69 @@ export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
 	}
 
 	return schema.checkChild( element.parent as Element, 'codeBlock' );
+}
+
+/**
+ * Check if modelElement is codeblock model.
+ * @param {module:engine/model/element~Element|null} modelElement
+ * @returns {Boolean}
+ */
+export function isCodeblockModel( modelElement: Element | null ): boolean {
+	return !!modelElement && modelElement.is( 'element', 'codeBlock' );
+}
+
+/**
+ * Returns a codeblock model element if one is selected or is among the selection's ancestors.
+ *
+ * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+ * @returns {module:engine/model/element~Element|null}
+ */
+export function getClosestSelectedCodeblockElement( selection: DocumentSelection ): Element | null {
+	const selectedElement = selection.getSelectedElement();
+
+	if ( isCodeblockModel( selectedElement ) ) {
+		return selectedElement;
+	} else {
+		return selection.getFirstPosition()!.findAncestor( 'codeBlock' );
+	}
+}
+
+/**
+ * Check if viewElement is codeblock view.
+ * @param {module:engine/view/element~Element} viewElement
+ * @returns {Boolean}
+ */
+export function isCodeblockView( viewElement: ViewElement ): boolean {
+	return viewElement.getCustomProperty && !!viewElement.getCustomProperty( 'codeblock' );
+}
+
+/**
+ * Returns an code block view element if one is selected or is among the selection's ancestors.
+ * @param {module:engine/view/documentselection~DocumentSelection} selection
+ * @returns {module:engine/view/element~Element|null}
+ */
+export function getClosestSelectedCodeblockView( selection: any ): any {
+	const selectionPosition = selection.getFirstPosition();
+
+	if ( !selectionPosition ) {
+		return null;
+	}
+
+	const viewElement = selection.getSelectedElement();
+
+	if ( viewElement && isCodeblockView( viewElement ) ) {
+		return viewElement;
+	}
+
+	let parent = selectionPosition.parent;
+
+	while ( parent ) {
+		if ( parent.is && parent.is( 'element' ) && isCodeblockView( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
+
+	return null;
 }

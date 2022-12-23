@@ -97,7 +97,8 @@ describe( 'codeblock caption utils', () => {
 
 		it( 'should return object if element is a valid caption', () => {
 			const element = new ViewElement( document, 'figcaption' );
-			new ViewElement( document, 'pre', null, element ); // eslint-disable-line no-new
+			const codeElement = new ViewElement( document, 'code', null, element );
+			new ViewElement( document, 'pre', null, codeElement ); // eslint-disable-line no-new
 
 			expect( matchCodeblockCaptionViewElement( element ) ).to.deep.equal( { name: true } );
 		} );

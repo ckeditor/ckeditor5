@@ -159,6 +159,8 @@ export default class CodeBlockCommand extends Command {
 					writer.rename( elementAfter, 'paragraph' );
 					writer.removeAttribute( 'language', elementAfter );
 					writer.remove( item );
+				} else if ( item.is( 'element', 'caption' ) && item.parent && item.parent.is( 'element', 'codeBlock' ) ) {
+					writer.remove( item );
 				}
 			}
 
