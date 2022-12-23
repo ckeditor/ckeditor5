@@ -47,7 +47,7 @@ Read more about our {@link framework/guides/contributing/testing-environment tes
 
 Assuming that you would like to propose some changes, these are the steps you should take to create a pull request:
 
-1. Make sure to open a ticket in https://github.com/ckeditor/ckeditor5 describing the issue, feature or problem that you want to solve in your pull request. This can be skipped in case of obvious and trivial changes (typos, documentation, etc.).
+1. Make sure to open a ticket in [https://github.com/ckeditor/ckeditor5](https://github.com/ckeditor/ckeditor5) describing the issue, feature or problem that you want to solve in your pull request. This can be skipped in case of obvious and trivial changes (typos, documentation, etc.).
 1. Make sure your {@link framework/guides/contributing/development-environment development environment} is ready.
 1. Go to GitHub and [fork the repository](https://help.github.com/articles/fork-a-repo). The forked repository will appear in your GitHub account as `https://github.com/YOUR-USERNAME/ckeditor5`.
 1. Open your terminal, then go to the package ("repository") folder in your development environment:

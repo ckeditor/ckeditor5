@@ -457,7 +457,7 @@ export default class DowncastWriter {
 	 * @param {String} value The attribute value.
 	 * @param {module:engine/view/element~Element} element
 	 */
-	public setAttribute( key: string, value: string, element: Element ): void {
+	public setAttribute( key: string, value: unknown, element: Element ): void {
 		element._setAttribute( key, value );
 	}
 

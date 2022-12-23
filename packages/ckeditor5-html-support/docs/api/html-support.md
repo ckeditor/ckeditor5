@@ -32,7 +32,7 @@ npm install --save @ckeditor/ckeditor5-html-support
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support).
 
 ## External links
 

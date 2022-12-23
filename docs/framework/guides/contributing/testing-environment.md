@@ -114,7 +114,7 @@ The `yarn run manual` task accepts the following options:
 * `--dll` &ndash; An optional flag that allows creating the DLL builds automatically without asking user for confirmation. If `true` (meaning that the `--dll` flag is provided), DLL builds are created automatically if they are required by test files. You can negate the logic to never create DLL builds and not ask user by providing the `--no-dll` flag. Defaults to `null`, so user will be asked for confirmation.
 * `--disable-watch` &ndash; It is enabled by default when there are no `--files` specified. This is due to high RAM memory usage when running watchers on all files. Disabling watch mode causes the files to no longer be rebuilt automatically when changed.
 
-It starts the server available at http://localhost:8125.
+It starts the server available at [http://localhost:8125](http://localhost:8125).
 
 ### Creating a manual test
 
