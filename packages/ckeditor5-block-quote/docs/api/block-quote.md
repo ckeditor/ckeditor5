@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-block-quote
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-block-quote.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-block-quote](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-block-quote).
 
 ## External links
 
