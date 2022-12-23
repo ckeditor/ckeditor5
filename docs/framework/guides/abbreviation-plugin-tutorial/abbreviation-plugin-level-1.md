@@ -1,17 +1,17 @@
 ---
-category: simple-plugin
-menu-title: Abbreviation plugin (part 1)
+category: abbreviation-plugin
+menu-title: Creating a toolbar button
 order: 24
 modified_at: 2022-07-15
 ---
 
-# Abbreviation plugin tutorial &ndash; part 1
+# Creating a toolbar button
 
 This guide will show you how to create a simple abbreviation plugin for CKEditor 5.
 
 We will create a toolbar button that lets the users insert abbreviations into their document. These abbreviations will use the [`<abbr>` <abbr title="HyperText Markup Language">HTML</abbr> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr) with a ‘title’ attribute that will show up in a tooltip when the user hovers over the element. You can check the mechanism hovering over the underlined "HTML" text in the previous sentence.
 
-This first part of the tutorial will only cover the basics. We will just insert one possible abbreviation: "WYSIWYG". We will get user input in the {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-2 next part of this tutorial series}.
+This first part of the tutorial will only cover the basics. We will just insert one possible abbreviation: "WYSIWYG". We will get user input in the {@link framework/guides/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 next part of this tutorial series}.
 
 If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo).
 
@@ -442,6 +442,6 @@ If you got lost at any point, this is [the final implementation of the plugin](h
 <info-box>
 	**What's next?**
 
-	That's it for the first part of this tutorial! Your plugin should now work (at least in its most basic form). Move on to the {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-2 second part}, where you will create a balloon with a form to get user's input, replacing our hard-coded "WYSIWYG" abbreviation.
+	That's it for the first part of this tutorial! Your plugin should now work (at least in its most basic form). Move on to the {@link framework/guides/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 second part}, where you will create a balloon with a form to get user's input, replacing our hard-coded "WYSIWYG" abbreviation.
 </info-box>
 

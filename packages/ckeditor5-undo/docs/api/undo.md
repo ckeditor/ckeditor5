@@ -22,7 +22,7 @@ npm install --save @ckeditor/ckeditor5-undo
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-undo.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-undo](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-undo).
 
 ## External links
 
