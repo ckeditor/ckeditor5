@@ -214,6 +214,7 @@ ClassicEditor
 				// Grouping the buttons for the icon-like image styling
 				// into one drop-down.
 				name: 'imageStyle:icons',
+				title: 'Alignment',
 				items: [
 					'imageStyle:margin-left',
 					'imageStyle:margin-right',
@@ -224,6 +225,7 @@ ClassicEditor
 				// Grouping the buttons for the regular
 				// picture-like image styling into one drop-down.
 				name: 'imageStyle:pictures',
+				title: 'Style',
 				items: [ 'imageStyle:block', 'imageStyle:side' ],
 				defaultItem: 'imageStyle:block'
 			}, '|', 'toggleImageCaption', 'linkImage'

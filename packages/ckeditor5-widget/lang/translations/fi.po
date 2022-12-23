@@ -27,3 +27,7 @@ msgstr "Liitä kappale ennen lohkoa"
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
 msgstr "Liitä kappale lohkon jälkeen"
+
+msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
+msgid "Press Enter to type after or press Shift + Enter to type before the widget"
+msgstr "Paina enter-näppäintä kirjoittaaksesi tai paina shift + enter kirjoittaaksesi ennen widget-sovellusta"

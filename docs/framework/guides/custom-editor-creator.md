@@ -19,7 +19,6 @@ import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * The multi-root editor implementation. It provides inline editables and a single toolbar.
@@ -33,7 +32,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
-class MultirootEditor extends Editor {
+class MultirootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * Creates an instance of the multi-root editor.
 	 *
@@ -114,8 +113,6 @@ class MultirootEditor extends Editor {
 		} );
 	}
 }
-
-mix( MultirootEditor, DataApiMixin );
 ```
 
 ## EditorUI class
@@ -123,7 +120,7 @@ mix( MultirootEditor, DataApiMixin );
 The `*EditorUI` class is the main UI class which initializes UI components (the main view and the toolbar) and sets up mechanisms like {@link framework/guides/deep-dive/focus-tracking#using-the-focustracker-class focus tracker} or placeholder management. The custom `*EditorUI` class should extend the {@link module:core/editor/editorui~EditorUI base `EditorUI` class} like below:
 
 ```js
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
 /**

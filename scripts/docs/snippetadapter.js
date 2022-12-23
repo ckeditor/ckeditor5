@@ -11,7 +11,7 @@ const fs = require( 'fs' );
 const minimatch = require( 'minimatch' );
 const webpack = require( 'webpack' );
 const { bundler, styles, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const glob = require( 'glob' );
@@ -135,7 +135,7 @@ module.exports = async function snippetAdapter( snippets, options, umbertoHelper
 	}
 
 	for ( const config of webpackConfigs ) {
-		const { language, additionalLanguages } = config.plugins.find( plugin => plugin instanceof CKEditorWebpackPlugin ).options;
+		const { language, additionalLanguages } = config.plugins.find( plugin => plugin instanceof CKEditorTranslationsPlugin ).options;
 		const textLang = additionalLanguages ? additionalLanguages.join( ', ' ) : language;
 
 		const spinner = tools.createSpinner(
@@ -363,7 +363,7 @@ function getWebpackConfig( snippets, config ) {
 		definitions[ definitionKey ] = JSON.stringify( config.definitions[ definitionKey ] );
 	}
 
-	const ckeditorWebpackPluginOptions = {
+	const ckeditorTranslationsPluginOptions = {
 		// All translation files are added to HTML files directly later.
 		buildAllTranslationsToSeparateFiles: true
 	};
@@ -378,13 +378,13 @@ function getWebpackConfig( snippets, config ) {
 			}
 		}
 
-		// Pass unique values of `additionalLanguages` to `CKEditorWebpackPlugin`.
-		ckeditorWebpackPluginOptions.additionalLanguages = [ ...additionalLanguages ];
+		// Pass unique values of `additionalLanguages` to `CKEditorTranslationsPlugin`.
+		ckeditorTranslationsPluginOptions.additionalLanguages = [ ...additionalLanguages ];
 
 		// Also, set the default language because of the warning that comes from the plugin.
-		ckeditorWebpackPluginOptions.language = DEFAULT_LANGUAGE;
+		ckeditorTranslationsPluginOptions.language = DEFAULT_LANGUAGE;
 	} else {
-		ckeditorWebpackPluginOptions.language = config.language;
+		ckeditorTranslationsPluginOptions.language = config.language;
 	}
 
 	const webpackConfig = {
@@ -413,7 +413,7 @@ function getWebpackConfig( snippets, config ) {
 
 		plugins: [
 			new MiniCssExtractPlugin( { filename: '[name]/snippet.css' } ),
-			new CKEditorWebpackPlugin( ckeditorWebpackPluginOptions ),
+			new CKEditorTranslationsPlugin( ckeditorTranslationsPluginOptions ),
 			new webpack.BannerPlugin( {
 				banner: bundler.getLicenseBanner(),
 				raw: true

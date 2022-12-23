@@ -21,7 +21,7 @@ If you want to skip some editor features, customize your build with {@link insta
 
 ### Use online builder to add plugins
 
-Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, use online builder instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
+Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, it is easier and safer to use online builder instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
 
 ## Safety
 

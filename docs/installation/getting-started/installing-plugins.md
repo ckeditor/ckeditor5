@@ -232,6 +232,7 @@ import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+// Rest of the imports.
 // ...
 
 export default class ClassicEditor extends ClassicEditorBase {}
@@ -243,6 +244,7 @@ ClassicEditor.builtinPlugins = [
 	Bold,
 	Italic,
 	BlockQuote,
+	// Rest of plugins to include in the build.
 	// ...
 ];
 
@@ -251,9 +253,11 @@ ClassicEditor.defaultConfig = {
 		items: [
 			'heading',
 			'bold',
+			// Remaining toolbar items.
 			// ...
 		]
 	},
+	// Rest of classic editor configuration. 
 	// ...
 };
 ```
