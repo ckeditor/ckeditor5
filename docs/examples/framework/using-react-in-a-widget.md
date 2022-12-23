@@ -6,7 +6,7 @@ classes: main__content--no-toc
 modified_at: 2022-12-16
 ---
 
-# Using a React component in a block widget
+# React components in an editor
 
 The editor below presents integration between React library and a block widget from the CKEditor ecosystem. In the example, the React component renders a list of products you can add to the editor content.
 
