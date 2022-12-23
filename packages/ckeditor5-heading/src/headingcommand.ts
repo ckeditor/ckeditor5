@@ -7,8 +7,10 @@
  * @module heading/headingcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
+
+import type { Element, Schema } from 'ckeditor5/src/engine';
 
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
@@ -17,38 +19,37 @@ import { first } from 'ckeditor5/src/utils';
  */
 export default class HeadingCommand extends Command {
 	/**
+	 * If the selection starts in a heading (which {@link #modelElements is supported by this command})
+	 * the value is set to the name of that heading model element.
+	 * It is  set to `false` otherwise.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public value: boolean | string;
+
+	/**
+	 * Set of defined model's elements names that this command support.
+	 * See {@link module:heading/heading~HeadingOption}.
+	 */
+	public readonly modelElements: Array<string>;
+
+	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {Array.<String>} modelElements Names of the element which this command can apply in the model.
+	 * @param editor Editor instance.
+	 * @param modelElements Names of the element which this command can apply in the model.
 	 */
-	constructor( editor, modelElements ) {
+	constructor( editor: Editor, modelElements: Array<string> ) {
 		super( editor );
 
-		/**
-		 * If the selection starts in a heading (which {@link #modelElements is supported by this command})
-		 * the value is set to the name of that heading model element.
-		 * It is  set to `false` otherwise.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean|String} #value
-		 */
-
-		/**
-		 * Set of defined model's elements names that this command support.
-		 * See {@link module:heading/heading~HeadingOption}.
-		 *
-		 * @readonly
-		 * @member {Array.<String>}
-		 */
 		this.modelElements = modelElements;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const block = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		this.value = !!block && this.modelElements.includes( block.name ) && block.name;
@@ -59,11 +60,10 @@ export default class HeadingCommand extends Command {
 	 * Executes the command. Applies the heading to the selected blocks or, if the first selected
 	 * block is a heading already, turns selected headings (of this level only) to paragraphs.
 	 *
-	 * @param {Object} options
-	 * @param {String} options.value Name of the element which this command will apply in the model.
+	 * @param options.value Name of the element which this command will apply in the model.
 	 * @fires execute
 	 */
-	execute( options ) {
+	public override execute( options: { value: string } ): void {
 		const model = this.editor.model;
 		const document = model.document;
 
@@ -84,13 +84,14 @@ export default class HeadingCommand extends Command {
 	}
 }
 
-// Checks whether the given block can be replaced by a specific heading.
-//
-// @private
-// @param {module:engine/model/element~Element} block A block to be tested.
-// @param {module:heading/headingcommand~HeadingCommand#modelElement} heading Command element name in the model.
-// @param {module:engine/model/schema~Schema} schema The schema of the document.
-// @returns {Boolean}
-function checkCanBecomeHeading( block, heading, schema ) {
+/**
+ * Checks whether the given block can be replaced by a specific heading.
+ *
+ * @param block A block to be tested.
+ * @param heading Command element name in the model.
+ * @param schema The schema of the document.
+ */
+function checkCanBecomeHeading( block: Element, heading: string, schema: Schema ) {
 	return schema.checkChild( block.parent, heading ) && !schema.isObject( block );
 }
+

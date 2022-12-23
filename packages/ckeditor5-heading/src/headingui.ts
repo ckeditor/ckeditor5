@@ -7,9 +7,9 @@
  * @module heading/headingui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
+import { Plugin, type Command } from 'ckeditor5/src/core';
+import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import { Collection, type EventInfo } from 'ckeditor5/src/utils';
 
 import { getLocalizedOptions } from './utils';
 
@@ -24,14 +24,14 @@ export default class HeadingUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'HeadingUI' {
 		return 'HeadingUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 		const options = getLocalizedOptions( editor );
@@ -40,16 +40,16 @@ export default class HeadingUI extends Plugin {
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'heading', locale => {
-			const titles = {};
-			const itemDefinitions = new Collection();
+			const titles: Record<string, string> = {};
+			const itemDefinitions: Collection<ListDropdownItemDefinition> = new Collection();
 
-			const headingCommand = editor.commands.get( 'heading' );
-			const paragraphCommand = editor.commands.get( 'paragraph' );
+			const headingCommand = editor.commands.get( 'heading' )!;
+			const paragraphCommand = editor.commands.get( 'paragraph' )!;
 
-			const commands = [ headingCommand ];
+			const commands: Array<Command> = [ headingCommand ];
 
 			for ( const option of options ) {
-				const def = {
+				const def: ListDropdownItemDefinition = {
 					type: 'button',
 					model: new Model( {
 						label: option.title,
@@ -99,17 +99,32 @@ export default class HeadingUI extends Plugin {
 
 			dropdownView.buttonView.bind( 'label' ).to( headingCommand, 'value', paragraphCommand, 'value', ( value, para ) => {
 				const whichModel = value || para && 'paragraph';
+
+				if ( typeof whichModel === 'boolean' ) {
+					return defaultTitle;
+				}
+
 				// If none of the commands is active, display default title.
-				return titles[ whichModel ] ? titles[ whichModel ] : defaultTitle;
+				if ( !titles[ whichModel ] ) {
+					return defaultTitle;
+				}
+
+				return titles[ whichModel ];
 			} );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdownView, 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', ( evt: EventInfo ) => {
 				editor.execute( evt.source.commandName, evt.source.commandValue ? { value: evt.source.commandValue } : undefined );
 				editor.editing.view.focus();
 			} );
 
 			return dropdownView;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ HeadingUI.pluginName ]: HeadingUI;
 	}
 }

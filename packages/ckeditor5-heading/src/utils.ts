@@ -7,6 +7,10 @@
  * @module heading/utils
  */
 
+import type { Editor } from 'ckeditor5/src/core';
+
+import type { HeadingOptions } from './heading';
+
 /**
  * Returns heading options as defined in `config.heading.options` but processed to consider
  * the editor localization, i.e. to display {@link module:heading/heading~HeadingOption}
@@ -14,14 +18,11 @@
  *
  * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
  * when the user configuration is defined because the editor does not exist yet.
- *
- * @param {module:core/editor/editor~Editor} editor
- * @returns {Array.<module:heading/heading~HeadingOption>}.
  */
-export function getLocalizedOptions( editor ) {
+export function getLocalizedOptions( editor: Editor ): HeadingOptions {
 	const t = editor.t;
-	const localizedTitles = {
-		Paragraph: t( 'Paragraph' ),
+	const localizedTitles: Record<string, string> = {
+		'Paragraph': t( 'Paragraph' ),
 		'Heading 1': t( 'Heading 1' ),
 		'Heading 2': t( 'Heading 2' ),
 		'Heading 3': t( 'Heading 3' ),
@@ -30,7 +31,7 @@ export function getLocalizedOptions( editor ) {
 		'Heading 6': t( 'Heading 6' )
 	};
 
-	return editor.config.get( 'heading.options' ).map( option => {
+	return editor.config.get( 'heading.options' )!.map( option => {
 		const title = localizedTitles[ option.title ];
 
 		if ( title && title != option.title ) {

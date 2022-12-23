@@ -16,9 +16,9 @@ export { default as DataController, type DataControllerSetEvent } from './contro
 // Conversion.
 export { default as Conversion } from './conversion/conversion';
 export type { DowncastInsertEvent, DowncastSelectionEvent } from './conversion/downcastdispatcher';
-export type { UpcastElementEvent, UpcastTextEvent } from './conversion/upcastdispatcher';
+export type { UpcastConversionApi, UpcastConversionData, UpcastElementEvent, UpcastTextEvent } from './conversion/upcastdispatcher';
 export type { AddHighlightCallback, HighlightDescriptor, RemoveHighlightCallback } from './conversion/downcasthelpers';
-export type { MapperViewToModelPositionEvent } from './conversion/mapper';
+export type { default as Mapper, MapperViewToModelPositionEvent } from './conversion/mapper';
 
 // DataProcessor.
 export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor';
@@ -45,10 +45,11 @@ export { default as Text } from './model/text';
 export type { default as Batch } from './model/batch';
 export type { default as Item } from './model/item';
 export type { default as Node } from './model/node';
+export type { default as RootElement } from './model/rootelement';
 export type { default as Schema } from './model/schema';
 export type { default as Selection } from './model/selection';
-export type { default as Writer } from './model/writer';
 export type { default as TypeCheckable } from './model/typecheckable';
+export type { default as Writer } from './model/writer';
 
 export { findOptimalInsertionRange } from './model/utils/findoptimalinsertionrange';
 
@@ -80,8 +81,10 @@ export { default as ViewEmptyElement } from './view/emptyelement';
 export { default as ViewRawElement } from './view/rawelement';
 export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
-export type { default as ViewItem } from './view/item';
+export type { default as ElementDefinition } from './view/elementdefinition';
 export type { default as ViewDocumentSelection } from './view/documentselection';
+export type { default as ViewItem } from './view/item';
+export type { default as ViewPosition } from './view/position';
 export type { default as ViewRange } from './view/range';
 export type { default as ViewSelection, ViewSelectionChangeEvent } from './view/selection';
 export type { default as ViewTypeCheckable } from './view/typecheckable';

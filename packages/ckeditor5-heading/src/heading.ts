@@ -7,7 +7,8 @@
  * @module heading/heading
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type { ElementDefinition } from 'ckeditor5/src/engine';
 
 import HeadingEditing from './headingediting';
 import HeadingUI from './headingui';
@@ -29,55 +30,51 @@ export default class Heading extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ HeadingEditing, HeadingUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Heading' {
 		return 'Heading';
 	}
 }
 
 /**
- * The configuration of the heading feature. Introduced by the {@link module:heading/headingediting~HeadingEditing} feature.
- *
- * Read more in {@link module:heading/heading~HeadingConfig}.
- *
- * @member {module:heading/heading~HeadingConfig} module:core/editor/editorconfig~EditorConfig#heading
- */
-
-/**
  * The configuration of the heading feature.
  * The option is used by the {@link module:heading/headingediting~HeadingEditing} feature.
  *
- *		ClassicEditor
- *			.create( {
- * 				heading: ... // Heading feature config.
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ```ts
+ * ClassicEditor
+ *   .create( {
+ *     heading: ... // Heading feature config.
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
  * @interface HeadingConfig
  */
+export type HeadingConfig = { options: HeadingOptions };
 
 /**
  * The available heading options.
  *
  * The default value is:
- *
- *		const headingConfig = {
- *			options: [
- *				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
- *				{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
- *				{ model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
- *				{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
- *			]
- *		};
+ * ```ts
+ * const headingConfig = {
+ *   options: [
+ *     { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+ *     { model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
+ *     { model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
+ *     { model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
+ *   ]
+ * };
+ * ```
  *
  * It defines 3 levels of headings. In the editor model they will use `heading1`, `heading2`, and `heading3` elements.
  * Their respective view elements (so the elements output by the editor) will be: `h2`, `h3`, and `h4`. This means that
@@ -100,20 +97,49 @@ export default class Heading extends Plugin {
  * The defined headings are also available as values passed to the `'heading'` command under their model names.
  * For example, the below code will apply `<heading1>` to the current selection:
  *
- *		editor.execute( 'heading', { value: 'heading1' } );
- *
- * @member {Array.<module:heading/heading~HeadingOption>} module:heading/heading~HeadingConfig#options
+ * ```ts
+ * editor.execute( 'heading', { value: 'heading1' } );
+ * ```
  */
+export type HeadingOptions = Array<HeadingOption>;
 
 /**
  * Heading option descriptor.
  *
- * @typedef {Object} module:heading/heading~HeadingOption
- * @property {String} model Name of the model element to convert.
- * @property {module:engine/view/elementdefinition~ElementDefinition} view Definition of a view element to convert from/to.
- * @property {String} title The user-readable title of the option.
- * @property {String} class The class which will be added to the dropdown item representing this option.
- * @property {String} [icon] Icon used by {@link module:heading/headingbuttonsui~HeadingButtonsUI}. It can be omitted when using
+ * @typedef module:heading/heading~HeadingOption
+ * @property model Name of the model element to convert.
+ * @property view Definition of a view element to convert from/to.
+ * @property title The user-readable title of the option.
+ * @property class The class which will be added to the dropdown item representing this option.
+ * @property icon Icon used by {@link module:heading/headingbuttonsui~HeadingButtonsUI}. It can be omitted when using
  * the default configuration.
- * @extends module:engine/conversion/conversion~ConverterDefinition
  */
+export type HeadingOption = {
+	model: 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6';
+	view: ElementDefinition;
+	title: string;
+	class: string;
+	icon?: string;
+} | {
+	model: 'paragraph';
+	title: string;
+	class: string;
+	icon?: string;
+};
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Heading.pluginName ]: Heading;
+	}
+
+	/**
+	 * The configuration of the heading feature. Introduced by the {@link module:heading/headingediting~HeadingEditing} feature.
+	 *
+	 * Read more in {@link module:heading/heading~HeadingConfig}.
+	 *
+	 * @member {module:heading/heading~HeadingConfig} module:core/editor/editorconfig~EditorConfig#heading
+	 */
+	interface EditorConfig {
+		heading?: HeadingConfig;
+	}
+}

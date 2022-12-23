@@ -11,6 +11,8 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
 import { getLocalizedOptions } from './utils';
+import type { HeadingOption } from './heading';
+
 import iconHeading1 from '../theme/icons/heading1.svg';
 import iconHeading2 from '../theme/icons/heading2.svg';
 import iconHeading3 from '../theme/icons/heading3.svg';
@@ -18,7 +20,7 @@ import iconHeading4 from '../theme/icons/heading4.svg';
 import iconHeading5 from '../theme/icons/heading5.svg';
 import iconHeading6 from '../theme/icons/heading6.svg';
 
-const defaultIcons = {
+const defaultIcons: Record<string, string> = {
 	heading1: iconHeading1,
 	heading2: iconHeading2,
 	heading3: iconHeading3,
@@ -36,21 +38,23 @@ const defaultIcons = {
  *
  * Plugin introduces button UI elements, which names are same as `model` property from {@link module:heading/heading~HeadingOption}.
  *
- *		ClassicEditor
- *			.create( {
- *				plugins: [ ..., Heading, Paragraph, HeadingButtonsUI, ParagraphButtonUI ]
- *				heading: {
- *					options: [
- *						{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
- *						{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
- *						{ model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
- *						{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
- *					]
- * 				},
- * 				toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3' ]
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ```ts
+ * ClassicEditor
+ *   .create( {
+ *     plugins: [ ..., Heading, Paragraph, HeadingButtonsUI, ParagraphButtonUI ]
+ *     heading: {
+ *       options: [
+ *         { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+ *         { model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
+ *         { model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
+ *         { model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
+ *       ]
+ *      },
+ *      toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3' ]
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  *
  * NOTE: The `'paragraph'` button is defined in by the {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugin
  * which needs to be loaded manually as well.
@@ -64,7 +68,7 @@ export default class HeadingButtonsUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const options = getLocalizedOptions( this.editor );
 
 		options
@@ -74,16 +78,13 @@ export default class HeadingButtonsUI extends Plugin {
 
 	/**
 	 * Creates single button view from provided configuration option.
-	 *
-	 * @private
-	 * @param {Object} option
 	 */
-	_createButton( option ) {
+	private _createButton( option: HeadingOption ) {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( option.model, locale => {
 			const view = new ButtonView( locale );
-			const command = editor.commands.get( 'heading' );
+			const command = editor.commands.get( 'heading' )!;
 
 			view.label = option.title;
 			view.icon = option.icon || defaultIcons[ option.model ];

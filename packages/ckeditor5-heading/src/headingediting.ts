@@ -7,7 +7,7 @@
  * @module heading/headingediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { priorities } from 'ckeditor5/src/utils';
 
@@ -26,14 +26,14 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'HeadingEditing' {
 		return 'HeadingEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( 'heading', {
@@ -49,31 +49,33 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ Paragraph ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
-		const options = editor.config.get( 'heading.options' );
+		const options = editor.config.get( 'heading.options' )!;
 
 		const modelElements = [];
 
 		for ( const option of options ) {
 			// Skip paragraph - it is defined in required Paragraph feature.
-			if ( option.model !== defaultModelElement ) {
-				// Schema.
-				editor.model.schema.register( option.model, {
-					inheritAllFrom: '$block'
-				} );
-
-				editor.conversion.elementToElement( option );
-
-				modelElements.push( option.model );
+			if ( option.model === 'paragraph' ) {
+				continue;
 			}
+
+			// Schema.
+			editor.model.schema.register( option.model, {
+				inheritAllFrom: '$block'
+			} );
+
+			editor.conversion.elementToElement( option );
+
+			modelElements.push( option.model );
 		}
 
 		this._addDefaultH1Conversion( editor );
@@ -85,16 +87,16 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		// If the enter command is added to the editor, alter its behavior.
 		// Enter at the end of a heading element should create a paragraph.
 		const editor = this.editor;
 		const enterCommand = editor.commands.get( 'enter' );
-		const options = editor.config.get( 'heading.options' );
+		const options = editor.config.get( 'heading.options' )!;
 
 		if ( enterCommand ) {
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
-				const positionParent = editor.model.document.selection.getFirstPosition().parent;
+				const positionParent = editor.model.document.selection.getFirstPosition()!.parent;
 				const isHeading = options.some( option => positionParent.is( 'element', option.model ) );
 
 				if ( isHeading && !positionParent.is( 'element', defaultModelElement ) && positionParent.childCount === 0 ) {
@@ -107,10 +109,9 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * Adds default conversion for `h1` -> `heading1` with a low priority.
 	 *
-	 * @private
-	 * @param {module:core/editor/editor~Editor} editor Editor instance on which to add the `h1` conversion.
+	 * @param editor Editor instance on which to add the `h1` conversion.
 	 */
-	_addDefaultH1Conversion( editor ) {
+	private _addDefaultH1Conversion( editor: Editor ) {
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			model: 'heading1',
 			view: 'h1',
@@ -118,5 +119,15 @@ export default class HeadingEditing extends Plugin {
 			// this listener is called before it. If not, `h1` will be transformed into a paragraph.
 			converterPriority: priorities.get( 'low' ) + 1
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ HeadingEditing.pluginName ]: HeadingEditing;
+	}
+
+	interface CommandsMap {
+		heading: HeadingCommand;
 	}
 }
