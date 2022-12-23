@@ -8,7 +8,7 @@
  */
 
 import type { ColorDefinition, DropdownView } from 'ckeditor5/src/ui';
-import type { AttributeToElementConverterDefinition, DowncastWriter, ViewAttributeElement, ViewElement } from 'ckeditor5/src/engine';
+import type { AttributeToElementComplexConverterDefinition, DowncastWriter, ViewAttributeElement, ViewElement } from 'ckeditor5/src/engine';
 import type { FontFamilyOption } from './fontfamily';
 import type { FontSizeOption } from './fontsize';
 import ColorTableView from './ui/colortableview';
@@ -39,11 +39,11 @@ export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
 export function buildDefinition(
 	modelAttributeKey: string,
 	options: Array<FontFamilyOption> | Array<FontSizeOption>
-): AttributeToElementConverterDefinition<string> {
-	const definition: AttributeToElementConverterDefinition<string> = {
+): AttributeToElementComplexConverterDefinition<string> {
+	const definition: AttributeToElementComplexConverterDefinition<string> = {
 		model: {
 			key: modelAttributeKey,
-			values: [] as Array<any>
+			values: [] as Array<string>
 		},
 		view: {} as any,
 		upcastAlso: {} as any
