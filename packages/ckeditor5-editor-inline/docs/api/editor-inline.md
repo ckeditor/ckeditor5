@@ -22,7 +22,7 @@ npm install --save @ckeditor/ckeditor5-editor-inline
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-inline.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-inline](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-inline).
 
 ## External links
 

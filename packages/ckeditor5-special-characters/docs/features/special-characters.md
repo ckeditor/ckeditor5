@@ -183,4 +183,4 @@ The {@link module:special-characters/specialcharacters~SpecialCharacters} plugin
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-special-characters.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-special-characters](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-special-characters).

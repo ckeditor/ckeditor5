@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-find-and-replace
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-find-and-replace.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-find-and-replace](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-find-and-replace).
 
 ## External links
 

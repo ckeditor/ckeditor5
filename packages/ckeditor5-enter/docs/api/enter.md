@@ -22,7 +22,7 @@ npm install --save @ckeditor/ckeditor5-enter
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-enter.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-enter](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-enter).
 
 ## External links
 

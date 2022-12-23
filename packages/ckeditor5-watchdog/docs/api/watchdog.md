@@ -20,7 +20,7 @@ npm install --save @ckeditor/ckeditor5-watchdog
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-watchdog.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-watchdog](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-watchdog).
 
 ## External links
 
