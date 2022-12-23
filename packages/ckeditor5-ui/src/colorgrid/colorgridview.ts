@@ -46,7 +46,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 	 * @param options Component configuration
 	 * @param options.colorDefinitions Array with definitions
 	 * required to create the {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
-	 * @param options.columns=5 A number of columns to display the tiles.
+	 * @param options.columns A number of columns to display the tiles.
 	 */
 	constructor(
 		locale?: Locale,

@@ -27,25 +27,27 @@ describe( 'utils', () => {
 			dropdown.render();
 
 			addColorTableToDropdown(
-				dropdown,
-				[
-					{
-						label: 'Black',
-						color: '#000',
-						options: {
-							hasBorder: false
+				{
+					dropdownView: dropdown,
+					colors: [
+						{
+							label: 'Black',
+							color: '#000',
+							options: {
+								hasBorder: false
+							}
+						},
+						{
+							label: 'White',
+							color: '#FFFFFF',
+							options: {
+								hasBorder: true
+							}
 						}
-					},
-					{
-						label: 'White',
-						color: '#FFFFFF',
-						options: {
-							hasBorder: true
-						}
-					}
-				],
-				2,
-				'Remove Color'
+					],
+					columns: 2,
+					removeButtonLabel: 'Remove Color'
+				}
 			);
 
 			expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );

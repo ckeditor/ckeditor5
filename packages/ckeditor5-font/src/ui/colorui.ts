@@ -9,9 +9,13 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
-import type FontCommand from '../fontcommand';
 
-import { type ColorTableDropdownView, addColorTableToDropdown } from '../utils';
+import {
+	addColorTableToDropdown,
+	type ColorTableDropdownView,
+	type FONT_BACKGROUND_COLOR,
+	type FONT_COLOR
+} from '../utils';
 import type ColorTableView from './colortableview';
 
 /**
@@ -19,20 +23,18 @@ import type ColorTableView from './colortableview';
  *
  * It is used to create the `'fontBackgroundColor'` and `'fontColor'` dropdowns, each hosting
  * a {@link module:font/ui/colortableview~ColorTableView}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ColorUI extends Plugin {
 	/**
 	 * The name of the command which will be executed when a color tile is clicked.
 	 */
-	public commandName: string;
+	public commandName: typeof FONT_BACKGROUND_COLOR | typeof FONT_COLOR;
 
 	/**
 	 * The name of this component in the {@link module:ui/componentfactory~ComponentFactory}.
 	 * Also the configuration scope name in `editor.config`.
 	 */
-	public componentName: string;
+	public componentName: typeof FONT_BACKGROUND_COLOR | typeof FONT_COLOR;
 
 	/**
 	 * The SVG icon used by the dropdown.
@@ -57,21 +59,30 @@ export default class ColorUI extends Plugin {
 	/**
 	 * Creates a plugin which introduces a dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}.
 	 *
-	 * @param {Object} config The configuration object.
-	 * @param {String} config.commandName The name of the command which will be executed when a color tile is clicked.
-	 * @param {String} config.componentName The name of the dropdown in the {@link module:ui/componentfactory~ComponentFactory}
+	 * @param config The configuration object.
+	 * @param config.commandName The name of the command which will be executed when a color tile is clicked.
+	 * @param config.componentName The name of the dropdown in the {@link module:ui/componentfactory~ComponentFactory}
 	 * and the configuration scope name in `editor.config`.
-	 * @param {String} config.icon The SVG icon used by the dropdown.
-	 * @param {String} config.dropdownLabel The label used by the dropdown.
+	 * @param config.icon The SVG icon used by the dropdown.
+	 * @param config.dropdownLabel The label used by the dropdown.
 	 */
-	constructor( editor: Editor, { commandName, icon, componentName, dropdownLabel }: any ) {
+	constructor(
+		editor: Editor,
+		{ commandName, componentName, icon, dropdownLabel }:
+			{
+				commandName: typeof FONT_BACKGROUND_COLOR | typeof FONT_COLOR;
+				componentName: typeof FONT_BACKGROUND_COLOR | typeof FONT_COLOR;
+				icon: string;
+				dropdownLabel: string;
+			}
+	) {
 		super( editor );
 
 		this.commandName = commandName;
 		this.componentName = componentName;
 		this.icon = icon;
 		this.dropdownLabel = dropdownLabel;
-		this.columns = editor.config.get( `${ this.componentName }.columns` ) as number;
+		this.columns = editor.config.get( `${ this.componentName }.columns` )!;
 		this.colorTableView = undefined;
 	}
 
@@ -82,27 +93,29 @@ export default class ColorUI extends Plugin {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const t = locale.t;
-		const command = editor.commands.get( this.commandName ) as FontCommand;
-		const colorsConfig = normalizeColorOptions( ( editor.config.get( this.componentName ) as any ).colors );
+		const command = editor.commands.get( this.commandName )!;
+		const colorsConfig = normalizeColorOptions( ( editor.config.get( this.componentName )! ).colors! );
 		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
-		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` ) as number | undefined;
+		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` )!;
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView: ColorTableDropdownView = createDropdown( locale );
 			this.colorTableView = addColorTableToDropdown(
-				dropdownView,
-				localizedColors.map( option => ( {
-					label: option.label,
-					color: option.model,
-					options: {
-						hasBorder: option.hasBorder
-					}
-				} ) ),
-				this.columns,
-				t( 'Remove color' ),
-				documentColorsCount !== 0 ? t( 'Document colors' ) : '',
-				documentColorsCount === undefined ? this.columns : documentColorsCount
+				{
+					dropdownView,
+					colors: localizedColors.map( option => ( {
+						label: option.label,
+						color: option.model,
+						options: {
+							hasBorder: option.hasBorder
+						}
+					} ) ),
+					columns: this.columns,
+					removeButtonLabel: t( 'Remove color' ),
+					documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
+					documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount
+				}
 			);
 
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );

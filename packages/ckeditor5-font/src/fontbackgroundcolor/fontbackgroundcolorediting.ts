@@ -138,7 +138,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ FontBackgroundColorEditing.pluginName ]: FontBackgroundColorEditing;
 	}
 
-  interface CommandConfig {
-	[FONT_BACKGROUND_COLOR]: FontBackgroundColorCommand;
+  interface CommandsMap {
+	[ FONT_BACKGROUND_COLOR ]: FontBackgroundColorCommand;
   }
 }

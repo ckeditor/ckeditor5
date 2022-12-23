@@ -14,8 +14,6 @@ import type { Editor } from 'ckeditor5/src/core';
 
 /**
  * The font color UI plugin. It introduces the `'fontColor'` dropdown.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FontColorUI extends ColorUI {
 	/**

@@ -148,9 +148,8 @@ function attachPriority( definition: FontSizeOption ): FontSizeOption {
 
 /**
  * Returns a prepared preset definition. If passed an object, a name of preset should be defined as `model` value.
- * @param {String|Object} definition
- * @param {String} definition.model A preset name.
- * @returns
+ *
+ * @param definition.model A preset name.
  */
 function findPreset( definition: string | { model?: string } ): FontSizeOption | undefined {
 	if ( typeof definition === 'string' ) {
@@ -163,15 +162,10 @@ function findPreset( definition: string | { model?: string } ): FontSizeOption |
  * We treat `definition` as completed if it is an object that contains `title`, `model` and `view` values.
  */
 function isFullItemDefinition( definition: Record<string, any> ): boolean {
-	return typeof definition === 'object' && definition.title && definition.model && definition.view;
+	return definition.title && definition.model && definition.view;
 }
 
-/**
- * We treat `definition` as numerical if it is a number, number-like (string) or an object with the `title` key.
- */
-// @param {Object|Number|String} definition
-// @param {Object} definition.title
-function isNumericalDefinition( definition: string | number | any ): boolean {
+function isNumericalDefinition( definition: any ): boolean {
 	let numberValue;
 
 	if ( typeof definition === 'object' ) {

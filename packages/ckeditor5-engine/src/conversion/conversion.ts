@@ -300,15 +300,9 @@ export default class Conversion {
 	 *
 	 * @param {module:engine/conversion/conversion~ConverterDefinition} definition The converter definition.
 	 */
-	public elementToElement( definition: {
-		model: string;
-		view: ElementDefinition;
-		upcastAlso?: ArrayOrItem<ElementDefinition | MatcherPattern>;
-		converterPriority?: PriorityString;
-	} ): void {
+	public elementToElement( definition: ElementToElementConverterDefinition ): void {
 		// Set up downcast converter.
 		this.for( 'downcast' ).elementToElement( definition );
-
 		// Set up upcast converter.
 		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
 			this.for( 'upcast' )
@@ -479,24 +473,7 @@ export default class Conversion {
 	 * @param {module:engine/conversion/conversion~ConverterDefinition} definition The converter definition.
 	 */
 	public attributeToElement<TValues extends string>(
-		definition: {
-			model: string | {
-				key: string;
-				name?: string;
-			};
-			view: ElementDefinition;
-			upcastAlso?: ArrayOrItem<MatcherPattern>;
-			converterPriority?: PriorityString;
-		} | {
-			model: {
-				key: string;
-				name?: string;
-				values: Array<TValues>;
-			};
-			view: Record<TValues, ElementDefinition>;
-			upcastAlso?: Record<TValues, MatcherPattern>;
-			converterPriority?: PriorityString;
-		}
+		definition: AttributeToElementConverterDefinition<TValues>
 	): void {
 		// Set up downcast converter.
 		this.for( 'downcast' ).attributeToElement( definition );
@@ -720,7 +697,7 @@ function* _getUpcastDefinition( model: unknown, view: unknown, upcastAlso?: unkn
 /**
  * Defines how the model should be converted from and to the view.
  */
-export interface ConverterDefinition {
+export interface ConverterDefinition<TModel, TView, TUpcastAlso> {
 
 	/**
 	 *
@@ -729,14 +706,14 @@ export interface ConverterDefinition {
 	 * learn how to set it.
 	 *
 	 */
-	model?: any;
+	model: TModel;
 
 	/**
 	 * @property {module:engine/view/elementdefinition~ElementDefinition|Object} view The definition of the view element to convert from and
 	 * to. If `model` describes multiple values, `view` is an object that assigns these values (`view` object keys) to view element
 	 * definitions (`view` object values).
 	 */
-	view: ElementDefinition | object;
+	view: TView;
 
 	/**
 	 * @property {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [upcastAlso]
@@ -744,10 +721,36 @@ export interface ConverterDefinition {
 	 * is an object that assigns these values (`upcastAlso` object keys) to {@link module:engine/view/matcher~MatcherPattern}s
 	 * (`upcastAlso` object values).
 	 */
-	upcastAlso?: MatcherPattern | Array<MatcherPattern>;
+	upcastAlso?: TUpcastAlso;
 
 	/**
 	 * @property [converterPriority] The converter priority.
 	 */
 	converterPriority?: PriorityString;
 }
+
+/**
+ * Defines how the model should be converted from and to the view.
+ */
+export type AttributeToElementConverterDefinition<TValues extends string> =
+	ConverterDefinition<{
+			key: string;
+			name?: string;
+			values: Array<TValues>;
+		},
+		Record<TValues, ElementDefinition>,
+		Record<TValues, ArrayOrItem<ElementDefinition | MatcherPattern>> > |
+	ConverterDefinition<
+		string | {
+			key: string;
+			name?: string;
+		},
+		ElementDefinition,
+		ArrayOrItem<ElementDefinition | MatcherPattern>
+	>;
+
+/**
+ * Defines how the model should be converted from and to the view.
+ */
+export type ElementToElementConverterDefinition =
+	ConverterDefinition<string, ElementDefinition, ArrayOrItem<ElementDefinition | MatcherPattern>>;

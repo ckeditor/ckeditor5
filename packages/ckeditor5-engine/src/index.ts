@@ -14,7 +14,11 @@ export { default as EditingController } from './controller/editingcontroller';
 export { default as DataController, type DataControllerSetEvent } from './controller/datacontroller';
 
 // Conversion.
-export { default as Conversion, ConverterDefinition } from './conversion/conversion';
+export {
+	default as Conversion,
+	type AttributeToElementConverterDefinition,
+	type ElementToElementConverterDefinition
+} from './conversion/conversion';
 export type { DowncastInsertEvent, DowncastSelectionEvent } from './conversion/downcastdispatcher';
 export type { AddHighlightCallback, HighlightDescriptor, RemoveHighlightCallback } from './conversion/downcasthelpers';
 export type { MapperViewToModelPositionEvent } from './conversion/mapper';

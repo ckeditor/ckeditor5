@@ -40,7 +40,7 @@ export default class FontFamilyUI extends Plugin {
 
 		const options = this._getLocalizedOptions();
 
-		const command = editor.commands.get( FONT_FAMILY )! as FontFamilyCommand;
+		const command = editor.commands.get( FONT_FAMILY )!;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_FAMILY, locale => {
@@ -83,7 +83,7 @@ export default class FontFamilyUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		const options = normalizeOptions( ( editor.config.get( FONT_FAMILY ) as any ).options );
+		const options = normalizeOptions( ( editor.config.get( FONT_FAMILY )! ).options! );
 
 		return options.map( option => {
 			// The only title to localize is "Default" others are font names.
@@ -98,8 +98,6 @@ export default class FontFamilyUI extends Plugin {
 
 /**
  * Prepares FontFamily dropdown items.
- *
- * @private
  */
 function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFamilyCommand ): Collection<ListDropdownItemDefinition> {
 	const itemDefinitions = new Collection<ListDropdownItemDefinition>();
@@ -126,7 +124,7 @@ function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFam
 				return false;
 			}
 
-			return ( value as string ).split( ',' )[ 0 ].replace( /'/g, '' ).toLowerCase() === option.model.toLowerCase();
+			return value.split( ',' )[ 0 ].replace( /'/g, '' ).toLowerCase() === option.model.toLowerCase();
 		} );
 
 		// Try to set a dropdown list item style.

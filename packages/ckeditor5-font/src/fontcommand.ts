@@ -53,7 +53,6 @@ export default class FontCommand extends Command {
 	 * Executes the command. Applies the `value` of the {@link #attributeKey} to the selection.
 	 * If no `value` is passed, it removes the attribute from the selection.
 	 *
-	 * @protected
 	 * @param options Options for the executed command.
 	 * @param options.value The value to apply.
 	 * @fires execute

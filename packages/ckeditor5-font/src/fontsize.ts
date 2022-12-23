@@ -81,28 +81,30 @@ export interface FontSizeOption {
 		[ FontSize.pluginName ]: FontSize;
 	}
 
-  interface EditorConfig {
+	interface EditorConfig {
 
-	/**
-	 * The configuration of the font size feature.
-	 * It is introduced by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} feature.
-	 *
-	 * Read more in {@link module:font/fontsize~FontSizeConfig}.
-	 */
-	fontSize?: FontSizeConfig;
-  }
+		/**
+		 * The configuration of the font size feature.
+		 * It is introduced by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} feature.
+		 *
+		 * Read more in {@link module:font/fontsize~FontSizeConfig}.
+		 */
+		fontSize?: FontSizeConfig;
+	}
 }
 
 /**
  * The configuration of the font size feature.
  * This option is used by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} feature.
  *
- * 		ClassicEditor
- * 			.create( {
- * 				fontSize: ... // Font size feature configuration.
+ * ```ts
+ * ClassicEditor
+ * 	.create( {
+ * 		fontSize: ... // Font size feature configuration.
  * 	} )
- * 			.then( ... )
- * 			.catch( ... );
+ * 	.then( ... )
+ * 	.catch( ... );
+ * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  */
@@ -171,7 +173,7 @@ export interface FontSizeConfig {
 	 *
 	 * Executing the `fontSize` command without value will remove the `fontSize` attribute from the current selection.
 	 */
-	options: Array<string | number | FontSizeOption>;
+	options?: Array<string | number | FontSizeOption>;
 
 	/**
 	 * By default the plugin removes any `font-size` value that does not match the plugin's configuration.
@@ -191,6 +193,6 @@ export interface FontSizeConfig {
 	 *
 	 * With this configuration font sizes not specified in the editor configuration will not be removed when pasting the content.
 	 */
-	supportAllValues: boolean;
+	supportAllValues?: boolean;
 	}
 

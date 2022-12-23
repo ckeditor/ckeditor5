@@ -77,7 +77,7 @@ export default class FontFamilyEditing extends Plugin {
 			this._prepareAnyValueConverters();
 			this._prepareCompatibilityConverter();
 		} else {
-			editor.conversion.attributeToElement( definition as any );
+			editor.conversion.attributeToElement( definition );
 		}
 
 		editor.commands.add( FONT_FAMILY, new FontFamilyCommand( editor ) );
@@ -137,7 +137,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ FontFamilyEditing.pluginName ]: FontFamilyEditing;
 	}
 
-  interface CommandConfig {
-	[FONT_FAMILY]: FontFamilyCommand;
-  }
+	interface CommandsMap {
+		[ FONT_FAMILY ]: FontFamilyCommand;
+	}
 }

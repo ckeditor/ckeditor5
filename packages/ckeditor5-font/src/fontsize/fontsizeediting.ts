@@ -90,7 +90,7 @@ export default class FontSizeEditing extends Plugin {
 			this._prepareAnyValueConverters( definition );
 			this._prepareCompatibilityConverter();
 		} else {
-			editor.conversion.attributeToElement( definition as any );
+			editor.conversion.attributeToElement( definition );
 		}
 
 		// Add FontSize command.
@@ -196,7 +196,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ FontSizeEditing.pluginName ]: FontSizeEditing;
 	}
 
-  interface CommandConfig {
-	[FONT_SIZE]: FontSizeCommand;
-  }
+	interface CommandsMap {
+		[ FONT_SIZE ]: FontSizeCommand;
+	}
 }

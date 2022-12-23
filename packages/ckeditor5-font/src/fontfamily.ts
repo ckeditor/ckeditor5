@@ -71,16 +71,16 @@ export interface FontFamilyOption {
 		[ FontFamily.pluginName ]: FontFamily;
 	}
 
-  interface EditorConfig {
+	interface EditorConfig {
 
-	/**
-	 * The configuration of the font family feature.
-	 * It is introduced by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} feature.
-	 *
-	 * Read more in {@link module:font/fontfamily~FontFamilyConfig}.
-	 */
-	fontFamily?: FontFamilyConfig;
-  }
+		/**
+		 * The configuration of the font family feature.
+		 * It is introduced by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} feature.
+		 *
+		 * Read more in {@link module:font/fontfamily~FontFamilyConfig}.
+		 */
+		fontFamily?: FontFamilyConfig;
+	}
 }
 
 /**
@@ -139,7 +139,7 @@ export interface FontFamilyConfig {
 	 *
 	 * Executing the `'fontFamily'` command without any value will remove the `fontFamily` attribute from the current selection.
 	 */
-	options: Array<string | FontFamilyOption>;
+	options?: Array<string | FontFamilyOption>;
 
 	/**
 	 * By default the plugin removes any `font-family` value that does not match the plugin's configuration.
@@ -156,7 +156,7 @@ export interface FontFamilyConfig {
 	 *
 	 * With this configuration font families not specified in the editor configuration will not be removed when pasting the content.
 	 */
-	supportAllValues: boolean;
+	supportAllValues?: boolean;
 
 }
 

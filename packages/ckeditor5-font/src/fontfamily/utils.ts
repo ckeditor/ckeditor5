@@ -15,7 +15,7 @@ import type { FontFamilyOption } from '../fontfamily';
  *
  * @param configuredOptions An array of options taken from the configuration.
  */
-export function normalizeOptions( configuredOptions: Array<string | object> ): Array<FontFamilyOption> {
+export function normalizeOptions( configuredOptions: Array<string | FontFamilyOption> ): Array<FontFamilyOption> {
 	// Convert options to objects.
 	return configuredOptions
 		.map( getOptionDefinition )
@@ -28,7 +28,7 @@ export function normalizeOptions( configuredOptions: Array<string | object> ): A
  * If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
  *
  */
-function getOptionDefinition( option: string | object ): object | undefined {
+function getOptionDefinition( option: string | FontFamilyOption ): FontFamilyOption | undefined {
 	// Treat any object as full item definition provided by user in configuration.
 	if ( typeof option === 'object' ) {
 		return option;

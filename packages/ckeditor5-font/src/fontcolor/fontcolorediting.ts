@@ -150,7 +150,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ FontColorEditing.pluginName ]: FontColorEditing;
 	}
 
-  interface CommandConfig {
-	[FONT_COLOR]: FontColorCommand;
+  interface CommandsMap {
+	[ FONT_COLOR ]: FontColorCommand;
   }
 }

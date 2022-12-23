@@ -139,11 +139,14 @@ export default class ColorTableView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		colors: Array<ColorDefinition>,
-		columns: number,
-		removeButtonLabel: string,
-		documentColorsLabel?: string,
-		documentColorsCount?: number
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
+
+			colors: Array<ColorDefinition>;
+			columns: number;
+			removeButtonLabel: string;
+			documentColorsLabel?: string;
+			documentColorsCount?: number;
+		}
 	) {
 		super( locale );
 
@@ -201,7 +204,7 @@ export default class ColorTableView extends View {
 	 */
 	public updateDocumentColors( model: Model, attributeName: string ): void {
 		const document = model.document;
-		const maxCount = this.documentColorsCount || 0;
+		const maxCount = this.documentColorsCount;
 
 		this.documentColors.clear();
 
@@ -213,7 +216,7 @@ export default class ColorTableView extends View {
 				if ( node.is( '$textProxy' ) && node.hasAttribute( attributeName ) ) {
 					this._addColorToDocumentColors( node.getAttribute( attributeName ) as string );
 
-					if ( this.documentColors.length >= maxCount ) {
+					if ( this.documentColors.length >= maxCount! ) {
 						return;
 					}
 				}

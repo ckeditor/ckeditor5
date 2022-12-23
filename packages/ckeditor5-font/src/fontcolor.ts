@@ -7,6 +7,7 @@
  * @module font/fontcolor
  */
 
+import type { ColorOption } from 'ckeditor5/src/ui';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import FontColorEditing from './fontcolor/fontcolorediting';
 import FontColorUI from './fontcolor/fontcolorui';
@@ -41,26 +42,28 @@ export default class FontColor extends Plugin {
 		[ FontColor.pluginName ]: FontColor;
 	}
 
-  interface EditorConfig {
+	interface EditorConfig {
 
-	/**
-	 * The configuration of the font color feature.
-	 * It is introduced by the {@link module:font/fontcolor/fontcolorediting~FontColorEditing} feature.
-	 *
-	 * Read more in {@link module:font/fontcolor~FontColorConfig}.
-	 */
-	fontColor?: FontColorConfig;
-  }
+		/**
+		 * The configuration of the font color feature.
+		 * It is introduced by the {@link module:font/fontcolor/fontcolorediting~FontColorEditing} feature.
+		 *
+		 * Read more in {@link module:font/fontcolor~FontColorConfig}.
+		 */
+		fontColor?: FontColorConfig;
+	}
 }
 
 /**
- * The configuration of the font color feature.
- * This option is used by the {@link module:font/fontcolor/fontcolorediting~FontColorEditing} feature.
+ * The configuration of the font color and font background color features.
+ * This option is used by the {@link module:font/fontcolor/fontcolorediting~FontColorEditing} and
+ * {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing} features.
  *
  * ```ts
  * ClassicEditor
  * 	.create( {
  * 		fontColor: ... // Font color feature configuration.
+ * 		fontBackgroundColor: ... // Font background color feature configuration.
  * 	} )
  * 	.then( ... )
  * 	.catch( ... );
@@ -145,7 +148,7 @@ export interface FontColorConfig {
 	 *
 	 * **Note**: The colors are displayed in the `'fontColor'` dropdown.
 	 */
-	colors: Array<string | object>;
+	colors?: Array<string | ColorOption>;
 
 	/**
 	 * Determines the maximum number of available document colors.
@@ -193,6 +196,6 @@ export interface FontColorConfig {
 	 * }
 	 * ```
 	 */
-	columns: number;
+	columns?: number;
 }
 

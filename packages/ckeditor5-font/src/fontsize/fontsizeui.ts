@@ -39,7 +39,7 @@ export default class FontSizeUI extends Plugin {
 
 		const options = this._getLocalizedOptions();
 
-		const command = editor.commands.get( FONT_SIZE )! as FontSizeCommand;
+		const command = editor.commands.get( FONT_SIZE )!;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_SIZE, locale => {
@@ -93,7 +93,7 @@ export default class FontSizeUI extends Plugin {
 			Huge: t( 'Huge' )
 		};
 
-		const options = normalizeOptions( ( editor.config.get( FONT_SIZE ) as any ).options );
+		const options = normalizeOptions( ( editor.config.get( FONT_SIZE )! ).options! );
 
 		return options.map( option => {
 			const title = ( localizedTitles as any )[ option.title ];
