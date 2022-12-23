@@ -6,7 +6,7 @@ classes: main__content--no-toc
 modified_at: 2022-12-19
 ---
 
-# Inline widget
+# Content placeholder
 
 The editor below has a feature that lets you add predefined placeholders, such as a date or a surname, to the document. The placeholders are inserted as inline widgets.
 
