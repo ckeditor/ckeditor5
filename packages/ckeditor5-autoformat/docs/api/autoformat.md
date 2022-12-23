@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-autoformat
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autoformat.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autoformat](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autoformat).
 
 ## External links
 

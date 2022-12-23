@@ -92,7 +92,7 @@ The inspector works with CKEditor 5 [v12.0.0](https://github.com/ckeditor/ckedit
 
 ### Contributing to the inspector
 
-The source code of CKEditor 5 inspector and its issue tracker is available on GitHub in https://github.com/ckeditor/ckeditor5-inspector.
+The source code of CKEditor 5 inspector and its issue tracker is available on GitHub in [https://github.com/ckeditor/ckeditor5-inspector](https://github.com/ckeditor/ckeditor5-inspector).
 
 ## Mr. Git
 

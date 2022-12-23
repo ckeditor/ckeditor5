@@ -77,4 +77,4 @@ editor.execute( 'horizontalLine' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line).

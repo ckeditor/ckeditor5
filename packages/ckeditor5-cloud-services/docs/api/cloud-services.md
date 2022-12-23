@@ -16,7 +16,7 @@ npm install --save @ckeditor/ckeditor5-cloud-services
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-cloud-services.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-cloud-services](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-cloud-services).
 
 ## External links
 

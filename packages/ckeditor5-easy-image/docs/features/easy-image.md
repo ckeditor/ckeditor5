@@ -162,4 +162,4 @@ See the {@link features/images-overview Image feature} guide to find out more ab
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-easy-image.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-easy-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-easy-image).
