@@ -90,3 +90,4 @@ export function isInsideCodeblockCaptionFromSelection( selection ) {
 
 	return isCodeblockWrapper( captionElement.parent );
 }
+

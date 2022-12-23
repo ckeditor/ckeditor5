@@ -178,3 +178,4 @@ export default class CodeblockCaptionEditing extends Plugin {
 		this._savedCaptionsMap.set( codeblockModelElement, caption.toJSON() );
 	}
 }
+

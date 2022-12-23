@@ -1,4 +1,9 @@
 /**
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
  * @module code-block/codeblockcaption/codeblockcaptionui
  */
 
@@ -12,63 +17,62 @@ import { getCodeblockCaptionFromModelSelection } from './utils';
  * @extends module:core/plugin~Plugin
  */
 export default class CodeblockCaptionUI extends Plugin {
-    /**
-     * @inheritDoc
-     */
-    static get requires() {
-        return [];
-    }
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [];
+	}
 
-    /**
-     * @inheritDoc
-     */
-    static get pluginName() {
-        return 'CodeblockCaptionUI';
-    }
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'CodeblockCaptionUI';
+	}
 
-    /**
-     * @inheritDoc
-     */
-    init() {
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+		const t = editor.t;
 
-        const editor = this.editor;
-        const editingView = editor.editing.view;
-        const t = editor.t;
+		editor.ui.componentFactory.add( 'toggleCodeblockCaption', locale => {
+			const command = editor.commands.get( 'toggleCodeblockCaption' );
+			const view = new ButtonView( locale );
 
-        editor.ui.componentFactory.add( 'toggleCodeblockCaption', locale => {
-            const command = editor.commands.get( 'toggleCodeblockCaption' );
-            const view = new ButtonView( locale );
+			view.set( {
+				icon: icons.caption,
+				tooltip: true,
+				isToggleable: true
+			} );
 
-            view.set( {
-                icon: icons.caption,
-                tooltip: true,
-                isToggleable: true
-            } );
+			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			view.bind( 'label' ).to( command, 'value', value => value ? t( 'Toggle caption off' ) : t( 'Toggle caption on' ) );
 
-            view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-            view.bind( 'label' ).to( command, 'value', value => value ? t( 'Toggle caption off' ) : t( 'Toggle caption on' ) );
+			this.listenTo( view, 'execute', () => {
+				editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
 
-            this.listenTo( view, 'execute', () => {
-                editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
+				// Scroll to the selection and highlight the caption if the caption showed up.
+				const modelCaptionElement = getCodeblockCaptionFromModelSelection( editor.model.document.selection );
 
-                // Scroll to the selection and highlight the caption if the caption showed up.
-                const modelCaptionElement = getCodeblockCaptionFromModelSelection( editor.model.document.selection );
+				if ( modelCaptionElement ) {
+					const figcaptionElement = editor.editing.mapper.toViewElement( modelCaptionElement );
 
-                if ( modelCaptionElement ) {
-                    const figcaptionElement = editor.editing.mapper.toViewElement ( modelCaptionElement );
+					editingView.scrollToTheSelection();
 
-                    editingView.scrollToTheSelection();
+					editingView.change( writer => {
+						writer.addClass( 'codeblock__caption_highlighted', figcaptionElement );
+					} );
+				}
 
-                    editingView.change( writer => {
-                        writer.addClass( 'codeblock__caption_highlighted', figcaptionElement );
-                    } );
-                }
+				editor.editing.view.focus();
+			} );
 
-                editor.editing.view.focus();
-            } );
-
-
-            return view;
-        } );
-    }
+			return view;
+		} );
+	}
 }
+
