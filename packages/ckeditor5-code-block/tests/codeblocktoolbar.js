@@ -1,3 +1,10 @@
+/**
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/* globals document, console, global */
+
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -9,17 +16,17 @@ import CodeblockToolbar from '../src/codeblocktoolbar';
 import CodeblockCaption from '../src/codeblockcaption';
 
 describe( 'CodeblockToolbar', () => {
-    let editor, model, doc, toolbar, balloon, widgetToolbarRepository, editorElement;
-    
-    testUtils.createSinonSandbox();
+	let editor, model, doc, toolbar, balloon, widgetToolbarRepository, editorElement;
 
-    beforeEach( () => {
+	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, CodeBlock, CodeblockToolbar, CodeblockCaption, ],
+				plugins: [ Paragraph, CodeBlock, CodeblockToolbar, CodeblockCaption ],
 				codeblock: {
 					toolbar: [ 'toggleCodeblockCaption' ]
 				}
@@ -34,17 +41,17 @@ describe( 'CodeblockToolbar', () => {
 			} );
 	} );
 
-    afterEach( () => {
+	afterEach( () => {
 		editorElement.remove();
 
 		return editor.destroy();
 	} );
 
-    it( 'should be loaded', () => {
+	it( 'should be loaded', () => {
 		expect( editor.plugins.get( CodeblockToolbar ) ).to.be.instanceOf( CodeblockToolbar );
 	} );
 
-    it( 'should not initialize if there is no configuration', () => {
+	it( 'should not initialize if there is no configuration', () => {
 		const consoleWarnStub = sinon.stub( console, 'warn' );
 		const editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
@@ -52,17 +59,17 @@ describe( 'CodeblockToolbar', () => {
 		return ClassicEditor.create( editorElement, {
 			plugins: [ CodeblockToolbar ]
 		} )
-		.then( editor => {
-			expect( editor.plugins.get( CodeblockToolbar )._toolbar ).to.be.undefined;
-			expect( consoleWarnStub.calledOnce ).to.equal( true );
-			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /widget-toolbar-no-items/ );
+			.then( editor => {
+				expect( editor.plugins.get( CodeblockToolbar )._toolbar ).to.be.undefined;
+				expect( consoleWarnStub.calledOnce ).to.equal( true );
+				expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /widget-toolbar-no-items/ );
 
-			editorElement.remove();
-			return editor.destroy();
-		} );
+				editorElement.remove();
+				return editor.destroy();
+			} );
 	} );
 
-    describe( 'integration with the editor focus', () => {
+	describe( 'integration with the editor focus', () => {
 		it( 'should show the toolbar when the editor gains focus and the code is selected', () => {
 			editor.ui.focusTracker.isFocused = true;
 
@@ -112,7 +119,7 @@ describe( 'CodeblockToolbar', () => {
 		} );
 	} );
 
-    describe( 'integration with the editor selection', () => {
+	describe( 'integration with the editor selection', () => {
 		beforeEach( () => {
 			editor.ui.focusTracker.isFocused = true;
 		} );
@@ -267,5 +274,4 @@ describe( 'CodeblockToolbar', () => {
 			expect( balloon.visibleView ).to.equal( toolbar );
 		} );
 	} );
-
 } );

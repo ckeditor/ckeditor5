@@ -87,6 +87,7 @@ describe( 'CodeblockCaptionEditing', () => {
 	} );
 
 	afterEach( async () => {
+		document.body.removeChild( element );
 		return editor.destroy();
 	} );
 

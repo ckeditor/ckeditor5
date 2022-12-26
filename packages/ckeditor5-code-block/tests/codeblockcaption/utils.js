@@ -54,6 +54,7 @@ describe( 'codeblock caption utils', () => {
 	} );
 
 	afterEach( async () => {
+		document.body.removeChild( element );
 		await editor.destroy();
 	} );
 

@@ -67,19 +67,13 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 	} );
 
 	afterEach( async () => {
+		document.body.removeChild( element );
 		return editor.destroy();
 	} );
 
 	describe( '#isEnabled', () => {
 		it( 'should be false if the CodeblockCaption is not loaded', async () => {
-			// const editor = await VirtualTestEditor.create( {
-			// 	plugins: [
-			// 		CodeBlock,
-			// 		CodeblockCaptionEditing,
-			// 		Paragraph
-			// 	]
-			// } );
-			element = document.createElement( 'div' );
+			const element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
 			const editor = await ClassicTestEditor
@@ -92,7 +86,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 				} );
 
 			expect( editor.commands.get( 'toggleCodeblockCaption' ).isEnabled ).to.be.false;
-
+			element.remove();
 			return editor.destroy();
 		} );
 
@@ -135,14 +129,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 
 	describe( '#value', () => {
 		it( 'should be false if the CodeblockCaption is not loaded', async () => {
-			// const editor = await VirtualTestEditor.create( {
-			// 	plugins: [
-			// 		CodeBlock,
-			// 		CodeblockCaptionEditing,
-			// 		Paragraph
-			// 	]
-			// } );
-			element = document.createElement( 'div' );
+			const element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
 			const editor = await ClassicTestEditor
@@ -155,7 +142,7 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 				} );
 
 			expect( editor.commands.get( 'toggleCodeblockCaption' ).value ).to.be.false;
-
+			element.remove();
 			return editor.destroy();
 		} );
 
