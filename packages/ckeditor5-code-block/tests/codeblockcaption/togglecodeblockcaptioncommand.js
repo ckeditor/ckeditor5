@@ -290,6 +290,14 @@ describe( 'ToggleCodeblockCaptionCommand', () => {
 				expect( getModelData( model ) ).to.equal( '<codeBlock><caption>[foo]</caption></codeBlock>' );
 			} );
 
+			it( 'should not change selection when caption is show up without focusCaptionOnShow option and tailing selection', () => {
+				setModelData( model, '<codeBlock>foo[]bar</codeBlock>' );
+
+				editor.execute( 'toggleCodeblockCaption' );
+
+				expect( getModelData( model ) ).to.equal( '<codeBlock>foo[]bar<caption></caption></codeBlock>' );
+			} );
+
 			it( 'should not affect removal of the caption (selection in the caption)', () => {
 				setModelData( model, '<codeBlock><caption>foo[]</caption></codeBlock>' );
 

@@ -11,9 +11,9 @@ import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import CodeBlockEditing from '../../src/codeblockediting';
-// import CodeBlock from '../../src/codeblock';
 import CodeblockCaptionEditing from '../../src/codeblockcaption/codeblockcaptionediting';
 import CodeblockCaption from '../../src/codeblockcaption';
 import ToggleCodeblockCaptionCommand from '../../src/codeblockcaption/togglecodeblockcaptioncommand';
@@ -119,6 +119,39 @@ describe( 'CodeblockCaptionEditing', () => {
 			expect( editor.model.schema.checkAttribute( [ '$root', 'codeBlock' ], 'caption' ) ).to.be.false;
 
 			return editor.destroy();
+		} );
+	} );
+
+	describe( 'enter key handling', () => {
+		let domEvtDataStub;
+
+		beforeEach( () => {
+			domEvtDataStub = {
+				keyCode: getCode( 'enter' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			sinon.spy( editor, 'execute' );
+		} );
+
+		afterEach( () => {
+			editor.execute.restore();
+		} );
+
+		it( 'should ignore enter key event when selection is inside codeblock caption', () => {
+			setModelData( model, '<codeBlock>foo<caption>bar[]></caption></codeBlock>' );
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
+
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+		} );
+
+		it( 'should not ignore enter key event when selection is not inside caption but codeblock', () => {
+			setModelData( model, '<codeBlock>foo[]<caption>bar></caption></codeBlock>' );
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
+
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );
 	} );
 

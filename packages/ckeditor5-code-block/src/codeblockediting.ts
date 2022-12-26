@@ -192,11 +192,6 @@ export default class CodeBlockEditing extends Plugin {
 					return;
 				}
 
-				// In case of nested caption we don't want to convert to another caption.
-				if ( data.modelCursor.findAncestor( 'caption' ) ) {
-					return;
-				}
-
 				if ( !consumable.test( viewCaptionElement, { name: true } ) ) {
 					return;
 				}
@@ -205,9 +200,7 @@ export default class CodeBlockEditing extends Plugin {
 
 				convertChildren( viewCaptionElement, captionModelElement );
 
-				if ( !safeInsert( captionModelElement, data.modelCursor ) ) {
-					return;
-				}
+				safeInsert( captionModelElement, data.modelCursor );
 
 				consumable.consume( viewCaptionElement, { name: true } );
 

@@ -11,7 +11,7 @@ import { Element, enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
 import { Plugin } from 'ckeditor5/src/core';
 import ToggleCodeblockCaptionCommand from './togglecodeblockcaptioncommand';
-import { matchCodeblockCaptionViewElement, isCodeblockWrapper, isInsideCodeblockCaptionFromSelection } from './utils';
+import { matchCodeblockCaptionViewElement, isCodeblockWrapper } from './utils';
 
 /**
  * The codeblock caption engine plugin. It is responsible for:
@@ -25,13 +25,6 @@ import { matchCodeblockCaptionViewElement, isCodeblockWrapper, isInsideCodeblock
  */
 
 export default class CodeblockCaptionEditing extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	static get require() {
-		return [];
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -83,14 +76,10 @@ export default class CodeblockCaptionEditing extends Plugin {
 
 		// Disable enter key event inside codeblock caption to prevent bug
 		this.listenTo( view.document, 'enter', ( evt, data ) => {
-			const doc = this.editor.model.document;
-
-			if ( isInsideCodeblockCaptionFromSelection( doc.selection ) ) {
-				data.stopPropagation();
-				data.preventDefault();
-				evt.stop();
-			}
-		} );
+			data.stopPropagation();
+			data.preventDefault();
+			evt.stop();
+		}, { context: 'figcaption' } );
 	}
 
 	/**

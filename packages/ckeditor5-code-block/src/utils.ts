@@ -259,28 +259,13 @@ export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
 }
 
 /**
- * Check if modelElement is codeblock model.
- * @param {module:engine/model/element~Element|null} modelElement
- * @returns {Boolean}
- */
-export function isCodeblockModel( modelElement: Element | null ): boolean {
-	return !!modelElement && modelElement.is( 'element', 'codeBlock' );
-}
-
-/**
  * Returns a codeblock model element if one is selected or is among the selection's ancestors.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
  * @returns {module:engine/model/element~Element|null}
  */
 export function getClosestSelectedCodeblockElement( selection: DocumentSelection ): Element | null {
-	const selectedElement = selection.getSelectedElement();
-
-	if ( isCodeblockModel( selectedElement ) ) {
-		return selectedElement;
-	} else {
-		return selection.getFirstPosition()!.findAncestor( 'codeBlock' );
-	}
+	return selection.getFirstPosition()!.findAncestor( 'codeBlock' );
 }
 
 /**
@@ -299,17 +284,7 @@ export function isCodeblockView( viewElement: ViewElement ): boolean {
  */
 export function getClosestSelectedCodeblockView( selection: any ): any {
 	const selectionPosition = selection.getFirstPosition();
-
-	if ( !selectionPosition ) {
-		return null;
-	}
-
 	const viewElement = selection.getSelectedElement();
-
-	if ( viewElement && isCodeblockView( viewElement ) ) {
-		return viewElement;
-	}
-
 	let parent = selectionPosition.parent;
 
 	while ( parent ) {

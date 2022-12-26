@@ -50,13 +50,6 @@ export default class ToggleCodeblockCaptionCommand extends Command {
 
 		const selection = editor.model.document.selection;
 
-		if ( !selection ) {
-			this.isEnabled = false;
-			this.value = false;
-
-			return;
-		}
-
 		const selectedCodeblockElement = getClosestSelectedCodeblockElement( selection );
 
 		this.isEnabled = !!selectedCodeblockElement;

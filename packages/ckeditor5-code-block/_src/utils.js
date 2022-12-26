@@ -237,7 +237,7 @@ export function canBeCodeBlock( schema, element ) {
 
 /**
  * Check if viewElement is codeblock view.
- * @param {module:engine/view/element~Element} viewElement 
+ * @param {module:engine/view/element~Element} viewElement
  * @returns {Boolean}
  */
 export function isCodeblockView( viewElement ) {
@@ -246,7 +246,7 @@ export function isCodeblockView( viewElement ) {
 
 /**
  * Check if modelElement is codeblock model.
- * @param {module:engine/model/element~Element} modelElement 
+ * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
 export function isCodeblockModel( modelElement ) {
@@ -255,19 +255,17 @@ export function isCodeblockModel( modelElement ) {
 
 /**
  * Returns a codeblock model element if one is selected or is among the selection's ancestors.
- * 
- * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection 
+ *
+ * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
  * @returns {module:engine/model/element~Element|null}
  */
 export function getClosestSelectedCodeblockElement( selection ) {
-	const selectedElement = selection.getSelectedElement();
-
-	return isCodeblockModel( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'codeBlock' );
+	return selection.getFirstPosition().findAncestor( 'codeBlock' );
 }
 
 /**
  * Returns an code block view element if one is selected or is among the selection's ancestors.
- * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection 
+ * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
  * @returns {module:engine/view/element~Element|null}
  */
 export function getClosestSelectedCodeblockView( selection ) {
@@ -279,14 +277,14 @@ export function getClosestSelectedCodeblockView( selection ) {
 
 	const viewElement = selection.getSelectedElement();
 
-	if ( viewElement && isCodeblockView ( viewElement ) ) {
+	if ( viewElement && isCodeblockView( viewElement ) ) {
 		return viewElement;
 	}
 
 	let parent = selectionPosition.parent;
 
 	while ( parent ) {
-		if ( parent.is( 'element' ) && isCodeblockView ( parent ) ) {
+		if ( parent.is( 'element' ) && isCodeblockView( parent ) ) {
 			return parent;
 		}
 

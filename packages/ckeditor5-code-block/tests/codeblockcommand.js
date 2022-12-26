@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals document */
 import CodeBlockEditing from '../src/codeblockediting';
 import CodeBlockCommand from '../src/codeblockcommand';
+import CodeblockCaption from '../src/codeblockcaption';
 
 import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
@@ -12,6 +14,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'CodeBlockCommand', () => {
@@ -351,5 +354,40 @@ describe( 'CodeBlockCommand', () => {
 				'<codeBlock language="plaintext">bi]z</codeBlock>'
 			);
 		} );
+	} );
+} );
+
+describe( 'CodeBlockCommand with Codeblock Caption', () => {
+	let editor, model, command, element;
+
+	beforeEach( () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ CodeBlockEditing, CodeblockCaption, Paragraph, BlockQuoteEditing, AlignmentEditing, BoldEditing ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				command = new CodeBlockCommand( editor );
+			} );
+	} );
+
+	afterEach( () => {
+		document.body.removeChild( element );
+		return editor.destroy();
+	} );
+
+	it( 'should remove codeblock caption data without error with cursor in codeblock', () => {
+		setModelData( model,
+			'<codeBlock language="plaintext">foo[]<caption>bar</caption></codeBlock>'
+		);
+
+		command.execute();
+
+		expect( getModelData( model ) ).to.equal(
+			'<paragraph>foo[]</paragraph>'
+		);
 	} );
 } );
