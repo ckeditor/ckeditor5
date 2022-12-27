@@ -19,8 +19,6 @@ import type { DocumentSelection, Element, Model, Schema } from 'ckeditor5/src/en
  * To insert a page break at the current selection, execute the command:
  *
  *		editor.execute( 'pageBreak' );
- *
- * @extends module:core/command~Command
  */
 export default class PageBreakCommand extends Command {
 	/**
@@ -53,23 +51,14 @@ export default class PageBreakCommand extends Command {
 }
 
 // Checks if a page break is allowed by the schema in the optimal insertion parent.
-//
-// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/model/model~Model} model Model instance.
-// @returns {Boolean}
-function isPageBreakAllowedInParent( selection: DocumentSelection, schema: Schema, model: Model ) {
+function isPageBreakAllowedInParent( selection: DocumentSelection, schema: Schema, model: Model ): boolean {
 	const parent = getInsertPageBreakParent( selection, model );
 
 	return schema.checkChild( parent, 'pageBreak' );
 }
 
 // Returns a node that will be used to insert a page break with `model.insertContent` to check if the page break can be placed there.
-//
-// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
-// @param {module:engine/model/model~Model} model Model instance.
-// @returns {module:engine/model/element~Element}
-function getInsertPageBreakParent( selection: DocumentSelection, model: Model ) {
+function getInsertPageBreakParent( selection: DocumentSelection, model: Model ): Element {
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
 

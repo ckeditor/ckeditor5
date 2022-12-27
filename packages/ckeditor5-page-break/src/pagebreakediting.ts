@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { toWidget } from 'ckeditor5/src/widget';
-import type { DowncastWriter, ViewContainerElement } from 'ckeditor5/src/engine';
+import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
 
 import PageBreakCommand from './pagebreakcommand';
 
@@ -17,8 +17,6 @@ import '../theme/pagebreak.css';
 
 /**
  * The page break editing feature.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class PageBreakEditing extends Plugin {
 	/**
@@ -123,12 +121,7 @@ export default class PageBreakEditing extends Plugin {
 // * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to
 //   recognize the page break widget element.
 // * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
-//
-//  @param {module:engine/view/element~Element} viewElement
-//  @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
-//  @param {String} label The element's label.
-//  @returns {module:engine/view/element~Element}
-function toPageBreakWidget( viewElement: ViewContainerElement, writer: DowncastWriter, label: string ) {
+function toPageBreakWidget( viewElement: ViewElement, writer: DowncastWriter, label: string ): ViewElement {
 	writer.setCustomProperty( 'pageBreak', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );

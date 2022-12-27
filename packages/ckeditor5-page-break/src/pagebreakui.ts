@@ -14,8 +14,6 @@ import pageBreakIcon from '../theme/icons/pagebreak.svg';
 
 /**
  * The page break UI plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class PageBreakUI extends Plugin {
 	/**
