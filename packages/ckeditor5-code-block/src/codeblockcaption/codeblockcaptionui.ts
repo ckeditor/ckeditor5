@@ -7,9 +7,12 @@
  * @module code-block/codeblockcaption/codeblockcaptionui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
+import { Plugin, icons, Command, type PluginDependencies } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import { getCodeblockCaptionFromModelSelection } from './utils';
+import type ToggleCodeblockCaptionCommand from './togglecodeblockcaptioncommand';
+
+const TOGGLECODEBLOCKCAPTION = 'toggleCodeblockCaption';
 
 /**
  * The codeblock caption UI plugin. It introduces the `'toggleCodeblockCaption'` UI button.
@@ -20,27 +23,27 @@ export default class CodeblockCaptionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CodeblockCaptionUI' {
 		return 'CodeblockCaptionUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const t = editor.t;
 
-		editor.ui.componentFactory.add( 'toggleCodeblockCaption', locale => {
-			const command = editor.commands.get( 'toggleCodeblockCaption' );
+		editor.ui.componentFactory.add( TOGGLECODEBLOCKCAPTION, locale => {
+			const command = editor.commands.get( TOGGLECODEBLOCKCAPTION ) as ToggleCodeblockCaptionCommand;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -53,13 +56,13 @@ export default class CodeblockCaptionUI extends Plugin {
 			view.bind( 'label' ).to( command, 'value', value => value ? t( 'Toggle caption off' ) : t( 'Toggle caption on' ) );
 
 			this.listenTo( view, 'execute', () => {
-				editor.execute( 'toggleCodeblockCaption', { focusCaptionOnShow: true } );
+				editor.execute( TOGGLECODEBLOCKCAPTION, { focusCaptionOnShow: true } );
 
 				// Scroll to the selection and highlight the caption if the caption showed up.
 				const modelCaptionElement = getCodeblockCaptionFromModelSelection( editor.model.document.selection );
 
 				if ( modelCaptionElement ) {
-					const figcaptionElement = editor.editing.mapper.toViewElement( modelCaptionElement );
+					const figcaptionElement = editor.editing.mapper.toViewElement( modelCaptionElement )!;
 
 					editingView.scrollToTheSelection();
 

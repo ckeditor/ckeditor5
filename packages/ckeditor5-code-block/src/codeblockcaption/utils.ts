@@ -6,13 +6,14 @@
 /**
  * @module code-block/codeblockcaption/utils
  */
+import type { Element, Selection, DocumentSelection, ViewElement, Node } from 'ckeditor5/src/engine';
 
 /**
  *
  * @param {module:engine/model/element~Element} modelElement Element to check if it is a codeblock wrapper
  * @returns {Boolean}
  */
-export function isCodeblockWrapper( modelElement ) {
+export function isCodeblockWrapper( modelElement: any ): boolean {
 	return !!modelElement && modelElement.is( 'element', 'codeBlock' );
 }
 
@@ -33,8 +34,8 @@ export function isCodeblockWrapper( modelElement ) {
  * @returns {Object|null} Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element
  * cannot be matched.
  */
-export function matchCodeblockCaptionViewElement( element ) {
-	const parent = element.parent;
+export function matchCodeblockCaptionViewElement( element: ViewElement ): any {
+	const parent = element.parent as ViewElement;
 
 	if ( element.name == 'figcaption' && parent && parent.name == 'code' ) {
 		return { name: true };
@@ -46,9 +47,9 @@ export function matchCodeblockCaptionViewElement( element ) {
 /**
  * It returns codeblock-caption node inside codeblockModelElement or `null` if there is no caption node inside modelElement.
  * @param {module:engine/model/element~Element} codeblockModelElement
- * @returns {module:engine/model/node~Node|null}
+ * @returns {module:engine/model/element~Element}
  */
-export function getCaptionFromCodeblockModelElement( codeblockModelElement ) {
+export function getCaptionFromCodeblockModelElement( codeblockModelElement: Element ): Element | null {
 	for ( const node of codeblockModelElement.getChildren() ) {
 		if ( !!node && node.is( 'element', 'caption' ) ) {
 			return node;
@@ -65,14 +66,14 @@ export function getCaptionFromCodeblockModelElement( codeblockModelElement ) {
  * @param {module:engine/model/selection~Selection} selection
  * @returns {module:engine/model/element~Element|null}
  */
-export function getCodeblockCaptionFromModelSelection( selection ) {
-	const codeblockElement = selection.getFirstPosition().findAncestor( 'codeBlock' );
+export function getCodeblockCaptionFromModelSelection( selection: Selection | DocumentSelection ): Element | null {
+	const codeblockElement = selection.getFirstPosition()!.findAncestor( 'codeBlock' );
 
 	if ( !codeblockElement ) {
 		return null;
 	}
 
-	return getCaptionFromCodeblockModelElement( codeblockElement );
+	return getCaptionFromCodeblockModelElement( codeblockElement ) as Element | null;
 }
 
 /**
@@ -81,8 +82,8 @@ export function getCodeblockCaptionFromModelSelection( selection ) {
  * @param {module:engine/model/selection~Selection} selection
  * @returns {Boolean}
  */
-export function isInsideCodeblockCaptionFromSelection( selection ) {
-	const captionElement = selection.getFirstPosition().findAncestor( 'caption' );
+export function isInsideCodeblockCaptionFromSelection( selection: Selection ): boolean {
+	const captionElement = selection.getFirstPosition()!.findAncestor( 'caption' );
 
 	if ( !captionElement ) {
 		return false;

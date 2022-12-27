@@ -7,7 +7,7 @@
  * @module code-block/codeblockcaption
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import CodeblockCaptionUI from './codeblockcaption/codeblockcaptionui';
 import CodeblockCaptionEditing from './codeblockcaption/codeblockcaptionediting';
 
@@ -24,14 +24,14 @@ export default class CodeblockCaption extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ CodeblockCaptionUI, CodeblockCaptionEditing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CodeblockCaption' {
 		return 'CodeblockCaption';
 	}
 }

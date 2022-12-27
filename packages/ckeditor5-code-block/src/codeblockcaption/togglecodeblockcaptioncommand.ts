@@ -10,6 +10,10 @@
 import { Command } from 'ckeditor5/src/core';
 import { getClosestSelectedCodeblockElement } from '../utils';
 import { getCaptionFromCodeblockModelElement } from './utils';
+import type CodeblockCaptionEditing from './codeblockcaptionediting';
+import type { Writer } from 'ckeditor5/src/engine';
+
+const CODEBLOCKCAPTIONEDITING = 'CodeblockCaptionEditing';
 
 /**
  * The toggle codeblock caption command.
@@ -36,9 +40,14 @@ import { getCaptionFromCodeblockModelElement } from './utils';
  */
 export default class ToggleCodeblockCaptionCommand extends Command {
 	/**
-	 * @inheritDoc
+	 * Command which toggle existance of caption for codeblock.
+	 *
+	 * @observable
 	 */
-	refresh() {
+	declare public value: boolean;
+	declare public isEnabled: boolean;
+
+	public override refresh(): void {
 		const editor = this.editor;
 
 		// Only codeblock caption plugin is loaded.
@@ -57,7 +66,7 @@ export default class ToggleCodeblockCaptionCommand extends Command {
 		if ( !this.isEnabled ) {
 			this.value = false;
 		} else {
-			this.value = !!getCaptionFromCodeblockModelElement( selectedCodeblockElement );
+			this.value = !!getCaptionFromCodeblockModelElement( selectedCodeblockElement! );
 		}
 	}
 
@@ -70,7 +79,9 @@ export default class ToggleCodeblockCaptionCommand extends Command {
 	 * @param {String} [options.focusCaptionOnShow] When true and the caption shows up, the selection will be moved into it straight away.
 	 * @fires execute
 	 */
-	execute( options = {} ) {
+	public override execute( options: {
+		focusCaptionOnShow?: boolean;
+	} = {} ): void {
 		const { focusCaptionOnShow } = options;
 		this.editor.model.change( writer => {
 			if ( this.value ) {
@@ -89,13 +100,13 @@ export default class ToggleCodeblockCaptionCommand extends Command {
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
 	 */
-	_showCodeblockCaption( writer, focusCaptionOnShow ) {
+	private _showCodeblockCaption( writer: Writer, focusCaptionOnShow: boolean | undefined ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
-		const codeblockCaptionEditing = editor.plugins.get( 'CodeblockCaptionEditing' );
+		const codeblockCaptionEditing = editor.plugins.get( CODEBLOCKCAPTIONEDITING ) as CodeblockCaptionEditing;
 
-		const selectedCodeblock = getClosestSelectedCodeblockElement( selection );
+		const selectedCodeblock = getClosestSelectedCodeblockElement( selection )!;
 
 		const savedCaption = codeblockCaptionEditing._getSavedCaption( selectedCodeblock );
 
@@ -106,7 +117,7 @@ export default class ToggleCodeblockCaptionCommand extends Command {
 		editor.editing.view.document.isFocused = true;
 		if ( focusCaptionOnShow ) {
 			writer.setSelection( newCaptionElement, 'in' );
-		} else if ( selection.getFirstPosition().isAtEnd ) {
+		} else if ( selection.getFirstPosition()!.isAtEnd ) {
 			writer.setSelection( newCaptionElement, 'before' );
 		}
 	}
@@ -120,19 +131,19 @@ export default class ToggleCodeblockCaptionCommand extends Command {
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
 	 */
-	_hideCodeblockCaption( writer ) {
+	private _hideCodeblockCaption( writer: Writer ): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
-		const codeblockCaptionEditing = this.editor.plugins.get( 'CodeblockCaptionEditing' );
+		const codeblockCaptionEditing = this.editor.plugins.get( CODEBLOCKCAPTIONEDITING ) as CodeblockCaptionEditing;
 
-		const selectedCodeblock = getClosestSelectedCodeblockElement( selection );
+		const selectedCodeblock = getClosestSelectedCodeblockElement( selection )!;
 		const captionElement = getCaptionFromCodeblockModelElement( selectedCodeblock );
 
 		// Store the caption content so it can be restored quickly if the user changes their mind.
-		codeblockCaptionEditing._saveCaption( selectedCodeblock, captionElement );
+		codeblockCaptionEditing._saveCaption( selectedCodeblock, captionElement! );
 
 		// writer.setSelection( selectedCodeblock, 'end' );
-		writer.remove( captionElement );
+		writer.remove( captionElement! );
 	}
 }
 

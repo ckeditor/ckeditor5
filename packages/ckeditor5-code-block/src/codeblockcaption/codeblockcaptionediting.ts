@@ -9,7 +9,7 @@
 
 import { Element, enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import ToggleCodeblockCaptionCommand from './togglecodeblockcaptioncommand';
 import { matchCodeblockCaptionViewElement, isCodeblockWrapper } from './utils';
 
@@ -23,19 +23,20 @@ import { matchCodeblockCaptionViewElement, isCodeblockWrapper } from './utils';
  *
  * @extends module:core/plugin~Plugin
  */
-
 export default class CodeblockCaptionEditing extends Plugin {
+	private _savedCaptionsMap: WeakMap<Element, any>;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CodeblockCaptionEditing' {
 		return 'CodeblockCaptionEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		/**
@@ -52,7 +53,7 @@ export default class CodeblockCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
 
@@ -79,13 +80,14 @@ export default class CodeblockCaptionEditing extends Plugin {
 			data.stopPropagation();
 			data.preventDefault();
 			evt.stop();
-		}, { context: 'figcaption' } );
+		} );
+		// context: 'figcaption'
 	}
 
 	/**
 	 * Configures conversion pipelines to support upcasting and downcasting codeblock captions.
 	 */
-	_setupConversion() {
+	private _setupConversion(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const t = editor.t;
@@ -116,7 +118,7 @@ export default class CodeblockCaptionEditing extends Plugin {
 					return null;
 				}
 
-				const figcaptionElement = writer.createEditableElement( 'figcaption' );
+				const figcaptionElement = writer.createEditableElement( 'figcaption', {} );
 
 				writer.setCustomProperty( 'codeblockCaption', true, figcaptionElement );
 
@@ -142,7 +144,7 @@ export default class CodeblockCaptionEditing extends Plugin {
 	 * @param {module:engine/model/element~Element} codeblockModelElement The model element the caption should be returned for.
 	 * @returns {module:engine/model/element~Element|null} The model caption element or `null` if there is none.
 	 */
-	_getSavedCaption( codeblockModelElement ) {
+	public _getSavedCaption( codeblockModelElement: Element ): Element | null {
 		const jsonObject = this._savedCaptionsMap.get( codeblockModelElement );
 
 		return jsonObject ? Element.fromJSON( jsonObject ) : null;
@@ -163,7 +165,7 @@ export default class CodeblockCaptionEditing extends Plugin {
 	 * @param {module:engine/model/element~Element} codeblockModelElement The model element the caption is saved for.
 	 * @param {module:engine/model/element~Element} caption The caption model element to be saved.
 	 */
-	_saveCaption( codeblockModelElement, caption ) {
+	public _saveCaption( codeblockModelElement: Element, caption: Element ): void {
 		this._savedCaptionsMap.set( codeblockModelElement, caption.toJSON() );
 	}
 }
