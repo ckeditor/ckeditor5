@@ -109,6 +109,15 @@ describe( 'ContainerElement', () => {
 				expect( parse( '<container:p>Foo<empty:img></empty:img></container:p>' ).getFillerOffset() )
 					.to.equals( null );
 			} );
+
+			it( 'should return filler offset value as (childCount - 1) when codeblock caption is placed on tail', () => {
+				expect(
+					parse(
+						'<container:code>' +
+							'foo<empty:br></empty:br><container:figcaption>bar</container:figcaption>' +
+						'</container:code>'
+					).getFillerOffset() ).to.equals( 2 );
+			} );
 		} );
 	} );
 } );
