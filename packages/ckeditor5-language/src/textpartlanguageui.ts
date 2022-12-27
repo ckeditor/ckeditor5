@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
 import { Collection } from 'ckeditor5/src/utils';
 import { stringifyLanguageAttribute } from './utils';
 
@@ -25,27 +25,27 @@ export default class TextPartLanguageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TextPartLanguageUI' {
 		return 'TextPartLanguageUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
-		const options = editor.config.get( 'language.textPartLanguage' );
+		const options = editor.config.get( 'language.textPartLanguage' )!;
 		const defaultTitle = t( 'Choose language' );
 		const removeTitle = t( 'Remove language' );
 		const dropdownTooltip = t( 'Language' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'textPartLanguage', locale => {
-			const itemDefinitions = new Collection();
-			const titles = {};
+			const itemDefinitions = new Collection<ListDropdownItemDefinition>();
+			const titles = {} as any;
 
-			const languageCommand = editor.commands.get( 'textPartLanguage' );
+			const languageCommand = editor.commands.get( 'textPartLanguage' )!;
 
 			// Item definition with false `languageCode` will behave as remove lang button.
 			itemDefinitions.add( {
@@ -63,7 +63,7 @@ export default class TextPartLanguageUI extends Plugin {
 
 			for ( const option of options ) {
 				const def = {
-					type: 'button',
+					type: 'button' as const,
 					model: new Model( {
 						label: option.title,
 						languageCode: option.languageCode,
@@ -100,14 +100,14 @@ export default class TextPartLanguageUI extends Plugin {
 
 			dropdownView.bind( 'isEnabled' ).to( languageCommand, 'isEnabled' );
 			dropdownView.buttonView.bind( 'label' ).to( languageCommand, 'value', value => {
-				return titles[ value ] || defaultTitle;
+				return titles[ value as string ] || defaultTitle;
 			} );
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
 				languageCommand.execute( {
-					languageCode: evt.source.languageCode,
-					textDirection: evt.source.textDirection
+					languageCode: ( evt.source as any ).languageCode,
+					textDirection: ( evt.source as any ).textDirection
 				} );
 
 				editor.editing.view.focus();
@@ -115,5 +115,11 @@ export default class TextPartLanguageUI extends Plugin {
 
 			return dropdownView;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ TextPartLanguageUI.pluginName ]: TextPartLanguageUI;
 	}
 }

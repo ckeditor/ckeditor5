@@ -7,7 +7,8 @@
  * @module language/textpartlanguageediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import type { ViewElement } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import TextPartLanguageCommand from './textpartlanguagecommand';
 import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils';
 
@@ -15,21 +16,19 @@ import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils';
  * The text part language editing.
  *
  * Introduces the `'textPartLanguage'` command and the `'language'` model element attribute.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TextPartLanguageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TextPartLanguageEditing' {
 		return 'TextPartLanguageEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		// Text part language options are only used to ensure that the feature works by default.
@@ -47,7 +46,7 @@ export default class TextPartLanguageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		editor.model.schema.extend( '$text', { allowAttributes: 'language' } );
@@ -63,15 +62,15 @@ export default class TextPartLanguageEditing extends Plugin {
 	/**
 	 * @private
 	 */
-	_defineConverters() {
+	private _defineConverters(): void {
 		const conversion = this.editor.conversion;
 
 		conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
 				key: 'language',
-				value: viewElement => {
-					const languageCode = viewElement.getAttribute( 'lang' );
-					const textDirection = viewElement.getAttribute( 'dir' );
+				value: ( viewElement: ViewElement ) => {
+					const languageCode = viewElement.getAttribute( 'lang' )!;
+					const textDirection = viewElement.getAttribute( 'dir' )! as 'ltr' | 'rtl';
 
 					return stringifyLanguageAttribute( languageCode, textDirection );
 				}
@@ -101,5 +100,15 @@ export default class TextPartLanguageEditing extends Plugin {
 				} );
 			}
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ TextPartLanguageEditing.pluginName ]: TextPartLanguageEditing;
+	}
+
+	interface CommandsMap {
+		textPartLanguage: TextPartLanguageCommand;
 	}
 }

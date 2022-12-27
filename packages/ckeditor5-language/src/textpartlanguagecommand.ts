@@ -12,15 +12,15 @@ import { stringifyLanguageAttribute } from './utils';
 
 /**
  * The text part language command plugin.
- *
- * @extends module:core/command~Command
  */
 export default class TextPartLanguageCommand extends Command {
 	/**
 	 * If the selection starts in a language attribute, the value is set to
 	 * the value of that language in a format:
 	 *
-	 *		<languageCode>:<textDirection>
+	 * ```
+	 * <languageCode>:<textDirection>
+	 * ```
 	 *
 	 * * `languageCode` - The language code used for the `lang` attribute in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1)
 	 *    format.
@@ -33,13 +33,13 @@ export default class TextPartLanguageCommand extends Command {
 	 *
 	 * @observable
 	 * @readonly
-	 * @member {Boolean|String} #value
 	 */
+	declare public value: false | string;
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const doc = model.document;
 
@@ -63,11 +63,13 @@ export default class TextPartLanguageCommand extends Command {
 	 * that the selection inherits all attributes from a node if it is in an empty node).
 	 *
 	 * @fires execute
-	 * @param {Object} [options] Command options.
-	 * @param {String|Boolean} [options.languageCode] The language code to be applied to the model.
-	 * @param {String} [options.textDirection] The language text direction.
+	 * @param options Command options.
+	 * @param options.languageCode The language code to be applied to the model.
+	 * @param options.textDirection The language text direction.
 	 */
-	execute( { languageCode, textDirection } = {} ) {
+	public override execute(
+		{ languageCode, textDirection }: { languageCode?: string | false; textDirection?: 'ltr' | 'rtl' } = {}
+	): void {
 		const model = this.editor.model;
 		const doc = model.document;
 		const selection = doc.selection;
@@ -99,22 +101,21 @@ export default class TextPartLanguageCommand extends Command {
 	 * Returns the attribute value of the first node in the selection that allows the attribute.
 	 * For a collapsed selection it returns the selection attribute.
 	 *
-	 * @private
-	 * @returns {Boolean|String} The attribute value.
+	 * @returns The attribute value.
 	 */
-	_getValueFromFirstAllowedNode() {
+	private _getValueFromFirstAllowedNode(): false | string {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const selection = model.document.selection;
 
 		if ( selection.isCollapsed ) {
-			return selection.getAttribute( 'language' ) || false;
+			return selection.getAttribute( 'language' ) as string || false;
 		}
 
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
 				if ( schema.checkAttribute( item, 'language' ) ) {
-					return item.getAttribute( 'language' ) || false;
+					return item.getAttribute( 'language' ) as string || false;
 				}
 			}
 		}
